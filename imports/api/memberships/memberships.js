@@ -16,15 +16,15 @@ Memberships.helpers({
   hasUser() {
     return !!this.userId;
   },
-  getUser() {
+  user() {
     const user = Meteor.users.findOne(this.userId);
     debugAssert(user);
     return user;
   },
   username() {
-    return this.hasUser() ? this.getUser().username : '';
+    return this.hasUser() ? this.user().username : '';
   },
-  getCommunity() {
+  community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);
     return community;
@@ -48,4 +48,6 @@ Memberships.deny({
   remove() { return true; },
 });
 
-Factory.define('membership', Memberships, {});
+Factory.define('membership', Memberships, {
+  communityId: () => Factory.get('community'),
+});

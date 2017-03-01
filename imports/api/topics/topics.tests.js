@@ -28,10 +28,11 @@ if (Meteor.isServer) {
 
     describe('publications', function () {
       const userId = Random.id();
+      const communityId = Factory.create('community')._id;
 
       // TODO -- make a `topicWithComments` factory
       const createTopic = (props = {}) => {
-        const topic = Factory.create('topic', props);
+        const topic = Factory.create('topic', _.extend(props, { communityId }));
         _.times(3, () => {
           Factory.create('comment', { topicId: topic._id });
         });
@@ -48,7 +49,7 @@ if (Meteor.isServer) {
       describe('topics.public', function () {
         it('sends all public topics', function (done) {
           const collector = new PublicationCollector();
-          collector.collect('topics.public', (collections) => {
+          collector.collect('topics.public', { communityId }, (collections) => {
             chai.assert.equal(collections.topics.length, 3);
             done();
           });
@@ -58,7 +59,7 @@ if (Meteor.isServer) {
       describe('topics.private', function () {
         it('sends all owned topics', function (done) {
           const collector = new PublicationCollector({ userId });
-          collector.collect('topics.private', (collections) => {
+          collector.collect('topics.private', { communityId }, (collections) => {
             chai.assert.equal(collections.topics.length, 2);
             done();
           });
@@ -233,11 +234,11 @@ if (Meteor.isServer) {
           const connection = DDP.connect(Meteor.absoluteUrl());
 
           _.times(5, () => {
-            connection.call(insert.name, { language: 'en' });
+            connection.call(insert.name, { language: 'en', communityId: Factory.create('community')._id });
           });
 
           assert.throws(() => {
-            connection.call(insert.name, { language: 'en' });
+            connection.call(insert.name, { language: 'en', communityId: Factory.create('community')._id });
           }, Meteor.Error, /too-many-requests/);
 
           connection.disconnect();

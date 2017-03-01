@@ -11,6 +11,7 @@ import { $ } from 'meteor/jquery';
 import { withRenderedTemplate } from '../test-helpers.js';
 import './topics-show.js';
 import { Comments } from '../../api/comments/comments.js';
+import '../../api/communities/communities.js';
 
 
 describe('Topics_show', function () {

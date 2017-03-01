@@ -23,7 +23,7 @@ import '../components/side-panel.html';
 Template.Side_panel.onCreated(function sidePanelOnCreated() {
   this.autorun(() => {
     // We run this is autorun, so when a new User logs in, the subscription changes
-    this.subHandle = this.subscribe('communities.ofUser', { userId: Meteor.userId() });
+    this.subHandle = this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
   });
 
   this.state = new ReactiveDict();

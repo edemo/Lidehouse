@@ -29,13 +29,6 @@ class CommentsCollection extends Mongo.Collection {
 
 export const Comments = new CommentsCollection('comments');
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Comments.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
-
 Comments.schema = new SimpleSchema({
   _id: {
     type: String,
@@ -62,6 +55,22 @@ Comments.schema = new SimpleSchema({
 
 Comments.attachSchema(Comments.schema);
 
+Comments.helpers({
+  topic() {
+    return Topics.findOne(this.topicId);
+  },
+  editableBy(userId) {
+    return this.topic().editableBy(userId);
+  },
+});
+
+// Deny all client-side updates since we will be using methods to manage this collection
+Comments.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});
+
 // This represents the keys from Topics objects that should be published
 // to the client. If we add secret properties to Topic objects, don't list
 // them here to keep them private to the server.
@@ -79,13 +88,4 @@ Factory.define('comment', Comments, {
   topicId: () => Factory.get('topic'),
   text: () => faker.lorem.sentence(),
   createdAt: () => new Date(),
-});
-
-Comments.helpers({
-  topic() {
-    return Topics.findOne(this.topicId);
-  },
-  editableBy(userId) {
-    return this.topic().editableBy(userId);
-  },
 });
