@@ -7,7 +7,7 @@ import './comments-item.html';
 import { Comments } from '../../api/comments/comments.js';
 
 import {
-  setCheckedStatus,
+  setReadedStatus,
   updateText,
   remove,
 } from '../../api/comments/methods.js';
@@ -25,8 +25,8 @@ Template.Comments_item.onCreated(function commentsItemOnCreated() {
 });
 
 Template.Comments_item.helpers({
-  checkedClass(comment) {
-    return comment.checked && 'checked';
+  readedClass(comment) {
+    return comment.readed && 'readed';
   },
   editingClass(editing) {
     return editing && 'editing';
@@ -35,11 +35,11 @@ Template.Comments_item.helpers({
 
 Template.Comments_item.events({
   'change [type=checkbox]'(event) {
-    const checked = $(event.target).is(':checked');
+    const readed = $(event.target).is(':readed');
 
-    setCheckedStatus.call({
+    setReadedStatus.call({
       commentId: this.comment._id,
-      newCheckedStatus: checked,
+      newReadedStatus: readed,
     });
   },
 

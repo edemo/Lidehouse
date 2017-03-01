@@ -21,7 +21,7 @@ export const insert = new ValidatedMethod({
     const comment = {
       topicId,
       text,
-      checked: false,
+      readed: false,
       createdAt: new Date(),
     };
 
@@ -29,27 +29,27 @@ export const insert = new ValidatedMethod({
   },
 });
 
-export const setCheckedStatus = new ValidatedMethod({
-  name: 'comments.makeChecked',
+export const setReadedStatus = new ValidatedMethod({
+  name: 'comments.makeReaded',
   validate: new SimpleSchema({
     commentId: Comments.simpleSchema().schema('_id'),
-    newCheckedStatus: Comments.simpleSchema().schema('checked'),
+    newReadedStatus: Comments.simpleSchema().schema('readed'),
   }).validator({ clean: true, filter: false }),
-  run({ commentId, newCheckedStatus }) {
+  run({ commentId, newReadedStatus }) {
     const comment = Comments.findOne(commentId);
 
-    if (comment.checked === newCheckedStatus) {
+    if (comment.readed === newReadedStatus) {
       // The status is already what we want, let's not do any extra work
       return;
     }
 
     if (!comment.editableBy(this.userId)) {
-      throw new Meteor.Error('comments.setCheckedStatus.accessDenied',
-        'Cannot edit checked status in a private topic that is not yours');
+      throw new Meteor.Error('comments.setReadedStatus.accessDenied',
+        'Cannot edit readed status in a private topic that is not yours');
     }
 
     Comments.update(commentId, { $set: {
-      checked: newCheckedStatus,
+      readed: newReadedStatus,
     } });
   },
 });
@@ -97,7 +97,7 @@ export const remove = new ValidatedMethod({
 
 const COMMENTS_METHOD_NAMES = _.pluck([
   insert,
-  setCheckedStatus,
+  setReadedStatus,
   updateText,
   remove,
 ], 'name');

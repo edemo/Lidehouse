@@ -46,7 +46,7 @@ Template.Topics_show_page.helpers({
       // We pass `topic` (which contains the full topic, with all fields, as a function
       // because we want to control reactivity. When you check a comment item, the
       // `topic.unreadCount` changes. If we didn't do this the entire topic would
-      // re-render whenever you checked an item. By isolating the reactiviy on the topic
+      // re-render whenever you readed an item. By isolating the reactiviy on the topic
       // to the area that cares about it, we stop it from happening.
       topic() {
         return Topics.findOne(topicId);

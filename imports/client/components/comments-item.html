@@ -1,7 +1,7 @@
 <template name="Comments_item">
-  <div class="topic-item {{checkedClass comment}} {{editingClass editing}}">
+  <div class="topic-item {{readedClass comment}} {{editingClass editing}}">
     <label class="checkbox">
-      <input type="checkbox" checked="{{comment.checked}}" name="checked">
+      <input type="checkbox" checked="{{comment.readed}}" name="readed">
       <span class="checkbox-custom"></span>
     </label>
     <input

@@ -46,7 +46,7 @@
     "insert": {
       "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
     },
-    "setCheckedStatus": {
+    "setReadedStatus": {
       "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
     },
     "updateText": {

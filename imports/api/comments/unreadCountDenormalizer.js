@@ -9,7 +9,7 @@ const unreadCountDenormalizer = {
     // Recalculate the correct incomplete count direct from MongoDB
     const unreadCount = Comments.find({
       topicId,
-      checked: false,
+      readed: false,
     }).count();
 
     Topics.update(topicId, { $set: { unreadCount } });
@@ -22,7 +22,7 @@ const unreadCountDenormalizer = {
     check(modifier, { $set: Object });
 
     // We can only deal with $set modifiers, but that's all we do in this app
-    if (_.has(modifier.$set, 'checked')) {
+    if (_.has(modifier.$set, 'readed')) {
       Comments.find(selector, { fields: { topicId: 1 } }).forEach((comment) => {
         this._updateTopic(comment.topicId);
       });

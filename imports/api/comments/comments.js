@@ -54,7 +54,7 @@ Comments.schema = new SimpleSchema({
     type: Date,
     denyUpdate: true,
   },
-  checked: {
+  readed: {
     type: Boolean,
     defaultValue: false,
   },
@@ -69,12 +69,12 @@ Comments.publicFields = {
   topicId: 1,
   text: 1,
   createdAt: 1,
-  checked: 1,
+  readed: 1,
 };
 
 // TODO This factory has a name - do we have a code style for this?
 //   - usually I've used the singular, sometimes you have more than one though, like
-//   'comment', 'emptyComment', 'checkedComment'
+//   'comment', 'emptyComment', 'readedComment'
 Factory.define('comment', Comments, {
   topicId: () => Factory.get('topic'),
   text: () => faker.lorem.sentence(),

@@ -46,7 +46,7 @@
     "insert": {
       "accessDenied": "Cannot add comment to a private topic that is not yours"
     },
-    "setCheckedStatus": {
+    "setReadedStatus": {
       "accessDenied": "Cannot edit comment in a private topic that is not yours"
     },
     "updateText": {
