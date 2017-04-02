@@ -1,0 +1,51 @@
+<body>
+  <div class="container">
+      {{> Owners}}
+      {{> Discussions}}
+  </div>
+</body>
+
+<template name="Buildings">
+  <header>
+    <h1>Buildings</h1>
+  </header>
+  <ul>
+    {{#each buildings}}
+      {{> Building}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="Building">
+  <li>{{address}}</li>
+</template>
+
+<template name="Owners">
+  <header>
+    <h1>Owners</h1>
+  </header>
+  <ul>
+    {{#each owners}}
+      {{> Owner}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="Owner">
+  <li>{{fullname}}</li>
+</template>
+
+<template name="Discussions">
+  <header>
+    <h1>Discussions</h1>
+  </header>
+  <ul>
+    {{#each discussions}}
+      {{> Discussion}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="Discussion">
+  <li>{{topic}}</li>
+</template>
