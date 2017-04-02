@@ -8,21 +8,21 @@ import { _ } from 'meteor/underscore';
 
 import { denodeify } from '../utils/denodeify';
 
-const createList = (userId) => {
-  const list = Factory.create('list', { userId });
-  _.times(3, () => Factory.create('todo', { listId: list._id }));
-  return list;
+const createTopic = (userId) => {
+  const topic = Factory.create('topic', { userId });
+  _.times(3, () => Factory.create('comment', { topicId: topic._id }));
+  return topic;
 };
 
 Meteor.methods({
   generateFixtures() {
     resetDatabase();
 
-    // create 3 public lists
-    _.times(3, () => createList());
+    // create 3 public topics
+    _.times(3, () => createTopic());
 
-    // create 3 private lists
-    _.times(3, () => createList(Random.id()));
+    // create 3 private topics
+    _.times(3, () => createTopic(Random.id()));
   },
 });
 

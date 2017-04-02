@@ -14,18 +14,18 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 
 
 import { withRenderedTemplate } from '../../test-helpers.js';
-import '../lists-show-page.js';
+import '../topics-show-page.js';
 
-import { Todos } from '../../../api/todos/todos.js';
-import { Lists } from '../../../api/lists/lists.js';
+import { Comments } from '../../../api/comments/comments.js';
+import { Topics } from '../../../api/topics/topics.js';
 
-describe('Lists_show_page', function () {
-  const listId = Random.id();
+describe('Topics_show_page', function () {
+  const topicId = Random.id();
 
   beforeEach(function () {
-    StubCollections.stub([Todos, Lists]);
+    StubCollections.stub([Comments, Topics]);
     Template.registerHelper('_', key => key);
-    sinon.stub(FlowRouter, 'getParam', () => listId);
+    sinon.stub(FlowRouter, 'getParam', () => topicId);
     sinon.stub(Meteor, 'subscribe', () => ({
       subscriptionId: 0,
       ready: () => true,
@@ -40,19 +40,19 @@ describe('Lists_show_page', function () {
   });
 
   it('renders correctly with simple data', function () {
-    Factory.create('list', { _id: listId });
+    Factory.create('topic', { _id: topicId });
     const timestamp = new Date();
-    const todos = _.times(3, i => Factory.create('todo', {
-      listId,
+    const comments = _.times(3, i => Factory.create('comment', {
+      topicId,
       createdAt: new Date(timestamp - (3 - i)),
     }));
 
-    withRenderedTemplate('Lists_show_page', {}, (el) => {
-      const todosText = todos.map(t => t.text).reverse();
-      const renderedText = $(el).find('.list-items input[type=text]')
+    withRenderedTemplate('Topics_show_page', {}, (el) => {
+      const commentsText = comments.map(t => t.text).reverse();
+      const renderedText = $(el).find('.topic-items input[type=text]')
         .map((i, e) => $(e).val())
         .toArray();
-      chai.assert.deepEqual(renderedText, todosText);
+      chai.assert.deepEqual(renderedText, commentsText);
     });
   });
 });

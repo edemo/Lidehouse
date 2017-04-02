@@ -1,8 +1,8 @@
 {
-  "lists": {
+  "topics": {
     "makePrivate": {
       "notLoggedIn": "Ehhez be kell lépni.",
-      "lastPublicList": "Az utolsó publikus téma nem tehető priváttá."
+      "lastPublicTopic": "Az utolsó publikus téma nem tehető priváttá."
     },
     "makePublic": {
       "notLoggedIn": "Ehhez be kell lépni.",
@@ -13,7 +13,7 @@
     },
     "remove": {
       "accessDenied": "'Nincs jogosultság törölni a témát.'",
-      "lastPublicList": "Az utolsó publikus téma nem törölhető.",
+      "lastPublicTopic": "Az utolsó publikus téma nem törölhető.",
       "confirm": "Biztosan törölni akarja a témát"
     },
     "show": {
@@ -23,19 +23,19 @@
       "makePublic": "Publikussá teszem",
       "makePrivate": "Priváttá teszem",
       "delete": "Törlés",
-      "makeListPublic": "A Téma legyen publikus",
-      "makeListPrivate": "A Téma legyen privát",
-      "deleteList": "Téma törlése",
+      "makeTopicPublic": "A Téma legyen publikus",
+      "makeTopicPrivate": "A Téma legyen privát",
+      "deleteTopic": "Téma törlése",
       "typeToAdd": "Írja ide hozzászólását",
       "noTasks": "Nincs hozzászólás",
       "addAbove": "Új hozzászólás a fenti mezőben hozható létre",
       "loading": "Hozzászólások betöltése..."
     },
     "insert": {
-      "list": "Téma"
+      "topic": "Téma"
     }
   },
-  "todos": {
+  "comments": {
     "insert": {
       "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
     },
@@ -62,8 +62,8 @@
       "logout": "Kilépés",
       "login": "Belépés",
       "join": "Új fiók",
-      "newList": "Új téma",
-      "newListError": "Nem lehet létrehozni az új témát",
+      "newTopic": "Új téma",
+      "newTopicError": "Nem lehet létrehozni az új témát",
       "tryingToConnect": "Kapcsolódás folyamatban...",
       "connectionIssue": "Valami hiba van a hálózattal"
     }

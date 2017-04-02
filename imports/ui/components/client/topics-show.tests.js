@@ -9,11 +9,11 @@ import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
 import { withRenderedTemplate } from '../../test-helpers.js';
-import '../lists-show.js';
-import { Todos } from '../../../api/todos/todos.js';
+import '../topics-show.js';
+import { Comments } from '../../../api/comments/comments.js';
 
 
-describe('Lists_show', function () {
+describe('Topics_show', function () {
   beforeEach(function () {
     Template.registerHelper('_', key => key);
   });
@@ -23,33 +23,33 @@ describe('Lists_show', function () {
   });
 
   it('renders correctly with simple data', function () {
-    const list = Factory.build('list');
+    const topic = Factory.build('topic');
     const timestamp = new Date();
 
     // Create a local collection in order to get a cursor
     // Note that we need to pass the transform in so the documents look right when they come out.
-    const todosCollection = new Mongo.Collection(null, { transform: Todos._transform });
+    const commentsCollection = new Mongo.Collection(null, { transform: Comments._transform });
     _.times(3, (i) => {
-      const todo = Factory.build('todo', {
-        listId: list._id,
+      const comment = Factory.build('comment', {
+        topicId: topic._id,
         createdAt: new Date(timestamp - (3 - i)),
       });
-      todosCollection.insert(todo);
+      commentsCollection.insert(comment);
     });
-    const todosCursor = todosCollection.find({}, { sort: { createdAt: -1 } });
+    const commentsCursor = commentsCollection.find({}, { sort: { createdAt: -1 } });
 
     const data = {
-      list: () => list,
-      todosReady: true,
-      todos: todosCursor,
+      topic: () => topic,
+      commentsReady: true,
+      comments: commentsCursor,
     };
 
-    withRenderedTemplate('Lists_show', data, (el) => {
-      const todosText = todosCursor.map(t => t.text);
-      const renderedText = $(el).find('.list-items input[type=text]')
+    withRenderedTemplate('Topics_show', data, (el) => {
+      const commentsText = commentsCursor.map(t => t.text);
+      const renderedText = $(el).find('.topic-items input[type=text]')
         .map((i, e) => $(e).val())
         .toArray();
-      chai.assert.deepEqual(renderedText, todosText);
+      chai.assert.deepEqual(renderedText, commentsText);
     });
   });
 });

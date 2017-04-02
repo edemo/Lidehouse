@@ -9,7 +9,7 @@ Meteor.users.deny({
   },
 });
 
-// Get a list of all accounts methods by running `Meteor.server.method_handlers` in meteor shell
+// Get a topic of all accounts methods by running `Meteor.server.method_handlers` in meteor shell
 const AUTH_METHODS = [
   'login',
   'logout',

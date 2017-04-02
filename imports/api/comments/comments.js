@@ -4,44 +4,44 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import faker from 'faker';
 import incompleteCountDenormalizer from './incompleteCountDenormalizer.js';
 
-import { Lists } from '../lists/lists.js';
+import { Topics } from '../topics/topics.js';
 
-class TodosCollection extends Mongo.Collection {
+class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
     const ourDoc = doc;
     ourDoc.createdAt = ourDoc.createdAt || new Date();
     const result = super.insert(ourDoc, callback);
-    incompleteCountDenormalizer.afterInsertTodo(ourDoc);
+    incompleteCountDenormalizer.afterInsertComment(ourDoc);
     return result;
   }
   update(selector, modifier) {
     const result = super.update(selector, modifier);
-    incompleteCountDenormalizer.afterUpdateTodo(selector, modifier);
+    incompleteCountDenormalizer.afterUpdateComment(selector, modifier);
     return result;
   }
   remove(selector) {
-    const todos = this.find(selector).fetch();
+    const comments = this.find(selector).fetch();
     const result = super.remove(selector);
-    incompleteCountDenormalizer.afterRemoveTodos(todos);
+    incompleteCountDenormalizer.afterRemoveComments(comments);
     return result;
   }
 }
 
-export const Todos = new TodosCollection('todos');
+export const Comments = new CommentsCollection('comments');
 
 // Deny all client-side updates since we will be using methods to manage this collection
-Todos.deny({
+Comments.deny({
   insert() { return true; },
   update() { return true; },
   remove() { return true; },
 });
 
-Todos.schema = new SimpleSchema({
+Comments.schema = new SimpleSchema({
   _id: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
   },
-  listId: {
+  topicId: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
     denyUpdate: true,
@@ -61,13 +61,13 @@ Todos.schema = new SimpleSchema({
   },
 });
 
-Todos.attachSchema(Todos.schema);
+Comments.attachSchema(Comments.schema);
 
-// This represents the keys from Lists objects that should be published
-// to the client. If we add secret properties to List objects, don't list
+// This represents the keys from Topics objects that should be published
+// to the client. If we add secret properties to Topic objects, don't list
 // them here to keep them private to the server.
-Todos.publicFields = {
-  listId: 1,
+Comments.publicFields = {
+  topicId: 1,
   text: 1,
   createdAt: 1,
   checked: 1,
@@ -75,18 +75,18 @@ Todos.publicFields = {
 
 // TODO This factory has a name - do we have a code style for this?
 //   - usually I've used the singular, sometimes you have more than one though, like
-//   'todo', 'emptyTodo', 'checkedTodo'
-Factory.define('todo', Todos, {
-  listId: () => Factory.get('list'),
+//   'comment', 'emptyComment', 'checkedComment'
+Factory.define('comment', Comments, {
+  topicId: () => Factory.get('topic'),
   text: () => faker.lorem.sentence(),
   createdAt: () => new Date(),
 });
 
-Todos.helpers({
-  list() {
-    return Lists.findOne(this.listId);
+Comments.helpers({
+  topic() {
+    return Topics.findOne(this.topicId);
   },
   editableBy(userId) {
-    return this.list().editableBy(userId);
+    return this.topic().editableBy(userId);
   },
 });

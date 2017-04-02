@@ -1,3 +1,3 @@
 import { LaunchScreen } from 'meteor/launch-screen';
 
-export const listRenderHold = LaunchScreen.hold();
+export const topicRenderHold = LaunchScreen.hold();

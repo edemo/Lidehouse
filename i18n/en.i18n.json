@@ -1,8 +1,8 @@
 {
-  "lists": {
+  "topics": {
     "makePrivate": {
       "notLoggedIn": "Must be logged in to make private topics.",
-      "lastPublicList": "Cannot make the last public topic private."
+      "lastPublicTopic": "Cannot make the last public topic private."
     },
     "makePublic": {
       "notLoggedIn": "Must be logged in.",
@@ -13,7 +13,7 @@
     },
     "remove": {
       "accessDenied": "'You don't have permission to remove this topic.'",
-      "lastPublicList": "Cannot delete the last public topic.",
+      "lastPublicTopic": "Cannot delete the last public topic.",
       "confirm": "Are you sure you want to delete the topic"
     },
     "show": {
@@ -23,19 +23,19 @@
       "makePublic": "Make Public",
       "makePrivate": "Make Private",
       "delete": "Delete",
-      "makeListPublic": "Make topic public",
-      "makeListPrivate": "Make topic private",
-      "deleteList": "Delete topic",
+      "makeTopicPublic": "Make topic public",
+      "makeTopicPrivate": "Make topic private",
+      "deleteTopic": "Delete topic",
       "typeToAdd": "Type to add new comment",
       "noTasks": "No comments here",
       "addAbove": "Add new comment using the field above",
       "loading": "Loading comments..."
     },
     "insert": {
-      "list": "Topic"
+      "topic": "Topic"
     }
   },
-  "todos": {
+  "comments": {
     "insert": {
       "accessDenied": "Cannot add comment to a private topic that is not yours"
     },
@@ -62,8 +62,8 @@
       "logout": "Logout",
       "login": "Sign In",
       "join": "Join",
-      "newList": "New Topic",
-      "newListError": "Could not create topic.",
+      "newTopic": "New Topic",
+      "newTopicError": "Could not create topic.",
       "tryingToConnect": "Trying to connect",
       "connectionIssue": "There seems to be a connection issue"
     }

@@ -11,8 +11,8 @@ import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
-import { Lists } from '../../api/lists/lists.js';
-import { insert } from '../../api/lists/methods.js';
+import { Topics } from '../../api/topics/topics.js';
+import { insert } from '../../api/topics/methods.js';
 
 import '../components/loading.js';
 import './app-body.html';
@@ -36,8 +36,8 @@ Meteor.startup(() => {
 });
 
 Template.App_body.onCreated(function appBodyOnCreated() {
-  this.subscribe('lists.public');
-  this.subscribe('lists.private');
+  this.subscribe('topics.public');
+  this.subscribe('topics.private');
 
   this.state = new ReactiveDict();
   this.state.setDefault({
@@ -62,15 +62,15 @@ Template.App_body.helpers({
     const instance = Template.instance();
     return instance.state.get('userMenuOpen');
   },
-  lists() {
-    return Lists.find({ $or: [
+  topics() {
+    return Topics.find({ $or: [
       { userId: { $exists: false } },
       { userId: Meteor.userId() },
     ] });
   },
-  activeListClass(list) {
-    const active = ActiveRoute.name('Lists.show')
-      && FlowRouter.getParam('_id') === list._id;
+  activeTopicClass(topic) {
+    const active = ActiveRoute.name('Topics.show')
+      && FlowRouter.getParam('_id') === topic._id;
 
     return active && 'active';
   },
@@ -120,28 +120,28 @@ Template.App_body.events({
   'click .js-logout'() {
     Meteor.logout();
 
-    // if we are on a private list, we'll need to go to a public one
-    if (ActiveRoute.name('Lists.show')) {
+    // if we are on a private topic, we'll need to go to a public one
+    if (ActiveRoute.name('Topics.show')) {
       // TODO -- test this code path
-      const list = Lists.findOne(FlowRouter.getParam('_id'));
-      if (list.userId) {
-        FlowRouter.go('Lists.show', Lists.findOne({ userId: { $exists: false } }));
+      const topic = Topics.findOne(FlowRouter.getParam('_id'));
+      if (topic.userId) {
+        FlowRouter.go('Topics.show', Topics.findOne({ userId: { $exists: false } }));
       }
     }
   },
 
-  'click .js-new-list'() {
-    const listId = insert.call({ language: TAPi18n.getLanguage() }, (err) => {
+  'click .js-new-topic'() {
+    const topicId = insert.call({ language: TAPi18n.getLanguage() }, (err) => {
       if (err) {
-        // At this point, we have already redirected to the new list page, but
-        // for some reason the list didn't get created. This should almost never
+        // At this point, we have already redirected to the new topic page, but
+        // for some reason the topic didn't get created. This should almost never
         // happen, but it's good to handle it anyway.
         FlowRouter.go('App.home');
-        alert(TAPi18n.__('layouts.appBody.newListError')); // eslint-disable-line no-alert
+        alert(TAPi18n.__('layouts.appBody.newTopicError')); // eslint-disable-line no-alert
       }
     });
 
-    FlowRouter.go('Lists.show', { _id: listId });
+    FlowRouter.go('Topics.show', { _id: topicId });
   },
 
   'click .js-toggle-language'(event) {

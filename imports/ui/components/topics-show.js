@@ -10,52 +10,52 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { TAPi18n } from 'meteor/tap:i18n';
 
-import './lists-show.html';
+import './topics-show.html';
 
 // Component used in the template
-import './todos-item.js';
+import './comments-item.js';
 
 import {
   updateName,
   makePublic,
   makePrivate,
   remove,
-} from '../../api/lists/methods.js';
+} from '../../api/topics/methods.js';
 
 import {
   insert,
-} from '../../api/todos/methods.js';
+} from '../../api/comments/methods.js';
 
 import { displayError } from '../lib/errors.js';
 
-Template.Lists_show.onCreated(function listShowOnCreated() {
+Template.Topics_show.onCreated(function topicShowOnCreated() {
   this.autorun(() => {
     new SimpleSchema({
-      list: { type: Function },
-      todosReady: { type: Boolean },
-      todos: { type: Mongo.Cursor },
+      topic: { type: Function },
+      commentsReady: { type: Boolean },
+      comments: { type: Mongo.Cursor },
     }).validate(Template.currentData());
   });
 
   this.state = new ReactiveDict();
   this.state.setDefault({
     editing: false,
-    editingTodo: false,
+    editingComment: false,
   });
 
-  this.saveList = () => {
+  this.saveTopic = () => {
     this.state.set('editing', false);
 
     const newName = this.$('[name=name]').val().trim();
     if (newName) {
       updateName.call({
-        listId: this.data.list()._id,
+        topicId: this.data.topic()._id,
         newName,
       }, displayError);
     }
   };
 
-  this.editList = () => {
+  this.editTopic = () => {
     this.state.set('editing', true);
 
     // force the template to redraw based on the reactive change
@@ -66,13 +66,13 @@ Template.Lists_show.onCreated(function listShowOnCreated() {
     }, 400);
   };
 
-  this.deleteList = () => {
-    const list = this.data.list();
-    const message = `${TAPi18n.__('lists.remove.confirm')} "${list.name}"?`;
+  this.deleteTopic = () => {
+    const topic = this.data.topic();
+    const message = `${TAPi18n.__('topics.remove.confirm')} "${topic.name}"?`;
 
     if (confirm(message)) { // eslint-disable-line no-alert
       remove.call({
-        listId: list._id,
+        topicId: topic._id,
       }, displayError);
 
       FlowRouter.go('App.home');
@@ -82,24 +82,24 @@ Template.Lists_show.onCreated(function listShowOnCreated() {
     return false;
   };
 
-  this.toggleListPrivacy = () => {
-    const list = this.data.list();
-    if (list.userId) {
-      makePublic.call({ listId: list._id }, displayError);
+  this.toggleTopicPrivacy = () => {
+    const topic = this.data.topic();
+    if (topic.userId) {
+      makePublic.call({ topicId: topic._id }, displayError);
     } else {
-      makePrivate.call({ listId: list._id }, displayError);
+      makePrivate.call({ topicId: topic._id }, displayError);
     }
   };
 });
 
-Template.Lists_show.helpers({
-  todoArgs(todo) {
+Template.Topics_show.helpers({
+  commentArgs(comment) {
     const instance = Template.instance();
     return {
-      todo,
-      editing: instance.state.equals('editingTodo', todo._id),
+      comment,
+      editing: instance.state.equals('editingComment', comment._id),
       onEditingChange(editing) {
-        instance.state.set('editingTodo', editing ? todo._id : false);
+        instance.state.set('editingComment', editing ? comment._id : false);
       },
     };
   },
@@ -109,7 +109,7 @@ Template.Lists_show.helpers({
   },
 });
 
-Template.Lists_show.events({
+Template.Topics_show.events({
   'click .js-cancel'(event, instance) {
     instance.state.set('editing', false);
   },
@@ -125,13 +125,13 @@ Template.Lists_show.events({
   'blur input[type=text]'(event, instance) {
     // if we are still editing (we haven't just clicked the cancel button)
     if (instance.state.get('editing')) {
-      instance.saveList();
+      instance.saveTopic();
     }
   },
 
   'submit .js-edit-form'(event, instance) {
     event.preventDefault();
-    instance.saveList();
+    instance.saveTopic();
   },
 
   // handle mousedown otherwise the blur handler above will swallow the click
@@ -142,36 +142,36 @@ Template.Lists_show.events({
   },
 
   // This is for the mobile dropdown
-  'change .list-edit'(event, instance) {
+  'change .topic-edit'(event, instance) {
     const target = event.target;
     if ($(target).val() === 'edit') {
-      instance.editList();
+      instance.editTopic();
     } else if ($(target).val() === 'delete') {
-      instance.deleteList();
+      instance.deleteTopic();
     } else {
-      instance.toggleListPrivacy();
+      instance.toggleTopicPrivacy();
     }
 
     target.selectedIndex = 0;
   },
 
-  'click .js-edit-list'(event, instance) {
-    instance.editList();
+  'click .js-edit-topic'(event, instance) {
+    instance.editTopic();
   },
 
-  'click .js-toggle-list-privacy'(event, instance) {
-    instance.toggleListPrivacy();
+  'click .js-toggle-topic-privacy'(event, instance) {
+    instance.toggleTopicPrivacy();
   },
 
-  'click .js-delete-list'(event, instance) {
-    instance.deleteList();
+  'click .js-delete-topic'(event, instance) {
+    instance.deleteTopic();
   },
 
-  'click .js-todo-add'(event, instance) {
-    instance.$('.js-todo-new input').focus();
+  'click .js-comment-add'(event, instance) {
+    instance.$('.js-comment-new input').focus();
   },
 
-  'submit .js-todo-new'(event) {
+  'submit .js-comment-new'(event) {
     event.preventDefault();
 
     const $input = $(event.target).find('[type=text]');
@@ -180,7 +180,7 @@ Template.Lists_show.events({
     }
 
     insert.call({
-      listId: this.list()._id,
+      topicId: this.topic()._id,
       text: $input.val(),
     }, displayError);
 

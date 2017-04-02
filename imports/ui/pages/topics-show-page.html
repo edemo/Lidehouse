@@ -1,0 +1,9 @@
+<template name="Topics_show_page">
+  {{#if topicIdArray}}
+    {{#each topicId in topicIdArray}}
+      {{> Topics_show (topicArgs topicId)}}
+    {{/each}}
+  {{else}}
+    {{> App_notFound}}
+  {{/if}}
+</template>

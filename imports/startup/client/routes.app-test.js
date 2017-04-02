@@ -10,8 +10,8 @@ import { $ } from 'meteor/jquery';
 
 import { denodeify } from '../../utils/denodeify';
 import { generateData } from './../../api/generate-data.app-tests.js';
-import { Lists } from '../../api/lists/lists.js';
-import { Todos } from '../../api/todos/todos.js';
+import { Topics } from '../../api/topics/topics.js';
+import { Comments } from '../../api/comments/comments.js';
 
 
 // Utility -- returns a promise which resolves when all subscriptions are done
@@ -38,19 +38,19 @@ if (Meteor.isClient) {
         .then(waitForSubscriptions));
 
     describe('when logged out', () => {
-      it('has all public lists at homepage', () => {
-        assert.equal(Lists.find().count(), 3);
+      it('has all public topics at homepage', () => {
+        assert.equal(Topics.find().count(), 3);
       });
 
-      it('renders the correct list when routed to', () => {
-        const list = Lists.findOne();
-        FlowRouter.go('Lists.show', { _id: list._id });
+      it('renders the correct topic when routed to', () => {
+        const topic = Topics.findOne();
+        FlowRouter.go('Topics.show', { _id: topic._id });
 
         return afterFlushPromise()
           .then(waitForSubscriptions)
           .then(() => {
-            assert.equal($('.title-wrapper').html(), list.name);
-            assert.equal(Todos.find({ listId: list._id }).count(), 3);
+            assert.equal($('.title-wrapper').html(), topic.name);
+            assert.equal(Comments.find({ topicId: topic._id }).count(), 3);
           });
       });
     });
