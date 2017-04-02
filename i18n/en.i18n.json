@@ -1,20 +1,20 @@
 {
   "lists": {
     "makePrivate": {
-      "notLoggedIn": "Must be logged in to make private lists.",
-      "lastPublicList": "Cannot make the last public list private."
+      "notLoggedIn": "Must be logged in to make private topics.",
+      "lastPublicList": "Cannot make the last public topic private."
     },
     "makePublic": {
       "notLoggedIn": "Must be logged in.",
-      "accessDenied": "You don't have permission to edit this list."
+      "accessDenied": "You don't have permission to edit this topic."
     },
     "updateName": {
-      "accessDenied": "You don't have permission to edit this list."
+      "accessDenied": "You don't have permission to edit this topic."
     },
     "remove": {
-      "accessDenied": "'You don't have permission to remove this list.'",
-      "lastPublicList": "Cannot delete the last public list.",
-      "confirm": "Are you sure you want to delete the list"
+      "accessDenied": "'You don't have permission to remove this topic.'",
+      "lastPublicList": "Cannot delete the last public topic.",
+      "confirm": "Are you sure you want to delete the topic"
     },
     "show": {
       "cancel": "Cancel",
@@ -23,38 +23,38 @@
       "makePublic": "Make Public",
       "makePrivate": "Make Private",
       "delete": "Delete",
-      "makeListPublic": "Make list public",
-      "makeListPrivate": "Make list private",
-      "deleteList": "Delete list",
-      "typeToAdd": "Type to add new tasks",
-      "noTasks": "No tasks here",
-      "addAbove": "Add new tasks using the field above",
-      "loading": "Loading tasks..."
+      "makeListPublic": "Make topic public",
+      "makeListPrivate": "Make topic private",
+      "deleteList": "Delete topic",
+      "typeToAdd": "Type to add new comment",
+      "noTasks": "No comments here",
+      "addAbove": "Add new comment using the field above",
+      "loading": "Loading comments..."
     },
     "insert": {
-      "list": "List"
+      "list": "Topic"
     }
   },
   "todos": {
     "insert": {
-      "accessDenied": "Cannot add todos to a private list that is not yours"
+      "accessDenied": "Cannot add comment to a private topic that is not yours"
     },
     "setCheckedStatus": {
-      "accessDenied": "Cannot edit todos in a private list that is not yours"
+      "accessDenied": "Cannot edit comment in a private topic that is not yours"
     },
     "updateText": {
-      "accessDenied": "Cannot edit todos in a private list that is not yours"
+      "accessDenied": "Cannot edit comment in a private topic that is not yours"
     },
     "remove": {
-      "accessDenied": "Cannot remove todos in a private list that is not yours"
+      "accessDenied": "Cannot remove comment in a private topic that is not yours"
     },
     "item": {
-      "taskName": "Task name"
+      "taskName": "Comment content"
     }
   },
   "useraccounts": {
     "atTitle": {
-      "subtitle": "Signing in allows you to have private lists"
+      "subtitle": "Signing in allows you to have private topics"
     }
   },
   "layouts": {
@@ -62,8 +62,8 @@
       "logout": "Logout",
       "login": "Sign In",
       "join": "Join",
-      "newList": "New List",
-      "newListError": "Could not create list.",
+      "newList": "New Topic",
+      "newListError": "Could not create topic.",
       "tryingToConnect": "Trying to connect",
       "connectionIssue": "There seems to be a connection issue"
     }

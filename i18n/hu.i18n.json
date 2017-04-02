@@ -1,0 +1,76 @@
+{
+  "lists": {
+    "makePrivate": {
+      "notLoggedIn": "Ehhez be kell lépni.",
+      "lastPublicList": "Az utolsó publikus téma nem tehető priváttá."
+    },
+    "makePublic": {
+      "notLoggedIn": "Ehhez be kell lépni.",
+      "accessDenied": "Nincs jogosultság szerkeszteni a témát."
+    },
+    "updateName": {
+      "accessDenied": "Nincs jogosultság szerkeszteni a témát."
+    },
+    "remove": {
+      "accessDenied": "'Nincs jogosultság törölni a témát.'",
+      "lastPublicList": "Az utolsó publikus téma nem törölhető.",
+      "confirm": "Biztosan törölni akarja a témát"
+    },
+    "show": {
+      "cancel": "Visszavonás",
+      "showMenu": "Menü megtekintése",
+      "selectAction": "Válasszon mit tesz",
+      "makePublic": "Publikussá teszem",
+      "makePrivate": "Priváttá teszem",
+      "delete": "Törlés",
+      "makeListPublic": "A Téma legyen publikus",
+      "makeListPrivate": "A Téma legyen privát",
+      "deleteList": "Téma törlése",
+      "typeToAdd": "Írja ide hozzászólását",
+      "noTasks": "Nincs hozzászólás",
+      "addAbove": "Új hozzászólás a fenti mezőben hozható létre",
+      "loading": "Hozzászólások betöltése..."
+    },
+    "insert": {
+      "list": "Téma"
+    }
+  },
+  "todos": {
+    "insert": {
+      "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
+    },
+    "setCheckedStatus": {
+      "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
+    },
+    "updateText": {
+      "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
+    },
+    "remove": {
+      "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
+    },
+    "item": {
+      "taskName": "Hozzászólás tartalma"
+    }
+  },
+  "useraccounts": {
+    "atTitle": {
+      "subtitle": "Bejelentkezett felhasználó létrehozhat privát témákat."
+    }
+  },
+  "layouts": {
+    "appBody": {
+      "logout": "Kilépés",
+      "login": "Belépés",
+      "join": "Új fiók",
+      "newList": "Új téma",
+      "newListError": "Nem lehet létrehozni az új témát",
+      "tryingToConnect": "Kapcsolódás folyamatban...",
+      "connectionIssue": "Valami hiba van a hálózattal"
+    }
+  },
+  "pages": {
+    "appNotFound": {
+      "pageNotFound": "Az odal nem található"
+    }
+  }
+}
