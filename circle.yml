@@ -1,0 +1,28 @@
+machine:
+  node:
+    version: 4.6.2
+dependencies:
+  cache_directories:
+    - "~/.npm"
+    - "~/.meteor"
+    - "node_modules"
+    - "./.meteor/local/build"
+    - "./.meteor/local/bundler-cache"
+    - "./.meteor/local/isopacks"
+    - "./.meteor/local/plugin-cache"
+    - "/home/ubuntu/nvm/versions/node/v4.6.2/bin"
+    - "/home/ubuntu/nvm/versions/node/v4.6.2/lib/node_modules"
+  override:
+    - ./.testing/upgrade_chrome_version.sh
+    - ./.testing/cache_meteor.sh
+    - ./.testing/cache_npm_dependencies.sh
+    - ./.testing/cache_build_and_dependencies.sh
+    - chimp --path=features # Cache chimp deps by running it without any tests
+checkout:
+  post:
+    - git submodule update --init
+test:
+  pre:
+    - mkdir -p $CIRCLE_TEST_REPORTS/cucumber
+  override:
+    - ./tests/acceptance_run

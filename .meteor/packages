@@ -1,23 +1,78 @@
-# Meteor packages used by this project, one per line.
+# Meteor packages used by this project one per line.
 # Check this file (and the other files in this directory) into your repository.
 #
-# 'meteor add' and 'meteor remove' will edit this file for you,
+# 'meteor add' and 'meteor remove' will edit this file for you
 # but you can also edit it by hand.
 
-meteor-base@1.0.4             # Packages every Meteor app needs to have
-mobile-experience@1.0.4       # Packages for a great mobile UX
-mongo@1.1.16                   # The database Meteor supports right now
-blaze-html-templates@1.0.4 # Compile .html files into Meteor Blaze views
-reactive-var@1.0.11            # Reactive variable for tracker
-tracker@1.1.2                 # Meteor's client-side reactive programming library
+# meteor libraries
+meteor-base@1.0.4
+ecmascript@0.6.1
+es5-shim@4.6.15
+check@1.2.4
+tracker@1.1.1
 
-standard-minifier-css@1.3.4   # CSS minifier run for production mode
-standard-minifier-js@1.2.3    # JS minifier run for production mode
-es5-shim@4.6.15                # ECMAScript 5 compatibility for older browsers.
-ecmascript@0.6.3              # Enable ECMAScript2015+ syntax in app code
-shell-server@0.2.3            # Server-side component of the `meteor shell` command
+# standard libraries
+jquery@1.11.10
+underscore@1.0.10
+less@2.7.8
 
-autopublish@1.0.7             # Publish all data to the clients (for prototyping)
-insecure@1.0.7                # Allow all DB writes from clients (for prototyping)
-accounts-ui
-accounts-password
+# ui
+blaze-html-templates@1.0.4
+reactive-dict@1.1.8
+reactive-var@1.0.11
+aldeed:template-extension
+percolate:momentum
+
+# data
+mongo@1.1.14
+aldeed:simple-schema
+aldeed:collection2
+dburles:collection-helpers
+reywood:publish-composite
+mdg:validated-method
+mdg:validation-error
+
+# routing
+kadira:flow-router
+kadira:blaze-layout
+arillo:flow-router-helpers
+zimme:active-route
+
+# i18n
+tap:i18n
+
+# accounts
+accounts-password@1.3.3
+useraccounts:core
+useraccounts:unstyled
+useraccounts:flow-routing
+softwarerero:accounts-t9n
+
+# mobile
+crosswalk@1.7.0
+mobile-experience@1.0.4
+chriswessels:hammer
+
+# production
+juliancwirko:postcss
+standard-minifier-js@1.2.1
+ddp-rate-limiter@1.0.6
+app-prod-security
+
+# rest apis
+simple:rest-accounts-password
+simple:rest
+
+# testing
+xolvio:cleaner
+dispatch:mocha-phantomjs
+practicalmeteor:chai
+practicalmeteor:sinon
+practicalmeteor:mocha
+hwillson:stub-collections
+johanbrook:publication-collector
+shell-server@0.2.1
+dburles:factory
+
+# security
+audit-argument-checks@1.0.7
