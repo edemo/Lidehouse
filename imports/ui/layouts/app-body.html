@@ -40,6 +40,31 @@
         {{/if}}
 
         <div class="topic-comments">
+          <a class="js-new-member link-topic-new">
+            {{_ 'layouts.appBody.community'}}
+          </a>
+
+          {{#each community in communities}}
+            <a class="topic-comment">
+              {{community.name}}
+            </a>
+          {{/each}}
+        </div>
+
+        <div class="topic-comments">
+          <a class="js-new-member link-topic-new">
+            <span class="icon-plus"></span>
+            {{_ 'layouts.appBody.newMember'}}
+          </a>
+
+          {{#each member in members}}
+            <a class="topic-comment">
+              {{member.username}}
+            </a>
+          {{/each}}
+        </div>
+
+        <div class="topic-comments">
           <a class="js-new-topic link-topic-new">
             <span class="icon-plus"></span>
             {{_ 'layouts.appBody.newTopic'}}

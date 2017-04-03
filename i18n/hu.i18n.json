@@ -64,6 +64,9 @@
       "join": "Új fiók",
       "newTopic": "Új téma",
       "newTopicError": "Nem lehet létrehozni az új témát",
+      "community": "Az ön lakóközössége:",
+      "newMember": "Csatlakozom a közösséghez",
+      "newMemberError": "Nem lehet létrehozni az új tagot",
       "tryingToConnect": "Kapcsolódás folyamatban...",
       "connectionIssue": "Valami hiba van a hálózattal"
     }

@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Topics } from '../../api/topics/topics.js';
 import { Comments } from '../../api/comments/comments.js';
+import { Communities } from '../../api/communities/communities.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
@@ -52,5 +53,15 @@ Meteor.startup(() => {
         timestamp += 1; // ensure unique timestamp.
       });
     });
+  }
+  if (Communities.find().count() === 0) {
+    Communities.insert({
+      name: 'Bazsalikom u 27',
+    });
+  }
+  if (Meteor.users.find({ username: 'dummy' }).count === 0) {
+    Meteor.users.insert({ username: 'dummy', email: 'dummy@dummy.net' });
+    Meteor.users.insert({ username: 'dummy1', email: 'dummy1@dummy.net' });
+    Meteor.users.insert({ username: 'dummy2', email: 'dummy2@dummy.net' });
   }
 });

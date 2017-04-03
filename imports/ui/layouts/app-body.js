@@ -12,7 +12,10 @@ import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
 import { Topics } from '../../api/topics/topics.js';
-import { insert } from '../../api/topics/methods.js';
+import { insert as insertTopic } from '../../api/topics/methods.js';
+import { Communities } from '../../api/communities/communities.js';
+import { Members } from '../../api/members/members.js';
+import { insert as insertMember } from '../../api/members/methods.js';
 
 import '../components/loading.js';
 import './app-body.html';
@@ -38,6 +41,8 @@ Meteor.startup(() => {
 Template.App_body.onCreated(function appBodyOnCreated() {
   this.subscribe('topics.public');
   this.subscribe('topics.private');
+  this.subscribe('communities.listing');
+  this.subscribe('members.inCommunity');
 
   this.state = new ReactiveDict();
   this.state.setDefault({
@@ -73,6 +78,12 @@ Template.App_body.helpers({
       && FlowRouter.getParam('_id') === topic._id;
 
     return active && 'active';
+  },
+  communities() {
+    return Communities.find({});
+  },
+  members() {
+    return Members.find({});
   },
   connected() {
     if (showConnectionIssue.get()) {
@@ -131,17 +142,26 @@ Template.App_body.events({
   },
 
   'click .js-new-topic'() {
-    const topicId = insert.call({ language: TAPi18n.getLanguage() }, (err) => {
+    const topicId = insertTopic.call({ language: TAPi18n.getLanguage() }, (err) => {
       if (err) {
         // At this point, we have already redirected to the new topic page, but
         // for some reason the topic didn't get created. This should almost never
         // happen, but it's good to handle it anyway.
         FlowRouter.go('App.home');
-        alert(TAPi18n.__('layouts.appBody.newTopicError')); // eslint-disable-line no-alert
+        alert("#{TAPi18n.__('layouts.appBody.newTopicError')}\n#{err}"); // eslint-disable-line no-alert
       }
     });
 
     FlowRouter.go('Topics.show', { _id: topicId });
+  },
+
+  'click .js-new-member'() {
+    insertMember.call({ userId: Meteor.userId() }, (err) => {
+      if (err) {
+        FlowRouter.go('App.home');
+        alert("#{TAPi18n.__('layouts.appBody.newMemberError')}\n#{err}"); // eslint-disable-line no-alert
+      }
+    });
   },
 
   'click .js-toggle-language'(event) {

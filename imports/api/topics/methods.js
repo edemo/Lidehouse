@@ -114,7 +114,7 @@ export const remove = new ValidatedMethod({
   },
 });
 
-// Get topic of all method names on Topics
+// Get list of all method names on Topics
 const TOPICS_METHODS = _.pluck([
   insert,
   makePublic,

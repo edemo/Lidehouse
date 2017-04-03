@@ -64,6 +64,9 @@
       "join": "Join",
       "newTopic": "New Topic",
       "newTopicError": "Could not create topic.",
+      "community": "Your community:",
+      "newMember": "Join the community",
+      "newMemberError": "Could not add member.",
       "tryingToConnect": "Trying to connect",
       "connectionIssue": "There seems to be a connection issue"
     }
