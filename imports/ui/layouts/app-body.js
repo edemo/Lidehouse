@@ -49,6 +49,9 @@ Template.App_body.onCreated(function appBodyOnCreated() {
     menuOpen: false,
     userMenuOpen: false,
   });
+
+  T9n.setLanguage('hu');
+  TAPi18n.setLanguage('hu');
 });
 
 Template.App_body.helpers({
@@ -101,7 +104,7 @@ Template.App_body.helpers({
     },
   },
   languages() {
-    return _.keys(TAPi18n.getLanguages());
+    return _.keys(TAPi18n.getLanguages()).reverse();
   },
   isActiveLanguage(language) {
     return (TAPi18n.getLanguage() === language);
