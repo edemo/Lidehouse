@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Topics } from '../../api/topics/topics.js';
 import { Comments } from '../../api/comments/comments.js';
+
 import { Communities } from '../../api/communities/communities.js';
 
 // if the database is empty on server start, create some sample data.
@@ -19,8 +20,7 @@ Meteor.startup(() => {
         items: [
           'A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.',
           'Engem is rohadtul idegesít!!!',
-          'Elnézést kérek a lakóktól. Enyém a kutyus, nem szokott vonyítani',
-          'csak a nagyi kórházban volt. De már itthon van.',
+          'Elnézést kérek a lakóktól. Enyém a kutyus, nem szokott vonyítani, csak a nagyi kórházban volt. De már itthon van.',
         ],
       },
       {
@@ -28,8 +28,7 @@ Meteor.startup(() => {
         items: [
           'Most kedvezményes feltételekkel lehet felvenni fundamenta hitelt tatarozásra.',
           'Szerintem érdemes lenne. A kamat csak 6%, és 10 évre kapnánk.',
-          'Nem tudom. Az előző hitelünket épp most tudtuk végre törleszteni.',
-          'Most végre lemenne a közös költség, és erre megint egy újabb hitel?',
+          'Nem tudom. Az előző hitelünket épp most tudtuk végre törleszteni. Most végre lemenne a közös költség, és erre megint egy újabb hitel?',
           'Szerintem bocsássuk szavazásra!',
         ],
       },

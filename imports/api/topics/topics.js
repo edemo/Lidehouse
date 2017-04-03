@@ -39,7 +39,7 @@ Topics.deny({
 
 Topics.schema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  name: { type: String },
+  name: { type: String, max: 100 },
   incompleteCount: { type: Number, defaultValue: 0 },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 });
