@@ -52,7 +52,7 @@
     }
   }
 
-  .topic-comments {
+  .listing {
     a {
       box-shadow: rgba(255,255,255,.15) 0 1px 0 0;
       display: block;
@@ -61,7 +61,7 @@
       position: relative;
     }
 
-    .count-topic {
+    .count {
       transition: all 200ms ease-in;
       background: rgba(255,255,255,.1);
       border-radius: 1em;
@@ -89,14 +89,14 @@
       opacity: .8;
     }
 
-    .topic-comment {
+    .list-item {
       color: rgba(255,255,255,.4);
 
       &:hover,
       &:active,
       &.active {
         color: @color-empty;
-        .count-topic { background: @color-primary; }
+        .count { background: @color-primary; }
       }
 
       .cordova &:hover {

@@ -37,46 +37,46 @@
       </div>
     {{/if}}
 
-    <div class="topic-comments">
-      <a class="js-new-member link-topic-new">
+    <div class="listing">
+      <a>
         {{_ 'layouts.appBody.community'}}
       </a>
 
       {{#each community in communities}}
-        <a class="topic-comment">
+        <a class="list-item">
           {{community.name}}
         </a>
       {{/each}}
     </div>
 
-    <div class="topic-comments">
-      <a class="js-new-member link-topic-new">
+    <div class="listing">
+      <a class="js-new-community link-new">
         <span class="icon-plus"></span>
         {{_ 'layouts.appBody.newMember'}}
       </a>
 
       {{#each member in members}}
-        <a class="topic-comment">
+        <a class="list-item">
           {{member.username}}
         </a>
       {{/each}}
     </div>
 
-    <div class="topic-comments">
-      <a class="js-new-topic link-topic-new">
+    <div class="listing">
+      <a class="js-new-topic link-new">
         <span class="icon-plus"></span>
         {{_ 'layouts.appBody.newTopic'}}
       </a>
 
       {{#each topic in topics}}
         <a href="{{pathFor 'Topics.show' _id=topic._id}}" title="{{topic.name}}"
-            class="topic-comment {{activeTopicClass topic}}">
+            class="list-item {{activeTopicClass topic}}">
           {{#if topic.userId}}
             <span class="icon-lock"></span>
           {{/if}}
 
           {{#if topic.incompleteCount}}
-            <span class="count-topic">{{topic.incompleteCount}}</span>
+            <span class="count">{{topic.incompleteCount}}</span>
           {{/if}}
 
           {{topic.name}}
