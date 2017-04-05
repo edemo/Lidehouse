@@ -1,8 +1,10 @@
 // import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/dburles:factory';
-import faker from 'faker';
+// import { Factory } from 'meteor/dburles:factory';
+// import faker from 'faker';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AddressSchema } from './address.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -14,23 +16,17 @@ Communities.deny({
 });
 
 Communities.schema = new SimpleSchema({
-  _id: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Id,
-  },
-  name: {
-    type: String,
-    max: 100,
-  },
+  name: { type: String, max: 100, label: () => TAPi18n.__('communities.name') },
+  lot: { type: String, max: 100, label: () => TAPi18n.__('communities.lot') },
+  address: { type: AddressSchema, label: () => TAPi18n.__('communities.address') },
 });
 
 Communities.attachSchema(Communities.schema);
 
-// This represents the keys from Community objects that should be published
-// to the client. If we add secret properties to Community objects, don't list
-// them here to keep them private to the server.
+// Fields not listed here can only be seen on the server.
 Communities.publicFields = {
   name: 1,
+  address: 1,
 };
 
-Factory.define('community', Communities, { name: () => faker.lorem.sentence() });
+// Factory.define('community', Communities, { name: () => faker.lorem.sentence() });

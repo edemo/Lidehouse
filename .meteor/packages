@@ -22,6 +22,7 @@ reactive-dict@1.1.8
 reactive-var@1.0.11
 aldeed:template-extension
 percolate:momentum
+aldeed:autoform
 
 # data
 mongo@1.1.14

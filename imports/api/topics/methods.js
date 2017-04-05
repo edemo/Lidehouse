@@ -115,7 +115,7 @@ export const remove = new ValidatedMethod({
 });
 
 // Get list of all method names on Topics
-const TOPICS_METHODS = _.pluck([
+const TOPICS_METHOD_NAMES = _.pluck([
   insert,
   makePublic,
   makePrivate,
@@ -127,7 +127,7 @@ if (Meteor.isServer) {
   // Only allow 5 topic operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {
-      return _.contains(TOPICS_METHODS, name);
+      return _.contains(TOPICS_METHOD_NAMES, name);
     },
 
     // Rate limit per connection ID

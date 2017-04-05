@@ -52,6 +52,15 @@
       "taskName": "Hozzászólás tartalma"
     }
   },
+  "communities": {
+    "name": "Név",
+    "lot": "Helyrajzi szám",
+    "address": "Cím",
+    "city": "Város",
+    "street": "Utca",
+    "number": "Házszám",
+    "zip": "Irányító szám"
+  },
   "useraccounts": {
     "atTitle": {
       "subtitle": "Bejelentkezett felhasználó létrehozhat privát témákat."

@@ -95,8 +95,7 @@ export const remove = new ValidatedMethod({
   },
 });
 
-// Get topic of all method names on Comments
-const COMMENTS_METHODS = _.pluck([
+const COMMENTS_METHOD_NAMES = _.pluck([
   insert,
   setCheckedStatus,
   updateText,
@@ -107,7 +106,7 @@ if (Meteor.isServer) {
   // Only allow 5 comments operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {
-      return _.contains(COMMENTS_METHODS, name);
+      return _.contains(COMMENTS_METHOD_NAMES, name);
     },
 
     // Rate limit per connection ID

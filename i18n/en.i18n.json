@@ -52,6 +52,15 @@
       "taskName": "Comment content"
     }
   },
+  "communities": {
+    "name": "Name",
+    "lot": "Lot number",
+    "address": "Address",
+    "city": "City",
+    "street": "Street",
+    "number": "Number",
+    "zip": "Zip code"
+  },
   "useraccounts": {
     "atTitle": {
       "subtitle": "Signing in allows you to have private topics"
