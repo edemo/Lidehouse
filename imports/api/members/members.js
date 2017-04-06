@@ -16,7 +16,7 @@ class MembersCollection extends Mongo.Collection {
     return super.insert(ourMember, callback);
   }
 }
-
+// TODO Rename to Memberships!
 export const Members = new MembersCollection('members');
 
 // Deny all client-side updates since we will be using methods to manage this collection
@@ -27,18 +27,10 @@ Members.deny({
 });
 
 Members.schema = new SimpleSchema({
-  _id: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Id,
-  },
-  userId: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Id,
-  },
-  username: {
-    type: String,
-    max: 20,
-  },
+  _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  username: { type: String, max: 20 },
 });
 
 Members.attachSchema(Members.schema);
@@ -48,6 +40,7 @@ Members.attachSchema(Members.schema);
 // them here to keep them private to the server.
 Members.publicFields = {
   userId: 1,
+  communityId: 1,
   username: 1,
 };
 

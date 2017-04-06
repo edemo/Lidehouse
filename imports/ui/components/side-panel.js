@@ -22,7 +22,11 @@ Template.Side_panel.onCreated(function sidePanelOnCreated() {
   this.subscribe('topics.public');
   this.subscribe('topics.private');
   this.subscribe('communities.listing');
-  this.subscribe('members.inCommunity');
+
+  this.autorun(() => {
+    // We run this is autorun, so when a new User logs in, the subscription changes
+    this.subHandle = this.subscribe('members.ofUser', { userId: Meteor.userId() });
+  });
 
   this.state = new ReactiveDict();
   this.state.setDefault({
@@ -31,6 +35,15 @@ Template.Side_panel.onCreated(function sidePanelOnCreated() {
 
   T9n.setLanguage('hu');
   TAPi18n.setLanguage('hu');
+});
+
+Template.Side_panel.onRendered(function sidePanelOnRendered() {
+  this.autorun(() => {
+    if (this.subHandle.ready()) {
+      const communityId = Members.findOne({ }).communityId;
+      this.subscribe('members.inCommunity', { communityId });
+    }
+  });
 });
 
 Template.Side_panel.helpers({

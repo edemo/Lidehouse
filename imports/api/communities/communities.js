@@ -16,6 +16,7 @@ Communities.deny({
 });
 
 Communities.schema = new SimpleSchema({
+//  _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   name: { type: String, max: 100, label: () => TAPi18n.__('communities.name') },
   lot: { type: String, max: 100, label: () => TAPi18n.__('communities.lot') },
   address: { type: AddressSchema, label: () => TAPi18n.__('communities.address') },
@@ -25,6 +26,7 @@ Communities.attachSchema(Communities.schema);
 
 // Fields not listed here can only be seen on the server.
 Communities.publicFields = {
+//  _id: 1,
   name: 1,
   address: 1,
 };
