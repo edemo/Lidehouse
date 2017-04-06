@@ -31,6 +31,7 @@ Template.Side_panel.onCreated(function sidePanelOnCreated() {
   this.state = new ReactiveDict();
   this.state.setDefault({
     userMenuOpen: false,
+    selectedCommunityId: null,
   });
 
   T9n.setLanguage('hu');
@@ -42,6 +43,7 @@ Template.Side_panel.onRendered(function sidePanelOnRendered() {
     if (this.subHandle.ready()) {
       const communityId = Members.findOne({ }).communityId;
       this.subscribe('members.inCommunity', { communityId });
+      this.state.set('selectedCommunityId', communityId);
     }
   });
 });
@@ -69,6 +71,10 @@ Template.Side_panel.helpers({
   },
   communities() {
     return Communities.find({});
+  },
+  activeCommunityClass(community) {
+    const active = community._id === Template.instance().state.get('selectedCommunityId');
+    return active && 'active';
   },
   members() {
     return Members.find({});
@@ -109,18 +115,19 @@ Template.Side_panel.events({
         // for some reason the topic didn't get created. This should almost never
         // happen, but it's good to handle it anyway.
         FlowRouter.go('App.home');
-        alert("#{TAPi18n.__('layouts.appBody.newTopicError')}\n#{err}"); // eslint-disable-line no-alert
+        alert(`${TAPi18n.__('layouts.appBody.newTopicError')}\n${err}`); // eslint-disable-line no-alert
       }
     });
 
     FlowRouter.go('Topics.show', { _id: topicId });
   },
 
-  'click .js-new-member'() {
-    insertMember.call({ userId: Meteor.userId() }, (err) => {
+  'click .js-new-member'(event, instance) {
+    const communityId = instance.state.get('selectedCommunityId');
+    insertMember.call({ userId: Meteor.userId(), communityId }, (err) => {
       if (err) {
         FlowRouter.go('App.home');
-        alert("#{TAPi18n.__('layouts.appBody.newMemberError')}\n#{err}"); // eslint-disable-line no-alert
+        alert(`${TAPi18n.__('layouts.appBody.newMemberError')}\n${err}`); // eslint-disable-line no-alert
       }
     });
   },

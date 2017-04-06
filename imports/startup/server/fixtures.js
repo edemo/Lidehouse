@@ -55,12 +55,14 @@ Meteor.startup(() => {
   }
   if (Communities.find().count() === 0) {
     Communities.insert({
-      name: 'Bazsalikom u 27',
+      name: 'De-Central HQ',
+      lot: '1234566/1234',
+      address: {
+        city: 'Budapest',
+        street: 'Hernad u',
+        number: '56',
+        zip: '1078',
+      },
     });
-  }
-  if (Meteor.users.find({ username: 'dummy' }).count === 0) {
-    Meteor.users.insert({ username: 'dummy', email: 'dummy@dummy.net' });
-    Meteor.users.insert({ username: 'dummy1', email: 'dummy1@dummy.net' });
-    Meteor.users.insert({ username: 'dummy2', email: 'dummy2@dummy.net' });
   }
 });

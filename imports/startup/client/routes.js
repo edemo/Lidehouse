@@ -5,8 +5,9 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import '../../ui/layouts/app-body.js';
 import '../../ui/pages/root-redirector.js';
 import '../../ui/pages/topics-show-page.js';
-import '../../ui/pages/communities-create-page.js';
 import '../../ui/pages/app-not-found.js';
+import '../../ui/forms/communities-create-form.js';
+import '../../ui/forms/users-show-form.js';
 
 // Import to override accounts templates
 import '../../ui/accounts/accounts-templates.js';
@@ -28,7 +29,14 @@ FlowRouter.route('/topics/:_id', {
 FlowRouter.route('/create', {
   name: 'Communities.create',
   action() {
-    BlazeLayout.render('App_body', { main: 'Communities_create_page' });
+    BlazeLayout.render('App_body', { main: 'Communities_create_form' });
+  },
+});
+
+FlowRouter.route('/user/:_id', {
+  name: 'Users.show',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Users_show_form' });
   },
 });
 

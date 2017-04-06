@@ -6,3 +6,5 @@ import '../../api/members/methods.js';
 import '../../api/members/server/publications.js';
 import '../../api/communities/methods.js';
 import '../../api/communities/server/publications.js';
+// import '../../api/users/methods.js';
+import '../../api/users/server/publications.js';
