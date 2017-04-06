@@ -6,6 +6,20 @@ import { Communities } from '../../api/communities/communities.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
+  let communityId;
+  if (Communities.find().count() === 0) {
+    communityId = Communities.insert({
+      name: 'Teszt ház',
+      lot: '1234566/1234',
+      address: {
+        city: 'Budapest',
+        street: 'Hernád u',
+        number: '56',
+        zip: '1078',
+      },
+    });
+  }
+
   if (Topics.find().count() === 0) {
     const data = [
       {
@@ -34,10 +48,12 @@ Meteor.startup(() => {
       },
     ];
 
+
     let timestamp = (new Date()).getTime();
 
     data.forEach((topic) => {
       const topicId = Topics.insert({
+        communityId,
         name: topic.name,
         incompleteCount: topic.items.length,
       });
@@ -51,18 +67,6 @@ Meteor.startup(() => {
 
         timestamp += 1; // ensure unique timestamp.
       });
-    });
-  }
-  if (Communities.find().count() === 0) {
-    Communities.insert({
-      name: 'De-Central HQ',
-      lot: '1234566/1234',
-      address: {
-        city: 'Budapest',
-        street: 'Hernad u',
-        number: '56',
-        zip: '1078',
-      },
     });
   }
 });

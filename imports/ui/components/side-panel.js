@@ -19,8 +19,6 @@ import { insert as insertMember } from '../../api/members/methods.js';
 import '../components/side-panel.html';
 
 Template.Side_panel.onCreated(function sidePanelOnCreated() {
-  this.subscribe('topics.public');
-  this.subscribe('topics.private');
   this.subscribe('communities.listing');
 
   this.autorun(() => {
@@ -43,6 +41,8 @@ Template.Side_panel.onRendered(function sidePanelOnRendered() {
     if (this.subHandle.ready()) {
       const communityId = Members.findOne({ }).communityId;
       this.subscribe('members.inCommunity', { communityId });
+      this.subscribe('topics.public', { communityId });
+      this.subscribe('topics.private', { communityId });
       this.state.set('selectedCommunityId', communityId);
     }
   });
@@ -108,8 +108,9 @@ Template.Side_panel.events({
     }
   },
 
-  'click .js-new-topic'() {
-    const topicId = insertTopic.call({ language: TAPi18n.getLanguage() }, (err) => {
+  'click .js-new-topic'(event, instance) {
+    const communityId = instance.state.get('selectedCommunityId');
+    const topicId = insertTopic.call({ communityId, language: TAPi18n.getLanguage() }, (err) => {
       if (err) {
         // At this point, we have already redirected to the new topic page, but
         // for some reason the topic didn't get created. This should almost never

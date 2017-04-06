@@ -39,6 +39,7 @@ Topics.deny({
 
 Topics.schema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   name: { type: String, max: 100 },
   incompleteCount: { type: Number, defaultValue: 0 },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
@@ -51,6 +52,7 @@ Topics.attachSchema(Topics.schema);
 // them here to keep them private to the server.
 Topics.publicFields = {
   name: 1,
+  communityId: 1,
   incompleteCount: 1,
   userId: 1,
 };

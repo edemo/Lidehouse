@@ -13,9 +13,8 @@ const TOPIC_ID_ONLY = new SimpleSchema({
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
   validate: new SimpleSchema({
-    language: {
-      type: String,
-    },
+    communityId: { type: String },
+    language: { type: String },
   }).validator(),
   run({ language }) {
     return Topics.insert({}, null, language);
