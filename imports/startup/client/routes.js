@@ -7,6 +7,7 @@ import '../../ui/pages/root-redirector.js';
 import '../../ui/pages/topics-show-page.js';
 import '../../ui/pages/app-not-found.js';
 import '../../ui/forms/communities-create-form.js';
+import '../../ui/forms/communities-join-form.js';
 import '../../ui/forms/users-show-form.js';
 
 // Import to override accounts templates
@@ -26,7 +27,14 @@ FlowRouter.route('/topics/:_id', {
   },
 });
 
-FlowRouter.route('/create', {
+FlowRouter.route('/join-community', {
+  name: 'Communities.join',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Communities_join_form' });
+  },
+});
+
+FlowRouter.route('/create-community', {
   name: 'Communities.create',
   action() {
     BlazeLayout.render('App_body', { main: 'Communities_create_form' });

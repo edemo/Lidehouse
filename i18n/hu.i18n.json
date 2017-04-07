@@ -53,13 +53,19 @@
     }
   },
   "communities": {
+    "communities": "Lakóközösségek",
     "name": "Név",
     "lot": "Helyrajzi szám",
     "address": "Cím",
     "city": "Város",
     "street": "Utca",
     "number": "Házszám",
-    "zip": "Irányító szám"
+    "zip": "Irányító szám",
+    "join": "Csatlakozom",
+    "create": "Létrehozom"
+  },
+  "members": {
+    "members": "Tagok"
   },
   "useraccounts": {
     "atTitle": {
@@ -73,7 +79,9 @@
       "join": "Új fiók",
       "newTopic": "Új téma",
       "newTopicError": "Nem lehet létrehozni az új témát",
-      "community": "Az ön lakóközössége:",
+      "community": "Az ön lakóközösségei:",
+      "joinCommunity": "Csatlakozás új lakóközösséghez",
+      "createCommunity": "Létrehozok egy lakóközösséget",
       "newMember": "Csatlakozom a közösséghez",
       "newMemberError": "Nem lehet létrehozni az új tagot",
       "tryingToConnect": "Kapcsolódás folyamatban...",

@@ -53,13 +53,20 @@
     }
   },
   "communities": {
+    "communities": "Communities",
+    "community": "Community",
     "name": "Name",
     "lot": "Lot number",
     "address": "Address",
     "city": "City",
     "street": "Street",
     "number": "Number",
-    "zip": "Zip code"
+    "zip": "Zip code",
+    "join": "Join",
+    "create": "Create"
+  },
+  "members": {
+    "members": "Members"
   },
   "useraccounts": {
     "atTitle": {
@@ -73,7 +80,9 @@
       "join": "Join",
       "newTopic": "New Topic",
       "newTopicError": "Could not create topic.",
-      "community": "Your community:",
+      "community": "Your communities:",
+      "joinCommunity": "Join a community",
+      "createCommunity": "Create a community",
       "newMember": "Join the community",
       "newMemberError": "Could not add member.",
       "tryingToConnect": "Trying to connect",

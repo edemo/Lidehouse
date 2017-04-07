@@ -1,0 +1,23 @@
+<template name="Communities_join_form">
+  <!-- COMMUNITIES -->
+  <div class="listing">
+    <h1>
+      {{_ 'communities.communities'}}
+    </h1>
+
+    {{#each community in communities}}
+      {{> Community_listed community=community}}
+    {{/each}}
+  </div>
+</template>
+
+<template name="Community_listed">
+  <div class="community" style="border: 1px solid black; margin: 10px;">
+    <a>
+      {{community.name}}
+    </a>
+    <button>
+      {{_ 'communities.join'}}
+    </button>
+  </div>
+</template>

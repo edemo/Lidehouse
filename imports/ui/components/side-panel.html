@@ -1,5 +1,7 @@
 <template name="Side_panel">
   <section id="menu">
+
+    <!-- LANG SELECT -->
     <div class="language-toggle">
       {{#each language in languages}}
         {{#if isActiveLanguage language}}
@@ -9,6 +11,8 @@
         {{/if}}
       {{/each}}
     </div>
+
+    <!-- USER LOGIN -->
     {{#if currentUser}}
       <div class="btns-group-vertical">
         <a href="#" class="js-user-menu btn-secondary">
@@ -48,13 +52,22 @@
           {{community.name}}
         </a>
       {{/each}}
+      <a href="{{pathFor 'Communities.join'}}" title="Join a community"
+        class="js-join-community link-new">
+        <span class="icon-plus"></span>
+        {{_ 'layouts.appBody.joinCommunity'}}
+      </a>
+      <a href="{{pathFor 'Communities.create'}}" title="Create a community"
+        class="js-create-community link-new">
+        <span class="icon-plus"></span>
+        {{_ 'layouts.appBody.createCommunity'}}
+      </a>
     </div>
 
     <!-- MEMBERS -->
     <div class="listing">
-      <a class="js-new-member link-new">
-        <span class="icon-plus"></span>
-        {{_ 'layouts.appBody.newMember'}}
+      <a>
+        {{_ 'members.members'}}:
       </a>
 
       {{#each member in members}}

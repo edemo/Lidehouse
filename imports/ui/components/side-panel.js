@@ -14,16 +14,13 @@ import { Topics } from '../../api/topics/topics.js';
 import { insert as insertTopic } from '../../api/topics/methods.js';
 import { Communities } from '../../api/communities/communities.js';
 import { Members } from '../../api/members/members.js';
-import { insert as insertMember } from '../../api/members/methods.js';
 
 import '../components/side-panel.html';
 
 Template.Side_panel.onCreated(function sidePanelOnCreated() {
-  this.subscribe('communities.listing');
-
   this.autorun(() => {
     // We run this is autorun, so when a new User logs in, the subscription changes
-    this.subHandle = this.subscribe('members.ofUser', { userId: Meteor.userId() });
+    this.subHandle = this.subscribe('communities.ofUser', { userId: Meteor.userId() });
   });
 
   this.state = new ReactiveDict();
@@ -70,14 +67,17 @@ Template.Side_panel.helpers({
     return active && 'active';
   },
   communities() {
-    return Communities.find({});
+    const members = Members.find({ userId: Meteor.userId() }).fetch();
+    const communityIds = _.pluck(members, 'communityId');
+    return Communities.find({ _id: { $in: communityIds } });
   },
   activeCommunityClass(community) {
     const active = community._id === Template.instance().state.get('selectedCommunityId');
     return active && 'active';
   },
   members() {
-    return Members.find({});
+    const communityId = Template.instance().state.get('selectedCommunityId');
+    return Members.find({ communityId });
   },
   languages() {
     return _.keys(TAPi18n.getLanguages()).reverse();
@@ -121,16 +121,6 @@ Template.Side_panel.events({
     });
 
     FlowRouter.go('Topics.show', { _id: topicId });
-  },
-
-  'click .js-new-member'(event, instance) {
-    const communityId = instance.state.get('selectedCommunityId');
-    insertMember.call({ userId: Meteor.userId(), communityId }, (err) => {
-      if (err) {
-        FlowRouter.go('App.home');
-        alert(`${TAPi18n.__('layouts.appBody.newMemberError')}\n${err}`); // eslint-disable-line no-alert
-      }
-    });
   },
 
   'click .js-toggle-language'(event) {
