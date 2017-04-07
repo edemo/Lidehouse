@@ -48,7 +48,8 @@
       </a>
 
       {{#each community in communities}}
-        <a class="list-item {{activeCommunityClass community}}">
+        <a href="{{pathFor 'Community.main' _cid=community._id}}"
+          class="list-item {{activeCommunityClass community}}">
           {{community.name}}
         </a>
       {{/each}}
@@ -86,7 +87,7 @@
       </a>
 
       {{#each topic in topics}}
-        <a href="{{pathFor 'Topics.show' _id=topic._id}}" title="{{topic.name}}"
+        <a href="{{pathFor 'Topics.show' _cid=activeCommunityId _tid=topic._id}}" title="{{topic.name}}"
             class="list-item {{activeTopicClass topic}}">
           {{#if topic.userId}}
             <span class="icon-lock"></span>

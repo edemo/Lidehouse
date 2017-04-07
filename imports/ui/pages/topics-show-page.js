@@ -11,7 +11,7 @@ import './app-not-found.js';
 import '../components/topics-show.js';
 
 Template.Topics_show_page.onCreated(function topicsShowPageOnCreated() {
-  this.getTopicId = () => FlowRouter.getParam('_id');
+  this.getTopicId = () => FlowRouter.getParam('_tid');
 
   this.autorun(() => {
     this.subscribe('comments.inTopic', { topicId: this.getTopicId() });

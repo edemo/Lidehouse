@@ -82,7 +82,7 @@
       "newTopicError": "Could not create topic.",
       "community": "Your communities:",
       "joinCommunity": "Join a community",
-      "createCommunity": "Create a community",
+      "createCommunity": "Create a new community",
       "newMembership": "Join the community",
       "newMembershipError": "Could not add membership.",
       "tryingToConnect": "Trying to connect",

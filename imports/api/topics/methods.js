@@ -16,8 +16,8 @@ export const insert = new ValidatedMethod({
     communityId: { type: String },
     language: { type: String },
   }).validator(),
-  run({ language }) {
-    return Topics.insert({}, null, language);
+  run({ communityId, language }) {
+    return Topics.insert({ communityId }, null, language);
   },
 });
 

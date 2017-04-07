@@ -26,7 +26,6 @@ Template.Side_panel.onCreated(function sidePanelOnCreated() {
   this.state = new ReactiveDict();
   this.state.setDefault({
     userMenuOpen: false,
-    selectedCommunityId: null,
   });
 
   T9n.setLanguage('hu');
@@ -36,7 +35,7 @@ Template.Side_panel.onCreated(function sidePanelOnCreated() {
 Template.Side_panel.onRendered(function sidePanelOnRendered() {
   this.autorun(() => {
     if (this.subHandle.ready()) {
-      const communityId = Memberships.findOne({ }).communityId;
+      const communityId = FlowRouter.getParam('_cid');
       this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('topics.public', { communityId });
       this.subscribe('topics.private', { communityId });
@@ -55,14 +54,17 @@ Template.Side_panel.helpers({
     return instance.state.get('userMenuOpen');
   },
   topics() {
-    return Topics.find({ $or: [
+    const communityId = FlowRouter.getParam('_cid');
+    return Topics.find({ communityId,
+      $or: [
       { userId: { $exists: false } },
       { userId: Meteor.userId() },
-    ] });
+      ],
+    });
   },
   activeTopicClass(topic) {
     const active = ActiveRoute.name('Topics.show')
-      && FlowRouter.getParam('_id') === topic._id;
+      && FlowRouter.getParam('_tid') === topic._id;
 
     return active && 'active';
   },
@@ -71,12 +73,15 @@ Template.Side_panel.helpers({
     const communityIds = _.pluck(memberships, 'communityId');
     return Communities.find({ _id: { $in: communityIds } });
   },
+  activeCommunityId() {
+    return FlowRouter.getParam('_cid');
+  },
   activeCommunityClass(community) {
-    const active = community._id === Template.instance().state.get('selectedCommunityId');
+    const active = FlowRouter.getParam('_cid') === community._id;
     return active && 'active';
   },
   memberships() {
-    const communityId = Template.instance().state.get('selectedCommunityId');
+    const communityId = FlowRouter.getParam('_cid');
     return Memberships.find({ communityId });
   },
   languages() {
@@ -101,15 +106,15 @@ Template.Side_panel.events({
     // if we are on a private topic, we'll need to go to a public one
     if (ActiveRoute.name('Topics.show')) {
       // TODO -- test this code path
-      const topic = Topics.findOne(FlowRouter.getParam('_id'));
+      const topic = Topics.findOne(FlowRouter.getParam('_tid'));
       if (topic.userId) {
         FlowRouter.go('Topics.show', Topics.findOne({ userId: { $exists: false } }));
       }
     }
   },
 
-  'click .js-new-topic'(event, instance) {
-    const communityId = instance.state.get('selectedCommunityId');
+  'click .js-new-topic'() {
+    const communityId = FlowRouter.getParam('_cid');
     const topicId = insertTopic.call({ communityId, language: TAPi18n.getLanguage() }, (err) => {
       if (err) {
         // At this point, we have already redirected to the new topic page, but
@@ -119,8 +124,7 @@ Template.Side_panel.events({
         alert(`${TAPi18n.__('layouts.appBody.newTopicError')}\n${err}`); // eslint-disable-line no-alert
       }
     });
-
-    FlowRouter.go('Topics.show', { _id: topicId });
+    FlowRouter.go('Topics.show', { _cid: communityId, _tid: topicId });
   },
 
   'click .js-toggle-language'(event) {

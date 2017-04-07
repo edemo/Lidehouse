@@ -4,6 +4,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 // Import to load these templates
 import '../../ui/layouts/app-body.js';
 import '../../ui/pages/root-redirector.js';
+import '../../ui/pages/community-main-page.js';
 import '../../ui/pages/topics-show-page.js';
 import '../../ui/pages/app-not-found.js';
 import '../../ui/forms/communities-create-form.js';
@@ -20,7 +21,14 @@ FlowRouter.route('/', {
   },
 });
 
-FlowRouter.route('/topics/:_id', {
+FlowRouter.route('/c/:_cid', {
+  name: 'Community.main',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Community_main_page' });
+  },
+});
+
+FlowRouter.route('/c/:_cid/t/:_tid', {
   name: 'Topics.show',
   action() {
     BlazeLayout.render('App_body', { main: 'Topics_show_page' });
