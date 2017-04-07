@@ -28,6 +28,13 @@ FlowRouter.route('/c/:_cid', {
   },
 });
 
+FlowRouter.route('/c/:_cid/invite', {
+  name: 'Community.invite',
+  action() {
+    BlazeLayout.render('App_body', { main: 'Community_invite_form' });
+  },
+});
+
 FlowRouter.route('/c/:_cid/t/:_tid', {
   name: 'Topics.show',
   action() {

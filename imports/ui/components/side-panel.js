@@ -127,6 +127,11 @@ Template.Side_panel.events({
     FlowRouter.go('Topics.show', { _cid: communityId, _tid: topicId });
   },
 
+  'click .js-new-member'() {
+    const communityId = FlowRouter.getParam('_cid');
+    FlowRouter.go('Community.invite', { _cid: communityId });
+  },
+
   'click .js-toggle-language'(event) {
     const language = $(event.target).html().trim();
     T9n.setLanguage(language);

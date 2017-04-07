@@ -84,7 +84,7 @@
       "community": "Your communities:",
       "joinCommunity": "Join a community",
       "createCommunity": "Create a new community",
-      "newMembership": "Join the community",
+      "newMembership": "Invite new member",
       "newMembershipError": "Could not add membership.",
       "tryingToConnect": "Trying to connect",
       "connectionIssue": "There seems to be a connection issue"
