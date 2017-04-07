@@ -1,5 +1,6 @@
 {
   "topics": {
+    "topics": "Topics",
     "makePrivate": {
       "notLoggedIn": "Must be logged in to make private topics.",
       "lastPublicTopic": "Cannot make the last public topic private."

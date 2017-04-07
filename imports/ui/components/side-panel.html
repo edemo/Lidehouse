@@ -81,9 +81,8 @@
 
     <!-- TOPICS -->
     <div class="listing">
-      <a class="js-new-topic link-new">
-        <span class="icon-plus"></span>
-        {{_ 'layouts.appBody.newTopic'}}
+      <a>
+        {{_ 'topics.topics'}}:
       </a>
 
       {{#each topic in topics}}
@@ -100,6 +99,12 @@
           {{topic.name}}
         </a>
       {{/each}}
+
+      <a class="js-new-topic link-new">
+        <span class="icon-plus"></span>
+        {{_ 'layouts.appBody.newTopic'}}
+      </a>
+
     </div>
   </section>
 </template>

@@ -1,5 +1,6 @@
 {
   "topics": {
+    "topics": "Témák",
     "makePrivate": {
       "notLoggedIn": "Ehhez be kell lépni.",
       "lastPublicTopic": "Az utolsó publikus téma nem tehető priváttá."
