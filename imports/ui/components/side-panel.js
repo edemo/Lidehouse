@@ -13,7 +13,7 @@ import { $ } from 'meteor/jquery';
 import { Topics } from '../../api/topics/topics.js';
 import { insert as insertTopic } from '../../api/topics/methods.js';
 import { Communities } from '../../api/communities/communities.js';
-import { Members } from '../../api/members/members.js';
+import { Memberships } from '../../api/memberships/memberships.js';
 
 import '../components/side-panel.html';
 
@@ -36,8 +36,8 @@ Template.Side_panel.onCreated(function sidePanelOnCreated() {
 Template.Side_panel.onRendered(function sidePanelOnRendered() {
   this.autorun(() => {
     if (this.subHandle.ready()) {
-      const communityId = Members.findOne({ }).communityId;
-      this.subscribe('members.inCommunity', { communityId });
+      const communityId = Memberships.findOne({ }).communityId;
+      this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('topics.public', { communityId });
       this.subscribe('topics.private', { communityId });
       this.state.set('selectedCommunityId', communityId);
@@ -67,17 +67,17 @@ Template.Side_panel.helpers({
     return active && 'active';
   },
   communities() {
-    const members = Members.find({ userId: Meteor.userId() }).fetch();
-    const communityIds = _.pluck(members, 'communityId');
+    const memberships = Memberships.find({ userId: Meteor.userId() }).fetch();
+    const communityIds = _.pluck(memberships, 'communityId');
     return Communities.find({ _id: { $in: communityIds } });
   },
   activeCommunityClass(community) {
     const active = community._id === Template.instance().state.get('selectedCommunityId');
     return active && 'active';
   },
-  members() {
+  memberships() {
     const communityId = Template.instance().state.get('selectedCommunityId');
-    return Members.find({ communityId });
+    return Memberships.find({ communityId });
   },
   languages() {
     return _.keys(TAPi18n.getLanguages()).reverse();

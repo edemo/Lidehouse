@@ -4,7 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Communities } from '../communities.js';
-import { Members } from '../../members/members.js';
+import { Memberships } from '../../memberships/memberships.js';
 
 Meteor.publish('communities.listing', function communitiesListing() {
   return Communities.find({}, {
@@ -21,12 +21,12 @@ Meteor.publishComposite('communities.ofUser', function communitiesOfUser(params)
 
   return {
     find() {
-      return Members.find({ userId });
+      return Memberships.find({ userId });
     },
 
     children: [{
-      find(member) {
-        return Communities.find({ _id: member.communityId }, { fields: Communities.publicFields });
+      find(membership) {
+        return Communities.find({ _id: membership.communityId }, { fields: Communities.publicFields });
       },
     }],
   };

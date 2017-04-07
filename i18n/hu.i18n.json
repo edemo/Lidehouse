@@ -64,8 +64,8 @@
     "join": "Csatlakozom",
     "create": "Létrehozom"
   },
-  "members": {
-    "members": "Tagok"
+  "memberships": {
+    "memberships": "Tagok"
   },
   "useraccounts": {
     "atTitle": {
@@ -82,8 +82,8 @@
       "community": "Az ön lakóközösségei:",
       "joinCommunity": "Csatlakozás új lakóközösséghez",
       "createCommunity": "Létrehozok egy lakóközösséget",
-      "newMember": "Csatlakozom a közösséghez",
-      "newMemberError": "Nem lehet létrehozni az új tagot",
+      "newMembership": "Csatlakozom a közösséghez",
+      "newMembershipError": "Nem lehet létrehozni az új tagot",
       "tryingToConnect": "Kapcsolódás folyamatban...",
       "connectionIssue": "Valami hiba van a hálózattal"
     }

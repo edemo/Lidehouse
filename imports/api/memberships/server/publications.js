@@ -5,7 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Memberships } from '../memberships.js';
 
-Meteor.publish('memberships.inCommunity', function membershipsInCommunity(params){
+Meteor.publish('memberships.inCommunity', function membershipsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);

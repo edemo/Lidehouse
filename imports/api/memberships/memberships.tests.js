@@ -8,7 +8,7 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { Random } from 'meteor/random';
 // import { _ } from 'meteor/underscore';
 
-// import { Members } from './members.js';
+// import { Memberships } from './memberships.js';
 
 if (Meteor.isServer) {
   // eslint-disable-next-line import/no-unresolved
@@ -20,23 +20,23 @@ if (Meteor.isServer) {
     userId = Random.id();
   });
 
-  describe('members', function () {
+  describe('memberships', function () {
     describe('mutators', function () {
       it('builds correctly from factory', function () {
-        const member = Factory.create('member', { userId, username: 'dummy' });
-        assert.typeOf(member, 'object');
+        const membership = Factory.create('membership', { userId, username: 'dummy' });
+        assert.typeOf(membership, 'object');
       });
     });
 
     describe('publications', function () {
-      describe('members.inCommunity', function () {
-        it('sends all members for your community', function (done) {
+      describe('memberships.inCommunity', function () {
+        it('sends all memberships for your community', function (done) {
           const collector = new PublicationCollector();
           collector.collect(
-            'members.inCommunity',
+            'memberships.inCommunity',
             { userId },
             (collections) => {
-              chai.assert.isAbove(collections.members.length, 0);
+              chai.assert.isAbove(collections.memberships.length, 0);
               done();
             }
           );

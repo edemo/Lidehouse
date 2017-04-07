@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 // import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Communities } from './communities.js';
-// import { Members } from '../members/members.js';
+// import { Memberships } from '../memberships/memberships.js';
 
 export const create = new ValidatedMethod({
   name: 'communities.create',
@@ -21,7 +21,7 @@ export const create = new ValidatedMethod({
     }
 
     const communityId = Communities.insert(doc);
-    Meteor.call('members.insert', { userId: this.userId, communityId });
+    Meteor.call('memberships.insert', { userId: this.userId, communityId });
 
     return communityId;
   },

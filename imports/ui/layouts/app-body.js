@@ -14,8 +14,8 @@ import { $ } from 'meteor/jquery';
 import { Topics } from '../../api/topics/topics.js';
 import { insert as insertTopic } from '../../api/topics/methods.js';
 import { Communities } from '../../api/communities/communities.js';
-import { Members } from '../../api/members/members.js';
-import { insert as insertMember } from '../../api/members/methods.js';
+import { Memberships } from '../../api/memberships/memberships.js';
+import { insert as insertMembership } from '../../api/memberships/methods.js';
 
 import '../components/loading.js';
 import '../components/side-panel.js';

@@ -65,8 +65,8 @@
     "join": "Join",
     "create": "Create"
   },
-  "members": {
-    "members": "Members"
+  "memberships": {
+    "memberships": "Memberships"
   },
   "useraccounts": {
     "atTitle": {
@@ -83,8 +83,8 @@
       "community": "Your communities:",
       "joinCommunity": "Join a community",
       "createCommunity": "Create a community",
-      "newMember": "Join the community",
-      "newMemberError": "Could not add member.",
+      "newMembership": "Join the community",
+      "newMembershipError": "Could not add membership.",
       "tryingToConnect": "Trying to connect",
       "connectionIssue": "There seems to be a connection issue"
     }
