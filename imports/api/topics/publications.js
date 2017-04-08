@@ -3,7 +3,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Topics } from '../topics.js';
+import { Topics } from './topics.js';
 
 Meteor.publish('topics.public', function topicsPublic(params) {
   new SimpleSchema({

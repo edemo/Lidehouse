@@ -12,7 +12,7 @@ import { Random } from 'meteor/random';
 
 if (Meteor.isServer) {
   // eslint-disable-next-line import/no-unresolved
-  import './server/publications.js';
+  import './publications.js';
 
   let userId;
 

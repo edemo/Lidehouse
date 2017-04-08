@@ -5,11 +5,11 @@ import { Factory } from 'meteor/dburles:factory';
 import { chai } from 'meteor/practicalmeteor:chai';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
-import { Comments } from '../../../api/comments/comments';
+import { Comments } from '../../api/comments/comments';
 
 
-import { withRenderedTemplate } from '../../test-helpers.js';
-import '../comments-item.js';
+import { withRenderedTemplate } from '../test-helpers.js';
+import './comments-item.js';
 
 describe('Comments_item', function () {
   beforeEach(function () {

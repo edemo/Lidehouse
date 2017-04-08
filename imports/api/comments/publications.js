@@ -3,8 +3,8 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Comments } from '../comments.js';
-import { Topics } from '../../topics/topics.js';
+import { Comments } from './comments.js';
+import { Topics } from '../topics/topics.js';
 
 Meteor.publishComposite('comments.inTopic', function commentsInTopic(params) {
   new SimpleSchema({

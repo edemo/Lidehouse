@@ -12,7 +12,7 @@ import { Comments } from './comments.js';
 
 if (Meteor.isServer) {
   // eslint-disable-next-line import/no-unresolved
-  import './server/publications.js';
+  import './publications.js';
 
   describe('comments', function () {
     describe('mutators', function () {

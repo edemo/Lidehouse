@@ -3,8 +3,8 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Communities } from '../communities.js';
-import { Memberships } from '../../memberships/memberships.js';
+import { Communities } from './communities.js';
+import { Memberships } from '../memberships/memberships.js';
 
 Meteor.publish('communities.listing', function communitiesListing() {
   return Communities.find({}, {

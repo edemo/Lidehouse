@@ -8,9 +8,9 @@ import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
-import { withRenderedTemplate } from '../../test-helpers.js';
-import '../topics-show.js';
-import { Comments } from '../../../api/comments/comments.js';
+import { withRenderedTemplate } from '../test-helpers.js';
+import './topics-show.js';
+import { Comments } from '../../api/comments/comments.js';
 
 
 describe('Topics_show', function () {

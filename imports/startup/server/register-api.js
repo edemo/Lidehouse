@@ -1,10 +1,10 @@
 import '../../api/topics/methods.js';
-import '../../api/topics/server/publications.js';
+import '../../api/topics/publications.js';
 import '../../api/comments/methods.js';
-import '../../api/comments/server/publications.js';
+import '../../api/comments/publications.js';
 import '../../api/memberships/methods.js';
-import '../../api/memberships/server/publications.js';
+import '../../api/memberships/publications.js';
 import '../../api/communities/methods.js';
-import '../../api/communities/server/publications.js';
+import '../../api/communities/publications.js';
 // import '../../api/users/methods.js';
-import '../../api/users/server/publications.js';
+import '../../api/users/publications.js';

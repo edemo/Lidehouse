@@ -15,7 +15,7 @@ import '../../../i18n/en.i18n.json';
 
 if (Meteor.isServer) {
   // eslint-disable-next-line import/no-unresolved
-  import './server/publications.js';
+  import './publications.js';
 
   describe('topics', function () {
     describe('mutators', function () {

@@ -13,11 +13,11 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { sinon } from 'meteor/practicalmeteor:sinon';
 
 
-import { withRenderedTemplate } from '../../test-helpers.js';
-import '../topics-show-page.js';
+import { withRenderedTemplate } from '../test-helpers.js';
+import './topics-show-page.js';
 
-import { Comments } from '../../../api/comments/comments.js';
-import { Topics } from '../../../api/topics/topics.js';
+import { Comments } from '../../api/comments/comments.js';
+import { Topics } from '../../api/topics/topics.js';
 
 describe('Topics_show_page', function () {
   const topicId = Random.id();
