@@ -71,7 +71,10 @@
   },
   "useraccounts": {
     "atTitle": {
-      "subtitle": "Signing in allows you to have private topics"
+      "subtitle": "Signing in allows you to join communities"
+    },
+    "invite": {
+      "inviteSend": "Send invitation"
     }
   },
   "layouts": {

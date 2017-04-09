@@ -29,3 +29,8 @@ AccountsTemplates.configureRoute('resetPwd', {
   name: 'resetPwd',
   path: '/reset-password',
 });
+
+AccountsTemplates.configureRoute('enrollAccount', {
+  name: 'enrollAccount',
+  path: '/enroll-account',
+});

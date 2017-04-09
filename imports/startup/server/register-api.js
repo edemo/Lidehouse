@@ -6,5 +6,5 @@ import '../../api/memberships/methods.js';
 import '../../api/memberships/publications.js';
 import '../../api/communities/methods.js';
 import '../../api/communities/publications.js';
-// import '../../api/users/methods.js';
+import '../../api/users/methods.js';
 import '../../api/users/publications.js';

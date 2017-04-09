@@ -70,7 +70,10 @@
   },
   "useraccounts": {
     "atTitle": {
-      "subtitle": "Bejelentkezett felhasználó létrehozhat privát témákat."
+      "subtitle": "Bejelentkezett felhasználók csatlakozhatnak lakóközösségekhez."
+    },
+    "invite": {
+      "inviteSend": "Meghívó kiküldése"
     }
   },
   "layouts": {

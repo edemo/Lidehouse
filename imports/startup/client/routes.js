@@ -10,6 +10,7 @@ import '../../client/pages/app-not-found.js';
 import '../../client/forms/communities-create-form.js';
 import '../../client/forms/communities-join-form.js';
 import '../../client/forms/users-show-form.js';
+import '../../client/forms/invite-form.js';
 
 // Import to override accounts templates
 import '../../client/accounts/accounts-templates.js';
@@ -21,21 +22,21 @@ FlowRouter.route('/', {
   },
 });
 
-FlowRouter.route('/c/:_cid', {
+FlowRouter.route('/community', {
   name: 'Community.main',
   action() {
     BlazeLayout.render('App_body', { main: 'Community_main_page' });
   },
 });
 
-FlowRouter.route('/c/:_cid/invite', {
-  name: 'Community.invite',
+FlowRouter.route('/invite', {
+  name: 'Invite',
   action() {
-    BlazeLayout.render('App_body', { main: 'Community_invite_form' });
+    BlazeLayout.render('App_body', { main: 'Invite_form' });
   },
 });
 
-FlowRouter.route('/c/:_cid/t/:_tid', {
+FlowRouter.route('/topic/:_tid', {
   name: 'Topics.show',
   action() {
     BlazeLayout.render('App_body', { main: 'Topics_show_page' });
