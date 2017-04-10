@@ -22,9 +22,17 @@ export const UserProfileSchema = new SimpleSchema({
 Meteor.users.schema = new SimpleSchema({
   // For accounts-password, either emails or username is required, but not both.
   // It is OK to make this optional because the accounts-password package does its own validation.
-  // Third-party login packages may not require either. Adjust this as necessary for your usage.
-  username: { type: String, optional: true },
-  emails: { type: Array, optional: true },
+  // Third-party login packages may not require either. Adjust this as necessary for your usage
+  username: { type: String,
+    autoValue() {
+      if (this.isInsert) {
+        const email = this.field('emails.0.address').value;
+        return email.substring(0, email.indexOf('@'));
+      }
+      return undefined; // means leave whats there alone for Updates, Upserts
+    },
+  },
+  emails: { type: Array },
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },

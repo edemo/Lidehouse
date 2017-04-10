@@ -6,6 +6,7 @@ export const displayError = (error) => {
   if (error) {
     // It would be better to not alert the error here but inform the user in some
     // more subtle way
-    alert(TAPi18n.__(error.error)); // eslint-disable-line no-alert
+    console.log(error);
+    alert(TAPi18n.__(error.error) + '\n' + error.reason + '\n' + error.message); // eslint-disable-line no-alert
   }
 };

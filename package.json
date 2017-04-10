@@ -57,9 +57,9 @@
           "templateInstanceParamName": "instance"
         }
       ],
-      "meteor/template-names": [
-        "off"
-      ]
+      "meteor/template-names": "off",
+      "meteor/no-session": "off",
+      "prefer-template": "warn"
     },
     "settings": {
       "import/resolver": "meteor"

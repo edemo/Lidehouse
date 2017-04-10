@@ -48,10 +48,6 @@ Template.Side_panel.onRendered(function sidePanelOnRendered() {
 });
 
 Template.Side_panel.helpers({
-  emailLocalPart() {
-    const email = Meteor.user().emails[0].address;
-    return email.substring(0, email.indexOf('@'));
-  },
   userMenuOpen() {
     const instance = Template.instance();
     return instance.state.get('userMenuOpen');

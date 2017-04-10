@@ -3,21 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-class MembershipsCollection extends Mongo.Collection {
-  insert(membership, callback) {
-    const ourMembership = membership;
-    if (!ourMembership.userId) {
-      ourMembership.userId = Meteor.userId();
-    }
-    if (!ourMembership.username) {
-      const email = Meteor.user().emails[0].address;
-      ourMembership.username = email.substring(0, email.indexOf('@'));
-    }
-    return super.insert(ourMembership, callback);
-  }
-}
-
-export const Memberships = new MembershipsCollection('memberships');
+export const Memberships = new Mongo.Collection('memberships');
 
 // Deny all client-side updates since we will be using methods to manage this collection
 Memberships.deny({
@@ -28,9 +14,12 @@ Memberships.deny({
 
 Memberships.schema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, autoValue: () => this.userId },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  username: { type: String, max: 20 },
+  username: { type: String,
+    max: 20,
+    autoValue() { return Meteor.users.findOne({ _id: this.field('userId').value }).username; },
+  },
 });
 
 Memberships.attachSchema(Memberships.schema);
