@@ -1,6 +1,7 @@
-[![Circle CI](https://circleci.com/gh/edemo/lidehaz.svg?style=svg)](https://circleci.com/gh/edemo/lidehaz)
 
-LiDeHáz - Liquid Democracy comes to your doorsteps.
+#LiDeHouse
+
+Liquid Democracy comes to your doorsteps.
 
 This software allows you to manage the community of your building online,
 discussing issues on a forum and voting on them using liquid democracy.
