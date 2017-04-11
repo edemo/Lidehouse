@@ -1,4 +1,3 @@
-
 # LiDeHouse
 
 Liquid Democracy comes to your doorsteps.
