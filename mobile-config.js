@@ -2,7 +2,7 @@
 /* eslint-disable quote-props */
 
 App.info({
-  name: 'LiDeHáz',
+  name: 'LiDeHouse',
   description: 'Liquid Democracy comes to your doorsteps',
   author: 'KDE Alapítvány',
   email: 'daniel.roka@tutanota.com',
