@@ -36,14 +36,22 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },
-  // Use this registered_emails field if you are using splendido:meteor-accounts-emails-field
-  // splendido:meteor-accounts-meld
-  registered_emails: { type: Array, optional: true },
-  'registered_emails.$': { type: Object, blackbox: true },
-  createdAt: { type: Date },
+  createdAt: { type: Date,
+    autoValue() {
+      if (this.isInsert) {
+        return new Date();
+      }
+      return undefined;
+    },
+    autoform: {
+      omit: true,
+    },
+  },
   profile: { type: UserProfileSchema, optional: true },
   // Make sure this services field is in your schema if you're using any of the accounts packages
-  services: { type: Object, optional: true, blackbox: true },
+  services: { type: Object, optional: true, blackbox: true, autoform: { omit: true },
+  },
+
   // Add `roles` to your schema if you use the meteor-roles package.
   // Option 1: Object type
   // If you specify that type as Object, you must also specify the
@@ -58,8 +66,9 @@ Meteor.users.schema = new SimpleSchema({
   // you can specify [String] as the type
   roles: { type: Array, optional: true },
   'roles.$': { type: String },
+
   // In order to avoid an 'Exception in setInterval callback' from Meteor
-  heartbeat: { type: Date, optional: true },
+  heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
 Meteor.users.attachSchema(Meteor.users.schema);

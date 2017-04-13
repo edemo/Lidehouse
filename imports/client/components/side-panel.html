@@ -70,7 +70,7 @@
       </a>
 
       {{#each membership in memberships}}
-        <a href="{{pathFor 'Users.show' _id=membership._id}}" title="{{membership.username}}"
+        <a href="{{pathFor 'Users.show' _id=membership.userId}}" title="{{membership.username}}"
           class="list-item">
           {{membership.username}}
         </a>

@@ -2,7 +2,7 @@
   <div class="autoform">
     <div class="content-scrollable">
       <div class="wrapper-form">
-        {{> quickForm collection=users id="users_show" type="update" doc=document}}
+        {{> quickForm collection=users id="users_show" type="method-update" doc=document meteormethod="user.update"}}
       </div>
     </div>
   </div>

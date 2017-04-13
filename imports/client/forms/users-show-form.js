@@ -30,6 +30,6 @@ Template.Users_show_form.helpers({
     return Meteor.users;
   },
   document() {
-    return Meteor.users.findOne({ userId: FlowRouter.getParam('_id') });
+    return Meteor.users.findOne({ _id: FlowRouter.getParam('_id') });
   },
 });
