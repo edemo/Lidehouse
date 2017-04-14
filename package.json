@@ -50,6 +50,7 @@
           "avoidQuotes": false
         }
       ],
+      "max-len": ["warn", 120],
       "meteor/eventmap-params": [
         "error",
         {

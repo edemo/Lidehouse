@@ -1,10 +1,12 @@
-import '../../api/topics/methods.js';
-import '../../api/topics/publications.js';
-import '../../api/comments/methods.js';
-import '../../api/comments/publications.js';
-import '../../api/memberships/methods.js';
-import '../../api/memberships/publications.js';
-import '../../api/communities/methods.js';
-import '../../api/communities/publications.js';
-import '../../api/users/methods.js';
-import '../../api/users/publications.js';
+import '/imports/api/topics/methods.js';
+import '/imports/api/topics/publications.js';
+import '/imports/api/comments/methods.js';
+import '/imports/api/comments/publications.js';
+import '/imports/api/memberships/methods.js';
+import '/imports/api/memberships/publications.js';
+import '/imports/api/communities/methods.js';
+import '/imports/api/communities/publications.js';
+import '/imports/api/users/methods.js';
+import '/imports/api/users/publications.js';
+
+import '/imports/api/views/community-members.js';

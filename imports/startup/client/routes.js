@@ -22,7 +22,7 @@ FlowRouter.route('/', {
   },
 });
 
-FlowRouter.route('/community', {
+FlowRouter.route('/community/:_cid', {
   name: 'Community.main',
   action() {
     BlazeLayout.render('App_body', { main: 'Community_main_page' });

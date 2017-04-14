@@ -114,7 +114,8 @@
 </template>
 
 <template name="Community">
-  <a class="list-item {{activeCommunityClass community}}">
+  <a href={{pathFor 'Community.main' _cid=community._id}} title="{{community.name}}"
+    class="list-item {{activeCommunityClass community}}">
     {{community.name}}
   </a>
 </template>

@@ -3,6 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
+import { ShareSchema } from './share.js';
+
 export const Memberships = new Mongo.Collection('memberships');
 
 // Deny all client-side updates since we will be using methods to manage this collection
@@ -13,9 +15,12 @@ Memberships.deny({
 });
 
 Memberships.schema = new SimpleSchema({
-  _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, autoValue: () => this.userId },
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, autoValue: () => this.userId, autoform: { omit: true } },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+//  shares: { type: Array, optional: true },
+//  'shares.$': { type: ShareSchema },
+  share: { type: ShareSchema },
+  // denormalized:
   username: { type: String,
     max: 20,
     autoValue() { return Meteor.users.findOne({ _id: this.field('userId').value }).username; },
@@ -31,6 +36,7 @@ Memberships.publicFields = {
   userId: 1,
   communityId: 1,
   username: 1,
+  shares: 1,
 };
 
 Factory.define('membership', Memberships, {});
