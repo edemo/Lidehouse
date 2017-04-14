@@ -2,7 +2,11 @@
   <div class="autoform">
     <div class="content-scrollable">
       <div class="wrapper-form">
-        {{> quickForm collection=communityMembers id="community_members" type="update"}}
+        <tbody>
+          {{#each member in members}}
+            {{> quickForm id=member._id type="update" collection=memberships doc=this}}
+          {{/each}}
+        </tbody>
       </div>
     </div>
   </div>

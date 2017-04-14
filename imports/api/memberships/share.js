@@ -7,6 +7,8 @@ export const FractionSchema = new SimpleSchema({
 
 export const ShareSchema = new SimpleSchema({
   name: { type: String },
-  type: { type: String },
+  type: { type: String,
+    allowedValues: ['Apartment', 'Garage', 'Storage'],
+  },
   ownership: { type: FractionSchema },
 });
