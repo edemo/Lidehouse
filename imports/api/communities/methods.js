@@ -1,3 +1,5 @@
+/* globals check */
+
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 // import { SimpleSchema } from 'meteor/aldeed:simple-schema';
@@ -24,5 +26,13 @@ export const create = new ValidatedMethod({
     Meteor.call('memberships.insert', { userId: this.userId, communityId });
 
     return communityId;
+  },
+});
+
+Meteor.methods({
+  'communities.update'(modifier, _id) {
+    check(_id, String);
+    check(modifier, Object);
+    Communities.update(_id, modifier);
   },
 });

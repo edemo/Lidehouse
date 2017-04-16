@@ -1,0 +1,44 @@
+<template name="Community_members_page">
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <td>Name</td>
+        <td>Type</td>
+        <td>Fraction</td>
+        <td>Username</td>
+        <td>user action</td>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each members}}
+        <tr class="table-row {{#if isSelected}}selected{{/if}}">
+          <td>{{share.name}}</td>
+          <td>{{share.type}}</td>
+          <td>{{share.ownership.units}}/{{share.ownership.total}}</td>
+          <td>{{username}}</td>
+          <td>
+            {{#if userId}}
+              <button class="js-remove-user">Remove</button>
+            {{else}}
+              <button class="js-invite-user">Invite</button>
+            {{/if}}
+          </td>
+          <td>
+            <a class="js-delete-share nav-item">
+            <span
+              class="icon-trash"
+              title={{_ 'topics.show.deleteShare'}}>
+            </span>
+            </a>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <button class="js-new-share btn-primary">Add Share</button>
+  {{#if hasSelection}}
+    <br>
+    <p> Edit membership details:</p>
+    {{> quickForm id="afUpdateDemo" type=formType meteormethod="memberships.update" collection=memberships doc=selectedDoc template="bootstrap3-inline"}}
+  {{/if}}
+</template>
