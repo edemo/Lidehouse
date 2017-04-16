@@ -12,7 +12,5 @@ Meteor.publish('memberships.inCommunity', function membershipsInCommunity(params
 
   const { communityId } = params;
 
-  return Memberships.find({ communityId }, {
-    fields: Memberships.publicFields,
-  });
+  return Memberships.find({ communityId });
 });

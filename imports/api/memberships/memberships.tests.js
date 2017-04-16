@@ -23,7 +23,7 @@ if (Meteor.isServer) {
   describe('memberships', function () {
     describe('mutators', function () {
       it('builds correctly from factory', function () {
-        const membership = Factory.create('membership', { userId, username: 'dummy' });
+        const membership = Factory.create('membership', { userId });
         assert.typeOf(membership, 'object');
       });
     });
