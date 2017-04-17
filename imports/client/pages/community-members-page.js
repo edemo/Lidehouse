@@ -5,7 +5,6 @@ import { Template } from 'meteor/templating';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { ReactiveVar } from 'meteor/reactive-var';
 import { displayError } from '/imports/client/lib/errors.js';
 
 import './community-members-page.html';
@@ -15,12 +14,11 @@ Template.Community_members_page.onCreated(function () {
   this.autorun(() => {
     this.subscribe('memberships.inCommunity', { communityId: this.getCommunityId() });
   });
-  this.membersInCommunity = new ReactiveVar(Memberships.find({ communityId: this.getCommunityId() }));
 });
 
 Template.Community_members_page.helpers({
   members() {
-    return Template.instance().membersInCommunity.get();
+    return Memberships.find({ communityId: Template.instance().getCommunityId() });
   },
   memberships() {
     return Memberships;
