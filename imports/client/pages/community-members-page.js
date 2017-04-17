@@ -5,6 +5,7 @@ import { Template } from 'meteor/templating';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { ReactiveVar } from 'meteor/reactive-var';
 import { displayError } from '/imports/client/lib/errors.js';
 
 import './community-members-page.html';
@@ -14,11 +15,12 @@ Template.Community_members_page.onCreated(function () {
   this.autorun(() => {
     this.subscribe('memberships.inCommunity', { communityId: this.getCommunityId() });
   });
+  this.membersInCommunity = new ReactiveVar(Memberships.find({ communityId: this.getCommunityId() }));
 });
 
 Template.Community_members_page.helpers({
   members() {
-    return Memberships.find({});
+    return Template.instance().membersInCommunity.get();
   },
   memberships() {
     return Memberships;
@@ -63,7 +65,7 @@ Template.Community_members_page.events({
 
   },
   'click .js-remove-user'() {
-    Meteor.call('memberships.update', { $unset: { userId: 1 } }, this._id, function(err, res) {
+    Meteor.call('memberships.update', { $unset: { userId: '' } }, this._id, function(err, res) {
       if (err) {
         displayError(err);
       }

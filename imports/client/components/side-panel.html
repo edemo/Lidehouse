@@ -70,10 +70,12 @@
       </a>
 
       {{#each membership in memberships}}
+      {{#if membership.userId}}
         <a href="{{pathFor 'Users.show' _id=membership.userId}}" title="{{membership.username}}"
           class="list-item">
           {{membership.username}}
         </a>
+      {{/if}}
       {{/each}}
 
       <a href="{{pathFor 'Invite'}}" title="Invite"
