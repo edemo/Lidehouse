@@ -36,6 +36,12 @@
       "topic": "Topic"
     }
   },
+  "user": {
+    "user": "User",
+    "username": "Username",
+    "remove": "Remove",
+    "invite": "Invite"
+  },
   "comments": {
     "insert": {
       "accessDenied": "Cannot add comment to a private topic that is not yours"
@@ -69,6 +75,18 @@
   "memberships": {
     "memberships": "Memberships"
   },
+  "share":  {
+    "share": "Share",
+    "name": "Name",
+    "type": "Type",
+    "apartment": "Apartment",
+    "parking": "Parking",
+    "storage": "Stroage",
+    "floor": "Floor",
+    "number": "Number",
+    "ownership": "Ownership",
+    "fraction": "Fraction"
+  },
   "useraccounts": {
     "atTitle": {
       "subtitle": "Signing in allows you to join communities"
@@ -96,6 +114,11 @@
   "pages": {
     "appNotFound": {
       "pageNotFound": "Page not found"
+    },
+    "community": {
+      "data": "Data",
+      "members": "Shares",
+      "addMember": "Add Share"
     }
   }
 }

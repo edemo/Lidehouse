@@ -71,7 +71,7 @@
 
       {{#each membership in memberships}}
       {{#if membership.userId}}
-        <a href="{{pathFor 'Users.show' _id=membership.userId}}" title="{{membership.username}}"
+        <a href="{{pathFor 'Users.show' _id=membership.userId}}"
           class="list-item">
           {{membership.username}}
         </a>

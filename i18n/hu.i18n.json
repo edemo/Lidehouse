@@ -36,6 +36,12 @@
       "topic": "Téma"
     }
   },
+  "user": {
+    "user": "Felhasználó",
+    "username": "Felhasználónév",
+    "remove": "Eltávolítás",
+    "invite": "Meghívás"
+  },
   "comments": {
     "insert": {
       "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
@@ -68,6 +74,18 @@
   "memberships": {
     "memberships": "Tagok"
   },
+  "share":  {
+    "share": "Albetét",
+    "name": "Név",
+    "type": "Típus",
+    "apartment": "Lakás",
+    "parking": "Parkoló",
+    "storage": "Tároló",
+    "floor": "Emelet",
+    "number": "Szám",
+    "ownership": "Tulajdon",
+    "fraction": "Tulajdonrész"
+  },
   "useraccounts": {
     "atTitle": {
       "subtitle": "Bejelentkezett felhasználók csatlakozhatnak lakóközösségekhez."
@@ -95,6 +113,11 @@
   "pages": {
     "appNotFound": {
       "pageNotFound": "Az odal nem található"
+    },
+    "community": {
+      "data": "Adatok",
+      "members": "Albetétek",
+      "addMember": "Albetét hozzáadás"
     }
   }
 }

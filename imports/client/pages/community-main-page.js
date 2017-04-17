@@ -6,6 +6,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { TAPi18n } from 'meteor/tap:i18n';
 
 import { displayError } from '/imports/client/lib/errors.js';
 
@@ -25,6 +26,9 @@ Template.Tabbed_page.helpers({
   },
   isActive() {
     return Template.instance().activeTab.get() === this.name;
+  },
+  translatedName() {
+    return TAPi18n.__('pages.community.' + this.name);
   },
 });
 

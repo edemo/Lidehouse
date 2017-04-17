@@ -5,12 +5,22 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Memberships } from './memberships.js';
 
-Meteor.publish('memberships.inCommunity', function membershipsInCommunity(params) {
+Meteor.publishComposite('memberships.inCommunity', function membershipsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
 
   const { communityId } = params;
 
-  return Memberships.find({ communityId });
+  return {
+    find() {
+      return Memberships.find({ communityId });
+    },
+
+    children: [{
+      find(membership) {
+        return Meteor.users.find({ _id: membership.userId });
+      },
+    }],
+  };
 });

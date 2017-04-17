@@ -6,13 +6,10 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AddressSchema } from './address.js';
 
-export const Communities = new Mongo.Collection('communities');
+import { Memberships } from '/imports/api/memberships/memberships.js';
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Communities.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
+export const Communities = new Mongo.Collection('communities', {
+
 });
 
 Communities.schema = new SimpleSchema({
@@ -30,5 +27,12 @@ Communities.publicFields = {
   name: 1,
   address: 1,
 };
+
+// Deny all client-side updates since we will be using methods to manage this collection
+Communities.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});
 
 // Factory.define('community', Communities, { name: () => faker.lorem.sentence() });
