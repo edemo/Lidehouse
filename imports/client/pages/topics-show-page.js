@@ -38,14 +38,14 @@ Template.Topics_show_page.helpers({
   topicArgs(topicId) {
     const instance = Template.instance();
     // By finding the topic with only the `_id` field set, we don't create a dependency on the
-    // `topic.incompleteCount`, and avoid re-rendering the comments when it changes
+    // `topic.unreadCount`, and avoid re-rendering the comments when it changes
     const topic = Topics.findOne(topicId, { fields: { _id: true } });
     const comments = topic && topic.comments();
     return {
       commentsReady: instance.subscriptionsReady(),
       // We pass `topic` (which contains the full topic, with all fields, as a function
       // because we want to control reactivity. When you check a comment item, the
-      // `topic.incompleteCount` changes. If we didn't do this the entire topic would
+      // `topic.unreadCount` changes. If we didn't do this the entire topic would
       // re-render whenever you checked an item. By isolating the reactiviy on the topic
       // to the area that cares about it, we stop it from happening.
       topic() {

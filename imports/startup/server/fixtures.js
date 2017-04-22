@@ -55,7 +55,7 @@ Meteor.startup(() => {
       const topicId = Topics.insert({
         communityId,
         name: topic.name,
-        incompleteCount: topic.items.length,
+        unreadCount: topic.items.length,
       });
 
       topic.items.forEach((text) => {

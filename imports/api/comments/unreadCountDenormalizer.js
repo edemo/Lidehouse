@@ -4,15 +4,15 @@ import { check } from 'meteor/check';
 import { Comments } from './comments.js';
 import { Topics } from '../topics/topics.js';
 
-const incompleteCountDenormalizer = {
+const unreadCountDenormalizer = {
   _updateTopic(topicId) {
     // Recalculate the correct incomplete count direct from MongoDB
-    const incompleteCount = Comments.find({
+    const unreadCount = Comments.find({
       topicId,
       checked: false,
     }).count();
 
-    Topics.update(topicId, { $set: { incompleteCount } });
+    Topics.update(topicId, { $set: { unreadCount } });
   },
   afterInsertComment(comment) {
     this._updateTopic(comment.topicId);
@@ -35,4 +35,4 @@ const incompleteCountDenormalizer = {
   },
 };
 
-export default incompleteCountDenormalizer;
+export default unreadCountDenormalizer;

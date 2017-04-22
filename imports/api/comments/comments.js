@@ -2,7 +2,7 @@ import { Mongo } from 'meteor/mongo';
 import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import faker from 'faker';
-import incompleteCountDenormalizer from './incompleteCountDenormalizer.js';
+import unreadCountDenormalizer from './unreadCountDenormalizer.js';
 
 import { Topics } from '../topics/topics.js';
 
@@ -11,18 +11,18 @@ class CommentsCollection extends Mongo.Collection {
     const ourDoc = doc;
     ourDoc.createdAt = ourDoc.createdAt || new Date();
     const result = super.insert(ourDoc, callback);
-    incompleteCountDenormalizer.afterInsertComment(ourDoc);
+    unreadCountDenormalizer.afterInsertComment(ourDoc);
     return result;
   }
   update(selector, modifier) {
     const result = super.update(selector, modifier);
-    incompleteCountDenormalizer.afterUpdateComment(selector, modifier);
+    unreadCountDenormalizer.afterUpdateComment(selector, modifier);
     return result;
   }
   remove(selector) {
     const comments = this.find(selector).fetch();
     const result = super.remove(selector);
-    incompleteCountDenormalizer.afterRemoveComments(comments);
+    unreadCountDenormalizer.afterRemoveComments(comments);
     return result;
   }
 }

@@ -41,7 +41,7 @@ Topics.schema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   name: { type: String, max: 100 },
-  incompleteCount: { type: Number, defaultValue: 0 },
+  unreadCount: { type: Number, defaultValue: 0 },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 });
 
@@ -53,7 +53,7 @@ Topics.attachSchema(Topics.schema);
 Topics.publicFields = {
   name: 1,
   communityId: 1,
-  incompleteCount: 1,
+  unreadCount: 1,
   userId: 1,
 };
 
