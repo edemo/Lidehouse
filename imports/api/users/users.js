@@ -1,5 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
+
+import 'meteor/accounts-base';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Communities } from '/imports/api/communities/communities.js';
 
 // Code from https://github.com/aldeed/meteor-collection2
 
@@ -17,6 +22,17 @@ export const UserProfileSchema = new SimpleSchema({
   website: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true },
   bio: { type: String, optional: true },
   country: { type: CountrySchema, optional: true },
+});
+
+Meteor.users.helpers({
+  memberships() {
+    return Memberships.find({ userId: Meteor.userId() }).fetch();
+  },
+  communities() {
+    const memberships = Memberships.find({ userId: Meteor.userId() }).fetch();
+    const communityIds = _.pluck(memberships, 'communityId');
+    return Communities.find({ _id: { $in: communityIds } });
+  },
 });
 
 Meteor.users.schema = new SimpleSchema({

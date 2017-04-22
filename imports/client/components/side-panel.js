@@ -13,6 +13,8 @@ import { $ } from 'meteor/jquery';
 
 import { Topics } from '../../api/topics/topics.js';
 import { insert as insertTopic } from '../../api/topics/methods.js';
+
+import '../../api/users/users.js';
 import { Communities } from '../../api/communities/communities.js';
 import { Memberships } from '../../api/memberships/memberships.js';
 
@@ -68,9 +70,10 @@ Template.Side_panel.helpers({
     return active && 'active';
   },
   communities() {
-    const memberships = Memberships.find({ userId: Meteor.userId() }).fetch();
-    const communityIds = _.pluck(memberships, 'communityId');
-    return Communities.find({ _id: { $in: communityIds } });
+    if (!Meteor.user()) {
+      return [];
+    }
+    return Meteor.user().communities();
   },
   activeCommunityId() {
     return Session.get('activeCommunityId');
