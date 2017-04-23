@@ -1,0 +1,17 @@
+{
+  "company": {
+    "communities": {
+      "communities": "Companies",
+      "community": "Company",
+      "name": "Company Name",
+      "number": "Company Number"
+    },
+    "memberships": {
+      "memberships": "Shareholders"
+    },
+    "share":  {
+      "shares": "Shares",
+      "share": "Share"
+    }
+  }
+}
