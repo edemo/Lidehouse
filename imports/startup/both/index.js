@@ -1,3 +1,3 @@
-import '/imports/subtypes/house/subtype.js'; // Import only one of the subtypes thats needed
+import '/imports/comtypes/house/comtype.js'; // Import only one of the comtypes thats needed
 
 import './useraccounts-configuration.js';
