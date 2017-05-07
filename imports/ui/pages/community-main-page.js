@@ -8,7 +8,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { TAPi18n } from 'meteor/tap:i18n';
 
-import { displayError } from '/imports/client/lib/errors.js';
+import { displayError } from '/imports/ui/lib/errors.js';
 
 import './community-main-page.html';
 

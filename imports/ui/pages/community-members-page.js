@@ -5,7 +5,7 @@ import { Template } from 'meteor/templating';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { displayError } from '/imports/client/lib/errors.js';
+import { displayError } from '/imports/ui/lib/errors.js';
 
 import './community-members-page.html';
 
