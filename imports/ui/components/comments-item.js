@@ -3,16 +3,10 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 
-import './comments-item.html';
-import { Comments } from '../../api/comments/comments.js';
-
-import {
-  setReadedStatus,
-  updateText,
-  remove,
-} from '../../api/comments/methods.js';
-
-import { displayError } from '../lib/errors.js';
+import { Comments } from '/imports/api/comments/comments.js';
+import { setReadedStatus, updateText, remove } from '/imports/api/comments/methods.js';
+import { displayError } from '/imports/ui/lib/errors.js';
+import '/imports/ui/components/comments-item.html';
 
 Template.Comments_item.onCreated(function commentsItemOnCreated() {
   this.autorun(() => {

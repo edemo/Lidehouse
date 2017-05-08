@@ -13,20 +13,20 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import './topics-show.html';
 
 // Component used in the template
-import './comments-item.js';
+import '/imports/ui/components/comments-item.js';
 
 import {
   updateName,
   makePublic,
   makePrivate,
   remove,
-} from '../../api/topics/methods.js';
+} from '/imports/api/topics/methods.js';
 
 import {
   insert,
-} from '../../api/comments/methods.js';
+} from '/imports/api/comments/methods.js';
 
-import { displayError } from '../lib/errors.js';
+import { displayError } from '/imports/ui/lib/errors.js';
 
 Template.Topics_show.onCreated(function topicShowOnCreated() {
   this.autorun(() => {

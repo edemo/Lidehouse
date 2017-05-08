@@ -24,6 +24,11 @@ export const UserProfileSchema = new SimpleSchema({
   country: { type: CountrySchema, optional: true },
 });
 
+export const ConcreteRoleSchema = new SimpleSchema({
+  role: { type: String },
+  community: { type: SimpleSchema.RegEx.Id },
+});
+
 Meteor.users.helpers({
   memberships() {
     return Memberships.find({ userId: Meteor.userId() }).fetch();
@@ -81,7 +86,7 @@ Meteor.users.schema = new SimpleSchema({
   // If you are sure you will never need to use role groups, then
   // you can specify [String] as the type
   roles: { type: Array, optional: true },
-  'roles.$': { type: String },
+  'roles.$': { type: ConcreteRoleSchema },
 
   // In order to avoid an 'Exception in setInterval callback' from Meteor
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },

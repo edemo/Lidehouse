@@ -11,12 +11,12 @@ import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
-import { Topics } from '../../api/topics/topics.js';
-import { insert as insertTopic } from '../../api/topics/methods.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { insert as insertTopic } from '/imports/api/topics/methods.js';
 
-import '../../api/users/users.js';
-import { Communities } from '../../api/communities/communities.js';
-import { Memberships } from '../../api/memberships/memberships.js';
+import '/imports/api/users/users.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 
 import '../components/side-panel.html';
 
