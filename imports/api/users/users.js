@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 import 'meteor/accounts-base';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Permissions } from '/imports/api/permissions/permissions.js';
 
 // Code from https://github.com/aldeed/meteor-collection2
 
@@ -25,8 +26,8 @@ export const UserProfileSchema = new SimpleSchema({
 });
 
 export const ConcreteRoleSchema = new SimpleSchema({
-  role: { type: String },
-  community: { type: SimpleSchema.RegEx.Id },
+  name: { type: String },
+  communityId: { type: SimpleSchema.RegEx.Id },
 });
 
 Meteor.users.helpers({
@@ -37,6 +38,15 @@ Meteor.users.helpers({
     const memberships = Memberships.find({ userId: Meteor.userId() }).fetch();
     const communityIds = _.pluck(memberships, 'communityId');
     return Communities.find({ _id: { $in: communityIds } });
+  },
+  hasPermission(permissionName, communityId) {
+    const permission = Permissions.findOne({ _id: permissionName });
+    const rolesWithThePermission = permission.roles;
+    const userHasTheseRoles = this.roles
+      ? this.roles.filter(role => role.communityId === communityId).map(role => role.name)
+      : [];
+    debugger;
+    return _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
   },
 });
 

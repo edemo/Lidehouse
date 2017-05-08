@@ -6,6 +6,7 @@ export const Roles = new Mongo.Collection('roles');
 
 Roles.schema = new SimpleSchema({
   name: { type: String, max: 100, label: () => TAPi18n.__('roles.name') },
+  protected: { type: Boolean, optional: true },
 });
 
 Roles.attachSchema(Roles.schema);

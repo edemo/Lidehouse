@@ -1,9 +1,10 @@
 /* eslint-disable no-multi-spaces */
 import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
 import { Roles } from './roles.js';
 import { Permissions } from './permissions.js';
 
-const roles = [
+const defaultRoles = [
   { name: 'admin' },
   { name: 'manager' },
   { name: 'member' },
@@ -25,12 +26,11 @@ const permissions = [
 
 if (Meteor.isServer) {
   Meteor.startup(function InitializeRoles() {
-    Roles.remove({});
-    roles.forEach(role => Roles.insert(role));
+    defaultRoles.forEach(role => Roles.upsert({ _id: role.name }, { $set: _.extend(role, { protected: true }) }));
   });
 
+
   Meteor.startup(function InitializePermissions() {
-    Permissions.remove({});
-    permissions.forEach(permission => Permissions.insert(permission));
+    permissions.forEach(permission => Permissions.upsert({ _id: permission.name }, { $set: permission }));
   });
 }

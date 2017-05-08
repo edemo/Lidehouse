@@ -1,5 +1,5 @@
 // Initial db data
-import '/imports/api/roles/config.js';
+import '/imports/api/permissions/config.js';
 
 // This defines a starting set of data to be loaded if the app is loaded with an empty db.
 import './fixtures.js';
