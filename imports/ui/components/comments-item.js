@@ -3,16 +3,10 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 
-import './comments-item.html';
-import { Comments } from '../../api/comments/comments.js';
-
-import {
-  setCheckedStatus,
-  updateText,
-  remove,
-} from '../../api/comments/methods.js';
-
-import { displayError } from '../lib/errors.js';
+import { Comments } from '/imports/api/comments/comments.js';
+import { setReadedStatus, updateText, remove } from '/imports/api/comments/methods.js';
+import { displayError } from '/imports/ui/lib/errors.js';
+import '/imports/ui/components/comments-item.html';
 
 Template.Comments_item.onCreated(function commentsItemOnCreated() {
   this.autorun(() => {
@@ -25,8 +19,8 @@ Template.Comments_item.onCreated(function commentsItemOnCreated() {
 });
 
 Template.Comments_item.helpers({
-  checkedClass(comment) {
-    return comment.checked && 'checked';
+  readedClass(comment) {
+    return comment.readed && 'readed';
   },
   editingClass(editing) {
     return editing && 'editing';
@@ -35,11 +29,11 @@ Template.Comments_item.helpers({
 
 Template.Comments_item.events({
   'change [type=checkbox]'(event) {
-    const checked = $(event.target).is(':checked');
+    const readed = $(event.target).is(':readed');
 
-    setCheckedStatus.call({
+    setReadedStatus.call({
       commentId: this.comment._id,
-      newCheckedStatus: checked,
+      newReadedStatus: readed,
     });
   },
 

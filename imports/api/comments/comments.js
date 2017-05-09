@@ -29,13 +29,6 @@ class CommentsCollection extends Mongo.Collection {
 
 export const Comments = new CommentsCollection('comments');
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Comments.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
-
 Comments.schema = new SimpleSchema({
   _id: {
     type: String,
@@ -54,32 +47,13 @@ Comments.schema = new SimpleSchema({
     type: Date,
     denyUpdate: true,
   },
-  checked: {
+  readed: {
     type: Boolean,
     defaultValue: false,
   },
 });
 
 Comments.attachSchema(Comments.schema);
-
-// This represents the keys from Topics objects that should be published
-// to the client. If we add secret properties to Topic objects, don't list
-// them here to keep them private to the server.
-Comments.publicFields = {
-  topicId: 1,
-  text: 1,
-  createdAt: 1,
-  checked: 1,
-};
-
-// TODO This factory has a name - do we have a code style for this?
-//   - usually I've used the singular, sometimes you have more than one though, like
-//   'comment', 'emptyComment', 'checkedComment'
-Factory.define('comment', Comments, {
-  topicId: () => Factory.get('topic'),
-  text: () => faker.lorem.sentence(),
-  createdAt: () => new Date(),
-});
 
 Comments.helpers({
   topic() {
@@ -88,4 +62,30 @@ Comments.helpers({
   editableBy(userId) {
     return this.topic().editableBy(userId);
   },
+});
+
+// Deny all client-side updates since we will be using methods to manage this collection
+Comments.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});
+
+// This represents the keys from Topics objects that should be published
+// to the client. If we add secret properties to Topic objects, don't list
+// them here to keep them private to the server.
+Comments.publicFields = {
+  topicId: 1,
+  text: 1,
+  createdAt: 1,
+  readed: 1,
+};
+
+// TODO This factory has a name - do we have a code style for this?
+//   - usually I've used the singular, sometimes you have more than one though, like
+//   'comment', 'emptyComment', 'readedComment'
+Factory.define('comment', Comments, {
+  topicId: () => Factory.get('topic'),
+  text: () => faker.lorem.sentence(),
+  createdAt: () => new Date(),
 });

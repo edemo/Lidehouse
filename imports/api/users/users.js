@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 import 'meteor/accounts-base';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Permissions } from '/imports/api/permissions/permissions.js';
 
 // Code from https://github.com/aldeed/meteor-collection2
 
@@ -24,6 +25,11 @@ export const UserProfileSchema = new SimpleSchema({
   country: { type: CountrySchema, optional: true },
 });
 
+export const ConcreteRoleSchema = new SimpleSchema({
+  name: { type: String },
+  communityId: { type: SimpleSchema.RegEx.Id },
+});
+
 Meteor.users.helpers({
   memberships() {
     return Memberships.find({ userId: Meteor.userId() }).fetch();
@@ -32,6 +38,15 @@ Meteor.users.helpers({
     const memberships = Memberships.find({ userId: Meteor.userId() }).fetch();
     const communityIds = _.pluck(memberships, 'communityId');
     return Communities.find({ _id: { $in: communityIds } });
+  },
+  hasPermission(permissionName, communityId) {
+    const permission = Permissions.findOne({ _id: permissionName });
+    const rolesWithThePermission = permission.roles;
+    const userHasTheseRoles = this.roles
+      ? this.roles.filter(role => role.communityId === communityId).map(role => role.name)
+      : [];
+    debugger;
+    return _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
   },
 });
 
@@ -81,7 +96,7 @@ Meteor.users.schema = new SimpleSchema({
   // If you are sure you will never need to use role groups, then
   // you can specify [String] as the type
   roles: { type: Array, optional: true },
-  'roles.$': { type: String },
+  'roles.$': { type: ConcreteRoleSchema },
 
   // In order to avoid an 'Exception in setInterval callback' from Meteor
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },

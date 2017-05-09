@@ -5,11 +5,11 @@ import { Factory } from 'meteor/dburles:factory';
 import { chai } from 'meteor/practicalmeteor:chai';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
-import { Comments } from '../../api/comments/comments';
+import { Comments } from '/imports/api/comments/comments';
 
 
-import { withRenderedTemplate } from '../test-helpers.js';
-import './comments-item.js';
+import { withRenderedTemplate } from '/imports/ui/test-helpers.js';
+import '/imports/ui/components/comments-item.js';
 
 describe('Comments_item', function () {
   beforeEach(function () {
@@ -21,7 +21,7 @@ describe('Comments_item', function () {
   });
 
   it('renders correctly with simple data', function () {
-    const comment = Factory.build('comment', { checked: false });
+    const comment = Factory.build('comment', { readed: false });
     const data = {
       comment: Comments._transform(comment),
       onEditingChange: () => 0,
@@ -29,13 +29,13 @@ describe('Comments_item', function () {
 
     withRenderedTemplate('Comments_item', data, (el) => {
       chai.assert.equal($(el).find('input[type=text]').val(), comment.text);
-      chai.assert.equal($(el).find('.topic-item.checked').length, 0);
+      chai.assert.equal($(el).find('.topic-item.readed').length, 0);
       chai.assert.equal($(el).find('.topic-item.editing').length, 0);
     });
   });
 
-  it('renders correctly when checked', function () {
-    const comment = Factory.build('comment', { checked: true });
+  it('renders correctly when readed', function () {
+    const comment = Factory.build('comment', { readed: true });
     const data = {
       comment: Comments._transform(comment),
       onEditingChange: () => 0,
@@ -43,7 +43,7 @@ describe('Comments_item', function () {
 
     withRenderedTemplate('Comments_item', data, (el) => {
       chai.assert.equal($(el).find('input[type=text]').val(), comment.text);
-      chai.assert.equal($(el).find('.topic-item.checked').length, 1);
+      chai.assert.equal($(el).find('.topic-item.readed').length, 1);
     });
   });
 

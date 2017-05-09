@@ -2,18 +2,18 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 
 // Import to load these templates
-import '../../client/layouts/app-body.js';
-import '../../client/pages/root-redirector.js';
-import '../../client/pages/community-main-page.js';
-import '../../client/pages/topics-show-page.js';
-import '../../client/pages/app-not-found.js';
-import '../../client/forms/communities-create-form.js';
-import '../../client/forms/communities-join-form.js';
-import '../../client/forms/users-show-form.js';
-import '../../client/forms/invite-form.js';
+import '/imports/ui//layouts/app-body.js';
+import '/imports/ui//pages/root-redirector.js';
+import '/imports/ui//pages/community-main-page.js';
+import '/imports/ui//pages/topics-show-page.js';
+import '/imports/ui//pages/app-not-found.js';
+import '/imports/ui//forms/communities-create-form.js';
+import '/imports/ui//forms/communities-join-form.js';
+import '/imports/ui//forms/users-show-form.js';
+import '/imports/ui//forms/invite-form.js';
 
 // Import to override accounts templates
-import '../../client/accounts/accounts-templates.js';
+import '/imports/ui//accounts/accounts-templates.js';
 
 FlowRouter.route('/', {
   name: 'App.home',

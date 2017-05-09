@@ -56,11 +56,13 @@
         <span class="icon-plus"></span>
         {{_ 'layouts.appBody.joinCommunity'}}
       </a>
-      <a href="{{pathFor 'Communities.create'}}" title="Create a community"
-        class="js-create-community link-new">
-        <span class="icon-plus"></span>
-        {{_ 'layouts.appBody.createCommunity'}}
-      </a>
+      {{#if userHasPermission 'communities.create'}}
+        <a href="{{pathFor 'Communities.create'}}" title="Create a community"
+          class="js-create-community link-new">
+          <span class="icon-plus"></span>
+          {{_ 'layouts.appBody.createCommunity'}}
+        </a>
+      {{/if}}
     </div>
 
     <!-- MEMBERS -->

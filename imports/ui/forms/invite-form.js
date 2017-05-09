@@ -4,7 +4,7 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
-import { displayError } from '/imports/client/lib/errors.js';
+import { displayError } from '/imports/ui/lib/errors.js';
 import { invite } from '../../api/users/methods.js';
 
 import './invite-form.html';
