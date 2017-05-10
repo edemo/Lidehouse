@@ -45,7 +45,6 @@ Meteor.users.helpers({
     const userHasTheseRoles = this.roles
       ? this.roles.filter(role => role.communityId === communityId).map(role => role.name)
       : [];
-    debugger;
     return _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
   },
 });
