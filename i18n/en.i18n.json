@@ -106,7 +106,9 @@
     "community": {
       "data": "Data",
       "members": "Shares",
-      "addMember": "Add Share"
+      "addMember": "Add Share",
+      "uploads": "Documentstore",
+      "upload": "Upload"
     }
   }
 }

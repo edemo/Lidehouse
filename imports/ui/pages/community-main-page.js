@@ -1,4 +1,3 @@
-
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
@@ -12,8 +11,9 @@ import { displayError } from '/imports/ui/lib/errors.js';
 
 import './community-main-page.html';
 
-import './community-members-page.js';
 import './community-data-page.js';
+import './community-members-page.js';
+import './community-uploads-page.js';
 
 Template.Tabbed_page.onCreated(function () {
   const defaultTab = this.data.tabs[0].name;
@@ -46,6 +46,7 @@ Template.Community_main_page.helpers({
     return [
       { name: 'data' },
       { name: 'members' },
+      { name: 'uploads' },
     ];
   },
 });

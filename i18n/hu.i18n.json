@@ -106,7 +106,9 @@
     "community": {
       "data": "Adatok",
       "members": "Albetétek",
-      "addMember": "Albetét hozzáadás"
+      "addMember": "Albetét hozzáadás",
+      "uploads": "Dokumentumtár",
+      "upload": "Feltöltés"
     }
   }
 }

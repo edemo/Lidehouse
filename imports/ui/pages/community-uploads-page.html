@@ -1,0 +1,17 @@
+<template name="Community_uploads_page">
+  <div>
+    {{#each shareddocs}}
+      <div>
+        {{#if uploading}}
+          <img src="/images/spinner.gif" style="{ width: 1em; height: 1em; }">
+          <span>{{name}}</span>
+          <span>{{completed}}%</span>
+        {{else}}
+          <img src="/images/disk.png" style="{ width: 1em; height: 1em; }">
+          <a target="_blank" href="{{url}}" title="{{name}}">{{name}}</a>
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
+  <button type="button" name="upload">{{_ 'pages.community.upload'}}</button>
+</template>

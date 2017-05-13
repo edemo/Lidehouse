@@ -9,5 +9,6 @@ import '/imports/api/communities/publications.js';
 import '/imports/api/users/methods.js';
 import '/imports/api/users/publications.js';
 import '/imports/api/permissions/publications.js';
+import '/imports/api/shareddocs/publications.js';
 
 import '/imports/api/views/community-members.js';
