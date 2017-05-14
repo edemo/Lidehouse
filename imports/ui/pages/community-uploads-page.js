@@ -89,4 +89,7 @@ Template.Community_uploads_page.events({
       // uploader.abort();
     });
   },
+  'click .js-delete'() {
+    Shareddocs.remove(this._id);
+  },
 });
