@@ -1,6 +1,7 @@
 /* global alert */
 
 import { Meteor } from 'meteor/meteor';
+import { Session } from 'meteor/session';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { Template } from 'meteor/templating';
@@ -31,6 +32,20 @@ Template.App_body.onCreated(function appBodyOnCreated() {
   this.state = new ReactiveDict();
   this.state.setDefault({
     menuOpen: false,
+  });
+
+  // We run this in autorun, so when a new User logs in, the subscription changes
+  this.autorun(() => {
+    this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
+  });
+  // We run this in autorun, so when User switches his community, the subscription changes
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    if (communityId) {
+      this.subscribe('memberships.inCommunity', { communityId });
+      this.subscribe('topics.public', { communityId });
+      this.subscribe('topics.private', { communityId });
+    }
   });
 });
 

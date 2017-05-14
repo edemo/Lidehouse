@@ -21,11 +21,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import '../components/side-panel.html';
 
 Template.Side_panel.onCreated(function sidePanelOnCreated() {
-  this.autorun(() => {
-    // We run this is autorun, so when a new User logs in, the subscription changes
-    this.subHandle = this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
-  });
-
   this.state = new ReactiveDict();
   this.state.setDefault({
     userMenuOpen: false,
@@ -33,20 +28,6 @@ Template.Side_panel.onCreated(function sidePanelOnCreated() {
 
   T9n.setLanguage('hu');
   TAPi18n.setLanguage('hu');
-});
-
-Template.Side_panel.onRendered(function sidePanelOnRendered() {
-  this.autorun(() => {
-    if (this.subHandle.ready()) {
-      const communityId = Session.get('activeCommunityId');
-      if (communityId) {
-        this.subscribe('memberships.inCommunity', { communityId });
-        this.subscribe('topics.public', { communityId });
-        this.subscribe('topics.private', { communityId });
-        this.state.set('selectedCommunityId', communityId);
-      }
-    }
-  });
 });
 
 Template.Side_panel.helpers({

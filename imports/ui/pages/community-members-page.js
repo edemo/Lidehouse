@@ -10,15 +10,12 @@ import { displayError } from '/imports/ui/lib/errors.js';
 import './community-members-page.html';
 
 Template.Community_members_page.onCreated(function () {
-  this.getCommunityId = () => FlowRouter.getParam('_cid');
-  this.autorun(() => {
-    this.subscribe('memberships.inCommunity', { communityId: this.getCommunityId() });
-  });
 });
 
 Template.Community_members_page.helpers({
   members() {
-    return Memberships.find({ communityId: Template.instance().getCommunityId() });
+    const communityId = Session.get('activeCommunityId');
+    return Memberships.find({ communityId });
   },
   memberships() {
     return Memberships;
@@ -43,7 +40,8 @@ Template.Community_members_page.events({
     Session.set('selectedMemberId', this._id);
   },
   'click .js-new-share'(event, instance) {
-    Meteor.call('memberships.insert', { communityId: instance.getCommunityId() }, function(err, res) {
+    const communityId = Session.get('activeCommunityId');
+    Meteor.call('memberships.insert', { communityId }, function(err, res) {
       if (err) {
         displayError(err);
         return;

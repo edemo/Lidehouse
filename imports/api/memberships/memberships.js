@@ -18,11 +18,12 @@ Memberships.helpers({
   },
   user() {
     const user = Meteor.users.findOne(this.userId);
-    debugAssert(user);
     return user;
   },
   username() {
-    return this.hasUser() ? this.user().username : '';
+    if (!this.userId) return '';
+    if (!this.user()) return 'unknown';
+    return this.user().username;
   },
   community() {
     const community = Communities.findOne(this.communityId);

@@ -8,9 +8,9 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import './community-uploads-page.html';
 
 Template.Community_uploads_page.onCreated(function () {
-  this.getCommunityId = () => FlowRouter.getParam('_cid');
   this.autorun(() => {
-    this.subscribe('shareddocs.inCommunity', this.getCommunityId());
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('shareddocs.inCommunity', communityId);
   });
 });
 
@@ -19,7 +19,8 @@ Template.Community_uploads_page.helpers({
     return Math.round(this.progress * 100);
   },
   shareddocs() {
-    return Shareddocs.find({});
+    const communityId = Session.get('activeCommunityId');
+    return Shareddocs.find({ communityId });
   },
 });
 

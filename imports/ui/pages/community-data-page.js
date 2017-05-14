@@ -10,12 +10,11 @@ import { displayError } from '/imports/ui/lib/errors.js';
 import './community-data-page.html';
 
 Template.Community_data_page.onCreated(function () {
-  this.getCommunityId = () => FlowRouter.getParam('_cid');
 });
 
 Template.Community_data_page.helpers({
   community() {
-    const communityId = Template.instance().getCommunityId();
+    const communityId = Session.get('activeCommunityId');
     return Communities.findOne({ _id: communityId });
   },
   communities() {
