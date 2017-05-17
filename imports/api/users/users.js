@@ -27,7 +27,7 @@ export const UserProfileSchema = new SimpleSchema({
 
 export const ConcreteRoleSchema = new SimpleSchema({
   name: { type: String },
-  communityId: { type: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
 });
 
 Meteor.users.helpers({
