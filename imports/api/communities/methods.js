@@ -22,7 +22,9 @@ export const create = new ValidatedMethod({
     }
 
     const communityId = Communities.insert(doc);
-    Meteor.call('memberships.insert', { userId: this.userId, communityId });
+
+    // The user creating the community, becomes the first 'admin' of it.
+    Meteor.users.update({ _id: this.userId }, { $push: { roles: { name: 'admin', communityId } } });
 
     return communityId;
   },
