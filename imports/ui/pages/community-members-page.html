@@ -39,6 +39,6 @@
   {{#if hasSelection}}
     <br>
     <p> Edit membership details:</p>
-    {{> quickForm id="afUpdateDemo" type=formType meteormethod="memberships.update" collection=memberships doc=selectedDoc template="bootstrap3-inline"}}
+    {{> quickForm id="afUpdateDemo" collection=memberships doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3-inline"}}
   {{/if}}
 </template>

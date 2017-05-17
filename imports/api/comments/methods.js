@@ -10,6 +10,7 @@ import { Topics } from '../topics/topics.js';
 export const insert = new ValidatedMethod({
   name: 'comments.insert',
   validate: Comments.simpleSchema().pick(['topicId', 'text']).validator({ clean: true, filter: false }),
+
   run({ topicId, text }) {
     const topic = Topics.findOne(topicId);
 
@@ -35,6 +36,7 @@ export const setReadedStatus = new ValidatedMethod({
     commentId: Comments.simpleSchema().schema('_id'),
     newReadedStatus: Comments.simpleSchema().schema('readed'),
   }).validator({ clean: true, filter: false }),
+
   run({ commentId, newReadedStatus }) {
     const comment = Comments.findOne(commentId);
 
@@ -60,6 +62,7 @@ export const updateText = new ValidatedMethod({
     commentId: Comments.simpleSchema().schema('_id'),
     newText: Comments.simpleSchema().schema('text'),
   }).validator({ clean: true, filter: false }),
+
   run({ commentId, newText }) {
     // This is complex auth stuff - perhaps denormalizing a userId onto comments
     // would be correct here?
@@ -83,6 +86,7 @@ export const remove = new ValidatedMethod({
   validate: new SimpleSchema({
     commentId: Comments.simpleSchema().schema('_id'),
   }).validator({ clean: true, filter: false }),
+
   run({ commentId }) {
     const comment = Comments.findOne(commentId);
 

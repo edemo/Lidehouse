@@ -1,3 +1,3 @@
 <template name="Community_data_page">
-  {{> quickForm collection=communities id="communities_data" type="method-update" meteormethod="communities.update" doc=community template="bootstrap3"}}
+  {{> quickForm id="communities_data" collection=communities doc=community type="method-update" meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
 </template>

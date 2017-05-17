@@ -104,3 +104,10 @@ Meteor.users.schema = new SimpleSchema({
 });
 
 Meteor.users.attachSchema(Meteor.users.schema);
+
+// Deny all client-side updates since we will be using methods to manage this collection
+Meteor.users.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});

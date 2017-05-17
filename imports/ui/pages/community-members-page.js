@@ -51,10 +51,11 @@ Template.Community_members_page.events({
     });
   },
   'click .js-delete-share'() {
-    Meteor.call('memberships.remove', this._id, function(err, res) {
+    Meteor.call('memberships.remove', { _id: this._id }, function(err, res) {
       if (err) {
         displayError(err);
       }
+      Session.set('selectedMemberId', undefined);
     });
   },
   'click .js-invite-user'() {
