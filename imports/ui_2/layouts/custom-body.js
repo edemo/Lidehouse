@@ -5,8 +5,8 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { Template } from 'meteor/templating';
 
-import '../../client/components/loading.js';
-import '../../client/components/side-panel.js';
+import '../../ui/components/loading.js';
+import '../../ui/components/side-panel.js';
 import './custom-body.html';
 
 const CONNECTION_ISSUE_TIMEOUT = 5000;
