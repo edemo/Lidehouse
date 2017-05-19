@@ -1,0 +1,9 @@
+<template name="Users_show_form">
+  <div class="autoform">
+    <div class="content-scrollable">
+      <div class="wrapper-form">
+        {{> quickForm id="users_show" collection=users doc=document type="method-update" meteormethod="user.update" singleMethodArgument=true}}
+      </div>
+    </div>
+  </div>
+</template>

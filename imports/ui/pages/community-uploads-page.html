@@ -1,0 +1,24 @@
+<template name="Community_uploads_page">
+  <div>
+    {{#each shareddocs}}
+      <div>
+        {{#if uploading}}
+          <img src="/images/spinner.gif" style="{ width: 1em; height: 1em; }">
+          <span>{{name}}</span>
+          <span>{{completed}}%</span>
+        {{else}}
+          <img src="/images/disk.png" style="{ width: 1em; height: 1em; }">
+          <a target="_blank" href="{{url}}" title="{{name}}">{{name}}</a>
+          {{#if userHasPermission "shareddocs.upload"}}
+            <a class="js-delete nav-item">
+              <span class="icon-trash" title={{_ 'Command_Delete'}}></span>
+            </a>
+          {{/if}}
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
+  {{#if userHasPermission "shareddocs.upload"}}
+    <button type="button" name="upload">{{_ 'pages.community.upload'}}</button>
+  {{/if}}
+</template>

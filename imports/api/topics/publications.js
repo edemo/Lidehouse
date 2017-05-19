@@ -1,10 +1,12 @@
 /* eslint-disable prefer-arrow-callback */
+/* globals check */
 
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Topics } from './topics.js';
 
+// TODO: If you pass in a function instead of an object of params, it passes validation
 Meteor.publish('topics.public', function topicsPublic(params) {
   new SimpleSchema({
     communityId: { type: String },

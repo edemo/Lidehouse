@@ -1,0 +1,33 @@
+{
+  "house": {
+    "communities": {
+      "communities": "Condominiums",
+      "community": "Condominium",
+      "name": "Name",
+      "lot": "Lot number",
+      "address": "Address",
+      "city": "City",
+      "street": "Street",
+      "number": "Number",
+      "zip": "Zip code",
+      "join": "Join",
+      "create": "Create"
+    },
+    "memberships": {
+      "memberships": "Owners"
+    },
+    "share":  {
+      "shares": "Parcels",
+      "share": "Parcel",
+      "name": "Name",
+      "type": "Type",
+      "apartment": "Apartment",
+      "parking": "Parking",
+      "storage": "Stroage",
+      "floor": "Floor",
+      "number": "Number",
+      "ownership": "Ownership",
+      "fraction": "Fraction"
+    }
+  }
+}

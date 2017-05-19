@@ -46,7 +46,7 @@
     "insert": {
       "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
     },
-    "setCheckedStatus": {
+    "setReadedStatus": {
       "accessDenied": "Mások privát témáját nem lehet szerkeszteni"
     },
     "updateText": {
@@ -60,14 +60,9 @@
     }
   },
   "communities": {
-    "communities": "Lakóközösségek",
+    "communities": "Közösségek",
+    "community": "Közösség",
     "name": "Név",
-    "lot": "Helyrajzi szám",
-    "address": "Cím",
-    "city": "Város",
-    "street": "Utca",
-    "number": "Házszám",
-    "zip": "Irányító szám",
     "join": "Csatlakozom",
     "create": "Létrehozom"
   },
@@ -75,14 +70,8 @@
     "memberships": "Tagok"
   },
   "share":  {
-    "share": "Albetét",
     "name": "Név",
     "type": "Típus",
-    "apartment": "Lakás",
-    "parking": "Parkoló",
-    "storage": "Tároló",
-    "floor": "Emelet",
-    "number": "Szám",
     "ownership": "Tulajdon",
     "fraction": "Tulajdonrész"
   },
@@ -117,7 +106,9 @@
     "community": {
       "data": "Adatok",
       "members": "Albetétek",
-      "addMember": "Albetét hozzáadás"
+      "addMember": "Albetét hozzáadás",
+      "uploads": "Dokumentumtár",
+      "upload": "Feltöltés"
     }
   }
 }

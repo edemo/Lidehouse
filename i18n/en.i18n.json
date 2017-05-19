@@ -46,7 +46,7 @@
     "insert": {
       "accessDenied": "Cannot add comment to a private topic that is not yours"
     },
-    "setCheckedStatus": {
+    "setReadedStatus": {
       "accessDenied": "Cannot edit comment in a private topic that is not yours"
     },
     "updateText": {
@@ -63,27 +63,15 @@
     "communities": "Communities",
     "community": "Community",
     "name": "Name",
-    "lot": "Lot number",
-    "address": "Address",
-    "city": "City",
-    "street": "Street",
-    "number": "Number",
-    "zip": "Zip code",
     "join": "Join",
     "create": "Create"
   },
   "memberships": {
-    "memberships": "Memberships"
+    "memberships": "Members"
   },
   "share":  {
-    "share": "Share",
     "name": "Name",
     "type": "Type",
-    "apartment": "Apartment",
-    "parking": "Parking",
-    "storage": "Stroage",
-    "floor": "Floor",
-    "number": "Number",
     "ownership": "Ownership",
     "fraction": "Fraction"
   },
@@ -118,7 +106,9 @@
     "community": {
       "data": "Data",
       "members": "Shares",
-      "addMember": "Add Share"
+      "addMember": "Add Share",
+      "uploads": "Documentstore",
+      "upload": "Upload"
     }
   }
 }

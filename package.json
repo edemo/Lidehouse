@@ -63,7 +63,8 @@
       ],
       "meteor/template-names": "off",
       "meteor/no-session": "off",
-      "prefer-template": "warn"
+      "prefer-template": "warn",
+      "prefer-arrow-callback": "off"
     },
     "settings": {
       "import/resolver": "meteor"

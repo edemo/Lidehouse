@@ -1,6 +1,7 @@
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 import { TAPi18n } from 'meteor/tap:i18n';
 
 import { Comments } from '../comments/comments.js';
@@ -30,13 +31,6 @@ class TopicsCollection extends Mongo.Collection {
 
 export const Topics = new TopicsCollection('topics');
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Topics.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
-
 Topics.schema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -46,18 +40,6 @@ Topics.schema = new SimpleSchema({
 });
 
 Topics.attachSchema(Topics.schema);
-
-// This represents the keys from Topics objects that should be published
-// to the client. If we add secret properties to Topic objects, don't list
-// them here to keep them private to the server.
-Topics.publicFields = {
-  name: 1,
-  communityId: 1,
-  unreadCount: 1,
-  userId: 1,
-};
-
-Factory.define('topic', Topics, {});
 
 Topics.helpers({
   // A topic is considered to be private if it has a userId set
@@ -78,4 +60,24 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
+});
+
+// Deny all client-side updates since we will be using methods to manage this collection
+Topics.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});
+
+// This represents the keys from Topics objects that should be published to the client.
+// If we add secret properties to Topic objects, don't list them here to keep them private to the server.
+Topics.publicFields = {
+  name: 1,
+  communityId: 1,
+  unreadCount: 1,
+  userId: 1,
+};
+
+Factory.define('topic', Topics, {
+  communityId: () => Factory.get('community'),
 });

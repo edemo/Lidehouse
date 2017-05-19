@@ -1,13 +1,12 @@
-/* globals check */
-
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Memberships } from './memberships';
 
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
   validate: Memberships.simpleSchema().validator({}),
+
   run(doc) {
     if (doc.userId) {
       const existingMembership = Memberships.findOne(doc);
@@ -21,17 +20,25 @@ export const insert = new ValidatedMethod({
   },
 });
 
-Meteor.methods({
-  'memberships.update'(modifier, _id) {
-    check(_id, String);
-    check(modifier, Object);
-    Memberships.update(_id, modifier);
+export const update = new ValidatedMethod({
+  name: 'memberships.update',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    modifier: { type: Object, blackbox: true },
+  }).validator({ isModifier: true }),
+
+  run({ _id, modifier }) {
+    Memberships.update({ _id }, modifier);
   },
 });
 
-Meteor.methods({
-  'memberships.remove'(_id) {
-    check(_id, String);
+export const remove = new ValidatedMethod({
+  name: 'memberships.remove',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id }) {
     Memberships.remove(_id);
   },
 });

@@ -1,0 +1,44 @@
+<template name="Community_members_page">
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <td>{{_ 'share.name'}}</td>
+        <td>{{_ 'share.type'}}</td>
+        <td>{{_ 'share.fraction'}}</td>
+        <td>{{_ 'user.username'}}</td>
+        <td>{{_ 'user.user'}}</td>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each members}}
+        <tr class="table-row {{#if isSelected}}selected{{/if}}">
+          <td>{{share.name}}</td>
+          <td>{{share.type}}</td>
+          <td>{{share.ownership.units}}/{{share.ownership.total}}</td>
+          <td>{{username}}</td>
+          <td>
+            {{#if userId}}
+              <button class="js-remove-user">{{_ 'user.remove'}}</button>
+            {{else}}
+              <button class="js-invite-user">{{_ 'user.invite'}}</button>
+            {{/if}}
+          </td>
+          <td>
+            <a class="js-delete-share nav-item">
+            <span
+              class="icon-trash"
+              title={{_ 'topics.show.deleteShare'}}>
+            </span>
+            </a>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <button class="js-new-share btn-primary">{{_ 'pages.community.addMember'}}</button>
+  {{#if hasSelection}}
+    <br>
+    <p> Edit membership details:</p>
+    {{> quickForm id="afUpdateDemo" collection=memberships doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3-inline"}}
+  {{/if}}
+</template>

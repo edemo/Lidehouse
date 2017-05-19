@@ -16,6 +16,7 @@ export const insert = new ValidatedMethod({
     communityId: { type: String },
     language: { type: String },
   }).validator(),
+
   run({ communityId, language }) {
     return Topics.insert({ communityId }, null, language);
   },
@@ -24,6 +25,7 @@ export const insert = new ValidatedMethod({
 export const makePrivate = new ValidatedMethod({
   name: 'topics.makePrivate',
   validate: TOPIC_ID_ONLY,
+
   run({ topicId }) {
     if (!this.userId) {
       throw new Meteor.Error('topics.makePrivate.notLoggedIn',
@@ -46,6 +48,7 @@ export const makePrivate = new ValidatedMethod({
 export const makePublic = new ValidatedMethod({
   name: 'topics.makePublic',
   validate: TOPIC_ID_ONLY,
+
   run({ topicId }) {
     if (!this.userId) {
       throw new Meteor.Error('topics.makePublic.notLoggedIn',
@@ -73,6 +76,7 @@ export const updateName = new ValidatedMethod({
     topicId: Topics.simpleSchema().schema('_id'),
     newName: Topics.simpleSchema().schema('name'),
   }).validator({ clean: true, filter: false }),
+
   run({ topicId, newName }) {
     const topic = Topics.findOne(topicId);
 
@@ -93,6 +97,7 @@ export const updateName = new ValidatedMethod({
 export const remove = new ValidatedMethod({
   name: 'topics.remove',
   validate: TOPIC_ID_ONLY,
+
   run({ topicId }) {
     const topic = Topics.findOne(topicId);
 

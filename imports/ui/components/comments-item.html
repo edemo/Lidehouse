@@ -1,0 +1,15 @@
+<template name="Comments_item">
+  <div class="topic-item {{readedClass comment}} {{editingClass editing}}">
+    <label class="checkbox">
+      <input type="checkbox" checked="{{comment.readed}}" name="readed">
+      <span class="checkbox-custom"></span>
+    </label>
+    <input
+      type="text"
+      value="{{comment.text}}"
+      placeholder={{_ 'comments.item.taskName'}}>
+    <a class="js-delete-item delete-item" href="#">
+      <span class="icon-trash"></span>
+    </a>
+  </div>
+</template>

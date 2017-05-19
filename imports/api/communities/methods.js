@@ -1,8 +1,6 @@
-/* globals check */
-
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-// import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Communities } from './communities.js';
 // import { Memberships } from '../memberships/memberships.js';
@@ -10,6 +8,7 @@ import { Communities } from './communities.js';
 export const create = new ValidatedMethod({
   name: 'communities.create',
   validate: Communities.simpleSchema().validator(),
+
   run(doc) {
     if (!this.userId) {
       throw new Meteor.Error('error.notLoggedIn.createCommunity',
@@ -23,16 +22,22 @@ export const create = new ValidatedMethod({
     }
 
     const communityId = Communities.insert(doc);
-    Meteor.call('memberships.insert', { userId: this.userId, communityId });
+
+    // The user creating the community, becomes the first 'admin' of it.
+    Meteor.users.update({ _id: this.userId }, { $push: { roles: { name: 'admin', communityId } } });
 
     return communityId;
   },
 });
 
-Meteor.methods({
-  'communities.update'(modifier, _id) {
-    check(_id, String);
-    check(modifier, Object);
-    Communities.update(_id, modifier);
+export const update = new ValidatedMethod({
+  name: 'communities.update',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    modifier: { type: Object, blackbox: true },
+  }).validator({ isModifier: true }),
+
+  run({ _id, modifier }) {
+    Communities.update({ _id }, modifier);
   },
 });
