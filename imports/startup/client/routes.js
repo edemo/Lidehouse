@@ -12,6 +12,10 @@ import '../../client/forms/communities-join-form.js';
 import '../../client/forms/users-show-form.js';
 import '../../client/forms/invite-form.js';
 
+import '../../ui_2/layouts/custom-body.js';
+import '../../ui_2/pages/board.js';
+import '../../ui_2/pages/styleguide.js';
+
 // Import to override accounts templates
 import '../../client/accounts/accounts-templates.js';
 
@@ -70,3 +74,17 @@ FlowRouter.notFound = {
     BlazeLayout.render('App_body', { main: 'App_notFound' });
   },
 };
+
+FlowRouter.route('/board', {
+  name: 'Board',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Board' });
+  },
+});
+
+FlowRouter.route('/styleguide', {
+  name: 'Styleguide',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Styleguide' });
+  },
+});

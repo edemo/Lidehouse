@@ -1,0 +1,117 @@
+<template name="Custom_body">
+  {{#HammerTouchArea gestureMap=templateGestures}}
+    <div id="container" class="{{menuOpen}} {{cordova}}">
+
+      <!-- mobile topmenu -->
+      <nav>
+        <div class="nav-group">
+          <a href="#" class="js-menu nav-item">
+            <span class="icon-topic-unordered"></span>
+            <img class="your-logo" src="/favicon.png" alt="logo" width="40"/>
+          </a>
+          <ul class="nav">
+            <li class="drop">Ház 3
+              <ul>
+                <li><a href="">Ház 1</a></li>
+                <li><a href="">Ház 2</a></li>
+                <li><a href="">Ház 3</a></li>
+                <li><a href="">Ház 4</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav">
+            <li class="drop">Albetét 3
+              <ul>
+                <li><a href="">Albetét 1</a></li>
+                <li><a href="">Albetét 2</a></li>
+                <li><a href="">Albetét 3</a></li>
+                <li><a href="">Albetét 4</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="topmenu-right">
+          <div class="language-toggle">
+            {{#each language in languages}}
+              {{#if isActiveLanguage language}}
+                <span class="active">{{language}}</span>
+              {{else}}
+                <a href="#" class="js-toggle-language">{{language}}</a>
+              {{/if}}
+            {{/each}}
+          </div>
+
+          {{#if currentUser}}
+            <ul class="nav">
+              <li class="drop profile-drop">K. Adrienn
+                <img src="http://pannako.hu/wp-content/uploads/avatar-8.png" alt="" width="35"/>
+                <ul>
+                  <li><a href="">Profil</a></li>
+                  <li><a class="js-logout" href="">{{_ 'layouts.appBody.logout'}}</a></li>
+                </ul>
+              </li>
+            </ul>
+          {{else}}
+            <div class="btns-group top-sign-in">
+              <a href="{{pathFor 'signin'}}" class="btn-secondary">
+                {{_ 'layouts.appBody.login'}} /
+              </a>
+              <a href="{{pathFor 'join'}}" class="btn-secondary">
+                {{_ 'layouts.appBody.join'}}
+              </a>
+            </div>
+          {{/if}}
+        </div>
+      </nav>
+
+      <!-- {{> Side_panel}} -->
+      <!-- Side panel -->
+      <section id="menu">
+        <div class="list-menu">
+          <ul>
+            <li class="list-item"><a href="{{pathFor 'Board'}}"><img src="/icon/si-glyph-house.svg"/> Főoldal</a></li>
+            <li class="list-item"><a><img src="/icon/si-glyph-mail-box.svg"/>Üzenetek</a></li>
+            <li class="list-item"><a><img src="/icon/si-glyph-bolt.svg"/>Szavazások</a></li>
+            <li class="list-item"><a><img src="/icon/si-glyph-hammer-and-wrench.svg"/>Hibabejelentés</a></li>
+            <li class="list-item"><a><img src="/icon/si-glyph-key.svg"/>Albetétek</a></li>
+            <li class="list-item"><a><img src="/icon/si-glyph-book-4.svg"/>Pénzügyek</a></li>
+            <li class="list-item"><a><img src="/icon/si-glyph-paper-clip.svg"/>Dokumentumok</a></li>
+          </ul>
+          <a href="{{pathFor 'Styleguide'}}" class="list-item" style="position: absolute; bottom: 0; width: 100%;">
+            <img src="/icon/si-glyph-bolt.svg"/>
+            Styleguide (dev)
+          </a>
+        </div>
+      </section>
+
+      {{#unless connected}}
+        <div class="notifications">
+          <div class="notification">
+            <span class="icon-sync"></span>
+            <div class="meta">
+              <div class="title-notification">
+                {{_ 'layouts.appBody.tryingToConnect'}}
+              </div>
+              <div class="description">
+                {{_ 'layouts.appBody.connectionIssue'}}
+              </div>
+            </div>
+          </div>
+        </div>
+      {{/unless}}
+
+      <div class="content-overlay"></div>
+
+      <div id="content-container">
+
+        {{#momentum plugin="fade"}}
+          {{#if Template.subscriptionsReady}}
+            {{> Template.dynamic template=main}}
+          {{else}}
+            {{> App_loading}}
+          {{/if}}
+        {{/momentum}}
+      </div>
+    </div>
+  {{/HammerTouchArea}}
+</template>
