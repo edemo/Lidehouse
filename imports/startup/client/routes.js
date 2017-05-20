@@ -50,14 +50,14 @@ FlowRouter.route('/topic/:_tid', {
 FlowRouter.route('/join-community', {
   name: 'Communities.join',
   action() {
-    BlazeLayout.render('App_body', { main: 'Communities_join_form' });
+    BlazeLayout.render('Custom_body', { main: 'Communities_join_form' });
   },
 });
 
 FlowRouter.route('/create-community', {
   name: 'Communities.create',
   action() {
-    BlazeLayout.render('App_body', { main: 'Communities_create_form' });
+    BlazeLayout.render('Custom_body', { main: 'Communities_create_form' });
   },
 });
 
@@ -71,7 +71,7 @@ FlowRouter.route('/user/:_id', {
 // the App_notFound template is used for unknown routes and missing topics
 FlowRouter.notFound = {
   action() {
-    BlazeLayout.render('App_body', { main: 'App_notFound' });
+    BlazeLayout.render('Custom_body', { main: 'App_notFound' });
   },
 };
 

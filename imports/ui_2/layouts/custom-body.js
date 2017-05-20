@@ -6,13 +6,18 @@ import { ReactiveDict } from 'meteor/reactive-dict';
 import { Template } from 'meteor/templating';
 import { ActiveRoute } from 'meteor/zimme:active-route';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 
-import '../../ui/components/loading.js';
-import '../../ui/components/side-panel.js';
+import '/imports/api/users/users.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+
+import '/imports//ui/components/loading.js';
+import '/imports/ui/components/side-panel.js';
 import './custom-body.html';
 
 const CONNECTION_ISSUE_TIMEOUT = 5000;
@@ -40,6 +45,18 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   });
   T9n.setLanguage('hu');
   TAPi18n.setLanguage('hu');
+
+  // We run this in autorun, so when a new User logs in, the subscription changes
+  this.autorun(() => {
+    this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
+  });
+  // We run this in autorun, so when User switches his community, the subscription changes
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    if (communityId) {
+      this.subscribe('memberships.inCommunity', { communityId });
+    }
+  });
 });
 
 Template.Custom_body.helpers({
@@ -70,6 +87,34 @@ Template.Custom_body.helpers({
     'swiperight .cordova'(event, instance) {
       instance.state.set('menuOpen', true);
     },
+  },
+  communities() {
+    if (!Meteor.user()) { return []; }
+    return Meteor.user().communities();
+  },
+  activeCommunity() {
+    let activeCommunity = Session.get('activeCommunity');
+    if (!activeCommunity && Meteor.user()) {
+      activeCommunity = Meteor.user().communities().fetch()[0];
+      Session.set('activeCommunity', activeCommunity);
+    }
+    return activeCommunity;
+  },
+  memberships() {
+    const activeCommunity = Session.get('activeCommunity');
+    if (!activeCommunity) { return []; }
+    return Memberships.find({ communityId: activeCommunity._id });
+  },
+  activeMembership() {
+    let activeMembership = Session.get('activeMembership');
+    if (!activeMembership) {
+      const activeCommunity = Session.get('activeCommunity');
+      if (activeCommunity) {
+        activeMembership = Memberships.findOne({ communityId: activeCommunity._id });
+        Session.set('activeMembership', activeMembership);
+      }
+    }
+    return activeMembership;
   },
 });
 

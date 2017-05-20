@@ -9,33 +9,47 @@
             <span class="icon-topic-unordered"></span>
             <img class="your-logo" src="/images/logo-tv.png" alt="logo" height="30"/>
           </a>
+          {{#if activeCommunity}}
+            <ul class="nav">
+              <li class="drop">
+                <img class="" src="/images/house.png" alt="house" height="20"/>
+                <ul>
+                  <li><a href="">Ház adatai</a></li>
+                  <li><a href="">Albetétek</a></li>
+                  <li><a href="">Szomszédok</a></li>
+                </ul>
+              </li>
+            </ul>
+          {{/if}}
           <ul class="nav">
             <li class="drop">
-              <img class="" src="/images/house.png" alt="house" height="20"/>
+              {{#if activeCommunity}}
+                {{activeCommunity.name}}
+              {{else}}
+                Nincs aktív ház
+              {{/if}}
               <ul>
-                <li><a href="">Ház adatai</a></li>
-                <li><a href="">Albetétek</a></li>
-                <li><a href="">Szomszédok</a></li>
+                {{#each communities}}
+                  <li><a href="">{{name}}</a></li>
+                {{/each}}
+                {{#if currentUser}}
+                  <li><a href="{{pathFor 'Communities.join'}}"> ... {{_ 'layouts.appBody.joinCommunity'}} </a></li>
+                  <li><a href="{{pathFor 'Communities.create'}}"> ... {{_ 'layouts.appBody.createCommunity'}} </a></li>
+                {{/if}}
               </ul>
             </li>
           </ul>
           <ul class="nav">
-            <li class="drop">Ház 3
+            <li class="drop">
+              {{#if activeMembership}}
+                {{activeMembership.name}}
+              {{else}}
+                Nincs aktív albetét
+              {{/if}}
               <ul>
-                <li><a href="">Ház 1</a></li>
-                <li><a href="">Ház 2</a></li>
-                <li><a href="">Ház 3</a></li>
-                <li><a href="">Ház 4</a></li>
-              </ul>
-            </li>
-          </ul>
-          <ul class="nav">
-            <li class="drop">Albetét 3
-              <ul>
-                <li><a href="">Albetét 1</a></li>
-                <li><a href="">Albetét 2</a></li>
-                <li><a href="">Albetét 3</a></li>
-                <li><a href="">Albetét 4</a></li>
+                {{#each memberships}}
+                  <li><a href="">{{name}}</a></li>
+                {{/each}}
               </ul>
             </li>
           </ul>
