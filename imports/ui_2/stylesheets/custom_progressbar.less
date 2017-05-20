@@ -1,0 +1,33 @@
+//progressbar
+.progressBar (@index) when (@index > -1){
+	.progressBar{
+		.progressLine[data-value="@{index}"]{
+			width:@index * 1%;
+		}
+	}
+	.progressBar (@index - 1);
+}
+.progressBar(0){};
+.progressBar (@progressbar);
+
+.progressBar{
+  height: 17px;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  background-color: lighten(@color_progress, 30%);
+  .progressLine{
+    align: center;
+    height:100%;
+    position:relative;
+    // background-color:@color_progress;
+		background-color: #8dc28a;
+    padding: 0px;
+    line-height: 1;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    font-size-adjust: 0.4;
+    letter-spacing: 1.5px;
+  }
+}

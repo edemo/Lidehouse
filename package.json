@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "autoprefixer": "^6.4.1",
-    "babel-runtime": "^6.18.0",
-    "faker": "^3.0.1"
+    "babel-runtime": "^6.23.0",
+    "faker": "^3.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
@@ -50,7 +50,10 @@
           "avoidQuotes": false
         }
       ],
-      "max-len": ["warn", 120],
+      "max-len": [
+        "warn",
+        120
+      ],
       "meteor/eventmap-params": [
         "error",
         {

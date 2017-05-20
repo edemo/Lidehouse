@@ -1,0 +1,218 @@
+<template name="Board">
+  <div class="page page-board">
+    <!-- right side -->
+    <div class="side-right">
+      <div class="chatbox faliujsag" style="min-height: 200px;">
+        <div class="faliujsag-title" style="border-bottom:1px solid rgb(209, 209, 209); padding: 7px 0;">
+          <!-- <img src="/icon/si-glyph-bolt.svg" width="17"> -->
+          Faliújság
+        </div>
+        <div class="faliujsag-item" style="padding: 4px 0;">
+          <p>
+            Lomtalanítás lesz 2017.05.01. 17:00-tól
+          </p>
+          <span>04.21. 19:26</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- left side -->
+    <div class="side-left">
+      <button class="accordion">Szavazások</button>
+      <div class="panel">
+
+        <div class="chatbox">
+          <div class="vote-title">
+            Legyen e biciklitartónk?
+            <div class="vote-date" data-tooltip="2017.05.27. 13:50">Lezárul: 3 nap 4 óra</div>
+          </div>
+          <div class="vote-description">
+            Azért lenne jó, mert jön a nyár és már most mindenki bringával mászkál és a halál se akarja a lakásból lecipelni vagy a tárolóból fel minden nap 3-szor vagy többször...
+          </div>
+          <div class="vote-body">
+            <div class="btns-group">
+              <a href="#modal-box--open" class="btn-secondary btn-yes">
+                Igen
+              </a>
+              <a href="#modal-box--open" class="btn-secondary btn-no">
+                Nem
+              </a>
+              <a href="#modal-box--open" class="btn-secondary">
+                Tartózkodom
+              </a>
+            </div>
+          </div>
+          <div class="vote-footer">
+            <span class="right-icon"><a href="#modal-box2--open">Papericon</a></span>
+            <a class="accordion-comment">1 komment</a>
+            <div class="panel panel-comment">
+              <!-- szavazás kommentek START -->
+              <div class="chat-comments">
+
+                <div class="add-comment" >
+                  <div class="chat-avatar">
+                    <img src="http://pannako.hu/wp-content/uploads/avatar-3.png" alt="avatar" align="center" width="35" height="35" />
+                  </div>
+                  <div class="">
+                    <textarea rows="" cols="5" placeholder="Szólj hozzá..." class="autoResize" style="overflow: hidden; word-wrap: break-word; height: 37px; width: 70%; padding: 0;"></textarea>
+                  </div>
+                </div>
+
+                <!-- Kommentenként -->
+                <div class="comment">
+                  <div class="chat-avatar">
+                    <img src="http://pannako.hu/wp-content/uploads/avatar-7.png" alt="avatar" align="center" width="35" height="35" />
+                  </div>
+                  <div class="chat-name">
+                    <!-- <span class="chat-dropdown" style="float: right;">X</span> -->
+                    <span class="chat-name-span"><a>Bakocsi Tímea (Név)</a></span>
+                    <span class="chat-date">3 perce (Mióta küldte)</span>
+                    <br>
+                    Ez az üzenet
+                  </div>
+                </div>
+
+              </div>
+              <!-- komment END -->
+            </div>
+          </div>
+        </div>
+
+        <div class="chatbox">
+          <div class="vote-title">
+            Legyen e biciklitartónk?
+            <span class="vote-date" data-tooltip="2017.05.27. 13:50">3 nap 2 óra</span>
+          </div>
+          <div class="vote-body">
+            <!-- a szavazás állása -->
+            <div class="progressBar" data-tooltip="eddig 10 -en szavaztak a 100-ból">
+              <div class="progressLine" data-value="62">62 %</div>
+            </div>
+            <!-- a "benyomódott" kiválasztott válasz -->
+            <div class="btns-group">
+              <a href="#modal-box--open" class="btn-secondary btn-yes btn-yes-chosen">
+                Igen
+              </a>
+              <a href="#modal-box--open" class="btn-secondary btn-no">
+                Nem
+              </a>
+              <a href="#modal-box--open" class="btn-secondary">
+                Tartózkodom
+              </a>
+            </div>
+
+            <div class="vote-footer">
+              <span style="float: right;"><a href="#">Hivatalos előterjesztés megtekintése</a></span>
+
+              <!-- ugyanaz a komment rendszer mint az előzőknél -->
+              <a class="accordion-comment">1 komment</a>
+              <div class="panel panel-comment">
+                <div class="chat-comments">
+
+                  <div class="add-comment" >
+                    <div class="chat-avatar">
+                      <img src="http://pannako.hu/wp-content/uploads/avatar-3.png" alt="avatar" align="center" width="35" height="35" />
+                    </div>
+                    <div class="">
+                      <textarea rows="" cols="5" placeholder="Szólj hozzá..." class="autoResize" style="overflow: hidden; word-wrap: break-word; height: 37px; width: 70%; padding: 0;"></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Kommentenként -->
+                  <div class="comment">
+                    <div class="chat-avatar">
+                      <img src="http://pannako.hu/wp-content/uploads/avatar-7.png" alt="avatar" align="center" width="35" height="35" />
+                    </div>
+                    <div class="chat-name">
+                      <span class="chat-name-span"><a>Bakocsi Tímea (Név)</a></span>
+                      <span class="chat-date">3 perce (Mióta küldte)</span>
+                      <br>
+                      Ez az üzenet
+                    </div>
+                  </div>
+
+                </div>
+                <!-- komment END -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 2nd section -->
+      <button class="accordion">Közösség</button>
+      <div class="panel">
+        <div class="chatbox">
+          <div class="chat-header">
+            <div class="chat-avatar">
+              <img src="http://pannako.hu/wp-content/uploads/avatar-8.png" alt="avatar" align="center" width="50" height="50" />
+            </div>
+            <div class="chat-name">
+              <span class="chat-dropdown"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
+              <span class="chat-name-span"><a>Balta Péter</a></span>
+              <br>
+              <span class="chat-date">16 órája <i class="fa fa-cog" area-hidden="true"></i></span>
+            </div>
+          </div>
+          <div class="chat-body">
+            Kiraktam egy májusfát, rakjátok fel a díszeiteket!
+          </div>
+          <div class="chat-footer">
+            <a>3 komment</a>
+            <!--insert here az előző kommentfelépítés alapján: accordion, panel .... -->
+          </div>
+        </div>
+
+        <div class="chatbox">
+          <div class="chat-header">
+            <div class="chat-avatar">
+              <img src="http://pannako.hu/wp-content/uploads/avatar-6.png" alt="avatar" align="center" width="50" height="50" />
+            </div>
+            <div class="chat-name">
+              <span class="chat-dropdown"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
+              <span class="chat-name-span"><a>Bakocsi Tímea</a></span>
+              <br>
+              <span class="chat-date">21 órája <i class="fa fa-cog" area-hidden="true"></i></span>
+            </div>
+          </div>
+          <div class="chat-body">
+            Elköltözök, viszlát mindenki!
+          </div>
+          <div class="chat-footer">
+            <a>1 komment</a>
+            <!--insert comments here.... -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ADA MODAL content-->
+  <div id="modal-box--open" class="modal-box">
+    <a href="#modal-box--close" class="modal-box__overlay"></a>
+    <div class="modal-box__content">
+      <a href="#modal-box--close" class="modal-box--close">X Mégsem szavazok</a>
+      <h3>Kérem jelentkezzen be ADA felhasználójával!</h3>
+      <a>Átirányítás az ADA felületére ...</a>
+      <p>
+        loginol ADA-n, majd késünk megerősítést hogy biztosan arra szavaz e. ha nem akkor vagy bezárja a modalt és rányom a másikra, vagy a modalon belül felajánljuk neki a többi lehetőséget.
+      </p>
+    </div>
+  </div>
+
+  <!-- szavazás előterjesztés Modal content-->
+  <div id="modal-box2--open" class="modal-box">
+    <a href="#modal-box2--close" class="modal-box__overlay"></a>
+    <div class="modal-box__content">
+      <a href="#modal-box2--close" class="modal-box--close">X</a>
+      <h3>Legyen biciklitárolónk?</h3>
+      <p>Lírás ...........</p>
+      <p>
+        Meh
+      </p>
+    </div>
+  </div>
+
+</template>
