@@ -2,27 +2,27 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 
 // Import to load these templates
-import '/imports/ui//layouts/app-body.js';
-import '/imports/ui//pages/root-redirector.js';
-import '/imports/ui//pages/community-main-page.js';
-import '/imports/ui//pages/topics-show-page.js';
-import '/imports/ui//pages/app-not-found.js';
-import '/imports/ui//forms/communities-create-form.js';
-import '/imports/ui//forms/communities-join-form.js';
-import '/imports/ui//forms/users-show-form.js';
-import '/imports/ui//forms/invite-form.js';
+import '/imports/ui/layouts/app-body.js';
+import '/imports/ui/pages/root-redirector.js';
+import '/imports/ui/pages/community-main-page.js';
+import '/imports/ui/pages/topics-show-page.js';
+import '/imports/ui/pages/app-not-found.js';
+import '/imports/ui/forms/communities-create-form.js';
+import '/imports/ui/forms/communities-join-form.js';
+import '/imports/ui/forms/users-show-form.js';
+import '/imports/ui/forms/invite-form.js';
 
-import '../../ui_2/layouts/custom-body.js';
-import '../../ui_2/pages/board.js';
-import '../../ui_2/pages/styleguide.js';
+import '/imports/ui_2/layouts/custom-body.js';
+import '/imports/ui_2/pages/board.js';
+import '/imports/ui_2/pages/styleguide.js';
 
 // Import to override accounts templates
-import '/imports/ui//accounts/accounts-templates.js';
+import '/imports/ui/accounts/accounts-templates.js';
 
 FlowRouter.route('/', {
   name: 'App.home',
   action() {
-    BlazeLayout.render('App_body', { main: 'app_rootRedirector' });
+    BlazeLayout.render('Custom_body', { main: 'app_rootRedirector' });
   },
 });
 
@@ -64,7 +64,7 @@ FlowRouter.route('/create-community', {
 FlowRouter.route('/user/:_id', {
   name: 'Users.show',
   action() {
-    BlazeLayout.render('App_body', { main: 'Users_show_form' });
+    BlazeLayout.render('Custom_body', { main: 'Users_show_form' });
   },
 });
 
