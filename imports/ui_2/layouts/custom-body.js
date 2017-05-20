@@ -132,7 +132,19 @@ Template.Custom_body.events({
     instance.state.set('menuOpen', false);
   },
   'click .js-logout'() {
-    Meteor.logout();
+    Meteor.logout(function onLogout(err) {
+      if (err) {
+//        Alerts.add('Error logging out: '+err); // using mrt:bootstrap-alerts
+      } else {
+        // Session cleanup
+        Object.keys(Session.keys).forEach(function unset(key) {
+          Session.set(key, undefined);
+        });
+        Session.keys = {};
+        // Redirect to the home page
+        FlowRouter.go('/');
+      }
+    });
   },
   'click .js-toggle-language'(event) {
     const language = $(event.target).html().trim();
