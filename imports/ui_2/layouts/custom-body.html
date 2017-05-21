@@ -30,7 +30,7 @@
               {{/if}}
               <ul>
                 {{#each communities}}
-                  <li><a href="">{{name}}</a></li>
+                  <li><a href="#" class="js-switch-community">{{name}}</a></li>
                 {{/each}}
                 {{#if currentUser}}
                   <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'layouts.appBody.joinCommunity'}} </a></li>
@@ -48,7 +48,7 @@
               {{/if}}
               <ul>
                 {{#each memberships}}
-                  <li><a href="">{{name}}</a></li>
+                  <li><a href="#" class="js-switch-membership">{{name}}</a></li>
                 {{/each}}
               </ul>
             </li>

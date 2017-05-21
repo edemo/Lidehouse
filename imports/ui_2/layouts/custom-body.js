@@ -131,6 +131,17 @@ Template.Custom_body.events({
   'click #menu a'(event, instance) {
     instance.state.set('menuOpen', false);
   },
+
+  'click .js-switch-community'() {
+    const community = Communities.findOne(this._id);
+    Session.set('activeCommunity', community);
+  },
+
+  'click .js-switch-membership'() {
+    const membership = Memberships.findOne(this._id);
+    Session.set('activeMembership', membership);
+  },
+
   'click .js-logout'() {
     Meteor.logout(function onLogout(err) {
       if (err) {
