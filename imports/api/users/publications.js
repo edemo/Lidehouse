@@ -12,3 +12,7 @@ Meteor.publish('user.byId', function userById(params) {
 
   return Meteor.users.find({ _id: userId });
 });
+
+Meteor.publish(null, function self() {
+  return Meteor.users.find({ _id: this.userId });
+});

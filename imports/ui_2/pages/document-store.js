@@ -10,8 +10,10 @@ import './document-store.html';
 
 Template.Document_store.onCreated(function () {
   this.autorun(() => {
-    const communityId = Session.get('activeCommunity')._id;
-    this.subscribe('shareddocs.inCommunity', communityId);
+    const activeCommunity = Session.get('activeCommunity');
+    if (activeCommunity) {
+      this.subscribe('shareddocs.inCommunity', activeCommunity._id);
+    }
   });
 });
 
@@ -20,8 +22,10 @@ Template.Document_store.helpers({
     return Math.round(this.progress * 100);
   },
   shareddocs() {
-    const communityId = Session.get('activeCommunity')._id;
-    return Shareddocs.find({ communityId });
+    const activeCommunity = Session.get('activeCommunity');
+    if (activeCommunity) {
+      return Shareddocs.find({ communityId: activeCommunity._id });
+    }
   },
 });
 

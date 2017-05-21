@@ -36,7 +36,7 @@ Template.Side_panel.helpers({
     return instance.state.get('userMenuOpen');
   },
   topics() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = Session.get('activeCommunity')._id;
     return Topics.find({ communityId,
       $or: [
       { userId: { $exists: false } },
@@ -57,10 +57,10 @@ Template.Side_panel.helpers({
     return Meteor.user().communities();
   },
   activeCommunityId() {
-    return Session.get('activeCommunityId');
+    return Session.get('activeCommunity')._id;
   },
   memberships() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = Session.get('activeCommunity')._id;
     return Memberships.find({ communityId });
   },
   languages() {
@@ -93,7 +93,7 @@ Template.Side_panel.events({
   },
 
   'click .js-new-topic'() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = Session.get('activeCommunity')._id;
     const topicId = insertTopic.call({ communityId, language: TAPi18n.getLanguage() }, (err) => {
       if (err) {
         // At this point, we have already redirected to the new topic page, but
@@ -126,6 +126,6 @@ Template.Community.helpers({
 
 Template.Community.events({
   'click a'(event, instance) {
-    Session.set('activeCommunityId', instance.data.community._id);
+    Session.set('activeCommunity', instance.data.community);
   },
 });

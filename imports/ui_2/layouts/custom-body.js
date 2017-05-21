@@ -52,9 +52,9 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   });
   // We run this in autorun, so when User switches his community, the subscription changes
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
-    if (communityId) {
-      this.subscribe('memberships.inCommunity', { communityId });
+    const activeCommunity = Session.get('activeCommunity');
+    if (activeCommunity) {
+      this.subscribe('memberships.inCommunity', { communityId: activeCommunity._id });
     }
   });
 });

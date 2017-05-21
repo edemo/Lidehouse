@@ -14,7 +14,7 @@ Template.Community_data_page.onCreated(function () {
 
 Template.Community_data_page.helpers({
   community() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = Session.get('activeCommunity')._id;
     return Communities.findOne({ _id: communityId });
   },
   communities() {

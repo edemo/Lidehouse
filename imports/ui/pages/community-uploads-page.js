@@ -9,7 +9,7 @@ import './community-uploads-page.html';
 
 Template.Community_uploads_page.onCreated(function () {
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = Session.get('activeCommunity')._id;
     this.subscribe('shareddocs.inCommunity', communityId);
   });
 });
@@ -19,7 +19,7 @@ Template.Community_uploads_page.helpers({
     return Math.round(this.progress * 100);
   },
   shareddocs() {
-    const communityId = Session.get('activeCommunityId');
+    const communityId = Session.get('activeCommunity')._id;
     return Shareddocs.find({ communityId });
   },
 });
@@ -33,7 +33,7 @@ Template.Community_uploads_page.events({
         name: file.name,
         size: file.size,
         type: file.type,
-        communityId: Session.get('activeCommunityId'),
+        communityId: Session.get('activeCommunity')._id,
       };
 
       // Create a new Uploader for this file

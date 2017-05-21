@@ -27,10 +27,17 @@ FlowRouter.route('/', {
   },
 });
 
-FlowRouter.route('/community/:_cid', {
+FlowRouter.route('/deprecated_community/:_cid', {
   name: 'Community.main',
   action() {
     BlazeLayout.render('App_body', { main: 'Community_main_page' });
+  },
+});
+
+FlowRouter.route('/community/:_cid', {
+  name: 'Communities.show',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Community_data_page' });
   },
 });
 

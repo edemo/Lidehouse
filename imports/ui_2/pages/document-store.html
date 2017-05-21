@@ -1,12 +1,12 @@
 <template name="Document_store">
-  <h1 style="margin-top:100px;">Dokumentumtár</h1>
-  <div style="margin-left:50px;">
+  <div class="content-scrollable wrapper-form page-content autoform">
+    <h1 class="page-title">Dokumentumtár</h1>
     {{#each shareddocs}}
       <div>
         {{#if uploading}}
+          <span>{{completed}}%</span>
           <img src="/images/spinner.gif" style="{ width: 1em; height: 1em; }">
           <span>{{name}}</span>
-          <span>{{completed}}%</span>
         {{else}}
           <img src="/images/disk.png" style="{ width: 1em; height: 1em; }">
           <a target="_blank" href="{{url}}" title="{{name}}">{{name}}</a>
@@ -18,8 +18,8 @@
         {{/if}}
       </div>
     {{/each}}
+    {{#if userHasPermission "shareddocs.upload"}}
+      <button type="button" name="upload"> + {{_ 'pages.community.upload'}}</button>
+    {{/if}}
   </div>
-  {{#if userHasPermission "shareddocs.upload"}}
-    <button type="button" name="upload">{{_ 'pages.community.upload'}}</button>
-  {{/if}}
 </template>

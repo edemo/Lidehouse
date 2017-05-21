@@ -14,7 +14,7 @@
               <li class="drop">
                 <img class="" src="/images/house.png" alt="house" height="20"/>
                 <ul>
-                  <li><a href="">Ház adatai</a></li>
+                  <li><a href="{{pathFor 'Communities.show' _cid=activeCommunity._id}}">Ház adatai</a></li>
                   <li><a href="">Albetétek</a></li>
                   <li><a href="">Szomszédok</a></li>
                 </ul>
@@ -33,8 +33,8 @@
                   <li><a href="">{{name}}</a></li>
                 {{/each}}
                 {{#if currentUser}}
-                  <li><a href="{{pathFor 'Communities.join'}}"> ... {{_ 'layouts.appBody.joinCommunity'}} </a></li>
-                  <li><a href="{{pathFor 'Communities.create'}}"> ... {{_ 'layouts.appBody.createCommunity'}} </a></li>
+                  <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'layouts.appBody.joinCommunity'}} </a></li>
+                  <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'layouts.appBody.createCommunity'}} </a></li>
                 {{/if}}
               </ul>
             </li>
