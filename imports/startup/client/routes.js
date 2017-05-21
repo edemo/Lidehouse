@@ -14,6 +14,7 @@ import '/imports/ui/forms/invite-form.js';
 
 import '/imports/ui_2/layouts/custom-body.js';
 import '/imports/ui_2/pages/board.js';
+import '/imports/ui_2/pages/document-store.js';
 import '/imports/ui_2/pages/styleguide.js';
 
 // Import to override accounts templates
@@ -79,6 +80,13 @@ FlowRouter.route('/board', {
   name: 'Board',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Board' });
+  },
+});
+
+FlowRouter.route('/documents', {
+  name: 'DocumentStore',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Document_store' });
   },
 });
 
