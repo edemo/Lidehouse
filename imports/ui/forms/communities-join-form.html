@@ -1,10 +1,6 @@
 <template name="Communities_join_form">
-  <!-- COMMUNITIES -->
-  <div class="listing">
-    <h1>
-      {{_ 'communities.communities'}}
-    </h1>
-
+  <div class="content-scrollable wrapper-form page-content autoform">
+    <h1 class="page-title">{{_ 'communities.communities'}}</h1>
     {{#each community in communities}}
       {{> Community_listed community=community}}
     {{/each}}

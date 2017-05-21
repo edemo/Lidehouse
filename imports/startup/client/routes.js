@@ -53,11 +53,11 @@ FlowRouter.route('/memberships', {
 FlowRouter.route('/invite', {
   name: 'Invite',
   action() {
-    BlazeLayout.render('App_body', { main: 'Invite_form' });
+    BlazeLayout.render('Custom_body', { main: 'Invite_form' });
   },
 });
 
-FlowRouter.route('/topic/:_tid', {
+FlowRouter.route('/deprecated_topic/:_tid', {
   name: 'Topics.show',
   action() {
     BlazeLayout.render('App_body', { main: 'Topics_show_page' });
