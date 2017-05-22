@@ -4,7 +4,8 @@
     <table class="table table-bordered table-condensed">
       <thead>
         <tr>
-          <td>{{_ 'share.name'}}</td>
+          <td>{{_ 'share.serial'}}</td>
+          <td>{{_ 'share.location'}}</td>
           <td>{{_ 'share.type'}}</td>
           <td>{{_ 'share.fraction'}}</td>
           <td>{{_ 'user.username'}}</td>
@@ -14,9 +15,10 @@
       <tbody>
         {{#each members}}
           <tr class="table-row {{#if isSelected}}selected{{/if}}">
-            <td>{{share.name}}</td>
-            <td>{{share.type}}</td>
-            <td>{{share.ownership.units}}/{{share.ownership.total}}</td>
+            <td>{{serial}}</td>
+            <td>{{location}}</td>
+            <td>{{type}}</td>
+            <td>{{displayShare share totalshares}}</td>
             <td>{{username}}</td>
             <td>
               {{#if userId}}

@@ -7,7 +7,6 @@ import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { ShareSchema } from '/imports/api/memberships/share.js';
 import { Communities } from '/imports/api/communities/communities.js';
 
 export const Memberships = new Mongo.Collection('memberships');
@@ -30,14 +29,44 @@ Memberships.helpers({
     debugAssert(community);
     return community;
   },
+  totalshares() {
+    return this.community().totalshares;
+  },
+  location() {
+    if (!this.number) return '';
+    return `${this.floor}/${this.number}`;
+  },
+  name() {
+    if (!this.type) return '';
+    const letter = this.type.substring(0, 1);
+    return `${letter} ${this.floor}/${this.number}`;
+  },
 });
 
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-//  shares: { type: Array, optional: true },
-//  'shares.$': { type: ShareSchema },
-  share: { type: ShareSchema, optional: true },
+  serial: { type: SimpleSchema.Integer, optional: true },
+  share: { type: SimpleSchema.Integer, optional: true },
+  /*  name: { type: String,
+      autoValue() {
+        if (this.isInsert) {
+          const letter = this.field('type').value.substring(0,1);
+          const floor = this.field('floor').value;
+          const number = this.field('number').value;
+          return letter + '-' + floor + '/' + number;
+        }
+        return undefined; // means leave whats there alone for Updates, Upserts
+      },
+    },
+  */
+  // TODO: move these into the House package
+  floor: { type: String, optional: true },
+  number: { type: String, optional: true },
+  type: { type: String,
+    allowedValues: ['Apartment', 'Parking', 'Storage'],
+    optional: true,
+  },
 });
 
 Memberships.attachSchema(Memberships.schema);
@@ -51,4 +80,5 @@ Memberships.deny({
 
 Factory.define('membership', Memberships, {
   communityId: () => Factory.get('community'),
+  userId: () => Factory.get('user'),
 });

@@ -33,6 +33,10 @@ Template.Community_memberships_page.helpers({
   hasSelection() {
     return !!Session.get('selectedMemberId');
   },
+  displayShare(share, totalshares) {
+    if (!share) return '';
+    return `${share}/${totalshares}`;
+  },
 });
 
 Template.Community_memberships_page.events({

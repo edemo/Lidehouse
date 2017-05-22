@@ -6,9 +6,9 @@ import { Communities } from '../../api/communities/communities.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
-  let communityId;
+  let demoCommunityId;
   if (Communities.find().count() === 0) {
-    communityId = Communities.insert({
+    demoCommunityId = Communities.insert({
       name: 'Teszt ház',
       lot: '1234566/1234',
       address: {
@@ -19,7 +19,27 @@ Meteor.startup(() => {
       },
     });
   }
-
+/*
+  if (!Meteor.users.findOne({ username: 'demo_user' })) {
+    Meteor.users.insert([{
+      username: 'demo_user',
+      emails: [{ address: 'user@demo.com', verified: true }],
+    }, {
+      username: 'bajorandor',
+      emails: [{ address: 'bajor@demo.com', verified: true }],
+      profile: { lastName: 'Bajor', firstName: 'Andor' },
+      roles: [{ name: 'admin', communityId: demoCommunityId }],
+    }, {
+      username: 'bakocsitimea',
+      emails: [{ address: 'bakocsi@demo.com', verified: true }],
+      profile: { lastName: 'Bakocsi', firstName: 'Tímea' },
+    }, {
+      username: 'baltapeter',
+      emails: [{ address: 'balta@demo.com', verified: true }],
+      profile: { lastName: 'Balta', firstName: 'Péter' },
+    }]);
+  }
+*/
   if (Topics.find().count() === 0) {
     const data = [
       {
@@ -53,7 +73,7 @@ Meteor.startup(() => {
 
     data.forEach((topic) => {
       const topicId = Topics.insert({
-        communityId,
+        communityId: demoCommunityId,
         name: topic.name,
         unreadCount: topic.items.length,
       });
