@@ -3,6 +3,7 @@ import { Topics } from '../../api/topics/topics.js';
 import { Comments } from '../../api/comments/comments.js';
 
 import { Communities } from '../../api/communities/communities.js';
+import { Memberships } from '../../api/memberships/memberships.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
@@ -19,27 +20,72 @@ Meteor.startup(() => {
       },
     });
   }
-/*
-  if (!Meteor.users.findOne({ username: 'demo_user' })) {
-    Meteor.users.insert([{
-      username: 'demo_user',
-      emails: [{ address: 'user@demo.com', verified: true }],
-    }, {
-      username: 'bajorandor',
-      emails: [{ address: 'bajor@demo.com', verified: true }],
+
+  let dummyUser1, dummyUser2, dummyUser3, dummyManager;
+  if (!Meteor.users.findOne('demo')) {
+    Meteor.users.insert({
+      _id: 'demo',
+      emails: [{ address: 'demouser@demo.com', verified: true }],
+    });
+    dummyUser1 = Meteor.users.insert({
+      emails: [{ address: 'bajorandor@demo.com', verified: true }],
       profile: { lastName: 'Bajor', firstName: 'Andor' },
       roles: [{ name: 'admin', communityId: demoCommunityId }],
-    }, {
-      username: 'bakocsitimea',
-      emails: [{ address: 'bakocsi@demo.com', verified: true }],
+    });
+    dummyUser2 = Meteor.users.insert({
+      emails: [{ address: 'bakocsitimea@demo.com', verified: true }],
       profile: { lastName: 'Bakocsi', firstName: 'Tímea' },
-    }, {
-      username: 'baltapeter',
-      emails: [{ address: 'balta@demo.com', verified: true }],
+      roles: [{ name: 'member', communityId: demoCommunityId }],
+    });
+    dummyUser3 = Meteor.users.insert({
+      emails: [{ address: 'baltapeter@demo.com', verified: true }],
       profile: { lastName: 'Balta', firstName: 'Péter' },
-    }]);
+      roles: [{ name: 'member', communityId: demoCommunityId }],
+    });
+    dummyManager = Meteor.users.insert({
+      emails: [{ address: 'baltazarimre@demo.com', verified: true }],
+      profile: { lastName: 'Baltazár', firstName: 'Imre' },
+      roles: [{ name: 'manager', communityId: demoCommunityId }],
+    });
+
+    Memberships.insert({
+      communityId: demoCommunityId,
+      userId: dummyUser1,
+      serial: 1,
+      share: 85,
+      floor: 'I',
+      number: '14',
+      type: 'Apartment',
+    });
+    Memberships.insert({
+      communityId: demoCommunityId,
+      userId: dummyUser2,
+      serial: 2,
+      share: 64,
+      floor: 'II',
+      number: '25',
+      type: 'Apartment',
+    });
+    Memberships.insert({
+      communityId: demoCommunityId,
+      userId: dummyUser3,
+      serial: 3,
+      share: 112,
+      floor: 'III',
+      number: '36',
+      type: 'Apartment',
+    });
+    Memberships.insert({
+      communityId: demoCommunityId,
+      userId: dummyUser3,
+      serial: 101,
+      share: 5,
+      floor: '-2',
+      number: 'P209',
+      type: 'Parking',
+    });
   }
-*/
+
   if (Topics.find().count() === 0) {
     const data = [
       {

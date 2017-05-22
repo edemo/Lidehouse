@@ -19,11 +19,6 @@ Memberships.helpers({
     const user = Meteor.users.findOne(this.userId);
     return user;
   },
-  username() {
-    if (!this.userId) return '';
-    if (!this.user()) return 'unknown';
-    return this.user().username;
-  },
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);

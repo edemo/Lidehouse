@@ -49,21 +49,27 @@ Meteor.users.helpers({
 //    console.log(this.username, ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
     return result;
   },
+  safeUsername() {
+    // If we have a username in db return that, otherwise generate one from her email address
+    if (this.username) return this.username;
+    const email = this.emails[0].address;
+    return email.substring(0, email.indexOf('@'));
+  },
 });
 
 Meteor.users.schema = new SimpleSchema({
   // For accounts-password, either emails or username is required, but not both.
   // It is OK to make this optional because the accounts-password package does its own validation.
   // Third-party login packages may not require either. Adjust this as necessary for your usage
-  username: { type: String,
-    autoValue() {
+  username: { type: String, optional: true },
+/*    autoValue() {
       if (this.isInsert) {
         const email = this.field('emails.0.address').value;
         return email.substring(0, email.indexOf('@'));
       }
       return undefined; // means leave whats there alone for Updates, Upserts
     },
-  },
+  },*/
   emails: { type: Array },
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },

@@ -37,6 +37,10 @@ Template.Community_memberships_page.helpers({
     if (!share) return '';
     return `${share}/${totalshares}`;
   },
+  displayUsername(membership) {
+    if (!membership.hasUser()) return '';
+    return membership.user().safeUsername();
+  },
 });
 
 Template.Community_memberships_page.events({

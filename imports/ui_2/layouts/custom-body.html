@@ -67,7 +67,7 @@
 
           {{#if currentUser}}
             <ul class="nav">
-              <li class="drop profile-drop">{{currentUser.username}}
+              <li class="drop profile-drop">{{currentUser.safeUsername}}
                 <img src="http://pannako.hu/wp-content/uploads/avatar-8.png" alt="" width="35"/>
                 <ul>
                   <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}">Profil</a></li>
