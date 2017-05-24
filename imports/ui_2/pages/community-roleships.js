@@ -7,21 +7,21 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { displayError } from '/imports/ui/lib/errors.js';
 
-import './community-memberships.html';
+import './community-roleships.html';
 
-Template.Community_memberships_page.onCreated(function () {
+Template.Community_roleships_page.onCreated(function () {
 });
 
-Template.Community_memberships_page.helpers({
+Template.Community_roleships_page.helpers({
   collection() {
     return Memberships;
   },
   schema() {
-    return Memberships.schemaOwnership;
+    return Memberships.schemaRole;
   },
-  owners() {
+  roleships() {
     const communityId = Session.get('activeCommunity')._id;
-    return Memberships.find({ communityId, role: 'owner' });
+    return Memberships.find({ communityId });
   },
   selectedDoc() {
     return Memberships.findOne(Session.get('selectedMemberId'));
@@ -36,29 +36,28 @@ Template.Community_memberships_page.helpers({
   hasSelection() {
     return !!Session.get('selectedMemberId');
   },
-  displayShare(share, totalshares) {
-    if (!share) return '';
-    return `${share}/${totalshares}`;
-  },
   displayUsername(membership) {
     if (!membership.hasUser()) return '';
-    return membership.user().safeUsername();
+    return membership.user().fullName();
+  },
+  displayRole(roleship) {
+    return roleship.role;
   },
 });
 
-Template.Community_memberships_page.events({
+Template.Community_roleships_page.events({
   'click .table-row'() {
     Session.set('selectedMemberId', this._id);
   },
   'click .js-new'(event, instance) {
     const communityId = Session.get('activeCommunity')._id;
-    Meteor.call('memberships.insert', { communityId, role: 'owner' }, function(err, res) {
+    Meteor.call('memberships.insert', { communityId, role: 'guest' }, function(err, res) {
       if (err) {
         displayError(err);
         return;
       }
-      const membershipId = res;
-      Session.set('selectedMemberId', membershipId);
+      const roleshipId = res;
+      Session.set('selectedMemberId', roleshipId);
     });
   },
   'click .js-delete'() {
@@ -67,16 +66,6 @@ Template.Community_memberships_page.events({
         displayError(err);
       }
       Session.set('selectedMemberId', undefined);
-    });
-  },
-  'click .js-invite-user'() {
-
-  },
-  'click .js-remove-user'() {
-    Meteor.call('memberships.update', { $unset: { userId: '' } }, this._id, function(err, res) {
-      if (err) {
-        displayError(err);
-      }
     });
   },
 });

@@ -9,6 +9,29 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 
+const OwnershipSchema = new SimpleSchema({
+  serial: { type: SimpleSchema.Integer },
+  share: { type: SimpleSchema.Integer },
+  /*  name: { type: String,
+      autoValue() {
+        if (this.isInsert) {
+          const letter = this.field('type').value.substring(0,1);
+          const floor = this.field('floor').value;
+          const number = this.field('number').value;
+          return letter + '-' + floor + '/' + number;
+        }
+        return undefined; // means leave whats there alone for Updates, Upserts
+      },
+    },
+  */
+  // TODO: move these into the House package
+  floor: { type: String },
+  number: { type: String },
+  type: { type: String,
+    allowedValues: ['Apartment', 'Parking', 'Storage'],
+  },
+});
+
 export const Memberships = new Mongo.Collection('memberships');
 
 Memberships.helpers({
@@ -27,41 +50,32 @@ Memberships.helpers({
   totalshares() {
     return this.community().totalshares;
   },
+  // TODO: move this to the house package
   location() {
-    if (!this.number) return '';
-    return `${this.floor}/${this.number}`;
+    if (!this.ownership) return '';
+    return `${this.ownership.floor}/${this.ownership.number}`;
   },
   name() {
-    if (!this.type) return '';
-    const letter = this.type.substring(0, 1);
-    return `${letter} ${this.floor}/${this.number}`;
+    if (!this.ownership) return '';
+    const letter = this.ownership.type.substring(0, 1);
+    return `${letter}-${this.ownership.floor}/${this.ownership.number}`;
   },
 });
 
 Memberships.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  serial: { type: SimpleSchema.Integer, optional: true },
-  share: { type: SimpleSchema.Integer, optional: true },
-  /*  name: { type: String,
-      autoValue() {
-        if (this.isInsert) {
-          const letter = this.field('type').value.substring(0,1);
-          const floor = this.field('floor').value;
-          const number = this.field('number').value;
-          return letter + '-' + floor + '/' + number;
-        }
-        return undefined; // means leave whats there alone for Updates, Upserts
-      },
-    },
-  */
-  // TODO: move these into the House package
-  floor: { type: String, optional: true },
-  number: { type: String, optional: true },
-  type: { type: String,
-    allowedValues: ['Apartment', 'Parking', 'Storage'],
-    optional: true,
-  },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  role: { type: String /* TODO check against existing roles */ },
+  // TODO should be conditional on role
+  ownership: { type: OwnershipSchema, optional: true },
+});
+
+Memberships.schemaRole = new SimpleSchema({
+  role: { type: String },
+});
+
+Memberships.schemaOwnership = new SimpleSchema({
+  ownership: { type: OwnershipSchema, optional: true },
 });
 
 Memberships.attachSchema(Memberships.schema);

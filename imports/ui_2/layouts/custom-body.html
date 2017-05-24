@@ -16,7 +16,7 @@
                 <ul>
                   <li><a href="{{pathFor 'Communities.show' _cid=activeCommunity._id}}">Ház adatai</a></li>
                   <li><a href="{{pathFor 'Community.memberships'}}">Albetétek</a></li>
-                  <li><a href="">Szomszédok</a></li>
+                  <li><a href="{{pathFor 'Community.roleships'}}">Szomszédok</a></li>
                 </ul>
               </li>
             </ul>
@@ -42,7 +42,7 @@
           <ul class="nav">
             <li class="drop">
               {{#if activeMembership}}
-                {{activeMembership.name}}
+                {{displayMembership activeMembership}}
               {{else}}
                 Nincs aktív albetét
               {{/if}}
@@ -67,7 +67,7 @@
 
           {{#if currentUser}}
             <ul class="nav">
-              <li class="drop profile-drop">{{currentUser.safeUsername}}
+              <li class="drop profile-drop">{{currentUser.fullName}}
                 <img src="http://pannako.hu/wp-content/uploads/avatar-8.png" alt="" width="35"/>
                 <ul>
                   <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}">Profil</a></li>

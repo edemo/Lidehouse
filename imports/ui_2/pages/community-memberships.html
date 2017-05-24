@@ -13,12 +13,12 @@
         </tr>
       </thead>
       <tbody>
-        {{#each members}}
+        {{#each owners}}
           <tr class="table-row {{#if isSelected}}selected{{/if}}">
-            <td>{{serial}}</td>
+            <td>{{ownership.serial}}</td>
             <td>{{location}}</td>
-            <td>{{type}}</td>
-            <td>{{displayShare share totalshares}}</td>
+            <td>{{ownership.type}}</td>
+            <td>{{displayShare ownership.share totalshares}}</td>
             <td>{{displayUsername this}}</td>
             <td>
               {{#if userId}}
@@ -28,7 +28,7 @@
               {{/if}}
             </td>
             <td>
-              <a class="js-delete-share nav-item">
+              <a class="js-delete nav-item">
               <span
                 class="icon-trash"
                 title={{_ 'topics.show.deleteShare'}}>
@@ -39,11 +39,11 @@
         {{/each}}
       </tbody>
     </table>
-    <button class="js-new-share btn-primary">{{_ 'pages.community.addMember'}}</button>
+    <button class="js-new btn-primary">{{_ 'pages.community.addMember'}}</button>
     {{#if hasSelection}}
-      <br>
-      <p> Edit membership details:</p>
-      {{> quickForm id="afUpdateDemo" collection=memberships doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3-inline"}}
+      <br><br><br>
+      <p> Szerkesztés: </p>
+      {{> quickForm id="afUpdateOwner" collection=collection schema=schema doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3-inline"}}
     {{/if}}
   </div>
 </template>

@@ -25,29 +25,37 @@ export const UserProfileSchema = new SimpleSchema({
   country: { type: CountrySchema, optional: true },
 });
 
-export const ConcreteRoleSchema = new SimpleSchema({
-  name: { type: String },
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-});
-
 Meteor.users.helpers({
   memberships() {
-    return Memberships.find({ userId: Meteor.userId() }).fetch();
+    return Memberships.find({ userId: this._id });
+  },
+  ownerships(communityId) {
+    return Memberships.find({ userId: this._id, communityId, role: 'owner' });
+  },
+  roles(communityId) {
+    return Memberships.find({ userId: this._id, communityId }).fetch().map(m => m.role);
   },
   communities() {
-    const memberships = Memberships.find({ userId: Meteor.userId() }).fetch();
+    const memberships = this.memberships().fetch();
     const communityIds = _.pluck(memberships, 'communityId');
-    return Communities.find({ _id: { $in: communityIds } });
+    const communities = Communities.find({ _id: { $in: communityIds } });
+    console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
+    return communities;
   },
   hasPermission(permissionName, communityId) {
     const permission = Permissions.findOne({ _id: permissionName });
     const rolesWithThePermission = permission.roles;
-    const userHasTheseRoles = this.roles
-      ? this.roles.filter(role => role.communityId === communityId).map(role => role.name)
-      : [];
+    const userHasTheseRoles = this.roles(communityId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
-//    console.log(this.username, ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
+    console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
     return result;
+  },
+  fullName() {
+    if (this.profile && this.profile.lastName && this.profile.firstName) {
+      return this.profile.lastName + ' ' + this.profile.firstName;
+    }
+    // or fallback to the username
+    return `[${this.safeUsername()}]`;
   },
   safeUsername() {
     // If we have a username in db return that, otherwise generate one from her email address
@@ -89,21 +97,6 @@ Meteor.users.schema = new SimpleSchema({
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true },
   },
-
-  // Add `roles` to your schema if you use the meteor-roles package.
-  // Option 1: Object type
-  // If you specify that type as Object, you must also specify the
-  // `Roles.GLOBAL_GROUP` group whenever you add a user to a role.
-  // Example:
-  // Roles.addUsersToRoles(userId, ["admin"], Roles.GLOBAL_GROUP);
-  // You can't mix and match adding with and without a group since
-  // you will fail validation in some cases.
-//  roles: { type: Object, optional: true, blackbox: true },
-  // Option 2: [String] type
-  // If you are sure you will never need to use role groups, then
-  // you can specify [String] as the type
-  roles: { type: Array, optional: true },
-  'roles.$': { type: ConcreteRoleSchema },
 
   // In order to avoid an 'Exception in setInterval callback' from Meteor
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },

@@ -11,13 +11,16 @@ Meteor.startup(() => {
   if (Communities.find().count() === 0) {
     demoCommunityId = Communities.insert({
       name: 'Teszt ház',
-      lot: '1234566/1234',
-      address: {
-        city: 'Budapest',
-        street: 'Hernád u',
-        number: '56',
-        zip: '1078',
+      profile: {
+        lot: '123456/1234',
+        address: {
+          city: 'Budapest',
+          street: 'Kankalin u',
+          number: '86',
+          zip: '1144',
+        },
       },
+      totalshares: 10000,
     });
   }
 
@@ -30,59 +33,77 @@ Meteor.startup(() => {
     dummyUser1 = Meteor.users.insert({
       emails: [{ address: 'bajorandor@demo.com', verified: true }],
       profile: { lastName: 'Bajor', firstName: 'Andor' },
-      roles: [{ name: 'admin', communityId: demoCommunityId }],
     });
     dummyUser2 = Meteor.users.insert({
       emails: [{ address: 'bakocsitimea@demo.com', verified: true }],
       profile: { lastName: 'Bakocsi', firstName: 'Tímea' },
-      roles: [{ name: 'member', communityId: demoCommunityId }],
     });
     dummyUser3 = Meteor.users.insert({
       emails: [{ address: 'baltapeter@demo.com', verified: true }],
       profile: { lastName: 'Balta', firstName: 'Péter' },
-      roles: [{ name: 'member', communityId: demoCommunityId }],
     });
     dummyManager = Meteor.users.insert({
       emails: [{ address: 'baltazarimre@demo.com', verified: true }],
       profile: { lastName: 'Baltazár', firstName: 'Imre' },
-      roles: [{ name: 'manager', communityId: demoCommunityId }],
     });
 
     Memberships.insert({
       communityId: demoCommunityId,
       userId: dummyUser1,
-      serial: 1,
-      share: 85,
-      floor: 'I',
-      number: '14',
-      type: 'Apartment',
+      role: 'admin',
+    });
+    Memberships.insert({
+      communityId: demoCommunityId,
+      userId: dummyManager,
+      role: 'manager',
+    });
+    Memberships.insert({
+      communityId: demoCommunityId,
+      userId: dummyUser1,
+      role: 'owner',
+      ownership: {
+        serial: 1,
+        share: 85,
+        floor: 'I',
+        number: '14',
+        type: 'Apartment',
+      },
     });
     Memberships.insert({
       communityId: demoCommunityId,
       userId: dummyUser2,
-      serial: 2,
-      share: 64,
-      floor: 'II',
-      number: '25',
-      type: 'Apartment',
+      role: 'owner',
+      ownership: {
+        serial: 2,
+        share: 64,
+        floor: 'II',
+        number: '25',
+        type: 'Apartment',
+      },
     });
     Memberships.insert({
       communityId: demoCommunityId,
       userId: dummyUser3,
-      serial: 3,
-      share: 112,
-      floor: 'III',
-      number: '36',
-      type: 'Apartment',
+      role: 'owner',
+      ownership: {
+        serial: 3,
+        share: 112,
+        floor: 'III',
+        number: '36',
+        type: 'Apartment',
+      },
     });
     Memberships.insert({
       communityId: demoCommunityId,
       userId: dummyUser3,
-      serial: 101,
-      share: 5,
-      floor: '-2',
-      number: 'P209',
-      type: 'Parking',
+      role: 'owner',
+      ownership: {
+        serial: 101,
+        share: 5,
+        floor: '-2',
+        number: 'P209',
+        type: 'Parking',
+      },
     });
   }
 

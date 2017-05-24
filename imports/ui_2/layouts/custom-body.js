@@ -103,18 +103,21 @@ Template.Custom_body.helpers({
   memberships() {
     const activeCommunity = Session.get('activeCommunity');
     if (!activeCommunity) { return []; }
-    return Memberships.find({ communityId: activeCommunity._id });
+    return Memberships.find({ communityId: activeCommunity._id, userId: Meteor.userId() });
   },
   activeMembership() {
     let activeMembership = Session.get('activeMembership');
     if (!activeMembership) {
       const activeCommunity = Session.get('activeCommunity');
       if (activeCommunity) {
-        activeMembership = Memberships.findOne({ communityId: activeCommunity._id });
+        activeMembership = Memberships.findOne({ communityId: activeCommunity._id, userId: Meteor.userId() });
         Session.set('activeMembership', activeMembership);
       }
     }
     return activeMembership;
+  },
+  displayMembership(membership) {
+    return membership.name();
   },
 });
 
