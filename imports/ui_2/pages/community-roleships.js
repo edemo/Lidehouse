@@ -20,7 +20,7 @@ Template.Community_roleships_page.helpers({
     return Memberships.schemaRole;
   },
   roleships() {
-    const communityId = Session.get('activeCommunity')._id;
+    const communityId = Session.get('activeCommunityId');
     return Memberships.find({ communityId });
   },
   selectedDoc() {
@@ -50,7 +50,7 @@ Template.Community_roleships_page.events({
     Session.set('selectedMemberId', this._id);
   },
   'click .js-new'(event, instance) {
-    const communityId = Session.get('activeCommunity')._id;
+    const communityId = Session.get('activeCommunityId');
     Meteor.call('memberships.insert', { communityId, role: 'guest' }, function(err, res) {
       if (err) {
         displayError(err);

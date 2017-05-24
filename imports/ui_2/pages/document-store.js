@@ -10,9 +10,9 @@ import './document-store.html';
 
 Template.Document_store.onCreated(function () {
   this.autorun(() => {
-    const activeCommunity = Session.get('activeCommunity');
-    if (activeCommunity) {
-      this.subscribe('shareddocs.inCommunity', activeCommunity._id);
+    const activeCommunityId = Session.get('activeCommunityId');
+    if (activeCommunityId) {
+      this.subscribe('shareddocs.inCommunity', activeCommunityId);
     }
   });
 });
@@ -22,9 +22,9 @@ Template.Document_store.helpers({
     return Math.round(this.progress * 100);
   },
   shareddocs() {
-    const activeCommunity = Session.get('activeCommunity');
-    if (activeCommunity) {
-      return Shareddocs.find({ communityId: activeCommunity._id });
+    const activeCommunityId = Session.get('activeCommunityId');
+    if (activeCommunityId) {
+      return Shareddocs.find({ communityId: activeCommunityId });
     }
   },
 });
@@ -38,7 +38,7 @@ Template.Document_store.events({
         name: file.name,
         size: file.size,
         type: file.type,
-        communityId: Session.get('activeCommunity')._id,
+        communityId: Session.get('activeCommunityId'),
       };
 
       // Create a new Uploader for this file

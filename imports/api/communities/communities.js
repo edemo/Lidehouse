@@ -11,7 +11,7 @@ export const Communities = new Mongo.Collection('communities');
 Communities.schema = new SimpleSchema({
   name: { type: String, max: 100, label: () => TAPi18n.__('communities.name') },
   profile: { type: comtype.profileSchema, optional: true },
-  totalshares: { type: SimpleSchema.Integer, autoValue() { return 10000; } },
+  totalshares: { type: SimpleSchema.Integer },
 });
 
 Communities.attachSchema(Communities.schema);

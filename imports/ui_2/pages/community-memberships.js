@@ -20,7 +20,7 @@ Template.Community_memberships_page.helpers({
     return Memberships.schemaOwnership;
   },
   owners() {
-    const communityId = Session.get('activeCommunity')._id;
+    const communityId = Session.get('activeCommunityId');
     return Memberships.find({ communityId, role: 'owner' });
   },
   selectedDoc() {
@@ -51,7 +51,7 @@ Template.Community_memberships_page.events({
     Session.set('selectedMemberId', this._id);
   },
   'click .js-new'(event, instance) {
-    const communityId = Session.get('activeCommunity')._id;
+    const communityId = Session.get('activeCommunityId');
     Meteor.call('memberships.insert', { communityId, role: 'owner' }, function(err, res) {
       if (err) {
         displayError(err);

@@ -14,7 +14,7 @@ Template.Invite_form.helpers({
 
 Template.Invite_form.events({
   'click button'() {
-    const communityId = Session.get('activeCommunity')._id;
+    const communityId = Session.get('activeCommunityId');
     if (!communityId) {
       alert('No active community selected.');
       return;

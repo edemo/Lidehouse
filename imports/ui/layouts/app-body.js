@@ -40,7 +40,7 @@ Template.App_body.onCreated(function appBodyOnCreated() {
   });
   // We run this in autorun, so when User switches his community, the subscription changes
   this.autorun(() => {
-    const communityId = Session.get('activeCommunity')._id;
+    const communityId = Session.get('activeCommunityId');
     if (communityId) {
       this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('topics.public', { communityId });

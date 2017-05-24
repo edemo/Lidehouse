@@ -52,9 +52,9 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   });
   // We run this in autorun, so when User switches his community, the subscription changes
   this.autorun(() => {
-    const activeCommunity = Session.get('activeCommunity');
-    if (activeCommunity) {
-      this.subscribe('memberships.inCommunity', { communityId: activeCommunity._id });
+    const activeCommunityId = Session.get('activeCommunityId');
+    if (activeCommunityId) {
+      this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
     }
   });
 });
@@ -93,30 +93,41 @@ Template.Custom_body.helpers({
     return Meteor.user().communities();
   },
   activeCommunity() {
-    let activeCommunity = Session.get('activeCommunity');
-    if (!activeCommunity && Meteor.user()) {
+    const activeCommunityId = Session.get('activeCommunityId');
+    let activeCommunity;
+    if (activeCommunityId) {
+      activeCommunity = Communities.findOne(activeCommunityId);
+    } else if (Meteor.user()) {
       activeCommunity = Meteor.user().communities().fetch()[0];
-      Session.set('activeCommunity', activeCommunity);
+      Session.set('activeCommunityId', activeCommunity._id);
     }
+    // else activeCommunity stays undefined
+
     return activeCommunity;
   },
   memberships() {
-    const activeCommunity = Session.get('activeCommunity');
-    if (!activeCommunity) { return []; }
-    return Memberships.find({ communityId: activeCommunity._id, userId: Meteor.userId() });
+    const activeCommunityId = Session.get('activeCommunityId');
+    if (!activeCommunityId) { return []; }
+    return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId() });
   },
   activeMembership() {
-    let activeMembership = Session.get('activeMembership');
-    if (!activeMembership) {
-      const activeCommunity = Session.get('activeCommunity');
-      if (activeCommunity) {
-        activeMembership = Memberships.findOne({ communityId: activeCommunity._id, userId: Meteor.userId() });
-        Session.set('activeMembership', activeMembership);
+    const activeMembershipId = Session.get('activeMembershipId');
+    const activeCommunityId = Session.get('activeCommunityId');
+    let activeMembership;
+    if (activeMembershipId) {
+      activeMembership = Memberships.findOne(activeMembershipId);
+    } else if (activeCommunityId) {
+      activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId() });
+      if (activeMembership) {
+        Session.set('activeMembershipId', activeMembership._id);
       }
     }
+    // else activeMembership stays undefined;
+
     return activeMembership;
   },
   displayMembership(membership) {
+    if (!membership) return '';
     return membership.name();
   },
 });
@@ -136,13 +147,12 @@ Template.Custom_body.events({
   },
 
   'click .js-switch-community'() {
-    const community = Communities.findOne(this._id);
-    Session.set('activeCommunity', community);
+    Session.set('activeCommunityId', this._id);
+    Session.set('activeMembershipId', undefined);
   },
 
   'click .js-switch-membership'() {
-    const membership = Memberships.findOne(this._id);
-    Session.set('activeMembership', membership);
+    Session.set('activeMembershipId', this._id);
   },
 
   'click .js-logout'() {

@@ -14,7 +14,7 @@ Template.Community_members_page.onCreated(function () {
 
 Template.Community_members_page.helpers({
   members() {
-    const communityId = Session.get('activeCommunity')._id;
+    const communityId = Session.get('activeCommunityId');
     return Memberships.find({ communityId });
   },
   memberships() {
@@ -40,7 +40,7 @@ Template.Community_members_page.events({
     Session.set('selectedMemberId', this._id);
   },
   'click .js-new-share'(event, instance) {
-    const communityId = Session.get('activeCommunity')._id;
+    const communityId = Session.get('activeCommunityId');
     Meteor.call('memberships.insert', { communityId }, function(err, res) {
       if (err) {
         displayError(err);
