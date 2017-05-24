@@ -17,7 +17,7 @@ Template.Community_roleships_page.helpers({
     return Memberships;
   },
   schema() {
-    return Memberships.schemaRole;
+    return Memberships.schemaForRoleship;
   },
   roleships() {
     const communityId = Session.get('activeCommunityId');

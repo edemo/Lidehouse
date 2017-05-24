@@ -8,29 +8,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
-
-const OwnershipSchema = new SimpleSchema({
-  serial: { type: SimpleSchema.Integer },
-  share: { type: SimpleSchema.Integer },
-  /*  name: { type: String,
-      autoValue() {
-        if (this.isInsert) {
-          const letter = this.field('type').value.substring(0,1);
-          const floor = this.field('floor').value;
-          const number = this.field('number').value;
-          return letter + '-' + floor + '/' + number;
-        }
-        return undefined; // means leave whats there alone for Updates, Upserts
-      },
-    },
-  */
-  // TODO: move these into the House package
-  floor: { type: String },
-  number: { type: String },
-  type: { type: String,
-    allowedValues: ['Apartment', 'Parking', 'Storage'],
-  },
-});
+import { Roles } from '/imports/api/permissions/roles.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -62,19 +40,48 @@ Memberships.helpers({
   },
 });
 
+const OwnershipSchema = new SimpleSchema({
+  serial: { type: SimpleSchema.Integer },
+  share: { type: SimpleSchema.Integer },
+  /*  name: { type: String,
+      autoValue() {
+        if (this.isInsert) {
+          const letter = this.field('type').value.substring(0,1);
+          const floor = this.field('floor').value;
+          const number = this.field('number').value;
+          return letter + '-' + floor + '/' + number;
+        }
+        return undefined; // means leave whats there alone for Updates, Upserts
+      },
+    },
+  */
+  // TODO: move these into the House package
+  floor: { type: String },
+  number: { type: String },
+  type: { type: String,
+    allowedValues: ['Apartment', 'Parking', 'Storage'],
+  },
+});
+
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  role: { type: String /* TODO check against existing roles */ },
+  role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); } },
   // TODO should be conditional on role
   ownership: { type: OwnershipSchema, optional: true },
 });
 
-Memberships.schemaRole = new SimpleSchema({
-  role: { type: String },
+Memberships.schemaForRoleship = new SimpleSchema({
+  role: { type: String,
+    autoform: {
+      options() {
+        return Roles.find({}).map(function option(r) { return { label: r.name, value: r._id }; }); // _id === name BTW
+      },
+    },
+  },
 });
 
-Memberships.schemaOwnership = new SimpleSchema({
+Memberships.schemaForOwnership = new SimpleSchema({
   ownership: { type: OwnershipSchema, optional: true },
 });
 

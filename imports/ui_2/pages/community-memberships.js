@@ -17,7 +17,7 @@ Template.Community_memberships_page.helpers({
     return Memberships;
   },
   schema() {
-    return Memberships.schemaOwnership;
+    return Memberships.schemaForOwnership;
   },
   owners() {
     const communityId = Session.get('activeCommunityId');
