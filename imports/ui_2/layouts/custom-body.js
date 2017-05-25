@@ -108,7 +108,7 @@ Template.Custom_body.helpers({
   memberships() {
     const activeCommunityId = Session.get('activeCommunityId');
     if (!activeCommunityId) { return []; }
-    return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId() });
+    return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId(), role: 'owner' });
   },
   activeMembership() {
     const activeMembershipId = Session.get('activeMembershipId');
@@ -117,7 +117,7 @@ Template.Custom_body.helpers({
     if (activeMembershipId) {
       activeMembership = Memberships.findOne(activeMembershipId);
     } else if (activeCommunityId) {
-      activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId() });
+      activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId(), role: 'owner' });
       if (activeMembership) {
         Session.set('activeMembershipId', activeMembership._id);
       }
