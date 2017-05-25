@@ -73,7 +73,7 @@ Template.Community_memberships_page.events({
 
   },
   'click .js-remove-user'() {
-    Meteor.call('memberships.update', { $unset: { userId: '' } }, this._id, function(err, res) {
+    Meteor.call('memberships.update', { _id: this._id, modifier: { $unset: { userId: '' } } }, function(err, res) {
       if (err) {
         displayError(err);
       }
