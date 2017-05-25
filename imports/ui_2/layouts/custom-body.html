@@ -32,10 +32,6 @@
                 {{#each communities}}
                   <li><a href="#" class="js-switch-community">{{name}}</a></li>
                 {{/each}}
-                {{#if currentUser}}
-                  <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'layouts.appBody.joinCommunity'}} </a></li>
-                  <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'layouts.appBody.createCommunity'}} </a></li>
-                {{/if}}
               </ul>
             </li>
           </ul>
@@ -53,6 +49,16 @@
               </ul>
             </li>
           </ul>
+          {{#if currentUser}}
+          <ul class="nav">
+            <li class="drop"> +
+              <ul>
+                  <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'layouts.appBody.joinCommunity'}} </a></li>
+                  <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'layouts.appBody.createCommunity'}} </a></li>
+              </ul>
+            </li>
+          </ul>
+          {{/if}}
         </div>
         <div class="topmenu-right">
           <div class="language-toggle">
