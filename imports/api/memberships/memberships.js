@@ -72,7 +72,8 @@ Memberships.schema = new SimpleSchema({
 });
 
 Memberships.schemaForRoleship = new SimpleSchema({
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
+  userId: { type: String,
+    optional: true,
     autoform: {
       options() {
         return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
@@ -89,7 +90,8 @@ Memberships.schemaForRoleship = new SimpleSchema({
 });
 
 Memberships.schemaForOwnership = new SimpleSchema({
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
+  userId: { type: String,
+    optional: true,
     autoform: {
       options() {
         return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
