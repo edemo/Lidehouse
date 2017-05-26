@@ -98,8 +98,11 @@ Template.Custom_body.helpers({
     if (activeCommunityId) {
       activeCommunity = Communities.findOne(activeCommunityId);
     } else if (Meteor.user()) {
-      activeCommunity = Meteor.user().communities().fetch()[0];
-      Session.set('activeCommunityId', activeCommunity._id);
+      const communities = Meteor.user().communities();
+      if (communities.count() > 0) {
+        activeCommunity = communities.fetch()[0];
+        Session.set('activeCommunityId', activeCommunity._id);
+      }
     }
     // else activeCommunity stays undefined
 

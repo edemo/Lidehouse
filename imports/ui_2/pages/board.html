@@ -83,25 +83,10 @@
       <!-- 2nd section -->
       <button class="accordion">Közösség</button>
       <div class="accordion-content">
-        <div class="chatbox">
-          <div class="chat-header">
-            <div class="chat-avatar">
-              <img src="http://pannako.hu/wp-content/uploads/avatar-8.png" alt="avatar" align="center" width="50" height="50" />
-            </div>
-            <div class="chat-name">
-              <span class="chat-dropdown"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
-              <span class="chat-name-span"><a>Balta Péter</a></span>
-              <br>
-              <span class="chat-date">16 órája <i class="fa fa-cog" area-hidden="true"></i></span>
-            </div>
-          </div>
-          <div class="chat-body">
-            Kiraktam egy májusfát, rakjátok fel a díszeiteket!
-          </div>
-          <div class="chat-footer">
-            {{> Comments_section}}
-          </div>
-        </div>
+
+        {{#each forumTopics}}
+          {{> Chatbox}}
+        {{/each}}
 
         <div class="chatbox">
           <div class="chat-header">

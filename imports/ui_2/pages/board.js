@@ -1,15 +1,25 @@
 /* globals document */
 
 import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
 
-import '../components/comments-section.html';
+import { Topics } from '/imports/api/topics/topics.js';
+
+import '../components/comments-section.js';
+import '../components/chatbox.js';
 import './board.html';
+
+
+Template.Board.onCreated(function boardOnCreated() {
+  this.autorun(() => {
+    this.subscribe('topics.inCommunity', { communityId: Session.get('activeCommunityId') });
+  });
+});
 
 Template.Board.onRendered(function boardOnRendered() {
   this.autorun(() => {
     //accordion click event adder,  open onload
     var acc = document.getElementsByClassName("accordion");
-    var acc2 = document.getElementsByClassName("accordion-comment");
     var i;
 
     for (i = 0; i < acc.length; i++) {
@@ -26,17 +36,11 @@ Template.Board.onRendered(function boardOnRendered() {
       var panel = acc[i].nextElementSibling;
       panel.style.maxHeight = "none";
     }
-
-    for (i = 0; i < acc2.length; i++) {
-      acc2[i].onclick = function() {
-        this.classList.toggle("active");
-        var panel = this.nextElementSibling;
-        if (panel.style.maxHeight){
-          panel.style.maxHeight = null;
-        } else {
-          panel.style.maxHeight = panel.scrollHeight + "px";
-        }
-      }
-    }
   });
+});
+
+Template.Board.helpers({
+  forumTopics() {
+    return Topics.find({ category: 'Forum' });
+  },
 });
