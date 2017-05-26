@@ -44,37 +44,7 @@
           </div>
           <div class="vote-footer">
             <span class="right-icon"><a href="#modal-box2--open">Papericon</a></span>
-            <a class="accordion-comment">1 komment</a>
-            <div class="accordion-content panel-comment">
-              <!-- szavazás kommentek START -->
-              <div class="chat-comments">
-
-                <div class="add-comment" >
-                  <div class="chat-avatar">
-                    <img src="http://pannako.hu/wp-content/uploads/avatar-3.png" alt="avatar" align="center" width="35" height="35" />
-                  </div>
-                  <div class="">
-                    <textarea rows="" cols="5" placeholder="Szólj hozzá..." class="autoResize" style="overflow: hidden; word-wrap: break-word; height: 37px; width: 70%; padding: 0;"></textarea>
-                  </div>
-                </div>
-
-                <!-- Kommentenként -->
-                <div class="comment">
-                  <div class="chat-avatar">
-                    <img src="http://pannako.hu/wp-content/uploads/avatar-7.png" alt="avatar" align="center" width="35" height="35" />
-                  </div>
-                  <div class="chat-name">
-                    <!-- <span class="chat-dropdown" style="float: right;">X</span> -->
-                    <span class="chat-name-span"><a>Bakocsi Tímea (Név)</a></span>
-                    <span class="chat-date">3 perce (Mióta küldte)</span>
-                    <br>
-                    Ez az üzenet
-                  </div>
-                </div>
-
-              </div>
-              <!-- komment END -->
-            </div>
+            {{> Comments_section}}
           </div>
         </div>
 
@@ -103,37 +73,7 @@
 
             <div class="vote-footer">
               <span style="float: right;"><a href="#">Hivatalos előterjesztés megtekintése</a></span>
-
-              <!-- ugyanaz a komment rendszer mint az előzőknél -->
-              <a class="accordion-comment">1 komment</a>
-              <div class="accordion-content panel-comment">
-                <div class="chat-comments">
-
-                  <div class="add-comment" >
-                    <div class="chat-avatar">
-                      <img src="http://pannako.hu/wp-content/uploads/avatar-3.png" alt="avatar" align="center" width="35" height="35" />
-                    </div>
-                    <div class="">
-                      <textarea rows="" cols="5" placeholder="Szólj hozzá..." class="autoResize" style="overflow: hidden; word-wrap: break-word; height: 37px; width: 70%; padding: 0;"></textarea>
-                    </div>
-                  </div>
-
-                  <!-- Kommentenként -->
-                  <div class="comment">
-                    <div class="chat-avatar">
-                      <img src="http://pannako.hu/wp-content/uploads/avatar-7.png" alt="avatar" align="center" width="35" height="35" />
-                    </div>
-                    <div class="chat-name">
-                      <span class="chat-name-span"><a>Bakocsi Tímea (Név)</a></span>
-                      <span class="chat-date">3 perce (Mióta küldte)</span>
-                      <br>
-                      Ez az üzenet
-                    </div>
-                  </div>
-
-                </div>
-                <!-- komment END -->
-              </div>
+              {{> Comments_section}}
             </div>
           </div>
         </div>
@@ -159,8 +99,7 @@
             Kiraktam egy májusfát, rakjátok fel a díszeiteket!
           </div>
           <div class="chat-footer">
-            <a>3 komment</a>
-            <!--insert here az előző kommentfelépítés alapján: accordion, accordion-content .... -->
+            {{> Comments_section}}
           </div>
         </div>
 
@@ -180,8 +119,7 @@
             Elköltözök, viszlát mindenki!
           </div>
           <div class="chat-footer">
-            <a>1 komment</a>
-            <!--insert comments here.... -->
+            {{> Comments_section}}
           </div>
         </div>
 
