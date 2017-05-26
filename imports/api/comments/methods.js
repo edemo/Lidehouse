@@ -7,35 +7,31 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { Comments } from './comments.js';
 import { Topics } from '../topics/topics.js';
 
+const VALIDATION_PARAMS = { clean: true, filter: false };
+
 export const insert = new ValidatedMethod({
   name: 'comments.insert',
-  validate: Comments.simpleSchema().pick(['topicId', 'text']).validator({ clean: true, filter: false }),
+  validate: Comments.simpleSchema().validator(VALIDATION_PARAMS),
 
-  run({ topicId, text }) {
-    const topic = Topics.findOne(topicId);
+  run(doc) {
+    const topic = Topics.findOne(doc.topicId);
 
-    if (topic.isPrivate() && topic.userId !== this.userId) {
+    // TODO goes into persmission check
+    if (topic.communityId !== doc.communityId) {
       throw new Meteor.Error('comments.insert.accessDenied',
-        'Cannot add comments to a private topic that is not yours');
+        'Cannot add comments to a topic that is not yours');
     }
 
-    const comment = {
-      topicId,
-      text,
-      readed: false,
-      createdAt: new Date(),
-    };
-
-    Comments.insert(comment);
+    Comments.insert(doc);
   },
 });
 
 export const setReadedStatus = new ValidatedMethod({
   name: 'comments.makeReaded',
   validate: new SimpleSchema({
-    commentId: Comments.simpleSchema().schema('_id'),
+    commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
     newReadedStatus: Comments.simpleSchema().schema('readed'),
-  }).validator({ clean: true, filter: false }),
+  }).validator(VALIDATION_PARAMS),
 
   run({ commentId, newReadedStatus }) {
     const comment = Comments.findOne(commentId);
@@ -59,9 +55,9 @@ export const setReadedStatus = new ValidatedMethod({
 export const updateText = new ValidatedMethod({
   name: 'comments.updateText',
   validate: new SimpleSchema({
-    commentId: Comments.simpleSchema().schema('_id'),
+    commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
     newText: Comments.simpleSchema().schema('text'),
-  }).validator({ clean: true, filter: false }),
+  }).validator(VALIDATION_PARAMS),
 
   run({ commentId, newText }) {
     // This is complex auth stuff - perhaps denormalizing a userId onto comments
@@ -84,8 +80,8 @@ export const updateText = new ValidatedMethod({
 export const remove = new ValidatedMethod({
   name: 'comments.remove',
   validate: new SimpleSchema({
-    commentId: Comments.simpleSchema().schema('_id'),
-  }).validator({ clean: true, filter: false }),
+    commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(VALIDATION_PARAMS),
 
   run({ commentId }) {
     const comment = Comments.findOne(commentId);

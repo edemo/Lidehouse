@@ -68,7 +68,7 @@ Template.Topics_show.onCreated(function topicShowOnCreated() {
 
   this.deleteTopic = () => {
     const topic = this.data.topic();
-    const message = `${TAPi18n.__('topics.remove.confirm')} "${topic.name}"?`;
+    const message = `${TAPi18n.__('topics.remove.confirm')} "${topic.title}"?`;
 
     if (confirm(message)) { // eslint-disable-line no-alert
       remove.call({

@@ -41,6 +41,6 @@ Template.Board.onRendered(function boardOnRendered() {
 
 Template.Board.helpers({
   forumTopics() {
-    return Topics.find({ category: 'Forum' });
+    return Topics.find({ category: 'forum' });
   },
 });

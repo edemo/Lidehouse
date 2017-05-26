@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor';
-import { Topics } from '../../api/topics/topics.js';
 import { Comments } from '../../api/comments/comments.js';
 
 import { Communities } from '../../api/communities/communities.js';
 import { Memberships } from '../../api/memberships/memberships.js';
+import { Topics } from '../../api/topics/topics.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
@@ -24,42 +24,47 @@ Meteor.startup(() => {
     });
   }
 
-  let dummyUser1, dummyUser2, dummyUser3, dummyManager;
+  const dummyUsers = [];
+
   if (!Meteor.users.findOne('demo')) {
     Meteor.users.insert({
       _id: 'demo',
       emails: [{ address: 'demouser@demo.com', verified: true }],
     });
-    dummyUser1 = Meteor.users.insert({
-      emails: [{ address: 'bajorandor@demo.com', verified: true }],
-      profile: { lastName: 'Bajor', firstName: 'Andor' },
-    });
-    dummyUser2 = Meteor.users.insert({
-      emails: [{ address: 'bakocsitimea@demo.com', verified: true }],
-      profile: { lastName: 'Bakocsi', firstName: 'Tímea' },
-    });
-    dummyUser3 = Meteor.users.insert({
-      emails: [{ address: 'baltapeter@demo.com', verified: true }],
-      profile: { lastName: 'Balta', firstName: 'Péter' },
-    });
-    dummyManager = Meteor.users.insert({
+    dummyUsers[0] = Meteor.users.insert({
       emails: [{ address: 'baltazarimre@demo.com', verified: true }],
       profile: { lastName: 'Baltazár', firstName: 'Imre' },
+      avatar: 'http://pannako.hu/wp-content/uploads/avatar-2.png',
+    });
+    dummyUsers[1] = Meteor.users.insert({
+      emails: [{ address: 'bajorandor@demo.com', verified: true }],
+      profile: { lastName: 'Bajor', firstName: 'Andor' },
+      avatar: 'http://pannako.hu/wp-content/uploads/avatar-7.png',
+    });
+    dummyUsers[2] = Meteor.users.insert({
+      emails: [{ address: 'bakocsitimea@demo.com', verified: true }],
+      profile: { lastName: 'Bakocsi', firstName: 'Tímea' },
+      avatar: 'http://pannako.hu/wp-content/uploads/avatar-6.png',
+    });
+    dummyUsers[3] = Meteor.users.insert({
+      emails: [{ address: 'baltapeter@demo.com', verified: true }],
+      profile: { lastName: 'Balta', firstName: 'Péter' },
+      avatar: 'http://pannako.hu/wp-content/uploads/avatar-5.png',
     });
 
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: dummyUser1,
-      role: 'admin',
-    });
-    Memberships.insert({
-      communityId: demoCommunityId,
-      userId: dummyManager,
+      userId: dummyUsers[0],
       role: 'manager',
     });
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: dummyUser1,
+      userId: dummyUsers[1],
+      role: 'admin',
+    });
+    Memberships.insert({
+      communityId: demoCommunityId,
+      userId: dummyUsers[1],
       role: 'owner',
       ownership: {
         serial: 1,
@@ -71,7 +76,7 @@ Meteor.startup(() => {
     });
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: dummyUser2,
+      userId: dummyUsers[2],
       role: 'owner',
       ownership: {
         serial: 2,
@@ -83,7 +88,7 @@ Meteor.startup(() => {
     });
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: dummyUser3,
+      userId: dummyUsers[3],
       role: 'owner',
       ownership: {
         serial: 3,
@@ -95,7 +100,7 @@ Meteor.startup(() => {
     });
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: dummyUser3,
+      userId: dummyUsers[3],
       role: 'owner',
       ownership: {
         serial: 101,
@@ -107,27 +112,34 @@ Meteor.startup(() => {
     });
   }
 
+  // The demo users comment one after the other, round robin style
+  let nextUserIndex = 0;
+  function nextUser() {
+    nextUserIndex %= dummyUsers.length;
+    return dummyUsers[nextUserIndex++];
+  }
+
   if (Topics.find().count() === 0) {
     const data = [
       {
-        name: 'Zár probléma',
+        title: 'Zár probléma',
+        text: 'Múlt héten megint benyomták a kaput, és azóta nem jól záródik a zár',
         items: [
-          'Múlt héten megint benyomták a kaput, és azóta nem jól záródik a zár',
           'Igen, már bejelentettem. Jövő héten tudnak csak jönni javítani',
         ],
       },
       {
-        name: 'Hangos kutya a negyediken',
+        title: 'Hangos kutya a negyediken',
+        text: 'A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.',
         items: [
-          'A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.',
           'Engem is rohadtul idegesít!!!',
-          'Elnézést kérek a lakóktól. Enyém a kutyus, nem szokott vonyítani, csak a nagyi kórházban volt. De már itthon van.',
+          'Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi kórházban volt de már itthon van.',
         ],
       },
       {
-        name: 'Fundamenta hitel',
+        title: 'Fundamenta hitel',
+        text: 'Most kedvezményes feltételekkel lehet felvenni fundamenta hitelt tatarozásra.',
         items: [
-          'Most kedvezményes feltételekkel lehet felvenni fundamenta hitelt tatarozásra.',
           'Szerintem érdemes lenne. A kamat csak 6%, és 10 évre kapnánk.',
           'Nem tudom. Az előző hitelünket épp most tudtuk végre törleszteni. Most végre lemenne a közös költség, és erre megint egy újabb hitel?',
           'Szerintem bocsássuk szavazásra!',
@@ -141,13 +153,17 @@ Meteor.startup(() => {
     data.forEach((topic) => {
       const topicId = Topics.insert({
         communityId: demoCommunityId,
-        name: topic.name,
+        userId: nextUser(),
+        category: 'forum',
+        title: topic.title,
+        text: topic.text,
         unreadCount: topic.items.length,
       });
 
       topic.items.forEach((text) => {
         Comments.insert({
           topicId,
+          userId: nextUser(),
           text,
           createdAt: new Date(timestamp),
         });

@@ -2,20 +2,20 @@
   <div class="chatbox">
     <div class="chat-header">
       <div class="chat-avatar">
-        <img src="http://pannako.hu/wp-content/uploads/avatar-8.png" alt="avatar" align="center" width="50" height="50" />
+        <img src="{{avatar}}" alt="avatar" align="center" width="50" height="50" />
       </div>
       <div class="chat-name">
         <span class="chat-dropdown"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
-        <span class="chat-name-span"><a>Balta Péter</a></span>
+        <span class="chat-name-span"><a>{{displayUser}}</a></span>
         <br>
-        <span class="chat-date">16 órája <i class="fa fa-cog" area-hidden="true"></i></span>
+        <span class="chat-date">{{displaySince}} <i class="fa fa-cog" area-hidden="true"></i></span>
       </div>
     </div>
     <div class="chat-body">
-      Kiraktam egy májusfát, rakjátok fel a díszeiteket!
+      {{text}}
     </div>
     <div class="chat-footer">
-      {{> Comments_section}}
+      {{> Comments_section topicId=_id}}
     </div>
   </div>
 </template>

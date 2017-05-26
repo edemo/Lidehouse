@@ -18,7 +18,7 @@ export const UserProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
   birthday: { type: Date, optional: true },
-  gender: { type: String, allowedValues: ['Male', 'Female'], optional: true },
+  gender: { type: String, allowedValues: ['male', 'female'], optional: true },
   organization: { type: String, optional: true },
   website: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true },
   bio: { type: String, optional: true },
@@ -94,6 +94,7 @@ Meteor.users.schema = new SimpleSchema({
     },
   },
   profile: { type: UserProfileSchema, optional: true },
+  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: 'http://pannako.hu/wp-content/uploads/avatar-1.png' },
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true },
   },

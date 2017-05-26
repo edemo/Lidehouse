@@ -7,7 +7,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Topics } from './topics.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
-Meteor.publish('topics.public', function topicsPublic(params) {
+Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
@@ -16,26 +16,6 @@ Meteor.publish('topics.public', function topicsPublic(params) {
 
   return Topics.find({
     communityId,
-    userId: { $exists: false },
-  }, {
-    fields: Topics.publicFields,
-  });
-});
-
-Meteor.publish('topics.private', function topicsPrivate(params) {
-  new SimpleSchema({
-    communityId: { type: String },
-  }).validate(params);
-
-  const { communityId } = params;
-
-  if (!this.userId) {
-    return this.ready();
-  }
-
-  return Topics.find({
-    communityId,
-    userId: this.userId,
   }, {
     fields: Topics.publicFields,
   });

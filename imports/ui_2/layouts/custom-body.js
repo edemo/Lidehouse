@@ -16,9 +16,11 @@ import '/imports/api/users/users.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
-import '/imports//ui/components/loading.js';
+import '/imports/ui/components/loading.js';
 import '/imports/ui/components/side-panel.js';
 import './custom-body.html';
+
+import '/imports/ui_2/pages/not-logged-in.html';
 
 const CONNECTION_ISSUE_TIMEOUT = 5000;
 

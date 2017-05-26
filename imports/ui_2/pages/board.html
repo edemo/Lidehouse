@@ -81,33 +81,11 @@
       </div>
 
       <!-- 2nd section -->
-      <button class="accordion">Közösség</button>
+      <button class="accordion">Forum</button>
       <div class="accordion-content">
-
         {{#each forumTopics}}
           {{> Chatbox}}
         {{/each}}
-
-        <div class="chatbox">
-          <div class="chat-header">
-            <div class="chat-avatar">
-              <img src="http://pannako.hu/wp-content/uploads/avatar-6.png" alt="avatar" align="center" width="50" height="50" />
-            </div>
-            <div class="chat-name">
-              <span class="chat-dropdown"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
-              <span class="chat-name-span"><a>Bakocsi Tímea</a></span>
-              <br>
-              <span class="chat-date">21 órája <i class="fa fa-cog" area-hidden="true"></i></span>
-            </div>
-          </div>
-          <div class="chat-body">
-            Elköltözök, viszlát mindenki!
-          </div>
-          <div class="chat-footer">
-            {{> Comments_section}}
-          </div>
-        </div>
-
       </div>
     </div>
   </div>

@@ -2,25 +2,12 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
-import { TAPi18n } from 'meteor/tap:i18n';
 
 import { Comments } from '../comments/comments.js';
 
 class TopicsCollection extends Mongo.Collection {
-  insert(topic, callback, language = 'en') {
+  insert(topic, callback) {
     const ourTopic = topic;
-    if (!ourTopic.name) {
-      const defaultName = TAPi18n.__('topics.insert.topic', null, language);
-      let nextLetter = 'A';
-      ourTopic.name = `${defaultName} ${nextLetter}`;
-
-      while (this.findOne({ name: ourTopic.name })) {
-        // not going to be too smart here, can go past Z
-        nextLetter = String.fromCharCode(nextLetter.charCodeAt(0) + 1);
-        ourTopic.name = `${defaultName} ${nextLetter}`;
-      }
-    }
-
     return super.insert(ourTopic, callback);
   }
   remove(selector, callback) {
@@ -32,29 +19,20 @@ class TopicsCollection extends Mongo.Collection {
 export const Topics = new TopicsCollection('topics');
 
 Topics.schema = new SimpleSchema({
-  _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  name: { type: String, max: 100 },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  category: { type: String, allowedValues: ['vote', 'forum', 'news'] },
+  title: { type: String, max: 100 },
+  text: { type: String },
+  createdAt: { type: Date, denyUpdate: true, autoValue() { if (this.isInsert) { return new Date(); } } },
   unreadCount: { type: Number, defaultValue: 0 },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 });
 
 Topics.attachSchema(Topics.schema);
 
 Topics.helpers({
-  // A topic is considered to be private if it has a userId set
-  isPrivate() {
-    return !!this.userId;
-  },
-  isLastPublicTopic() {
-    const publicTopicCount = Topics.find({ userId: { $exists: false } }).count();
-    return !this.isPrivate() && publicTopicCount === 1;
-  },
   editableBy(userId) {
-    if (!this.userId) {
-      return true;
-    }
-
+    if (!this.userId) { return true; }
     return this.userId === userId;
   },
   comments() {
@@ -72,10 +50,13 @@ Topics.deny({
 // This represents the keys from Topics objects that should be published to the client.
 // If we add secret properties to Topic objects, don't list them here to keep them private to the server.
 Topics.publicFields = {
-  name: 1,
   communityId: 1,
-  unreadCount: 1,
   userId: 1,
+  category: 1,
+  title: 1,
+  text: 1,
+  createdAt: 1,
+  unreadCount: 1,
 };
 
 Factory.define('topic', Topics, {

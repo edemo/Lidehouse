@@ -52,11 +52,11 @@ if (Meteor.isServer) {
         });
       });
 
-      describe('comments.inTopic', function () {
+      describe('comments.onTopic', function () {
         it('sends all comments for a public topic', function (done) {
           const collector = new PublicationCollector();
           collector.collect(
-            'comments.inTopic',
+            'comments.onTopic',
             { topicId: publicTopic._id },
             (collections) => {
               chai.assert.equal(collections.comments.length, 3);
@@ -68,7 +68,7 @@ if (Meteor.isServer) {
         it('sends all comments for a public topic when logged in', function (done) {
           const collector = new PublicationCollector({ userId });
           collector.collect(
-            'comments.inTopic',
+            'comments.onTopic',
             { topicId: publicTopic._id },
             (collections) => {
               chai.assert.equal(collections.comments.length, 3);
@@ -80,7 +80,7 @@ if (Meteor.isServer) {
         it('sends all comments for a private topic when logged in as owner', function (done) {
           const collector = new PublicationCollector({ userId });
           collector.collect(
-            'comments.inTopic',
+            'comments.onTopic',
             { topicId: privateTopic._id },
             (collections) => {
               chai.assert.equal(collections.comments.length, 3);
@@ -92,7 +92,7 @@ if (Meteor.isServer) {
         it('sends no comments for a private topic when not logged in', function (done) {
           const collector = new PublicationCollector();
           collector.collect(
-            'comments.inTopic',
+            'comments.onTopic',
             { topicId: privateTopic._id },
             (collections) => {
               chai.assert.isUndefined(collections.comments);
@@ -104,7 +104,7 @@ if (Meteor.isServer) {
         it('sends no comments for a private topic when logged in as another user', function (done) {
           const collector = new PublicationCollector({ userId: Random.id() });
           collector.collect(
-            'comments.inTopic',
+            'comments.onTopic',
             { topicId: privateTopic._id },
             (collections) => {
               chai.assert.isUndefined(collections.comments);
