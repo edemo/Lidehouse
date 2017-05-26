@@ -74,7 +74,7 @@
           {{#if currentUser}}
             <ul class="nav">
               <li class="drop profile-drop">{{currentUser.fullName}}
-                <img src="http://pannako.hu/wp-content/uploads/avatar-8.png" alt="" width="35"/>
+                <img src="{{currentUser.avatar}}" alt="" width="35"/>
                 <ul>
                   <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}">Profil</a></li>
                   <li><a class="js-logout" href="">{{_ 'layouts.appBody.logout'}}</a></li>
