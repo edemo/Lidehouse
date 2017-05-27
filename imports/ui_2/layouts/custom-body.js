@@ -6,8 +6,10 @@ import { ReactiveDict } from 'meteor/reactive-dict';
 import { Template } from 'meteor/templating';
 import { ActiveRoute } from 'meteor/zimme:active-route';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Tracker } from 'meteor/tracker';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { moment } from 'meteor/momentjs:moment';
 import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
@@ -47,6 +49,10 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   });
   T9n.setLanguage('hu');
   TAPi18n.setLanguage('hu');
+  Tracker.autorun(() => {
+    const result = moment.locale(TAPi18n.getLanguage());
+    console.log('moment locale: ', result);
+  });
 
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {

@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
+import { moment } from 'meteor/momentjs:moment';
+
 import { Comments } from '/imports/api/comments/comments.js';
 
 import '../components/comments-section.html';
@@ -28,7 +30,7 @@ Template.Comment.helpers({
     return this.user().fullName();
   },
   displaySince() {
-    return "3 ora 6 perce";
+    return moment(this.createdAt).fromNow();
   },
 });
 
