@@ -34,7 +34,7 @@ Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
   text: { type: String, optional: true },
-  createdAt: { type: Date, denyUpdate: true },
+  createdAt: { type: Date, defaultValue: new Date(), denyUpdate: true },
   readed: { type: Boolean, defaultValue: false },
 });
 

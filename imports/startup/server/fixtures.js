@@ -119,6 +119,7 @@ Meteor.startup(() => {
     return dummyUsers[nextUserIndex++];
   }
 
+  // Forum
   if (Topics.find().count() === 0) {
     const data = [
       {
@@ -133,7 +134,7 @@ Meteor.startup(() => {
         text: 'A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.',
         items: [
           'Engem is rohadtul idegesít!!!',
-          'Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi kórházban volt de már itthon van.',
+          'Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi sajnos három hétig kórházban, és szegény kutyus nagyon rosszul bírja az egyedüllétet. De szerencsére a nagyit már hazaengedték,  tegnap óta már otthon van. Úgyhogy nem lesz többet gond, és tényeg elnézést kérek mindenkitől.',
         ],
       },
       {
@@ -170,6 +171,24 @@ Meteor.startup(() => {
 
         timestamp += 1; // ensure unique timestamp.
       });
+    });
+
+    // News
+    Topics.insert({
+      communityId: demoCommunityId,
+      userId: dummyUsers[0],
+      category: 'news',
+      title: 'Lomtalanítás lesz május 4.-én',
+      text: 'A lomokat előző nap (tehát május 3.-án) 18 órától lehet kihelyezni az utcára, amit a FKFV 4.-én szállít el./n' +
+            'A veszélyes hulladékokat a külön erre kijelölt helyre kell vinni. Azokat NEM szabad az utcára kitenni!',
+    });
+    Topics.insert({
+      communityId: demoCommunityId,
+      userId: dummyUsers[0],
+      category: 'news',
+      title: 'Kémények ellenörzéséhez időpontot szükséges kérni',
+      text: 'Hónap végéig kötelező a kémények ellenőrzése. Három lehetséges időpont van. 2017.05.11, 2017.05.13, 2017.05.24./n' +
+            'Ezek közül lehet választani és a kéményseprőkkel egyeztetni a 06(20)2569875 telefonszámon hogy kinek melyik felel meg.',
     });
   }
 });

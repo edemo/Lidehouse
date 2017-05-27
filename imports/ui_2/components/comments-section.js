@@ -34,17 +34,30 @@ Template.Comment.helpers({
 
 Template.Comments_section.events({
   'click .accordion-comment'(event, instance) {
-    const accordion = event.target;
-    accordion.classList.toggle('active');
-    const content = accordion.nextElementSibling;
-    if (content.style.maxHeight) {
-      content.style.maxHeight = null;
-    } else {
-      content.style.maxHeight = content.scrollHeight + 'px';
-    }
+    instance.autorun(() => {
+      const accordion = event.target;
+      accordion.classList.toggle('active');
+      const content = accordion.nextElementSibling;
+      if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        // TODO: if content.scrollHeight changes, we need to rerun this
+        // so content.scrollHeight changes need to trigger this autorun block
+        // so content.scrollHeigh might need to be in a ReactiveVar
+      }
+    });
     // Once its open, we need to subscribe to the comments
     instance.autorun(() => {
       instance.subscribe('comments.onTopic', { topicId: this.topicId });
     });
+  },
+  'click .js-send-comment'(event) {
+    Meteor.call('comments.insert', {
+      topicId: this.topicId,
+      userId: Meteor.userId(),
+      text: event.target.previousElementSibling.value,
+    });
+    event.target.previousElementSibling.value = '';
   },
 });

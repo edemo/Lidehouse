@@ -16,11 +16,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     const topic = Topics.findOne(doc.topicId);
 
-    // TODO goes into persmission check
-    if (topic.communityId !== doc.communityId) {
-      throw new Meteor.Error('comments.insert.accessDenied',
-        'Cannot add comments to a topic that is not yours');
-    }
+    // TODO go into persmission check
 
     Comments.insert(doc);
   },
