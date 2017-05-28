@@ -9,6 +9,9 @@ import { Comments } from '/imports/api/comments/comments.js';
 import '../components/comments-section.html';
 
 Template.Comments_section.onCreated(function commentsSectionOnCreated() {
+  this.autorun(() => {
+    this.subscribe('comments.onTopic', { topicId: this.data.topicId });
+  });
 });
 
 Template.Comments_section.helpers({
@@ -51,10 +54,6 @@ Template.Comments_section.events({
         // so content.scrollHeight changes need to trigger this autorun block
         // so content.scrollHeigh might need to be in a ReactiveVar
       }
-    });
-    // Once its open, we need to subscribe to the comments
-    instance.autorun(() => {
-      instance.subscribe('comments.onTopic', { topicId: this.topicId });
     });
   },
   'click .js-send-comment'(event) {
