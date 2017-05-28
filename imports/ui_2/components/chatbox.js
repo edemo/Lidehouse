@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 import { moment } from 'meteor/momentjs:moment';
-import { TAPi18n } from 'meteor/tap:i18n';
+import { TimeSync } from 'meteor/mizzao:timesync';
 
 import { Comments } from '/imports/api/comments/comments.js';
 
@@ -19,8 +19,10 @@ Template.Chatbox.helpers({
   displayUser() {
     return Meteor.users.findOne(this.userId).fullName();
   },
-  displaySince() {
-    return moment(this.createdAt).fromNow();
+  displayTimeSince() {
+    // momentjs is not reactive, but TymeSync call makes this reactive
+    const serverTimeNow = new Date(TimeSync.serverTime());
+    return moment(this.createdAt).from(serverTimeNow);
   },
   comments() {
     return Comments.find({ topicId: this._id }, { $sort: { createdAt: 1 } });

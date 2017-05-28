@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 import { moment } from 'meteor/momentjs:moment';
+import { TimeSync } from 'meteor/mizzao:timesync';
 
 import { Comments } from '/imports/api/comments/comments.js';
 
@@ -29,8 +30,10 @@ Template.Comment.helpers({
   displayUser() {
     return this.user().fullName();
   },
-  displaySince() {
-    return moment(this.createdAt).fromNow();
+  displayTimeSince() {
+    // momentjs is not reactive, but TymeSync call makes this reactive
+    const serverTimeNow = new Date(TimeSync.serverTime());
+    return moment(this.createdAt).from(serverTimeNow);
   },
 });
 

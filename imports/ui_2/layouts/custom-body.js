@@ -50,8 +50,7 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   T9n.setLanguage('hu');
   TAPi18n.setLanguage('hu');
   Tracker.autorun(() => {
-    const result = moment.locale(TAPi18n.getLanguage());
-    console.log('moment locale: ', result);
+    moment.locale(TAPi18n.getLanguage());
   });
 
   // We run this in autorun, so when a new User logs in, the subscription changes

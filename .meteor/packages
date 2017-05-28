@@ -26,6 +26,7 @@ aldeed:autoform
 twbs:bootstrap
 momentjs:moment
 rzymek:moment-locale-hu
+mizzao:timesync
 
 # data
 mongo@1.1.14
