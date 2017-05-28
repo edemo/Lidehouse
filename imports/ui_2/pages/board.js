@@ -3,6 +3,9 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
+import { moment } from 'meteor/momentjs:moment';
+import { TimeSync } from 'meteor/mizzao:timesync';
+
 import { Topics } from '/imports/api/topics/topics.js';
 
 import '../components/comments-section.js';
@@ -40,7 +43,10 @@ Template.Board.onRendered(function boardOnRendered() {
 });
 
 Template.Board.helpers({
-  forumTopics() {
-    return Topics.find({ category: 'forum' });
+  topics(category) {
+    return Topics.find({ category });
+  },
+  displayTime() {
+    return moment(this.createdAt).format('YYYY MMM Do');
   },
 });

@@ -7,12 +7,14 @@
           <!-- <img src="/icon/si-glyph-bolt.svg" width="17"> -->
           Faliújság
         </div>
-        <div class="faliujsag-item" style="padding: 4px 0;">
-          <p>
-            Lomtalanítás lesz 2017.05.01. 17:00-tól
-          </p>
-          <span>04.21. 19:26</span>
-        </div>
+        {{#each topics 'news'}}
+          <div class="faliujsag-item" style="padding: 4px 0;">
+            <p>
+              {{title}}
+            </p>
+            <span>{{displayTime}}</span>
+          </div>
+        {{/each}}
       </div>
     </div>
 
@@ -83,7 +85,7 @@
       <!-- 2nd section -->
       <button class="accordion">Forum</button>
       <div class="accordion-content">
-        {{#each forumTopics}}
+        {{#each topics 'forum'}}
           {{> Chatbox}}
         {{/each}}
       </div>
