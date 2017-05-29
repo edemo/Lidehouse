@@ -22,64 +22,9 @@
     <div class="side-left">
       <button class="accordion">Szavazások</button>
       <div class="accordion-content">
-
-        <div class="chatbox">
-          <div class="vote-title">
-            Legyen e biciklitartónk?
-            <div class="vote-date" data-tooltip="2017.05.27. 13:50">Lezárul: 3 nap 4 óra</div>
-          </div>
-          <div class="vote-description">
-            Azért lenne jó, mert jön a nyár és már most mindenki bringával mászkál és a halál se akarja a lakásból lecipelni vagy a tárolóból fel minden nap 3-szor vagy többször...
-          </div>
-          <div class="vote-body">
-            <div class="btns-group">
-              <a href="#modal-box--open" class="btn-secondary btn-yes">
-                Igen
-              </a>
-              <a href="#modal-box--open" class="btn-secondary btn-no">
-                Nem
-              </a>
-              <a href="#modal-box--open" class="btn-secondary">
-                Tartózkodom
-              </a>
-            </div>
-          </div>
-          <div class="vote-footer">
-            <span class="right-icon"><a href="#modal-box2--open">Papericon</a></span>
-            {{> Comments_section}}
-          </div>
-        </div>
-
-        <div class="chatbox">
-          <div class="vote-title">
-            Legyen e biciklitartónk?
-            <span class="vote-date" data-tooltip="2017.05.27. 13:50">3 nap 2 óra</span>
-          </div>
-          <div class="vote-body">
-            <!-- a szavazás állása -->
-            <div class="progressBar" data-tooltip="eddig 10 -en szavaztak a 100-ból">
-              <div class="progressLine" data-value="62">62 %</div>
-            </div>
-            <!-- a "benyomódott" kiválasztott válasz -->
-            <div class="btns-group">
-              <a href="#modal-box--open" class="btn-secondary btn-yes btn-yes-chosen">
-                Igen
-              </a>
-              <a href="#modal-box--open" class="btn-secondary btn-no">
-                Nem
-              </a>
-              <a href="#modal-box--open" class="btn-secondary">
-                Tartózkodom
-              </a>
-            </div>
-
-            <div class="vote-footer">
-              <span style="float: right;"><a href="#">Hivatalos előterjesztés megtekintése</a></span>
-              {{> Comments_section}}
-            </div>
-          </div>
-        </div>
-
+        {{#each topics 'vote'}}
+          {{> Votebox}}
+        {{/each}}
       </div>
 
       <!-- 2nd section -->

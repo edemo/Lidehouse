@@ -9,6 +9,7 @@ import { TimeSync } from 'meteor/mizzao:timesync';
 import { Topics } from '/imports/api/topics/topics.js';
 
 import '../components/comments-section.js';
+import '../components/votebox.js';
 import '../components/chatbox.js';
 import './board.html';
 

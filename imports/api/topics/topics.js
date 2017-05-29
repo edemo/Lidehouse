@@ -1,6 +1,7 @@
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
+import { moment } from 'meteor/momentjs:moment';
 import faker from 'faker';
 
 import { Comments } from '../comments/comments.js';
@@ -8,6 +9,7 @@ import { Comments } from '../comments/comments.js';
 class TopicsCollection extends Mongo.Collection {
   insert(topic, callback) {
     const ourTopic = topic;
+    console.log(ourTopic);
     return super.insert(ourTopic, callback);
   }
   remove(selector, callback) {
@@ -18,6 +20,15 @@ class TopicsCollection extends Mongo.Collection {
 
 export const Topics = new TopicsCollection('topics');
 
+Topics.voteSchema = new SimpleSchema({
+  closesAt: { type: Date, defaultValue: moment().add(2, 'week').toDate() },
+  type: { type: String, allowedValues: ['yesno', 'preferential'], defaultValue: 'yesno' },
+  choices: { type: Array, defaultValue: ['yes', 'no', 'abstain'] },
+  'choices.$': { type: String },
+  results: { type: Object, blackbox: true, defaultValue: {} },
+  progress: { type: Number, defaultValue: 0 },
+});
+
 Topics.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -26,6 +37,7 @@ Topics.schema = new SimpleSchema({
   text: { type: String },
   createdAt: { type: Date, denyUpdate: true, autoValue() { if (this.isInsert) { return new Date(); } } },
   unreadCount: { type: Number, defaultValue: 0 },
+  vote: { type: Topics.voteSchema, optional: true }, // TODO: should be conditional on category
 });
 
 Topics.attachSchema(Topics.schema);
@@ -57,6 +69,7 @@ Topics.publicFields = {
   text: 1,
   createdAt: 1,
   unreadCount: 1,
+  vote: 1,
 };
 
 Factory.define('topic', Topics, {
