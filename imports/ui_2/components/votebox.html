@@ -12,18 +12,28 @@
       <div class="progressBar" data-tooltip="eddig 10 -en szavaztak a 100-ból">
         <div class="progressLine" data-value="62">62 %</div>
       </div>
-      <!-- a "benyomódott" kiválasztott válasz -->
-      <div class="btns-group">
-        <a href="#modal-box--open" class="btn-secondary btn-yes btn-yes-chosen">
-          Igen
-        </a>
-        <a href="#modal-box--open" class="btn-secondary btn-no">
-          Nem
-        </a>
-        <a href="#modal-box--open" class="btn-secondary">
-          Tartózkodom
-        </a>
-      </div>
+      {{#if voteTypeIs "yesno"}}
+        <!-- a "benyomódott" kiválasztott válasz -->
+        <div class="btns-group">
+          <a href="#modal-box--open" class="btn-secondary btn-yes btn-yes-chosen">
+            Igen
+          </a>
+          <a href="#modal-box--open" class="btn-secondary btn-no">
+            Nem
+          </a>
+          <a href="#modal-box--open" class="btn-secondary">
+            Tartózkodom
+          </a>
+        </div>
+      {{/if}}
+      {{#if voteTypeIs "preferential"}}
+        <!-- TODO ide kellene a sorbarendezos cucc -->
+        <ul style="{margin-left:20px;}">
+          {{#each choice in vote.choices}}
+            <li>{{choice}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
     </div>
     <div class="vote-footer">
       <span class="right-icon"><a href="#modal-box2--open" title="Hivatalos előterjesztés megtekintése">Papericon</a></span>

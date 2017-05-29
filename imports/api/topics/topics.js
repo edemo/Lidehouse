@@ -50,6 +50,10 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
+  voteTypeIs(type) {
+    if (!this.vote) return undefined;
+    return (this.vote.type === type);
+  },
 });
 
 // Deny all client-side updates since we will be using methods to manage this collection
