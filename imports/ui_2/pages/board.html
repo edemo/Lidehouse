@@ -9,7 +9,7 @@
         </div>
         {{#each topics 'news'}}
           <div class="faliujsag-item" style="padding: 4px 0;">
-            <p>
+            <p data-tooltip="{{text}}">
               {{title}}
             </p>
             <span>{{displayTime}}</span>
@@ -20,7 +20,7 @@
 
     <!-- left side -->
     <div class="side-left">
-      <button class="accordion">Szavazások</button>
+      <button class="accordion">Aktív Szavazások</button>
       <div class="accordion-content">
         {{#each topics 'vote'}}
           {{> Votebox}}
@@ -28,7 +28,7 @@
       </div>
 
       <!-- 2nd section -->
-      <button class="accordion">Forum</button>
+      <button class="accordion">Friss Forum Posztok</button>
       <div class="accordion-content">
         {{#each topics 'forum'}}
           {{> Chatbox}}

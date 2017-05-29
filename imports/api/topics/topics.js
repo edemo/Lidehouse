@@ -9,7 +9,6 @@ import { Comments } from '../comments/comments.js';
 class TopicsCollection extends Mongo.Collection {
   insert(topic, callback) {
     const ourTopic = topic;
-    console.log(ourTopic);
     return super.insert(ourTopic, callback);
   }
   remove(selector, callback) {

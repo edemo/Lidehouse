@@ -210,7 +210,7 @@ Meteor.startup(() => {
     },
   });
 
-  Topics.insert({
+  const voteTopicId = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'vote',
@@ -221,5 +221,19 @@ Meteor.startup(() => {
       type: 'preferential',
       choices: ['semleges fehér', 'halvány rózsaszín', 'sárga', 'világos szürke'],
     },
+  });
+
+  Comments.insert({
+    topicId: voteTopicId,
+    userId: nextUser(),
+    text: 'A halovány színek jobban mutatnak. Világosabb hatású lesz a lépcsőház.',
+    createdAt: new Date(timestamp),
+  });
+
+  Comments.insert({
+    topicId: voteTopicId,
+    userId: nextUser(),
+    text: 'Jajj csak szürke NE legyen. Akkor költözöm.',
+    createdAt: new Date(timestamp),
   });
 });
