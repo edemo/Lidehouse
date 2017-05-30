@@ -1,3 +1,53 @@
+@btn-primary-color: rgb(45, 45, 45);
+@btn-primary-bcg: rgb(243, 191, 115);
+@chat-msg-color: rgb(68, 68, 68);
+@base-link-color: #1885d8;
+@chat-avatar-size: 40px;
+@chat-avatar-margin: 15px;
+
+@status-uconf: #bdbdbd;
+@status-acc: rgba(112, 255, 11, 0.55);
+@status-inp: rgb(254, 185, 60);
+@status-freez: rgba(11, 142, 225, 0.35);
+@status-done: rgba(95, 209, 4, 0.79);
+@status-del: rgba(255, 62, 21, 0.7);
+
+// report page table
+@th-border: #c8c8c8;
+@td-border: #d5d5d5;
+
+.full-width {
+  width: 100%;
+}
+.no-padding {
+  padding: 0px;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.text-left {
+  text-align: left;
+}
+.page-profile, .page-board, .page_styleguide, .page-report, .page-housing {
+  a {
+    color: @base-link-color;
+  }
+  .btn-primary {
+    min-width: 100px;
+    color: @btn-primary-color !important;
+    background: @btn-primary-bcg none repeat scroll 0% 0%;
+    letter-spacing: 2px;
+    margin-top: 7px;
+    margin-bottom: 10px;
+    &:hover {
+      background: lighten(@btn-primary-bcg, 10%);
+    }
+  }
+}
+
 @media screen and (min-width: 40em) {
   // nav { display: none; }
 }
@@ -279,13 +329,20 @@ nav::after {
       // float: right;
     }
     &-avatar {
+      img {
+        width: @chat-avatar-size;
+      }
       float: left;
-      margin-right: 10px;
+      margin-right: @chat-avatar-margin;
     }
     &-name {
       height: 50px;
       &-span {
-        font-size-adjust: .6;
+        // font-size-adjust: .53;
+      }
+      p {
+        padding: 0px;
+        color: @chat-msg-color;
       }
     }
     &-date {
@@ -331,6 +388,47 @@ nav::after {
       @media screen and (max-width: 80em) {
         font-size-adjust: 0.4;
       }
+    }
+  }
+}
+
+// hibabejelnto statuszai
+.status-span {
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 13px;
+  &-unc {
+    background-color: @status-uconf;
+  }
+  &-acc {
+    background-color: @status-acc;
+  }
+  &-inp {
+    background-color: @status-inp;
+  }
+  &-freez {
+    background-color: @status-freez;
+  }
+  &-done {
+    background-color: @status-done;
+  }
+  &-del {
+    background-color: @status-del;
+  }
+}
+.status-demo {
+  float: unset;
+  display: -moz-box;
+  display: -webkit-box;
+  padding: 10px;
+  div {
+    width:120px;
+    margin:10px;
+  }
+  &-sg {
+    div {
+      width:120px;
+      margin:10px;
     }
   }
 }

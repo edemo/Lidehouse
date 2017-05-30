@@ -1,0 +1,240 @@
+<template name="Housing">
+  <div class="content-scrollable page-content page-housing">
+
+    <div style="width:100%;">
+      <ul class="tabs">
+        <li class="tab">
+          <input type="radio" name="tabs" checked="checked" id="tab1" />
+          <label for="tab1">Albetétek</label>
+          <div id="tab-content1" class="content">
+            <button type="button" class="primary" name="button"></button>
+
+            <div class="row">
+              <div class="col-xs-8">
+                <h4>
+                  A ház adatai
+                </h4>
+              </div>
+              <div class="col-xs-4 text-right">
+                <button type="submit" class="btn btn-primary">Mentés</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <form>
+                <div class="col-xs-12 col-md-6 col-lg-4">
+                  <img src="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" alt="" style="max-width: 100%;" />
+                </div>
+                <div class="col-xs-12 col-md-6 col-lg-4">
+                  <div class="form-group">
+                    <label for="houseName">Név</label>
+                    <input type="text" class="form-control" id="houseName" placeholder="Rózsadomb lakókert">
+                  </div>
+                  <div class="form-group">
+                    <label for="houseNum">Helyralyzi szám</label>
+                    <input type="text" class="form-control" id="houseNum" placeholder=123456789>
+                  </div>
+                  <div class="form-group">
+                    <label for="houseCou">Utca</label>
+                    <input type="text" class="form-control" id="houseCou" placeholder="Lonyai út">
+                  </div>
+                </div>
+                <div class="col-xs-12 col-md-6 col-lg-4">
+                  <div class="form-group">
+                    <label for="houseCity">Város</label>
+                    <input type="text" class="form-control" id="houseCity" placeholder="Budapest">
+                  </div>
+                  <div class="form-group">
+                    <label for="houseIr">Irányító szám</label>
+                    <input type="number" class="form-control" id="houseIr" placeholder="1026" min="0">
+                  </div>
+                  <div class="form-group">
+                    <label for="houseHsz">Házszám</label>
+                    <input type="number" class="form-control" id="houseHsz" placeholder="52" min="0">
+                  </div>
+                  <!-- megerosito modal mentes elott-->
+                </div>
+              </form>
+            </div>
+            <div class="row house_lowdetails">
+              <div class="col-xs-3">
+                <img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakók száma: 120
+              </div>
+              <div class="col-xs-3">
+                <img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakások száma: 123
+              </div>
+              <div class="col-xs-3">
+                <img src="/icon/si-glyph-mail-box.svg" width="20"/>Parkolók száma: 120
+              </div>
+              <div class="col-xs-3">
+                <img src="/icon/si-glyph-mail-box.svg" width="20"/>Tárolók száma: 123
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+                <hr>
+                <h4>A házhoz tartozó albetétek</h4>
+                <br>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 table-responsive">
+                <table class="albetet-table full-width table-striped">
+                  <tr>
+                    <th>
+                      Albetét neve
+                    </th>
+                    <th>
+                      Em./Hsz.
+                    </th>
+                    <th>
+                      Tulajdonos
+                    </th>
+                    <th>
+                      Helyr. szám
+                    </th>
+                    <th>
+                      Típus
+                    </th>
+                    <th>
+                      Méret(nm.)
+                    </th>
+                    <th>
+                      Tulajd. hányad
+                    </th>
+                    <th>
+                      Lakók
+                    </th>
+                    <th>
+                      Szavazati jog
+                    </th>
+                    <th>
+                      Megjegyzés
+                    </th>
+                    <th>
+
+                    </th>
+                    <th>
+
+                    </th>
+                    <th>
+
+                    </th>
+                  </tr>
+                  <tr>
+                    <td>
+                      Józsi lakása
+                    </td>
+                    <td>
+                      3/12
+                    </td>
+                    <td>
+                      R. Dani
+                    </td>
+                    <td>
+                      2051666/684
+                    </td>
+                    <td>
+                      Lakás
+                    </td>
+                    <td>
+                      35
+                    </td>
+                    <td>
+                      1/1
+                    </td>
+                    <td>
+                      Én
+                    </td>
+                    <td>
+                      Én
+                    </td>
+                    <td>
+                      Ez egyéb info a lakásról
+                    </td>
+                    <td>
+                      <img src="/icon/si-glyph-book-4.svg" alt="konyveles" />
+                    </td>
+                    <td>
+                      <img src="/icon/si-glyph-hammer-and-wrench.svg" alt="modify" />
+                    </td>
+                    <td>
+                      <img src="/icon/si-glyph-delete.svg" alt="delete"/>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      Józsi lakása
+                    </td>
+                    <td>
+                      3/12
+                    </td>
+                    <td>
+                      R. Dani
+                    </td>
+                    <td>
+                      2051666/684
+                    </td>
+                    <td>
+                      Lakás
+                    </td>
+                    <td>
+                      35
+                    </td>
+                    <td>
+                      1/1
+                    </td>
+                    <td>
+                      Én
+                    </td>
+                    <td>
+                      Én
+                    </td>
+                    <td>
+                      Ez egyéb info a lakásról
+                    </td>
+                    <td>
+                      <img src="/icon/si-glyph-book-4.svg" alt="konyveles" />
+                    </td>
+                    <td>
+                      <img src="/icon/si-glyph-hammer-and-wrench.svg" alt="modify" />
+                    </td>
+                    <td>
+                      <img src="/icon/si-glyph-delete.svg" alt="delete"/>
+                    </td>
+                  </tr>
+
+                </table>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="tab">
+          <input type="radio" name="tabs" id="tab2" />
+          <label for="tab2">Alb. csoportosítása</label>
+          <div id="tab-content2" class="content">
+            <div class="row">
+              <div class="col-xs-12 text-center">
+                <p>Ez a funkció még nincs kész. Köszönjük türelmét!</p>
+                <hr/>
+              </div>
+            </div>
+
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+  $(function() {
+    $( "ul.droptrue" ).sortable({
+      connectWith: ".js-sort-list"
+    });
+
+    // $( "#sortable1" ).disableSelection();
+  });
+  </script>
+</template>

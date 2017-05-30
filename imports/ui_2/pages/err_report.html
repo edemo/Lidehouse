@@ -1,0 +1,269 @@
+<template name="Err_report">
+  <div class="content-scrollable page-content page-report">
+
+    <!-- top table start -->
+    <div class="row">
+      <div class="col-xs-12 col-lg-10 col-lg-offset-1 white-box">
+        <div class="row">
+          <div class="col-xs-12 text-center">
+            <h3>Aktív bejelentett hibák</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 no-padding table-responsive">
+            <table class="table full-width">
+              <tr>
+                <!-- <th>
+                  Név
+                </th> -->
+                <th>
+                  Leírás
+                </th>
+                <th>
+                  Kategória
+                </th>
+                <th>
+                  Bejelentve
+                </th>
+                <th>
+                  Bejelentő
+                </th>
+                <th>
+                  Státusz
+                </th>
+                <th></th>
+              </tr>
+
+              <tr>
+                <!-- <td>
+
+                </td> -->
+                <td>
+                  Leszakad a teraszom, így hát fwpeofj pqo jf fpejwfáweéopjf
+                </td>
+                <td>
+                  Építészet
+                </td>
+                <td>
+                  2017.05.29.
+                </td>
+                <td>
+                  Mariann Jose
+                </td>
+                <td>
+                  <div class="text-center status-span status-span-inp">Folyamatban</div>
+                </td>
+                <td class="td-icon">
+                  <img src="/icon/si-glyph-checked.svg" alt="resolved"/> <img src="/icon/si-glyph-trash.svg" alt="delete" />
+                </td>
+              </tr>
+
+              <tr>
+                <!-- <td>
+
+                </td> -->
+                <td>
+                  A lépcsőházban hullik a vakolat -2/b 8.lph. 4.emelet
+                </td>
+                <td>
+                  Építészet
+                </td>
+                <td>
+                  2017.05.29.
+                </td>
+                <td>
+                  Mariann Jose
+                </td>
+                <td>
+                  <div class="text-center status-span status-span-unc">Megerősítés alatt</div>
+                </td>
+                <!-- icon csak a kk szamara lathato -->
+                <td class="td-icon">
+                  <img src="/icon/si-glyph-checked.svg" alt="resolved"/> <img src="/icon/si-glyph-trash.svg" alt="delete"/>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- top table end -->
+
+    <!-- bejelento form start -->
+    <div class="row">
+      <div class="col-xs-12 col-lg-10 col-lg-offset-1 white-box">
+        <div class="row text-center">
+          <p class="lead">Új hibabejelentés</p>
+          <small>Kérjük csak akkor adja fel bejelentését, ha az még nem szerepel a fenti listán vagy nemrég került archiválásra hasonló. A lezárt bejelentéseket a lap alján tekinthetik meg. Köszönjük!</small>
+        </div>
+        <div class="row">
+          <div class="col-xs-4 col-md-3 col-lg-3 col-lg-offset-1">
+            <select class="form-control">
+              <option selected disabled>Kategória</option>
+              <option>Víz</option>
+              <option>Gáz</option>
+              <option>Villany</option>
+              <option>Lift</option>
+              <option>Épületszerkezet</option>
+              <option>Kert</option>
+            </select>
+          </div>
+          <div class="col-xs-8 col-md-9 col-lg-7">
+            <input type="text" class="form-control" placeholder="A hiba rövid leírása ...">
+          </div>
+          <div class="col-xs-12 text-center">
+            <button type="button" class="btn-primary">Elküldöm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- bejelento form end -->
+
+    <!-- lezárt bejelentesek -->
+    <div class="row">
+      <div class="col-xs-12 col-lg-10 col-lg-offset-1 white-box">
+        <div class="row">
+          <div class="col-xs-12 text-center">
+            <h3>Lezárt bejelentett hibák</h3>
+          </div>
+        </div>
+        <div class="row text-center hidden">
+          <p>
+            Még nincs lezárt bejelentés.
+          </p>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 no-padding table-responsive archive-div">
+            <table class="table full-width">
+              <tr>
+                <!-- <th>
+                  Név
+                </th> -->
+                <th>
+                  Leírás
+                </th>
+                <th>
+                  Kategória
+                </th>
+                <th>
+                  Bejelentve
+                </th>
+                <th>
+                  Bejelentő
+                </th>
+                <th>
+                  Lezárva
+                </th>
+                <th></th>
+              </tr>
+
+              <tr>
+                <!-- <td>
+
+                </td> -->
+                <td>
+                  Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF
+                </td>
+                <td>
+                  Építészet
+                </td>
+                <td>
+                  2017.05.29.
+                </td>
+                <td>
+                  Mariann Jose
+                </td>
+                <td>
+                  <div class="text-center status-span status-span-del">Törölve</div>
+                </td>
+                <td class="td-icon">
+                  <img src="/icon/si-glyph-delete.svg" alt="delete" />
+                </td>
+              </tr>
+
+              <tr>
+                <!-- <td>
+
+                </td> -->
+                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
+                <td>Építészet</td>
+                <td>2017.05.29.</td>
+                <td>Mariann Jose</td>
+                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
+                <!-- icon csak a kk szamara lathato -->
+                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
+              </tr>
+
+              <tr>
+                <!-- <td>
+
+                </td> -->
+                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
+                <td>Építészet</td>
+                <td>2017.05.29.</td>
+                <td>Mariann Jose</td>
+                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
+                <!-- icon csak a kk szamara lathato -->
+                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
+              </tr>
+              <tr>
+                <!-- <td>
+
+                </td> -->
+                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
+                <td>Építészet</td>
+                <td>2017.05.29.</td>
+                <td>Mariann Jose</td>
+                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
+                <!-- icon csak a kk szamara lathato -->
+                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
+              </tr>
+              <tr>
+                <!-- <td>
+
+                </td> -->
+                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
+                <td>Építészet</td>
+                <td>2017.05.29.</td>
+                <td>Mariann Jose</td>
+                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
+                <!-- icon csak a kk szamara lathato -->
+                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
+              </tr>
+              <tr>
+                <!-- <td>
+
+                </td> -->
+                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
+                <td>Építészet</td>
+                <td>2017.05.29.</td>
+                <td>Mariann Jose</td>
+                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
+                <!-- icon csak a kk szamara lathato -->
+                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
+              </tr>
+              <tr>
+                <!-- <td>
+
+                </td> -->
+                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
+                <td>Építészet</td>
+                <td>2017.05.29.</td>
+                <td>Mariann Jose</td>
+                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
+                <!-- icon csak a kk szamara lathato -->
+                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
+              </tr>
+
+            </table>
+          </div>
+          <!-- table div end -->
+        </div>
+      </div>
+    </div>
+    <!-- archiv end -->
+
+  </div>
+</template>

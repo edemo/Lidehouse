@@ -17,6 +17,8 @@ Template.Styleguide.onRendered(function styleguideOnRendered() {
         var accordionHtml = htmlEscape(document.getElementById("accordion-sample").innerHTML);
         var progressbarHtml = htmlEscape(document.getElementById("progressbar-sample").innerHTML);
         var voteboxHtml = htmlEscape(document.getElementById("votebox-sample").innerHTML);
+        var prefvoteHtml = htmlEscape(document.getElementById("sorting-vote-sample").innerHTML);
+        var statusHtml = htmlEscape(document.getElementById("status-sample").innerHTML);
 
         // Highlight the operative parts:
         quineHtml = quineHtml.replace(
@@ -31,11 +33,19 @@ Template.Styleguide.onRendered(function styleguideOnRendered() {
         voteboxHtml = voteboxHtml.replace(
           /&lt;script src[\s\S]*?&gt;&lt;\/script&gt;|&lt;!--\?[\s\S]*?--&gt;|&lt;pre\b[\s\S]*?&lt;\/pre&gt;/g,
           '<span class="operative">$&<\/span>');
+        prefvoteHtml = prefvoteHtml.replace(
+          /&lt;script src[\s\S]*?&gt;&lt;\/script&gt;|&lt;!--\?[\s\S]*?--&gt;|&lt;pre\b[\s\S]*?&lt;\/pre&gt;/g,
+          '<span class="operative">$&<\/span>');
+        statusHtml = statusHtml.replace(
+          /&lt;script src[\s\S]*?&gt;&lt;\/script&gt;|&lt;!--\?[\s\S]*?--&gt;|&lt;pre\b[\s\S]*?&lt;\/pre&gt;/g,
+          '<span class="operative">$&<\/span>');
           // insert into PRE
         document.getElementById("quine").innerHTML = quineHtml;
         document.getElementById("accordion_code").innerHTML = accordionHtml;
         document.getElementById("progressbar_code").innerHTML = progressbarHtml;
         document.getElementById("votebox_code").innerHTML = voteboxHtml;
+        document.getElementById("sorting-vote-code").innerHTML = prefvoteHtml;
+        document.getElementById("status-code").innerHTML = statusHtml;
       })();
       //]]>
 
@@ -68,5 +78,8 @@ Template.Styleguide.onRendered(function styleguideOnRendered() {
         }
       }
     }
+
+    // pref vote data  gather
+    // TODO
   });
 });
