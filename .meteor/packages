@@ -27,6 +27,7 @@ twbs:bootstrap
 momentjs:moment
 rzymek:moment-locale-hu
 mizzao:timesync
+djk:jquery-ui
 
 # data
 mongo@1.1.14
@@ -85,9 +86,3 @@ dburles:factory
 
 # security
 audit-argument-checks@1.0.7
-
-msavin:mongol
-twbs:bootstrap
-jalik:ufs
-jalik:ufs-gridfs
-djk:jquery-ui
