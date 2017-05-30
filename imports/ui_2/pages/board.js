@@ -43,20 +43,6 @@ Template.Board.onRendered(function boardOnRendered() {
       acc[i].classList.toggle("active");
       var panel = acc[i].nextElementSibling;
       panel.style.maxHeight = "none";
-
-      acc2[i].onclick = function() {
-        this.classList.toggle("active");
-        var panel = this.nextElementSibling;
-        var parent_acc = this.closest('.accordion-content');
-        if (panel.style.maxHeight){
-          panel.style.maxHeight = null;
-          fullheight = fullheight - panel.scrollHeight;
-        } else {
-          fullheight = fullheight + panel.scrollHeight;
-          panel.style.maxHeight = panel.scrollHeight + "px";
-          parent_acc.style.maxHeight = parent_acc.scrollHeight + fullheight + "px";
-        }
-      }
     }
   });
 });

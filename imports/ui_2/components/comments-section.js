@@ -46,10 +46,12 @@ Template.Comments_section.events({
       const accordion = event.target;
       accordion.classList.toggle('active');
       const content = accordion.nextElementSibling;
+      const parentAccordion = event.target.closest('.accordion-content');
       if (content.style.maxHeight) {
         content.style.maxHeight = null;
       } else {
-        content.style.maxHeight = content.scrollHeight + 'px';
+        content.style.maxHeight = 'unset';
+        parentAccordion.style.maxHeight = 'auto';
         // TODO: if content.scrollHeight changes, we need to rerun this
         // so content.scrollHeight changes need to trigger this autorun block
         // so content.scrollHeigh might need to be in a ReactiveVar
