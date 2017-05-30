@@ -94,7 +94,7 @@
       </a>
 
       {{#each topic in topics}}
-        <a href="{{pathFor 'Topics.show' _tid=topic._id}}" title="{{topic.name}}"
+        <a href="{{pathFor 'Topics.show' _tid=topic._id}}" title="{{topic.title}}"
             class="list-item {{activeTopicClass topic}}">
           {{#if topic.userId}}
             <span class="icon-lock"></span>
@@ -104,7 +104,7 @@
             <span class="count">{{topic.unreadCount}}</span>
           {{/if}}
 
-          {{topic.name}}
+          {{topic.title}}
         </a>
       {{/each}}
 

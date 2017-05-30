@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
@@ -30,37 +31,24 @@ class CommentsCollection extends Mongo.Collection {
 export const Comments = new CommentsCollection('comments');
 
 Comments.schema = new SimpleSchema({
-  _id: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Id,
-  },
-  topicId: {
-    type: String,
-    regEx: SimpleSchema.RegEx.Id,
-    denyUpdate: true,
-  },
-  text: {
-    type: String,
-    optional: true,
-  },
-  createdAt: {
-    type: Date,
-    denyUpdate: true,
-  },
-  readed: {
-    type: Boolean,
-    defaultValue: false,
-  },
+  topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  text: { type: String, optional: true },
+  createdAt: { type: Date, defaultValue: new Date(), denyUpdate: true },
+  readed: { type: Boolean, defaultValue: false },
 });
 
 Comments.attachSchema(Comments.schema);
 
 Comments.helpers({
+  user() {
+    return Meteor.users.findOne(this.userId);
+  },
   topic() {
     return Topics.findOne(this.topicId);
   },
   editableBy(userId) {
-    return this.topic().editableBy(userId);
+    return this.userId === userId;
   },
 });
 
@@ -76,6 +64,7 @@ Comments.deny({
 // them here to keep them private to the server.
 Comments.publicFields = {
   topicId: 1,
+  userId: 1,
   text: 1,
   createdAt: 1,
   readed: 1,

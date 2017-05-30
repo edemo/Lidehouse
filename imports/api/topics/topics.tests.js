@@ -22,7 +22,7 @@ if (Meteor.isServer) {
       it('builds correctly from factory', function () {
         const topic = Factory.create('topic');
         assert.typeOf(topic, 'object');
-        assert.match(topic.name, /Topic /);
+        assert.match(topic.title, /Topic /);
       });
     });
 

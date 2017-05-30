@@ -11,6 +11,7 @@ export const Communities = new Mongo.Collection('communities');
 Communities.schema = new SimpleSchema({
   name: { type: String, max: 100, label: () => TAPi18n.__('communities.name') },
   profile: { type: comtype.profileSchema, optional: true },
+  totalshares: { type: SimpleSchema.Integer },
 });
 
 Communities.attachSchema(Communities.schema);
@@ -26,6 +27,7 @@ Communities.deny({
 Communities.publicFields = {
   name: 1,
   profile: 1,
+  totalshares: 1,
 };
 
 Factory.define('community', Communities, {

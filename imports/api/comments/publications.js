@@ -6,7 +6,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Comments } from './comments.js';
 import { Topics } from '../topics/topics.js';
 
-Meteor.publishComposite('comments.inTopic', function commentsInTopic(params) {
+Meteor.publishComposite('comments.onTopic', function commentsOnTopic(params) {
   new SimpleSchema({
     topicId: { type: String },
   }).validate(params);
@@ -16,10 +16,7 @@ Meteor.publishComposite('comments.inTopic', function commentsInTopic(params) {
 
   return {
     find() {
-      const query = {
-        _id: topicId,
-        $or: [{ userId: { $exists: false } }, { userId }],
-      };
+      const query = { _id: topicId };
 
       // We only need the _id field in this query, since it's only
       // used to drive the child queries to get the comments

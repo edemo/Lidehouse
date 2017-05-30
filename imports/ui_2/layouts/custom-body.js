@@ -6,8 +6,10 @@ import { ReactiveDict } from 'meteor/reactive-dict';
 import { Template } from 'meteor/templating';
 import { ActiveRoute } from 'meteor/zimme:active-route';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Tracker } from 'meteor/tracker';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { moment } from 'meteor/momentjs:moment';
 import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
@@ -16,9 +18,11 @@ import '/imports/api/users/users.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
-import '/imports//ui/components/loading.js';
+import '/imports/ui/components/loading.js';
 import '/imports/ui/components/side-panel.js';
 import './custom-body.html';
+
+import '/imports/ui_2/pages/not-logged-in.html';
 
 const CONNECTION_ISSUE_TIMEOUT = 5000;
 
@@ -45,6 +49,9 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   });
   T9n.setLanguage('hu');
   TAPi18n.setLanguage('hu');
+  Tracker.autorun(() => {
+    moment.locale(TAPi18n.getLanguage());
+  });
 
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {
@@ -52,9 +59,9 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   });
   // We run this in autorun, so when User switches his community, the subscription changes
   this.autorun(() => {
-    const activeCommunity = Session.get('activeCommunity');
-    if (activeCommunity) {
-      this.subscribe('memberships.inCommunity', { communityId: activeCommunity._id });
+    const activeCommunityId = Session.get('activeCommunityId');
+    if (activeCommunityId) {
+      this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
     }
   });
 });
@@ -93,28 +100,45 @@ Template.Custom_body.helpers({
     return Meteor.user().communities();
   },
   activeCommunity() {
-    let activeCommunity = Session.get('activeCommunity');
-    if (!activeCommunity && Meteor.user()) {
-      activeCommunity = Meteor.user().communities().fetch()[0];
-      Session.set('activeCommunity', activeCommunity);
+    const activeCommunityId = Session.get('activeCommunityId');
+    let activeCommunity;
+    if (activeCommunityId) {
+      activeCommunity = Communities.findOne(activeCommunityId);
+    } else if (Meteor.user()) {
+      const communities = Meteor.user().communities();
+      if (communities.count() > 0) {
+        activeCommunity = communities.fetch()[0];
+        Session.set('activeCommunityId', activeCommunity._id);
+      }
     }
+    // else activeCommunity stays undefined
+
     return activeCommunity;
   },
   memberships() {
-    const activeCommunity = Session.get('activeCommunity');
-    if (!activeCommunity) { return []; }
-    return Memberships.find({ communityId: activeCommunity._id });
+    const activeCommunityId = Session.get('activeCommunityId');
+    if (!activeCommunityId) { return []; }
+    return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId(), role: 'owner' });
   },
   activeMembership() {
-    let activeMembership = Session.get('activeMembership');
-    if (!activeMembership) {
-      const activeCommunity = Session.get('activeCommunity');
-      if (activeCommunity) {
-        activeMembership = Memberships.findOne({ communityId: activeCommunity._id });
-        Session.set('activeMembership', activeMembership);
+    const activeMembershipId = Session.get('activeMembershipId');
+    const activeCommunityId = Session.get('activeCommunityId');
+    let activeMembership;
+    if (activeMembershipId) {
+      activeMembership = Memberships.findOne(activeMembershipId);
+    } else if (activeCommunityId) {
+      activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId(), role: 'owner' });
+      if (activeMembership) {
+        Session.set('activeMembershipId', activeMembership._id);
       }
     }
+    // else activeMembership stays undefined;
+
     return activeMembership;
+  },
+  displayMembership(membership) {
+    if (!membership) return '';
+    return membership.name();
   },
 });
 
@@ -133,13 +157,12 @@ Template.Custom_body.events({
   },
 
   'click .js-switch-community'() {
-    const community = Communities.findOne(this._id);
-    Session.set('activeCommunity', community);
+    Session.set('activeCommunityId', this._id);
+    Session.set('activeMembershipId', undefined);
   },
 
   'click .js-switch-membership'() {
-    const membership = Memberships.findOne(this._id);
-    Session.set('activeMembership', membership);
+    Session.set('activeMembershipId', this._id);
   },
 
   'click .js-logout'() {

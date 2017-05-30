@@ -7,8 +7,8 @@ import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { ShareSchema } from '/imports/api/memberships/share.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Roles } from '/imports/api/permissions/roles.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -20,24 +20,85 @@ Memberships.helpers({
     const user = Meteor.users.findOne(this.userId);
     return user;
   },
-  username() {
-    if (!this.userId) return '';
-    if (!this.user()) return 'unknown';
-    return this.user().username;
-  },
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);
     return community;
   },
+  totalshares() {
+    return this.community().totalshares;
+  },
+  // TODO: move this to the house package
+  location() {
+    if (!this.ownership) return '';
+    return `${this.ownership.floor}/${this.ownership.number}`;
+  },
+  name() {
+    if (!this.ownership) return '';
+    const letter = this.ownership.type.substring(0, 1);
+    return `${letter}-${this.ownership.floor}/${this.ownership.number}`;
+  },
+});
+
+const OwnershipSchema = new SimpleSchema({
+  serial: { type: SimpleSchema.Integer },
+  share: { type: SimpleSchema.Integer },
+  /*  name: { type: String,
+      autoValue() {
+        if (this.isInsert) {
+          const letter = this.field('type').value.substring(0,1);
+          const floor = this.field('floor').value;
+          const number = this.field('number').value;
+          return letter + '-' + floor + '/' + number;
+        }
+        return undefined; // means leave whats there alone for Updates, Upserts
+      },
+    },
+  */
+  // TODO: move these into the House package
+  floor: { type: String },
+  number: { type: String },
+  type: { type: String,
+    allowedValues: ['Apartment', 'Parking', 'Storage'],
+  },
 });
 
 Memberships.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-//  shares: { type: Array, optional: true },
-//  'shares.$': { type: ShareSchema },
-  share: { type: ShareSchema, optional: true },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); } },
+  // TODO should be conditional on role
+  ownership: { type: OwnershipSchema, optional: true },
+});
+
+Memberships.schemaForRoleship = new SimpleSchema({
+  userId: { type: String,
+    optional: true,
+    autoform: {
+      options() {
+        return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
+      },
+    },
+  },
+  role: { type: String,
+    autoform: {
+      options() {
+        return Roles.find({}).map(function option(r) { return { label: r.name, value: r._id }; }); // _id === name BTW
+      },
+    },
+  },
+});
+
+Memberships.schemaForOwnership = new SimpleSchema({
+  userId: { type: String,
+    optional: true,
+    autoform: {
+      options() {
+        return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
+      },
+    },
+  },
+  ownership: { type: OwnershipSchema, optional: true },
 });
 
 Memberships.attachSchema(Memberships.schema);
@@ -51,4 +112,5 @@ Memberships.deny({
 
 Factory.define('membership', Memberships, {
   communityId: () => Factory.get('community'),
+  userId: () => Factory.get('user'),
 });

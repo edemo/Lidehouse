@@ -80,6 +80,7 @@ meteortoys:toykit@3.0.4
 minifier-css@1.2.15
 minifier-js@1.2.15
 minimongo@1.0.19
+mizzao:timesync@0.5.0
 mobile-experience@1.0.4
 mobile-status-bar@1.0.13
 modules@0.7.7
@@ -109,6 +110,7 @@ reload@1.1.11
 retry@1.0.9
 reywood:publish-composite@1.4.2
 routepolicy@1.0.12
+rzymek:moment-locale-hu@2.9.0
 service-configuration@1.0.11
 session@1.1.7
 sha@1.0.9

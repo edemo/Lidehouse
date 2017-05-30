@@ -70,7 +70,9 @@
     "memberships": "Tagok"
   },
   "share":  {
+    "serial": "Sorszám",
     "name": "Név",
+    "location": "Elhelyezkedés",
     "type": "Típus",
     "ownership": "Tulajdon",
     "fraction": "Tulajdonrész"

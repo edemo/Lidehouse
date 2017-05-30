@@ -7,18 +7,21 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { displayError } from '/imports/ui/lib/errors.js';
 
-import './community-members-page.html';
+import './community-roleships.html';
 
-Template.Community_members_page.onCreated(function () {
+Template.Community_roleships_page.onCreated(function () {
 });
 
-Template.Community_members_page.helpers({
-  members() {
+Template.Community_roleships_page.helpers({
+  collection() {
+    return Memberships;
+  },
+  schema() {
+    return Memberships.schemaForRoleship;
+  },
+  roleships() {
     const communityId = Session.get('activeCommunityId');
     return Memberships.find({ communityId });
-  },
-  memberships() {
-    return Memberships;
   },
   selectedDoc() {
     return Memberships.findOne(Session.get('selectedMemberId'));
@@ -33,39 +36,36 @@ Template.Community_members_page.helpers({
   hasSelection() {
     return !!Session.get('selectedMemberId');
   },
+  displayUsername(membership) {
+    if (!membership.hasUser()) return '';
+    return membership.user().fullName();
+  },
+  displayRole(roleship) {
+    return roleship.role;
+  },
 });
 
-Template.Community_members_page.events({
+Template.Community_roleships_page.events({
   'click .table-row'() {
     Session.set('selectedMemberId', this._id);
   },
-  'click .js-new-share'(event, instance) {
+  'click .js-new'(event, instance) {
     const communityId = Session.get('activeCommunityId');
-    Meteor.call('memberships.insert', { communityId }, function(err, res) {
+    Meteor.call('memberships.insert', { communityId, role: 'guest' }, function(err, res) {
       if (err) {
         displayError(err);
         return;
       }
-      const membershipId = res;
-      Session.set('selectedMemberId', membershipId);
+      const roleshipId = res;
+      Session.set('selectedMemberId', roleshipId);
     });
   },
-  'click .js-delete-share'() {
+  'click .js-delete'() {
     Meteor.call('memberships.remove', { _id: this._id }, function(err, res) {
       if (err) {
         displayError(err);
       }
       Session.set('selectedMemberId', undefined);
-    });
-  },
-  'click .js-invite-user'() {
-
-  },
-  'click .js-remove-user'() {
-    Meteor.call('memberships.update', { $unset: { userId: '' } }, this._id, function(err, res) {
-      if (err) {
-        displayError(err);
-      }
     });
   },
 });

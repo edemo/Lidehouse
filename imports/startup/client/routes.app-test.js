@@ -49,7 +49,7 @@ if (Meteor.isClient) {
         return afterFlushPromise()
           .then(waitForSubscriptions)
           .then(() => {
-            assert.equal($('.title-wrapper').html(), topic.name);
+            assert.equal($('.title-wrapper').html(), topic.title);
             assert.equal(Comments.find({ topicId: topic._id }).count(), 3);
           });
       });

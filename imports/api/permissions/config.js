@@ -7,7 +7,7 @@ import { Permissions } from './permissions.js';
 const defaultRoles = [
   { name: 'admin' },
   { name: 'manager' },
-  { name: 'member' },
+  { name: 'owner' },
   { name: 'accountant' },
   { name: 'overseer' },
   { name: 'delegate' },
@@ -15,8 +15,8 @@ const defaultRoles = [
 ];
 
 // Groupings just to ease configuration
-const everybody = ['admin', 'manager', 'member', 'accountant', 'overseer', 'delegate', 'guest'];
-const exceptGuest = ['admin', 'manager', 'member', 'accountant', 'overseer', 'delegate'];
+const everybody = ['admin', 'manager', 'owner', 'accountant', 'overseer', 'delegate', 'guest'];
+const exceptGuest = ['admin', 'manager', 'owner', 'accountant', 'overseer', 'delegate'];
 
 const permissions = [
   { name: 'communities.create',   type: 'edit', roles: exceptGuest },

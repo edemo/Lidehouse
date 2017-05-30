@@ -17,6 +17,7 @@ import '/imports/ui_2/pages/board.js';
 import '/imports/ui_2/pages/document-store.js';
 import '/imports/ui_2/pages/communities-show.js';
 import '/imports/ui_2/pages/community-memberships.js';
+import '/imports/ui_2/pages/community-roleships.js';
 import '/imports/ui_2/pages/housing.js';
 import '/imports/ui_2/pages/styleguide.js';
 import '/imports/ui_2/pages/err_report.js';
@@ -52,6 +53,12 @@ FlowRouter.route('/memberships', {
   },
 });
 
+FlowRouter.route('/roleships', {
+  name: 'Community.roleships',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Community_roleships_page' });
+  },
+});
 FlowRouter.route('/invite', {
   name: 'Invite',
   action() {

@@ -70,7 +70,9 @@
     "memberships": "Members"
   },
   "share":  {
+    "serial": "SerialNo",
     "name": "Name",
+    "location": "Location",
     "type": "Type",
     "ownership": "Ownership",
     "fraction": "Fraction"

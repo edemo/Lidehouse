@@ -23,6 +23,10 @@ reactive-var@1.0.11
 aldeed:template-extension
 percolate:momentum
 aldeed:autoform
+twbs:bootstrap
+momentjs:moment
+rzymek:moment-locale-hu
+mizzao:timesync
 
 # data
 mongo@1.1.14
@@ -32,6 +36,10 @@ dburles:collection-helpers
 reywood:publish-composite
 mdg:validated-method
 mdg:validation-error
+msavin:mongol
+jalik:ufs
+jalik:ufs-gridfs
+
 
 # routing
 kadira:flow-router
@@ -77,6 +85,7 @@ dburles:factory
 
 # security
 audit-argument-checks@1.0.7
+
 msavin:mongol
 twbs:bootstrap
 jalik:ufs

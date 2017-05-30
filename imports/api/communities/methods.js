@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Communities } from './communities.js';
-// import { Memberships } from '../memberships/memberships.js';
+import { Memberships } from '../memberships/memberships.js';
 
 export const create = new ValidatedMethod({
   name: 'communities.create',
@@ -24,7 +24,7 @@ export const create = new ValidatedMethod({
     const communityId = Communities.insert(doc);
 
     // The user creating the community, becomes the first 'admin' of it.
-    Meteor.users.update({ _id: this.userId }, { $push: { roles: { name: 'admin', communityId } } });
+    Memberships.insert({ communityId, userId: this.userId, role: 'admin' });
 
     return communityId;
   },

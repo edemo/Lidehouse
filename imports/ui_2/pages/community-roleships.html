@@ -1,0 +1,35 @@
+<template name="Community_roleships_page">
+  <div class="content-scrollable wrapper-form page-content autoform">
+    <h1 class="page-title">Szereplők a házban</h1>
+    <table class="table table-bordered table-condensed">
+      <thead>
+        <tr>
+          <td>{{_ 'user.username'}}</td>
+          <td>Jogosultság</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each roleships}}
+          <tr class="table-row {{#if isSelected}}selected{{/if}}">
+            <td>{{displayUsername this}}</td>
+            <td>{{displayRole this}}</td>
+            <td>
+              <a class="js-delete nav-item">
+              <span
+                class="icon-trash"
+                title={{_ 'topics.show.deleteShare'}}>
+              </span>
+              </a>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    <button class="js-new btn-primary">Hozzáadás</button>
+    {{#if hasSelection}}
+      <br><br><br>
+      <p> Szerkesztés: </p>
+      {{> quickForm id="afUpdateRoles" collection=collection schema=schema doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3-inline"}}
+    {{/if}}
+  </div>
+</template>

@@ -6,78 +6,24 @@ import { _ } from 'meteor/underscore';
 
 import { Topics } from './topics.js';
 
-const TOPIC_ID_ONLY = new SimpleSchema({
-  topicId: Topics.simpleSchema().schema('_id'),
-}).validator({ clean: true, filter: false });
-
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
+  validate: Topics.simpleSchema().validator(),
+
+  run({ doc }) {
+    return Topics.insert(doc);
+  },
+});
+
+export const update = new ValidatedMethod({
+  name: 'topics.update',
   validate: new SimpleSchema({
-    communityId: { type: String },
-    language: { type: String },
-  }).validator(),
-
-  run({ communityId, language }) {
-    return Topics.insert({ communityId }, null, language);
-  },
-});
-
-export const makePrivate = new ValidatedMethod({
-  name: 'topics.makePrivate',
-  validate: TOPIC_ID_ONLY,
-
-  run({ topicId }) {
-    if (!this.userId) {
-      throw new Meteor.Error('topics.makePrivate.notLoggedIn',
-        'Must be logged in to make private topics.');
-    }
-
-    const topic = Topics.findOne(topicId);
-
-    if (topic.isLastPublicTopic()) {
-      throw new Meteor.Error('topics.makePrivate.lastPublicTopic',
-        'Cannot make the last public topic private.');
-    }
-
-    Topics.update(topicId, {
-      $set: { userId: this.userId },
-    });
-  },
-});
-
-export const makePublic = new ValidatedMethod({
-  name: 'topics.makePublic',
-  validate: TOPIC_ID_ONLY,
-
-  run({ topicId }) {
-    if (!this.userId) {
-      throw new Meteor.Error('topics.makePublic.notLoggedIn',
-        'Must be logged in.');
-    }
-
-    const topic = Topics.findOne(topicId);
-
-    if (!topic.editableBy(this.userId)) {
-      throw new Meteor.Error('topics.makePublic.accessDenied',
-        'You don\'t have permission to edit this topic.');
-    }
-
-    // XXX the security check above is not atomic, so in theory a race condition could
-    // result in exposing private data
-    Topics.update(topicId, {
-      $unset: { userId: true },
-    });
-  },
-});
-
-export const updateName = new ValidatedMethod({
-  name: 'topics.updateName',
-  validate: new SimpleSchema({
-    topicId: Topics.simpleSchema().schema('_id'),
-    newName: Topics.simpleSchema().schema('name'),
+    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    newTitle: Topics.simpleSchema().schema('title'),
+    newText: Topics.simpleSchema().schema('text'),
   }).validator({ clean: true, filter: false }),
 
-  run({ topicId, newName }) {
+  run({ topicId, newTitle, newText }) {
     const topic = Topics.findOne(topicId);
 
     if (!topic.editableBy(this.userId)) {
@@ -89,10 +35,14 @@ export const updateName = new ValidatedMethod({
     // result in exposing private data
 
     Topics.update(topicId, {
-      $set: { name: newName },
+      $set: { title: newTitle, text: newText },
     });
   },
 });
+
+const TOPIC_ID_ONLY = new SimpleSchema({
+  topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+}).validator({ clean: true, filter: false });
 
 export const remove = new ValidatedMethod({
   name: 'topics.remove',
@@ -121,9 +71,7 @@ export const remove = new ValidatedMethod({
 // Get list of all method names on Topics
 const TOPICS_METHOD_NAMES = _.pluck([
   insert,
-  makePublic,
-  makePrivate,
-  updateName,
+  update,
   remove,
 ], 'name');
 

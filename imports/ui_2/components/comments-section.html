@@ -1,0 +1,38 @@
+<template name="Comments_section">
+  <a class="accordion-comment">{{count}} komment</a>
+  <div class="accordion-content panel-comment">
+
+    <div class="chat-comments">
+
+      <div class="add-comment" >
+        <div class="chat-avatar">
+          <img src="{{selfAvatar}}" alt="avatar" align="center" width="35" height="35" />
+        </div>
+        <div class="">
+          <textarea rows="" cols="5" placeholder="Szólj hozzá..." class="autoResize" style="overflow: hidden; word-wrap: break-word; height: 37px; width: 70%; padding: 0;"></textarea>
+          <button class="js-send-comment">Elküld</button>
+        </div>
+      </div>
+
+      {{#each comment in comments}}
+        {{> Comment comment}}
+      {{/each}}
+
+    </div>
+  </div>
+</template>
+
+<template name="Comment">
+  <div class="comment">
+    <div class="chat-avatar">
+      <img src="{{avatar}}" alt="avatar" align="center" width="35" height="35" />
+    </div>
+    <div class="chat-name">
+      <!-- <span class="chat-dropdown" style="float: right;">X</span> -->
+      <span class="chat-name-span"><a>{{displayUser}}</a></span>
+      <span class="chat-date">{{displayTimeSince}}</span>
+      <br>
+      {{text}}
+    </div>
+  </div>
+</template>

@@ -1,0 +1,43 @@
+<template name="Votebox">
+  <div class="chatbox">
+    <div class="vote-title">
+      {{title}}
+      <div class="vote-date" data-tooltip="{{displayTime}}">Lezárul: {{displayTimeLeft}}</div>
+    </div>
+    <div class="vote-description">
+      {{text}}
+    </div>
+    <div class="vote-body">
+      <!-- a szavazás állása -->
+      <div class="progressBar" data-tooltip="eddig {{votedCount}} tag szavazott a {{memberCount}}-ból">
+        <div class="progressLine" data-value="{{voteProgress}}">{{voteProgress}} %</div>
+      </div>
+      {{#if voteTypeIs "yesno"}}
+        <!-- a "benyomódott" kiválasztott válasz -->
+        <div class="btns-group">
+          <a href="#modal-box--open" class="btn-secondary btn-yes btn-yes-chosen">
+            Igen
+          </a>
+          <a href="#modal-box--open" class="btn-secondary btn-no">
+            Nem
+          </a>
+          <a href="#modal-box--open" class="btn-secondary">
+            Tartózkodom
+          </a>
+        </div>
+      {{/if}}
+      {{#if voteTypeIs "preferential"}}
+        <!-- TODO ide kellene a sorbarendezos cucc -->
+        <ul style="{margin-left:20px;}">
+          {{#each choice in vote.choices}}
+            <li>{{choice}}</li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </div>
+    <div class="vote-footer">
+      <span class="right-icon"><a href="#modal-box2--open" title="Hivatalos előterjesztés megtekintése">Papericon</a></span>
+      {{> Comments_section topicId=_id}}
+    </div>
+  </div>
+</template>

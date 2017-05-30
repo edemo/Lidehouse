@@ -16,7 +16,7 @@
                 <ul>
                   <li><a href="{{pathFor 'Communities.show' _cid=activeCommunity._id}}">Ház adatai</a></li>
                   <li><a href="{{pathFor 'Community.memberships'}}">Albetétek</a></li>
-                  <li><a href="">Szomszédok</a></li>
+                  <li><a href="{{pathFor 'Community.roleships'}}">Szomszédok</a></li>
                 </ul>
               </li>
             </ul>
@@ -32,17 +32,13 @@
                 {{#each communities}}
                   <li><a href="#" class="js-switch-community">{{name}}</a></li>
                 {{/each}}
-                {{#if currentUser}}
-                  <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'layouts.appBody.joinCommunity'}} </a></li>
-                  <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'layouts.appBody.createCommunity'}} </a></li>
-                {{/if}}
               </ul>
             </li>
           </ul>
           <ul class="nav">
             <li class="drop">
               {{#if activeMembership}}
-                {{activeMembership.name}}
+                {{displayMembership activeMembership}}
               {{else}}
                 Nincs aktív albetét
               {{/if}}
@@ -53,6 +49,16 @@
               </ul>
             </li>
           </ul>
+          {{#if currentUser}}
+          <ul class="nav">
+            <li class="drop"> +
+              <ul>
+                  <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'layouts.appBody.joinCommunity'}} </a></li>
+                  <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'layouts.appBody.createCommunity'}} </a></li>
+              </ul>
+            </li>
+          </ul>
+          {{/if}}
         </div>
         <div class="topmenu-right">
           <div class="language-toggle">
@@ -67,8 +73,8 @@
 
           {{#if currentUser}}
             <ul class="nav">
-              <li class="drop profile-drop">{{currentUser.username}}
-                <img src="http://pannako.hu/wp-content/uploads/avatar-8.png" alt="" width="35"/>
+              <li class="drop profile-drop">{{currentUser.fullName}}
+                <img src="{{currentUser.avatar}}" alt="" width="35"/>
                 <ul>
                   <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}">Profil</a></li>
                   <li><a class="js-logout" href="">{{_ 'layouts.appBody.logout'}}</a></li>
@@ -94,6 +100,7 @@
           <ul>
             <li class="list-item"><a href="{{pathFor 'Board'}}"><img src="/icon/si-glyph-house.svg"/> Főoldal</a></li>
             <li class="list-item"><a><img src="/icon/si-glyph-mail-box.svg"/>Üzenetek</a></li>
+            <li class="list-item"><a><img src="/icon/si-glyph-bolt.svg"/>Forum</a></li>
             <li class="list-item"><a><img src="/icon/si-glyph-bolt.svg"/>Szavazások</a></li>
             <li class="list-item"><a href="{{pathFor 'Report'}}"><img src="/icon/si-glyph-hammer-and-wrench.svg"/>Hibabejelentés</a></li>
             <li class="list-item"><a href="{{pathFor 'Housing'}}"><img src="/icon/si-glyph-key.svg"/>Albetétek</a></li>

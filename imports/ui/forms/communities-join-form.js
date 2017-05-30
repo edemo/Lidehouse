@@ -24,7 +24,7 @@ Template.Communities_join_form.helpers({
 Template.Community_listed.events({
   'click button'(event, instance) {
     const communityId = instance.data.community._id;
-    insertMembership.call({ userId: Meteor.userId(), communityId }, (err) => {
+    insertMembership.call({ userId: Meteor.userId(), communityId, role: 'guest' }, (err) => {
       if (err) {
         FlowRouter.go('App.home');
         alert(`${TAPi18n.__('layouts.appBody.newMembershipError')}\n${err}`); // eslint-disable-line no-alert

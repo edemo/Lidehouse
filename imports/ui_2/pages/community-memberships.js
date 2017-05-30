@@ -13,12 +13,15 @@ Template.Community_memberships_page.onCreated(function () {
 });
 
 Template.Community_memberships_page.helpers({
-  members() {
-    const communityId = Session.get('activeCommunity')._id;
-    return Memberships.find({ communityId });
-  },
-  memberships() {
+  collection() {
     return Memberships;
+  },
+  schema() {
+    return Memberships.schemaForOwnership;
+  },
+  owners() {
+    const communityId = Session.get('activeCommunityId');
+    return Memberships.find({ communityId, role: 'owner' });
   },
   selectedDoc() {
     return Memberships.findOne(Session.get('selectedMemberId'));
@@ -33,15 +36,23 @@ Template.Community_memberships_page.helpers({
   hasSelection() {
     return !!Session.get('selectedMemberId');
   },
+  displayShare(share, totalshares) {
+    if (!share) return '';
+    return `${share}/${totalshares}`;
+  },
+  displayUsername(membership) {
+    if (!membership.hasUser()) return '';
+    return membership.user().safeUsername();
+  },
 });
 
 Template.Community_memberships_page.events({
   'click .table-row'() {
     Session.set('selectedMemberId', this._id);
   },
-  'click .js-new-share'(event, instance) {
-    const communityId = Session.get('activeCommunity')._id;
-    Meteor.call('memberships.insert', { communityId }, function(err, res) {
+  'click .js-new'(event, instance) {
+    const communityId = Session.get('activeCommunityId');
+    Meteor.call('memberships.insert', { communityId, role: 'owner' }, function(err, res) {
       if (err) {
         displayError(err);
         return;
@@ -50,7 +61,7 @@ Template.Community_memberships_page.events({
       Session.set('selectedMemberId', membershipId);
     });
   },
-  'click .js-delete-share'() {
+  'click .js-delete'() {
     Meteor.call('memberships.remove', { _id: this._id }, function(err, res) {
       if (err) {
         displayError(err);
@@ -62,7 +73,7 @@ Template.Community_memberships_page.events({
 
   },
   'click .js-remove-user'() {
-    Meteor.call('memberships.update', { $unset: { userId: '' } }, this._id, function(err, res) {
+    Meteor.call('memberships.update', { _id: this._id, modifier: { $unset: { userId: '' } } }, function(err, res) {
       if (err) {
         displayError(err);
       }

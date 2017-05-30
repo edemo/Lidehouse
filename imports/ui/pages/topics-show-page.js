@@ -14,7 +14,7 @@ Template.Topics_show_page.onCreated(function topicsShowPageOnCreated() {
   this.getTopicId = () => FlowRouter.getParam('_tid');
 
   this.autorun(() => {
-    this.subscribe('comments.inTopic', { topicId: this.getTopicId() });
+    this.subscribe('comments.onTopic', { topicId: this.getTopicId() });
   });
 });
 
