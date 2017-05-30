@@ -187,18 +187,24 @@ Meteor.startup(() => {
   });
 
   // Votes
-  Topics.insert({
+  const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'vote',
     title: 'Fundamenta hitel felvétele',
     text: 'Felvegyük-e az 5 millio forintos Fundamenta hitelt 15 évre 6%-os kamattal.',
+    closed: true,
     vote: {
       closesAt: moment().subtract(10, 'day').toDate(),
     },
+    voteResults: {
+      yes: [dummyUsers[0]],
+      no: [dummyUsers[1], dummyUsers[2]],
+      abstain: [dummyUsers[3]],
+    }
   });
 
-  Topics.insert({
+  const voteTopic2 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'vote',
@@ -207,10 +213,14 @@ Meteor.startup(() => {
           'Elfogadás esetén három különböző árajánlatot kérünk be, és a legjobbat választjuk.',
     vote: {
       closesAt: moment().add(2, 'week').toDate(),
+      voteResults: {
+        'semleges fehér': [dummyUsers[0]],
+        'világos szürke': [dummyUsers[3]],
+      },
     },
   });
 
-  const voteTopicId = Topics.insert({
+  const voteTopic3 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'vote',
@@ -224,14 +234,14 @@ Meteor.startup(() => {
   });
 
   Comments.insert({
-    topicId: voteTopicId,
+    topicId: voteTopic3,
     userId: nextUser(),
     text: 'A halovány színek jobban mutatnak. Világosabb hatású lesz a lépcsőház.',
     createdAt: new Date(timestamp),
   });
 
   Comments.insert({
-    topicId: voteTopicId,
+    topicId: voteTopic3,
     userId: nextUser(),
     text: 'Jajj csak szürke NE legyen. Akkor költözöm.',
     createdAt: new Date(timestamp),

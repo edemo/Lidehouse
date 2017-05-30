@@ -5,6 +5,8 @@ import { moment } from 'meteor/momentjs:moment';
 import faker from 'faker';
 
 import { Comments } from '../comments/comments.js';
+import { Communities } from '../communities/communities.js';
+import { Memberships } from '../memberships/memberships.js';
 
 class TopicsCollection extends Mongo.Collection {
   insert(topic, callback) {
@@ -24,8 +26,7 @@ Topics.voteSchema = new SimpleSchema({
   type: { type: String, allowedValues: ['yesno', 'preferential'], defaultValue: 'yesno' },
   choices: { type: Array, defaultValue: ['yes', 'no', 'abstain'] },
   'choices.$': { type: String },
-  results: { type: Object, blackbox: true, defaultValue: {} },
-  progress: { type: Number, defaultValue: 0 },
+//  participation: { type: Number },
 });
 
 Topics.schema = new SimpleSchema({
@@ -35,13 +36,18 @@ Topics.schema = new SimpleSchema({
   title: { type: String, max: 100 },
   text: { type: String },
   createdAt: { type: Date, denyUpdate: true, autoValue() { if (this.isInsert) { return new Date(); } } },
+  closed: { type: Boolean, defaultValue: false },
   unreadCount: { type: Number, defaultValue: 0 },
   vote: { type: Topics.voteSchema, optional: true }, // TODO: should be conditional on category
+  voteResults: { type: Object, blackbox: true, defaultValue: {} },
 });
 
 Topics.attachSchema(Topics.schema);
 
 Topics.helpers({
+  community() {
+    return Communities.findOne(this.communityId);
+  },
   editableBy(userId) {
     if (!this.userId) { return true; }
     return this.userId === userId;
@@ -52,6 +58,19 @@ Topics.helpers({
   voteTypeIs(type) {
     if (!this.vote) return undefined;
     return (this.vote.type === type);
+  },
+  votedCount() {
+    let votedCount = 0;
+    for (const key in this.voteResults) {
+      votedCount += this.voteResults[key].length;
+    }
+    return votedCount;
+  },
+  memberCount() {
+    return Memberships.find({ communityId: this.communityId }).count();
+  },
+  voteProgress() {
+    return Math.round(100 * (this.votedCount() / this.memberCount()));
   },
 });
 
@@ -71,8 +90,10 @@ Topics.publicFields = {
   title: 1,
   text: 1,
   createdAt: 1,
+  closed: 1,
   unreadCount: 1,
   vote: 1,
+  voteResults: 1, // TODO: Should not be seeen by client?!
 };
 
 Factory.define('topic', Topics, {

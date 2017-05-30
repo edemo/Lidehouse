@@ -9,8 +9,8 @@
     </div>
     <div class="vote-body">
       <!-- a szavazás állása -->
-      <div class="progressBar" data-tooltip="eddig 10 -en szavaztak a 100-ból">
-        <div class="progressLine" data-value="62">62 %</div>
+      <div class="progressBar" data-tooltip="eddig {{votedCount}} tag szavazott a {{memberCount}}-ból">
+        <div class="progressLine" data-value="{{voteProgress}}">{{voteProgress}} %</div>
       </div>
       {{#if voteTypeIs "yesno"}}
         <!-- a "benyomódott" kiválasztott válasz -->
