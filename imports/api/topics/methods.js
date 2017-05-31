@@ -5,6 +5,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
 
 import { Topics } from './topics.js';
+import { Memberships } from '../memberships/memberships.js';
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
@@ -12,6 +13,39 @@ export const insert = new ValidatedMethod({
 
   run({ doc }) {
     return Topics.insert(doc);
+  },
+});
+
+export const vote = new ValidatedMethod({
+  name: 'topics.vote',
+  validate: new SimpleSchema({
+    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    castedVote: { type: Array },
+    'castedVote.$': { type: String },
+  }).validator({ clean: true, filter: false }),
+
+  run({ topicId, membershipId, castedVote }) {
+    const topic = Topics.findOne(topicId);
+    const membership = Memberships.findOne(membershipId);
+
+    if (membership.communityId !== topic.communityId) {
+      throw new Meteor.Error('voting.accessDenied',
+        'Membership has no permission to vote on this topic.');
+    }
+
+    if (membership.userId !== this.userId) {         // TODO meghatalmazassal is lehet
+      throw new Meteor.Error('voting.accessDenied',
+        'You don\'t have permission to vote in the name of this membership.');
+    }
+
+    Topics.update(topicId, {
+      $inc: {
+        'vote.participationCount': 1,
+        'vote.participationShares': membership.ownership.share,
+      },
+      $push: { voteResults: { membershipId: castedVote } },
+    });
   },
 });
 

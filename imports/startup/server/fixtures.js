@@ -24,7 +24,7 @@ Meteor.startup(() => {
         zip: '1144',
       },
     },
-    totalshares: 10000,
+    totalshares: 100,
   });
 
   const dummyUsers = [];
@@ -65,7 +65,7 @@ Meteor.startup(() => {
     role: 'owner',
     ownership: {
       serial: 1,
-      share: 85,
+      share: 10,
       floor: 'I',
       number: '14',
       type: 'Apartment',
@@ -77,7 +77,7 @@ Meteor.startup(() => {
     role: 'owner',
     ownership: {
       serial: 2,
-      share: 64,
+      share: 20,
       floor: 'II',
       number: '25',
       type: 'Apartment',
@@ -89,7 +89,7 @@ Meteor.startup(() => {
     role: 'owner',
     ownership: {
       serial: 3,
-      share: 112,
+      share: 30,
       floor: 'III',
       number: '36',
       type: 'Apartment',
@@ -101,7 +101,7 @@ Meteor.startup(() => {
     role: 'owner',
     ownership: {
       serial: 101,
-      share: 5,
+      share: 30,
       floor: '-2',
       number: 'P209',
       type: 'Parking',
@@ -187,6 +187,15 @@ Meteor.startup(() => {
   });
 
   // Votes
+
+  const ownerships = Memberships.find({ role: 'owner' }).fetch();
+
+  const voteResults1 = {};
+  voteResults1[ownerships[0]._id] = 'no';
+  voteResults1[ownerships[1]._id] = 'yes';
+  voteResults1[ownerships[2]._id] = 'no';
+  voteResults1[ownerships[3]._id] = 'abstain';
+
   const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
@@ -196,12 +205,10 @@ Meteor.startup(() => {
     closed: true,
     vote: {
       closesAt: moment().subtract(10, 'day').toDate(),
+      participationCount: 4,
+      participationShares: 90,
     },
-    voteResults: {
-      yes: [dummyUsers[0]],
-      no: [dummyUsers[1], dummyUsers[2]],
-      abstain: [dummyUsers[3]],
-    }
+    voteResults: voteResults1,
   });
 
   const voteTopic2 = Topics.insert({
@@ -213,12 +220,14 @@ Meteor.startup(() => {
           'Elfogadás esetén három különböző árajánlatot kérünk be, és a legjobbat választjuk.',
     vote: {
       closesAt: moment().add(2, 'week').toDate(),
-      voteResults: {
-        'semleges fehér': [dummyUsers[0]],
-        'világos szürke': [dummyUsers[3]],
-      },
     },
+    // no results yet, noone voted
   });
+
+  const voteResults3 = {};
+  voteResults3[ownerships[1]._id] = [1, 2, 3, 4];
+  voteResults3[ownerships[2]._id] = [1, 3, 4, 2];
+  voteResults3[ownerships[3]._id] = [4, 3, 2, 1];
 
   const voteTopic3 = Topics.insert({
     communityId: demoCommunityId,
@@ -230,7 +239,10 @@ Meteor.startup(() => {
       closesAt: moment().add(1, 'month').toDate(),
       type: 'preferential',
       choices: ['semleges fehér', 'halvány rózsaszín', 'sárga', 'világos szürke'],
+      participationCount: 3,
+      participationShares: 50,
     },
+    voteResults: voteResults3,
   });
 
   Comments.insert({
