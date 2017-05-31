@@ -118,7 +118,7 @@ Template.Custom_body.helpers({
   memberships() {
     const activeCommunityId = Session.get('activeCommunityId');
     if (!activeCommunityId) { return []; }
-    return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId(), role: 'owner' });
+    return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId() });
   },
   activeMembership() {
     const activeMembershipId = Session.get('activeMembershipId');

@@ -31,12 +31,12 @@ Memberships.helpers({
   // TODO: move this to the house package
   location() {
     if (!this.ownership) return '';
-    return `${this.ownership.floor}/${this.ownership.number}`;
+    return this.ownership.floor + '/' + this.ownership.number;
   },
   name() {
-    if (!this.ownership) return '';
-    const letter = this.ownership.type.substring(0, 1);
-    return `${letter}-${this.ownership.floor}/${this.ownership.number}`;
+    if (!this.ownership) return this.role;
+    // const letter = this.ownership.type.substring(0, 1);
+    return this.location() + ' ' + this.role;
   },
 });
 
