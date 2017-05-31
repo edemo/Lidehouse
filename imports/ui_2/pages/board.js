@@ -49,7 +49,8 @@ Template.Board.onRendered(function boardOnRendered() {
 
 Template.Board.helpers({
   topics(category) {
-    return Topics.find({ category, closed: false });
+    const communityId = Session.get('activeCommunityId');
+    return Topics.find({ communityId, category, closed: false });
   },
   displayTime() {
     return moment(this.createdAt).format('YYYY MMM Do');

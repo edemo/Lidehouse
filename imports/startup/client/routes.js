@@ -13,14 +13,16 @@ import '/imports/ui/forms/users-show-form.js';
 import '/imports/ui/forms/invite-form.js';
 
 import '/imports/ui_2/layouts/custom-body.js';
-import '/imports/ui_2/pages/board.js';
-import '/imports/ui_2/pages/document-store.js';
 import '/imports/ui_2/pages/communities-show.js';
 import '/imports/ui_2/pages/community-memberships.js';
 import '/imports/ui_2/pages/community-roleships.js';
+import '/imports/ui_2/pages/board.js';
+import '/imports/ui_2/pages/forum-topics.js';
+import '/imports/ui_2/pages/vote-topics.js';
 import '/imports/ui_2/pages/housing.js';
-import '/imports/ui_2/pages/styleguide.js';
 import '/imports/ui_2/pages/err_report.js';
+import '/imports/ui_2/pages/document-store.js';
+import '/imports/ui_2/pages/styleguide.js';
 
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates.js';
@@ -108,6 +110,34 @@ FlowRouter.route('/board', {
   },
 });
 
+FlowRouter.route('/forum', {
+  name: 'Topics.forum',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Forum_topics' });
+  },
+});
+
+FlowRouter.route('/vote', {
+  name: 'Topics.vote',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Vote_topics' });
+  },
+});
+
+FlowRouter.route('/housing', {
+  name: 'Housing',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Housing' });
+  },
+});
+
+FlowRouter.route('/report', {
+  name: 'ErrorReport',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Err_report' });
+  },
+});
+
 FlowRouter.route('/documents', {
   name: 'DocumentStore',
   action() {
@@ -119,17 +149,5 @@ FlowRouter.route('/styleguide', {
   name: 'Styleguide',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Styleguide' });
-  },
-});
-FlowRouter.route('/housing', {
-  name: 'Housing',
-  action() {
-    BlazeLayout.render('Custom_body', { main: 'Housing' });
-  },
-});
-FlowRouter.route('/report', {
-  name: 'ErrorReport',
-  action() {
-    BlazeLayout.render('Custom_body', { main: 'Err_report' });
   },
 });
