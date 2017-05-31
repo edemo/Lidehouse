@@ -25,15 +25,19 @@ Template.Board.onRendered(function boardOnRendered() {
     //accordion click event adder,  open onload
     var acc = document.getElementsByClassName("accordion");
     var i;
+    var fullheight = 0;
 
     for (i = 0; i < acc.length; i++) {
       acc[i].onclick = function() {
         this.classList.toggle("active");
         var panel = this.nextElementSibling;
+        var child_panels = $(panel).find('.accordion-content');
+        // console.log(child_panels[0].scrollHeight);
         if (panel.style.maxHeight){
           panel.style.maxHeight = null;
         } else {
-          panel.style.maxHeight = panel.scrollHeight + "px";
+          console.log(fullheight);
+          panel.style.maxHeight = panel.scrollHeight + fullheight + "px";
         }
       }
       acc[i].classList.toggle("active");

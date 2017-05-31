@@ -1,5 +1,5 @@
 <template name="Styleguide">
-  <div class="styleguide-container">
+  <div class="styleguide-container page_styleguide">
     <!-- <div class="styleguide-title">
       Buttons <small>primary, seconday, button group</small>
     </div> -->
@@ -114,6 +114,7 @@
       </div>
     </div>
 
+    <!-- vote 1-->
     <div class="styleguide-box">
       <div class="styleguide-box-left">
         <div id="votebox-sample">
@@ -180,8 +181,82 @@
         <pre class="prettyprint" id="votebox_code"></pre>
       </div>
     </div>
+    <!-- vote 1 end -->
+
+    <!-- vote 2 -->
+    <div class="styleguide-box">
+      <div class="styleguide-box-left">
+        <div id="sorting-vote-sample">
+          <ul class="sortable droptrue js-sort-list">
+            <li class="ui-state-default" data-value="1">Bringatároló</li>
+            <li class="ui-state-default" data-value="2">Tartózkodom</li>
+            <li class="ui-state-default" data-value="3">Több parkoló</li>
+            <li class="ui-state-default" data-value="4">Ne legyen egyik se</li>
+            <li class="ui-state-default" data-value="5">Motor tároló</li>
+            <li class="ui-state-default" data-value="6">Új kertész</li>
+            <li class="ui-state-default" data-value="7">Lépcsőház festés</li>
+          </ul>
+        </div>
+      </div>
+      <div class="styleguide-box-right">
+        <div class="styleguide-box-title">
+          Preferenciális szavazás (still TODO)
+        </div>
+        <div class="styleguide-box-definition">
+          <p>
+            A sortable, droptrue és js-sort classokat meg kell tartani. Az li-khez tartozik egy data-value melynek segítségével a végén megállapíthatjuk a sorrendet és küldhetjük feldolgozásra.
+          </p>
+        </div>
+        <!--?prettify lang=html linenums=true?-->
+        <pre class="prettyprint" id="sorting-vote-code"></pre>
+        <!--?prettify lang=jquery linenums=true?-->
+        <pre class="prettyprint">
+          $(function() {
+            $( "ul.droptrue" ).sortable({
+              connectWith: ".js-sort-list"
+            });
+
+            // $( "#sortable1" ).disableSelection();
+          });
+        </pre>
+      </div>
+    </div>
+
+    <div class="styleguide-box">
+      <div class="styleguide-box-left">
+        <div class="row">
+          <div class="col-xs-12 col-lg-10 col-lg-offset-1 status-demo-sg" id="status-sample">
+            <div class="text-center status-span status-span-unc">Megerősítés alatt</div>
+            <div class="text-center status-span status-span-acc">Elfogadva</div>
+            <div class="text-center status-span status-span-inp">Folyamatban</div>
+            <div class="text-center status-span status-span-freez">Felfüggesztve</div>
+            <div class="text-center status-span status-span-done">Megoldva</div>
+            <div class="text-center status-span status-span-del">Törölve</div>
+          </div>
+        </div>
+      </div>
+      <div class="styleguide-box-right">
+        <div class="styleguide-box-title">
+          Hibabejelentések fokozatai
+        </div>
+        <div class="styleguide-box-definition">
+          <p>
+            ...
+          </p>
+        </div>
+        <!--?prettify lang=html linenums=true?-->
+        <pre class="prettyprint" id="status-code"></pre>
+      </div>
+    </div>
 
   </div>
-  
+
   <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+  <script type="text/javascript" style="visibility:hidden;">
+    $(function() {
+      $( "ul.droptrue" ).sortable({
+        connectWith: ".js-sort-list"
+      });
+    });
+  </script>
 </template>

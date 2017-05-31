@@ -1,0 +1,49 @@
+.page_profile, .page_styleguide, .page-board, .page-report, .page-housing {
+  textarea {
+    resize: none;
+    word-wrap: break-word;
+    width: calc(~"100% - " 60px);
+    padding: 0px;
+    background: white none repeat scroll 0% 0%;
+    border-bottom: 1px solid #bcbcbc;
+    height: auto;
+    // overflow-y: scroll;
+    overflow: hidden;
+    scrollbar-track-color: #ff00ff;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    &:active, &:focus {
+      border-bottom: 1.7px solid rgb(110, 168, 255);
+      transition: border-bottom .28s ease;
+    }
+  }
+  input[type="text"], input[type="number"] {
+    padding: unset;
+    background: white none repeat scroll 0% 0%;
+    border: unset;
+    border-bottom: 1px solid #bcbcbc;
+    box-shadow: none !important;
+    &:active, &:focus {
+      border-bottom: 1.7px solid rgb(110, 168, 255);
+      transition: border-bottom .28s ease;
+    }
+  }
+  select {
+    border: unset;
+    border-bottom: 1px solid rgb(188, 188, 188);
+    box-shadow: none !important;
+    &:active, &:focus {
+      border-bottom: 1.7px solid rgb(110, 168, 255);
+      transition: border-bottom .28s ease;
+    }
+    option {
+      padding: 3px 5px 3px 5px;
+    }
+    // -webkit-appearance: none;
+    -moz-appearance: none;
+    &::-ms-expand {
+      display: none;
+    }
+  }
+}

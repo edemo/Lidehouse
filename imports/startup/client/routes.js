@@ -18,7 +18,9 @@ import '/imports/ui_2/pages/document-store.js';
 import '/imports/ui_2/pages/communities-show.js';
 import '/imports/ui_2/pages/community-memberships.js';
 import '/imports/ui_2/pages/community-roleships.js';
+import '/imports/ui_2/pages/housing.js';
 import '/imports/ui_2/pages/styleguide.js';
+import '/imports/ui_2/pages/err_report.js';
 
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates.js';
@@ -117,5 +119,17 @@ FlowRouter.route('/styleguide', {
   name: 'Styleguide',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Styleguide' });
+  },
+});
+FlowRouter.route('/housing', {
+  name: 'Housing',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Housing' });
+  },
+});
+FlowRouter.route('/report', {
+  name: 'ErrorReport',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Err_report' });
   },
 });

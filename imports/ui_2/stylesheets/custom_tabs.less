@@ -1,0 +1,79 @@
+@tab-label-bcg: white;
+@tab-label-col: black;
+@tab-content-col: black;
+@tab-content-bcg: white;
+@tab-content-shadow: rgb(227, 227, 227);
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+// h1, h3{
+//   text-transform: uppercase;
+//   font-weight: normal;
+// }
+
+.tabs{
+    width: 95%;
+    display: block;
+    margin: 40px auto;
+    position: relative;
+}
+
+.tabs .tab{
+    float: left;
+    display: block;
+    height: 40px;
+}
+
+.tabs .tab>input[type="radio"] {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+.tabs .tab>label {
+    display: block;
+    padding: 6px 21px;
+    line-height: 24px;
+    font-size: 13.7px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    color: @tab-label-col;
+    background: @tab-content-bcg;
+    margin-right: 7px;
+    height: 100%;
+}
+
+.tabs .content {
+    z-index: 0;/* or display: none; */
+    overflow: hidden;
+    margin-top: 20px;
+    width: 100%;
+    padding: 25px;
+    position: absolute;
+    top: 27px;
+    left: 0;
+    // background: #303030;
+    background: @tab-content-bcg;
+    // color: #DFDFDF;
+    box-shadow: 1px 1px 1px 1px @tab-content-shadow;
+    opacity:0;
+    transition: opacity 400ms ease-out;
+}
+
+.tabs>.tab>[id^="tab"]:checked + label {
+    top: 0;
+    background: @tab-label-bcg;
+    color: @tab-label-col;
+    box-shadow: 0px 0px 2px 1px rgb(189, 189, 189);
+}
+
+.tabs>.tab>[id^="tab"]:checked ~ [id^="tab-content"] {
+    z-index: 1;/* or display: block; */
+
+    opacity: 1;
+    transition: opacity 400ms ease-out;
+}
