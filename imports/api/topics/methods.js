@@ -21,8 +21,8 @@ export const vote = new ValidatedMethod({
   validate: new SimpleSchema({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
     membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    castedVote: { type: Array },
-    'castedVote.$': { type: String },
+    castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
+    'castedVote.$': { type: SimpleSchema.Integer },
   }).validator({ clean: true, filter: false }),
 
   run({ topicId, membershipId, castedVote }) {
@@ -39,12 +39,15 @@ export const vote = new ValidatedMethod({
         'You don\'t have permission to vote in the name of this membership.');
     }
 
+    const voteSetterObj = {};
+    voteSetterObj['voteResults.' + membershipId] = castedVote;
+
     Topics.update(topicId, {
       $inc: {
         'vote.participationCount': 1,
         'vote.participationShares': membership.ownership.share,
       },
-      $push: { voteResults: { membershipId: castedVote } },
+      $set: { voteSetterObj },
     });
   },
 });
