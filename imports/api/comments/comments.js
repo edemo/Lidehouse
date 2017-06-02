@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Timestamps } from '../timestamps.js';
 import faker from 'faker';
 import unreadCountDenormalizer from './unreadCountDenormalizer.js';
 
@@ -9,10 +10,8 @@ import { Topics } from '../topics/topics.js';
 
 class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
-    const ourDoc = doc;
-    ourDoc.createdAt = ourDoc.createdAt || new Date();
-    const result = super.insert(ourDoc, callback);
-    unreadCountDenormalizer.afterInsertComment(ourDoc);
+    const result = super.insert(doc, callback);
+    unreadCountDenormalizer.afterInsertComment(doc);
     return result;
   }
   update(selector, modifier) {
@@ -34,11 +33,11 @@ Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
   text: { type: String, optional: true },
-  createdAt: { type: Date, defaultValue: new Date(), denyUpdate: true },
   readed: { type: Boolean, defaultValue: false },
 });
 
 Comments.attachSchema(Comments.schema);
+Comments.attachSchema(Timestamps);
 
 Comments.helpers({
   user() {
@@ -58,17 +57,6 @@ Comments.deny({
   update() { return true; },
   remove() { return true; },
 });
-
-// This represents the keys from Topics objects that should be published
-// to the client. If we add secret properties to Topic objects, don't list
-// them here to keep them private to the server.
-Comments.publicFields = {
-  topicId: 1,
-  userId: 1,
-  text: 1,
-  createdAt: 1,
-  readed: 1,
-};
 
 // TODO This factory has a name - do we have a code style for this?
 //   - usually I've used the singular, sometimes you have more than one though, like

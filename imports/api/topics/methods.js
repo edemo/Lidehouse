@@ -10,7 +10,7 @@ import { Memberships } from '../memberships/memberships.js';
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
-  validate: Topics.simpleSchema().validator(CleaningParams),
+  validate: Topics.schema.validator({ clean: true }),
 
   run({ doc }) {
     return Topics.insert(doc);

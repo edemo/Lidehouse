@@ -3,13 +3,15 @@
 // letting you look puzzled why you don't have your field in your doc.
 
 const SAFE_CLEANING_PARAMS_FOR_VALIDATION = {
+  clean: true,
   filter: false,
   autoConvert: false,
 };
 
 const TOLERANT_CLEANING_PARAMS_FOR_VALIDATION = {
-//    filter: true,  by default
-//    autoConvert: true, by default
+  clean: true,
+//  filter: true,  by default
+//  autoConvert: true, by default
 };
 
-export const CleaningParams = SAFE_CLEANING_PARAMS_FOR_VALIDATION;
+export const CleaningParams = TOLERANT_CLEANING_PARAMS_FOR_VALIDATION;

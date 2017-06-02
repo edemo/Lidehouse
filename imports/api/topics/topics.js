@@ -5,14 +5,14 @@ import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import faker from 'faker';
 
+import { Timestamps } from '../timestamps.js';
 import { Comments } from '../comments/comments.js';
 import { Communities } from '../communities/communities.js';
 import { Memberships } from '../memberships/memberships.js';
 
 class TopicsCollection extends Mongo.Collection {
   insert(topic, callback) {
-    const ourTopic = topic;
-    return super.insert(ourTopic, callback);
+    return super.insert(topic, callback);
   }
   remove(selector, callback) {
     Comments.remove({ topicId: selector });
@@ -37,7 +37,6 @@ Topics.schema = new SimpleSchema({
   category: { type: String, allowedValues: ['vote', 'forum', 'news'] },
   title: { type: String, max: 100 },
   text: { type: String },
-  createdAt: { type: Date, denyUpdate: true, autoValue() { if (this.isInsert) { return new Date(); } } },
   closed: { type: Boolean, defaultValue: false },
   unreadCount: { type: SimpleSchema.Integer, defaultValue: 0 },
   vote: { type: Topics.voteSchema, optional: true }, // TODO: should be conditional on category
@@ -45,6 +44,7 @@ Topics.schema = new SimpleSchema({
 });
 
 Topics.attachSchema(Topics.schema);
+Topics.attachSchema(Timestamps);
 
 Topics.helpers({
   community() {

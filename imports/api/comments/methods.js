@@ -10,7 +10,7 @@ import { Topics } from '../topics/topics.js';
 
 export const insert = new ValidatedMethod({
   name: 'comments.insert',
-  validate: Comments.simpleSchema().validator(CleaningParams),
+  validate: Comments.schema.validator({ clean: true }),
 
   run(doc) {
     const topic = Topics.findOne(doc.topicId);
@@ -26,7 +26,7 @@ export const setReadedStatus = new ValidatedMethod({
   validate: new SimpleSchema({
     commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
     newReadedStatus: Comments.simpleSchema().schema('readed'),
-  }).validator(CleaningParams),
+  }).validator({ clean: true }),
 
   run({ commentId, newReadedStatus }) {
     const comment = Comments.findOne(commentId);

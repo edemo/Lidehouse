@@ -10,7 +10,7 @@ import { Topics } from '../../api/topics/topics.js';
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
   if (Communities.findOne({ name: 'Demo ház' })) {
-    return; // Demo data already populated
+    return; // if Demo data already populated
   }
 
   const demoCommunityId = Communities.insert({
@@ -144,8 +144,6 @@ Meteor.startup(() => {
   ];
 
 
-  let timestamp = (new Date()).getTime();
-
   data.forEach((topic) => {
     const topicId = Topics.insert({
       communityId: demoCommunityId,
@@ -161,10 +159,7 @@ Meteor.startup(() => {
         topicId,
         userId: nextUser(),
         text,
-        createdAt: new Date(timestamp),
       });
-
-      timestamp += 1; // ensure unique timestamp.
     });
   });
 
@@ -250,13 +245,11 @@ Meteor.startup(() => {
     topicId: voteTopic3,
     userId: nextUser(),
     text: 'A halovány színek jobban mutatnak. Világosabb hatású lesz a lépcsőház.',
-    createdAt: new Date(timestamp),
   });
 
   Comments.insert({
     topicId: voteTopic3,
     userId: nextUser(),
     text: 'Jajj csak szürke NE legyen. Akkor költözöm.',
-    createdAt: new Date(timestamp),
   });
 });
