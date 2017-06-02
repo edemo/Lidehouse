@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { CleaningParams } from '/imports/utils/validation.js';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
 
@@ -24,7 +23,7 @@ export const castVote = new ValidatedMethod({
     membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
     castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
     'castedVote.$': { type: SimpleSchema.Integer },
-  }).validator(CleaningParams),
+  }).validator(),
 
   run({ topicId, membershipId, castedVote }) {
     const topic = Topics.findOne(topicId);
@@ -64,7 +63,7 @@ export const update = new ValidatedMethod({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
     newTitle: Topics.simpleSchema().schema('title'),
     newText: Topics.simpleSchema().schema('text'),
-  }).validator(CleaningParams),
+  }).validator(),
 
   run({ topicId, newTitle, newText }) {
     const topic = Topics.findOne(topicId);
@@ -85,7 +84,7 @@ export const update = new ValidatedMethod({
 
 const TOPIC_ID_ONLY = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
-}).validator(CleaningParams);
+}).validator();
 
 export const remove = new ValidatedMethod({
   name: 'topics.remove',

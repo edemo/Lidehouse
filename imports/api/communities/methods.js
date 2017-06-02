@@ -1,14 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { CleaningParams } from '/imports/utils/validation.js';
 
 import { Communities } from './communities.js';
 import { Memberships } from '../memberships/memberships.js';
 
 export const create = new ValidatedMethod({
   name: 'communities.create',
-  validate: Communities.simpleSchema().validator(CleaningParams),
+  validate: Communities.simpleSchema().validator({ clean: true }),
 
   run(doc) {
     if (!this.userId) {
@@ -36,7 +35,7 @@ export const update = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
-  }).validator(CleaningParams),
+  }).validator(),
 
   run({ _id, modifier }) {
     Communities.update({ _id }, modifier);

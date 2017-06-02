@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { CleaningParams } from '/imports/utils/validation.js';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 
 import { Comments } from './comments.js';
@@ -26,7 +25,7 @@ export const setReadedStatus = new ValidatedMethod({
   validate: new SimpleSchema({
     commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
     newReadedStatus: Comments.simpleSchema().schema('readed'),
-  }).validator({ clean: true }),
+  }).validator(),
 
   run({ commentId, newReadedStatus }) {
     const comment = Comments.findOne(commentId);
@@ -52,7 +51,7 @@ export const updateText = new ValidatedMethod({
   validate: new SimpleSchema({
     commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
     newText: Comments.simpleSchema().schema('text'),
-  }).validator(CleaningParams),
+  }).validator(),
 
   run({ commentId, newText }) {
     // This is complex auth stuff - perhaps denormalizing a userId onto comments
@@ -76,7 +75,7 @@ export const remove = new ValidatedMethod({
   name: 'comments.remove',
   validate: new SimpleSchema({
     commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(CleaningParams),
+  }).validator(),
 
   run({ commentId }) {
     const comment = Comments.findOne(commentId);

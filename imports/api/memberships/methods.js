@@ -1,13 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { CleaningParams } from '/imports/utils/validation.js';
 
 import { Memberships } from './memberships';
 
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
-  validate: Memberships.simpleSchema().validator(CleaningParams),
+  validate: Memberships.simpleSchema().validator({ clean: true }),
 
   run(doc) {
 /*    if (doc.userId) {
@@ -28,7 +27,7 @@ export const update = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
-  }).validator(CleaningParams),
+  }).validator(),
 
   run({ _id, modifier }) {
     Memberships.update({ _id }, modifier);
@@ -39,7 +38,7 @@ export const remove = new ValidatedMethod({
   name: 'memberships.remove',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(CleaningParams),
+  }).validator(),
 
   run({ _id }) {
     Memberships.remove(_id);

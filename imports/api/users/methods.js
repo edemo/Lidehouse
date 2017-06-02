@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { CleaningParams } from '/imports/utils/validation.js';
 import { Accounts } from 'meteor/accounts-base';
 
 import { insert as insertMember } from '/imports/api/memberships/methods.js';
@@ -13,7 +12,7 @@ export const invite = new ValidatedMethod({
   validate: new SimpleSchema({
     email: { type: String, regEx: SimpleSchema.RegEx.Email },
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(CleaningParams),
+  }).validator(),
 
   run({ email, communityId }) {
     const userId = Accounts.createUser({ email, password: 'initialPassword' });
@@ -36,7 +35,7 @@ export const update = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
-  }).validator(CleaningParams),
+  }).validator(),
 
   run({ _id, modifier }) {
     Meteor.users.update({ _id }, modifier);
