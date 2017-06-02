@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { CleaningParams } from '/imports/utils/validation.js';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
 
@@ -9,7 +10,7 @@ import { Memberships } from '../memberships/memberships.js';
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
-  validate: Topics.simpleSchema().validator(),
+  validate: Topics.simpleSchema().validator(CleaningParams),
 
   run({ doc }) {
     return Topics.insert(doc);
@@ -23,7 +24,7 @@ export const castVote = new ValidatedMethod({
     membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
     castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
     'castedVote.$': { type: SimpleSchema.Integer },
-  }).validator({ clean: true, filter: false }),
+  }).validator(CleaningParams),
 
   run({ topicId, membershipId, castedVote }) {
     const topic = Topics.findOne(topicId);
@@ -63,7 +64,7 @@ export const update = new ValidatedMethod({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
     newTitle: Topics.simpleSchema().schema('title'),
     newText: Topics.simpleSchema().schema('text'),
-  }).validator({ clean: true, filter: false }),
+  }).validator(CleaningParams),
 
   run({ topicId, newTitle, newText }) {
     const topic = Topics.findOne(topicId);
@@ -84,7 +85,7 @@ export const update = new ValidatedMethod({
 
 const TOPIC_ID_ONLY = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
-}).validator({ clean: true, filter: false });
+}).validator(CleaningParams);
 
 export const remove = new ValidatedMethod({
   name: 'topics.remove',

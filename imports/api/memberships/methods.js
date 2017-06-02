@@ -1,18 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Memberships } from './memberships';
+import { CleaningParams } from '/imports/utils/validation.js';
 
-const SAFE_VALIDATION = {
-  clean: {
-    filter: false,
-    autoConvert: false,
-  },
-};
+import { Memberships } from './memberships';
 
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
-  validate: Memberships.simpleSchema().validator(SAFE_VALIDATION), // TODO: turn off clean, filter, autoConvert
+  validate: Memberships.simpleSchema().validator(CleaningParams),
 
   run(doc) {
 /*    if (doc.userId) {
@@ -33,7 +28,7 @@ export const update = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
-  }).validator(),
+  }).validator(CleaningParams),
 
   run({ _id, modifier }) {
     Memberships.update({ _id }, modifier);
@@ -44,7 +39,7 @@ export const remove = new ValidatedMethod({
   name: 'memberships.remove',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
+  }).validator(CleaningParams),
 
   run({ _id }) {
     Memberships.remove(_id);
