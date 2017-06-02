@@ -16,7 +16,7 @@ export const insert = new ValidatedMethod({
   },
 });
 
-export const vote = new ValidatedMethod({
+export const castVote = new ValidatedMethod({
   name: 'topics.vote',
   validate: new SimpleSchema({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -39,17 +39,22 @@ export const vote = new ValidatedMethod({
         'You don\'t have permission to vote in the name of this membership.');
     }
 
+    // If there is already a vote, then owner is changing his vote now.
+    const oldVote = topic.voteResults[membershipId];
+    if (!oldVote) {
+      Topics.update(topicId, { $inc: {
+        'vote.participationCount': 1,
+        'vote.participationShares': membership.ownership.share,
+      } });
+    }
+
     const voteSetterObj = {};
     voteSetterObj['voteResults.' + membershipId] = castedVote;
 
-    Topics.update(topicId, {
-      $inc: {
-        'vote.participationCount': 1,
-        'vote.participationShares': membership.ownership.share,
-      },
-      $set: { voteSetterObj },
+    Topics.update(topicId, { $set: voteSetterObj }, function(err, res) {
+      if (err) throw new Meteor.Error('UnknownError', 'in topics.vote update');
     });
-  },
+  }
 });
 
 export const update = new ValidatedMethod({

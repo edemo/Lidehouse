@@ -27,8 +27,8 @@ Topics.voteSchema = new SimpleSchema({
   type: { type: String, allowedValues: ['yesno', 'preferential'], defaultValue: 'yesno' },
   choices: { type: Array, defaultValue: ['abstain', 'yes', 'no'] },
   'choices.$': { type: String },
-  participationCount: { type: SimpleSchema.Integer, defaultValue: 0 },
-  participationShares: { type: SimpleSchema.Integer, defaultValue: 0 },
+  participationCount: { type: Number, defaultValue: 0 },
+  participationShares: { type: Number, defaultValue: 0 },
 });
 
 Topics.schema = new SimpleSchema({

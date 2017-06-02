@@ -1,15 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-
+import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
-
+import { displayError } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { castVote } from '/imports/api/topics/methods.js';
 
 import '../components/votebox.html';
 import '../components/comments-section.js';
 
-Template.Votebox.onRendered(function chatboxOnRendered() {
+Template.Votebox.onRendered(function voteboxOnRendered() {
 });
 
 Template.Votebox.helpers({
@@ -31,3 +32,23 @@ Template.Votebox.helpers({
     return Comments.find({ topicId: this._id }, { $sort: { createdAt: 1 } });
   },
 });
+
+Template.Votebox.events({
+  'click .btn-yes'(event, instance) {
+    const membershipId = Session.get('activeMembershipId');
+    const topicId = this._id;
+    event.target.classList.toggle('pressed');
+    castVote.call({ topicId, membershipId, castedVote: [1] }, function (err, res) {
+      if (err) {
+        displayError(err);
+        return;
+      }
+    });
+  },
+  'click .btn-no'(event, instance) {
+    // TODO
+  },
+  'click .btn-abstain'(event, instance) {
+    // TODO
+  },
+})

@@ -221,6 +221,7 @@ Meteor.startup(() => {
     vote: {
       closesAt: moment().add(2, 'week').toDate(),
     },
+    voteResults: {},
     // no results yet, noone voted
   });
 
