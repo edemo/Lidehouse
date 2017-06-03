@@ -40,11 +40,24 @@ Template.Votebox.helpers({
 });
 
 Template.Votebox.events({
+  // event handler for the single choice vote type
   'click .btn-vote'(event) {
     const membershipId = Session.get('activeMembershipId');
     const topicId = this._id;
     const choice = $(event.target).data('index');
     castVote.call({ topicId, membershipId, castedVote: [choice] }, function handle(err) {
+      if (err) {
+        displayError(err);
+        return;
+      }
+    });
+  },
+  // event handler for the preferential vote type
+  'click .js-send-vote'(event) {
+    const membershipId = Session.get('activeMembershipId');
+    const topicId = this._id;
+    const choices = []; // TODO: Get the ordering and put it into the choices array
+    castVote.call({ topicId, membershipId, castedVote: choices }, function handle(err) {
       if (err) {
         displayError(err);
         return;

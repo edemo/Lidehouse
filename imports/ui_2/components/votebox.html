@@ -23,12 +23,16 @@
         </div>
       {{/if}}
       {{#if voteTypeIs "preferential"}}
-        <!-- TODO ide kellene a sorbarendezos cucc -->
-        <ul style="{margin-left:20px;}">
-          {{#each choice in vote.choices}}
-            <li>{{choice}}</li>
-          {{/each}}
-        </ul>
+      <div>
+        <span>
+          <ul class="sortable droptrue js-sort-list">
+            {{#each choice in vote.choices}}
+              <li class="ui-state-default" data-value="{{@index}}">{{choice}}</li>
+            {{/each}}
+          </ul>
+          <button class="js-send-vote">Elküld</button>
+        </span>
+      </div>
       {{/if}}
     </div>
     <div class="vote-footer">
@@ -36,4 +40,11 @@
       {{> Comments_section topicId=_id}}
     </div>
   </div>
+  <script type="text/javascript" style="visibility:hidden;">
+    $(function() {
+      $( "ul.droptrue" ).sortable({
+        connectWith: ".js-sort-list"
+      });
+    });
+  </script>
 </template>
