@@ -6,7 +6,7 @@ import { TimeSync } from 'meteor/mizzao:timesync';
 import { displayError } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote } from '/imports/api/topics/methods.js';
-
+import { $ } from 'meteor/jquery';
 import '../components/votebox.html';
 import '../components/comments-section.js';
 
@@ -31,24 +31,24 @@ Template.Votebox.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { $sort: { createdAt: 1 } });
   },
+  pressedClass(choice) {
+    const activeMembershipId = Session.get('activeMembershipId');
+    if (!activeMembershipId || !this.voteResults) return '';
+    const ownVote = this.voteResults[activeMembershipId][0];
+    return (ownVote === choice) && 'btn-pressed';
+  },
 });
 
 Template.Votebox.events({
-  'click .btn-yes'(event, instance) {
+  'click .btn-vote'(event) {
     const membershipId = Session.get('activeMembershipId');
     const topicId = this._id;
-    event.target.classList.toggle('pressed');
-    castVote.call({ topicId, membershipId, castedVote: [1] }, function (err, res) {
+    const choice = $(event.target).data('index');
+    castVote.call({ topicId, membershipId, castedVote: [choice] }, function handle(err) {
       if (err) {
         displayError(err);
         return;
       }
     });
   },
-  'click .btn-no'(event, instance) {
-    // TODO
-  },
-  'click .btn-abstain'(event, instance) {
-    // TODO
-  },
-})
+});

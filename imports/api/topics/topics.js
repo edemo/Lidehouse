@@ -25,7 +25,7 @@ export const Topics = new TopicsCollection('topics');
 Topics.voteSchema = new SimpleSchema({
   closesAt: { type: Date, defaultValue: moment().add(2, 'week').toDate() },
   type: { type: String, allowedValues: ['yesno', 'preferential'], defaultValue: 'yesno' },
-  choices: { type: Array, defaultValue: ['abstain', 'yes', 'no'] },
+  choices: { type: Array, defaultValue: ['yes', 'no', 'abstain'] },
   'choices.$': { type: String },
   participationCount: { type: Number, defaultValue: 0 },
   participationShares: { type: Number, defaultValue: 0 },

@@ -22,16 +22,30 @@ export const castVote = new ValidatedMethod({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
     membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
     castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
-    'castedVote.$': { type: SimpleSchema.Integer },
+    'castedVote.$': { type: Number },
   }).validator(),
 
   run({ topicId, membershipId, castedVote }) {
     const topic = Topics.findOne(topicId);
     const membership = Memberships.findOne(membershipId);
 
+    if (!topic || !membership) {
+      throw new Meteor.Error('internal server error',
+        'Unable to find data'
+      );
+    }
+
     if (membership.communityId !== topic.communityId) {
       throw new Meteor.Error('voting.accessDenied',
-        'Membership has no permission to vote on this topic.');
+        'Membership has no permission to vote on this topic.',
+        'Different community');
+    }
+
+    if (membership.role !== 'owner') {
+      throw new Meteor.Error('voting.accessDenied',
+        'Membership has no voting power.',
+        `Active role is ${membership.role}`
+      );
     }
 
     if (membership.userId !== this.userId) {         // TODO meghatalmazassal is lehet
@@ -40,7 +54,7 @@ export const castVote = new ValidatedMethod({
     }
 
     // If there is already a vote, then owner is changing his vote now.
-    const oldVote = topic.voteResults[membershipId];
+    const oldVote = topic.voteResults && topic.voteResults[membershipId];
     if (!oldVote) {
       Topics.update(topicId, { $inc: {
         'vote.participationCount': 1,
