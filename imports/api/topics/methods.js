@@ -64,19 +64,20 @@ export const castVote = new ValidatedMethod({
       );
     }
 
+    const topicModifier = {};
+    topicModifier['$set'] = {};
+    topicModifier['$set']['voteResults.' + membershipId] = castedVote;
+
     // If there is already a vote, then owner is changing his vote now.
     const oldVote = topic.voteResults && topic.voteResults[membershipId];
     if (!oldVote) {
-      Topics.update(topicId, { $inc: {
+      topicModifier['$inc'] = {
         'vote.participationCount': 1,
         'vote.participationShares': membership.ownership.share,
-      } });
+      };
     }
 
-    const voteSetterObj = {};
-    voteSetterObj['voteResults.' + membershipId] = castedVote;
-
-    Topics.update(topicId, { $set: voteSetterObj }, function(err, res) {
+    Topics.update(topicId, topicModifier, function(err, res) {
       if (err) throw new Meteor.Error('databaseWriteFail', 'Database write failed in|topics.vote|update');
     });
   }
