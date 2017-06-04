@@ -1,21 +1,37 @@
 <template name="Chatbox">
-  <div class="chatbox">
-    <div class="chat-header">
-      <div class="chat-avatar">
+  <div class="white-box chat-thread">
+    <div class="row">
+      <div class="col-xs-2 col-lg-1">
         <img src="{{avatar}}" alt="avatar" align="center" width="50" height="50" />
       </div>
-      <div class="chat-name">
-        <span class="chat-dropdown"><i class="fa fa-caret-down" aria-hidden="true"></i></span>
-        <span class="chat-name-span"><a>{{displayUser}}</a></span>
+      <div class="col-xs-9 col-lg-10">
+        <a>{{displayUser}}</a>
         <br>
-        <span class="chat-date">{{displayTimeSince}} <i class="fa fa-cog" area-hidden="true"></i></span>
+        <small class="chat-time small-size">{{displayTimeSince}}</small>
+      </div>
+      
+      <!-- dropdown at the right corner -->
+      <div class="col-xs-1 col-lg-1">
+        <div class="dropdown text-right">
+          <button class="dropdown-toggle drop-unfoll" type="button" id="drop_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="drop_{{_id}}">
+            <li><a href="#">{{displayUser}} hozzászólásainak elrejtése</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Hozzászólás jelentése</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-xs-12 chat-text">
+        {{text}}
       </div>
     </div>
-    <div class="chat-body">
-      {{text}}
-    </div>
-    <div class="chat-footer">
-      {{> Comments_section topicId=_id}}
+    <div class="row">
+      <div class="col-xs-12">
+        {{> Comments_section topicId=_id}}
+      </div>
     </div>
   </div>
 </template>

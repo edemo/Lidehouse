@@ -1,66 +1,87 @@
 <template name="Board">
-  <div class="page page-board">
+  <div class="page-content page-board-new">
+
+    <div class="col-xs-12 col-lg-9">
+
+      <!-- 1st section start -->
+      <div class="full-width section-btn" type="button" data-toggle="collapse" data-target="#vote-pane" aria-expanded="false" aria-controls="collapseExample">
+        Aktív szavazások
+        <small>(3)</small>
+      </div>
+      <div class="collapse in section-pane" id="vote-pane">
+        <div class="well">
+          {{#each topics 'vote'}}
+            {{> Votebox}}
+          {{/each}}
+        </div>
+      </div>
+      <!-- 1st section end -->
+
+    </div>
+
     <!-- right side -->
-    <div class="side-right">
-      <div class="chatbox faliujsag" style="min-height: 200px;">
-        <div class="faliujsag-title" style="border-bottom:1px solid rgb(209, 209, 209); padding: 7px 0;">
-          <!-- <img src="/icon/si-glyph-bolt.svg" width="17"> -->
-          Faliújság
+    <div class="col-xs-12 col-lg-3">
+      <div class="white-box">
+        <div class="row">
+          <div class="col-xs-12">
+            Faliújság ( //TODO )
+          </div>
         </div>
         {{#each topics 'news'}}
-          <div class="faliujsag-item" style="padding: 4px 0;">
-            <p data-tooltip="{{text}}">
+          <div class="row">
+            <div class="col-xs-8" data-tooltip="{{text}}">
               {{title}}
-            </p>
-            <span>{{displayTime}}</span>
+            </div>
+            <div class="col-xs-4">
+              {{displayTime}}
+            </div>
           </div>
         {{/each}}
       </div>
     </div>
 
-    <!-- left side -->
-    <div class="side-left">
-      <button class="accordion">Aktív Szavazások</button>
-      <div class="accordion-content">
-        {{#each topics 'vote'}}
-          {{> Votebox}}
-        {{/each}}
+    <div class="col-xs-12 col-lg-9">
+      <!-- 2nd section start -->
+      <div class="full-width section-btn" type="button" data-toggle="collapse" data-target="#forum-pane" aria-expanded="false" aria-controls="collapseExample">
+        Fórum
       </div>
-
-      <!-- 2nd section -->
-      <button class="accordion">Friss Forum Posztok</button>
-      <div class="accordion-content">
-        {{#each topics 'forum'}}
+      <div class="collapse in section-pane" id="forum-pane">
+        <div class="well">
+          {{#each topics 'forum'}}
           {{> Chatbox}}
-        {{/each}}
+          {{/each}}
+        </div>
+      </div>
+      <!-- 2nd section end -->
+    </div>
+
+
+    <!-- ADA MODAL content-->
+    <div id="modal-box--open" class="modal-box">
+      <a href="#modal-box--close" class="modal-box__overlay"></a>
+      <div class="modal-box__content">
+        <a href="#modal-box--close" class="modal-box--close">X Mégsem szavazok</a>
+        <h3>Kérem jelentkezzen be ADA felhasználójával!</h3>
+        <a>Átirányítás az ADA felületére ...</a>
+        <p>
+          loginol ADA-n, majd késünk megerősítést hogy biztosan arra szavaz e. ha nem akkor vagy bezárja a modalt és rányom a másikra, vagy a modalon belül felajánljuk neki a többi lehetőséget.
+        </p>
       </div>
     </div>
-  </div>
 
-  <!-- ADA MODAL content-->
-  <div id="modal-box--open" class="modal-box">
-    <a href="#modal-box--close" class="modal-box__overlay"></a>
-    <div class="modal-box__content">
-      <a href="#modal-box--close" class="modal-box--close">X Mégsem szavazok</a>
-      <h3>Kérem jelentkezzen be ADA felhasználójával!</h3>
-      <a>Átirányítás az ADA felületére ...</a>
-      <p>
-        loginol ADA-n, majd késünk megerősítést hogy biztosan arra szavaz e. ha nem akkor vagy bezárja a modalt és rányom a másikra, vagy a modalon belül felajánljuk neki a többi lehetőséget.
-      </p>
+    <!-- szavazás előterjesztés Modal content-->
+    <div id="modal-box2--open" class="modal-box">
+      <a href="#modal-box2--close" class="modal-box__overlay"></a>
+      <div class="modal-box__content">
+        <a href="#modal-box2--close" class="modal-box--close">X</a>
+        <h3>Legyen biciklitárolónk?</h3>
+        <p>Lírás ...........</p>
+        <p>
+          Meh
+        </p>
+      </div>
     </div>
-  </div>
 
-  <!-- szavazás előterjesztés Modal content-->
-  <div id="modal-box2--open" class="modal-box">
-    <a href="#modal-box2--close" class="modal-box__overlay"></a>
-    <div class="modal-box__content">
-      <a href="#modal-box2--close" class="modal-box--close">X</a>
-      <h3>Legyen biciklitárolónk?</h3>
-      <p>Lírás ...........</p>
-      <p>
-        Meh
-      </p>
-    </div>
-  </div>
 
+  </div>
 </template>

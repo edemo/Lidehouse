@@ -1,6 +1,7 @@
 @btn-primary-color: rgb(45, 45, 45);
 @btn-primary-bcg: rgb(243, 191, 115);
 @chat-msg-color: rgb(68, 68, 68);
+@chat-time-color: rgb(125, 125, 125);
 @base-link-color: #1885d8;
 @chat-avatar-size: 40px;
 @chat-avatar-margin: 15px;
@@ -31,7 +32,13 @@
 .text-left {
   text-align: left;
 }
-.page-profile, .page-board, .page_styleguide, .page-report, .page-housing {
+.title-size {
+  font-size: 17px;
+}
+.small-size {
+  font-size: 11.7px;
+}
+.page-profile, .page-board, .page_styleguide, .page-report, .page-housing, .page-board-new {
   a {
     color: @base-link-color;
   }
@@ -125,7 +132,7 @@
   background-size: cover;
 }
 #content-container {
-  font-size-adjust: 0.5;
+  font-size: 14px;
   background-color: @fb-bcg-lighter;
   overflow-y: scroll;
 }
@@ -133,7 +140,6 @@
 nav {
   height: 48px;
   background: white;
-  // box-shadow: 0 2px 4px 2px #484747;;
   box-shadow: 0 2px 4px 2px rgba(35, 35, 35, 0.45);
   span {
     // color: white;
@@ -181,22 +187,6 @@ nav::after {
   background-position: center center;
 }
 
-.side {
-  &-left {
-    @media screen and (min-width: 60em) {
-      width: 70%;
-      float: left;
-      padding-right: 30px;
-    }
-  }
-  &-right {
-    @media screen and (min-width: 60em) {
-      width: 30%;
-      float: right;
-    }
-  }
-}
-
 [class^="btn-"], [class*=" btn-"] {
   letter-spacing: .1em;
   padding-left: 0;
@@ -227,12 +217,25 @@ nav::after {
     border: 2px solid;
     font-weight: bold;
   }
+  &-comment {
+    width: 30px;
+    padding: 7px 15px 7px 10px;
+    height: 50px;
+    text-align: center;
+    background: transparent none repeat scroll 0% 0%;
+    color: rgb(81, 149, 251);
+    font-size: 15px;
+    margin-right: 13px;
+    &:hover {
+      color: rgb(125, 174, 249);
+    }
+  }
 }
-
-.page-board {
-  overflow: auto;
+.page-content {
+  padding: unset;
+}
+.page-board-new, .page-vote {
   background-color: @fb-bcg-lighter;
-  padding-top: 70px;
   @media screen and (max-width: 40em) {
     // padding-top: 50px;
   }
@@ -241,156 +244,21 @@ nav::after {
     padding-right: 0.5em;
   }
   @media screen and (min-width: 80em) {
-    // padding: 1em 4.5em;
+    padding: 1em 4.5em;
     padding-left: 4.5em;
     padding-right: 4.5em;
   }
   @media screen and (min-width: 110em) {
-    // max-width: 1400px;
-    // margin-left: auto;
-    // margin-right: auto;
-    // padding: 1.3em 7em;
-  }
-  .side-right {
-    @media screen and (min-width: 60em) {
-      width: 30%;
-      float: right;
-      position: fixed;
-      right: 3%;
-      // top: 15px;
-      top: 67px;
-    }
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1.3em 7em;
   }
 }
-
-.chatbox {
-  padding: 0px 13px 5px 13px;
-  background-color: @fb-chat-bcg;
-  border: 1.3px solid @fb-chat-border;
-  margin-bottom: 10px;
-
-  //Vote
-  .vote-date {
-    font-size-adjust: 0.4;
-    float: right;
-  }
-  .vote-title {
-    padding: 10px 0px;
-    font-size-adjust: 0.6;
-    border-bottom: 1px solid @chat-part-border;
-  }
-  .vote-description {
-    padding: 7px 0px;
-  }
-  .vote-body {
-    padding: 7px 0px;
-    .btns-group {
-      align: center;
-      max-width: 7600px;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
-    .btn-secondary {
-      box-shadow: rgba(90, 124, 166, 0.42) 0 0 0 1px inset;
-      color: #4A4949;
-      &:hover {
-        color: black;
-        text-shadow: 1px 0px gray;
-      }
-    }
-  }
-  .vote-footer {
-    padding: 7px 0 0 0;
-    color: rgb(144, 144, 144);
-    .right-icon {
-      float: right;
-    }
-  }
-
-  //Chat
-  .chat {
-    &-header {
-      margin-top: 10px;
-    }
-    &-comments {
-      padding-top: 7px;
-      .add-comment {
-        margin-top: 10px;
-        margin-bottom: 15px;
-      }
-    }
-    &-dropdown {
-      color: gray;
-      float: right;
-    }
-    &-like {
-      // float: right;
-    }
-    &-avatar {
-      img {
-        width: @chat-avatar-size;
-      }
-      float: left;
-      margin-right: @chat-avatar-margin;
-    }
-    &-name {
-      height: 50px;
-      &-span {
-        // font-size-adjust: .53;
-      }
-      p {
-        padding: 0px;
-        color: @chat-msg-color;
-      }
-    }
-    &-date {
-      color: gray;
-      font-size-adjust: .4;
-    }
-    &-body {
-      padding: 1em 0;
-    }
-    &-footer {
-      padding: 7px 0 0 0;
-      color: rgb(144, 144, 144);
-      border-top: 1px solid @chat-part-border;
-      .right-icon {
-        float: right;
-      }
-    }
-  }
-  .comment {
-    margin-top: 10px;
-    margin-bottom: 15px;
-  }
+.page-vote {
+  padding-top: 75px;
 }
 
-.faliujsag {
-  &-title {
-
-  }
-  &-item {
-    display: flex;
-    p {
-      width: 80%;
-      @media screen and (min-width: 60em) {
-        font-size-adjust: 0.45;
-      }
-    }
-    span {
-      width: 20%;
-      color: gray;
-      @media screen and (min-width: 60em) {
-        font-size-adjust: 0.3;
-      }
-      @media screen and (max-width: 80em) {
-        font-size-adjust: 0.4;
-      }
-    }
-  }
-}
 
 // hibabejelnto statuszai
 .status-span {
