@@ -1,8 +1,11 @@
+/* eslint-disable dot-notation */
+
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
+import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from './topics.js';
 import { Memberships } from '../memberships/memberships.js';
@@ -12,12 +15,97 @@ export const insert = new ValidatedMethod({
   validate: Topics.schema.validator({ clean: true }),
 
   run({ doc }) {
-    return Topics.insert(doc);
+    const topic = Topics.findOne(doc._id);
+    if (topic) {
+      throw new Meteor.Error('err_duplicateId', 'This id is already used',
+        `Method: topics.insert, Collection: topics, id: ${doc._id}`
+      );
+    }
+
+    return Topics.insert(doc, function handle(err, res) {
+      if (err) {
+        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
+        `Method: topics.insert, userId: ${this.userId}, topicId: ${doc._id}`);
+      }
+      debugAssert(res === 1);
+    });
+  },
+});
+
+export const update = new ValidatedMethod({
+  name: 'topics.update',
+  validate: new SimpleSchema({
+    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    newTitle: Topics.simpleSchema().schema('title'),
+    newText: Topics.simpleSchema().schema('text'),
+  }).validator(),
+
+  run({ topicId, newTitle, newText }) {
+    const topic = Topics.findOne(topicId);
+    if (!topic) {
+      throw new Meteor.Error('err_invalidId', 'No such object',
+        `Method: topics.update, Collection: topics, id: ${topicId}`
+      );
+    }
+
+    if (!topic.editableBy(this.userId)) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.update, userId: ${this.userId}, topicId: ${topicId}`);
+    }
+
+    // XXX the security check above is not atomic, so in theory a race condition could
+    // result in exposing private data
+
+    const topicModifier = {
+      $set: { title: newTitle, text: newText },
+    };
+
+    Topics.update(topicId, topicModifier, function handle(err, res) {
+      if (err) {
+        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
+        `Method: topics.update, userId: ${this.userId}, topicId: ${topicId}`);
+      }
+      debugAssert(res === 1);
+    });
+  },
+});
+
+const TOPIC_ID_ONLY = new SimpleSchema({
+  topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+}).validator();
+
+export const remove = new ValidatedMethod({
+  name: 'topics.remove',
+  validate: TOPIC_ID_ONLY,
+
+  run({ topicId }) {
+    const topic = Topics.findOne(topicId);
+    if (!topic) {
+      throw new Meteor.Error('err_invalidId', 'No such object',
+        `Method: topics.remove, Collection: topics, id: ${topicId}`
+      );
+    }
+
+    if (!topic.editableBy(this.userId)) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.remove, userId: ${this.userId}, topicId: ${topicId}`);
+    }
+
+    // XXX the security check above is not atomic, so in theory a race condition could
+    // result in exposing private data
+
+    Topics.remove(topicId, function handle(err, res) {
+      if (err) {
+        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
+        `Method: topics.remove, userId: ${this.userId}, topicId: ${topicId}`);
+      }
+      debugAssert(res === 1);
+    });
   },
 });
 
 export const castVote = new ValidatedMethod({
-  name: 'topics.vote',
+  name: 'topics.castVote',
   validate: new SimpleSchema({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
     membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -28,33 +116,28 @@ export const castVote = new ValidatedMethod({
   run({ topicId, membershipId, castedVote }) {
     const topic = Topics.findOne(topicId);
     if (!topic) {
-      throw new Meteor.Error('invalidId',
-        'No such|topic',
-        `Method: topics.vote, id: ${topicId}`
+      throw new Meteor.Error('err_invalidId', 'No such object',
+        `Method: topics.castVote, Collection: topics, id: ${topicId}`
       );
     }
-
     const membership = Memberships.findOne(membershipId);
     if (!membership) {
-      throw new Meteor.Error('invalidId',
-        'No such|membership',
-        `Method: topics.vote, id: ${membershipId}`
+      throw new Meteor.Error('err_invalidId', 'No such object',
+        `Method: topics.castVote, Collection: memberships, id: ${membershipId}`
       );
     }
 
     if (membership.userId !== this.userId) {         // TODO meghatalmazassal is lehet
-      throw new Meteor.Error('permissionDenied',
-        'No permission|to vote|in the name of this membership.',
-        `Method: topics.vote, userId: ${this.userId}, membershipId: ${membershipId}`);
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.castVote, userId: ${this.userId}, topicId: ${topicId}`);
     }
 
     // TODO:  use permissions system to determine if user has permission
     // const user = Meteor.users.findOne()
 
     if (membership.communityId !== topic.communityId) {
-      throw new Meteor.Error('permissionDenied',
-        'Membership has no permission to vote on this topic.',
-        'Different community');
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.castVote, userId: ${this.userId}, topicId: ${topicId}`);
     }
 
     if (membership.role !== 'owner') {
@@ -77,62 +160,13 @@ export const castVote = new ValidatedMethod({
       };
     }
 
-    Topics.update(topicId, topicModifier, function(err, res) {
-      if (err) throw new Meteor.Error('databaseWriteFail', 'Database write failed in|topics.vote|update');
+    Topics.update(topicId, topicModifier, function handle(err, res) {
+      if (err) {
+        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
+        `Method: topics.castVote, userId: ${this.userId}, topicId: ${topicId}`);
+      }
+      debugAssert(res === 1);
     });
-  }
-});
-
-export const update = new ValidatedMethod({
-  name: 'topics.update',
-  validate: new SimpleSchema({
-    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    newTitle: Topics.simpleSchema().schema('title'),
-    newText: Topics.simpleSchema().schema('text'),
-  }).validator(),
-
-  run({ topicId, newTitle, newText }) {
-    const topic = Topics.findOne(topicId);
-
-    if (!topic.editableBy(this.userId)) {
-      throw new Meteor.Error('topics.updateName.accessDenied',
-        'You don\'t have permission to edit this topic.');
-    }
-
-    // XXX the security check above is not atomic, so in theory a race condition could
-    // result in exposing private data
-
-    Topics.update(topicId, {
-      $set: { title: newTitle, text: newText },
-    });
-  },
-});
-
-const TOPIC_ID_ONLY = new SimpleSchema({
-  topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
-}).validator();
-
-export const remove = new ValidatedMethod({
-  name: 'topics.remove',
-  validate: TOPIC_ID_ONLY,
-
-  run({ topicId }) {
-    const topic = Topics.findOne(topicId);
-
-    if (!topic.editableBy(this.userId)) {
-      throw new Meteor.Error('topics.remove.accessDenied',
-        'You don\'t have permission to remove this topic.');
-    }
-
-    // XXX the security check above is not atomic, so in theory a race condition could
-    // result in exposing private data
-
-    if (topic.isLastPublicTopic()) {
-      throw new Meteor.Error('topics.remove.lastPublicTopic',
-        'Cannot delete the last public topic.');
-    }
-
-    Topics.remove(topicId);
   },
 });
 
@@ -141,6 +175,7 @@ const TOPICS_METHOD_NAMES = _.pluck([
   insert,
   update,
   remove,
+  castVote,
 ], 'name');
 
 if (Meteor.isServer) {
