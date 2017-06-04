@@ -41,8 +41,8 @@ Memberships.helpers({
 });
 
 const OwnershipSchema = new SimpleSchema({
-  serial: { type: SimpleSchema.Integer },
-  share: { type: SimpleSchema.Integer },
+  serial: { type: Number },
+  share: { type: Number },
   /*  name: { type: String,
       autoValue() {
         if (this.isInsert) {

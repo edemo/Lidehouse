@@ -27,30 +27,41 @@ export const castVote = new ValidatedMethod({
 
   run({ topicId, membershipId, castedVote }) {
     const topic = Topics.findOne(topicId);
-    const membership = Memberships.findOne(membershipId);
-
-    if (!topic || !membership) {
-      throw new Meteor.Error('internal server error',
-        'Unable to find data'
+    if (!topic) {
+      throw new Meteor.Error('invalidId',
+        'No such|topic',
+        `Method: topics.vote, id: ${topicId}`
       );
     }
 
+    const membership = Memberships.findOne(membershipId);
+    if (!membership) {
+      throw new Meteor.Error('invalidId',
+        'No such|membership',
+        `Method: topics.vote, id: ${membershipId}`
+      );
+    }
+
+    if (membership.userId !== this.userId) {         // TODO meghatalmazassal is lehet
+      throw new Meteor.Error('permissionDenied',
+        'No permission|to vote|in the name of this membership.',
+        `Method: topics.vote, userId: ${this.userId}, membershipId: ${membershipId}`);
+    }
+
+    // TODO:  use permissions system to determine if user has permission
+    // const user = Meteor.users.findOne()
+
     if (membership.communityId !== topic.communityId) {
-      throw new Meteor.Error('voting.accessDenied',
+      throw new Meteor.Error('permissionDenied',
         'Membership has no permission to vote on this topic.',
         'Different community');
     }
 
     if (membership.role !== 'owner') {
       throw new Meteor.Error('voting.accessDenied',
-        'Membership has no voting power.',
+        'Role has no voting power.',
         `Active role is ${membership.role}`
       );
-    }
-
-    if (membership.userId !== this.userId) {         // TODO meghatalmazassal is lehet
-      throw new Meteor.Error('voting.accessDenied',
-        'You don\'t have permission to vote in the name of this membership.');
     }
 
     // If there is already a vote, then owner is changing his vote now.
@@ -66,7 +77,7 @@ export const castVote = new ValidatedMethod({
     voteSetterObj['voteResults.' + membershipId] = castedVote;
 
     Topics.update(topicId, { $set: voteSetterObj }, function(err, res) {
-      if (err) throw new Meteor.Error('UnknownError', 'in topics.vote update');
+      if (err) throw new Meteor.Error('databaseWriteFail', 'Database write failed in|topics.vote|update');
     });
   }
 });
