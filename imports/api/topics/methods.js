@@ -1,8 +1,11 @@
+/* eslint-disable dot-notation */
+
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
+import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from './topics.js';
 import { Memberships } from '../memberships/memberships.js';
@@ -12,63 +15,21 @@ export const insert = new ValidatedMethod({
   validate: Topics.schema.validator({ clean: true }),
 
   run({ doc }) {
-    return Topics.insert(doc);
-  },
-});
-
-export const castVote = new ValidatedMethod({
-  name: 'topics.vote',
-  validate: new SimpleSchema({
-    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
-    'castedVote.$': { type: Number },
-  }).validator(),
-
-  run({ topicId, membershipId, castedVote }) {
-    const topic = Topics.findOne(topicId);
-    const membership = Memberships.findOne(membershipId);
-
-    if (!topic || !membership) {
-      throw new Meteor.Error('internal server error',
-        'Unable to find data'
+    const topic = Topics.findOne(doc._id);
+    if (topic) {
+      throw new Meteor.Error('err_duplicateId', 'This id is already used',
+        `Method: topics.insert, Collection: topics, id: ${doc._id}`
       );
     }
 
-    if (membership.communityId !== topic.communityId) {
-      throw new Meteor.Error('voting.accessDenied',
-        'Membership has no permission to vote on this topic.',
-        'Different community');
-    }
-
-    if (membership.role !== 'owner') {
-      throw new Meteor.Error('voting.accessDenied',
-        'Membership has no voting power.',
-        `Active role is ${membership.role}`
-      );
-    }
-
-    if (membership.userId !== this.userId) {         // TODO meghatalmazassal is lehet
-      throw new Meteor.Error('voting.accessDenied',
-        'You don\'t have permission to vote in the name of this membership.');
-    }
-
-    // If there is already a vote, then owner is changing his vote now.
-    const oldVote = topic.voteResults && topic.voteResults[membershipId];
-    if (!oldVote) {
-      Topics.update(topicId, { $inc: {
-        'vote.participationCount': 1,
-        'vote.participationShares': membership.ownership.share,
-      } });
-    }
-
-    const voteSetterObj = {};
-    voteSetterObj['voteResults.' + membershipId] = castedVote;
-
-    Topics.update(topicId, { $set: voteSetterObj }, function(err, res) {
-      if (err) throw new Meteor.Error('UnknownError', 'in topics.vote update');
+    return Topics.insert(doc, function handle(err, res) {
+      if (err) {
+        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
+        `Method: topics.insert, userId: ${this.userId}, topicId: ${doc._id}`);
+      }
+      debugAssert(res === 1);
     });
-  }
+  },
 });
 
 export const update = new ValidatedMethod({
@@ -81,17 +42,30 @@ export const update = new ValidatedMethod({
 
   run({ topicId, newTitle, newText }) {
     const topic = Topics.findOne(topicId);
+    if (!topic) {
+      throw new Meteor.Error('err_invalidId', 'No such object',
+        `Method: topics.update, Collection: topics, id: ${topicId}`
+      );
+    }
 
     if (!topic.editableBy(this.userId)) {
-      throw new Meteor.Error('topics.updateName.accessDenied',
-        'You don\'t have permission to edit this topic.');
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.update, userId: ${this.userId}, topicId: ${topicId}`);
     }
 
     // XXX the security check above is not atomic, so in theory a race condition could
     // result in exposing private data
 
-    Topics.update(topicId, {
+    const topicModifier = {
       $set: { title: newTitle, text: newText },
+    };
+
+    Topics.update(topicId, topicModifier, function handle(err, res) {
+      if (err) {
+        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
+        `Method: topics.update, userId: ${this.userId}, topicId: ${topicId}`);
+      }
+      debugAssert(res === 1);
     });
   },
 });
@@ -106,21 +80,93 @@ export const remove = new ValidatedMethod({
 
   run({ topicId }) {
     const topic = Topics.findOne(topicId);
+    if (!topic) {
+      throw new Meteor.Error('err_invalidId', 'No such object',
+        `Method: topics.remove, Collection: topics, id: ${topicId}`
+      );
+    }
 
     if (!topic.editableBy(this.userId)) {
-      throw new Meteor.Error('topics.remove.accessDenied',
-        'You don\'t have permission to remove this topic.');
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.remove, userId: ${this.userId}, topicId: ${topicId}`);
     }
 
     // XXX the security check above is not atomic, so in theory a race condition could
     // result in exposing private data
 
-    if (topic.isLastPublicTopic()) {
-      throw new Meteor.Error('topics.remove.lastPublicTopic',
-        'Cannot delete the last public topic.');
+    Topics.remove(topicId, function handle(err, res) {
+      if (err) {
+        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
+        `Method: topics.remove, userId: ${this.userId}, topicId: ${topicId}`);
+      }
+      debugAssert(res === 1);
+    });
+  },
+});
+
+export const castVote = new ValidatedMethod({
+  name: 'topics.castVote',
+  validate: new SimpleSchema({
+    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
+    'castedVote.$': { type: Number },
+  }).validator(),
+
+  run({ topicId, membershipId, castedVote }) {
+    const topic = Topics.findOne(topicId);
+    if (!topic) {
+      throw new Meteor.Error('err_invalidId', 'No such object',
+        `Method: topics.castVote, Collection: topics, id: ${topicId}`
+      );
+    }
+    const membership = Memberships.findOne(membershipId);
+    if (!membership) {
+      throw new Meteor.Error('err_invalidId', 'No such object',
+        `Method: topics.castVote, Collection: memberships, id: ${membershipId}`
+      );
     }
 
-    Topics.remove(topicId);
+    if (membership.userId !== this.userId) {         // TODO meghatalmazassal is lehet
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.castVote, userId: ${this.userId}, topicId: ${topicId}`);
+    }
+
+    // TODO:  use permissions system to determine if user has permission
+    // const user = Meteor.users.findOne()
+
+    if (membership.communityId !== topic.communityId) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.castVote, userId: ${this.userId}, topicId: ${topicId}`);
+    }
+
+    if (membership.role !== 'owner') {
+      throw new Meteor.Error('voting.accessDenied',
+        'Role has no voting power.',
+        `Active role is ${membership.role}`
+      );
+    }
+
+    const topicModifier = {};
+    topicModifier['$set'] = {};
+    topicModifier['$set']['voteResults.' + membershipId] = castedVote;
+
+    // If there is already a vote, then owner is changing his vote now.
+    const oldVote = topic.voteResults && topic.voteResults[membershipId];
+    if (!oldVote) {
+      topicModifier['$inc'] = {
+        'vote.participationCount': 1,
+        'vote.participationShares': membership.ownership.share,
+      };
+    }
+
+    Topics.update(topicId, topicModifier, function handle(err, res) {
+      if (err) {
+        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
+        `Method: topics.castVote, userId: ${this.userId}, topicId: ${topicId}`);
+      }
+      debugAssert(res === 1);
+    });
   },
 });
 
@@ -129,6 +175,7 @@ const TOPICS_METHOD_NAMES = _.pluck([
   insert,
   update,
   remove,
+  castVote,
 ], 'name');
 
 if (Meteor.isServer) {

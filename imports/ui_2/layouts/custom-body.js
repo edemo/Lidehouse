@@ -6,10 +6,8 @@ import { ReactiveDict } from 'meteor/reactive-dict';
 import { Template } from 'meteor/templating';
 import { ActiveRoute } from 'meteor/zimme:active-route';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Tracker } from 'meteor/tracker';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
-import { moment } from 'meteor/momentjs:moment';
 import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
@@ -20,9 +18,9 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 
 import '/imports/ui/components/loading.js';
 import '/imports/ui/components/side-panel.js';
+import '/imports/ui_2/pages/not-logged-in.html';
 import './custom-body.html';
 
-import '/imports/ui_2/pages/not-logged-in.html';
 
 const CONNECTION_ISSUE_TIMEOUT = 5000;
 
@@ -46,11 +44,6 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   this.state = new ReactiveDict();
   this.state.setDefault({
     menuOpen: false,
-  });
-  T9n.setLanguage('hu');
-  TAPi18n.setLanguage('hu');
-  Tracker.autorun(() => {
-    moment.locale(TAPi18n.getLanguage());
   });
 
   // We run this in autorun, so when a new User logs in, the subscription changes

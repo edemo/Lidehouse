@@ -1,116 +1,18 @@
 {
-  "topics": {
-    "topics": "Topics",
-    "makePrivate": {
-      "notLoggedIn": "Must be logged in to make private topics.",
-      "lastPublicTopic": "Cannot make the last public topic private."
-    },
-    "makePublic": {
-      "notLoggedIn": "Must be logged in.",
-      "accessDenied": "You don't have permission to edit this topic."
-    },
-    "updateName": {
-      "accessDenied": "You don't have permission to edit this topic."
-    },
-    "remove": {
-      "accessDenied": "'You don't have permission to remove this topic.'",
-      "lastPublicTopic": "Cannot delete the last public topic.",
-      "confirm": "Are you sure you want to delete the topic"
-    },
-    "show": {
-      "cancel": "Cancel",
-      "showMenu": "Show Menu",
-      "selectAction": "Select an action",
-      "makePublic": "Make Public",
-      "makePrivate": "Make Private",
-      "delete": "Delete",
-      "makeTopicPublic": "Make topic public",
-      "makeTopicPrivate": "Make topic private",
-      "deleteTopic": "Delete topic",
-      "typeToAdd": "Type to add new comment",
-      "noTasks": "No comments here",
-      "addAbove": "Add new comment using the field above",
-      "loading": "Loading comments..."
-    },
-    "insert": {
-      "topic": "Topic"
-    }
-  },
-  "user": {
-    "user": "User",
-    "username": "Username",
-    "remove": "Remove",
-    "invite": "Invite"
-  },
-  "comments": {
-    "insert": {
-      "accessDenied": "Cannot add comment to a private topic that is not yours"
-    },
-    "setReadedStatus": {
-      "accessDenied": "Cannot edit comment in a private topic that is not yours"
-    },
-    "updateText": {
-      "accessDenied": "Cannot edit comment in a private topic that is not yours"
-    },
-    "remove": {
-      "accessDenied": "Cannot remove comment in a private topic that is not yours"
-    },
-    "item": {
-      "taskName": "Comment content"
-    }
-  },
-  "communities": {
-    "communities": "Communities",
-    "community": "Community",
-    "name": "Name",
-    "join": "Join",
-    "create": "Create"
-  },
-  "memberships": {
-    "memberships": "Members"
-  },
-  "share":  {
-    "serial": "SerialNo",
-    "name": "Name",
-    "location": "Location",
-    "type": "Type",
-    "ownership": "Ownership",
-    "fraction": "Fraction"
-  },
-  "useraccounts": {
-    "atTitle": {
-      "subtitle": "Signing in allows you to join communities"
-    },
-    "invite": {
-      "inviteSend": "Send invitation"
-    }
-  },
-  "layouts": {
-    "appBody": {
-      "logout": "Logout",
-      "login": "Sign In",
-      "join": "Join",
-      "newTopic": "New Topic",
-      "newTopicError": "Could not create topic.",
-      "community": "Your communities:",
-      "joinCommunity": "Join a community",
-      "createCommunity": "Create a new community",
-      "newMembership": "Invite new member",
-      "newMembershipError": "Could not add membership.",
-      "tryingToConnect": "Trying to connect",
-      "connectionIssue": "There seems to be a connection issue"
-    }
-  },
-  "pages": {
-    "appNotFound": {
-      "pageNotFound": "Page not found"
-    },
-    "community": {
-      "data": "Data",
-      "members": "Shares",
-      "addMember": "Add Share",
-      "uploads": "Documentstore",
-      "upload": "Upload"
-    }
-  }
+  "err_notLoggedIn": "Must be logged in",
+  "err_permissionDenied": "You don't have permission",
+
+  "confirm": "Are you sure?",
+
+  "inviteSend": "Send invitation",
+
+  "logout": "Logout",
+  "login": "Sign In",
+  "join": "Join",
+  "newTopic": "New Topic",
+  "tryingToConnect": "Trying to connect",
+  "connectionIssue": "There seems to be a connection issue",
+  "pageNotFound": "Page not found",
+
+  "userAccountsSubtitle": "Log in to enjoy all functionalities of this app"
 }
