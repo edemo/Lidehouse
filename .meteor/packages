@@ -25,7 +25,6 @@ percolate:momentum
 aldeed:autoform
 twbs:bootstrap
 momentjs:moment
-rzymek:moment-locale-hu
 mizzao:timesync
 djk:jquery-ui
 
@@ -41,7 +40,6 @@ msavin:mongol
 jalik:ufs
 jalik:ufs-gridfs
 
-
 # routing
 kadira:flow-router
 kadira:blaze-layout
@@ -50,6 +48,8 @@ zimme:active-route
 
 # i18n
 tap:i18n
+rzymek:moment-locale-hu
+gwendall:simple-schema-i18n
 
 # accounts
 accounts-password@1.3.3
