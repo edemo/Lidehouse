@@ -6,6 +6,8 @@ export const HouseTranslation = {
   {
     "communities": "buildings",
     "community": "building",
+    "Join a community": "Join a building",
+    "Create a community": "Create a building",
 
     "lot": "Lot number",
     "address": "Address",
@@ -31,6 +33,8 @@ export const HouseTranslation = {
   {
     "communities": "házak",
     "community": "ház",
+    "Join a community": "Csatlakozás egy házhoz",
+    "Create a community": "Létrehozok egy házat",
 
     "lot": "Helyrajzi szám",
     "address": "Cím",
