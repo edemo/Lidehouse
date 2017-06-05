@@ -29,3 +29,13 @@ Template.Board.helpers({
     return moment(this.createdAt).format('YYYY MMM Do');
   },
 });
+
+Template.News.helpers({
+  topics(category) {
+    const communityId = Session.get('activeCommunityId');
+    return Topics.find({ communityId, category, closed: false });
+  },
+  displayTime() {
+    return moment(this.createdAt).format('YYYY MMM Do');
+  },
+});
