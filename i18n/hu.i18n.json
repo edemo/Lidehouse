@@ -19,40 +19,44 @@
   "Tickets": "Hibabejelentés",
   "Finances": "Pénzügyek",
   "Documentstore": "Dokumentumtár",
-  
+
+  "News": "Hírek",
+  "Board": "Faliújság",
+
   // api
-  "name": "Név",
-  "user": "Felhasználó",
-  "users": "Felhasználók",
-  "username": "Felhasználónév",
-  "profile": "Profil",
-  "firstName": "Keresztnév",
-  "lastName": "Vezetéknév",
-  "community": "Közösség",
-  "communities": "Közösségek",
-  "membership": "Tagság",
-  "memberships": "Tagságok",
+  "name": "név",
+  "user": "felhasználó",
+  "users": "felhasználók",
+  "username": "felhasználónév",
+  "profile": "profil",
+  "firstName": "keresztnév",
+  "lastName": "vezetéknév",
+  "community": "közösség",
+  "communities": "közösségek",
+  "membership": "tagság",
+  "memberships": "tagságok",
+  "role": "szerep",
 
-  "ownership": "Albetét",
+  "ownership": "albetét",
 
-  "data": "Adatok",
-  "members": "Albetétek",
-  "addMember": "Albetét hozzáadás",
-  "uploads": "Dokumentumtár",
-  "upload": "Feltöltés",
+  "data": "adatok",
+  "members": "albetétek",
+  "addMember": "albetét hozzáadás",
+  "uploads": "dokumentumtár",
+  "upload": "feltöltés",
 
-  "share": "Tulajdonrész",
-  "serial": "Sorszám",
-  "name": "Név",
-  "location": "Elhelyezkedés",
-  "type": "Típus",
-  "ownership": "Tulajdon",
-  "fraction": "Tulajdonrész",
+  "share": "tulajdonrész",
+  "serial": "sorszám",
+  "name": "név",
+  "location": "elhelyezkedés",
+  "type": "típus",
+  "ownership": "tulajdon",
+  "fraction": "tulajdonrész",
 
-  "topic": "Téma",
-  "topics": "Témák",
+  "topic": "téma",
+  "topics": "témák",
 
-  "comment": "Hozzászólás",
+  "comment": "hozzászólás",
 
   // commands
   "delete": "Törlés",
@@ -79,20 +83,20 @@
   "err_databaseWriteFailed": "Adatbázis írás sikertelen",
   "Database write failed": "Adatbázis írás sikertelen",
 
+  "No active": "Nincs aktív",
 
-  "logout": "Kilépés",
-  "login": "Belépés",
-  "join": "Új fiók",
-  "newTopic": "Új téma",
-  "newTopicError": "Nem lehet létrehozni az új témát",
-  "community": "Az ön házai:",
-  "joinCommunity": "Csatlakozás egy házhoz",
-  "createCommunity": "Létrehozok egy házat",
-  "newMembership": "Új tag meghívása a házba",
-  "newMembershipError": "Nem lehet létrehozni az új tagot",
+  "Join a Community": "Csatlakozás egy házhoz",
+  "Create a Community": "Létrehozok egy házat",
+
+  "logout": "kilépés",
+  "login": "belépés",
+  "register": "új fiók",
+
   "tryingToConnect": "Kapcsolódás folyamatban...",
   "connectionIssue": "Valami hiba van a hálózattal",
   "pageNotFound": "Az odal nem található",
   "inviteSend": "Meghívó kiküldése",
-  "subtitle": "Bejelentkezett felhasználók csatlakozhatnak lakóközösségekhez."
+
+  "userAccountsSubtitle": "Bejelentkezett felhasználók minden funkciót elérhetnek"
+
 }

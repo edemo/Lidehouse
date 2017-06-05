@@ -26,7 +26,7 @@
               {{#if activeCommunity}}
                 {{activeCommunity.name}}
               {{else}}
-                Nincs aktív ház
+                {{_ 'No active'}} {{_ 'community'}}
               {{/if}}
               <ul>
                 {{#each communities}}
@@ -40,7 +40,7 @@
               {{#if activeMembership}}
                 {{displayMembership activeMembership}}
               {{else}}
-                Nincs aktív szerep
+                {{_ 'No active'}} {{_ 'role'}}
               {{/if}}
               <ul>
                 {{#each memberships}}
@@ -53,8 +53,8 @@
           <ul class="nav">
             <li class="drop"> +
               <ul>
-                  <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'layouts.appBody.joinCommunity'}} </a></li>
-                  <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'layouts.appBody.createCommunity'}} </a></li>
+                  <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
+                  <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'Create a community'}} </a></li>
               </ul>
             </li>
           </ul>
@@ -76,18 +76,18 @@
               <li class="drop profile-drop">{{currentUser.fullName}}
                 <img src="{{currentUser.avatar}}" alt="" width="35"/>
                 <ul>
-                  <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}">Profil</a></li>
-                  <li><a class="js-logout" href="">{{_ 'layouts.appBody.logout'}}</a></li>
+                  <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}">{{_ 'profile'}}</a></li>
+                  <li><a class="js-logout" href="">{{_ 'logout'}}</a></li>
                 </ul>
               </li>
             </ul>
           {{else}}
             <div class="btns-group top-sign-in">
               <a href="{{pathFor 'signin'}}" class="btn-secondary">
-                {{_ 'layouts.appBody.login'}} /
+                {{_ 'login'}} /
               </a>
               <a href="{{pathFor 'join'}}" class="btn-secondary">
-                {{_ 'layouts.appBody.join'}}
+                {{_ 'register'}}
               </a>
             </div>
           {{/if}}
@@ -98,14 +98,14 @@
       <section id="menu">
         <div class="list-menu">
           <ul>
-            <li class="list-item"><a href="{{pathFor 'Board'}}"><img src="/icon/si-glyph-house.svg"/> Főoldal</a></li>
-            <li class="list-item"><a><img src="/icon/si-glyph-mail-box.svg"/>Üzenetek</a></li>
-            <li class="list-item"><a href="{{pathFor 'Topics.forum'}}"><img src="/icon/si-glyph-bolt.svg"/>Forum</a></li>
-            <li class="list-item"><a href="{{pathFor 'Topics.vote'}}"><img src="/icon/si-glyph-bolt.svg"/>Szavazások</a></li>
-            <li class="list-item"><a href="{{pathFor 'Report'}}"><img src="/icon/si-glyph-hammer-and-wrench.svg"/>Hibabejelentés</a></li>
-            <li class="list-item"><a href="{{pathFor 'Housing'}}"><img src="/icon/si-glyph-key.svg"/>Albetétek</a></li>
-            <li class="list-item"><a><img src="/icon/si-glyph-book-4.svg"/>Pénzügyek</a></li>
-            <li class="list-item"><a href="{{pathFor 'DocumentStore'}}"><img src="/icon/si-glyph-paper-clip.svg"/>Dokumentumtár</a></li>
+            <li class="list-item"><a href="{{pathFor 'Board'}}"><img src="/icon/si-glyph-house.svg"/> {{_ 'Main'}}</a></li>
+            <li class="list-item"><a><img src="/icon/si-glyph-mail-box.svg"/>{{_ 'Messages'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'Topics.forum'}}"><img src="/icon/si-glyph-bolt.svg"/>{{_ 'Forum'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'Topics.vote'}}"><img src="/icon/si-glyph-bolt.svg"/>{{_ 'Votings'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'Housing'}}"><img src="/icon/si-glyph-key.svg"/>{{_ 'Delegations'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'Report'}}"><img src="/icon/si-glyph-hammer-and-wrench.svg"/>{{_ 'Tickets'}}</a></li>
+            <li class="list-item"><a><img src="/icon/si-glyph-book-4.svg"/>{{_ 'Finances'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'DocumentStore'}}"><img src="/icon/si-glyph-paper-clip.svg"/>{{_ 'Documentstore'}}</a></li>
           </ul>
           <a href="{{pathFor 'Styleguide'}}" class="list-item" style="position: absolute; bottom: 0; width: 100%;">
             <img src="/icon/si-glyph-bolt.svg"/>
@@ -120,10 +120,10 @@
             <span class="icon-sync"></span>
             <div class="meta">
               <div class="title-notification">
-                {{_ 'layouts.appBody.tryingToConnect'}}
+                {{_ 'tryingToConnect'}}
               </div>
               <div class="description">
-                {{_ 'layouts.appBody.connectionIssue'}}
+                {{_ 'connectionIssue'}}
               </div>
             </div>
           </div>

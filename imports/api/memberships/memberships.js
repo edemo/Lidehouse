@@ -5,12 +5,14 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-
+import { TAPi18n } from 'meteor/tap:i18n';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Roles } from '/imports/api/permissions/roles.js';
 
 export const Memberships = new Mongo.Collection('memberships');
+
+const __ = TAPi18n.__;
 
 Memberships.helpers({
   hasUser() {
@@ -34,9 +36,9 @@ Memberships.helpers({
     return this.ownership.floor + '/' + this.ownership.number;
   },
   name() {
-    if (!this.ownership) return this.role;
+    if (!this.ownership) return __(this.role);
     // const letter = this.ownership.type.substring(0, 1);
-    return this.location() + ' ' + this.role;
+    return this.location() + ' ' + __(this.role);
   },
 });
 
