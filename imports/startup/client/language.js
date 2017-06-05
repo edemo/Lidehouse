@@ -6,6 +6,7 @@ import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { Tracker } from 'meteor/tracker';
 import { moment } from 'meteor/momentjs:moment';
 
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 function getDefaultLanguage() {
   return 'hu';    // Current default language is hungarian
@@ -32,4 +33,9 @@ Meteor.startup(function setDefaultLanguage() {
   Tracker.autorun(() => {
     moment.locale(TAPi18n.getLanguage());
   });
+
+  SimpleSchema.defaultLabel = function (key) {
+    debugger;
+    return TAPi18n.__(key);
+  };
 });
