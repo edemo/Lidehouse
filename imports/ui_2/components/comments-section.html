@@ -1,38 +1,40 @@
 <template name="Comments_section">
-  <a class="accordion-comment">{{count}} komment</a>
-  <div class="accordion-content panel-comment">
-
-    <div class="chat-comments">
-
-      <div class="add-comment" >
-        <div class="chat-avatar">
-          <img src="{{selfAvatar}}" alt="avatar" align="center" width="35" height="35" />
-        </div>
-        <div class="">
-          <textarea rows="" cols="5" placeholder="Szólj hozzá..." class="autoResize" style="overflow: hidden; word-wrap: break-word; height: 37px; width: 70%; padding: 0;"></textarea>
-          <button class="js-send-comment">Elküld</button>
-        </div>
-      </div>
-
-      {{#each comment in comments}}
-        {{> Comment comment}}
-      {{/each}}
-
+  <div class="row">
+    <div class="col-xs-12 small-size">
+      <a data-toggle="collapse" data-target="#{{topicId}}" aria-expanded="true" aria-controls="collapseExample">{{count}} hozzászólás</a>
     </div>
+  </div>
+  <div class="collapse" id="{{topicId}}">
+    <!-- other comment row -->
+    {{#each comment in comments}}
+      {{> Comment comment}}
+    {{/each}}
+    <!-- your new comment row-->
+    <div class="row">
+      <div class="col-xs-2 col-lg-1">
+        <img src="{{selfAvatar}}" alt="avatar" align="center" width="35" height="35" />
+      </div>
+      <div class="col-xs-10 col-lg-11">
+        <textarea rows="" cols="5" placeholder="Szólj hozzá..." class="chat-field"></textarea>
+        <button class="js-send-comment btn-comment">
+          <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <template name="Comment">
-  <div class="comment">
-    <div class="chat-avatar">
+  <div class="row comment-margin">
+    <div class="col-xs-2 col-lg-1">
       <img src="{{avatar}}" alt="avatar" align="center" width="35" height="35" />
     </div>
-    <div class="chat-name">
-      <!-- <span class="chat-dropdown" style="float: right;">X</span> -->
-      <span class="chat-name-span"><a>{{displayUser}}</a></span>
-      <span class="chat-date">{{displayTimeSince}}</span>
-      <br>
-      {{text}}
+    <div class="col-xs-10 col-lg-11">
+      <a>{{displayUser}}</a> - {{displayTimeSince}}
+      <p class="comment-text">
+        {{text}}
+      </p>
     </div>
   </div>
 </template>

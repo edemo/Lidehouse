@@ -3,6 +3,7 @@
 	.progressBar{
 		.progressLine[data-value="@{index}"]{
 			width:@index * 1%;
+			min-width: 2%;
 		}
 	}
 	.progressBar (@index - 1);
@@ -14,7 +15,6 @@
   height: 17px;
   width: 100%;
   margin-top: 10px;
-  margin-bottom: 30px;
   background-color: lighten(@color_progress, 30%);
   .progressLine{
     align: center;

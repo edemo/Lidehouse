@@ -1,46 +1,81 @@
 <template name="Votebox">
-  <div class="chatbox">
-    <div class="vote-title">
-      {{title}}
-      <div class="vote-date" data-tooltip="{{displayTime}}">Lezárul: {{displayTimeLeft}}</div>
-    </div>
-    <div class="vote-description">
-      {{text}}
-    </div>
-    <div class="vote-body">
-      <!-- voting progress -->
-      <div class="progressBar" data-tooltip="eddig {{votedCount}} tag szavazott a {{memberCount}}-ból">
-        <div class="progressLine" data-value="{{voteParticipation}}">{{voteParticipation}} %</div>
+  <div class="vote-container white-box">
+    <div class="row vote-title">
+      <div class="col-xs-6 title-size">
+        {{title}}
       </div>
-      <!-- voting buttons -->
-      {{#if voteTypeIs "yesno"}}
-        <div class="btns-group">
-          {{#each choice in vote.choices}}
-            <a href="#" class="btn-secondary btn-vote {{pressedClass @index}}" data-index="{{@index}}">
-              {{choice}}
-            </a>
-          {{/each}}
+      <div class="col-xs-6 small-size text-right" data-tooltip="{{displayTime}}">
+        Lezárul: {{displayTimeLeft}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        {{text}}
+      </div>
+    </div>
+    <div class="row paper-row">
+      <div class="col-xs-12 text-right small-size">
+        <a href="#modal-box2--open" title="Előterjesztés megtekintése">
+          <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+          Hivatalos előterjesztés megtekintése
+        </a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 progress-holder text-center">
+        <!-- voting progress -->
+        <div class="progressBar">
+          <div class="progressLine" data-value="{{voteParticipation}}">{{voteParticipation}} %</div>
         </div>
-      {{/if}}
-      {{#if voteTypeIs "preferential"}}
-      <div>
-        <span>
-          <ul class="sortable droptrue js-sort-list">
-            {{#each choice in vote.choices}}
-              <li class="ui-state-default" data-value="{{@index}}">{{choice}}</li>
-            {{/each}}
-          </ul>
-          <button class="js-send-vote">Elküld</button>
-        </span>
+        <small class="small-size">Eddig {{votedCount}} tag szavazott a {{memberCount}}-ból</small>
       </div>
-      {{/if}}
     </div>
-    <div class="vote-footer">
-      <span class="right-icon"><a href="#modal-box2--open" title="Hivatalos előterjesztés megtekintése">Papericon</a></span>
-      {{> Comments_section topicId=_id}}
+    <div class="row">
+      <div class="col-xs-12 vote-answer">
+
+        <!-- voting buttons -->
+        {{#if voteTypeIs "yesno"}}
+        <div class="row">
+          <div class="col-xs-12 vsend-col">
+            <div class="btns-group">
+              {{#each choice in vote.choices}}
+              <a href="#" class="btn-secondary btn-vote {{pressedClass @index}}" data-index="{{@index}}">
+                {{choice}}
+              </a>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+        {{/if}}
+        {{#if voteTypeIs "preferential"}}
+        <div class="row vote-answer-sort">
+          <div class="col-xs-12 text-center">
+            Ez egy preferenciális szavazás. Kérjük rakja sorrenbe...
+          </div>
+          <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
+            <ul class="sortable droptrue js-sort-list">
+              {{#each choice in vote.choices}}
+              <li class="ui-state-default" data-value="{{@index}}">{{choice}}</li>
+              {{/each}}
+            </ul>
+          </div>
+          <div class="col-xs-12 text-center vsend-col">
+            <button class="btn-primary btn-votesend">Véglegesítem</button>
+          </div>
+        </div>
+        {{/if}}
+
+      </div>
     </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        {{> Comments_section topicId=_id}}
+      </div>
+    </div>
+
   </div>
-  <!-- TODO: Remove this. Somewhere appropriate -->
+
   <script type="text/javascript" style="visibility:hidden;">
     $(function() {
       $( "ul.droptrue" ).sortable({
@@ -48,10 +83,4 @@
       });
     });
   </script>
-  <!-- TODO: Remove this. Just a temp hack -->
-  <style>.btn-pressed {
-    background-color: grey;
-    border-radius: 3px;
-  }
-  </style>
 </template>

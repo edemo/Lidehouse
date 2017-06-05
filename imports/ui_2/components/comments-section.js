@@ -41,23 +41,6 @@ Template.Comment.helpers({
 });
 
 Template.Comments_section.events({
-  'click .accordion-comment'(event, instance) {
-    instance.autorun(() => {
-      const accordion = event.target;
-      accordion.classList.toggle('active');
-      const content = accordion.nextElementSibling;
-      const parentAccordion = event.target.closest('.accordion-content');
-      if (content.style.maxHeight) {
-        content.style.maxHeight = null;
-      } else {
-        content.style.maxHeight = 'unset';
-        parentAccordion.style.maxHeight = 'auto';
-        // TODO: if content.scrollHeight changes, we need to rerun this
-        // so content.scrollHeight changes need to trigger this autorun block
-        // so content.scrollHeigh might need to be in a ReactiveVar
-      }
-    });
-  },
   'click .js-send-comment'(event) {
     Meteor.call('comments.insert', {
       topicId: this.topicId,

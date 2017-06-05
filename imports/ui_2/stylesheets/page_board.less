@@ -1,0 +1,91 @@
+.white-box {
+  // margin-bottom: 20px;
+  background-color: white;
+  border: 1.3px solid @fb-chat-border;
+  &.chat-thread {
+    padding: +11.3px;
+    margin-bottom: 11px;
+  }
+}
+.page-board-new, .page-vote {
+  @section-btn-col: rgba(251, 172, 53, 0.63);
+  @section-btn-col-collapsed: rgba(104, 125, 151, 0.47);
+  @icon-gray: gray;
+  .section-btn {
+    padding: 10px 19px 10px 19px;
+    cursor: pointer;
+    background-color: @section-btn-col-collapsed;
+    &-2 {
+      margin-top: 20px;
+    }
+    &.collapsed {
+      background-color: @section-btn-col;
+    }
+    small {
+      float: right;
+    }
+  }
+  .section-pane {
+    .well {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+    }
+  }
+  .news-mid {
+    margin-top: 20px;
+  }
+
+  // new vote and chat less
+  .vote-container {
+    margin-bottom: 3.7px;
+    padding: 17px;
+  }
+  .vote-title {
+    border-bottom: 1px solid @chat-part-border;
+    padding-bottom: 7px;
+    margin-bottom: 7px;
+  }
+  .progress-holder {
+    padding: 13px 17px 7px 17px;
+    margin-bottom: 37px;
+  }
+  .vote-answer {
+    &-sort {
+
+    }
+  }
+  .btn-votesend {
+    padding: 5px;
+  }
+  .vsend-col {
+    padding-bottom: 13px;
+    margin-bottom: 9px;
+    border-bottom: 1px solid @fb-chat-border;
+  }
+  .comment-margin {
+    margin-top: 17px;
+    margin-bottom: 11px;
+  }
+  .comment-text {
+    padding: 0;
+    font-size: 12.5px;
+  }
+  .paper-row {
+    padding-top: 21px;
+  }
+  .drop-unfoll {
+    background: transparent;
+    color: @icon-gray;
+    padding-right: 7px;
+    font-size: 13px;
+    text-align: center;
+  }
+  .chat-time {
+    color: @chat-time-color
+  }
+  .chat-text {
+    padding-top: 9px;
+    padding-bottom: 13px;
+  }
+}
