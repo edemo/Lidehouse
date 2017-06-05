@@ -45,8 +45,8 @@ Template.Comments_section.events({
     Meteor.call('comments.insert', {
       topicId: this.topicId,
       userId: Meteor.userId(),
-      text: event.target.previousElementSibling.value,
+      text: event.target.parentElement.previousElementSibling.value,
     });
-    event.target.previousElementSibling.value = '';
+    event.target.parentElement.previousElementSibling.value = '';
   },
 });
