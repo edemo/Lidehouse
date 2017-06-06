@@ -7,6 +7,7 @@ import { Tracker } from 'meteor/tracker';
 import { moment } from 'meteor/momentjs:moment';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { comtype } from '/imports/comtypes/comtype.js';
 
 function getDefaultLanguage() {
   return 'hu';    // Current default language is hungarian
@@ -33,9 +34,10 @@ Meteor.startup(function setDefaultLanguage() {
   Tracker.autorun(() => {
     moment.locale(TAPi18n.getLanguage());
   });
+});
 
-  SimpleSchema.defaultLabel = function (key) {
-    debugger;
-    return TAPi18n.__(key);
-  };
+// The different community types bring in their own i18n extensions
+
+Meteor.startup(function comtypeLanguageExtensions() {
+  TAPi18n.loadTranslations(comtype.translation, 'project');
 });

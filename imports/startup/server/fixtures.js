@@ -15,15 +15,11 @@ Meteor.startup(() => {
 
   const demoCommunityId = Communities.insert({
     name: 'Demo ház',
-    profile: {
-      lot: '123456/1234',
-      address: {
-        city: 'Budapest',
-        street: 'Kankalin u',
-        number: '86',
-        zip: '1144',
-      },
-    },
+    zip: '1144',
+    city: 'Budapest',
+    street: 'Kankalin u',
+    number: '86',
+    lot: '123456/1234',
     totalshares: 100,
   });
 

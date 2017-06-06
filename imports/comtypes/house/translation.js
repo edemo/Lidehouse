@@ -9,12 +9,38 @@ export const HouseTranslation = {
     "Join a community": "Join a building",
     "Create a community": "Create a building",
 
-    "lot": "Lot number",
-    "address": "Address",
-    "city": "City",
-    "street": "Street",
-    "number": "Number",
-    "zip": "Zip code",
+    "api": {
+      "communities": {
+        "name": {
+          "label": "Name of the Building",
+          "placeholder": "(eg. Marina Gardens)"
+        },
+        "zip": {
+          "label": "Zip code",
+          "placeholder": "(eg. 1089)"
+        },
+        "city": {
+          "label": "City",
+          "placeholder": "(eg. Budapest)"
+        },
+        "street": {
+          "label": "Street",
+          "placeholder": "(eg. Tulip street or Heros square)"
+        },
+        "number": {
+          "label": "House number",
+          "placeholder": "(eg. 101 or 25/B)"
+        },
+        "lot": {
+          "label": "Lot number",
+          "placeholder": "(eg. 29732/9)"
+        },
+        "totalshares": {
+          "label": "Total shares outstanding",
+          "placeholder": "(eg. 10000)"
+        }
+      }
+    },
 
     "memberships": "Owners",
 
@@ -36,12 +62,42 @@ export const HouseTranslation = {
     "Join a community": "Csatlakozás egy házhoz",
     "Create a community": "Létrehozok egy házat",
 
-    "lot": "Helyrajzi szám",
-    "address": "Cím",
-    "city": "Város",
-    "street": "Utca",
-    "number": "Házszám",
-    "zip": "Irányító szám",
+    "api": {
+      "communities": {
+        "why": {
+          "label": "Társasház neve",
+          "placeholder": "(pl. Rózsakert lakópark vagy Kankalin u 45)"
+        },
+        "name": {
+          "label": "Társasház neve",
+          "placeholder": "(pl. Rózsakert lakópark vagy Kankalin u 45)"
+        },
+        "totalshares": {
+          "label": "Összes tulajdoni hányad száma",
+          "placeholder": "(pl. 1000 vagy 9999)"
+        },
+        "zip": {
+          "label": "Irányító szám",
+          "placeholder": "(pl. 1034)"
+        },
+        "city": {
+          "label": "Város",
+          "placeholder": "(pl. Budapest)"
+        },
+        "street": {
+          "label": "Utca/közterület",
+          "placeholder": "(pl.Kankalin u. vagy Zsigmond tér)"
+        },
+        "number": {
+          "label": "Házszám",
+          "placeholder": "(pl. 101 vagy 25/B)"
+        },
+        "lot": {
+          "label": "Helyrajzi szám (Hrsz)",
+          "placeholder": "(pl. 29732/9)"
+        },
+      }
+    },
 
     "memberships": "Tulajdonosok",
 
