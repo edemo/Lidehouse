@@ -1,7 +1,7 @@
 /* eslint-disable dot-notation */
-import { CompanySchema } from './company.js';
+import { CompanyProfileSchema } from './company.js';
 
 export const companyType = {
   name: 'company',
-  profileSchema: CompanySchema,
+  profileSchema: CompanyProfileSchema,
 };

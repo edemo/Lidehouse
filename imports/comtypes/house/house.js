@@ -1,8 +1,7 @@
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { TAPi18n } from 'meteor/tap:i18n';
-import { AddressSchema } from './address.js';
+import { AddressSchema } from '/imports/localization/localization.js';
 
-export const HouseSchema = new SimpleSchema({
+export const HouseProfileSchema = new SimpleSchema({
   lot: { type: String, max: 100 },
   address: { type: AddressSchema },
 });
