@@ -1,4 +1,5 @@
 {
+  // api
   "users": {
     "username": {
       "label": "Username",
@@ -37,20 +38,20 @@
     }
   },
 
-  "err_notLoggedIn": "Must be logged in",
-  "err_permissionDenied": "You don't have permission",
-
+  // buttons etc.
   "confirm": "Are you sure?",
-
   "inviteSend": "Send invitation",
-
   "logout": "Logout",
   "login": "Sign In",
   "join": "Join",
   "newTopic": "New Topic",
-  "tryingToConnect": "Trying to connect",
-  "connectionIssue": "There seems to be a connection issue",
+
+  // errors and messages
+  "err_notLoggedIn": "Must be logged in",
+  "err_permissionDenied": "You don't have permission",
   "pageNotFound": "Page not found",
+  "connectionIssue": "There seems to be a connection issue",
+  "tryingToConnect": "Trying to connect",
 
   "userAccountsSubtitle": "Log in to enjoy all functionalities of this app"
 }

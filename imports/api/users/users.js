@@ -89,15 +89,15 @@ Meteor.users.schema = new SimpleSchema({
       return undefined; // means leave whats there alone for Updates, Upserts
     },
   },*/
-  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: 'http://pannako.hu/wp-content/uploads/avatar-1.png' },
   profile: { type: UserProfileSchema, optional: true },
+  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: 'http://pannako.hu/wp-content/uploads/avatar-1.png' },
   emails: { type: Array },
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },
+
   // Make sure this services field is in your schema if you're using any of the accounts packages
-  services: { type: Object, optional: true, blackbox: true, autoform: { omit: true },
-  },
+  services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },
 
   // In order to avoid an 'Exception in setInterval callback' from Meteor
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
@@ -116,3 +116,10 @@ Meteor.users.deny({
   update() { return true; },
   remove() { return true; },
 });
+
+Meteor.users.publicFields = {
+  username: 1,
+  profile: 1,
+  avatar: 1,
+  // email is not public
+};
