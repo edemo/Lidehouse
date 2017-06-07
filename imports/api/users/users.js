@@ -8,6 +8,8 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 
+
+/*
 // Code from https://github.com/aldeed/meteor-collection2
 
 export const CountrySchema = new SimpleSchema({
@@ -24,6 +26,13 @@ export const UserProfileSchema = new SimpleSchema({
   website: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true },
   bio: { type: String, optional: true },
   country: { type: CountrySchema, optional: true },
+});
+*/
+
+export const UserProfileSchema = new SimpleSchema({
+  firstName: { type: String },
+  lastName: { type: String },
+  bio: { type: String, optional: true },
 });
 
 Meteor.users.helpers({
@@ -79,12 +88,12 @@ Meteor.users.schema = new SimpleSchema({
       return undefined; // means leave whats there alone for Updates, Upserts
     },
   },*/
+  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: 'http://pannako.hu/wp-content/uploads/avatar-1.png' },
+  profile: { type: UserProfileSchema, optional: true },
   emails: { type: Array },
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },
-  profile: { type: UserProfileSchema, optional: true },
-  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: 'http://pannako.hu/wp-content/uploads/avatar-1.png' },
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true },
   },
