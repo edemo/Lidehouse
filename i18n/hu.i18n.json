@@ -1,4 +1,43 @@
 {
+  // api
+  "users": {
+    "username": {
+      "label": "Felhasználónév",
+      "placeholder": "(pl. Miki75)"
+    },
+    "avatar": {
+      "label": "Avatár",
+      "placeholder": "(pl. kockásfülünyúl.jpg)"
+    },
+    "profile": {
+      "label": "Profil",
+
+      "firstName": {
+        "label": "Keresztnév",
+        "placeholder": "(pl. Miklós)"
+      },
+      "lastName": {
+        "label": "Vezetéknév",
+        "placeholder": "(pl. Galambos)"
+      },
+      "bio": {
+        "label": "Bemutatkozás",
+        "placeholder": "(pl. Vasárnaponként szoktam gyakorolni zongorázni. Bocsi :) )"
+      }
+    },
+    "emails": {
+      "$": {
+        "address": {
+          "label": "E-mail cím",
+          "placeholder": "(pl. margitka21@ingyenmail.com)"
+        },
+        "verified": {
+          "label": "Ellenőrzött"
+        }
+      }
+    }
+  },
+
   // roles
   "admin": "admin",
   "manager": "közös képviselő",
@@ -26,7 +65,6 @@
   // api
   "name": "név",
   "user": "felhasználó",
-  "users": "felhasználók",
   "username": "felhasználónév",
   "profile": "profil",
   "firstName": "keresztnév",

@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 import 'meteor/accounts-base';
 
@@ -30,7 +31,7 @@ export const UserProfileSchema = new SimpleSchema({
 */
 
 export const UserProfileSchema = new SimpleSchema({
-  firstName: { type: String },
+  firstName: { type: String /* label: () => TAPi18n.__('users.profile.firstName.label') */ },
   lastName: { type: String },
   bio: { type: String, optional: true },
 });
@@ -104,6 +105,10 @@ Meteor.users.schema = new SimpleSchema({
 
 Meteor.users.attachSchema(Meteor.users.schema);
 Meteor.users.attachSchema(Timestamps);
+
+Meteor.startup(function attach() {
+  Meteor.users.simpleSchema().i18n('users');
+});
 
 // Deny all client-side updates since we will be using methods to manage this collection
 Meteor.users.deny({

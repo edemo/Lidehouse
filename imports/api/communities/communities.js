@@ -17,7 +17,7 @@ Communities.schema = new SimpleSchema([
 Communities.attachSchema(Communities.schema);
 
 Meteor.startup(function attach() {
-  Communities.schema.i18n('api.communities');
+  Communities.simpleSchema().i18n('communities');
 });
 
 // Deny all client-side updates since we will be using methods to manage this collection

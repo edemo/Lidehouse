@@ -41,3 +41,13 @@ Meteor.startup(function setDefaultLanguage() {
 Meteor.startup(function comtypeLanguageExtensions() {
   TAPi18n.loadTranslations(comtype.translation, 'project');
 });
+
+// Note: Currently this is run on the CLIENT ONLY
+// So comtype transaltions will not be available on the server.
+
+// Known problems with this language and translation system
+// 1. If there is no english label, the other language labels are not used either
+// 2. Need to call i18n() function AFTER tapi18n had the chance to load all traslations
+//    including the extra translations for the comtypes !!!
+// 3. When schema contains included Arrays
+//    if you try to put label in the array, or in array.$, it creates two levels of labels

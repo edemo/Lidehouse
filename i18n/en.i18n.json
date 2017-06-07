@@ -1,4 +1,42 @@
 {
+  "users": {
+    "username": {
+      "label": "Username",
+      "placeholder": "(eg. Mike75)"
+    },
+    "avatar": {
+      "label": "Avatar",
+      "placeholder": "(eg. heart.jpg)"
+    },
+    "profile": {
+      "label": "Profile",
+
+      "firstName": {
+        "label": "First name",
+        "placeholder": "(eg. Michael)"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "(eg. Keaton)"
+      },
+      "bio": {
+        "label": "Bio",
+        "placeholder": "(pl. On sundays I like to play the piano. Sorry :) )"
+      }
+    },
+    "emails": {
+      "$": {
+        "address": {
+          "label": "Address",
+          "placeholder": "(eg. margaret21@freemail.com)"
+        },
+        "verified": {
+          "label": "Verified"
+        }
+      }
+    }
+  },
+
   "err_notLoggedIn": "Must be logged in",
   "err_permissionDenied": "You don't have permission",
 
