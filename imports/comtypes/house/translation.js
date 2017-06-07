@@ -64,13 +64,13 @@ export const HouseTranslation = {
 
     "api": {
       "communities": {
-        "why": {
-          "label": "Társasház neve",
-          "placeholder": "(pl. Rózsakert lakópark vagy Kankalin u 45)"
-        },
         "name": {
           "label": "Társasház neve",
           "placeholder": "(pl. Rózsakert lakópark vagy Kankalin u 45)"
+        },
+        "image": {
+          "label": "Irányító szám",
+          "placeholder": "(pl. 1034)"
         },
         "totalshares": {
           "label": "Összes tulajdoni hányad száma",

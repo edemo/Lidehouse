@@ -9,6 +9,7 @@ export const Communities = new Mongo.Collection('communities');
 
 Communities.schema = new SimpleSchema([
   { name: { type: String, max: 100 } },
+  { image: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true } },
   comtype.profileSchema,
   { totalshares: { type: Number } },
 ]);
