@@ -1,8 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-
 import 'meteor/accounts-base';
+
+import { Timestamps } from '/imports/api/timestamps.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
@@ -82,17 +83,6 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },
-  createdAt: { type: Date,
-    autoValue() {
-      if (this.isInsert) {
-        return new Date();
-      }
-      return undefined;
-    },
-    autoform: {
-      omit: true,
-    },
-  },
   profile: { type: UserProfileSchema, optional: true },
   avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: 'http://pannako.hu/wp-content/uploads/avatar-1.png' },
   // Make sure this services field is in your schema if you're using any of the accounts packages
@@ -104,6 +94,7 @@ Meteor.users.schema = new SimpleSchema({
 });
 
 Meteor.users.attachSchema(Meteor.users.schema);
+Meteor.users.attachSchema(Timestamps);
 
 // Deny all client-side updates since we will be using methods to manage this collection
 Meteor.users.deny({

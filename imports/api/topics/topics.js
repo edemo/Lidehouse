@@ -5,7 +5,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import faker from 'faker';
 
-import { Timestamps } from '../timestamps.js';
+import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '../comments/comments.js';
 import { Communities } from '../communities/communities.js';
 import { Memberships } from '../memberships/memberships.js';

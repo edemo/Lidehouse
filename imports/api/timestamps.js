@@ -7,11 +7,11 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 // Collection.attachSchema(Timestamps);
 //
 // This way Timestamps are added in additon to the normal schema
-// And when you validate the insert method on the Collection you can use
+// And when you validate the inserting ValidatedMethod parameters you can use
 // Collection.schema.validator({ clean: true })
 // so you validate against the timestamp-less schema.
 // That is important because the timestamp autoValues will only be added
-// when the insert, update database operations happen done by aldeed:collection2
+// when the insert, update database operations happen (done by aldeed:collection2)
 
 export const Timestamps = new SimpleSchema({
   createdAt: {
@@ -23,11 +23,13 @@ export const Timestamps = new SimpleSchema({
       }
       return undefined;   // so it leaves it alone
     },
+    autoform: { omit: true },
   },
   updatedAt: {
     type: Date,
     autoValue() {
       return new Date();
     },
+    autoform: { omit: true },
   },
 });
