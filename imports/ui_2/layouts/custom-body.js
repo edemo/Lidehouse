@@ -120,7 +120,7 @@ Template.Custom_body.helpers({
     if (activeMembershipId) {
       activeMembership = Memberships.findOne(activeMembershipId);
     } else if (activeCommunityId) {
-      activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId(), role: 'owner' });
+      activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId() });
       if (activeMembership) {
         Session.set('activeMembershipId', activeMembership._id);
       }
@@ -128,10 +128,6 @@ Template.Custom_body.helpers({
     // else activeMembership stays undefined;
 
     return activeMembership;
-  },
-  displayMembership(membership) {
-    if (!membership) return '';
-    return membership.name();
   },
 });
 

@@ -38,7 +38,7 @@
           <ul class="nav">
             <li class="drop">
               {{#if activeMembership}}
-                {{displayMembership activeMembership}}
+                {{activeMembership.name}}
               {{else}}
                 {{_ 'No active'}} {{_ 'role'}}
               {{/if}}
