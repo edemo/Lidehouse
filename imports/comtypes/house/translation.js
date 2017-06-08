@@ -58,7 +58,7 @@ export const HouseTranslation = {
 
   hu:
   {
-    "community": "ház",
+    "community": "társasház",
     "Join a community": "Csatlakozás egy házhoz",
     "Create a community": "Létrehozok egy házat",
 
