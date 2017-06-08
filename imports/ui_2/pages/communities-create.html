@@ -1,14 +1,10 @@
 <template name="Communities_create_form">
-  <div class="autoform">
-    <div class="content-scrollable">
-      <div class="wrapper-form">
-        {{#autoForm id="communities_create" collection=communities type="method" meteormethod="communities.create" template="bootstrap3"}}
-          {{> afQuickFields}}
-          <div>
-            <button type="submit" class="btn btn-primary">{{_ "create"}}</button>
-          </div>
-        {{/autoForm}}
+  <div class="content-scrollable page-content">
+    {{#autoForm id="communities_create" collection=communities type="method" meteormethod="communities.create" template="bootstrap3"}}
+      {{> afQuickFields}}
+      <div>
+        <button type="submit" class="btn btn-primary">{{_ "create"}}</button>
       </div>
-    </div>
+    {{/autoForm}}
   </div>
 </template>
