@@ -101,6 +101,7 @@
   "closes": "lezárul",
 
   // commands
+  "save": "Mentés",
   "delete": "Törlés",
   "remove": "Eltávolítás",
   "invite": "Meghívás",

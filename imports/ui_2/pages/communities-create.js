@@ -4,7 +4,7 @@ import { Template } from 'meteor/templating';
 import { Communities } from '/imports/api/communities/communities.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
-import './communities-create-form.html';
+import './communities-create.html';
 
 AutoForm.hooks({
   communities_create: {
