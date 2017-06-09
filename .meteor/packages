@@ -27,6 +27,8 @@ twbs:bootstrap
 momentjs:moment
 mizzao:timesync
 djk:jquery-ui
+ephemer:reactive-datatables
+aldeed:tabular
 
 # data
 mongo@1.1.14
@@ -50,6 +52,7 @@ zimme:active-route
 tap:i18n
 rzymek:moment-locale-hu
 gwendall:simple-schema-i18n
+gwendall:autoform-i18n
 
 # accounts
 accounts-password@1.3.3
@@ -86,4 +89,3 @@ dburles:factory
 
 # security
 audit-argument-checks@1.0.7
-gwendall:autoform-i18n

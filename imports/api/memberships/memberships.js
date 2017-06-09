@@ -22,13 +22,28 @@ Memberships.helpers({
     const user = Meteor.users.findOne(this.userId);
     return user;
   },
+  ownerName() {
+    if (!this.userId) return 'no user';
+    const user = Meteor.users.findOne(this.userId);
+    return user.fullName();
+  },
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);
     return community;
   },
   totalshares() {
-    return this.community().totalshares;
+    const community = this.community();
+    if (!community) return undefined;
+    return community.totalshares;
+  },
+  votingShares() {
+    if (!this.ownership) return 'non-voting';
+    const share = this.ownership.share;
+    if (!share) return '0';
+    const totalshares = this.totalshares();
+    if (!totalshares) return '';
+    return `${share}/${totalshares}`;
   },
   // TODO: move this to the house package
   location() {
@@ -63,6 +78,8 @@ const OwnershipSchema = new SimpleSchema({
   type: { type: String,
     allowedValues: ['Apartment', 'Parking', 'Storage'],
   },
+  lot: { type: String, max: 100 },
+  size: { type: Number, decimal: true },
 });
 
 Memberships.schema = new SimpleSchema({

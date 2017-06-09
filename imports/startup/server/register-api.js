@@ -4,6 +4,7 @@ import '/imports/api/comments/methods.js';
 import '/imports/api/comments/publications.js';
 import '/imports/api/memberships/methods.js';
 import '/imports/api/memberships/publications.js';
+import '/imports/api/memberships/table.js';
 import '/imports/api/communities/methods.js';
 import '/imports/api/communities/publications.js';
 import '/imports/api/users/methods.js';

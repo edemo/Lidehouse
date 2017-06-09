@@ -37,6 +37,41 @@
       }
     }
   },
+  "memberships": {
+    "ownership": {
+      "serial": {
+        "label": "Sorszám",
+        "placeholder": "(pl. 101)"
+      },
+      "share": {
+        "label": "Tulajdoni hányad",
+        "placeholder": "(pl. 135)"
+      },
+      "floor": {
+        "label": "Emelet",
+        "placeholder": "(pl. 4 vagy IV)"
+      },
+      "number": {
+        "label": "Szám",
+        "placeholder": "(pl. 24)"
+      },
+      "type": {
+        "label": "Típus",
+        "placeholder": "(pl. Lakás)"
+      },
+      "lot": {
+        "label": "Helyrajzi szám",
+        "placeholder": "(pl. 293456/A/24)"
+      },
+      "size": {
+        "label": "Méret",
+        "placeholder": "(pl. 45)"
+      },
+      "location": {
+        "label": "Elhelyezkedés"
+      }
+    }
+  },
 
   // roles
   "admin": "admin",

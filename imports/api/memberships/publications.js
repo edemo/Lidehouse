@@ -6,6 +6,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Memberships } from './memberships.js';
 import { Communities } from '../communities/communities.js';
 
+// might be better to go with peerlibrary:meteor-reactive-publish
+// https://github.com/aldeed/meteor-tabular/issues/332
 
 Meteor.publishComposite('memberships.inCommunity', function membershipsInCommunity(params) {
   new SimpleSchema({

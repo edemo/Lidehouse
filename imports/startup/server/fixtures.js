@@ -66,6 +66,8 @@ Meteor.startup(() => {
       floor: 'I',
       number: '14',
       type: 'Apartment',
+      lot: '29345/A/114',
+      size: 65,
     },
   });
   Memberships.insert({
@@ -78,6 +80,8 @@ Meteor.startup(() => {
       floor: 'II',
       number: '25',
       type: 'Apartment',
+      lot: '29345/A/225',
+      size: 142,
     },
   });
   Memberships.insert({
@@ -90,6 +94,8 @@ Meteor.startup(() => {
       floor: 'III',
       number: '36',
       type: 'Apartment',
+      lot: '29345/A/336',
+      size: '98.4',
     },
   });
   Memberships.insert({
@@ -102,6 +108,8 @@ Meteor.startup(() => {
       floor: '-2',
       number: 'P209',
       type: 'Parking',
+      lot: '29345/P/209',
+      size: 6,
     },
   });
 

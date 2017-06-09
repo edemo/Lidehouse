@@ -6,7 +6,9 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { displayError } from '/imports/ui/lib/errors.js';
+import { TAPi18n } from 'meteor/tap:i18n';
 
+import { tableColumns } from '/imports/api/memberships/table.js';
 import './community-memberships.html';
 
 Template.Community_memberships_page.onCreated(function () {
@@ -43,6 +45,26 @@ Template.Community_memberships_page.helpers({
   displayUsername(membership) {
     if (!membership.hasUser()) return '';
     return membership.user().safeUsername();
+  },
+
+  // ephemer:reactive-meteor-datatables (client-side filtering)
+  reactiveTableDataFn() {
+    function getTableData() {
+      const communityId = Session.get('activeCommunityId');
+      return Memberships.find({ communityId, role: 'owner' }).fetch();
+    }
+    return getTableData;
+  },
+  optionsObject() {
+    return {
+      columns: tableColumns,
+      tableClasses: 'table-striped table-bordered table-condensed',
+    };
+  },
+
+  // aldeed:tabular (server-side filtering)
+  selector() {
+    return { communityId: Session.get('activeCommunityId'), role: 'owner' };
   },
 });
 
