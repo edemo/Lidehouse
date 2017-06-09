@@ -1,7 +1,7 @@
 <template name="Comments_section">
   <div class="row">
     <div class="col-xs-12 small-size">
-      <a data-toggle="collapse" data-target="#{{topicId}}" aria-expanded="true" aria-controls="collapseExample">{{count}} hozzászólás</a>
+      <a data-toggle="collapse" data-target="#{{topicId}}" aria-expanded="true" aria-controls="#{{topicId}}">{{count}} hozzászólás</a>
     </div>
   </div>
   <div class="collapse" id="{{topicId}}">
@@ -27,12 +27,11 @@
 
 <template name="Comment">
   <div class="row comment-margin">
-    <div class="col-xs-2 col-lg-1">
-      <img src="{{avatar}}" alt="avatar" align="center" width="35" height="35" />
-    </div>
-    <div class="col-xs-10 col-lg-11">
+    <div class="col-xs-12 col-lg-12">
+      <img class="margined-avatar" src="{{avatar}}" alt="avatar" align="left" width="35" height="35" />
       <a>{{displayUser}}</a> - {{displayTimeSince}}
-      <p class="comment-text">
+      <br>
+      <p class="comment-text no-padding">
         {{text}}
       </p>
     </div>
