@@ -74,6 +74,9 @@ Meteor.users.helpers({
     const email = this.emails[0].address;
     return email.substring(0, email.indexOf('@'));
   },
+  toString() {
+    return this.safeUsername();
+  },
 });
 
 Meteor.users.schema = new SimpleSchema({
@@ -121,5 +124,5 @@ Meteor.users.publicFields = {
   username: 1,
   profile: 1,
   avatar: 1,
-  // email is not public
+  emails: 1, // TODO: email is not public, but we now need for calculating derived username
 };
