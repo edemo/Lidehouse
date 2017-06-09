@@ -37,45 +37,6 @@
       }
     }
   },
-  "memberships": {
-    "ownership": {
-      "serial": {
-        "label": "Serial No",
-        "placeholder": "(eg. 101)"
-      },
-      "share": {
-        "label": "Voting share",
-        "placeholder": "(eg. 135)"
-      },
-      "lot": {
-        "label": "Lot no",
-        "placeholder": "(eg. 293456/A/24)"
-      },
-      "floor": {
-        "label": "Floor",
-        "placeholder": "(eg. 4 or IV)"
-      },
-      "number": {
-        "label": "Number",
-        "placeholder": "24"
-      },
-      "type": {
-        "label": "Type",
-        "placeholder": "(eg. Apartment)"
-      },
-      "lot": {
-        "label": "Lot No",
-        "placeholder": "(eg. 293457/A/21)"
-      },
-      "size": {
-        "label": "Size",
-        "placeholder": "(eg. 45)"
-      },
-      "location": {
-        "label": "Location"
-      }
-    }
-  },
 
   // buttons etc.
   "confirm": "Are you sure?",
@@ -83,7 +44,8 @@
   "logout": "Logout",
   "login": "Sign In",
   "join": "Join",
-  "newTopic": "New Topic",
+  "createNew": "Create New",
+  "edit": "Edit",
 
   // errors and messages
   "err_notLoggedIn": "Must be logged in",

@@ -41,11 +41,11 @@
         {{/each}}
       </tbody>
     </table-->
-    <button class="js-new btn-primary">{{_ 'pages.community.addMember'}}</button>
+    <button class="js-new btn-primary">{{_ 'createNew'}}</button>
     {{#if hasSelection}}
       <br><br><br>
-      <p> Szerkesztés: </p>
-      {{> quickForm id="afUpdateOwner" collection=collection schema=schema doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3-inline"}}
+      <p>{{_ 'edit'}} </p>
+      {{> quickForm id="afUpdateOwner" collection=collection schema=schema doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3"}}
     {{/if}}
   </div>
 </template>

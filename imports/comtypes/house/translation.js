@@ -42,18 +42,45 @@ export const HouseTranslation = {
         "placeholder": "(eg. 10000)"
       }
     },
-
-    "memberships": "Owners",
-
-    "shares": "Parcels",
-    "share": "Parcel",
-    "type": "Type",
-    "apartment": "Apartment",
-    "parking": "Parking",
-    "storage": "Stroage",
-    "floor": "Floor",
-    "ownership": "Ownership",
-    "fraction": "Fraction"
+    "memberships": {
+      "ownership": {
+        "label": "Parcel",
+        "serial": {
+          "label": "Serial No",
+          "placeholder": "(eg. 101)"
+        },
+        "share": {
+          "label": "Voting share",
+          "placeholder": "(eg. 135)"
+        },
+        "floor": {
+          "label": "Floor",
+          "placeholder": "(eg. 4 or IV)"
+        },
+        "number": {
+          "label": "Number",
+          "placeholder": "24"
+        },
+        "type": {
+          "label": "Type",
+          "placeholder": "(eg. Apartment)",
+          "apartment": "Apartment",
+          "parking": "Parking",
+          "storage": "Stroage"
+        },
+        "lot": {
+          "label": "Lot No",
+          "placeholder": "(eg. 293457/A/21)"
+        },
+        "size": {
+          "label": "Size",
+          "placeholder": "(eg. 45)"
+        },
+        "location": {
+          "label": "Location"
+        }
+      }
+    }
   },
 
   hu:
@@ -96,17 +123,44 @@ export const HouseTranslation = {
         "placeholder": "(pl. 1000 vagy 9999)"
       }
     },
-
-    "memberships": "Tulajdonosok",
-
-    "shares": "Albetétek",
-    "share": "Albetét",
-    "type": "Típus",
-    "apartment": "Lakás",
-    "parking": "Parkoló",
-    "storage": "Tároló",
-    "floor": "Emelet",
-    "ownership": "Tulajdon",
-    "fraction": "Tulajdonrész"
+    "memberships": {
+      "ownership": {
+        "label": "Albetét",
+        "serial": {
+          "label": "Sorszám",
+          "placeholder": "(pl. 101)"
+        },
+        "share": {
+          "label": "Tulajdoni hányad",
+          "placeholder": "(pl. 135)"
+        },
+        "floor": {
+          "label": "Emelet",
+          "placeholder": "(pl. 4 vagy IV)",
+          "apartment": "Lakás",
+          "parking": "Parkoló",
+          "storage": "Tároló"
+        },
+        "number": {
+          "label": "Szám",
+          "placeholder": "(pl. 24)"
+        },
+        "type": {
+          "label": "Típus",
+          "placeholder": "(pl. Lakás)"
+        },
+        "lot": {
+          "label": "Helyrajzi szám",
+          "placeholder": "(pl. 293456/A/24)"
+        },
+        "size": {
+          "label": "Méret",
+          "placeholder": "(pl. 45)"
+        },
+        "location": {
+          "label": "Elhelyezkedés"
+        }
+      }
+    }
   }
 };
