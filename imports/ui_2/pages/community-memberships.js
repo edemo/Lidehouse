@@ -7,6 +7,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { displayError } from '/imports/ui/lib/errors.js';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { $ } from 'meteor/jquery';
 
 import { tableColumns } from '/imports/api/memberships/table.js';
 import './community-memberships.html';
@@ -69,9 +70,6 @@ Template.Community_memberships_page.helpers({
 });
 
 Template.Community_memberships_page.events({
-  'click .table-row'() {
-    Session.set('selectedMemberId', this._id);
-  },
   'click .js-new'(event, instance) {
     const communityId = Session.get('activeCommunityId');
     Meteor.call('memberships.insert', { communityId, role: 'owner' }, function(err, res) {
@@ -83,8 +81,13 @@ Template.Community_memberships_page.events({
       Session.set('selectedMemberId', membershipId);
     });
   },
-  'click .js-delete'() {
-    Meteor.call('memberships.remove', { _id: this._id }, function(err, res) {
+  'click .js-edit'(event) {
+    const id = $(event.target).data('id');
+    Session.set('selectedMemberId', id);
+  },
+  'click .js-delete'(event) {
+    const id = $(event.target).data('id');
+    Meteor.call('memberships.remove', { _id: id }, function(err, res) {
       if (err) {
         displayError(err);
       }
