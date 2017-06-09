@@ -9,7 +9,7 @@
 
 <template name="Community_listed">
   <div class="community" style="border: 1px solid black; margin: 10px;">
-    <a>
+    <a href={{pathFor 'Communities.show' _cid=community._id}}>
       {{community.name}}
     </a>
     <button class="btn btn-primary">
