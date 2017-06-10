@@ -27,8 +27,8 @@ twbs:bootstrap
 momentjs:moment
 mizzao:timesync
 djk:jquery-ui
-ephemer:reactive-datatables
 aldeed:tabular
+ephemer:reactive-datatables
 
 # data
 mongo@1.1.14

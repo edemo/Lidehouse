@@ -8,7 +8,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { displayError } from '/imports/ui/lib/errors.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
-
+import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { tableColumns } from '/imports/api/memberships/table.js';
 import './community-memberships.html';
 
@@ -61,6 +61,7 @@ Template.Community_memberships_page.helpers({
       return {
         columns: tableColumns(),
         tableClasses: 'display',
+        language: datatables_i18n[TAPi18n.getLanguage()],
       };
     }
     return getOptions;

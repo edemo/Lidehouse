@@ -1,7 +1,7 @@
 Template.ReactiveDatatable.rendered = function() {
-  const data = this.data;
-  const options = data.options();
-  const instance = this;
+  var data = this.data;
+  var options = data.options();
+  var instance = this;
 
   if (typeof data.tableData !== "function") {
       throw new Meteor.Error('Your tableData must be a function that returns an array via Cursor.fetch(), .map() or another (hopefully reactive) means')
@@ -14,15 +14,15 @@ Template.ReactiveDatatable.rendered = function() {
 
 //  this.autorun(function() {
 
-    const reactiveDataTable = new ReactiveDatatable(options);
+    var reactiveDataTable = new ReactiveDatatable(options);
 
     // Help Blaze cleanly remove entire datatable when changing template / route by
     // wrapping table in existing element (.datatable_wrapper) defined in the template.
-    const table = document.createElement('table');
-    const tableClasses = options.tableClasses || "";
+    var table = document.createElement('table');
+    var tableClasses = options.tableClasses || "";
     table.className = 'table dataTable ' + tableClasses;
 
-    const wrapper = document.createElement('div');
+    var wrapper = document.createElement('div');
 //    wrapper.id = "wrapper_" + Math.floor(Math.random()*1000);   // just to prove Blaze doesnt replace it
     wrapper.className = 'datatable_wrapper';
     wrapper.append(table);
@@ -30,11 +30,11 @@ Template.ReactiveDatatable.rendered = function() {
     instance.$('.datatable_wrapper').replaceWith(wrapper);
 
     // Render the table element and turn it into a DataTable
-    const dt = $(table).DataTable(options);
+    var dt = $(table).DataTable(options);
     reactiveDataTable.datatable = dt;
 
     dt.on('page.dt', function(e, settings) {
-        const info = dt.page.info();
+        var info = dt.page.info();
         reactiveDataTable.page = info.page;
     });
 

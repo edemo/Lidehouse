@@ -2,7 +2,7 @@ Package.describe({
   name: 'ephemer:reactive-datatables',
   summary: "Fast and reactive jQuery DataTables using standard Cursors / DataTables API. Supports Bootstrap 3.",
   version: "1.2.0",
-  git: "https://github.com/ephemer/meteor-reactive-datatables.git"
+  git: "https://github.com/droka/meteor-reactive-datatables.git"
 });
 
 Package.onUse(function(api) {
@@ -11,8 +11,10 @@ Package.onUse(function(api) {
   api.addFiles([
   	'jquery.dataTables.min.js',
     'jquery.dataTables.min.css',
+    'datatables_i18n.js',
   	'reactive-datatables.js',
   	'reactive-datatable-template.html',
   	'reactive-datatable-template.js',
   ], 'client');
+  api.export('datatables_i18n');
 });
