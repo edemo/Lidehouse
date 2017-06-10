@@ -59,7 +59,7 @@ Template.Community_memberships_page.helpers({
   optionsObject() {
     return {
       columns: tableColumns,
-      tableClasses: 'table-striped table-bordered table-condensed',
+      tableClasses: 'display',
     };
   },
 
