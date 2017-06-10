@@ -75,23 +75,13 @@
   "Create a community": "Létrehozok egy közösséget",
   "membership": "tagság",
   "memberships": "tagságok",
+  "ownership": "tulajdon",
+  "ownerships": "tulajdonok",
   "role": "szerep",
-
-  "ownership": "albetét",
-
+  "roles": "szerepek",
   "data": "adatok",
-  "members": "albetétek",
-  "addMember": "albetét hozzáadás",
   "uploads": "dokumentumtár",
   "upload": "feltöltés",
-
-  "share": "tulajdonrész",
-  "serial": "sorszám",
-  "name": "név",
-  "location": "elhelyezkedés",
-  "type": "típus",
-  "ownership": "tulajdon",
-  "fraction": "tulajdonrész",
 
   "topic": "téma",
   "topics": "témák",
