@@ -37,8 +37,20 @@ Memberships.helpers({
     if (!community) return undefined;
     return community.totalshares;
   },
-  votingShares() {
-    if (!this.ownership) return 'non-voting';
+  isOwnership() {
+    if (this.role === 'owner') return true;
+    debugAssert(!this.ownership);
+    return false;
+  },
+  hasOwnership() {
+    if (this.ownership) {
+      debugAssert(this.role === 'owner');
+      return true;
+    }
+    return false;
+  },
+  displayShareFraction() {
+    if (!this.hasOwnership()) return 'non-voting';
     const share = this.ownership.share;
     if (!share) return '0';
     const totalshares = this.totalshares();
@@ -47,11 +59,11 @@ Memberships.helpers({
   },
   // TODO: move this to the house package
   location() {
-    if (!this.ownership) return '';
+    if (!this.hasOwnership()) return '';
     return this.ownership.floor + '/' + this.ownership.number;
   },
   name() {
-    if (!this.ownership) return __(this.role);
+    if (!this.hasOwnership()) return __(this.role);
     // const letter = this.ownership.type.substring(0, 1);
     return this.location() + ' ' + __(this.role);
   },
@@ -76,7 +88,7 @@ const OwnershipSchema = new SimpleSchema({
   floor: { type: String },
   number: { type: String },
   type: { type: String,
-    allowedValues: ['Apartment', 'Parking', 'Storage'],
+    allowedValues: ['flat', 'parking', 'storage'],
   },
   lot: { type: String, max: 100 },
   size: { type: Number, decimal: true },
@@ -106,7 +118,7 @@ Memberships.schemaForRoleship = new SimpleSchema({
   role: { type: String,
     autoform: {
       options() {
-        return Roles.find({}).map(function option(r) { return { label: r.name, value: r._id }; }); // _id === name BTW
+        return Roles.find({}).map(function option(r) { return { label: __(r.name), value: r._id }; }); // _id === name BTW
       },
     },
   },

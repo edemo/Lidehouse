@@ -38,6 +38,8 @@
     }
   },
 
+  "role": "szerep",
+  "roles": "szerepek",
   // roles
   "admin": "admin",
   "manager": "közös képviselő",
@@ -77,8 +79,6 @@
   "memberships": "tagságok",
   "ownership": "tulajdon",
   "ownerships": "tulajdonok",
-  "role": "szerep",
-  "roles": "szerepek",
   "data": "adatok",
   "uploads": "dokumentumtár",
   "upload": "feltöltés",

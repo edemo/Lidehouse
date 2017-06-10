@@ -10,6 +10,10 @@ export const HouseTranslation = {
     "ownership": "parcel",
     "ownerships": "parcels",
 
+    "flat": "Apartment",
+    "parking": "Parking",
+    "storage": "Stroage",
+
     "communities": {
       "name": {
         "label": "Name of the Building",
@@ -65,17 +69,14 @@ export const HouseTranslation = {
         },
         "type": {
           "label": "Type",
-          "placeholder": "(eg. Apartment)",
-          "apartment": "Apartment",
-          "parking": "Parking",
-          "storage": "Stroage"
+          "placeholder": "(eg. Apartment)"
         },
         "lot": {
           "label": "Lot No",
           "placeholder": "(eg. 293457/A/21)"
         },
         "size": {
-          "label": "Size",
+          "label": "Size (sqm)",
           "placeholder": "(eg. 45)"
         },
         "location": {
@@ -92,6 +93,10 @@ export const HouseTranslation = {
     "Create a community": "Létrehozok egy házat",
     "ownership": "albetét",
     "ownerships": "albetétek",
+
+    "flat": "Lakás",
+    "parking": "Parkoló",
+    "storage": "Tároló",
 
     "communities": {
       "name": {
@@ -140,10 +145,7 @@ export const HouseTranslation = {
         },
         "floor": {
           "label": "Emelet",
-          "placeholder": "(pl. 4 vagy IV)",
-          "apartment": "Lakás",
-          "parking": "Parkoló",
-          "storage": "Tároló"
+          "placeholder": "(pl. 4 vagy IV)"
         },
         "number": {
           "label": "Szám",
@@ -158,7 +160,7 @@ export const HouseTranslation = {
           "placeholder": "(pl. 293456/A/24)"
         },
         "size": {
-          "label": "Méret",
+          "label": "Méret (m2)",
           "placeholder": "(pl. 45)"
         },
         "location": {
