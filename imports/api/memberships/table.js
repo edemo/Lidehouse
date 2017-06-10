@@ -15,7 +15,8 @@ function renderEditButton(cellData, renderType, currentRow) {
   return html;
 }
 
-export const tableColumns = [
+export function tableColumns() {
+  return [
     { data: 'ownership.serial', title: __('memberships.ownership.serial.label') },
     { data: 'location()', title: __('memberships.ownership.location.label') },
     { data: 'ownership.type', title: __('memberships.ownership.type.label') },
@@ -25,13 +26,14 @@ export const tableColumns = [
     { data: 'ownerName()', title: __('owner') },
     { data: '_id', render: renderEditButton },
     { data: '_id', render: renderDeleteButton },
-];
+  ];
+}
 
 // for aldeed:tabular datatable
 new Tabular.Table({
   name: 'Memberships',
   collection: Memberships,
-  columns: tableColumns,
+  columns: tableColumns(),
   extraFields: ['userId', 'communityId'],
   responsive: true,
   autoWidth: false,

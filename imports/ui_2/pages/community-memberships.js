@@ -56,11 +56,14 @@ Template.Community_memberships_page.helpers({
     }
     return getTableData;
   },
-  optionsObject() {
-    return {
-      columns: tableColumns,
-      tableClasses: 'display',
-    };
+  optionsFn() {
+    function getOptions() {
+      return {
+        columns: tableColumns(),
+        tableClasses: 'display',
+      };
+    }
+    return getOptions;
   },
 
   // aldeed:tabular (server-side filtering)
