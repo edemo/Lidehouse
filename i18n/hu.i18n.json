@@ -1,4 +1,43 @@
 {
+  // api
+  "users": {
+    "username": {
+      "label": "Felhasználónév",
+      "placeholder": "(pl. Miki75)"
+    },
+    "avatar": {
+      "label": "Avatár",
+      "placeholder": "(pl. kockásfülünyúl.jpg)"
+    },
+    "profile": {
+      "label": "Profil",
+
+      "firstName": {
+        "label": "Keresztnév",
+        "placeholder": "(pl. Miklós)"
+      },
+      "lastName": {
+        "label": "Vezetéknév",
+        "placeholder": "(pl. Galambos)"
+      },
+      "bio": {
+        "label": "Bemutatkozás",
+        "placeholder": "(pl. Vasárnaponként szoktam gyakorolni zongorázni. Bocsi :) )"
+      }
+    },
+    "emails": {
+      "$": {
+        "address": {
+          "label": "E-mail cím",
+          "placeholder": "(pl. margitka21@ingyenmail.com)"
+        },
+        "verified": {
+          "label": "Ellenőrzött"
+        }
+      }
+    }
+  },
+
   // roles
   "admin": "admin",
   "manager": "közös képviselő",
@@ -26,13 +65,14 @@
   // api
   "name": "név",
   "user": "felhasználó",
-  "users": "felhasználók",
   "username": "felhasználónév",
   "profile": "profil",
   "firstName": "keresztnév",
   "lastName": "vezetéknév",
   "community": "közösség",
   "communities": "közösségek",
+  "Join a community": "Csatlakozás egy közösséghez",
+  "Create a community": "Létrehozok egy közösséget",
   "membership": "tagság",
   "memberships": "tagságok",
   "role": "szerep",
@@ -57,8 +97,11 @@
   "topics": "témák",
 
   "comment": "hozzászólás",
+  "created": "létrehozva",
+  "closes": "lezárul",
 
   // commands
+  "save": "Mentés",
   "delete": "Törlés",
   "remove": "Eltávolítás",
   "invite": "Meghívás",
@@ -67,6 +110,11 @@
 
   "join": "Csatlakozom",
   "create": "Létrehozom",
+
+  // voting
+  "yes": "igen",
+  "no": "nem",
+  "abstain": "tartózkodom",
 
   // placeholders
   "Make your comment": "Szóljon hozzá",
@@ -85,9 +133,6 @@
 
   "No active": "Nincs aktív",
 
-  "Join a Community": "Csatlakozás egy házhoz",
-  "Create a Community": "Létrehozok egy házat",
-
   "logout": "kilépés",
   "login": "belépés",
   "register": "új fiók",
@@ -97,6 +142,6 @@
   "pageNotFound": "Az odal nem található",
   "inviteSend": "Meghívó kiküldése",
 
+  "User data page": "Felhasználói adatlap",
   "userAccountsSubtitle": "Bejelentkezett felhasználók minden funkciót elérhetnek"
-
 }

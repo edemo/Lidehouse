@@ -21,7 +21,7 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
 
     children: [{
       find(membership) {
-        return Meteor.users.find({ _id: membership.userId });
+        return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
       },
     }],
   };

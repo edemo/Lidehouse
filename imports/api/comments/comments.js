@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Timestamps } from '../timestamps.js';
+import { Timestamps } from '/imports/api/timestamps.js';
 import faker from 'faker';
 import unreadCountDenormalizer from './unreadCountDenormalizer.js';
 

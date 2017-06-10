@@ -1,12 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
-
 import 'meteor/accounts-base';
+
+import { Timestamps } from '/imports/api/timestamps.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 
+
+/*
 // Code from https://github.com/aldeed/meteor-collection2
 
 export const CountrySchema = new SimpleSchema({
@@ -23,6 +27,13 @@ export const UserProfileSchema = new SimpleSchema({
   website: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true },
   bio: { type: String, optional: true },
   country: { type: CountrySchema, optional: true },
+});
+*/
+
+export const UserProfileSchema = new SimpleSchema({
+  firstName: { type: String /* label: () => TAPi18n.__('users.profile.firstName.label') */ },
+  lastName: { type: String },
+  bio: { type: String, optional: true },
 });
 
 Meteor.users.helpers({
@@ -63,6 +74,9 @@ Meteor.users.helpers({
     const email = this.emails[0].address;
     return email.substring(0, email.indexOf('@'));
   },
+  toString() {
+    return this.safeUsername();
+  },
 });
 
 Meteor.users.schema = new SimpleSchema({
@@ -78,32 +92,26 @@ Meteor.users.schema = new SimpleSchema({
       return undefined; // means leave whats there alone for Updates, Upserts
     },
   },*/
+  profile: { type: UserProfileSchema, optional: true },
+  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: 'http://pannako.hu/wp-content/uploads/avatar-1.png' },
   emails: { type: Array },
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },
-  createdAt: { type: Date,
-    autoValue() {
-      if (this.isInsert) {
-        return new Date();
-      }
-      return undefined;
-    },
-    autoform: {
-      omit: true,
-    },
-  },
-  profile: { type: UserProfileSchema, optional: true },
-  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: 'http://pannako.hu/wp-content/uploads/avatar-1.png' },
+
   // Make sure this services field is in your schema if you're using any of the accounts packages
-  services: { type: Object, optional: true, blackbox: true, autoform: { omit: true },
-  },
+  services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },
 
   // In order to avoid an 'Exception in setInterval callback' from Meteor
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
 Meteor.users.attachSchema(Meteor.users.schema);
+Meteor.users.attachSchema(Timestamps);
+
+Meteor.startup(function attach() {
+  Meteor.users.simpleSchema().i18n('users');
+});
 
 // Deny all client-side updates since we will be using methods to manage this collection
 Meteor.users.deny({
@@ -111,3 +119,10 @@ Meteor.users.deny({
   update() { return true; },
   remove() { return true; },
 });
+
+Meteor.users.publicFields = {
+  username: 1,
+  profile: 1,
+  avatar: 1,
+  emails: 1, // TODO: email is not public, but we now need for calculating derived username
+};

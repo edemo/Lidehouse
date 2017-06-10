@@ -1,6 +1,11 @@
 <template name="Communities_show_page">
-  <div class="content-scrollable wrapper-form page-content autoform">
+  <div class="content-scrollable page-content">
     <h1 class="page-title">Ház adatlap</h1>
-    {{> quickForm id="communities_show" collection=communities doc=community type="method-update" meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
+    {{#autoForm id="communities_show" collection=communities doc=community type="method-update" meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
+      {{> afQuickFields}}
+      <div>
+        <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+      </div>
+    {{/autoForm}}
   </div>
 </template>

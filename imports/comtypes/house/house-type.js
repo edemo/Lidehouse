@@ -1,10 +1,10 @@
 /* eslint-disable dot-notation */
 
-import { HouseSchema } from './house.js';
+import { HouseProfileSchema } from './house.js';
 import { HouseTranslation } from './translation.js';
 
 export const houseType = {
   name: 'house',
-  profileSchema: HouseSchema,
+  profileSchema: HouseProfileSchema,
   translation: HouseTranslation,
 };

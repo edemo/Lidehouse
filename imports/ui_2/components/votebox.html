@@ -5,7 +5,7 @@
         {{title}}
       </div>
       <div class="col-xs-6 small-size text-right" data-tooltip="{{displayTime}}">
-        Lezárul: {{displayTimeLeft}}
+        {{_ "closes"}}: {{displayTimeLeft}}
       </div>
     </div>
     <div class="row">
@@ -41,7 +41,7 @@
             <div class="btns-group">
               {{#each choice in vote.choices}}
               <a href="#" class="btn-secondary btn-vote {{pressedClass @index}}" data-index="{{@index}}">
-                {{choice}}
+                {{_ choice}}
               </a>
               {{/each}}
             </div>

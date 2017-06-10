@@ -11,7 +11,7 @@
       <tbody>
         {{#each roleships}}
           <tr class="table-row {{#if isSelected}}selected{{/if}}">
-            <td>{{displayUsername this}}</td>
+            <td><a href="{{pathFor 'Users.show' _id=this.userId}}">{{displayUsername this}}</a></td>
             <td>{{displayRole this}}</td>
             <td>
               <a class="js-delete nav-item">

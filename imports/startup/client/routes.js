@@ -4,16 +4,15 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 // Import to load these templates
 import '/imports/ui/layouts/app-body.js';
 import '/imports/ui/pages/root-redirector.js';
-import '/imports/ui/pages/community-main-page.js';
 import '/imports/ui/pages/topics-show-page.js';
 import '/imports/ui/pages/app-not-found.js';
-import '/imports/ui/forms/communities-create-form.js';
 import '/imports/ui/forms/communities-join-form.js';
 import '/imports/ui/forms/users-show-form.js';
 import '/imports/ui/forms/invite-form.js';
 
 import '/imports/ui_2/layouts/custom-body.js';
 import '/imports/ui_2/pages/communities-show.js';
+import '/imports/ui_2/pages/communities-create.js';
 import '/imports/ui_2/pages/community-memberships.js';
 import '/imports/ui_2/pages/community-roleships.js';
 import '/imports/ui_2/pages/board.js';
