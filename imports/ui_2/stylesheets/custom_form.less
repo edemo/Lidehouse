@@ -1,52 +1,151 @@
-.page_profile, .page_styleguide, .page-board-new, .page-report, .page-housing, .page-vote {
-  textarea {
-    resize: none;
-    word-wrap: break-word;
-    width: 100%;
+// autoform miatt
+.panel {
+  border: unset;
+  box-shadow: unset;
+  &-body {
     padding: 0px;
-    background: white none repeat scroll 0% 0%;
-    border-bottom: 1px solid #bcbcbc;
-    height: auto;
-    // overflow-y: scroll;
-    overflow: hidden;
-    scrollbar-track-color: #ff00ff;
-    &.chat-field {
-      width: calc(~"100% - " 55px);
-    }
-    &::-webkit-scrollbar {
-      display: none;
-    }
-    &:active, &:focus {
-      border-bottom: 1.7px solid rgb(110, 168, 255);
-      transition: border-bottom .28s ease;
+  }
+}
+#communities_show {
+  max-width: 500px;
+  margin: auto;
+}
+.form-group {
+  background-color: white;
+  padding-top: 8px;
+  padding-right: 5%;
+  padding-bottom: 10px;
+  padding-left: 5%;
+  .control-label {
+    border-bottom: 1px solid rgb(221, 221, 221);
+    padding-left: 17px;
+    padding-right: 17px;
+    padding-bottom: 3px;
+  }
+}
+textarea {
+  .font-s2;
+  .type-regular;
+  line-height: 1.5rem;
+  resize: none;
+  word-wrap: break-word;
+  width: 100%;
+  padding: 0px;
+  background: white none repeat scroll 0% 0%;
+  border: none;
+  border-bottom: 1px solid #bcbcbc;
+  height: auto;
+  // overflow-y: scroll;
+  overflow: hidden;
+  scrollbar-track-color: #ff00ff;
+  color: @color-full;
+  outline: none;
+  ::placeholder {
+    color: @color-complementary;
+  }
+
+  &[disabled] { opacity: .5; }
+  &.chat-field {
+    width: calc(~"100% - " 55px);
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  &:active, &:focus {
+    border-bottom: 1.5px solid rgb(110, 168, 255);
+    transition: border-bottom .28s ease;
+  }
+}
+input[type="text"], input[type="number"], input[type="date"], [type="email"], [type="password"] {
+  .font-s2;
+  .type-regular;
+  line-height: 1.5rem;
+  padding: unset;
+  background: white none repeat scroll 0% 0%;
+  border: unset;
+  border-bottom: 1px solid #bcbcbc;
+  box-shadow: none !important;
+  &:active, &:focus {
+    border-bottom: 1.5px solid rgb(110, 168, 255);
+    transition: border-bottom .28s ease;
+  }
+  ::placeholder {
+    color: @color-complementary;
+  }
+  color: @color-full;
+  outline: none;
+
+  &[disabled] { opacity: .5; }
+}
+select {
+  border: unset !important;
+  border-bottom: 1px solid rgb(188, 188, 188) !important;
+  box-shadow: none !important;
+  color: @color-full;
+  outline: none;
+
+  &[disabled] { opacity: .5; }
+  &:active, &:focus {
+    border-bottom: 1.5px solid rgb(110, 168, 255);
+    transition: border-bottom .28s ease;
+  }
+  option {
+    padding: 3px 5px 3px 5px;
+  }
+  // -webkit-appearance: none;
+  -moz-appearance: none;
+  &::-ms-expand {
+    display: none;
+  }
+  ::placeholder {
+    color: @color-complementary;
+  }
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px @color-empty inset;
+}
+
+// Input with an icon
+.input-symbol {
+  display: inline-block;
+  position: relative;
+
+  &.error [class^="icon-"],
+  &.error [class*=" icon-"] {
+    color: @color-negative;
+  }
+
+  // Position & padding
+  [class^="icon-"],
+  [class*=" icon-"] {
+    left: 1em;
+  }
+
+  input { padding-left: 3em; }
+
+  // Styling
+  input {
+    width: 100%;
+
+    &:focus {
+      & + [class^="icon-"],
+      & + [class*=" icon-"] {
+        color: @color-primary;
+      }
     }
   }
-  input[type="text"], input[type="number"] {
-    padding: unset;
-    background: white none repeat scroll 0% 0%;
-    border: unset;
-    border-bottom: 1px solid #bcbcbc;
-    box-shadow: none !important;
-    &:active, &:focus {
-      border-bottom: 1.7px solid rgb(110, 168, 255);
-      transition: border-bottom .28s ease;
-    }
-  }
-  select {
-    border: unset;
-    border-bottom: 1px solid rgb(188, 188, 188);
-    box-shadow: none !important;
-    &:active, &:focus {
-      border-bottom: 1.7px solid rgb(110, 168, 255);
-      transition: border-bottom .28s ease;
-    }
-    option {
-      padding: 3px 5px 3px 5px;
-    }
-    // -webkit-appearance: none;
-    -moz-appearance: none;
-    &::-ms-expand {
-      display: none;
-    }
+
+  [class^="icon-"],
+  [class*=" icon-"] {
+    transition: all 300ms ease-in;
+    transform: translate3d(0,-50%,0);
+    background: transparent;
+    color: @color-medium;
+    font-size: 1em;
+    height: 1em;
+    position: absolute;
+    top: 50%;
+    width: 1em;
   }
 }

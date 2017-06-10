@@ -1,5 +1,8 @@
 @btn-primary-color: rgb(45, 45, 45);
 @btn-primary-bcg: rgb(243, 191, 115);
+@btn-secondary-color: black;
+@btn-secondary-bcg: rgb(167, 216, 167);
+@btn-box-shadow: #517096;
 @chat-msg-color: rgb(68, 68, 68);
 @chat-time-color: rgb(125, 125, 125);
 @base-link-color: #1885d8;
@@ -12,6 +15,16 @@
 @status-freez: rgba(11, 142, 225, 0.35);
 @status-done: rgba(95, 209, 4, 0.79);
 @status-del: rgba(255, 62, 21, 0.7);
+
+// layout
+@nav-bcg: white;
+@nav-after-bcg: rgba(131, 92, 48, 0.6);
+@nav-bcg-img: url(/small.jpg);
+
+// borad
+@section-btn-col: rgba(251, 172, 53, 0.63);
+@section-btn-col-collapsed: rgba(104, 125, 151, 0.47);
+@icon-gray: gray;
 
 // report page table
 @th-border: #c8c8c8;
@@ -38,21 +51,9 @@
 .small-size {
   font-size: 11.7px;
 }
-.page-profile, .page-board, .page_styleguide, .page-report, .page-housing, .page-board-new {
-  a {
-    color: @base-link-color;
-  }
-  .btn-primary {
-    min-width: 100px;
-    color: @btn-primary-color !important;
-    background: @btn-primary-bcg none repeat scroll 0% 0%;
-    letter-spacing: 2px;
-    margin-top: 7px;
-    margin-bottom: 10px;
-    &:hover {
-      background: lighten(@btn-primary-bcg, 10%);
-    }
-  }
+
+a {
+  color: @base-link-color;
 }
 
 @media screen and (min-width: 40em) {
@@ -71,7 +72,6 @@
   }
 }
 #container {
-  // background-image: linear-gradient(to bottom, #76C560, #dcf672 100%);
   @media screen and (min-width: 60em) {
     left: 0;
     right: 0;
@@ -132,6 +132,9 @@
   background-size: cover;
 }
 #content-container {
+  .autoform .content-scrollable {
+    background: none;
+  }
   font-size: 14px;
   background-color: @fb-bcg-lighter;
   overflow-y: scroll;
@@ -139,10 +142,9 @@
 
 nav {
   height: 48px;
-  background: white;
+  background: @nav-bcg;
   box-shadow: 0 2px 4px 2px rgba(35, 35, 35, 0.45);
   span {
-    // color: white;
     &.icon-topic-unordered {
       @media screen and (min-width: 40em) {
         display: none;
@@ -178,64 +180,22 @@ nav::after {
   right: 0;
   position: absolute;
   z-index: -1;
-  background: rgba(131, 92, 48, 0.6);
+  background: @nav-after-bcg;
   @media screen and (max-width: 40em) {
-    background-image: url(/small.jpg);
+    background-image: @nav-bcg-img;
   }
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
 }
 
-[class^="btn-"], [class*=" btn-"] {
-  letter-spacing: .1em;
-  padding-left: 0;
-  padding-right: 0;
-}
-.btn {
-  &-secondary {
-    color: #383737 !important;
-  }
-  &-yes {
-    color: green !important;
-    box-shadow: #71a65a 0 0 0 1px inset !important;
-    &-chosen {
-      box-shadow: 1px 2px 4px 2px rgba(33, 66, 11, 0.25) inset !important;
-      border: 2px solid rgb(0, 180, 0);
-      font-weight: bold;
-    }
-  }
-  &-no {
-    color: red !important;
-    box-shadow: #db774f 0 0 0 1px inset !important;
-    &-chosen {
-      border: 2px solid red;
-      font-weight: bold;
-    }
-  }
-  &-chosen {
-    border: 2px solid;
-    font-weight: bold;
-  }
-  &-comment {
-    width: 30px;
-    padding: 7px 15px 7px 10px;
-    height: 50px;
-    text-align: center;
-    background: transparent none repeat scroll 0% 0%;
-    color: rgb(81, 149, 251);
-    font-size: 15px;
-    margin-right: 13px;
-    &:hover {
-      color: rgb(125, 174, 249);
-    }
-  }
-}
 .page-content {
   padding: unset;
 }
+[class^="page"],[class*="page"] {
+  margin-top: 60px;
+}
 .page-board-new, .page-vote {
-  background-color: @fb-bcg-lighter;
   @media screen and (max-width: 40em) {
     // padding-top: 50px;
   }
@@ -249,14 +209,15 @@ nav::after {
     padding-right: 4.5em;
   }
   @media screen and (min-width: 110em) {
-    max-width: 1200px;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
     padding: 1.3em 7em;
   }
 }
-.page-vote {
-  padding-top: 75px;
+
+.margined-avatar {
+  margin-right: 10px;
 }
 
 

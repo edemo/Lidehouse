@@ -1,8 +1,30 @@
 <template name="Styleguide">
   <div class="styleguide-container page_styleguide">
-    <!-- <div class="styleguide-title">
-      Buttons <small>primary, seconday, button group</small>
-    </div> -->
+
+    <!-- font-->
+    <div class="styleguide-box">
+      <div class="styleguide-box-left">
+        <div id="votebox-sample">
+          <!-- Font selection //TODO -->
+        </div>
+      </div>
+      <div class="styleguide-box-right">
+        <div class="styleguide-box-title">
+          Fontok
+        </div>
+        <div class="styleguide-box-definition">
+          <p>
+            //TODO
+            <br>
+            betűtípus, méret, szín ...
+          </p>
+        </div>
+        <!--?prettify lang=html linenums=true?-->
+        <pre class="prettyprint" id="votebox_code"></pre>
+      </div>
+    </div>
+    <!-- font end -->
+
     <!-- Buttons -->
     <div class="styleguide-box">
       <div class="styleguide-box-left">
@@ -66,9 +88,9 @@
     <!-- accordions -->
     <div class="styleguide-box">
       <div id="accordion-sample" class="styleguide-box-left">
-        <button class="accordion">Accordion button</button>
-        <div class="accordion-content">
-          Opened accordion tartalom
+        <a data-toggle="collapse" data-target="#targetId" aria-expanded="true" aria-controls="targetId">Accordion button</a>
+        <div class="collapse" id="targetId">
+          Accordion tartalom
         </div>
       </div>
       <div class="styleguide-box-right">
@@ -76,7 +98,7 @@
           Accordion
         </div>
         <div class="styleguide-box-definition">
-          Leírás
+          ...
         </div>
         <!--?prettify lang=html linenums=true?-->
         <pre class="prettyprint" id="accordion_code"></pre>
@@ -114,74 +136,6 @@
       </div>
     </div>
 
-    <!-- vote 1-->
-    <div class="styleguide-box">
-      <div class="styleguide-box-left">
-        <div id="votebox-sample">
-          <div class="chatbox">
-            <div class="vote-title">
-              Legyen e biciklitartónk?
-              <div class="vote-date" data-tooltip="2017.05.27. 13:50">Lezárul: 3 nap 4 óra</div>
-            </div>
-            <div class="vote-description">
-              Szavazás leírása
-            </div>
-            <div class="vote-body">
-              Válaszlehetőségek (pl Igen Nem Tartózkodom button group)
-            </div>
-            <div class="vote-footer">
-              <span><a href="#modal-box2--open">PaperIcon</a></span>
-              <a class="accordion-comment">1 komment</a>
-              <div class="accordion-content panel-comment">
-                <!-- szavazás kommentek START -->
-                <div class="chat-comments">
-                  <div class="add-comment">
-                    <div class="chat-avatar">
-                      <img src="http://pannako.hu/wp-content/uploads/avatar-3.png" alt="avatar" align="center" width="35" height="35" />
-                    </div>
-                    <div class="">
-                      <textarea rows="" cols="5" placeholder="Szólj hozzá..." class="autoResize" style="overflow: hidden; word-wrap: break-word; height: 37px; width: 70%; padding: 0;"></textarea>
-                    </div>
-                  </div>
-                  <div class="comment">
-                    <div class="chat-avatar">
-                      <img src="http://pannako.hu/wp-content/uploads/avatar-7.png" alt="avatar" align="center" width="35" height="35" />
-                    </div>
-                    <div class="chat-name">
-                      <!-- <span class="chat-dropdown" style="float: right;">X</span> -->
-                      <span class="chat-name-span"><a>Bakocsi Tímea</a></span>
-                      <span class="chat-date">3 perce</span>
-                      <br>
-                      Nannnneee
-                    </div>
-                  </div>
-                </div>
-                <!-- komment END -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="styleguide-box-right">
-        <div class="styleguide-box-title">
-          Chatbox and Vote card
-        </div>
-        <div class="styleguide-box-definition">
-          <p>
-            A szavazást egy <i>"chatbox"</i> classú elementben helyezzük el
-          </p>
-          <p>
-            A Vote Card részei: <i>vote-title</i> -címe, <i>vote-date</i>-dátum, <i>vote-description</i>-leírás, <i>vote-body</i>-a válaszlehetőségek helye, <i>vote-footer</i>-kommentek száma és a kommentek lenyíló paneljának helye.
-          </p>
-          <p>
-            A paper icon a szavazás hivatalos előteresztésének megtekintésést teszi lehetővé egy felugró modal keretében.
-          </p>
-        </div>
-        <!--?prettify lang=html linenums=true?-->
-        <pre class="prettyprint" id="votebox_code"></pre>
-      </div>
-    </div>
-    <!-- vote 1 end -->
 
     <!-- vote 2 -->
     <div class="styleguide-box">

@@ -5,12 +5,12 @@
   &.chat-thread {
     padding: +11.3px;
     margin-bottom: 11px;
+    .empty-chat-field {
+      width: calc(~"100% - " 135px);
+    }
   }
 }
-.page-board-new, .page-vote {
-  @section-btn-col: rgba(251, 172, 53, 0.63);
-  @section-btn-col-collapsed: rgba(104, 125, 151, 0.47);
-  @icon-gray: gray;
+.page-board-new, .page-vote, .page-forum {
   .section-btn {
     padding: 10px 19px 10px 19px;
     cursor: pointer;
@@ -73,6 +73,7 @@
   .comment-text {
     padding: 0;
     font-size: 12.5px;
+    padding-left: 45px;
   }
   .paper-row {
     padding-top: 21px;
