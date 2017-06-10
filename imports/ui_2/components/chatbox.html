@@ -1,15 +1,12 @@
 <template name="Chatbox">
   <div class="white-box chat-thread">
     <div class="row">
-      <div class="col-xs-2 col-lg-1">
-        <img src="{{avatar}}" alt="avatar" align="center" width="50" height="50" />
-      </div>
-      <div class="col-xs-9 col-lg-10">
-        <a>{{displayUser}}</a>
-        <br>
+      <div class="col-xs-11 col-lg-11">
+        <img class="margined-avatar" src="{{avatar}}" alt="avatar" align="left" width="50" height="50" />
+        <a>{{displayUser}}</a> <br>
         <small class="chat-time small-size">{{displayTimeSince}}</small>
       </div>
-      
+
       <!-- dropdown at the right corner -->
       <div class="col-xs-1 col-lg-1">
         <div class="dropdown text-right">
