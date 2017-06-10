@@ -22,7 +22,7 @@ Memberships.helpers({
     const user = Meteor.users.findOne(this.userId);
     return user;
   },
-  ownerName() {
+  userName() {
     if (!this.userId) return 'no user';
     const user = Meteor.users.findOne(this.userId);
     return user.fullName();

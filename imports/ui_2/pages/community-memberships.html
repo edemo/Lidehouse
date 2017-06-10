@@ -45,7 +45,12 @@
     {{#if hasSelection}}
       <br><br><br>
       <p>{{_ 'edit'}} </p>
-      {{> quickForm id="afUpdateOwner" collection=collection schema=schema doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3"}}
+      {{# autoForm id="afUpdateOwner" collection=collection schema=schema doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3"}}
+        {{> afQuickFields}}
+        <div>
+          <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+        </div>
+      {{/autoForm}}
     {{/if}}
   </div>
 </template>

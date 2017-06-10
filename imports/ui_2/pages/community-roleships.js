@@ -5,7 +5,10 @@ import { Template } from 'meteor/templating';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { displayError } from '/imports/ui/lib/errors.js';
+import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
+import { roleshipColumns } from '/imports/api/memberships/table.js';
 
 import './community-roleships.html';
 
@@ -43,6 +46,23 @@ Template.Community_roleships_page.helpers({
   displayRole(roleship) {
     return roleship.role;
   },
+  reactiveTableDataFn() {
+    function getTableData() {
+      const communityId = Session.get('activeCommunityId');
+      return Memberships.find({ communityId }).fetch();
+    }
+    return getTableData;
+  },
+  optionsFn() {
+    function getOptions() {
+      return {
+        columns: roleshipColumns(),
+        tableClasses: 'display',
+        language: datatables_i18n[TAPi18n.getLanguage()],
+      };
+    }
+    return getOptions;
+  },
 });
 
 Template.Community_roleships_page.events({
@@ -60,8 +80,13 @@ Template.Community_roleships_page.events({
       Session.set('selectedMemberId', roleshipId);
     });
   },
-  'click .js-delete'() {
-    Meteor.call('memberships.remove', { _id: this._id }, function(err, res) {
+  'click .js-edit'(event) {
+    const id = $(event.target).data('id');
+    Session.set('selectedMemberId', id);
+  },
+  'click .js-delete'(event) {
+    const id = $(event.target).data('id');
+    Meteor.call('memberships.remove', { _id: id }, function(err, res) {
       if (err) {
         displayError(err);
       }
