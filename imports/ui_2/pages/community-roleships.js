@@ -8,7 +8,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { displayError } from '/imports/ui/lib/errors.js';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { roleshipColumns } from '/imports/api/memberships/table.js';
+import { roleshipColumns } from '/imports/api/memberships/tables.js';
 
 import './community-roleships.html';
 

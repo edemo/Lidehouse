@@ -1,4 +1,3 @@
-/* eslint-disable no-new */
 import { TAPi18n } from 'meteor/tap:i18n';
 
 const __ = TAPi18n.__;
@@ -38,6 +37,7 @@ export function roleshipColumns() {
 
 /*
 // for aldeed:tabular datatable
+// eslint-disable no-new
 import Tabular from 'meteor/aldeed:tabular';
 import { Memberships } from './memberships.js';
 new Tabular.Table({

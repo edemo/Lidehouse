@@ -9,7 +9,7 @@ import { displayError } from '/imports/ui/lib/errors.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { ownershipColumns } from '/imports/api/memberships/table.js';
+import { ownershipColumns } from '/imports/api/memberships/tables.js';
 import './community-memberships.html';
 
 Template.Community_memberships_page.onCreated(function () {
