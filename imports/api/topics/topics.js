@@ -36,7 +36,7 @@ Topics.schema = new SimpleSchema({
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
   category: { type: String, allowedValues: ['vote', 'forum', 'news'] },
   title: { type: String, max: 100 },
-  text: { type: String },
+  text: { type: String, max: 5000 },
   closed: { type: Boolean, defaultValue: false },
   unreadCount: { type: SimpleSchema.Integer, defaultValue: 0 },
   vote: { type: Topics.voteSchema, optional: true }, // TODO: should be conditional on category

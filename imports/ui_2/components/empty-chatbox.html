@@ -2,11 +2,9 @@
   <div class="white-box chat-thread">
     <div class="row">
       <div class="col-xs-12 col-lg-12">
-        <img class="margined-avatar" src="https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg" alt="avatar" align="center" width="65" height="65" />
-        <textarea name="name" rows="2" class="empty-chat-field" placeholder="Milyen napod van?"></textarea>
-        <button class="btn-comment">
-          <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
-        </button>
+        <img class="margined-avatar" src="{{currentUser.avatar}}" alt="avatar" align="center" width="65" height="65" />
+        <textarea name="name" rows="2" class="empty-chat-field" placeholder={{_ 'newForumTopicPlaceholder'}}></textarea>
+        <span class="js-send-comment btn-comment glyphicon glyphicon-send" aria-hidden="true"></span>
       </div>
     </div>
   </div>

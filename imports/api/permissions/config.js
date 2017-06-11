@@ -27,7 +27,7 @@ const permissions = [
   { name: 'communities.listing',  type: 'view', roles: everybody },
   { name: 'memberships.insert',   type: 'edit', roles: ['admin', 'manager', 'owner'] },
   { name: 'memberships.listing',  type: 'edit', roles: exceptGuest },
-  { name: 'topics.insert.forum',  type: 'edit', roles: exceptGuest },
+  { name: 'topics.insert.forum',  type: 'edit', roles: everybody },
   { name: 'topics.insert.prevote', type: 'edit', roles: ['owner'] },
   { name: 'topics.insert.vote',   type: 'edit', roles: ['manager'] },
   { name: 'topics.insert.news',   type: 'edit', roles: ['manager'] },

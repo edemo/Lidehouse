@@ -14,20 +14,27 @@ export const insert = new ValidatedMethod({
   name: 'topics.insert',
   validate: Topics.schema.validator({ clean: true }),
 
-  run({ doc }) {
-    const topic = Topics.findOne(doc._id);
+  run(doc) {
+    const topic = doc._id ? Topics.findOne(doc._id) : undefined;
     if (topic) {
       throw new Meteor.Error('err_duplicateId', 'This id is already used',
         `Method: topics.insert, Collection: topics, id: ${doc._id}`
       );
     }
 
+    const user = Meteor.users.findOne(this.userId);
+    if (!user.hasPermission('topics.insert.'+doc.category, doc.communityId)) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.insert, Collection: topics, topic: {${doc}}`)
+    }
+
     return Topics.insert(doc, function handle(err, res) {
       if (err) {
         throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
-        `Method: topics.insert, userId: ${this.userId}, topicId: ${doc._id}`);
+        `Method: topics.insert, userId: ${this.userId}, topic: ${doc}`);
       }
-      debugAssert(res === 1);
+      const topicId = res;
+      debugAssert(topicId);
     });
   },
 });

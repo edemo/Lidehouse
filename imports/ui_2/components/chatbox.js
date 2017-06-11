@@ -25,6 +25,6 @@ Template.Chatbox.helpers({
     return moment(this.createdAt).from(serverTimeNow);
   },
   comments() {
-    return Comments.find({ topicId: this._id }, { $sort: { createdAt: 1 } });
+    return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },
 });

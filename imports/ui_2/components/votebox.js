@@ -29,7 +29,7 @@ Template.Votebox.helpers({
     return moment(this.vote.closesAt).from(serverTimeNow);
   },
   comments() {
-    return Comments.find({ topicId: this._id }, { $sort: { createdAt: 1 } });
+    return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },
   pressedClass(choice) {
     const activeMembershipId = Session.get('activeMembershipId');

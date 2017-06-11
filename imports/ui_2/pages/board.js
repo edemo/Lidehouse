@@ -24,7 +24,7 @@ Template.Board.onCreated(function boardOnCreated() {
 Template.Board.helpers({
   topics(category) {
     const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category, closed: false });
+    return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
   },
   displayTime() {
     return moment(this.createdAt).format('YYYY MMM Do');
@@ -34,7 +34,7 @@ Template.Board.helpers({
 Template.News.helpers({
   topics(category) {
     const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category, closed: false });
+    return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
   },
   displayTime() {
     return moment(this.createdAt).format('YYYY MMM Do');

@@ -53,6 +53,7 @@
   "pageNotFound": "Page not found",
   "connectionIssue": "There seems to be a connection issue",
   "tryingToConnect": "Trying to connect",
-
+  "newForumTopicPlaceholder": "Start a discussion...",
+  "newCommentPlaceholder": "Make your comment...",
   "userAccountsSubtitle": "Log in to enjoy all functionalities of this app"
 }
