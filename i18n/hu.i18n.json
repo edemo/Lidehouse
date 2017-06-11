@@ -61,8 +61,7 @@
   "Finances": "Pénzügyek",
   "Documentstore": "Dokumentumtár",
 
-  "News": "Hírek",
-  "Board": "Faliújság",
+  "News board": "Faliújság",
 
   // api
   "name": "név",

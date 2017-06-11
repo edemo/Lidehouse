@@ -47,15 +47,15 @@
 </template>
 
 <template name="News">
-  <div class="white-box">
+  <div class="white-box" style="min-height: 200px;padding: 30px;">
     <div class="row">
-      <div class="col-xs-12">
-        Faliújság ( //TODO )
+      <div class="col-xs-12" style="border-bottom:1px solid rgb(209, 209, 209); padding: 7px 0;">
+        {{_ 'News board'}} ( //TODO )
       </div>
     </div>
     {{#each topics 'news'}}
       <div class="row">
-        <div class="col-xs-8" data-tooltip="{{text}}">
+        <div class="col-xs-8" data-tooltip="{{text}}" style="padding: 4px 0;">
           {{title}}
         </div>
         <div class="col-xs-4">
@@ -64,4 +64,22 @@
       </div>
     {{/each}}
   </div>
+
+  <!-- Ez itt a regi, atmenetileg visszahozva. Az uj, a fentebbi.
+  <div class="side-right">
+    <div class="chatbox faliujsag" style="min-height: 200px;">
+      <div class="faliujsag-title" style="border-bottom:1px solid rgb(209, 209, 209); padding: 7px 0;">
+        {{_ 'News board'}}
+      </div>
+      {{#each topics 'news'}}
+        <div class="faliujsag-item" style="padding: 4px 0;">
+          <p>
+            {{title}}
+          </p>
+          <span>{{displayTime}}</span>
+        </div>
+      {{/each}}
+    </div>
+  </div -->
+
 </template>
