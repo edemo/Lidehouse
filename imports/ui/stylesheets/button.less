@@ -45,16 +45,34 @@
     }
     &:active,
     &.active {
+      background: none;
+      background-color: lighten(@btn-primary-bcg, 10%) !important;
       box-shadow: lighten(@btn-box-shadow, 25%) 0 0 0 1px inset;
+    }
+    &:focus {
+      background-color: @btn-primary-bcg !important;
+    }
+    &.disabled {
+      &:hover {
+        background: none;
+        background-color: lighten(@btn-primary-bcg, 10%) !important;
+      }
     }
   }
   &-secondary {
-    color: #383737 !important;
+    transition: all 200ms ease-in;
+    color: #383737;
     box-shadow: lighten(@btn-box-shadow, 5%) 0 0 0 1px inset;
-    &:hover{ color: @color-rare; }
+    &:hover{
+      color: darken(#383737, 53%);
+      letter-spacing: 5px;
+      box-shadow: lighten(@btn-box-shadow, 15%) 0 0 0 1px inset;
+    }
     &:active,
     &.active {
-      box-shadow: lighten(@btn-box-shadow, 25%) 0 0 0 1px inset;
+      background: none;
+      background-color: darken(@btn-secondary-bcg, 10%);
+      box-shadow: darken(@btn-box-shadow, 25%) 0 0 0 1px inset;
     }
   }
   &-yes {
@@ -79,6 +97,7 @@
     font-weight: bold;
   }
   &-comment {
+    cursor: pointer;
     width: 30px;
     padding: 7px 15px 7px 10px;
     height: 50px;
