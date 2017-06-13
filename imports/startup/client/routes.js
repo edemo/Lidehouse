@@ -16,6 +16,7 @@ import '/imports/ui_2/pages/communities-join.js';
 import '/imports/ui_2/pages/community-memberships.js';
 import '/imports/ui_2/pages/community-roleships.js';
 import '/imports/ui_2/pages/board.js';
+import '/imports/ui_2/pages/messenger.js';
 import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
 import '/imports/ui_2/pages/housing.js';
@@ -106,6 +107,13 @@ FlowRouter.route('/board', {
   name: 'Board',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Board' });
+  },
+});
+
+FlowRouter.route('/messenger', {
+  name: 'Messenger',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Messenger' });
   },
 });
 
