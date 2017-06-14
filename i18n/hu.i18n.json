@@ -107,6 +107,12 @@
   "no": "nem",
   "abstain": "tartózkodom",
 
+  // delegations
+  "Delegations from less specific to more specific": "Meghatalmazások sorrendben a kevesbé specifikustól a legspecifikusabbig",
+  "general": "általános",
+  "topicGroup": "téma csoport",
+  "issues": "kérdések",
+
   // placeholders
   "Make your comment": "Szóljon hozzá",
 

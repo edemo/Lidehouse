@@ -37,7 +37,6 @@ Template.Communities_join.helpers({
     }
     return getOptions;
   },
-
 });
 
 Template.Communities_join.events({

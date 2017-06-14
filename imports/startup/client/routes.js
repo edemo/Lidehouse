@@ -15,6 +15,7 @@ import '/imports/ui_2/pages/communities-create.js';
 import '/imports/ui_2/pages/communities-join.js';
 import '/imports/ui_2/pages/community-memberships.js';
 import '/imports/ui_2/pages/community-roleships.js';
+import '/imports/ui_2/pages/user-delegations.js';
 import '/imports/ui_2/pages/board.js';
 import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
@@ -113,6 +114,13 @@ FlowRouter.route('/forum', {
   name: 'Topics.forum',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Forum_topics' });
+  },
+});
+
+FlowRouter.route('/delegations', {
+  name: 'Delegations',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'User_delegations' });
   },
 });
 
