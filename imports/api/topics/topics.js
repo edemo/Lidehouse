@@ -22,9 +22,9 @@ export const Topics = new TopicsCollection('topics');
 Topics.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  category: { type: String, allowedValues: ['vote', 'forum', 'news'] },
-  title: { type: String, max: 100 },
-  text: { type: String, max: 5000 },
+  category: { type: String, allowedValues: ['vote', 'forum', 'news', 'room'] },
+  title: { type: String, max: 100, optional: true },
+  text: { type: String, max: 5000, optional: true },
   closed: { type: Boolean, defaultValue: false },
   unreadCount: { type: SimpleSchema.Integer, defaultValue: 0 },
 });
