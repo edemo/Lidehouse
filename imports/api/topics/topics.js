@@ -1,14 +1,11 @@
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
-import { moment } from 'meteor/momentjs:moment';
-import { _ } from 'meteor/underscore';
 import faker from 'faker';
 
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '../comments/comments.js';
 import { Communities } from '../communities/communities.js';
-import { Memberships } from '../memberships/memberships.js';
 
 class TopicsCollection extends Mongo.Collection {
   insert(topic, callback) {
@@ -22,15 +19,6 @@ class TopicsCollection extends Mongo.Collection {
 
 export const Topics = new TopicsCollection('topics');
 
-Topics.voteSchema = new SimpleSchema({
-  closesAt: { type: Date, defaultValue: moment().add(2, 'week').toDate() },
-  type: { type: String, allowedValues: ['yesno', 'preferential'], defaultValue: 'yesno' },
-  choices: { type: Array, defaultValue: ['yes', 'no', 'abstain'] },
-  'choices.$': { type: String },
-  participationCount: { type: Number, defaultValue: 0 },
-  participationShares: { type: Number, defaultValue: 0 },
-});
-
 Topics.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -39,8 +27,6 @@ Topics.schema = new SimpleSchema({
   text: { type: String, max: 5000 },
   closed: { type: Boolean, defaultValue: false },
   unreadCount: { type: SimpleSchema.Integer, defaultValue: 0 },
-  vote: { type: Topics.voteSchema, optional: true }, // TODO: should be conditional on category
-  voteResults: { type: Object, blackbox: true, defaultValue: {} },
 });
 
 Topics.attachSchema(Topics.schema);
@@ -56,19 +42,6 @@ Topics.helpers({
   },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
-  },
-  voteTypeIs(type) {
-    if (!this.vote) return undefined;
-    return (this.vote.type === type);
-  },
-  votedCount() {
-    return this.vote.participationCount;
-  },
-  memberCount() {
-    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
-  },
-  voteParticipation() {
-    return Math.round(100 * (this.vote.participationShares / this.community().totalshares));
   },
 });
 
@@ -90,8 +63,6 @@ Topics.publicFields = {
   createdAt: 1,
   closed: 1,
   unreadCount: 1,
-  vote: 1,
-  // voteResults are NOT sent to the client
 };
 
 Factory.define('topic', Topics, {
