@@ -1,0 +1,186 @@
+@messages-after-bcg: url(/light_msg_bcg.jpg);
+@people-box-shadow: 0px 3px 4px 2px #ccc;
+@people-mobile-width: 350px;
+@message-bcg: rgb(249, 249, 249);
+@message-top-border: #d8d8d8;
+@msg-nav-bcg: white;
+@msg-nav-shadow: rgb(201, 201, 201);
+.page-messenger {
+  max-height: calc(~"100vh - " 50px);
+  .no-margin {
+    margin: 0px !important;
+  }
+  padding: 0px !important;
+  .full-h {
+    height: 100%;
+  }
+  .frame {
+    .full-h;
+    &.row {
+      margin-right: 0px;
+    }
+  }
+  .left {
+    display: flex;
+    flex-direction: column;
+    padding-right: 0px;
+  }
+  .right {
+    border-left: 1px solid @td-border;
+    box-shadow: @people-box-shadow;
+    background-color: white;
+    padding-right: 25px;
+    overflow-y: auto;
+  }
+  .mobile-nav {
+    background-color: @msg-nav-bcg;
+    box-shadow: 0px 2px 4px 1px @msg-nav-shadow;
+    border-bottom: 1px solid rgb(219, 219, 219);
+    z-index: 1;
+    div.name {
+      font-size: 16px;
+      padding: 17px;
+      position: relative;
+      float: left;
+    }
+    .js-people {
+      position: relative;
+      float: right;
+      div.link {
+        text-align: right;
+        font-size: 16px;
+        color: rgb(165, 165, 165);
+        padding: 17px;
+        cursor: pointer;
+      }
+    }
+    span {
+      font-size: 17px;
+    }
+  }
+  // messages container
+  .messages {
+    max-height: calc(~"100vh - " 110px);
+    overflow-y: auto;
+    flex-grow: 1;
+    &.empty {
+      padding-top: 15%;
+    }
+    &::after {
+      content: "";
+      opacity: 0.65;
+      background: @messages-after-bcg;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      position: absolute;
+      background-position: left center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      z-index: -1;
+    }
+    .message-box {
+      &-self, &-target {
+        padding: 13px;
+        width: 100%;
+        margin-top: 15px;
+        display: flex;
+        .avatar {
+          margin: 7px;
+          img {
+            width: 60px;
+            height: 60px;
+          }
+        }
+      }
+      &-self {
+        flex-direction: row-reverse;
+      }
+    }
+    .message {
+      min-width: 45px;
+      max-width: 65%;
+      border: 1px solid rgba(178, 196, 218, 0.8);
+      border-radius: 15px;
+      background-color: white;
+      padding: 11px;
+      box-shadow: 0px 1px 4px 1px rgb(227, 227, 227);
+    }
+  }
+
+  // send message field
+  .message-field {
+    height: 60px;
+    background-color: @message-bcg;
+    border-top: 1px solid @message-top-border;
+    padding-top: 5px;
+    &.row {
+      margin: 0px;
+    }
+    textarea {
+      background-color: transparent;
+    }
+    .btn-comment {
+      width: 100%;
+      margin: 0px;
+      cursor: pointer;
+      width: 100%;
+      margin: 0px;
+      font-size: 19px;
+    }
+  }
+
+  // people list
+  .search-row {
+    padding: 10px;
+    margin-bottom: 30px;
+    .form-group {
+      margin: 0px;
+      padding: 0px;
+      &:focus, &:active, &.active {
+        .input-group-addon {
+          border-bottom: 1.5px solid @form-border-active;
+          transition: border-bottom .28s ease;
+        }
+      }
+      .input-group-addon {
+        border-radius: 0px;
+        background-color: transparent;
+        border: 0px;
+        border-bottom: 1px solid @form-border;
+      }
+    }
+  }
+  .person {
+    cursor: pointer;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    border-top: 1px solid @message-top-border;
+    border-bottom: 1px solid @message-top-border;
+    .media-body:hover {
+      color: lighten(gray, 7%);
+    }
+    &-kk {
+      margin: 0 1px 21px;
+    }
+  }
+  .badge {
+    background-color: rgb(255, 99, 99);
+    font-size: 11px;
+  }
+
+  #people {
+    .right;
+    .position(absolute, 0, -@people-mobile-width, 0, auto, @people-mobile-width);
+    transform: translate3d(0,0,0);
+    transition: all 300ms ease-out;
+    z-index: 10;
+    // visibility: collapse;
+    padding-left: 15px;
+    &.peopleOpen {
+      // visibility: visible;
+      .position(absolute, 0, 0, 0, auto, @people-mobile-width);
+    }
+  }
+}
