@@ -1,0 +1,10 @@
+<template name="User_delegations">
+  <div class="content-scrollable page-content">
+    <h1 class="page-title">{{_ 'Delegations'}}</h1>
+    <h2 class="page-title">{{_ 'Delegations from less specific to more specific'}}</h2>
+    {{#each scope in delegationScopes}}
+      <h3 class="page-title">{{_ scope}} {{_ 'issues'}}:</h3>
+      {{> ReactiveDatatable tableData=(reactiveDelegationsDataFn scope) options=optionsFn}}
+    {{/each}}
+  </div>
+</template>

@@ -33,7 +33,7 @@ textarea {
   padding: 0px;
   background: white none repeat scroll 0% 0%;
   border: none;
-  border-bottom: 1px solid #bcbcbc;
+  border-bottom: 1px solid @form-border;
   height: auto;
   // overflow-y: scroll;
   overflow: hidden;
@@ -52,7 +52,7 @@ textarea {
     display: none;
   }
   &:active, &:focus {
-    border-bottom: 1.5px solid rgb(110, 168, 255);
+    border-bottom: 1.5px solid @form-border-active;
     transition: border-bottom .28s ease;
   }
 }
@@ -64,10 +64,10 @@ input[type="text"], input[type="number"], input[type="date"], [type="email"], [t
   background: white none repeat scroll 0% 0%;
   border: unset;
   border-radius: 0px;
-  border-bottom: 1px solid #bcbcbc;
+  border-bottom: 1px solid @form-border;
   box-shadow: none !important;
   &:active, &:focus {
-    border-bottom: 1.5px solid rgb(110, 168, 255);
+    border-bottom: 1.5px solid @form-border-active;
     transition: border-bottom .28s ease;
   }
   ::placeholder {
@@ -81,14 +81,14 @@ input[type="text"], input[type="number"], input[type="date"], [type="email"], [t
 select {
   border: unset !important;
   border-radius: 0px;
-  border-bottom: 1px solid rgb(188, 188, 188) !important;
+  border-bottom: 1px solid @textarea-border !important;
   box-shadow: none !important;
   color: @color-full;
   outline: none;
 
   &[disabled] { opacity: .5; }
   &:active, &:focus {
-    border-bottom: 1.5px solid rgb(110, 168, 255);
+    border-bottom: 1.5px solid @form-border-active;
     transition: border-bottom .28s ease;
   }
   option {

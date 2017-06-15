@@ -98,29 +98,14 @@
       <section id="menu">
         <div class="list-menu">
           <ul>
-            <li class="list-item">
-              <a href="{{pathFor 'Board'}}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{_ 'Main'}}</a>
-            </li>
-            <li class="list-item">
-              <a><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> {{_ 'Messages'}}</a>
-            </li>
-            <li class="list-item">
-              <a href="{{pathFor 'Topics.forum'}}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> {{_ 'Forum'}}</a>
-            </li>
-            <li class="list-item">
-              <a href="{{pathFor 'Topics.vote'}}"><span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span> {{_ 'Votings'}}</a>
-            </li>
-            <li class="list-item">
-              <a href="{{pathFor 'Housing'}}"><span class="glyphicon glyphicon-bed" aria-hidden="true"></span> {{_ 'Delegations'}}</a>
-            </li>
-            <li class="list-item">
-              <a href="{{pathFor 'Report'}}"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> {{_ 'Tickets'}}</a>
-            </li>
-            <li class="list-item">
-              <a><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span> {{_ 'Finances'}}</a></li>
-            <li class="list-item">
-              <a href="{{pathFor 'DocumentStore'}}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span> {{_ 'Documentstore'}}</a>
-            </li>
+            <li class="list-item"><a href="{{pathFor 'Board'}}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{_ 'Main'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'Messenger'}}"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>{{_ 'Messages'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'Topics.forum'}}"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>{{_ 'Forum'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'Topics.vote'}}"><span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>{{_ 'Votings'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'Delegations'}}"><span class="glyphicon glyphicon-bed" aria-hidden="true"></span>{{_ 'Delegations'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'Report'}}"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>{{_ 'Tickets'}}</a></li>
+            <li class="list-item"><a><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>{{_ 'Finances'}}</a></li>
+            <li class="list-item"><a href="{{pathFor 'DocumentStore'}}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>{{_ 'Documentstore'}}</a></li>
           </ul>
           <a href="{{pathFor 'Styleguide'}}" class="list-item" style="position: absolute; bottom: 0; width: 100%;">
             <img src="/icon/si-glyph-bolt.svg"/>

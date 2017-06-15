@@ -5,7 +5,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { displayError } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { castVote } from '/imports/api/topics/methods.js';
+import { castVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
 import '../components/votebox.html';
 import '../components/comments-section.js';

@@ -1,14 +1,18 @@
 import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 
-import { Comments } from '../../api/comments/comments.js';
-import { Communities } from '../../api/communities/communities.js';
-import { Memberships } from '../../api/memberships/memberships.js';
-import { Topics } from '../../api/topics/topics.js';
+import { Comments } from '/imports/api/comments/comments.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Topics } from '/imports/api/topics/topics.js';
 
+import '/imports/api/topics/tickets/tickets.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
+
+  // ===== Communities =====
+
   if (Communities.findOne({ name: 'Demo ház' })) {
     return; // if Demo data already populated
   }
@@ -23,6 +27,8 @@ Meteor.startup(() => {
     image: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
     totalshares: 100,
   });
+
+  // ===== Users =====
 
   const dummyUsers = [];
   dummyUsers[0] = Meteor.users.insert({
@@ -45,6 +51,8 @@ Meteor.startup(() => {
     profile: { lastName: 'Balta', firstName: 'Péter' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-5.png',
   });
+
+  // ===== Memberships =====
 
   Memberships.insert({
     communityId: demoCommunityId,
@@ -113,6 +121,8 @@ Meteor.startup(() => {
     },
   });
 
+  // ===== Forum =====
+
   // The demo users comment one after the other, round robin style
   let nextUserIndex = 0;
   function nextUser() {
@@ -120,7 +130,6 @@ Meteor.startup(() => {
     return dummyUsers[nextUserIndex++];
   }
 
-  // Forum
   const data = [
     {
       title: 'Zár probléma',
@@ -168,7 +177,8 @@ Meteor.startup(() => {
     });
   });
 
-  // News
+  // ===== News =====
+
   Topics.insert({
     communityId: demoCommunityId,
     userId: dummyUsers[0],
@@ -186,7 +196,7 @@ Meteor.startup(() => {
           'Ezek közül lehet választani és a kéményseprőkkel egyeztetni a 06(20)2569875 telefonszámon hogy kinek melyik felel meg.',
   });
 
-  // Votes
+  // ===== Votes =====
 
   const ownerships = Memberships.find({ role: 'owner' }).fetch();
 
@@ -256,5 +266,65 @@ Meteor.startup(() => {
     topicId: voteTopic3,
     userId: nextUser(),
     text: 'Jajj csak szürke NE legyen. Akkor költözöm.',
+  });
+
+  // ===== Tickets =====
+
+  const ticket1 = Topics.insert({
+    communityId: demoCommunityId,
+    userId: nextUser(),
+    category: 'ticket',
+    title: 'Elromlott a lift',
+    text: 'A hatodikon megállt. Semmilyen gombra nem reagál.',
+    ticket: {
+      type: 'building',
+      urgency: 'high',
+      status: 'progressing',
+    },
+  });
+
+  const ticket2 = Topics.insert({
+    communityId: demoCommunityId,
+    userId: nextUser(),
+    category: 'ticket',
+    title: 'Beázik a fürdőszobám a felettem lakótol.',
+    text: 'Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék.',
+    ticket: {
+      type: 'building',
+      urgency: 'normal',
+      status: 'closed',
+    },
+  });
+
+  const ticket3 = Topics.insert({
+    communityId: demoCommunityId,
+    userId: nextUser(),
+    category: 'ticket',
+    title: 'Áramkimaradás éjjelente',
+    text: 'Harmadszor fordul elő, hogy hirtelen áramkimaradás van éjjel.',
+    ticket: {
+      type: 'service',
+      urgency: 'normal',
+      status: 'reported',
+    },
+  });
+
+  Comments.insert({
+    topicId: ticket3,
+    userId: nextUser(),
+    text: 'Igen, már jelentettem az elműnek. Azt mondták utánanéznek',
+  });
+
+  const ticket4 = Topics.insert({
+    communityId: demoCommunityId,
+    userId: nextUser(),
+    category: 'ticket',
+    title: 'A lépcsőházban hullik a vakolat',
+    text: 'A II. emeleti lépcsőfordulónál vettem észre.',
+    ticket: {
+      type: 'building',
+      urgency: 'low',
+      status: 'closed',
+    },
   });
 });

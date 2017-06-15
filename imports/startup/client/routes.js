@@ -15,7 +15,10 @@ import '/imports/ui_2/pages/communities-create.js';
 import '/imports/ui_2/pages/communities-join.js';
 import '/imports/ui_2/pages/community-memberships.js';
 import '/imports/ui_2/pages/community-roleships.js';
+import '/imports/ui_2/pages/user-delegations.js';
 import '/imports/ui_2/pages/board.js';
+import '/imports/ui_2/pages/messenger.js';
+import '/imports/ui_2/pages/msg_people.js';
 import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
 import '/imports/ui_2/pages/housing.js';
@@ -109,10 +112,24 @@ FlowRouter.route('/board', {
   },
 });
 
+FlowRouter.route('/messenger', {
+  name: 'Messenger',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Messenger' });
+  },
+});
+
 FlowRouter.route('/forum', {
   name: 'Topics.forum',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Forum_topics' });
+  },
+});
+
+FlowRouter.route('/delegations', {
+  name: 'Delegations',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'User_delegations' });
   },
 });
 

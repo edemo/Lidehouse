@@ -1,0 +1,83 @@
+<template name="Messenger">
+  <div class="page page-messenger">
+
+    <!-- Side panel -->
+    <section id="people" class="{{peopleOpen}}">
+      {{> Msg_people}}
+    </section>
+
+    <div class="row frame">
+      <div class="col-xs-12 col-sm-12 col-md-8 left full-h">
+        <div class="visible-xs visible-sm mobile-nav">
+          <div class="name">
+            <!-- aktiv chat név, clickre go to profile -->
+            Lachelky Nimand
+          </div>
+          <div class="js-people">
+            <div class="link">
+              Back to people
+              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- chat history - HA van -->
+        <div class="messages">
+          <!-- uzenetenkent -->
+          {{> Msg_box}}
+        </div>
+
+        <!-- HA nincs chat history -->
+        <!-- <div class="messages text-center empty"> -->
+          <!-- some emty state img here TODO -->
+          <!-- Még nincsenek üzeneteid! <br> Kezdj el csevegni most! -->
+        <!-- </div> -->
+
+        <!-- send message field -->
+        <div class="message-field row">
+          <div class="col-xs-10">
+            <textarea name="name" cols="40" placeholder="Your message ..."></textarea>
+          </div>
+          <div class="col-xs-2">
+            <span class="btn-comment glyphicon glyphicon-send" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- right side, people -->
+      <div class="col-xs-12 col-md-4 right full-h hidden-xs hidden-sm">
+        {{> Msg_people}}
+      </div>
+    </div>
+
+  </div>
+</template>
+
+<template name="Msg_box">
+  <!-- if én üzim / kapott -->
+
+  <!-- box for recived messages -->
+  <div class="message-box-target">
+    <div class="avatar">
+      <img src="http://nerdist.com/wp-content/uploads/2016/11/Screen-Shot-2016-11-26-at-4.14.07-PM.png" class="img-circle" width="55" height="55" alt="Név" />
+    </div>
+    <div class="message">
+      Kapot üzi -
+      Kisd üzenet áfápwoe wfpoje fweápojf wepfjwpeágggpjw wápeojfpjwep
+      wf éoih3f qihf oqéi f foih egoih43qőá pif ewi hfih ogih3oihgoeréi qoi
+      wápefok we
+    </div>
+  </div>
+
+  <!-- box for my messages -->
+  <div class="message-box-self pull-right">
+    <div class="avatar">
+      <img src="https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg" class="img-circle" width="55" height="55" alt="Név" />
+    </div>
+    <div class="message">
+      Én üzim -
+      Amit én írtam fw fáwoeih we fápqeihf áwiehf woeifháogh áwPIFHÁFPIH WE4
+      ÉQFuh weéwéeiohf wéogháweigoh áWEIGH WOE HÁwepfh áoi
+    </div>
+  </div>
+</template>

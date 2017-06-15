@@ -6,7 +6,6 @@ aldeed:collection2-core@1.2.0
 aldeed:schema-deny@1.1.0
 aldeed:schema-index@1.1.1
 aldeed:simple-schema@1.5.3
-aldeed:tabular@2.1.1
 aldeed:template-extension@4.0.0
 allow-deny@1.0.5
 app-prod-security@0.0.0
