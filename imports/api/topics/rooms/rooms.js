@@ -7,9 +7,9 @@ import { Topics } from '../topics.js';
 Topics.helpers({
 });
 
-const roomsSchema = new SimpleSchema({
+const roomSchema = new SimpleSchema({
   participantIds: { type: Array, optional: true },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
 });
 
-Topics.attachSchema(roomsSchema);
+Topics.attachSchema({ room: { type: roomSchema, optional: true } });

@@ -1,11 +1,13 @@
+import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
 import { Timestamps } from '/imports/api/timestamps.js';
-import { Comments } from '../comments/comments.js';
-import { Communities } from '../communities/communities.js';
+import { Comments } from '/imports/api/comments/comments.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import '/imports/api/users/users.js';
 
 class TopicsCollection extends Mongo.Collection {
   insert(topic, callback) {
@@ -22,7 +24,7 @@ export const Topics = new TopicsCollection('topics');
 Topics.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  category: { type: String, allowedValues: ['vote', 'forum', 'news', 'room'] },
+  category: { type: String, allowedValues: ['forum', 'vote', 'news', 'ticket', 'room'] },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, optional: true },
   closed: { type: Boolean, defaultValue: false },
@@ -35,6 +37,9 @@ Topics.attachSchema(Timestamps);
 Topics.helpers({
   community() {
     return Communities.findOne(this.communityId);
+  },
+  createdBy() {
+    return Meteor.users.findOne(this.userId);
   },
   editableBy(userId) {
     if (!this.userId) { return true; }

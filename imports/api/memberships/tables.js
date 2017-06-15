@@ -38,18 +38,3 @@ export function roleshipColumns() {
     { data: '_id', render: renderDeleteButton },
   ];
 }
-
-/*
-// for aldeed:tabular datatable
-// eslint-disable no-new
-import Tabular from 'meteor/aldeed:tabular';
-import { Memberships } from './memberships.js';
-new Tabular.Table({
-  name: 'Memberships',
-  collection: Memberships,
-  columns: ownershipColumns(),
-  extraFields: ['userId', 'communityId'],
-  responsive: true,
-  autoWidth: false,
-});
-*/

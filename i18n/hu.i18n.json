@@ -38,6 +38,28 @@
     }
   },
 
+  "topics": {
+    "title": {
+      "label": "Hiba rövid leírása"
+    },
+    "ticket": {
+      "type": {
+        "label": "Hiba típusa"
+      },
+      "urgency": {
+        "label": "Sürgősség"
+      },
+      "status": {
+        "label": "Státusz"
+      }
+    }
+  },
+
+  // Shared
+  "createdAt": "Létrehozva",
+  "reportedAt": "Bejelentve",
+  "reportedBy": "Bejelentő",
+
   "role": "szerep",
   "roles": "szerepek",
   // roles
@@ -82,9 +104,6 @@
   "uploads": "dokumentumtár",
   "upload": "feltöltés",
 
-  "topic": "téma",
-  "topics": "témák",
-
   "comment": "hozzászólás",
   "created": "létrehozva",
   "closes": "lezárul",
@@ -101,6 +120,8 @@
   "create": "Létrehozom",
   "createNew": "Új Létrehozása",
   "edit": "Szerkesztés",
+  "report": "Bejelentés",
+  "send": "Elküldés",
 
   // voting
   "yes": "igen",
@@ -112,6 +133,24 @@
   "general": "általános",
   "topicGroup": "téma csoport",
   "issues": "kérdések",
+
+  "building": "épület",
+  "service": "közmű",
+  "high": "sürgős",
+  "normal": "közepes",
+  "low": "alacsony",
+  "reported": "megerősítés alatt",
+  "confirmed": "megerősítve",
+  "progressing": "folyamatban",
+  "finished": "megoldva",
+  "checked": "ellenőrizve",
+  "closed": "lezárva",
+
+  "Active tickets": "Aktív bejelentett hibák",
+  "Closed tickets": "Lezárt bejelentett hibák",
+  "New ticket": "Új hibabejelentés",
+  "Please dont report twice": "Kérjük csak akkor adja fel bejelentését, ha az még nem szerepel a fenti listán vagy nemrég került archiválásra hasonló. A lezárt bejelentéseket a lap alján tekinthetik meg. Köszönjük!",
+  "Describe the problem briefly": "A hiba rövid leírása ...",
 
   // placeholders
   "Make your comment": "Szóljon hozzá",

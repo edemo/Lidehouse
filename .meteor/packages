@@ -27,7 +27,6 @@ twbs:bootstrap
 momentjs:moment
 mizzao:timesync
 djk:jquery-ui
-aldeed:tabular
 ephemer:reactive-datatables
 
 # data

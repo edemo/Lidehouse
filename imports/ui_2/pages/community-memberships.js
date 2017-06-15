@@ -48,7 +48,6 @@ Template.Community_memberships_page.helpers({
     return membership.user().safeUsername();
   },
 
-  // ephemer:reactive-meteor-datatables (client-side filtering)
   reactiveTableDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
@@ -65,11 +64,6 @@ Template.Community_memberships_page.helpers({
       };
     }
     return getOptions;
-  },
-
-  // aldeed:tabular (server-side filtering)
-  selector() {
-    return { communityId: Session.get('activeCommunityId'), role: 'owner' };
   },
 });
 

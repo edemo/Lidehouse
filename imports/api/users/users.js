@@ -75,7 +75,7 @@ Meteor.users.helpers({
     return email.substring(0, email.indexOf('@'));
   },
   toString() {
-    return this.safeUsername();
+    return this.fullName();
   },
 });
 
