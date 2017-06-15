@@ -17,6 +17,7 @@ import '/imports/ui_2/pages/community-memberships.js';
 import '/imports/ui_2/pages/community-roleships.js';
 import '/imports/ui_2/pages/board.js';
 import '/imports/ui_2/pages/messenger.js';
+import '/imports/ui_2/pages/msg_people.js';
 import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
 import '/imports/ui_2/pages/housing.js';

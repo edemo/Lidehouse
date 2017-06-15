@@ -1,7 +1,10 @@
 @messages-after-bcg: url(/light_msg_bcg.jpg);
 @people-box-shadow: 0px 3px 4px 2px #ccc;
+@people-mobile-width: 350px;
 @message-bcg: rgb(249, 249, 249);
 @message-top-border: #d8d8d8;
+@msg-nav-bcg: white;
+@msg-nav-shadow: rgb(201, 201, 201);
 .page-messenger {
   max-height: calc(~"100vh - " 50px);
   .no-margin {
@@ -13,6 +16,9 @@
   }
   .frame {
     .full-h;
+    &.row {
+      margin-right: 0px;
+    }
   }
   .left {
     display: flex;
@@ -23,14 +29,43 @@
     border-left: 1px solid @td-border;
     box-shadow: @people-box-shadow;
     background-color: white;
-    padding-right: 35px;
+    padding-right: 25px;
+    overflow-y: auto;
+  }
+  .mobile-nav {
+    background-color: @msg-nav-bcg;
+    box-shadow: 0px 2px 4px 1px @msg-nav-shadow;
+    border-bottom: 1px solid rgb(219, 219, 219);
+    z-index: 1;
+    div.name {
+      font-size: 16px;
+      padding: 17px;
+      position: relative;
+      float: left;
+    }
+    .js-people {
+      position: relative;
+      float: right;
+      div.link {
+        text-align: right;
+        font-size: 16px;
+        color: rgb(165, 165, 165);
+        padding: 17px;
+        cursor: pointer;
+      }
+    }
+    span {
+      font-size: 17px;
+    }
   }
   // messages container
   .messages {
     max-height: calc(~"100vh - " 110px);
-    overflow-y: scroll;
+    overflow-y: auto;
     flex-grow: 1;
-    padding: 10px;
+    &.empty {
+      padding-top: 15%;
+    }
     &::after {
       content: "";
       opacity: 0.65;
@@ -47,6 +82,7 @@
     }
     .message-box {
       &-self, &-target {
+        padding: 13px;
         width: 100%;
         margin-top: 15px;
         display: flex;
@@ -124,6 +160,27 @@
     border-bottom: 1px solid @message-top-border;
     .media-body:hover {
       color: lighten(gray, 7%);
+    }
+    &-kk {
+      margin: 0 1px 21px;
+    }
+  }
+  .badge {
+    background-color: rgb(255, 99, 99);
+    font-size: 11px;
+  }
+
+  #people {
+    .right;
+    .position(absolute, 0, -@people-mobile-width, 0, auto, @people-mobile-width);
+    transform: translate3d(0,0,0);
+    transition: all 300ms ease-out;
+    z-index: 10;
+    // visibility: collapse;
+    padding-left: 15px;
+    &.peopleOpen {
+      // visibility: visible;
+      .position(absolute, 0, 0, 0, auto, @people-mobile-width);
     }
   }
 }
