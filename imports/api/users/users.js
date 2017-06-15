@@ -79,6 +79,9 @@ Meteor.users.helpers({
   },
 });
 
+const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';
+// const defaultAvatar = 'http://pannako.hu/wp-content/uploads/avatar-1.png';
+
 Meteor.users.schema = new SimpleSchema({
   // For accounts-password, either emails or username is required, but not both.
   // It is OK to make this optional because the accounts-password package does its own validation.
@@ -93,7 +96,8 @@ Meteor.users.schema = new SimpleSchema({
     },
   },*/
   profile: { type: UserProfileSchema, optional: true },
-  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: 'http://pannako.hu/wp-content/uploads/avatar-1.png' },
+  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar },
+
   emails: { type: Array },
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
