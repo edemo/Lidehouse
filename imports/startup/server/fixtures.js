@@ -215,8 +215,11 @@ Meteor.startup(() => {
     closed: true,
     vote: {
       closesAt: moment().subtract(10, 'day').toDate(),
-      participationCount: 4,
-      participationShares: 90,
+      type: 'yesno',
+    },
+    voteParticipation: {
+      count: 4,
+      shares: 90,
     },
     voteResults: voteResults1,
   });
@@ -230,6 +233,7 @@ Meteor.startup(() => {
           'Elfogadás esetén három különböző árajánlatot kérünk be, és a legjobbat választjuk.',
     vote: {
       closesAt: moment().add(2, 'week').toDate(),
+      type: 'yesno',
     },
     voteResults: {},
     // no results yet, noone voted
@@ -250,8 +254,10 @@ Meteor.startup(() => {
       closesAt: moment().add(1, 'month').toDate(),
       type: 'preferential',
       choices: ['semleges fehér', 'halvány rózsaszín', 'sárga', 'világos szürke'],
-      participationCount: 3,
-      participationShares: 50,
+    },
+    voteParticipation: {
+      count: 3,
+      shares: 50,
     },
     voteResults: voteResults3,
   });

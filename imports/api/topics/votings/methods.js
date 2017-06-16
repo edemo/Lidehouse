@@ -59,8 +59,8 @@ export const castVote = new ValidatedMethod({
     const oldVote = topic.voteResults && topic.voteResults[membershipId];
     if (!oldVote) {
       topicModifier['$inc'] = {
-        'vote.participationCount': 1,
-        'vote.participationShares': membership.ownership.share,
+        'voteParticipation.count': 1,
+        'voteParticipation.shares': membership.ownership.share,
       };
     }
 

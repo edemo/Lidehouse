@@ -10,34 +10,46 @@ Topics.helpers({
     if (!this.vote) return undefined;
     return (this.vote.type === type);
   },
-  votedCount() {
-    return this.vote.participationCount;
-  },
   memberCount() {
     return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
   },
-  voteParticipation() {
-    return Math.round(100 * (this.vote.participationShares / this.community().totalshares));
+  votedCount() {
+    return this.voteParticipation.count;
+  },
+  votedPercent() {
+    return Math.round(100 * (this.voteParticipation.shares / this.community().totalshares));
   },
 });
 
 const voteSchema = new SimpleSchema({
-  closesAt: { type: Date, defaultValue: moment().add(2, 'week').toDate() },
-  type: { type: String, allowedValues: ['yesno', 'preferential'], defaultValue: 'yesno' },
-  choices: { type: Array, defaultValue: ['yes', 'no', 'abstain'] },
+  closesAt: { type: Date },
+  type: { type: String, allowedValues: ['yesno', 'preferential'] },
+  choices: { type: Array, autoValue() { if (this.field('vote.type').value === 'yesno') return ['yes', 'no', 'abstain']; } },
   'choices.$': { type: String },
-  participationCount: { type: Number, defaultValue: 0 },
-  participationShares: { type: Number, defaultValue: 0 },
+});
+
+const voteParticipationSchema = new SimpleSchema({
+  count: { type: Number },
+  shares: { type: Number },
 });
 
 Topics.votingSchema = new SimpleSchema({
   vote: { type: voteSchema, optional: true },
-  voteResults: { type: Object, blackbox: true, defaultValue: {} },
+  voteResults: { type: Object, optional: true, blackbox: true },
+  voteParticipation: {
+    type: voteParticipationSchema,
+    optional: true,
+    autoValue() {
+      if (!this.isSet && this.isInsert && this.field('category').value === 'vote') {
+        return { count: 0, shares: 0 };
+      }
+    },
+  },
 });
 
 Topics.attachSchema(Topics.votingSchema);   // TODO: should be conditional on category === 'vote'
 
-_.extend(Topics.publicFields, { vote: 1 });   // voteResults are NOT sent to the client
+_.extend(Topics.publicFields, { vote: 1, voteParticipation: 1 });   // voteResults are NOT sent to the client
 
 Topics.publicFields.extendForUser = function (userId, communityId) {
   // User cannot see other user's votes, but need to see his own votes
