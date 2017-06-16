@@ -21,11 +21,19 @@ Template.Document_store.helpers({
   completed() {
     return Math.round(this.progress * 100);
   },
+  storeHasDocuments() {
+    const activeCommunityId = Session.get('activeCommunityId');
+    if (!activeCommunityId) return false;
+    return Shareddocs.find({ communityId: activeCommunityId }).count() > 0;
+  },
   shareddocs() {
     const activeCommunityId = Session.get('activeCommunityId');
     if (activeCommunityId) {
       return Shareddocs.find({ communityId: activeCommunityId });
     }
+  },
+  uploadDate() {
+    return moment(this.createdAt).format('YYYY.MM.DD');
   },
 });
 

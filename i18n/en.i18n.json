@@ -55,5 +55,7 @@
   "tryingToConnect": "Trying to connect",
   "newForumTopicPlaceholder": "Start a discussion...",
   "newCommentPlaceholder": "Make your comment...",
-  "userAccountsSubtitle": "Log in to enjoy all functionalities of this app"
+  "userAccountsSubtitle": "Log in to enjoy all functionalities of this app",
+  "documentStoreSubtitle": "Here you find the shared documents of this community.",
+  "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules."
 }
