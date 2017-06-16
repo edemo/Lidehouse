@@ -20,6 +20,14 @@ Template.Err_report.onCreated(function () {
 });
 
 Template.Err_report.helpers({
+  ticketsCollection() {
+    return Topics;
+  },
+  ticketsSchema() {
+    return Topics.simpleSchema();
+
+//    new SimpleSchema({ });
+  },
   activeTicketsDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
