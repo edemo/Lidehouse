@@ -28,6 +28,7 @@ momentjs:moment
 mizzao:timesync
 djk:jquery-ui
 ephemer:reactive-datatables
+flawless:meteor-toastr
 
 # data
 mongo@1.1.14
@@ -88,4 +89,3 @@ dburles:factory
 
 # security
 audit-argument-checks@1.0.7
-flawless:meteor-toastr

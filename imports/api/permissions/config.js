@@ -8,17 +8,19 @@ const defaultRoles = [
   { name: 'admin' },
   { name: 'manager' },
   { name: 'owner' },
+  { name: 'tenant' },
   { name: 'moderator' },
   { name: 'accountant' },
   { name: 'treasurer' },
   { name: 'overseer' },
   { name: 'delegate' },
+  { name: 'maintainer' },
   { name: 'guest' },
 ];
 
 // Groupings just to ease configuration
-const everybody = ['admin', 'manager', 'owner', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate', 'guest'];
-const exceptGuest = ['admin', 'manager', 'owner', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate'];
+const everybody = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate', 'maintainer', 'guest'];
+const exceptGuest = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'maintainer', 'delegate'];
 const nobody = [];
 
 const permissions = [
