@@ -57,5 +57,9 @@
   "newCommentPlaceholder": "Make your comment...",
   "userAccountsSubtitle": "Log in to enjoy all functionalities of this app",
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
-  "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules."
+  "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
+
+  // Notifications
+  "Joined community": "Succesfully joined community %s",
+  "Created community": "Succesfully created community."
 }
