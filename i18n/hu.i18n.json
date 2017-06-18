@@ -122,6 +122,7 @@
   "edit": "Szerkesztés",
   "report": "Bejelentés",
   "send": "Elküldés",
+  "finalize": "Véglegesítem",
 
   // voting
   "yes": "igen",
@@ -187,6 +188,6 @@
   "NoPermissionToUpload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közösképviselő segítségét.",
 
   // Notifications
-  "Joined community": "Sikeresen csatlakozott a %s közösséghez.",
+  "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
   "Created community": "Közösség sikeresen létrehozva."
 }

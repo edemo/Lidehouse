@@ -3,7 +3,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
-import { displayError } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
@@ -34,7 +34,7 @@ Template.Votebox.helpers({
   pressedClass(choice) {
     const activeMembershipId = Session.get('activeMembershipId');
     if (!activeMembershipId || !this.voteResults) return '';
-    const ownVote = this.voteResults[activeMembershipId][0];
+    const ownVote = this.voteResults[activeMembershipId] && this.voteResults[activeMembershipId][0];
     return (ownVote === choice) && 'btn-pressed';
   },
 });
@@ -50,10 +50,11 @@ Template.Votebox.events({
         displayError(err);
         return;
       }
+      displayMessage('success', 'Vote casted');
     });
   },
   // event handler for the preferential vote type
-  'click .js-send-vote'(event) {
+  'click .btn-votesend'(event) {
     const membershipId = Session.get('activeMembershipId');
     const topicId = this._id;
     const choices = []; // TODO: Get the ordering and put it into the choices array
@@ -62,6 +63,7 @@ Template.Votebox.events({
         displayError(err);
         return;
       }
+      displayMessage('success', 'Vote casted');
     });
   },
 });
