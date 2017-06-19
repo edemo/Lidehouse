@@ -13,11 +13,20 @@ import '../components/comments-section.js';
 
 Template.Votebox.onCreated(function voteboxOnCreated() {
   this.state = new ReactiveDict();
-  this.state.set('voteFinalized', false);
 });
 
 Template.Votebox.onRendered(function voteboxOnRendered() {
-  $('.sortable').sortable();
+  $('.sortable').sortable({ connectWith: '.sortable' });
+  const voteResults = this.data.voteResults;
+  const state = this.state;
+//  this.autorun(function update() { // TODO: would be nicer in autorun
+  const activeMembershipId = Session.get('activeMembershipId');
+  const voteIsFinalized = activeMembershipId &&
+    voteResults[activeMembershipId] &&
+    voteResults[activeMembershipId].length > 0;
+  state.set('voteFinalized', voteIsFinalized);
+  $('.sortable').sortable(voteIsFinalized ? 'disable' : 'enable');
+//  });
 });
 
 Template.Votebox.helpers({
@@ -47,9 +56,18 @@ Template.Votebox.helpers({
   },
   // Preferential voting
   selectedChoices() {
-    const results = this.voteResults[Meteor.userId()];
-    if (results && results.length > 0) return results;
-    return this.vote.choices;
+    const activeMembershipId = Session.get('activeMembershipId');
+    const results = this.voteResults[activeMembershipId];
+    // We are returning an array here, where the elements are pairs of a choice,
+    // and its corresponding ORIGINAL index in the vote.choices array
+    if (results && results.length > 0) { // voter already casted vote
+      const originalVoteChoices = this.vote.choices;
+      const selectedChoices = results.map(function obj(index) { return { choice: originalVoteChoices[index], index }; });
+      console.log('displaying:', selectedChoices);
+      return selectedChoices;
+    }
+    // no vote yet, original vote choices are simply used
+    return this.vote.choices.map(function obj(choice, index) { return { choice, index }; });
   },
   voteIsFinalized() {
     return Template.instance().state.get('voteFinalized');
@@ -80,7 +98,8 @@ Template.Votebox.events({
     const topicId = this._id;
     const voteFinalized = instance.state.get('voteFinalized');
     if (!voteFinalized) {
-      const choices = []; // TODO: Get the ordering and put it into the choices array
+      const choices = $('.sortable').sortable('toArray', { attribute: 'data-value' });
+      console.log('casting:', choices);
       castVote.call({ topicId, membershipId, castedVote: choices }, function handle(err) {
         if (err) {
           displayError(err);
