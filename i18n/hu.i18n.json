@@ -123,6 +123,7 @@
   "report": "Bejelentés",
   "send": "Elküldés",
   "finalize": "Véglegesítem",
+  "change": "Megváltoztatom",
 
   // voting
   "yes": "igen",
@@ -189,5 +190,6 @@
 
   // Notifications
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
-  "Created community": "Közösség sikeresen létrehozva."
+  "Created community": "Közösség sikeresen létrehozva.",
+  "Vote casted": "Szavazat sikeresen leadva"
 }

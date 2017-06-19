@@ -54,14 +54,18 @@
             Ez egy preferenciális szavazás. Kérjük rakja sorrenbe...
           </div>
           <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
-            <ul class="sortable droptrue js-sort-list">
-              {{#each choice in vote.choices}}
-              <li class="ui-state-default" data-value="{{@index}}">{{choice}}</li>
+            <ul class="sortable droptrue {{pressedClassForPreferential}}">
+              {{#each choice in selectedChoices}}
+                <li class="ui-state-default" data-value="{{@index}}">{{choice}}</li>
               {{/each}}
             </ul>
           </div>
           <div class="col-xs-12 text-center vsend-col">
-            <button class="btn-primary btn-votesend">{{_ 'finalize'}}</button>
+            {{#if voteIsFinalized}}
+              <button class="btn-primary btn-votesend">{{_ 'change'}}</button>
+            {{else}}
+              <button class="btn-primary btn-votesend">{{_ 'finalize'}}</button>
+            {{/if}}
           </div>
         </div>
         {{/if}}
@@ -76,12 +80,4 @@
     </div>
 
   </div>
-
-  <script type="text/javascript" style="visibility:hidden;">
-    $(function() {
-      $( "ul.droptrue" ).sortable({
-        connectWith: ".js-sort-list"
-      });
-    });
-  </script>
 </template>
