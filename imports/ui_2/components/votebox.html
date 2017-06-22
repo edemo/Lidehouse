@@ -62,8 +62,8 @@
           </div>
           <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
             <ul class="sortable droptrue {{pressedClassForPreferential}}">
-              {{#each selectedChoices}}
-                <li class="ui-state-default" data-value="{{index}}">{{choice}}</li>
+              {{#each currentPreference}}
+                <li class="ui-state-default" data-value="{{value}}">{{text}}</li>
               {{/each}}
             </ul>
           </div>

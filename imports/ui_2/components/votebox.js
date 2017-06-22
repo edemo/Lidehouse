@@ -16,17 +16,46 @@ Template.Votebox.onCreated(function voteboxOnCreated() {
 });
 
 Template.Votebox.onRendered(function voteboxOnRendered() {
-  $('.sortable').sortable({ connectWith: '.sortable' });
-  const voteResults = this.data.voteResults;
+
+  const self = this;
   const state = this.state;
-//  this.autorun(function update() { // TODO: would be nicer in autorun
-  const activeMembershipId = Session.get('activeMembershipId');
-  const voteIsFinalized = activeMembershipId &&
-    voteResults[activeMembershipId] &&
-    voteResults[activeMembershipId].length > 0;
-  state.set('voteFinalized', voteIsFinalized);
-  $('.sortable').sortable(voteIsFinalized ? 'disable' : 'enable');
-//  });
+  const vote = this.data.vote;
+  const voteResults = this.data.voteResults;
+
+  // creating the JQuery sortable widget
+  $(self.find('.sortable')).sortable({
+    stop(event, ui) { // fired when an item is dropped
+      event.preventDefault();
+      const preference = $(self.find('.sortable')).sortable('toArray', { attribute: 'data-value' })
+        .map(function obj(value, index) { return { text: vote.choices[value], value }; });
+        console.log('onstop:', preference);
+      state.set('preference', preference);
+    },
+  });
+
+  // this is in an autorun, so if activeMembershipId changes, it will rerun
+  this.autorun(function update() {
+    const activeMembershipId = Session.get('activeMembershipId');
+    const voteIsFinalized = activeMembershipId &&
+      voteResults[activeMembershipId] &&
+      voteResults[activeMembershipId].length > 0;
+    state.set('voteFinalized', voteIsFinalized);
+
+    const castedPreference = voteResults[activeMembershipId];
+    let preference;
+    if (voteIsFinalized) {
+      preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
+    } else { // no vote yet, preference is then the original vote choices in that order
+      preference = vote.choices.map(function obj(text, index) { return { text, value: index }; });
+    }
+    state.set('preference', preference);
+    console.log('onrender:', preference);
+  });
+
+  this.autorun(function update() {
+    const voteIsFinalized = state.get('voteIsFinalized');
+    $('.sortable').sortable(voteIsFinalized ? 'disable' : 'enable');
+  });
 });
 
 Template.Votebox.helpers({
@@ -55,19 +84,10 @@ Template.Votebox.helpers({
     return (ownVote === choice) && 'btn-pressed';
   },
   // Preferential voting
-  selectedChoices() {
-    const activeMembershipId = Session.get('activeMembershipId');
-    const results = this.voteResults[activeMembershipId];
-    // We are returning an array here, where the elements are pairs of a choice,
-    // and its corresponding ORIGINAL index in the vote.choices array
-    if (results && results.length > 0) { // voter already casted vote
-      const originalVoteChoices = this.vote.choices;
-      const selectedChoices = results.map(function obj(index) { return { choice: originalVoteChoices[index], index }; });
-      console.log('displaying:', selectedChoices);
-      return selectedChoices;
-    }
-    // no vote yet, original vote choices are simply used
-    return this.vote.choices.map(function obj(choice, index) { return { choice, index }; });
+  currentPreference() {
+    const preference = Template.instance().state.get('preference');
+    console.log('ondisplay:', preference);
+    return preference;
   },
   voteIsFinalized() {
     return Template.instance().state.get('voteFinalized');
@@ -98,20 +118,20 @@ Template.Votebox.events({
     const topicId = this._id;
     const voteFinalized = instance.state.get('voteFinalized');
     if (!voteFinalized) {
-      const choices = $('.sortable').sortable('toArray', { attribute: 'data-value' });
-      console.log('casting:', choices);
-      castVote.call({ topicId, membershipId, castedVote: choices }, function handle(err) {
+      const preference = instance.state.get('preference');
+      console.log('casting:', preference);
+      const castedVote = preference.map(p => p.value);
+      castVote.call({ topicId, membershipId, castedVote }, function handle(err) {
         if (err) {
           displayError(err);
           return;
         }
         displayMessage('success', 'Vote casted');
         instance.state.set('voteFinalized', true);
-        $('.sortable').sortable('disable');
+        console.log('casted:', preference);
       });
     } else { // voteFinalized === true
       instance.state.set('voteFinalized', false);
-      $('.sortable').sortable('enable');
     }
   },
 });
