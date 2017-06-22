@@ -60,12 +60,17 @@
     }
   }
   &-secondary {
+    background-color: #a7d8a7;
     transition: all 200ms ease-in;
     color: #383737;
     box-shadow: lighten(@btn-box-shadow, 5%) 0 0 0 1px inset;
+    border: none;
+    box-shadow: none;
+    padding: 4px 7px;
     &:hover{
+      background-color: #cae8ca;
       color: darken(#383737, 53%);
-      letter-spacing: 5px;
+      letter-spacing: 4.5px;
       box-shadow: lighten(@btn-box-shadow, 15%) 0 0 0 1px inset;
     }
     &:active,
@@ -73,6 +78,14 @@
       background: none;
       background-color: darken(@btn-secondary-bcg, 10%);
       box-shadow: darken(@btn-box-shadow, 25%) 0 0 0 1px inset;
+    }
+  }
+  &-vote {
+    border: 1px solid gray;
+    color: #333333;
+    &:hover {
+      background-color: #efefef;
+      color: lighten(#333333, 10%);
     }
   }
   &-yes {
