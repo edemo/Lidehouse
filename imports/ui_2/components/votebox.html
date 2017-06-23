@@ -47,7 +47,7 @@
           <div class="col-xs-12 vsend-col">
             <div class="btns-group">
               {{#each choice in vote.choices}}
-              <a href="#" class="btn-vote {{pressedClass @index}}" data-index="{{@index}}">
+              <a href="#" class="btn-vote {{pressedClass @index}}" data-value="{{@index}}">
                 {{_ choice}}
               </a>
               {{/each}}

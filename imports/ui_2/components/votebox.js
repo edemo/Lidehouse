@@ -34,6 +34,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   });
 
   // this is in an autorun, so if activeMembershipId changes, it will rerun
+  // or if the vote is changed on another machine, it also gets updated here
   this.autorun(function update() {
     const activeMembershipId = Session.get('activeMembershipId');
     const voteIsFinalized = activeMembershipId &&
@@ -103,7 +104,7 @@ Template.Votebox.events({
   'click .btn-vote'(event) {
     const membershipId = Session.get('activeMembershipId');
     const topicId = this._id;
-    const choice = $(event.target).data('index');
+    const choice = $(event.target).data('value');
     castVote.call({ topicId, membershipId, castedVote: [choice] }, function handle(err) {
       if (err) {
         displayError(err);
