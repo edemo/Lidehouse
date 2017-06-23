@@ -25,7 +25,7 @@ Memberships.helpers({
   userName() {
     if (!this.userId) return 'no user';
     const user = Meteor.users.findOne(this.userId);
-    return user.fullName();
+    return user.fullName() + ' (1/1)';
   },
   community() {
     const community = Communities.findOne(this.communityId);

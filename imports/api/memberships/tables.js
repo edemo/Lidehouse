@@ -23,7 +23,7 @@ export function ownershipColumns() {
     { data: 'ownership.type', title: __('memberships.ownership.type.label'), render: translate },
     { data: 'ownership.lot', title: __('memberships.ownership.lot.label') },
     { data: 'ownership.size', title: __('memberships.ownership.size.label') },
-    { data: 'ownership.share', title: __('memberships.ownership.share.label') },
+    { data: 'displayShareFraction()', title: __('memberships.ownership.share.label') },
     { data: 'userName()', title: __('owner') },
     { data: '_id', render: renderEditButton },
     { data: '_id', render: renderDeleteButton },
