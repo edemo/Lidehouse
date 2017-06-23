@@ -55,7 +55,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
 
   this.autorun(function update() {
     const voteIsFinalized = state.get('voteIsFinalized');
-    $('.sortable').sortable(voteIsFinalized ? 'disable' : 'enable');
+    $(self.find('.sortable')).sortable(voteIsFinalized ? 'disable' : 'enable');
   });
 });
 
