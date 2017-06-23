@@ -57,8 +57,9 @@
 
   // Shared
   "createdAt": "Létrehozva",
+  "createdBy": "Létrehozta",
   "reportedAt": "Bejelentve",
-  "reportedBy": "Bejelentő",
+  "reportedBy": "Bejelentette",
 
   "role": "szerep",
   "roles": "szerepek",
@@ -129,6 +130,8 @@
   "yes": "igen",
   "no": "nem",
   "abstain": "tartózkodom",
+
+  "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrenbe...",
 
   // delegations
   "Delegations from less specific to more specific": "Meghatalmazások sorrendben a kevesbé specifikustól a legspecifikusabbig",

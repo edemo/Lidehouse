@@ -66,7 +66,10 @@ Template.Votebox.helpers({
   displayUser() {
     return Meteor.users.findOne(this.userId).fullName();
   },
-  displayTime() {
+  displayCreatedAtTime() {
+    return moment(this.createdAt).format('YYYY.MM.DD hh:mm');
+  },
+  displayClosesAtTime() {
     return moment(this.vote.closesAt).format('YYYY.MM.DD hh:mm');
   },
   displayTimeLeft() {
