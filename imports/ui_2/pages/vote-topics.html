@@ -7,14 +7,12 @@
        <!-- 1st tab start -->
        <li class="tab">
          <input type="radio" name="tabs" checked="checked" id="tab1" />
-         <label for="tab1">Aktív szavazások</label>
+         <label for="tab1">{{_ 'Active votings'}}</label>
          <!-- content -->
          <div id="tab-content1" class="content">
-           <!-- collapsing new vote form start -->
            <div class="collapse white-box" id="new-vote">
              {{> Vote_create}}
            </div>
-           <!-- collapsing new vote form end -->
 
            <div class="row">
              <div class="col-xs-12 text-right">
@@ -23,8 +21,7 @@
            </div>
            <div class="row">
              <div class="col-xs-12">
-               <!-- only active votings todo -->
-               {{#each topics 'vote'}}
+               {{#each openVoteTopics}}
                  {{> Votebox}}
                {{/each}}
              </div>
@@ -37,26 +34,30 @@
        <!-- 2nd tab start-->
        <li class="tab">
          <input type="radio" name="tabs" id="tab2" />
-         <label for="tab2">Lezárt szavazások</label>
+         <label for="tab2">{{_ 'Closed votings'}}</label>
          <div id="tab-content2" class="content">
 
            <div class="row">
              <div class="col-xs-12 text-center">
-               <h4>Lezárt szavazások</h4>
+               <h4>{{_ 'Closed votings'}}</h4>
                <hr/>
              </div>
            </div>
 
            <div class="row">
+             {{#if hasSelection}}
              <div class="col-xs-12">
-               ~ View selected (from table) closed voting here - use the votebox comp. ~
+               {{#with selectedDoc}}
+                 {{> Votebox}}
+               {{/with}}
              </div>
+             {{/if}}
            </div>
 
            <div class="row">
              <div class="col-xs-12">
-               insert table here (outdated votes)
-               (add active class to selected row)
+               {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+               <!-- TODO add active class to selected row)-->
              </div>
            </div>
 

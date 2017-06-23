@@ -40,7 +40,10 @@
 
   "topics": {
     "title": {
-      "label": "Hiba rövid leírása"
+      "label": "Rövid leírás"
+    },
+    "text": {
+      "label": "Szöveg"
     },
     "ticket": {
       "type": {
@@ -150,6 +153,9 @@
   "finished": "megoldva",
   "checked": "ellenőrizve",
   "closed": "lezárva",
+
+  "Active votings": "Aktív szavazások",
+  "Closed votings": "Lezárt szavazások",
 
   "Active tickets": "Aktív bejelentett hibák",
   "Closed tickets": "Lezárt bejelentett hibák",
