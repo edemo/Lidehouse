@@ -1,0 +1,136 @@
+<template name='Vote_create'>
+  <div class="row">
+    <div class="col-xs-12 left-padded text-center">
+      <br>
+      <span class="glyphicon glyphicon-remove js-vote-nope" aria-hidden="true"
+      data-toggle="collapse" data-target="#new-vote" aria-expanded="true" aria-controls="new-vote">
+      </span>
+      <!-- ha nem uj hanem módosítás -->
+      <!-- <h4>Szavazás módosítása</h4>
+      <p class="small-size"> <i>Eredeti szerző: Kecsmetéi Imre <br>Módosítva: 2017.06.15.</i></p> -->
+      <!-- / -->
+      <!-- ha teljesen uj szavazás -->
+      <h4>Új szavazás</h4>
+      <!-- / -->
+      <br>
+    </div>
+  </div>
+  <div class="row">
+    <form>
+      <div class="col-xs-12 col-md-6 col-lg-6">
+        <div class="form-group">
+          <label for="houseName">Név</label>
+          <input type="text" class="form-control"  placeholder="Fessük e át a falat kékre?">
+        </div>
+        <div class="form-group">
+          <label for="houseNum">Leírás</label>
+          <textarea class="form-control" rows="8" placeholder="A szavazás kérdésének bővebb kifejtése ..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Típus</label>
+          <select class="form-control">
+            <option>Támogatásgyűjtő</option>
+            <option>Közvéleménykutatás</option>
+            <option>Jogegrős szavazás</option>
+          </select>
+        </div>
+
+
+        <div class="left-padded">
+          <label>Csatolmányok</label>
+          <hr>
+        </div>
+        <div class="form-group">
+          <ul class="vote-files">
+            <!-- li in files -->
+            <li class="row file-dl">
+              <div class="col-xs-10">
+                Fájl.doc
+              </div>
+              <div class="col-xs-2">
+                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+              </div>
+            </li>
+            <li class="row file-dl">
+              <div class="col-xs-10">
+                bizonyitek.jpg
+              </div>
+              <div class="col-xs-2">
+                <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <div class="col-xs-12 text-center">
+            <button type="button" class="btn btn-secondary" name="docupload">+ Feltöltés</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- right side -->
+      <div class="col-xs-12 col-md-6 col-lg-6">
+        <div class="form-group">
+          <label>Szavazás menete</label>
+          <select class="form-control">
+            <option>Eldöntendő</option>
+            <option>Preferenciális</option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 text-center">
+            Válaszlehetőségek
+            <hr>
+          </div>
+        </div>
+        <!-- válasz lsita -->
+        <div class="row choice">
+          <div class="col-xs-12 choice-rect">
+            Válasz 1 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          </div>
+          <div class="col-xs-12 choice-rect">
+            Válasz 2 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="row choice choice-form hidden">
+          <div class="col-xs-12 choice-rect">
+            <span class="glyphicon glyphicon-ok js-add-answer" aria-hidden="true"></span>
+            <input type="text" class="form-control" name="new-choice" placeholder="pl. Nem szeretnék, de jó ötlet">
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12 text-center">
+            <button type="button" class="btn btn-secondary js-answer" name="upload"> + Új válasz</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 form-inline vote-dates">
+        <div class="form-group form-inline">
+          <label>Szaváz kezdete: </label>
+          <input type="date" class="form-control" placeholder="2017.08.15">
+        </div>
+        <div class="form-group form-inline">
+          <label>Szavazás vége: </label>
+          <input type="date" class="form-control" placeholder="2017.09.15.">
+        </div>
+      </div>
+      <div class="col-xs-12">
+        <hr>
+      </div>
+    </form>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 text-center">
+       <!-- megerosito modal up -->
+       <a class="btn btn-primary">Szavazás indítása</a>
+       <!-- notification push-->
+
+       <!-- ha nem uj hanem módosítás -->
+       <!-- <a class="btn btn-primary">Szavazás módosítása</a> -->
+       <!-- / -->
+    </div>
+  </div>
+</template>
