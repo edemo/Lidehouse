@@ -40,8 +40,8 @@ Parcels.helpers({
   location() {
     return `${this.floor}/${this.number}`;
   },
-  name() {
-    return this.location() + ' ' + __('owner');
+  toString() {
+    return this.location();
   },
 });
 

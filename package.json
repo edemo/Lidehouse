@@ -13,7 +13,8 @@
   "dependencies": {
     "autoprefixer": "^6.4.1",
     "babel-runtime": "^6.23.0",
-    "faker": "^3.1.0"
+    "faker": "^3.1.0",
+    "fractional": "^1.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",

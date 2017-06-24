@@ -35,11 +35,19 @@
               </ul>
             </li>
           </ul>
-          <ul class="nav"> [
-            {{#each memberships}}
-              {{_ role}},
-            {{/each}}
-            ]
+          <ul class="nav">
+            <li class="drop">
+              {{#if activeMembership}}
+                {{activeMembership}}
+              {{else}}
+                {{_ 'No active'}} {{_ 'role'}}
+              {{/if}}
+              <ul>
+                {{#each memberships}}
+                  <li><a href="#" class="js-switch-membership">{{this}}</a></li>
+                {{/each}}
+              </ul>
+            </li>
           </ul>
           {{#if currentUser}}
           <ul class="nav">
@@ -138,15 +146,19 @@
   {{/HammerTouchArea}}
 
   <!-- Modal -->
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  {{>Modal modalId="myModal" title="Cim" content="Szavazás előterjesztés szövegei, ADA login ha lesz, Faliújság bővebb tartalom megtekintés"}}
+</template>
+
+<template name="Modal">
+  <div class="modal fade" id="{{modalId}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+          <h4 class="modal-title" id="myModalLabel">{{title}}</h4>
         </div>
         <div class="modal-body">
-          Modal content: Szavazás előterjesztés szövegei, ADA login ha lesz, Faliújság bővebb tartalom megtekintése
+          {{content}}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

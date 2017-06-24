@@ -8,7 +8,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Roles } from '/imports/api/permissions/roles.js';
+import { Fractional } from 'fractional';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -32,6 +34,12 @@ Memberships.helpers({
     debugAssert(community);
     return community;
   },
+  parcel() {
+    debugAssert(this.hasOwnership());
+    const parcel = Parcels.findOne(this.ownership.parcelId);
+    debugAssert(parcel);
+    return parcel;
+  },
   totalshares() {
     const community = this.community();
     if (!community) return undefined;
@@ -49,13 +57,16 @@ Memberships.helpers({
     }
     return false;
   },
-  displayShareFraction() {
-    if (!this.hasOwnership()) return 'non-voting';
-    const share = this.ownership.share;
-    if (!share) return '0';
-    const totalshares = this.totalshares();
-    if (!totalshares) return '';
-    return `${share}/${totalshares}`;
+  votingShare() {
+    debugAssert(this.hasOwnership());
+    const parcel = this.parcel();
+    const parcelShare = new Fractional(parcel.share, this.totalshares());
+    const ownedShare = new Fractional(this.ownership.ownedShareC, this.ownership.ownedShareD);
+    return parcelShare.multiply(ownedShare);
+  },
+  toString() {
+    if (this.isOwnership()) return this.parcel().toString() + ' ' + __('owner');
+    else return __(this.role);
   },
 });
 
