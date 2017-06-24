@@ -77,7 +77,7 @@ Memberships.schema = new SimpleSchema({
 Memberships.attachSchema(Memberships.schema);
 
 // Next schemas are for the autoforms explicitly
-/*
+
 Memberships.schemaForRoleship = new SimpleSchema({
   userId: { type: String,
     optional: true,
@@ -107,7 +107,7 @@ Memberships.schemaForOwnership = new SimpleSchema({
   },
   ownership: { type: OwnershipSchema, optional: true },
 });
-*/
+
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
 // and that happens earlier than TAPi18n extra comtype transaltions get added.
@@ -116,7 +116,7 @@ Meteor.startup(function attach() {
 });
 
 // Deny all client-side updates since we will be using methods to manage this collection
-Memberships.deny({
+Memberships.allow({
   insert() { return true; },
   update() { return true; },
   remove() { return true; },

@@ -35,19 +35,11 @@
               </ul>
             </li>
           </ul>
-          <ul class="nav">
-            <li class="drop">
-              {{#if activeMembership}}
-                {{activeMembership.name}}
-              {{else}}
-                {{_ 'No active'}} {{_ 'role'}}
-              {{/if}}
-              <ul>
-                {{#each memberships}}
-                  <li><a href="#" class="js-switch-membership">{{name}}</a></li>
-                {{/each}}
-              </ul>
-            </li>
+          <ul class="nav"> [
+            {{#each memberships}}
+              {{_ role}},
+            {{/each}}
+            ]
           </ul>
           {{#if currentUser}}
           <ul class="nav">

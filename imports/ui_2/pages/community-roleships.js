@@ -33,7 +33,7 @@ Template.Community_roleships_page.helpers({
     return Session.equals('selectedMemberId', this._id);
   },
   formType() {
-    if (Session.get('selectedMemberId')) return 'method-update';
+    if (Session.get('selectedMemberId')) return 'update';
     return 'disabled';
   },
   hasSelection() {
@@ -71,7 +71,7 @@ Template.Community_roleships_page.events({
   },
   'click .js-new'(event, instance) {
     const communityId = Session.get('activeCommunityId');
-    Meteor.call('memberships.insert', { communityId, role: 'guest' }, function(err, res) {
+    Memberships.insert({ communityId, role: 'guest' }, function(err, res) {
       if (err) {
         displayError(err);
         return;
@@ -86,7 +86,7 @@ Template.Community_roleships_page.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Meteor.call('memberships.remove', { _id: id }, function(err, res) {
+    Memberships.remove({ _id: id }, function(err, res) {
       if (err) {
         displayError(err);
       }

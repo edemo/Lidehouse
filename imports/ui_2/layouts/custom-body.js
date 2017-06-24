@@ -113,22 +113,6 @@ Template.Custom_body.helpers({
     if (!activeCommunityId) { return []; }
     return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId() });
   },
-  activeMembership() {
-    const activeMembershipId = Session.get('activeMembershipId');
-    const activeCommunityId = Session.get('activeCommunityId');
-    let activeMembership;
-    if (activeMembershipId) {
-      activeMembership = Memberships.findOne(activeMembershipId);
-    } else if (activeCommunityId) {
-      activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId() });
-      if (activeMembership) {
-        Session.set('activeMembershipId', activeMembership._id);
-      }
-    }
-    // else activeMembership stays undefined;
-
-    return activeMembership;
-  },
 });
 
 Template.Custom_body.events({
@@ -147,11 +131,6 @@ Template.Custom_body.events({
 
   'click .js-switch-community'() {
     Session.set('activeCommunityId', this._id);
-    Session.set('activeMembershipId', undefined);
-  },
-
-  'click .js-switch-membership'() {
-    Session.set('activeMembershipId', this._id);
   },
 
   'click .js-logout'() {
