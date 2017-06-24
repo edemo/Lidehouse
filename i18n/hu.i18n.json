@@ -137,6 +137,12 @@
   "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrenbe...",
 
   // delegations
+  "Delegations from me": "Meghatalmazásaim",
+  "Delegations to me": "Meghatalmazottságaim",
+  "delegationsFromMeInstructions": "Itt beállíthat meghatalmazásokat, hogy az ön tulajdonrészéhez tartozó szavazati jogot ki használhatja fel az ön nevében.",
+  "delegationsFromMeInstructions2": "A meghatalmazásait amit rendszerünkben beállít, bármikor visszavonhatja, vagy átirányíthaja más személyre.",
+  "delegationsToMeInstructions": "Itt láthatja kik hatalmazták meg önt azzal hogy az ő tulajdonrészükkel is szavazhasson.",
+  "delegationsToMeInstructions2": "Ezeket a meghatalmazási kérelmeket ön visszautasíthatja. Sőt, beállíthatja hogy önt egyáltalán ne lehessen meghatalmazni.",
   "Delegations from less specific to more specific": "Meghatalmazások sorrendben a kevesbé specifikustól a legspecifikusabbig",
   "general": "általános",
   "topicGroup": "téma csoport",

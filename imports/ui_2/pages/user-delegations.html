@@ -1,5 +1,62 @@
 <template name="User_delegations">
   <div class="content-scrollable page-content">
+
+    <div style="row">
+      <ul class="tabs">
+
+        <!-- 1st tab start -->
+        <li class="tab">
+          <input type="radio" name="tabs" checked="checked" id="tab1" />
+          <label for="tab1">{{_ 'Delegations from me'}}</label>
+          <!-- content -->
+          <div id="tab-content1" class="content">
+            <div class="row">
+              <div class="col-xs-12 text-center">
+                <h4>{{_ 'Delegations from me'}}</h4>
+                <hr/>
+                <!-- some instruction for the users -->
+                <div class="row margined-row">
+                  <div class="col-xs-12 text-center">
+                    <p>{{_ 'delegationsFromMeInstructions'}}</p>
+                    <p>{{_ 'delegationsFromMeInstructions2'}}</p>
+                  </div>
+                </div>
+                {{> ReactiveDatatable tableData=delegationsFromMeDataFn options=delegationsFromMeOptionsFn}}
+              </div>
+            </div>
+          </div>
+        </li>
+        <!-- 1st tab end -->
+        <!-- 2nd tab start-->
+        <li class="tab">
+          <input type="radio" name="tabs" id="tab2" />
+          <label for="tab2">{{_ 'Delegations to me'}}</label>
+          <div id="tab-content2" class="content">
+            <div class="row">
+              <div class="col-xs-12 text-center">
+                <h4>{{_ 'Delegations to me'}}</h4>
+                <hr/>
+                <!-- some instruction for the users -->
+                <div class="row margined-row">
+                  <div class="col-xs-12 text-center">
+                    <p>{{_ 'delegationsToMeInstructions'}}</p>
+                    <p>{{_ 'delegationsToMeInstructions2'}}</p>
+                  </div>
+                </div>
+                {{> ReactiveDatatable tableData=delegationsToMeDataFn options=delegationsToMeOptionsFn}}
+              </div>
+            </div>
+          </div>
+        </li>
+        <!-- 2nd tab end -->
+
+      </ul>
+    </div>
+  </div>
+</template>
+
+<!--template name="User_delegations">
+  <div class="content-scrollable page-content">
     <h1 class="page-title">{{_ 'Delegations'}}</h1>
     <h2 class="page-title">{{_ 'Delegations from less specific to more specific'}}</h2>
     {{#each scope in delegationScopes}}
@@ -7,4 +64,4 @@
       {{> ReactiveDatatable tableData=(reactiveDelegationsDataFn scope) options=optionsFn}}
     {{/each}}
   </div>
-</template>
+</template-->
