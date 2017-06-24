@@ -43,14 +43,35 @@
     </table-->
     <button class="js-new btn-primary">{{_ 'createNew'}}</button>
     {{#if hasSelection}}
+    <p>{{_ 'edit'}} </p>
+      {{# autoForm id="afUpdateParcel" collection=parcels doc=selectedDoc type=formType template="bootstrap3"}}
+      {{> afQuickFields}}
+      <div>
+        <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+      </div>
+    {{/autoForm}}
       <br><br><br>
-      <p>{{_ 'edit'}} </p>
-      {{# autoForm id="afUpdateOwner" collection=collection schema=schema doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3"}}
-        {{> afQuickFields}}
-        <div>
-          <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
-        </div>
-      {{/autoForm}}
+      <p>{{_ 'associate'}} </p>
+
     {{/if}}
   </div>
 </template>
+
+<!--template name="Parcel_update">
+  <p>{{_ 'edit'}} </p>
+  {{# autoForm id="afUpdateParcel" collection=parcels doc=selectedDoc type=formType template="bootstrap3"}}
+    {{> afQuickFields}}
+    <div>
+      <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+    </div>
+  {{/autoForm}}
+</template-->
+
+<!--template name="Parcel_associate">
+  {{# autoForm id="afUpdateOwnership" collection=memberships schema=ownershipSchema type=insert template="bootstrap3"}}
+    {{> afQuickFields}}
+    <div>
+      <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+    </div>
+  {{/autoForm}}
+</template-->

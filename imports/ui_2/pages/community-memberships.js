@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { displayError } from '/imports/ui/lib/errors.js';
@@ -16,13 +17,16 @@ Template.Community_memberships_page.onCreated(function () {
 });
 
 Template.Community_memberships_page.helpers({
-  collection() {
+  parcels() {
     return Parcels;
   },
-/*  schema() {
+  memberships() {
+    return Memberships;
+  },
+  ownershipSchema() {
     return Memberships.schemaForOwnership;
   },
-  owners() {
+/*  owners() {
     const communityId = Session.get('activeCommunityId');
     return Memberships.find({ communityId, role: 'owner' });
   },*/
@@ -75,8 +79,8 @@ Template.Community_memberships_page.events({
         displayError(err);
         return;
       }
-      const membershipId = res;
-      Session.set('selectedParcelId', membershipId);
+      const parcelId = res;
+      Session.set('selectedParcelId', parcelId);
     });
   },
   'click .js-edit'(event) {

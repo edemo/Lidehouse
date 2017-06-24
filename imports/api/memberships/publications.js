@@ -22,18 +22,11 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
       return Memberships.find({ communityId });
     },
 
-    children: [
-      {
+    children: [{
         find(membership) {
           return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
         },
-      }, {
-        find(membership) {
-          if (membership.ownership) {
-            return Parcels.find({ _id: membership.ownership.parcelId });
-          }
-        },
-      },
+    },
     ],
   };
 });

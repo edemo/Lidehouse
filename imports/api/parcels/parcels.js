@@ -47,8 +47,8 @@ Parcels.helpers({
 
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  serial: { type: Number },
-  share: { type: Number },
+  serial: { type: Number, optional: true },
+  share: { type: Number, optional: true },
   /*  name: { type: String,
       autoValue() {
         if (this.isInsert) {
@@ -62,13 +62,11 @@ Parcels.schema = new SimpleSchema({
     },
   */
   // TODO: move these into the House package
-  floor: { type: String },
-  number: { type: String },
-  type: { type: String,
-    allowedValues: ['flat', 'parking', 'storage'],
-  },
-  lot: { type: String, max: 100 },
-  size: { type: Number, decimal: true },
+  floor: { type: String, optional: true },
+  number: { type: String, optional: true },
+  type: { type: String, allowedValues: ['flat', 'parking', 'storage'], optional: true },
+  lot: { type: String, max: 100, optional: true },
+  size: { type: Number, decimal: true, optional: true },
 });
 
 Parcels.attachSchema(Parcels.schema);
