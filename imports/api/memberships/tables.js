@@ -16,6 +16,7 @@ function renderEditButton(cellData, renderType, currentRow) {
   return html;
 }
 
+/*
 export function ownershipColumns() {
   return [
     { data: 'ownership.serial', title: __('memberships.ownership.serial.label') },
@@ -29,6 +30,7 @@ export function ownershipColumns() {
     { data: '_id', render: renderDeleteButton },
   ];
 }
+*/
 
 export function roleshipColumns() {
   return [

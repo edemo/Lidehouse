@@ -5,6 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Memberships } from './memberships.js';
 import { Communities } from '../communities/communities.js';
+import { Parcels } from '../parcels/parcels.js';
 
 // might be better to go with peerlibrary:meteor-reactive-publish
 // https://github.com/aldeed/meteor-tabular/issues/332
@@ -21,11 +22,19 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
       return Memberships.find({ communityId });
     },
 
-    children: [{
-      find(membership) {
-        return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
+    children: [
+      {
+        find(membership) {
+          return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
+        },
+      }, {
+        find(membership) {
+          if (membership.ownership) {
+            return Parcels.find({ _id: membership.ownership.parcelId });
+          }
+        },
       },
-    }],
+    ],
   };
 });
 

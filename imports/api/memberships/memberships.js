@@ -25,7 +25,7 @@ Memberships.helpers({
   userName() {
     if (!this.userId) return 'no user';
     const user = Meteor.users.findOne(this.userId);
-    return user.fullName() + ' (1/1)';
+    return user.fullName();
   },
   community() {
     const community = Communities.findOne(this.communityId);
@@ -57,43 +57,15 @@ Memberships.helpers({
     if (!totalshares) return '';
     return `${share}/${totalshares}`;
   },
-  // TODO: move this to the house package
-  location() {
-    if (!this.hasOwnership()) return '';
-    return this.ownership.floor + '/' + this.ownership.number;
-  },
-  name() {
-    if (!this.hasOwnership()) return __(this.role);
-    // const letter = this.ownership.type.substring(0, 1);
-    return this.location() + ' ' + __(this.role);
-  },
 });
 
 const OwnershipSchema = new SimpleSchema({
-  serial: { type: Number },
-  share: { type: Number },
-  /*  name: { type: String,
-      autoValue() {
-        if (this.isInsert) {
-          const letter = this.field('type').value.substring(0,1);
-          const floor = this.field('floor').value;
-          const number = this.field('number').value;
-          return letter + '-' + floor + '/' + number;
-        }
-        return undefined; // means leave whats there alone for Updates, Upserts
-      },
-    },
-  */
-  // TODO: move these into the House package
-  floor: { type: String },
-  number: { type: String },
-  type: { type: String,
-    allowedValues: ['flat', 'parking', 'storage'],
-  },
-  lot: { type: String, max: 100 },
-  size: { type: Number, decimal: true },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  ownedShareC: { type: Number },  // counter
+  ownedShareD: { type: Number },  // denominator
 });
 
+// Memberships are the Ownerships and the Roleships in a single collection
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
@@ -105,7 +77,7 @@ Memberships.schema = new SimpleSchema({
 Memberships.attachSchema(Memberships.schema);
 
 // Next schemas are for the autoforms explicitly
-
+/*
 Memberships.schemaForRoleship = new SimpleSchema({
   userId: { type: String,
     optional: true,
@@ -135,12 +107,12 @@ Memberships.schemaForOwnership = new SimpleSchema({
   },
   ownership: { type: OwnershipSchema, optional: true },
 });
-
+*/
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
 // and that happens earlier than TAPi18n extra comtype transaltions get added.
 Meteor.startup(function attach() {
-  Memberships.schemaForOwnership.i18n('memberships');
+  Memberships.simpleSchema().i18n('memberships');
 });
 
 // Deny all client-side updates since we will be using methods to manage this collection

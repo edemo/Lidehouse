@@ -3,6 +3,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
@@ -51,6 +52,11 @@ Meteor.startup(() => {
     profile: { lastName: 'Balta', firstName: 'Péter' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-5.png',
   });
+  dummyUsers[4] = Meteor.users.insert({
+    emails: [{ address: 'baltaemilia@demo.com', verified: true }],
+    profile: { lastName: 'Balta', firstName: 'Emilia' },
+    avatar: 'http://pannako.hu/wp-content/uploads/avatar-3.png',
+  });
 
   // ===== Memberships =====
 
@@ -69,13 +75,18 @@ Meteor.startup(() => {
     userId: dummyUsers[1],
     role: 'owner',
     ownership: {
-      serial: 1,
-      share: 10,
-      floor: 'I',
-      number: '14',
-      type: 'flat',
-      lot: '29345/A/114',
-      size: 65,
+      parcelId: Parcels.insert({
+        communityId: demoCommunityId,
+        serial: 1,
+        share: 10,
+        floor: 'I',
+        number: '14',
+        type: 'flat',
+        lot: '29345/A/114',
+        size: 65,
+      }),
+      ownedShareC: 1,
+      ownedShareD: 1,
     },
   });
   Memberships.insert({
@@ -83,13 +94,18 @@ Meteor.startup(() => {
     userId: dummyUsers[2],
     role: 'owner',
     ownership: {
-      serial: 2,
-      share: 20,
-      floor: 'II',
-      number: '25',
-      type: 'flat',
-      lot: '29345/A/225',
-      size: 142,
+      parcelId: Parcels.insert({
+        communityId: demoCommunityId,
+        serial: 2,
+        share: 20,
+        floor: 'II',
+        number: '25',
+        type: 'flat',
+        lot: '29345/A/225',
+        size: 142,
+      }),
+      ownedShareC: 1,
+      ownedShareD: 1,
     },
   });
   Memberships.insert({
@@ -97,30 +113,50 @@ Meteor.startup(() => {
     userId: dummyUsers[3],
     role: 'owner',
     ownership: {
-      serial: 3,
-      share: 30,
-      floor: 'III',
-      number: '36',
-      type: 'flat',
-      lot: '29345/A/336',
-      size: '98.4',
+      parcelId: Parcels.insert({
+        communityId: demoCommunityId,
+        serial: 3,
+        share: 30,
+        floor: 'III',
+        number: '36',
+        type: 'flat',
+        lot: '29345/A/336',
+        size: '98.4',
+      }),
+      ownedShareC: 1,
+      ownedShareD: 1,
     },
+  });
+  const lastParcel = Parcels.insert({
+    communityId: demoCommunityId,
+    serial: 101,
+    share: 30,
+    floor: '-2',
+    number: 'P209',
+    type: 'parking',
+    lot: '29345/P/209',
+    size: 6,
   });
   Memberships.insert({
     communityId: demoCommunityId,
     userId: dummyUsers[3],
     role: 'owner',
     ownership: {
-      serial: 101,
-      share: 30,
-      floor: '-2',
-      number: 'P209',
-      type: 'parking',
-      lot: '29345/P/209',
-      size: 6,
+      parcelId: lastParcel,
+      ownedShareC: 3,
+      ownedShareD: 4,
     },
   });
-
+  Memberships.insert({
+    communityId: demoCommunityId,
+    userId: dummyUsers[4],
+    role: 'owner',
+    ownership: {
+      parcelId: lastParcel,
+      ownedShareC: 1,
+      ownedShareD: 4,
+    },
+  });
   // ===== Forum =====
 
   // The demo users comment one after the other, round robin style
