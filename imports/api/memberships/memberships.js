@@ -35,9 +35,7 @@ Memberships.helpers({
     return community;
   },
   parcel() {
-    debugAssert(this.hasOwnership());
-    const parcel = Parcels.findOne(this.ownership.parcelId);
-    debugAssert(parcel);
+    const parcel = Parcels.findOne(this.parcelId);
     return parcel;
   },
   totalshares() {
@@ -65,13 +63,14 @@ Memberships.helpers({
     return parcelShare.multiply(ownedShare);
   },
   toString() {
-    if (this.isOwnership()) return this.parcel().toString() + ' ' + __('owner');
-    else return __(this.role);
+    let result = __(this.role);
+    const parcel = this.parcel();
+    if (parcel) result += ' ' + parcel.toString();
+    return result;
   },
 });
 
 const OwnershipSchema = new SimpleSchema({
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id },
   ownedShareC: { type: Number },  // counter
   ownedShareD: { type: Number },  // denominator
 });
@@ -79,6 +78,7 @@ const OwnershipSchema = new SimpleSchema({
 // Memberships are the Ownerships and the Roleships in a single collection
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); } },
   // TODO should be conditional on role

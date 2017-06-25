@@ -50,9 +50,11 @@
         <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
       </div>
     {{/autoForm}}
-      <br><br><br>
-      <p>{{_ 'associate'}} </p>
-
+    <form>
+      <label>User {{_ 'assign'}}:</label>
+      <input type="text" class="email" placeholder="email@address.com"/>
+      <button type="submit" class="btn btn-primary js-assign">{{_ "assign"}}</button>
+    </form>
     {{/if}}
   </div>
 </template>

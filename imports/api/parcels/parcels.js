@@ -29,7 +29,7 @@ Parcels.helpers({
   },
   ownerName() {
     let result = '';
-    const ownerships = Memberships.find({ role: 'owner', 'ownership.parcelId': this._id });
+    const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
     ownerships.forEach((m) => {
       const user = Meteor.users.findOne(m.userId);
       result += `${user.fullName()} (${m.ownership.ownedShareC}/${m.ownership.ownedShareD})<br>`;

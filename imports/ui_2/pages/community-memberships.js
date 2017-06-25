@@ -6,7 +6,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { displayError } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
@@ -96,8 +96,27 @@ Template.Community_memberships_page.events({
       Session.set('selectedParcelId', undefined);
     });
   },
-  'click .js-invite-user'() {
-
+  'click .js-assign'(event) {
+    const communityId = Session.get('activeCommunityId');
+    const parcelId = Session.get('selectedParcelId');
+    const email = event.target.previousElementSibling.value;
+    const user = Meteor.users.findOne({ 'emails.0.address': email });
+    Meteor.call('memberships.insert', {
+      communityId,
+      userId: user._id,
+      role: 'owner',
+      parcelId,
+      ownership: {
+        ownedShareC: 1,
+        ownedShareD: 1,
+      },
+    }, function (err, res) {
+      if (err) {
+        displayError(err);
+      }
+      displayMessage('success', 'Assigned user');
+      Session.set('selectedParcelId', undefined);
+    });
   },
   'click .js-remove-user'() {
     Meteor.call('memberships.update', { _id: this._id, modifier: { $unset: { userId: '' } } }, function(err, res) {

@@ -14,6 +14,7 @@ import { $ } from 'meteor/jquery';
 
 import '/imports/api/users/users.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
 import '/imports/ui/components/loading.js';
@@ -50,12 +51,37 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   this.autorun(() => {
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
   });
+  // This autorun sets the active community automatically to the first community of the user
+  // TODO: active community could be saved somewhere so he gets back where he left off last time
+  this.autorun(() => {
+    const activeCommunityId = Session.get('activeCommunityId');
+    const user = Meteor.user();
+    if (!activeCommunityId && user) {
+      const communities = user.communities();
+      if (communities.count() > 0) {
+        const activeCommunity = communities.fetch()[0];
+        Session.set('activeCommunityId', activeCommunity._id);
+      }
+    }
+  });
   // We run this in autorun, so when User switches his community, the subscription changes
   this.autorun(() => {
     const activeCommunityId = Session.get('activeCommunityId');
     if (activeCommunityId) {
       this.subscribe('parcels.inCommunity', { communityId: activeCommunityId });
       this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
+    }
+  });
+  // This autorun sets the active membership automatically to the first membership of the user in the community
+  // TODO: active membership could be saved somewhere so he gets back where he left off last time
+  this.autorun(() => {
+    const activeMembershipId = Session.get('activeMembershipId');
+    const activeCommunityId = Session.get('activeCommunityId');
+    if (!activeMembershipId && activeCommunityId && Meteor.userId()) {
+      const activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId() });
+      if (activeMembership) {
+        Session.set('activeMembershipId', activeMembership._id);
+      }
     }
   });
 });
@@ -95,39 +121,18 @@ Template.Custom_body.helpers({
   },
   activeCommunity() {
     const activeCommunityId = Session.get('activeCommunityId');
-    let activeCommunity;
-    if (activeCommunityId) {
-      activeCommunity = Communities.findOne(activeCommunityId);
-    } else if (Meteor.user()) {
-      const communities = Meteor.user().communities();
-      if (communities.count() > 0) {
-        activeCommunity = communities.fetch()[0];
-        Session.set('activeCommunityId', activeCommunity._id);
-      }
-    }
-    // else activeCommunity stays undefined
-
+    const activeCommunity = activeCommunityId ? Communities.findOne(activeCommunityId) : undefined;
     return activeCommunity;
   },
   memberships() {
     const activeCommunityId = Session.get('activeCommunityId');
     if (!activeCommunityId) { return []; }
+//    const parcels = Parcels.find({ communityId: activeCommunityId });
     return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId() });
   },
   activeMembership() {
     const activeMembershipId = Session.get('activeMembershipId');
-    const activeCommunityId = Session.get('activeCommunityId');
-    let activeMembership;
-    if (activeMembershipId) {
-      activeMembership = Memberships.findOne(activeMembershipId);
-    } else if (activeCommunityId) {
-      activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId() });
-      if (activeMembership) {
-        Session.set('activeMembershipId', activeMembership._id);
-      }
-    }
-    // else activeMembership stays undefined;
-
+    const activeMembership = activeMembershipId ? Memberships.findOne(activeMembershipId) : undefined;
     return activeMembership;
   },
 });

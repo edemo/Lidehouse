@@ -36,4 +36,4 @@ UploadFS.config.storesPath = 'uploads';
 UploadFS.config.tmpDir = './tmp/uploads';
 
 // Set the temporary directory permissions.
-UploadFS.config.tmpDirPermissions = '0700';
+UploadFS.config.tmpDirPermissions = '0777';
