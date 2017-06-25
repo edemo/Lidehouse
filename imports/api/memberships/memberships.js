@@ -10,7 +10,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Roles } from '/imports/api/permissions/roles.js';
-import { Fractional } from 'fractional';
+import { Fraction } from 'fractional';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -56,11 +56,13 @@ Memberships.helpers({
     return false;
   },
   votingShare() {
-    debugAssert(this.hasOwnership());
     const parcel = this.parcel();
-    const parcelShare = new Fractional(parcel.share, this.totalshares());
-    const ownedShare = new Fractional(this.ownership.ownedShareC, this.ownership.ownedShareD);
-    return parcelShare.multiply(ownedShare);
+    debugAssert(parcel);
+    debugAssert(this.hasOwnership());
+    const parcelShare = new Fraction(parcel.share, this.totalshares());
+    const ownedShare = new Fraction(this.ownership.ownedShareC, this.ownership.ownedShareD);
+    const votingShare = parcelShare.multiply(ownedShare);
+    return votingShare;
   },
   toString() {
     let result = __(this.role);

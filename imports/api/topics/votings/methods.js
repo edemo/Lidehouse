@@ -18,6 +18,8 @@ export const castVote = new ValidatedMethod({
   }).validator({ clean: true }),
 
   run({ topicId, membershipId, castedVote }) {
+    const userId = this.userId;
+
     const topic = Topics.findOne(topicId);
     if (!topic) {
       throw new Meteor.Error('err_invalidId', 'No such object',
@@ -33,7 +35,7 @@ export const castVote = new ValidatedMethod({
 
     if (membership.userId !== this.userId) {         // TODO meghatalmazassal is lehet
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: topics.castVote, userId: ${this.userId}, topicId: ${topicId}`);
+        `Method: topics.castVote, userId: ${userId}, topicId: ${topicId}`);
     }
 
     // TODO:  use permissions system to determine if user has permission
@@ -41,7 +43,7 @@ export const castVote = new ValidatedMethod({
 
     if (membership.communityId !== topic.communityId) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: topics.castVote, userId: ${this.userId}, topicId: ${topicId}`);
+        `Method: topics.castVote, userId: ${userId}, topicId: ${topicId}`);
     }
 
     if (membership.role !== 'owner') {
@@ -67,7 +69,7 @@ export const castVote = new ValidatedMethod({
     Topics.update(topicId, topicModifier, function handle(err, res) {
       if (err) {
         throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
-        `Method: topics.castVote, userId: ${this.userId}, topicId: ${topicId}`);
+        `Method: topics.castVote, userId: ${userId}, topicId: ${topicId}`);
       }
       debugAssert(res === 1);
     });
