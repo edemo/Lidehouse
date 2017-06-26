@@ -15,11 +15,17 @@
     padding: 10px 19px 10px 19px;
     cursor: pointer;
     background-color: @section-btn-col-collapsed;
+    .glyphicon {
+      visibility: collapse;
+    }
     &-2 {
       margin-top: 20px;
     }
     &.collapsed {
       background-color: @section-btn-col;
+      .glyphicon {
+        visibility: visible;
+      }
     }
     small {
       float: right;

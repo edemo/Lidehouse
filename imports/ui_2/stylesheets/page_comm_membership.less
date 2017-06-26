@@ -1,0 +1,30 @@
+.page-comm-memberships {
+  .white-box {
+    padding: 20px;
+  }
+  th {
+    text-align: center;
+  }
+  td {
+    text-align: left;
+  }
+  form {
+    // max-width: 400px;
+    // margin: auto;
+  }
+  // width: 100%;
+  [name~=userId] {
+    width: 20em;
+    margin: auto;
+  }
+  @media screen and (min-width: 40em) {
+    .panel-body {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      .form-group {
+        min-width: 370px;
+      }
+    }
+  }
+}
