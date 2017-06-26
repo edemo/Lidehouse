@@ -21,7 +21,7 @@
 @nav-after-bcg: rgba(131, 92, 48, 0.6);
 @nav-bcg-img: url(/small.jpg);
 
-// borad
+// board
 @section-btn-col: rgba(251, 172, 53, 0.63);
 @section-btn-col-collapsed: rgba(104, 125, 151, 0.47);
 @icon-gray: gray;
@@ -119,9 +119,13 @@ a {
       }
       &:hover, &.active {
         background-color: rgba(255, 255, 255, 0.52);
+        box-shadow: 0px 1px 2px 2px rgb(191, 191, 191);
         a {
           text-decoration: none;
         }
+      }
+      span {
+        margin-right: .7em;;
       }
     }
   }
@@ -180,6 +184,12 @@ nav {
     display: inline;
     a {
       box-shadow: unset !important;
+    }
+  }
+  .btn-secondary {
+    background-color: transparent;
+    &:hover, &:active {
+      background-color: darken(white, 10%);
     }
   }
 }
