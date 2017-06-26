@@ -22,9 +22,8 @@ Parcels.helpers({
     if (!community) return undefined;
     return community.totalunits;
   },
-  displayShareFraction() {
-    if (!this.share) return '0';
-    return this.share.toString();
+  share() {
+    return new Fraction(this.units, this.totalunits());
   },
   ownerName() {
     let result = '';
@@ -47,7 +46,7 @@ Parcels.helpers({
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   serial: { type: Number, optional: true },
-  share: { type: Fraction, optional: true },
+  units: { type: Number, optional: true },
   /*  name: { type: String,
       autoValue() {
         if (this.isInsert) {

@@ -77,7 +77,7 @@ Meteor.startup(() => {
     parcelId: Parcels.insert({
       communityId: demoCommunityId,
       serial: 1,
-      share: new Fraction(10, 100),
+      units: 10,
       floor: 'I',
       number: '14',
       type: 'flat',
@@ -95,7 +95,7 @@ Meteor.startup(() => {
     parcelId: Parcels.insert({
       communityId: demoCommunityId,
       serial: 2,
-      share: new Fraction(20, 100),
+      units: 20,
       floor: 'II',
       number: '25',
       type: 'flat',
@@ -113,7 +113,7 @@ Meteor.startup(() => {
     parcelId: Parcels.insert({
       communityId: demoCommunityId,
       serial: 3,
-      share: new Fraction(30, 100),
+      units: 30,
       floor: 'III',
       number: '36',
       type: 'flat',
@@ -127,7 +127,7 @@ Meteor.startup(() => {
   const lastParcel = Parcels.insert({
     communityId: demoCommunityId,
     serial: 101,
-    share: new Fraction(40, 100),
+    units: 40,
     floor: '-2',
     number: 'P209',
     type: 'parking',
@@ -196,7 +196,6 @@ Meteor.startup(() => {
       category: 'forum',
       title: topic.title,
       text: topic.text,
-      unreadCount: topic.items.length,
     });
 
     topic.items.forEach((text) => {
@@ -250,7 +249,7 @@ Meteor.startup(() => {
     },
     voteParticipation: {
       count: 4,
-      shares: new Fraction(90, 100),
+      units: 90,
     },
     voteResults: voteResults1,
   });
@@ -288,7 +287,7 @@ Meteor.startup(() => {
     },
     voteParticipation: {
       count: 3,
-      shares: new Fraction(50, 100),
+      units: 50,
     },
     voteResults: voteResults3,
   });

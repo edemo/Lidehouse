@@ -17,7 +17,8 @@ Topics.helpers({
     return this.voteParticipation.count;
   },
   votedPercent() {
-    return Math.round(100 * (this.voteParticipation.shares.toNumber()));
+    const voteParticipationShares = new Fraction(this.voteParticipation.units, this.community().totalunits);
+    return Math.round(100 * (voteParticipationShares.toNumber()));
   },
 });
 
@@ -30,7 +31,7 @@ const voteSchema = new SimpleSchema({
 
 const voteParticipationSchema = new SimpleSchema({
   count: { type: Number },
-  shares: { type: Fraction },
+  units: { type: Number },
 });
 
 Topics.votingSchema = new SimpleSchema({
@@ -41,7 +42,7 @@ Topics.votingSchema = new SimpleSchema({
     optional: true,
     autoValue() {
       if (!this.isSet && this.isInsert && this.field('category').value === 'vote') {
-        return { count: 0, shares: new Fraction(0) };
+        return { count: 0, units: 0 };
       }
     },
   },

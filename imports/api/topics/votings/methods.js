@@ -62,11 +62,9 @@ export const castVote = new ValidatedMethod({
     if (!oldVote) {
       topicModifier['$inc'] = {
         'voteParticipation.count': 1,
-        'voteParticipation.shares': membership.votingShare(),
+        'voteParticipation.units': membership.votingUnits(),
       };
     }
-
-    console.log(topicId, topicModifier);
 
     Topics.update(topicId, topicModifier, function handle(err, res) {
       if (err) {

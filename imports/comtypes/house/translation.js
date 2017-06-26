@@ -54,8 +54,8 @@ export const HouseTranslation = {
         "label": "Serial No",
         "placeholder": "(eg. 101)"
       },
-      "share": {
-        "label": "Voting share",
+      "units": {
+        "label": "Voting share units",
         "placeholder": "(eg. 135)"
       },
       "floor": {
@@ -136,7 +136,7 @@ export const HouseTranslation = {
         "label": "Sorszám",
         "placeholder": "(pl. 101)"
       },
-      "share": {
+      "units": {
         "label": "Tulajdoni hányad",
         "placeholder": "(pl. 135)"
       },

@@ -23,7 +23,7 @@ export function parcelColumns() {
     { data: 'type', title: __('parcels.type.label'), render: translate },
     { data: 'lot', title: __('parcels.lot.label') },
     { data: 'size', title: __('parcels.size.label') },
-    { data: 'displayShareFraction()', title: __('parcels.share.label') },
+    { data: 'share()', title: __('parcels.share.label') },
     { data: 'ownerName()', title: __('owner') },
     { data: '_id', render: renderEditButton },
     { data: '_id', render: renderDeleteButton },

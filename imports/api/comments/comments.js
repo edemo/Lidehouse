@@ -4,25 +4,24 @@ import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Timestamps } from '/imports/api/timestamps.js';
 import faker from 'faker';
-import unreadCountDenormalizer from './unreadCountDenormalizer.js';
 
 import { Topics } from '../topics/topics.js';
 
 class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
     const result = super.insert(doc, callback);
-    unreadCountDenormalizer.afterInsertComment(doc);
+//    unreadCountDenormalizer.afterInsertComment(doc);
     return result;
   }
   update(selector, modifier) {
     const result = super.update(selector, modifier);
-    unreadCountDenormalizer.afterUpdateComment(selector, modifier);
+  //  unreadCountDenormalizer.afterUpdateComment(selector, modifier);
     return result;
   }
   remove(selector) {
     const comments = this.find(selector).fetch();
     const result = super.remove(selector);
-    unreadCountDenormalizer.afterRemoveComments(comments);
+//    unreadCountDenormalizer.afterRemoveComments(comments);
     return result;
   }
 }

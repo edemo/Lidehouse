@@ -28,7 +28,6 @@ Topics.schema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, optional: true },
   closed: { type: Boolean, defaultValue: false },
-  unreadCount: { type: SimpleSchema.Integer, defaultValue: 0 },
 });
 
 Topics.attachSchema(Topics.schema);
@@ -67,7 +66,6 @@ Topics.publicFields = {
   text: 1,
   createdAt: 1,
   closed: 1,
-  unreadCount: 1,
 };
 
 Factory.define('topic', Topics, {

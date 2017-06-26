@@ -55,11 +55,14 @@ Memberships.helpers({
     }
     return false;
   },
+  votingUnits() {
+    const parcel = this.parcel();
+    const votingUnits = parcel.units * this.ownership.share.toNumber();
+    return votingUnits;
+  },
   votingShare() {
     const parcel = this.parcel();
-    debugAssert(parcel);
-    debugAssert(this.hasOwnership());
-    const votingShare = parcel.share.multiply(this.ownership.share);
+    const votingShare = parcel.share().multiply(this.ownership.share);
     return votingShare;
   },
   toString() {
