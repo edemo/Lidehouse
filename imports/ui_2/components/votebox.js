@@ -23,6 +23,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   const voteResults = this.data.voteResults;
 
   // creating the JQuery sortable widget
+  // https://github.com/meteor/meteor/blob/master/examples/unfinished/reorderable-list/client/shark.js
   $(self.find('.sortable')).sortable({
     stop(event, ui) { // fired when an item is dropped
       event.preventDefault();

@@ -2,36 +2,36 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Memberships } from './memberships.js';
+import { Parcels } from './parcels.js';
 
 export const insert = new ValidatedMethod({
-  name: 'memberships.insert',
-  validate: Memberships.simpleSchema().validator({ clean: true }),
+  name: 'parcels.insert',
+  validate: Parcels.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    return Memberships.insert(doc);
+    return Parcels.insert(doc);
   },
 });
 
 export const update = new ValidatedMethod({
-  name: 'memberships.update',
+  name: 'parcels.update',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
   }).validator({ clean: true }),
 
   run({ _id, modifier }) {
-    Memberships.update({ _id }, modifier);
+    Parcels.update({ _id }, modifier);
   },
 });
 
 export const remove = new ValidatedMethod({
-  name: 'memberships.remove',
+  name: 'parcels.remove',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator({ clean: true }),
 
   run({ _id }) {
-    Memberships.remove(_id);
+    Parcels.remove(_id);
   },
 });

@@ -7,6 +7,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Roles } from '/imports/api/permissions/roles.js';
+import { Fraction } from 'fractional';
 
 export const Parcels = new Mongo.Collection('parcels');
 
@@ -16,23 +17,21 @@ Parcels.helpers({
     debugAssert(community);
     return community;
   },
-  totalshares() {
+  totalunits() {
     const community = this.community();
     if (!community) return undefined;
-    return community.totalshares;
+    return community.totalunits;
   },
   displayShareFraction() {
     if (!this.share) return '0';
-    const totalshares = this.totalshares();
-    if (!totalshares) return '';
-    return `${this.share}/${totalshares}`;
+    return this.share.toString();
   },
   ownerName() {
     let result = '';
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
     ownerships.forEach((m) => {
       const user = Meteor.users.findOne(m.userId);
-      result += `${user.fullName()} (${m.ownership.ownedShareC}/${m.ownership.ownedShareD})<br>`;
+      result += `${user.fullName()} (${m.ownership.share.toStringLong()})<br>`;
     });
     return result;
   },
@@ -48,7 +47,7 @@ Parcels.helpers({
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   serial: { type: Number, optional: true },
-  share: { type: Number, optional: true },
+  share: { type: Fraction, optional: true },
   /*  name: { type: String,
       autoValue() {
         if (this.isInsert) {
@@ -75,14 +74,9 @@ Meteor.startup(function attach() {
   Parcels.simpleSchema().i18n('parcels');
 });
 
-Parcels.allow({
-  insert(userId, doc) {
-    return true; //hasPermission(userId, 'write.parcels');
-  },
-  update(userId, doc) {
-    return true; //hasPermission(userId, 'write.parcels');
-  },
-  remove(userId, doc) {
-    return true; //hasPermission(userId, 'write.parcels');
-  },
+// Deny all client-side updates since we will be using methods to manage this collection
+Parcels.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
 });

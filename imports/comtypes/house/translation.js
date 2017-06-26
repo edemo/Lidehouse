@@ -43,7 +43,7 @@ export const HouseTranslation = {
         "label": "Lot number",
         "placeholder": "(eg. 29732/9)"
       },
-      "totalshares": {
+      "totalunits": {
         "label": "Total shares outstanding",
         "placeholder": "(eg. 10000)"
       }
@@ -125,7 +125,7 @@ export const HouseTranslation = {
         "label": "Helyrajzi szám (Hrsz)",
         "placeholder": "(pl. 29732/9)"
       },
-      "totalshares": {
+      "totalunits": {
         "label": "Összes tulajdoni hányad",
         "placeholder": "(pl. 1000 vagy 9999)"
       }

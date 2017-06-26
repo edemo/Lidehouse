@@ -11,6 +11,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { parcelColumns } from '/imports/api/parcels/tables.js';
+import { Fraction } from 'fractional';
 import './community-memberships.html';
 
 Template.Community_memberships_page.onCreated(function () {
@@ -26,10 +27,6 @@ Template.Community_memberships_page.helpers({
   ownershipSchema() {
     return Memberships.schemaForOwnership;
   },
-/*  owners() {
-    const communityId = Session.get('activeCommunityId');
-    return Memberships.find({ communityId, role: 'owner' });
-  },*/
   selectedDoc() {
     return Parcels.findOne(Session.get('selectedParcelId'));
   },
@@ -37,21 +34,12 @@ Template.Community_memberships_page.helpers({
     return Session.equals('selectedParcelId', this._id);
   },
   formType() {
-    if (Session.get('selectedParcelId')) return 'update';
+    if (Session.get('selectedParcelId')) return 'method-update';
     return 'disabled';
   },
   hasSelection() {
     return !!Session.get('selectedParcelId');
   },
-/*  displayShare(share, totalshares) {
-    if (!share) return '';
-    return `${share}/${totalshares}`;
-  },
-  displayUsername(membership) {
-    if (!membership.hasUser()) return '';
-    return membership.user().safeUsername();
-  },
-*/
   reactiveTableDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
@@ -107,8 +95,7 @@ Template.Community_memberships_page.events({
       role: 'owner',
       parcelId,
       ownership: {
-        ownedShareC: 1,
-        ownedShareD: 1,
+        share: new Fraction(1, 1),
       },
     }, function (err, res) {
       if (err) {

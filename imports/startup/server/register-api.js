@@ -1,6 +1,6 @@
 import '/imports/api/communities/methods.js';
 import '/imports/api/communities/publications.js';
-// import '/imports/api/parcels/methods.js';
+import '/imports/api/parcels/methods.js';
 import '/imports/api/parcels/publications.js';
 import '/imports/api/users/methods.js';
 import '/imports/api/users/publications.js';

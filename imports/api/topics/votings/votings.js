@@ -1,7 +1,7 @@
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
-
+import { Fraction } from 'fractional';
 import { Topics } from '../topics.js';
 import { Memberships } from '../../memberships/memberships.js';
 
@@ -17,7 +17,7 @@ Topics.helpers({
     return this.voteParticipation.count;
   },
   votedPercent() {
-    return Math.round(100 * (this.voteParticipation.shares / this.community().totalshares));
+    return Math.round(100 * (this.voteParticipation.shares.toNumber()));
   },
 });
 
@@ -30,7 +30,7 @@ const voteSchema = new SimpleSchema({
 
 const voteParticipationSchema = new SimpleSchema({
   count: { type: Number },
-  shares: { type: Number },
+  shares: { type: Fraction },
 });
 
 Topics.votingSchema = new SimpleSchema({
@@ -41,7 +41,7 @@ Topics.votingSchema = new SimpleSchema({
     optional: true,
     autoValue() {
       if (!this.isSet && this.isInsert && this.field('category').value === 'vote') {
-        return { count: 0, shares: 0 };
+        return { count: 0, shares: new Fraction(0) };
       }
     },
   },

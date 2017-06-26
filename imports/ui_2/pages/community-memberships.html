@@ -20,7 +20,7 @@
             <td>{{ownership.serial}}</td>
             <td>{{location}}</td>
             <td>{{ownership.type}}</td>
-            <td>{{displayShare ownership.share totalshares}}</td>
+            <td>{{displayShare ownership.share totalunits}}</td>
             <td>{{displayUsername this}}</td>
             <td>
               {{#if userId}}
@@ -44,7 +44,7 @@
     <button class="js-new btn-primary">{{_ 'createNew'}}</button>
     {{#if hasSelection}}
     <p>{{_ 'edit'}} </p>
-      {{# autoForm id="afUpdateParcel" collection=parcels doc=selectedDoc type=formType template="bootstrap3"}}
+      {{# autoForm id="afUpdateParcel" collection=parcels doc=selectedDoc type=formType meteormethod='parcels.update' singleMethodArgument=true template="bootstrap3"}}
       {{> afQuickFields}}
       <div>
         <button type="submit" class="btn btn-primary">{{_ "save"}}</button>

@@ -38,10 +38,10 @@ Memberships.helpers({
     const parcel = Parcels.findOne(this.parcelId);
     return parcel;
   },
-  totalshares() {
+  totalunits() {
     const community = this.community();
     if (!community) return undefined;
-    return community.totalshares;
+    return community.totalunits;
   },
   isOwnership() {
     if (this.role === 'owner') return true;
@@ -59,9 +59,7 @@ Memberships.helpers({
     const parcel = this.parcel();
     debugAssert(parcel);
     debugAssert(this.hasOwnership());
-    const parcelShare = new Fraction(parcel.share, this.totalshares());
-    const ownedShare = new Fraction(this.ownership.ownedShareC, this.ownership.ownedShareD);
-    const votingShare = parcelShare.multiply(ownedShare);
+    const votingShare = parcel.share.multiply(this.ownership.share);
     return votingShare;
   },
   toString() {
@@ -73,8 +71,7 @@ Memberships.helpers({
 });
 
 const OwnershipSchema = new SimpleSchema({
-  ownedShareC: { type: Number },  // counter
-  ownedShareD: { type: Number },  // denominator
+  share: { type: Fraction },
 });
 
 // Memberships are the Ownerships and the Roleships in a single collection
@@ -129,7 +126,7 @@ Meteor.startup(function attach() {
 });
 
 // Deny all client-side updates since we will be using methods to manage this collection
-Memberships.allow({
+Memberships.deny({
   insert() { return true; },
   update() { return true; },
   remove() { return true; },

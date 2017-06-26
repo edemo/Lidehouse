@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
-
+import { Fraction } from 'fractional';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -26,7 +26,7 @@ Meteor.startup(() => {
     number: '86',
     lot: '123456/1234',
     image: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
-    totalshares: 100,
+    totalunits: 100,
   });
 
   // ===== Users =====
@@ -77,7 +77,7 @@ Meteor.startup(() => {
     parcelId: Parcels.insert({
       communityId: demoCommunityId,
       serial: 1,
-      share: 10,
+      share: new Fraction(10, 100),
       floor: 'I',
       number: '14',
       type: 'flat',
@@ -85,8 +85,7 @@ Meteor.startup(() => {
       size: 65,
     }),
     ownership: {
-      ownedShareC: 1,
-      ownedShareD: 1,
+      share: new Fraction(1, 1),
     },
   });
   Memberships.insert({
@@ -96,7 +95,7 @@ Meteor.startup(() => {
     parcelId: Parcels.insert({
       communityId: demoCommunityId,
       serial: 2,
-      share: 20,
+      share: new Fraction(20, 100),
       floor: 'II',
       number: '25',
       type: 'flat',
@@ -104,8 +103,7 @@ Meteor.startup(() => {
       size: 142,
     }),
     ownership: {
-      ownedShareC: 1,
-      ownedShareD: 1,
+      share: new Fraction(1, 1),
     },
   });
   Memberships.insert({
@@ -115,7 +113,7 @@ Meteor.startup(() => {
     parcelId: Parcels.insert({
       communityId: demoCommunityId,
       serial: 3,
-      share: 30,
+      share: new Fraction(30, 100),
       floor: 'III',
       number: '36',
       type: 'flat',
@@ -123,14 +121,13 @@ Meteor.startup(() => {
       size: '98.4',
     }),
     ownership: {
-      ownedShareC: 1,
-      ownedShareD: 1,
+      share: new Fraction(1, 1),
     },
   });
   const lastParcel = Parcels.insert({
     communityId: demoCommunityId,
     serial: 101,
-    share: 30,
+    share: new Fraction(40, 100),
     floor: '-2',
     number: 'P209',
     type: 'parking',
@@ -143,8 +140,7 @@ Meteor.startup(() => {
     role: 'owner',
     parcelId: lastParcel,
     ownership: {
-      ownedShareC: 3,
-      ownedShareD: 4,
+      share: new Fraction(3, 4),
     },
   });
   Memberships.insert({
@@ -153,8 +149,7 @@ Meteor.startup(() => {
     role: 'owner',
     parcelId: lastParcel,
     ownership: {
-      ownedShareC: 1,
-      ownedShareD: 4,
+      share: new Fraction(1, 4),
     },
   });
   // ===== Forum =====
@@ -255,7 +250,7 @@ Meteor.startup(() => {
     },
     voteParticipation: {
       count: 4,
-      shares: 90,
+      shares: new Fraction(90, 100),
     },
     voteResults: voteResults1,
   });
@@ -293,7 +288,7 @@ Meteor.startup(() => {
     },
     voteParticipation: {
       count: 3,
-      shares: 50,
+      shares: new Fraction(50, 100),
     },
     voteResults: voteResults3,
   });
