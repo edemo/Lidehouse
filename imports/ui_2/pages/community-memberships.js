@@ -62,7 +62,7 @@ Template.Community_memberships_page.helpers({
 Template.Community_memberships_page.events({
   'click .js-new'(event, instance) {
     const communityId = Session.get('activeCommunityId');
-    Parcels.insert({ communityId }, function(err, res) {
+    Meteor.call('parcels.insert', { communityId }, function(err, res) {
       if (err) {
         displayError(err);
         return;
@@ -77,7 +77,7 @@ Template.Community_memberships_page.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Parcels.remove({ _id: id }, function(err, res) {
+    Meteor.call('parcels.remove', { _id: id }, function(err, res) {
       if (err) {
         displayError(err);
       }
