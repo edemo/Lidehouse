@@ -1,61 +1,27 @@
 <template name="Community_memberships_page">
-  <div class="content-scrollable wrapper-form page-content autoform">
-    <h1 class="page-title">{{_ 'ownerships'}}</h1>
-    <!--{{> tabular table=TabularTables.Memberships selector=selector class="table table-striped table-bordered table-condensed"}}-->
-    {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
-    <!--table class="table table-bordered table-condensed">
-      <thead>
-        <tr>
-          <td>{{_ 'share.serial'}}</td>
-          <td>{{_ 'share.location'}}</td>
-          <td>{{_ 'share.type'}}</td>
-          <td>{{_ 'share.fraction'}}</td>
-          <td>{{_ 'user.username'}}</td>
-          <td>{{_ 'user.user'}}</td>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each owners}}
-          <tr class="table-row {{#if isSelected}}selected{{/if}}">
-            <td>{{ownership.serial}}</td>
-            <td>{{location}}</td>
-            <td>{{ownership.type}}</td>
-            <td>{{displayShare ownership.share totalunits}}</td>
-            <td>{{displayUsername this}}</td>
-            <td>
-              {{#if userId}}
-                <button class="js-remove-user">{{_ 'user.remove'}}</button>
-              {{else}}
-                <button class="js-invite-user">{{_ 'user.invite'}}</button>
-              {{/if}}
-            </td>
-            <td>
-              <a class="js-delete nav-item">
-              <span
-                class="icon-trash"
-                title={{_ 'topics.show.deleteShare'}}>
-              </span>
-              </a>
-            </td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table-->
-    <button class="js-new btn-primary">{{_ 'createNew'}}</button>
-    {{#if hasSelection}}
-    <p>{{_ 'edit'}} </p>
-      {{# autoForm id="afUpdateParcel" collection=parcels doc=selectedDoc type=formType meteormethod='parcels.update' singleMethodArgument=true template="bootstrap3"}}
-      {{> afQuickFields}}
-      <div>
-        <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+  <div class="content-scrollable wrapper-form page-content autoform page-comm-memberships">
+    <div class="white-box text-center">
+      <h1 class="page-title">{{_ 'ownerships'}}</h1>
+      <div class="table-responsive">
+        {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
       </div>
-    {{/autoForm}}
-    <form>
-      <label>User {{_ 'assign'}}:</label>
-      <input type="text" class="email" placeholder="email@address.com"/>
-      <button type="submit" class="btn btn-primary js-assign">{{_ "assign"}}</button>
-    </form>
-    {{/if}}
+      <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+      {{#if hasSelection}}
+        <br><br><br>
+        <p>{{_ 'edit'}} </p>
+        {{# autoForm id="afUpdateOwner" collection=parcels doc=selectedDoc type=formType meteormethod="parcels.update" singleMethodArgument=true template="bootstrap3"}}
+          {{> afQuickFields}}
+          <div>
+            <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+          </div>
+        {{/autoForm}}
+        <form>
+          <label>User {{_ 'assign'}}:</label>
+          <input type="text" class="email" placeholder="email@address.com"/>
+          <button type="submit" class="btn btn-primary js-assign">{{_ "assign"}}</button>
+        </form>
+      {{/if}}
+    </div>
   </div>
 </template>
 
