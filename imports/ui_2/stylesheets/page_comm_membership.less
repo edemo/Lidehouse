@@ -1,4 +1,7 @@
 .page-comm-memberships {
+  @media screen and (max-width: 45em) {
+    padding: 0;
+  }
   .white-box {
     padding: 20px;
   }
@@ -18,13 +21,35 @@
     margin: auto;
   }
   @media screen and (min-width: 40em) {
-    .panel-body {
+    form {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       .form-group {
         min-width: 370px;
       }
+    }
+  }
+  p.form-title {
+    background-color: #f1f1f1;
+    font-size: 1.35em;
+    line-height: 1em;
+    padding: .7em;
+    margin-bottom: 1.1em;
+    span {
+      font-size: .7em;
+      cursor: pointer;
+    }
+  }
+  .submit-div {
+    width: 100%;
+    margin-bottom: 3.7em;
+  }
+  .assign-fields > div {
+    input {
+      min-width: 250px;
+      margin: 1.3em;
+      text-align: center;
     }
   }
 }
