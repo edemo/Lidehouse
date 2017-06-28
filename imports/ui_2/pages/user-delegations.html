@@ -17,10 +17,11 @@
                 <!-- some instruction for the users -->
                 <div class="row margined-row">
                   <div class="col-xs-12 text-center">
-                    {{_ 'delegationsFromMeInstructions'}}
-                    {{_ 'delegationsFromMeInstructions2'}}
+                    <p>{{_ 'delegationsFromMeInstructions'}}
+                    {{_ 'delegationsFromMeInstructions2'}}</p>
                   </div>
                 </div>
+                <br>
                 {{> ReactiveDatatable tableData=delegationsFromMeDataFn options=delegationsFromMeOptionsFn}}
                 <button class="js-new-fromme btn-primary">{{_ 'createNew'}}</button>
                 {{#if hasSelection}}
@@ -50,10 +51,15 @@
                 <!-- some instruction for the users -->
                 <div class="row margined-row">
                   <div class="col-xs-12 text-center">
-                    {{_ 'delegationsToMeInstructions'}}
-                    {{_ 'delegationsToMeInstructions2'}}
+                    <p>{{_ 'delegationsToMeInstructions'}}
+                    {{_ 'delegationsToMeInstructions2'}}</p>
                   </div>
                 </div>
+                <form>
+                  <input type="checkbox" name="allow" id="allow" value=on>
+                  <label for="allow">{{_ 'allowDelegationsToMe'}}</label>
+                </form>
+                <br>
                 {{> ReactiveDatatable tableData=delegationsToMeDataFn options=delegationsToMeOptionsFn}}
               </div>
             </div>

@@ -95,6 +95,8 @@
 
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
 
+  "allowDelegationsToMe": "Allow others to delegate to me",
+
   // Notifications
   "Joined community": "Succesfully joined community %s",
   "Created community": "Succesfully created community.",

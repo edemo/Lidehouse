@@ -161,6 +161,7 @@
   "delegationsFromMeInstructions2": "A meghatalmazásait amit rendszerünkben beállít, bármikor visszavonhatja, vagy átirányíthaja más személyre.",
   "delegationsToMeInstructions": "Itt láthatja kik hatalmazták meg önt azzal hogy az ő tulajdonrészükkel is szavazhasson.",
   "delegationsToMeInstructions2": "Ezeket a meghatalmazási kérelmeket ön visszautasíthatja. Sőt, beállíthatja hogy önt egyáltalán ne lehessen meghatalmazni.",
+  "allowDelegationsToMe": "Engedélyezem hogy meghatalmazzanak mások",
   "Delegations from less specific to more specific": "Meghatalmazások sorrendben a kevesbé specifikustól a legspecifikusabbig",
   "general": "általános",
   "topicGroup": "téma csoport",

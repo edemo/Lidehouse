@@ -8,7 +8,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 // import { AutoForm } from 'meteor/aldeed:autoform';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { displayError } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -16,33 +16,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { delegationFromMeColumns, delegationToMeColumns } from '/imports/api/delegations/tables.js';
 
 import './user-delegations.html';
-
-const schemaForDelegationsFromMe = new SimpleSchema({
-  objectId: { type: String,
-    autoform: {
-      options() {
-        return Memberships.find({ userId: Meteor.userId(), role: 'owner' }).map(function option(m) {
-          return { label: m.parcel(), value: m._id };
-        });
-      },
-    },
-  },
-  targetUserId: { type: String,
-    autoform: {
-      options() {
-        return Meteor.users.find({}).map(function option(u) {
-          return { label: u.fullName(), value: u._id };
-        });
-      },
-    },
-  },
-});
-
-Meteor.startup(function attach() {
-  schemaForDelegationsFromMe.i18n('delegations');
-});
-
-// ----- TEMPLATE START -----
 
 Template.User_delegations.onCreated(function onCreated() {
   this.subscribe('delegations.ofUser');
@@ -63,7 +36,7 @@ Template.User_delegations.helpers({
     return 'disabled';
   },
   schemaForDelegationsFromMe() {
-    return schemaForDelegationsFromMe;
+    return Delegations.simpleSchema().pick(['objectId', 'targetUserId']);
   },
   delegationsFromMeDataFn() {
     function getTableData() {
@@ -136,6 +109,16 @@ Template.User_delegations.events({
         displayError(err);
       }
       Session.set('selectedDelegationId', undefined);
+    });
+  },
+  'click .js-refuse'(event) {
+    const id = $(event.target).data('id');
+    Meteor.call('delegations.remove', { _id: id }, function(err, res) {
+      if (err) {
+        displayError(err);
+        return;
+      }
+      displayMessage('success', 'Delegation refused');
     });
   },
 });
