@@ -8,17 +8,23 @@
       <button class="js-new btn-primary">{{_ 'createNew'}}</button>
       {{#if hasSelection}}
         <br><br><br>
-        <p>{{_ 'edit'}} </p>
+        <p class="form-title">
+          {{_ 'edit'}}
+          <!-- TODO cancel edit or new, hide fields -->
+          <span class="glyphicon glyphicon-remove pull-right js-edit-nope"></span>
+        </p>
         {{# autoForm id="afUpdateOwner" collection=parcels doc=selectedDoc type=formType meteormethod="parcels.update" singleMethodArgument=true template="bootstrap3"}}
           {{> afQuickFields}}
-          <div>
-            <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+          <div class="submit-div">
+            <button type="submit" class="btn btn-secondary">{{_ "save"}}</button>
           </div>
         {{/autoForm}}
-        <form>
-          <label>User {{_ 'assign'}}:</label>
-          <input type="text" class="email" placeholder="email@address.com"/>
-          <button type="submit" class="btn btn-primary js-assign">{{_ "assign"}}</button>
+        <form class="form-inline assign-fields">
+          <div class="form-group">
+            <label>User {{_ 'assign'}}: </label>
+            <input type="text" class="email" placeholder="email@address.com"/>
+            <button type="submit" class="btn btn-secondary js-assign">{{_ "assign"}}</button>
+          </div>
         </form>
       {{/if}}
     </div>
