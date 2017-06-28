@@ -1,0 +1,9 @@
+Common bugs, symptoms and causes:
+
+Exception while trying to find an element by id
+- You are using Collection.find(_id) instead of Collection.findOne(_id)
+  find returns a Cursor, findOne returns an Document
+
+Translation of autoform fields doesn't show for you language
+- You have 'collection.field.label' translated in that language, but not in english.
+  The field path has to be translated into english (even if thats just the same as key) for autoform-i18n to work.

@@ -17,11 +17,22 @@
                 <!-- some instruction for the users -->
                 <div class="row margined-row">
                   <div class="col-xs-12 text-center">
-                    <p>{{_ 'delegationsFromMeInstructions'}}</p>
-                    <p>{{_ 'delegationsFromMeInstructions2'}}</p>
+                    {{_ 'delegationsFromMeInstructions'}}
+                    {{_ 'delegationsFromMeInstructions2'}}
                   </div>
                 </div>
                 {{> ReactiveDatatable tableData=delegationsFromMeDataFn options=delegationsFromMeOptionsFn}}
+                <button class="js-new-fromme btn-primary">{{_ 'createNew'}}</button>
+                {{#if hasSelection}}
+                  <br><br><br>
+                  <p>{{_ 'edit'}} </p>
+                  {{# autoForm id="afUpdateDelegationFromMe" collection=collection schema=schemaForDelegationsFromMe doc=selectedDoc type=formType meteormethod="delegations.update" singleMethodArgument=true template="bootstrap3"}}
+                    {{> afQuickFields}}
+                    <div>
+                      <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+                    </div>
+                  {{/autoForm}}
+                {{/if}}
               </div>
             </div>
           </div>
@@ -39,8 +50,8 @@
                 <!-- some instruction for the users -->
                 <div class="row margined-row">
                   <div class="col-xs-12 text-center">
-                    <p>{{_ 'delegationsToMeInstructions'}}</p>
-                    <p>{{_ 'delegationsToMeInstructions2'}}</p>
+                    {{_ 'delegationsToMeInstructions'}}
+                    {{_ 'delegationsToMeInstructions2'}}
                   </div>
                 </div>
                 {{> ReactiveDatatable tableData=delegationsToMeDataFn options=delegationsToMeOptionsFn}}

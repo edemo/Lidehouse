@@ -37,6 +37,40 @@
       }
     }
   },
+  "topics": {
+    "title": {
+      "label": "Short description"
+    },
+    "text": {
+      "label": "Full description"
+    },
+    "ticket": {
+      "type": {
+        "label": "Kind of problem"
+      },
+      "urgency": {
+        "label": "Urgency"
+      },
+      "status": {
+        "label": "Status"
+      }
+    }
+  },
+
+  "delegations": {
+    "sourceUserId": {
+      "label": "Delegator",
+      "placeholder": "(eg. Mike75)"
+    },
+    "targetUserId": {
+      "label": "Delegatee",
+      "placeholder": "(eg. Mike75)"
+    },
+    "objectId": {
+      "label": "Scope of delegation (ownership)",
+      "placeholder": "(eg. ownership II/4)"
+    }
+  },
 
   // buttons etc.
   "confirm": "Are you sure?",
@@ -58,7 +92,7 @@
   "userAccountsSubtitle": "Log in to enjoy all functionalities of this app",
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
-  
+
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
 
   // Notifications

@@ -6,6 +6,8 @@ import '/imports/api/users/methods.js';
 import '/imports/api/users/publications.js';
 import '/imports/api/memberships/methods.js';
 import '/imports/api/memberships/publications.js';
+import '/imports/api/delegations/methods.js';
+import '/imports/api/delegations/publications.js';
 import '/imports/api/topics/methods.js';
 import '/imports/api/topics/publications.js';
 import '/imports/api/topics/votings/methods.js';

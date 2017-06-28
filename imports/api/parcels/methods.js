@@ -6,7 +6,7 @@ import { Parcels } from './parcels.js';
 
 export const insert = new ValidatedMethod({
   name: 'parcels.insert',
-  validate: Parcels.simpleSchema().validator({ clean: true }),
+  validate: Parcels.schema.validator({ clean: true }),
 
   run(doc) {
     return Parcels.insert(doc);

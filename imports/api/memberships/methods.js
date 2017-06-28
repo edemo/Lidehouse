@@ -6,7 +6,7 @@ import { Memberships } from './memberships.js';
 
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
-  validate: Memberships.simpleSchema().validator({ clean: true }),
+  validate: Memberships.schema.validator({ clean: true }),
 
   run(doc) {
     return Memberships.insert(doc);

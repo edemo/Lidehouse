@@ -12,10 +12,21 @@ function renderEditButton(cellData, renderType, currentRow) {
   return html;
 }
 
-export function delegationColumns() {
+export function delegationFromMeColumns() {
   return [
-    { data: 'objectId', title: __('delegations.objectId.label') },
-    { data: 'targetUserId', title: __('delegations.targetUserId.label') },
+    { data: 'object()', title: __('delegations.objectId.label') },
+    { data: 'votingShare()', title: __('votingShare') },
+    { data: 'targetUser()', title: __('delegations.targetUserId.label') },
+    { data: '_id', render: renderEditButton },
+    { data: '_id', render: renderDeleteButton },
+  ];
+}
+
+export function delegationToMeColumns() {
+  return [
+    { data: 'object()', title: __('delegations.objectId.label') },
+    { data: 'votingShare()', title: __('votingShare') },
+    { data: 'sourceUser()', title: __('delegations.sourceUserId.label') },
     { data: '_id', render: renderEditButton },
     { data: '_id', render: renderDeleteButton },
   ];

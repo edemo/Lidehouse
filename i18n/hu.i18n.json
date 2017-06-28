@@ -58,6 +58,23 @@
     }
   },
 
+  "delegations": {
+    "sourceUserId": {
+      "label": "Meghatalmazó",
+      "placeholder": "(pl. Miki75)"
+    },
+    "targetUserId": {
+      "label": "Meghatalmazott",
+      "placeholder": "(pl. Miki75)"
+    },
+    "objectId": {
+      "label": "Meghatalmazás tárgya (tulajdon)",
+      "placeholder": "(pl. II/4)"
+    }
+  },
+
+  "votingShare": "Szavazati hányad",
+
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
