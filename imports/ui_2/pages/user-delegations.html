@@ -23,11 +23,11 @@
                 </div>
                 <br>
                 {{> ReactiveDatatable tableData=delegationsFromMeDataFn options=delegationsFromMeOptionsFn}}
-                <button class="js-new-fromme btn-primary">{{_ 'createNew'}}</button>
+                <button class="js-new btn-primary">{{_ 'createNew'}}</button>
                 {{#if hasSelection}}
                   <br><br><br>
                   <p>{{_ 'edit'}} </p>
-                  {{# autoForm id="afUpdateDelegationFromMe" collection=collection schema=schemaForDelegationsFromMe doc=selectedDoc type=formType meteormethod="delegations.update" singleMethodArgument=true template="bootstrap3"}}
+                  {{# autoForm id="afUpdateDelegationsFromMe" collection=collection schema=schemaForDelegationsFromMe doc=selectedDoc type=formType meteormethod="delegations.update" singleMethodArgument=true template="bootstrap3"}}
                     {{> afQuickFields}}
                     <div>
                       <button type="submit" class="btn btn-primary">{{_ "save"}}</button>

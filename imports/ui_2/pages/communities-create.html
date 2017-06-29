@@ -1,7 +1,7 @@
 <template name="Communities_create_form">
   <div class="content-scrollable page-content">
     <h1 class="page-title">{{_ 'Create a community'}}</h1>
-    {{#autoForm id="communities_create" collection=communities type="method" meteormethod="communities.create" template="bootstrap3"}}
+    {{#autoForm id="afCommunitiesCreate" collection=communities type="method" meteormethod="communities.create" template="bootstrap3"}}
       {{> afQuickFields}}
       <div>
         <button type="submit" class="btn btn-primary">{{_ "create"}}</button>

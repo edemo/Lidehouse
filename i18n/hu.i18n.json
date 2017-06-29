@@ -225,5 +225,8 @@
   // Notifications
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
   "Created community": "Közösség sikeresen létrehozva.",
-  "Vote casted": "Szavazat sikeresen leadva"
+  "Vote casted": "Szavazat sikeresen leadva",
+  "Delegation saved": "Meghatalmazás elmentve",
+  "Delegation revoked": "Meghatalmazás visszavonva",
+  "Delegation refused": "Meghatalmazás visszautasítva"
 }

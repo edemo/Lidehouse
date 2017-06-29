@@ -6,20 +6,19 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import './communities-create.html';
 
+Template.Communities_create_form.helpers({
+  communities() {
+    return Communities;
+  },
+});
+
 AutoForm.hooks({
-  communities_create: {
-    // Called when any submit operation fails
+  afCommunitiesCreate: {
     onError: function onFormError(formType, error) {
-      alert(error); // eslint-disable-line no-alert
+      displayError(error);
     },
     onSuccess: function onFormSuccess(formType, result) {
       displayMessage('success', 'Created community');
     },
-  },
-});
-
-Template.Communities_create_form.helpers({
-  communities() {
-    return Communities;
   },
 });

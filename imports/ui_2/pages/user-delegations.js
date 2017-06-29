@@ -5,7 +5,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-// import { AutoForm } from 'meteor/aldeed:autoform';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
@@ -80,17 +80,8 @@ Template.User_delegations.helpers({
 });
 
 Template.User_delegations.events({
-  'click .js-new-fromme'(event, instance) {
+  'click .js-new'(event, instance) {
     Meteor.call('delegations.insert', { sourceUserId: Meteor.userId(), scope: 'membership' }, function(err, res) {
-      if (err) {
-        displayError(err);
-        return;
-      }
-      Session.set('selectedDelegationId', res);
-    });
-  },
-  'click .js-new-tome'(event, instance) {
-    Meteor.call('delegations.insert', { targetUserId: Meteor.userId(), scope: 'membership' }, function(err, res) {
       if (err) {
         displayError(err);
         return;
@@ -107,7 +98,9 @@ Template.User_delegations.events({
     Meteor.call('delegations.remove', { _id: id }, function(err, res) {
       if (err) {
         displayError(err);
+        return;
       }
+      displayMessage('success', 'Delegation revoked');
       Session.set('selectedDelegationId', undefined);
     });
   },
@@ -120,5 +113,16 @@ Template.User_delegations.events({
       }
       displayMessage('success', 'Delegation refused');
     });
+  },
+});
+
+AutoForm.hooks({
+  afUpdateDelegationsFromMe: {
+    onError: function onFormError(formType, error) {
+      displayError(error);
+    },
+    onSuccess: function onFormSuccess(formType, result) {
+      displayMessage('success', 'Delegation saved');
+    },
   },
 });
