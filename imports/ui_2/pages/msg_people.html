@@ -12,58 +12,37 @@
     </div>
   </div>
 
-  <!-- kozoskepviselo list item (1db lesz) -->
-  <div class="row person person-kk">
-    <div class="media">
-      <div class="media-left media-middle">
-        <a href="#">
-          <img class="media-object img-circle" src="https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg" alt="pic" width="41">
-        </a>
-      </div>
-      <div class="media-body">
-        <div class="">
-          Marckle Falmer <small class="small-size">(közösképviselő)</small>
-        </div>
-      </div>
-      <div class="media-body">
-        <div class="text-right">
-          <!-- Offline icon -->
-          <svg height="10" width="10" data-tooltip="Offline">
-            <circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="white" />
-          </svg>
-          <!-- online icon -->
-          <!-- <svg height="10" width="10">
-          <circle cx="5" cy="5" r="5" fill="green" />
-        </svg> -->
-          <br>
-          <span class="badge">7</span>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- normally there is exactly 1 manager (kk) -->
+  {{#each managers}}
+    {{> Msg_person}}
+  {{/each}}
 
+  {{#each members}}
+    {{> Msg_person}}
+  {{/each}}
+
+</template>
+
+<template name="Msg_person">
   <!-- normal test item (each in people) -->
   <div class="row no-margin person">
     <div class="media">
       <div class="media-left media-middle">
         <a href="#">
-          <img class="media-object img-circle" src="https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg" alt="pic" width="41">
+          <img class="media-object img-circle" src="{{user/avatar}}" alt="avatar" width="41">
         </a>
       </div>
       <div class="media-body">
         <div class="">
-          Harkonnen fehr Hürend
+          {{user/fullName}}<br>
+          <small class="small-size">({{this}})</small>
         </div>
       </div>
       <div class="media-body">
         <div class="text-right">
-          <!-- Offline icon -->
-          <!-- <svg height="10" width="10" data-tooltip="Offline">
-            <circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="white" />
-          </svg> -->
-          <!-- online icon -->
-          <svg height="10" width="10">
-            <circle cx="5" cy="5" r="5" fill="green" />
+          <!-- online/offline status icon -->
+          <svg height="10" width="10" data-tooltip="{{user/status}}">
+            <circle {{statusCircleParameters user/status}} />
           </svg>
           <br>
           <span class="badge hidden">7</span>
@@ -71,5 +50,4 @@
       </div>
     </div>
   </div>
-
 </template>
