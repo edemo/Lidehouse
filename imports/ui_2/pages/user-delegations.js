@@ -114,6 +114,16 @@ Template.User_delegations.events({
       displayMessage('success', 'Delegation refused');
     });
   },
+  'click #allow'(event) {
+    const value = event.target.value === 'on';
+    Meteor.call('delegations.enable', { value }, function(err, res) {
+      if (err) {
+        displayError(err);
+        return;
+      }
+      displayMessage('success', `Delegations ${value ? 'enabled' : 'disabled'}`);
+    });
+  }
 });
 
 AutoForm.hooks({

@@ -29,9 +29,24 @@ export const remove = new ValidatedMethod({
   name: 'delegations.remove',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator({ clean: true }),
+  }).validator(),
 
   run({ _id }) {
     Delegations.remove(_id);
+  },
+});
+
+export const disable = new ValidatedMethod({
+  name: 'delegations.enable',
+  validate: new SimpleSchema({
+    value: { type: Boolean },
+  }).validator(),
+
+  run({ value }) {
+    const userId = this.userId;
+    if (value === false) {
+      Delegations.remove({ targetUserId: userId });
+    }
+    Meteor.users.update(userId, { $set: { 'settings.enabled': value } });
   },
 });

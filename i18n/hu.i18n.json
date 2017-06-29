@@ -151,7 +151,8 @@
   "yes": "igen",
   "no": "nem",
   "abstain": "tartózkodom",
-
+  "Active votings": "Aktív szavazások",
+  "Closed votings": "Lezárt szavazások",
   "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrenbe...",
 
   // delegations
@@ -167,6 +168,7 @@
   "topicGroup": "téma csoport",
   "issues": "kérdések",
 
+  // tickets
   "building": "épület",
   "service": "közmű",
   "high": "sürgős",
@@ -178,9 +180,6 @@
   "finished": "megoldva",
   "checked": "ellenőrizve",
   "closed": "lezárva",
-
-  "Active votings": "Aktív szavazások",
-  "Closed votings": "Lezárt szavazások",
 
   "Active tickets": "Aktív bejelentett hibák",
   "Closed tickets": "Lezárt bejelentett hibák",
@@ -226,6 +225,8 @@
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
   "Created community": "Közösség sikeresen létrehozva.",
   "Vote casted": "Szavazat sikeresen leadva",
+  "Delegations enabled": "Bejövő meghatalmazások engedélyezve",
+  "Delegations disabled": "Bejövő meghatalmazások visszautasítva",
   "Delegation saved": "Meghatalmazás elmentve",
   "Delegation revoked": "Meghatalmazás visszavonva",
   "Delegation refused": "Meghatalmazás visszautasítva"

@@ -9,7 +9,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 
-
 /*
 // Code from https://github.com/aldeed/meteor-collection2
 
@@ -30,10 +29,14 @@ export const UserProfileSchema = new SimpleSchema({
 });
 */
 
-export const UserProfileSchema = new SimpleSchema({
-  firstName: { type: String /* label: () => TAPi18n.__('users.profile.firstName.label') */ },
+const UserProfileSchema = new SimpleSchema({
+  firstName: { type: String },
   lastName: { type: String },
   bio: { type: String, optional: true },
+});
+
+const UserSettingsSchema = new SimpleSchema({
+  delegationsEnabled: { type: Boolean },
 });
 
 Meteor.users.helpers({
@@ -102,6 +105,8 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },
+
+  settings: { type: UserSettingsSchema },
 
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },
