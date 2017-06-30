@@ -137,6 +137,7 @@
   "assign": "Hozzárendelés",
   "confirm": "Biztos benne?",
   "loading...": "Betöltés folyamatban...",
+  "search": "Keresés",
 
   "join": "Csatlakozom",
   "create": "Létrehozom",
@@ -214,6 +215,7 @@
   "inviteSend": "Meghívó kiküldése",
   "newForumTopicPlaceholder": "Dobjon fel egy témát...",
   "newCommentPlaceholder": "Szóljon hozzá...",
+  "messagePlaceholder": "Az ön üzenete...",
 
   "User data page": "Felhasználói adatlap",
   "userAccountsSubtitle": "Bejelentkezett felhasználók minden funkciót elérhetnek",

@@ -36,7 +36,7 @@ const UserProfileSchema = new SimpleSchema({
 });
 
 const UserSettingsSchema = new SimpleSchema({
-  delegationsEnabled: { type: Boolean },
+  delegationsEnabled: { type: Boolean, defaultValue: true },
 });
 
 Meteor.users.helpers({
@@ -100,7 +100,7 @@ Meteor.users.schema = new SimpleSchema({
   },*/
   profile: { type: UserProfileSchema, optional: true },
   avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar },
-  status: { type: String, allowedValues: ['online', 'inactive', 'offline'], defaultValue: 'offline' },
+  status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline' },
 
   emails: { type: Array },
   'emails.$': { type: Object },
@@ -134,5 +134,6 @@ Meteor.users.publicFields = {
   username: 1,
   profile: 1,
   avatar: 1,
+  status: 1,
   emails: 1, // TODO: email is not public, but we now need for calculating derived username
 };

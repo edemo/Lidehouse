@@ -89,12 +89,12 @@
   "tryingToConnect": "Trying to connect",
   "newForumTopicPlaceholder": "Start a discussion...",
   "newCommentPlaceholder": "Make your comment...",
+  "messagePlaceholder": "Your message ...",
+
   "userAccountsSubtitle": "Log in to enjoy all functionalities of this app",
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
-
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
-
   "allowDelegationsToMe": "Allow others to delegate to me",
 
   // Notifications
