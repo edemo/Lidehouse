@@ -45,7 +45,9 @@
             <circle {{statusCircleParameters user/status}} />
           </svg>
           <br>
-          <span class="badge hidden">7</span>
+          {{#if hasUnreadMessages}}
+          <span class="badge">{{unreadMessagesCount}}</span>
+          {{/if}}
         </div>
       </div>
     </div>

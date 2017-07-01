@@ -6,8 +6,11 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Accounts } from 'meteor/accounts-base';
 
+import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
+import '/imports/api/topics/rooms/rooms.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
@@ -31,11 +34,15 @@ Meteor.startup(() => {
 
   // ===== Users =====
 
+  // Someone can log in as the demo user, if he doesn't want to register
+  const demoUserId = Accounts.createUser({ email: 'demo.user@demo.com', password: 'password' });
+
   const dummyUsers = [];
   dummyUsers[0] = Meteor.users.insert({
     emails: [{ address: 'baltazarimre@demo.com', verified: true }],
     profile: { lastName: 'Baltazár', firstName: 'Imre' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-2.png',
+    status: 'online',
   });
   dummyUsers[1] = Meteor.users.insert({
     emails: [{ address: 'bajorandor@demo.com', verified: true }],
@@ -46,6 +53,7 @@ Meteor.startup(() => {
     emails: [{ address: 'bakocsitimea@demo.com', verified: true }],
     profile: { lastName: 'Bakocsi', firstName: 'Tímea' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-6.png',
+    status: 'standby',
   });
   dummyUsers[3] = Meteor.users.insert({
     emails: [{ address: 'baltapeter@demo.com', verified: true }],
@@ -60,6 +68,24 @@ Meteor.startup(() => {
 
   // ===== Memberships =====
 
+  Memberships.insert({
+    communityId: demoCommunityId,
+    userId: demoUserId,
+    role: 'owner',
+    parcelId: Parcels.insert({
+      communityId: demoCommunityId,
+      serial: 101,
+      units: 11,
+      floor: 'fsz',
+      number: '2',
+      type: 'flat',
+      lot: '29345/A/002',
+      size: 39,
+    }),
+    ownership: {
+      share: new Fraction(1, 1),
+    },
+  });
   Memberships.insert({
     communityId: demoCommunityId,
     userId: dummyUsers[0],
@@ -126,7 +152,7 @@ Meteor.startup(() => {
   });
   const lastParcel = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 101,
+    serial: 4,
     units: 40,
     floor: '-2',
     number: 'P209',
@@ -154,7 +180,7 @@ Meteor.startup(() => {
   });
   // ===== Forum =====
 
-  // The demo users comment one after the other, round robin style
+  // The dummy users comment one after the other, round robin style
   let nextUserIndex = 0;
   function nextUser() {
     nextUserIndex %= dummyUsers.length;
@@ -362,5 +388,26 @@ Meteor.startup(() => {
       urgency: 'low',
       status: 'closed',
     },
+  });
+
+  // ===== Rooms =====
+
+  const demoMessageRoom = Topics.insert({
+    communityId: demoCommunityId,
+    userId: demoUserId,
+    category: 'room',
+    participantIds: [demoUserId, dummyUsers[2]],
+  });
+
+  Comments.insert({
+    topicId: demoMessageRoom,
+    userId: dummyUsers[2],
+    text: 'Szervusz! Megtaláltam a postaláda kulcsodat. Benne hagytad a levélszekrény ajtajában. :)',
+  });
+
+  Comments.insert({
+    topicId: demoMessageRoom,
+    userId: demoUserId,
+    text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
   });
 });

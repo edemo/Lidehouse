@@ -215,7 +215,9 @@
   "inviteSend": "Meghívó kiküldése",
   "newForumTopicPlaceholder": "Dobjon fel egy témát...",
   "newCommentPlaceholder": "Szóljon hozzá...",
-  "messagePlaceholder": "Az ön üzenete...",
+  "messengerPeopleMenu": "Vissza az emberekhez",
+  "messengerMessagePlaceholder": "Az ön üzenete... (pl. Epertortát sütöttem. Nincs kedved átugrani megkóstolni?)",
+  "messengerHistoryPlaceholder": "Még nincsenek üzenetek közöttetek. <br> Kezdjetek el csevegni most!",
 
   "User data page": "Felhasználói adatlap",
   "userAccountsSubtitle": "Bejelentkezett felhasználók minden funkciót elérhetnek",

@@ -5,5 +5,5 @@ import { Topics } from '../topics.js';
 import './rooms.js';
 
 Meteor.publish(null, function roomsOfUser() {
-  return Topics.find({ category: 'room', userId: this.userId });
+  return Topics.find({ category: 'room', participantIds: this.userId });
 });

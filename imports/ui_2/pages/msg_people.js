@@ -1,9 +1,12 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 // import { ReactiveDict } from 'meteor/reactive-dict';
 import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import '/imports/api/topics/rooms/rooms.js';
 
 import './msg_people.html';
 import './messenger.html';
@@ -12,15 +15,21 @@ import './messenger.html';
 Template.Msg_people.onCreated(function onCreated() {
 });
 
+Template.Msg_people.onCreated(function onRendered() {
+  const communityId = Session.get('activeCommunityId');
+  const manager = Memberships.findOne({ communityId, role: 'manager' });
+  Session.set('messengerPersonId', manager.userId);
+});
+
 Template.Msg_people.helpers({
   managers() {
     const communityId = Session.get('activeCommunityId');
-    return Memberships.find({ communityId, role: 'manager' });
+    return Memberships.find({ communityId, userId: { $not: Meteor.userId() }, role: 'manager' });
   },
   members() {
     const communityId = Session.get('activeCommunityId');
-    const personSearch = Session.get('personSearch');
-    const nonManagers = Memberships.find({ communityId, role: { $not: 'manager' } });
+    const personSearch = Session.get('messengerPersonSearch');
+    const nonManagers = Memberships.find({ communityId, userId: { $not: Meteor.userId() }, role: { $not: 'manager' } });
     if (personSearch) {
       return nonManagers.fetch().filter(m => m.user().fullName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }
@@ -30,11 +39,18 @@ Template.Msg_people.helpers({
 
 Template.Msg_people.events({
   'keyup #search'(event) {
-    Session.set('personSearch', event.target.value);
+    Session.set('messengerPersonSearch', event.target.value);
   },
 });
 
 // ---------------------- Msg_person ----------------------
+
+Template.Msg_person.onCreated(function onMsgPersonCreated() {
+  this.autorun(() => {    // TODO: It would enough to subscribe here to the Count
+    const room = Topics.messengerRoom(this.data.userId, Meteor.userId());
+    if (room) this.subscribe('comments.onTopic', { topicId: room._id });
+  });
+});
 
 Template.Msg_person.helpers({
   statusCircleParameters(status) {
@@ -50,5 +66,21 @@ Template.Msg_person.helpers({
       default: _.extend(params, { fill: 'pink' });
     }
     return params;
+  },
+  hasUnreadMessages() {
+    const room = Topics.messengerRoom(this.userId, Meteor.userId());
+    if (!room) return false;
+    if (!room.comments()) return false;
+    return room.comments().count() > 0;
+  },
+  unreadMessagesCount() {
+    const room = Topics.messengerRoom(this.userId, Meteor.userId());
+    return room.comments().count();
+  },
+});
+
+Template.Msg_person.events({
+  'click .person'(event, instance) {
+    Session.set('messengerPersonId', instance.data.userId);
   },
 });

@@ -7,9 +7,12 @@ import { Topics } from '../topics.js';
 Topics.helpers({
 });
 
+// static helpers
+Topics.messengerRoom = function messengerRoom(userId, otherUserId) {
+  return Topics.findOne({ category: 'room', participantIds: { $size: 2, $all: [userId, otherUserId] } });
+};
+
 const roomSchema = new SimpleSchema({
-  participantIds: { type: Array, optional: true },
-  'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
 });
 
-Topics.attachSchema({ room: { type: roomSchema, optional: true } });
+Topics.attachSchema(roomSchema);

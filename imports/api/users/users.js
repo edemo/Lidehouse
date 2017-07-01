@@ -108,6 +108,7 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$.verified': { type: Boolean },
 
   settings: { type: UserSettingsSchema },
+  lastSeens: { type: Object, blackbox: true, optional: true, autoform: { omit: true } },
 
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },

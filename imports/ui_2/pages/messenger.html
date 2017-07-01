@@ -7,42 +7,36 @@
     </section>
 
     <div class="row frame">
+      {{#with selectedPerson}}
       <div class="col-xs-12 col-sm-12 col-md-8 left full-h">
         <div class="visible-xs visible-sm mobile-nav">
           <div class="name">
-            <!-- aktiv chat név, clickre go to profile -->
-            Lachelky Nimand
+            <a href="{{pathFor 'Users.show' _id=_id}}">{{fullName}}</a>
           </div>
           <div class="js-people">
             <div class="link">
-              Back to people
+              {{_ 'messengerPeopleMenu'}}
               <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             </div>
           </div>
         </div>
 
-        <!-- chat history - HA van -->
+        <!-- chat history - if exists - empty state otherwise -->
+        {{#if selectedPersonRoom}}
         <div class="messages">
-          <!-- uzenetenkent -->
-          {{> Msg_box}}
+          {{> Msg_box room=selectedPersonRoom}}
         </div>
-
-        <!-- HA nincs chat history -->
-        <!-- <div class="messages text-center empty"> -->
+        {{else}}
+        <div class="messages text-center empty">
           <!-- some emty state img here TODO -->
-          <!-- Még nincsenek üzeneteid! <br> Kezdj el csevegni most! -->
-        <!-- </div> -->
+          {{{_ 'messengerHistoryPlaceholder'}}}
+        </div>
+        {{/if}}
 
         <!-- send message field -->
-        <div class="message-field row">
-          <div class="col-xs-10">
-            <textarea name="name" cols="40" placeholder={{_ 'messagePlaceholder'}}></textarea>
-          </div>
-          <div class="col-xs-2">
-            <span class="btn-comment glyphicon glyphicon-send" aria-hidden="true"></span>
-          </div>
-        </div>
+        {{> Msg_send room=selectedPersonRoom}}
       </div>
+      {{/with}}
 
       <!-- right side, people -->
       <div class="col-xs-12 col-md-4 right full-h hidden-xs hidden-sm">
@@ -54,28 +48,32 @@
 </template>
 
 <template name="Msg_box">
-  <!-- if én üzim / kapott -->
+  {{#each messages}}
+    {{#if ownMessage this}}    <!-- box for my messages -->
+    <div class="message-box-self pull-right">
+      <div class="avatar">
+        <img src="{{user/avatar}}" class="img-circle" width="55" height="55" alt="{{user/fullName}}" />
+      </div>
+      <div class="message">{{text}}</div>
+    </div>
+    {{else}}                  <!-- box for recived messages -->
+      <div class="message-box-target">
+      <div class="avatar">
+        <img src="{{user/avatar}}" class="img-circle" width="55" height="55" alt="{{user/fullName}}" />
+      </div>
+      <div class="message">{{text}}</div>
+    </div>
+    {{/if}}
+  {{/each}}
+</template>
 
-  <!-- box for recived messages -->
-  <div class="message-box-target">
-    <div class="avatar">
-      <img src="http://nerdist.com/wp-content/uploads/2016/11/Screen-Shot-2016-11-26-at-4.14.07-PM.png" class="img-circle" width="55" height="55" alt="Név" />
+<template name="Msg_send">
+  <div class="message-field row">
+    <div class="col-xs-10">
+      <textarea name="name" cols="40" placeholder={{_ 'messengerMessagePlaceholder'}}></textarea>
     </div>
-    <div class="message">
-      Szervusz! Megtaláltam a postaláda kulcsodat.
-      Benne hagytad a levélszekrény ajtajában. :)
-    </div>
-  </div>
-
-  <!-- box for my messages -->
-  <div class="message-box-self pull-right">
-    <div class="avatar">
-      <img src="https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg" class="img-circle" width="55" height="55" alt="Név" />
-    </div>
-    <div class="message">
-      Ó de jó. Köszönöm szépen!
-      Már azt hittem elhagytam.
-      Felmegyek érte este, a Barátok közt után.
+    <div class="col-xs-2">
+      <span class="btn-comment glyphicon glyphicon-send" aria-hidden="true"></span>
     </div>
   </div>
 </template>

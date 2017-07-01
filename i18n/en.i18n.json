@@ -89,13 +89,16 @@
   "tryingToConnect": "Trying to connect",
   "newForumTopicPlaceholder": "Start a discussion...",
   "newCommentPlaceholder": "Make your comment...",
-  "messagePlaceholder": "Your message ...",
+  "messengerPeopleMenu": "Back to people",
+  "messengerMessagePlaceholder": "Your message here... (eg. I just baked a strawberry cake. Want to come over and taste it?)",
+  "messengerHistoryPlaceholder": "No messages yet between you. <br> Start chatting today!",
 
   "userAccountsSubtitle": "Log in to enjoy all functionalities of this app",
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
   "allowDelegationsToMe": "Allow others to delegate to me",
+
 
   // Notifications
   "Joined community": "Succesfully joined community %s",
