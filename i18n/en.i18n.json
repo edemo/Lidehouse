@@ -25,6 +25,12 @@
         "placeholder": "(pl. On sundays I like to play the piano. Sorry :) )"
       }
     },
+    "settings": {
+      "label": "Settings",
+      "delegationsEnabled": {
+        "label": "Allow incoming delegations"
+      }
+    },
     "emails": {
       "$": {
         "address": {

@@ -47,6 +47,6 @@ export const disable = new ValidatedMethod({
     if (value === false) {
       Delegations.remove({ targetUserId: userId });
     }
-    Meteor.users.update(userId, { $set: { 'settings.enabled': value } });
+    Meteor.users.update(userId, { $set: { 'settings.delegationsEnabled': value } });
   },
 });

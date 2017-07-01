@@ -25,6 +25,12 @@
         "placeholder": "(pl. Vasárnaponként szoktam gyakorolni zongorázni. Bocsi :) )"
       }
     },
+    "settings": {
+      "label": "Beálítások",
+      "delegationsEnabled": {
+        "label": "Bejövő meghatalmazások engedélyeyése"
+      }
+    },
     "emails": {
       "$": {
         "address": {

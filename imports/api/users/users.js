@@ -100,7 +100,7 @@ Meteor.users.schema = new SimpleSchema({
   },*/
   profile: { type: UserProfileSchema, optional: true },
   avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar },
-  status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline' },
+  status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', autoform: { omit: true } },
 
   emails: { type: Array },
   'emails.$': { type: Object },

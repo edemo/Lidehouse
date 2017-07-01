@@ -21,6 +21,10 @@ Template.User_delegations.onCreated(function onCreated() {
   this.subscribe('delegations.ofUser');
 });
 
+Template.User_delegations.onRendered(function onRendered() {
+  this.find('#allow').checked = Meteor.user().settings.delegationsEnabled;
+});
+
 Template.User_delegations.helpers({
   collection() {
     return Delegations;
@@ -114,8 +118,8 @@ Template.User_delegations.events({
       displayMessage('success', 'Delegation refused');
     });
   },
-  'click #allow'(event) {
-    const value = event.target.value === 'on';
+  'change #allow'(event) {
+    const value = event.target.checked;
     Meteor.call('delegations.enable', { value }, function(err, res) {
       if (err) {
         displayError(err);
@@ -123,7 +127,7 @@ Template.User_delegations.events({
       }
       displayMessage('success', `Delegations ${value ? 'enabled' : 'disabled'}`);
     });
-  }
+  },
 });
 
 AutoForm.hooks({
