@@ -50,4 +50,7 @@ Template.Vote_topics.events({
     const id = $(event.target).data('id');
     Session.set('selectedTopicId', id);
   },
+  'click .js-new-vote, click .js-vote-nope'(event) {
+    $('.js-new-vote')[0].classList.toggle('hidden');
+  },
 });
