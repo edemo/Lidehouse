@@ -53,7 +53,16 @@ Template.Msg_person.onCreated(function onMsgPersonCreated() {
 });
 
 Template.Msg_person.helpers({
+  /* statusCircleColor(status) {
+    switch (status) {
+      case 'online': return 'green';
+      case 'standby': return '#FFD801';
+      case 'offline': return 'white';
+      default: return 'pink';
+    }
+  },*/
   statusCircleParameters(status) {
+    const rubberDuckyYellow = '#FFD801';
     const params = {
       cx: '5',
       cy: '5',
@@ -61,7 +70,7 @@ Template.Msg_person.helpers({
     };
     switch (status) {
       case 'online': _.extend(params, { fill: 'green' }); break;
-      case 'standby': _.extend(params, { fill: 'yellow' }); break;
+      case 'standby': _.extend(params, { fill: rubberDuckyYellow }); break;
       case 'offline': _.extend(params, { fill: 'white', r: '4', stroke: 'black', 'stroke-width': '1' }); break;
       default: _.extend(params, { fill: 'pink' });
     }
