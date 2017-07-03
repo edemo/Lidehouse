@@ -8,6 +8,7 @@
 @base-link-color: #1885d8;
 @chat-avatar-size: 40px;
 @chat-avatar-margin: 15px;
+@text-alt: #535353;
 
 @status-uconf: #bdbdbd;
 @status-acc: rgba(112, 255, 11, 0.55);
@@ -55,6 +56,9 @@
 }
 .small-size {
   font-size: 11.7px;
+}
+.text-alt {
+  color: @text-alt;
 }
 
 body {
@@ -218,7 +222,7 @@ nav::after {
   margin-top: 50px;
   padding: 30px;
 }
-.page-board-new, .page-vote {
+.page-vote {
   @media screen and (max-width: 40em) {
     // padding-top: 50px;
   }
