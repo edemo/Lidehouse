@@ -30,7 +30,7 @@
     {{#if hasSelection}}
       <br><br><br>
       <p>{{_ 'edit'}}</p>
-      {{# autoForm id="afUpdateRoles" collection=collection schema=schema doc=selectedDoc type=formType template="bootstrap3-inline"}}
+      {{# autoForm id="afUpdateRoles" collection=collection schema=schema doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3-inline"}}
         {{> afQuickFields}}
         <div>
           <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
