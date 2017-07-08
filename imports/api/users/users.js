@@ -9,36 +9,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 
-/*
-// Code from https://github.com/aldeed/meteor-collection2
-
-export const CountrySchema = new SimpleSchema({
-  name: { type: String },
-  code: { type: String, regEx: /^[A-Z]{2}$/ },
-});
-
-export const UserProfileSchema = new SimpleSchema({
-  firstName: { type: String, optional: true },
-  lastName: { type: String, optional: true },
-  birthday: { type: Date, optional: true },
-  gender: { type: String, allowedValues: ['male', 'female'], optional: true },
-  organization: { type: String, optional: true },
-  website: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true },
-  bio: { type: String, optional: true },
-  country: { type: CountrySchema, optional: true },
-});
-*/
-
-const UserProfileSchema = new SimpleSchema({
-  firstName: { type: String },
-  lastName: { type: String },
-  bio: { type: String, optional: true },
-});
-
-const UserSettingsSchema = new SimpleSchema({
-  delegationsEnabled: { type: Boolean, defaultValue: true },
-});
-
 Meteor.users.helpers({
   memberships() {
     return Memberships.find({ userId: this._id });
@@ -80,6 +50,37 @@ Meteor.users.helpers({
   toString() {
     return this.fullName();
   },
+});
+
+/*
+// Code from https://github.com/aldeed/meteor-collection2
+
+export const CountrySchema = new SimpleSchema({
+  name: { type: String },
+  code: { type: String, regEx: /^[A-Z]{2}$/ },
+});
+
+export const UserProfileSchema = new SimpleSchema({
+  firstName: { type: String, optional: true },
+  lastName: { type: String, optional: true },
+  birthday: { type: Date, optional: true },
+  gender: { type: String, allowedValues: ['male', 'female'], optional: true },
+  organization: { type: String, optional: true },
+  website: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true },
+  bio: { type: String, optional: true },
+  country: { type: CountrySchema, optional: true },
+});
+*/
+
+const UserProfileSchema = new SimpleSchema({
+  firstName: { type: String },
+  lastName: { type: String },
+  bio: { type: String, optional: true },
+});
+
+const UserSettingsSchema = new SimpleSchema({
+  language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'en' },
+  delegationsEnabled: { type: Boolean, defaultValue: true },
 });
 
 const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';

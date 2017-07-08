@@ -20,7 +20,7 @@ export const invite = new ValidatedMethod({
     // so I can only add the user to the community on the server side (not nice)
     if (Meteor.isServer) {
       Accounts.sendEnrollmentEmail(userId);
-      insertMember.call({ userId, communityId });
+      insertMember.call({ userId, communityId, role: 'guest' });
     }
     return userId;
   },
