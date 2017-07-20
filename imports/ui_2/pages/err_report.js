@@ -7,11 +7,13 @@ import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/tickets/tickets.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { displayError } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '../modals/confirmation.js';
 
 Template.Err_report.onCreated(function () {
   this.autorun(() => {
@@ -73,10 +75,21 @@ Template.Err_report.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Meteor.call('topics.remove', { _id: id }, function(err, res) {
-      if (err) {
-        displayError(err);
-      }
-    });
+    const onOK = function () {
+      Meteor.call('topics.remove', { id }, function(err, res) {
+        if (err) {
+          Modal.hide();
+          displayError(err);
+        } else {
+          Modal.hide();
+          displayMessage('success', 'Delete succesful');
+        }
+      });
+    };
+    const modalContext = {
+      action: 'delete topic',
+      onOK,
+    };
+    Modal.show('Confirmation', modalContext);
   },
 });

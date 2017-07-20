@@ -2,40 +2,6 @@
   <div class="content-scrollable wrapper-form page-content autoform">
     <h1 class="page-title">{{_ 'roles'}}</h1>
     {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
-    <!--table class="table table-bordered table-condensed">
-      <thead>
-        <tr>
-          <td>{{_ 'user.username'}}</td>
-          <td>Jogosultság</td>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each roleships}}
-          <tr class="table-row {{#if isSelected}}selected{{/if}}">
-            <td><a href="{{pathFor 'Users.show' _id=this.userId}}">{{displayUsername this}}</a></td>
-            <td>{{displayRole this}}</td>
-            <td>
-              <a class="js-delete nav-item">
-              <span
-                class="icon-trash"
-                title={{_ 'topics.show.deleteShare'}}>
-              </span>
-              </a>
-            </td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table-->
     <button class="js-new btn-primary">{{_ 'createNew'}}</button>
-    {{#if hasSelection}}
-      <br><br><br>
-      <p>{{_ 'edit'}}</p>
-      {{# autoForm id="afUpdateRoles" collection=collection schema=schema doc=selectedDoc type=formType meteormethod="memberships.update" singleMethodArgument=true template="bootstrap3-inline"}}
-        {{> afQuickFields}}
-        <div>
-          <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
-        </div>
-      {{/autoForm}}
-    {{/if}}
   </div>
 </template>

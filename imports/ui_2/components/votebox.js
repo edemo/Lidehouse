@@ -8,6 +8,8 @@ import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '../modals/proposal-view.js';
 import '../components/votebox.html';
 import '../components/comments-section.js';
 
@@ -138,5 +140,12 @@ Template.Votebox.events({
     } else { // voteFinalized === true
       instance.state.set('voteFinalized', false);
     }
+  },
+  'click .js-view-proposal'(event, instance) {
+    const modalContext = {
+      title: 'előterjesztés megtekint',
+      content: 'Szavazás előterjesztés szövegei, ADA login ha lesz, Faliújság bővebb tartalom megtekintés',
+    };
+    Modal.show('Proposal_view', modalContext);
   },
 });
