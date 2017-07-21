@@ -23,7 +23,7 @@ import '/imports/ui_2/pages/msg_people.js';
 import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
 import '/imports/ui_2/pages/housing.js';
-import '/imports/ui_2/pages/err_report.js';
+import '/imports/ui_2/pages/tickets-report.js';
 import '/imports/ui_2/pages/document-store.js';
 import '/imports/ui_2/pages/styleguide.js';
 
@@ -107,13 +107,6 @@ FlowRouter.route('/user/:_id', {
   },
 });
 
-// the App_notFound template is used for unknown routes and missing topics
-FlowRouter.notFound = {
-  action() {
-    BlazeLayout.render('Custom_body', { main: 'App_notFound' });
-  },
-};
-
 FlowRouter.route('/board', {
   name: 'Board',
   action() {
@@ -157,9 +150,9 @@ FlowRouter.route('/housing', {
 });
 
 FlowRouter.route('/report', {
-  name: 'ErrorReport',
+  name: 'Tickets.report',
   action() {
-    BlazeLayout.render('Custom_body', { main: 'Err_report' });
+    BlazeLayout.render('Custom_body', { main: 'Tickets_report' });
   },
 });
 
@@ -176,3 +169,10 @@ FlowRouter.route('/styleguide', {
     BlazeLayout.render('Custom_body', { main: 'Styleguide' });
   },
 });
+
+// the App_notFound template is used for unknown routes and missing topics
+FlowRouter.notFound = {
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'App_notFound' });
+  },
+};

@@ -14,15 +14,15 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import '../modals/confirmation.js';
 
-import './err_report.html';
+import './tickets-report.html';
 
-Template.Err_report.onCreated(function () {
+Template.Tickets_report.onCreated(function () {
   this.autorun(() => {
     this.subscribe('topics.inCommunity', { communityId: Session.get('activeCommunityId') });
   });
 });
 
-Template.Err_report.helpers({
+Template.Tickets_report.helpers({
   ticketsCollection() {
     return Topics;
   },
@@ -66,7 +66,7 @@ Template.Err_report.helpers({
   },
 });
 
-Template.Err_report.events({
+Template.Tickets_report.events({
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
   },
