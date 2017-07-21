@@ -8,6 +8,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { ownershipColumns } from '/imports/api/memberships/tables.js';
@@ -44,7 +45,7 @@ Template.Parcel_owners_page.helpers({
 Template.Parcel_owners_page.events({
   'click .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
-      id: 'afOwnershipInsert',
+      id: 'af.ownership.insert',
       collection: Memberships,
       omitFields: ['communityId', 'parcelId', 'role'],
       type: 'method',
@@ -55,7 +56,7 @@ Template.Parcel_owners_page.events({
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
-      id: 'afOwnershipUpdate',
+      id: 'af.ownership.update',
       collection: Memberships,
       omitFields: ['communityId', 'parcelId', 'role'],
       doc: Memberships.findOne(id),
@@ -100,9 +101,9 @@ Template.Parcel_owners_page.events({
   */
 });
 
-AutoForm.addModalHooks('afOwnershipInsert');
-AutoForm.addModalHooks('afOwnershipUpdate');
-AutoForm.addHooks('afOwnershipInsert', {
+AutoForm.addModalHooks('af.ownership.insert');
+AutoForm.addModalHooks('af.ownership.update');
+AutoForm.addHooks('af.ownership.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.parcelId = FlowRouter.getParam('_pid');

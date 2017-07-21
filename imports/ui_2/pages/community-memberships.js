@@ -42,7 +42,7 @@ Template.Community_memberships_page.helpers({
 Template.Community_memberships_page.events({
   'click .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
-      id: 'afParcelInsert',
+      id: 'af.parcel.insert',
       collection: Parcels,
       type: 'method',
       meteormethod: 'parcels.insert',
@@ -52,7 +52,7 @@ Template.Community_memberships_page.events({
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
-      id: 'afParcelUpdate',
+      id: 'af.parcel.update',
       collection: Parcels,
       doc: Parcels.findOne(id),
       type: 'method-update',
@@ -96,9 +96,9 @@ Template.Community_memberships_page.events({
   */
 });
 
-AutoForm.addModalHooks('afParcelInsert');
-AutoForm.addModalHooks('afParcelUpdate');
-AutoForm.addHooks('afParcelInsert', {
+AutoForm.addModalHooks('af.parcel.insert');
+AutoForm.addModalHooks('af.parcel.update');
+AutoForm.addHooks('af.parcel.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;

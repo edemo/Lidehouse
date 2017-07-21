@@ -44,7 +44,7 @@ Template.Community_roleships_page.helpers({
 Template.Community_roleships_page.events({
   'click .js-new'() {
     Modal.show('Autoform_edit', {
-      id: 'afRoleshipInsert',
+      id: 'af.roleship.insert',
       collection: Memberships,
       omitFields: ['communityId', 'parcelId', 'ownership'],
       type: 'method',
@@ -55,7 +55,7 @@ Template.Community_roleships_page.events({
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
-      id: 'afRoleshipUpdate',
+      id: 'af.roleship.update',
       collection: Memberships,
       omitFields: ['communityId', 'parcelId', 'ownership'],
       doc: Memberships.findOne(id),
@@ -71,9 +71,9 @@ Template.Community_roleships_page.events({
   },
 });
 
-AutoForm.addModalHooks('afRoleshipInsert');
-AutoForm.addModalHooks('afRoleshipUpdate');
-AutoForm.addHooks('afRoleshipInsert', {
+AutoForm.addModalHooks('af.roleship.insert');
+AutoForm.addModalHooks('af.roleship.update');
+AutoForm.addHooks('af.roleship.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;

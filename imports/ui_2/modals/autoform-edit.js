@@ -4,10 +4,7 @@ import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
-import { TAPi18n } from 'meteor/tap:i18n';
 import './autoform-edit.html';
-
-const __ = TAPi18n.__;
 
 Template.Autoform_edit.helpers({
 });
@@ -19,8 +16,10 @@ AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
     },
     onSuccess(formType, result) {
       Modal.hide();
-      const actionName = afId.substring(2); // AutoFormId convention is 'afActionName'
-      displayMessage('success', __(actionName) + ' ' + __('successful'));
+      const split = afId.split('.'); // AutoFormId convention is 'af.object.action'
+      const objectName = split[1];
+      const actionName = split[2];
+      displayMessage('success', objectName + ' ' + actionName + ' successful');
     },
   });
 };
