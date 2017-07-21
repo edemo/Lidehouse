@@ -13,69 +13,34 @@ import { displayError } from '/imports/ui/lib/errors.js';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Roles } from '/imports/api/permissions/roles.js';
 import { roleshipColumns } from '/imports/api/memberships/tables.js';
+import { remove as removeMembership } from '/imports/api/memberships/methods.js';
 import '../modals/autoform-edit.js';
 import './community-roleships.html';
 
 const __ = TAPi18n.__;
 
-
 Template.Community_roleships_page.onCreated(function () {
 });
 
 Template.Community_roleships_page.helpers({
-  collection() {
-    return Memberships;
-  },
-  schema() {
-    return Memberships.schemaForRoleship;
-  },
-  roleships() {
-    const communityId = Session.get('activeCommunityId');
-    return Memberships.find({ communityId });
-  },
-  selectedDoc() {
-    return Memberships.findOne(Session.get('selectedMemberId'));
-  },
-  isSelected() {
-    return Session.equals('selectedMemberId', this._id);
-  },
-  formType() {
-    if (Session.get('selectedMemberId')) return 'method-update';
-    return 'disabled';
-  },
-  hasSelection() {
-    return !!Session.get('selectedMemberId');
-  },
-  displayUsername(membership) {
-    if (!membership.hasUser()) return '';
-    return membership.user().fullName();
-  },
-  displayRole(roleship) {
-    return roleship.role;
-  },
   reactiveTableDataFn() {
-    function getTableData() {
+    return () => {
       const communityId = Session.get('activeCommunityId');
-      return Memberships.find({ communityId }).fetch();
-    }
-    return getTableData;
+      return Memberships.find({ communityId, role: { $not: 'owner' } }).fetch();
+    };
   },
   optionsFn() {
-    function getOptions() {
+    return () => {
       return {
         columns: roleshipColumns(),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
-    }
-    return getOptions;
+    };
   },
 });
 
 Template.Community_roleships_page.events({
-  'click .table-row'() {
-    Session.set('selectedMemberId', this._id);
-  },
   'click .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'afModalInserter',
@@ -88,12 +53,11 @@ Template.Community_roleships_page.events({
   },
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
-    Session.set('selectedMemberId', id);
     Modal.show('Autoform_edit', {
       id: 'afModalUpdater',
       collection: Memberships,
       omitFields: ['communityId', 'parcelId', 'ownership'],
-      doc: Memberships.findOne(Session.get('selectedMemberId')),
+      doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
@@ -102,11 +66,6 @@ Template.Community_roleships_page.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Meteor.call('memberships.remove', { _id: id }, function cb(err, res) {
-      if (err) {
-        displayError(err);
-      }
-      Session.set('selectedMemberId', undefined);
-    });
+    Modal.confirmAndCall(removeMembership, { _id: id }, 'remove role');
   },
 });
