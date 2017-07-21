@@ -81,45 +81,25 @@ const OwnershipSchema = new SimpleSchema({
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
+    autoform: {
+      options() {
+        return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
+      },
+    },
+  },
+  role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); },
+    autoform: {
+      options() {
+        return Roles.find({}).map(function option(r) { return { label: __(r.name), value: r._id }; });
+      },
+    },
+  },
   // TODO should be conditional on role
   ownership: { type: OwnershipSchema, optional: true },
 });
 
 Memberships.attachSchema(Memberships.schema);
-
-// Next schemas are for the autoforms explicitly
-
-Memberships.schemaForRoleship = new SimpleSchema({
-  userId: { type: String,
-    optional: true,
-    autoform: {
-      options() {
-        return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
-      },
-    },
-  },
-  role: { type: String,
-    autoform: {
-      options() {
-        return Roles.find({}).map(function option(r) { return { label: __(r.name), value: r._id }; }); // _id === name BTW
-      },
-    },
-  },
-});
-
-Memberships.schemaForOwnership = new SimpleSchema({
-  userId: { type: String,
-    optional: true,
-    autoform: {
-      options() {
-        return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
-      },
-    },
-  },
-  ownership: { type: OwnershipSchema, optional: true },
-});
 
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,

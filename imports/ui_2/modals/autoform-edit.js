@@ -11,13 +11,27 @@ Template.Autoform_edit.helpers({
 });
 
 AutoForm.hooks({
-  afModalUpdater: {
-    onError: function onFormError(formType, error) {
+  afModalInserter: {
+    formToDoc(doc) {
+      doc.communityId = Session.get('activeCommunityId');
+      return doc;
+    },
+    onError(formType, error) {
       displayError(error);
     },
-    onSuccess: function onFormSuccess(formType, result) {
+    onSuccess(formType, result) {
       Modal.hide();
-      displayMessage('success', 'Edit succesful');
+      displayMessage('success', 'Insert successful');
+    },
+  },
+
+  afModalUpdater: {
+    onError(formType, error) {
+      displayError(error);
+    },
+    onSuccess(formType, result) {
+      Modal.hide();
+      displayMessage('success', 'Edit successful');
     },
   },
 });
