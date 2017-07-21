@@ -1,4 +1,5 @@
 import { TAPi18n } from 'meteor/tap:i18n';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 
 const __ = TAPi18n.__;
 
@@ -6,15 +7,23 @@ function translate(cellData, renderType, currentRow) {
   return __(cellData);
 }
 
+function renderEditButton(cellData, renderType, currentRow) {
+  const html = `<span data-id=${cellData} class="js-edit nav-item icon-edit"></span>`;
+  return html;
+}
+
+function renderAssignButton(cellData, renderType, currentRow) {
+  let html = `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
+  html += `<span data-id=${cellData} class="js-assign nav-item glyphicon glyphicon-user"></span>`;
+  html += `</a>`;
+  return html;
+}
+
 function renderDeleteButton(cellData, renderType, currentRow) {
   const html = `<span data-id=${cellData} class="js-delete nav-item icon-trash"></span>`;
   return html;
 }
 
-function renderEditButton(cellData, renderType, currentRow) {
-  const html = `<span data-id=${cellData} class="js-edit nav-item icon-edit"></span>`;
-  return html;
-}
 
 export function parcelColumns() {
   return [
@@ -26,6 +35,7 @@ export function parcelColumns() {
     { data: 'share()', title: __('parcels.units.label') },
     { data: 'ownerName()', title: __('owner') },
     { data: '_id', render: renderEditButton },
+    { data: '_id', render: renderAssignButton },
     { data: '_id', render: renderDeleteButton },
   ];
 }

@@ -32,21 +32,19 @@ Template.Err_report.helpers({
 //    new SimpleSchema({ });
   },
   activeTicketsDataFn() {
-    function getTableData() {
+    return () => {
       const communityId = Session.get('activeCommunityId');
       return Topics.find({ communityId, category: 'ticket', 'ticket.status': { $not: 'closed' } }).fetch();
-    }
-    return getTableData;
+    };
   },
   closedTicketsDataFn() {
-    function getTableData() {
+    return () => {
       const communityId = Session.get('activeCommunityId');
       return Topics.find({ communityId, category: 'ticket', 'ticket.status': 'closed' }).fetch();
-    }
-    return getTableData;
+    };
   },
   activeTicketsOptionsFn() {
-    function getOptions() {
+    return () => {
       return {
         columns: ticketColumns(),
         tableClasses: 'display',
@@ -55,18 +53,16 @@ Template.Err_report.helpers({
         paging: false,
         info: false,
       };
-    }
-    return getOptions;
+    };
   },
   closedTicketsOptionsFn() {
-    function getOptions() {
+    return () => {
       return {
         columns: ticketColumns(),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
-    }
-    return getOptions;
+    };
   },
 });
 

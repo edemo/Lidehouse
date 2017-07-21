@@ -44,7 +44,7 @@ Template.Community_roleships_page.helpers({
 Template.Community_roleships_page.events({
   'click .js-new'() {
     Modal.show('Autoform_edit', {
-      id: 'afModalInserter',
+      id: 'afRoleshipInsert',
       collection: Memberships,
       omitFields: ['communityId', 'parcelId', 'ownership'],
       type: 'method',
@@ -55,7 +55,7 @@ Template.Community_roleships_page.events({
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
-      id: 'afModalUpdater',
+      id: 'afRoleshipUpdate',
       collection: Memberships,
       omitFields: ['communityId', 'parcelId', 'ownership'],
       doc: Memberships.findOne(id),
@@ -68,5 +68,14 @@ Template.Community_roleships_page.events({
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeMembership, { _id: id }, 'remove role');
+  },
+});
+
+AutoForm.addModalHooks('afRoleshipInsert');
+AutoForm.addModalHooks('afRoleshipUpdate');
+AutoForm.addHooks('afRoleshipInsert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    return doc;
   },
 });

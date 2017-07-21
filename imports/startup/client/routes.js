@@ -15,6 +15,7 @@ import '/imports/ui_2/pages/communities-create.js';
 import '/imports/ui_2/pages/communities-join.js';
 import '/imports/ui_2/pages/community-memberships.js';
 import '/imports/ui_2/pages/community-roleships.js';
+import '/imports/ui_2/pages/parcel-owners.js';
 import '/imports/ui_2/pages/user-delegations.js';
 import '/imports/ui_2/pages/board.js';
 import '/imports/ui_2/pages/messenger.js';
@@ -63,6 +64,14 @@ FlowRouter.route('/roleships', {
     BlazeLayout.render('Custom_body', { main: 'Community_roleships_page' });
   },
 });
+
+FlowRouter.route('/owners/:_pid', {
+  name: 'Parcel.owners',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Parcel_owners_page' });
+  },
+});
+
 FlowRouter.route('/invite', {
   name: 'Invite',
   action() {

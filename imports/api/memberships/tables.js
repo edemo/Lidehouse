@@ -24,3 +24,12 @@ export function roleshipColumns() {
     { data: '_id', render: renderDeleteButton },
   ];
 }
+
+export function ownershipColumns() {
+  return [
+    { data: 'userName()', title: __('owner') },
+    { data: 'ownership.share', title: __('ownership.share') },
+    { data: '_id', render: renderEditButton },
+    { data: '_id', render: renderDeleteButton },
+  ];
+}
