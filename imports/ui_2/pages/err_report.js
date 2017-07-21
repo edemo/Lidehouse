@@ -1,5 +1,3 @@
-import './err_report.html';
-
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
@@ -13,7 +11,10 @@ import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import '../modals/confirmation.js';
+
+import './err_report.html';
 
 Template.Err_report.onCreated(function () {
   this.autorun(() => {
@@ -75,21 +76,6 @@ Template.Err_report.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    const onOK = function () {
-      Meteor.call('topics.remove', { id }, function(err, res) {
-        if (err) {
-          Modal.hide();
-          displayError(err);
-        } else {
-          Modal.hide();
-          displayMessage('success', 'Delete succesful');
-        }
-      });
-    };
-    const modalContext = {
-      action: 'delete topic',
-      onOK,
-    };
-    Modal.show('Confirmation', modalContext);
+    Modal.confirmAndCall(removeTopic, { id }, 'remove topic');
   },
 });
