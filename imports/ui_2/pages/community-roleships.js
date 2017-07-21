@@ -14,6 +14,7 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Roles } from '/imports/api/permissions/roles.js';
 import { roleshipColumns } from '/imports/api/memberships/tables.js';
 import { remove as removeMembership } from '/imports/api/memberships/methods.js';
+import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
 import './community-roleships.html';
 

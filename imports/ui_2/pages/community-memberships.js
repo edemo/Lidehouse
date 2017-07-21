@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
@@ -12,77 +13,57 @@ import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { parcelColumns } from '/imports/api/parcels/tables.js';
 import { Fraction } from 'fractional';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '../modals/confirmation.js';
+import '../modals/autoform-edit.js';
 import './community-memberships.html';
 
 Template.Community_memberships_page.onCreated(function () {
 });
 
 Template.Community_memberships_page.helpers({
-  parcels() {
-    return Parcels;
-  },
-  memberships() {
-    return Memberships;
-  },
-  ownershipSchema() {
-    return Memberships.schemaForOwnership;
-  },
-  selectedDoc() {
-    return Parcels.findOne(Session.get('selectedParcelId'));
-  },
-  isSelected() {
-    return Session.equals('selectedParcelId', this._id);
-  },
-  formType() {
-    if (Session.get('selectedParcelId')) return 'method-update';
-    return 'disabled';
-  },
-  hasSelection() {
-    return !!Session.get('selectedParcelId');
-  },
   reactiveTableDataFn() {
-    function getTableData() {
+    return () => {
       const communityId = Session.get('activeCommunityId');
       return Parcels.find({ communityId }).fetch();
-    }
-    return getTableData;
+    };
   },
   optionsFn() {
-    function getOptions() {
+    return () => {
       return {
         columns: parcelColumns(),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
-    }
-    return getOptions;
+    };
   },
 });
 
 Template.Community_memberships_page.events({
   'click .js-new'(event, instance) {
-    const communityId = Session.get('activeCommunityId');
-    Meteor.call('parcels.insert', { communityId }, function(err, res) {
-      if (err) {
-        displayError(err);
-        return;
-      }
-      const parcelId = res;
-      Session.set('selectedParcelId', parcelId);
+    Modal.show('Autoform_edit', {
+      id: 'afModalInserter',
+      collection: Parcels,
+      type: 'method',
+      meteormethod: 'parcels.insert',
+      template: 'bootstrap3-inline',
     });
   },
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
-    Session.set('selectedParcelId', id);
+    Modal.show('Autoform_edit', {
+      id: 'afModalUpdater',
+      collection: Parcels,
+      doc: Parcels.findOne(id),
+      type: 'method-update',
+      meteormethod: 'parcels.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Meteor.call('parcels.remove', { _id: id }, function(err, res) {
-      if (err) {
-        displayError(err);
-      }
-      Session.set('selectedParcelId', undefined);
-    });
+    Modal.confirmAndCall(removeParcel, { _id: id }, 'remove parcel');
   },
   'click .js-assign'(event) {
     const communityId = Session.get('activeCommunityId');
