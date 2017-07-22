@@ -41,35 +41,31 @@ export const insert = new ValidatedMethod({
 export const update = new ValidatedMethod({
   name: 'topics.update',
   validate: new SimpleSchema({
-    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    newTitle: Topics.simpleSchema().schema('title'),
-    newText: Topics.simpleSchema().schema('text'),
-  }).validator(),
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    modifier: { type: Object, blackbox: true },
+  }).validator({ clean: true }),
 
-  run({ topicId, newTitle, newText }) {
-    const topic = Topics.findOne(topicId);
+  run({ _id, modifier }) {
+    const topic = Topics.findOne(_id);
     if (!topic) {
       throw new Meteor.Error('err_invalidId', 'No such object',
-        `Method: topics.update, Collection: topics, id: ${topicId}`
+        `Method: topics.update, Collection: topics, id: ${_id}`
       );
     }
 
     if (!topic.editableBy(this.userId)) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: topics.update, userId: ${this.userId}, topicId: ${topicId}`);
+        `Method: topics.update, userId: ${this.userId}, topicId: ${_id}`);
     }
 
     // XXX the security check above is not atomic, so in theory a race condition could
     // result in exposing private data
 
-    const topicModifier = {
-      $set: { title: newTitle, text: newText },
-    };
 
-    Topics.update(topicId, topicModifier, function handle(err, res) {
+    Topics.update({ _id }, modifier, function handle(err, res) {
       if (err) {
         throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
-        `Method: topics.update, userId: ${this.userId}, topicId: ${topicId}`);
+        `Method: topics.update, userId: ${this.userId}, topicId: ${_id}`);
       }
       debugAssert(res === 1);
     });
@@ -77,33 +73,33 @@ export const update = new ValidatedMethod({
 });
 
 const TOPIC_ID_ONLY = new SimpleSchema({
-  id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  _id: { type: String, regEx: SimpleSchema.RegEx.Id },
 }).validator();
 
 export const remove = new ValidatedMethod({
   name: 'topics.remove',
   validate: TOPIC_ID_ONLY,
 
-  run({ id }) {
-    const topic = Topics.findOne(id);
+  run({ _id }) {
+    const topic = Topics.findOne(_id);
     if (!topic) {
       throw new Meteor.Error('err_invalidId', 'No such object',
-        `Method: topics.remove, Collection: topics, id: ${id}`
+        `Method: topics.remove, Collection: topics, id: ${_id}`
       );
     }
 
     if (!topic.editableBy(this.userId)) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: topics.remove, userId: ${this.userId}, id: ${id}`);
+        `Method: topics.remove, userId: ${this.userId}, id: ${_id}`);
     }
 
     // XXX the security check above is not atomic, so in theory a race condition could
     // result in exposing private data
 
-    Topics.remove(id, function handle(err, res) {
+    Topics.remove(_id, function handle(err, res) {
       if (err) {
         throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
-        `Method: topics.remove, userId: ${this.userId}, id: ${id}`);
+        `Method: topics.remove, userId: ${this.userId}, id: ${_id}`);
       }
       debugAssert(res === 1);
     });
