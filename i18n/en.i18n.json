@@ -43,16 +43,17 @@
       }
     }
   },
-  "topics": {
+  "schemaTickets": {
     "title": {
       "label": "Short description"
     },
     "text": {
-      "label": "Full description"
+      "label": "Details"
     },
     "ticket": {
+      "label": "Ticket",
       "type": {
-        "label": "Kind of problem"
+        "label": "Type of problem"
       },
       "urgency": {
         "label": "Urgency"

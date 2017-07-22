@@ -45,11 +45,15 @@ Topics.schema = new SimpleSchema({
   category: { type: String, allowedValues: ['forum', 'vote', 'news', 'ticket', 'room'] },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, optional: true },
-  closed: { type: Boolean, defaultValue: false },
+  closed: { type: Boolean, optional: true, defaultValue: false },
 });
 
 Topics.attachSchema(Topics.schema);
 Topics.attachSchema(Timestamps);
+
+Meteor.startup(function attach() {
+  Topics.simpleSchema().i18n('schemaTopics');
+});
 
 // Deny all client-side updates since we will be using methods to manage this collection
 Topics.deny({

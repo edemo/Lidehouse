@@ -1,9 +1,17 @@
 Common bugs, symptoms and causes:
 
+You don't see data on the UI, that should be there
+- You are not subscribed to it. Check the mongo db, if its there, then this is the case.
+  Check what subscriptions are active in Mongol.
+- Possible that you are subscribed, but the subscription doesn't publish the fields you are looking for.
+  Check the subscription's code.
+
 Exception while trying to find an element by id
 - You are using Collection.find(_id) instead of Collection.findOne(_id)
-  find returns a Cursor, findOne returns an Document
+  find() returns a Cursor, that can be fetch()-ed, findOne() returns an actual Document.
 
 Translation of autoform fields doesn't show for you language
-- You have 'collection.field.label' translated in that language, but not in english.
+- You have accidentally overridden the translation, eg had "topic" as object, so "topic.text.label" was a translated field,
+  but then you put in a translation for "topic". This replaces the whole "topic" object, so those translations are lost.
+- You have "collection.field.label" translated in your language, but not in english.
   The field path has to be translated into english (even if thats just the same as key) for autoform-i18n to work.

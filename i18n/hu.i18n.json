@@ -44,14 +44,15 @@
     }
   },
 
-  "topics": {
+  "schemaTickets": {
     "title": {
-      "label": "Rövid leírás"
+      "label": "Hiba rövid leírása"
     },
     "text": {
-      "label": "Szöveg"
+      "label": "Részletek"
     },
     "ticket": {
+      "label": "Hibajegy",
       "type": {
         "label": "Hiba típusa"
       },
@@ -157,6 +158,8 @@
   "finalize": "Véglegesítem",
   "change": "Megváltoztatom",
   "new": "Új",
+  
+  "editing data": "Adatok szerkesztése",
 
   // voting
   "yes": "igen",

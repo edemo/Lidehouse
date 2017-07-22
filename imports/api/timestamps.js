@@ -6,27 +6,31 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 // Collection.attachSchema(Collection.schema);
 // Collection.attachSchema(Timestamps);
 //
-// This way Timestamps are added in additon to the normal schema
+// Deprecated: This way Timestamps are added in additon to the normal schema
 // And when you validate the inserting ValidatedMethod parameters you can use
 // Collection.schema.validator({ clean: true })
 // so you validate against the timestamp-less schema.
 // That is important because the timestamp autoValues will only be added
 // when the insert, update database operations happen (done by aldeed:collection2)
-
+//
+// New way: createdAt is optional: true, so validation doesn't complain
+//
 export const Timestamps = new SimpleSchema({
   createdAt: {
     type: Date,
-    denyUpdate: true,
+    optional: true,
     autoValue() {
       if (this.isInsert) {
         return new Date();
       }
-      return undefined;   // so it leaves it alone
+      return undefined;   // means leave it alone
     },
+    denyUpdate: true,
     autoform: { omit: true },
   },
   updatedAt: {
     type: Date,
+    optional: true,
     autoValue() {
       return new Date();
     },

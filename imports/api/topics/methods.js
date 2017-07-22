@@ -8,10 +8,14 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from './topics.js';
+// In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
+import './rooms/rooms.js';
+import './tickets/tickets.js';
+import './votings/votings.js';
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
-  validate: Topics.schema.validator({ clean: true }),
+  validate: Topics.simpleSchema().validator({}),
 
   run(doc) {
     const existingDoc = doc._id ? Topics.findOne(doc._id) : undefined;
@@ -43,7 +47,7 @@ export const update = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
-  }).validator({ clean: true }),
+  }).validator({}),
 
   run({ _id, modifier }) {
     const topic = Topics.findOne(_id);

@@ -23,12 +23,12 @@ function renderEditButton(cellData, renderType, currentRow) {
 
 export function ticketColumns() {
   return [
-    { data: 'title', title: __('topics.title.label') },
-    { data: 'ticket.type', title: __('topics.ticket.type.label'), render: translate },
+    { data: 'title', title: __('schemaTickets.title.label') },
+    { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: translate },
     { data: 'createdBy()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: formatTime },
-    { data: 'ticket.urgency', title: __('topics.ticket.urgency.label'), render: translate },
-    { data: 'ticket.status', title: __('topics.ticket.status.label'), render: translate },
+    { data: 'ticket.urgency', title: __('schemaTickets.ticket.urgency.label'), render: translate },
+    { data: 'ticket.status', title: __('schemaTickets.ticket.status.label'), render: translate },
     { data: '_id', render: renderEditButton },
     { data: '_id', render: renderDeleteButton },
   ];
