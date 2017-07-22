@@ -127,3 +127,12 @@ AutoForm.addHooks('af.delegation.insert', {
     return doc;
   },
 });
+AutoForm.addHooks('af.delegation.insert', {
+  onError(formType, error) {
+    if (error.error === 'err_otherPartyNotAllowed') {
+      displayMessage('warning', 'Other party not allowed this activity');
+      return;
+    }
+    displayError(error);
+  },
+}, true);

@@ -212,7 +212,8 @@
   "This operation requires that you log in": "Ehhez a művelethez be kell jelentkeznie",
   "err_databaseWriteFailed": "Adatbázis írás sikertelen",
   "Database write failed": "Adatbázis írás sikertelen",
-
+  "err_otherPartyNotAllowed": "Nincs engedélyezve a másik fél részéről",
+  "Other party not allowed this activity": "A másik fél nem engedélyezte ezt a műveletet.",
   "No active": "Nincs aktív",
 
   "logout": "kilépés",

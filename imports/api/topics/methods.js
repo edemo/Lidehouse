@@ -14,8 +14,8 @@ export const insert = new ValidatedMethod({
   validate: Topics.schema.validator({ clean: true }),
 
   run(doc) {
-    const topic = doc._id ? Topics.findOne(doc._id) : undefined;
-    if (topic) {
+    const existingDoc = doc._id ? Topics.findOne(doc._id) : undefined;
+    if (existingDoc) {
       throw new Meteor.Error('err_duplicateId', 'This id is already used',
         `Method: topics.insert, Collection: topics, id: ${doc._id}`
       );

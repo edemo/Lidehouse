@@ -9,6 +9,18 @@ export const insert = new ValidatedMethod({
   validate: Delegations.schema.validator({ clean: true }),
 
   run(doc) {
+//    const user = Meteor.users.findOne(this.userId);
+    if (this.userId !== doc.sourceUserId) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: delegations.insert, doc: {${doc}}`);
+    }
+
+    const targetUser = Meteor.users.findOne(doc.targetUserId);
+    if (!targetUser.settings.delegationsAllowed) {
+      throw new Meteor.Error('err_otherPartyNotAllowed', 'Other party not allowed this activity',
+        `Method: delegations.insert, doc: {${doc}}`);
+    }
+
     return Delegations.insert(doc);
   },
 });
