@@ -29,6 +29,10 @@ Template.User_delegations.onRendered(function onRendered() {
   });
 });
 
+Template.registerHelper('fromSession', function(paramName) {
+  return Session.get(paramName);
+});
+
 Template.User_delegations.helpers({
   delegationsFromMeDataFn() {
     return () => {

@@ -3,11 +3,13 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 import 'meteor/accounts-base';
+import { Fraction } from 'fractional';
 
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
+import { Delegations } from '/imports/api/delegations/delegations.js';
 
 Meteor.users.helpers({
   memberships() {
@@ -33,6 +35,26 @@ Meteor.users.helpers({
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
     console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
     return result;
+  },
+  totalOwnedUnits(communityId) {
+    let total = 0;
+    this.ownerships(communityId).map(function addUpUnits(m) { total += m.votingUnits(); });
+    return total;
+  },
+  totalDelegatedToMeUnits(communityId) {
+    let total = 0;
+    // TODO: needs traversing calculation
+    Delegations.find({ targetUserId: this._id }).map(function addUpUnits(d) {
+      const m = Memberships.findOne(d.objectId);
+      total += m.votingUnits();
+    });
+    return total;
+  },
+  totalVotingPower(communityId) {
+    const community = Communities.findOne(communityId);
+    if (!community) return new Fraction(0);
+    const totalVotingUnits = this.totalOwnedUnits(communityId) + this.totalDelegatedToMeUnits(communityId);
+    return new Fraction(totalVotingUnits, community.totalunits);
   },
   fullName() {
     if (this.profile && this.profile.lastName && this.profile.firstName) {

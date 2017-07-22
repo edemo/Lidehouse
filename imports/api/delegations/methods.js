@@ -9,12 +9,13 @@ export const insert = new ValidatedMethod({
   validate: Delegations.schema.validator({ clean: true }),
 
   run(doc) {
-//    const user = Meteor.users.findOne(this.userId);
+    // User can only delegate his own votes
     if (this.userId !== doc.sourceUserId) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
         `Method: delegations.insert, doc: {${doc}}`);
     }
 
+    // User can only delegate to those who allow incoming delegations
     const targetUser = Meteor.users.findOne(doc.targetUserId);
     if (!targetUser.settings.delegationsAllowed) {
       throw new Meteor.Error('err_otherPartyNotAllowed', 'Other party not allowed this activity',

@@ -51,6 +51,18 @@
                 </form>
                 <br>
                 {{> ReactiveDatatable tableData=delegationsToMeDataFn options=delegationsToMeOptionsFn}}
+                <br>
+                <!-- voting power -->
+                <div class="row margined-row">
+                  <div class="col-xs-12 text-center">
+                    <p>{{_ 'Your voting power'}}:
+                      {{currentUser.totalOwnedUnits (fromSession 'activeCommunityId')}} {{_ 'from own voting units'}},
+                      {{currentUser.totalDelegatedToMeUnits (fromSession 'activeCommunityId')}} {{_ 'from delegated voting units'}}.
+                      <span style="{ font-weight: bold; }">{{_ 'In total'}}: {{currentUser.totalVotingPower (fromSession 'activeCommunityId')}}
+                      </span>
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
