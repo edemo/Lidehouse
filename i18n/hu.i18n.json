@@ -27,8 +27,8 @@
     },
     "settings": {
       "label": "Beálítások",
-      "delegationsEnabled": {
-        "label": "Bejövő meghatalmazások engedélyeyése"
+      "delegationsAllowed": {
+        "label": "Bejövő meghatalmazások engedélyezése"
       }
     },
     "emails": {
@@ -137,6 +137,8 @@
   "closes": "lezárul",
 
   // commands
+  "ok": "OK",
+  "cancel": "Mégse",
   "save": "Mentés",
   "delete": "Törlés",
   "remove": "Eltávolítás",
@@ -241,5 +243,11 @@
   "Delegations disabled": "Bejövő meghatalmazások visszautasítva",
   "Delegation saved": "Meghatalmazás elmentve",
   "Delegation revoked": "Meghatalmazás visszavonva",
-  "Delegation refused": "Meghatalmazás visszautasítva"
+  "Delegation refused": "Meghatalmazás visszautasítva",
+
+  "Are you sure you want to": "Biztos benne, hogy",
+  "enableDelegations": "engedélyezi a bejövő meghatalmazásokat",
+  "disableDelegations": "visszautasítja a bejövő meghatalmazásokat",
+  "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
+  "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást."
 }

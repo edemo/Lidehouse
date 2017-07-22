@@ -36,8 +36,8 @@ export const remove = new ValidatedMethod({
   },
 });
 
-export const disable = new ValidatedMethod({
-  name: 'delegations.enable',
+export const allow = new ValidatedMethod({
+  name: 'delegations.allow',
   validate: new SimpleSchema({
     value: { type: Boolean },
   }).validator(),
@@ -47,6 +47,6 @@ export const disable = new ValidatedMethod({
     if (value === false) {
       Delegations.remove({ targetUserId: userId });
     }
-    Meteor.users.update(userId, { $set: { 'settings.delegationsEnabled': value } });
+    Meteor.users.update(userId, { $set: { 'settings.delegationsAllowed': value } });
   },
 });

@@ -12,9 +12,10 @@ Template.Confirmation.events({
   },
 });
 
-Modal.confirmAndCall = function (func, params, actionName) {
+Modal.confirmAndCall = function (func, params, options) {
   Modal.show('Confirmation', {
-    action: actionName,
+    action: options.action,
+    body: options.message,
     onOK() {
       func.call(params, function (err, res) {
         if (err) {
@@ -22,7 +23,7 @@ Modal.confirmAndCall = function (func, params, actionName) {
           displayError(err);
         } else {
           Modal.hide();
-          displayMessage('success', actionName + ' succesful');
+          displayMessage('success', options.notification || `${options.action} successful`);
         }
       });
     },

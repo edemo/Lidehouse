@@ -10,7 +10,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { remove as removeDelegation } from '/imports/api/delegations/methods.js';
+import { remove as removeDelegation, allow as allowDelegations } from '/imports/api/delegations/methods.js';
 import { delegationFromMeColumns, delegationToMeColumns } from '/imports/api/delegations/tables.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/confirmation.js';
@@ -23,7 +23,10 @@ Template.User_delegations.onCreated(function onCreated() {
 });
 
 Template.User_delegations.onRendered(function onRendered() {
-  this.find('#allow').checked = Meteor.user().settings.delegationsEnabled;
+  const allowCheckbox = this.find('#allow');
+  this.autorun(() => {
+    allowCheckbox.checked = Meteor.user().settings.delegationsAllowed;
+  });
 });
 
 Template.User_delegations.helpers({
@@ -101,14 +104,16 @@ Template.User_delegations.events({
       displayMessage('success', 'Delegation refused');
     });
   },
-  'change #allow'(event) {
+  'click #allow'(event) {
+    event.preventDefault();
     const value = event.target.checked;
-    Meteor.call('delegations.enable', { value }, function(err, res) {
-      if (err) {
-        displayError(err);
-        return;
-      }
-      displayMessage('success', `Delegations ${value ? 'enabled' : 'disabled'}`);
+    const message = value ?
+      'This will let others to delegate to you':
+      'This will refuse all existing delegations';
+    Modal.confirmAndCall(allowDelegations, { value }, {
+      action: value ? 'enableDelegations' : 'disableDelegations',
+      message,
+      notification: `Delegations ${value ? 'enabled' : 'disabled'}`,
     });
   },
 });
