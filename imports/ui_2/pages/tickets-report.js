@@ -60,14 +60,25 @@ Template.Tickets_report.helpers({
   },
 });
 
+const ticketReportSchema = new SimpleSchema({
+  title: { type: String, max: 100, optional: true },
+  text: { type: String, max: 5000, optional: true },
+  ticket: { type: ticketSchema, optional: true },
+});
+
 Template.Tickets_report.events({
+  'click .js-new'() {
+    Modal.show('Autoform_edit', {
+      id: 'af.ticket.insert',
+      collection: Topics,
+      schema: ticketReportSchema,
+      type: 'method',
+      meteormethod: 'topics.insert',
+      template: 'bootstrap3-inline',
+    });
+  },
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
-    const ticketReportSchema = new SimpleSchema({
-      title: { type: String, max: 100, optional: true },
-      text: { type: String, max: 5000, optional: true },
-      ticket: { type: ticketSchema, optional: true },
-    });
     Modal.show('Autoform_edit', {
       id: 'af.ticket.update',
       collection: Topics,

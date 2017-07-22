@@ -127,6 +127,7 @@
   "memberships": "tagságok",
   "ownership": "tulajdon",
   "ownerships": "tulajdonok",
+  "ticket": "hibajegy",
   "data": "adatok",
   "uploads": "dokumentumtár",
   "upload": "feltöltés",
@@ -153,6 +154,7 @@
   "send": "Elküldés",
   "finalize": "Véglegesítem",
   "change": "Megváltoztatom",
+  "new": "Új",
 
   // voting
   "yes": "igen",
