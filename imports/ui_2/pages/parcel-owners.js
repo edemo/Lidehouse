@@ -22,6 +22,11 @@ Template.Parcel_owners_page.onCreated(function () {
 });
 
 Template.Parcel_owners_page.helpers({
+  display() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    return parcel.toString();
+  },
   reactiveTableDataFn() {
     return () => {
       const parcelId = FlowRouter.getParam('_pid');

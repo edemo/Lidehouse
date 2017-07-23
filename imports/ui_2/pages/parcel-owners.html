@@ -1,7 +1,8 @@
 <template name="Parcel_owners_page">
   <div class="content-scrollable wrapper-form page-content autoform page-comm-memberships">
     <div class="white-box text-center">
-      <h1 class="page-title">{{_ 'parcelOwners'}}</h1>
+      <h1 class="page-title">{{_ "parcel"}}{{_"'s owners"}}</h1>
+      <h2 class="page-title">{{display}}</h2>
       <div class="table-responsive">
         {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
       </div>
