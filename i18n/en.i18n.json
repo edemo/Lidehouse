@@ -43,12 +43,34 @@
       }
     }
   },
-  "schemaTickets": {
+  "schemaTopics": {
     "title": {
-      "label": "Short description"
+      "label": "Title",
+      "placeholder": "Short summary"
     },
     "text": {
-      "label": "Details"
+      "label": "Details",
+      "placeholder": "Longer description (if needed)..."
+    }
+  },
+  "schemaVotings": {
+    "title": {
+      "label": "Voting",
+      "placeholder": "(eg. Should we paint the house blue?)"
+    },
+    "text": {
+      "label": "Details",
+      "placeholder": "Longer description (if needed)..."
+    }
+  },
+  "schemaTickets": {
+    "title": {
+      "label": "Problem description",
+      "placeholder": "(eg. Elevator out of order)"
+    },
+    "text": {
+      "label": "Details",
+      "placeholder": "Longer description (if needed)..."
     },
     "ticket": {
       "label": "Ticket",

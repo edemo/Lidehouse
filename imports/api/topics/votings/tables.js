@@ -5,7 +5,7 @@ const __ = TAPi18n.__;
 
 export function voteColumns() {
   return [
-    { data: 'title', title: __('topics.title.label') },
+    { data: 'title', title: __('schemaVotings.title.label') },
     { data: 'createdBy()', title: __('createdBy') },
     { data: 'createdAt', title: __('createdAt'), render: Render.formatTime },
     { data: '_id', render: Render.buttonView },

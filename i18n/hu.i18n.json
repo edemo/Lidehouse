@@ -43,12 +43,34 @@
       }
     }
   },
-  "schemaTickets": {
+  "schemaTopics": {
     "title": {
-      "label": "Hiba rövid leírása"
+      "label": "Cím",
+      "placeholder": "Rövid összefoglalás"
     },
     "text": {
-      "label": "Részletek"
+      "label": "Részletek",
+      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+    }
+  },
+  "schemaVotings": {
+    "title": {
+      "label": "Szavazás",
+      "placeholder": "(pl. Fessük-e a falat kékre?)"
+    },
+    "text": {
+      "label": "Részletek",
+      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+    }
+  },
+  "schemaTickets": {
+    "title": {
+      "label": "Hiba rövid leírása",
+      "placeholder": "(pl. Elromlott a lift)"
+    },
+    "text": {
+      "label": "Részletek",
+      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
     },
     "ticket": {
       "label": "Hibajegy",
