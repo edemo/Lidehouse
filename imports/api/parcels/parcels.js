@@ -10,7 +10,11 @@ import { Roles } from '/imports/api/permissions/roles.js';
 import { Fraction } from 'fractional';
 import { Factory } from 'meteor/dburles:factory';
 
+const __ = TAPi18n.__;
+
 export const Parcels = new Mongo.Collection('parcels');
+
+Parcels.types = ['flat', 'parking', 'storage'];
 
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
@@ -31,7 +35,13 @@ Parcels.schema = new SimpleSchema({
   // TODO: move these into the House package
   floor: { type: String, optional: true },
   number: { type: String, optional: true },
-  type: { type: String, allowedValues: ['flat', 'parking', 'storage'], optional: true },
+  type: { type: String, optional: true, allowedValues: Parcels.types,
+    autoform: {
+      options() {
+        return Parcels.types.map(function option(t) { return { label: __(t), value: t }; });
+      },
+    },
+  },
   lot: { type: String, max: 100, optional: true },
   size: { type: Number, decimal: true, optional: true },
 });
