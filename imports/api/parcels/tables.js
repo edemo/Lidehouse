@@ -27,12 +27,12 @@ function renderDeleteButton(cellData, renderType, currentRow) {
 
 export function parcelColumns() {
   return [
-    { data: 'serial', title: __('parcels.serial.label') },
-    { data: 'location()', title: __('parcels.location.label') },
-    { data: 'type', title: __('parcels.type.label'), render: translate },
-    { data: 'lot', title: __('parcels.lot.label') },
-    { data: 'size', title: __('parcels.size.label') },
-    { data: 'share()', title: __('parcels.units.label') },
+    { data: 'serial', title: __('schemaParcels.serial.label') },
+    { data: 'location()', title: __('schemaParcels.location.label') },
+    { data: 'type', title: __('schemaParcels.type.label'), render: translate },
+    { data: 'lot', title: __('schemaParcels.lot.label') },
+    { data: 'size', title: __('schemaParcels.size.label') },
+    { data: 'share()', title: __('schemaParcels.units.label') },
     { data: 'ownerName()', title: __('owner') },
     { data: '_id', render: renderEditButton },
     { data: '_id', render: renderAssignButton },

@@ -14,7 +14,7 @@ export const HouseTranslation = {
     "parking": "Parking",
     "storage": "Stroage",
 
-    "communities": {
+    "schemaCommunities": {
       "name": {
         "label": "Name of the Building",
         "placeholder": "(eg. Marina Gardens)"
@@ -48,7 +48,7 @@ export const HouseTranslation = {
         "placeholder": "(eg. 10000)"
       }
     },
-    "parcels": {
+    "schemaParcels": {
       "label": "Parcel",
       "serial": {
         "label": "Serial No",
@@ -96,7 +96,7 @@ export const HouseTranslation = {
     "parking": "Parkoló",
     "storage": "Tároló",
 
-    "communities": {
+    "schemaCommunities": {
       "name": {
         "label": "Társasház neve",
         "placeholder": "(pl. Rózsakert lakópark vagy Kankalin u 45)"
@@ -130,7 +130,7 @@ export const HouseTranslation = {
         "placeholder": "(pl. 1000 vagy 9999)"
       }
     },
-    "parcels": {
+    "schemaParcels": {
       "label": "Albetét",
       "serial": {
         "label": "Sorszám",

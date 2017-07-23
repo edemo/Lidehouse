@@ -1,5 +1,9 @@
 Common bugs, symptoms and causes:
 
+Application crashes. (You recently edited the translations)
+- You miss a comma, or have an extra comma somewhere.
+  The JSON files don't tolerate trailing commas. Last property cannot end with comma, the others have to.
+
 You don't see data on the UI, that should be there
 - You are not subscribed to it. Check the mongo db, if its there, then this is the case.
   Check what subscriptions are active in Mongol.

@@ -55,5 +55,5 @@ Delegations.attachSchema(Delegations.schema);
 Delegations.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
-  Delegations.simpleSchema().i18n('delegations');
+  Delegations.simpleSchema().i18n('schemaDelegations');
 });

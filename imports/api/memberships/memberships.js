@@ -105,7 +105,7 @@ Memberships.attachSchema(Memberships.schema);
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
 // and that happens earlier than TAPi18n extra comtype transaltions get added.
 Meteor.startup(function attach() {
-  Memberships.simpleSchema().i18n('memberships');
+  Memberships.simpleSchema().i18n('schemaMemberships');
 });
 
 // Deny all client-side updates since we will be using methods to manage this collection

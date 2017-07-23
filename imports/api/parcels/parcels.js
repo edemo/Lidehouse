@@ -70,7 +70,7 @@ Parcels.schema = new SimpleSchema({
 Parcels.attachSchema(Parcels.schema);
 
 Meteor.startup(function attach() {
-  Parcels.simpleSchema().i18n('parcels');
+  Parcels.simpleSchema().i18n('schemaParcels');
 });
 
 // Deny all client-side updates since we will be using methods to manage this collection

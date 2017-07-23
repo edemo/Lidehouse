@@ -1,6 +1,6 @@
 {
-  // api
-  "users": {
+  // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaUsers": {
     "username": {
       "label": "Username",
       "placeholder": "(eg. Mike75)"
@@ -63,8 +63,21 @@
       }
     }
   },
-
-  "delegations": {
+  "schemaMemberships" : {
+    "userId": {
+      "label": "User"
+    },
+    "role": {
+      "label": "Role"
+    },
+    "ownership": {
+      "label": "Owner",
+      "share": {
+        "label": "Ownership share"
+      }
+    }
+  },
+  "schemaDelegations": {
     "sourceUserId": {
       "label": "Delegator",
       "placeholder": "(eg. Mike75)"

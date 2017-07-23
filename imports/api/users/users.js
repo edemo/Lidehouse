@@ -144,7 +144,7 @@ Meteor.users.attachSchema(Meteor.users.schema);
 Meteor.users.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
-  Meteor.users.simpleSchema().i18n('users');
+  Meteor.users.simpleSchema().i18n('schemaUsers');
 });
 
 // Deny all client-side updates since we will be using methods to manage this collection

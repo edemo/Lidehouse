@@ -19,9 +19,9 @@ function renderRefuseButton(cellData, renderType, currentRow) {
 
 export function delegationFromMeColumns() {
   return [
-    { data: 'object()', title: __('delegations.objectId.label') },
+    { data: 'object()', title: __('schemaDelegations.objectId.label') },
     { data: 'votingShare()', title: __('votingShare') },
-    { data: 'targetUser()', title: __('delegations.targetUserId.label') },
+    { data: 'targetUser()', title: __('schemaDelegations.targetUserId.label') },
     { data: '_id', render: renderEditButton },
     { data: '_id', render: renderDeleteButton },
   ];
@@ -29,8 +29,8 @@ export function delegationFromMeColumns() {
 
 export function delegationToMeColumns() {
   return [
-    { data: 'sourceUser()', title: __('delegations.sourceUserId.label') },
-    { data: 'object()', title: __('delegations.objectId.label') },
+    { data: 'sourceUser()', title: __('schemaDelegations.sourceUserId.label') },
+    { data: 'object()', title: __('schemaDelegations.objectId.label') },
     { data: 'votingShare()', title: __('votingShare') },
     { data: '_id', render: renderRefuseButton },
   ];

@@ -1,6 +1,6 @@
 {
-  // api
-  "users": {
+  // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaUsers": {
     "username": {
       "label": "Felhasználónév",
       "placeholder": "(pl. Miki75)"
@@ -43,7 +43,6 @@
       }
     }
   },
-
   "schemaTickets": {
     "title": {
       "label": "Hiba rövid leírása"
@@ -64,8 +63,21 @@
       }
     }
   },
-
-  "delegations": {
+  "schemaMemberships" : {
+    "userId": {
+      "label": "Felhasználó"
+    },
+    "role": {
+      "label": "Szerep"
+    },
+    "ownership": {
+      "label": "Tulajdon",
+      "share": {
+        "label": "Tulajdonrész"
+      }
+    }
+  },
+  "schemaDelegations": {
     "sourceUserId": {
       "label": "Meghatalmazó",
       "placeholder": "(pl. Miki75)"
@@ -158,7 +170,7 @@
   "finalize": "Véglegesítem",
   "change": "Megváltoztatom",
   "new": "Új",
-  
+
   "editing data": "Adatok szerkesztése",
 
   // voting
