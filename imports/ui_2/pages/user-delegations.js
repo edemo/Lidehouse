@@ -98,7 +98,7 @@ Template.User_delegations.events({
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeDelegation, { _id: id }, 'remove delegation');
   },
-  'click .js-refuse'(event) {
+  'click .js-remove'(event) {
     const id = $(event.target).data('id');
     removeDelegation.call({ _id: id }, function(err, res) {
       if (err) {

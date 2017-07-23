@@ -1,41 +1,19 @@
 import { TAPi18n } from 'meteor/tap:i18n';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 
 const __ = TAPi18n.__;
-
-function translate(cellData, renderType, currentRow) {
-  return __(cellData);
-}
-
-function renderEditButton(cellData, renderType, currentRow) {
-  const html = `<span data-id=${cellData} class="js-edit nav-item icon-edit"></span>`;
-  return html;
-}
-
-function renderAssignButton(cellData, renderType, currentRow) {
-  let html = `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
-  html += `<span data-id=${cellData} class="js-assign nav-item glyphicon glyphicon-user"></span>`;
-  html += `</a>`;
-  return html;
-}
-
-function renderDeleteButton(cellData, renderType, currentRow) {
-  const html = `<span data-id=${cellData} class="js-delete nav-item icon-trash"></span>`;
-  return html;
-}
-
 
 export function parcelColumns() {
   return [
     { data: 'serial', title: __('schemaParcels.serial.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
-    { data: 'type', title: __('schemaParcels.type.label'), render: translate },
+    { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'lot', title: __('schemaParcels.lot.label') },
     { data: 'size', title: __('schemaParcels.size.label') },
     { data: 'share()', title: __('schemaParcels.units.label') },
     { data: 'ownerName()', title: __('owner') },
-    { data: '_id', render: renderEditButton },
-    { data: '_id', render: renderAssignButton },
-    { data: '_id', render: renderDeleteButton },
+    { data: '_id', render: Render.buttonEdit },
+    { data: '_id', render: Render.buttonAssignParcelOwner },
+    { data: '_id', render: Render.buttonDelete },
   ];
 }
