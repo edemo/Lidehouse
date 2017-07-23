@@ -18,7 +18,7 @@ Template.Msg_people.onCreated(function onCreated() {
 Template.Msg_people.onCreated(function onRendered() {
   const communityId = Session.get('activeCommunityId');
   const manager = Memberships.findOne({ communityId, role: 'manager' });
-  Session.set('messengerPersonId', manager.userId);
+  if (manager) Session.set('messengerPersonId', manager.userId);
 });
 
 Template.Msg_people.helpers({
@@ -53,6 +53,10 @@ Template.Msg_person.onCreated(function onMsgPersonCreated() {
 });
 
 Template.Msg_person.helpers({
+  selectedClass() {
+    if (Session.get('messengerPersonId') === this.userId) return 'selected';
+    return '';
+  },
   /* statusCircleColor(status) {
     switch (status) {
       case 'online': return 'green';
