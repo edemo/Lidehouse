@@ -6,7 +6,7 @@ import { Delegations } from './delegations.js';
 
 export const insert = new ValidatedMethod({
   name: 'delegations.insert',
-  validate: Delegations.schema.validator({ clean: true }),
+  validate: Delegations.simpleSchema().validator({ clean: true }),
 
   run(doc) {
     // User can only delegate his own votes
@@ -31,7 +31,7 @@ export const update = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
-  }).validator({ clean: true }),
+  }).validator(),
 
   run({ _id, modifier }) {
     Delegations.update({ _id }, modifier);

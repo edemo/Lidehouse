@@ -15,7 +15,7 @@ import './votings/votings.js';
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
-  validate: Topics.simpleSchema().validator({}),
+  validate: Topics.simpleSchema().validator({ clean: true }),
 
   run(doc) {
     const existingDoc = doc._id ? Topics.findOne(doc._id) : undefined;
@@ -47,7 +47,7 @@ export const update = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
-  }).validator({}),
+  }).validator(),
 
   run({ _id, modifier }) {
     const topic = Topics.findOne(_id);

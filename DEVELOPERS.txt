@@ -1,18 +1,27 @@
 Common bugs, symptoms and causes:
 
-Application crashes. (You recently edited the translations)
-- You miss a comma, or have an extra comma somewhere.
-  The JSON files don't tolerate trailing commas. Last property cannot end with comma, the others have to.
-
 You don't see data on the UI, that should be there
 - You are not subscribed to it. Check the mongo db, if its there, then this is the case.
   Check what subscriptions are active in Mongol.
 - Possible that you are subscribed, but the subscription doesn't publish the fields you are looking for.
   Check the subscription's code.
 
+Validation error, missing a field, even though it should be default or auto
+Important:Validation happens (1st) on the autoform, (2nd) on the method call (client, then server), (3rd) in the db operation.
+  - if autoform.omit: true, then defaultValue is not recognized at (1st), so (1st) will complain
+  solution: Don't use omit: true, use omitFields instead
+  -  defaultValue only applied at (2nd) if clean: true in the method validation
+  solution: If you use insert method with doc param, make sure you have clean: true
+  - autoValue only applied at the (3rd)
+  solution: When you use autovalue, always pair it with optional: true , otherwise it will fail at (2nd)
+
 Exception while trying to find an element by id
 - You are using Collection.find(_id) instead of Collection.findOne(_id)
   find() returns a Cursor, that can be fetch()-ed, findOne() returns an actual Document.
+
+Application crashes. (You recently edited the translations)
+- You miss a comma, or have an extra comma somewhere.
+  The JSON files don't tolerate trailing commas. Last property cannot end with comma, the others have to.
 
 Translation of autoform fields doesn't show for you language
 - You have accidentally overridden the translation, eg had "topic" as object, so "topic.text.label" was a translated field,

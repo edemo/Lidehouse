@@ -9,7 +9,7 @@ import { Topics } from '../topics/topics.js';
 
 export const insert = new ValidatedMethod({
   name: 'comments.insert',
-  validate: Comments.schema.validator({ clean: true }),
+  validate: Comments.simpleSchema().validator({ clean: true }),
 
   run(doc) {
     const topic = Topics.findOne(doc.topicId);

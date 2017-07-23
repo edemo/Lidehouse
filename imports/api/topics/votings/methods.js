@@ -15,7 +15,7 @@ export const castVote = new ValidatedMethod({
     membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
     castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
     'castedVote.$': { type: Number },
-  }).validator({ clean: true }),
+  }).validator(),
 
   run({ topicId, membershipId, castedVote }) {
     const userId = this.userId;

@@ -10,7 +10,7 @@ export const join = new ValidatedMethod({
   validate: new SimpleSchema({
     roomId: { type: String, regEx: SimpleSchema.RegEx.Id },
     userId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator({ clean: true }),
+  }).validator(),
 
   run({ roomId, userId }) {
     // const room = Topics.find(roomId);
