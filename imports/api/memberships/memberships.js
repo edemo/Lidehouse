@@ -3,18 +3,45 @@
 
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Timestamps } from '/imports/api/timestamps.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Roles } from '/imports/api/permissions/roles.js';
 import { Fraction } from 'fractional';
+import { Factory } from 'meteor/dburles:factory';
+
+const __ = TAPi18n.__;
 
 export const Memberships = new Mongo.Collection('memberships');
 
-const __ = TAPi18n.__;
+const OwnershipSchema = new SimpleSchema({
+  share: { type: Fraction },
+});
+
+// Memberships are the Ownerships and the Roleships in a single collection
+Memberships.schema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
+    autoform: {
+      options() {
+        return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
+      },
+    },
+  },
+  role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); },
+    autoform: {
+      options() {
+        return Roles.find({}).map(function option(r) { return { label: __(r.name), value: r._id }; });
+      },
+    },
+  },
+  // TODO should be conditional on role
+  ownership: { type: OwnershipSchema, optional: true },
+});
 
 Memberships.helpers({
   hasUser() {
@@ -73,33 +100,8 @@ Memberships.helpers({
   },
 });
 
-const OwnershipSchema = new SimpleSchema({
-  share: { type: Fraction },
-});
-
-// Memberships are the Ownerships and the Roleships in a single collection
-Memberships.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
-    autoform: {
-      options() {
-        return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
-      },
-    },
-  },
-  role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); },
-    autoform: {
-      options() {
-        return Roles.find({}).map(function option(r) { return { label: __(r.name), value: r._id }; });
-      },
-    },
-  },
-  // TODO should be conditional on role
-  ownership: { type: OwnershipSchema, optional: true },
-});
-
 Memberships.attachSchema(Memberships.schema);
+Memberships.attachSchema(Timestamps);
 
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,

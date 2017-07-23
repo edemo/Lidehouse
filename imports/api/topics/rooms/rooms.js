@@ -4,15 +4,15 @@ import { _ } from 'meteor/underscore';
 
 import { Topics } from '../topics.js';
 
-Topics.helpers({
-});
-
 // static helpers
 Topics.messengerRoom = function messengerRoom(userId, otherUserId) {
   return Topics.findOne({ category: 'room', participantIds: { $size: 2, $all: [userId, otherUserId] } });
 };
 
 const roomSchema = new SimpleSchema({
+});
+
+Topics.helpers({
 });
 
 Topics.attachSchema(roomSchema);

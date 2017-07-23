@@ -11,70 +11,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 
-Meteor.users.helpers({
-  memberships() {
-    return Memberships.find({ userId: this._id });
-  },
-  ownerships(communityId) {
-    return Memberships.find({ userId: this._id, communityId, role: 'owner' });
-  },
-  roles(communityId) {
-    return Memberships.find({ userId: this._id, communityId }).fetch().map(m => m.role);
-  },
-  communities() {
-    const memberships = this.memberships().fetch();
-    const communityIds = _.pluck(memberships, 'communityId');
-    const communities = Communities.find({ _id: { $in: communityIds } });
-    console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
-    return communities;
-  },
-  hasPermission(permissionName, communityId) {
-    const permission = Permissions.findOne({ _id: permissionName });
-    const rolesWithThePermission = permission.roles;
-    const userHasTheseRoles = this.roles(communityId);
-    const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
-    console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
-    return result;
-  },
-  totalOwnedUnits(communityId) {
-    let total = 0;
-    this.ownerships(communityId).map(function addUpUnits(m) { total += m.votingUnits(); });
-    return total;
-  },
-  totalDelegatedToMeUnits(communityId) {
-    let total = 0;
-    // TODO: needs traversing calculation
-    Delegations.find({ targetUserId: this._id }).map(function addUpUnits(d) {
-      const m = Memberships.findOne(d.objectId);
-      total += m.votingUnits();
-    });
-    return total;
-  },
-  totalVotingPower(communityId) {
-    const community = Communities.findOne(communityId);
-    if (!community) return new Fraction(0);
-    const totalVotingUnits = this.totalOwnedUnits(communityId) + this.totalDelegatedToMeUnits(communityId);
-    return new Fraction(totalVotingUnits, community.totalunits);
-  },
-  fullName() {
-    if (this.profile && this.profile.lastName && this.profile.firstName) {
-      return this.profile.lastName + ' ' + this.profile.firstName;
-    }
-    // or fallback to the username
-    return `[${this.safeUsername()}]`;
-  },
-  safeUsername() {
-    // If we have a username in db return that, otherwise generate one from her email address
-    if (this.username) return this.username;
-    const email = this.emails[0].address;
-    return email.substring(0, email.indexOf('@'));
-  },
-  toString() {
-    return this.fullName();
-  },
-});
-
 /*
+// Suggestion for full User Profile:
 // Code from https://github.com/aldeed/meteor-collection2
 
 export const CountrySchema = new SimpleSchema({
@@ -138,6 +76,69 @@ Meteor.users.schema = new SimpleSchema({
 
   // In order to avoid an 'Exception in setInterval callback' from Meteor
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
+});
+
+Meteor.users.helpers({
+  memberships() {
+    return Memberships.find({ userId: this._id });
+  },
+  ownerships(communityId) {
+    return Memberships.find({ userId: this._id, communityId, role: 'owner' });
+  },
+  roles(communityId) {
+    return Memberships.find({ userId: this._id, communityId }).fetch().map(m => m.role);
+  },
+  communities() {
+    const memberships = this.memberships().fetch();
+    const communityIds = _.pluck(memberships, 'communityId');
+    const communities = Communities.find({ _id: { $in: communityIds } });
+    console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
+    return communities;
+  },
+  hasPermission(permissionName, communityId) {
+    const permission = Permissions.findOne({ _id: permissionName });
+    const rolesWithThePermission = permission.roles;
+    const userHasTheseRoles = this.roles(communityId);
+    const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
+    console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
+    return result;
+  },
+  totalOwnedUnits(communityId) {
+    let total = 0;
+    this.ownerships(communityId).map(function addUpUnits(m) { total += m.votingUnits(); });
+    return total;
+  },
+  totalDelegatedToMeUnits(communityId) {
+    let total = 0;
+    // TODO: needs traversing calculation
+    Delegations.find({ targetUserId: this._id }).map(function addUpUnits(d) {
+      const m = Memberships.findOne(d.objectId);
+      total += m.votingUnits();
+    });
+    return total;
+  },
+  totalVotingPower(communityId) {
+    const community = Communities.findOne(communityId);
+    if (!community) return new Fraction(0);
+    const totalVotingUnits = this.totalOwnedUnits(communityId) + this.totalDelegatedToMeUnits(communityId);
+    return new Fraction(totalVotingUnits, community.totalunits);
+  },
+  fullName() {
+    if (this.profile && this.profile.lastName && this.profile.firstName) {
+      return this.profile.lastName + ' ' + this.profile.firstName;
+    }
+    // or fallback to the username
+    return `[${this.safeUsername()}]`;
+  },
+  safeUsername() {
+    // If we have a username in db return that, otherwise generate one from her email address
+    if (this.username) return this.username;
+    const email = this.emails[0].address;
+    return email.substring(0, email.indexOf('@'));
+  },
+  toString() {
+    return this.fullName();
+  },
 });
 
 Meteor.users.attachSchema(Meteor.users.schema);

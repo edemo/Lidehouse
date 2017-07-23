@@ -4,14 +4,14 @@ import { UploadFS } from 'meteor/jalik:ufs';
 import { GridFSStore } from 'meteor/jalik:ufs-gridfs';
 import './config.js';
 
+// Declare store collection
+export const Shareddocs = new Mongo.Collection('shareddocs');
+
 function hasPermissionToUpload(userId, doc) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
   return user.hasPermission('shareddocs.upload', doc.communityId);
 }
-
-// Declare store collection
-export const Shareddocs = new Mongo.Collection('shareddocs');
 
 // Setting up collection permissions
 Shareddocs.allow({

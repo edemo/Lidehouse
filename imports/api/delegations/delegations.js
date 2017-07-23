@@ -1,30 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Memberships } from '../memberships/memberships.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
 export const Delegations = new Mongo.Collection('delegations');
-
-Delegations.helpers({
-  object() {
-    debugAssert(this.scope === 'membership');
-    return Memberships.findOne(this.objectId);
-  },
-  sourceUser() {
-    return Meteor.users.findOne(this.sourceUserId);
-  },
-  targetUser() {
-    return Meteor.users.findOne(this.targetUserId);
-  },
-  votingShare() {
-    const obj = this.object();
-    return obj ? obj.votingShare() : 0;
-  },
-});
 
 Delegations.scopes = ['general', 'community', 'membership', 'topicGroup', 'topic'];
 
@@ -51,9 +34,33 @@ Delegations.schema = new SimpleSchema({
   objectId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseOwnership },
 });
 
+Delegations.helpers({
+  object() {
+    debugAssert(this.scope === 'membership');
+    return Memberships.findOne(this.objectId);
+  },
+  sourceUser() {
+    return Meteor.users.findOne(this.sourceUserId);
+  },
+  targetUser() {
+    return Meteor.users.findOne(this.targetUserId);
+  },
+  votingShare() {
+    const obj = this.object();
+    return obj ? obj.votingShare() : 0;
+  },
+});
+
 Delegations.attachSchema(Delegations.schema);
 Delegations.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
   Delegations.simpleSchema().i18n('schemaDelegations');
+});
+
+// Deny all client-side updates since we will be using methods to manage this collection
+Delegations.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
 });

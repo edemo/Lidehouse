@@ -4,13 +4,13 @@ import { _ } from 'meteor/underscore';
 
 import { Topics } from '../topics.js';
 
-Topics.helpers({
-});
-
 export const ticketSchema = new SimpleSchema({
   type: { type: String, allowedValues: ['building', 'service'] },
   urgency: { type: String, allowedValues: ['high', 'normal', 'low'] },
   status: { type: String, allowedValues: ['reported', 'confirmed', 'progressing', 'finished', 'checked', 'closed'] },
+});
+
+Topics.helpers({
 });
 
 Topics.attachSchema({ ticket: { type: ticketSchema, optional: true } });

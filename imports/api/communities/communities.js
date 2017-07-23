@@ -1,8 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Timestamps } from '/imports/api/timestamps.js';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { comtype } from '/imports/comtypes/comtype.js';
 
 export const Communities = new Mongo.Collection('communities');
@@ -15,6 +16,7 @@ Communities.schema = new SimpleSchema([
 ]);
 
 Communities.attachSchema(Communities.schema);
+Communities.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
   Communities.simpleSchema().i18n('schemaCommunities');

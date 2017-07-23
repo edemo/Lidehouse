@@ -5,23 +5,6 @@ import { Fraction } from 'fractional';
 import { Topics } from '../topics.js';
 import { Memberships } from '../../memberships/memberships.js';
 
-Topics.helpers({
-  voteTypeIs(type) {
-    if (!this.vote) return undefined;
-    return (this.vote.type === type);
-  },
-  memberCount() {
-    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
-  },
-  votedCount() {
-    return this.voteParticipation.count;
-  },
-  votedPercent() {
-    const voteParticipationShares = new Fraction(this.voteParticipation.units, this.community().totalunits);
-    return Math.round(100 * (voteParticipationShares.toNumber()));
-  },
-});
-
 const voteSchema = new SimpleSchema({
   closesAt: { type: Date },
   type: { type: String, allowedValues: ['yesno', 'preferential'] },
@@ -45,6 +28,23 @@ Topics.votingSchema = new SimpleSchema({
         return { count: 0, units: 0 };
       }
     },
+  },
+});
+
+Topics.helpers({
+  voteTypeIs(type) {
+    if (!this.vote) return undefined;
+    return (this.vote.type === type);
+  },
+  memberCount() {
+    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
+  },
+  votedCount() {
+    return this.voteParticipation.count;
+  },
+  votedPercent() {
+    const voteParticipationShares = new Fraction(this.voteParticipation.units, this.community().totalunits);
+    return Math.round(100 * (voteParticipationShares.toNumber()));
   },
 });
 

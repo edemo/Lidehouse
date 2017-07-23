@@ -21,6 +21,17 @@ class TopicsCollection extends Mongo.Collection {
 
 export const Topics = new TopicsCollection('topics');
 
+Topics.schema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  participantIds: { type: Array, optional: true },
+  'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
+  category: { type: String, allowedValues: ['forum', 'vote', 'news', 'ticket', 'room'] },
+  title: { type: String, max: 100, optional: true },
+  text: { type: String, max: 5000, optional: true },
+  closed: { type: Boolean, optional: true, defaultValue: false },
+});
+
 Topics.helpers({
   community() {
     return Communities.findOne(this.communityId);
@@ -35,17 +46,6 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
-});
-
-Topics.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  participantIds: { type: Array, optional: true },
-  'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
-  category: { type: String, allowedValues: ['forum', 'vote', 'news', 'ticket', 'room'] },
-  title: { type: String, max: 100, optional: true },
-  text: { type: String, max: 5000, optional: true },
-  closed: { type: Boolean, optional: true, defaultValue: false },
 });
 
 Topics.attachSchema(Topics.schema);
