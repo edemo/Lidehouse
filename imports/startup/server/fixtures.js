@@ -57,12 +57,12 @@ Meteor.startup(() => {
   });
   dummyUsers[3] = Meteor.users.insert({
     emails: [{ address: 'baltapeter@demo.com', verified: true }],
-    profile: { lastName: 'Balta', firstName: 'Péter' },
+    profile: { lastName: 'Barna', firstName: 'Péter' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-5.png',
   });
   dummyUsers[4] = Meteor.users.insert({
     emails: [{ address: 'baltaemilia@demo.com', verified: true }],
-    profile: { lastName: 'Balta', firstName: 'Emilia' },
+    profile: { lastName: 'Barna', firstName: 'Emilia' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-3.png',
   });
 

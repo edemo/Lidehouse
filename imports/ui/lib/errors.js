@@ -1,14 +1,34 @@
-/* global alert toastr*/
+/* global alert toastr */
+/* eslint-disable no-alert, no-console */
 
 import { TAPi18n } from 'meteor/tap:i18n';
 
+const __ = TAPi18n.__;
+
 export const displayError = (error) => {
   if (error) {
-    // It would be better to not alert the error here but inform the user in some
-    // more subtle way
+    // It would be better to not alert the error here but inform the user in some more subtle way
     console.log(error);
-    alert(TAPi18n.__(error.error) + '\n' + error.reason + '\n' + error.details + '\n' + error.stack); // eslint-disable-line no-alert
+    alert(__(error.error) + '\n' + error.reason + '\n' + error.details + '\n' + error.stack);
   }
+};
+
+export const onSuccess = (cb) => {
+  return function handler(err, res) {
+    if (err) {
+      displayError(err);
+      return;
+    }
+    cb(res);
+  };
+};
+
+export const handleError = () => {
+  onSuccess(() => {});
+};
+
+export const displayMessage = (level, ...params) => {
+  toastr[level](TAPi18n.__.apply(this, params));
 };
 
 toastr.options = {
@@ -27,8 +47,4 @@ toastr.options = {
   hideEasing: 'linear',
   showMethod: 'fadeIn',
   hideMethod: 'fadeOut',
-};
-
-export const displayMessage = (level, ...params) => {
-  toastr[level](TAPi18n.__.apply(this, params));
 };

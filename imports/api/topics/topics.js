@@ -46,6 +46,14 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
+  unseenCommentsBy(userId) {
+    const user = Meteor.users.findOne(userId);
+    const lastseenTimestamp = user.lastseens[this._id];
+    const messages = lastseenTimestamp ?
+       Comments.find({ topicId: this._id, createdAt: { $gt: lastseenTimestamp } }) :
+       Comments.find({ topicId: this._id });
+    return messages.count();
+  },
 });
 
 Topics.attachSchema(Topics.schema);

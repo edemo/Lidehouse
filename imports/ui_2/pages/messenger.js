@@ -3,10 +3,10 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { $ } from 'meteor/jquery';
-import { displayError } from '/imports/ui/lib/errors.js';
-
+import { handleError, onSuccess } from '/imports/ui/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { update as updateUser } from '/imports/api/users/methods.js';
 import '/imports/api/topics/rooms/rooms.js';
 
 import './messenger.html';
@@ -74,9 +74,30 @@ Template.Msg_box.onCreated(function onCreated() {
 });
 */
 
-Template.Msg_box.onCreated(function onCreated() {
+Template.Msg_box.onCreated(function tmplMsgBoxOnCreated() {
   this.autorun(() => {
     this.subscribe('comments.onTopic', { topicId: this.data.room._id });
+  });
+});
+
+Template.Msg_box.onRendered(function tmplMsgBoxOnRendered() {
+  const self = this;
+  const _updateLastseen = function updateLastSeen() {
+    // Set the lastseen for this topic, to the last comment on this topic
+    if (!self.data.room) return;
+    const topicId = self.data.room._id;
+    const comments = Topics.findOne(topicId).comments().fetch(); // returns newest-first order
+    if (!comments || comments.length === 0) return;
+    const lastseenTimestamp = comments[0].createdAt;
+    const modifier = {};
+    modifier['$set'] = {};
+    modifier['$set']['lastseens.' + topicId] = lastseenTimestamp;
+    updateUser.call({ _id: Meteor.userId(), modifier }, handleError);
+  };
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
+      _updateLastseen();
+    }
   });
 });
 
@@ -96,13 +117,14 @@ Template.Msg_send.events({
     const textarea = instance.find('textarea');
     const text = textarea.value;
     let roomId;
-    const insertMessage = function () {
+    const insertMessage = () => {
       Meteor.call('comments.insert', {
         topicId: roomId,
         userId: Meteor.userId(),
         text,
-      });
-      textarea.value = '';
+      },
+      onSuccess(res => (textarea.value = '')),
+      );
     };
 
     const room = instance.data.room;
@@ -115,14 +137,11 @@ Template.Msg_send.events({
         userId: Meteor.userId(),
         participantIds: [Meteor.userId(), Session.get('messengerPersonId')],
         category: 'room',
-      }, function handle(err, res) {
-        if (err) {
-          displayError(err);
-          return;
-        }
+      }, onSuccess((res) => {
         roomId = res;
         insertMessage();
-      });
+      }),
+      );
     }
   },
 });

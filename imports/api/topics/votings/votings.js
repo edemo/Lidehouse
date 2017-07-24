@@ -20,6 +20,7 @@ const voteParticipationSchema = new SimpleSchema({
 Topics.votingSchema = new SimpleSchema({
   vote: { type: voteSchema, optional: true },
   voteResults: { type: Object, optional: true, blackbox: true },
+  // ownershipId -> ranked array of choice indexes (or single entry in the array)
   voteParticipation: {
     type: voteParticipationSchema,
     optional: true,

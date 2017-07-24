@@ -83,12 +83,11 @@ Template.Msg_person.helpers({
   hasUnreadMessages() {
     const room = Topics.messengerRoom(this.userId, Meteor.userId());
     if (!room) return false;
-    if (!room.comments()) return false;
-    return room.comments().count() > 0;
+    return room.unseenCommentsBy(Meteor.userId()) > 0;
   },
   unreadMessagesCount() {
     const room = Topics.messengerRoom(this.userId, Meteor.userId());
-    return room.comments().count();
+    return room.unseenCommentsBy(Meteor.userId());
   },
 });
 

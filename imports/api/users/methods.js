@@ -38,6 +38,11 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
+    if (_id !== this.userId) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: users.update, userId: ${this.userId}, _id: ${_id}`);
+    }
+
     Meteor.users.update({ _id }, modifier);
   },
 });
