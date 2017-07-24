@@ -15,6 +15,11 @@ Important:Validation happens (1st) on the autoform, (2nd) on the method call (cl
   - autoValue only applied at the (3rd)
   solution: When you use autovalue, always pair it with optional: true , otherwise it will fail at (2nd)
 
+Autoform update crashes with internal server error or strange error message
+  - The autoform update-method is passing two method parameters (mongo modifier object, doc id)
+  ValidatedMethod expects a single parameter object with named parameters _id, modifier
+  solution: Use singleMethodArgument=true as a form attribute on a method-update type autoforms.
+
 Exception while trying to find an element by id
 - You are using Collection.find(_id) instead of Collection.findOne(_id)
   find() returns a Cursor, that can be fetch()-ed, findOne() returns an actual Document.

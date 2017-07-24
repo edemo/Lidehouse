@@ -26,10 +26,6 @@ export const invite = new ValidatedMethod({
   },
 });
 
-// The autoform update-method doesnt work with ValidatedMethod's single parameter
-// It is passing two method parameters not one (mongo modifier object, doc id).
-// Unless you set singleMethodArgument=true as a form attribute on a method-update type form
-
 export const update = new ValidatedMethod({
   name: 'user.update',
   validate: new SimpleSchema({

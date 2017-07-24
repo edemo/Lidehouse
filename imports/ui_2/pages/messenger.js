@@ -60,8 +60,22 @@ Template.Messenger.events({
 
 // -------------------- Msg_box ---------------------------
 
-/*
-Template.Msg_box.onCreated(function onCreated() {
+const updateLastseen = function updateLastSeen() {
+  // Set the lastseen for this topic, to the last comment on this topic
+  const otherUserId = Session.get('messengerPersonId');
+  const room = Topics.messengerRoom(Meteor.userId(), otherUserId);
+  if (!room) return;
+  const comments = room.comments().fetch(); // returns newest-first order
+  if (!comments || comments.length === 0) return;
+  const lastseenTimestamp = comments[0].createdAt;
+  const modifier = {};
+  modifier['$set'] = {};
+  modifier['$set']['lastseens.' + room._id] = lastseenTimestamp;
+  updateUser.call({ _id: Meteor.userId(), modifier }, handleError);
+};
+
+Template.Msg_box.onCreated(function tmplMsgBoxOnCreated() {
+  /* doesn't need this, ever since MsgBox is only rendered when there is already communication between the users
   this.autorun(() => {
     const selectedPersonId = Session.get('messengerPersonId');
     if (selectedPersonId) {
@@ -71,32 +85,16 @@ Template.Msg_box.onCreated(function onCreated() {
       }
     }
   });
-});
-*/
-
-Template.Msg_box.onCreated(function tmplMsgBoxOnCreated() {
+  */
   this.autorun(() => {
     this.subscribe('comments.onTopic', { topicId: this.data.room._id });
   });
 });
 
 Template.Msg_box.onRendered(function tmplMsgBoxOnRendered() {
-  const self = this;
-  const _updateLastseen = function updateLastSeen() {
-    // Set the lastseen for this topic, to the last comment on this topic
-    if (!self.data.room) return;
-    const topicId = self.data.room._id;
-    const comments = Topics.findOne(topicId).comments().fetch(); // returns newest-first order
-    if (!comments || comments.length === 0) return;
-    const lastseenTimestamp = comments[0].createdAt;
-    const modifier = {};
-    modifier['$set'] = {};
-    modifier['$set']['lastseens.' + topicId] = lastseenTimestamp;
-    updateUser.call({ _id: Meteor.userId(), modifier }, handleError);
-  };
   this.autorun(() => {
     if (this.subscriptionsReady()) {
-      _updateLastseen();
+      updateLastseen();
     }
   });
 });
