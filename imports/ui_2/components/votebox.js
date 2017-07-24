@@ -4,7 +4,7 @@ import { Session } from 'meteor/session';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
@@ -18,7 +18,6 @@ Template.Votebox.onCreated(function voteboxOnCreated() {
 });
 
 Template.Votebox.onRendered(function voteboxOnRendered() {
-
   const self = this;
   const state = this.state;
   const vote = this.data.vote;
@@ -111,13 +110,9 @@ Template.Votebox.events({
     const membershipId = Session.get('activeMembershipId');
     const topicId = this._id;
     const choice = $(event.target).data('value');
-    castVote.call({ topicId, membershipId, castedVote: [choice] }, function handle(err) {
-      if (err) {
-        displayError(err);
-        return;
-      }
-      displayMessage('success', 'Vote casted');
-    });
+    castVote.call({ topicId, membershipId, castedVote: [choice] },
+      onSuccess(res => displayMessage('success', 'Vote casted'))
+    );
   },
   // event handler for the preferential vote type
   'click .btn-votesend'(event, instance) {
@@ -128,15 +123,13 @@ Template.Votebox.events({
       const preference = instance.state.get('preference');
       console.log('casting:', preference);
       const castedVote = preference.map(p => p.value);
-      castVote.call({ topicId, membershipId, castedVote }, function handle(err) {
-        if (err) {
-          displayError(err);
-          return;
-        }
-        displayMessage('success', 'Vote casted');
-        instance.state.set('voteFinalized', true);
-        console.log('casted:', preference);
-      });
+      castVote.call({ topicId, membershipId, castedVote },
+        onSuccess((res) => {
+          displayMessage('success', 'Vote casted');
+          instance.state.set('voteFinalized', true);
+          console.log('casted:', preference);
+        })
+      );
     } else { // voteFinalized === true
       instance.state.set('voteFinalized', false);
     }

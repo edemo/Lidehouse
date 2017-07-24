@@ -7,7 +7,7 @@ import { remove as removeMembership } from '/imports/api/memberships/methods.js'
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { onSuccess } from '/imports/ui/lib/errors.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
@@ -75,35 +75,6 @@ Template.Parcel_owners_page.events({
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeMembership, { _id: id }, 'remove ownership');
   },
-/*  'click .js-assign'(event) {
-    const communityId = Session.get('activeCommunityId');
-    const parcelId = Session.get('selectedParcelId');
-    const email = event.target.previousElementSibling.value;
-    const user = Meteor.users.findOne({ 'emails.0.address': email });
-    Meteor.call('memberships.insert', {
-      communityId,
-      userId: user._id,
-      role: 'owner',
-      parcelId,
-      ownership: {
-        share: new Fraction(1, 1),
-      },
-    }, function (err, res) {
-      if (err) {
-        displayError(err);
-      }
-      displayMessage('success', 'Assigned user');
-      Session.set('selectedParcelId', undefined);
-    });
-  },
-  'click .js-remove-user'() {
-    Meteor.call('memberships.update', { _id: this._id, modifier: { $unset: { userId: '' } } }, function(err, res) {
-      if (err) {
-        displayError(err);
-      }
-    });
-  },
-  */
 });
 
 AutoForm.addModalHooks('af.ownership.insert');

@@ -8,7 +8,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { onSuccess, displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { remove as removeDelegation, allow as allowDelegations } from '/imports/api/delegations/methods.js';
 import { delegationFromMeColumns, delegationToMeColumns } from '/imports/api/delegations/tables.js';
@@ -100,19 +100,15 @@ Template.User_delegations.events({
   },
   'click .js-remove'(event) {
     const id = $(event.target).data('id');
-    removeDelegation.call({ _id: id }, function(err, res) {
-      if (err) {
-        displayError(err);
-        return;
-      }
-      displayMessage('success', 'Delegation refused');
-    });
+    removeDelegation.call({ _id: id },
+      onSuccess(res => displayMessage('success', 'Delegation refused'))
+    );
   },
   'click #allow'(event) {
     event.preventDefault();
     const value = event.target.checked;
     const message = value ?
-      'This will let others to delegate to you':
+      'This will let others to delegate to you' :
       'This will refuse all existing delegations';
     Modal.confirmAndCall(allowDelegations, { value }, {
       action: value ? 'enableDelegations' : 'disableDelegations',
