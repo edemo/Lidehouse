@@ -60,6 +60,9 @@ Topics.attachSchema(Topics.schema);
 Topics.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
+  // Topics.schema is just the core schema, shared by all.
+  // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
+  Topics.schema.i18n('schemaTopics');
   Topics.simpleSchema().i18n('schemaTopics');
 });
 
