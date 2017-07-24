@@ -9,11 +9,14 @@
     <div class="row frame">
       {{#with selectedPerson}}
       <div class="col-xs-12 col-sm-12 col-md-8 left full-h">
-        <div class="visible-xs visible-sm mobile-nav">
+        <div class="mobile-nav">
           <div class="name">
-            <a href="{{pathFor 'Users.show' _id=_id}}">{{fullName}}</a>
+            <a href="{{pathFor 'Users.show' _id=_id}}">
+              <img src="{{avatar}}" alt="" width="40px" class="img-circle" />
+              {{fullName}}
+            </a>
           </div>
-          <div class="js-people">
+          <div class="js-people visible-xs visible-sm ">
             <div class="link">
               {{_ 'messengerPeopleMenu'}}
               <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>

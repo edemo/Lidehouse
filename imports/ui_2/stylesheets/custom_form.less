@@ -17,7 +17,7 @@
   padding-bottom: 10px;
   padding-left: 5%;
   .control-label {
-    border-bottom: 1px solid rgb(221, 221, 221);
+    border-bottom: @cont-label-border;
     padding-left: 17px;
     padding-right: 17px;
     padding-bottom: 3px;
@@ -37,7 +37,7 @@ textarea {
   height: auto;
   // overflow-y: scroll;
   overflow: hidden;
-  scrollbar-track-color: #ff00ff;
+  scrollbar-track-color: @scrollbar-color;
   color: @color-full;
   outline: none;
   ::placeholder {
@@ -61,7 +61,7 @@ input[type="text"], input[type="number"], input[type="date"], [type="email"], [t
   .type-regular;
   line-height: 1.5rem;
   padding: unset;
-  background: white none repeat scroll 0% 0%;
+  background: @input-bcg none repeat scroll 0% 0%;
   border: unset;
   border-radius: 0px;
   border-bottom: 1px solid @form-border;

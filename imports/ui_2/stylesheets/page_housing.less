@@ -1,8 +1,3 @@
-@th-border: #b7b7b7;
-@th-bcg: #ededed;
-@tr-border: gba(128, 128, 128, 0.46);
-@td-border: rgba(128, 128, 128, 0.21);
-@table-border: rgba(128, 128, 128, 0.21);
 .page-housing {
   .btn-primary {
     padding: 5px;
@@ -13,7 +8,7 @@
   }
   tr:hover {
     // background: rgba(0, 84, 255, 0.1) none repeat scroll 0% 0%;
-    box-shadow: 1px 1px 3px 1px rgba(128, 128, 128, 0.62);
+    box-shadow: @tr-hover-shadow;
   }
   .sortable {
     & .text-right {

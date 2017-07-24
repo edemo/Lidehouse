@@ -1,41 +1,3 @@
-@btn-primary-color: rgb(45, 45, 45);
-@btn-primary-bcg: rgb(243, 191, 115);
-@btn-secondary-color: black;
-@btn-secondary-bcg: rgb(167, 216, 167);
-@btn-box-shadow: #517096;
-@chat-msg-color: rgb(68, 68, 68);
-@chat-time-color: rgb(125, 125, 125);
-@base-link-color: #1885d8;
-@chat-avatar-size: 40px;
-@chat-avatar-margin: 15px;
-@text-alt: #535353;
-
-@status-uconf: #bdbdbd;
-@status-acc: rgba(112, 255, 11, 0.55);
-@status-inp: rgb(254, 185, 60);
-@status-freez: rgba(11, 142, 225, 0.35);
-@status-done: rgba(95, 209, 4, 0.79);
-@status-del: rgba(255, 62, 21, 0.7);
-
-// layout
-@nav-bcg: white;
-@nav-after-bcg: rgba(131, 92, 48, 0.6);
-@nav-bcg-img: url(/small.jpg);
-
-// board
-@section-btn-col: rgba(251, 172, 53, 0.63);
-@section-btn-col-collapsed: rgba(104, 125, 151, 0.47);
-@icon-gray: gray;
-
-// report page table
-@th-border: #c8c8c8;
-@td-border: #d5d5d5;
-
-// form
-@form-border: #bcbcbc;
-@form-border-active: rgb(110, 168, 255);
-@textarea-border: rgb(188, 188, 188);
-
 .full-width {
   width: 100%;
 }
@@ -98,12 +60,12 @@ a {
 #menu {
   padding-left: 0px;
   padding-top: 75px;
-  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.3), 0px 4px 5px 0px rgba(0, 0, 0, 0.15), 0px 1px 10px 0px rgba(0, 0, 0, 0.32);
+  box-shadow: @menu-shadow;
   @media screen and (min-width: 40em) {
     z-index: 1;
   }
   a, div a {
-    color: #272727  !important;
+    color: @menu-a-color  !important;
     font-weight: bold;
   }
   .listing {
@@ -122,8 +84,8 @@ a {
         margin-right: 13px;
       }
       &:hover, &.active {
-        background-color: rgba(255, 255, 255, 0.52);
-        box-shadow: 0px 1px 2px 2px rgb(191, 191, 191);
+        background-color: @item-active-bcg;
+        box-shadow: @item-active-shadow;
         a {
           text-decoration: none;
         }
@@ -163,7 +125,7 @@ a {
 nav {
   height: 48px;
   background: @nav-bcg;
-  box-shadow: 0 2px 4px 2px rgba(35, 35, 35, 0.45);
+  box-shadow: @nav-shadow;
   span {
     &.icon-topic-unordered {
       @media screen and (min-width: 40em) {
@@ -193,7 +155,7 @@ nav {
   .btn-secondary {
     background-color: transparent;
     &:hover, &:active {
-      background-color: darken(white, 10%);
+      background-color: @btn-secondary-active-bcg;
     }
   }
 }
