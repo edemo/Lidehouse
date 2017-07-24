@@ -10,18 +10,18 @@
     margin-top: 7px;
   }
   .white-box {
-    border: 1.3px solid #a5a5a5;
+    border: @vote-whitebox-border;
     margin-bottom: 26px;
   }
   .content {
-    background-color: rgba(251, 251, 251, 0.78);
+    background-color: @vote-content-bcg;
   }
   .js-vote-nope {
     float: right;
     cursor: pointer;
     margin-right: 20px;
     font-size: 17px;
-    color: gray;
+    color: @vote-nope-col;
   }
   .vote-files {
     list-style: none;
@@ -48,14 +48,14 @@
     margin-right: 10px;
     margin-bottom: 13px;
     &-rect {
-      border: 1px solid rgba(104, 156, 87, 0.47);
+      border: 1px solid @choice-border;
       padding-top: 5px;
       padding-bottom: 5px;
       margin-top: 7px;
       span {
         float: right;
         cursor: pointer;
-        color: gray;
+        color: @choice-span-col;
       }
     }
   }
