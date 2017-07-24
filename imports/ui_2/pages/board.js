@@ -2,12 +2,10 @@
 
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-
 import { moment } from 'meteor/momentjs:moment';
-import { TimeSync } from 'meteor/mizzao:timesync';
-
 import { Topics } from '/imports/api/topics/topics.js';
-
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '../modals/modal.js';
 import '../components/comments-section.js';
 import '../components/votebox.js';
 import '../components/chatbox.js';
@@ -38,5 +36,17 @@ Template.News.helpers({
   },
   displayTime() {
     return moment(this.createdAt).format('YYYY MMM Do');
+  },
+});
+
+Template.News.events({
+  'click .js-view'(event, instance) {
+    const modalContext = {
+      title: this.title,
+      body: 'Proposal_view',
+      bodyContext: this,
+      btnClose: 'close',
+    };
+    Modal.show('Modal', modalContext);
   },
 });
