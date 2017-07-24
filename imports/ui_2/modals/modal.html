@@ -1,0 +1,23 @@
+<template name="Modal">
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">{{_ title}}</h4>
+        </div>
+        <div class="modal-body">
+          {{> Template.dynamic template=body data=bodyContext}}
+        </div>
+        <div class="modal-footer">
+          {{#if btnClose}}
+          <button type="button" class="btn btn-default" data-dismiss="modal">{{_ btnClose}}</button>
+          {{/if}}
+          {{#if btnPrimary}}
+          <button type="button" class="btn btn-primary">{{_ btnPrimary}}</button>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

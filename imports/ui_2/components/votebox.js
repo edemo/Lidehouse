@@ -8,6 +8,7 @@ import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
+import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/proposal-view.js';
 import '../components/votebox.html';
@@ -105,6 +106,16 @@ Template.Votebox.helpers({
 });
 
 Template.Votebox.events({
+  'click .btn-golive'(event) {
+    const modalContext = {
+      title: 'Live voting',
+      body: 'Votebox',
+      bodyContext: _.extend(this, { live: true }),
+      btnClose: 'cancel',
+      btnPrimary: 'send vote',
+    };
+    Modal.show('Modal', modalContext);
+  },
   // event handler for the single choice vote type
   'click .btn-vote'(event) {
     const membershipId = Session.get('activeMembershipId');
@@ -136,9 +147,11 @@ Template.Votebox.events({
   },
   'click .js-view-proposal'(event, instance) {
     const modalContext = {
-      title: 'előterjesztés megtekint',
-      content: 'Szavazás előterjesztés szövegei, ADA login ha lesz, Faliújság bővebb tartalom megtekintés',
+      title: 'Official proposal',
+      body: 'Proposal_view',
+      bodyContext: this,
+      btnClose: 'close',
     };
-    Modal.show('Proposal_view', modalContext);
+    Modal.show('Modal', modalContext);
   },
 });
