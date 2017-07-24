@@ -184,7 +184,7 @@
   "assign": "Hozzárendelés",
   "search": "Keresés",
   "ok": "OK",
-  "cancel": "Mégse",
+  "cancel": "Mégsem",
   "confirm": "Biztos benne?",
   "loading...": "Betöltés folyamatban...",
 
@@ -284,15 +284,19 @@
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
   "Created community": "Közösség sikeresen létrehozva.",
   "Vote casted": "Szavazat sikeresen leadva",
-  "Delegations enabled": "Bejövő meghatalmazások engedélyezve",
-  "Delegations disabled": "Bejövő meghatalmazások visszautasítva",
-  "Delegation saved": "Meghatalmazás elmentve",
-  "Delegation revoked": "Meghatalmazás visszavonva",
-  "Delegation refused": "Meghatalmazás visszautasítva",
+
+  "enable delegations successful": "Bejövő meghatalmazások engedélyezve",
+  "disable delegations successful": "Bejövő meghatalmazások visszautasítva",
+  "insert delegation successful": "Meghatalmazás aktiválva",
+  "update delegation successful": "Meghatalmazás módosítva",
+  "revoke delegation successful": "Meghatalmazás visszavonva",
+  "refuse delegation successful": "Meghatalmazás visszautasítva",
 
   "Are you sure you want to": "Biztos benne, hogy",
-  "enableDelegations": "engedélyezi a bejövő meghatalmazásokat",
-  "disableDelegations": "visszautasítja a bejövő meghatalmazásokat",
+  "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
+  "disable delegations": "visszautasítja a bejövő meghatalmazásokat",
+  "revoke delegation": "visszavonja a meghatalmazást",
+  "refuse delegation": "visszautasítja a meghatalmazást",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
   "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást."
 }

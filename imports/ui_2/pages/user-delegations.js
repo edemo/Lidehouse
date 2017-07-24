@@ -96,12 +96,14 @@ Template.User_delegations.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Modal.confirmAndCall(removeDelegation, { _id: id }, 'remove delegation');
+    Modal.confirmAndCall(removeDelegation, { _id: id }, {
+      action: 'revoke delegation',
+    });
   },
   'click .js-remove'(event) {
     const id = $(event.target).data('id');
     removeDelegation.call({ _id: id },
-      onSuccess(res => displayMessage('success', 'Delegation refused'))
+      onSuccess(res => displayMessage('success', 'refuse delegation successful'))
     );
   },
   'click #allow'(event) {
@@ -111,9 +113,8 @@ Template.User_delegations.events({
       'This will let others to delegate to you' :
       'This will refuse all existing delegations';
     Modal.confirmAndCall(allowDelegations, { value }, {
-      action: value ? 'enableDelegations' : 'disableDelegations',
+      action: value ? 'enable delegations' : 'disable delegations',
       message,
-      notification: `Delegations ${value ? 'enabled' : 'disabled'}`,
     });
   },
 });

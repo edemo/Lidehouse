@@ -12,12 +12,12 @@ Template.Confirmation.events({
   },
 });
 
-Modal.confirmAndCall = function (func, params, options) {
+Modal.confirmAndCall = function ModalConfirmAndCall(func, params, options) {
   Modal.show('Confirmation', {
     action: options.action,
-    body: options.message,
+    body: (options.message || ''),
     onOK() {
-      func.call(params, function (err, res) {
+      func.call(params, function handler(err, res) {
         if (err) {
           Modal.hide();
           displayError(err);

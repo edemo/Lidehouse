@@ -19,7 +19,7 @@ AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
       const split = afId.split('.'); // AutoFormId convention is 'af.object.action'
       const objectName = split[1];
       const actionName = split[2];
-      displayMessage('success', objectName + ' ' + actionName + ' successful');
+      displayMessage('success', actionName + ' ' + objectName + ' ' + 'successful');
     },
   });
 };
