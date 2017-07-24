@@ -15,7 +15,7 @@ export const castVote = new ValidatedMethod({
     membershipId: { type: String, regEx: SimpleSchema.RegEx.Id },
     castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
     'castedVote.$': { type: Number },
-  }).validator(),
+  }).validator({ clean: true }),  // we 'clean' here to convert the vote strings (eg "1") into numbers (1)
 
   run({ topicId, membershipId, castedVote }) {
     const userId = this.userId;

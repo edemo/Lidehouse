@@ -25,6 +25,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   const voteResults = this.data.voteResults;
 
   // creating the JQuery sortable widget
+  // both JQuery and Blaze wants control over the order of elements, so needs a hacky solution
   // https://github.com/meteor/meteor/blob/master/examples/unfinished/reorderable-list/client/shark.js
   $(self.find('.sortable')).sortable({
     stop(event, ui) { // fired when an item is dropped
@@ -43,7 +44,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
     const voteIsFinalized = activeMembershipId &&
       voteResults[activeMembershipId] &&
       voteResults[activeMembershipId].length > 0;
-    state.set('voteFinalized', voteIsFinalized);
+    state.set('voteIsFinalized', voteIsFinalized);
 
     const castedPreference = voteResults[activeMembershipId];
     let preference;
@@ -56,6 +57,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
     console.log('onrender:', preference);
   });
 
+  // This is where we enable/disable the sorting, dependant on the finalized state
   this.autorun(function update() {
     const voteIsFinalized = state.get('voteIsFinalized');
     $(self.find('.sortable')).sortable(voteIsFinalized ? 'disable' : 'enable');
@@ -97,10 +99,10 @@ Template.Votebox.helpers({
     return preference;
   },
   voteIsFinalized() {
-    return Template.instance().state.get('voteFinalized');
+    return Template.instance().state.get('voteIsFinalized');
   },
   pressedClassForPreferential() {
-    if (Template.instance().state.get('voteFinalized')) return 'btn-pressed';
+    if (Template.instance().state.get('voteIsFinalized')) return 'btn-pressed';
     return '';
   },
 });
@@ -129,20 +131,20 @@ Template.Votebox.events({
   'click .btn-votesend'(event, instance) {
     const membershipId = Session.get('activeMembershipId');
     const topicId = this._id;
-    const voteFinalized = instance.state.get('voteFinalized');
-    if (!voteFinalized) {
+    const voteIsFinalized = instance.state.get('voteIsFinalized');
+    if (!voteIsFinalized) {
       const preference = instance.state.get('preference');
       console.log('casting:', preference);
       const castedVote = preference.map(p => p.value);
       castVote.call({ topicId, membershipId, castedVote },
         onSuccess((res) => {
           displayMessage('success', 'Vote casted');
-          instance.state.set('voteFinalized', true);
+          instance.state.set('voteIsFinalized', true);
           console.log('casted:', preference);
         })
       );
-    } else { // voteFinalized === true
-      instance.state.set('voteFinalized', false);
+    } else { // voteIsFinalized === true
+      instance.state.set('voteIsFinalized', false);
     }
   },
   'click .js-view-proposal'(event, instance) {
