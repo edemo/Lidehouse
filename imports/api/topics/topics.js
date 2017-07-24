@@ -21,15 +21,17 @@ class TopicsCollection extends Mongo.Collection {
 
 export const Topics = new TopicsCollection('topics');
 
+Topics.categories = ['forum', 'vote', 'news', 'ticket', 'room'];
+
 Topics.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  participantIds: { type: Array, optional: true },
+  participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
-  category: { type: String, allowedValues: ['forum', 'vote', 'news', 'ticket', 'room'] },
+  category: { type: String, allowedValues: Topics.categories, autoform: { omit: true } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, optional: true },
-  closed: { type: Boolean, optional: true, defaultValue: false },
+  closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
 });
 
 Topics.helpers({

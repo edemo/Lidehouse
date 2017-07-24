@@ -42,18 +42,13 @@ Template.News.helpers({
   },
 });
 
-let newsEditSchema;
-Meteor.startup(function defineNewsEditSchema() {
-  newsEditSchema = Topics.schema.pick(['title', 'text']); // pick needs to happen AFTER the i18n labels are attached;
-});
-
 Template.News.events({
   'click .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.news.insert',
       collection: Topics,
-      schema: newsEditSchema,
-//      omitFields: ['communityId', 'userId', 'category', 'participantIds', 'closed'],
+      schema: Topics.schema,
+      omitFields: ['communityId', 'userId', 'category'],
       type: 'method',
       meteormethod: 'topics.insert',
       template: 'bootstrap3-inline',

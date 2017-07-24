@@ -147,7 +147,7 @@
 
   "News board": "Faliújság",
   "Useful Informations": "Hasznos Információk",
-  
+
   // api
   "name": "név",
   "user": "felhasználó",
@@ -301,5 +301,9 @@
   "revoke delegation": "visszavonja a meghatalmazást",
   "refuse delegation": "visszautasítja a meghatalmazást",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
-  "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást."
+  "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",
+
+  "insert ticket successful": "Hibajegy rögzítésre került",
+  "update ticket successful": "Hibajegy módosítva",
+  "delete ticket successful": "Hibajegy törölve"
 }

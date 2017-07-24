@@ -60,17 +60,13 @@ Template.Tickets_report.helpers({
   },
 });
 
-const ticketReportSchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  category: { type: String },
-  title: { type: String, max: 100, optional: true },
-  text: { type: String, max: 5000, optional: true },
-  ticket: { type: ticketSchema, optional: true },
-});
+const ticketReportSchema = new SimpleSchema([
+  Topics.schema,
+  { ticket: { type: ticketSchema, optional: true } },
+]);
 
 Meteor.startup(function attach() {
-  ticketReportSchema.i18n('schemaTickets');
+  ticketReportSchema.i18n('schemaTickets');   // translation is different from schemaTopics
 });
 
 Template.Tickets_report.events({

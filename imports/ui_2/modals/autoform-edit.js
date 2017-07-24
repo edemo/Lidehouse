@@ -6,6 +6,9 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import './autoform-edit.html';
 
+// How to instantiate an Autoform_edit window: Modal.show('Autoform_edit', afOptions)
+// Make sure afOptions you omitFields if it is auto filled in an Autoform.hook
+
 Template.Autoform_edit.helpers({
 });
 
