@@ -65,7 +65,9 @@ Template.Community_roleships_page.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Modal.confirmAndCall(removeMembership, { _id: id }, 'remove role');
+    Modal.confirmAndCall(removeMembership, { _id: id }, {
+      action: 'delete roleship',
+    });
   },
 });
 

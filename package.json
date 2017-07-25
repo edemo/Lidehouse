@@ -53,7 +53,7 @@
       ],
       "max-len": [
         "warn",
-        120
+        150
       ],
       "meteor/eventmap-params": [
         "error",

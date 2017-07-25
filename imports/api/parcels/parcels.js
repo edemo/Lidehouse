@@ -2,8 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { autoformOptions } from '/imports/utils/autoform.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Roles } from '/imports/api/permissions/roles.js';
@@ -12,7 +12,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 export const Parcels = new Mongo.Collection('parcels');
 
-Parcels.types = ['flat', 'parking', 'storage'];
+Parcels.typeValues = ['flat', 'parking', 'storage'];
 
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
@@ -33,13 +33,7 @@ Parcels.schema = new SimpleSchema({
   // TODO: move these into the House package
   floor: { type: String, optional: true },
   number: { type: String, optional: true },
-  type: { type: String, optional: true, allowedValues: Parcels.types,
-    autoform: {
-      options() {
-        return Parcels.types.map(function option(t) { return { label: __(t), value: t }; });
-      },
-    },
-  },
+  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
   lot: { type: String, max: 100, optional: true },
   size: { type: Number, decimal: true, optional: true },
 });

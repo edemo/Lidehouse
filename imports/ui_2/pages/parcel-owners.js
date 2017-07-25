@@ -73,7 +73,9 @@ Template.Parcel_owners_page.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Modal.confirmAndCall(removeMembership, { _id: id }, 'remove ownership');
+    Modal.confirmAndCall(removeMembership, { _id: id }, {
+      action: 'delete ownership',
+    });
   },
 });
 

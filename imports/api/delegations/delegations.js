@@ -9,7 +9,7 @@ import faker from 'faker';
 
 export const Delegations = new Mongo.Collection('delegations');
 
-Delegations.scopes = ['general', 'community', 'membership', 'topicGroup', 'topic'];
+Delegations.scopeValues = ['general', 'community', 'membership', 'topicGroup', 'topic'];
 
 const chooseOwnership = {
   options() {
@@ -30,7 +30,7 @@ const chooseUser = {
 Delegations.schema = new SimpleSchema({
   sourceUserId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
   targetUserId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
-  scope: { type: String, allowedValues: Delegations.scopes },
+  scope: { type: String, allowedValues: Delegations.scopeValues },
   objectId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseOwnership },
 });
 

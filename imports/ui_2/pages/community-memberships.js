@@ -63,7 +63,9 @@ Template.Community_memberships_page.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Modal.confirmAndCall(removeParcel, { _id: id }, 'remove parcel');
+    Modal.confirmAndCall(removeParcel, { _id: id }, {
+      action: 'delete parcel',
+    });
   },
 });
 
