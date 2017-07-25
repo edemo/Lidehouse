@@ -91,6 +91,10 @@ Template.Custom_body.helpers({
     const instance = Template.instance();
     return instance.state.get('menuOpen') && 'menu-open';
   },
+  feedbackClosed() {
+    const instance = Template.instance();
+    return instance.state.get('feedbackClosed') && 'feedback-closed';
+  },
   cordova() {
     return Meteor.isCordova && 'cordova';
   },
@@ -179,5 +183,8 @@ Template.Custom_body.events({
     const language = $(event.target).html().trim();
     T9n.setLanguage(language);
     TAPi18n.setLanguage(language);
+  },
+  'click .js-feedback-close'(event, instance) {
+    instance.state.set('feedbackClosed', !instance.state.get('feedbackClosed'));
   },
 });
