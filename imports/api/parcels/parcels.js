@@ -2,15 +2,13 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { TAPi18n } from 'meteor/tap:i18n';
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Roles } from '/imports/api/permissions/roles.js';
 import { Fraction } from 'fractional';
 import { Factory } from 'meteor/dburles:factory';
-
-const __ = TAPi18n.__;
 
 export const Parcels = new Mongo.Collection('parcels');
 

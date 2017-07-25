@@ -18,8 +18,6 @@ import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
 import './community-roleships.html';
 
-const __ = TAPi18n.__;
-
 Template.Community_roleships_page.onCreated(function () {
 });
 

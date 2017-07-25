@@ -1,8 +1,6 @@
-import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-
-const __ = TAPi18n.__;
+import { __ } from '/imports/localization/i18n.js';
 
 export const Render = {
   translate(cellData, renderType, currentRow) {

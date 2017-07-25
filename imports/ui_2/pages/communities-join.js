@@ -9,8 +9,6 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { insert as insertMembership } from '../../api/memberships/methods.js';
 import './communities-join.html';
 
-const __ = TAPi18n.__;
-
 Template.Communities_join.onCreated(function onCreated() {
   this.subscribe('communities.listing');
 });

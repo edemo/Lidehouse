@@ -1,7 +1,5 @@
-import { TAPi18n } from 'meteor/tap:i18n';
+import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
-
-const __ = TAPi18n.__;
 
 export function parcelColumns() {
   return [

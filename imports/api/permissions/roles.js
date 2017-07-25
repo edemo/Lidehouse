@@ -1,11 +1,11 @@
 import { Mongo } from 'meteor/mongo';
-import { TAPi18n } from 'meteor/tap:i18n';
+import { __ } from '/imports/localization/i18n.js';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 export const Roles = new Mongo.Collection('roles');
 
 Roles.schema = new SimpleSchema({
-  name: { type: String, max: 100, label: () => TAPi18n.__('roles.name') },
+  name: { type: String, max: 100, label: () => __('roles.name') },
   protected: { type: Boolean, optional: true },
 });
 

@@ -108,6 +108,7 @@ AutoForm.addHooks('af.ticket.insert', {
     doc.communityId = Session.get('activeCommunityId');
     doc.userId = Meteor.userId();
     doc.category = 'ticket';
+    if (!doc.ticket) doc.ticket = {};
     doc.ticket.status = 'reported';
     return doc;
   },

@@ -1,9 +1,6 @@
 /* global alert toastr */
 /* eslint-disable no-alert, no-console */
-
-import { TAPi18n } from 'meteor/tap:i18n';
-
-const __ = TAPi18n.__;
+import { __ } from '/imports/localization/i18n.js';
 
 export const displayError = (error) => {
   if (error) {
@@ -28,7 +25,7 @@ export const handleError = () => {
 };
 
 export const displayMessage = (level, ...params) => {
-  toastr[level](TAPi18n.__.apply(this, params));
+  toastr[level](__(...params));
 };
 
 toastr.options = {
