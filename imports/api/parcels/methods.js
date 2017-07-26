@@ -3,6 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Parcels } from './parcels.js';
+import { Memberships } from '../memberships/memberships.js';
 
 export const insert = new ValidatedMethod({
   name: 'parcels.insert',
@@ -33,5 +34,6 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     Parcels.remove(_id);
+    Memberships.remove({ parcelId: _id });
   },
 });
