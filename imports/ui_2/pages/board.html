@@ -68,7 +68,7 @@
     <div class="row news-title">
       {{_ 'News board'}}
       {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
-        <button class="js-new btn-default pull-right"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{_ 'createNew'}}</button>
+        <button class="js-new btn-default pull-right"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{_ 'new'}}</button>
       {{/if}}
     </div>
     {{#each topics 'news'}}
