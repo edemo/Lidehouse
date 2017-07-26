@@ -31,6 +31,12 @@
 }
 .btn {
   &[disabled] { opacity: .5; }
+  &-default {
+    color: black;
+    border: 1px solid gray;
+    padding: .4em .7em;
+    letter-spacing: .15em;
+  }
   &-primary {
     min-width: 100px;
     color: @btn-primary-color !important;
@@ -144,5 +150,11 @@
     &:hover, &:active {
       background-color: lighten(@btn-secondary-bcg, 10%);
     }
+  }
+}
+.modal-content {
+  .btn-primary {
+    margin-top: 0px;
+    padding: .41em .71em;
   }
 }

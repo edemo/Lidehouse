@@ -13,6 +13,15 @@
       </div>
       <div class="collapse in section-pane" id="vote-pane">
         <div class="well">
+          <!-- ha nincs szavazás ~ empty state -->
+          <div class="vote-container white-box text-center">
+            <p>
+              Jelenleg nincs aktív szavazás!
+            </p>
+            <p class="small-size">
+              Korábbi szavazásainkat megtekinthetik a <a href="{{pathFor 'Topics.vote'}}">Szavazások</a> menüpontban a "Lezárt szavazások"-ra kattintva.
+            </p>
+          </div>
           {{#each topics 'vote'}}
             {{> Votebox}}
           {{/each}}
@@ -46,7 +55,7 @@
     </div>
 
     <!-- right side -->
-    <div class="col-xs-12 col-lg-4 visible-md visible-lg">
+    <div class="col-xs-12 col-lg-4  visible-lg">
       {{> News}}
     </div>
   </div>
@@ -54,10 +63,12 @@
 
 <template name="News">
 
-  <!-- Atmenetileg ratettem ezeket az inline style-okat, csak hogy legyen terfogata. Majd szedd le ha keszul. -->
   <div class="white-box news">
-    <div class="full-width" style="padding: 7px 0;">
+    <div class="row news-title">
       {{_ 'News board'}}
+      {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
+        <button class="js-new btn-default pull-right"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{_ 'createNew'}}</button>
+      {{/if}}
     </div>
     {{#each topics 'news'}}
       <div class="row news-row js-view" data-toggle="modal" data-target="#{{_id}}">
@@ -69,9 +80,6 @@
         </div>
       </div>
     {{/each}}
-    {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
-      <button class="js-new btn-primary">{{_ 'createNew'}}</button>
-    {{/if}}
   </div>
 
   <div class="white-box infos">
