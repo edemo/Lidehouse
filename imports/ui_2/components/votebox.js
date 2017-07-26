@@ -27,6 +27,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   // creating the JQuery sortable widget
   // both JQuery and Blaze wants control over the order of elements, so needs a hacky solution
   // https://github.com/meteor/meteor/blob/master/examples/unfinished/reorderable-list/client/shark.js
+  // https://differential.com/insights/sortable-lists-in-meteor-using-jquery-ui/
   $(self.find('.sortable')).sortable({
     stop(event, ui) { // fired when an item is dropped
       event.preventDefault();

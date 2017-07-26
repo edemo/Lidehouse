@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import { UI } from 'meteor/blaze';
+import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
-UI.registerHelper('userHasPermission', function userHasPermission(permission) {
+Template.registerHelper('userHasPermission', function userHasPermission(permission) {
   const user = Meteor.user();
   if (!user) return false;
   const activeCommunityId = Session.get('activeCommunityId');

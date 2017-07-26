@@ -1,4 +1,4 @@
-import { UI } from 'meteor/blaze';
+import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 
 // Copied from:
@@ -16,7 +16,7 @@ import { _ } from 'meteor/underscore';
 // To make underscore function work with optional parameters
 // that last argument is stripped from the argument list.
 function createUnderscoreHelper(key, fun) {
-  UI.registerHelper('_' + key, function () {
+  Template.registerHelper('_' + key, function () {
     const args = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
     return fun.apply(null, args);
   });

@@ -1,6 +1,6 @@
-import { UI } from 'meteor/blaze';
+import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
-UI.registerHelper('fromSession', function fromSession(paramName) {
+Template.registerHelper('fromSession', function fromSession(paramName) {
   return Session.get(paramName);
 });
