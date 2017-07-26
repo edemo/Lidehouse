@@ -27,6 +27,10 @@ Template.Board.helpers({
     const communityId = Session.get('activeCommunityId');
     return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
   },
+  topicsCount(category) {
+    const communityId = Session.get('activeCommunityId');
+    return Topics.find({ communityId, category, closed: false }).count();
+  },
   displayTime() {
     return moment(this.createdAt).format('YYYY MMM Do');
   },
