@@ -26,7 +26,7 @@ export const insert = new ValidatedMethod({
     }
 
     const user = Meteor.users.findOne(this.userId);
-    if (!user.hasPermission('topics.insert.'+doc.category, doc.communityId)) {
+    if (!user.hasPermission(doc.category + '.insert', doc.communityId)) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
         `Method: topics.insert, Collection: topics, topic: {${doc}}`)
     }

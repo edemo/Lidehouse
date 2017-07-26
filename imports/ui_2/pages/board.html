@@ -69,7 +69,9 @@
         </div>
       </div>
     {{/each}}
-    <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+    {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
+      <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+    {{/if}}
   </div>
 
   <div class="white-box infos">

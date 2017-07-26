@@ -2,7 +2,6 @@
 
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
@@ -27,10 +26,6 @@ Template.User_delegations.onRendered(function onRendered() {
   this.autorun(() => {
     allowCheckbox.checked = Meteor.user().settings.delegationsAllowed;
   });
-});
-
-Template.registerHelper('fromSession', function(paramName) {
-  return Session.get(paramName);
 });
 
 Template.User_delegations.helpers({
