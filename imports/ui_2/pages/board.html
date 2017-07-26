@@ -13,17 +13,18 @@
       </div>
       <div class="collapse in section-pane" id="vote-pane">
         <div class="well">
-          <!-- ha nincs szavazás ~ empty state -->
-          <div class="vote-container white-box text-center">
-            <p>
-              Jelenleg nincs aktív szavazás!
-            </p>
-            <p class="small-size">
-              Korábbi szavazásainkat megtekinthetik a <a href="{{pathFor 'Topics.vote'}}">Szavazások</a> menüpontban a "Lezárt szavazások"-ra kattintva.
-            </p>
-          </div>
           {{#each topics 'vote'}}
             {{> Votebox}}
+          {{else}}
+            <!-- ha nincs szavazás ~ empty state -->
+            <div class="vote-container white-box text-center">
+              <p>
+                Jelenleg nincs aktív szavazás!
+              </p>
+              <p class="small-size">
+                Korábbi szavazásainkat megtekinthetik a <a href="{{pathFor 'Topics.vote'}}">Szavazások</a> menüpontban a "Lezárt szavazások"-ra kattintva.
+              </p>
+            </div>
           {{/each}}
         </div>
       </div>
