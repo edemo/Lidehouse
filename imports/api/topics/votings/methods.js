@@ -66,12 +66,6 @@ export const castVote = new ValidatedMethod({
       };
     }
 
-    Topics.update(topicId, topicModifier, function handle(err, res) {
-      if (err) {
-        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
-        `Method: topics.castVote, userId: ${userId}, topicId: ${topicId}`);
-      }
-      debugAssert(res === 1);
-    });
+    Topics.update(topicId, topicModifier);
   },
 });

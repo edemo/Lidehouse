@@ -14,7 +14,7 @@ const voteSchema = new SimpleSchema({
 
 const voteParticipationSchema = new SimpleSchema({
   count: { type: Number },
-  units: { type: Number },
+  units: { type: Number, decimal: true /* so that partial owned units are OK to vote */ },
 });
 
 Topics.votingSchema = new SimpleSchema({

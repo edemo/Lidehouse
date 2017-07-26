@@ -31,14 +31,7 @@ export const insert = new ValidatedMethod({
         `Method: topics.insert, Collection: topics, topic: {${doc}}`)
     }
 
-    return Topics.insert(doc, function handle(err, res) {
-      if (err) {
-        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
-        `Method: topics.insert, userId: ${this.userId}, topic: ${doc}`);
-      }
-      const topicId = res;
-      debugAssert(topicId);
-    });
+    return Topics.insert(doc);
   },
 });
 
@@ -66,13 +59,7 @@ export const update = new ValidatedMethod({
     // result in exposing private data
 
 
-    Topics.update({ _id }, modifier, function handle(err, res) {
-      if (err) {
-        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
-        `Method: topics.update, userId: ${this.userId}, topicId: ${_id}`);
-      }
-      debugAssert(res === 1);
-    });
+    Topics.update({ _id }, modifier);
   },
 });
 
@@ -100,13 +87,7 @@ export const remove = new ValidatedMethod({
     // XXX the security check above is not atomic, so in theory a race condition could
     // result in exposing private data
 
-    Topics.remove(_id, function handle(err, res) {
-      if (err) {
-        throw new Meteor.Error('err_databaseWriteFailed', 'Database write failed',
-        `Method: topics.remove, userId: ${this.userId}, id: ${_id}`);
-      }
-      debugAssert(res === 1);
-    });
+    Topics.remove(_id);
   },
 });
 
