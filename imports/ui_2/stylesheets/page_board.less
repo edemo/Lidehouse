@@ -11,9 +11,28 @@
   }
   &.news {
     min-height: 200px;
-    padding: 15px;
+    padding: 0px;
+    .news-title {
+      background-color: #bad5a9;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+    }
+    .btn-default {
+      padding: 0 .5em;
+      border: 1px solid #bcbaba;
+      font-size: .85em;
+      font-weight: bold;
+      text-transform: none;
+      background-color: inherit;
+      color: inherit;
+      span {
+        font-size: .8em;
+      }
+    }
     .row {
-      padding: 10px;
+      margin-right: .1px;
+      margin-left: .1px;
+      padding: 7px;
       border-top: 1px solid rgb(209, 209, 209);
     }
     .news-row {
@@ -44,7 +63,7 @@
   &.infos {
     margin-top: 1.6em;
     min-height: 200px;
-    padding: 30px;
+    padding: 20px;
   }
 }
 .page-board-new, .page-vote, .page-forum {
@@ -52,6 +71,8 @@
     padding: 10px 19px 10px 19px;
     cursor: pointer;
     background-color: @section-btn-col-collapsed;
+    text-transform: uppercase;
+    letter-spacing: .1em;
     .glyphicon-menu-down {
       visibility: collapse;
     }

@@ -14,9 +14,15 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="drop_{{_id}}">
+            <!-- ha van jogosultsága szerkeszteni -->
+            <li><a href="#">Szerkesztés</a></li>
+            <!-- megerősítő modal figyelmeztetéssel hogy nem fogja látni a többit, instrukció hogy a profil beállításokban oldhatja fel -->
             <li><a href="#">{{displayUser}} hozzászólásainak elrejtése</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#">Hozzászólás jelentése</a></li>
+            <li role="separator" class="divider"></li>
+            <!-- ha van jogosultsága törölni -->
+            <li><a href="#">Törlés</a></li>
           </ul>
         </div>
       </div>
