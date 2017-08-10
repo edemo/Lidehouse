@@ -11,11 +11,10 @@ import '/imports/api/topics/rooms/rooms.js';
 import './msg_people.html';
 import './messenger.html';
 
-
 Template.Msg_people.onCreated(function onCreated() {
 });
 
-Template.Msg_people.onCreated(function onRendered() {
+Template.Msg_people.onRendered(function onRendered() {
   const communityId = Session.get('activeCommunityId');
   const manager = Memberships.findOne({ communityId, role: 'manager' });
   if (manager) Session.set('messengerPersonId', manager.userId);
@@ -46,10 +45,6 @@ Template.Msg_people.events({
 // ---------------------- Msg_person ----------------------
 
 Template.Msg_person.onCreated(function onMsgPersonCreated() {
-  this.autorun(() => {    // TODO: It would enough to subscribe here to the Count
-    const room = Topics.messengerRoom(this.data.userId, Meteor.userId());
-    if (room) this.subscribe('comments.onTopic', { topicId: room._id });
-  });
 });
 
 Template.Msg_person.helpers({

@@ -32,6 +32,7 @@ Topics.schema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, optional: true },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
+  commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
 });
 
 Topics.helpers({
@@ -50,11 +51,16 @@ Topics.helpers({
   },
   unseenCommentsBy(userId) {
     const user = Meteor.users.findOne(userId);
-    const lastseenTimestamp = user.lastseens[this._id];
+/*    const lastseenTimestamp = user.lastseens[this._id];
     const messages = lastseenTimestamp ?
        Comments.find({ topicId: this._id, createdAt: { $gt: lastseenTimestamp } }) :
        Comments.find({ topicId: this._id });
     return messages.count();
+    */
+    const lastSeenInfo = user.lastseens[this._id];
+    const lastSeenCommentCounter = lastSeenInfo ? lastSeenInfo.commentCounter : 0;
+    const newCommentCounter = this.commentCounter - lastSeenCommentCounter;
+    return newCommentCounter;
   },
 });
 

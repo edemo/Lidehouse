@@ -20,32 +20,6 @@ export const insert = new ValidatedMethod({
   },
 });
 
-export const setReadedStatus = new ValidatedMethod({
-  name: 'comments.makeReaded',
-  validate: new SimpleSchema({
-    commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    newReadedStatus: Comments.simpleSchema().schema('readed'),
-  }).validator(),
-
-  run({ commentId, newReadedStatus }) {
-    const comment = Comments.findOne(commentId);
-
-    if (comment.readed === newReadedStatus) {
-      // The status is already what we want, let's not do any extra work
-      return;
-    }
-
-    if (!comment.editableBy(this.userId)) {
-      throw new Meteor.Error('comments.setReadedStatus.accessDenied',
-        'Cannot edit readed status in a private topic that is not yours');
-    }
-
-    Comments.update(commentId, { $set: {
-      readed: newReadedStatus,
-    } });
-  },
-});
-
 export const updateText = new ValidatedMethod({
   name: 'comments.updateText',
   validate: new SimpleSchema({
@@ -91,7 +65,6 @@ export const remove = new ValidatedMethod({
 
 const COMMENTS_METHOD_NAMES = _.pluck([
   insert,
-  setReadedStatus,
   updateText,
   remove,
 ], 'name');

@@ -11,7 +11,6 @@ import '/imports/api/topics/rooms/rooms.js';
 
 import './messenger.html';
 
-
 Template.Messenger.onCreated(function onCreated() {
   this.state = new ReactiveDict();
   this.state.set('peopleOpen', false);
@@ -70,7 +69,10 @@ const updateLastseen = function updateLastSeen() {
   const lastseenTimestamp = comments[0].createdAt;
   const modifier = {};
   modifier['$set'] = {};
-  modifier['$set']['lastseens.' + room._id] = lastseenTimestamp;
+  modifier['$set']['lastseens.' + room._id] = {
+    timestamp: lastseenTimestamp,
+    commentCounter: room.commentCounter,
+  };
   updateUser.call({ _id: Meteor.userId(), modifier }, handleError);
 };
 

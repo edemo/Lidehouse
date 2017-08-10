@@ -69,7 +69,7 @@ Meteor.users.schema = new SimpleSchema({
 
   settings: { type: UserSettingsSchema },
   lastseens: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
-  // topicId -> lastseen comment's createdAt (if seen any)
+    // topicId -> { timestamp: lastseen comment's createdAt (if seen any), commentCounter }
 
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },

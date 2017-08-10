@@ -10,18 +10,17 @@ import { Topics } from '../topics/topics.js';
 class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
     const result = super.insert(doc, callback);
-//    unreadCountDenormalizer.afterInsertComment(doc);
+    Topics.update(doc.topicId, { $inc: { commentCounter: 1 } }); // NOTE: the commentCounter does NOT decrease when a comment is removed
+                                    // this is so that we are notified on new comments, even if some old comments were removed meanwhile
     return result;
   }
   update(selector, modifier) {
     const result = super.update(selector, modifier);
-  //  unreadCountDenormalizer.afterUpdateComment(selector, modifier);
     return result;
   }
   remove(selector) {
     const comments = this.find(selector).fetch();
     const result = super.remove(selector);
-//    unreadCountDenormalizer.afterRemoveComments(comments);
     return result;
   }
 }
@@ -32,7 +31,6 @@ Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
   text: { type: String, optional: true },
-  readed: { type: Boolean, defaultValue: false },
 });
 
 Comments.attachSchema(Comments.schema);

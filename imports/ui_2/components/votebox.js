@@ -42,14 +42,14 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   // or if the vote is changed on another machine, it also gets updated here
   this.autorun(function update() {
     const activeMembershipId = Session.get('activeMembershipId');
-    const voteIsFinalized = activeMembershipId &&
+    const voteIsFinalized = voteResults && activeMembershipId &&
       voteResults[activeMembershipId] &&
       voteResults[activeMembershipId].length > 0;
     state.set('voteIsFinalized', voteIsFinalized);
 
-    const castedPreference = voteResults[activeMembershipId];
     let preference;
     if (voteIsFinalized) {
+      const castedPreference = voteResults[activeMembershipId];
       preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
     } else { // no vote yet, preference is then the original vote choices in that order
       preference = vote.choices.map(function obj(text, index) { return { text, value: index }; });
