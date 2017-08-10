@@ -204,8 +204,8 @@ AutoForm.addHooks('af.feedback', {
     doc.communityId = Session.get('activeCommunityId');
     doc.userId = Meteor.userId();
     doc.category = 'feedback';
-//    if (!doc.ticket) doc.ticket = {};
-//    doc.ticket.status = 'reported';
+    doc.title = doc.text ? doc.text.substring(0, 100) : '';
+//    if (!doc.feedback) doc.feedback = {};
     return doc;
   },
   onError(formType, error) {

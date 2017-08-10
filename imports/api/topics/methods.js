@@ -9,9 +9,10 @@ import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
-import './rooms/rooms.js';
-import './tickets/tickets.js';
 import './votings/votings.js';
+import './tickets/tickets.js';
+import './rooms/rooms.js';
+import './feedbacks/feedbacks.js';
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',

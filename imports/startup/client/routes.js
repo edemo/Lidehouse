@@ -25,6 +25,7 @@ import '/imports/ui_2/pages/vote-topics.js';
 import '/imports/ui_2/pages/housing.js';
 import '/imports/ui_2/pages/tickets-report.js';
 import '/imports/ui_2/pages/document-store.js';
+import '/imports/ui_2/pages/feedbacks.js';
 import '/imports/ui_2/pages/styleguide.js';
 
 // Import to override accounts templates
@@ -160,6 +161,13 @@ FlowRouter.route('/documents', {
   name: 'DocumentStore',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Document_store' });
+  },
+});
+
+FlowRouter.route('/feedbacks', {
+  name: 'Feedbacks',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Feedbacks' });
   },
 });
 

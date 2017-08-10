@@ -86,6 +86,9 @@
     }
   },
   "schemaFeedback": {
+    "title": {
+      "label": "Visszajelzés (kezdete)..."
+    },
     "text": {
       "label": "Részletek",
       "placeholder": "Vélemény, javaslat, hiba leírása..."
@@ -265,6 +268,7 @@
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",
   "FeedbackPaneTitle": "Véleményével, javaslataival nagyban segítheti az alkalmazás fejlesztését. </br> Ha technikai hibát észlel, vagy új funkciót szeretne kérni az alkalmazásba, kérjük jelezze nekünk.",
+  "Rating": "Értékelés",
   "opinion": "Vélemény",
   "bug": "Technikai hiba jelentése",
   "feature": "Új funkció javaslat",

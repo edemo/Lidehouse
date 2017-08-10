@@ -86,6 +86,9 @@
     }
   },
   "schemaFeedback": {
+    "title": {
+      "label": "Feedback (beginning)..."
+    },
     "text": {
       "label": "Details",
       "placeholder": "Description of error, proposal or opinion..."
