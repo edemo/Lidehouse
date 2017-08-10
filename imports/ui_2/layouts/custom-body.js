@@ -16,6 +16,10 @@ import '/imports/api/users/users.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { feedbacksSchema } from '/imports/api/topics/feedbacks/feedbacks.js';
+import { AutoForm } from 'meteor/aldeed:autoform';
+import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 
 import '/imports/ui/components/loading.js';
 import '/imports/ui/components/side-panel.js';
@@ -94,6 +98,12 @@ Template.Custom_body.helpers({
   feedbackClosed() {
     const instance = Template.instance();
     return instance.state.get('feedbackClosed') && 'feedback-closed';
+  },
+  feedbackCollection() {
+    return Topics;
+  },
+  feedbackInsertSchema() {
+    return feedbacksSchema;
   },
   cordova() {
     return Meteor.isCordova && 'cordova';
@@ -186,5 +196,22 @@ Template.Custom_body.events({
   },
   'click .js-feedback-close'(event, instance) {
     instance.state.set('feedbackClosed', !instance.state.get('feedbackClosed'));
+  },
+});
+
+AutoForm.addHooks('af.feedback', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    doc.userId = Meteor.userId();
+    doc.category = 'feedback';
+//    if (!doc.ticket) doc.ticket = {};
+//    doc.ticket.status = 'reported';
+    return doc;
+  },
+  onError(formType, error) {
+    displayError(error);
+  },
+  onSuccess(formType, result) {
+    displayMessage('success', 'Feedback appreciated');
   },
 });

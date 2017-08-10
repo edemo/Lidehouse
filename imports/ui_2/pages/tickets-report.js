@@ -10,7 +10,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
-import { ticketSchema } from '/imports/api/topics/tickets/tickets.js';
+import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import '../modals/autoform-edit.js';
@@ -60,21 +60,12 @@ Template.Tickets_report.helpers({
   },
 });
 
-const ticketReportSchema = new SimpleSchema([
-  Topics.schema,
-  { ticket: { type: ticketSchema, optional: true } },
-]);
-
-Meteor.startup(function attach() {
-  ticketReportSchema.i18n('schemaTickets');   // translation is different from schemaTopics
-});
-
 Template.Tickets_report.events({
   'click .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.ticket.insert',
       collection: Topics,
-      schema: ticketReportSchema,
+      schema: ticketsSchema,
       omitFields: ['communityId', 'userId', 'category', 'ticket.status'],
       type: 'method',
       meteormethod: 'topics.insert',
@@ -86,7 +77,7 @@ Template.Tickets_report.events({
     Modal.show('Autoform_edit', {
       id: 'af.ticket.update',
       collection: Topics,
-      schema: ticketReportSchema,
+      schema: ticketsSchema,
       omitFields: ['communityId', 'userId', 'category'],
       doc: Topics.findOne(id),
       type: 'method-update',

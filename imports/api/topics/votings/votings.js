@@ -17,10 +17,10 @@ const voteParticipationSchema = new SimpleSchema({
   units: { type: Number, decimal: true /* so that partial owned units are OK to vote */ },
 });
 
-Topics.votingSchema = new SimpleSchema({
+const votingsExtensionSchema = new SimpleSchema({
   vote: { type: voteSchema, optional: true },
   voteResults: { type: Object, optional: true, blackbox: true },
-  // ownershipId -> ranked array of choice indexes (or single entry in the array)
+    // ownershipId -> ranked array of choice indexes (or single entry in the array)
   voteParticipation: {
     type: voteParticipationSchema,
     optional: true,
@@ -49,7 +49,7 @@ Topics.helpers({
   },
 });
 
-Topics.attachSchema(Topics.votingSchema);   // TODO: should be conditional on category === 'vote'
+Topics.attachSchema(votingsExtensionSchema);   // TODO: should be conditional on category === 'vote'
 
 _.extend(Topics.publicFields, { vote: 1, voteParticipation: 1 });   // voteResults are NOT sent to the client
 

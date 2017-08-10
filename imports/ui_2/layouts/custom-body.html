@@ -146,26 +146,25 @@
 
     <div id="feedback-pane" class="collapse">
       <div class="row">
-        <div class="col-xs-10">
-          Hogyan értékelné az oldalt?
-        </div>
+        <div class="col-xs-10"> {{{_ 'FeedbackPaneTitle'}}}</div>
         <div class="col-xs-2 text-right">
           <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="collapse" data-target="#feedback-pane" aria-expanded="true" aria-controls="#feedback-pane"></span>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
-          Feedback autoform (?) <br>
-          -> dropdown: kategória {vélemény, technikai hiba, hiányzó funció kérése} <br>
-          -> ajánlaná e másoknak: 1-10 ponton <br>
-          -> textarea -szabad szöveg <br>
-          <br> a végén Köszönő modal valamilyen szines ábrával
+          {{#autoForm id="af.feedback" collection=feedbackCollection schema=feedbackInsertSchema omitFields="communityId, userId, category, title" type="method" meteormethod="topics.insert" singleMethodArgument=true template="bootstrap3-inline"}}
+            {{> afQuickFields}}
+            <div>
+              <button type="submit" data-toggle="collapse" data-target="#feedback-pane" class="btn btn-primary">{{_ "send"}}</button>
+            </div>
+          {{/autoForm}}
         </div>
       </div>
     </div>
     <div id="feedback-btn" class="{{feedbackClosed}}">
       <a data-toggle="collapse" data-target="#feedback-pane" aria-expanded="true" aria-controls="#feedback-pane">
-        <span>Mondd el véleményed az oldalról!</span>
+        <span>{{_ 'FeedbackPaneCallout'}}</span>
       </a>
        |
       <span class="glyphicon glyphicon-remove js-feedback-close" aria-hidden="true"></span>

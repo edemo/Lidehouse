@@ -41,6 +41,8 @@ const permissions = [
   { name: 'ticket.update',        type: 'edit', roles: ['manager'] },
   { name: 'room.insert',          type: 'edit', roles: everybody },
   { name: 'room.update',          type: 'edit', roles: nobody },
+  { name: 'feedback.insert',      type: 'edit', roles: everybody },
+  { name: 'feedback.update',      type: 'edit', roles: nobody },
   { name: 'topics.remove',        type: 'edit', roles: ['moderator'], allowAuthor: true },
   { name: 'topics.castVote',      type: 'edit', roles: ['owner'] },
   { name: 'topics.listing',       type: 'edit', roles: exceptGuest },

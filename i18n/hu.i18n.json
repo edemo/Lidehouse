@@ -85,6 +85,21 @@
       }
     }
   },
+  "schemaFeedback": {
+    "text": {
+      "label": "Részletek",
+      "placeholder": "Vélemény, javaslat, hiba leírása..."
+    },
+    "feedback": {
+      "label": "Visszajelzés",
+      "type": {
+        "label": "Visszajelzés fajtája"
+      },
+      "rating": {
+        "label": "Mennyire ajánlaná az alkalmazást másoknak?"
+      }
+    }
+  },
   "schemaMemberships" : {
     "userId": {
       "label": "Felhasználó"
@@ -246,6 +261,14 @@
   "New ticket": "Új hibabejelentés",
   "Please dont report twice": "Kérjük csak akkor adja fel bejelentését, ha az még nem szerepel a fenti listán vagy nemrég került archiválásra hasonló. A lezárt bejelentéseket a lap alján tekinthetik meg. Köszönjük!",
   "Describe the problem briefly": "A hiba rövid leírása ...",
+
+  // feedback
+  "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",
+  "FeedbackPaneTitle": "Véleményével, javaslataival nagyban segítheti az alkalmazás fejlesztését. </br> Ha technikai hibát észlel, vagy új funkciót szeretne kérni az alkalmazásba, kérjük jelezze nekünk.",
+  "opinion": "Vélemény",
+  "bug": "Technikai hiba jelentése",
+  "feature": "Új funkció javaslat",
+  "Feedback appreciated": "Köszönjük, hogy visszajelzésével segítette munkánkat!",
 
   // placeholders
   "Make your comment": "Szóljon hozzá",

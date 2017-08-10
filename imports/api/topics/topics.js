@@ -21,7 +21,7 @@ class TopicsCollection extends Mongo.Collection {
 
 export const Topics = new TopicsCollection('topics');
 
-Topics.categoryValues = ['forum', 'vote', 'news', 'ticket', 'room'];
+Topics.categoryValues = ['forum', 'vote', 'news', 'ticket', 'room', 'feedback'];
 
 Topics.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },

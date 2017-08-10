@@ -85,6 +85,21 @@
       }
     }
   },
+  "schemaFeedback": {
+    "text": {
+      "label": "Details",
+      "placeholder": "Description of error, proposal or opinion..."
+    },
+    "feedback": {
+      "label": "Feedback",
+      "type": {
+        "label": "Feedback type"
+      },
+      "rating": {
+        "label": "How much would you recommend this app to others?"
+      }
+    }
+  },
   "schemaMemberships" : {
     "userId": {
       "label": "User"
@@ -122,6 +137,13 @@
   "join": "Join",
   "createNew": "Create New",
   "edit": "Edit",
+
+  // feedback
+  "FeedbackPaneCallout": "Tell us your opinion about the app!",
+  "FeedbackPaneTitle": "Your feedback can help the app develepment a lot. </br> If you notice technical errors, or you have a suggestion for a new feature, please let us know.",
+  "opinion": "Opinion",
+  "bug": "Technical problem report",
+  "feature": "New feature recommendation",
 
   // errors and messages
   "err_notLoggedIn": "Must be logged in",
