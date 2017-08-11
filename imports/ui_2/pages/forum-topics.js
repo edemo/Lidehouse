@@ -6,9 +6,6 @@ import './forum-topics.html';
 import '../components/chatbox.js';
 
 Template.Forum_topics.onCreated(function forumTopicsOnCreated() {
-  this.autorun(() => {
-    this.subscribe('topics.inCommunity', { communityId: Session.get('activeCommunityId') });
-  });
 });
 
 Template.Forum_topics.helpers({

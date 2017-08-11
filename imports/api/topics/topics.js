@@ -49,6 +49,11 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
+  isUnseenBy(userId) {
+    const user = Meteor.users.findOne(userId);
+    const lastSeenInfo = user.lastseens[this._id];
+    return lastSeenInfo ? false : true;
+  },
   unseenCommentsBy(userId) {
     const user = Meteor.users.findOne(userId);
 /*    const lastseenTimestamp = user.lastseens[this._id];
@@ -91,6 +96,7 @@ Topics.publicFields = {
   text: 1,
   createdAt: 1,
   closed: 1,
+  commentCounter: 1,
 };
 
 Factory.define('topic', Topics, {

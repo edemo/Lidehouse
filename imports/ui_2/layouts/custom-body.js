@@ -20,6 +20,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { feedbacksSchema } from '/imports/api/topics/feedbacks/feedbacks.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { debugAssert } from '/imports/utils/assert.js';
 
 import '/imports/ui/components/loading.js';
 import '/imports/ui/components/side-panel.js';
@@ -88,6 +89,10 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
       }
     }
   });
+  // We subscribe to all topics in the community, so that we have access to the commentCounters
+  this.autorun(() => {
+    this.subscribe('topics.inCommunity', { communityId: Session.get('activeCommunityId') });
+  });
 });
 
 Template.Custom_body.helpers({
@@ -148,6 +153,28 @@ Template.Custom_body.helpers({
     const activeMembershipId = Session.get('activeMembershipId');
     const activeMembership = activeMembershipId ? Memberships.findOne(activeMembershipId) : undefined;
     return activeMembership;
+  },
+  countNotifications(category) {
+    const communityId = Session.get('activeCommunityId');
+    let count = 0;
+    const topics = Topics.find({ communityId, category });
+    topics.map(t => {
+      const userId = Meteor.userId();
+      switch (category) {
+        case 'room':
+          if (t.isUnseenBy(userId) || t.unseenCommentsBy(userId) > 0) count += 1;
+          break;
+        case 'vote':
+          if (!t.closed && !t.hasVoted(userId)) count += 1;
+          break;
+        case 'feedback':
+          if (t.isUnseenBy(userId)) count += 1;
+          break;
+        default:
+          debugAssert(false);
+      }
+    });
+    return count;
   },
 });
 

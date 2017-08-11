@@ -19,9 +19,6 @@ import '../modals/confirmation.js';
 import './tickets-report.html';
 
 Template.Tickets_report.onCreated(function () {
-  this.autorun(() => {
-    this.subscribe('topics.inCommunity', { communityId: Session.get('activeCommunityId') });
-  });
 });
 
 Template.Tickets_report.helpers({

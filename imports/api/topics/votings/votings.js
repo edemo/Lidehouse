@@ -47,6 +47,12 @@ Topics.helpers({
     const voteParticipationShares = new Fraction(this.voteParticipation.units, this.community().totalunits);
     return Math.round(100 * (voteParticipationShares.toNumber()));
   },
+  hasVotedDirect(userId) {
+    return !!(this.voteResults && this.voteResults[userId]);  // TODO
+  },
+  hasVoted(userId) {
+    return this.hasVotedDirect(userId); // TODO
+  },
 });
 
 Topics.attachSchema(votingsExtensionSchema);   // TODO: should be conditional on category === 'vote'

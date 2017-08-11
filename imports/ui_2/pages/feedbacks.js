@@ -6,7 +6,9 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { feedbackColumns } from '/imports/api/topics/feedbacks/tables.js';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import './feedbacks.html';
+import '../modals/modal.js';
 
 Template.Feedbacks.onCreated(function onCreated() {
   this.subscribe('feedbacks.listing');
@@ -36,11 +38,11 @@ Template.Feedbacks.helpers({
 
 Template.Feedbacks.events({
   'click .js-view'(event) {
-    const id = $(event.target).data('id');
+    const topicId = $(event.target).data('id');
     const modalContext = {
       title: 'Feedback',
       body: 'Chatbox',
-      bodyContext: Topics.findOne(id),
+      bodyContext: Topics.findOne(topicId),
     };
     Modal.show('Modal', modalContext);
   },

@@ -98,23 +98,48 @@
       <section id="menu">
         <div class="list-menu">
           <ul>
-            <li class="list-item"><a href="{{pathFor 'Board'}}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>{{_ 'Main'}}</a></li>
-            <li class="list-item"><a href="{{pathFor 'Messenger'}}"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>{{_ 'Messages'}}</a><span class="badge pull-right">4</span></li>
-            <li class="list-item"><a href="{{pathFor 'Topics.forum'}}"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>{{_ 'Forum'}}</a></li>
-            <li class="list-item"><a href="{{pathFor 'Topics.vote'}}"><span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>{{_ 'Votings'}}</a><span class="badge pull-right">1</span></li>
-            <li class="list-item"><a href="{{pathFor 'Delegations'}}"><span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>{{_ 'Delegations'}}</a><span class="badge pull-right">8</span></li>
-            <li class="list-item"><a href="{{pathFor 'Tickets.report'}}"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>{{_ 'Tickets'}}</a></li>
-            <li class="list-item"><a><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>{{_ 'Finances'}}</a></li>
-            <li class="list-item"><a href="{{pathFor 'DocumentStore'}}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>{{_ 'Documentstore'}}</a></li>
+            <li class="list-item">
+              <a href="{{pathFor 'Board'}}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>{{_ 'Main'}}</a>
+            </li>
+            <li class="list-item">
+              <a href="{{pathFor 'Messenger'}}"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>{{_ 'Messages'}}</a>
+              {{#if countNotifications 'room'}}
+                <span class="badge pull-right">{{countNotifications 'room'}}</span>
+                {{/if}}
+            </li>
+            <li class="list-item">
+              <a href="{{pathFor 'Topics.forum'}}"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>{{_ 'Forum'}}</a>
+            </li>
+            <li class="list-item">
+              <a href="{{pathFor 'Topics.vote'}}"><span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>{{_ 'Votings'}}</a>
+              {{#if countNotifications 'vote'}}
+                <span class="badge pull-right">{{countNotifications 'vote'}}</span>
+              {{/if}}
+            </li>
+            <li class="list-item">
+              <a href="{{pathFor 'Delegations'}}"><span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>{{_ 'Delegations'}}</a>
+            </li>
+            <li class="list-item">
+              <a href="{{pathFor 'Tickets.report'}}"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>{{_ 'Tickets'}}</a>
+            </li>
+            <li class="list-item">
+              <a><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>{{_ 'Finances'}}</a>
+            </li>
+            <li class="list-item">
+              <a href="{{pathFor 'DocumentStore'}}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>{{_ 'Documentstore'}}</a>
+            </li>
           </ul>
-          <a href="{{pathFor 'Feedbacks'}}" class="list-item" style="position: absolute; bottom: 5%; width: 100%;">
-            <img src="/icon/si-glyph-bolt.svg"/>
-            Feedbacks (dev)
-          </a>
-          <a href="{{pathFor 'Styleguide'}}" class="list-item" style="position: absolute; bottom: 0; width: 100%;">
-            <img src="/icon/si-glyph-bolt.svg"/>
-            Styleguide (dev)
-          </a>
+          <ul style="position: absolute; bottom: 0; width: 100%;">
+            <li class="list-item">
+              <a href="{{pathFor 'Feedbacks'}}"><img src="/icon/si-glyph-bolt.svg"/>Feedbacks (dev)</a>
+              {{#if countNotifications 'feedback'}}
+                <span class="badge pull-right">{{countNotifications 'feedback'}}</span>
+              {{/if}}
+            </li>
+            <li class="list-item">
+              <a href="{{pathFor 'Styleguide'}}"><img src="/icon/si-glyph-bolt.svg"/>Styleguide (dev)</a>
+            </li>
+          </ul>
         </div>
       </section>
 

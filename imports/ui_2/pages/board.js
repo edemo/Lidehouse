@@ -17,9 +17,6 @@ import './board.html';
 
 
 Template.Board.onCreated(function boardOnCreated() {
-  this.autorun(() => {
-    this.subscribe('topics.inCommunity', { communityId: Session.get('activeCommunityId') });
-  });
 });
 
 Template.Board.helpers({

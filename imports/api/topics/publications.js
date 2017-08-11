@@ -15,7 +15,16 @@ Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
 
   const { communityId } = params;
 
+  const selector = {
+    communityId,
+    // Filter for 'No participantIds (meaning everyone), or contains userId'
+    $or: [
+      { participantIds: { $exists: false } },
+      { participantIds: this.userId },
+    ],
+  };
+
   const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
 
-  return Topics.find({ communityId }, { fields: publicFields });
+  return Topics.find(selector, { fields: publicFields });
 });

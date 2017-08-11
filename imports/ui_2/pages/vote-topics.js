@@ -10,9 +10,6 @@ import '../components/vote-create.js';
 import '../components/votebox.js';
 
 Template.Vote_topics.onCreated(function voteTopicsOnCreated() {
-  this.autorun(() => {
-    this.subscribe('topics.inCommunity', { communityId: Session.get('activeCommunityId') });
-  });
 });
 
 Template.Vote_topics.helpers({
