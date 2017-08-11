@@ -3,6 +3,7 @@ import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 
 export function feedbackColumns() {
   return [
+    { data: 'community().name', title: __('community') },
     { data: 'createdBy()', title: __('createdBy') },
     { data: 'feedback.rating', title: __('Rating') },
     { data: 'feedback.type', title: __('schemaFeedback.feedback.type.label'), render: Render.translate },
