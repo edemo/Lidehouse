@@ -77,18 +77,6 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
       this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
     }
   });
-  // This autorun sets the active membership automatically to the first membership of the user in the community
-  // TODO: active membership could be saved somewhere so he gets back where he left off last time
-  this.autorun(() => {
-    const activeMembershipId = Session.get('activeMembershipId');
-    const activeCommunityId = Session.get('activeCommunityId');
-    if (!activeMembershipId && activeCommunityId && Meteor.userId()) {
-      const activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId() });
-      if (activeMembership) {
-        Session.set('activeMembershipId', activeMembership._id);
-      }
-    }
-  });
   // We subscribe to all topics in the community, so that we have access to the commentCounters
   this.autorun(() => {
     this.subscribe('topics.inCommunity', { communityId: Session.get('activeCommunityId') });
@@ -143,16 +131,8 @@ Template.Custom_body.helpers({
     const activeCommunity = activeCommunityId ? Communities.findOne(activeCommunityId) : undefined;
     return activeCommunity;
   },
-  memberships() {
-    const activeCommunityId = Session.get('activeCommunityId');
-    if (!activeCommunityId) { return []; }
-//    const parcels = Parcels.find({ communityId: activeCommunityId });
-    return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId() });
-  },
-  activeMembership() {
-    const activeMembershipId = Session.get('activeMembershipId');
-    const activeMembership = activeMembershipId ? Memberships.findOne(activeMembershipId) : undefined;
-    return activeMembership;
+  displayMemberships(communityId) {
+    return Memberships.find({ communityId, userId: Meteor.userId() }).fetch().toString();
   },
   countNotifications(category) {
     const communityId = Session.get('activeCommunityId');
@@ -194,11 +174,6 @@ Template.Custom_body.events({
 
   'click .js-switch-community'() {
     Session.set('activeCommunityId', this._id);
-    Session.set('activeMembershipId', undefined);
-  },
-
-  'click .js-switch-membership'() {
-    Session.set('activeMembershipId', this._id);
   },
 
   'click .js-logout'() {
