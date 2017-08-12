@@ -39,11 +39,13 @@ Template.Feedbacks.helpers({
 Template.Feedbacks.events({
   'click .js-view'(event) {
     const topicId = $(event.target).data('id');
+    const topic = Topics.findOne(topicId);
     const modalContext = {
       title: 'Feedback',
       body: 'Chatbox',
-      bodyContext: Topics.findOne(topicId),
+      bodyContext: topic,
     };
     Modal.show('Modal', modalContext);
+    Meteor.user().hasNowSeen(topic);
   },
 });

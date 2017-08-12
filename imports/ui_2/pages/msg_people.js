@@ -12,12 +12,12 @@ import './msg_people.html';
 import './messenger.html';
 
 Template.Msg_people.onCreated(function onCreated() {
-});
-
-Template.Msg_people.onRendered(function onRendered() {
   const communityId = Session.get('activeCommunityId');
   const manager = Memberships.findOne({ communityId, role: 'manager' });
   if (manager) Session.set('messengerPersonId', manager.userId);
+});
+
+Template.Msg_people.onRendered(function onRendered() {
 });
 
 Template.Msg_people.helpers({

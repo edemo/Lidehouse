@@ -59,51 +59,32 @@ Template.Messenger.events({
 
 // -------------------- Msg_box ---------------------------
 
-const updateLastseen = function updateLastSeen() {
-  // Set the lastseen for this topic, to the last comment on this topic
-  const otherUserId = Session.get('messengerPersonId');
-  const room = Topics.messengerRoom(Meteor.userId(), otherUserId);
-  if (!room) return;
-  const comments = room.comments().fetch(); // returns newest-first order
-  if (!comments || comments.length === 0) return;
-  const lastseenTimestamp = comments[0].createdAt;
-  const modifier = {};
-  modifier['$set'] = {};
-  modifier['$set']['lastseens.' + room._id] = {
-    timestamp: lastseenTimestamp,
-    commentCounter: room.commentCounter,
-  };
-  updateUser.call({ _id: Meteor.userId(), modifier }, handleError);
-};
-
 Template.Msg_box.onCreated(function tmplMsgBoxOnCreated() {
-  /* doesn't need this, ever since MsgBox is only rendered when there is already communication between the users
   this.autorun(() => {
-    const selectedPersonId = Session.get('messengerPersonId');
-    if (selectedPersonId) {
-      const roomId = Topics.messengerRoom(Meteor.userId(), selectedPersonId);
-      if (roomId) {
-        this.subscribe('comments.onTopic', { topicId: roomId });
-      }
-    }
+    const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
+    if (!room) return;
+    this.subscribe('comments.onTopic', { topicId: room._id });
+  });   // doesn't need this, ever since MsgBox is only rendered when there is already communication between the users
+/*  this.autorun(() => {
+    this.subscribe('comments.onTopic', { topicId: this.data._id });
   });
   */
-  this.autorun(() => {
-    this.subscribe('comments.onTopic', { topicId: this.data.room._id });
-  });
 });
 
 Template.Msg_box.onRendered(function tmplMsgBoxOnRendered() {
   this.autorun(() => {
+    const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
+    if (!room) return;
     if (this.subscriptionsReady()) {
-      updateLastseen();
+      Meteor.user().hasNowSeen(room);
     }
   });
 });
 
 Template.Msg_box.helpers({
   messages() {
-    return Comments.find({ topicId: this.room._id }, { sort: { createdAt: 1 } });
+    const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
+    return Comments.find({ topicId: room._id }, { sort: { createdAt: 1 } });
   },
   ownMessage(comment) {
     return comment.userId === Meteor.userId();
@@ -123,11 +104,13 @@ Template.Msg_send.events({
         userId: Meteor.userId(),
         text,
       },
-      onSuccess(res => (textarea.value = '')),
-      );
+      onSuccess((res) => {
+        textarea.value = '';
+        Meteor.user().hasNowSeen(roomId);
+      }));
     };
 
-    const room = instance.data.room;
+    const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
     if (room) {
       roomId = room._id;
       insertMessage();
