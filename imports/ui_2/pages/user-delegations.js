@@ -1,6 +1,7 @@
 /* global alert */
 
 import { Meteor } from 'meteor/meteor';
+import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
@@ -31,7 +32,7 @@ Template.User_delegations.onRendered(function onRendered() {
 Template.User_delegations.helpers({
   delegationsFromMeDataFn() {
     return () => {
-      return Delegations.find({ sourceUserId: Meteor.userId(), scope: 'membership' }).fetch();
+      return Delegations.find({ sourceUserId: Meteor.userId() }).fetch();
     };
   },
   delegationsFromMeOptionsFn() {
@@ -48,7 +49,7 @@ Template.User_delegations.helpers({
   },
   delegationsToMeDataFn() {
     return () => {
-      return Delegations.find({ targetUserId: Meteor.userId(), scope: 'membership' }).fetch();
+      return Delegations.find({ targetUserId: Meteor.userId() }).fetch();
     };
   },
   delegationsToMeOptionsFn() {
@@ -119,7 +120,8 @@ AutoForm.addModalHooks('af.delegation.update');
 AutoForm.addHooks('af.delegation.insert', {
   formToDoc(doc) {
     doc.sourceUserId = Meteor.userId();
-    doc.scope = 'membership';
+    doc.scope = 'community';
+    doc.objectId = Session.get('activeCommunityId');
     return doc;
   },
 });

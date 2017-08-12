@@ -2,22 +2,14 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
 export const Delegations = new Mongo.Collection('delegations');
 
-Delegations.scopeValues = ['general', 'community', 'membership', 'topicGroup', 'topic'];
-
-const chooseOwnership = {
-  options() {
-    return Memberships.find({ userId: Meteor.userId(), role: 'owner' }).map(function option(m) {
-      return { label: m.parcel(), value: m._id };
-    });
-  },
-};
+Delegations.scopeValues = ['general', 'community', 'topicGroup', 'topic'];
 
 const chooseUser = {
   options() {
@@ -28,16 +20,16 @@ const chooseUser = {
 };
 
 Delegations.schema = new SimpleSchema({
-  sourceUserId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
-  targetUserId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
+  sourceUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseUser },
+  targetUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseUser },
   scope: { type: String, allowedValues: Delegations.scopeValues },
-  objectId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseOwnership },
+  objectId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 });
 
 Delegations.helpers({
   object() {
-    debugAssert(this.scope === 'membership');
-    return Memberships.findOne(this.objectId);
+    debugAssert(this.scope === 'community');
+    return Communities.findOne(this.objectId);
   },
   sourceUser() {
     return Meteor.users.findOne(this.sourceUserId);
@@ -46,8 +38,7 @@ Delegations.helpers({
     return Meteor.users.findOne(this.targetUserId);
   },
   votingShare() {
-    const obj = this.object();
-    return obj ? obj.votingShare() : 0;
+    return 0;
   },
 });
 

@@ -48,7 +48,7 @@ Topics.helpers({
     return Math.round(100 * (voteParticipationShares.toNumber()));
   },
   hasVotedDirect(userId) {
-    return !!(this.voteResults && this.voteResults[userId]);  // TODO
+    return !!(this.voteResults && this.voteResults[userId] && this.voteResults[userId].length > 0);  // TODO
   },
   hasVoted(userId) {
     return this.hasVotedDirect(userId); // TODO
@@ -62,8 +62,7 @@ _.extend(Topics.publicFields, { vote: 1, voteParticipation: 1 });   // voteResul
 Topics.publicFields.extendForUser = function (userId, communityId) {
   // User cannot see other user's votes, but need to see his own votes
   const publicFiledsForOwnVotes = {};
-  const usersOwnershipIds = Memberships.find({ userId, communityId, role: 'owner' }).map(m => m._id);
-  usersOwnershipIds.forEach(function addToPublic(id) { publicFiledsForOwnVotes['voteResults.' + id] = 1; });
+  publicFiledsForOwnVotes['voteResults.' + userId] = 1;
   const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
   return publicFields;
 }

@@ -21,6 +21,7 @@ Template.Votebox.onCreated(function voteboxOnCreated() {
 Template.Votebox.onRendered(function voteboxOnRendered() {
   const self = this;
   const state = this.state;
+  const voting = this.data;
   const vote = this.data.vote;
   const voteResults = this.data.voteResults;
 
@@ -38,18 +39,15 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
     },
   });
 
-  // this is in an autorun, so if activeMembershipId changes, it will rerun
+  // this is in an autorun, so if logged in user changes, it will rerun
   // or if the vote is changed on another machine, it also gets updated here
   this.autorun(function update() {
-    const activeMembershipId = Session.get('activeMembershipId');
-    const voteIsFinalized = voteResults && activeMembershipId &&
-      voteResults[activeMembershipId] &&
-      voteResults[activeMembershipId].length > 0;
+    const voteIsFinalized = voting.hasVotedDirect(Meteor.userId())
     state.set('voteIsFinalized', voteIsFinalized);
 
     let preference;
     if (voteIsFinalized) {
-      const castedPreference = voteResults[activeMembershipId];
+      const castedPreference = voteResults[Meteor.userId()];
       preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
     } else { // no vote yet, preference is then the original vote choices in that order
       preference = vote.choices.map(function obj(text, index) { return { text, value: index }; });
@@ -88,9 +86,9 @@ Template.Votebox.helpers({
   },
   // Single choice voting
   pressedClass(choice) {
-    const activeMembershipId = Session.get('activeMembershipId');
-    if (!activeMembershipId || !this.voteResults) return '';
-    const ownVote = this.voteResults[activeMembershipId] && this.voteResults[activeMembershipId][0];
+    const userId = Meteor.userId();
+    if (!this.voteResults) return '';
+    const ownVote = this.voteResults[userId] && this.voteResults[userId][0];
     return (ownVote === choice) && 'btn-pressed';
   },
   // Preferential voting
@@ -121,23 +119,21 @@ Template.Votebox.events({
   },
   // event handler for the single choice vote type
   'click .btn-vote'(event) {
-    const membershipId = Session.get('activeMembershipId');
     const topicId = this._id;
     const choice = $(event.target).data('value');
-    castVote.call({ topicId, membershipId, castedVote: [choice] },
+    castVote.call({ topicId, castedVote: [choice] },
       onSuccess(res => displayMessage('success', 'Vote casted'))
     );
   },
   // event handler for the preferential vote type
   'click .btn-votesend'(event, instance) {
-    const membershipId = Session.get('activeMembershipId');
     const topicId = this._id;
     const voteIsFinalized = instance.state.get('voteIsFinalized');
     if (!voteIsFinalized) {
       const preference = instance.state.get('preference');
       console.log('casting:', preference);
       const castedVote = preference.map(p => p.value);
-      castVote.call({ topicId, membershipId, castedVote },
+      castVote.call({ topicId, castedVote },
         onSuccess((res) => {
           displayMessage('success', 'Vote casted');
           instance.state.set('voteIsFinalized', true);
