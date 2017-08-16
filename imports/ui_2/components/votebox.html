@@ -4,9 +4,17 @@
       <div class="col-xs-6 title-size">
         {{title}}
       </div>
+      {{#if this.closed}}
+      <div>
+        {{_ "closed"}}
+        <button class="js-view-results">{{_ "Show results"}}</button>
+      </div>
+      {{else}}
       <div class="col-xs-6 small-size text-right" data-tooltip="{{displayClosesAtTime}}">
         {{_ "closes"}}: {{displayTimeLeft}}
+        <button class="js-close">{{_ "close topic"}}</button>
       </div>
+      {{/if}}
     </div>
     <div class="row">
       <div class="col-xs-12">

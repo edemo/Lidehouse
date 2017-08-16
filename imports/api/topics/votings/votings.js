@@ -63,6 +63,7 @@ Topics.publicFields.extendForUser = function (userId, communityId) {
   // User cannot see other user's votes, but need to see his own votes
   const publicFiledsForOwnVotes = {};
   publicFiledsForOwnVotes['voteResults.' + userId] = 1;
-  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
+//  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
+  const publicFields = _.extend({}, Topics.publicFields, { voteResults: 1 });
   return publicFields;
 }
