@@ -126,9 +126,13 @@
       "label": "Meghatalmazott",
       "placeholder": "(pl. Miki75)"
     },
+    "scope": {
+      "label": "Meghatalmazás köre",
+      "placeholder": "(pl. Ház ügyei)"
+    },
     "objectId": {
       "label": "Meghatalmazás tárgya (tulajdon)",
-      "placeholder": "(pl. II/4)"
+      "placeholder": "(pl. Demo ház)"
     }
   },
   "undefined": "nincs megadva",

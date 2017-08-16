@@ -37,9 +37,6 @@ Delegations.helpers({
   targetUser() {
     return Meteor.users.findOne(this.targetUserId);
   },
-  votingShare() {
-    return 0;
-  },
 });
 
 Delegations.attachSchema(Delegations.schema);

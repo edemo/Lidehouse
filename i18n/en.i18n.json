@@ -126,9 +126,13 @@
       "label": "Delegatee",
       "placeholder": "(eg. Mike75)"
     },
+    "scope": {
+      "label": "Scope of Delegation",
+      "placeholder": "(pl. Community issues)"
+    },
     "objectId": {
-      "label": "Scope of delegation (ownership)",
-      "placeholder": "(eg. ownership II/4)"
+      "label": "Object of delegation",
+      "placeholder": "(eg. Demo community)"
     }
   },
 
