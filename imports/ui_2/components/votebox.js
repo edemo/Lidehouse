@@ -6,6 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { update } from '/imports/api/topics/methods.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
@@ -13,6 +14,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/proposal-view.js';
 import '../components/votebox.html';
 import '../components/comments-section.js';
+import '../components/vote-results.js';
 
 Template.Votebox.onCreated(function voteboxOnCreated() {
   this.state = new ReactiveDict();
@@ -152,6 +154,22 @@ Template.Votebox.events({
     const modalContext = {
       title: 'Official proposal',
       body: 'Proposal_view',
+      bodyContext: this,
+      btnClose: 'close',
+    };
+    Modal.show('Modal', modalContext);
+  },
+  'click .js-close'(event, instance) {
+    update.call({ _id: this._id, modifier: { $set: { closed: true } } },
+      onSuccess((res) => {
+        displayMessage('success', 'Vote closed');
+      })
+    );
+  },
+  'click .js-view-results'(event, instance) {
+    const modalContext = {
+      title: 'Vote results',
+      body: 'Vote_results',
       bodyContext: this,
       btnClose: 'close',
     };

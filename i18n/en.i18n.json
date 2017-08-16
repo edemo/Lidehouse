@@ -140,6 +140,7 @@
   "join": "Join",
   "createNew": "Create New",
   "edit": "Edit",
+  "close topic": "Close",
 
   // feedback
   "FeedbackPaneCallout": "Tell us your opinion about the app!",

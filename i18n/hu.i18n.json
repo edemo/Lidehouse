@@ -201,11 +201,13 @@
   "send": "Elküldés",
   "vote": "Szavazás",
   "send vote": "Szavazat elküldése",
+  "close topic": "Lezárás",
   "invite": "Meghívás",
   "assign": "Hozzárendelés",
   "search": "Keresés",
   "ok": "OK",
   "cancel": "Mégsem",
+  "close": "Bezárás",
   "confirm": "Biztos benne?",
   "loading...": "Betöltés folyamatban...",
 
@@ -228,6 +230,12 @@
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
   "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrenbe...",
+  "Show results": "Eredmények megtekintése",
+  "Vote results": "Szavazási eredmények",
+  "voter": "Szavazó",
+  "casted vote": "Szavazat",
+  "vote path": "Meghatalmazás lánc",
+  "direct": "Közvetlen",
 
   // delegations
   "Delegations from me": "Meghatalmazásaim",

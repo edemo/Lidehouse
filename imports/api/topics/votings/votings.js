@@ -64,6 +64,6 @@ Topics.publicFields.extendForUser = function (userId, communityId) {
   const publicFiledsForOwnVotes = {};
   const usersOwnershipIds = Memberships.find({ userId, communityId, role: 'owner' }).map(m => m._id);
   usersOwnershipIds.forEach(function addToPublic(id) { publicFiledsForOwnVotes['voteResults.' + id] = 1; });
-  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
+  const publicFields = _.extend({}, Topics.publicFields, { voteResults: 1 });
   return publicFields;
 }
