@@ -73,7 +73,7 @@ Topics.helpers({
         const voteResult = directVotes[voterId];
         if (voteResult) {
           const result = {
-            votingUnits: ownership.votingUnits,
+            votingShare: ownership.votingShare(),
             voteResult,
             votePath,
           };
