@@ -21,8 +21,12 @@ const voteParticipationSchema = new SimpleSchema({
 
 const votingsExtensionSchema = new SimpleSchema({
   vote: { type: voteSchema, optional: true },
+  voteCasts: { type: Object, optional: true, blackbox: true },
+    // userId -> ranked array of choice indexes (or single entry in the array)
   voteResults: { type: Object, optional: true, blackbox: true },
-    // ownershipId -> ranked array of choice indexes (or single entry in the array)
+    // ownershipId -> {}
+  voteSummary: { type: Object, optional: true, blackbox: true },
+    // choiceIndex -> {}
   voteParticipation: {
     type: voteParticipationSchema,
     optional: true,
@@ -50,17 +54,16 @@ Topics.helpers({
     return Math.round(100 * (voteParticipationShares.toNumber()));
   },
   hasVotedDirect(userId) {
-    return !!(this.voteResults && this.voteResults[userId] && this.voteResults[userId].length > 0);  // TODO
+    return !!(this.voteCasts && this.voteCasts[userId] && this.voteCasts[userId].length > 0);
   },
   hasVoted(userId) {
-    return this.hasVotedDirect(userId); // TODO
+    return !!(this.voteResults && this.voteResults[userId] && this.voteResults[userId].length > 0);
   },
-  voteResultSummary() {
-    const results = [];
+  voteEvaluate() {
+    const results = {};
     const summary = {};
-    const directVotes = this.voteResults;
+    const directVotes = this.voteCasts;
     const data = this;
-    debugger;
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner' });
     ownerships.forEach(ownership => {
       const votePath = [ownership.userId];
@@ -69,23 +72,12 @@ Topics.helpers({
         const choices = data.vote.choices;
         const voteResult = directVotes[voterId];
         if (voteResult) {
-          results.push({
-            voterId: ownership.userId,
+          const result = {
+            votingUnits: ownership.votingUnits,
             voteResult,
             votePath,
-            voter() {
-              return Meteor.users.findOne(this.voterId);
-            },
-            voteResultDisplay() {
-              return choices[voteResult[0]];
-            },
-            votePathDisplay() {
-              if (votePath.length === 1) return 'direct';
-              let path = '';
-              this.votePath.forEach((did, ind) => { if (ind > 0) path += ' -> ' + Meteor.users.findOne(did).toString(); });
-              return path;
-            },
-          });
+          };
+          results[ownership._id] = result;
           summary[voteResult] = summary[voteResult] || 0;
           summary[voteResult] += ownership.votingUnits();
           return true;
@@ -101,19 +93,54 @@ Topics.helpers({
 
       getVoteResult(ownership.userId);
     });
-    return { results, summary };
+
+    Topics.update(this._id, { $set: { voteResults: results, voteSummary: summary } });
+  },
+  voteResultsDisplay() {
+    const topic = this;
+    const results = this.voteResults;
+    const data = [];
+    Object.keys(results).forEach(key => {
+      data.push(_.extend(results[key], {
+        voter() {
+          return Meteor.users.findOne(this.votePath[0]);
+        },
+        voteResultDisplay() {
+          return topic.vote.choices[this.voteResult[0]];
+        },
+        votePathDisplay() {
+          if (this.votePath.length === 1) return 'direct';
+          let path = '';
+          this.votePath.forEach((did, ind) => { if (ind > 0) path += ' -> ' + Meteor.users.findOne(did).toString(); });
+          return path;
+        },
+      }))
+    });
+    return data;
+  },
+  voteSummaryDisplay() {
+    const summary = this.voteSummary;
+    return Object.keys(summary).map(key => {
+      return { vote: this.vote.choices[key], percentage: summary[key] }
+    });
   },
 });
 
 Topics.attachSchema(votingsExtensionSchema);   // TODO: should be conditional on category === 'vote'
 
-_.extend(Topics.publicFields, { vote: 1, voteParticipation: 1 });   // voteResults are NOT sent to the client
+_.extend(Topics.publicFields, {
+  vote: 1,
+  // voteCasts are NOT sent to the client
+  voteResults: 1,
+  voteSummary: 1,
+  voteParticipation: 1
+});
 
 Topics.publicFields.extendForUser = function (userId, communityId) {
-  // User cannot see other user's votes, but need to see his own votes
+  // User cannot see other user's votes, but need to see his own votes (during active voting)
   const publicFiledsForOwnVotes = {};
-  publicFiledsForOwnVotes['voteResults.' + userId] = 1;
-//  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
-  const publicFields = _.extend({}, Topics.publicFields, { voteResults: 1 });
+  publicFiledsForOwnVotes['voteCasts.' + userId] = 1;
+  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
+//  const publicFields = _.extend({}, Topics.publicFields, { voteResults: 1 });
   return publicFields;
 }

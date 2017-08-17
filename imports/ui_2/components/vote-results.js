@@ -27,7 +27,7 @@ Template.Vote_results.onRendered(function voteboxOnRendered() {
 Template.Vote_results.helpers({
   dataFn() {
     return () => {
-      return this.voteResultSummary().results;
+      return this.voteResultsDisplay();
     };
   },
   optionsFn() {
@@ -41,12 +41,6 @@ Template.Vote_results.helpers({
         info: false,
       };
     };
-  },
-  summary() {
-    const summary = this.voteResultSummary().summary;
-    return Object.keys(summary).map(key => {
-      return { vote: this.vote.choices[key], percentage: summary[key] }
-    });
   },
 });
 

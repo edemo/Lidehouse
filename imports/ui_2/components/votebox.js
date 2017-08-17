@@ -6,8 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { update } from '/imports/api/topics/methods.js';
-import { castVote } from '/imports/api/topics/votings/methods.js';
+import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -25,7 +24,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   const state = this.state;
   const voting = this.data;
   const vote = this.data.vote;
-  const voteResults = this.data.voteResults;
+  const voteCasts = this.data.voteCasts;
 
   // creating the JQuery sortable widget
   // both JQuery and Blaze wants control over the order of elements, so needs a hacky solution
@@ -49,7 +48,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
 
     let preference;
     if (voteIsFinalized) {
-      const castedPreference = voteResults[Meteor.userId()];
+      const castedPreference = voteCasts[Meteor.userId()];
       preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
     } else { // no vote yet, preference is then the original vote choices in that order
       preference = vote.choices.map(function obj(text, index) { return { text, value: index }; });
@@ -89,8 +88,8 @@ Template.Votebox.helpers({
   // Single choice voting
   pressedClass(choice) {
     const userId = Meteor.userId();
-    if (!this.voteResults) return '';
-    const ownVote = this.voteResults[userId] && this.voteResults[userId][0];
+    if (!this.voteCasts) return '';
+    const ownVote = this.voteCasts[userId] && this.voteCasts[userId][0];
     return (ownVote === choice) && 'btn-pressed';
   },
   // Preferential voting
@@ -156,7 +155,7 @@ Template.Votebox.events({
     Modal.show('Modal', modalContext);
   },
   'click .js-close'(event, instance) {
-    update.call({ _id: this._id, modifier: { $set: { closed: true } } },
+    closeVote.call({ topicId: this._id },
       onSuccess((res) => {
         displayMessage('success', 'Vote closed');
       })

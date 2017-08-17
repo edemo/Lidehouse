@@ -44,6 +44,9 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
+
+    // TODO: how to check that only allowed fields are modified
+
     const topic = Topics.findOne(_id);
     if (!topic) {
       throw new Meteor.Error('err_invalidId', 'No such object',

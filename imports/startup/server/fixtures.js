@@ -256,19 +256,19 @@ Meteor.startup(() => {
 
   const ownerships = Memberships.find({ role: 'owner' }).fetch();
 
-  const voteResults1 = {};
-  voteResults1[ownerships[0].userId] = [2];  // no
-  voteResults1[ownerships[1].userId] = [1];  // yes
-  voteResults1[ownerships[2].userId] = [2];  // no
-  voteResults1[ownerships[3].userId] = [0];  // abstain
+  const voteCasts1 = {};
+  voteCasts1[ownerships[0].userId] = [2];  // no
+  voteCasts1[ownerships[1].userId] = [1];  // yes
+  voteCasts1[ownerships[2].userId] = [2];  // no
+  voteCasts1[ownerships[3].userId] = [0];  // abstain
 
   const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
-    userId: nextUser(),
+    userId: demoUserId,
     category: 'vote',
     title: 'Fundamenta hitel felvétele',
     text: 'Felvegyük-e az 5 millio forintos Fundamenta hitelt 15 évre 6%-os kamattal.',
-    closed: true,
+    closed: false,  // should be closed, its past close date - but the close op calculates the results
     vote: {
       closesAt: moment().subtract(10, 'day').toDate(),
       type: 'yesno',
@@ -277,7 +277,7 @@ Meteor.startup(() => {
       count: 4,
       units: 90,
     },
-    voteResults: voteResults1,
+    voteCasts: voteCasts1,
   });
 
   const voteTopic2 = Topics.insert({
@@ -291,14 +291,14 @@ Meteor.startup(() => {
       closesAt: moment().add(2, 'week').toDate(),
       type: 'yesno',
     },
-    voteResults: {},
-    // no results yet, noone voted
+    voteCasts: {},
+    // no casts yet, noone voted
   });
 
-  const voteResults3 = {};
-  voteResults3[ownerships[1].userId] = [1, 2, 3, 4];
-  voteResults3[ownerships[2].userId] = [1, 3, 4, 2];
-  voteResults3[ownerships[3].userId] = [4, 3, 2, 1];
+  const voteCasts3 = {};
+  voteCasts3[ownerships[1].userId] = [1, 2, 3, 4];
+  voteCasts3[ownerships[2].userId] = [1, 3, 4, 2];
+  voteCasts3[ownerships[3].userId] = [4, 3, 2, 1];
 
   const voteTopic3 = Topics.insert({
     communityId: demoCommunityId,
@@ -315,7 +315,7 @@ Meteor.startup(() => {
       count: 3,
       units: 50,
     },
-    voteResults: voteResults3,
+    voteCasts: voteCasts3,
   });
 
   Comments.insert({

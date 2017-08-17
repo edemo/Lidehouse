@@ -9,7 +9,7 @@
       {{text}}
     </div>
     <div class="row">
-      {{#each sum in summary}}
+      {{#each sum in this.voteSummaryDisplay}}
       {{_ sum.vote}}: {{sum.percentage}}
       {{/each}}
     </div>

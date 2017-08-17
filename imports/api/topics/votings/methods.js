@@ -37,10 +37,10 @@ export const castVote = new ValidatedMethod({
 
     const topicModifier = {};
     topicModifier['$set'] = {};
-    topicModifier['$set']['voteResults.' + this.userId] = castedVote;
+    topicModifier['$set']['voteCasts.' + this.userId] = castedVote;
 
     // If there is already a vote, then owner is changing his vote now.
-    const oldVote = topic.voteResults && topic.voteResults[this.userId];
+    const oldVote = topic.voteCasts && topic.voteCasts[this.userId];
     if (!oldVote) {
       topicModifier['$inc'] = {
         'voteParticipation.count': 1,
@@ -49,5 +49,34 @@ export const castVote = new ValidatedMethod({
     }
 
     Topics.update(topicId, topicModifier);
+  },
+});
+
+export const closeVote = new ValidatedMethod({
+  name: 'topics.closeVote',
+  validate: new SimpleSchema({
+    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator({ clean: true }),  // we 'clean' here to convert the vote strings (eg "1") into numbers (1)
+
+  run({ topicId }) {
+    const topic = Topics.findOne(topicId);
+    if (!topic) {
+      throw new Meteor.Error('err_invalidId', 'No such object',
+        `Method: topics.castVote, Collection: topics, id: ${topicId}`
+      );
+    }
+    if (!topic.editableBy(this.userId)) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.update, userId: ${this.userId}, topicId: ${topicId}`);
+    }
+    if (topic.closed) {
+      throw new Meteor.Error('err_invalidOperation', 'Topic already closed',
+        `Method: topics.closeVote, Collection: topics, id: ${topicId}`
+      );
+    }
+
+    topic.voteEvaluate(); // writes reults into voteResults and voteSummary
+
+    Topics.update(topicId, { $set: { closed: true } });
   },
 });
