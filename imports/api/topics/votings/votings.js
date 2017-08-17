@@ -121,7 +121,11 @@ Topics.helpers({
   voteSummaryDisplay() {
     const summary = this.voteSummary;
     return Object.keys(summary).map(key => {
-      return { vote: this.vote.choices[key], percentage: summary[key] }
+      const votingShare = new Fraction(summary[key], this.community().totalunits)
+      return {
+        choice: this.vote.choices[key],
+        votingShare,
+      }
     });
   },
 });

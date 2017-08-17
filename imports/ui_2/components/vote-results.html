@@ -10,7 +10,7 @@
     </div>
     <div class="row">
       {{#each sum in this.voteSummaryDisplay}}
-      {{_ sum.vote}}: {{sum.percentage}}
+      <div>{{_ sum.choice}}: {{sum.votingShare}} ({{percentage sum.votingShare.toNumber}})</div>
       {{/each}}
     </div>
     <div class="row">
