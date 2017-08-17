@@ -257,10 +257,10 @@ Meteor.startup(() => {
   const ownerships = Memberships.find({ role: 'owner' }).fetch();
 
   const voteResults1 = {};
-  voteResults1[ownerships[0]._id] = [2];  // no
-  voteResults1[ownerships[1]._id] = [1];  // yes
-  voteResults1[ownerships[2]._id] = [2];  // no
-  voteResults1[ownerships[3]._id] = [0];  // abstain
+  voteResults1[ownerships[0].userId] = [2];  // no
+  voteResults1[ownerships[1].userId] = [1];  // yes
+  voteResults1[ownerships[2].userId] = [2];  // no
+  voteResults1[ownerships[3].userId] = [0];  // abstain
 
   const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
@@ -296,9 +296,9 @@ Meteor.startup(() => {
   });
 
   const voteResults3 = {};
-  voteResults3[ownerships[1]._id] = [1, 2, 3, 4];
-  voteResults3[ownerships[2]._id] = [1, 3, 4, 2];
-  voteResults3[ownerships[3]._id] = [4, 3, 2, 1];
+  voteResults3[ownerships[1].userId] = [1, 2, 3, 4];
+  voteResults3[ownerships[2].userId] = [1, 3, 4, 2];
+  voteResults3[ownerships[3].userId] = [4, 3, 2, 1];
 
   const voteTopic3 = Topics.insert({
     communityId: demoCommunityId,

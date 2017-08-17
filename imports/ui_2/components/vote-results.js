@@ -27,19 +27,7 @@ Template.Vote_results.onRendered(function voteboxOnRendered() {
 Template.Vote_results.helpers({
   dataFn() {
     return () => {
-      const data = [];
-      const results = this.voteResults;
-      Object.keys(results).map(key => { data.push({
-        voterId: key,
-        voteResult: results[key],
-        votePath: 'direct',
-        voter() {
-          const m = Memberships.findOne(this.voterId);
-          return m.user();
-        },
-      });
-      });
-      return data;
+      return this.voteResultSummary().results;
     };
   },
   optionsFn() {
@@ -55,12 +43,7 @@ Template.Vote_results.helpers({
     };
   },
   summary() {
-    const summary = {};
-    const results = this.voteResults;
-    Object.keys(results).map(key => {
-      if (!summary[results[key]]) summary[results[key]] = 0;
-      summary[results[key]] += Memberships.findOne(key).votingUnits();
-    });
+    const summary = this.voteResultSummary().summary;
     return Object.keys(summary).map(key => {
       return { vote: this.vote.choices[key], percentage: summary[key] }
     });

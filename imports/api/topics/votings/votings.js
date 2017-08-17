@@ -1,9 +1,11 @@
+import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
 import { Topics } from '../topics.js';
 import { Memberships } from '../../memberships/memberships.js';
+import { Delegations } from '../../delegations/delegations.js';
 
 const voteSchema = new SimpleSchema({
   closesAt: { type: Date },
@@ -52,6 +54,54 @@ Topics.helpers({
   },
   hasVoted(userId) {
     return this.hasVotedDirect(userId); // TODO
+  },
+  voteResultSummary() {
+    const results = [];
+    const summary = {};
+    const directVotes = this.voteResults;
+    const data = this;
+    debugger;
+    const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner' });
+    ownerships.forEach(ownership => {
+      const votePath = [ownership.userId];
+
+      function getVoteResult(voterId) {
+        const choices = data.vote.choices;
+        const voteResult = directVotes[voterId];
+        if (voteResult) {
+          results.push({
+            voterId: ownership.userId,
+            voteResult,
+            votePath,
+            voter() {
+              return Meteor.users.findOne(this.voterId);
+            },
+            voteResultDisplay() {
+              return choices[voteResult[0]];
+            },
+            votePathDisplay() {
+              if (votePath.length === 1) return 'direct';
+              let path = '';
+              this.votePath.forEach((did, ind) => { if (ind > 0) path += ' -> ' + Meteor.users.findOne(did).toString(); });
+              return path;
+            },
+          });
+          summary[voteResult] = summary[voteResult] || 0;
+          summary[voteResult] += ownership.votingUnits();
+          return true;
+        }
+        const delegations = Delegations.find({ sourceUserId: voterId, scope: 'community', objectId: ownership.communityId });
+        for (const delegation of delegations.fetch()) {
+          votePath.push(delegation.targetUserId);
+          if (getVoteResult(delegation.targetUserId)) return true;
+          votePath.pop();
+        }
+        return false;
+      }
+
+      getVoteResult(ownership.userId);
+    });
+    return { results, summary };
   },
 });
 
