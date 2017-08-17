@@ -59,9 +59,10 @@ Topics.helpers({
   hasVoted(userId) {
     return !!(this.voteResults && this.voteResults[userId] && this.voteResults[userId].length > 0);
   },
-  voteEvaluate() {
+  voteEvaluate(revealResults: false) {
     const results = {};
     const summary = {};
+    const participation = { count: 0, units: 0 };
     const directVotes = this.voteCasts;
     const data = this;
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner' });
@@ -80,6 +81,8 @@ Topics.helpers({
           results[ownership._id] = result;
           summary[voteResult] = summary[voteResult] || 0;
           summary[voteResult] += ownership.votingUnits();
+          participation.count += 1;
+          participation.units += ownership.votingUnits();
           return true;
         }
         const delegations = Delegations.find({ sourceUserId: voterId, scope: 'community', objectId: ownership.communityId });
@@ -94,7 +97,10 @@ Topics.helpers({
       getVoteResult(ownership.userId);
     });
 
-    Topics.update(this._id, { $set: { voteResults: results, voteSummary: summary } });
+    Topics.update(this._id, { $set: { voteParticipation: participation } });
+    if (revealResults) {
+      Topics.update(this._id, { $set: { voteResults: results, voteSummary: summary } });
+    }
   },
   voteResultsDisplay() {
     const topic = this;

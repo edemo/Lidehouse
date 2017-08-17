@@ -39,16 +39,22 @@ export const castVote = new ValidatedMethod({
     topicModifier['$set'] = {};
     topicModifier['$set']['voteCasts.' + this.userId] = castedVote;
 
-    // If there is already a vote, then owner is changing his vote now.
-    const oldVote = topic.voteCasts && topic.voteCasts[this.userId];
-    if (!oldVote) {
-      topicModifier['$inc'] = {
-        'voteParticipation.count': 1,
-        'voteParticipation.units': user.votingUnits(topic.communityId),
-      };
-    }
-
-    Topics.update(topicId, topicModifier);
+    Topics.update(topicId, topicModifier, function cb(err, res) {
+      if (err) throw new Meteor.Error(err);
+      if (Meteor.isClient) {
+        // If there is already a vote, then owner is changing his vote now.
+        const oldVote = topic.voteCasts && topic.voteCasts[this.userId];
+        if (!oldVote) {
+          topicModifier['$inc'] = {
+            'voteParticipation.count': 1,
+            'voteParticipation.units': user.votingUnits(topic.communityId),
+          };
+        }
+      }
+      if (Meteor.isServer) {
+        topic.voteEvaluate(false); // writes only voteParticipation, no results
+      }
+    });
   },
 });
 
@@ -65,18 +71,20 @@ export const closeVote = new ValidatedMethod({
         `Method: topics.castVote, Collection: topics, id: ${topicId}`
       );
     }
-    if (!topic.editableBy(this.userId)) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: topics.update, userId: ${this.userId}, topicId: ${topicId}`);
-    }
+//    if (!topic.editableBy(this.userId)) {
+//      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+//        `Method: topics.update, userId: ${this.userId}, topicId: ${topicId}`);
+//    }
     if (topic.closed) {
       throw new Meteor.Error('err_invalidOperation', 'Topic already closed',
         `Method: topics.closeVote, Collection: topics, id: ${topicId}`
       );
     }
 
-    topic.voteEvaluate(); // writes reults into voteResults and voteSummary
-
     Topics.update(topicId, { $set: { closed: true } });
+
+    if (Meteor.isServer) {
+      topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
+    }
   },
 });
