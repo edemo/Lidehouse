@@ -36,8 +36,13 @@ export const castVote = new ValidatedMethod({
     // const user = Meteor.users.findOne()
 
     const topicModifier = {};
-    topicModifier['$set'] = {};
-    topicModifier['$set']['voteCasts.' + this.userId] = castedVote;
+    if (castedVote.length === 0) {
+      topicModifier['$unset'] = {};
+      topicModifier['$unset']['voteCasts.' + this.userId] = '';
+    } else {
+      topicModifier['$set'] = {};
+      topicModifier['$set']['voteCasts.' + this.userId] = castedVote;
+    }
 
     Topics.update(topicId, topicModifier, function cb(err, res) {
       if (err) throw new Meteor.Error(err);

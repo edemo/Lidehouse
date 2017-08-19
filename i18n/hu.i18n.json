@@ -205,6 +205,8 @@
   "send": "Elküldés",
   "vote": "Szavazás",
   "send vote": "Szavazat elküldése",
+  "change": "Megváltoztatom",
+  "revoke": "Visszavonás",
   "close topic": "Lezárás",
   "invite": "Meghívás",
   "assign": "Hozzárendelés",
@@ -257,6 +259,9 @@
   "from own voting units": "egység saját tulajdonból",
   "from delegated voting units": "egység meghatalmazásokból",
   "In total": "Összesen",
+  "You voted directly": "Ön személyesen szavazott",
+  "You voted via delegation": "Ön meghatalmazott útján szavazott",
+  "votedViaDelegationHint" : "szavazat leadásával felülbírálható",
 
   // tickets
   "building": "épület",
@@ -326,6 +331,7 @@
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
   "Created community": "Közösség sikeresen létrehozva.",
   "Vote casted": "Szavazat sikeresen leadva",
+  "Vote revoked": "Szavazat sikeresen visszavonva",
 
   "insert parcel successful": "Albetét rögzítésre került",
   "update parcel successful": "Albetét adatai módosítva",

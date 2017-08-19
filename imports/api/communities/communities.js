@@ -31,4 +31,5 @@ Communities.deny({
 
 Factory.define('community', Communities, {
   name: () => faker.lorem.sentence(),
+  totalunits: 10000,
 });

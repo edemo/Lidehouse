@@ -88,9 +88,8 @@ Template.Votebox.helpers({
   // Single choice voting
   pressedClass(choice) {
     const userId = Meteor.userId();
-    if (!this.voteCasts) return '';
-    const ownVote = this.voteCasts[userId] && this.voteCasts[userId][0];
-    return (ownVote === choice) && 'btn-pressed';
+    const voteOfUser = this.voteOf(userId);
+    return _.isEqual(voteOfUser, [choice]) && 'btn-pressed';
   },
   // Preferential voting
   currentPreference() {
@@ -144,6 +143,13 @@ Template.Votebox.events({
     } else { // voteIsFinalized === true
       instance.state.set('voteIsFinalized', false);
     }
+  },
+  'click .js-revoke'(event) {
+    const topicId = this._id;
+    const vote = [];  // indicates a no-vote
+    castVote.call({ topicId, castedVote: vote },
+      onSuccess(res => displayMessage('success', 'Vote revoked'))
+    );
   },
   'click .js-view-proposal'(event, instance) {
     const modalContext = {

@@ -117,4 +117,5 @@ Memberships.deny({
 Factory.define('membership', Memberships, {
   communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
+  role: 'guest',
 });

@@ -22,6 +22,7 @@ const voteParticipationSchema = new SimpleSchema({
 const votingsExtensionSchema = new SimpleSchema({
   vote: { type: voteSchema, optional: true },
   voteCasts: { type: Object, optional: true, blackbox: true },
+  voteCastsIndirect: { type: Object, optional: true, blackbox: true },
     // userId -> ranked array of choice indexes (or single entry in the array)
   voteResults: { type: Object, optional: true, blackbox: true },
     // ownershipId -> {}
@@ -56,12 +57,16 @@ Topics.helpers({
   hasVotedDirect(userId) {
     return !!(this.voteCasts && this.voteCasts[userId] && this.voteCasts[userId].length > 0);
   },
-  hasVoted(userId) {
-    return !!(this.voteResults && this.voteResults[userId] && this.voteResults[userId].length > 0);
+  hasVotedIndirect(userId) {
+    return !!(this.voteCastsIndirect && this.voteCastsIndirect[userId] && this.voteCastsIndirect[userId].length > 0);
+  },
+  voteOf(userId) {
+    return (this.voteCasts && this.voteCasts[userId]) || (this.voteCastsIndirect && this.voteCastsIndirect[userId]);
   },
   voteEvaluate(revealResults: false) {
-    const results = {};
-    const summary = {};
+    const results = {};         // results by ownerships
+    const indirectVotes = {};   // results by users
+    const summary = {};         // results by choices
     const participation = { count: 0, units: 0 };
     const directVotes = this.voteCasts;
     const data = this;
@@ -70,7 +75,6 @@ Topics.helpers({
       const votePath = [ownership.userId];
 
       function getVoteResult(voterId) {
-        const choices = data.vote.choices;
         const voteResult = directVotes[voterId];
         if (voteResult) {
           const result = {
@@ -79,6 +83,7 @@ Topics.helpers({
             votePath,
           };
           results[ownership._id] = result;
+          indirectVotes[ownership.userId] = voteResult;
           summary[voteResult] = summary[voteResult] || 0;
           summary[voteResult] += ownership.votingUnits();
           participation.count += 1;
@@ -98,9 +103,8 @@ Topics.helpers({
     });
 
     Topics.update(this._id, { $set: { voteParticipation: participation } });
-    if (revealResults) {
-      Topics.update(this._id, { $set: { voteResults: results, voteSummary: summary } });
-    }
+//    if (!revealResults) return;
+    Topics.update(this._id, { $set: { voteCastsIndirect: indirectVotes, voteResults: results, voteSummary: summary } });
   },
   voteResultsDisplay() {
     const topic = this;
@@ -117,21 +121,21 @@ Topics.helpers({
         votePathDisplay() {
           if (this.votePath.length === 1) return 'direct';
           let path = '';
-          this.votePath.forEach((did, ind) => { if (ind > 0) path += ' -> ' + Meteor.users.findOne(did).toString(); });
+          this.votePath.forEach((did, ind) => { if (ind > 0) path += (' -> ' + Meteor.users.findOne(did).toString()); });
           return path;
         },
-      }))
+      }));
     });
     return data;
   },
   voteSummaryDisplay() {
     const summary = this.voteSummary;
     return Object.keys(summary).map(key => {
-      const votingShare = new Fraction(summary[key], this.community().totalunits)
+      const votingShare = new Fraction(summary[key], this.community().totalunits);
       return {
         choice: this.vote.choices[key],
         votingShare,
-      }
+      };
     });
   },
 });
@@ -140,17 +144,20 @@ Topics.attachSchema(votingsExtensionSchema);   // TODO: should be conditional on
 
 _.extend(Topics.publicFields, {
   vote: 1,
-  // voteCasts are NOT sent to the client
+  // voteCasts should NOT be sent to the client during active voting
   voteResults: 1,
   voteSummary: 1,
-  voteParticipation: 1
+  voteParticipation: 1,
 });
 
-Topics.publicFields.extendForUser = function (userId, communityId) {
-  // User cannot see other user's votes, but need to see his own votes (during active voting)
-  const publicFiledsForOwnVotes = {};
-  publicFiledsForOwnVotes['voteCasts.' + userId] = 1;
-  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
-//  const publicFields = _.extend({}, Topics.publicFields, { voteResults: 1 });
+Topics.publicFields.extendForUser = function extendForUser(userId, communityId) {
+  // TODO: User cannot see other user's votes, but need to see his own votes (during active voting)
+  // Soution: 2 subsrciptions, one on the live votings, one on the archived, and the public fields are different for the two
+
+//  const publicFiledsForOwnVotes = {};
+//  publicFiledsForOwnVotes['voteCasts.' + userId] = 1;
+//  also for voteResults
+//  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
+  const publicFields = _.extend({}, Topics.publicFields, { voteCasts: 1, voteCastsIndirect: 1 });
   return publicFields;
 }

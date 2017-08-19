@@ -145,7 +145,7 @@ Template.Custom_body.helpers({
           if (t.isUnseenBy(userId) || t.unseenCommentsBy(userId) > 0) count += 1;
           break;
         case 'vote':
-          if (!t.closed && !t.hasVoted(userId)) count += 1;
+          if (!t.closed && !t.hasVotedIndirect(userId)) count += 1;
           break;
         case 'feedback':
           if (t.isUnseenBy(userId)) count += 1;

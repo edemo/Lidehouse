@@ -171,6 +171,7 @@
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
   "allowDelegationsToMe": "Allow others to delegate to me",
 
+  "votedViaDelegationHint" : "casting a vote can override this",
 
   // Notifications
   "Joined community": "Succesfully joined community %s",

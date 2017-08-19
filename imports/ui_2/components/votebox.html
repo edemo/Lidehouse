@@ -49,6 +49,18 @@
     <div class="row">
       <div class="col-xs-12 vote-answer">
 
+        <!-- showing if you voted directly or via delegation -->
+        <div>
+          {{#if this.hasVotedDirect currentUser._id}}
+            {{_ "You voted directly"}}
+            <button class="js-revoke">{{_ "revoke"}}</button>
+          {{else}}
+            {{#if this.hasVotedIndirect currentUser._id}}
+              {{_ "You voted via delegation"}} ({{_ "votedViaDelegationHint"}})
+            {{/if}}
+          {{/if}}
+        </div>
+
         <!-- voting buttons -->
         {{#if voteTypeIs "yesno"}}
         <div class="row">
@@ -91,7 +103,6 @@
 
       </div>
     </div>
-
     <div class="row">
       <div class="col-xs-12">
         {{> Comments_section topicId=_id}}
