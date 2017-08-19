@@ -12,14 +12,10 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 
-// if the database is empty on server start, create some sample data.
-Meteor.startup(() => {
+
+export function insertDemoFixture() {
 
   // ===== Communities =====
-
-  if (Communities.findOne({ name: 'Demo ház' })) {
-    return; // if Demo data already populated
-  }
 
   const demoCommunityId = Communities.insert({
     name: 'Demo ház',
@@ -410,4 +406,10 @@ Meteor.startup(() => {
     userId: demoUserId,
     text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
   });
-});
+
+  return {
+    demoCommunityId,
+    demoUserId,
+    dummyUsers,
+  };
+}

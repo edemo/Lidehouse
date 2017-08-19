@@ -6,29 +6,22 @@ import { Factory } from 'meteor/dburles:factory';
 import { PublicationCollector } from 'meteor/johanbrook:publication-collector';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { Random } from 'meteor/random';
-// import { _ } from 'meteor/underscore';
+import { _ } from 'meteor/underscore';
+import { freshFixture, logDB } from '/imports/api/test-utils.js';
+
+import { Communities } from '/imports/api/communities/communities.js';
 
 if (Meteor.isServer) {
-  // eslint-disable-next-line import/no-unresolved
-  import './publications.js';
 
-  let userId;
-  let communityId;
+  const Fixture = freshFixture();
+
+  const demoUser = Meteor.users.findOne(Fixture.demoUserId);
+  const demoCommunity = Communities.findOne(Fixture.demoCommunityId);
 
   before(function () {
-    userId = Random.id();
-    communityId = Factory.create('community')._id;
-    Factory.create('membership', { userId, communityId });
   });
 
   describe('memberships', function () {
-
-    describe('mutators', function () {
-      it('builds correctly from factory', function () {
-        const membership = Factory.create('membership', { userId });
-        assert.typeOf(membership, 'object');
-      });
-    });
 
     describe('publications', function () {
 
@@ -37,9 +30,10 @@ if (Meteor.isServer) {
           const collector = new PublicationCollector();
           collector.collect(
             'memberships.inCommunity',
-            { communityId },
+            { communityId: demoCommunity._id },
             (collections) => {
-              chai.assert.isAbove(collections.memberships.length, 0);
+              chai.assert.equal(collections.memberships.length, 8);
+              chai.assert.equal(collections.parcels.length, 5);
               done();
             }
           );
@@ -51,9 +45,10 @@ if (Meteor.isServer) {
           const collector = new PublicationCollector();
           collector.collect(
             'memberships.ofUser',
-            { userId },
+            { userId: demoUser._id },
             (collections) => {
-              chai.assert.isAbove(collections.memberships.length, 0);
+              chai.assert.equal(collections.memberships.length, 1);
+              chai.assert.equal(collections.communities.length, 1);
               done();
             }
           );

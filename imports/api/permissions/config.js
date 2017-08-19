@@ -63,12 +63,12 @@ const permissions = [
   { name: 'shareddocs.listing',   type: 'view', roles: exceptGuest },
 ];
 
-if (Meteor.isServer) {
-  Meteor.startup(function InitializeRoles() {
-    defaultRoles.forEach(role => Roles.upsert({ _id: role.name }, { $set: _.extend(role, { protected: true }) }));
-  });
+export function initializePermissions() {
+  console.log('>>> roles');
+  defaultRoles.forEach(role => Roles.upsert({ _id: role.name }, { $set: _.extend(role, { protected: true }) }));
+  permissions.forEach(permission => Permissions.upsert({ _id: permission.name }, { $set: permission }));
+}
 
-  Meteor.startup(function InitializePermissions() {
-    permissions.forEach(permission => Permissions.upsert({ _id: permission.name }, { $set: permission }));
-  });
+if (Meteor.isServer) {
+  Meteor.startup(() => initializePermissions());
 }
