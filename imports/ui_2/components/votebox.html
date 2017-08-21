@@ -57,6 +57,8 @@
           {{else}}
             {{#if this.hasVotedIndirect currentUser._id}}
               {{_ "You voted via delegation"}} ({{_ "votedViaDelegationHint"}})
+            {{else}}
+              {{_ "You have not yet voted"}} ({{_ "notYetVotedHint"}})
             {{/if}}
           {{/if}}
         </div>

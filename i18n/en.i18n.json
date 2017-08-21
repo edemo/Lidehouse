@@ -172,6 +172,8 @@
   "allowDelegationsToMe": "Allow others to delegate to me",
 
   "votedViaDelegationHint" : "casting a vote can override this",
+  "notYetVotedHint": "cast your vote below, or set up a delegation",
+
 
   // Notifications
   "Joined community": "Succesfully joined community %s",
