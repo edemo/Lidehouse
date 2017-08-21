@@ -9,7 +9,7 @@ import { Delegations } from '../../delegations/delegations.js';
 
 const voteSchema = new SimpleSchema({
   closesAt: { type: Date },
-  type: { type: String, allowedValues: ['yesno', 'preferential'] },
+  type: { type: String, allowedValues: ['yesno', 'select', 'preferential'] },
   choices: { type: Array, autoValue() { if (this.field('vote.type').value === 'yesno') return ['yes', 'no', 'abstain']; } },
   'choices.$': { type: String },
 });
@@ -63,12 +63,12 @@ Topics.helpers({
   voteOf(userId) {
     return (this.voteCasts && this.voteCasts[userId]) || (this.voteCastsIndirect && this.voteCastsIndirect[userId]);
   },
-  voteEvaluate(revealResults: false) {
+  voteEvaluate(revealResults) {
     const results = {};         // results by ownerships
     const indirectVotes = {};   // results by users
     const summary = {};         // results by choices
     const participation = { count: 0, units: 0 };
-    const directVotes = this.voteCasts;
+    const directVotes = this.voteCasts || {};
     const data = this;
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner' });
     ownerships.forEach(ownership => {
@@ -82,7 +82,7 @@ Topics.helpers({
             voteResult,
             votePath,
           };
-          results[ownership._id] = result;
+          results[ownership.parcelId] = result;
           indirectVotes[ownership.userId] = voteResult;
           summary[voteResult] = summary[voteResult] || 0;
           summary[voteResult] += ownership.votingUnits();

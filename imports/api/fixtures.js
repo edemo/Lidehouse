@@ -6,6 +6,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { castVote } from '/imports/api/topics/votings/methods.js';
 import { Accounts } from 'meteor/accounts-base';
 
 import '/imports/api/topics/votings/votings.js';
@@ -62,22 +63,67 @@ export function insertDemoFixture() {
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-3.png',
   });
 
+  // ===== Parcels =====
+
+  const dummyParcels = [];
+  dummyParcels[0] = Parcels.insert({
+    communityId: demoCommunityId,
+    serial: 0,
+    units: 0,
+    floor: '-2',
+    number: 'P02',
+    type: 'parking',
+    lot: '29345/P/209',
+    size: 6,
+  });
+  dummyParcels[1] = Parcels.insert({
+    communityId: demoCommunityId,
+    serial: 1,
+    units: 10,
+    floor: 'I',
+    number: '12',
+    type: 'flat',
+    lot: '29345/A/114',
+    size: 65,
+  });
+  dummyParcels[2] = Parcels.insert({
+    communityId: demoCommunityId,
+    serial: 2,
+    units: 20,
+    floor: 'II',
+    number: '23',
+    type: 'flat',
+    lot: '29345/A/225',
+    size: 142,
+  });
+  dummyParcels[3] = Parcels.insert({
+    communityId: demoCommunityId,
+    serial: 3,
+    units: 30,
+    floor: 'III',
+    number: '34',
+    type: 'flat',
+    lot: '29345/A/336',
+    size: '98.4',
+  });
+  dummyParcels[4] = Parcels.insert({
+    communityId: demoCommunityId,
+    serial: 4,
+    units: 40,
+    floor: 'IV',
+    number: '45',
+    type: 'flat',
+    lot: '29345/A/002',
+    size: 70,
+  });
+
   // ===== Memberships =====
 
   Memberships.insert({
     communityId: demoCommunityId,
     userId: demoUserId,
     role: 'owner',
-    parcelId: Parcels.insert({
-      communityId: demoCommunityId,
-      serial: 101,
-      units: 11,
-      floor: 'fsz',
-      number: '2',
-      type: 'flat',
-      lot: '29345/A/002',
-      size: 39,
-    }),
+    parcelId: dummyParcels[0],
     ownership: {
       share: new Fraction(1, 1),
     },
@@ -96,16 +142,7 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     userId: dummyUsers[1],
     role: 'owner',
-    parcelId: Parcels.insert({
-      communityId: demoCommunityId,
-      serial: 1,
-      units: 10,
-      floor: 'I',
-      number: '14',
-      type: 'flat',
-      lot: '29345/A/114',
-      size: 65,
-    }),
+    parcelId: dummyParcels[1],
     ownership: {
       share: new Fraction(1, 1),
     },
@@ -114,16 +151,7 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     userId: dummyUsers[2],
     role: 'owner',
-    parcelId: Parcels.insert({
-      communityId: demoCommunityId,
-      serial: 2,
-      units: 20,
-      floor: 'II',
-      number: '25',
-      type: 'flat',
-      lot: '29345/A/225',
-      size: 142,
-    }),
+    parcelId: dummyParcels[2],
     ownership: {
       share: new Fraction(1, 1),
     },
@@ -132,48 +160,39 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     userId: dummyUsers[3],
     role: 'owner',
-    parcelId: Parcels.insert({
-      communityId: demoCommunityId,
-      serial: 3,
-      units: 30,
-      floor: 'III',
-      number: '36',
-      type: 'flat',
-      lot: '29345/A/336',
-      size: '98.4',
-    }),
+    parcelId: dummyParcels[3],
     ownership: {
       share: new Fraction(1, 1),
     },
-  });
-  const lastParcel = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 4,
-    units: 40,
-    floor: '-2',
-    number: 'P209',
-    type: 'parking',
-    lot: '29345/P/209',
-    size: 6,
   });
   Memberships.insert({
     communityId: demoCommunityId,
     userId: dummyUsers[3],
     role: 'owner',
-    parcelId: lastParcel,
+    parcelId: dummyParcels[4],
     ownership: {
-      share: new Fraction(3, 4),
+      share: new Fraction(1, 2),
     },
   });
   Memberships.insert({
     communityId: demoCommunityId,
     userId: dummyUsers[4],
     role: 'owner',
-    parcelId: lastParcel,
+    parcelId: dummyParcels[4],
     ownership: {
       share: new Fraction(1, 4),
     },
   });
+  Memberships.insert({
+    communityId: demoCommunityId,
+    userId: demoUserId,
+    role: 'owner',
+    parcelId: dummyParcels[4],
+    ownership: {
+      share: new Fraction(1, 4),
+    },
+  });
+
   // ===== Forum =====
 
   // The dummy users comment one after the other, round robin style
@@ -252,12 +271,6 @@ export function insertDemoFixture() {
 
   const ownerships = Memberships.find({ role: 'owner' }).fetch();
 
-  const voteCasts1 = {};
-  voteCasts1[ownerships[0].userId] = [2];  // no
-  voteCasts1[ownerships[1].userId] = [1];  // yes
-  voteCasts1[ownerships[2].userId] = [2];  // no
-  voteCasts1[ownerships[3].userId] = [0];  // abstain
-
   const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
     userId: demoUserId,
@@ -269,12 +282,12 @@ export function insertDemoFixture() {
       closesAt: moment().subtract(10, 'day').toDate(),
       type: 'yesno',
     },
-    voteParticipation: {
-      count: 4,
-      units: 90,
-    },
-    voteCasts: voteCasts1,
   });
+
+  castVote._execute({ userId: ownerships[0].userId }, { topicId: voteTopic1, castedVote: [2] });  // no
+  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic1, castedVote: [1] });  // yes
+  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic1, castedVote: [2] });  // no
+  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic1, castedVote: [0] });  // abstain
 
   const voteTopic2 = Topics.insert({
     communityId: demoCommunityId,
@@ -287,14 +300,8 @@ export function insertDemoFixture() {
       closesAt: moment().add(2, 'week').toDate(),
       type: 'yesno',
     },
-    voteCasts: {},
-    // no casts yet, noone voted
+    // no voteCasts yet, noone voted
   });
-
-  const voteCasts3 = {};
-  voteCasts3[ownerships[1].userId] = [1, 2, 3, 4];
-  voteCasts3[ownerships[2].userId] = [1, 3, 4, 2];
-  voteCasts3[ownerships[3].userId] = [4, 3, 2, 1];
 
   const voteTopic3 = Topics.insert({
     communityId: demoCommunityId,
@@ -307,12 +314,11 @@ export function insertDemoFixture() {
       type: 'preferential',
       choices: ['semleges fehér', 'halvány rózsaszín', 'sárga', 'világos szürke'],
     },
-    voteParticipation: {
-      count: 3,
-      units: 50,
-    },
-    voteCasts: voteCasts3,
   });
+
+  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic3, castedVote: [1, 2, 3, 4] });
+  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic3, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic3, castedVote: [3, 4, 1, 2] });
 
   Comments.insert({
     topicId: voteTopic3,
@@ -411,5 +417,6 @@ export function insertDemoFixture() {
     demoCommunityId,
     demoUserId,
     dummyUsers,
+    dummyParcels,
   };
 }

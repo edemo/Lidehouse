@@ -1,9 +1,9 @@
+/* eslint-disable no-console */
+
 import { Meteor } from 'meteor/meteor';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 import { initializePermissions } from '/imports/api/permissions/config.js';
 import { insertDemoFixture } from '/imports/api/fixtures.js';
-
-import '/imports/api/memberships/publications.js';
 
 import { Communities } from '/imports/api/communities/communities.js';
 import { Roles } from '/imports/api/permissions/roles.js';
@@ -20,6 +20,11 @@ export function logDB() {
   console.log('Parcels:', '\n', Parcels.find().fetch());
   console.log('Memberships:', '\n', Memberships.find().fetch());
   console.log('Topics:', '\n', Topics.find().fetch());
+}
+
+export function emptyFixture() {
+  resetDatabase();
+  initializePermissions();
 }
 
 export function freshFixture() {

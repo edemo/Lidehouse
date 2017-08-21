@@ -13,15 +13,14 @@ import { Communities } from '/imports/api/communities/communities.js';
 
 if (Meteor.isServer) {
 
-  const Fixture = freshFixture();
+  import '/imports/api/memberships/publications.js';
 
-  const demoUser = Meteor.users.findOne(Fixture.demoUserId);
-  const demoCommunity = Communities.findOne(Fixture.demoCommunityId);
-
-  before(function () {
-  });
+  let Fixture;
 
   describe('memberships', function () {
+    before(function () {
+      Fixture = freshFixture();
+    });
 
     describe('publications', function () {
 
@@ -30,9 +29,9 @@ if (Meteor.isServer) {
           const collector = new PublicationCollector();
           collector.collect(
             'memberships.inCommunity',
-            { communityId: demoCommunity._id },
+            { communityId: Fixture.demoCommunityId },
             (collections) => {
-              chai.assert.equal(collections.memberships.length, 8);
+              chai.assert.equal(collections.memberships.length, 9);
               chai.assert.equal(collections.parcels.length, 5);
               done();
             }
@@ -45,9 +44,9 @@ if (Meteor.isServer) {
           const collector = new PublicationCollector();
           collector.collect(
             'memberships.ofUser',
-            { userId: demoUser._id },
+            { userId: Fixture.demoUserId },
             (collections) => {
-              chai.assert.equal(collections.memberships.length, 1);
+              chai.assert.equal(collections.memberships.length, 2);
               chai.assert.equal(collections.communities.length, 1);
               done();
             }

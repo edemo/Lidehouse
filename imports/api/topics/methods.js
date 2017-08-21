@@ -7,6 +7,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 
+import '/imports/api/users/users.js';
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';

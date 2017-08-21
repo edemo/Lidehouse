@@ -17,8 +17,6 @@ export const castVote = new ValidatedMethod({
   }).validator({ clean: true }),  // we 'clean' here to convert the vote strings (eg "1") into numbers (1)
 
   run({ topicId, castedVote }) {
-    const userId = this.userId;
-
     const topic = Topics.findOne(topicId);
     if (!topic) {
       throw new Meteor.Error('err_invalidId', 'No such object',
@@ -44,22 +42,23 @@ export const castVote = new ValidatedMethod({
       topicModifier['$set']['voteCasts.' + this.userId] = castedVote;
     }
 
-    Topics.update(topicId, topicModifier, function cb(err, res) {
-      if (err) throw new Meteor.Error(err);
-      if (Meteor.isClient) {
-        // If there is already a vote, then owner is changing his vote now.
-        const oldVote = topic.voteCasts && topic.voteCasts[this.userId];
-        if (!oldVote) {
-          topicModifier['$inc'] = {
-            'voteParticipation.count': 1,
-            'voteParticipation.units': user.votingUnits(topic.communityId),
-          };
-        }
+    if (Meteor.isClient) {  // a quick'n'dirty update on the client, before the calculation from server comes back
+      const oldVote = topic.voteCasts && topic.voteCasts[this.userId];
+      if (!oldVote) {       // If there is already a vote, then owner is changing his vote now.
+        topicModifier['$inc'] = {
+          'voteParticipation.count': 1,
+          'voteParticipation.units': user.votingUnits(topic.communityId),
+        };
       }
-      if (Meteor.isServer) {
-        topic.voteEvaluate(false); // writes only voteParticipation, no results
-      }
-    });
+    }
+
+    const res = Topics.update(topicId, topicModifier);
+    debugAssert(res === 1);
+
+    if (Meteor.isServer) {
+      const updatedTopic = Topics.findOne(topicId);
+      updatedTopic.voteEvaluate(false); // writes only voteParticipation, no results
+    }
   },
 });
 
@@ -86,7 +85,8 @@ export const closeVote = new ValidatedMethod({
       );
     }
 
-    Topics.update(topicId, { $set: { closed: true } });
+    const res = Topics.update(topicId, { $set: { closed: true } });
+    debugAssert(res === 1);
 
     if (Meteor.isServer) {
       topic.voteEvaluate(true); // writes results out into voteResults and voteSummary

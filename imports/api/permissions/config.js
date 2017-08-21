@@ -33,7 +33,7 @@ const permissions = [
   { name: 'forum.update',         type: 'edit', roles: nobody },
   { name: 'prevote.insert',       type: 'edit', roles: ['owner'] },
   { name: 'prevote.update',       type: 'edit', roles: nobody },
-  { name: 'vote.insert',          type: 'edit', roles: ['manager'] },
+  { name: 'vote.insert',          type: 'edit', roles: ['manager', 'owner'] },
   { name: 'vote.update',          type: 'edit', roles: nobody },
   { name: 'news.insert',          type: 'edit', roles: ['manager'] },
   { name: 'news.update',          type: 'edit', roles: ['manager'] },
@@ -64,7 +64,6 @@ const permissions = [
 ];
 
 export function initializePermissions() {
-  console.log('>>> roles');
   defaultRoles.forEach(role => Roles.upsert({ _id: role.name }, { $set: _.extend(role, { protected: true }) }));
   permissions.forEach(permission => Permissions.upsert({ _id: permission.name }, { $set: permission }));
 }
