@@ -6,7 +6,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { castVote } from '/imports/api/topics/votings/methods.js';
+import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Accounts } from 'meteor/accounts-base';
 
 import '/imports/api/topics/votings/votings.js';
@@ -73,7 +73,7 @@ export function insertDemoFixture() {
     floor: '-2',
     number: 'P02',
     type: 'parking',
-    lot: '29345/P/209',
+    lot: '29345/P/002',
     size: 6,
   });
   dummyParcels[1] = Parcels.insert({
@@ -83,7 +83,7 @@ export function insertDemoFixture() {
     floor: 'I',
     number: '12',
     type: 'flat',
-    lot: '29345/A/114',
+    lot: '23456/A/114',
     size: 65,
   });
   dummyParcels[2] = Parcels.insert({
@@ -93,7 +93,7 @@ export function insertDemoFixture() {
     floor: 'II',
     number: '23',
     type: 'flat',
-    lot: '29345/A/225',
+    lot: '23456/A/225',
     size: 142,
   });
   dummyParcels[3] = Parcels.insert({
@@ -103,7 +103,7 @@ export function insertDemoFixture() {
     floor: 'III',
     number: '34',
     type: 'flat',
-    lot: '29345/A/336',
+    lot: '23456/A/336',
     size: '98.4',
   });
   dummyParcels[4] = Parcels.insert({
@@ -113,7 +113,7 @@ export function insertDemoFixture() {
     floor: 'IV',
     number: '45',
     type: 'flat',
-    lot: '29345/A/002',
+    lot: '23456/A/447',
     size: 70,
   });
 
@@ -277,9 +277,8 @@ export function insertDemoFixture() {
     category: 'vote',
     title: 'Fundamenta hitel felvétele',
     text: 'Felvegyük-e az 5 millio forintos Fundamenta hitelt 15 évre 6%-os kamattal.',
-    closed: false,  // should be closed, its past close date - but the close op calculates the results
     vote: {
-      closesAt: moment().subtract(10, 'day').toDate(),
+      closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
       type: 'yesno',
     },
   });
@@ -288,6 +287,8 @@ export function insertDemoFixture() {
   castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic1, castedVote: [1] });  // yes
   castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic1, castedVote: [2] });  // no
   castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic1, castedVote: [0] });  // abstain
+
+  closeVote._execute({ userId: demoUserId }, { topicId: voteTopic1 }); // This vote is already closed
 
   const voteTopic2 = Topics.insert({
     communityId: demoCommunityId,
@@ -300,8 +301,9 @@ export function insertDemoFixture() {
       closesAt: moment().add(2, 'week').toDate(),
       type: 'yesno',
     },
-    // no voteCasts yet, noone voted
   });
+
+  // No one voted on this yet
 
   const voteTopic3 = Topics.insert({
     communityId: demoCommunityId,
