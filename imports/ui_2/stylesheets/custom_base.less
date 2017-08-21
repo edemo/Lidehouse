@@ -77,8 +77,9 @@ a {
     }
     &-item {
       list-style-type: none;
-      padding: .7em 21px;
+      padding: .7em 5px .7em 21px;
       transition: all 0.2s ease;
+      font-size: .85em;
       img {
         width: 20px;
         margin-right: 13px;
@@ -102,7 +103,7 @@ a {
 #menu::after {
   content: "";
   background: url(http://static.panoramio.com/photos/original/59978318.jpg);
-  opacity: 0.6;
+  opacity: 0.4;
   top: 0;
   left: 0;
   bottom: 0;
@@ -125,8 +126,16 @@ a {
   z-index: 9;
   box-shadow: 0 0px 4px 1.3px #b3b3b3;
   border-radius: 5px;
+  max-height: calc(~"100vh - " 50px);
+  overflow-y: auto;
   .glyphicon {
     cursor: pointer;
+  }
+  @media screen and (max-width: 40em) {
+    max-width: 100%;
+    width: 100%;
+    font-size: .8em;
+    // padding-left: 20px;
   }
 }
 #feedback-btn {
@@ -147,6 +156,13 @@ a {
   &.feedback-closed {
     visibility: collapse;
   }
+  @media screen and (max-width: 40em) {
+    max-width: 100%;
+    width: 100%;
+    font-size: .8em;
+    padding-left: 20px;
+    border-radius: 0;
+  }
 }
 #content-container {
   .autoform .content-scrollable {
@@ -156,6 +172,14 @@ a {
   background-color: @fb-bcg-lighter;
   overflow-y: scroll;
   overflow-x: hidden;
+  @media screen and (max-width: 40em) {
+    padding-top: 7px;
+  }
+}
+.menu-open .content-container {
+  @media screen and (max-width: 40em) {
+
+  }
 }
 
 nav {
@@ -219,6 +243,9 @@ nav::after {
 [class^="page"],[class*="page"] {
   margin-top: 50px;
   padding: 30px;
+  @media screen and (max-width: 40em) {
+    padding: 0px;
+  }
 }
 .page-vote {
   @media screen and (max-width: 40em) {
