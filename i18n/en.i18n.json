@@ -27,7 +27,7 @@
     },
     "settings": {
       "label": "Settings",
-      "delegationsAllowed": {
+      "delegatee": {
         "label": "Allow incoming delegations"
       }
     },

@@ -13,7 +13,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 
 if (Meteor.isServer) {
 
-  import '/imports/api/memberships/publications.js';
+  import './publications.js';
 
   let Fixture;
 

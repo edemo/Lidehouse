@@ -25,7 +25,7 @@ Template.User_delegations.onCreated(function onCreated() {
 Template.User_delegations.onRendered(function onRendered() {
   const allowCheckbox = this.find('#allow');
   this.autorun(() => {
-    allowCheckbox.checked = Meteor.user().settings.delegationsAllowed;
+    allowCheckbox.checked = Meteor.user().settings.delegatee;
   });
 });
 

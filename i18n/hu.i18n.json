@@ -27,7 +27,7 @@
     },
     "settings": {
       "label": "Beálítások",
-      "delegationsAllowed": {
+      "delegatee": {
         "label": "Bejövő meghatalmazások engedélyezése"
       }
     },
