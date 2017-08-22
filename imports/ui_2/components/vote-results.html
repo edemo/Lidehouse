@@ -9,8 +9,8 @@
       {{text}}
     </div>
     <div class="row">
-      {{#each sum in summary}}
-      {{sum.vote}}: {{sum.percentage}}
+      {{#each sum in this.voteSummaryDisplay}}
+      <div>{{_ sum.choice}}: {{sum.votingShare}} ({{percentage sum.votingShare.toNumber}})</div>
       {{/each}}
     </div>
     <div class="row">

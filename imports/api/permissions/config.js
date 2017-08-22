@@ -33,7 +33,7 @@ const permissions = [
   { name: 'forum.update',         type: 'edit', roles: nobody },
   { name: 'prevote.insert',       type: 'edit', roles: ['owner'] },
   { name: 'prevote.update',       type: 'edit', roles: nobody },
-  { name: 'vote.insert',          type: 'edit', roles: ['manager'] },
+  { name: 'vote.insert',          type: 'edit', roles: ['manager', 'owner'] },
   { name: 'vote.update',          type: 'edit', roles: nobody },
   { name: 'news.insert',          type: 'edit', roles: ['manager'] },
   { name: 'news.update',          type: 'edit', roles: ['manager'] },
@@ -63,12 +63,11 @@ const permissions = [
   { name: 'shareddocs.listing',   type: 'view', roles: exceptGuest },
 ];
 
-if (Meteor.isServer) {
-  Meteor.startup(function InitializeRoles() {
-    defaultRoles.forEach(role => Roles.upsert({ _id: role.name }, { $set: _.extend(role, { protected: true }) }));
-  });
+export function initializePermissions() {
+  defaultRoles.forEach(role => Roles.upsert({ _id: role.name }, { $set: _.extend(role, { protected: true }) }));
+  permissions.forEach(permission => Permissions.upsert({ _id: permission.name }, { $set: permission }));
+}
 
-  Meteor.startup(function InitializePermissions() {
-    permissions.forEach(permission => Permissions.upsert({ _id: permission.name }, { $set: permission }));
-  });
+if (Meteor.isServer) {
+  Meteor.startup(() => initializePermissions());
 }

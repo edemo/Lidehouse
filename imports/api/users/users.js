@@ -39,7 +39,7 @@ const UserProfileSchema = new SimpleSchema({
 
 const UserSettingsSchema = new SimpleSchema({
   language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'en' },
-  delegationsAllowed: { type: Boolean, defaultValue: true },
+  delegatee: { type: Boolean, defaultValue: true },
 });
 
 const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';
@@ -95,6 +95,14 @@ Meteor.users.helpers({
     console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
+  isInCommunity(communityId) {
+    return !!Memberships.findOne({ userId: this._id, communityId });
+  },
+  votingUnits(communityId) {
+    let sum = 0;
+    Memberships.find({ userId: this._id, communityId, role: 'owner' }).map(m => sum += m.votingUnits());
+    return sum;
+  },
   hasPermission(permissionName, communityId) {
     const permission = Permissions.findOne({ _id: permissionName });
     const rolesWithThePermission = permission.roles;
@@ -112,8 +120,8 @@ Meteor.users.helpers({
     let total = 0;
     // TODO: needs traversing calculation
     Delegations.find({ targetUserId: this._id }).map(function addUpUnits(d) {
-      const m = Memberships.findOne(d.objectId);
-      total += m.votingUnits();
+      const sourceUser = Meteor.users.findOne(d.sourceUserId);
+      total += sourceUser.votingUnits();
     });
     return total;
   },

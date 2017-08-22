@@ -27,7 +27,7 @@
     },
     "settings": {
       "label": "Settings",
-      "delegationsAllowed": {
+      "delegatee": {
         "label": "Allow incoming delegations"
       }
     },
@@ -126,9 +126,13 @@
       "label": "Delegatee",
       "placeholder": "(eg. Mike75)"
     },
+    "scope": {
+      "label": "Scope of Delegation",
+      "placeholder": "(pl. Community issues)"
+    },
     "objectId": {
-      "label": "Scope of delegation (ownership)",
-      "placeholder": "(eg. ownership II/4)"
+      "label": "Object of delegation",
+      "placeholder": "(eg. Demo community)"
     }
   },
 
@@ -166,6 +170,9 @@
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
   "allowDelegationsToMe": "Allow others to delegate to me",
+
+  "votedViaDelegationHint" : "casting a vote can override this",
+  "notYetVotedHint": "cast your vote below, or set up a delegation",
 
 
   // Notifications

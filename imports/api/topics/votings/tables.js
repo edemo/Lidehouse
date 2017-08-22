@@ -13,7 +13,8 @@ export function voteColumns() {
 export function voteResultsColumns() {
   return [
     { data: 'voter()', title: __('voter') },
-    { data: 'voteResult', title: __('casted vote') },
-    { data: 'votePath', title: __('vote path'), render: Render.translate },
+    { data: 'votingShare', title: __('votingShare') },
+    { data: 'voteResultDisplay()', title: __('casted vote'), render: Render.translate },
+    { data: 'votePathDisplay()', title: __('vote path'), render: Render.translate },
   ];
 }

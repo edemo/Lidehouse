@@ -1,5 +1,4 @@
 import { Mongo } from 'meteor/mongo';
-import { __ } from '/imports/localization/i18n.js';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 export const Permissions = new Mongo.Collection('permissions');
@@ -9,7 +8,7 @@ Permissions.scopeSchema = new SimpleSchema({
 });
 
 Permissions.schema = new SimpleSchema({
-  name: { type: String, max: 100, label: () => __('permissions.name') },
+  name: { type: String, max: 100 },
   type: { type: String, allowedValues: ['view', 'edit'] },
 //  scope: { type: Permissions.scopeSchema },
   roles: { type: Array },

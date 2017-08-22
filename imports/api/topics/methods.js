@@ -7,6 +7,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 
+import '/imports/api/users/users.js';
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
@@ -44,6 +45,9 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
+
+    // TODO: how to check that only allowed fields are modified
+
     const topic = Topics.findOne(_id);
     if (!topic) {
       throw new Meteor.Error('err_invalidId', 'No such object',

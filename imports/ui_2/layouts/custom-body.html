@@ -30,35 +30,18 @@
               {{/if}}
               <ul>
                 {{#each communities}}
-                  <li><a href="#" class="js-switch-community">{{name}}</a></li>
+                  <li><a href="#" class="js-switch-community">{{name}} ({{displayMemberships _id}})</a></li>
                 {{/each}}
-              </ul>
-            </li>
-          </ul>
-          <ul class="nav">
-            <li class="drop">
-              {{#if activeMembership}}
-                {{activeMembership}}
-              {{else}}
-                {{_ 'No active'}} {{_ 'role'}}
-              {{/if}}
-              <ul>
-                {{#each memberships}}
-                  <li><a href="#" class="js-switch-membership">{{this}}</a></li>
-                {{/each}}
-              </ul>
-            </li>
-          </ul>
-          {{#if currentUser}}
-          <ul class="nav">
-            <li class="drop"> +
-              <ul>
+                <li role="separator" class="divider"></li><!-- TODO, it doesnt show up!!!-->
+                {{#if currentUser}}
                   <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
                   <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'Create a community'}} </a></li>
+                {{else}}
+                  <li>{{_'Log in to join'}} {{_'communities'}}</li>
+                {{/if}}
               </ul>
             </li>
           </ul>
-          {{/if}}
         </div>
         <div class="topmenu-right">
           <div class="language-toggle">
