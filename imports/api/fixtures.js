@@ -1,13 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
-import { Comments } from '/imports/api/comments/comments.js';
+import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
-import { Accounts } from 'meteor/accounts-base';
+import { Comments } from '/imports/api/comments/comments.js';
+import { PayAccounts } from '/imports/api/payments/payaccounts.js';
+import { Payments } from '/imports/api/payments/payments.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -413,6 +415,114 @@ export function insertDemoFixture() {
     topicId: demoMessageRoom,
     userId: demoUserId,
     text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
+  });
+
+  // ===== PayAccounts =====
+
+  const physical = PayAccounts.insert({
+    communityId: demoCommunityId,
+    type: 'physical',
+    name: 'Folyószámla',
+    children: [
+      { name: 'Bank 1' },
+      { name: 'Bank 2' },
+      { name: 'Pénztár' },
+    ]
+  });
+
+  const payOutCategory = PayAccounts.insert({
+    communityId: demoCommunityId,
+    type: 'virtual',
+    name: 'Kifizetés nem',
+    children: [
+      { name: 'Közmű',
+        children: [
+        { name: 'Villany' },
+        { name: 'Víz' },
+        { name: 'Gáz' },
+        ],
+      },
+      { name: 'Felújítás' },
+      { name: 'Takarítás' },
+    ]
+  });
+
+  const payInCategory = PayAccounts.insert({
+    communityId: demoCommunityId,
+    type: 'virtual',
+    name: 'Befizetés nem',
+    children: [
+      { name: 'Közös költség' },
+      { name: 'Célbefizetés' },
+    ]
+  });
+
+  const locator = PayAccounts.insert({
+    communityId: demoCommunityId,
+    type: 'locator',
+    name: 'Fizetési hely',
+    children: [
+      { name: 'A. lépcsőház',
+        children: [
+        { parcelNo: 1 },
+        { parcelNo: 2 },
+        ],
+      },
+      { name: 'B. lépcsőház',
+        children: [
+        { parcelNo: 3 },
+        { parcelNo: 4 },
+        ],
+      },
+      { parcelNo: 0 },
+      { name: 'Kert' },
+    ],
+  });
+
+  // ===== Payments =====
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    date: new Date(),
+    amount: 10000,
+    increaseAccount: {
+      'Folyószámla': 'Bank 1',
+      'Befizetés nem': 'Közös költség',
+      'Fizetési hely': 1,
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    date: new Date(),
+    amount: 20000,
+    increaseAccount: {
+      'Folyószámla': 'Bank 2',
+      'Befizetés nem': 'Közös költség',
+      'Fizetési hely': 2,
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    date: new Date(),
+    amount: 30000,
+    increaseAccount: {
+      'Folyószámla': 'Pénztár',
+      'Befizetés nem': 'Közös költség',
+      'Fizetési hely': 3,
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    date: new Date(),
+    amount: 40000,
+    increaseAccount: {
+      'Folyószámla': 'Pénztár',
+      'Befizetés nem': 'Célbefizetés',
+      'Fizetési hely': 4,
+    },
   });
 
   return {

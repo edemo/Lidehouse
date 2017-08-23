@@ -1,0 +1,42 @@
+<template name="Finances">
+  <div class="content-scrollable page-content page-vote">
+
+   <div style="row">
+     <ul class="tabs">
+
+       <!-- 1st tab start -->
+       <li class="tab">
+         <input type="radio" name="tabs" checked="checked" id="tab1" />
+         <label for="tab1">{{_ 'Payments'}}</label>
+         <!-- content -->
+         <div id="tab-content1" class="content">
+           <div class="row">
+             <div class="col-xs-12 text-center">
+               <h4>{{_ 'All transactions'}}</h4>
+               <hr/>
+             </div>
+           </div>
+           <div class="row">
+             <div class="col-xs-12">
+               {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+             </div>
+           </div>
+         </div>
+       </li>
+       <!-- 1st tab end -->
+
+       <!-- 2nd tab start-->
+       <li class="tab">
+         <input type="radio" name="tabs" id="tab2" />
+         <label for="tab2">{{_ 'Report'}}</label>
+         <div id="tab-content2" class="content">
+
+         </div>
+       </li>
+       <!-- 2nd tab end -->
+
+     </ul>
+   </div>
+ </div>
+
+</template>
