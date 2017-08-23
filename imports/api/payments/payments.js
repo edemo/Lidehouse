@@ -11,17 +11,15 @@ export const Payments = new Mongo.Collection('payments');
 Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   date: { type: Date },
-  increaseAccountId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePayAccount, optional: true },
-  decreaseAccountId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePayAccount, optional: true },
-  note: { type: String, max: 100 },
+  amount: { type: Number, decimal: true },
+  accounts: { type: Object, autoform: choosePayAccount },
+  ref: { type: String, max: 100, optional: true },
+  note: { type: String, max: 100, optional: true },
 });
 
 Payments.helpers({
   increaseAccount() {
     return PayAccounts.findOne(this.increaseAccountId);
-  },
-  decreaseAccount() {
-    return PayAccounts.findOne(this.decreaseAccountId);
   },
 });
 

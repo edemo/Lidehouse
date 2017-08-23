@@ -21,16 +21,19 @@ export const choosePayAccount = {
   },
 };
 
-PayAccounts.schema = new SimpleSchema({
-  name: { type: String },
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+let PayAccountSchema;
+PayAccountSchema = new SimpleSchema({
+  name: { type: String, max: 100 },
+  children: { type: Array },
+  'children.$': { type: PayAccountSchema },
+});
 
-  // An account is either a root (then it has a type)...
-  type: { type: String, allowedValues: PayAccounts.typeValues, optional: true },
-  // or not a root (then it has a root and a parent)
-  rootId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  parentId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  // TODO: Can we enforce this or-or
+PayAccounts.schema = new SimpleSchema({
+  name: { type: String, max: 100 },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  type: { type: String, allowedValues: PayAccounts.typeValues },
+  children: { type: Array },
+  'children.$': { type: PayAccountSchema },
 });
 
 PayAccounts.helpers({
@@ -44,14 +47,19 @@ PayAccounts.attachSchema(Timestamps);
 // });
 
 // Setting up collection permissions
+const hasPermission = function hasPermission(userId, doc) {
+  const user = Meteor.users.findOne(userId);
+  return user.hasPermission('payaccounts.update', doc.communityId);
+};
+
 PayAccounts.allow({
   insert(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
+    return hasPermission(userId, doc);
   },
   update(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
+    return hasPermission(userId, doc);
   },
   remove(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
+    return hasPermission(userId, doc);
   },
 });

@@ -485,7 +485,7 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     date: new Date(),
     amount: 10000,
-    increaseAccount: {
+    accounts: {
       'Folyószámla': 'Bank 1',
       'Befizetés nem': 'Közös költség',
       'Fizetési hely': 1,
@@ -496,7 +496,7 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     date: new Date(),
     amount: 20000,
-    increaseAccount: {
+    accounts: {
       'Folyószámla': 'Bank 2',
       'Befizetés nem': 'Közös költség',
       'Fizetési hely': 2,
@@ -507,7 +507,7 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     date: new Date(),
     amount: 30000,
-    increaseAccount: {
+    accounts: {
       'Folyószámla': 'Pénztár',
       'Befizetés nem': 'Közös költség',
       'Fizetési hely': 3,
@@ -518,7 +518,7 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     date: new Date(),
     amount: 40000,
-    increaseAccount: {
+    accounts: {
       'Folyószámla': 'Pénztár',
       'Befizetés nem': 'Célbefizetés',
       'Fizetési hely': 4,
