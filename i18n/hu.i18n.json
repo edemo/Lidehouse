@@ -135,6 +135,35 @@
       "placeholder": "(pl. Demo ház)"
     }
   },
+  "schemaPayments": {
+    "date": {
+      "label": "Könyvelési dátum",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Összeg",
+      "placeholder": "(pl. 14560)"
+    },
+    "ref": {
+      "label": "Referencia azonosító",
+      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
+    },
+    "note": {
+      "label": "Megjegyzés",
+      "placeholder": "(pl. emlékeztető)"
+    },
+    "accounts": {
+      "label": "Könyvelési fiókok",
+      "root": {
+        "label": "Fiók neve",
+        "placeholder": "(pl. Kifizetési hely)"
+      },
+      "leaf": {
+        "label": "Alfiók neve vagy albetét sorszám",
+        "placeholder": "(pl. B lépcsőház)"
+      }
+    }
+  },
   "undefined": "nincs megadva",
   "votingShare": "Szavazati hányad",
 

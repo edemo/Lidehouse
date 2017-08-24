@@ -6,6 +6,9 @@ export const Render = {
   translate(cellData, renderType, currentRow) {
     return __(cellData);
   },
+  formatDate(cellData, renderType, currentRow) {
+    return moment(cellData).format('YYYY.MM.DD');
+  },
   formatTime(cellData, renderType, currentRow) {
     return moment(cellData).format('YYYY.MM.DD hh:mm');
   },

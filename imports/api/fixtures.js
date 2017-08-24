@@ -424,10 +424,18 @@ export function insertDemoFixture() {
     type: 'physical',
     name: 'Folyószámla',
     children: [
-      { name: 'Bank 1' },
-      { name: 'Bank 2' },
-      { name: 'Pénztár' },
-    ]
+      { name: 'Bankszámla',
+        children: [
+        { name: 'Bank 1' },
+        { name: 'Bank 2' },
+        ],
+      },
+      { name: '*',
+        children: [
+        { name: 'Pénztár' },
+        ],
+      },
+    ],
   });
 
   const payOutCategory = PayAccounts.insert({
@@ -442,9 +450,13 @@ export function insertDemoFixture() {
         { name: 'Gáz' },
         ],
       },
-      { name: 'Felújítás' },
-      { name: 'Takarítás' },
-    ]
+      { name: '*',
+        children: [
+        { name: 'Felújítás' },
+        { name: 'Takarítás' },
+        ],
+      },
+    ],
   });
 
   const payInCategory = PayAccounts.insert({
@@ -452,9 +464,13 @@ export function insertDemoFixture() {
     type: 'virtual',
     name: 'Befizetés nem',
     children: [
-      { name: 'Közös költség' },
-      { name: 'Célbefizetés' },
-    ]
+      { name: '*',
+        children: [
+        { name: 'Közös költség' },
+        { name: 'Célbefizetés' },
+        ],
+      },
+    ],
   });
 
   const locator = PayAccounts.insert({
@@ -474,8 +490,12 @@ export function insertDemoFixture() {
         { parcelNo: 4 },
         ],
       },
-      { parcelNo: 0 },
-      { name: 'Kert' },
+      { name: '*',
+        children: [
+        { parcelNo: 0 },
+        { name: 'Kert' },
+        ],
+      },
     ],
   });
 
@@ -485,44 +505,44 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     date: new Date(),
     amount: 10000,
-    accounts: {
-      'Folyószámla': 'Bank 1',
-      'Befizetés nem': 'Közös költség',
-      'Fizetési hely': 1,
-    },
+    accounts: [
+      { root: 'Folyószámla', leaf: { name: 'Bank 1' } },
+      { root: 'Befizetés nem', leaf: { name: 'Közös költség' } },
+      { root: 'Fizetési hely', leaf: { parcelNo: 1 } },
+    ],
   });
 
   Payments.insert({
     communityId: demoCommunityId,
     date: new Date(),
     amount: 20000,
-    accounts: {
-      'Folyószámla': 'Bank 2',
-      'Befizetés nem': 'Közös költség',
-      'Fizetési hely': 2,
-    },
+    accounts: [
+      { root: 'Folyószámla', leaf: { name: 'Bank 2' } },
+      { root: 'Befizetés nem', leaf: { name: 'Közös költség' } },
+      { root: 'Fizetési hely', leaf: { parcelNo: 2 } },
+    ],
   });
 
   Payments.insert({
     communityId: demoCommunityId,
     date: new Date(),
     amount: 30000,
-    accounts: {
-      'Folyószámla': 'Pénztár',
-      'Befizetés nem': 'Közös költség',
-      'Fizetési hely': 3,
-    },
+    accounts: [
+      { root: 'Folyószámla', leaf: { name: 'Pénztár' } },
+      { root: 'Befizetés nem', leaf: { name: 'Közös költség' } },
+      { root: 'Fizetési hely', leaf: { parcelNo: 3 } },
+    ],
   });
 
   Payments.insert({
     communityId: demoCommunityId,
     date: new Date(),
     amount: 40000,
-    accounts: {
-      'Folyószámla': 'Pénztár',
-      'Befizetés nem': 'Célbefizetés',
-      'Fizetési hely': 4,
-    },
+    accounts: [
+      { root: 'Folyószámla', leaf: { name: 'Pénztár' } },
+      { root: 'Befizetés nem', leaf: { name: 'Célbefizetés' } },
+      { root: 'Fizetési hely', leaf: { parcelNo: 4 } },
+    ],
   });
 
   return {

@@ -8,13 +8,19 @@ import { PayAccounts, choosePayAccount } from '/imports/api/payments/payaccounts
 
 export const Payments = new Mongo.Collection('payments');
 
+const AccountSchema = new SimpleSchema({
+  root: { type: String /* regEx: SimpleSchema.RegEx.Id */},
+  leaf: { type: PayAccounts.LeafAccountSchema /* regEx: SimpleSchema.RegEx.Id, autoform: choosePayAccount*/ },
+});
+
 Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   date: { type: Date },
   amount: { type: Number, decimal: true },
-  accounts: { type: Object, autoform: choosePayAccount },
   ref: { type: String, max: 100, optional: true },
   note: { type: String, max: 100, optional: true },
+  accounts: { type: Array },
+  'accounts.$': { type: AccountSchema },
 });
 
 Payments.helpers({
