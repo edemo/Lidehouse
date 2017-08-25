@@ -8,13 +8,16 @@ import { PayAccounts, choosePayAccount } from '/imports/api/payments/payaccounts
 
 export const Payments = new Mongo.Collection('payments');
 
+Payments.orientValues = ['plan', 'bill', 'done'];
+
 Payments.AccountSchema = new SimpleSchema({
-  root: { type: String }, // regEx: SimpleSchema.RegEx.Id
+  root: { type: String, autoform: choosePayAccount }, // regEx: SimpleSchema.RegEx.Id
   leaf: { type: String }, // PayAccounts.LeafAccountSchema /* regEx: SimpleSchema.RegEx.Id, autoform: choosePayAccount*/
 });
 
 Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  orient: { type: String, allowedValues: Payments.orientValues },
   date: { type: Date },
   amount: { type: Number, decimal: true },
   ref: { type: String, max: 100, optional: true },

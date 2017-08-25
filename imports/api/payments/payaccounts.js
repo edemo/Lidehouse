@@ -59,7 +59,7 @@ PayAccounts.MidAccountSchema = new SimpleSchema({
 PayAccounts.schema = new SimpleSchema({
   name: { type: String, max: 100 },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  type: { type: String, allowedValues: PayAccounts.typeValues },
+//  type: { type: String, allowedValues: PayAccounts.typeValues },
   children: { type: Array },
   'children.$': { type: PayAccounts.MidAccountSchema },
 });
@@ -87,9 +87,9 @@ PayAccounts.helpers({
 PayAccounts.attachSchema(PayAccounts.schema);
 PayAccounts.attachSchema(Timestamps);
 
-// Meteor.startup(function attach() {
-//   PayAccounts.simpleSchema().i18n('schemaPayAccounts');
-// });
+Meteor.startup(function attach() {
+  PayAccounts.simpleSchema().i18n('schemaPayAccounts');
+});
 
 // Setting up collection permissions
 const hasPermission = function hasPermission(userId, doc) {

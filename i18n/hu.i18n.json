@@ -135,7 +135,37 @@
       "placeholder": "(pl. Demo ház)"
     }
   },
+  "schemaPayAccounts": {
+    "name": {
+      "label": "Elnevezés",
+      "placeholder": "(pl. Fizetési hely)"
+    },
+    "type": {
+      "label": "Típus"
+    },
+    "children": {
+      "label": "Gyűjtő fiókok",
+      "$": {
+        "name": {
+          "label": "Elnevezés",
+          "placeholder": "(pl. B. lépcsőház)"
+        },
+        "children": {
+          "label": "Al fiókok",
+          "$": {
+            "name": {
+              "label": "Elnevezés",
+              "placeholder": "(pl. Kert)"
+            }
+          }
+        }
+      }
+    }
+  },
   "schemaPayments": {
+    "orient": {
+      "label": "Tranzakció típusa"
+    },
     "date": {
       "label": "Könyvelési dátum",
       "placeholder": "(pl. 2017-05-06)"
@@ -312,6 +342,17 @@
   "New ticket": "Új hibabejelentés",
   "Please dont report twice": "Kérjük csak akkor adja fel bejelentését, ha az még nem szerepel a fenti listán vagy nemrég került archiválásra hasonló. A lezárt bejelentéseket a lap alján tekinthetik meg. Köszönjük!",
   "Describe the problem briefly": "A hiba rövid leírása ...",
+
+  // finances
+  "Payaccounts": "Fizetési fiókok",
+  "Payments": "Tranzakciók",
+  "Reports": "Kimutatások",
+  "physical": "Számla fiók",
+  "virtual": "Fizetési nem",
+  "locator": "Fizetési hely",
+  "plan": "tervezet",
+  "bill": "előírt",
+  "done": "rendezett",
 
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",

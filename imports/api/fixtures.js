@@ -421,8 +421,8 @@ export function insertDemoFixture() {
 
   const physical = PayAccounts.insert({
     communityId: demoCommunityId,
-    type: 'physical',
-    name: 'Folyószámla',
+//    type: 'physical',
+    name: 'Számla fiók',
     children: [
       { name: 'Bankszámla',
         children: [
@@ -440,7 +440,7 @@ export function insertDemoFixture() {
 
   const payOutCategory = PayAccounts.insert({
     communityId: demoCommunityId,
-    type: 'virtual',
+//    type: 'virtual',
     name: 'Kifizetés nem',
     children: [
       { name: 'Közmű',
@@ -461,7 +461,7 @@ export function insertDemoFixture() {
 
   const payInCategory = PayAccounts.insert({
     communityId: demoCommunityId,
-    type: 'virtual',
+//    type: 'virtual',
     name: 'Befizetés nem',
     children: [
       { name: '*',
@@ -475,7 +475,7 @@ export function insertDemoFixture() {
 
   const locator = PayAccounts.insert({
     communityId: demoCommunityId,
-    type: 'locator',
+//    type: 'locator',
     name: 'Fizetési hely',
     children: [
       { name: 'A. lépcsőház',
@@ -503,6 +503,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
+    orient: 'done',
     date: new Date(),
     amount: 10000,
     accounts: {
@@ -514,6 +515,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
+    orient: 'done',
     date: new Date(),
     amount: 20000,
     accounts: {
@@ -525,6 +527,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
+    orient: 'done',
     date: new Date(),
     amount: 30000,
     accounts: {
@@ -536,6 +539,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
+    orient: 'done',
     date: new Date(),
     amount: 40000,
     accounts: {

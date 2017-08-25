@@ -4,6 +4,28 @@
    <div style="row">
      <ul class="tabs">
 
+       <!-- 0st tab start -->
+       <li class="tab">
+         <input type="radio" name="tabs" checked="checked" id="tab0" />
+         <label for="tab0">{{_ 'Payaccounts'}}</label>
+         <!-- content -->
+         <div id="tab-content0" class="content">
+           <div class="row">
+             <div class="col-xs-12 text-center">
+               <h4>{{_ 'Payaccounts'}}</h4>
+               <hr/>
+             </div>
+           </div>
+           <div class="row">
+             <div class="col-xs-12">
+               {{> ReactiveDatatable tableData=payaccountsTableDataFn options=payaccountsOptionsFn }}
+             </div>
+             <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+           </div>
+         </div>
+       </li>
+       <!-- 0st tab end -->
+
        <!-- 1st tab start -->
        <li class="tab">
          <input type="radio" name="tabs" checked="checked" id="tab1" />
@@ -18,7 +40,7 @@
            </div>
            <div class="row">
              <div class="col-xs-12">
-               {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+               {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
              </div>
              <button class="js-new btn-primary">{{_ 'createNew'}}</button>
            </div>
@@ -29,7 +51,7 @@
        <!-- 2nd tab start-->
        <li class="tab">
          <input type="radio" name="tabs" id="tab2" />
-         <label for="tab2">{{_ 'Report'}}</label>
+         <label for="tab2">{{_ 'Reports'}}</label>
          <div id="tab-content2" class="content">
 
          </div>

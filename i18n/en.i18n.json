@@ -135,6 +135,66 @@
       "placeholder": "(eg. Demo community)"
     }
   },
+  "schemaPayAccounts": {
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Payment target)"
+    },
+    "type": {
+      "label": "Type"
+    },
+    "children": {
+      "label": "Container account",
+      "$": {
+        "name": {
+          "label": "Name",
+          "placeholder": "(eg. Building C.)"
+        },
+        "children": {
+          "label": "Sub account",
+          "$": {
+            "name": {
+              "label": "Name",
+              "placeholder": "(eg. Garden)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaPayments": {
+    "orient": {
+      "label": "Payment type"
+    },
+    "date": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Amount",
+      "placeholder": "(eg. 14560)"
+    },
+    "ref": {
+      "label": "Reference id",
+      "placeholder": "(eg. transaction no. from bank statement)"
+    },
+    "note": {
+      "label": "Note",
+      "placeholder": "(eg. reminder)"
+    },
+    "accounts": {
+      "label": "Könyvelési fiókok",
+      "root": {
+        "label": "Fiók neve",
+        "placeholder": "(pl. Kifizetési hely)"
+      },
+      "leaf": {
+        "label": "Alfiók neve vagy albetét sorszám",
+        "placeholder": "(pl. B lépcsőház)"
+      }
+    }
+  },
+
 
   // buttons etc.
   "confirm": "Are you sure?",

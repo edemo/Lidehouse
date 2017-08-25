@@ -6,7 +6,7 @@ import { remove as removePayment } from '/imports/api/payments/methods.js';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { paymentColumns } from '/imports/api/payments/tables.js';
+import { paymentColumns, payaccountColumns } from '/imports/api/payments/tables.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/confirmation.js';
@@ -22,14 +22,31 @@ Template.Finances.onCreated(function financesOnCreated() {
 });
 
 Template.Finances.helpers({
-  reactiveTableDataFn() {
+  payaccountsTableDataFn() {
+    function getTableData() {
+      const communityId = Session.get('activeCommunityId');
+      return PayAccounts.find({ communityId }).fetch();
+    }
+    return getTableData;
+  },
+  payaccountsOptionsFn() {
+    function getOptions() {
+      return {
+        columns: payaccountColumns(),
+        tableClasses: 'display',
+        language: datatables_i18n[TAPi18n.getLanguage()],
+      };
+    }
+    return getOptions;
+  },
+  paymentsTableDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
       return Payments.find({ communityId }).fetch();
     }
     return getTableData;
   },
-  optionsFn() {
+  paymentsOptionsFn() {
     const communityId = Session.get('activeCommunityId');
     const accounts = PayAccounts.find({ communityId }).fetch();
     function getOptions() {
@@ -44,7 +61,39 @@ Template.Finances.helpers({
 });
 
 Template.Finances.events({
-  'click .js-new'(event, instance) {
+  'click #tab-content0 .js-new'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.payaccounts.insert',
+      collection: PayAccounts,
+      omitFields: ['communityId'],
+      type: 'insert',
+      //      type: 'method',
+//      meteormethod: 'payaccounts.insert',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #tab-content0 .js-edit'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.payaccounts.update',
+      collection: PayAccounts,
+      omitFields: ['communityId'],
+      doc: PayAccounts.findOne(id),
+      type: 'update',
+//      type: 'method-update',
+//      meteormethod: 'payments.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #tab-content0 .js-delete'(event) {
+    const id = $(event.target).data('id');
+    Modal.confirmAndCall(PayAccounts.remove, { _id: id }, {
+      action: 'delete payaccount',
+    });
+  },
+
+  'click #tab-content1 .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.payments.insert',
       collection: Payments,
@@ -54,7 +103,7 @@ Template.Finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-edit'(event) {
+  'click #tab-content1 .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payments.update',
@@ -67,11 +116,20 @@ Template.Finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-delete'(event) {
+  'click #tab-content1 .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removePayment, { _id: id }, {
       action: 'delete payment',
     });
+  },
+});
+
+AutoForm.addModalHooks('af.payaccounts.insert');
+AutoForm.addModalHooks('af.payaccounts.update');
+AutoForm.addHooks('af.payaccounts.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    return doc;
   },
 });
 

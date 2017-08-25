@@ -1,6 +1,26 @@
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 
+export function payaccountColumns() {
+  const displayLeafs = function displayLeafs(cellData, renderType, currentRow) {
+    let result = '';
+    cellData.forEach(c =>
+      c.children.forEach(cc =>
+        result += (cc.name || `${cc.parcelNo} ${__('parcel')}`) + ', '
+      )
+    );
+    return result;
+  };
+
+  return [
+    { data: 'name', title: __('schemaPayAccounts.name.label') },
+//    { data: 'type', title: __('schemaPayAccounts.type.label'), render: Render.translate },
+    { data: 'children', title: __('schemaPayAccounts.children.$.children.label'), render: displayLeafs },
+    { data: '_id', render: Render.buttonEdit },
+    { data: '_id', render: Render.buttonDelete },
+  ];
+}
+
 export function paymentColumns(accounts) {
   const columns = [
     { data: 'date', title: __('schemaPayments.date.label'), render: Render.formatDate },
