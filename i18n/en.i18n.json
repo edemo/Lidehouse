@@ -147,15 +147,15 @@
       "label": "Container account",
       "$": {
         "name": {
-          "label": "Name",
+          "label": "Name (or * if not needed)",
           "placeholder": "(eg. Building C.)"
         },
         "children": {
           "label": "Sub account",
           "$": {
             "name": {
-              "label": "Name",
-              "placeholder": "(eg. Garden)"
+              "label": "Name (or serial no. of parcel)",
+              "placeholder": "(eg. Garden or 114)"
             }
           }
         }

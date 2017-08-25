@@ -147,15 +147,15 @@
       "label": "Gyűjtő fiókok",
       "$": {
         "name": {
-          "label": "Elnevezés",
+          "label": "Elnevezés (vagy * ha nem kell)",
           "placeholder": "(pl. B. lépcsőház)"
         },
         "children": {
           "label": "Al fiókok",
           "$": {
             "name": {
-              "label": "Elnevezés",
-              "placeholder": "(pl. Kert)"
+              "label": "Elnevezés (vagy albetét száma)",
+              "placeholder": "(pl. Kert vagy 114)"
             }
           }
         }

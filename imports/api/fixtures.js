@@ -480,19 +480,19 @@ export function insertDemoFixture() {
     children: [
       { name: 'A. lépcsőház',
         children: [
-        { parcelNo: 1 },
-        { parcelNo: 2 },
+        { name: '1' },
+        { name: '2' },
         ],
       },
       { name: 'B. lépcsőház',
         children: [
-        { parcelNo: 3 },
-        { parcelNo: 4 },
+        { name: '3' },
+        { name: '4' },
         ],
       },
       { name: '*',
         children: [
-        { parcelNo: 0 },
+        { name: '0' },
         { name: 'Kert' },
         ],
       },
@@ -507,9 +507,9 @@ export function insertDemoFixture() {
     date: new Date(),
     amount: 10000,
     accounts: {
-      'Folyószámla': 'Bank 1',
+      'Számla fiók': 'Bank 1',
       'Befizetés nem': 'Közös költség',
-      'Fizetési hely': 1,
+      'Fizetési hely': '1',
     },
   });
 
@@ -519,9 +519,9 @@ export function insertDemoFixture() {
     date: new Date(),
     amount: 20000,
     accounts: {
-      'Folyószámla': 'Bank 2',
+      'Számla fiók': 'Bank 2',
       'Befizetés nem': 'Közös költség',
-      'Fizetési hely': 2,
+      'Fizetési hely': '2',
     },
   });
 
@@ -531,9 +531,9 @@ export function insertDemoFixture() {
     date: new Date(),
     amount: 30000,
     accounts: {
-      'Folyószámla': 'Pénztár',
+      'Számla fiók': 'Pénztár',
       'Befizetés nem': 'Közös költség',
-      'Fizetési hely': 3,
+      'Fizetési hely': '3',
     },
   });
 
@@ -543,9 +543,9 @@ export function insertDemoFixture() {
     date: new Date(),
     amount: 40000,
     accounts: {
-      'Folyószámla': 'Pénztár',
+      'Számla fiók': 'Pénztár',
       'Befizetés nem': 'Célbefizetés',
-      'Fizetési hely': 4,
+      'Fizetési hely': '4',
     },
   });
 

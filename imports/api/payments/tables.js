@@ -6,7 +6,7 @@ export function payaccountColumns() {
     let result = '';
     cellData.forEach(c =>
       c.children.forEach(cc =>
-        result += (cc.name || `${cc.parcelNo} ${__('parcel')}`) + ', '
+        result += (cc.name || `${cc.parcelNo}. ${__('parcel')}`) + ', '
       )
     );
     return result;
