@@ -8,9 +8,9 @@ import { PayAccounts, choosePayAccount } from '/imports/api/payments/payaccounts
 
 export const Payments = new Mongo.Collection('payments');
 
-const AccountSchema = new SimpleSchema({
-  root: { type: String /* regEx: SimpleSchema.RegEx.Id */},
-  leaf: { type: PayAccounts.LeafAccountSchema /* regEx: SimpleSchema.RegEx.Id, autoform: choosePayAccount*/ },
+Payments.AccountSchema = new SimpleSchema({
+  root: { type: String }, // regEx: SimpleSchema.RegEx.Id
+  leaf: { type: String }, // PayAccounts.LeafAccountSchema /* regEx: SimpleSchema.RegEx.Id, autoform: choosePayAccount*/
 });
 
 Payments.schema = new SimpleSchema({
@@ -19,8 +19,10 @@ Payments.schema = new SimpleSchema({
   amount: { type: Number, decimal: true },
   ref: { type: String, max: 100, optional: true },
   note: { type: String, max: 100, optional: true },
-  accounts: { type: Array },
-  'accounts.$': { type: AccountSchema },
+  accounts: { type: Object, blackbox: true },
+    // rootAccountName -> leafAccountName or parcelNo
+  accountsArray: { type: Array, optional: true },
+  'accountsArray.$': { type: Payments.AccountSchema },
 });
 
 Payments.helpers({

@@ -505,44 +505,44 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     date: new Date(),
     amount: 10000,
-    accounts: [
-      { root: 'Folyószámla', leaf: { name: 'Bank 1' } },
-      { root: 'Befizetés nem', leaf: { name: 'Közös költség' } },
-      { root: 'Fizetési hely', leaf: { parcelNo: 1 } },
-    ],
+    accounts: {
+      'Folyószámla': 'Bank 1',
+      'Befizetés nem': 'Közös költség',
+      'Fizetési hely': 1,
+    },
   });
 
   Payments.insert({
     communityId: demoCommunityId,
     date: new Date(),
     amount: 20000,
-    accounts: [
-      { root: 'Folyószámla', leaf: { name: 'Bank 2' } },
-      { root: 'Befizetés nem', leaf: { name: 'Közös költség' } },
-      { root: 'Fizetési hely', leaf: { parcelNo: 2 } },
-    ],
+    accounts: {
+      'Folyószámla': 'Bank 2',
+      'Befizetés nem': 'Közös költség',
+      'Fizetési hely': 2,
+    },
   });
 
   Payments.insert({
     communityId: demoCommunityId,
     date: new Date(),
     amount: 30000,
-    accounts: [
-      { root: 'Folyószámla', leaf: { name: 'Pénztár' } },
-      { root: 'Befizetés nem', leaf: { name: 'Közös költség' } },
-      { root: 'Fizetési hely', leaf: { parcelNo: 3 } },
-    ],
+    accounts: {
+      'Folyószámla': 'Pénztár',
+      'Befizetés nem': 'Közös költség',
+      'Fizetési hely': 3,
+    },
   });
 
   Payments.insert({
     communityId: demoCommunityId,
     date: new Date(),
     amount: 40000,
-    accounts: [
-      { root: 'Folyószámla', leaf: { name: 'Pénztár' } },
-      { root: 'Befizetés nem', leaf: { name: 'Célbefizetés' } },
-      { root: 'Fizetési hely', leaf: { parcelNo: 4 } },
-    ],
+    accounts: {
+      'Folyószámla': 'Pénztár',
+      'Befizetés nem': 'Célbefizetés',
+      'Fizetési hely': 4,
+    },
   });
 
   return {
