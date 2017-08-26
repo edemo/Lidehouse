@@ -37,3 +37,6 @@ Translation of autoform fields doesn't show for you language
 Error: "Can't find npm module 'meteor/session'. Did you forget to call 'Npm.depends' in package.js within the 'modules-runtime' package?"
 - Session, Template and all UI libraries can only be imported on client side.
 solution: put them under a 'client' dir, or under 'imports'.
+
+Your tests time out (many or all), complains you should call the 'done()' function
+- The machine is overloaded. Quit some apps.

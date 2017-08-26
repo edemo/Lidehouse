@@ -501,10 +501,47 @@ export function insertDemoFixture() {
 
   // ===== Payments =====
 
+    // === Nyito ===
+
   Payments.insert({
     communityId: demoCommunityId,
     orient: 'done',
-    date: new Date(),
+    date: new Date('2017-01-01'),
+    ref: 'nyitó',
+    amount: 100000,
+    accounts: {
+      'Számla fiók': 'Pénztár',
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    orient: 'done',
+    date: new Date('2017-01-01'),
+    ref: 'nyitó',
+    amount: 110000,
+    accounts: {
+      'Számla fiók': 'Bank 1',
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    orient: 'done',
+    date: new Date('2017-01-01'),
+    ref: 'nyitó',
+    amount: 120000,
+    accounts: {
+      'Számla fiók': 'Bank 2',
+    },
+  });
+
+    // === Befizetesek ===
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    orient: 'done',
+    date: new Date('2017-06-01'),
     amount: 10000,
     accounts: {
       'Számla fiók': 'Bank 1',
@@ -516,7 +553,7 @@ export function insertDemoFixture() {
   Payments.insert({
     communityId: demoCommunityId,
     orient: 'done',
-    date: new Date(),
+    date: new Date('2017-06-02'),
     amount: 20000,
     accounts: {
       'Számla fiók': 'Bank 2',
@@ -528,7 +565,7 @@ export function insertDemoFixture() {
   Payments.insert({
     communityId: demoCommunityId,
     orient: 'done',
-    date: new Date(),
+    date: new Date('2017-06-03'),
     amount: 30000,
     accounts: {
       'Számla fiók': 'Pénztár',
@@ -540,7 +577,7 @@ export function insertDemoFixture() {
   Payments.insert({
     communityId: demoCommunityId,
     orient: 'done',
-    date: new Date(),
+    date: new Date('2017-06-04'),
     amount: 40000,
     accounts: {
       'Számla fiók': 'Pénztár',
@@ -548,6 +585,56 @@ export function insertDemoFixture() {
       'Fizetési hely': '4',
     },
   });
+
+    // === Eloirasok ===
+
+  for (let i = 0; i < 12; ++i) {
+    Payments.insert({
+      communityId: demoCommunityId,
+      orient: 'bill',
+      date: new Date(2017, i, 1),
+      amount: 6500,
+      accounts: {
+        'Befizetés nem': 'Közös költség',
+        'Fizetési hely': '4',
+      },
+    });
+  }
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    orient: 'bill',
+    date: new Date(2017, 7, 1),
+    amount: 52000,
+    accounts: {
+      'Befizetés nem': 'Célbefizetés',
+      'Fizetési hely': '4',
+    },
+  });
+
+    // === Tervezetek ===
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    orient: 'plan',
+    date: new Date('2017-01-01'),
+    amount: 24000,
+    accounts: {
+      'Kifizetés nem': 'Villany',
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    orient: 'plan',
+    date: new Date('2017-01-01'),
+    amount: 415000,
+    accounts: {
+      'Kifizetés nem': 'Felújítás',
+    },
+  });
+
+  // ===== Returning a bunch of pointers, for easy direct access
 
   return {
     demoCommunityId,
