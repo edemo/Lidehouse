@@ -71,13 +71,7 @@ PayAccounts.helpers({
       const leafs = [];
       this.children.forEach((c) => {
         c.children.forEach((leaf) => {
-/*          if (!leaf.name) {
-            debugAssert(leaf.parcelNo);
-            // const parcel = Parcels.find({ communityId: this.communityId, serial: leaf.parcelNo });
-            leaf.name = `${leaf.parcelNo}. ${__('parcel')}`;
-          }
-*/
-          leafs.push(leaf.name);
+          leafs.push(PayAccounts.leafNameDisplay(leaf.name));
         });
       });
       this.leafs = leafs;
@@ -85,6 +79,16 @@ PayAccounts.helpers({
     return this;
   },
 });
+
+PayAccounts.leafIsParcel = function leafIsParcel(name) {
+  const number = parseInt(name, 0);
+  return number;
+};
+
+PayAccounts.leafNameDisplay = function leafNameDisplay(name) {
+  if (this.leafIsParcel(name)) return `${name}. ${__('parcel')}`;
+  return name;
+};
 
 PayAccounts.attachSchema(PayAccounts.schema);
 PayAccounts.attachSchema(Timestamps);

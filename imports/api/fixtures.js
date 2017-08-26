@@ -70,7 +70,7 @@ export function insertDemoFixture() {
   const dummyParcels = [];
   dummyParcels[0] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 0,
+    serial: 100,
     units: 0,
     floor: '-2',
     number: 'P02',
@@ -492,7 +492,7 @@ export function insertDemoFixture() {
       },
       { name: '*',
         children: [
-        { name: '0' },
+        { name: '100' },
         { name: 'Kert' },
         ],
       },

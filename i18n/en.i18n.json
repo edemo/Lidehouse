@@ -164,7 +164,8 @@
   },
   "schemaPayments": {
     "orient": {
-      "label": "Payment type"
+      "label": "Orientation"
+      //"Payment type"
     },
     "date": {
       "label": "Accounting date",
@@ -183,17 +184,6 @@
       "placeholder": "(eg. reminder)"
     },
     "accounts": {
-      "label": "Könyvelési fiókok"
-//    "root": {
-//        "label": "Fiók neve",
-//        "placeholder": "(pl. Kifizetési hely)"
-//      },
-//      "leaf": {
-//        "label": "Alfiók neve vagy albetét sorszám",
-//        "placeholder": "(pl. B lépcsőház)"
-//      }
-    },
-    "chooseAccounts": {
       "label": "Könyvelési fiókok"
     }
   },

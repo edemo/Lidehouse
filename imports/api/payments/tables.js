@@ -1,12 +1,13 @@
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
+import { PayAccounts } from '/imports/api/payments/payaccounts.js';
 
 export function payaccountColumns() {
   const displayLeafs = function displayLeafs(cellData, renderType, currentRow) {
     let result = '';
     cellData.forEach(c =>
       c.children.forEach(cc =>
-        result += (cc.name || `${cc.parcelNo}. ${__('parcel')}`) + ', '
+        result += PayAccounts.leafNameDisplay(cc.name) + ', '
       )
     );
     return result;
@@ -32,7 +33,7 @@ export function paymentColumns(accounts) {
 
   accounts.forEach((account) => {
     const extractAccountLeaf = function extractAccountLeaf(cellData, renderType, currentRow) {
-      return cellData ? cellData[account.name] : undefined;
+      return cellData ? PayAccounts.leafNameDisplay(cellData[account.name]) : undefined;
     };
     columns.push({ data: 'accounts', title: account.name, render: extractAccountLeaf });
   });

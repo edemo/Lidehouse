@@ -72,7 +72,7 @@ function newPaymentSchema() {
   }
   return new SimpleSchema([
     Payments.simpleSchema(),
-    { chooseAccounts: { type: chooseAccountsSchema(), optional: true } },
+    { accounts: { type: chooseAccountsSchema(), optional: true } },
   ]);
 }
 
@@ -114,7 +114,7 @@ Template.Finances.events({
       id: 'af.payments.insert',
       collection: Payments,
       schema: newPaymentSchema(),
-      omitFields: ['communityId', 'accounts'],
+      omitFields: ['communityId'],
       type: 'method',
       meteormethod: 'payments.insert',
       template: 'bootstrap3-inline',
@@ -126,7 +126,7 @@ Template.Finances.events({
       id: 'af.payments.update',
       collection: Payments,
       schema: newPaymentSchema(),
-      omitFields: ['communityId', 'accounts'],
+      omitFields: ['communityId'],
       doc: Payments.findOne(id),
       type: 'method-update',
       meteormethod: 'payments.update',
@@ -156,24 +156,6 @@ AutoForm.addModalHooks('af.payments.update');
 AutoForm.addHooks('af.payments.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.accounts = doc.chooseAccounts;
-    doc.chooseAccounts = undefined;
-    return doc;
-  },
-});
-AutoForm.addHooks('af.payments.update', {
-  formToDoc(doc) {
-    doc.accounts = doc.chooseAccounts;
-    doc.chooseAccounts = undefined;
-    return doc;
-  },
-  docToForm(doc) {
-    doc.chooseAccounts = {};
-    if (doc.accounts) {
-      Object.keys(doc.accounts).forEach(key =>
-        doc.chooseAccounts[key] = doc.accounts[key]
-      );
-    }
     return doc;
   },
 });

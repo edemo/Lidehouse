@@ -10,12 +10,7 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 export const Payments = new Mongo.Collection('payments');
 
 Payments.orientValues = ['plan', 'bill', 'done'];
-/*
-Payments.AccountSchema = new SimpleSchema({
-  root: { type: String, autoform: choosePayAccount }, // regEx: SimpleSchema.RegEx.Id
-  leaf: { type: String }, // PayAccounts.LeafAccountSchema // regEx: SimpleSchema.RegEx.Id, autoform: choosePayAccount
-});
-*/
+
 Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   orient: { type: String, allowedValues: Payments.orientValues, autoform: autoformOptions(Payments.orientValues) },
@@ -25,9 +20,6 @@ Payments.schema = new SimpleSchema({
   note: { type: String, max: 100, optional: true },
   accounts: { type: Object, blackbox: true },
     // rootAccountName -> leafAccountName or parcelNo
-
-//  accountsArray: { type: Array, optional: true },
-//  'accountsArray.$': { type: Payments.AccountSchema },
 });
 
 Payments.helpers({
