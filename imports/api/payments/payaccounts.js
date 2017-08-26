@@ -71,12 +71,13 @@ PayAccounts.helpers({
       const leafs = [];
       this.children.forEach((c) => {
         c.children.forEach((leaf) => {
-          if (!leaf.name) {
+/*          if (!leaf.name) {
             debugAssert(leaf.parcelNo);
             // const parcel = Parcels.find({ communityId: this.communityId, serial: leaf.parcelNo });
             leaf.name = `${leaf.parcelNo}. ${__('parcel')}`;
           }
-          leafs.push(leaf);
+*/
+          leafs.push(leaf.name);
         });
       });
       this.leafs = leafs;

@@ -183,15 +183,18 @@
       "placeholder": "(pl. emlékeztető)"
     },
     "accounts": {
-      "label": "Könyvelési fiókok",
-      "root": {
-        "label": "Fiók neve",
-        "placeholder": "(pl. Kifizetési hely)"
-      },
-      "leaf": {
-        "label": "Alfiók neve vagy albetét sorszám",
-        "placeholder": "(pl. B lépcsőház)"
-      }
+      "label": "Könyvelési fiókok"
+//      "root": {
+//        "label": "Fiók neve",
+//        "placeholder": "(pl. Kifizetési hely)"
+//      },
+//      "leaf": {
+//        "label": "Alfiók neve vagy albetét sorszám",
+//        "placeholder": "(pl. B lépcsőház)"
+//      }
+    },
+    "chooseAccounts": {
+      "label": "Könyvelési fiókok"
     }
   },
   "undefined": "nincs megadva",

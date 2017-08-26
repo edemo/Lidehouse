@@ -60,6 +60,22 @@ Template.Finances.helpers({
   },
 });
 
+function newPaymentSchema() {
+  function chooseAccountsSchema() {
+    const obj = {};
+    const communityId = Session.get('activeCommunityId');
+    const payaccounts = PayAccounts.find({ communityId });
+    payaccounts.forEach((payaccount) => {
+      obj[payaccount.name] = { type: String, optional: true, label: payaccount.name, allowedValues: payaccount.init().leafs };
+    });
+    return new SimpleSchema(obj);
+  }
+  return new SimpleSchema([
+    Payments.simpleSchema(),
+    { chooseAccounts: { type: chooseAccountsSchema(), optional: true } },
+  ]);
+}
+
 Template.Finances.events({
   'click #tab-content0 .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
@@ -97,6 +113,7 @@ Template.Finances.events({
     Modal.show('Autoform_edit', {
       id: 'af.payments.insert',
       collection: Payments,
+      schema: newPaymentSchema(),
       omitFields: ['communityId', 'accounts'],
       type: 'method',
       meteormethod: 'payments.insert',
@@ -108,6 +125,7 @@ Template.Finances.events({
     Modal.show('Autoform_edit', {
       id: 'af.payments.update',
       collection: Payments,
+      schema: newPaymentSchema(),
       omitFields: ['communityId', 'accounts'],
       doc: Payments.findOne(id),
       type: 'method-update',
@@ -138,26 +156,22 @@ AutoForm.addModalHooks('af.payments.update');
 AutoForm.addHooks('af.payments.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.accounts = {};
-    if (doc.accountsArray) {
-      doc.accountsArray.forEach(acc => doc.accounts[acc.root] = acc.leaf);
-    }
+    doc.accounts = doc.chooseAccounts;
+    doc.chooseAccounts = undefined;
     return doc;
   },
 });
 AutoForm.addHooks('af.payments.update', {
   formToDoc(doc) {
-    doc.accounts = {};
-    if (doc.accountsArray) {
-      doc.accountsArray.forEach(acc => doc.accounts[acc.root] = acc.leaf);
-    }
+    doc.accounts = doc.chooseAccounts;
+    doc.chooseAccounts = undefined;
     return doc;
   },
   docToForm(doc) {
-    doc.accountsArray = [];
+    doc.chooseAccounts = {};
     if (doc.accounts) {
       Object.keys(doc.accounts).forEach(key =>
-        doc.accountsArray.push({ root: key, leaf: doc.accounts[key] })
+        doc.chooseAccounts[key] = doc.accounts[key]
       );
     }
     return doc;
