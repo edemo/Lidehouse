@@ -7,10 +7,12 @@ import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { paymentColumns, payaccountColumns } from '/imports/api/payments/tables.js';
+import { reportColumns } from '/imports/api/payments/reports.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
+import '../components/sumif-table.js';
 import './finances.html';
 
 Template.Finances.onCreated(function financesOnCreated() {
@@ -58,6 +60,31 @@ Template.Finances.helpers({
     }
     return getOptions;
   },
+  reportsTableDataFn() {
+    function getTableData() {
+      const communityId = Session.get('activeCommunityId');
+      return Payments.find({ communityId }).fetch();
+    }
+    return getTableData;
+  },
+  reportsOptionsFn() {
+    function getOptions() {
+      return {
+        columns: reportColumns(),
+        tableClasses: 'display',
+        language: datatables_i18n[TAPi18n.getLanguage()],
+      };
+    }
+    return getOptions;
+  },
+  dataAlbetetekElszamolasa() {
+    return {
+      name: 'Albetetek Elszamolasa',
+      filter: { orient: { not: 'plan' }, 'date.year': 2017 },
+      vgroup: ['accounts.Fizetési hely'],
+      hgroup: ['date.month', 'orient']
+    };
+  }
 });
 
 function newPaymentSchema() {
@@ -66,7 +93,7 @@ function newPaymentSchema() {
     const communityId = Session.get('activeCommunityId');
     const payaccounts = PayAccounts.find({ communityId });
     payaccounts.forEach((payaccount) => {
-      obj[payaccount.name] = { type: String, optional: true, label: payaccount.name, allowedValues: payaccount.init().leafs };
+      obj[payaccount.name] = { type: String, optional: true, label: payaccount.name, allowedValues: payaccount.leafDisplays() };
     });
     return new SimpleSchema(obj);
   }

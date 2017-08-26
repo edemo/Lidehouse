@@ -7,12 +7,11 @@ export function payaccountColumns() {
     let result = '';
     cellData.forEach(c =>
       c.children.forEach(cc =>
-        result += PayAccounts.leafNameDisplay(cc.name) + ', '
+        result += PayAccounts.leafDisplay(cc.name) + ', '
       )
     );
     return result;
   };
-
   return [
     { data: 'name', title: __('schemaPayAccounts.name.label') },
 //    { data: 'type', title: __('schemaPayAccounts.type.label'), render: Render.translate },
@@ -30,14 +29,12 @@ export function paymentColumns(accounts) {
     { data: 'ref', title: __('schemaPayments.ref.label') },
     { data: 'note', title: __('schemaPayments.note.label') },
   ];
-
   accounts.forEach((account) => {
     const extractAccountLeaf = function extractAccountLeaf(cellData, renderType, currentRow) {
-      return cellData ? PayAccounts.leafNameDisplay(cellData[account.name]) : undefined;
+      return cellData ? PayAccounts.leafDisplay(cellData[account.name]) : undefined;
     };
     columns.push({ data: 'accounts', title: account.name, render: extractAccountLeaf });
   });
-
   columns.push({ data: '_id', render: Render.buttonEdit });
   columns.push({ data: '_id', render: Render.buttonDelete });
 

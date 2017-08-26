@@ -54,6 +54,14 @@
          <label for="tab2">{{_ 'Reports'}}</label>
          <div id="tab-content2" class="content">
 
+           {{> Sumif_table dataAlbetetekElszamolasa}}
+
+           <div class="row">
+             <!--div class="col-xs-12">
+               {{> ReactiveDatatable tableData=reportsTableDataFn options=reportsOptionsFn }}
+             </div-->
+             <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+           </div>
          </div>
        </li>
        <!-- 2nd tab end -->

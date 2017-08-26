@@ -1,0 +1,44 @@
+<template name="Sumif_table">
+  <div class="row">
+    <div class="col-xs-12 text-center">
+      <h4>{{this.name}}</h4>
+      <hr/>
+    </div>
+    <table class="table table-bordered table-condensed">
+      <thead>
+        <tr>
+          <td>{{timestamp}}</td>
+          {{#each colElem in colElems}}
+          {{#each colElem2 in colElems2}}
+            <td>{{colElem}}</td>
+          {{/each}}
+          {{/each}}
+        </tr>
+        <tr>
+          <td>{{timestamp}}</td>
+          {{#each colElem in colElems}}
+          {{#each colElem2 in colElems2}}
+            <td>{{_ colElem2}}</td>
+          {{/each}}
+          {{/each}}
+        </tr>
+      </thead>
+      <tbody>
+      {{#each rowElem in rowElems}}
+      {{#let rowindex=@index}}
+        <tr class="table-row">
+          <td>{{rowElem}}</td>
+          {{#each colElem in colElems}}
+          {{#each colElem2 in colElems2}}
+          {{#let colindex=@index}}
+            <td>{{sumif rowElem colElem colElem2}}</td>
+          {{/let}}
+          {{/each}}
+          {{/each}}
+        </tr>
+      {{/let}}
+      {{/each}}
+      </tbody>
+    </table>
+  </div>
+</template>

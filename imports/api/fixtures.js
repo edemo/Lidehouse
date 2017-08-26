@@ -501,7 +501,7 @@ export function insertDemoFixture() {
 
   // ===== Payments =====
 
-    // === Nyito ===
+    // === Opening ===
 
   Payments.insert({
     communityId: demoCommunityId,
@@ -592,7 +592,7 @@ export function insertDemoFixture() {
     Payments.insert({
       communityId: demoCommunityId,
       orient: 'bill',
-      date: new Date(2017, i, 1),
+      date: new Date(2017, i, 10),
       amount: 6500,
       accounts: {
         'Befizetés nem': 'Közös költség',

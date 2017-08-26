@@ -67,16 +67,19 @@ PayAccounts.schema = new SimpleSchema({
 
 PayAccounts.helpers({
   init() {
-    if (!this.leafs) {
-      const leafs = [];
+    if (!this.leafNames) {
+      const leafNames = [];
       this.children.forEach((c) => {
         c.children.forEach((leaf) => {
-          leafs.push(PayAccounts.leafNameDisplay(leaf.name));
+          leafNames.push(leaf.name);
         });
       });
-      this.leafs = leafs;
+      this.leafNames = leafNames;
     }
     return this;
+  },
+  leafDisplays() {
+    return this.init().leafNames.map(leafName => PayAccounts.leafDisplay(leafName));
   },
 });
 
@@ -85,8 +88,8 @@ PayAccounts.leafIsParcel = function leafIsParcel(name) {
   return number;
 };
 
-PayAccounts.leafNameDisplay = function leafNameDisplay(name) {
-  if (this.leafIsParcel(name)) return `${name}. ${__('parcel')}`;
+PayAccounts.leafDisplay = function leafDisplay(name) {
+  if (this.leafIsParcel(name)) return `${name}.${__('parcel')}`;
   return name;
 };
 

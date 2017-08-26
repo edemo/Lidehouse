@@ -343,9 +343,9 @@
   "physical": "Számla fiók",
   "virtual": "Fizetési nem",
   "locator": "Fizetési hely",
-  "plan": "tervezet",
+  "plan": "terv",
   "bill": "előírt",
-  "done": "rendezett",
+  "done": "megtörtént",
 
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",
