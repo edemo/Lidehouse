@@ -1,7 +1,9 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { PayAccounts } from '/imports/api/payments/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { remove as removePayment } from '/imports/api/payments/methods.js';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
@@ -118,11 +120,13 @@ Template.Finances.helpers({
     const communityId = Session.get('activeCommunityId');
     const locator = PayAccounts.findOne({ communityId, name: 'Fizetési hely' });
     const befnem = PayAccounts.findOne({ communityId, name: 'Befizetés nem' });
+    const myParcels = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
+
     return {
-      name: `Albetéteim Elszámolása (${year})`,
-      filter: { year, 'accounts.Fizetési hely': '4' },
+      name: `Albetétem Elszámolása (${year})`,
+      filter: { year },
       rows: [
-        { field: 'accounts.Fizetési hely', values: locator.init().leafNames },
+        { field: 'accounts.Fizetési hely', values: myParcels },
         { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], total: year },
       ],
       cols: [
