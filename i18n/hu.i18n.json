@@ -346,6 +346,7 @@
   "plan": "terv",
   "bill": "előírt",
   "done": "fizetett",
+  "month": "hó",
 
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",

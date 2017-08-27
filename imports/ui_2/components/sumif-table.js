@@ -1,12 +1,13 @@
 import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
+import { PayAccounts } from '/imports/api/payments/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
 import { __ } from '/imports/localization/i18n.js';
 import { _ } from 'meteor/underscore';
 
 import './sumif-table.html';
 
-export function descartesProductWith(vectorArray, elemArray) {
+function descartesProductWith(vectorArray, elemArray) {
   const result = [];
   vectorArray.forEach((vector) => {
     elemArray.forEach((elem) => {
@@ -57,11 +58,16 @@ Template.Sumif_table.helpers({
   displayHeaderCell(vector, index, dim) {
     let display = vector[index];
     let classValue = 'header';
+    const rowDef = this[dim][index];
     if (display === 'total') {
-      display = this[dim][index].total;
+      display = rowDef.total;
       classValue += ' total';
     } else {
-      display = __(display);
+      switch (rowDef.field.split('.')[0]) {
+        case 'month': display += `. ${__('month')}`; break;
+        case 'accounts': display = PayAccounts.leafDisplay(display); break;
+        default: display = __(display);
+      }
     }
     return `<td class="${classValue}">${display}</td>`;
   },
