@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import './sumif-table.html';
 
-export function descartesProductOfTwo(vectorArray, elemArray) {
+export function descartesProductWith(vectorArray, elemArray) {
   const result = [];
   vectorArray.forEach((vector) => {
     elemArray.forEach((elem) => {
@@ -18,7 +18,7 @@ export function descartesProductOfTwo(vectorArray, elemArray) {
 export function descartesProduct(arrayOfArrays) {
   let result = [[]];
   arrayOfArrays.forEach((array) => {
-    result = descartesProductOfTwo(result, array);
+    result = descartesProductWith(result, array);
   });
   return result;
 }
@@ -30,8 +30,6 @@ function testDescartes() {
   const descartes = descartesProduct([array1, array2, array3]);
   const result = [['1', 'x', 'a'], ['1', 'x', 'b'], ['1', 'x', 'c'],
                   ['2', 'x', 'a'], ['2', 'x', 'b'], ['2', 'x', 'c']];
-  console.log(descartes);
-  console.log(result);
 }
 
 testDescartes();

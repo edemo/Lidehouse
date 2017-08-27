@@ -60,29 +60,52 @@ Template.Finances.helpers({
     }
     return getOptions;
   },
-  reportsTableDataFn() {
-    function getTableData() {
-      const communityId = Session.get('activeCommunityId');
-      return Payments.find({ communityId }).fetch();
-    }
-    return getTableData;
+  dataEgyenlegek() {
+    const communityId = Session.get('activeCommunityId');
+    const accountLots = PayAccounts.findOne({ communityId, name: 'Számla fiók' });
+    return {
+      name: 'Egyenlegek',
+      filter: { phase: 'done' },
+      rows: [
+        { field: 'accounts.Számla fiók', values: accountLots.init().leafNames },
+      ],
+      cols: [],
+    };
   },
-  reportsOptionsFn() {
-    function getOptions() {
-      return {
-        columns: reportColumns(),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-      };
-    }
-    return getOptions;
+  dataEvesBevetelek() {
+    const communityId = Session.get('activeCommunityId');
+    const befnem = PayAccounts.findOne({ communityId, name: 'Befizetés nem' });
+    return {
+      name: 'Éves bevételek',
+      rows: [
+        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
+      ],
+      cols: [
+        { field: 'year', values: [2016, 2017] },
+        { field: 'phase', values: ['bill', 'done'] },
+      ],
+    };
+  },
+  dataHaviBevetelek(year) {
+    const communityId = Session.get('activeCommunityId');
+    const befnem = PayAccounts.findOne({ communityId, name: 'Befizetés nem' });
+    return {
+      name: `Havi bevételek (${year})`,
+      filter: { year, phase: 'done' },
+      rows: [
+        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
+      ],
+      cols: [
+        { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], sum: year },
+      ],
+    };
   },
   dataAlbetetekSzamlai(year) {
     const communityId = Session.get('activeCommunityId');
     const locator = PayAccounts.findOne({ communityId, name: 'Fizetési hely' });
     const befnem = PayAccounts.findOne({ communityId, name: 'Befizetés nem' });
     return {
-      name: 'Albetetek Szamlai',
+      name: `Albetétek Számlái (${year})`,
       filter: { year },
       rows: [
         { field: 'accounts.Fizetési hely', values: locator.init().leafNames },
@@ -98,7 +121,7 @@ Template.Finances.helpers({
     const locator = PayAccounts.findOne({ communityId, name: 'Fizetési hely' });
     const befnem = PayAccounts.findOne({ communityId, name: 'Befizetés nem' });
     return {
-      name: 'Albetetem Elszamolasa',
+      name: `Albetéteim Elszámolása (${year})`,
       filter: { year, 'accounts.Fizetési hely': '4' },
       rows: [
         { field: 'accounts.Fizetési hely', values: locator.init().leafNames },
@@ -108,6 +131,18 @@ Template.Finances.helpers({
         { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
         { field: 'phase', values: ['bill', 'done'] },
       ],
+    };
+  },
+  dataNyito() {
+    const communityId = Session.get('activeCommunityId');
+    const accountLots = PayAccounts.findOne({ communityId, name: 'Számla fiók' });
+    return {
+      name: 'Nyitó',
+      filter: { phase: 'done', ref: 'nyitó' },
+      rows: [
+        { field: 'accounts.Számla fiók', values: accountLots.init().leafNames },
+      ],
+      cols: [],
     };
   },
 });
