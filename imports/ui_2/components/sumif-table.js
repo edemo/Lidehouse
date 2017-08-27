@@ -1,22 +1,11 @@
 import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { PayAccounts } from '/imports/api/payments/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
-import { remove as removePayment } from '/imports/api/payments/methods.js';
-import { Session } from 'meteor/session';
-import { TAPi18n } from 'meteor/tap:i18n';
-import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { paymentColumns, payaccountColumns } from '/imports/api/payments/tables.js';
-import { reportColumns } from '/imports/api/payments/reports.js';
-import { AutoForm } from 'meteor/aldeed:autoform';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { _ } from 'meteor/underscore';
+
 import './sumif-table.html';
 
 Template.Sumif_table.onCreated(function financesOnCreated() {
-  const communityId = Session.get('activeCommunityId');
-  this.data.locator = PayAccounts.findOne({ communityId, name: 'Fizetési hely' });
-  this.data.befnem = PayAccounts.findOne({ communityId, name: 'Befizetés nem' });
 });
 
 Template.Sumif_table.helpers({
@@ -24,25 +13,24 @@ Template.Sumif_table.helpers({
     return moment().format('YYYY.MM.DD');
   },
   rowElems() {
-    return this.locator.init().leafNames;
+    return this.rows[0].values;
   },
   rowElems2() {
-    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    return this.rows[1].values;
   },
   colElems() {
-    return this.befnem.init().leafNames;
+    return this.cols[0].values;
   },
   colElems2() {
-    return ['bill', 'done'];
+    return this.cols[1].values;
   },
   sumif(rowElem, rowElem2, colElem, colElem2) {
-//    return rowElem + ',' + colElem;
     let amount = 0;
-    const query = {};
-    const rowKey = 'accounts.' + this.locator.name;
-    const rowKey2 = 'month';
-    const colKey = 'accounts.' + this.befnem.name;
-    const colKey2 = 'orient';
+    const query = this.filter || {};
+    const rowKey = this.rows[0].field;
+    const rowKey2 = this.rows[1].field;
+    const colKey = this.cols[0].field;
+    const colKey2 = this.cols[1].field;
     query[rowKey] = rowElem;
     query[rowKey2] = rowElem2;
     query[colKey] = colElem;

@@ -78,19 +78,37 @@ Template.Finances.helpers({
     return getOptions;
   },
   dataAlbetetekSzamlai() {
+    const communityId = Session.get('activeCommunityId');
+    const locator = PayAccounts.findOne({ communityId, name: 'Fizetési hely' });
+    const befnem = PayAccounts.findOne({ communityId, name: 'Befizetés nem' });
     return {
       name: 'Albetetek Szamlai',
-      filter: { orient: ['bill', 'done'], year: 2017 },
-      rows: ['accounts.Fizetési hely'],
-      columns: ['accounts.Befizetés nem', 'orient'],
+      filter: { year: 2017 },
+      rows: [
+        { field: 'accounts.Fizetési hely', values: locator.init().leafNames },
+        { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+      ],
+      cols: [
+        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
+        { field: 'orient', values: ['bill', 'done'] },
+      ],
     };
   },
   dataAlbetetemElszamolasa() {
+    const communityId = Session.get('activeCommunityId');
+    const locator = PayAccounts.findOne({ communityId, name: 'Fizetési hely' });
+    const befnem = PayAccounts.findOne({ communityId, name: 'Befizetés nem' });
     return {
       name: 'Albetetem Elszamolasa',
-      filter: { orient: ['bill', 'done'], year: 2017, 'accounts.Fizetési hely': '4' },
-      rows: ['accounts.Fizetési hely', 'month'],
-      columns: ['accounts.Befizetés nem', 'orient'],
+      filter: { year: 2017, 'accounts.Fizetési hely': '4' },
+      rows: [
+        { field: 'accounts.Fizetési hely', values: locator.init().leafNames },
+        { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+      ],
+      cols: [
+        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
+        { field: 'orient', values: ['bill', 'done'] },
+      ],
     };
   },
 });

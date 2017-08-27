@@ -15,7 +15,7 @@ Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   orient: { type: String, allowedValues: Payments.orientValues, autoform: autoformOptions(Payments.orientValues) },
   date: { type: Date },
-  year: { type: Number, decimal: true, autoValue() { return this.field('date').value.getYear(); }, optional: true },
+  year: { type: Number, decimal: true, autoValue() { return this.field('date').value.getFullYear(); }, optional: true },
   month: { type: Number, decimal: true, autoValue() { return this.field('date').value.getMonth(); }, optional: true },
   amount: { type: Number, decimal: true },
   ref: { type: String, max: 100, optional: true },

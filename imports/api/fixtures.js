@@ -588,7 +588,7 @@ export function insertDemoFixture() {
 
     // === Eloirasok ===
 
-  for (let i = 0; i < 12; ++i) {
+  for (let i = 1; i <= 12; ++i) {
     Payments.insert({
       communityId: demoCommunityId,
       orient: 'bill',
