@@ -13,7 +13,7 @@
               <td></td>
           {{/each}}
           {{#each colVector in (descartesValues cols)}}
-              <td>{{displayHeader colVector index 'cols'}}</td>
+              {{{displayHeaderCell colVector index 'cols'}}}
           {{/each}}
         </tr>
         {{/let}}
@@ -24,11 +24,11 @@
         <tr class="table-row">
           {{#each row in rows}}
           {{#let index=@index}}
-            <td>{{displayHeader rowVector index 'rows'}}</td>
+            {{{displayHeaderCell rowVector index 'rows'}}}
           {{/let}}
           {{/each}}
           {{#each colVector in (descartesValues cols)}}
-            <td>{{displayCell rowVector colVector}}</td>
+            {{{displaySumifCell rowVector colVector}}}
           {{/each}}
         </tr>
         {{/each}}

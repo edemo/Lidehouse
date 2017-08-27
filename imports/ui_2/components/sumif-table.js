@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
 import { Payments } from '/imports/api/payments/payments.js';
+import { __ } from '/imports/localization/i18n.js';
 import { _ } from 'meteor/underscore';
 
 import './sumif-table.html';
@@ -53,29 +54,39 @@ Template.Sumif_table.helpers({
   descartesValues(rows) {
     return descartesProduct(rows.map(row => (row.total ? ['total'] : []).concat(row.values)));
   },
-  displayHeader(vector, index, dim) {
+  displayHeaderCell(vector, index, dim) {
     let display = vector[index];
+    let classValue = 'header';
     if (display === 'total') {
       display = this[dim][index].total;
-//      display += ' class="bold"';
+      classValue += ' total';
+    } else {
+      display = __(display);
     }
-    return display;
+    return `<td class="${classValue}">${display}</td>`;
   },
-  displayCell(rowVector, colVector) {
+  displaySumifCell(rowVector, colVector) {
     let amount = 0;
+    let classValue = '';
     const query = _.extend({}, this.filter);
     rowVector.forEach((elem, index) => {
-      if (elem === 'total') return;
+      if (elem === 'total') {
+        classValue += ' total';
+        return;
+      }
       const rowKey = this.rows[index].field;
       query[rowKey] = elem;
     });
     colVector.forEach((elem, index) => {
-      if (elem === 'total') return;
+      if (elem === 'total') {
+        classValue += ' total';
+        return;
+      }
       const colKey = this.cols[index].field;
       query[colKey] = elem;
     });
     const payments = Payments.find(query);
     payments.forEach(pay => amount += pay.amount);
-    return amount;
+    return `<td class="${classValue}">${amount}</td>`;
   },
 });
