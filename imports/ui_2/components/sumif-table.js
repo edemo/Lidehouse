@@ -41,9 +41,6 @@ Template.Sumif_table.helpers({
   timestamp() {
     return moment().format('YYYY.MM.DD');
   },
-  elemOfArray(array, index) {
-    return array[index];
-  },
   /*
   descartesFields(rows) {
     return descartesProduct(rows.map((row) => {
@@ -56,7 +53,15 @@ Template.Sumif_table.helpers({
   descartesValues(rows) {
     return descartesProduct(rows.map(row => (row.total ? ['total'] : []).concat(row.values)));
   },
-  sumif(rowVector, colVector) {
+  displayHeader(vector, index, dim) {
+    let display = vector[index];
+    if (display === 'total') {
+      display = this[dim][index].total;
+//      display += ' class="bold"';
+    }
+    return display;
+  },
+  displayCell(rowVector, colVector) {
     let amount = 0;
     const query = _.extend({}, this.filter);
     rowVector.forEach((elem, index) => {
