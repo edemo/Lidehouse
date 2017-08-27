@@ -54,16 +54,18 @@ Template.Sumif_table.helpers({
     );
   },*/
   descartesValues(rows) {
-    return descartesProduct(rows.map(row => row.values));
+    return descartesProduct(rows.map(row => (row.total ? ['total'] : []).concat(row.values)));
   },
   sumif(rowVector, colVector) {
     let amount = 0;
-    const query = this.filter || {};
+    const query = _.extend({}, this.filter);
     rowVector.forEach((elem, index) => {
+      if (elem === 'total') return;
       const rowKey = this.rows[index].field;
       query[rowKey] = elem;
     });
     colVector.forEach((elem, index) => {
+      if (elem === 'total') return;
       const colKey = this.cols[index].field;
       query[colKey] = elem;
     });

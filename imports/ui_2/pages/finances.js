@@ -5,9 +5,7 @@ import { Payments } from '/imports/api/payments/payments.js';
 import { remove as removePayment } from '/imports/api/payments/methods.js';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
-import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { paymentColumns, payaccountColumns } from '/imports/api/payments/tables.js';
-import { reportColumns } from '/imports/api/payments/reports.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/confirmation.js';
@@ -78,7 +76,7 @@ Template.Finances.helpers({
     return {
       name: 'Éves bevételek',
       rows: [
-        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
+        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames, total: 'Bevételek' },
       ],
       cols: [
         { field: 'year', values: [2016, 2017] },
@@ -93,10 +91,10 @@ Template.Finances.helpers({
       name: `Havi bevételek (${year})`,
       filter: { year, phase: 'done' },
       rows: [
-        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
+        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames, total: 'Bevételek' },
       ],
       cols: [
-        { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], sum: year },
+        { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], total: year },
       ],
     };
   },
@@ -111,7 +109,7 @@ Template.Finances.helpers({
         { field: 'accounts.Fizetési hely', values: locator.init().leafNames },
       ],
       cols: [
-        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
+        { field: 'accounts.Befizetés nem', values: befnem.init().leafNames, total: 'Albetét folyószámla' },
         { field: 'phase', values: ['bill', 'done'] },
       ],
     };
@@ -125,7 +123,7 @@ Template.Finances.helpers({
       filter: { year, 'accounts.Fizetési hely': '4' },
       rows: [
         { field: 'accounts.Fizetési hely', values: locator.init().leafNames },
-        { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], sum: year },
+        { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], total: year },
       ],
       cols: [
         { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
