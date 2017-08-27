@@ -77,14 +77,22 @@ Template.Finances.helpers({
     }
     return getOptions;
   },
-  dataAlbetetekElszamolasa() {
+  dataAlbetetekSzamlai() {
     return {
-      name: 'Albetetek Elszamolasa',
-      filter: { orient: { not: 'plan' }, 'date.year': 2017 },
-      vgroup: ['accounts.Fizetési hely'],
-      hgroup: ['date.month', 'orient']
+      name: 'Albetetek Szamlai',
+      filter: { orient: ['bill', 'done'], year: 2017 },
+      rows: ['accounts.Fizetési hely'],
+      columns: ['accounts.Befizetés nem', 'orient'],
     };
-  }
+  },
+  dataAlbetetemElszamolasa() {
+    return {
+      name: 'Albetetem Elszamolasa',
+      filter: { orient: ['bill', 'done'], year: 2017, 'accounts.Fizetési hely': '4' },
+      rows: ['accounts.Fizetési hely', 'month'],
+      columns: ['accounts.Befizetés nem', 'orient'],
+    };
+  },
 });
 
 function newPaymentSchema() {

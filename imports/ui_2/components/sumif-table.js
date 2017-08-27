@@ -26,20 +26,25 @@ Template.Sumif_table.helpers({
   rowElems() {
     return this.locator.init().leafNames;
   },
+  rowElems2() {
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  },
   colElems() {
     return this.befnem.init().leafNames;
   },
   colElems2() {
     return ['bill', 'done'];
   },
-  sumif(rowElem, colElem, colElem2) {
+  sumif(rowElem, rowElem2, colElem, colElem2) {
 //    return rowElem + ',' + colElem;
     let amount = 0;
     const query = {};
     const rowKey = 'accounts.' + this.locator.name;
+    const rowKey2 = 'month';
     const colKey = 'accounts.' + this.befnem.name;
     const colKey2 = 'orient';
     query[rowKey] = rowElem;
+    query[rowKey2] = rowElem2;
     query[colKey] = colElem;
     query[colKey2] = colElem2;
     const payments = Payments.find(query);

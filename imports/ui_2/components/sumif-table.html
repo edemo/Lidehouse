@@ -8,6 +8,7 @@
       <thead>
         <tr>
           <td>{{timestamp}}</td>
+          <td>{{timestamp}}</td>
           {{#each colElem in colElems}}
           {{#each colElem2 in colElems2}}
             <td>{{colElem}}</td>
@@ -15,6 +16,7 @@
           {{/each}}
         </tr>
         <tr>
+          <td>{{timestamp}}</td>
           <td>{{timestamp}}</td>
           {{#each colElem in colElems}}
           {{#each colElem2 in colElems2}}
@@ -25,18 +27,17 @@
       </thead>
       <tbody>
       {{#each rowElem in rowElems}}
-      {{#let rowindex=@index}}
+      {{#each rowElem2 in rowElems2}}
         <tr class="table-row">
           <td>{{rowElem}}</td>
+          <td>{{rowElem2}}</td>
           {{#each colElem in colElems}}
           {{#each colElem2 in colElems2}}
-          {{#let colindex=@index}}
-            <td>{{sumif rowElem colElem colElem2}}</td>
-          {{/let}}
+            <td>{{sumif rowElem rowElem2 colElem colElem2}}</td>
           {{/each}}
           {{/each}}
         </tr>
-      {{/let}}
+      {{/each}}
       {{/each}}
       </tbody>
     </table>
