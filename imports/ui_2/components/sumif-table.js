@@ -5,6 +5,37 @@ import { _ } from 'meteor/underscore';
 
 import './sumif-table.html';
 
+export function descartesProductOfTwo(vectorArray, elemArray) {
+  const result = [];
+  vectorArray.forEach((vector) => {
+    elemArray.forEach((elem) => {
+      result.push(vector.concat(elem));
+    });
+  });
+  return result;
+}
+
+export function descartesProduct(arrayOfArrays) {
+  let result = [[]];
+  arrayOfArrays.forEach((array) => {
+    result = descartesProductOfTwo(result, array);
+  });
+  return result;
+}
+
+function testDescartes() {
+  const array1 = ['1', '2'];
+  const array2 = ['x'];
+  const array3 = ['a', 'b', 'c'];
+  const descartes = descartesProduct([array1, array2, array3]);
+  const result = [['1', 'x', 'a'], ['1', 'x', 'b'], ['1', 'x', 'c'],
+                  ['2', 'x', 'a'], ['2', 'x', 'b'], ['2', 'x', 'c']];
+  console.log(descartes);
+  console.log(result);
+}
+
+testDescartes();
+
 Template.Sumif_table.onCreated(function financesOnCreated() {
 });
 
@@ -12,29 +43,32 @@ Template.Sumif_table.helpers({
   timestamp() {
     return moment().format('YYYY.MM.DD');
   },
-  rowElems() {
-    return this.rows[0].values;
+  elemOfArray(array, index) {
+    return array[index];
   },
-  rowElems2() {
-    return this.rows[1].values;
+  /*
+  descartesFields(rows) {
+    return descartesProduct(rows.map((row) => {
+      const res = [];
+      row.values.forEach(v => res.push(row.field));
+      return res;
+    })
+    );
+  },*/
+  descartesValues(rows) {
+    return descartesProduct(rows.map(row => row.values));
   },
-  colElems() {
-    return this.cols[0].values;
-  },
-  colElems2() {
-    return this.cols[1].values;
-  },
-  sumif(rowElem, rowElem2, colElem, colElem2) {
+  sumif(rowVector, colVector) {
     let amount = 0;
     const query = this.filter || {};
-    const rowKey = this.rows[0].field;
-    const rowKey2 = this.rows[1].field;
-    const colKey = this.cols[0].field;
-    const colKey2 = this.cols[1].field;
-    query[rowKey] = rowElem;
-    query[rowKey2] = rowElem2;
-    query[colKey] = colElem;
-    query[colKey2] = colElem2;
+    rowVector.forEach((elem, index) => {
+      const rowKey = this.rows[index].field;
+      query[rowKey] = elem;
+    });
+    colVector.forEach((elem, index) => {
+      const colKey = this.cols[index].field;
+      query[colKey] = elem;
+    });
     const payments = Payments.find(query);
     payments.forEach(pay => amount += pay.amount);
     return amount;

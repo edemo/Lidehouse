@@ -6,39 +6,32 @@
     </div>
     <table class="table table-bordered table-condensed">
       <thead>
+        {{#each col in cols}}
+        {{#let index=@index}}
         <tr>
-          <td>{{timestamp}}</td>
-          <td></td>
-          {{#each colElem in colElems}}
-          {{#each colElem2 in colElems2}}
-            <td>{{colElem}}</td>
+          {{#each row in rows}}
+              <td></td>
           {{/each}}
+          {{#each colVector in (descartesValues cols)}}
+              <td>{{elemOfArray colVector index}}</td>
           {{/each}}
         </tr>
-        <tr>
-          <td></td>
-          <td></td>
-          {{#each colElem in colElems}}
-          {{#each colElem2 in colElems2}}
-            <td>{{_ colElem2}}</td>
-          {{/each}}
-          {{/each}}
-        </tr>
+        {{/let}}
+        {{/each}}
       </thead>
       <tbody>
-      {{#each rowElem in rowElems}}
-      {{#each rowElem2 in rowElems2}}
+        {{#each rowVector in (descartesValues rows)}}
         <tr class="table-row">
-          <td>{{rowElem}}</td>
-          <td>{{rowElem2}}</td>
-          {{#each colElem in colElems}}
-          {{#each colElem2 in colElems2}}
-            <td>{{sumif rowElem rowElem2 colElem colElem2}}</td>
+          {{#each row in rows}}
+          {{#let index=@index}}
+            <td>{{elemOfArray rowVector index}}</td>
+          {{/let}}
           {{/each}}
+          {{#each colVector in (descartesValues cols)}}
+            <td>{{sumif rowVector colVector}}</td>
           {{/each}}
         </tr>
-      {{/each}}
-      {{/each}}
+        {{/each}}
       </tbody>
     </table>
   </div>
