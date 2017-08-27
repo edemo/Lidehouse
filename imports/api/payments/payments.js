@@ -9,11 +9,11 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const Payments = new Mongo.Collection('payments');
 
-Payments.orientValues = ['plan', 'bill', 'done'];
+Payments.phaseValues = ['plan', 'bill', 'done'];
 
 Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  orient: { type: String, allowedValues: Payments.orientValues, autoform: autoformOptions(Payments.orientValues) },
+  phase: { type: String, allowedValues: Payments.phaseValues, autoform: autoformOptions(Payments.phaseValues) },
   date: { type: Date },
   year: { type: Number, decimal: true, autoValue() { return this.field('date').value.getFullYear(); }, optional: true },
   month: { type: Number, decimal: true, autoValue() { return this.field('date').value.getMonth(); }, optional: true },

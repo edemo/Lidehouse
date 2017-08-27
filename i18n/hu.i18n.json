@@ -163,8 +163,8 @@
     }
   },
   "schemaPayments": {
-    "orient": {
-      "label": "Orientáció"
+    "phase": {
+      "label": "Fázis"
       //"Tranzakció típusa"
     },
     "date": {
@@ -345,7 +345,7 @@
   "locator": "Fizetési hely",
   "plan": "terv",
   "bill": "előírt",
-  "done": "megtörtént",
+  "done": "fizetett",
 
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",

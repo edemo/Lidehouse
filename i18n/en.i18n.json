@@ -163,8 +163,8 @@
     }
   },
   "schemaPayments": {
-    "orient": {
-      "label": "Orientation"
+    "phase": {
+      "label": "Phase"
       //"Payment type"
     },
     "date": {

@@ -24,7 +24,7 @@ export function payaccountColumns() {
 export function paymentColumns(accounts) {
   const columns = [
     { data: 'date', title: __('schemaPayments.date.label'), render: Render.formatDate },
-    { data: 'orient', title: __('schemaPayments.orient.label'), render: Render.translate },
+    { data: 'phase', title: __('schemaPayments.phase.label'), render: Render.translate },
     { data: 'amount', title: __('schemaPayments.amount.label') },
     { data: 'ref', title: __('schemaPayments.ref.label') },
     { data: 'note', title: __('schemaPayments.note.label') },

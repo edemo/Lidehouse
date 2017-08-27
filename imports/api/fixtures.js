@@ -505,7 +505,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'done',
+    phase: 'done',
     date: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 100000,
@@ -516,7 +516,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'done',
+    phase: 'done',
     date: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 110000,
@@ -527,7 +527,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'done',
+    phase: 'done',
     date: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 120000,
@@ -540,7 +540,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'done',
+    phase: 'done',
     date: new Date('2017-06-01'),
     amount: 10000,
     accounts: {
@@ -552,7 +552,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'done',
+    phase: 'done',
     date: new Date('2017-06-02'),
     amount: 20000,
     accounts: {
@@ -564,7 +564,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'done',
+    phase: 'done',
     date: new Date('2017-06-03'),
     amount: 30000,
     accounts: {
@@ -576,7 +576,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'done',
+    phase: 'done',
     date: new Date('2017-06-04'),
     amount: 40000,
     accounts: {
@@ -591,7 +591,7 @@ export function insertDemoFixture() {
   for (let i = 1; i <= 12; ++i) {
     Payments.insert({
       communityId: demoCommunityId,
-      orient: 'bill',
+      phase: 'bill',
       date: new Date(2017, i, 10),
       amount: 6500,
       accounts: {
@@ -603,7 +603,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'bill',
+    phase: 'bill',
     date: new Date(2017, 7, 1),
     amount: 52000,
     accounts: {
@@ -616,7 +616,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'plan',
+    phase: 'plan',
     date: new Date('2017-01-01'),
     amount: 24000,
     accounts: {
@@ -626,7 +626,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    orient: 'plan',
+    phase: 'plan',
     date: new Date('2017-01-01'),
     amount: 415000,
     accounts: {

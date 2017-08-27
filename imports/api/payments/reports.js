@@ -8,7 +8,7 @@ export function reportColumns() {
 }
 
 
-// filter in: orient, eloirt, rendezett, out: terv
-// collate: orient
+// filter in: phase, eloirt, rendezett, out: terv
+// collate: phase
 // filter in: date 2017
 // collate: date

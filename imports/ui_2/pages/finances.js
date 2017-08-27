@@ -89,7 +89,7 @@ Template.Finances.helpers({
       ],
       cols: [
         { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
-        { field: 'orient', values: ['bill', 'done'] },
+        { field: 'phase', values: ['bill', 'done'] },
       ],
     };
   },
@@ -106,7 +106,7 @@ Template.Finances.helpers({
       ],
       cols: [
         { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
-        { field: 'orient', values: ['bill', 'done'] },
+        { field: 'phase', values: ['bill', 'done'] },
       ],
     };
   },
