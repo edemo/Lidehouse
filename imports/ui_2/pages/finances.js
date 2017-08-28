@@ -82,7 +82,7 @@ Template.Finances.helpers({
       ],
       cols: [
         { field: 'year', values: [2016, 2017] },
-        { field: 'phase', values: ['bill', 'done'] },
+        { field: 'phase', values: ['plan', 'done'] },
       ],
     };
   },
@@ -112,7 +112,7 @@ Template.Finances.helpers({
       ],
       cols: [
         { field: 'accounts.Befizetés nem', values: befnem.init().leafNames, total: 'Albetét folyószámla' },
-        { field: 'phase', values: ['bill', 'done'] },
+        { field: 'phase', values: ['plan', 'done'] },
       ],
     };
   },
@@ -131,7 +131,7 @@ Template.Finances.helpers({
       ],
       cols: [
         { field: 'accounts.Befizetés nem', values: befnem.init().leafNames },
-        { field: 'phase', values: ['bill', 'done'] },
+        { field: 'phase', values: ['plan', 'done'] },
       ],
     };
   },

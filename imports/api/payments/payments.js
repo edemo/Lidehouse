@@ -9,7 +9,7 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const Payments = new Mongo.Collection('payments');
 
-Payments.phaseValues = ['plan', 'bill', 'done'];
+Payments.phaseValues = ['plan', 'done'];
 
 Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },

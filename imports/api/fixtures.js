@@ -591,7 +591,7 @@ export function insertDemoFixture() {
   for (let i = 1; i <= 12; ++i) {
     Payments.insert({
       communityId: demoCommunityId,
-      phase: 'bill',
+      phase: 'plan',
       date: new Date(2017, i, 10),
       amount: 6500,
       accounts: {
@@ -603,7 +603,7 @@ export function insertDemoFixture() {
 
   Payments.insert({
     communityId: demoCommunityId,
-    phase: 'bill',
+    phase: 'plan',
     date: new Date(2017, 7, 1),
     amount: 52000,
     accounts: {

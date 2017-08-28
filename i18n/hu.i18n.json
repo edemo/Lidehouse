@@ -344,8 +344,7 @@
   "virtual": "Fizetési nem",
   "locator": "Fizetési hely",
   "plan": "terv",
-  "bill": "előírt",
-  "done": "fizetett",
+  "done": "tény",
   "month": "hó",
 
   // feedback
