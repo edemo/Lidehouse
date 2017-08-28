@@ -3,6 +3,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
+import { update as updateCommunity } from '/imports/api/communities/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -10,6 +11,7 @@ import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { PayAccounts } from '/imports/api/payments/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
+import { billParcels } from '/imports/api/payments/methods.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -76,7 +78,7 @@ export function insertDemoFixture() {
     number: 'P02',
     type: 'parking',
     lot: '29345/P/002',
-    size: 6,
+    area: 6,
   });
   dummyParcels[1] = Parcels.insert({
     communityId: demoCommunityId,
@@ -86,7 +88,7 @@ export function insertDemoFixture() {
     number: '12',
     type: 'flat',
     lot: '23456/A/114',
-    size: 65,
+    area: 65,
   });
   dummyParcels[2] = Parcels.insert({
     communityId: demoCommunityId,
@@ -96,7 +98,7 @@ export function insertDemoFixture() {
     number: '23',
     type: 'flat',
     lot: '23456/A/225',
-    size: 142,
+    area: 142,
   });
   dummyParcels[3] = Parcels.insert({
     communityId: demoCommunityId,
@@ -106,7 +108,7 @@ export function insertDemoFixture() {
     number: '34',
     type: 'flat',
     lot: '23456/A/336',
-    size: '98.4',
+    area: '98.4',
   });
   dummyParcels[4] = Parcels.insert({
     communityId: demoCommunityId,
@@ -116,7 +118,7 @@ export function insertDemoFixture() {
     number: '45',
     type: 'flat',
     lot: '23456/A/447',
-    size: 70,
+    area: 70,
   });
 
   // ===== Memberships =====
@@ -588,18 +590,19 @@ export function insertDemoFixture() {
 
     // === Eloirasok ===
 
-  for (let i = 1; i <= 12; ++i) {
-    Payments.insert({
-      communityId: demoCommunityId,
-      phase: 'plan',
-      date: new Date(2017, i, 10),
-      amount: 6500,
-      accounts: {
-        'Befizetés nem': 'Közös költség',
-        'Fizetési hely': '4',
-      },
-    });
-  }
+  const commonCosts = {
+    ccArea: 210,
+    ccVolume: 10,
+    ccHabitants: 0,
+  };
+  updateCommunity._execute(
+    { userId: dummyUsers[0] },
+    { _id: demoCommunityId, modifier: { $set: { finances: commonCosts } } }
+  );
+  billParcels._execute(
+    { userId: dummyUsers[0] },
+    { communityId: demoCommunityId },
+  );
 
   Payments.insert({
     communityId: demoCommunityId,

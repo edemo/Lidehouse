@@ -16,7 +16,7 @@ Payments.schema = new SimpleSchema({
   phase: { type: String, allowedValues: Payments.phaseValues, autoform: autoformOptions(Payments.phaseValues) },
   date: { type: Date },
   year: { type: Number, decimal: true, autoValue() { return this.field('date').value.getFullYear(); }, optional: true },
-  month: { type: Number, decimal: true, autoValue() { return this.field('date').value.getMonth(); }, optional: true },
+  month: { type: Number, decimal: true, autoValue() { return this.field('date').value.getMonth() + 1; }, optional: true },
   amount: { type: Number, decimal: true },
   ref: { type: String, max: 100, optional: true },
   note: { type: String, max: 100, optional: true },

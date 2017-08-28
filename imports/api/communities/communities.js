@@ -13,6 +13,7 @@ Communities.schema = new SimpleSchema([
   { image: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true } },
   comtype.profileSchema,
   { totalunits: { type: Number } },
+  { finances: { type: comtype.financesSchema, optional: true } },
 ]);
 
 Communities.attachSchema(Communities.schema);

@@ -50,6 +50,7 @@ const permissions = [
   { name: 'comments.update',      type: 'edit', roles: nobody, allowAuthor: true },
   { name: 'comments.remove',      type: 'edit', roles: ['moderator'], allowAuthor: true },
   { name: 'comments.listing',     type: 'edit', roles: exceptGuest },
+  { name: 'finances.view',        type: 'view', roles: exceptGuest },
   { name: 'payaccounts.insert',   type: 'edit', roles: ['accountant'] },
   { name: 'payaccounts.update',   type: 'edit', roles: ['accountant'] },
   { name: 'payaccounts.remove',   type: 'edit', roles: ['accountant'] },

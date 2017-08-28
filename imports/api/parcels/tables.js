@@ -7,7 +7,7 @@ export function parcelColumns() {
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'lot', title: __('schemaParcels.lot.label') },
-    { data: 'size', title: __('schemaParcels.size.label') },
+    { data: 'area', title: __('schemaParcels.area.label') },
     { data: 'share()', title: __('schemaParcels.units.label') },
     { data: 'ownerName()', title: __('owner') },
     { data: '_id', render: Render.buttonEdit },

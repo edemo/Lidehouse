@@ -340,6 +340,7 @@
   "Payaccounts": "Fizetési fiókok",
   "Payments": "Tranzakciók",
   "Reports": "Kimutatások",
+  "Common cost plan": "Előírás",
   "physical": "Számla fiók",
   "virtual": "Fizetési nem",
   "locator": "Fizetési hely",
@@ -416,6 +417,7 @@
   "update delegation successful": "Meghatalmazás módosítva",
   "revoke delegation successful": "Meghatalmazás visszavonva",
   "refuse delegation successful": "Meghatalmazás visszautasítva",
+  "bill parcels successful": "Közös költség terv kiróvva",
 
   "Are you sure you want to": "Biztos benne, hogy",
   "delete parcel": "törli az albetétet",
@@ -426,7 +428,9 @@
   "disable delegations": "visszautasítja a bejövő meghatalmazásokat",
   "revoke delegation": "visszavonja a meghatalmazást",
   "refuse delegation": "visszautasítja a meghatalmazást",
+  "bill parcels": "kírója a beállított közös költséget az összes albetétre",
 
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
-  "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást."
+  "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",
+  "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra."
 }

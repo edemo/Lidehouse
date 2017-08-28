@@ -35,7 +35,10 @@ Parcels.schema = new SimpleSchema({
   number: { type: String, optional: true },
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
   lot: { type: String, max: 100, optional: true },
-  size: { type: Number, decimal: true, optional: true },
+  // cost calculation purposes
+  area: { type: Number, decimal: true, optional: true },
+  volume: { type: Number, decimal: true, optional: true },
+  habitants: { type: Number, decimal: true, optional: true },
 });
 
 Parcels.helpers({

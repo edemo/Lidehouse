@@ -1,10 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Communities } from '/imports/api/communities/communities.js';
 import { PayAccounts } from '/imports/api/payments/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { remove as removePayment } from '/imports/api/payments/methods.js';
+import { remove as removePayment, billParcels } from '/imports/api/payments/methods.js';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { paymentColumns, payaccountColumns } from '/imports/api/payments/tables.js';
@@ -147,6 +148,20 @@ Template.Finances.helpers({
       cols: [],
     };
   },
+  afCommunityFinancesData() {
+    const communityId = Session.get('activeCommunityId');
+    const financesOnlySchema = Communities.simpleSchema().pick(['finances', 'finances.ccArea', 'finances.ccVolume', 'finances.ccHabitants']);
+    return {
+      id: 'af.communities.finances',
+      collection: Communities,
+      schema: financesOnlySchema,
+      doc: Communities.findOne(communityId),
+      type: 'method-update',
+      meteormethod: 'communities.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    };
+  },
 });
 
 function newPaymentSchema() {
@@ -227,6 +242,13 @@ Template.Finances.events({
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removePayment, { _id: id }, {
       action: 'delete payment',
+    });
+  },
+  'click #tab-content3 .js-bill'(event) {
+    const communityId = Session.get('activeCommunityId');
+    Modal.confirmAndCall(billParcels, { communityId }, {
+      action: 'bill parcels',
+      message: 'This will bill all parcels',
     });
   },
 });
