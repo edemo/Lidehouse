@@ -31,3 +31,38 @@
     letter-spacing: 1.5px;
   }
 }
+
+// vertical progressbar
+.progressBar-v (@index) when (@index > -1){
+	.progressBar-v{
+		.progressLine-v[data-value="@{index}"]{
+			height: @index * 1%;
+			min-height: 2%;
+		}
+	}
+	.progressBar-v (@index - 1);
+}
+.progressBar-v(0){};
+.progressBar-v (@progressbar);
+
+.progressBar-v{
+  height: 100%;
+  width: 20px;
+  background-color: lighten(@color_progress, 30%);
+	border-radius: 3px;
+  .progressLine-v{
+		border-radius: inherit;
+		font-size: .9em;
+    padding-top: 5px;
+    align: center;
+    width:100%;
+    position:relative;
+		// background-color: @progressbar-bcg;
+		background-color: @pip-usericon-bcg;
+    padding: 0px;
+    line-height: 1;
+    text-align: center;
+    color: @progressbar-color;
+    font-weight: bold;
+  }
+}

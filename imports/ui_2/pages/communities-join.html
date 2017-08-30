@@ -1,6 +1,16 @@
 <template name="Communities_join">
   <div class="content-scrollable page-content">
-    <h1 class="page-title">{{_ 'Join a community'}}</h1>
-    {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+    <div class="white-box padded">
+      <div class="row">
+        <div class="col-xs-12 text-center">
+          <h1 class="page-title">{{_ 'Join a community'}}</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 table table-responsive">
+          {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
