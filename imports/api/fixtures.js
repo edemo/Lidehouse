@@ -271,6 +271,18 @@ export function insertDemoFixture() {
           'Ezek közül lehet választani és a kéményseprőkkel egyeztetni a 06(20)2569875 telefonszámon hogy kinek melyik felel meg.',
   });
 
+  Topics.insert({
+    communityId: demoCommunityId,
+    userId: dummyUsers[0],
+    category: 'news',
+    title: 'Hasznos informáciok',
+    text: 'Orvosi rendelő: <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +36 (1) 345-562 <br>' +
+          'Polizei: <small class="text-alt">07</small> <br>' +
+          'Közös képviselő: <small class="text-alt"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +3630 6545621' +
+          ' / <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> baltazar.imre@demo.com</small>',
+    sticky: true,
+  });
+
   // ===== Votes =====
 
   const ownerships = Memberships.find({ role: 'owner' }).fetch();

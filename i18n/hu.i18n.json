@@ -51,6 +51,9 @@
     "text": {
       "label": "Részletek",
       "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+    },
+    "sticky" : {
+      "label": "Kiemelt"
     }
   },
   "schemaVotings": {

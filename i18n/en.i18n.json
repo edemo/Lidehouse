@@ -51,6 +51,9 @@
     "text": {
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
+    },
+    "sticky" : {
+      "label": "Sticky"
     }
   },
   "schemaVotings": {

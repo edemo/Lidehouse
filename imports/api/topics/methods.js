@@ -48,6 +48,7 @@ export const update = new ValidatedMethod({
 
     // TODO: how to check that only allowed fields are modified
 
+    // TODO: probably not needed, since the update will throw exception anyways, is that understandable on Client?
     const topic = Topics.findOne(_id);
     if (!topic) {
       throw new Meteor.Error('err_invalidId', 'No such object',
@@ -65,6 +66,24 @@ export const update = new ValidatedMethod({
 
 
     Topics.update({ _id }, modifier);
+  },
+});
+
+export const makeSticky = new ValidatedMethod({
+  name: 'topics.makeSticky',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    value: { type: Boolean },
+  }).validator(),
+
+  run({ _id, value }) {
+    const user = Meteor.users.find(this.userId);
+    if (!user.hasPermission('topics.makeSticky')) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: topics.makeSticky, userId: ${this.userId}, topicId: ${_id}`);
+    }
+
+    Topics.update({ _id }, { $set: { sticky: value } });
   },
 });
 
