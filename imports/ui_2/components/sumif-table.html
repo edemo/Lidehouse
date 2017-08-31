@@ -4,35 +4,37 @@
       <h3>{{this.name}}</h3>
       <hr/>
     </div>
-    <table class="table table-bordered table-condensed">
-      <thead>
-        {{#each col in cols}}
-        {{#let index=@index}}
-        <tr>
-          {{#each row in rows}}
-              <td></td>
-          {{/each}}
-          {{#each colVector in (descartesValues cols)}}
-              {{{displayHeaderCell colVector index 'cols'}}}
-          {{/each}}
-        </tr>
-        {{/let}}
-        {{/each}}
-      </thead>
-      <tbody>
-        {{#each rowVector in (descartesValues rows)}}
-        <tr class="table-row">
-          {{#each row in rows}}
+    <!--div class="table-responsive"-->
+      <table class="table table-bordered table-condensed">
+        <thead>
+          {{#each col in cols}}
           {{#let index=@index}}
-            {{{displayHeaderCell rowVector index 'rows'}}}
+          <tr>
+            {{#each row in rows}}
+                <td></td>
+            {{/each}}
+            {{#each colVector in (descartesValues cols)}}
+                {{{displayHeaderCell colVector index 'cols'}}}
+            {{/each}}
+          </tr>
           {{/let}}
           {{/each}}
-          {{#each colVector in (descartesValues cols)}}
-            {{{displaySumifCell rowVector colVector}}}
+        </thead>
+        <tbody>
+          {{#each rowVector in (descartesValues rows)}}
+          <tr class="table-row">
+            {{#each row in rows}}
+            {{#let index=@index}}
+              {{{displayHeaderCell rowVector index 'rows'}}}
+            {{/let}}
+            {{/each}}
+            {{#each colVector in (descartesValues cols)}}
+              {{{displaySumifCell rowVector colVector}}}
+            {{/each}}
+          </tr>
           {{/each}}
-        </tr>
-        {{/each}}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    <!--/div-->
   </div>
 </template>
