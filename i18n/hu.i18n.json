@@ -396,6 +396,8 @@
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
   "NoPermissionToUpload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közösképviselő segítségét.",
 
+  "Not implemented yet": "Ez a funkció még nem elérhető",
+
   // Notifications
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
   "Created community": "Közösség sikeresen létrehozva.",
@@ -411,6 +413,7 @@
   "insert roleship successful": "Szerep kiadva",
   "update roleship successful": "Szerep módosítva",
   "delete roleship successful": "Szerep visszavonva",
+  "delete topic successful": "Bejegyzés törölve",
   "insert ticket successful": "Hibajegy rögzítésre került",
   "update ticket successful": "Hibajegy módosítva",
   "delete ticket successful": "Hibajegy törölve",
@@ -426,6 +429,7 @@
   "delete parcel": "törli az albetétet",
   "delete ownership": "megszünteti a tulajdonviszonyt",
   "delete roleship": "visszavonja a kiadott szerepet",
+  "delete topic": "törli a bejegyzést",
   "delete ticket": "törli a hibajegyet",
   "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
   "disable delegations": "visszautasítja a bejövő meghatalmazásokat",
@@ -433,6 +437,7 @@
   "refuse delegation": "visszautasítja a meghatalmazást",
   "bill parcels": "kírója a beállított közös költséget az összes albetétre",
 
+  "It will disappear forever": "A bejegyzés végleg törlödni fog",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
   "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",
   "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra."

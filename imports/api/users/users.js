@@ -3,7 +3,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import 'meteor/accounts-base';
 import { Fraction } from 'fractional';
-
+import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -103,8 +103,10 @@ Meteor.users.helpers({
     Memberships.find({ userId: this._id, communityId, role: 'owner' }).map(m => sum += m.votingUnits());
     return sum;
   },
-  hasPermission(permissionName, communityId) {
+  hasPermission(permissionName, communityId, object) {
     const permission = Permissions.findOne({ _id: permissionName });
+    debugAssert(permission);
+    if (permission.allowAuthor && object && (object.userId === this._id)) return true;
     const rolesWithThePermission = permission.roles;
     const userHasTheseRoles = this.roles(communityId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));

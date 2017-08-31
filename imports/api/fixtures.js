@@ -37,6 +37,8 @@ export function insertDemoFixture() {
 
   // Someone can log in as the demo user, if he doesn't want to register
   const demoUserId = Accounts.createUser({ email: 'demo.user@demo.com', password: 'password' });
+  const demoAdminId = Accounts.createUser({ email: 'demo.admin@demo.com', password: 'password' });
+  const demoManagerId = Accounts.createUser({ email: 'demo.kk@demo.com', password: 'password' });
 
   const dummyUsers = [];
   dummyUsers[0] = Meteor.users.insert({
@@ -131,6 +133,16 @@ export function insertDemoFixture() {
     ownership: {
       share: new Fraction(1, 1),
     },
+  });
+  Memberships.insert({
+    communityId: demoCommunityId,
+    userId: demoManagerId,
+    role: 'manager',
+  });
+  Memberships.insert({
+    communityId: demoCommunityId,
+    userId: demoAdminId,
+    role: 'admin',
   });
   Memberships.insert({
     communityId: demoCommunityId,
@@ -304,7 +316,7 @@ export function insertDemoFixture() {
   castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic1, castedVote: [2] });  // no
   castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic1, castedVote: [0] });  // abstain
 
-  closeVote._execute({ userId: demoUserId }, { topicId: voteTopic1 }); // This vote is already closed
+  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic1 }); // This vote is already closed
 
   const voteTopic2 = Topics.insert({
     communityId: demoCommunityId,

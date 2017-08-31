@@ -43,10 +43,6 @@ Topics.helpers({
   createdBy() {
     return Meteor.users.findOne(this.userId);
   },
-  editableBy(userId) {
-    if (!this.userId) { return true; }
-    return this.userId === userId;
-  },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
