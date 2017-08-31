@@ -450,7 +450,7 @@ export function insertDemoFixture() {
 
   const locator = PayAccounts.update({
     communityId: demoCommunityId,
-    name: 'Hely',
+    name: 'Helyek',
   },
   {
     $set: {
@@ -475,7 +475,7 @@ export function insertDemoFixture() {
       },
     ] },
     },
-    { upsert: true }
+    { upsert: false }
   );
 
   // ===== Payments =====

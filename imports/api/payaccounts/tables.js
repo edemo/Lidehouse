@@ -3,6 +3,11 @@ import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 
 export function payaccountColumns() {
+  const displayMids = function displayMids(cellData, renderType, currentRow) {
+    let result = '';
+    cellData.forEach(c => result += c.name + ', ');
+    return result;
+  };
   const displayLeafs = function displayLeafs(cellData, renderType, currentRow) {
     let result = '';
     cellData.forEach(c =>
@@ -15,6 +20,7 @@ export function payaccountColumns() {
   return [
     { data: 'name', title: __('schemaPayAccounts.name.label') },
 //    { data: 'type', title: __('schemaPayAccounts.type.label'), render: Render.translate },
+    { data: 'children', title: __('schemaPayAccounts.children.label'), render: displayMids },
     { data: 'children', title: __('schemaPayAccounts.children.$.children.label'), render: displayLeafs },
     { data: '_id', render: Render.buttonEdit },
     { data: '_id', render: Render.buttonDelete },
