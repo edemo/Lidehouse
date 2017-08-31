@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { PayAccounts, choosePayAccount } from '/imports/api/payments/payaccounts.js';
+import { PayAccounts, choosePayAccount } from '/imports/api/payaccounts/payaccounts.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const Payments = new Mongo.Collection('payments');

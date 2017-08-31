@@ -58,8 +58,8 @@ export const billParcels = new ValidatedMethod({
           phase: 'plan',
           date: new Date(2017, i, 10),
           accounts: {
-            'Befizetés nem': 'Közös költség',
-            'Fizetési hely': parcel.serial.toString(),
+            'Bevételek': 'Közös költség',
+            'Hely': parcel.serial.toString(),
           },
         };
         const doc = _.extend({}, query, { amount: commonCost });

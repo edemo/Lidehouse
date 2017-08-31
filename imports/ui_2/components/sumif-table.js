@@ -1,6 +1,6 @@
 import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
-import { PayAccounts } from '/imports/api/payments/payaccounts.js';
+import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
 import { __ } from '/imports/localization/i18n.js';
 import { _ } from 'meteor/underscore';

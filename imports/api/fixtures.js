@@ -9,9 +9,10 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { PayAccounts } from '/imports/api/payments/payaccounts.js';
+import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
 import { billParcels } from '/imports/api/payments/methods.js';
+import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -445,64 +446,14 @@ export function insertDemoFixture() {
 
   // ===== PayAccounts =====
 
-  const physical = PayAccounts.insert({
-    communityId: demoCommunityId,
-//    type: 'physical',
-    name: 'Számla fiók',
-    children: [
-      { name: 'Bankszámla',
-        children: [
-        { name: 'Bank 1' },
-        { name: 'Bank 2' },
-        ],
-      },
-      { name: '*',
-        children: [
-        { name: 'Pénztár' },
-        ],
-      },
-    ],
-  });
+  insertPayAccountTemplate(demoCommunityId);
 
-  const payOutCategory = PayAccounts.insert({
+  const locator = PayAccounts.update({
     communityId: demoCommunityId,
-//    type: 'virtual',
-    name: 'Kifizetés nem',
-    children: [
-      { name: 'Közmű',
-        children: [
-        { name: 'Villany' },
-        { name: 'Víz' },
-        { name: 'Gáz' },
-        ],
-      },
-      { name: '*',
-        children: [
-        { name: 'Felújítás' },
-        { name: 'Takarítás' },
-        ],
-      },
-    ],
-  });
-
-  const payInCategory = PayAccounts.insert({
-    communityId: demoCommunityId,
-//    type: 'virtual',
-    name: 'Befizetés nem',
-    children: [
-      { name: '*',
-        children: [
-        { name: 'Közös költség' },
-        { name: 'Célbefizetés' },
-        ],
-      },
-    ],
-  });
-
-  const locator = PayAccounts.insert({
-    communityId: demoCommunityId,
-//    type: 'locator',
-    name: 'Fizetési hely',
+    name: 'Hely',
+  },
+  {
+    $set: {
     children: [
       { name: 'A. lépcsőház',
         children: [
@@ -522,8 +473,10 @@ export function insertDemoFixture() {
         { name: 'Kert' },
         ],
       },
-    ],
-  });
+    ] },
+    },
+    { upsert: true }
+  );
 
   // ===== Payments =====
 
@@ -536,7 +489,7 @@ export function insertDemoFixture() {
     ref: 'nyitó',
     amount: 100000,
     accounts: {
-      'Számla fiók': 'Pénztár',
+      'Számlák': 'Pénztár',
     },
   });
 
@@ -547,7 +500,7 @@ export function insertDemoFixture() {
     ref: 'nyitó',
     amount: 110000,
     accounts: {
-      'Számla fiók': 'Bank 1',
+      'Számlák': 'Bank főszámla',
     },
   });
 
@@ -558,7 +511,7 @@ export function insertDemoFixture() {
     ref: 'nyitó',
     amount: 120000,
     accounts: {
-      'Számla fiók': 'Bank 2',
+      'Számlák': 'Bank felújítási alap',
     },
   });
 
@@ -570,9 +523,9 @@ export function insertDemoFixture() {
     date: new Date('2017-06-01'),
     amount: 10000,
     accounts: {
-      'Számla fiók': 'Bank 1',
-      'Befizetés nem': 'Közös költség',
-      'Fizetési hely': '1',
+      'Számlák': 'Bank főszámla',
+      'Bevételek': 'Közös költség',
+      'Hely': '1',
     },
   });
 
@@ -582,9 +535,9 @@ export function insertDemoFixture() {
     date: new Date('2017-06-02'),
     amount: 20000,
     accounts: {
-      'Számla fiók': 'Bank 2',
-      'Befizetés nem': 'Közös költség',
-      'Fizetési hely': '2',
+      'Számlák': 'Bank főszámla',
+      'Bevételek': 'Közös költség',
+      'Hely': '2',
     },
   });
 
@@ -594,9 +547,9 @@ export function insertDemoFixture() {
     date: new Date('2017-06-03'),
     amount: 30000,
     accounts: {
-      'Számla fiók': 'Pénztár',
-      'Befizetés nem': 'Közös költség',
-      'Fizetési hely': '3',
+      'Számlák': 'Pénztár',
+      'Bevételek': 'Közös költség',
+      'Hely': '3',
     },
   });
 
@@ -606,9 +559,9 @@ export function insertDemoFixture() {
     date: new Date('2017-06-04'),
     amount: 40000,
     accounts: {
-      'Számla fiók': 'Pénztár',
-      'Befizetés nem': 'Célbefizetés',
-      'Fizetési hely': '4',
+      'Számlák': 'Bank felújítási alap',
+      'Bevételek': 'Felújítási célbefizetés',
+      'Hely': '4',
     },
   });
 
@@ -634,8 +587,8 @@ export function insertDemoFixture() {
     date: new Date(2017, 7, 1),
     amount: 52000,
     accounts: {
-      'Befizetés nem': 'Célbefizetés',
-      'Fizetési hely': '4',
+      'Bevételek': 'Felújítási célbefizetés',
+      'Hely': '4',
     },
   });
 
@@ -647,7 +600,7 @@ export function insertDemoFixture() {
     date: new Date('2017-01-01'),
     amount: 24000,
     accounts: {
-      'Kifizetés nem': 'Villany',
+      'Kiadások': 'Anyag',
     },
   });
 
@@ -657,7 +610,7 @@ export function insertDemoFixture() {
     date: new Date('2017-01-01'),
     amount: 415000,
     accounts: {
-      'Kifizetés nem': 'Felújítás',
+      'Kiadások': 'Felújítás',
     },
   });
 
