@@ -141,7 +141,7 @@
   "schemaPayAccounts": {
     "name": {
       "label": "Elnevezés",
-      "placeholder": "(pl. Fizetési hely)"
+      "placeholder": "(pl. Kifizetési hely)"
     },
     "type": {
       "label": "Típus"
@@ -340,7 +340,7 @@
   "Describe the problem briefly": "A hiba rövid leírása ...",
 
   // finances
-  "Payaccounts": "Fizetési fiókok",
+  "Payaccounts": "Könyvelési fiókok",
   "Payments": "Tranzakciók",
   "Reports": "Kimutatások",
   "Common cost plan": "Előírás",
