@@ -66,6 +66,7 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },
+  phone: { type: String, max: 20, optional: true },
 
   settings: { type: UserSettingsSchema },
   lastseens: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
@@ -100,7 +101,7 @@ Meteor.users.helpers({
   },
   votingUnits(communityId) {
     let sum = 0;
-    Memberships.find({ userId: this._id, communityId, role: 'owner' }).map(m => sum += m.votingUnits());
+    Memberships.find({ userId: this._id, communityId, role: 'owner' }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
   hasPermission(permissionName, communityId, object) {
@@ -115,13 +116,13 @@ Meteor.users.helpers({
   },
   totalOwnedUnits(communityId) {
     let total = 0;
-    this.ownerships(communityId).map(function addUpUnits(m) { total += m.votingUnits(); });
+    this.ownerships(communityId).forEach(m => (total += m.votingUnits()));
     return total;
   },
   totalDelegatedToMeUnits(communityId) {
     let total = 0;
     // TODO: needs traversing calculation
-    Delegations.find({ targetUserId: this._id }).map(function addUpUnits(d) {
+    Delegations.find({ targetUserId: this._id }).forEach(function addUpUnits(d) {
       const sourceUser = Meteor.users.findOne(d.sourceUserId);
       total += sourceUser.votingUnits();
     });
@@ -171,4 +172,5 @@ Meteor.users.publicFields = {
   avatar: 1,
   status: 1,
   emails: 1, // TODO: email is not public, but we now need for calculating derived username
+  phone: 1, // should only be public if user sets it to public
 };

@@ -20,7 +20,7 @@ import '/imports/api/topics/rooms/rooms.js';
 
 
 export function insertDemoFixture() {
-
+  //
   // ===== Communities =====
 
   const demoCommunityId = Communities.insert({
@@ -44,12 +44,14 @@ export function insertDemoFixture() {
   const dummyUsers = [];
   dummyUsers[0] = Meteor.users.insert({
     emails: [{ address: 'baltazarimre@demo.com', verified: true }],
+    phone: '06 30 234 5678',
     profile: { lastName: 'Baltazár', firstName: 'Imre' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-2.png',
     status: 'online',
   });
   dummyUsers[1] = Meteor.users.insert({
     emails: [{ address: 'bajorandor@demo.com', verified: true }],
+    phone: '+36 70 1234 567',
     profile: { lastName: 'Bajor', firstName: 'Andor' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-7.png',
   });

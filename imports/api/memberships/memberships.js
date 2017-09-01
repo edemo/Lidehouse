@@ -22,8 +22,7 @@ const OwnershipSchema = new SimpleSchema({
 // Memberships are the Ownerships and the Roleships in a single collection
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id,
     autoform: {
       options() {
         return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
@@ -38,6 +37,7 @@ Memberships.schema = new SimpleSchema({
     },
   },
   // TODO should be conditional on role
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   ownership: { type: OwnershipSchema, optional: true },
 });
 
@@ -48,11 +48,6 @@ Memberships.helpers({
   user() {
     const user = Meteor.users.findOne(this.userId);
     return user;
-  },
-  userName() {
-    if (!this.userId) return 'no user';
-    const user = Meteor.users.findOne(this.userId);
-    return user.fullName();
   },
   community() {
     const community = Communities.findOne(this.communityId);
@@ -93,7 +88,7 @@ Memberships.helpers({
   toString() {
     let result = __(this.role);
     const parcel = this.parcel();
-    if (parcel) result += ' ' + parcel.toString();
+    if (parcel) result += (' ' + parcel.toString());
     return result;
   },
 });

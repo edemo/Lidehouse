@@ -41,6 +41,10 @@
           "label": "Verified"
         }
       }
+    },
+    "phone": {
+      "label": "Phone number",
+      "placeholder": "(pl. +36 30 123 4567)"
     }
   },
   "schemaTopics": {

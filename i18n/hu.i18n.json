@@ -41,6 +41,10 @@
           "label": "Ellenőrzött"
         }
       }
+    },
+    "phone": {
+      "label": "Telefonszám",
+      "placeholder": "(pl. 06 30 123 4567)"
     }
   },
   "schemaTopics": {
