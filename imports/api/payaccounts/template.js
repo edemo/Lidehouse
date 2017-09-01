@@ -1,9 +1,8 @@
+import { _ } from 'meteor/underscore';
 import { PayAccounts } from './payaccounts.js';
 
-export function insertPayAccountTemplate(communityId) {
-  PayAccounts.insert({
-    communityId,
-    name: 'Bevételek',
+const PayAccountsTemplate = [
+  { name: 'Bevételek',
     children: [
       { name: 'NEM adóköteles bevételek',
         children: [
@@ -29,11 +28,9 @@ export function insertPayAccountTemplate(communityId) {
         ],
       },
     ],
-  });
+  },
 
-  PayAccounts.insert({
-    communityId,
-    name: 'Kiadások',
+  { name: 'Kiadások',
     children: [
       { name: 'Költségek',
         children: [
@@ -52,11 +49,9 @@ export function insertPayAccountTemplate(communityId) {
         ],
       },
     ],
-  });
+  },
 
-  PayAccounts.insert({
-    communityId,
-    name: 'Számlák',
+  { name: 'Számlák',
     children: [
       { name: '*',
         children: [
@@ -67,17 +62,9 @@ export function insertPayAccountTemplate(communityId) {
         ],
       },
     ],
-  });
+  },
 
-  PayAccounts.insert({
-    communityId,
-    name: 'Helyek',
-    children: [],
-  });
-
-  PayAccounts.insert({
-    communityId,
-    name: 'Pénzügyi elszámolások',
+  { name: 'Pénzügyi elszámolások',
     children: [
       { name: '*',
         children: [
@@ -86,7 +73,17 @@ export function insertPayAccountTemplate(communityId) {
         ],
       },
     ],
-  });
+  },
 
-  // { name: 'MEGJEGYZÉS', children: [ { name: '*', children: [ { name: 'Partner neve  (számlán,  bizonylaton)' }, { name: 'Számla száma' }, { name: 'Másik fél bankszámla vagy  pénztárbizonylat száma' }, { name: 'Közlemény' } ] } ], 'communityId' : 'g5nJJYwsTyfxMfPh3', 'createdAt' : ISODate('2017-08-31T13:18:50.538Z'), 'updatedAt' : ISODate('2017-08-31T13:20:54.847Z') }
+  { name: 'Helyek',
+    children: [],
+  },
+
+  // { name: 'MEGJEGYZÉS', children: [ { name: '*', children: [ { name: 'Partner neve  (számlán,  bizonylaton)' }, { name: 'Számla száma' }, { name: 'Másik fél bankszámla vagy  pénztárbizonylat száma' }, { name: 'Közlemény' } ] } ], }
+];
+
+export function insertPayAccountTemplate(communityId) {
+  PayAccountsTemplate.forEach((payaccount) => {
+    PayAccounts.insert(_.extend({}, payaccount, { communityId }));
+  });
 }
