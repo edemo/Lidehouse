@@ -6,6 +6,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { update as updateCommunity } from '/imports/api/communities/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -363,6 +364,12 @@ export function insertDemoFixture() {
     topicId: voteTopic3,
     userId: nextUser(),
     text: 'Jajj csak szürke NE legyen. Akkor költözöm.',
+  });
+
+  const agenda = Agendas.insert({
+    communityId: demoCommunityId,
+    title: 'Közgyűlés 2017-II.',
+    topicIds: [voteTopic1, voteTopic2, voteTopic3],
   });
 
   // ===== Tickets =====

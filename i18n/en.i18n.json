@@ -47,6 +47,15 @@
       "placeholder": "(pl. +36 30 123 4567)"
     }
   },
+  "schemaAgendas": {
+    "title": {
+      "label": "Name",
+      "placeholder": "(eg. Owner's meeting 2017-II.)"
+    },
+    "topicIds": {
+      "label": "Agenda topics"
+    }
+  },
   "schemaTopics": {
     "title": {
       "label": "Title",

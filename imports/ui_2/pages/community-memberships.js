@@ -2,18 +2,14 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { Parcels } from '/imports/api/parcels/parcels.js';
-import { remove as removeParcel } from '/imports/api/parcels/methods.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { onSuccess } from '/imports/ui/lib/errors.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
-import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { parcelColumns } from '/imports/api/parcels/tables.js';
-import { Fraction } from 'fractional';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { remove as removeParcel } from '/imports/api/parcels/methods.js';
+import { parcelColumns } from '/imports/api/parcels/tables.js';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
 import './community-memberships.html';
