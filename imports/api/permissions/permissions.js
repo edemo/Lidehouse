@@ -1,19 +1,31 @@
 import { Mongo } from 'meteor/mongo';
-import { __ } from '/imports/localization/i18n.js';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { debugAssert } from '/imports/utils/assert.js';
 
 export const Permissions = new Mongo.Collection('permissions');
 
-Permissions.scopeSchema = new SimpleSchema({
-  scope: { type: String, allowedValues: ['all', 'community', 'membership'] },
-});
+// TODO: Superadmin temp solution
+// Permissions.scopeSchema = new SimpleSchema({
+//   scope: { type: String, allowedValues: ['all', 'community', 'membership'] },
+// });
 
 Permissions.schema = new SimpleSchema({
-  name: { type: String, max: 100, label: () => __('permissions.name') },
-  type: { type: String, allowedValues: ['view', 'edit'] },
+  name: { type: String, max: 100 },
 //  scope: { type: Permissions.scopeSchema },
   roles: { type: Array },
   'roles.$': { type: String },
+  allowAuthor: { type: Boolean, optional: true },
+});
+
+Permissions.accessTypes = ['read', 'write'];
+
+Permissions.helpers({
+  accessType() {
+    const methodType = this.name.split['.'].pop();
+    if (['insert', 'update', 'remove'].contains(methodType)) return 'read';
+    if (['listing', 'view', 'details'].contains(methodType)) return 'write';
+    debugAssert(false); return '';
+  },
 });
 
 Permissions.attachSchema(Permissions.schema);

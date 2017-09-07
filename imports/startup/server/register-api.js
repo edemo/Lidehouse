@@ -18,6 +18,10 @@ import '/imports/api/topics/rooms/publications.js';
 import '/imports/api/topics/feedbacks/publications.js';
 import '/imports/api/comments/methods.js';
 import '/imports/api/comments/publications.js';
+//import '/imports/api/payaccounts/methods.js';
+import '/imports/api/payaccounts/publications.js';
+import '/imports/api/payments/methods.js';
+import '/imports/api/payments/publications.js';
 import '/imports/api/permissions/publications.js';
 import '/imports/api/shareddocs/publications.js';
 

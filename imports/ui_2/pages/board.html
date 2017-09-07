@@ -67,7 +67,7 @@
         <button class="js-new btn-default pull-right"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{_ 'new'}}</button>
       {{/if}}
     </div>
-    {{#each topics 'news'}}
+    {{#each topics 'news' false}}
       <div class="row news-row js-view" data-toggle="modal" data-target="#{{_id}}">
         <div class="col-xs-9" style="padding: 4px 0;">
           {{title}}
@@ -79,21 +79,16 @@
     {{/each}}
   </div>
 
+  {{#each topics 'news' true}}
   <div class="white-box infos">
     <div class="full-width">
-      {{_ 'Useful Informations'}}
+      {{title}}
       <hr>
     </div>
     <div class="full-width">
-      Orvosi rendelő: <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +36 (1) 345-562 <br>
-      Polizei: <small class="text-alt">07</small> <br>
-      Közös képviselő:
-      <small class="text-alt">
-        <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +3630 6545621
-        /
-        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> baltazar.imre@demo.com
-      </small>
+      {{{text}}}
     </div>
   </div>
+  {{/each}}
 
 </template>

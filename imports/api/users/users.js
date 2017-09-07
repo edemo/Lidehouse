@@ -3,7 +3,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import 'meteor/accounts-base';
 import { Fraction } from 'fractional';
-
+import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -39,7 +39,7 @@ const UserProfileSchema = new SimpleSchema({
 
 const UserSettingsSchema = new SimpleSchema({
   language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'en' },
-  delegationsAllowed: { type: Boolean, defaultValue: true },
+  delegatee: { type: Boolean, defaultValue: true },
 });
 
 const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';
@@ -95,8 +95,18 @@ Meteor.users.helpers({
     console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
-  hasPermission(permissionName, communityId) {
+  isInCommunity(communityId) {
+    return !!Memberships.findOne({ userId: this._id, communityId });
+  },
+  votingUnits(communityId) {
+    let sum = 0;
+    Memberships.find({ userId: this._id, communityId, role: 'owner' }).map(m => sum += m.votingUnits());
+    return sum;
+  },
+  hasPermission(permissionName, communityId, object) {
     const permission = Permissions.findOne({ _id: permissionName });
+    debugAssert(permission);
+    if (permission.allowAuthor && object && (object.userId === this._id)) return true;
     const rolesWithThePermission = permission.roles;
     const userHasTheseRoles = this.roles(communityId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
@@ -112,8 +122,8 @@ Meteor.users.helpers({
     let total = 0;
     // TODO: needs traversing calculation
     Delegations.find({ targetUserId: this._id }).map(function addUpUnits(d) {
-      const m = Memberships.findOne(d.objectId);
-      total += m.votingUnits();
+      const sourceUser = Meteor.users.findOne(d.sourceUserId);
+      total += sourceUser.votingUnits();
     });
     return total;
   },

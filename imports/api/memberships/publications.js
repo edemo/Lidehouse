@@ -52,7 +52,10 @@ Meteor.publishComposite('memberships.ofUser', function communitiesOfUser(params)
 
     children: [{
       find(membership) {
-        return Communities.find({ _id: membership.communityId }, { fields: Communities.publicFields });
+        const communityId = membership.communityId;
+        const user = Meteor.users.findOne(this.userId);
+        const visibleFields = user.hasPermission('finances.view') ? {} : { finances: 0 };
+        return Communities.find({ _id: communityId }/*, { fields: visibleFields }*/);
       },
     }],
   };

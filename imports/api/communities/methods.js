@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-
+import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from './communities.js';
-import { Memberships } from '../memberships/memberships.js';
 
 export const create = new ValidatedMethod({
   name: 'communities.create',
@@ -23,6 +23,7 @@ export const create = new ValidatedMethod({
 
     const communityId = Communities.insert(doc);
 
+    insertPayAccountTemplate(communityId);
     // The user creating the community, becomes the first 'admin' of it.
     Memberships.insert({ communityId, userId: this.userId, role: 'admin' });
 

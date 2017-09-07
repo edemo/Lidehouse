@@ -12,12 +12,12 @@ export const insert = new ValidatedMethod({
     // User can only delegate his own votes
     if (this.userId !== doc.sourceUserId) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: delegations.insert, doc: {${doc}}`);
+        `Method: delegations.insert, doc: {${doc}}, this.userId: {${this.userId}}`);
     }
 
     // User can only delegate to those who allow incoming delegations
     const targetUser = Meteor.users.findOne(doc.targetUserId);
-    if (!targetUser.settings.delegationsAllowed) {
+    if (!targetUser.settings.delegatee) {
       throw new Meteor.Error('err_otherPartyNotAllowed', 'Other party not allowed this activity',
         `Method: delegations.insert, doc: {${doc}}`);
     }
@@ -45,6 +45,12 @@ export const remove = new ValidatedMethod({
   }).validator(),
 
   run({ _id }) {
+    const delegation = Delegations.findOne(_id);
+    if (this.userId !== delegation.sourceUserId && this.userId !== delegation.targetUserId) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: delegations.remove, doc: {${delegation}}, this.userId: {${this.userId}}`);
+    }
+
     Delegations.remove(_id);
   },
 });
@@ -60,6 +66,6 @@ export const allow = new ValidatedMethod({
     if (value === false) {
       Delegations.remove({ targetUserId: userId });
     }
-    Meteor.users.update(userId, { $set: { 'settings.delegationsAllowed': value } });
+    Meteor.users.update(userId, { $set: { 'settings.delegatee': value } });
   },
 });

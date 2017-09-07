@@ -55,6 +55,8 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
+    this.subscribe('delegations.toUser', { userId: Meteor.userId() });
+    this.subscribe('delegations.fromUser', { userId: Meteor.userId() });
   });
   // This autorun sets the active community automatically to the first community of the user
   // TODO: active community could be saved somewhere so he gets back where he left off last time
@@ -68,6 +70,8 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
         Session.set('activeCommunityId', activeCommunity._id);
       }
     }
+    // although this is too early, but if we sub it in Finances page, the datatables has no way to refresh
+    this.subscribe('payaccounts.inCommunity', { communityId: activeCommunityId });
   });
   // We run this in autorun, so when User switches his community, the subscription changes
   this.autorun(() => {
@@ -75,18 +79,6 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
     if (activeCommunityId) {
       this.subscribe('parcels.inCommunity', { communityId: activeCommunityId });
       this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
-    }
-  });
-  // This autorun sets the active membership automatically to the first membership of the user in the community
-  // TODO: active membership could be saved somewhere so he gets back where he left off last time
-  this.autorun(() => {
-    const activeMembershipId = Session.get('activeMembershipId');
-    const activeCommunityId = Session.get('activeCommunityId');
-    if (!activeMembershipId && activeCommunityId && Meteor.userId()) {
-      const activeMembership = Memberships.findOne({ communityId: activeCommunityId, userId: Meteor.userId() });
-      if (activeMembership) {
-        Session.set('activeMembershipId', activeMembership._id);
-      }
     }
   });
   // We subscribe to all topics in the community, so that we have access to the commentCounters
@@ -143,16 +135,8 @@ Template.Custom_body.helpers({
     const activeCommunity = activeCommunityId ? Communities.findOne(activeCommunityId) : undefined;
     return activeCommunity;
   },
-  memberships() {
-    const activeCommunityId = Session.get('activeCommunityId');
-    if (!activeCommunityId) { return []; }
-//    const parcels = Parcels.find({ communityId: activeCommunityId });
-    return Memberships.find({ communityId: activeCommunityId, userId: Meteor.userId() });
-  },
-  activeMembership() {
-    const activeMembershipId = Session.get('activeMembershipId');
-    const activeMembership = activeMembershipId ? Memberships.findOne(activeMembershipId) : undefined;
-    return activeMembership;
+  displayMemberships(communityId) {
+    return Memberships.find({ communityId, userId: Meteor.userId() }).fetch().toString();
   },
   countNotifications(category) {
     const communityId = Session.get('activeCommunityId');
@@ -165,7 +149,7 @@ Template.Custom_body.helpers({
           if (t.isUnseenBy(userId) || t.unseenCommentsBy(userId) > 0) count += 1;
           break;
         case 'vote':
-          if (!t.closed && !t.hasVoted(userId)) count += 1;
+          if (!t.closed && !t.hasVotedIndirect(userId)) count += 1;
           break;
         case 'feedback':
           if (t.isUnseenBy(userId)) count += 1;
@@ -194,11 +178,6 @@ Template.Custom_body.events({
 
   'click .js-switch-community'() {
     Session.set('activeCommunityId', this._id);
-    Session.set('activeMembershipId', undefined);
-  },
-
-  'click .js-switch-membership'() {
-    Session.set('activeMembershipId', this._id);
   },
 
   'click .js-logout'() {

@@ -10,6 +10,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Roles } from '/imports/api/permissions/roles.js';
 import { Fraction } from 'fractional';
+import '/utils/fractional.js';  // TODO: should be automatic, but not included in tests
 import { Factory } from 'meteor/dburles:factory';
 
 export const Memberships = new Mongo.Collection('memberships');
@@ -117,4 +118,5 @@ Memberships.deny({
 Factory.define('membership', Memberships, {
   communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
+  role: 'guest',
 });

@@ -46,6 +46,18 @@ export const HouseTranslation = {
       "totalunits": {
         "label": "Total shares outstanding",
         "placeholder": "(eg. 10000)"
+      },
+      "finances": {
+        "label": "Finances",
+        "ccArea": {
+          "label": "Common cost per area (m2)"
+        },
+        "ccVolume": {
+          "label": "Common cost per volume (m3)"
+        },
+        "ccHabitants": {
+          "label": "Common cost per habitant"
+        }
       }
     },
     "schemaParcels": {
@@ -74,12 +86,20 @@ export const HouseTranslation = {
         "label": "Lot No",
         "placeholder": "(eg. 293457/A/21)"
       },
-      "size": {
-        "label": "Size (sqm)",
-        "placeholder": "(eg. 45)"
-      },
       "location": {
         "label": "Location"
+      },
+      "area": {
+        "label": "Area (m2)",
+        "placeholder": "(eg. 45)"
+      },
+      "volume": {
+        "label": "Volume (m3)",
+        "placeholder": "(eg. 142)"
+      },
+      "habitants": {
+        "label": "Number of habitants",
+        "placeholder": "(eg. 3)"
       }
     }
   },
@@ -128,6 +148,18 @@ export const HouseTranslation = {
       "totalunits": {
         "label": "Összes tulajdoni hányad",
         "placeholder": "(pl. 1000 vagy 9999)"
+      },
+      "finances": {
+        "label": "Pénzügyek",
+        "ccArea": {
+          "label": "Közös költség alapterületre (m2)"
+        },
+        "ccVolume": {
+          "label": "Közös költség légköbméterre (m3)"
+        },
+        "ccHabitants": {
+          "label": "Közös költség lakó után"
+        }
       }
     },
     "schemaParcels": {
@@ -156,12 +188,20 @@ export const HouseTranslation = {
         "label": "Helyrajzi szám",
         "placeholder": "(pl. 293456/A/24)"
       },
-      "size": {
-        "label": "Méret (m2)",
-        "placeholder": "(pl. 45)"
-      },
       "location": {
         "label": "Elhelyezkedés"
+      },
+      "area": {
+        "label": "Alapterület (m2)",
+        "placeholder": "(pl. 45)"
+      },
+      "volume": {
+        "label": "Légköbméter (m3)",
+        "placeholder": "(pl. 142)"
+      },
+      "habitants": {
+        "label": "Lakók száma",
+        "placeholder": "(pl. 3)"
       }
     }
   }

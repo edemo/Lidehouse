@@ -27,7 +27,7 @@
     },
     "settings": {
       "label": "Settings",
-      "delegationsAllowed": {
+      "delegatee": {
         "label": "Allow incoming delegations"
       }
     },
@@ -51,6 +51,9 @@
     "text": {
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
+    },
+    "sticky" : {
+      "label": "Sticky"
     }
   },
   "schemaVotings": {
@@ -126,11 +129,68 @@
       "label": "Delegatee",
       "placeholder": "(eg. Mike75)"
     },
+    "scope": {
+      "label": "Scope of Delegation",
+      "placeholder": "(pl. Community issues)"
+    },
     "objectId": {
-      "label": "Scope of delegation (ownership)",
-      "placeholder": "(eg. ownership II/4)"
+      "label": "Object of delegation",
+      "placeholder": "(eg. Demo community)"
     }
   },
+  "schemaPayAccounts": {
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Payment target)"
+    },
+    "type": {
+      "label": "Type"
+    },
+    "children": {
+      "label": "Container account",
+      "$": {
+        "name": {
+          "label": "Name (or * if not needed)",
+          "placeholder": "(eg. Building C.)"
+        },
+        "children": {
+          "label": "Sub account",
+          "$": {
+            "name": {
+              "label": "Name (or serial no. of parcel)",
+              "placeholder": "(eg. Garden or 114)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaPayments": {
+    "phase": {
+      "label": "Phase"
+      //"Payment type"
+    },
+    "date": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Amount",
+      "placeholder": "(eg. 14560)"
+    },
+    "ref": {
+      "label": "Reference id",
+      "placeholder": "(eg. transaction no. from bank statement)"
+    },
+    "note": {
+      "label": "Note",
+      "placeholder": "(eg. reminder)"
+    },
+    "accounts": {
+      "label": "Könyvelési fiókok"
+    }
+  },
+
 
   // buttons etc.
   "confirm": "Are you sure?",
@@ -166,6 +226,9 @@
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
   "allowDelegationsToMe": "Allow others to delegate to me",
+
+  "votedViaDelegationHint" : "casting a vote can override this",
+  "notYetVotedHint": "cast your vote below, or set up a delegation",
 
 
   // Notifications
