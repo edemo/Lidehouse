@@ -105,7 +105,7 @@ Meteor.users.helpers({
     return sum;
   },
   hasPermission(permissionName, communityId, object) {
-    const permission = Permissions.findOne({ _id: permissionName });
+    const permission = Permissions.findOne({ name: permissionName });
     debugAssert(permission);
     if (permission.allowAuthor && object && (object.userId === this._id)) return true;
     const rolesWithThePermission = permission.roles;

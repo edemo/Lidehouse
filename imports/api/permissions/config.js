@@ -23,11 +23,16 @@ const everybody = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accounta
 const exceptGuest = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'maintainer', 'delegate'];
 const nobody = [];
 
+export const canAddMemberWithRole = {
+  admin: everybody,
+  manager: ['owner'],
+  onwer: ['tenant'],
+};
+
 const permissions = [
   { name: 'communities.insert',     roles: everybody },
   { name: 'communities.update',     roles: ['admin'] },
   { name: 'communities.listing',    roles: everybody },
-  { name: 'memberships.insert',     roles: ['admin', 'manager', 'owner'] },
   { name: 'memberships.listing',    roles: exceptGuest },
   { name: 'forum.insert',           roles: exceptGuest },
   { name: 'forum.update',           roles: nobody, allowAuthor: true },

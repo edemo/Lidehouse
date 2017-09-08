@@ -1,6 +1,10 @@
 import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
+
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import '/imports/api/users/users.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { canAddMemberWithRole } from '/imports/api/permissions/config.js';
 
 export function checkExists(collection, objectId) {
   const object = collection.findOne(objectId);
@@ -25,7 +29,7 @@ export function checkPermissions(userId, permissionName, communityId, object) {
   const user = Meteor.users.findOne(userId);
   if (!user.hasPermission(permissionName, communityId, object)) {
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-      `Permission: ${permissionName}, userId: ${this.userId}, communityId: ${communityId}, objectId: ${object._id}`);
+      `Permission: ${permissionName}, userId: ${userId}, communityId: ${communityId}, objectId: ${object._id}`);
   }
 }
 
@@ -37,6 +41,18 @@ export function checkTopicPermissions(userId, permissionName, topic) {
     checkPermissions(userId, categoryPermission.name, topic.communityId, topic);
   } else {
     checkPermissions(userId, genericPermissionName, topic.communityId, topic);
+  }
+}
+
+export function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
+  let permissioned = false;
+  const rolesOfUser = Memberships.find({ userId, communityId }).map(m => m.role);
+  rolesOfUser.forEach((role) => {
+    if (_.contains(canAddMemberWithRole[role], roleOfNewMember)) permissioned = true;
+  });
+  if (!permissioned) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
   }
 }
 

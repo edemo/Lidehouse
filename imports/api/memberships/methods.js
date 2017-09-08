@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
+import { checkAddMemberPermissions } from '/imports/api/method-utils.js';
 import { Memberships } from './memberships.js';
 
 export const insert = new ValidatedMethod({
@@ -9,6 +10,7 @@ export const insert = new ValidatedMethod({
   validate: Memberships.simpleSchema().validator({ clean: true }),
 
   run(doc) {
+    checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     return Memberships.insert(doc);
   },
 });
