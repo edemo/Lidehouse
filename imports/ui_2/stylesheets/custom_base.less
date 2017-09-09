@@ -57,13 +57,94 @@ a {
     right: 0;
   }
 }
+.right-orange {
+  background-color: #dac39a;
+  position: absolute;
+  z-index: 1;
+  padding: 7px 13px;
+  border-radius: 0 0 0 0;
+  left: 0;
+  right: 0;
+  height: 55px;
+  box-shadow: @nav-shadow;
+  display: none;
+  @media screen and (max-width: 40em) {
+    display: block;
+  }
+}
+.nav-hamburger {
+  padding: 10px;
+  font-size: 1.7em;
+  color: black;
+}
 #menu {
   padding-left: 0px;
-  padding-top: 75px;
+  // padding-top: 75px;
   box-shadow: @menu-shadow;
   @media screen and (min-width: 40em) {
     z-index: 1;
   }
+  @media screen and (max-width: 40em) {
+    padding-top:50px;
+  }
+  // start beta design
+  .pic-menu {
+    margin-bottom: 17px;
+    .pip-usericon {
+      background-color: @pip-usericon-bcg;
+      position: absolute;
+      padding: 3px 3px 3px 10px;
+      border-radius: 0 0 0 59%;
+      top: 0;
+      right: 0;
+      height: 55px;
+      display: none;
+      @media screen and (min-width: 40em) {
+        display: block;
+      }
+    }
+    .login-box {
+      margin-top: 13px;
+      margin-bottom: 13px;
+    }
+    .house-pic {
+      max-height: 150px;
+      width: 270px;
+
+    }
+    .comm-drop {
+      .dropdown-toggle {
+        font-size: .8em;
+        padding: 5px;
+        border-radius: 0;
+        text-transform: none;
+        border: 0;
+        background-color: @comm-drop-bcg;
+        word-wrap: break-word;
+        height: auto;
+        max-height: 50px;
+        width: 270px;
+        white-space: normal;
+      }
+      .dropdown-menu {
+        width: 270px;
+      }
+    }
+    .comm-btns {
+      .btns-group {
+        margin: 0;
+        width: 270px;
+        text-transform: capitalize;
+        a {
+          color: @comm-btns-col !important;
+          font-weight: bold;
+          border: 1px solid @comm-btns-border;
+          border-radius: 0;
+        }
+      }
+    }
+  }
+  // end beta design
   a, div a {
     color: @menu-a-color  !important;
     font-weight: bold;
@@ -77,8 +158,9 @@ a {
     }
     &-item {
       list-style-type: none;
-      padding: .7em 21px;
+      padding: .7em 5px .7em 21px;
       transition: all 0.2s ease;
+      font-size: .95em;
       img {
         width: 20px;
         margin-right: 13px;
@@ -101,32 +183,53 @@ a {
 }
 #menu::after {
   content: "";
-  background: url(http://static.panoramio.com/photos/original/59978318.jpg);
-  opacity: 0.6;
+  background: @new-nav-bcg;
+  opacity: 0.4;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  position: absolute;
+  position: fixed;
+  width: 270px;
   z-index: -1;
   // background-image: url("http://static.panoramio.com/photos/original/59978318.jpg");
-  background-image: url(/header.jpg);
+  background-image: @new-nav-bcg;
   background-position: left center;
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
 }
 //feedback still in progress
 #feedback-pane {
   position: absolute;
   bottom: 0px; right: 10px;
   background-color: white;
-  padding: 7px;
+  padding: 3em 2em .5em;
+  text-align: center;
   max-width: 400px;
   z-index: 9;
   box-shadow: 0 0px 4px 1.3px #b3b3b3;
   border-radius: 5px;
+  max-height: calc(~"100vh - " 50px);
+  overflow-y: auto;
   .glyphicon {
     cursor: pointer;
+    position: absolute;
+    right: 1.5em;
+    top: 1em;
+    font-size: 1.2em;
+  }
+  .panel-heading {
+    display: none;
+  }
+  .panel-body {
+    margin-top: 1.3em;
+  }
+  @media screen and (max-width: 40em) {
+    max-width: 100%;
+    width: 95vw;;
+    font-size: .8em;
+    // padding-left: 20px;
   }
 }
 #feedback-btn {
@@ -147,6 +250,13 @@ a {
   &.feedback-closed {
     visibility: collapse;
   }
+  @media screen and (max-width: 40em) {
+    max-width: 100%;
+    width: 100%;
+    font-size: .8em;
+    padding-left: 20px;
+    border-radius: 0;
+  }
 }
 #content-container {
   .autoform .content-scrollable {
@@ -156,6 +266,14 @@ a {
   background-color: @fb-bcg-lighter;
   overflow-y: scroll;
   overflow-x: hidden;
+  @media screen and (max-width: 40em) {
+    padding-top: 7px;
+  }
+}
+.menu-open .content-container {
+  @media screen and (max-width: 40em) {
+
+  }
 }
 
 nav {
@@ -217,8 +335,13 @@ nav::after {
   padding: unset;
 }
 [class^="page"],[class*="page"] {
-  margin-top: 50px;
-  padding: 30px;
+  padding: 11px 31px 31px 31px;
+  @media screen and (max-width: 60em) {
+    padding: 0px;
+  }
+  @media screen and (max-width: 40em) {
+    margin-top: 53px;
+  }
 }
 .page-vote {
   @media screen and (max-width: 40em) {

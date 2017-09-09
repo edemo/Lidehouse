@@ -65,6 +65,9 @@
     min-height: 200px;
     padding: 20px;
   }
+  &.padded {
+    padding: 2em;
+  }
 }
 .page-board-new, .page-vote, .page-forum {
   .section-btn {
@@ -73,6 +76,14 @@
     background-color: @section-btn-col-collapsed;
     text-transform: uppercase;
     letter-spacing: .1em;
+    small {
+      height: 40px;
+      margin: -10px -18px;
+      padding: 11px 17px 11px;
+      float: right;
+      // border-radius: 0 0 0 30px;
+      // background-color: @icon-bcg-down;
+    }
     .glyphicon-menu-down {
       visibility: collapse;
     }
@@ -89,12 +100,12 @@
         visibility: visible;
       }
       .glyphicon-menu-up {
-        display: none;
+        display: none !important;
         visibility: collapse;
       }
-    }
-    small {
-      float: right;
+      small {
+        background-color: rgba(255, 255, 255, 0.25);
+      }
     }
   }
   .section-pane {
@@ -109,9 +120,45 @@
   }
 
   // new vote and chat less
+  .vote-tools {
+    position:absolute;
+    right:0; top:0;
+    width:50px;
+    height: 270px;
+    z-index: 1;
+    .tool-up {
+      padding: 7px;
+      background: lighten(@pip-usericon-bcg, 23%);
+      border: 3px solid @pip-usericon-bcg;
+      border-bottom: none;
+      border-right: 2px solid @pip-usericon-bcg;
+      border-radius: 7px 0 0 15px;
+      text-align: center;
+      a > span {
+        margin-bottom: .6em;
+        font-size: 1.2em;
+        color: darken(@pip-usericon-bcg, 10%);
+      }
+      .glyphicon-align-right {
+        color: red;
+      }
+    }
+    .tool-progress {
+      position: absolute;
+      height: 7.3em;
+      right: 0;
+      padding: 7px;
+      background: lighten(@pip-usericon-bcg, 23%);
+      border: 2px solid @pip-usericon-bcg;
+      border-top: none;
+      border-radius: 0 0 15px 15px;
+    }
+  }
   .vote-container {
-    margin-bottom: 3.7px;
+    margin-bottom: 1em;
     padding: 17px;
+    padding-right: 70px;
+    position: relative;
   }
   .vote-title {
     border-bottom: 1px solid @chat-part-border;

@@ -1,7 +1,7 @@
 <template name="Board">
   <div class="page-content page-board-new">
 
-    <div class="col-xs-12 col-lg-8">
+    <div class="col-xs-12 col-lg-8 no-padding">
 
       <!-- 1st section start -->
       <div class="full-width section-btn" type="button" data-toggle="collapse" data-target="#vote-pane" aria-expanded="false" aria-controls="collapseExample">
@@ -36,12 +36,8 @@
       </div>
 
       <!-- 2nd section start -->
-      <div class="full-width section-btn section-btn-2" type="button" data-toggle="collapse" data-target="#forum-pane" aria-expanded="false" aria-controls="collapseExample">
+      <div class="full-width section-btn section-btn-2" type="button" aria-expanded="false">
         {{_ 'Forum'}}
-        <small>
-          <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
-          <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
-        </small>
       </div>
       <div class="collapse in section-pane" id="forum-pane">
         <div class="well">
