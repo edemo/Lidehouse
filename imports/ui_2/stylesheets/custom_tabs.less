@@ -71,3 +71,29 @@
     opacity: 1;
     transition: opacity 400ms ease-out;
 }
+@media screen and (max-width: 50em) {
+  .tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    .tab {
+      width: unset;
+      height: unset;
+    }
+    .tab .content {
+      margin-top: 40px;
+    }
+  }
+}
+@media screen and (max-width: 25em) {
+  .tab label {
+    padding: 7px;
+    font-size: .8em;
+  }
+}
+@media screen and (max-width: 54em) {
+  .page-finances .tab label {
+    padding: 7px;
+    font-size: .8em;
+  }
+}

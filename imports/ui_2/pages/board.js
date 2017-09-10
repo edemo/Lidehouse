@@ -61,6 +61,7 @@ Template.News.events({
       body: 'Proposal_view',
       bodyContext: this,
       btnClose: 'close',
+      btnEdit: 'edit',
     };
     Modal.show('Modal', modalContext);
   },
