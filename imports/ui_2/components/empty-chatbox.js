@@ -13,8 +13,8 @@ Template.Empty_chatbox.events({
       userId: Meteor.userId(),
       category: 'forum',
       title: 'undefined',
-      text: event.target.previousElementSibling.value,
-    }, onSuccess(res => event.target.previousElementSibling.value = '')
+      text: document.getElementById('new_forumpost').value,
+    }, onSuccess(res => document.getElementById('new_forumpost').value = '')
     );
   },
 });

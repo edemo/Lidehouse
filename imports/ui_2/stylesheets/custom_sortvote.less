@@ -6,21 +6,28 @@
   // border: 1px solid #ddd;
   padding: 5px;
   // width: 70%;
-  background: white none repeat scroll 0% 0%;
+  background: white none repeat scroll 0% 0% !important;
   // box-shadow: .2px .1px .2px .15px rgba(35, 35, 35, 0.18);
   transition: box-shadow 0.30s ease;
+  display: inline-block;
+  max-width: 100%;
   &:hover {
     // box-shadow: 3px 4px 7px 2px rgba(35, 35, 35, 0.18);
   }
   li {
+    position: relative;
     cursor: pointer;
     text-align: left;
     line-height: 1.2em;
     height: 1.5em;
     margin: 0 5px 5px 5px;
-    padding: 5px;
-    font-size: 1.1em;
-    height: 1.7em;
+    padding: 5px 30px;
+    font-size: 1em;
+    height: auto;
+    border-radius: 15px;
+    span {
+      display: none;
+    }
   }
 }
 p {
@@ -36,4 +43,13 @@ p {
 .ui-sortable-handle {
   -ms-touch-action: none;
   touch-action: none;
+}
+.ui-sortable-disabled, .ui-sortable-disabled > li {
+  cursor: default;
+  span {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    display: block;
+  }
 }

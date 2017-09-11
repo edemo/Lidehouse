@@ -157,7 +157,9 @@ Template.Votebox.events({
       body: 'Proposal_view',
       bodyContext: this,
       btnClose: 'close',
+      btnEdit: 'edit',
     };
+    console.log(this);
     Modal.show('Modal', modalContext);
   },
   'click .js-close'(event, instance) {

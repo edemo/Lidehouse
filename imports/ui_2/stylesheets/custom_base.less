@@ -30,6 +30,12 @@ body {
 a {
   color: @base-link-color;
 }
+.font-info {
+  font-family: serif;
+}
+.font-deatil {
+  font-family: monospace;
+}
 
 @media screen and (min-width: 40em) {
   // nav { display: none; }
@@ -101,6 +107,9 @@ a {
       display: none;
       @media screen and (min-width: 40em) {
         display: block;
+      }
+      &:hover {
+        background-color: lighten(@pip-usericon-bcg, 5%);
       }
     }
     .login-box {
@@ -180,6 +189,20 @@ a {
       }
     }
   }
+}
+.comment-collapse {
+  margin: 0px -10px -17px -17px;
+  background-color: rgba(128, 128, 128, 0.05);
+  padding: 20px;
+  .row {
+    margin-bottom: 16px;
+  }
+  textarea {
+    background-color: inherit;
+  }
+}
+.vote-container .comment-collapse {
+  margin: 0px -70px -17px -17px;
 }
 #menu::after {
   content: "";
