@@ -26,7 +26,7 @@ const nobody = [];
 export const canAddMemberWithRole = {
   admin: everybody,
   manager: ['owner'],
-  onwer: ['tenant'],
+  owner: ['tenant'],
 };
 
 const permissions = [
@@ -42,7 +42,7 @@ const permissions = [
   { name: 'prevote.remove',         roles: nobody, allowAuthor: true },
   { name: 'vote.insert',            roles: ['manager'] },
   { name: 'vote.update',            roles: nobody },
-  { name: 'vote.remove',            roles: ['manger'] },
+  { name: 'vote.remove',            roles: ['manager'] },
   { name: 'vote.cast.update',       roles: ['owner', 'delegate'] },
   { name: 'vote.close.update',      roles: ['manager'] },
   { name: 'news.insert',            roles: ['manager'] },
