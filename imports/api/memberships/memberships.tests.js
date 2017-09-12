@@ -18,6 +18,7 @@ if (Meteor.isServer) {
   let Fixture;
 
   describe('memberships', function () {
+    this.timeout(5000);
     before(function () {
       Fixture = freshFixture();
     });
@@ -31,7 +32,7 @@ if (Meteor.isServer) {
             'memberships.inCommunity',
             { communityId: Fixture.demoCommunityId },
             (collections) => {
-              chai.assert.equal(collections.memberships.length, 9);
+              chai.assert.equal(collections.memberships.length, 11);
               chai.assert.equal(collections.parcels.length, 5);
               done();
             }

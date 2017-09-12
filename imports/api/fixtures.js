@@ -628,6 +628,8 @@ export function insertDemoFixture() {
   return {
     demoCommunityId,
     demoUserId,
+    demoAdminId,
+    demoManagerId,
     dummyUsers,
     dummyParcels,
   };
