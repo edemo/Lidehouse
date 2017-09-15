@@ -44,6 +44,8 @@ export const remove = new ValidatedMethod({
   }).validator(),
 
   run({ _id }) {
+    const doc = Memberships.findOne(_id);
+    checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     Memberships.remove(_id);
   },
 });
