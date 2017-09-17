@@ -63,11 +63,12 @@ export function checkAddMemberPermissions(userId, communityId, roleOfNewMember) 
 
 export function checkModifier(object, modifier, modifiableFields) {
   // Checks that the *modifier* only tries to modify the *modifiableFields* on the given *object*
-  const modifiedFields = Object.keys(modifier.$set);
+  let modifiedFields = Object.keys(modifier.$set);
+  modifiedFields = _.without(modifiedFields, 'updatedAt');
   modifiedFields.forEach((mf) => {
-    if (!modifiableFields.contains(mf) && object[mf] !== modifier.$set[mf]) {
+    if (!_.contains(modifiableFields, mf) && object[mf] !== modifier.$set[mf]) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Modifier: ${modifier}, object: ${object}`);
+        `Modifier: ${modifier.toJSON()}, field: ${mf}, object: ${object}`);
     }
   });
 }

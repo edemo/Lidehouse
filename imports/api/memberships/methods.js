@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 
-import { checkAddMemberPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
 import { Memberships } from './memberships.js';
 
 export const insert = new ValidatedMethod({
@@ -17,7 +17,7 @@ export const insert = new ValidatedMethod({
       Memberships.find({ parcelId: doc.parcelId }).forEach(p => total += p.ownership.share.toNumber());
       const newTotal = total + doc.ownership.share;
       if (!(newTotal <= 1)) {
-        throw new Meteor.Error('err_sanityCheckFailed', 'Value does not make sense.',
+        throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1',
           `Old total: ${total}, New total: ${newTotal}`);
       }
     }
@@ -33,9 +33,10 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
+    const doc = checkExists(Memberships, _id);
+    checkModifier(doc, modifier, ['userId', 'role', 'ownership.share']);
     const newrole = modifier.$set.role;
-    if (newrole) {
-      const doc = Memberships.findOne(_id);
+    if (newrole && newrole !== doc.role) {
       checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
       checkAddMemberPermissions(this.userId, doc.communityId, newrole);
     }
@@ -50,7 +51,7 @@ export const remove = new ValidatedMethod({
   }).validator(),
 
   run({ _id }) {
-    const doc = Memberships.findOne(_id);
+    const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     Memberships.remove(_id);
   },
