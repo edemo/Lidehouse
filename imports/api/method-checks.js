@@ -68,7 +68,7 @@ export function checkModifier(object, modifier, modifiableFields) {
   modifiedFields.forEach((mf) => {
     if (!_.contains(modifiableFields, mf) && object[mf] !== modifier.$set[mf]) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Modifier: ${modifier.toJSON()}, field: ${mf}, object: ${object}`);
+        `Modifier: ${modifier}, field: ${mf}, object: ${object}`);
     }
   });
 }
