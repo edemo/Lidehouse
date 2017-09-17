@@ -35,34 +35,30 @@ if (Meteor.isServer) {
 
     describe('publications', function () {
 
-      describe('delegations.fromUser', function () {
-        it('sends all delegations set from user', function (done) {
-          const collector = new PublicationCollector({ userId: Fixture.demoUserId });
-          collector.collect(
-            'delegations.fromUser',
-            { userId: Fixture.demoUserId },
-            (collections) => {
-              chai.assert.equal(collections.delegations.length, 2);
-              chai.assert.equal(collections.users.length, 2);
-              done();
-            }
-          );
-        });
+      it('sends all delegations.fromUser', function (done) {
+        const collector = new PublicationCollector({ userId: Fixture.demoUserId });
+        collector.collect(
+          'delegations.fromUser',
+          { userId: Fixture.demoUserId },
+          (collections) => {
+            chai.assert.equal(collections.delegations.length, 2);
+            chai.assert.equal(collections.users.length, 2);
+            done();
+          }
+        );
       });
 
-      describe('delegations.toUser', function () {
-        it('sends all delegations set toward the user', function (done) {
-          const collector = new PublicationCollector({ userId: Fixture.demoUserId });
-          collector.collect(
-            'delegations.toUser',
-            { userId: Fixture.demoUserId },
-            (collections) => {
-              chai.assert.equal(collections.delegations.length, 2);
-              chai.assert.equal(collections.users.length, 2);
-              done();
-            }
-          );
-        });
+      it('sends all delegations.toUser', function (done) {
+        const collector = new PublicationCollector({ userId: Fixture.demoUserId });
+        collector.collect(
+          'delegations.toUser',
+          { userId: Fixture.demoUserId },
+          (collections) => {
+            chai.assert.equal(collections.delegations.length, 2);
+            chai.assert.equal(collections.users.length, 2);
+            done();
+          }
+        );
       });
     });
 
