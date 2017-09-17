@@ -33,6 +33,12 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
+    const newrole = modifier.$set.role;
+    if (newrole) {
+      const doc = Memberships.findOne(_id);
+      checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
+      checkAddMemberPermissions(this.userId, doc.communityId, newrole);
+    }
     Memberships.update({ _id }, modifier);
   },
 });
@@ -44,6 +50,8 @@ export const remove = new ValidatedMethod({
   }).validator(),
 
   run({ _id }) {
+    const doc = Memberships.findOne(_id);
+    checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     Memberships.remove(_id);
   },
 });
