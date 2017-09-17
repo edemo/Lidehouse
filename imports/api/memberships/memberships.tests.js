@@ -10,6 +10,11 @@ import { _ } from 'meteor/underscore';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 
 import { Communities } from '/imports/api/communities/communities.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { insert as insertMembership, update as updateMembership, remove as removeMembership  } from '/imports/api/memberships/methods.js';
+import { everybody } from '/imports/api/permissions/config.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Fraction } from 'fractional';
 
 if (Meteor.isServer) {
 
@@ -53,6 +58,75 @@ if (Meteor.isServer) {
             }
           );
         });
+      });
+    });
+
+    describe('permissions', function () {
+      let testMembershipId;
+      const randomRole = _.sample(everybody);
+      console.log(randomRole);
+      const doc = function (newrole) {
+        const newMembership = 
+        { communityId: Fixture.demoCommunityId,
+          userId: Fixture.demoUserId,
+          role: newrole,
+        }
+        if (newrole === 'owner') {
+          _.extend(newMembership, {
+            parcelId: Parcels.insert({ communityId: Fixture.demoCommunityId, serial: 45, units: 0}), 
+            ownership: {share: new Fraction(1, 1)}
+          })
+        }
+        return newMembership;
+      };
+
+      it('admin can add member', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, doc(randomRole));
+        chai.assert.isDefined(testMembershipId);
+        const testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership._id, testMembershipId);
+        done();
+      });
+
+      it('owner can add only tenant', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, doc('tenant'));
+        chai.assert.isDefined(testMembershipId);
+        const testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership._id, testMembershipId);
+        chai.assert.throws(() => {
+          testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, doc('manager'));
+        });
+        done();
+      });
+
+      it('manager can add only owner', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId }, doc('owner'));
+        chai.assert.isDefined(testMembershipId);
+        const testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership._id, testMembershipId);
+        chai.assert.throws(() => {
+          testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId }, doc('treasurer'));
+        });
+        done();
+      });
+     
+      it('admin can update member\'s role', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, doc('tenant'));
+        updateMembership._execute({ userId: Fixture.demoAdminId },
+           { _id: testMembershipId, modifier: { $set: { role: 'treasurer' } } });
+        const testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership.role, 'treasurer');
+        done();
+      });
+
+      it('owner cannot update member\'s role', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, doc('accountant'));
+        chai.assert.throws(() => { 
+          updateMembership._execute({ userId: Fixture.demoUserId },
+           { _id: testMembershipId, modifier: { $set: { role: 'treasurer' } } });
+        });
+        
+        done();
       });
     });
   });

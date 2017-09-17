@@ -52,6 +52,13 @@ if (Meteor.isServer) {
         done();
       });
 
+      it('cannot create new voting without permission', function (done) {
+        chai.assert.throws(() => {
+          votingId = insertTopic._execute({ userId: Fixture.demoUserId }, createVoting('yesno'));
+        });
+        done();
+      });
+
       it('can vote', function (done) {
         castVote._execute({ userId: Fixture.demoUserId }, { topicId: votingId, castedVote: [0] });
 

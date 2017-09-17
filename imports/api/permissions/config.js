@@ -19,7 +19,7 @@ const defaultRoles = [
 ];
 
 // Groupings just to ease configuration
-const everybody = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate', 'maintainer', 'guest'];
+export const everybody = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate', 'maintainer', 'guest'];
 const exceptGuest = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'maintainer', 'delegate'];
 const nobody = [];
 
