@@ -28,7 +28,7 @@ if (Meteor.isServer) {
 
     describe('publications', function () {
 
-      it('send all memberships.inCommunity', function (done) {
+      it('sends all memberships.inCommunity', function (done) {
         const collector = new PublicationCollector();
         collector.collect(
           'memberships.inCommunity',
@@ -58,7 +58,7 @@ if (Meteor.isServer) {
     describe('permissions', function () {
       let testMembershipId;
       const randomRole = _.sample(everybody);
-      const doc = function (newrole) {
+      const createMembership = function (newrole) {
         const newMembership = {
           communityId: Fixture.demoCommunityId,
           userId: Fixture.demoUserId,
@@ -74,37 +74,37 @@ if (Meteor.isServer) {
       };
 
       it('admin can add member', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, doc(randomRole));
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(randomRole));
         chai.assert.isDefined(testMembershipId);
         const testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership._id, testMembershipId);
+        chai.assert.equal(testMembership.role, randomRole);
         done();
       });
 
       it('owner can add only tenant', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, doc('tenant'));
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('tenant'));
         chai.assert.isDefined(testMembershipId);
         const testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership._id, testMembershipId);
+        chai.assert.equal(testMembership.role, 'tenant');
         chai.assert.throws(() => {
-          testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, doc('manager'));
+          insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('manager'));
         });
         done();
       });
 
       it('manager can add only owner', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId }, doc('owner'));
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId }, createMembership('owner'));
         chai.assert.isDefined(testMembershipId);
         const testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership._id, testMembershipId);
+        chai.assert.equal(testMembership.role, 'owner');
         chai.assert.throws(() => {
-          testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId }, doc('treasurer'));
+          insertMembership._execute({ userId: Fixture.demoManagerId }, createMembership('treasurer'));
         });
         done();
       });
 
       it('admin can update member\'s role', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, doc('tenant'));
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('tenant'));
         updateMembership._execute({ userId: Fixture.demoAdminId },
            { _id: testMembershipId, modifier: { $set: { role: 'treasurer' } } });
         const testMembership = Memberships.findOne(testMembershipId);
@@ -113,7 +113,7 @@ if (Meteor.isServer) {
       });
 
       it('owner cannot update member\'s role', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, doc('accountant'));
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('accountant'));
         chai.assert.throws(() => {
           updateMembership._execute({ userId: Fixture.demoUserId },
            { _id: testMembershipId, modifier: { $set: { role: 'treasurer' } } });

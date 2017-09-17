@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 
-import { checkAddMemberPermissions } from '/imports/api/method-utils.js';
+import { checkAddMemberPermissions } from '/imports/api/method-checks.js';
 import { Memberships } from './memberships.js';
 
 export const insert = new ValidatedMethod({
