@@ -46,13 +46,13 @@ export const Reports = {
   },
   AlbetetekSzamlai(year) {
     const communityId = Session.get('activeCommunityId');
-    const locator = PayAccounts.findOne({ communityId, name: 'Helyek' });
+    const locator = PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' });
     const befnem = PayAccounts.findOne({ communityId, name: 'Bevételek' });
     return {
       name: `Albetétek Számlái (${year})`,
       filter: { year },
       rows: [
-        { field: 'accounts.Helyek', values: locator.init().leafNames },
+        { field: 'accounts.Könyvelési helyek', values: locator.init().leafNames },
       ],
       cols: [
         { field: 'accounts.Bevételek', values: befnem.init().leafNames, total: 'Albetét folyószámla' },
@@ -62,7 +62,7 @@ export const Reports = {
   },
   AlbetetemElszamolasa(year) {
     const communityId = Session.get('activeCommunityId');
-    const locator = PayAccounts.findOne({ communityId, name: 'Helyek' });
+    const locator = PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' });
     const payins = PayAccounts.findOne({ communityId, name: 'Bevételek' });
     const myParcels = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
 
@@ -70,7 +70,7 @@ export const Reports = {
       name: `Albetétem Elszámolása (${year})`,
       filter: { year },
       rows: [
-        { field: 'accounts.Helyek', values: myParcels },
+        { field: 'accounts.Könyvelési helyek', values: myParcels },
         { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], total: year.toString() },
       ],
       cols: [

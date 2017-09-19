@@ -459,7 +459,7 @@ export function insertDemoFixture() {
 
   const locator = PayAccounts.update({
     communityId: demoCommunityId,
-    name: 'Helyek',
+    name: 'Könyvelési helyek',
   },
   {
     $set: {
@@ -533,8 +533,8 @@ export function insertDemoFixture() {
     amount: 10000,
     accounts: {
       'Pénz számlák': 'Bank főszámla',
-      'Bevételek': 'Közös költség',
-      'Helyek': '1',
+      'Bevételek': 'Közös költség befizetés',
+      'Könyvelési helyek': '1',
     },
   });
 
@@ -545,8 +545,8 @@ export function insertDemoFixture() {
     amount: 20000,
     accounts: {
       'Pénz számlák': 'Bank főszámla',
-      'Bevételek': 'Közös költség',
-      'Helyek': '2',
+      'Bevételek': 'Közös költség befizetés',
+      'Könyvelési helyek': '2',
     },
   });
 
@@ -557,8 +557,8 @@ export function insertDemoFixture() {
     amount: 30000,
     accounts: {
       'Pénz számlák': 'Pénztár',
-      'Bevételek': 'Közös költség',
-      'Helyek': '3',
+      'Bevételek': 'Közös költség befizetés',
+      'Könyvelési helyek': '3',
     },
   });
 
@@ -568,9 +568,9 @@ export function insertDemoFixture() {
     date: new Date('2017-06-04'),
     amount: 40000,
     accounts: {
-      'Számlák': 'Bank felújítási alap',
+      'Pénz számlák': 'Bank felújítási alap',
       'Bevételek': 'Felújítási célbefizetés',
-      'Helyek': '4',
+      'Könyvelési helyek': '4',
     },
   });
 
@@ -597,7 +597,7 @@ export function insertDemoFixture() {
     amount: 52000,
     accounts: {
       'Bevételek': 'Felújítási célbefizetés',
-      'Hely': '4',
+      'Könyvelési helyek': '4',
     },
   });
 
@@ -609,7 +609,7 @@ export function insertDemoFixture() {
     date: new Date('2017-01-01'),
     amount: 24000,
     accounts: {
-      'Kiadások': 'Anyag',
+      'Kiadások': 'Anyagok',
     },
   });
 
@@ -619,7 +619,7 @@ export function insertDemoFixture() {
     date: new Date('2017-01-01'),
     amount: 415000,
     accounts: {
-      'Kiadások': 'Felújítás',
+      'Kiadások': 'Üzemeltetés',
     },
   });
 
