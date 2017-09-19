@@ -5,7 +5,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
-import { checkExists, checkNotExists, checkTopicPermissions, checkModifier } from '/imports/api/method-utils.js';
+import { checkExists, checkNotExists, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema

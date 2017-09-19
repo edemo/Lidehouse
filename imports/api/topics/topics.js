@@ -32,7 +32,7 @@ Topics.schema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, optional: true },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
-  sticky: { type: Boolean, optional: true, defaultValue: false },
+  sticky: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
 });
 
