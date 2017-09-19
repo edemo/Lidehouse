@@ -1,6 +1,8 @@
 import { _ } from 'meteor/underscore';
 import { PayAccounts } from './payaccounts.js';
-// AccountCathegories  would be better  than PayAccounts 
+
+// TODO: AccountCathegories  would be better  than PayAccounts
+
 const PayAccountsTemplate = [
   { name: 'Bevételek',
     children: [
@@ -23,7 +25,7 @@ const PayAccountsTemplate = [
         ],
       },
       { name: 'Hitelfelvétel',
-        children: [       
+        children: [
           { name: 'Bank hitel' },
         ],
       },
@@ -63,11 +65,11 @@ const PayAccountsTemplate = [
         { name: 'Bank hitel törlesztés' },
         ],
       },
-        { name: 'Egyéb kiadások',
+      { name: 'Egyéb kiadások',
         children: [
         { name: 'Egyéb kiadás' },
         ],
-      },         
+      },
     ],
   },
 
@@ -108,7 +110,7 @@ const PayAccountsTemplate = [
         { name: '3. Albetét' },
         ],
       },
-       { name: 'Központ',
+      { name: 'Központ',
         children: [
         { name: 'Kert' },
         { name: 'Kazán' },
@@ -116,10 +118,8 @@ const PayAccountsTemplate = [
       },
     ],
   },
-  
-  
 
-  // { name: 'MEGJEGYZÉS', children: [ { name: '*', children: [ { name: 'Partner neve  (számlán,  bizonylaton)' }, { name: 'Számla száma' }, { name: 'Másik fél bankszámla vagy  pénztárbizonylat száma' }, { name: 'Közlemény' } ] } ], }
+// { name: 'MEGJEGYZÉS', children: [ { name: '*', children: [ { name: 'Partner neve  (számlán,  bizonylaton)' }, { name: 'Számla száma' }, { name: 'Másik fél bankszámla vagy  pénztárbizonylat száma' }, { name: 'Közlemény' } ] } ], }
 ];
 
 export function insertPayAccountTemplate(communityId) {
