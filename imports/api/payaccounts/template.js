@@ -103,11 +103,8 @@ const PayAccountsTemplate = [
 
   { name: 'Helyek',
     children: [
-      { name: 'A épület',
+      { name: 'Főépület',
         children: [
-        { name: '1. Albetét' },
-        { name: '2. Albetét' },
-        { name: '3. Albetét' },
         ],
       },
       { name: 'Központ',

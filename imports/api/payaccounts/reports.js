@@ -6,12 +6,12 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 export const Reports = {
   Egyenlegek() {
     const communityId = Session.get('activeCommunityId');
-    const accountLots = PayAccounts.findOne({ communityId, name: 'Számlák' });
+    const accountLots = PayAccounts.findOne({ communityId, name: 'Pénz számlák' });
     return {
       name: 'Egyenlegek',
       filter: { phase: 'done' },
       rows: [
-        { field: 'accounts.Számlák', values: accountLots.init().leafNames },
+        { field: 'accounts.Pénz számlák', values: accountLots.init().leafNames },
       ],
       cols: [],
     };
@@ -81,12 +81,12 @@ export const Reports = {
   },
   Nyito() {
     const communityId = Session.get('activeCommunityId');
-    const accountLots = PayAccounts.findOne({ communityId, name: 'Számlák' });
+    const accountLots = PayAccounts.findOne({ communityId, name: 'Pénz számlák' });
     return {
       name: 'Nyitó',
       filter: { phase: 'done', ref: 'nyitó' },
       rows: [
-        { field: 'accounts.Számlák', values: accountLots.init().leafNames },
+        { field: 'accounts.Pénz számlák', values: accountLots.init().leafNames },
       ],
       cols: [],
     };
