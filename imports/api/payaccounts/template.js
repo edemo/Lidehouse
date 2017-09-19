@@ -101,7 +101,7 @@ const PayAccountsTemplate = [
     ],
   },
 
-  { name: 'könyvelési helyek',
+  { name: 'Könyvelési helyek',
     children: [
       { name: 'A épület',
         children: [
