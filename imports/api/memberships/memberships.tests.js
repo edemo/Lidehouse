@@ -73,53 +73,66 @@ if (Meteor.isServer) {
         return newMembership;
       };
 
-      it('admin can add member', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(randomRole));
+      it('admin can add/update/remove member', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, 
+          createMembership(randomRole));
         chai.assert.isDefined(testMembershipId);
-        const testMembership = Memberships.findOne(testMembershipId);
+        let testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.role, randomRole);
+        chai.assert.deepEqual(Memberships.find().count(), 12);
+        updateMembership._execute({ userId: Fixture.demoAdminId },
+          { _id: testMembershipId, modifier: { $set: { role: 'treasurer' } } });
+        testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership.role, 'treasurer');
+        removeMembership._execute({ userId: Fixture.demoAdminId },
+          { _id: testMembershipId });
+        chai.assert.deepEqual(Memberships.find().count(), 11);
         done();
       });
 
-      it('owner can add only tenant', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('tenant'));
+      it('owner can only add/update?/remove tenant', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, 
+          createMembership('tenant'));
         chai.assert.isDefined(testMembershipId);
-        const testMembership = Memberships.findOne(testMembershipId);
+        let testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.role, 'tenant');
+        updateMembership._execute({ userId: Fixture.demoUserId },
+          { _id: testMembershipId, modifier: { $set: { role: 'tenant' } } });
+        testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership.role, 'tenant');
+        chai.assert.throws(() => {
+          updateMembership._execute({ userId: Fixture.demoUserId }, 
+            { _id: testMembershipId, modifier: { $set: { role: 'manager' } } });
+        });
         chai.assert.throws(() => {
           insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('manager'));
         });
+        removeMembership._execute({ userId: Fixture.demoUserId },{ _id: testMembershipId });
+        chai.assert.deepEqual(Memberships.find().count(), 11);
         done();
       });
 
-      it('manager can add only owner', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId }, createMembership('owner'));
+      it('manager can only add/update?/remove owner', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId }, 
+          createMembership('owner'));
         chai.assert.isDefined(testMembershipId);
-        const testMembership = Memberships.findOne(testMembershipId);
+        let testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership.role, 'owner');
+        updateMembership._execute({ userId: Fixture.demoManagerId },
+          { _id: testMembershipId, modifier: { $set: { role: 'owner' } } });
+        testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.role, 'owner');
         chai.assert.throws(() => {
-          insertMembership._execute({ userId: Fixture.demoManagerId }, createMembership('treasurer'));
+          updateMembership._execute({ userId: Fixture.demoManagerId }, 
+            { _id: testMembershipId, modifier: { $set: { role: 'manager' } } });
         });
-        done();
-      });
-
-      it('admin can update member\'s role', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('tenant'));
-        updateMembership._execute({ userId: Fixture.demoAdminId },
-           { _id: testMembershipId, modifier: { $set: { role: 'treasurer' } } });
-        const testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership.role, 'treasurer');
-        done();
-      });
-
-      it('owner cannot update member\'s role', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('accountant'));
         chai.assert.throws(() => {
-          updateMembership._execute({ userId: Fixture.demoUserId },
-           { _id: testMembershipId, modifier: { $set: { role: 'treasurer' } } });
+          insertMembership._execute({ userId: Fixture.demoManagerId }, createMembership('manager'));
         });
+        removeMembership._execute({ userId: Fixture.demoManagerId },{ _id: testMembershipId });
+        chai.assert.deepEqual(Memberships.find().count(), 11);
         done();
       });
     });
   });
-}
+};
