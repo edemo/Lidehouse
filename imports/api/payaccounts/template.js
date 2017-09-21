@@ -1,6 +1,8 @@
 import { _ } from 'meteor/underscore';
 import { PayAccounts } from './payaccounts.js';
 
+// TODO: AccountCathegories  would be better  than PayAccounts
+
 const PayAccountsTemplate = [
   { name: 'Bevételek',
     children: [
@@ -22,9 +24,9 @@ const PayAccountsTemplate = [
         { name: 'Egyéb bevétel' },
         ],
       },
-      { name: 'Egyéb bevételek',
+      { name: 'Hitelfelvétel',
         children: [
-         { name: 'Hitelfelvétel' },
+          { name: 'Bank hitel' },
         ],
       },
     ],
@@ -34,7 +36,22 @@ const PayAccountsTemplate = [
     children: [
       { name: 'Költségek',
         children: [
-        { name: 'Anyag' },
+        { name: 'Víz' },
+        { name: 'Csatorna' },
+        { name: 'Áram' },
+        { name: 'Szemét' },
+        { name: 'Anyagok' },
+        { name: 'Takarítás' },
+        { name: 'Karbantartás' },
+        { name: 'Üzemeltetés' },
+        { name: 'Közösképviselet' },
+        { name: 'Megbízási díjak' },
+        { name: 'Bérek és közterhek' },
+        { name: 'Jogi költségek' },
+        { name: 'Hatósági díjak' },
+        { name: 'Adók és bírságok' },
+        { name: 'Kamat és bank költségek' },
+        { name: 'Egyéb költségek' },
         ],
       },
       { name: 'Beruházások',
@@ -43,22 +60,31 @@ const PayAccountsTemplate = [
         { name: 'Gép, berendezés' },
         ],
       },
+      { name: 'Hitel törlesztés',
+        children: [
+        { name: 'Bank hitel törlesztés' },
+        ],
+      },
       { name: 'Egyéb kiadások',
         children: [
-        { name: 'Hitel törlesztés' },
+        { name: 'Egyéb kiadás' },
         ],
       },
     ],
   },
 
-  { name: 'Számlák',
+  { name: 'Pénz számlák',
     children: [
-      { name: '*',
+      { name: 'Bank',
         children: [
-        { name: 'Pénztár' },
         { name: 'Bank főszámla' },
         { name: 'Bank felújítási alap' },
         { name: 'Hitelszámla' },
+        ],
+      },
+      { name: 'Készpénz',
+        children: [
+        { name: 'Pénztár 1' },
         ],
       },
     ],
@@ -75,11 +101,22 @@ const PayAccountsTemplate = [
     ],
   },
 
-  { name: 'Helyek',
-    children: [],
+  { name: 'Könyvelési helyek',
+    children: [
+      { name: 'Főépület',
+        children: [
+        ],
+      },
+      { name: 'Központ',
+        children: [
+        { name: 'Kert' },
+        { name: 'Kazán' },
+        ],
+      },
+    ],
   },
 
-  // { name: 'MEGJEGYZÉS', children: [ { name: '*', children: [ { name: 'Partner neve  (számlán,  bizonylaton)' }, { name: 'Számla száma' }, { name: 'Másik fél bankszámla vagy  pénztárbizonylat száma' }, { name: 'Közlemény' } ] } ], }
+// { name: 'MEGJEGYZÉS', children: [ { name: '*', children: [ { name: 'Partner neve  (számlán,  bizonylaton)' }, { name: 'Számla száma' }, { name: 'Másik fél bankszámla vagy  pénztárbizonylat száma' }, { name: 'Közlemény' } ] } ], }
 ];
 
 export function insertPayAccountTemplate(communityId) {

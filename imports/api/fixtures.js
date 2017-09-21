@@ -459,7 +459,7 @@ export function insertDemoFixture() {
 
   const locator = PayAccounts.update({
     communityId: demoCommunityId,
-    name: 'Helyek',
+    name: 'Könyvelési helyek',
   },
   {
     $set: {
@@ -498,7 +498,7 @@ export function insertDemoFixture() {
     ref: 'nyitó',
     amount: 100000,
     accounts: {
-      'Számlák': 'Pénztár',
+      'Pénz számlák': 'Pénztár 1',
     },
   });
 
@@ -509,7 +509,7 @@ export function insertDemoFixture() {
     ref: 'nyitó',
     amount: 110000,
     accounts: {
-      'Számlák': 'Bank főszámla',
+      'Pénz számlák': 'Bank főszámla',
     },
   });
 
@@ -520,7 +520,7 @@ export function insertDemoFixture() {
     ref: 'nyitó',
     amount: 120000,
     accounts: {
-      'Számlák': 'Bank felújítási alap',
+      'Pénz számlák': 'Bank felújítási alap',
     },
   });
 
@@ -532,9 +532,9 @@ export function insertDemoFixture() {
     date: new Date('2017-06-01'),
     amount: 10000,
     accounts: {
-      'Számlák': 'Bank főszámla',
-      'Bevételek': 'Közös költség',
-      'Hely': '1',
+      'Pénz számlák': 'Bank főszámla',
+      'Bevételek': 'Közös költség befizetés',
+      'Könyvelési helyek': '1',
     },
   });
 
@@ -544,9 +544,9 @@ export function insertDemoFixture() {
     date: new Date('2017-06-02'),
     amount: 20000,
     accounts: {
-      'Számlák': 'Bank főszámla',
-      'Bevételek': 'Közös költség',
-      'Hely': '2',
+      'Pénz számlák': 'Bank főszámla',
+      'Bevételek': 'Közös költség befizetés',
+      'Könyvelési helyek': '2',
     },
   });
 
@@ -556,9 +556,9 @@ export function insertDemoFixture() {
     date: new Date('2017-06-03'),
     amount: 30000,
     accounts: {
-      'Számlák': 'Pénztár',
-      'Bevételek': 'Közös költség',
-      'Hely': '3',
+      'Pénz számlák': 'Pénztár',
+      'Bevételek': 'Közös költség befizetés',
+      'Könyvelési helyek': '3',
     },
   });
 
@@ -568,9 +568,9 @@ export function insertDemoFixture() {
     date: new Date('2017-06-04'),
     amount: 40000,
     accounts: {
-      'Számlák': 'Bank felújítási alap',
+      'Pénz számlák': 'Bank felújítási alap',
       'Bevételek': 'Felújítási célbefizetés',
-      'Hely': '4',
+      'Könyvelési helyek': '4',
     },
   });
 
@@ -597,7 +597,7 @@ export function insertDemoFixture() {
     amount: 52000,
     accounts: {
       'Bevételek': 'Felújítási célbefizetés',
-      'Hely': '4',
+      'Könyvelési helyek': '4',
     },
   });
 
@@ -609,7 +609,7 @@ export function insertDemoFixture() {
     date: new Date('2017-01-01'),
     amount: 24000,
     accounts: {
-      'Kiadások': 'Anyag',
+      'Kiadások': 'Anyagok',
     },
   });
 
@@ -619,7 +619,7 @@ export function insertDemoFixture() {
     date: new Date('2017-01-01'),
     amount: 415000,
     accounts: {
-      'Kiadások': 'Felújítás',
+      'Kiadások': 'Üzemeltetés',
     },
   });
 
