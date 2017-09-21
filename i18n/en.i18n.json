@@ -130,8 +130,18 @@
       "label": "Owner",
       "share": {
         "label": "Ownership share"
+      },
+      "representor": {
+        "label": "Representor?"
+      }
+    },
+    "benefactorship": {
+      "label": "Benefactor",
+      "type": {
+        "label": "Type"
       }
     }
+
   },
   "schemaDelegations": {
     "sourceUserId": {

@@ -34,10 +34,10 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Memberships, _id);
-    checkModifier(doc, modifier, ['userId', 'role', 'ownership.share']);
+    checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
+    checkModifier(doc, modifier, ['userId', 'role', 'ownership.share', 'ownership.representor']);
     const newrole = modifier.$set.role;
     if (newrole && newrole !== doc.role) {
-      checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
       checkAddMemberPermissions(this.userId, doc.communityId, newrole);
     }
     Memberships.update({ _id }, modifier);

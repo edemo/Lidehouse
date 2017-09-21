@@ -55,12 +55,24 @@ Parcels.helpers({
   share() {
     return new Fraction(this.units, this.totalunits());
   },
-  ownerName() {
+  representorId() {
+    const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
+    const rep = firstDefinedRep || Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner' });
+    return rep.userId;
+  },
+  userNames() {
     let result = '';
+    const representorId = this.representorId();
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
     ownerships.forEach((m) => {
       const user = Meteor.users.findOne(m.userId);
-      result += `${user.fullName()} (${m.ownership.share.toStringLong()})<br>`;
+      const repBadge = representorId === m.userId ? '(*)' : '';
+      result += `${user.fullName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
+    });
+    const benefactorships = Memberships.find({ communityId: this.communityId, role: 'benefactor', parcelId: this._id });
+    benefactorships.forEach((m) => {
+      const user = Meteor.users.findOne(m.userId);
+      result += `${user.fullName()}<br>`;
     });
     return result;
   },

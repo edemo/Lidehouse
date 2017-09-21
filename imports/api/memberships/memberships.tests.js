@@ -55,6 +55,48 @@ if (Meteor.isServer) {
       });
     });
 
+    describe('representor', function () {
+      let parcelId;
+      let ownership1Id, ownership2Id, ownership3Id;
+      beforeEach(function () {
+        parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, serial: 45, units: 0 });
+        ownership1Id = Memberships.insert({
+          communityId: Fixture.demoCommunityId,
+          parcelId,
+          userId: Fixture.dummyUsers[1],
+          role: 'owner',
+          ownership: { share: new Fraction(1, 4), representor: false }
+        });
+        ownership2Id = Memberships.insert({
+          communityId: Fixture.demoCommunityId,
+          parcelId,
+          userId: Fixture.dummyUsers[2],
+          role: 'owner',
+          ownership: { share: new Fraction(1, 4), representor: true }
+        });
+        ownership3Id = Memberships.insert({
+          communityId: Fixture.demoCommunityId,
+          parcelId,
+          userId: Fixture.dummyUsers[3],
+          role: 'owner',
+          ownership: { share: new Fraction(1, 4) }
+        });
+      });
+
+      it('selects representor when specified', function (done) {
+        const parcel = Parcels.findOne(parcelId);
+        chai.assert.equal(parcel.representorId(), Fixture.dummyUsers[2]);
+        done();
+      });
+
+      it('selects representor when not specified', function (done) {
+        Memberships.update(ownership2Id, { $set: { 'ownership.representor': false } });
+        const parcel = Parcels.findOne(parcelId);
+        chai.assert.equal(parcel.representorId(), Fixture.dummyUsers[1]);
+        done();
+      });
+    });
+
     describe('permissions', function () {
       let testMembershipId;
       const randomRole = _.sample(everybody);
@@ -81,11 +123,11 @@ if (Meteor.isServer) {
         done();
       });
 
-      it('owner can add only tenant', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('tenant'));
+      it('owner can add only benefactor', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('benefactor'));
         chai.assert.isDefined(testMembershipId);
         const testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership.role, 'tenant');
+        chai.assert.equal(testMembership.role, 'benefactor');
         chai.assert.throws(() => {
           insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('manager'));
         });
@@ -104,7 +146,7 @@ if (Meteor.isServer) {
       });
 
       it('admin can update member\'s role', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('tenant'));
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('benefactor'));
         updateMembership._execute({ userId: Fixture.demoAdminId },
            { _id: testMembershipId, modifier: { $set: { role: 'treasurer' } } });
         const testMembership = Memberships.findOne(testMembershipId);
