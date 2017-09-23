@@ -25,7 +25,7 @@ Template.Community_roleships_page.helpers({
   reactiveTableDataFn() {
     return () => {
       const communityId = Session.get('activeCommunityId');
-      return Memberships.find({ communityId, role: { $not: 'owner' } }).fetch();
+      return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest'] } } }).fetch();
     };
   },
   optionsFn() {
