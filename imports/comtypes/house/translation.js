@@ -100,6 +100,19 @@ export const HouseTranslation = {
       "habitants": {
         "label": "Number of habitants",
         "placeholder": "(eg. 3)"
+      },
+      "freeFields": {
+        "label": "Free fields",
+        "$": {
+          "key": {
+            "label": "Field name",
+            "placeholder": "(pl. Height)"
+          },
+          "value": {
+            "label": "Field value",
+            "placeholder": "(eg. 3.5m)"
+          }
+        }
       }
     }
   },
@@ -202,6 +215,19 @@ export const HouseTranslation = {
       "habitants": {
         "label": "Lakók száma",
         "placeholder": "(pl. 3)"
+      },
+      "freeFields": {
+        "label": "Kötetlen mezők",
+        "$": {
+          "key": {
+            "label": "Megnevezés",
+            "placeholder": "(pl. Belmagasság)"
+          },
+          "value": {
+            "label": "Érték",
+            "placeholder": "(pl. 3,5m)"
+          }
+        }
       }
     }
   }
