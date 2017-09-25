@@ -14,8 +14,18 @@ export function roleshipColumns() {
 
 export function ownershipColumns() {
   return [
-    { data: 'user().fullName()', title: __('owner') },
+    { data: 'user().fullName()', title: __('user') },
     { data: 'ownership.share', title: __('schemaMemberships.ownership.share.label') },
+    { data: 'ownership.representor', title: __('schemaMemberships.ownership.representor.label'), render: Render.translate },
+    { data: '_id', render: Render.buttonEdit },
+    { data: '_id', render: Render.buttonDelete },
+  ];
+}
+
+export function benefactorshipColumns() {
+  return [
+    { data: 'user().fullName()', title: __('user') },
+    { data: 'benefactorship.type', title: __('schemaMemberships.benefactorship.type.label'), render: Render.translate },
     { data: '_id', render: Render.buttonEdit },
     { data: '_id', render: Render.buttonDelete },
   ];

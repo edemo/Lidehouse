@@ -12,16 +12,24 @@ import { Roles } from '/imports/api/permissions/roles.js';
 import { Fraction } from 'fractional';
 import '/utils/fractional.js';  // TODO: should be automatic, but not included in tests
 import { Factory } from 'meteor/dburles:factory';
+import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
 const OwnershipSchema = new SimpleSchema({
   share: { type: Fraction },
+  representor: { type: Boolean, optional: true },
 });
 
-// Memberships are the Ownerships and the Roleships in a single collection
+const benefactorTypeValues = ['rental', 'favor', 'right'];
+const BenefactorshipSchema = new SimpleSchema({
+  type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues) },
+});
+
+// Memberships are the Ownerships, Benefactorships and Roleships in a single collection
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id,
     autoform: {
       options() {
@@ -36,9 +44,10 @@ Memberships.schema = new SimpleSchema({
       },
     },
   },
-  // TODO should be conditional on role
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  // TODO should be conditional on role === 'owner'
   ownership: { type: OwnershipSchema, optional: true },
+  // TODO should be conditional on role === 'benefactor'
+  benefactorship: { type: BenefactorshipSchema, optional: true },
 });
 
 Memberships.helpers({
