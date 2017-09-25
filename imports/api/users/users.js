@@ -19,7 +19,7 @@ export const CountrySchema = new SimpleSchema({
   code: { type: String, regEx: /^[A-Z]{2}$/ },
 });
 
-export const UserProfileSchema = new SimpleSchema({
+export const PersonProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
   birthday: { type: Date, optional: true },
@@ -31,9 +31,10 @@ export const UserProfileSchema = new SimpleSchema({
 });
 */
 
-const UserProfileSchema = new SimpleSchema({
-  firstName: { type: String },
-  lastName: { type: String },
+const PersonProfileSchema = new SimpleSchema({
+  firstName: { type: String, optional: true },
+  lastName: { type: String, optional: true },
+  nick: { type: String, optional: true },
   bio: { type: String, optional: true },
 });
 
@@ -58,7 +59,7 @@ Meteor.users.schema = new SimpleSchema({
       return undefined; // means leave whats there alone for Updates, Upserts
     },
   },*/
-  profile: { type: UserProfileSchema, optional: true },
+  profile: { type: PersonProfileSchema, optional: true },
   avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar },
   status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', autoform: { omit: true } },
 

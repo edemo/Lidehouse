@@ -20,6 +20,10 @@
         "label": "Last name",
         "placeholder": "(eg. Keaton)"
       },
+      "nick": {
+        "label": "Nick name",
+        "placeholder": "(pl. Mikey75)"
+      },
       "bio": {
         "label": "Bio",
         "placeholder": "(pl. On sundays I like to play the piano. Sorry :) )"

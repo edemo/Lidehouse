@@ -20,6 +20,10 @@
         "label": "Vezetéknév",
         "placeholder": "(pl. Galambos)"
       },
+      "nick": {
+        "label": "Becenév",
+        "placeholder": "(pl. Miki75)"
+      },
       "bio": {
         "label": "Bemutatkozás",
         "placeholder": "(pl. Vasárnaponként szoktam gyakorolni zongorázni. Bocsi :) )"
