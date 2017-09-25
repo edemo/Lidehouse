@@ -62,6 +62,11 @@ Parcels.helpers({
   share() {
     return new Fraction(this.units, this.totalunits());
   },
+  ownedShare() {
+    let total = new Fraction(0);
+    Memberships.find({ parcelId: this._id }).forEach(p => total = total.add(p.ownership.share));
+    return total;
+  },
   representorId() {
     const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
     const rep = firstDefinedRep || Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner' });

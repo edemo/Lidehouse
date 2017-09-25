@@ -5,6 +5,7 @@ import { Fraction } from 'fractional';
 
 import { checkExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
 import { Memberships } from './memberships.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
@@ -13,14 +14,13 @@ export const insert = new ValidatedMethod({
   run(doc) {
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     if (doc.role === 'owner') {
-      let total = 0;
-      Memberships.find({ parcelId: doc.parcelId }).forEach(p => total += p.ownership.share.toNumber());
-      const newTotal = total + doc.ownership.share;
-      if (!(newTotal <= 1)) {
+      const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
+      const newTotal = total.add(doc.ownership.share);
+      if (newTotal.numerator > newTotal.denominator) {
         throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1',
           `Old total: ${total}, New total: ${newTotal}`);
       }
-    }
+    };
     return Memberships.insert(doc);
   },
 });
@@ -40,6 +40,14 @@ export const update = new ValidatedMethod({
     if (newrole && newrole !== doc.role) {
       checkAddMemberPermissions(this.userId, doc.communityId, newrole);
     }
+    if (doc.role === 'owner') {
+      const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
+      const newTotal = total.subtract(doc.ownership.share).add(modifier.$set['ownership.share']);
+      if (newTotal.numerator > newTotal.denominator) {
+        throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1',
+          `Old total: ${total}, New total: ${newTotal}`);
+      }
+    };
     Memberships.update({ _id }, modifier);
   },
 });
