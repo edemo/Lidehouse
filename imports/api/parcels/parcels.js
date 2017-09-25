@@ -55,6 +55,11 @@ Parcels.helpers({
   share() {
     return new Fraction(this.units, this.totalunits());
   },
+  ownedShare() {
+    let total = new Fraction(0);
+    Memberships.find({ parcelId: this._id }).forEach(p => total = total.add(p.ownership.share));
+    return total;
+  },
   ownerName() {
     let result = '';
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
