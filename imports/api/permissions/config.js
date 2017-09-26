@@ -5,28 +5,28 @@ import { Roles } from './roles.js';
 import { Permissions } from './permissions.js';
 
 const defaultRoles = [
-  { name: 'admin' },
-  { name: 'manager' },
-  { name: 'owner' },
-  { name: 'tenant' },
-  { name: 'moderator' },
-  { name: 'accountant' },
-  { name: 'treasurer' },
-  { name: 'overseer' },
-  { name: 'delegate' },
-  { name: 'maintainer' },
-  { name: 'guest' },
+  { name: 'admin' },        // Creator of the community. Can give out all other roles and take them back.
+  { name: 'manager' },      // The manager (kk) of the community. Registers owners.
+  { name: 'owner' },        // Title holder of a parcel. Has voting rights.
+  { name: 'benefactor' },   // Uses the parcel. Owner handed over beneficiary rights to him/her.
+  { name: 'moderator' },    // Moderates the conversations on topics. Can remove comments.
+  { name: 'accountant' },   // Can set the PayAccount structure.
+  { name: 'treasurer' },    // Can add new financial transactions.
+  { name: 'overseer' },     // Can oversee financial transactions.
+  { name: 'delegate' },     // Can vote for someone else.
+  { name: 'maintainer' },   // Works on the reported errors. Sees them, can coment on them.
+  { name: 'guest' },        // Just poking around. Somone invited him/her to take a look.
 ];
 
 // Groupings just to ease configuration
-export const everybody = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate', 'maintainer', 'guest'];
-const exceptGuest = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'maintainer', 'delegate'];
+export const everybody = ['admin', 'manager', 'owner', 'benefactor', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate', 'maintainer', 'guest'];
+const exceptGuest = ['admin', 'manager', 'owner', 'benefactor', 'moderator', 'accountant', 'treasurer', 'overseer', 'maintainer', 'delegate'];
 const nobody = [];
 
 export const canAddMemberWithRole = {
   admin: everybody,
-  manager: ['owner'],
-  owner: ['tenant'],
+  manager: ['owner', 'benefactor'],
+  owner: ['benefactor'],
 };
 
 const permissions = [

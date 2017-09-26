@@ -130,6 +130,15 @@
       "label": "Tulajdon",
       "share": {
         "label": "Tulajdonrész"
+      },
+      "representor": {
+        "label": "Képviselője?"
+      }
+    },
+    "benefactorship": {
+      "label": "Haszonélvezet",
+      "type": {
+        "label": "Típus"
       }
     }
   },
@@ -203,8 +212,6 @@
       "label": "Könyvelési fiókok"
     }
   },
-  "undefined": "nincs megadva",
-  "votingShare": "Szavazati hányad",
 
   // Shared
   "createdAt": "Létrehozva",
@@ -214,16 +221,29 @@
 
   "role": "szerep",
   "roles": "szerepek",
+  "owners": "tulajdonosok",
+  "benefactors": "haszonélvezők",
+
+  "undefined": "nincs megadva",
+  "true": "igen",
+  "false": "nem",
+  "votingShare": "Szavazati hányad",
+
   // roles
   "admin": "admin",
   "manager": "közös képviselő",
   "owner": "tulajdonos",
+  "benefactor": "haszonélvező",
   "moderator": "moderátor",
   "accountant": "könyvelő",
   "treasurer": "kincstárnok",
   "overseer": "számvizsgáló",
   "delegate": "meghatalmazott",
   "guest": "vendég",
+
+  "rental": "Bérlet",
+  "favor": "Szívességi használat",
+  "right": "Haszonélvezeti jog",
 
   // menu
   "Main": "Főoldal",
@@ -424,6 +444,9 @@
   "insert ownership successful": "Albetét tulajdonosa rögzítve",
   "update ownership successful": "Albetét tulajdonosa módosítva",
   "delete ownership successful": "Albetét tulajdonosa törölve",
+  "insert benefactorship successful": "Albetét használója rögzítve",
+  "update benefactorship successful": "Albetét használója módosítva",
+  "delete benefactorship successful": "Albetét használója törölve",
   "insert roleship successful": "Szerep kiadva",
   "update roleship successful": "Szerep módosítva",
   "delete roleship successful": "Szerep visszavonva",
@@ -445,6 +468,7 @@
   "Are you sure you want to": "Biztos benne, hogy",
   "delete parcel": "törli az albetétet",
   "delete ownership": "megszünteti a tulajdonviszonyt",
+  "delete benefactorship": "megszünteti a használati viszonyt",
   "delete roleship": "visszavonja a kiadott szerepet",
   "delete topic": "törli a bejegyzést",
   "delete ticket": "törli a hibajegyet",

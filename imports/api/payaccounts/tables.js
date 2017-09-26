@@ -3,10 +3,15 @@ import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 
 export function payaccountColumns() {
+  const constrainText = function constrainText(text, charCount) {
+    return (text.length > charCount) ?
+      text.substr(0, charCount - 3) + '...' :
+      text;
+  };
   const displayMids = function displayMids(cellData, renderType, currentRow) {
     let result = '';
     cellData.forEach(c => result += c.name + ', ');
-    return result;
+    return constrainText(result, 50);
   };
   const displayLeafs = function displayLeafs(cellData, renderType, currentRow) {
     let result = '';
@@ -15,7 +20,7 @@ export function payaccountColumns() {
         result += PayAccounts.leafDisplay(cc.name) + ', '
       )
     );
-    return result;
+    return constrainText(result, 50);
   };
   return [
     { data: 'name', title: __('schemaPayAccounts.name.label') },
