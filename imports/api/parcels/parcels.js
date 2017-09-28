@@ -70,7 +70,7 @@ Parcels.helpers({
   representorId() {
     const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
     const rep = firstDefinedRep || Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner' });
-    return rep.userId;
+    return rep ? rep.userId : undefined;
   },
   userNames() {
     let result = '';
