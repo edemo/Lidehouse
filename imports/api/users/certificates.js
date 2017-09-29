@@ -11,13 +11,13 @@ const PersonIdentifierSchema = new SimpleSchema({
   dateOfBirth: { type: Date },
   mothersMaidenName: { type: String },
   officialAddress: { type: String },
-  officialIdentifier: { type: String },
+  officialIdentifier: { type: String }, // szig szam
 });
 
 const LegalEntityIdentifierSchema = new SimpleSchema({
   name: { type: String },
   officialAddress: { type: String },
-  officialIdentifier: { type: String },
+  officialIdentifier: { type: String }, //cegjegyzek szam
 });
 
 export const UserIdentifierSchema = new SimpleSchema({
