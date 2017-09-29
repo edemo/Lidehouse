@@ -1,20 +1,9 @@
 <template name="Vote_results">
   <div class="vote-container white-box">
-    <div class="row vote-title">
-      <div class="col-xs-6 title-size">
-        {{title}}
+    <div class="row">
+      <div class="col-xs-12">
+        {{> ReactiveDatatable tableData=dataFn options=optionsFn}}
       </div>
-    </div>
-    <div class="row">
-      {{text}}
-    </div>
-    <div class="row">
-      {{#each sum in this.voteSummaryDisplay}}
-      <div>{{_ sum.choice}}: {{sum.votingShare}} ({{percentage sum.votingShare.toNumber}})</div>
-      {{/each}}
-    </div>
-    <div class="row">
-      {{> ReactiveDatatable tableData=dataFn options=optionsFn}}
     </div>
   </div>
 </template>
