@@ -95,6 +95,15 @@ if (Meteor.isServer) {
         chai.assert.equal(parcel.representorId(), Fixture.dummyUsers[1]);
         done();
       });
+
+      it('if no owner, representor is undefined', function (done) {
+        Memberships.remove(ownership1Id);
+        Memberships.remove(ownership2Id);
+        Memberships.remove(ownership3Id);
+        const parcel = Parcels.findOne(parcelId);
+        chai.assert.isUndefined(parcel.representorId());
+        done();
+      });
     });
 
     describe('permissions', function () {
