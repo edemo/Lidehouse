@@ -248,6 +248,12 @@
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
+
+  // delegations
+  "delegationsFromMeInstructions": "Here you can set up delegations. So someone else can use your vote in your name.",
+  "delegationsFromMeInstructions2": "The delegations you set up here, can be revoked at any time, or can be redirected toward someone else.",
+  "delegationsToMeInstructions": "Here you can see those who have set up delegations toward you, asking you to vote for them.",
+  "delegationsToMeInstructions2": "These delegations you may refuse to accept. You can also disallow others delegating to you, completely.",
   "allowDelegationsToMe": "Allow others to delegate to me",
 
   "votedViaDelegationHint" : "casting a vote can override this",

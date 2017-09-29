@@ -222,7 +222,7 @@
   "role": "szerep",
   "roles": "szerepek",
   "owners": "tulajdonosok",
-  "benefactors": "haszonélvezők",
+  "benefactors": "használók",
 
   "undefined": "nincs megadva",
   "true": "igen",
@@ -233,7 +233,7 @@
   "admin": "admin",
   "manager": "közös képviselő",
   "owner": "tulajdonos",
-  "benefactor": "haszonélvező",
+  "benefactor": "használó",
   "moderator": "moderátor",
   "accountant": "könyvelő",
   "treasurer": "kincstárnok",
