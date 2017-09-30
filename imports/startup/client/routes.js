@@ -157,8 +157,15 @@ FlowRouter.route('/report', {
   },
 });
 
-FlowRouter.route('/finances', {
-  name: 'Finances',
+FlowRouter.route('/parcels-finances', {
+  name: 'Parcels.finances',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Finances' });
+  },
+});
+
+FlowRouter.route('/community-finances', {
+  name: 'Community.finances',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Finances' });
   },
