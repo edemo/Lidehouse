@@ -1,11 +1,21 @@
 <template name="Communities_show_page">
-  <div class="content-scrollable page-content">
-    <h1 class="page-title">{{_ 'community'}} {{_ 'data'}}</h1>
-    {{#autoForm id="communities_show" collection=communities doc=community type="method-update" meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
-      {{> afQuickFields}}
-      <div>
-        <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+  <div class="content-scrollable page-content page_comm_show">
+    <div class="white-box">
+      <div class="row">
+        <div class="col-xs-12 text-center">
+          <h1 class="page-title">{{_ 'community'}} {{_ 'data'}}</h1>
+        </div>
       </div>
-    {{/autoForm}}
+      <div class="row">
+        <div class="col-xs-12">
+          {{#autoForm id="communities_show" collection=communities omitFields="finances" doc=community type="method-update" meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
+          {{> afQuickFields}}
+          <div class="full-width text-center">
+            <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+          </div>
+          {{/autoForm}}
+        </div>
+      </div>
+    </div>
   </div>
 </template>

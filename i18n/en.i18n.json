@@ -41,6 +41,19 @@
           "label": "Verified"
         }
       }
+    },
+    "phone": {
+      "label": "Phone number",
+      "placeholder": "(pl. +36 30 123 4567)"
+    }
+  },
+  "schemaAgendas": {
+    "title": {
+      "label": "Name",
+      "placeholder": "(eg. Owner's meeting 2017-II.)"
+    },
+    "topicIds": {
+      "label": "Agenda topics"
     }
   },
   "schemaTopics": {
@@ -51,6 +64,9 @@
     "text": {
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
+    },
+    "sticky" : {
+      "label": "Sticky"
     }
   },
   "schemaVotings": {
@@ -114,8 +130,18 @@
       "label": "Owner",
       "share": {
         "label": "Ownership share"
+      },
+      "representor": {
+        "label": "Representor?"
+      }
+    },
+    "benefactorship": {
+      "label": "Benefactor",
+      "type": {
+        "label": "Type"
       }
     }
+
   },
   "schemaDelegations": {
     "sourceUserId": {
@@ -135,6 +161,59 @@
       "placeholder": "(eg. Demo community)"
     }
   },
+  "schemaPayAccounts": {
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Payment target)"
+    },
+    "type": {
+      "label": "Type"
+    },
+    "children": {
+      "label": "Container account",
+      "$": {
+        "name": {
+          "label": "Name (or * if not needed)",
+          "placeholder": "(eg. Building C.)"
+        },
+        "children": {
+          "label": "Sub account",
+          "$": {
+            "name": {
+              "label": "Name (or serial no. of parcel)",
+              "placeholder": "(eg. Garden or 114)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaPayments": {
+    "phase": {
+      "label": "Phase"
+      //"Payment type"
+    },
+    "date": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Amount",
+      "placeholder": "(eg. 14560)"
+    },
+    "ref": {
+      "label": "Reference id",
+      "placeholder": "(eg. transaction no. from bank statement)"
+    },
+    "note": {
+      "label": "Note",
+      "placeholder": "(eg. reminder)"
+    },
+    "accounts": {
+      "label": "Könyvelési fiókok"
+    }
+  },
+
 
   // buttons etc.
   "confirm": "Are you sure?",
@@ -169,6 +248,12 @@
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
+
+  // delegations
+  "delegationsFromMeInstructions": "Here you can set up delegations. So someone else can use your vote in your name.",
+  "delegationsFromMeInstructions2": "The delegations you set up here, can be revoked at any time, or can be redirected toward someone else.",
+  "delegationsToMeInstructions": "Here you can see those who have set up delegations toward you, asking you to vote for them.",
+  "delegationsToMeInstructions2": "These delegations you may refuse to accept. You can also disallow others delegating to you, completely.",
   "allowDelegationsToMe": "Allow others to delegate to me",
 
   "votedViaDelegationHint" : "casting a vote can override this",

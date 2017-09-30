@@ -1,84 +1,104 @@
 <template name="Custom_body">
   {{#HammerTouchArea gestureMap=templateGestures}}
     <div id="container" class="{{menuOpen}} {{cordova}}">
-
-      <!-- mobile topmenu -->
-      <nav>
-        <div class="nav-group">
-          <a href="#" class="js-menu nav-item">
-            <span class="icon-topic-unordered"></span>
-            <img class="your-logo" src="/images/logo-tv.png" alt="logo" height="30"/>
+      <div class="right-orange">
+        <a href="#" class="js-menu nav-item pull-left nav-hamburger">
+          <span class="icon-topic-unordered"></span>
+        </a>
+      {{#if currentUser}}
+        <ul class="nav pull-right">
+          <li class="drop profile-drop">
+            {{currentUser.fullName}}
+            <img src="{{currentUser.avatar}}" class="img-circle" alt="" width="35"/>
+            <ul>
+              <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}">{{_ 'profile'}}</a></li>
+              <li><a class="js-logout" href="">{{_ 'logout'}}</a></li>
+            </ul>
+          </li>
+        </ul>
+      {{else}}
+        <div class="btns-group top-sign-in-b pull-right">
+          <a href="{{pathFor 'signin'}}" class="btn-secondary">
+            {{_ 'login'}}
           </a>
-          {{#if activeCommunity}}
-            <ul class="nav">
-              <li class="drop">
-                <img class="" src="/images/house.png" alt="house" height="20"/>
-                <ul>
-                  <li><a class="cap" href="{{pathFor 'Communities.show' _cid=activeCommunity._id}}">{{_ 'community'}}</a></li>
-                  <li><a class="cap" href="{{pathFor 'Community.memberships'}}">{{_ 'ownerships'}}</a></li>
-                  <li><a class="cap" href="{{pathFor 'Community.roleships'}}">{{_ 'roles'}}</a></li>
-                </ul>
-              </li>
-            </ul>
-          {{/if}}
-          <ul class="nav">
-            <li class="drop">
-              {{#if activeCommunity}}
-                {{activeCommunity.name}}
-              {{else}}
-                {{_ 'No active'}} {{_ 'community'}}
-              {{/if}}
-              <ul>
-                {{#each communities}}
-                  <li><a href="#" class="js-switch-community">{{name}} ({{displayMemberships _id}})</a></li>
-                {{/each}}
-                <li role="separator" class="divider"></li><!-- TODO, it doesnt show up!!!-->
-                {{#if currentUser}}
-                  <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
-                  <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'Create a community'}} </a></li>
-                {{else}}
-                  <li>{{_'Log in to join'}} {{_'communities'}}</li>
-                {{/if}}
-              </ul>
-            </li>
-          </ul>
+          |
+          <a href="{{pathFor 'join'}}" class="btn-secondary">
+            {{_ 'register'}}
+          </a>
         </div>
-        <div class="topmenu-right">
-          <div class="language-toggle">
-            {{#each language in languages}}
-              {{#if isActiveLanguage language}}
-                <span class="active">{{language}}</span>
-              {{else}}
-                <a href="#" class="js-toggle-language">{{language}}</a>
-              {{/if}}
-            {{/each}}
-          </div>
-
-          {{#if currentUser}}
-            <ul class="nav">
-              <li class="drop profile-drop">{{currentUser.fullName}}
-                <img src="{{currentUser.avatar}}" alt="" width="35"/>
-                <ul>
-                  <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}">{{_ 'profile'}}</a></li>
-                  <li><a class="js-logout" href="">{{_ 'logout'}}</a></li>
-                </ul>
-              </li>
-            </ul>
-          {{else}}
-            <div class="btns-group top-sign-in">
-              <a href="{{pathFor 'signin'}}" class="btn-secondary">
-                {{_ 'login'}} /
-              </a>
-              <a href="{{pathFor 'join'}}" class="btn-secondary">
-                {{_ 'register'}}
-              </a>
-            </div>
-          {{/if}}
-        </div>
-      </nav>
+      {{/if}}
+      </div>
 
       <!-- Side panel -->
       <section id="menu">
+        <div class="pic-menu">
+          {{#if currentUser}}
+          <div class="pip-usericon">
+            <ul class="nav dropdown">
+              <li class="dropdown-toggle profile-drop" type="button" id="avatardropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <!-- {{currentUser.fullName}} -->
+                <img src="{{currentUser.avatar}}" class="img-circle" alt="" width="35"/>
+              </li>
+              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="avatardropdown">
+                <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {{_ 'profile'}}</a></li>
+                <li><a class="js-logout" href=""><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> {{_ 'logout'}}</a></li>
+              </ul>
+            </ul>
+          </div>
+          {{else}}
+          <div class="btns-group top-sign-in">
+            <a href="{{pathFor 'signin'}}" class="btn-secondary">
+            {{_ 'login'}}
+            </a>
+            /
+            <a href="{{pathFor 'join'}}" class="btn-secondary">
+              {{_ 'register'}}
+            </a>
+          </div>
+          {{/if}}
+          <div class="full-width">
+            <img class="house-pic" src="http://static.panoramio.com/photos/original/59978318.jpg" alt=""/>
+          </div>
+          <div class="comm-drop">
+            {{#if activeCommunity}}
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                {{activeCommunity.name}}
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
+                    <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'Create a community'}} </a></li>
+                  <li role="separator" class="divider"></li>
+                  {{#each communities}}
+                  <li><a href="#" class="js-switch-community">{{name}}</a></li>
+                  {{/each}}
+                </ul>
+              </div>
+            {{else}}
+              <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="emptycommunity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                {{_ 'No active'}} {{_ 'community'}}
+                <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="emptycommunity">
+                    <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
+                    <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'Create a community'}} </a></li>
+                </ul>
+              </div>
+            {{/if}}
+          </div>
+          {{#if activeCommunity}}
+          <div class="comm-btns">
+            <div class="btns-group">
+              <a class="btn" href="{{pathFor 'Communities.show' _cid=activeCommunity._id}}">{{_ 'community'}}</a>
+              <a class="btn" href="{{pathFor 'Community.memberships'}}">{{_ 'ownerships'}}</a>
+              <a class="btn" href="{{pathFor 'Community.roleships'}}">{{_ 'roles'}}</a>
+            </div>
+          </div>
+          {{/if}}
+        </div>
+
         <div class="list-menu">
           <ul>
             <li class="list-item">
@@ -90,9 +110,9 @@
                 <span class="badge pull-right">{{countNotifications 'room'}}</span>
                 {{/if}}
             </li>
-            <li class="list-item">
+            <!-- <li class="list-item">
               <a href="{{pathFor 'Topics.forum'}}"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span>{{_ 'Forum'}}</a>
-            </li>
+            </li> -->
             <li class="list-item">
               <a href="{{pathFor 'Topics.vote'}}"><span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>{{_ 'Votings'}}</a>
               {{#if countNotifications 'vote'}}
@@ -106,7 +126,7 @@
               <a href="{{pathFor 'Tickets.report'}}"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>{{_ 'Tickets'}}</a>
             </li>
             <li class="list-item">
-              <a><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>{{_ 'Finances'}}</a>
+              <a href="{{pathFor 'Finances'}}"><span class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></span>{{_ 'Finances'}}</a>
             </li>
             <li class="list-item">
               <a href="{{pathFor 'DocumentStore'}}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>{{_ 'Documentstore'}}</a>
@@ -157,12 +177,8 @@
     </div>
 
     <div id="feedback-pane" class="collapse">
-      <div class="row">
-        <div class="col-xs-10"> {{{_ 'FeedbackPaneTitle'}}}</div>
-        <div class="col-xs-2 text-right">
-          <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="collapse" data-target="#feedback-pane" aria-expanded="true" aria-controls="#feedback-pane"></span>
-        </div>
-      </div>
+      <div class="full-width text-center"> {{{_ 'FeedbackPaneTitle'}}}</div>
+      <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="collapse" data-target="#feedback-pane" aria-expanded="true" aria-controls="#feedback-pane"></span>
       <div class="row">
         <div class="col-xs-12">
           {{#autoForm id="af.feedback" collection=feedbackCollection schema=feedbackInsertSchema omitFields="communityId, userId, category, title" type="method" meteormethod="topics.insert" singleMethodArgument=true template="bootstrap3-inline"}}
@@ -174,12 +190,11 @@
         </div>
       </div>
     </div>
-    <div id="feedback-btn" class="{{feedbackClosed}}">
+    <div id="feedback-btn" class="{{feedbackClosed}} text-center">
       <a data-toggle="collapse" data-target="#feedback-pane" aria-expanded="true" aria-controls="#feedback-pane">
         <span>{{_ 'FeedbackPaneCallout'}}</span>
       </a>
-       |
-      <span class="glyphicon glyphicon-remove js-feedback-close" aria-hidden="true"></span>
+      <span class="glyphicon glyphicon-remove js-feedback-close pull-right" aria-hidden="true"></span>
     </div>
 
   {{/HammerTouchArea}}

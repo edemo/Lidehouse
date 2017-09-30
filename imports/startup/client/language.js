@@ -18,7 +18,6 @@ function getDefaultLanguage() {
 
 Meteor.startup(function setDefaultLanguage() {
   Session.set('showLoadingIndicator', true);
-
   TAPi18n.setLanguage(getDefaultLanguage())
     .done(function handleSuccess() {
       Session.set('showLoadingIndicator', false);
@@ -27,8 +26,16 @@ Meteor.startup(function setDefaultLanguage() {
       // TODO: Handle the situation
       console.log(errorMessage);
     });
-
   T9n.setLanguage(getDefaultLanguage());
+
+  // Logged in users have language prefenence in their settings. So if user logs in, use that.
+  Tracker.autorun(() => {
+    const user = Meteor.user();
+    if (user) {
+      TAPi18n.setLanguage(user.settings.language);
+      T9n.setLanguage(user.settings.language);
+    }
+  });
 
   // moment package is not reactive, need to localize it reactively
   Tracker.autorun(() => {

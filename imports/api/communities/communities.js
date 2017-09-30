@@ -5,6 +5,7 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { comtype } from '/imports/comtypes/comtype.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -13,7 +14,16 @@ Communities.schema = new SimpleSchema([
   { image: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true } },
   comtype.profileSchema,
   { totalunits: { type: Number } },
+  { finances: { type: comtype.financesSchema, optional: true } },
 ]);
+
+Communities.helpers({
+  registeredUnits() {
+    let total = 0;
+    Parcels.find({ communityId: this._id }).forEach(p => total += p.units);
+    return total;
+  }
+});
 
 Communities.attachSchema(Communities.schema);
 Communities.attachSchema(Timestamps);

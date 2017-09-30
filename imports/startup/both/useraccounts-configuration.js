@@ -4,6 +4,22 @@ import { Accounts } from 'meteor/accounts-base';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 
+/*
+Accounts.config({
+  sendVerificationEmail: true,
+  forbidClientAccountCreation: true,
+  restrictCreationByEmailDomain: 'school.edu',
+  loginExpirationDays: 30,
+  oauthSecretKey: 'wgporjigrpqgdfg',
+});
+
+Accounts.ui.config({
+  requestPermissions: {},
+  requestOfflineToken: {},
+  passwordSignupFields: 'USERNAME_AND_OPTIONAL_EMAIL',
+});
+*/
+
 /**
  * The useraccounts package must be configured for both client and server to work properly.
  * See the Guide for reference (https://github.com/meteor-useraccounts/core/blob/master/Guide.md)

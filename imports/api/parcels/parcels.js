@@ -12,6 +12,13 @@ import { Factory } from 'meteor/dburles:factory';
 
 export const Parcels = new Mongo.Collection('parcels');
 
+const FreeFields = new SimpleSchema({
+  freeFields: { type: Array, optional: true },
+  'freeFields.$': { type: Object },
+  'freeFields.$.key': { type: String, max: 25 },
+  'freeFields.$.value': { type: String, max: 25 },
+});
+
 Parcels.typeValues = ['flat', 'parking', 'storage'];
 
 Parcels.schema = new SimpleSchema({
@@ -35,7 +42,10 @@ Parcels.schema = new SimpleSchema({
   number: { type: String, optional: true },
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
   lot: { type: String, max: 100, optional: true },
-  size: { type: Number, decimal: true, optional: true },
+  // cost calculation purposes
+  area: { type: Number, decimal: true, optional: true },
+  volume: { type: Number, decimal: true, optional: true },
+  habitants: { type: Number, decimal: true, optional: true },
 });
 
 Parcels.helpers({
@@ -52,12 +62,29 @@ Parcels.helpers({
   share() {
     return new Fraction(this.units, this.totalunits());
   },
-  ownerName() {
+  ownedShare() {
+    let total = new Fraction(0);
+    Memberships.find({ parcelId: this._id }).forEach(p => total = total.add(p.ownership.share));
+    return total;
+  },
+  representorId() {
+    const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
+    const rep = firstDefinedRep || Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner' });
+    return rep ? rep.userId : undefined;
+  },
+  userNames() {
     let result = '';
+    const representorId = this.representorId();
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
     ownerships.forEach((m) => {
       const user = Meteor.users.findOne(m.userId);
-      result += `${user.fullName()} (${m.ownership.share.toStringLong()})<br>`;
+      const repBadge = representorId === m.userId ? '(*)' : '';
+      result += `${user.fullName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
+    });
+    const benefactorships = Memberships.find({ communityId: this.communityId, role: 'benefactor', parcelId: this._id });
+    benefactorships.forEach((m) => {
+      const user = Meteor.users.findOne(m.userId);
+      result += `${user.fullName()}<br>`;
     });
     return result;
   },
@@ -71,6 +98,7 @@ Parcels.helpers({
 });
 
 Parcels.attachSchema(Parcels.schema);
+Parcels.attachSchema(FreeFields);
 Parcels.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {

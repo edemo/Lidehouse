@@ -158,3 +158,24 @@
     padding: .41em .71em;
   }
 }
+.top-sign-in, .top-sign-in-b {
+  width: 100% !important;
+  max-width: 250px;
+  font-size: .85em;
+  margin: .5em !important;
+  text-transform: capitalize;
+  a {
+    background-color: transparent;
+    text-transform: capitalize;
+    letter-spacing: .2em;
+  }
+}
+.top-sign-in, .pip-usericon {
+  display: none;
+  @media screen and (min-width: 40em) {
+    display: block;
+  }
+}
+.top-sign-in-b {
+  width: calc(~"100% - " 65px) !important;
+}

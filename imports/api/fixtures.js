@@ -1,13 +1,19 @@
 import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
-import { Comments } from '/imports/api/comments/comments.js';
+import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
+import { update as updateCommunity } from '/imports/api/communities/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
-import { Accounts } from 'meteor/accounts-base';
+import { Comments } from '/imports/api/comments/comments.js';
+import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
+import { Payments } from '/imports/api/payments/payments.js';
+import { billParcels } from '/imports/api/payments/methods.js';
+import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -15,7 +21,7 @@ import '/imports/api/topics/rooms/rooms.js';
 
 
 export function insertDemoFixture() {
-
+  //
   // ===== Communities =====
 
   const demoCommunityId = Communities.insert({
@@ -33,16 +39,20 @@ export function insertDemoFixture() {
 
   // Someone can log in as the demo user, if he doesn't want to register
   const demoUserId = Accounts.createUser({ email: 'demo.user@demo.com', password: 'password' });
+  const demoAdminId = Accounts.createUser({ email: 'demo.admin@demo.com', password: 'password' });
+  const demoManagerId = Accounts.createUser({ email: 'demo.kk@demo.com', password: 'password' });
 
   const dummyUsers = [];
   dummyUsers[0] = Meteor.users.insert({
     emails: [{ address: 'baltazarimre@demo.com', verified: true }],
+    phone: '06 30 234 5678',
     profile: { lastName: 'Baltazár', firstName: 'Imre' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-2.png',
     status: 'online',
   });
   dummyUsers[1] = Meteor.users.insert({
     emails: [{ address: 'bajorandor@demo.com', verified: true }],
+    phone: '+36 70 1234 567',
     profile: { lastName: 'Bajor', firstName: 'Andor' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-7.png',
   });
@@ -68,13 +78,13 @@ export function insertDemoFixture() {
   const dummyParcels = [];
   dummyParcels[0] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 0,
+    serial: 100,
     units: 0,
     floor: '-2',
     number: 'P02',
     type: 'parking',
     lot: '29345/P/002',
-    size: 6,
+    area: 6,
   });
   dummyParcels[1] = Parcels.insert({
     communityId: demoCommunityId,
@@ -84,7 +94,7 @@ export function insertDemoFixture() {
     number: '12',
     type: 'flat',
     lot: '23456/A/114',
-    size: 65,
+    area: 65,
   });
   dummyParcels[2] = Parcels.insert({
     communityId: demoCommunityId,
@@ -94,7 +104,7 @@ export function insertDemoFixture() {
     number: '23',
     type: 'flat',
     lot: '23456/A/225',
-    size: 142,
+    area: 142,
   });
   dummyParcels[3] = Parcels.insert({
     communityId: demoCommunityId,
@@ -104,7 +114,7 @@ export function insertDemoFixture() {
     number: '34',
     type: 'flat',
     lot: '23456/A/336',
-    size: '98.4',
+    area: '98.4',
   });
   dummyParcels[4] = Parcels.insert({
     communityId: demoCommunityId,
@@ -114,7 +124,7 @@ export function insertDemoFixture() {
     number: '45',
     type: 'flat',
     lot: '23456/A/447',
-    size: 70,
+    area: 70,
   });
 
   // ===== Memberships =====
@@ -127,6 +137,16 @@ export function insertDemoFixture() {
     ownership: {
       share: new Fraction(1, 1),
     },
+  });
+  Memberships.insert({
+    communityId: demoCommunityId,
+    userId: demoManagerId,
+    role: 'manager',
+  });
+  Memberships.insert({
+    communityId: demoCommunityId,
+    userId: demoAdminId,
+    role: 'admin',
   });
   Memberships.insert({
     communityId: demoCommunityId,
@@ -267,6 +287,18 @@ export function insertDemoFixture() {
           'Ezek közül lehet választani és a kéményseprőkkel egyeztetni a 06(20)2569875 telefonszámon hogy kinek melyik felel meg.',
   });
 
+  Topics.insert({
+    communityId: demoCommunityId,
+    userId: dummyUsers[0],
+    category: 'news',
+    title: 'Hasznos informáciok',
+    text: 'Orvosi rendelő: <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +36 (1) 345-562 <br>' +
+          'Polizei: <small class="text-alt">07</small> <br>' +
+          'Közös képviselő: <small class="text-alt"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +3630 6545621' +
+          ' / <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> baltazar.imre@demo.com</small>',
+    sticky: true,
+  });
+
   // ===== Votes =====
 
   const ownerships = Memberships.find({ role: 'owner' }).fetch();
@@ -288,7 +320,7 @@ export function insertDemoFixture() {
   castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic1, castedVote: [2] });  // no
   castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic1, castedVote: [0] });  // abstain
 
-  closeVote._execute({ userId: demoUserId }, { topicId: voteTopic1 }); // This vote is already closed
+  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic1 }); // This vote is already closed
 
   const voteTopic2 = Topics.insert({
     communityId: demoCommunityId,
@@ -332,6 +364,12 @@ export function insertDemoFixture() {
     topicId: voteTopic3,
     userId: nextUser(),
     text: 'Jajj csak szürke NE legyen. Akkor költözöm.',
+  });
+
+  const agenda = Agendas.insert({
+    communityId: demoCommunityId,
+    title: 'Közgyűlés 2017-II.',
+    topicIds: [voteTopic1, voteTopic2, voteTopic3],
   });
 
   // ===== Tickets =====
@@ -415,9 +453,183 @@ export function insertDemoFixture() {
     text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
   });
 
+  // ===== PayAccounts =====
+
+  insertPayAccountTemplate(demoCommunityId);
+
+  const locator = PayAccounts.update({
+    communityId: demoCommunityId,
+    name: 'Könyvelési helyek',
+  },
+  {
+    $set: {
+    children: [
+      { name: 'A. lépcsőház',
+        children: [
+        { name: '1' },
+        { name: '2' },
+        ],
+      },
+      { name: 'B. lépcsőház',
+        children: [
+        { name: '3' },
+        { name: '4' },
+        ],
+      },
+      { name: '*',
+        children: [
+        { name: '100' },
+        { name: 'Kert' },
+        ],
+      },
+    ] },
+    },
+    { upsert: false }
+  );
+
+  // ===== Payments =====
+
+    // === Opening ===
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    date: new Date('2017-01-01'),
+    ref: 'nyitó',
+    amount: 100000,
+    accounts: {
+      'Pénz számlák': 'Pénztár 1',
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    date: new Date('2017-01-01'),
+    ref: 'nyitó',
+    amount: 110000,
+    accounts: {
+      'Pénz számlák': 'Bank főszámla',
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    date: new Date('2017-01-01'),
+    ref: 'nyitó',
+    amount: 120000,
+    accounts: {
+      'Pénz számlák': 'Bank felújítási alap',
+    },
+  });
+
+    // === Befizetesek ===
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    date: new Date('2017-06-01'),
+    amount: 10000,
+    accounts: {
+      'Pénz számlák': 'Bank főszámla',
+      'Bevételek': 'Közös költség befizetés',
+      'Könyvelési helyek': '1',
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    date: new Date('2017-06-02'),
+    amount: 20000,
+    accounts: {
+      'Pénz számlák': 'Bank főszámla',
+      'Bevételek': 'Közös költség befizetés',
+      'Könyvelési helyek': '2',
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    date: new Date('2017-06-03'),
+    amount: 30000,
+    accounts: {
+      'Pénz számlák': 'Pénztár',
+      'Bevételek': 'Közös költség befizetés',
+      'Könyvelési helyek': '3',
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    date: new Date('2017-06-04'),
+    amount: 40000,
+    accounts: {
+      'Pénz számlák': 'Bank felújítási alap',
+      'Bevételek': 'Felújítási célbefizetés',
+      'Könyvelési helyek': '4',
+    },
+  });
+
+    // === Eloirasok ===
+
+  const commonCosts = {
+    ccArea: 210,
+    ccVolume: 10,
+    ccHabitants: 0,
+  };
+  updateCommunity._execute(
+    { userId: dummyUsers[0] },
+    { _id: demoCommunityId, modifier: { $set: { finances: commonCosts } } }
+  );
+  billParcels._execute(
+    { userId: dummyUsers[0] },
+    { communityId: demoCommunityId },
+  );
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'plan',
+    date: new Date(2017, 7, 1),
+    amount: 52000,
+    accounts: {
+      'Bevételek': 'Felújítási célbefizetés',
+      'Könyvelési helyek': '4',
+    },
+  });
+
+    // === Tervezetek ===
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'plan',
+    date: new Date('2017-01-01'),
+    amount: 24000,
+    accounts: {
+      'Kiadások': 'Anyagok',
+    },
+  });
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'plan',
+    date: new Date('2017-01-01'),
+    amount: 415000,
+    accounts: {
+      'Kiadások': 'Üzemeltetés',
+    },
+  });
+
+  // ===== Returning a bunch of pointers, for easy direct access
+
   return {
     demoCommunityId,
     demoUserId,
+    demoAdminId,
+    demoManagerId,
     dummyUsers,
     dummyParcels,
   };

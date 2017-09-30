@@ -32,6 +32,7 @@ Topics.schema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, optional: true },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
+  sticky: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
 });
 
@@ -41,10 +42,6 @@ Topics.helpers({
   },
   createdBy() {
     return Meteor.users.findOne(this.userId);
-  },
-  editableBy(userId) {
-    if (!this.userId) { return true; }
-    return this.userId === userId;
   },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
@@ -96,6 +93,7 @@ Topics.publicFields = {
   text: 1,
   createdAt: 1,
   closed: 1,
+  sticky: 1,
   commentCounter: 1,
 };
 

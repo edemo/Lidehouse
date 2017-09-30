@@ -41,6 +41,19 @@
           "label": "Ellenőrzött"
         }
       }
+    },
+    "phone": {
+      "label": "Telefonszám",
+      "placeholder": "(pl. 06 30 123 4567)"
+    }
+  },
+  "schemaAgendas": {
+    "title": {
+      "label": "Név",
+      "placeholder": "(pl. Közgyűlés 2017-II.)"
+    },
+    "topicIds": {
+      "label": "Napirendi pontok"
     }
   },
   "schemaTopics": {
@@ -51,6 +64,9 @@
     "text": {
       "label": "Részletek",
       "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+    },
+    "sticky" : {
+      "label": "Kiemelt"
     }
   },
   "schemaVotings": {
@@ -114,6 +130,15 @@
       "label": "Tulajdon",
       "share": {
         "label": "Tulajdonrész"
+      },
+      "representor": {
+        "label": "Képviselője?"
+      }
+    },
+    "benefactorship": {
+      "label": "Haszonélvezet",
+      "type": {
+        "label": "Típus"
       }
     }
   },
@@ -135,8 +160,58 @@
       "placeholder": "(pl. Demo ház)"
     }
   },
-  "undefined": "nincs megadva",
-  "votingShare": "Szavazati hányad",
+  "schemaPayAccounts": {
+    "name": {
+      "label": "Elnevezés",
+      "placeholder": "(pl. Kifizetési hely)"
+    },
+    "type": {
+      "label": "Típus"
+    },
+    "children": {
+      "label": "Gyűjtő fiókok",
+      "$": {
+        "name": {
+          "label": "Elnevezés (vagy * ha nem kell)",
+          "placeholder": "(pl. B. lépcsőház)"
+        },
+        "children": {
+          "label": "Al fiókok",
+          "$": {
+            "name": {
+              "label": "Elnevezés (vagy albetét száma)",
+              "placeholder": "(pl. Kert vagy 114)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaPayments": {
+    "phase": {
+      "label": "Fázis"
+      //"Tranzakció típusa"
+    },
+    "date": {
+      "label": "Könyvelési dátum",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Összeg",
+      "placeholder": "(pl. 14560)"
+    },
+    "ref": {
+      "label": "Referencia azonosító",
+      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
+    },
+    "note": {
+      "label": "Megjegyzés",
+      "placeholder": "(pl. emlékeztető)"
+    },
+    "accounts": {
+      "label": "Könyvelési fiókok"
+    }
+  },
 
   // Shared
   "createdAt": "Létrehozva",
@@ -146,16 +221,29 @@
 
   "role": "szerep",
   "roles": "szerepek",
+  "owners": "tulajdonosok",
+  "benefactors": "használók",
+
+  "undefined": "nincs megadva",
+  "true": "igen",
+  "false": "nem",
+  "votingShare": "Szavazati hányad",
+
   // roles
   "admin": "admin",
   "manager": "közös képviselő",
   "owner": "tulajdonos",
+  "benefactor": "használó",
   "moderator": "moderátor",
   "accountant": "könyvelő",
   "treasurer": "kincstárnok",
   "overseer": "számvizsgáló",
   "delegate": "meghatalmazott",
   "guest": "vendég",
+
+  "rental": "Bérlet",
+  "favor": "Szívességi használat",
+  "right": "Haszonélvezeti jog",
 
   // menu
   "Main": "Főoldal",
@@ -235,6 +323,7 @@
   "abstain": "tartózkodom",
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
+  "Agendas": "Napirendek",
   "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrenbe...",
   "Show results": "Eredmények megtekintése",
   "Vote results": "Szavazási eredmények",
@@ -284,6 +373,18 @@
   "Please dont report twice": "Kérjük csak akkor adja fel bejelentését, ha az még nem szerepel a fenti listán vagy nemrég került archiválásra hasonló. A lezárt bejelentéseket a lap alján tekinthetik meg. Köszönjük!",
   "Describe the problem briefly": "A hiba rövid leírása ...",
 
+  // finances
+  "Payaccounts": "Könyvelési fiókok",
+  "Payments": "Tranzakciók",
+  "Reports": "Kimutatások",
+  "Common cost plan": "Előírás",
+//  "physical": "Számla fiók",
+//  "virtual": "Fizetési nem",
+//  "locator": "Fizetési hely",
+  "plan": "terv",
+  "done": "tény",
+  "month": "hó",
+
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",
   "FeedbackPaneTitle": "Véleményével, javaslataival nagyban segítheti az alkalmazás fejlesztését. </br> Ha technikai hibát észlel, vagy új funkciót szeretne kérni az alkalmazásba, kérjük jelezze nekünk.",
@@ -329,6 +430,8 @@
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
   "NoPermissionToUpload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közösképviselő segítségét.",
 
+  "Not implemented yet": "Ez a funkció még nem elérhető",
+
   // Notifications
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
   "Created community": "Közösség sikeresen létrehozva.",
@@ -341,9 +444,13 @@
   "insert ownership successful": "Albetét tulajdonosa rögzítve",
   "update ownership successful": "Albetét tulajdonosa módosítva",
   "delete ownership successful": "Albetét tulajdonosa törölve",
+  "insert benefactorship successful": "Albetét használója rögzítve",
+  "update benefactorship successful": "Albetét használója módosítva",
+  "delete benefactorship successful": "Albetét használója törölve",
   "insert roleship successful": "Szerep kiadva",
   "update roleship successful": "Szerep módosítva",
   "delete roleship successful": "Szerep visszavonva",
+  "delete topic successful": "Bejegyzés törölve",
   "insert ticket successful": "Hibajegy rögzítésre került",
   "update ticket successful": "Hibajegy módosítva",
   "delete ticket successful": "Hibajegy törölve",
@@ -353,17 +460,28 @@
   "update delegation successful": "Meghatalmazás módosítva",
   "revoke delegation successful": "Meghatalmazás visszavonva",
   "refuse delegation successful": "Meghatalmazás visszautasítva",
+  "bill parcels successful": "Közös költség terv kiróvva",
+  "insert agenda successful": "Napirend létrehozva",
+  "update agenda successful": "Napirend módosítva",
+  "delete agenda successful": "Napirend törölve",
 
   "Are you sure you want to": "Biztos benne, hogy",
   "delete parcel": "törli az albetétet",
   "delete ownership": "megszünteti a tulajdonviszonyt",
+  "delete benefactorship": "megszünteti a használati viszonyt",
   "delete roleship": "visszavonja a kiadott szerepet",
+  "delete topic": "törli a bejegyzést",
   "delete ticket": "törli a hibajegyet",
   "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
   "disable delegations": "visszautasítja a bejövő meghatalmazásokat",
   "revoke delegation": "visszavonja a meghatalmazást",
   "refuse delegation": "visszautasítja a meghatalmazást",
+  "bill parcels": "kírója a beállított közös költséget az összes albetétre",
+  "delete agenda": "törli a napirendet",
 
+  "It will disappear forever": "A bejegyzés végleg törlödni fog",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
-  "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást."
+  "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",
+  "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra.",
+  "This will not delete topics": "Ettől a benne lévő szavazások nem fognak törlődni."
 }

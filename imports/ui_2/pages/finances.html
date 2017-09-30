@@ -1,0 +1,107 @@
+<template name="Finances">
+  <div class="content-scrollable page-content page-finances">
+
+   <div style="row">
+     <ul class="tabs">
+
+       <!-- 0st tab start -->
+       <li class="tab">
+         <input type="radio" name="tabs" checked="checked" id="tab0" />
+         <label for="tab0">{{_ 'Payaccounts'}}</label>
+         <!-- content -->
+         <div id="tab-content0" class="content">
+           <div class="row">
+             <div class="col-xs-12 text-center">
+               <h4>{{_ 'Payaccounts'}}</h4>
+               <hr/>
+             </div>
+           </div>
+           <div class="row">
+             <div class="col-xs-12">
+               {{> ReactiveDatatable tableData=payaccountsTableDataFn options=payaccountsOptionsFn }}
+             </div>
+             <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+           </div>
+         </div>
+       </li>
+       <!-- 0st tab end -->
+
+       <!-- 1st tab start -->
+       <li class="tab">
+         <input type="radio" name="tabs" checked="checked" id="tab1" />
+         <label for="tab1">{{_ 'Payments'}}</label>
+         <!-- content -->
+         <div id="tab-content1" class="content">
+           <div class="row">
+             <div class="col-xs-12 text-center">
+               <h4>{{_ 'Payments'}}</h4>
+               <hr/>
+             </div>
+           </div>
+           <div class="row">
+             <div class="col-xs-12">
+               {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+             </div>
+             <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+           </div>
+         </div>
+       </li>
+       <!-- 1st tab end -->
+
+       <!-- 2nd tab start-->
+       <li class="tab">
+         <input type="radio" name="tabs" id="tab2" />
+         <label for="tab2">{{_ 'Reports'}}</label>
+         <div id="tab-content2" class="content">
+           <div class="row">
+             <div class="col-xs-12 text-left">
+               <h4>{{_ 'Lekérés időpontja:'}} {{currentTime}}</h4>
+               <hr/>
+             </div>
+           </div>
+
+           {{> Sumif_table (report 'Egyenlegek')}}
+           {{> Sumif_table (report 'EvesBevetelek')}}
+           {{> Sumif_table (report 'HaviBevetelek' 2017)}}
+           {{> Sumif_table (report 'AlbetetekSzamlai' 2017)}}
+           {{> Sumif_table (report 'AlbetetemElszamolasa' 2017)}}
+           {{> Sumif_table (report 'Nyito')}}
+
+           <div class="row">
+             <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+           </div>
+         </div>
+       </li>
+       <!-- 2nd tab end -->
+
+       <!-- 3rd tab start -->
+       <li class="tab">
+         <input type="radio" name="tabs" checked="checked" id="tab3" />
+         <label for="tab3">{{_ 'Common cost plan'}}</label>
+         <!-- content -->
+         <div id="tab-content3" class="content">
+           <div class="row">
+             <div class="col-xs-12 text-center">
+               <h4>{{_ 'Common cost plan'}}</h4>
+               <hr/>
+             </div>
+           </div>
+           <div class="row">
+             {{#autoForm afCommunityFinancesData}}
+               {{> afQuickFields}}
+               <div>
+                 <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+               </div>
+             {{/autoForm}}
+
+             <button class="js-bill btn-primary">{{_ 'Beállított közös költség kiírása minden albetétre'}}</button>
+           </div>
+         </div>
+       </li>
+       <!-- 3rd tab end -->
+
+     </ul>
+   </div>
+ </div>
+
+</template>

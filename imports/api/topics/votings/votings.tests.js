@@ -36,6 +36,7 @@ if (Meteor.isServer) {
   };
 
   describe('votings', function () {
+    this.timeout(5000);
     before(function () {
       Fixture = freshFixture();
     });
@@ -44,11 +45,17 @@ if (Meteor.isServer) {
       let votingId;
 
       it('can create new voting', function (done) {
-        votingId = insertTopic._execute({ userId: Fixture.demoUserId }, createVoting('yesno'));
-
+        votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('yesno'));
         chai.assert.isDefined(votingId);
         const voting = Topics.findOne(votingId);
         chai.assert.equal(voting._id, votingId);
+        done();
+      });
+
+      it('cannot create new voting without permission', function (done) {
+        chai.assert.throws(() => {
+          votingId = insertTopic._execute({ userId: Fixture.demoUserId }, createVoting('yesno'));
+        });
         done();
       });
 
@@ -61,14 +68,14 @@ if (Meteor.isServer) {
       });
 
       it('others can vote', function (done) {
-        castVote._execute({ userId: Fixture.dummyUsers[0] }, { topicId: votingId, castedVote: [0] });
         castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [1] });
         castVote._execute({ userId: Fixture.dummyUsers[2] }, { topicId: votingId, castedVote: [2] });
+        castVote._execute({ userId: Fixture.dummyUsers[3] }, { topicId: votingId, castedVote: [3] });
 
         const voting = Topics.findOne(votingId);
-        chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[0]], [0]);
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[1]], [1]);
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[2]], [2]);
+        chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[3]], [3]);
         done();
       });
     });
@@ -77,7 +84,7 @@ if (Meteor.isServer) {
       let votingId;
 
       before(function () {
-        votingId = insertTopic._execute({ userId: Fixture.demoUserId }, createVoting('yesno'));
+        votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('yesno'));
       });
 
       it('no evaluation on fresh voting', function (done) {
@@ -238,7 +245,7 @@ if (Meteor.isServer) {
         // Delegation revoked
         removeDelegation._execute({ userId: Fixture.dummyUsers[4] }, { _id: delegationId });
         // TODO it doesnt come into effect until SOME vote is cast
-        castVote._execute({ userId: Fixture.dummyUsers[0] }, { topicId: votingId, castedVote: [0] });
+        castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [0] });
 
         voting = Topics.findOne(votingId);
         chai.assert.deepEqual(voting.voteParticipation, { count: 4, units: 80 });

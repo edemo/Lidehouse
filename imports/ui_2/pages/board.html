@@ -1,10 +1,11 @@
 <template name="Board">
   <div class="page-content page-board-new">
 
-    <div class="col-xs-12 col-lg-8">
+    <div class="col-xs-12 col-lg-8 no-padding">
 
       <!-- 1st section start -->
       <div class="full-width section-btn" type="button" data-toggle="collapse" data-target="#vote-pane" aria-expanded="false" aria-controls="collapseExample">
+        <!-- <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>  -->
         {{_ 'Active votings'}} ({{topicsCount 'vote'}})
         <small>
           <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
@@ -30,18 +31,15 @@
       </div>
       <!-- 1st section end -->
 
-      <!-- right side -->
+      <!-- right side mobile -->
       <div class="full-width news-mid visible-xs visible-sm visible-md">
         {{> News}}
       </div>
+      <!-- right side mobile end-->
 
       <!-- 2nd section start -->
-      <div class="full-width section-btn section-btn-2" type="button" data-toggle="collapse" data-target="#forum-pane" aria-expanded="false" aria-controls="collapseExample">
+      <div class="full-width section-btn section-btn-2" type="button" aria-expanded="false">
         {{_ 'Forum'}}
-        <small>
-          <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
-          <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
-        </small>
       </div>
       <div class="collapse in section-pane" id="forum-pane">
         <div class="well">
@@ -65,13 +63,13 @@
 <template name="News">
 
   <div class="white-box news">
+    {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
+    <button class="js-new btn-default pull-right"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+    {{/if}}
     <div class="row news-title">
       {{_ 'News board'}}
-      {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
-        <button class="js-new btn-default pull-right"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{_ 'new'}}</button>
-      {{/if}}
     </div>
-    {{#each topics 'news'}}
+    {{#each topics 'news' false}}
       <div class="row news-row js-view" data-toggle="modal" data-target="#{{_id}}">
         <div class="col-xs-9" style="padding: 4px 0;">
           {{title}}
@@ -83,21 +81,19 @@
     {{/each}}
   </div>
 
+  {{#each topics 'news' true}}
   <div class="white-box infos">
-    <div class="full-width">
-      {{_ 'Useful Informations'}}
-      <hr>
+    {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
+    <!-- kk: szerkeszt / unpin -->
+    <button class="btn-default" title="Edit"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></button>
+    {{/if}}
+    <div class="full-width title">
+      {{title}}
     </div>
     <div class="full-width">
-      Orvosi rendelő: <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +36 (1) 345-562 <br>
-      Polizei: <small class="text-alt">07</small> <br>
-      Közös képviselő:
-      <small class="text-alt">
-        <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +3630 6545621
-        /
-        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> baltazar.imre@demo.com
-      </small>
+        {{{text}}} <!--TODO: fix this XScript attak-->
     </div>
   </div>
+  {{/each}}
 
 </template>

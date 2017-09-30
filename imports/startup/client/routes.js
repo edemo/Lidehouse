@@ -23,6 +23,7 @@ import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
 import '/imports/ui_2/pages/housing.js';
 import '/imports/ui_2/pages/tickets-report.js';
+import '/imports/ui_2/pages/finances.js';
 import '/imports/ui_2/pages/document-store.js';
 import '/imports/ui_2/pages/feedbacks.js';
 import '/imports/ui_2/pages/styleguide.js';
@@ -153,6 +154,13 @@ FlowRouter.route('/report', {
   name: 'Tickets.report',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Tickets_report' });
+  },
+});
+
+FlowRouter.route('/finances', {
+  name: 'Finances',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Finances' });
   },
 });
 

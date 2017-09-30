@@ -5,62 +5,73 @@ import { Roles } from './roles.js';
 import { Permissions } from './permissions.js';
 
 const defaultRoles = [
-  { name: 'admin' },
-  { name: 'manager' },
-  { name: 'owner' },
-  { name: 'tenant' },
-  { name: 'moderator' },
-  { name: 'accountant' },
-  { name: 'treasurer' },
-  { name: 'overseer' },
-  { name: 'delegate' },
-  { name: 'maintainer' },
-  { name: 'guest' },
+  { name: 'admin' },        // Creator of the community. Can give out all other roles and take them back.
+  { name: 'manager' },      // The manager (kk) of the community. Registers owners.
+  { name: 'owner' },        // Title holder of a parcel. Has voting rights.
+  { name: 'benefactor' },   // Uses the parcel. Owner handed over beneficiary rights to him/her.
+  { name: 'moderator' },    // Moderates the conversations on topics. Can remove comments.
+  { name: 'accountant' },   // Can set the PayAccount structure.
+  { name: 'treasurer' },    // Can add new financial transactions.
+  { name: 'overseer' },     // Can oversee financial transactions.
+  { name: 'delegate' },     // Can vote for someone else.
+  { name: 'maintainer' },   // Works on the reported errors. Sees them, can coment on them.
+  { name: 'guest' },        // Just poking around. Somone invited him/her to take a look.
 ];
 
 // Groupings just to ease configuration
-const everybody = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate', 'maintainer', 'guest'];
-const exceptGuest = ['admin', 'manager', 'owner', 'tenant', 'moderator', 'accountant', 'treasurer', 'overseer', 'maintainer', 'delegate'];
+export const everybody = ['admin', 'manager', 'owner', 'benefactor', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate', 'maintainer', 'guest'];
+const exceptGuest = ['admin', 'manager', 'owner', 'benefactor', 'moderator', 'accountant', 'treasurer', 'overseer', 'maintainer', 'delegate'];
 const nobody = [];
 
+export const canAddMemberWithRole = {
+  admin: everybody,
+  manager: ['owner', 'benefactor'],
+  owner: ['benefactor'],
+};
+
 const permissions = [
-  { name: 'communities.insert',   type: 'edit', roles: everybody },
-  { name: 'communities.update',   type: 'edit', roles: ['admin'] },
-  { name: 'communities.listing',  type: 'view', roles: everybody },
-  { name: 'memberships.insert',   type: 'edit', roles: ['admin', 'manager', 'owner'] },
-  { name: 'memberships.listing',  type: 'edit', roles: exceptGuest },
-  { name: 'forum.insert',         type: 'edit', roles: everybody },
-  { name: 'forum.update',         type: 'edit', roles: nobody },
-  { name: 'prevote.insert',       type: 'edit', roles: ['owner'] },
-  { name: 'prevote.update',       type: 'edit', roles: nobody },
-  { name: 'vote.insert',          type: 'edit', roles: ['manager', 'owner'] },
-  { name: 'vote.update',          type: 'edit', roles: nobody },
-  { name: 'news.insert',          type: 'edit', roles: ['manager'] },
-  { name: 'news.update',          type: 'edit', roles: ['manager'] },
-  { name: 'ticket.insert',        type: 'edit', roles: exceptGuest },
-  { name: 'ticket.update',        type: 'edit', roles: ['manager'] },
-  { name: 'room.insert',          type: 'edit', roles: everybody },
-  { name: 'room.update',          type: 'edit', roles: nobody },
-  { name: 'feedback.insert',      type: 'edit', roles: everybody },
-  { name: 'feedback.update',      type: 'edit', roles: nobody },
-  { name: 'topics.remove',        type: 'edit', roles: ['moderator'], allowAuthor: true },
-  { name: 'topics.castVote',      type: 'edit', roles: ['owner'] },
-  { name: 'topics.listing',       type: 'edit', roles: exceptGuest },
-  { name: 'comments.insert',      type: 'edit', roles: exceptGuest },
-  { name: 'comments.update',      type: 'edit', roles: nobody, allowAuthor: true },
-  { name: 'comments.remove',      type: 'edit', roles: ['moderator'], allowAuthor: true },
-  { name: 'comments.listing',     type: 'edit', roles: exceptGuest },
-  { name: 'accounts.insert',      type: 'edit', roles: ['accountant'] },
-  { name: 'accounts.update',      type: 'edit', roles: ['accountant'] },
-  { name: 'accounts.remove',      type: 'edit', roles: ['accountant'] },
-  { name: 'accounts.listing',     type: 'edit', roles: ['accountant', 'treasurer', 'overseer'] },
-  { name: 'payments.insert',      type: 'edit', roles: ['treasurer'] },
-  { name: 'payments.update',      type: 'edit', roles: ['treasurer'] },
-  { name: 'payments.remove',      type: 'edit', roles: ['treasurer'] },
-  { name: 'payments.listing',     type: 'edit', roles: ['accountant', 'treasurer', 'overseer'] },
-  { name: 'shareddocs.upload',    type: 'edit', roles: ['manager'] },
-  { name: 'shareddocs.download',  type: 'view', roles: exceptGuest },
-  { name: 'shareddocs.listing',   type: 'view', roles: exceptGuest },
+  { name: 'communities.insert',     roles: everybody },
+  { name: 'communities.update',     roles: ['admin'] },
+  { name: 'communities.listing',    roles: everybody },
+  { name: 'memberships.listing',    roles: exceptGuest },
+  { name: 'forum.insert',           roles: exceptGuest },
+  { name: 'forum.update',           roles: nobody, allowAuthor: true },
+  { name: 'forum.remove',           roles: ['moderator'], allowAuthor: true },
+  { name: 'prevote.insert',         roles: ['owner'] },
+  { name: 'prevote.update',         roles: nobody },
+  { name: 'prevote.remove',         roles: nobody, allowAuthor: true },
+  { name: 'vote.insert',            roles: ['manager'] },
+  { name: 'vote.update',            roles: nobody },
+  { name: 'vote.remove',            roles: ['manager'] },
+  { name: 'vote.cast.update',       roles: ['owner', 'delegate'] },
+  { name: 'vote.close.update',      roles: ['manager'] },
+  { name: 'news.insert',            roles: ['manager'] },
+  { name: 'news.update',            roles: ['manager'] },
+  { name: 'news.remove',            roles: ['manager'] },
+  { name: 'ticket.insert',          roles: exceptGuest },
+  { name: 'ticket.update',          roles: ['manager', 'maintainer'], allowAuthor: true },
+  { name: 'ticket.remove',          roles: ['manager', 'maintainer'], allowAuthor: true },
+  { name: 'room.insert',            roles: everybody },
+  { name: 'room.update',            roles: nobody },
+  { name: 'feedback.insert',        roles: everybody },
+  { name: 'feedback.update',        roles: nobody },
+  { name: 'topics.listing',         roles: exceptGuest },
+  { name: 'comments.insert',        roles: exceptGuest },
+  { name: 'comments.update',        roles: nobody, allowAuthor: true },
+  { name: 'comments.remove',        roles: ['moderator'], allowAuthor: true },
+  { name: 'comments.listing',       roles: exceptGuest },
+  { name: 'finances.view',          roles: exceptGuest },
+  { name: 'payaccounts.insert',     roles: ['accountant'] },
+  { name: 'payaccounts.update',     roles: ['accountant'] },
+  { name: 'payaccounts.remove',     roles: ['accountant'] },
+  { name: 'payaccounts.listing',    roles: ['accountant', 'treasurer', 'overseer'] },
+  { name: 'payments.insert',        roles: ['treasurer'] },
+  { name: 'payments.update',        roles: ['treasurer'] },
+  { name: 'payments.remove',        roles: ['treasurer'] },
+  { name: 'payments.listing',       roles: ['accountant', 'treasurer', 'overseer'] },
+  { name: 'shareddocs.upload',      roles: ['manager'] },
+  { name: 'shareddocs.download',    roles: exceptGuest },
+  { name: 'shareddocs.listing',     roles: exceptGuest },
 ];
 
 export function initializePermissions() {

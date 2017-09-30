@@ -1,22 +1,31 @@
 <template name="Comments_section">
   <div class="row">
-    <div class="col-xs-12 small-size">
-      <a data-toggle="collapse" data-target="#{{topicId}}" aria-expanded="true" aria-controls="#{{topicId}}">{{count}} hozzászólás</a>
+    <div class="col-xs-12">
+      <a data-toggle="collapse" data-target="#{{topicId}}" aria-expanded="true" aria-controls="#{{topicId}}">
+        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span> {{count}}
+        <!-- hozzászólás -->
+      </a>
     </div>
   </div>
-  <div class="collapse" id="{{topicId}}">
+  <div class="collapse comment-collapse" id="{{topicId}}">
     <!-- other comment row -->
     {{#each comment in comments}}
       {{> Comment comment}}
     {{/each}}
     <!-- your new comment row-->
     <div class="row">
-      <div class="col-xs-2 col-lg-1">
-        <img src="{{selfAvatar}}" alt="avatar" align="center" width="35" height="35" />
-      </div>
-      <div class="col-xs-10 col-lg-11">
-        <textarea rows="" cols="5" placeholder="{{_ 'newCommentPlaceholder'}}" class="chat-field"></textarea>
-        <span class="js-send-comment btn-comment glyphicon glyphicon-send" aria-hidden="true"></span>
+      <div class="col-xs-12">
+        <div class="media">
+          <div class="media-left">
+            <img src="{{selfAvatar}}" alt="avatar" align="center" width="35" height="35" />
+          </div>
+          <div class="media-body">
+            <textarea id="text_{{topicId}}" rows="" cols="3" placeholder="{{_ 'newCommentPlaceholder'}}" class="full-width"></textarea>
+          </div>
+          <div class="media-right">
+            <span class="js-send-comment btn-comment glyphicon glyphicon-send" aria-hidden="true"></span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -24,14 +33,20 @@
 </template>
 
 <template name="Comment">
-  <div class="row comment-margin">
-    <div class="col-xs-12 col-lg-12">
-      <img class="margined-avatar" src="{{avatar}}" alt="avatar" align="left" width="35" height="35" />
-      <a>{{displayUser}}</a> - {{displayTimeSince}}
-      <br>
-      <p class="comment-text no-padding">
-        {{text}}
-      </p>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="media">
+        <div class="media-left">
+          <a href="#">
+            <img class="media-object" src="{{avatar}}" alt="avatar" width="35" height="35" >
+          </a>
+        </div>
+        <div class="media-body">
+          <a>{{displayUser}}</a> - {{displayTimeSince}}
+          <br>
+          {{text}}
+        </div>
+      </div>
     </div>
   </div>
 </template>
