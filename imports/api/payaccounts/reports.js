@@ -60,6 +60,22 @@ export const Reports = {
       ],
     };
   },
+  AlbetetemEgyenlege(year) {
+    const communityId = Session.get('activeCommunityId');
+    const locator = PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' });
+    const myParcels = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
+
+    return {
+      name: `Albetétem Egyenlege (${year})`,
+      filter: { year },
+      rows: [
+        { field: 'accounts.Könyvelési helyek', values: myParcels },
+      ],
+      cols: [
+        { field: 'phase', values: ['plan', 'done'], total: 'Egyenleg' },
+      ],
+    };
+  },
   AlbetetemElszamolasa(year) {
     const communityId = Session.get('activeCommunityId');
     const locator = PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' });

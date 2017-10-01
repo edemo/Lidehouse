@@ -23,7 +23,8 @@ import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
 import '/imports/ui_2/pages/housing.js';
 import '/imports/ui_2/pages/tickets-report.js';
-import '/imports/ui_2/pages/finances.js';
+import '/imports/ui_2/pages/parcels-finances.js';
+import '/imports/ui_2/pages/community-finances.js';
 import '/imports/ui_2/pages/document-store.js';
 import '/imports/ui_2/pages/feedbacks.js';
 import '/imports/ui_2/pages/styleguide.js';
@@ -160,14 +161,14 @@ FlowRouter.route('/report', {
 FlowRouter.route('/parcels-finances', {
   name: 'Parcels.finances',
   action() {
-    BlazeLayout.render('Custom_body', { main: 'Finances' });
+    BlazeLayout.render('Custom_body', { main: 'Parcels_finances' });
   },
 });
 
 FlowRouter.route('/community-finances', {
   name: 'Community.finances',
   action() {
-    BlazeLayout.render('Custom_body', { main: 'Finances' });
+    BlazeLayout.render('Custom_body', { main: 'Community_finances' });
   },
 });
 

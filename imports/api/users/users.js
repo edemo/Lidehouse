@@ -38,7 +38,7 @@ const UserProfileSchema = new SimpleSchema({
 });
 
 const UserSettingsSchema = new SimpleSchema({
-  language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'en' },
+  language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'hu' },
   delegatee: { type: Boolean, defaultValue: true },
 });
 

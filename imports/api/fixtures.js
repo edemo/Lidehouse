@@ -594,7 +594,7 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     phase: 'plan',
     date: new Date(2017, 7, 1),
-    amount: 52000,
+    amount: -52000,
     accounts: {
       'Bevételek': 'Felújítási célbefizetés',
       'Könyvelési helyek': '4',
@@ -607,7 +607,7 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     phase: 'plan',
     date: new Date('2017-01-01'),
-    amount: 24000,
+    amount: -24000,
     accounts: {
       'Kiadások': 'Anyagok',
     },
@@ -617,7 +617,7 @@ export function insertDemoFixture() {
     communityId: demoCommunityId,
     phase: 'plan',
     date: new Date('2017-01-01'),
-    amount: 415000,
+    amount: -415000,
     accounts: {
       'Kiadások': 'Üzemeltetés',
     },

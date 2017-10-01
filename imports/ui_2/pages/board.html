@@ -5,7 +5,7 @@
 
       <!-- 1st section start -->
       <div class="full-width section-btn" type="button" data-toggle="collapse" data-target="#vote-pane" aria-expanded="false" aria-controls="collapseExample">
-        <!-- <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>  -->
+        <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
         {{_ 'Active votings'}} ({{topicsCount 'vote'}})
         <small>
           <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
@@ -38,7 +38,8 @@
       <!-- right side mobile end-->
 
       <!-- 2nd section start -->
-      <div class="full-width section-btn section-btn-2" type="button" aria-expanded="false">
+      <div class="full-width section-btn section-btn-notfirst" type="button" aria-expanded="false">
+        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
         {{_ 'Forum'}}
       </div>
       <div class="collapse in section-pane" id="forum-pane">

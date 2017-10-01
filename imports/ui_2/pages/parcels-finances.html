@@ -1,0 +1,62 @@
+<template name="Parcels_finances">
+  <div class="content-scrollable page-content page-finances">
+
+    <!-- balances section start -->
+    <div class="full-width section-btn" type="button" data-toggle="collapse" data-target="#balances-pane" aria-expanded="false" aria-controls="collapseExample">
+      <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
+      {{_ 'Parcel balances'}}
+      <small>
+        <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
+        <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
+      </small>
+    </div>
+    <div class="collapse in section-pane" id="balances-pane">
+      <div class="well">
+        {{> Sumif_table (report 'AlbetetemEgyenlege' 2017)}}
+        {{> Sumif_table (report 'AlbetetemElszamolasa' 2017)}}
+      </div>
+    </div>
+    <!-- section end -->
+
+    <!-- payments section start -->
+    <div class="full-width section-btn section-btn-notfirst" type="button" data-toggle="collapse" data-target="#payments-pane" aria-expanded="false" aria-controls="collapseExample">
+      <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
+      {{_ 'Parcel payments'}}
+      <small>
+        <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
+        <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
+      </small>
+    </div>
+    <div class="collapse in section-pane" id="payments-pane">
+      <div class="well">
+        <div class="row">
+          <div class="col-xs-12">
+            {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- section end -->
+
+    <!-- bills section start -->
+    <div class="full-width section-btn section-btn-notfirst" type="button" data-toggle="collapse" data-target="#bills-pane" aria-expanded="false" aria-controls="collapseExample">
+      <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
+      {{_ 'Parcel bills'}}
+      <small>
+        <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
+        <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
+      </small>
+    </div>
+    <div class="collapse in section-pane" id="bills-pane">
+      <div class="well">
+        <div class="row">
+          <div class="col-xs-12">
+            {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- section end -->
+
+  </div>
+</template>
