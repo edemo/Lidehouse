@@ -1,14 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Fraction } from 'fractional';
+
+import { __ } from '/imports/localization/i18n.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Roles } from '/imports/api/permissions/roles.js';
-import { Fraction } from 'fractional';
-import { Factory } from 'meteor/dburles:factory';
 
 export const Parcels = new Mongo.Collection('parcels');
 
@@ -91,6 +92,9 @@ Parcels.helpers({
   // TODO: move this to the house package
   location() {
     return `${this.floor}/${this.number}`;
+  },
+  display() {
+    return `${this.serial}. ${__(this.type)} ${this.location()} (${this.lot})`;
   },
   toString() {
     return this.location();

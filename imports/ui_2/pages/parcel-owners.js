@@ -25,7 +25,7 @@ Template.Parcel_owners_page.helpers({
   display() {
     const parcelId = FlowRouter.getParam('_pid');
     const parcel = Parcels.findOne(parcelId);
-    return parcel.toString();
+    return parcel.display();
   },
   ownersTableDataFn() {
     return () => {
