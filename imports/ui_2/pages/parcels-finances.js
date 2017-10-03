@@ -13,9 +13,10 @@ import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
 import { Reports } from '/imports/api/payaccounts/reports.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '../components/collapse-pane.js';
+import '../components/sumif-table.js';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
-import '../components/sumif-table.js';
 import './parcels-finances.html';
 
 Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {

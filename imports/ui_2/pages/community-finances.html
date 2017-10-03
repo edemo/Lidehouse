@@ -3,128 +3,58 @@
 
     <div class="col-xs-12">
 
-    <!-- balances section start -->
-    <div class="full-width section-btn" type="button" data-toggle="collapse" data-target="#balances-pane" aria-expanded="false" aria-controls="collapseExample">
-      <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
-      {{_ 'Community balances'}}
-      <small>
-        <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
-        <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
-      </small>
-    </div>
-    <div class="collapse in section-pane" id="balances-pane">
-      <div class="well">
+    {{#Collapse_pane id='balances' title='Balances'}}
+      {{> Sumif_table (report 'Egyenlegek')}}
+    {{/Collapse_pane}}
 
-        {{> Sumif_table (report 'Egyenlegek')}}
-
+    {{#Collapse_pane id='payaccounts' title='Payaccounts' notFirst=true collapsed=true }}
+      <div class="row">
+        <div class="col-xs-12">
+          {{> ReactiveDatatable tableData=payaccountsTableDataFn options=payaccountsOptionsFn }}
+        </div>
+        <button class="js-new btn-primary">{{_ 'createNew'}}</button>
       </div>
-    </div>
-    <!-- section end -->
+    {{/Collapse_pane}}
 
-    <!-- payaccounts section start -->
-    <div class="full-width section-btn section-btn-notfirst collapsed" type="button" data-toggle="collapse" data-target="#payaccounts-pane" aria-expanded="false" aria-controls="collapseExample">
-      <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
-      {{_ 'Payaccounts'}}
-      <small>
-        <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
-        <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
-      </small>
-    </div>
-    <div class="collapse section-pane" id="payaccounts-pane">
-      <div class="well">
+    {{#Collapse_pane id='payments' title='Payments' notFirst=true collapsed=true }}
+      <div class="row">
+        <div class="col-xs-12">
+          {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+        </div>
+        <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+      </div>
+    {{/Collapse_pane}}
 
-        <div class="row">
-          <div class="col-xs-12">
-            {{> ReactiveDatatable tableData=payaccountsTableDataFn options=payaccountsOptionsFn }}
+    {{#Collapse_pane id='report' title=communityStatusReportTitle notFirst=true collapsed=true }}
+      {{> Sumif_table (report 'EvesBevetelek')}}
+      {{> Sumif_table (report 'HaviBevetelek' 2017)}}
+      {{> Sumif_table (report 'AlbetetekSzamlai' 2017)}}
+    {{/Collapse_pane}}
+
+    {{#Collapse_pane id='bills' title='Bills' notFirst=true collapsed=true }}
+      <div class="row">
+        <div class="col-xs-12">
+          {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
+        </div>
+        <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12 text-center">
+          <h4>{{_ 'Common cost plan'}}</h4>
+          <hr/>
+        </div>
+      </div>
+      <div class="row">
+        {{#autoForm afCommunityFinancesData}}
+          {{> afQuickFields}}
+          <div>
+            <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
           </div>
-          <button class="js-new btn-primary">{{_ 'createNew'}}</button>
-        </div>
-
+        {{/autoForm}}
+        <button class="js-bill btn-primary">{{_ 'Beállított közös költség kiírása minden albetétre'}}</button>
       </div>
-    </div>
-    <!-- section end -->
-
-    <!-- payments section start -->
-    <div class="full-width section-btn section-btn-notfirst collapsed" type="button" data-toggle="collapse" data-target="#payments-pane" aria-expanded="false" aria-controls="collapseExample">
-      <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
-      {{_ 'Payments'}}
-      <small>
-        <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
-        <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
-      </small>
-    </div>
-    <div class="collapse section-pane" id="payments-pane">
-      <div class="well">
-
-        <div class="row">
-          <div class="col-xs-12">
-            {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
-          </div>
-          <button class="js-new btn-primary">{{_ 'createNew'}}</button>
-        </div>
-
-      </div>
-    </div>
-    <!-- section end -->
-
-    <!-- status section start -->
-    <div class="full-width section-btn section-btn-notfirst collapsed" type="button" data-toggle="collapse" data-target="#status-pane" aria-expanded="false" aria-controls="collapseExample">
-      <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
-      {{_ 'community'}} {{_ 'status report'}}
-      <small>
-        <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
-        <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
-      </small>
-    </div>
-    <div class="collapse section-pane" id="status-pane">
-      <div class="well">
-
-        {{> Sumif_table (report 'EvesBevetelek')}}
-        {{> Sumif_table (report 'HaviBevetelek' 2017)}}
-        {{> Sumif_table (report 'AlbetetekSzamlai' 2017)}}
-
-      </div>
-    </div>
-    <!-- section end -->
-
-    <!-- bills section start -->
-    <div class="full-width section-btn section-btn-notfirst collapsed" type="button" data-toggle="collapse" data-target="#bills-pane" aria-expanded="false" aria-controls="collapseExample">
-      <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
-      {{_ 'Bills'}}
-      <small>
-        <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
-        <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
-      </small>
-    </div>
-    <div class="collapse section-pane" id="bills-pane">
-      <div class="well">
-
-        <div class="row">
-          <div class="col-xs-12">
-            {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
-          </div>
-          <button class="js-new btn-primary">{{_ 'createNew'}}</button>
-        </div>
-
-        <div class="row">
-          <div class="col-xs-12 text-center">
-            <h4>{{_ 'Common cost plan'}}</h4>
-            <hr/>
-          </div>
-        </div>
-        <div class="row">
-          {{#autoForm afCommunityFinancesData}}
-            {{> afQuickFields}}
-            <div>
-              <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
-            </div>
-          {{/autoForm}}
-          <button class="js-bill btn-primary">{{_ 'Beállított közös költség kiírása minden albetétre'}}</button>
-        </div>
-
-      </div>
-    </div>
-    <!-- section end -->
+    {{/Collapse_pane}}
 
     </div>
   </div>
