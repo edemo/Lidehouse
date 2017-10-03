@@ -106,7 +106,7 @@ function newPaymentSchema() {
 }
 
 Template.Community_finances.events({
-  'click #balances-pane .js-new'(event, instance) {
+  'click #payaccounts-pane .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.payaccounts.insert',
       collection: PayAccounts,
@@ -117,7 +117,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #balances-pane .js-edit'(event) {
+  'click #payaccounts-pane .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccounts.update',
@@ -131,7 +131,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #balances-pane .js-delete'(event) {
+  'click #payaccounts-pane .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(PayAccounts.remove, { _id: id }, {
       action: 'delete payaccount',
