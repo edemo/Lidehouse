@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
+
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { update as updateCommunity } from '/imports/api/communities/methods.js';
@@ -20,15 +22,21 @@ import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 
 
-export function insertDemoFixture() {
-  //
+export function insertDemoFixture(lang) {
+  const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
+
+  // if Demo house data already populated, no need to do anything
+  if (Communities.findOne({ name: __('demo.house') })) {
+    return;
+  }
+
   // ===== Communities =====
 
   const demoCommunityId = Communities.insert({
-    name: 'Demo ház',
+    name: __('demo.house'),
     zip: '1144',
-    city: 'Budapest',
-    street: 'Kankalin u',
+    city: __('demo.city'),
+    street: __('demo.street'),
     number: '86',
     lot: '123456/1234',
     image: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
@@ -38,38 +46,39 @@ export function insertDemoFixture() {
   // ===== Users =====
 
   // Someone can log in as the demo user, if he doesn't want to register
-  const demoUserId = Accounts.createUser({ email: 'demo.user@demo.com', password: 'password' });
-  const demoAdminId = Accounts.createUser({ email: 'demo.admin@demo.com', password: 'password' });
-  const demoManagerId = Accounts.createUser({ email: 'demo.kk@demo.com', password: 'password' });
+  const com = { en: 'com', hu: 'hu' }[lang];
+  const demoUserId = Accounts.createUser({ email: `demo.user@demo.${com}`, password: 'password', settings: { language: lang } });
+  const demoAdminId = Accounts.createUser({ email: `demo.admin@demo.${com}`, password: 'password', settings: { language: lang } });
+  const demoManagerId = Accounts.createUser({ email: `demo.manager@demo.${com}`, password: 'password', settings: { language: lang } });
 
   const dummyUsers = [];
   dummyUsers[0] = Meteor.users.insert({
-    emails: [{ address: 'baltazarimre@demo.com', verified: true }],
+    emails: [{ address: `user.0@demo.${com}`, verified: true }],
     phone: '06 30 234 5678',
-    profile: { lastName: 'Baltazár', firstName: 'Imre' },
+    profile: { lastName: __('demo.user.0.lastName'), firstName: __('demo.user.0.firstName') },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-2.png',
     status: 'online',
   });
   dummyUsers[1] = Meteor.users.insert({
-    emails: [{ address: 'bajorandor@demo.com', verified: true }],
+    emails: [{ address: `user.1@demo.${com}`, verified: true }],
     phone: '+36 70 1234 567',
-    profile: { lastName: 'Bajor', firstName: 'Andor' },
+    profile: { lastName: __('demo.user.1.lastName'), firstName: __('demo.user.1.firstName') },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-7.png',
   });
   dummyUsers[2] = Meteor.users.insert({
-    emails: [{ address: 'bakocsitimea@demo.com', verified: true }],
-    profile: { lastName: 'Bakocsi', firstName: 'Tímea' },
+    emails: [{ address: `user.2@demo.${com}`, verified: true }],
+    profile: { lastName: __('demo.user.2.lastName'), firstName: __('demo.user.2.firstName') },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-6.png',
     status: 'standby',
   });
   dummyUsers[3] = Meteor.users.insert({
-    emails: [{ address: 'baltapeter@demo.com', verified: true }],
-    profile: { lastName: 'Barna', firstName: 'Péter' },
+    emails: [{ address: `user.3@demo.${com}`, verified: true }],
+    profile: { lastName: __('demo.user.3.lastName'), firstName: __('demo.user.3.firstName') },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-5.png',
   });
   dummyUsers[4] = Meteor.users.insert({
-    emails: [{ address: 'baltaemilia@demo.com', verified: true }],
-    profile: { lastName: 'Barna', firstName: 'Emilia' },
+    emails: [{ address: `user.4@demo.${com}`, verified: true }],
+    profile: { lastName: __('demo.user.4.lastName'), firstName: __('demo.user.4.firstName') },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-3.png',
   });
 
@@ -222,113 +231,81 @@ export function insertDemoFixture() {
     return dummyUsers[nextUserIndex++];
   }
 
-  const data = [
-    {
-      title: 'Zár probléma',
-      text: 'Múlt héten megint benyomták a kaput, és azóta nem jól záródik a zár',
-      items: [
-        'Igen, már bejelentettem. Jövő héten tudnak csak jönni javítani',
-      ],
-    },
-    {
-      title: 'Hangos kutya a negyediken',
-      text: 'A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.',
-      items: [
-        'Engem is rohadtul idegesít!!!',
-        'Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi sajnos három hétig kórházban, és szegény kutyus nagyon rosszul bírja az egyedüllétet. De szerencsére a nagyit már hazaengedték,  tegnap óta már otthon van. Úgyhogy nem lesz többet gond, és tényeg elnézést kérek mindenkitől.',
-      ],
-    },
-    {
-      title: 'Fundamenta hitel',
-      text: 'Most kedvezményes feltételekkel lehet felvenni fundamenta hitelt tatarozásra.',
-      items: [
-        'Szerintem érdemes lenne. A kamat csak 6%, és 10 évre kapnánk.',
-        'Nem tudom. Az előző hitelünket épp most tudtuk végre törleszteni. Most végre lemenne a közös költség, és erre megint egy újabb hitel?',
-        'Szerintem bocsássuk szavazásra!',
-      ],
-    },
-  ];
-
-
-  data.forEach((topic) => {
+  ['0', '1', '2'].forEach((topicNo) => {
     const topicId = Topics.insert({
       communityId: demoCommunityId,
       userId: nextUser(),
       category: 'forum',
-      title: topic.title,
-      text: topic.text,
+      title: __(`demo.topic.${topicNo}.title`),
+      text: __(`demo.topic.${topicNo}.text`),
     });
 
-    topic.items.forEach((text) => {
-      Comments.insert({
-        topicId,
-        userId: nextUser(),
-        text,
-      });
+    ['0', '1', '2'].forEach((commentNo) => {
+      const path = `demo.topic.${topicNo}.comment.${commentNo}`;
+      const commentText = __(path);
+      if (commentText !== path) {
+        Comments.insert({
+          topicId,
+          userId: nextUser(),
+          text: commentText,
+        });
+      }
     });
   });
 
   // ===== News =====
 
-  Topics.insert({
-    communityId: demoCommunityId,
-    userId: dummyUsers[0],
-    category: 'news',
-    title: 'Lomtalanítás lesz május 4.-én',
-    text: 'A lomokat előző nap (tehát május 3.-án) 18 órától lehet kihelyezni az utcára, amit a FKFV 4.-én szállít el.\n' +
-          'A veszélyes hulladékokat a külön erre kijelölt helyre kell vinni. Azokat NEM szabad az utcára kitenni!',
-  });
-  Topics.insert({
-    communityId: demoCommunityId,
-    userId: dummyUsers[0],
-    category: 'news',
-    title: 'Kémények ellenörzéséhez időpontot szükséges kérni',
-    text: 'Hónap végéig kötelező a kémények ellenőrzése. Három lehetséges időpont van. 2017.05.11, 2017.05.13, 2017.05.24.\n' +
-          'Ezek közül lehet választani és a kéményseprőkkel egyeztetni a 06(20)2569875 telefonszámon hogy kinek melyik felel meg.',
-  });
+  ['0', '1', '2'].forEach((newsNo) => {
+    const newsId = Topics.insert({
+      communityId: demoCommunityId,
+      userId: dummyUsers[0],
+      category: 'news',
+      title: __(`demo.news.${newsNo}.title`),
+      text: __(`demo.news.${newsNo}.text`),
+    });
 
-  Topics.insert({
-    communityId: demoCommunityId,
-    userId: dummyUsers[0],
-    category: 'news',
-    title: 'Hasznos informáciok',
-    text: 'Orvosi rendelő: <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +36 (1) 345-562 <br>' +
-          'Polizei: <small class="text-alt">07</small> <br>' +
-          'Közös képviselő: <small class="text-alt"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +3630 6545621' +
-          ' / <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> baltazar.imre@demo.com</small>',
-    sticky: true,
+    if (newsNo == 2) {
+      Topics.update(newsId, {
+        $set: {
+          text: 'Doctor: <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +36 (1) 345-562 <br>' +
+                'Polizei: <small class="text-alt">07</small> <br>' +
+                'Information: <small class="text-alt"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +3630 6545621' +
+                ' / <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> baltazar.imre@demo.com</small>',
+          sticky: true,
+        },
+      });
+    }
   });
 
   // ===== Votes =====
 
   const ownerships = Memberships.find({ role: 'owner' }).fetch();
 
-  const voteTopic1 = Topics.insert({
+  const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,
     userId: demoUserId,
     category: 'vote',
-    title: 'Fundamenta hitel felvétele',
-    text: 'Felvegyük-e az 5 millio forintos Fundamenta hitelt 15 évre 6%-os kamattal.',
+    title: __('demo.vote.0.title'),
+    text: __('demo.vote.0.text'),
     vote: {
       closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
       type: 'yesno',
     },
   });
 
-  castVote._execute({ userId: ownerships[0].userId }, { topicId: voteTopic1, castedVote: [2] });  // no
-  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic1, castedVote: [1] });  // yes
-  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic1, castedVote: [2] });  // no
-  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic1, castedVote: [0] });  // abstain
+//  castVote._execute({ userId: ownerships[0].userId }, { topicId: voteTopic0, castedVote: [2] });  // no
+  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic0, castedVote: [1] });  // yes
+  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic0, castedVote: [2] });  // no
+  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
 
-  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic1 }); // This vote is already closed
+  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic0 }); // This vote is already closed
 
-  const voteTopic2 = Topics.insert({
+  const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'vote',
-    title: 'Kerékpár tároló létesítéséről',
-    text: 'Létesítsen-e a ház kerékpár tárolót maximum 200,000 Ft-ból a garázsszinten.\n' +
-          'Elfogadás esetén három különböző árajánlatot kérünk be, és a legjobbat választjuk.',
+    title: __('demo.vote.1.title'),
+    text: __('demo.vote.1.text'),
     vote: {
       closesAt: moment().add(2, 'week').toDate(),
       type: 'yesno',
@@ -337,49 +314,50 @@ export function insertDemoFixture() {
 
   // No one voted on this yet
 
-  const voteTopic3 = Topics.insert({
+  const voteTopic2 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'vote',
-    title: 'Lépcsőház színéről',
-    text: 'Milyen színűre fessük a lépcsőház homlokzatát az augusztusi felújítás során.',
+    title: __('demo.vote.2.title'),
+    text: __('demo.vote.2.text'),
     vote: {
       closesAt: moment().add(1, 'month').toDate(),
       type: 'preferential',
-      choices: ['semleges fehér', 'halvány rózsaszín', 'sárga', 'világos szürke'],
+      choices: [
+        __('demo.vote.2.choice.0'),
+        __('demo.vote.2.choice.1'),
+        __('demo.vote.2.choice.2'),
+        __('demo.vote.2.choice.3'),
+      ],
     },
   });
 
-  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic3, castedVote: [1, 2, 3, 4] });
-  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic3, castedVote: [2, 3, 4, 1] });
-  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic3, castedVote: [3, 4, 1, 2] });
+  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
+  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
 
-  Comments.insert({
-    topicId: voteTopic3,
-    userId: nextUser(),
-    text: 'A halovány színek jobban mutatnak. Világosabb hatású lesz a lépcsőház.',
-  });
-
-  Comments.insert({
-    topicId: voteTopic3,
-    userId: nextUser(),
-    text: 'Jajj csak szürke NE legyen. Akkor költözöm.',
-  });
+  ['0', '1'].forEach(commentNo =>
+    Comments.insert({
+      topicId: voteTopic2,
+      userId: nextUser(),
+      text: __(`demo.vote.2.comment.${commentNo}`),
+    })
+  );
 
   const agenda = Agendas.insert({
     communityId: demoCommunityId,
-    title: 'Közgyűlés 2017-II.',
-    topicIds: [voteTopic1, voteTopic2, voteTopic3],
+    title: __('demo.agenda.0.title'),
+    topicIds: [voteTopic0, voteTopic1, voteTopic2],
   });
 
   // ===== Tickets =====
 
-  const ticket1 = Topics.insert({
+  const ticket0 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'ticket',
-    title: 'Elromlott a lift',
-    text: 'A hatodikon megállt. Semmilyen gombra nem reagál.',
+    title: __('demo.ticket.0.title'),
+    text: __('demo.ticket.0.text'),
     ticket: {
       type: 'building',
       urgency: 'high',
@@ -387,12 +365,12 @@ export function insertDemoFixture() {
     },
   });
 
-  const ticket2 = Topics.insert({
+  const ticket1 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'ticket',
-    title: 'Beázik a fürdőszobám a felettem lakótol.',
-    text: 'Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék.',
+    title: __('demo.ticket.1.title'),
+    text: __('demo.ticket.1.text'),
     ticket: {
       type: 'building',
       urgency: 'normal',
@@ -400,12 +378,12 @@ export function insertDemoFixture() {
     },
   });
 
-  const ticket3 = Topics.insert({
+  const ticket2 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'ticket',
-    title: 'Áramkimaradás éjjelente',
-    text: 'Harmadszor fordul elő, hogy hirtelen áramkimaradás van éjjel.',
+    title: __('demo.ticket.2.title'),
+    text: __('demo.ticket.2.text'),
     ticket: {
       type: 'service',
       urgency: 'normal',
@@ -414,17 +392,17 @@ export function insertDemoFixture() {
   });
 
   Comments.insert({
-    topicId: ticket3,
+    topicId: ticket2,
     userId: nextUser(),
-    text: 'Igen, már jelentettem az elműnek. Azt mondták utánanéznek',
+    text: __('demo.ticket.2.comment.0'),
   });
 
-  const ticket4 = Topics.insert({
+  const ticket3 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
     category: 'ticket',
-    title: 'A lépcsőházban hullik a vakolat',
-    text: 'A II. emeleti lépcsőfordulónál vettem észre.',
+    title: __('demo.ticket.3.title'),
+    text: __('demo.ticket.3.text'),
     ticket: {
       type: 'building',
       urgency: 'low',
@@ -444,13 +422,13 @@ export function insertDemoFixture() {
   Comments.insert({
     topicId: demoMessageRoom,
     userId: dummyUsers[2],
-    text: 'Szervusz! Megtaláltam a postaláda kulcsodat. Benne hagytad a levélszekrény ajtajában. :)',
+    text: __('demo.messages.0'),
   });
 
   Comments.insert({
     topicId: demoMessageRoom,
     userId: demoUserId,
-    text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
+    text: __('demo.messages.1'),
   });
 
   // ===== PayAccounts =====
