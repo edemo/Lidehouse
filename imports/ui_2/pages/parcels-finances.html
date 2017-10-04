@@ -2,26 +2,34 @@
   <div class="content-scrollable page-content page-finances">
 
     {{#Collapse_pane id='balances' title='ParcelBalances'}}
+      <div class="row">
+      <div class="col-xs-12 white-box">
       {{> Sumif_table (report 'AlbetetemEgyenlege' 2017)}}
+      </div>
+      </div>
     {{/Collapse_pane}}
 
     {{#Collapse_pane id='accounting' title='ParcelAccounting' notFirst=true collapsed=true}}
+      <div class="row">
+      <div class="col-xs-12 white-box">
       {{> Sumif_table (report 'AlbetetemElszamolasa' 2017)}}
+      </div>
+      </div>
     {{/Collapse_pane}}
 
     {{#Collapse_pane id='payments' title='ParcelPayments' notFirst=true collapsed=true }}
       <div class="row">
-        <div class="col-xs-12">
-          {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
-        </div>
+      <div class="col-xs-12 white-box">
+      {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+      </div>
       </div>
     {{/Collapse_pane}}
 
     {{#Collapse_pane id='bills' title='ParcelBills' notFirst=true collapsed=true }}
       <div class="row">
-        <div class="col-xs-12">
-          {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
-        </div>
+      <div class="col-xs-12 white-box">
+        {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
+      </div>
       </div>
     {{/Collapse_pane}}
 
