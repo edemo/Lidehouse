@@ -293,7 +293,7 @@ export function insertDemoFixture(lang) {
     },
   });
 
-//  castVote._execute({ userId: ownerships[0].userId }, { topicId: voteTopic0, castedVote: [2] });  // no
+  castVote._execute({ userId: ownerships[0].userId }, { topicId: voteTopic0, castedVote: [2] });  // no
   castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic0, castedVote: [1] });  // yes
   castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic0, castedVote: [2] });  // no
   castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic0, castedVote: [0] });  // abstain

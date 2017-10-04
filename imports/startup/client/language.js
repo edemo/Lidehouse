@@ -10,7 +10,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { comtype } from '/imports/comtypes/comtype.js';
 
 function getDefaultLanguage() {
-  return 'hu';    // Current default language is hungarian
+  return 'en';    // Current default language is hungarian
 }
 
 // TODO:  Use the session var to show loading while language loads
