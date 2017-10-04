@@ -27,7 +27,7 @@ Template.Board.helpers({
   activeVotingsTitle() {
     const communityId = Session.get('activeCommunityId');
     const topicsCount = Topics.find({ communityId, category: 'vote', closed: false }).count();
-    return `${__('Active')} ${__('votings')} (${topicsCount})`;
+    return `${__('Active votings')} (${topicsCount})`;
   },
   topics(category) {
     const communityId = Session.get('activeCommunityId');
