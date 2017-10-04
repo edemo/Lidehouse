@@ -4,39 +4,47 @@
     <div class="col-xs-12">
 
     {{#Collapse_pane id='balances' title='Balances'}}
-      {{> Sumif_table (report 'Egyenlegek')}}
+      <div class="row">
+      <div class="col-xs-12 white-box">
+        {{> Sumif_table (report 'Egyenlegek')}}
+      </div>
+      </div>
     {{/Collapse_pane}}
 
     {{#Collapse_pane id='payaccounts' title='Payaccounts' notFirst=true collapsed=true }}
       <div class="row">
-        <div class="col-xs-12">
-          {{> ReactiveDatatable tableData=payaccountsTableDataFn options=payaccountsOptionsFn }}
-        </div>
+      <div class="col-xs-12 white-box">
+        {{> ReactiveDatatable tableData=payaccountsTableDataFn options=payaccountsOptionsFn }}
         <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+      </div>
       </div>
     {{/Collapse_pane}}
 
     {{#Collapse_pane id='payments' title='Payments' notFirst=true collapsed=true }}
       <div class="row">
-        <div class="col-xs-12">
-          {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
-        </div>
+      <div class="col-xs-12 white-box">
+        {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
         <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+      </div>
       </div>
     {{/Collapse_pane}}
 
     {{#Collapse_pane id='report' title=communityStatusReportTitle notFirst=true collapsed=true }}
-      {{> Sumif_table (report 'EvesBevetelek')}}
-      {{> Sumif_table (report 'HaviBevetelek' 2017)}}
-      {{> Sumif_table (report 'AlbetetekSzamlai' 2017)}}
+      <div class="row">
+      <div class="col-xs-12 white-box">
+        {{> Sumif_table (report 'EvesBevetelek')}}
+        {{> Sumif_table (report 'HaviBevetelek' 2017)}}
+        {{> Sumif_table (report 'AlbetetekSzamlai' 2017)}}
+      </div>
+      </div>
     {{/Collapse_pane}}
 
     {{#Collapse_pane id='bills' title='Bills' notFirst=true collapsed=true }}
       <div class="row">
-        <div class="col-xs-12">
-          {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
-        </div>
+      <div class="col-xs-12 white-box">
+        {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
         <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+      </div>
       </div>
 
       <div class="row">
@@ -46,6 +54,7 @@
         </div>
       </div>
       <div class="row">
+      <div class="col-xs-12 white-box">
         {{#autoForm afCommunityFinancesData}}
           {{> afQuickFields}}
           <div>
@@ -53,6 +62,7 @@
           </div>
         {{/autoForm}}
         <button class="js-bill btn-primary">{{_ 'Beállított közös költség kiírása minden albetétre'}}</button>
+      </div>
       </div>
     {{/Collapse_pane}}
 
