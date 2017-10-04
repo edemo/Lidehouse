@@ -16,6 +16,7 @@ import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
 import { billParcels } from '/imports/api/payments/methods.js';
 import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
+import { freshFixture, logDB } from '/imports/api/test-utils.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -279,7 +280,7 @@ export function insertDemoFixture(lang) {
 
   // ===== Votes =====
 
-  const ownerships = Memberships.find({ role: 'owner' }).fetch();
+  const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner' }).fetch();
 
   const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,
