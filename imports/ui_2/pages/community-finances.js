@@ -4,21 +4,24 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Communities } from '/imports/api/communities/communities.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { remove as removePayment, billParcels } from '/imports/api/payments/methods.js';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { AutoForm } from 'meteor/aldeed:autoform';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+
+import { __ } from '/imports/localization/i18n.js';
+
 import { paymentColumns } from '/imports/api/payments/tables.js';
 import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
 import { Reports } from '/imports/api/payaccounts/reports.js';
-import { AutoForm } from 'meteor/aldeed:autoform';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '../components/collapse-pane.js';
+import '../components/sumif-table.js';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
-import '../components/sumif-table.js';
-import './finances.html';
+import './community-finances.html';
 
-Template.Finances.onCreated(function financesOnCreated() {
+Template.Community_finances.onCreated(function communityFinancesOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('payaccounts.inCommunity', { communityId });
@@ -26,7 +29,13 @@ Template.Finances.onCreated(function financesOnCreated() {
   });
 });
 
-Template.Finances.helpers({
+Template.Community_finances.helpers({
+  communityStatusReportTitle() {
+    return `${__('community')} ${__('status report')}`;
+  },
+  report(name, year) {
+    return Reports[name](year);
+  },
   payaccountsTableDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
@@ -47,7 +56,14 @@ Template.Finances.helpers({
   paymentsTableDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
-      return Payments.find({ communityId }).fetch();
+      return Payments.find({ communityId, phase: 'done' }).fetch();
+    }
+    return getTableData;
+  },
+  billsTableDataFn() {
+    function getTableData() {
+      const communityId = Session.get('activeCommunityId');
+      return Payments.find({ communityId, phase: 'plan' }).fetch();
     }
     return getTableData;
   },
@@ -62,9 +78,6 @@ Template.Finances.helpers({
       };
     }
     return getOptions;
-  },
-  report(name, year) {
-    return Reports[name](year);
   },
   afCommunityFinancesData() {
     const communityId = Session.get('activeCommunityId');
@@ -98,8 +111,8 @@ function newPaymentSchema() {
   ]);
 }
 
-Template.Finances.events({
-  'click #tab-content0 .js-new'(event, instance) {
+Template.Community_finances.events({
+  'click #payaccounts-pane .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.payaccounts.insert',
       collection: PayAccounts,
@@ -110,7 +123,7 @@ Template.Finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #tab-content0 .js-edit'(event) {
+  'click #payaccounts-pane .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccounts.update',
@@ -124,31 +137,30 @@ Template.Finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #tab-content0 .js-delete'(event) {
+  'click #payaccounts-pane .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(PayAccounts.remove, { _id: id }, {
       action: 'delete payaccount',
     });
   },
-
-  'click #tab-content1 .js-new'(event, instance) {
+  'click #payments-pane .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.payments.insert',
       collection: Payments,
       schema: newPaymentSchema(),
-      omitFields: ['communityId'],
+      omitFields: ['communityId', 'phase'],
       type: 'method',
       meteormethod: 'payments.insert',
       template: 'bootstrap3-inline',
     });
   },
-  'click #tab-content1 .js-edit'(event) {
+  'click #payments-pane .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payments.update',
       collection: Payments,
       schema: newPaymentSchema(),
-      omitFields: ['communityId'],
+      omitFields: ['communityId', 'phase'],
       doc: Payments.findOne(id),
       type: 'method-update',
       meteormethod: 'payments.update',
@@ -156,13 +168,44 @@ Template.Finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #tab-content1 .js-delete'(event) {
+  'click #payments-pane .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removePayment, { _id: id }, {
       action: 'delete payment',
     });
   },
-  'click #tab-content3 .js-bill'(event) {
+  'click #bills-pane .js-new'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.payments.insert',
+      collection: Payments,
+      schema: newPaymentSchema(),
+      omitFields: ['communityId', 'phase'],
+      type: 'method',
+      meteormethod: 'bills.insert',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #bills-pane .js-edit'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.payments.update',
+      collection: Payments,
+      schema: newPaymentSchema(),
+      omitFields: ['communityId', 'phase'],
+      doc: Payments.findOne(id),
+      type: 'method-update',
+      meteormethod: 'bills.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #bills-pane .js-delete'(event) {
+    const id = $(event.target).data('id');
+    Modal.confirmAndCall(removePayment, { _id: id }, {
+      action: 'delete bill',
+    });
+  },
+  'click #bills-pane .js-bill'(event) {
     const communityId = Session.get('activeCommunityId');
     Modal.confirmAndCall(billParcels, { communityId }, {
       action: 'bill parcels',
@@ -185,6 +228,17 @@ AutoForm.addModalHooks('af.payments.update');
 AutoForm.addHooks('af.payments.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
+    doc.phase = 'done';
+    return doc;
+  },
+});
+
+AutoForm.addModalHooks('af.bills.insert');
+AutoForm.addModalHooks('af.bills.update');
+AutoForm.addHooks('af.bills.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    doc.phase = 'plan';
     return doc;
   },
 });

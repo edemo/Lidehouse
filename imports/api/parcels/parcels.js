@@ -1,23 +1,17 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Fraction } from 'fractional';
+
+import { __ } from '/imports/localization/i18n.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Roles } from '/imports/api/permissions/roles.js';
-import { Fraction } from 'fractional';
-import { Factory } from 'meteor/dburles:factory';
 
 export const Parcels = new Mongo.Collection('parcels');
-
-const FreeFields = new SimpleSchema({
-  freeFields: { type: Array, optional: true },
-  'freeFields.$': { type: Object },
-  'freeFields.$.key': { type: String, max: 25 },
-  'freeFields.$.value': { type: String, max: 25 },
-});
 
 Parcels.typeValues = ['flat', 'parking', 'storage'];
 
@@ -62,10 +56,15 @@ Parcels.helpers({
   share() {
     return new Fraction(this.units, this.totalunits());
   },
+  ownedShare() {
+    let total = new Fraction(0);
+    Memberships.find({ parcelId: this._id }).forEach(p => total = total.add(p.ownership.share));
+    return total;
+  },
   representorId() {
     const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
     const rep = firstDefinedRep || Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner' });
-    return rep.userId;
+    return rep ? rep.userId : undefined;
   },
   userNames() {
     let result = '';
@@ -87,13 +86,15 @@ Parcels.helpers({
   location() {
     return `${this.floor}/${this.number}`;
   },
+  display() {
+    return `${this.serial}. ${__(this.type)} ${this.location()} (${this.lot})`;
+  },
   toString() {
     return this.location();
   },
 });
 
 Parcels.attachSchema(Parcels.schema);
-Parcels.attachSchema(FreeFields);
 Parcels.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {

@@ -1,8 +1,10 @@
 import { Meteor } from 'meteor/meteor';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import 'meteor/accounts-base';
 import { Fraction } from 'fractional';
+import 'meteor/accounts-base';
+
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -39,11 +41,12 @@ const PersonProfileSchema = new SimpleSchema({
 });
 
 const UserSettingsSchema = new SimpleSchema({
-  language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'en' },
+  language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'hu' },
   delegatee: { type: Boolean, defaultValue: true },
 });
 
-const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';
+const defaultAvatar = 'http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png';
+// const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';
 // const defaultAvatar = 'http://pannako.hu/wp-content/uploads/avatar-1.png';
 
 Meteor.users.schema = new SimpleSchema({
@@ -138,7 +141,11 @@ Meteor.users.helpers({
   },
   fullName() {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
-      return this.profile.lastName + ' ' + this.profile.firstName;
+      if (TAPi18n.getLanguage() === 'hu') {
+        return this.profile.lastName + ' ' + this.profile.firstName;
+      } else {
+        return this.profile.firstName + ' ' + this.profile.lastName;
+      }
     }
     // or fallback to the username
     return `[${this.safeUsername()}]`;

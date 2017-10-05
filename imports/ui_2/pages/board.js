@@ -3,12 +3,16 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import { moment } from 'meteor/momentjs:moment';
-import { Topics } from '/imports/api/topics/topics.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { moment } from 'meteor/momentjs:moment';
+
+import { __ } from '/imports/localization/i18n.js';
+
+import { Topics } from '/imports/api/topics/topics.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/modal.js';
 import '../modals/autoform-edit.js';
+import '../components/collapse-pane.js';
 import '../components/comments-section.js';
 import '../components/votebox.js';
 import '../components/chatbox.js';
@@ -20,13 +24,14 @@ Template.Board.onCreated(function boardOnCreated() {
 });
 
 Template.Board.helpers({
+  activeVotingsTitle() {
+    const communityId = Session.get('activeCommunityId');
+    const topicsCount = Topics.find({ communityId, category: 'vote', closed: false }).count();
+    return `${__('Active votings')} (${topicsCount})`;
+  },
   topics(category) {
     const communityId = Session.get('activeCommunityId');
     return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
-  },
-  topicsCount(category) {
-    const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category, closed: false }).count();
   },
   displayTime() {
     return moment(this.createdAt).format('YYYY MMM Do');

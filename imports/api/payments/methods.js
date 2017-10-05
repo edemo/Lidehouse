@@ -59,10 +59,10 @@ export const billParcels = new ValidatedMethod({
           date: new Date(2017, i, 10),
           accounts: {
             'Bevételek': 'Közös költség befizetés',
-            'Helyek': parcel.serial.toString(),
+            'Könyvelési helyek': parcel.serial.toString(),
           },
         };
-        const doc = _.extend({}, query, { amount: commonCost });
+        const doc = _.extend({}, query, { amount: -1 * commonCost });
         Payments.update(query, { $set: doc }, { upsert: true });
       }
     });
