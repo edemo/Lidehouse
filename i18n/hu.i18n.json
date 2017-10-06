@@ -71,6 +71,9 @@
   "created": "létrehozva",
   "closes": "lezárul",
 
+  "person": "magán személy",
+  "legal": "jogi személyiség",
+  
   // commands
   "view": "Megtekintés",
   "edit": "Szerkesztés",

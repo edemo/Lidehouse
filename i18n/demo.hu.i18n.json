@@ -10,11 +10,20 @@
       },
       "1": {
         "firstName": "Andor",
-        "lastName": "Bajor"
+        "lastName": "Bajor",
+        "benefactor": {
+          "name": "Bíró Rozália",
+          "address": "Szolnok, Kunigunda u 45.",
+          "mothersName": "Perjés Katalin"
+        }
       },
       "2": {
         "firstName": "Tímea",
-        "lastName": "Bakocsi"
+        "lastName": "Bakocsi",
+        "company": {
+          "name": "ACME Kft.",
+          "address": "Jászkunszállás, Petfőfi Sándor u 124."
+        }
       },
       "3": {
         "firstName": "Péter",

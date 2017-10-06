@@ -51,6 +51,73 @@
       "placeholder": "(pl. 06 30 123 4567)"
     }
   },
+  "schemaMemberships" : {
+    "role": {
+      "label": "Szerep"
+    },
+    "userId": {
+      "label": "Felhasználó"
+    },
+    "idCard": {
+      "label" : "Ellenőrzött adatok",
+      "type": {
+        "label": "Entitás típusa"
+      },
+      "name": {
+        "label": "Név",
+        "placeholder": "(pl. Kovács János vagy Kulcslyuk Kft.)"
+      },
+      "address": {
+        "label": "Bejelentett cím",
+        "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
+      },
+      "identifier": {
+        "label": "Szig. szám ill. cégjegyzékszám",
+        "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
+      },
+      "mothersName": {
+        "label": "Anyja leánykori neve",
+        "placeholder": "(csak magánszemély esetén)"
+      },
+      "dob": {
+        "label": "Születési idő"
+      }
+    },
+    "ownership": {
+      "label": "Tulajdon",
+      "share": {
+        "label": "Tulajdonrész",
+        "placeholder": "(pl. 1/1 vagy 1/2)"
+      },
+      "representor": {
+        "label": "Képviselője?"
+      }
+    },
+    "benefactorship": {
+      "label": "Használat",
+      "type": {
+        "label": "Típus"
+      }
+    }
+  },
+  "schemaDelegations": {
+    "sourceUserId": {
+      "label": "Meghatalmazó",
+      "placeholder": "(pl. Miki75)"
+    },
+    "targetUserId": {
+      "label": "Meghatalmazott",
+      "placeholder": "(pl. Miki75)"
+    },
+    "scope": {
+      "label": "Meghatalmazás köre",
+      "placeholder": "(pl. Ház ügyei)"
+    },
+    "objectId": {
+      "label": "Meghatalmazás tárgya (tulajdon)",
+      "placeholder": "(pl. Demo ház)"
+    }
+  },
   "schemaAgendas": {
     "title": {
       "label": "Név",
@@ -121,47 +188,6 @@
       "rating": {
         "label": "Mennyire ajánlaná az alkalmazást másoknak?"
       }
-    }
-  },
-  "schemaMemberships" : {
-    "userId": {
-      "label": "Felhasználó"
-    },
-    "role": {
-      "label": "Szerep"
-    },
-    "ownership": {
-      "label": "Tulajdon",
-      "share": {
-        "label": "Tulajdonrész"
-      },
-      "representor": {
-        "label": "Képviselője?"
-      }
-    },
-    "benefactorship": {
-      "label": "Haszonélvezet",
-      "type": {
-        "label": "Típus"
-      }
-    }
-  },
-  "schemaDelegations": {
-    "sourceUserId": {
-      "label": "Meghatalmazó",
-      "placeholder": "(pl. Miki75)"
-    },
-    "targetUserId": {
-      "label": "Meghatalmazott",
-      "placeholder": "(pl. Miki75)"
-    },
-    "scope": {
-      "label": "Meghatalmazás köre",
-      "placeholder": "(pl. Ház ügyei)"
-    },
-    "objectId": {
-      "label": "Meghatalmazás tárgya (tulajdon)",
-      "placeholder": "(pl. Demo ház)"
     }
   },
   "schemaPayAccounts": {

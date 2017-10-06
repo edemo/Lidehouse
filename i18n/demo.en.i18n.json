@@ -10,11 +10,20 @@
       },
       "1": {
         "firstName": "Andrew",
-        "lastName": "Bay"
+        "lastName": "Bay",
+        "benefactor": {
+          "name": "Rosemary Bird",
+          "address": "123 Awesome street, Georgia ",
+          "mothersName": "Cethleen Pierce"
+        }
       },
       "2": {
         "firstName": "Tiffany",
-        "lastName": "Baker"
+        "lastName": "Baker",
+        "company": {
+          "name": "ACME Inc.",
+          "address": "Peterson avenue 124., Philadelphia, USA"
+        }
       },
       "3": {
         "firstName": "Peter",

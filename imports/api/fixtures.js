@@ -16,7 +16,6 @@ import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
 import { billParcels } from '/imports/api/payments/methods.js';
 import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
-import { freshFixture, logDB } from '/imports/api/test-utils.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -179,11 +178,44 @@ export function insertDemoFixture(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: dummyUsers[2],
+    // no userId -- This person is benefactor of parcel[1], but he is not a registered user of the app
+    idCard: {
+      type: 'person',
+      name: __('demo.user.1.benefactor.name'),
+      address: __('demo.user.1.benefactor.address'),
+      identifier: '987201NA',
+      dob: new Date(1951, 1, 5),
+      mothersName: __('demo.user.1.benefactor.mothersName'),
+    },
+    role: 'benefactor',
+    parcelId: dummyParcels[1],
+    benefactorship: {
+      type: 'rental',
+    },
+  });
+  Memberships.insert({
+    communityId: demoCommunityId,
+    // no userId -- This parcel is owned by a legal entity, and the representor for them is user[2]
+    idCard: {
+      type: 'legal',
+      name: __('demo.user.2.company.name'),
+      address: __('demo.user.2.company.address'),
+      identifier: 'Cg.123456-89',
+    },
     role: 'owner',
     parcelId: dummyParcels[2],
     ownership: {
       share: new Fraction(1, 1),
+    },
+  });
+  Memberships.insert({
+    communityId: demoCommunityId,
+    userId: dummyUsers[2],
+    role: 'owner',
+    parcelId: dummyParcels[2],
+    ownership: {
+      share: new Fraction(0),
+      representor: true,
     },
   });
   Memberships.insert({
@@ -202,6 +234,7 @@ export function insertDemoFixture(lang) {
     parcelId: dummyParcels[4],
     ownership: {
       share: new Fraction(1, 2),
+      representor: false,
     },
   });
   Memberships.insert({
@@ -211,6 +244,7 @@ export function insertDemoFixture(lang) {
     parcelId: dummyParcels[4],
     ownership: {
       share: new Fraction(1, 4),
+      representor: true,
     },
   });
   Memberships.insert({
@@ -220,6 +254,7 @@ export function insertDemoFixture(lang) {
     parcelId: dummyParcels[4],
     ownership: {
       share: new Fraction(1, 4),
+      representor: false,
     },
   });
 
@@ -228,8 +263,9 @@ export function insertDemoFixture(lang) {
   // The dummy users comment one after the other, round robin style
   let nextUserIndex = 0;
   function nextUser() {
+    nextUserIndex += 7; // relative prime
     nextUserIndex %= dummyUsers.length;
-    return dummyUsers[nextUserIndex++];
+    return dummyUsers[nextUserIndex];
   }
 
   ['0', '1', '2'].forEach((topicNo) => {
@@ -280,7 +316,7 @@ export function insertDemoFixture(lang) {
 
   // ===== Votes =====
 
-  const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner' }).fetch();
+  const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', userId: { $exists: true } }).fetch();
 
   const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,

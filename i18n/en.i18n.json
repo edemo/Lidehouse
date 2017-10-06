@@ -1,4 +1,7 @@
 {
+  "person": "natural person",
+  "legal": "legal entity",
+
   // buttons etc.
   "confirm": "Are you sure?",
   "inviteSend": "Send invitation",

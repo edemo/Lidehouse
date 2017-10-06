@@ -61,24 +61,25 @@ Parcels.helpers({
     Memberships.find({ parcelId: this._id }).forEach(p => total = total.add(p.ownership.share));
     return total;
   },
-  representorId() {
-    const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
-    const rep = firstDefinedRep || Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner' });
-    return rep ? rep.userId : undefined;
+  representor() {
+    const firstDefinedRep =
+      Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
+    if (firstDefinedRep) return firstDefinedRep;
+    const ownersSorted =
+      Memberships.find({ communityId: this.communityId, parcelId: this._id, role: 'owner' }, { sort: { createdAt: 1 } }).fetch();
+    if (ownersSorted.length > 0) return ownersSorted[0];
+    return undefined;
   },
-  userNames() {
+  displayNames() {
     let result = '';
-    const representorId = this.representorId();
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
     ownerships.forEach((m) => {
-      const user = Meteor.users.findOne(m.userId);
-      const repBadge = representorId === m.userId ? '(*)' : '';
-      result += `${user.fullName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
+      const repBadge = m.isRepresentor() ? '(*)' : '';
+      result += `${m.displayName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
     });
     const benefactorships = Memberships.find({ communityId: this.communityId, role: 'benefactor', parcelId: this._id });
     benefactorships.forEach((m) => {
-      const user = Meteor.users.findOne(m.userId);
-      result += `${user.fullName()}<br>`;
+      result += `${m.displayName()}<br>`;
     });
     return result;
   },

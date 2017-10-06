@@ -36,5 +36,6 @@ export function emptyFixture() {
 export function freshFixture() {
   resetDatabase();
   initializePermissions();
-  return insertDemoFixture('en');
+  const result = insertDemoFixture('en');
+  return result;
 }

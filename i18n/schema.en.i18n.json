@@ -51,6 +51,73 @@
       "placeholder": "(pl. +36 30 123 4567)"
     }
   },
+  "schemaMemberships" : {
+    "role": {
+      "label": "Role"
+    },
+    "userId": {
+      "label": "User"
+    },
+    "idCard": {
+      "label" : "Verified identification",
+      "type": {
+        "label": "Entity type"
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "(eg. John Smith or ACME Inc.)"
+      },
+      "address": {
+        "label": "Official address",
+        "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
+      },
+      "identifier": {
+        "label": "Official identifier",
+        "placeholder": "(card number)"
+      },
+      "mothersName": {
+        "label": "Mother's maiden name",
+        "placeholder": "(only for person)"
+      },
+      "dob": {
+        "label": "Date of birth"
+      }
+    },
+    "ownership": {
+      "label": "Owner",
+      "share": {
+        "label": "Ownership share",
+        "placeholder": "(eg. 1/1 or 1/2)"
+      },
+      "representor": {
+        "label": "Representor?"
+      }
+    },
+    "benefactorship": {
+      "label": "Benefactor",
+      "type": {
+        "label": "Type"
+      }
+    }
+  },
+  "schemaDelegations": {
+    "sourceUserId": {
+      "label": "Delegator",
+      "placeholder": "(eg. Mike75)"
+    },
+    "targetUserId": {
+      "label": "Delegatee",
+      "placeholder": "(eg. Mike75)"
+    },
+    "scope": {
+      "label": "Scope of Delegation",
+      "placeholder": "(pl. Community issues)"
+    },
+    "objectId": {
+      "label": "Object of delegation",
+      "placeholder": "(eg. Demo community)"
+    }
+  },
   "schemaAgendas": {
     "title": {
       "label": "Name",
@@ -121,48 +188,6 @@
       "rating": {
         "label": "How much would you recommend this app to others?"
       }
-    }
-  },
-  "schemaMemberships" : {
-    "userId": {
-      "label": "User"
-    },
-    "role": {
-      "label": "Role"
-    },
-    "ownership": {
-      "label": "Owner",
-      "share": {
-        "label": "Ownership share"
-      },
-      "representor": {
-        "label": "Representor?"
-      }
-    },
-    "benefactorship": {
-      "label": "Benefactor",
-      "type": {
-        "label": "Type"
-      }
-    }
-
-  },
-  "schemaDelegations": {
-    "sourceUserId": {
-      "label": "Delegator",
-      "placeholder": "(eg. Mike75)"
-    },
-    "targetUserId": {
-      "label": "Delegatee",
-      "placeholder": "(eg. Mike75)"
-    },
-    "scope": {
-      "label": "Scope of Delegation",
-      "placeholder": "(pl. Community issues)"
-    },
-    "objectId": {
-      "label": "Object of delegation",
-      "placeholder": "(eg. Demo community)"
     }
   },
   "schemaPayAccounts": {

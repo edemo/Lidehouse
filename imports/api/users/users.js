@@ -139,6 +139,12 @@ Meteor.users.helpers({
     const totalVotingUnits = this.totalOwnedUnits(communityId) + this.totalDelegatedToMeUnits(communityId);
     return new Fraction(totalVotingUnits, community.totalunits);
   },
+  safeUsername() {
+    // If we have a username in db return that, otherwise generate one from her email address
+    if (this.username) return this.username;
+    const email = this.emails[0].address;
+    return email.substring(0, email.indexOf('@'));
+  },
   fullName() {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
       if (TAPi18n.getLanguage() === 'hu') {
@@ -149,12 +155,6 @@ Meteor.users.helpers({
     }
     // or fallback to the username
     return `[${this.safeUsername()}]`;
-  },
-  safeUsername() {
-    // If we have a username in db return that, otherwise generate one from her email address
-    if (this.username) return this.username;
-    const email = this.emails[0].address;
-    return email.substring(0, email.indexOf('@'));
   },
   toString() {
     return this.fullName();

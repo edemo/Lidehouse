@@ -34,7 +34,7 @@ if (Meteor.isServer) {
           'memberships.inCommunity',
           { communityId: Fixture.demoCommunityId },
           (collections) => {
-            chai.assert.equal(collections.memberships.length, 11);
+            chai.assert.equal(collections.memberships.length, 13);
             chai.assert.equal(collections.parcels.length, 5);
             done();
           }
@@ -83,16 +83,16 @@ if (Meteor.isServer) {
         });
       });
 
-      it('selects representor when specified', function (done) {
+      it('selects flagged representor when specified', function (done) {
         const parcel = Parcels.findOne(parcelId);
-        chai.assert.equal(parcel.representorId(), Fixture.dummyUsers[2]);
+        chai.assert.equal(parcel.representor()._id, ownership2Id);
         done();
       });
 
-      it('selects representor when not specified', function (done) {
+      it('selects first owner as representor when not specified', function (done) {
         Memberships.update(ownership2Id, { $set: { 'ownership.representor': false } });
         const parcel = Parcels.findOne(parcelId);
-        chai.assert.equal(parcel.representorId(), Fixture.dummyUsers[1]);
+        chai.assert.equal(parcel.representor()._id, ownership1Id);
         done();
       });
 
@@ -101,7 +101,7 @@ if (Meteor.isServer) {
         Memberships.remove(ownership2Id);
         Memberships.remove(ownership3Id);
         const parcel = Parcels.findOne(parcelId);
-        chai.assert.isUndefined(parcel.representorId());
+        chai.assert.isUndefined(parcel.representor());
         done();
       });
     });
