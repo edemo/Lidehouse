@@ -261,7 +261,10 @@ export function insertDemoFixture(lang) {
   // ===== Forum =====
 
   // The dummy users comment one after the other, round robin style
-  let nextUserIndex = 0;
+  let nextUserIndex = 1;
+  function sameUser() {
+    return dummyUsers[nextUserIndex];
+  }
   function nextUser() {
     nextUserIndex += 7; // relative prime
     nextUserIndex %= dummyUsers.length;
@@ -283,7 +286,7 @@ export function insertDemoFixture(lang) {
       if (commentText !== path) {
         Comments.insert({
           topicId,
-          userId: nextUser(),
+          userId: (topicNo == 2 && commentNo == 2) ? sameUser() : nextUser(),
           text: commentText,
         });
       }

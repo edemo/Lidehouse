@@ -73,7 +73,7 @@
       },
       "identifier": {
         "label": "Official identifier",
-        "placeholder": "(card number)"
+        "placeholder": "(id card number or company registration number)"
       },
       "mothersName": {
         "label": "Mother's maiden name",

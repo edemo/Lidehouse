@@ -43,20 +43,21 @@
         }
       },
       "1": {
-        "title": "Loud dog on the 4th floor",
-        "text": "There is a dog on the 4th crying all day. The owner should not leave it alone all day.",
-        "comment": {
-          "0": "It is very annoying!!!",
-          "1": "I apologize from everyone. The dog is ours, it ususally doesn't make any noise. But my granny was in the hospital, and it was left alone last week. Fortunately granny is out of hospital and back home from yesterday, so it won't be causing noise anymore. Sincere apologies from everyone."
-        }
-      },
-      "2": {
         "title": "Bank loan for renovation",
         "text": "There is special offer from the bank for a one time loan that can be used for renovation.",
         "comment": {
           "0": "I think it is worth it. Interest is only 6%, repayment period is 10 years.",
           "1": "Well, I'm not sure. We just got out from our last loan. Finally we can make the common cost lower, and now another loan?",
           "2": "I suggest voting on it!"
+        }
+      },
+      "2": {
+        "title": "Loud dog on the 4th floor",
+        "text": "There is a dog on the 4th crying all day. The owner should not leave it alone all day.",
+        "comment": {
+          "0": "It is very annoying!!!",
+          "1": "I apologize from everyone. The dog is ours, it ususally doesn't make any noise. But my granny was in the hospital, and it was left alone last week.",
+          "2": "Fortunately granny is out of hospital and back home from yesterday, so it won't be causing noise anymore. Sincere apologies from everyone."
         }
       }
     },

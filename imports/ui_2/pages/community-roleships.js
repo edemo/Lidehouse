@@ -44,7 +44,7 @@ Template.Community_roleships_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'ownership'],
+      omitFields: ['communityId', 'parcelId', 'ownership', 'benefactorship', 'idCard'],
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',
@@ -55,7 +55,7 @@ Template.Community_roleships_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.roleship.update',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'ownership'],
+      omitFields: ['communityId', 'parcelId', 'ownership', 'benefactorship', 'idCard'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',

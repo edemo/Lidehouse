@@ -43,20 +43,21 @@
         }
       },
       "1": {
-        "title": "Hangos kutya a negyediken",
-        "text": "A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.",
-        "comment": {
-          "0": "Engem is rohadtul idegesít!!!",
-          "1": "Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi sajnos három hétig kórházban, és szegény kutyus nagyon rosszul bírja az egyedüllétet. De szerencsére a nagyit már hazaengedték,  tegnap óta már otthon van. Úgyhogy nem lesz többet gond, és tényeg elnézést kérek mindenkitől."
-        }
-      },
-      "2": {
         "title": "Fundamenta hitel",
         "text": "Most kedvezményes feltételekkel lehet felvenni fundamenta hitelt tatarozásra.",
         "comment": {
           "0": "Szerintem érdemes lenne. A kamat csak 6%, és 10 évre kapnánk.",
           "1": "Nem tudom. Az előző hitelünket épp most tudtuk végre törleszteni. Most végre lemenne a közös költség, és erre megint egy újabb hitel?",
           "2": "Szerintem bocsássuk szavazásra!"
+        }
+      },
+      "2": {
+        "title": "Hangos kutya a negyediken",
+        "text": "A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.",
+        "comment": {
+          "0": "Engem is rohadtul idegesít!!!",
+          "1": "Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi sajnos három hétig kórházban, és szegény kutyus nagyon rosszul bírja az egyedüllétet.",
+          "2": "Szerencsére a nagyit már hazaengedték, tegnap óta már otthon van. Úgyhogy nem lesz többet gond, és tényeg elnézést kérek mindenkitől."
         }
       }
     },
