@@ -1,13 +1,13 @@
 <template name="Vote_topics">
   <div class="content-scrollable page-content page-vote">
 
-    {{#Collapse_pane id='newVoting' title='New voting' collapsed=true}}
+    {{#Collapse_section id='newVoting' title='New voting' collapsed=true}}
        <div class="white-box">
          {{> Vote_create}}
        </div>
-    {{/Collapse_pane}}
+    {{/Collapse_section}}
 
-    {{#Collapse_pane id='activeVotings' title='Active votings' notFirst=true}}
+    {{#Collapse_section id='activeVotings' title='Active votings'}}
        <div class="row">
          <div class="col-xs-12">
            {{#each openVoteTopics}}
@@ -15,9 +15,9 @@
            {{/each}}
          </div>
        </div>
-    {{/Collapse_pane}}
+    {{/Collapse_section}}
 
-    {{#Collapse_pane id='closedVotings' title='Closed votings' notFirst=true collapsed=true}}
+    {{#Collapse_section id='closedVotings' title='Closed votings' collapsed=true}}
        <div class="row">
          {{#if hasSelection}}
          <div class="col-xs-12">
@@ -29,20 +29,20 @@
        </div>
        <div class="row">
          <div class="col-xs-12">
-           {{> ReactiveDatatable tableData=closedVotingsTableDataFn options=closedVotingsOptionsFn }}
+           {{> ReactiveDatatable tableData=closedVotingsTableDataFn options=closedVotingsOptionsFn}}
            <!-- TODO add active class to selected row)-->
          </div>
        </div>
-    {{/Collapse_pane}}
+    {{/Collapse_section}}
 
-    {{#Collapse_pane id='agendas' title='Agendas' notFirst=true collapsed=true}}
+    {{#Collapse_section id='agendas' title='Agendas' collapsed=true}}
        <div class="row">
          <div class="col-xs-12">
-           {{> ReactiveDatatable tableData=agendasTableDataFn options=agendasOptionsFn }}
+           {{> ReactiveDatatable tableData=agendasTableDataFn options=agendasOptionsFn}}
          </div>
          <button class="js-new btn-primary">{{_ 'createNew'}}</button>
        </div>
-    {{/Collapse_pane}}
+    {{/Collapse_section}}
 
   </div>
 </template>

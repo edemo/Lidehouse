@@ -9,7 +9,7 @@
       </div>
     {{/Collapse_section}}
 
-    {{#Collapse_section id='accounting' title='ParcelAccounting' notFirst=true collapsed=true}}
+    {{#Collapse_section id='accounting' title='ParcelAccounting' collapsed=true }}
       <div class="row">
       <div class="col-xs-12 white-box">
       {{> Sumif_table (report 'AlbetetemElszamolasa' 2017)}}
@@ -17,7 +17,7 @@
       </div>
     {{/Collapse_section}}
 
-    {{#Collapse_section id='payments' title='ParcelPayments' notFirst=true collapsed=true }}
+    {{#Collapse_section id='payments' title='ParcelPayments' collapsed=true }}
       <div class="row">
       <div class="col-xs-12 white-box">
       {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
@@ -25,7 +25,7 @@
       </div>
     {{/Collapse_section}}
 
-    {{#Collapse_section id='bills' title='ParcelBills' notFirst=true collapsed=true }}
+    {{#Collapse_section id='bills' title='ParcelBills' collapsed=true }}
       <div class="row">
       <div class="col-xs-12 white-box">
         {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
