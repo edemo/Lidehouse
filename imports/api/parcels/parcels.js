@@ -62,12 +62,12 @@ Parcels.helpers({
     return total;
   },
   representor() {
-    const firstDefinedRep =
-      Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
+    const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
     if (firstDefinedRep) return firstDefinedRep;
-    const ownersSorted =
-      Memberships.find({ communityId: this.communityId, parcelId: this._id, role: 'owner' }, { sort: { createdAt: 1 } }).fetch();
+    const ownersSorted = Memberships.find({ communityId: this.communityId, parcelId: this._id, role: 'owner' }, { sort: { createdAt: 1 } }).fetch();
     if (ownersSorted.length > 0) return ownersSorted[0];
+    const benefactorsSorted = Memberships.find({ communityId: this.communityId, parcelId: this._id, role: 'benefactor' }, { sort: { createdAt: 1 } }).fetch();
+    if (benefactorsSorted.length > 0) return benefactorsSorted[0];
     return undefined;
   },
   displayNames() {
