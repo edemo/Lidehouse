@@ -22,11 +22,19 @@
       },
       "nick": {
         "label": "Nick name",
-        "placeholder": "(pl. Mikey75)"
+        "placeholder": "(eg. Mikey75)"
+      },
+      "address": {
+        "label": "Contact address",
+        "placeholder": "(eg. 24 Cattle str, Wyoming)"
+      },
+      "phone": {
+        "label": "Phone number",
+        "placeholder": "(pl. +36 30 123 4567)"
       },
       "bio": {
         "label": "Bio",
-        "placeholder": "(pl. On sundays I like to play the piano. Sorry :) )"
+        "placeholder": "(eg. On sundays I like to play the piano. Sorry :) )"
       }
     },
     "settings": {
@@ -45,10 +53,6 @@
           "label": "Verified"
         }
       }
-    },
-    "phone": {
-      "label": "Phone number",
-      "placeholder": "(pl. +36 30 123 4567)"
     }
   },
   "schemaMemberships" : {

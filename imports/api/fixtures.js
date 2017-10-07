@@ -54,15 +54,13 @@ export function insertDemoFixture(lang) {
   const dummyUsers = [];
   dummyUsers[0] = Meteor.users.insert({
     emails: [{ address: `user.0@demo.${com}`, verified: true }],
-    phone: '06 30 234 5678',
-    profile: { lastName: __('demo.user.0.lastName'), firstName: __('demo.user.0.firstName') },
+    profile: { lastName: __('demo.user.0.lastName'), firstName: __('demo.user.0.firstName'), phone: '06 30 234 5678' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-2.png',
     status: 'online',
   });
   dummyUsers[1] = Meteor.users.insert({
     emails: [{ address: `user.1@demo.${com}`, verified: true }],
-    phone: '+36 70 1234 567',
-    profile: { lastName: __('demo.user.1.lastName'), firstName: __('demo.user.1.firstName') },
+    profile: { lastName: __('demo.user.1.lastName'), firstName: __('demo.user.1.firstName'), phone: '+36 70 1234 567' },
     avatar: 'http://pannako.hu/wp-content/uploads/avatar-7.png',
   });
   dummyUsers[2] = Meteor.users.insert({

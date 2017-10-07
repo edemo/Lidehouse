@@ -6,7 +6,7 @@ export function roleshipColumns() {
     { data: 'role', title: __('role'), render: Render.translate },
     { data: 'displayName()', title: __('user') },
     { data: 'user().emails[0].address', title: __('schemaUsers.emails.$.address.label') },
-    { data: 'user().phone', title: __('schemaUsers.phone.label') },
+    { data: 'user().profile.phone', title: __('schemaUsers.profile.phone.label') },
     { data: '_id', render: Render.buttonEdit },
     { data: '_id', render: Render.buttonDelete },
   ];

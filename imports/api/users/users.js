@@ -37,6 +37,8 @@ const PersonProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
   nick: { type: String, optional: true },
+  address: { type: String, optional: true },
+  phone: { type: String, max: 20, optional: true },
   bio: { type: String, optional: true },
 });
 
@@ -67,9 +69,8 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },
-  phone: { type: String, max: 20, optional: true },
 
-  profile: { type: PersonProfileSchema, optional: true },
+  profile: { type: PersonProfileSchema, defaultValue: {} },
   avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar },
   status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', autoform: { omit: true } },
 

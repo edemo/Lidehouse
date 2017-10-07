@@ -24,6 +24,14 @@
         "label": "Becenév",
         "placeholder": "(pl. Miki75)"
       },
+      "address": {
+        "label": "Kapcsolati cím",
+        "placeholder": "(pl. 2543 Kiskunhalas, Pitypang u 6.)"
+      },
+      "phone": {
+        "label": "Telefonszám",
+        "placeholder": "(pl. 06 30 123 4567)"
+      },
       "bio": {
         "label": "Bemutatkozás",
         "placeholder": "(pl. Vasárnaponként szoktam gyakorolni zongorázni. Bocsi :) )"
@@ -45,10 +53,6 @@
           "label": "Ellenőrzött"
         }
       }
-    },
-    "phone": {
-      "label": "Telefonszám",
-      "placeholder": "(pl. 06 30 123 4567)"
     }
   },
   "schemaMemberships" : {
