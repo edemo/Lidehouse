@@ -19,14 +19,8 @@
     display: unset;
     visibility: visible;
   }
-  &-notfirst {
-    margin-top: 20px;
-    // temp
-    // background: white;
-    // border: 1.3px solid gray;
-    // display: none;
-  }
   &.collapsed {
+    margin-bottom: 20px;
     background-color: @section-btn-col;
     .glyphicon-menu-down {
       visibility: visible;
@@ -42,9 +36,12 @@
 }
 
 .section-pane {
+  margin-bottom: 20px;
   .well {
-    background-color: transparent;
-    border: none;
-    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    padding: 25px;
+    background-color: fade(@tab-content-bcg, 50%);
+    box-shadow: 1px 1px 1px 1px @tab-content-shadow;
   }
 }
