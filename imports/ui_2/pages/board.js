@@ -12,7 +12,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/modal.js';
 import '../modals/autoform-edit.js';
-import '../components/collapse-pane.js';
+import '../components/collapse-section.js';
 import '../components/comments-section.js';
 import '../components/votebox.js';
 import '../components/chatbox.js';

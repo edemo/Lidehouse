@@ -3,7 +3,7 @@
 
     <div class="col-xs-12 col-lg-8 no-padding">
 
-      {{#Collapse_pane id='vote' title=activeVotingsTitle }}
+      {{#Collapse_section id='vote' title=activeVotingsTitle }}
         {{#each topics 'vote'}}
           {{> Votebox}}
         {{else}}
@@ -17,7 +17,7 @@
             </p>
           </div>
         {{/each}}
-      {{/Collapse_pane}}
+      {{/Collapse_section}}
 
       <!-- right side mobile -->
       <div class="full-width news-mid visible-xs visible-sm visible-md">
@@ -25,12 +25,12 @@
       </div>
       <!-- right side mobile end-->
 
-      {{#Collapse_pane id='forum' title='Forum' notFirst=true uncollapsable=true}}
+      {{#Collapse_section id='forum' title='Forum' notFirst=true uncollapsable=true}}
         {{> Empty_chatbox}}
         {{#each topics 'forum'}}
         {{> Chatbox}}
         {{/each}}
-      {{/Collapse_pane}}
+      {{/Collapse_section}}
     </div>
 
     <!-- right side -->
