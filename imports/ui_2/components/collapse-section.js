@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
-import './collapse-pane.html';
+import './collapse-section.html';
 
-Template.Collapse_pane.onCreated(function collapsePaneOnCreated() {
+Template.Collapse_section.onCreated(function collapseSectionOnCreated() {
 });
 
-Template.Collapse_pane.helpers({
+Template.Collapse_section.helpers({
   notFirstClassHeader() {
     return this.notFirst ? 'section-btn-notfirst' : '';
   },
@@ -21,5 +21,5 @@ Template.Collapse_pane.helpers({
   },
 });
 
-Template.Collapse_pane.events({
+Template.Collapse_section.events({
 });

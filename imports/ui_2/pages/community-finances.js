@@ -15,7 +15,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { paymentColumns } from '/imports/api/payments/tables.js';
 import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
 import { Reports } from '/imports/api/payaccounts/reports.js';
-import '../components/collapse-pane.js';
+import '../components/collapse-section.js';
 import '../components/sumif-table.js';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
