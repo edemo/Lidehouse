@@ -181,6 +181,5 @@ Meteor.users.publicFields = {
   profile: 1,
   avatar: 1,
   status: 1,
-  emails: 1, // TODO: email is not public, but we now need for calculating derived username
-  phone: 1, // should only be public if user sets it to public
+  'emails.address': 1, // TODO: email is not public, but we now need for calculating derived username
 };
