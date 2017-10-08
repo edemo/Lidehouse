@@ -90,14 +90,20 @@ const PayAccountsTemplate = [
     ],
   },
 
-  { name: 'Pénzügyi elszámolások',
+  { name: 'Back office műveletek',
     children: [
-      { name: '*',
+      { name: 'Pénzügyi elszámolások',
         children: [
         { name: 'Készpénzfelvét' },
         { name: 'Készpénz befizetés' },
         ],
       },
+       { name: 'Nyitó egyenleg felvitel',
+        children: [
+        { name: 'Tartozás (-)' },
+        { name: 'Túlfizetés (+)' },
+        ],
+      },    
     ],
   },
 
