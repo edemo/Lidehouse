@@ -5,8 +5,8 @@ import { Fraction } from 'fractional';
 
 import { Log } from '/imports/utils/log.js';
 import { checkExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
-import { Memberships } from './memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Memberships } from './memberships.js';
 
 // We need a check of userEmail and userId matches.
 // Easy solution is to not allow setting both fields in inserts and updates. Eg. userId will be the stronger.

@@ -476,30 +476,30 @@ export function insertDemoFixture(lang) {
   const locator = PayAccounts.update({
     communityId: demoCommunityId,
     name: 'Könyvelési helyek',
-  },
-  {
+  }, {
     $set: {
-    children: [
-      { name: 'A. lépcsőház',
-        children: [
-        { name: '1' },
-        { name: '2' },
-        ],
-      },
-      { name: 'B. lépcsőház',
-        children: [
-        { name: '3' },
-        { name: '4' },
-        ],
-      },
-      { name: '*',
-        children: [
-        { name: '100' },
-        { name: 'Kert' },
-        ],
-      },
-    ] },
+      children: [
+        { name: 'A. lépcsőház',
+          children: [
+          { name: '1' },
+          { name: '2' },
+          ],
+        },
+        { name: 'B. lépcsőház',
+          children: [
+          { name: '3' },
+          { name: '4' },
+          ],
+        },
+        { name: '*',
+          children: [
+          { name: '100' },
+          { name: 'Kert' },
+          ],
+        },
+      ],
     },
+  },
     { upsert: false }
   );
 

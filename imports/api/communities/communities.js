@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
+import { _ } from 'meteor/underscore';
 
 import { comtype } from '/imports/comtypes/comtype.js';
 import { Timestamps } from '/imports/api/timestamps.js';
@@ -26,7 +27,8 @@ Communities.helpers({
     return total;
   },
   users() {
-    return Memberships.find({ communityId: this._id, userId: { $exists: true } }).map(m => m.user());
+    const users = Memberships.find({ communityId: this._id, userId: { $exists: true } }).map(m => m.user());
+    return _.uniq(users, false, u => u._id);
   },
 });
 
