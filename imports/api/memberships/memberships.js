@@ -5,6 +5,7 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 import '/utils/fractional.js';  // TODO: should be automatic, but not included in tests
+if (Meteor.isClient) import { Session } from 'meteor/session';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -55,10 +56,12 @@ Memberships.schema = new SimpleSchema({
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
     autoform: {
       options() {
-        return Meteor.users.find({}).map(function option(u) { return { label: u.fullName(), value: u._id }; });
+        const communityId = Meteor.isClient ? Session.get('activeCommunityId') : undefined;
+        return Communities.findOne(communityId).users().map(function option(u) { return { label: u.displayName(), value: u._id }; });
       },
     },
   },
+  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
   idCard: { type: IdCardSchema, optional: true },
   // TODO should be conditional on role === 'owner'
   ownership: { type: OwnershipSchema, optional: true },
@@ -66,22 +69,35 @@ Memberships.schema = new SimpleSchema({
   benefactorship: { type: BenefactorshipSchema, optional: true },
 });
 
+// Statuses of members:
+// 0. Email not given
+// 1. Email given - not yet registered user (maybe later will be invited)
+// 2. Email given - not yet registered user, invitation already sent
+// 3. Email given - registered user, but email not yet verified [2 and 3 are very similar, as accepting invitation veryfies the email]
+// 4. Email given - registered user, with verified email (userId field also set)
+// -. idCard not registered
+// +. idCard registered
+// These are orthogonal. Status of (0+) means: No email given, but has registered idCard.
+
+// A megadott email címmel még nincs regisztrált felhasználó a rendszerben.
+// Küldjünk egy meghívót a címre?
+
 Memberships.helpers({
+  hasVerifiedIdCard() {
+    return !!this.idCard;
+  },
   hasUser() {
     return !!this.userId;
   },
-  hasIdCard() {
-    return !!this.idCard;
-  },
   user() {
-    const user = Meteor.users.findOne(this.userId);
-    return user;
+    if (this.userId) return Meteor.users.findOne(this.userId);
+    return undefined;
   },
   displayName() {
-    if (this.hasIdCard()) return this.idCard.name;
-    if (this.hasUser()) return this.user().fullName();
-    debugAssert(false);
-    return '';
+    if (this.idCard) return this.idCard.name;
+    if (this.userId) return this.user().displayName();
+    if (this.userEmail) return this.userEmail;
+    return 'should never get here';
   },
   community() {
     const community = Communities.findOne(this.communityId);
@@ -147,6 +163,15 @@ Memberships.deny({
   update() { return true; },
   remove() { return true; },
 });
+
+Memberships.modifiableFields = [
+  'userEmail',
+  'userId',
+  'role',
+  'ownership.share',
+  'ownership.representor',
+  'benefactorship.type',
+];
 
 Factory.define('membership', Memberships, {
   communityId: () => Factory.get('community'),

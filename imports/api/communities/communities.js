@@ -1,11 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Timestamps } from '/imports/api/timestamps.js';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
+
 import { comtype } from '/imports/comtypes/comtype.js';
+import { Timestamps } from '/imports/api/timestamps.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -22,7 +24,10 @@ Communities.helpers({
     let total = 0;
     Parcels.find({ communityId: this._id }).forEach(p => total += p.units);
     return total;
-  }
+  },
+  users() {
+    return Memberships.find({ communityId: this._id, userId: { $exists: true } }).map(m => m.user());
+  },
 });
 
 Communities.attachSchema(Communities.schema);

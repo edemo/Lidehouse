@@ -60,7 +60,11 @@
       "label": "Role"
     },
     "userId": {
-      "label": "User"
+      "label": "User (from registered users)"
+    },
+    "userEmail": {
+      "label": "User's email address (if not registered)",
+      "placeholder": "(eg. jsmith45@dmail.com)"
     },
     "idCard": {
       "label" : "Verified identification",

@@ -60,7 +60,11 @@
       "label": "Szerep"
     },
     "userId": {
-      "label": "Felhasználó"
+      "label": "Felhasználó (a regisztráltak közül)"
+    },
+    "userEmail": {
+      "label": "Felhasználó email címe (ha nem regisztrált)",
+      "placeholder": "(pl. tibi45@dmail.com)"
     },
     "idCard": {
       "label" : "Ellenőrzött adatok",

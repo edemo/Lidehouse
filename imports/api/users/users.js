@@ -154,11 +154,13 @@ Meteor.users.helpers({
         return this.profile.firstName + ' ' + this.profile.lastName;
       }
     }
-    // or fallback to the username
-    return `[${this.safeUsername()}]`;
+    return undefined;
+  },
+  displayName() {
+    return this.fullName() || `[${this.safeUsername()}]`;     // or fallback to the username
   },
   toString() {
-    return this.fullName();
+    return this.displayName();
   },
 });
 

@@ -47,6 +47,7 @@ if (Meteor.isServer) {
 // scenario B1: 1. manager creates an identity to be used in the system
 //                 (no intention to create user account later - can be used to list parcel owner or register in person votes)
 // scenario B2: 1. manager creates an identity and an account for user 2. adds him to community 3. invites him to this account 4. user later accepts
+// scenario BONUS: user changes his email address after all this, or during the process
 
       it('scenario A1', function (done) {
         // 1. user creates account
