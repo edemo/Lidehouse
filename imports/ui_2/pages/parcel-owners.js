@@ -89,6 +89,17 @@ Template.Parcel_owners_page.events({
       template: 'bootstrap3-inline',
     });
   },
+  'click #owners .js-view'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.ownership.view',
+      collection: Memberships,
+      omitFields: ['communityId', 'parcelId', 'role', 'benefactorship'],
+      doc: Memberships.findOne(id),
+      type: 'readonly',
+      template: 'bootstrap3-inline',
+    });
+  },
   'click #owners .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeMembership, { _id: id }, {
@@ -115,6 +126,17 @@ Template.Parcel_owners_page.events({
       type: 'method-update',
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #benefactors .js-view'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.benefactorship.view',
+      collection: Memberships,
+      omitFields: ['communityId', 'parcelId', 'role', 'ownership'],
+      doc: Memberships.findOne(id),
+      type: 'readonly',
       template: 'bootstrap3-inline',
     });
   },

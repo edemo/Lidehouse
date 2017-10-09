@@ -61,7 +61,6 @@ Template.Community_roleships_page.events({
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
-      resetOnSuccess: false,
     });
   },
   'click .js-view'(event) {
@@ -83,43 +82,11 @@ Template.Community_roleships_page.events({
   },
 });
 
-/*
-export function email2invite(email) {
-  const user = Meteor.users.findOne({ 'emails.0.address': email });
-  if (user) return;
-  Modal.show('Confirmation', {
-    action: 'invite user',
-    body: 'No such email registered, an invite will be sent',
-    onOK() {
-      const id = Accounts.createUser({ email });
-    },
-  });
-  // TODO: Send invitation email with membership details
-  displayMessage('warning', `An invitation was sent to ${email}`);
-}
-*/
-
-let lastDocId;  // in case of update, we don't get the doc id passed in the onSuccess callback
-
 AutoForm.addModalHooks('af.roleship.insert');
 AutoForm.addModalHooks('af.roleship.update');
-AutoForm.addHooks(['af.roleship.insert', 'af.roleship.update', 'af.roleship.view'], {
+AutoForm.addHooks('af.roleship.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;
   },
-  formToModifier(mod) {
-    return mod;
-  },
-  docToForm(doc) {
-    lastDocId = doc._id;  // only called for update
-    return doc;
-  },
-/*  onSuccess(formType, result) {
-    debugger;
-    if (formType === 'method') lastDocId = result;    // only called for insert (result is not set when update)
-    const lastDoc = Memberships.findOne(lastDocId);
-    lastDoc.checkEmail();
-  },
-*/
 });
