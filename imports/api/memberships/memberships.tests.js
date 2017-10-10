@@ -95,6 +95,15 @@ if (Meteor.isServer) {
         chai.assert.equal(parcel.representorId(), Fixture.dummyUsers[1]);
         done();
       });
+
+      it('if no owner, representor is undefined', function (done) {
+        Memberships.remove(ownership1Id);
+        Memberships.remove(ownership2Id);
+        Memberships.remove(ownership3Id);
+        const parcel = Parcels.findOne(parcelId);
+        chai.assert.isUndefined(parcel.representorId());
+        done();
+      });
     });
 
     describe('permissions', function () {
@@ -106,17 +115,26 @@ if (Meteor.isServer) {
           userId: Fixture.demoUserId,
           role: newrole,
         };
-        if (newrole === 'owner') {
+        if (newrole === 'owner' || newrole === 'benefactor') {
           _.extend(newMembership, {
             parcelId: Parcels.insert({ communityId: Fixture.demoCommunityId, serial: 45, units: 0 }),
+          });
+        }
+        if (newrole === 'owner') {
+          _.extend(newMembership, {
             ownership: { share: new Fraction(1, 1) },
+          });
+        }
+        if (newrole === 'benefactor') {
+          _.extend(newMembership, {
+            benefactorship: { type: 'rental' },
           });
         }
         return newMembership;
       };
 
-      it('admin can add/update/remove member', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, 
+      it('admin can add/update/remove any member', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId },
           createMembership(randomRole));
         chai.assert.isDefined(testMembershipId);
         let testMembership = Memberships.findOne(testMembershipId);
@@ -134,20 +152,33 @@ if (Meteor.isServer) {
       });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       it('owner can only add/update?/remove tenant', function (done) {
         testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, 
           createMembership('tenant'));
+=======
+      it('owner can only add/update/remove benefactor', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('benefactor'));
+>>>>>>> origin/master
         chai.assert.isDefined(testMembershipId);
         let testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership.role, 'tenant');
-        updateMembership._execute({ userId: Fixture.demoUserId },
-          { _id: testMembershipId, modifier: { $set: { role: 'tenant' } } });
-        testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership.role, 'tenant');
+        chai.assert.equal(testMembership.role, 'benefactor');
         chai.assert.throws(() => {
-          updateMembership._execute({ userId: Fixture.demoUserId }, 
+          insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('manager'));
+        });
+        chai.assert.throws(() => {
+          insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('owner'));
+        });
+
+        updateMembership._execute({ userId: Fixture.demoUserId },
+          { _id: testMembershipId, modifier: { $set: { 'benefactorship.type': 'favor' } } });
+        testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership.benefactorship.type, 'favor');
+        chai.assert.throws(() => {
+          updateMembership._execute({ userId: Fixture.demoUserId },
             { _id: testMembershipId, modifier: { $set: { role: 'manager' } } });
         });
+<<<<<<< HEAD
 =======
       it('owner can add only benefactor', function (done) {
         testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('benefactor'));
@@ -155,72 +186,104 @@ if (Meteor.isServer) {
         const testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.role, 'benefactor');
 >>>>>>> refs/remotes/edemo/master
+=======
+>>>>>>> origin/master
         chai.assert.throws(() => {
-          insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('manager'));
+          updateMembership._execute({ userId: Fixture.demoUserId },
+            { _id: testMembershipId, modifier: { $set: { role: 'owner' } } });
         });
-        removeMembership._execute({ userId: Fixture.demoUserId },{ _id: testMembershipId });
+
+        removeMembership._execute({ userId: Fixture.demoUserId }, { _id: testMembershipId });
         testMembership = Memberships.findOne(testMembershipId);
         chai.assert.isUndefined(testMembership);
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('owner'));
+        chai.assert.throws(() => {
+          removeMembership._execute({ userId: Fixture.demoUserId }, { _id: testMembershipId });
+        });
         done();
       });
 
-      it('manager can only add/update?/remove owner', function (done) {
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId }, 
+      it('manager can only add/update/remove owner & benefactor', function (done) {
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId },
           createMembership('owner'));
         chai.assert.isDefined(testMembershipId);
         let testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.role, 'owner');
-        updateMembership._execute({ userId: Fixture.demoManagerId },
-          { _id: testMembershipId, modifier: { $set: { role: 'owner' } } });
-        testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership.role, 'owner');
-        chai.assert.throws(() => {
-          updateMembership._execute({ userId: Fixture.demoManagerId }, 
-            { _id: testMembershipId, modifier: { $set: { role: 'manager' } } });
-        });
         chai.assert.throws(() => {
           insertMembership._execute({ userId: Fixture.demoManagerId }, createMembership('manager'));
         });
+
+        updateMembership._execute({ userId: Fixture.demoManagerId },
+          { _id: testMembershipId, modifier: { $set: { role: 'benefactor' } } });
+        testMembership = Memberships.findOne(testMembershipId);
+        chai.assert.equal(testMembership.role, 'benefactor');
+        chai.assert.throws(() => {
+          updateMembership._execute({ userId: Fixture.demoManagerId },
+            { _id: testMembershipId, modifier: { $set: { role: 'manager' } } });
+        });
+
         removeMembership._execute({ userId: Fixture.demoManagerId }, { _id: testMembershipId });
         testMembership = Memberships.findOne(testMembershipId);
         chai.assert.isUndefined(testMembership);
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('manager'));
+        chai.assert.throws(() => {
+          removeMembership._execute({ userId: Fixture.demoManagerId }, { _id: testMembershipId });
+        });
         done();
       });
+    });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    describe('sanity', function () {
+      let testMembershipId;
+
+>>>>>>> origin/master
       it('total ownership shares cannot exceed 1', function (done) {
         const createMembershipWithShare = function (parcelId, share) {
           const newMembership = {
             communityId: Fixture.demoCommunityId,
             userId: Fixture.demoUserId,
             role: 'owner',
-            parcelId, 
+            parcelId,
             ownership: { share },
           };
           return newMembership;
         };
         const testParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, serial: 45, units: 0 });
         chai.assert.throws(() => {
-          insertMembership._execute({ userId: Fixture.demoAdminId }, 
+          insertMembership._execute({ userId: Fixture.demoAdminId },
             createMembershipWithShare(testParcelId, new Fraction(2, 1)));
         });
         let testParcel = Parcels.findOne(testParcelId);
         chai.assert.equal(testParcel.ownedShare(), 0);
-        
-        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, 
+
+        testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId },
           createMembershipWithShare(testParcelId, new Fraction(2, 3)));
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembershipWithShare(testParcelId, new Fraction(1, 3)));
         testParcel = Parcels.findOne(testParcelId);
         chai.assert.equal(testParcel.ownedShare(), 1);
-        updateMembership._execute({ userId: Fixture.demoAdminId }, 
+        chai.assert.throws(() => {
+          insertMembership._execute({ userId: Fixture.demoAdminId },
+            createMembershipWithShare(testParcelId, new Fraction(1, 16)));
+        });
+
+        updateMembership._execute({ userId: Fixture.demoAdminId },
           { _id: testMembershipId, modifier: { $set: { 'ownership.share': new Fraction(1, 3) } } });
         testParcel = Parcels.findOne(testParcelId);
         /* .normalize() method does not work on fraction here, the multiplied denominator stays the result*/
         chai.assert.equal(testParcel.ownedShare().toString(), '6/9');
         chai.assert(testParcel.ownedShare().numerator / testParcel.ownedShare().denominator <= 1);
+        chai.assert.throws(() => {
+          insertMembership._execute({ userId: Fixture.demoAdminId },
+            createMembershipWithShare(testParcelId, new Fraction(4, 9)));
+        });
+
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembershipWithShare(testParcelId, new Fraction(2, 6)));
         testParcel = Parcels.findOne(testParcelId);
         chai.assert.equal(testParcel.ownedShare(), 1);
+<<<<<<< HEAD
 =======
       it('admin can update member\'s role', function (done) {
         testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('benefactor'));
@@ -234,12 +297,14 @@ if (Meteor.isServer) {
       it('owner cannot update member\'s role', function (done) {
         testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership('accountant'));
 >>>>>>> refs/remotes/edemo/master
+=======
+>>>>>>> origin/master
         chai.assert.throws(() => {
-          updateMembership._execute({ userId: Fixture.demoAdminId }, 
+          updateMembership._execute({ userId: Fixture.demoAdminId },
             { _id: testMembershipId, modifier: { $set: { 'ownership.share': new Fraction(3, 8) } } });
         });
         done();
       });
     });
   });
-};
+}
