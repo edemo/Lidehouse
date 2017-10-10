@@ -4,9 +4,6 @@ import { AddressSchema } from '/imports/localization/localization.js';
 export const HouseProfileSchema = new SimpleSchema(
   [
     AddressSchema,
-    { tel: { type: String, max: 16 } },
-    { address: { type: String } },
-    { lot: { type: String, max: 100 } },
   ]
 );
 
