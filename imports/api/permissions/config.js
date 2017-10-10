@@ -19,8 +19,8 @@ const defaultRoles = [
 ];
 
 // Groupings just to ease configuration
-export const everybody = ['admin', 'manager', 'owner', 'benefactor', 'moderator', 'accountant', 'treasurer', 'overseer', 'delegate', 'maintainer', 'guest'];
-const exceptGuest = ['admin', 'manager', 'owner', 'benefactor', 'moderator', 'accountant', 'treasurer', 'overseer', 'maintainer', 'delegate'];
+export const everybody = defaultRoles.map(r => r.name);
+const exceptGuest = _.without(everybody, 'guest');
 const nobody = [];
 
 export const canAddMemberWithRole = {

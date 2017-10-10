@@ -1,8 +1,10 @@
 import { Meteor } from 'meteor/meteor';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import 'meteor/accounts-base';
 import { Fraction } from 'fractional';
+import 'meteor/accounts-base';
+
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -19,7 +21,7 @@ export const CountrySchema = new SimpleSchema({
   code: { type: String, regEx: /^[A-Z]{2}$/ },
 });
 
-export const UserProfileSchema = new SimpleSchema({
+export const PersonProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
   birthday: { type: Date, optional: true },
@@ -31,18 +33,22 @@ export const UserProfileSchema = new SimpleSchema({
 });
 */
 
-const UserProfileSchema = new SimpleSchema({
-  firstName: { type: String },
-  lastName: { type: String },
+const PersonProfileSchema = new SimpleSchema({
+  firstName: { type: String, optional: true },
+  lastName: { type: String, optional: true },
+  nick: { type: String, optional: true },
+  address: { type: String, optional: true },
+  phone: { type: String, max: 20, optional: true },
   bio: { type: String, optional: true },
 });
 
 const UserSettingsSchema = new SimpleSchema({
-  language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'en' },
+  language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'hu' },
   delegatee: { type: Boolean, defaultValue: true },
 });
 
-const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';
+const defaultAvatar = 'http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png';
+// const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';
 // const defaultAvatar = 'http://pannako.hu/wp-content/uploads/avatar-1.png';
 
 Meteor.users.schema = new SimpleSchema({
@@ -58,15 +64,15 @@ Meteor.users.schema = new SimpleSchema({
       return undefined; // means leave whats there alone for Updates, Upserts
     },
   },*/
-  profile: { type: UserProfileSchema, optional: true },
-  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar },
-  status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', autoform: { omit: true } },
 
   emails: { type: Array },
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean },
-  phone: { type: String, max: 20, optional: true },
+
+  profile: { type: PersonProfileSchema, defaultValue: {} },
+  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar },
+  status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', autoform: { omit: true } },
 
   settings: { type: UserSettingsSchema },
   lastseens: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
@@ -134,21 +140,27 @@ Meteor.users.helpers({
     const totalVotingUnits = this.totalOwnedUnits(communityId) + this.totalDelegatedToMeUnits(communityId);
     return new Fraction(totalVotingUnits, community.totalunits);
   },
-  fullName() {
-    if (this.profile && this.profile.lastName && this.profile.firstName) {
-      return this.profile.lastName + ' ' + this.profile.firstName;
-    }
-    // or fallback to the username
-    return `[${this.safeUsername()}]`;
-  },
   safeUsername() {
     // If we have a username in db return that, otherwise generate one from her email address
     if (this.username) return this.username;
     const email = this.emails[0].address;
     return email.substring(0, email.indexOf('@'));
   },
+  fullName() {
+    if (this.profile && this.profile.lastName && this.profile.firstName) {
+      if (TAPi18n.getLanguage() === 'hu') {
+        return this.profile.lastName + ' ' + this.profile.firstName;
+      } else {
+        return this.profile.firstName + ' ' + this.profile.lastName;
+      }
+    }
+    return undefined;
+  },
+  displayName() {
+    return this.fullName() || `[${this.safeUsername()}]`;     // or fallback to the username
+  },
   toString() {
-    return this.fullName();
+    return this.displayName();
   },
 });
 
@@ -171,6 +183,5 @@ Meteor.users.publicFields = {
   profile: 1,
   avatar: 1,
   status: 1,
-  emails: 1, // TODO: email is not public, but we now need for calculating derived username
-  phone: 1, // should only be public if user sets it to public
+  'emails.address': 1, // TODO: email is not public, but we now need for calculating derived username
 };

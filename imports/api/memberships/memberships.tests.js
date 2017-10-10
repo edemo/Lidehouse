@@ -34,7 +34,7 @@ if (Meteor.isServer) {
           'memberships.inCommunity',
           { communityId: Fixture.demoCommunityId },
           (collections) => {
-            chai.assert.equal(collections.memberships.length, 11);
+            chai.assert.equal(collections.memberships.length, 13);
             chai.assert.equal(collections.parcels.length, 5);
             done();
           }
@@ -57,7 +57,7 @@ if (Meteor.isServer) {
 
     describe('representor', function () {
       let parcelId;
-      let ownership1Id, ownership2Id, ownership3Id;
+      let ownership1Id, ownership2Id, ownership3Id, benefactorship1Id;
       beforeEach(function () {
         parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, serial: 45, units: 0 });
         ownership1Id = Memberships.insert({
@@ -65,34 +65,58 @@ if (Meteor.isServer) {
           parcelId,
           userId: Fixture.dummyUsers[1],
           role: 'owner',
-          ownership: { share: new Fraction(1, 4), representor: false }
+          ownership: { share: new Fraction(1, 4), representor: false },
         });
         ownership2Id = Memberships.insert({
           communityId: Fixture.demoCommunityId,
           parcelId,
           userId: Fixture.dummyUsers[2],
           role: 'owner',
-          ownership: { share: new Fraction(1, 4), representor: true }
+          ownership: { share: new Fraction(1, 4), representor: true },
         });
         ownership3Id = Memberships.insert({
           communityId: Fixture.demoCommunityId,
           parcelId,
           userId: Fixture.dummyUsers[3],
           role: 'owner',
-          ownership: { share: new Fraction(1, 4) }
+          ownership: { share: new Fraction(1, 4) },
+        });
+        benefactorship1Id = Memberships.insert({
+          communityId: Fixture.demoCommunityId,
+          parcelId,
+          userId: Fixture.dummyUsers[1],
+          role: 'benefactor',
+          benefactorship: { type: 'favor' },
         });
       });
 
-      it('selects representor when specified', function (done) {
-        const parcel = Parcels.findOne(parcelId);
-        chai.assert.equal(parcel.representorId(), Fixture.dummyUsers[2]);
-        done();
-      });
+      it('selects parcel\'s representor correctly', function (done) {
+        // it('selects flagged representor when specified', function (done) {
+        let parcel = Parcels.findOne(parcelId);
+        chai.assert.equal(parcel.representor()._id, ownership2Id);
 
-      it('selects representor when not specified', function (done) {
+        // it('selects first owner as representor when not specified', function (done) {
         Memberships.update(ownership2Id, { $set: { 'ownership.representor': false } });
-        const parcel = Parcels.findOne(parcelId);
-        chai.assert.equal(parcel.representorId(), Fixture.dummyUsers[1]);
+        parcel = Parcels.findOne(parcelId);
+        chai.assert.equal(parcel.representor()._id, ownership1Id);
+
+        Memberships.remove(ownership1Id);
+        parcel = Parcels.findOne(parcelId);
+        chai.assert.equal(parcel.representor()._id, ownership2Id);
+
+        Memberships.remove(ownership2Id);
+        parcel = Parcels.findOne(parcelId);
+        chai.assert.equal(parcel.representor()._id, ownership3Id);
+
+        // it('selects first benefactor as representor when no owner', function (done) {
+        Memberships.remove(ownership3Id);
+        parcel = Parcels.findOne(parcelId);
+        chai.assert.equal(parcel.representor()._id, benefactorship1Id);
+
+        // it('if no owner & benefactor, representor is undefined', function (done) {
+        Memberships.remove(benefactorship1Id);
+        parcel = Parcels.findOne(parcelId);
+        chai.assert.isUndefined(parcel.representor());
         done();
       });
     });

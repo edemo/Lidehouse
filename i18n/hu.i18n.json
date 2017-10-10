@@ -1,218 +1,4 @@
 {
-  // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
-  "schemaUsers": {
-    "username": {
-      "label": "Felhasználónév",
-      "placeholder": "(pl. Miki75)"
-    },
-    "avatar": {
-      "label": "Avatár",
-      "placeholder": "(pl. kockásfülünyúl.jpg)"
-    },
-    "profile": {
-      "label": "Profil",
-
-      "firstName": {
-        "label": "Keresztnév",
-        "placeholder": "(pl. Miklós)"
-      },
-      "lastName": {
-        "label": "Vezetéknév",
-        "placeholder": "(pl. Galambos)"
-      },
-      "bio": {
-        "label": "Bemutatkozás",
-        "placeholder": "(pl. Vasárnaponként szoktam gyakorolni zongorázni. Bocsi :) )"
-      }
-    },
-    "settings": {
-      "label": "Beálítások",
-      "delegatee": {
-        "label": "Bejövő meghatalmazások engedélyezése"
-      }
-    },
-    "emails": {
-      "$": {
-        "address": {
-          "label": "E-mail cím",
-          "placeholder": "(pl. margitka21@ingyenmail.com)"
-        },
-        "verified": {
-          "label": "Ellenőrzött"
-        }
-      }
-    },
-    "phone": {
-      "label": "Telefonszám",
-      "placeholder": "(pl. 06 30 123 4567)"
-    }
-  },
-  "schemaAgendas": {
-    "title": {
-      "label": "Név",
-      "placeholder": "(pl. Közgyűlés 2017-II.)"
-    },
-    "topicIds": {
-      "label": "Napirendi pontok"
-    }
-  },
-  "schemaTopics": {
-    "title": {
-      "label": "Cím",
-      "placeholder": "Rövid összefoglalás"
-    },
-    "text": {
-      "label": "Részletek",
-      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
-    },
-    "sticky" : {
-      "label": "Kiemelt"
-    }
-  },
-  "schemaVotings": {
-    "title": {
-      "label": "Szavazás",
-      "placeholder": "(pl. Fessük-e a falat kékre?)"
-    },
-    "text": {
-      "label": "Részletek",
-      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
-    }
-  },
-  "schemaTickets": {
-    "title": {
-      "label": "Hiba rövid leírása",
-      "placeholder": "(pl. Elromlott a lift)"
-    },
-    "text": {
-      "label": "Részletek",
-      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
-    },
-    "ticket": {
-      "label": "Hibajegy",
-      "type": {
-        "label": "Hiba típusa"
-      },
-      "urgency": {
-        "label": "Sürgősség"
-      },
-      "status": {
-        "label": "Státusz"
-      }
-    }
-  },
-  "schemaFeedback": {
-    "title": {
-      "label": "Visszajelzés (kezdete)..."
-    },
-    "text": {
-      "label": "Részletek",
-      "placeholder": "Vélemény, javaslat, hiba leírása..."
-    },
-    "feedback": {
-      "label": "Visszajelzés",
-      "type": {
-        "label": "Visszajelzés fajtája"
-      },
-      "rating": {
-        "label": "Mennyire ajánlaná az alkalmazást másoknak?"
-      }
-    }
-  },
-  "schemaMemberships" : {
-    "userId": {
-      "label": "Felhasználó"
-    },
-    "role": {
-      "label": "Szerep"
-    },
-    "ownership": {
-      "label": "Tulajdon",
-      "share": {
-        "label": "Tulajdonrész"
-      },
-      "representor": {
-        "label": "Képviselője?"
-      }
-    },
-    "benefactorship": {
-      "label": "Haszonélvezet",
-      "type": {
-        "label": "Típus"
-      }
-    }
-  },
-  "schemaDelegations": {
-    "sourceUserId": {
-      "label": "Meghatalmazó",
-      "placeholder": "(pl. Miki75)"
-    },
-    "targetUserId": {
-      "label": "Meghatalmazott",
-      "placeholder": "(pl. Miki75)"
-    },
-    "scope": {
-      "label": "Meghatalmazás köre",
-      "placeholder": "(pl. Ház ügyei)"
-    },
-    "objectId": {
-      "label": "Meghatalmazás tárgya (tulajdon)",
-      "placeholder": "(pl. Demo ház)"
-    }
-  },
-  "schemaPayAccounts": {
-    "name": {
-      "label": "Elnevezés",
-      "placeholder": "(pl. Kifizetési hely)"
-    },
-    "type": {
-      "label": "Típus"
-    },
-    "children": {
-      "label": "Gyűjtő fiókok",
-      "$": {
-        "name": {
-          "label": "Elnevezés (vagy * ha nem kell)",
-          "placeholder": "(pl. B. lépcsőház)"
-        },
-        "children": {
-          "label": "Al fiókok",
-          "$": {
-            "name": {
-              "label": "Elnevezés (vagy albetét száma)",
-              "placeholder": "(pl. Kert vagy 114)"
-            }
-          }
-        }
-      }
-    }
-  },
-  "schemaPayments": {
-    "phase": {
-      "label": "Fázis"
-      //"Tranzakció típusa"
-    },
-    "date": {
-      "label": "Könyvelési dátum",
-      "placeholder": "(pl. 2017-05-06)"
-    },
-    "amount": {
-      "label": "Összeg",
-      "placeholder": "(pl. 14560)"
-    },
-    "ref": {
-      "label": "Referencia azonosító",
-      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
-    },
-    "note": {
-      "label": "Megjegyzés",
-      "placeholder": "(pl. emlékeztető)"
-    },
-    "accounts": {
-      "label": "Könyvelési fiókok"
-    }
-  },
-
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
@@ -222,7 +8,7 @@
   "role": "szerep",
   "roles": "szerepek",
   "owners": "tulajdonosok",
-  "benefactors": "haszonélvezők",
+  "benefactors": "használók",
 
   "undefined": "nincs megadva",
   "true": "igen",
@@ -233,7 +19,7 @@
   "admin": "admin",
   "manager": "közös képviselő",
   "owner": "tulajdonos",
-  "benefactor": "haszonélvező",
+  "benefactor": "használó",
   "moderator": "moderátor",
   "accountant": "könyvelő",
   "treasurer": "kincstárnok",
@@ -252,7 +38,8 @@
   "Votings": "Szavazások",
   "Delegations": "Meghatalmazások",
   "Tickets": "Hibabejelentés",
-  "Finances": "Pénzügyek",
+  "Parcel finances": "Albetétek elszámolása",
+  "Community finances": "Ház pénzügyek",
   "Documentstore": "Dokumentumtár",
 
   "News board": "Faliújság",
@@ -284,6 +71,9 @@
   "created": "létrehozva",
   "closes": "lezárul",
 
+  "person": "magán személy",
+  "legal": "jogi személyiség",
+  
   // commands
   "view": "Megtekintés",
   "edit": "Szerkesztés",
@@ -321,6 +111,8 @@
   "yes": "igen",
   "no": "nem",
   "abstain": "tartózkodom",
+  "voting": "szavazás",
+  "votings": "szavazások",
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
   "Agendas": "Napirendek",
@@ -376,11 +168,15 @@
   // finances
   "Payaccounts": "Könyvelési fiókok",
   "Payments": "Tranzakciók",
+  "Bills": "Előírások",
   "Reports": "Kimutatások",
-  "Common cost plan": "Előírás",
-//  "physical": "Számla fiók",
-//  "virtual": "Fizetési nem",
-//  "locator": "Fizetési hely",
+  "Common cost plan": "Előírás minden albetétre",
+  "Balances": "Egyenlegek",
+  "status report": "helyzete",
+  "ParcelBalances": "Túlfizetés/Hátralék",
+  "ParcelAccounting": "Albetétek Elszámolása",
+  "ParcelPayments": "Befizetések",
+  "ParcelBills": "Kötelezettségek",
   "plan": "terv",
   "done": "tény",
   "month": "hó",

@@ -1,23 +1,17 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Fraction } from 'fractional';
+
+import { __ } from '/imports/localization/i18n.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Roles } from '/imports/api/permissions/roles.js';
-import { Fraction } from 'fractional';
-import { Factory } from 'meteor/dburles:factory';
 
 export const Parcels = new Mongo.Collection('parcels');
-
-const FreeFields = new SimpleSchema({
-  freeFields: { type: Array, optional: true },
-  'freeFields.$': { type: Object },
-  'freeFields.$.key': { type: String, max: 25 },
-  'freeFields.$.value': { type: String, max: 25 },
-});
 
 Parcels.typeValues = ['flat', 'parking', 'storage'];
 
@@ -67,24 +61,25 @@ Parcels.helpers({
     Memberships.find({ parcelId: this._id }).forEach(p => total = total.add(p.ownership.share));
     return total;
   },
-  representorId() {
+  representor() {
     const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
-    const rep = firstDefinedRep || Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner' });
-    return rep.userId;
+    if (firstDefinedRep) return firstDefinedRep;
+    const ownersSorted = Memberships.find({ communityId: this.communityId, parcelId: this._id, role: 'owner' }, { sort: { createdAt: 1 } }).fetch();
+    if (ownersSorted.length > 0) return ownersSorted[0];
+    const benefactorsSorted = Memberships.find({ communityId: this.communityId, parcelId: this._id, role: 'benefactor' }, { sort: { createdAt: 1 } }).fetch();
+    if (benefactorsSorted.length > 0) return benefactorsSorted[0];
+    return undefined;
   },
-  userNames() {
+  displayNames() {
     let result = '';
-    const representorId = this.representorId();
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
     ownerships.forEach((m) => {
-      const user = Meteor.users.findOne(m.userId);
-      const repBadge = representorId === m.userId ? '(*)' : '';
-      result += `${user.fullName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
+      const repBadge = m.isRepresentor() ? '(*)' : '';
+      result += `${m.displayName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
     });
     const benefactorships = Memberships.find({ communityId: this.communityId, role: 'benefactor', parcelId: this._id });
     benefactorships.forEach((m) => {
-      const user = Meteor.users.findOne(m.userId);
-      result += `${user.fullName()}<br>`;
+      result += `${m.displayName()}<br>`;
     });
     return result;
   },
@@ -92,13 +87,15 @@ Parcels.helpers({
   location() {
     return `${this.floor}/${this.number}`;
   },
+  display() {
+    return `${this.serial}. ${__(this.type)} ${this.location()} (${this.lot})`;
+  },
   toString() {
     return this.location();
   },
 });
 
 Parcels.attachSchema(Parcels.schema);
-Parcels.attachSchema(FreeFields);
 Parcels.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {

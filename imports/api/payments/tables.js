@@ -5,7 +5,7 @@ import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 export function paymentColumns(accounts) {
   const columns = [
     { data: 'date', title: __('schemaPayments.date.label'), render: Render.formatDate },
-    { data: 'phase', title: __('schemaPayments.phase.label'), render: Render.translate },
+//    { data: 'phase', title: __('schemaPayments.phase.label'), render: Render.translate },
     { data: 'amount', title: __('schemaPayments.amount.label') },
     { data: 'ref', title: __('schemaPayments.ref.label') },
     { data: 'note', title: __('schemaPayments.note.label') },
