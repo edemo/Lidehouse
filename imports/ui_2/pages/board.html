@@ -19,12 +19,12 @@
           {{else}}
             <!-- ha nincs szavazás ~ empty state -->
             <div class="vote-container white-box text-center">
-              <p>
-                Jelenleg nincs aktív szavazás!
-              </p>
-              <p class="small-size">
-                Korábbi szavazásainkat megtekinthetik a <a href="{{pathFor 'Topics.vote'}}">Szavazások</a> menüpontban a "Lezárt szavazások"-ra kattintva.
-              </p>
+              <h3>
+                {{_ 'No active votes'}}
+              </h3>
+              <h4 class="m2em">
+                {{_ 'Latest votes'}}: <br /><span class="b"><a href="{{pathFor 'Topics.vote'}}"><span class="em b">{{_ 'Votings'}}</span></a> &gt; <span class="em">{{_ 'Closed votings'}}</span></span>
+              </h4>
             </div>
           {{/each}}
         </div>
