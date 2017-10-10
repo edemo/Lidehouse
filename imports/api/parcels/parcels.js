@@ -62,17 +62,33 @@ Parcels.helpers({
   share() {
     return new Fraction(this.units, this.totalunits());
   },
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/master
   ownedShare() {
     let total = new Fraction(0);
     Memberships.find({ parcelId: this._id }).forEach(p => total = total.add(p.ownership.share));
     return total;
   },
+<<<<<<< HEAD
+  ownerName() {
+=======
+  representorId() {
+    const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
+    const rep = firstDefinedRep || Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner' });
+    return rep.userId;
+  },
+  userNames() {
+>>>>>>> refs/remotes/edemo/master
+=======
   representorId() {
     const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
     const rep = firstDefinedRep || Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner' });
     return rep ? rep.userId : undefined;
   },
   userNames() {
+>>>>>>> origin/master
     let result = '';
     const representorId = this.representorId();
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
