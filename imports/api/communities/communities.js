@@ -26,6 +26,9 @@ Communities.helpers({
     Parcels.find({ communityId: this._id }).forEach(p => total += p.units);
     return total;
   },
+  admin() {
+		return Memberships.findOne({ communityId: this._id, role: 'admin' });
+	},
   users() {
     const users = Memberships.find({ communityId: this._id, userId: { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);
