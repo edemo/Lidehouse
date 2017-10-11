@@ -2,7 +2,10 @@
 
 .page.auth {
   .white-box {
-    padding: 3em;
+	padding: 3em;
+    @media screen and (min-width: 40em) {
+	    padding: 3em 3em 1em 3em;
+	  }
   }
   input {
     margin-top: 13px;
@@ -12,7 +15,8 @@
   .content-scrollable { background: @fb-bcg-lighter; }
 
   .wrapper-auth {
-    padding-top: 4em;
+    /* padding-top: 4em */;
+    vertical-align: middle;
 
     @media screen and (min-width: 40em) {
       margin: 0 auto;
@@ -29,7 +33,7 @@
 
     .subtitle-auth {
       color: @color-medium-well;
-      margin: 0 15% 3rem;
+      margin: 0 15%;
     }
 
     form {

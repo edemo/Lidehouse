@@ -1,75 +1,98 @@
-<template name="Housing">
+<template name="Housing_page">
   <div class="content-scrollable page-content page-housing">
 
     <div style="width:100%;">
+	{{#if currentUser}}
       <ul class="tabs">
         <li class="tab">
           <input type="radio" name="tabs" checked="checked" id="tab1" />
           <label for="tab1">Albetétek</label>
           <div id="tab-content1" class="content">
             <button type="button" class="primary" name="button"></button>
-
-            <div class="row">
-              <div class="col-xs-8">
-                <h4>
-                  A ház adatai
-                </h4>
-              </div>
-              <div class="col-xs-4 text-right">
-                <button type="submit" class="btn btn-primary">Mentés</button>
-              </div>
-            </div>
-
-            <div class="row">
               <form>
-                <div class="col-xs-12 col-md-6 col-lg-4">
-                  <img src="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" alt="" style="max-width: 100%;" />
-                </div>
-                <div class="col-xs-12 col-md-6 col-lg-4">
-                  <div class="form-group">
-                    <label for="houseName">Név</label>
-                    <input type="text" class="form-control" id="houseName" placeholder="Rózsadomb lakókert">
-                  </div>
-                  <div class="form-group">
-                    <label for="houseNum">Helyralyzi szám</label>
-                    <input type="text" class="form-control" id="houseNum" placeholder=123456789>
-                  </div>
-                  <div class="form-group">
-                    <label for="houseCou">Utca</label>
-                    <input type="text" class="form-control" id="houseCou" placeholder="Lonyai út">
-                  </div>
-                </div>
-                <div class="col-xs-12 col-md-6 col-lg-4">
-                  <div class="form-group">
-                    <label for="houseCity">Város</label>
-                    <input type="text" class="form-control" id="houseCity" placeholder="Budapest">
-                  </div>
-                  <div class="form-group">
-                    <label for="houseIr">Irányító szám</label>
-                    <input type="number" class="form-control" id="houseIr" placeholder="1026" min="0">
-                  </div>
-                  <div class="form-group">
-                    <label for="houseHsz">Házszám</label>
-                    <input type="number" class="form-control" id="houseHsz" placeholder="52" min="0">
-                  </div>
-                  <!-- megerosito modal mentes elott-->
-                </div>
-              </form>
-            </div>
-            <div class="row house_lowdetails">
-              <div class="col-xs-3">
-                <img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakók száma: 120
-              </div>
-              <div class="col-xs-3">
-                <img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakások száma: 123
-              </div>
-              <div class="col-xs-3">
-                <img src="/icon/si-glyph-mail-box.svg" width="20"/>Parkolók száma: 120
-              </div>
-              <div class="col-xs-3">
-                <img src="/icon/si-glyph-mail-box.svg" width="20"/>Tárolók száma: 123
-              </div>
-            </div>
+				<div class="row">
+				  <div class="col-xs-8">
+					<h4>
+					  A ház adatai
+					</h4>
+				  </div>
+				  <div class="col-xs-4 text-right">
+					<button type="submit" class="btn btn-primary">Mentés</button>
+				  </div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-6 col-lg-4 pull-right">
+					  <a href="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" class="simple-lightbox"><img src="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" alt="" /></a>
+					  <div class="form-group">
+						<label for="houseCou">Utca</label>
+						<input type="text" class="form-control pull-right" id="houseCou" placeholder="Lonyai út">
+						<label for="houseHsz">Házszám</label>
+						<input type="number" class="form-control" id="houseHsz" placeholder="52" min="0">
+					  </div>
+					  <div class="form-group">
+						<label for="houseCity">Város</label>
+						<input type="text" class="form-control" id="houseCity" placeholder="Budapest">
+					  </div>
+					  <div class="form-group">
+						<label for="houseIr">Irányító szám</label>
+						<input type="number" class="form-control" id="houseIr" placeholder="1026" min="0">
+					  </div>
+					  <div class="form-group">
+						<label for="houseNum">Helyralyzi szám</label>
+						<input type="text" class="form-control" id="houseNum" placeholder=123456789>
+					  </div>
+					  <div class="form-group">
+						<img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakók száma: 120
+					  </div>
+					  <div class="form-group">
+						<img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakások száma: 123
+					  </div>
+					  <div class="form-group">
+						<img src="/icon/si-glyph-mail-box.svg" width="20"/>Parkolók száma: 120
+					  </div>
+					  <div class="form-group">
+						<img src="/icon/si-glyph-mail-box.svg" width="20"/>Tárolók száma: 123
+					  </div>
+					  <!-- megerosito modal mentes elott -->
+					</div>
+					<div class="col-xs-12 col-md-6 col-lg-8">
+					  <div class="form-group">
+						<label for="houseName">Név</label>
+						<input type="text" class="form-control" id="houseName" placeholder="Rózsadomb lakókert">
+					  </div>
+					  <div class="form-group">
+						<label for="houseName">Leírás</label>
+						<textarea class="form-control vert" id="houseWelcome" placeholder="Welcome" rows="12"></textarea>
+						<!--{{#markdown}}{{{markdown_data}}}{{/markdown}}-->
+					  </div>
+			          <div class="row">
+						<div class="col-xs-12 text-center">
+						  <h4 class="page-title">{{_ 'roles'}}</h4>
+						</div>
+					  </div>
+					  <div class="row">
+						<div class="col-xs-12">
+						  {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+						</div>
+					  </div>
+					  <div class="row">
+						<div class="col-xs-12 text-center">
+						  <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
+						</div>
+					  </div>
+					</div>
+				</div>
+				<div class="row">
+				  <div class="col-xs-8">
+					<small>
+					  <label><input type="checkbox">Tudomásul veszem, hogy az elmentett módosítás azonnal láthatóvá válik a HázNeve nyilvános oldalán.</label>
+					</small>
+				  </div>
+				  <div class="col-xs-4 text-right">
+					<button type="submit" class="btn btn-primary">Mentés</button>
+				  </div>
+				</div>
+			</form>
             <div class="row">
               <div class="col-xs-12">
                 <hr>
@@ -225,16 +248,54 @@
           </div>
         </li>
       </ul>
+	{{else}}
+    <div class="white-box padded">
+	  <div id="front-content" class="content">
+		<button type="button" class="primary" name="button"></button>
+		<div class="row">
+		  <div class="col-xs-8">
+			<h1 id="houseName">Rózsadomb lakókert</h1>
+		  </div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-md-6 col-lg-4 pull-right">
+			  <a href="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" class="simple-lightbox"><img src="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" alt="" /></a>
+			  <ul class="list-group no-style" id="houseInfo">
+				<li id="houseCou">Lonyai út</li>
+				<li id="houseHsz">52.</li>
+				<li id="houseCity">Budapest</li>
+				<li id="houseIr">1026</li>
+				<li id="houseNum">HR23432</li>
+			  </ul>
+			  <ul class="list-group no-style">
+				<li><img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakók száma: 120</li>
+				<li><img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakások száma: 123</li>
+				<li><img src="/icon/si-glyph-mail-box.svg" width="20"/>Parkolók száma: 120</li>
+				<li><img src="/icon/si-glyph-mail-box.svg" width="20"/>Tárolók száma: 123</li>
+			  </ul>
+			  <!-- megerosito modal mentes elott -->
+			</div>
+			<div class="col-xs-12 col-md-6 col-lg-8">
+			  <div class="form-group">
+				<div id="houseWelcome" class="markdown-render"><h4>Welcome</h4></div>
+			  </div>
+			  <div class="row">
+				<div class="col-xs-12 text-center">
+				  <h4 class="page-title">{{_ 'roles'}}</h4>
+				</div>
+			  </div>
+			  <div class="row">
+				<div class="col-xs-12">
+				  <table class="table dataTable display no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info"><thead><tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="role: activate to sort column descending" aria-sort="ascending" style="width: 0px;">role</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="user: activate to sort column ascending" style="width: 0px;">user</th></tr></thead><tbody><tr role="row" class="odd"><td class="sorting_1">admin</td><td>[demo.admin]</td></tr><tr role="row" class="even"><td class="sorting_1">admin</td><td>Andrew Bay</td></tr><tr role="row" class="odd"><td class="sorting_1">manager</td><td>[demo.manager]</td></tr><tr role="row" class="even"><td class="sorting_1">manager</td><td>Stephen Bolt</td></tr></tbody></table>
+				</div>
+			  </div>
+			</div>
+		</div>
+	  </div>
+	</div>
+	{{/if}}
     </div>
   </div>
 
-  <script type="text/javascript">
-  $(function() {
-    $( "ul.droptrue" ).sortable({
-      connectWith: ".js-sort-list"
-    });
-
-    // $( "#sortable1" ).disableSelection();
-  });
-  </script>
+  {{sortables}}
 </template>
