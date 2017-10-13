@@ -70,8 +70,8 @@ Topics.helpers({
     const participation = { count: 0, units: 0 };
     const directVotes = this.voteCasts || {};
     const data = this;
-    const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner' });
-    ownerships.forEach(ownership => {
+    const voterships = Memberships.find({ communityId: this.communityId, role: 'owner' }).fetch().filter(o => o.isRepresentor());
+    voterships.forEach((ownership) => {
       const votePath = [ownership.userId];
 
       function getVoteResult(voterId) {

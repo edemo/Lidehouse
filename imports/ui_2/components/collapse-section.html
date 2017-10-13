@@ -1,0 +1,18 @@
+<template name="Collapse_section">
+  <div class="full-width section-btn {{notFirstClassHeader}} {{collapsedClassHeader}}" type="button" {{collapsableDirectiveHeader}} data-target="#{{id}}-pane" aria-expanded="false" aria-controls="collapseExample">
+    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+    {{_ title}}
+    {{#if uncollapsable}}
+    {{else}}
+    <small>
+      <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
+      <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
+    </small>
+    {{/if}}
+  </div>
+  <div class="collapse section-pane {{collapsedClassBody}}" id="{{id}}-pane">
+    <div class="well">
+      {{> Template.contentBlock ..}}
+    </div>
+  </div>
+</template>

@@ -1,0 +1,133 @@
+{
+  "demo": {
+    "house": "Demo ház",
+    "city": "Budapest",
+    "street": "Kankalin utca",
+    "user": {
+      "0": {
+        "firstName": "Imre",
+        "lastName": "Baltazár"
+      },
+      "1": {
+        "firstName": "Andor",
+        "lastName": "Bajor",
+        "benefactor": {
+          "name": "Bíró Rozália",
+          "address": "Szolnok, Kunigunda u 45.",
+          "mothersName": "Perjés Katalin"
+        }
+      },
+      "2": {
+        "firstName": "Tímea",
+        "lastName": "Bakocsi",
+        "company": {
+          "name": "ACME Kft.",
+          "address": "Jászkunszállás, Petfőfi Sándor u 124."
+        }
+      },
+      "3": {
+        "firstName": "Péter",
+        "lastName": "Barna"
+      },
+      "4": {
+        "firstName": "Emilia",
+        "lastName": "Barna"
+      }
+    },
+    "topic": {
+      "0": {
+        "title": "Zár probléma",
+        "text": "Múlt héten megint benyomták a kaput, és azóta nem jól záródik a zár",
+        "comment": {
+          "0": "Igen, már bejelentettem. Jövő héten tudnak csak jönni javítani"
+        }
+      },
+      "1": {
+        "title": "Fundamenta hitel",
+        "text": "Most kedvezményes feltételekkel lehet felvenni fundamenta hitelt tatarozásra.",
+        "comment": {
+          "0": "Szerintem érdemes lenne. A kamat csak 6%, és 10 évre kapnánk.",
+          "1": "Nem tudom. Az előző hitelünket épp most tudtuk végre törleszteni. Most végre lemenne a közös költség, és erre megint egy újabb hitel?",
+          "2": "Szerintem bocsássuk szavazásra!"
+        }
+      },
+      "2": {
+        "title": "Hangos kutya a negyediken",
+        "text": "A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.",
+        "comment": {
+          "0": "Engem is rohadtul idegesít!!!",
+          "1": "Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi sajnos három hétig kórházban, és szegény kutyus nagyon rosszul bírja az egyedüllétet.",
+          "2": "Szerencsére a nagyit már hazaengedték, tegnap óta már otthon van. Úgyhogy nem lesz többet gond, és tényeg elnézést kérek mindenkitől."
+        }
+      }
+    },
+    "news": {
+      "0": {
+        "title": "Lomtalanítás lesz május 4.-én",
+        "text": "A lomokat előző nap (tehát május 3.-án) 18 órától lehet kihelyezni az utcára, amit a FKFV 4.-én szállít el.\nA veszélyes hulladékokat a külön erre kijelölt helyre kell vinni. Azokat NEM szabad az utcára kitenni!"
+      },
+      "1": {
+        "title": "Kémények ellenörzéséhez időpontot szükséges kérni",
+        "text": "Hónap végéig kötelező a kémények ellenőrzése. Három lehetséges időpont van. 2017.05.11, 2017.05.13, 2017.05.24.\nEzek közül lehet választani és a kéményseprőkkel egyeztetni a 06(20)2569875 telefonszámon hogy kinek melyik felel meg."
+      },
+      "2": {
+        "title": "Hasznos informáciok",
+        "text": ""
+      }
+    },
+    "vote": {
+      "0": {
+        "title": "Fundamenta hitel felvétele",
+        "text": "Felvegyük-e az 5 millio forintos Fundamenta hitelt 10 évre 6%-os kamattal."
+      },
+      "1": {
+        "title": "Kerékpár tároló létesítéséről",
+        "text": "Létesítsen-e a ház kerékpár tárolót maximum 200,000 Ft-ból a garázsszinten.\nElfogadás esetén három különböző árajánlatot kérünk be, és a legjobbat választjuk."
+      },
+      "2": {
+        "title": "Lépcsőház színéről",
+        "text": "Milyen színűre fessük a lépcsőház homlokzatát az augusztusi felújítás során.",
+        "choice": {
+          "0": "semleges fehér",
+          "1": "halvány rózsaszín",
+          "2": "sárga",
+          "3": "világos szürke"
+        },
+        "comment": {
+          "0": "A halovány színek jobban mutatnak. Világosabb hatású lesz a lépcsőház.",
+          "1": "Jajj csak szürke NE legyen. Akkor költözöm"
+        }
+      }
+    },
+    "agenda": {
+      "0": {
+        "title": "Közgyűlés 2017-II."
+      }
+    },
+    "ticket": {
+      "0": {
+        "title": "Elromlott a lift",
+        "text": "A hatodikon megállt. Semmilyen gombra nem reagál."
+      },
+      "1": {
+        "title": "Beázik a fürdőszobám a felettem lakótol.",
+        "text": "Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék."
+      },
+      "2": {
+        "title": "Áramkimaradás éjjelente",
+        "text": "Harmadszor fordul elő, hogy hirtelen áramkimaradás van éjjel.",
+        "comment": {
+          "0": "Igen, már jelentettem az elműnek. Azt mondták utánanéznek"
+        }
+      },
+      "3": {
+        "title": "A lépcsőházban hullik a vakolat",
+        "text": "A II. emeleti lépcsőfordulónál vettem észre."
+      }
+    },
+    "messages": {
+      "0": "Szervusz! Megtaláltam a postaláda kulcsodat. Benne hagytad a levélszekrény ajtajában. :)",
+      "1": "Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után."
+    }
+  }
+}
