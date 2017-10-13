@@ -3,33 +3,21 @@
 
     <div class="col-xs-12 col-lg-8 no-padding">
 
-      <!-- 1st section start -->
-      <div class="full-width section-btn" type="button" data-toggle="collapse" data-target="#vote-pane" aria-expanded="false" aria-controls="collapseExample">
-        <!-- <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>  -->
-        {{_ 'Active votings'}} ({{topicsCount 'vote'}})
-        <small>
-          <span class="glyphicon glyphicon-menu-down" title={{_ 'menuDown'}} aria-hidden="true"></span>
-          <span class="glyphicon glyphicon-menu-up" title={{_ 'menuUp'}} aria-hidden="true"></span>
-        </small>
-      </div>
-      <div class="collapse in section-pane" id="vote-pane">
-        <div class="well">
-          {{#each topics 'vote'}}
-            {{> Votebox}}
-          {{else}}
-            <!-- ha nincs szavazás ~ empty state -->
-            <div class="vote-container white-box text-center">
-              <p>
-                Jelenleg nincs aktív szavazás!
-              </p>
-              <p class="small-size">
-                Korábbi szavazásainkat megtekinthetik a <a href="{{pathFor 'Topics.vote'}}">Szavazások</a> menüpontban a "Lezárt szavazások"-ra kattintva.
-              </p>
-            </div>
-          {{/each}}
-        </div>
-      </div>
-      <!-- 1st section end -->
+      {{#Collapse_section id='vote' title=activeVotingsTitle }}
+        {{#each topics 'vote'}}
+          {{> Votebox}}
+        {{else}}
+          <!-- ha nincs szavazás ~ empty state -->
+          <div class="vote-container white-box text-center">
+            <h3>
+              {{_ 'No active votes'}}
+            </h3>
+            <h4 class="m2em">
+              {{_ 'Latest votes'}}: <br /><span class="b"><a href="{{pathFor 'Topics.vote'}}"><span class="em b">{{_ 'Votings'}}</span></a> &gt; <span class="em">{{_ 'Closed votings'}}</span></span>
+            </h4>
+         </div>
+        {{/each}}
+      {{/Collapse_section}}
 
       <!-- right side mobile -->
       <div class="full-width news-mid visible-xs visible-sm visible-md">
@@ -37,20 +25,12 @@
       </div>
       <!-- right side mobile end-->
 
-      <!-- 2nd section start -->
-      <div class="full-width section-btn section-btn-2" type="button" aria-expanded="false">
-        {{_ 'Forum'}}
-      </div>
-      <div class="collapse in section-pane" id="forum-pane">
-        <div class="well">
-          {{> Empty_chatbox}}
-
-          {{#each topics 'forum'}}
-          {{> Chatbox}}
-          {{/each}}
-        </div>
-      </div>
-      <!-- 2nd section end -->
+      {{#Collapse_section id='forum' title='Forum' notFirst=true uncollapsable=true}}
+        {{> Empty_chatbox}}
+        {{#each topics 'forum'}}
+        {{> Chatbox}}
+        {{/each}}
+      {{/Collapse_section}}
     </div>
 
     <!-- right side -->
@@ -91,7 +71,7 @@
       {{title}}
     </div>
     <div class="full-width">
-        {{{text}}} <!--TODO: fix this XScript attak-->
+        {{{text}}} <!--TODO: fix this, XSS problem -->
     </div>
   </div>
   {{/each}}

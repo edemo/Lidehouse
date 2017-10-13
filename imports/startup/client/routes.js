@@ -9,7 +9,9 @@ import '/imports/ui/forms/users-show-form.js';
 import '/imports/ui/forms/invite-form.js';
 
 import '/imports/ui_2/layouts/custom-body.js';
+import '/imports/ui_2/pages/users-show.js';
 import '/imports/ui_2/pages/communities-show.js';
+import '/imports/ui_2/pages/communities-front.js';
 import '/imports/ui_2/pages/communities-create.js';
 import '/imports/ui_2/pages/communities-join.js';
 import '/imports/ui_2/pages/community-memberships.js';
@@ -23,7 +25,8 @@ import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
 import '/imports/ui_2/pages/housing.js';
 import '/imports/ui_2/pages/tickets-report.js';
-import '/imports/ui_2/pages/finances.js';
+import '/imports/ui_2/pages/parcels-finances.js';
+import '/imports/ui_2/pages/community-finances.js';
 import '/imports/ui_2/pages/document-store.js';
 import '/imports/ui_2/pages/feedbacks.js';
 import '/imports/ui_2/pages/styleguide.js';
@@ -32,10 +35,15 @@ import '/imports/ui_2/pages/styleguide.js';
 import '/imports/ui/accounts/accounts-templates.js';
 
 FlowRouter.route('/', {
-  name: 'App.home',
-  action() {
-    BlazeLayout.render('Custom_body', { main: 'app_rootRedirector' });
-  },
+	  name: 'App.home',
+	  action() {
+		if (Meteor.user()) {
+			BlazeLayout.render('Custom_body', { main: 'app_rootRedirector' });
+		} else {
+			BlazeLayout.render('Communities_front_page');
+//			BlazeLayout.render('Custom_body', { main: 'Communities_front_page' });
+		}
+	  },
 });
 
 FlowRouter.route('/deprecated_community/:_cid', {
@@ -104,7 +112,11 @@ FlowRouter.route('/create-community', {
 FlowRouter.route('/user/:_id', {
   name: 'Users.show',
   action() {
-    BlazeLayout.render('Custom_body', { main: 'Users_show_form' });
+		if (Meteor.user()) {
+		    BlazeLayout.render('Custom_body', { main: 'Users_show_form' });
+		} else {
+		    BlazeLayout.render('Custom_body', { main: 'Users_show' });
+		}
   },
 });
 
@@ -157,10 +169,17 @@ FlowRouter.route('/report', {
   },
 });
 
-FlowRouter.route('/finances', {
-  name: 'Finances',
+FlowRouter.route('/parcels-finances', {
+  name: 'Parcels.finances',
   action() {
-    BlazeLayout.render('Custom_body', { main: 'Finances' });
+    BlazeLayout.render('Custom_body', { main: 'Parcels_finances' });
+  },
+});
+
+FlowRouter.route('/community-finances', {
+  name: 'Community.finances',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Community_finances' });
   },
 });
 

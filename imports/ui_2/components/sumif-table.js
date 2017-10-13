@@ -47,6 +47,7 @@ Template.Sumif_table.helpers({
     let amount = 0;
     let classValue = '';
     const query = _.extend({}, this.filter);
+
     rowVector.forEach((elem, index) => {
       if (elem === 'total') {
         classValue += ' total';
@@ -63,8 +64,21 @@ Template.Sumif_table.helpers({
       const colKey = this.cols[index].field;
       query[colKey] = elem;
     });
+
     const payments = Payments.find(query);
     payments.forEach(pay => amount += pay.amount);
+
+    rowVector.forEach((elem, index) => {
+      if (elem === 'total') {
+        if (amount < 0) classValue += ' negative';
+      }
+    });
+    colVector.forEach((elem, index) => {
+      if (elem === 'total') {
+        if (amount < 0) classValue += ' negative';
+      }
+    });
+
     return `<td class="${classValue}">${amount}</td>`;
   },
 });

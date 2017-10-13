@@ -2,9 +2,10 @@
 
 import { Meteor } from 'meteor/meteor';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
+import { chai } from 'meteor/practicalmeteor:chai';
+
 import { initializePermissions } from '/imports/api/permissions/config.js';
 import { insertDemoFixture } from '/imports/api/fixtures.js';
-
 import { Communities } from '/imports/api/communities/communities.js';
 import { Roles } from '/imports/api/permissions/roles.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
@@ -14,6 +15,8 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
+
+chai.config.truncateThreshold = Infinity;
 
 export function logDB() {
   console.log('Communities:', '\n', Communities.find().fetch());
@@ -36,5 +39,6 @@ export function emptyFixture() {
 export function freshFixture() {
   resetDatabase();
   initializePermissions();
-  return insertDemoFixture();
+  const result = insertDemoFixture('en');
+  return result;
 }

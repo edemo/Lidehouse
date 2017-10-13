@@ -1,0 +1,133 @@
+{
+  "demo": {
+    "house": "Demo house",
+    "city": "Boston",
+    "street": "Lavender street",
+    "user": {
+      "0": {
+        "firstName": "Stephen",
+        "lastName": "Bolt"
+      },
+      "1": {
+        "firstName": "Andrew",
+        "lastName": "Bay",
+        "benefactor": {
+          "name": "Rosemary Bird",
+          "address": "123 Awesome street, Georgia ",
+          "mothersName": "Cethleen Pierce"
+        }
+      },
+      "2": {
+        "firstName": "Tiffany",
+        "lastName": "Baker",
+        "company": {
+          "name": "ACME Inc.",
+          "address": "Peterson avenue 124., Philadelphia, USA"
+        }
+      },
+      "3": {
+        "firstName": "Peter",
+        "lastName": "Brown"
+      },
+      "4": {
+        "firstName": "Emilia",
+        "lastName": "Brown"
+      }
+    },
+    "topic": {
+      "0": {
+        "title": "Problem with the front door",
+        "text": "Someone broke in the front door last week, it cannot be locked ever since",
+        "comment": {
+          "0": "Yes, I've already reported the problem. Earliest they can come fix it is next week."
+        }
+      },
+      "1": {
+        "title": "Bank loan for renovation",
+        "text": "There is special offer from the bank for a one time loan that can be used for renovation.",
+        "comment": {
+          "0": "I think it is worth it. Interest is only 6%, repayment period is 10 years.",
+          "1": "Well, I'm not sure. We just got out from our last loan. Finally we can make the common cost lower, and now another loan?",
+          "2": "I suggest voting on it!"
+        }
+      },
+      "2": {
+        "title": "Loud dog on the 4th floor",
+        "text": "There is a dog on the 4th crying all day. The owner should not leave it alone all day.",
+        "comment": {
+          "0": "It is very annoying!!!",
+          "1": "I apologize from everyone. The dog is ours, it ususally doesn't make any noise. But my granny was in the hospital, and it was left alone last week.",
+          "2": "Fortunately granny is out of hospital and back home from yesterday, so it won't be causing noise anymore. Sincere apologies from everyone."
+        }
+      }
+    },
+    "news": {
+      "0": {
+        "title": "Garbage Day on May 4",
+        "text": "Any dangerous materials and special garbage can be placed outside the front door on the previous day. And it will be taken away"
+      },
+      "1": {
+        "title": "Mandatory chimney checking",
+        "text": "Has to be done until the end of the month. Three possible dates: 2017.05.11, 2017.05.13, 2017.05.24.\nPlease choose one and schedule an appointment with the chimney checkers at +36(20)2569875."
+      },
+      "2": {
+        "title": "Useful information",
+        "text": ""
+      }
+    },
+    "vote": {
+      "0": {
+        "title": "Bank loan for renovation",
+        "text": "Shall we take out a $100,000 special loan from the bank at 6% interest, repaying through the next 10 years."
+      },
+      "1": {
+        "title": "Bicycle storage",
+        "text": "Shall we create a bicycle storage for maximum $1000 in the basement.\nIf accepted, we will get 3 offers and choose the best."
+      },
+      "2": {
+        "title": "Color of the building walls",
+        "text": "What color should we paint the building's walls during the renovation in August.",
+        "choice": {
+          "0": "neutral white",
+          "1": "light pink",
+          "2": "yellow",
+          "3": "light grey"
+        },
+        "comment": {
+          "0": "Light colors are always prefered. Makes the area look brighter.",
+          "1": "OMG If you choose grey, I'm moving out!"
+        }
+      }
+    },
+    "agenda": {
+      "0": {
+        "title": "Owners Association Meeting 2017-II."
+      }
+    },
+    "ticket": {
+      "0": {
+        "title": "Elevator out of order",
+        "text": "Stopped on the 6th floor. None of the buttons make it move."
+      },
+      "1": {
+        "title": "My bathroom is being flooded from above.",
+        "text": "A part of the ceiling has even fallen. I was lucky to not have my bath at that moment. I could be dead now."
+      },
+      "2": {
+        "title": "Electricity shortages",
+        "text": "It is the third time that the electricity goes away for a period during the nigth.",
+        "comment": {
+          "0": "I reported to the electricity company last week. They are looking into it."
+        }
+      },
+      "3": {
+        "title": "Cracks in the wall",
+        "text": "On the second floor the wall is cracked, pieces of it fallen down."
+      }
+    },
+    "messages": {
+      "0": "Hi! I've found your post box keys. You've left it in the post box. :)",
+      "1": "Ooops. Thanks a lot! I was looking for it, thought I lost it. I'll drop by to pick it up after dinner."
+    }
+  }
+}

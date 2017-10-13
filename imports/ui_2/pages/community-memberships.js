@@ -57,6 +57,16 @@ Template.Community_memberships_page.events({
       template: 'bootstrap3-inline',
     });
   },
+  'click .js-view'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.parcel.view',
+      collection: Parcels,
+      doc: Parcels.findOne(id),
+      type: 'readonly',
+      template: 'bootstrap3-inline',
+    });
+  },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeParcel, { _id: id }, {

@@ -1,11 +1,12 @@
 import { Meteor } from 'meteor/meteor';
-import { Communities } from '/imports/api/communities/communities.js';
+import { TAPi18n } from 'meteor/tap:i18n';
+
 import { insertDemoFixture } from '/imports/api/fixtures.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
-  if (Communities.findOne({ name: 'Demo ház' })) {
-    return; // if Demo data already populated
-  }
-  insertDemoFixture();
+  const languages = TAPi18n.getLanguages();
+  Object.keys(languages).forEach((lang) => {
+    insertDemoFixture(lang);
+  });
 });

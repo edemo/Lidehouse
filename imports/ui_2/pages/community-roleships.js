@@ -1,19 +1,19 @@
-
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { $ } from 'meteor/jquery';
-import { onSuccess } from '/imports/ui/lib/errors.js';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { Roles } from '/imports/api/permissions/roles.js';
+import { Accounts } from 'meteor/accounts-base';
+
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { roleshipColumns } from '/imports/api/memberships/tables.js';
-import { remove as removeMembership } from '/imports/api/memberships/methods.js';
+import { update as updateMembership, remove as removeMembership } from '/imports/api/memberships/methods.js';
+import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
 import './community-roleships.html';
@@ -44,7 +44,7 @@ Template.Community_roleships_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'ownership'],
+      omitFields: ['communityId', 'parcelId', 'ownership', 'benefactorship', 'idCard'],
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',
@@ -55,11 +55,22 @@ Template.Community_roleships_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.roleship.update',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'ownership'],
+      omitFields: ['communityId', 'parcelId', 'ownership', 'benefactorship', 'idCard'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click .js-view'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.roleship.view',
+      collection: Memberships,
+      omitFields: ['communityId', 'parcelId', 'ownership', 'benefactorship', 'idCard'],
+      doc: Memberships.findOne(id),
+      type: 'readonly',
       template: 'bootstrap3-inline',
     });
   },

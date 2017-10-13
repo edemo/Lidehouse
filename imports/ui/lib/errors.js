@@ -21,7 +21,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 export const displayError = (error) => {
   if (error) {
-    console.log(error);
+    console.error(error);
     let message;
     if (error instanceof Meteor.Error) {
       // For server side errors, on the client side we always get a Meteor.Error, that is what gets channeled over DDP.

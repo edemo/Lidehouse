@@ -66,7 +66,7 @@
       "meteor/no-session": "off",
       "prefer-template": "off",
       "prefer-arrow-callback": "off",
-      "no-param-reassign": "warn",
+      "no-param-reassign": ["error", { "props": false }],
       "no-return-assign": "warn",
       "no-useless-concat": "warn",
       "no-unused-vars": "warn"

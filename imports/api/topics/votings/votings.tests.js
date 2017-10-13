@@ -190,7 +190,7 @@ if (Meteor.isServer) {
 
       const assertsAfterIndirectVote = function (choice = 0) {
         const voting = Topics.findOne(votingId);
-        chai.assert.deepEqual(voting.voteParticipation, { count: 5, units: 90 });
+        chai.assert.deepEqual(voting.voteParticipation, { count: 4, units: 100 });
         const castsShouldBe = {};
         castsShouldBe[Fixture.dummyUsers[1]] = [1];
         castsShouldBe[Fixture.dummyUsers[2]] = [2];
@@ -202,16 +202,16 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].votingShare, new Fraction(30, 100));
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].voteResult, [choice]);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].votePath, [Fixture.dummyUsers[3]]);
-// TODO       chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].votingShare, new Fraction(30, 100));
+        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].votingShare, new Fraction(40, 100));
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].voteResult, [choice]);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].votePath, [Fixture.dummyUsers[4], Fixture.dummyUsers[3]]);
         const summaryShouldBe = {};
         if (choice === 0) {
           summaryShouldBe[1] = 10;
           summaryShouldBe[2] = 20;
-          summaryShouldBe[0] = 60;
+          summaryShouldBe[0] = 70;
         } else if (choice === 1) {
-          summaryShouldBe[1] = 70;
+          summaryShouldBe[1] = 80;
           summaryShouldBe[2] = 20;
         }
         chai.assert.deepEqual(voting.voteSummary, summaryShouldBe);
@@ -248,7 +248,7 @@ if (Meteor.isServer) {
         castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [0] });
 
         voting = Topics.findOne(votingId);
-        chai.assert.deepEqual(voting.voteParticipation, { count: 4, units: 80 });
+        chai.assert.deepEqual(voting.voteParticipation, { count: 3, units: 60 });
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[3]], [0]);
         chai.assert.isUndefined(voting.voteCasts[Fixture.dummyUsers[4]]);
         chai.assert.isUndefined(voting.voteCastsIndirect[Fixture.dummyUsers[4]]);

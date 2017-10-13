@@ -1,0 +1,253 @@
+{
+  // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaUsers": {
+    "username": {
+      "label": "Felhasználónév",
+      "placeholder": "(pl. Miki75)"
+    },
+    "avatar": {
+      "label": "Avatár",
+      "placeholder": "(pl. kockásfülünyúl.jpg)"
+    },
+    "profile": {
+      "label": "Profil",
+
+      "firstName": {
+        "label": "Keresztnév",
+        "placeholder": "(pl. Miklós)"
+      },
+      "lastName": {
+        "label": "Vezetéknév",
+        "placeholder": "(pl. Galambos)"
+      },
+      "nick": {
+        "label": "Becenév",
+        "placeholder": "(pl. Miki75)"
+      },
+      "address": {
+        "label": "Kapcsolati cím",
+        "placeholder": "(pl. 2543 Kiskunhalas, Pitypang u 6.)"
+      },
+      "phone": {
+        "label": "Telefonszám",
+        "placeholder": "(pl. 06 30 123 4567)"
+      },
+      "bio": {
+        "label": "Bemutatkozás",
+        "placeholder": "(pl. Vasárnaponként szoktam gyakorolni zongorázni. Bocsi :) )"
+      }
+    },
+    "settings": {
+      "label": "Beálítások",
+      "delegatee": {
+        "label": "Bejövő meghatalmazások engedélyezése"
+      }
+    },
+    "emails": {
+      "$": {
+        "address": {
+          "label": "E-mail cím",
+          "placeholder": "(pl. margitka21@ingyenmail.com)"
+        },
+        "verified": {
+          "label": "Ellenőrzött"
+        }
+      }
+    }
+  },
+  "schemaMemberships" : {
+    "role": {
+      "label": "Szerep"
+    },
+    "userId": {
+      "label": "Felhasználó (a regisztráltak közül)"
+    },
+    "userEmail": {
+      "label": "Felhasználó email címe (ha nem regisztrált)",
+      "placeholder": "(pl. tibi45@dmail.com)"
+    },
+    "idCard": {
+      "label" : "Ellenőrzött adatok",
+      "type": {
+        "label": "Entitás típusa"
+      },
+      "name": {
+        "label": "Név",
+        "placeholder": "(pl. Kovács János vagy Kulcslyuk Kft.)"
+      },
+      "address": {
+        "label": "Bejelentett cím",
+        "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
+      },
+      "identifier": {
+        "label": "Szig. szám ill. cégjegyzékszám",
+        "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
+      },
+      "mothersName": {
+        "label": "Anyja leánykori neve",
+        "placeholder": "(csak magánszemély esetén)"
+      },
+      "dob": {
+        "label": "Születési idő"
+      }
+    },
+    "ownership": {
+      "label": "Tulajdon",
+      "share": {
+        "label": "Tulajdonrész",
+        "placeholder": "(pl. 1/1 vagy 1/2)"
+      },
+      "representor": {
+        "label": "Képviselője?"
+      }
+    },
+    "benefactorship": {
+      "label": "Használat",
+      "type": {
+        "label": "Típus"
+      }
+    }
+  },
+  "schemaDelegations": {
+    "sourceUserId": {
+      "label": "Meghatalmazó",
+      "placeholder": "(pl. Miki75)"
+    },
+    "targetUserId": {
+      "label": "Meghatalmazott",
+      "placeholder": "(pl. Miki75)"
+    },
+    "scope": {
+      "label": "Meghatalmazás köre",
+      "placeholder": "(pl. Ház ügyei)"
+    },
+    "objectId": {
+      "label": "Meghatalmazás tárgya (tulajdon)",
+      "placeholder": "(pl. Demo ház)"
+    }
+  },
+  "schemaAgendas": {
+    "title": {
+      "label": "Név",
+      "placeholder": "(pl. Közgyűlés 2017-II.)"
+    },
+    "topicIds": {
+      "label": "Napirendi pontok"
+    }
+  },
+  "schemaTopics": {
+    "title": {
+      "label": "Cím",
+      "placeholder": "Rövid összefoglalás"
+    },
+    "text": {
+      "label": "Részletek",
+      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+    },
+    "sticky" : {
+      "label": "Kiemelt"
+    }
+  },
+  "schemaVotings": {
+    "title": {
+      "label": "Szavazás",
+      "placeholder": "(pl. Fessük-e a falat kékre?)"
+    },
+    "text": {
+      "label": "Részletek",
+      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+    }
+  },
+  "schemaTickets": {
+    "title": {
+      "label": "Hiba rövid leírása",
+      "placeholder": "(pl. Elromlott a lift)"
+    },
+    "text": {
+      "label": "Részletek",
+      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+    },
+    "ticket": {
+      "label": "Hibajegy",
+      "type": {
+        "label": "Hiba típusa"
+      },
+      "urgency": {
+        "label": "Sürgősség"
+      },
+      "status": {
+        "label": "Státusz"
+      }
+    }
+  },
+  "schemaFeedback": {
+    "title": {
+      "label": "Visszajelzés (kezdete)..."
+    },
+    "text": {
+      "label": "Részletek",
+      "placeholder": "Vélemény, javaslat, hiba leírása..."
+    },
+    "feedback": {
+      "label": "Visszajelzés",
+      "type": {
+        "label": "Visszajelzés fajtája"
+      },
+      "rating": {
+        "label": "Mennyire ajánlaná az alkalmazást másoknak?"
+      }
+    }
+  },
+  "schemaPayAccounts": {
+    "name": {
+      "label": "Elnevezés",
+      "placeholder": "(pl. Kifizetési hely)"
+    },
+    "type": {
+      "label": "Típus"
+    },
+    "children": {
+      "label": "Gyűjtő fiókok",
+      "$": {
+        "name": {
+          "label": "Elnevezés (vagy * ha nem kell)",
+          "placeholder": "(pl. B. lépcsőház)"
+        },
+        "children": {
+          "label": "Al fiókok",
+          "$": {
+            "name": {
+              "label": "Elnevezés (vagy albetét száma)",
+              "placeholder": "(pl. Kert vagy 114)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaPayments": {
+    "phase": {
+      "label": "Fázis"
+      //"Tranzakció típusa"
+    },
+    "date": {
+      "label": "Könyvelési dátum",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Összeg",
+      "placeholder": "(pl. 14560)"
+    },
+    "ref": {
+      "label": "Referencia azonosító",
+      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
+    },
+    "note": {
+      "label": "Megjegyzés",
+      "placeholder": "(pl. emlékeztető)"
+    },
+    "accounts": {
+      "label": "Könyvelési fiókok"
+    }
+  }
+}

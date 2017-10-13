@@ -1,0 +1,253 @@
+{
+  // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaUsers": {
+    "username": {
+      "label": "Username",
+      "placeholder": "(eg. Mike75)"
+    },
+    "avatar": {
+      "label": "Avatar",
+      "placeholder": "(eg. heart.jpg)"
+    },
+    "profile": {
+      "label": "Profile",
+
+      "firstName": {
+        "label": "First name",
+        "placeholder": "(eg. Michael)"
+      },
+      "lastName": {
+        "label": "Last name",
+        "placeholder": "(eg. Keaton)"
+      },
+      "nick": {
+        "label": "Nick name",
+        "placeholder": "(eg. Mikey75)"
+      },
+      "address": {
+        "label": "Contact address",
+        "placeholder": "(eg. 24 Cattle str, Wyoming)"
+      },
+      "phone": {
+        "label": "Phone number",
+        "placeholder": "(pl. +36 30 123 4567)"
+      },
+      "bio": {
+        "label": "Bio",
+        "placeholder": "(eg. On sundays I like to play the piano. Sorry :) )"
+      }
+    },
+    "settings": {
+      "label": "Settings",
+      "delegatee": {
+        "label": "Allow incoming delegations"
+      }
+    },
+    "emails": {
+      "$": {
+        "address": {
+          "label": "Address",
+          "placeholder": "(eg. margaret21@freemail.com)"
+        },
+        "verified": {
+          "label": "Verified"
+        }
+      }
+    }
+  },
+  "schemaMemberships" : {
+    "role": {
+      "label": "Role"
+    },
+    "userId": {
+      "label": "User (from registered users)"
+    },
+    "userEmail": {
+      "label": "User's email address (if not registered)",
+      "placeholder": "(eg. jsmith45@dmail.com)"
+    },
+    "idCard": {
+      "label" : "Verified identification",
+      "type": {
+        "label": "Entity type"
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "(eg. John Smith or ACME Inc.)"
+      },
+      "address": {
+        "label": "Official address",
+        "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
+      },
+      "identifier": {
+        "label": "Official identifier",
+        "placeholder": "(id card number or company registration number)"
+      },
+      "mothersName": {
+        "label": "Mother's maiden name",
+        "placeholder": "(only for person)"
+      },
+      "dob": {
+        "label": "Date of birth"
+      }
+    },
+    "ownership": {
+      "label": "Owner",
+      "share": {
+        "label": "Ownership share",
+        "placeholder": "(eg. 1/1 or 1/2)"
+      },
+      "representor": {
+        "label": "Representor?"
+      }
+    },
+    "benefactorship": {
+      "label": "Benefactor",
+      "type": {
+        "label": "Type"
+      }
+    }
+  },
+  "schemaDelegations": {
+    "sourceUserId": {
+      "label": "Delegator",
+      "placeholder": "(eg. Mike75)"
+    },
+    "targetUserId": {
+      "label": "Delegatee",
+      "placeholder": "(eg. Mike75)"
+    },
+    "scope": {
+      "label": "Scope of Delegation",
+      "placeholder": "(pl. Community issues)"
+    },
+    "objectId": {
+      "label": "Object of delegation",
+      "placeholder": "(eg. Demo community)"
+    }
+  },
+  "schemaAgendas": {
+    "title": {
+      "label": "Name",
+      "placeholder": "(eg. Owner's meeting 2017-II.)"
+    },
+    "topicIds": {
+      "label": "Agenda topics"
+    }
+  },
+  "schemaTopics": {
+    "title": {
+      "label": "Title",
+      "placeholder": "Short summary"
+    },
+    "text": {
+      "label": "Details",
+      "placeholder": "Longer description (if needed)..."
+    },
+    "sticky" : {
+      "label": "Sticky"
+    }
+  },
+  "schemaVotings": {
+    "title": {
+      "label": "Voting",
+      "placeholder": "(eg. Should we paint the house blue?)"
+    },
+    "text": {
+      "label": "Details",
+      "placeholder": "Longer description (if needed)..."
+    }
+  },
+  "schemaTickets": {
+    "title": {
+      "label": "Problem description",
+      "placeholder": "(eg. Elevator out of order)"
+    },
+    "text": {
+      "label": "Details",
+      "placeholder": "Longer description (if needed)..."
+    },
+    "ticket": {
+      "label": "Ticket",
+      "type": {
+        "label": "Type of problem"
+      },
+      "urgency": {
+        "label": "Urgency"
+      },
+      "status": {
+        "label": "Status"
+      }
+    }
+  },
+  "schemaFeedback": {
+    "title": {
+      "label": "Feedback (beginning)..."
+    },
+    "text": {
+      "label": "Details",
+      "placeholder": "Description of error, proposal or opinion..."
+    },
+    "feedback": {
+      "label": "Feedback",
+      "type": {
+        "label": "Feedback type"
+      },
+      "rating": {
+        "label": "How much would you recommend this app to others?"
+      }
+    }
+  },
+  "schemaPayAccounts": {
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Payment target)"
+    },
+    "type": {
+      "label": "Type"
+    },
+    "children": {
+      "label": "Container account",
+      "$": {
+        "name": {
+          "label": "Name (or * if not needed)",
+          "placeholder": "(eg. Building C.)"
+        },
+        "children": {
+          "label": "Sub account",
+          "$": {
+            "name": {
+              "label": "Name (or serial no. of parcel)",
+              "placeholder": "(eg. Garden or 114)"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaPayments": {
+    "phase": {
+      "label": "Phase"
+      //"Payment type"
+    },
+    "date": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Amount",
+      "placeholder": "(eg. 14560)"
+    },
+    "ref": {
+      "label": "Reference id",
+      "placeholder": "(eg. transaction no. from bank statement)"
+    },
+    "note": {
+      "label": "Note",
+      "placeholder": "(eg. reminder)"
+    },
+    "accounts": {
+      "label": "Könyvelési fiókok"
+    }
+  }
+}
