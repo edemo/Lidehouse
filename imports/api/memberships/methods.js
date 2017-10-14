@@ -22,7 +22,7 @@ function checkUserDataConsistency(membership) {
 
 // Connecting the membership with a registered user (call if only email is provided and no user connected)
 // from this point the user can change her email address, w/o breaking the association
-function connectUser(membershipId, userId) {
+export function connectUser(membershipId, userId) {
   const modifier = {
     $set: { userId },
     $unset: { userEmail: '' },      // !! break the email association - the userId is the new association

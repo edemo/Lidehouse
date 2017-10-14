@@ -3,7 +3,9 @@ import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { Accounts } from 'meteor/accounts-base';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
-
+import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { connectUser } from '/imports/api/memberships/methods.js';
 /*
 Accounts.config({
   sendVerificationEmail: true,
@@ -27,6 +29,8 @@ Accounts.ui.config({
 
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
+  sendVerificationEmail: true, 
+  enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
   defaultTemplate: 'Auth_page',
   defaultLayout: 'Custom_body',
   defaultContentRegion: 'main',
@@ -83,6 +87,20 @@ if (Meteor.isClient) {
     // Now call the original create user function with
     // the original user object plus the new callback
     createUser(user, newCallback);
+  });
+
+  Accounts.onEmailVerificationLink(function(token, done){
+    Accounts.verifyEmail(token, (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        FlowRouter.go('/board');
+        const email = Meteor.user().emails[0].address;
+        const memberships = Memberships.find({ userEmail: email }).fetch();
+        console.log(email + ' memberships:' + memberships);
+        // connectUser(membershipId, Meteor.userId());
+    }
+    });
   });
 }
 
