@@ -45,20 +45,11 @@
               </ul>
             </ul>
           </div>
-          {{else}}
-          <div class="btns-group top-sign-in">
-            <a href="{{pathFor 'signin'}}" class="btn-secondary">
-            {{_ 'login'}}
-            </a>
-            /
-            <a href="{{pathFor 'join'}}" class="btn-secondary">
-              {{_ 'register'}}
-            </a>
-          </div>
           {{/if}}
           <div class="full-width">
             <img class="house-pic" src="http://static.panoramio.com/photos/original/59978318.jpg" alt=""/>
           </div>
+          {{#if currentUser}}
           <div class="comm-drop">
             {{#if activeCommunity}}
               <div class="dropdown">
@@ -78,7 +69,7 @@
             {{else}}
               <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" id="emptycommunity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                {{_ 'No active'}} {{_ 'community'}}
+                {{_ 'community'}} {{_ 'Selection'}}
                 <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="emptycommunity">
@@ -88,6 +79,7 @@
               </div>
             {{/if}}
           </div>
+		  {{/if}}
           {{#if activeCommunity}}
           <div class="comm-btns">
             <div class="btns-group">
@@ -100,7 +92,8 @@
         </div>
 
         <div class="list-menu">
-          <ul>
+          {{#if currentUser}}
+          <ul id="main-menu">
             <li class="list-item">
               <a href="{{pathFor 'Board'}}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>{{_ 'Main'}}</a>
             </li>
@@ -135,6 +128,16 @@
               <a href="{{pathFor 'DocumentStore'}}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>{{_ 'Documentstore'}}</a>
             </li>
           </ul>
+		  {{else}}
+          <ul class="btns-group top-sign-in">
+            <li class="menu-item"><a href="{{pathFor 'signin'}}" class="btn-primary">
+            {{_ 'login'}}
+            </a></li>
+            <li class="menu-item"><a href="{{pathFor 'join'}}" class="btn-primary">
+              {{_ 'register'}}
+            </a></li>
+          </ul>
+		  {{/if}}
           <ul style="position: absolute; bottom: 0; width: 100%;">
             <li class="list-item">
               <a href="{{pathFor 'Feedbacks'}}"><img src="/icon/si-glyph-bolt.svg"/>Feedbacks (dev)</a>
