@@ -30,7 +30,7 @@ Accounts.ui.config({
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
   sendVerificationEmail: true, 
-  enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
+ // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
   defaultTemplate: 'Auth_page',
   defaultLayout: 'Custom_body',
   defaultContentRegion: 'main',
@@ -97,7 +97,7 @@ if (Meteor.isClient) {
         FlowRouter.go('/board');
         const email = Meteor.user().emails[0].address;
         const memberships = Memberships.find({ userEmail: email }).fetch();
-        console.log(email + ' memberships:' + memberships);
+        console.log(email + ' memberships:', memberships);
         // connectUser(membershipId, Meteor.userId());
     }
     });

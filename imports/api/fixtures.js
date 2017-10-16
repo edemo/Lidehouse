@@ -50,7 +50,9 @@ export function insertDemoFixture(lang) {
   const demoUserId = Accounts.createUser({ email: `demo.user@demo.${com}`, password: 'password', settings: { language: lang } });
   const demoAdminId = Accounts.createUser({ email: `demo.admin@demo.${com}`, password: 'password', settings: { language: lang } });
   const demoManagerId = Accounts.createUser({ email: `demo.manager@demo.${com}`, password: 'password', settings: { language: lang } });
-
+  [demoUserId, demoAdminId, demoManagerId].forEach(function (userId) {
+    Meteor.users.update({ _id: userId }, { $set: { 'emails.0.verified': true } });
+  });
   const dummyUsers = [];
   dummyUsers[0] = Meteor.users.insert({
     emails: [{ address: `user.0@demo.${com}`, verified: true }],
