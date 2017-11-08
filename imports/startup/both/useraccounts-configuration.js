@@ -5,7 +5,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { connectUser } from '/imports/api/memberships/methods.js';
+import { connectMe } from '/imports/api/memberships/methods.js';
 /*
 Accounts.config({
   sendVerificationEmail: true,
@@ -94,12 +94,9 @@ if (Meteor.isClient) {
       if (err) {
         console.log(err);
       } else {
+        connectMe.call();
         FlowRouter.go('/board');
-        const email = Meteor.user().emails[0].address;
-        const memberships = Memberships.find({ userEmail: email }).fetch();
-        console.log(email + ' memberships:', memberships);
-        // connectUser(membershipId, Meteor.userId());
-    }
+      }
     });
   });
 }

@@ -72,6 +72,19 @@ function checkSanityOfTotalShare(parcelId, totalShare) {
   }
 }
 
+export const connectMe = new ValidatedMethod({
+  name: 'memberships.connectMe',
+  validate: null,
+
+  run() {
+    const email = Meteor.users.findOne(this.userId).emails[0].address;
+    const userId = this.userId;
+    Memberships.find({ userEmail: email }).forEach((membership) => {
+      connectUser(membership._id, userId);
+    });
+  },
+});
+
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
   validate: Memberships.simpleSchema().validator({ clean: true }),
