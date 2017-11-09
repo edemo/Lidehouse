@@ -68,11 +68,11 @@ Meteor.users.schema = new SimpleSchema({
   emails: { type: Array },
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
-  'emails.$.verified': { type: Boolean },
+  'emails.$.verified': { type: Boolean, defaultValue: false, optional: true, autoform: { omit: true } },
 
-  profile: { type: PersonProfileSchema, defaultValue: {} },
-  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar },
-  status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', autoform: { omit: true } },
+  profile: { type: PersonProfileSchema, defaultValue: {}, optional: true },
+  avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar, optional: true },
+  status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', optional: true, autoform: { omit: true } },
 
   settings: { type: UserSettingsSchema },
   lastseens: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
