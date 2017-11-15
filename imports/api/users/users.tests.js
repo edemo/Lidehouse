@@ -14,6 +14,8 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { insert as insertMembership, update as updateMembership, remove as removeMembership  } from '/imports/api/memberships/methods.js';
 import { everybody } from '/imports/api/permissions/config.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { cleanExpiredEmails } from '/imports/startup/both/useraccounts-configuration.js';
+import { moment } from 'meteor/momentjs:moment';
 import '/imports/api/users/users.js'
 
 if (Meteor.isServer) {
@@ -61,5 +63,48 @@ if (Meteor.isServer) {
         done();
       });
     });
+
+    describe('unverified emails', function () {
+      const oneWeekAgo = moment().subtract(1, 'week').toDate();
+      const twoWeeksAgo = moment().subtract(2, 'week').toDate();
+      const threeWeeksAgo = moment().subtract(3, 'week').toDate();
+      
+      it('deletes expired unverified emails', function (done) {
+        let user = Meteor.users.findOne({ _id: Fixture.dummyUsers[1] });
+        Meteor.users.update({ _id: user._id }, 
+          { $push: { 'services.email.verificationTokens': 
+            { token: 'qwert1234', address: user.emails[0].address, when: threeWeeksAgo } } });
+        Meteor.users.update({ _id: user._id }, 
+          { $push: { 'services.email.verificationTokens': 
+            { token: 'asdfg9876', address: 'secondaddress@demo.com', when: oneWeekAgo } } });
+        Meteor.users.update({ _id: user._id }, { $set: { 'emails.1.address': 'secondaddress@demo.com'} });
+        user = Meteor.users.findOne({ _id: Fixture.dummyUsers[1] });
+        chai.assert.equal(user.emails.length, 2);
+        chai.assert.equal(user.services.email.verificationTokens.length, 2);
+        cleanExpiredEmails(); 
+        user = Meteor.users.findOne({ _id: Fixture.dummyUsers[1] });
+        chai.assert.equal(user.emails.length, 1);
+        chai.assert.equal(user.services.email.verificationTokens.length, 1);
+        chai.assert.isAbove(user.services.email.verificationTokens[0].when, twoWeeksAgo);
+        done();
+      });
+
+      it('then deletes users with no email address', function (done) {
+        let user = Meteor.users.findOne({ _id: Fixture.dummyUsers[2] });
+        Meteor.users.update({ _id: user._id }, 
+          { $push: { 'services.email.verificationTokens': 
+            { token: 'qwert4567', address: user.emails[0].address, when: threeWeeksAgo } } });
+        user = Meteor.users.findOne({ _id: Fixture.dummyUsers[2] });
+        chai.assert.equal(user.emails[0].address, user.services.email.verificationTokens[0].address);
+        chai.assert.equal(user.emails.length, 1);
+        chai.assert.equal(user.services.email.verificationTokens.length, 1);
+        cleanExpiredEmails(); 
+        user = Meteor.users.findOne({ _id: Fixture.dummyUsers[2] });
+        chai.assert.isUndefined(user);
+        const controlUser = Meteor.users.findOne({ _id: Fixture.dummyUsers[1] });
+        chai.assert.isDefined(controlUser);
+        done();
+      });
+    });  
   });
 }

@@ -68,7 +68,7 @@ Meteor.users.schema = new SimpleSchema({
   emails: { type: Array },
   'emails.$': { type: Object },
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
-  'emails.$.verified': { type: Boolean, defaultValue: false, optional: true, autoform: { omit: true } },
+  'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
   profile: { type: PersonProfileSchema, defaultValue: {}, optional: true },
   avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar, optional: true },
