@@ -22,7 +22,7 @@ function checkUserDataConsistency(membership) {
 
 // Connecting the membership with a registered user (call if only email is provided and no user connected)
 // from this point the user can change her email address, w/o breaking the association
-function connectUser(membershipId, userId) {
+export function connectUser(membershipId, userId) {
   const modifier = {
     $set: { userId },
     $unset: { userEmail: '' },      // !! break the email association - the userId is the new association
@@ -71,6 +71,19 @@ function checkSanityOfTotalShare(parcelId, totalShare) {
       `New total shares would become: ${totalShare}, for parcel ${parcelId}`);
   }
 }
+
+export const connectMe = new ValidatedMethod({
+  name: 'memberships.connectMe',
+  validate: null,
+
+  run() {
+    const email = Meteor.users.findOne(this.userId).emails[0].address;
+    const userId = this.userId;
+    Memberships.find({ userEmail: email }).forEach((membership) => {
+      connectUser(membership._id, userId);
+    });
+  },
+});
 
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
