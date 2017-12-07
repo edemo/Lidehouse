@@ -44,11 +44,12 @@ Meteor.publishComposite('memberships.ofUser', function communitiesOfUser(params)
   }).validate(params);
 
   const { userId } = params;
-  const userEmail = Meteor.users.findOne(userId).emails[0].address;
+  const user = Meteor.users.findOne(userId);
+  const userEmail = user.emails[0].address;
 
   return {
     find() {
-      return Memberships.find({ $or: [ { userId }, { userEmail } ] });
+      return Memberships.find({ $or: [{ userId }, { userEmail }] });
     },
 
     children: [{
@@ -56,7 +57,7 @@ Meteor.publishComposite('memberships.ofUser', function communitiesOfUser(params)
         const communityId = membership.communityId;
        // const user = Meteor.users.findOne(this.userId);
        // const visibleFields = user.hasPermission('finances.view') ? {} : { finances: 0 };
-        return Communities.find({ _id: communityId }/*, { fields: visibleFields }*/);
+        return Communities.find({ _id: communityId } /* , { fields: visibleFields } */);
       },
     }],
   };

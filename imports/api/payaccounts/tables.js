@@ -10,14 +10,14 @@ export function payaccountColumns() {
   };
   const displayMids = function displayMids(cellData, renderType, currentRow) {
     let result = '';
-    cellData.forEach(c => result += c.name + ', ');
+    cellData.children.forEach(c => result += c.name + ', ');
     return constrainText(result, 50);
   };
   const displayLeafs = function displayLeafs(cellData, renderType, currentRow) {
     let result = '';
-    cellData.forEach(c =>
+    cellData.children.forEach(c =>
       c.children.forEach(cc =>
-        result += PayAccounts.leafDisplay(cc.name) + ', '
+        result += cellData.leafDisplay(cc.name) + ', '
       )
     );
     return constrainText(result, 50);
@@ -25,8 +25,8 @@ export function payaccountColumns() {
   return [
     { data: 'name', title: __('schemaPayAccounts.name.label') },
 //    { data: 'type', title: __('schemaPayAccounts.type.label'), render: Render.translate },
-    { data: 'children', title: __('schemaPayAccounts.children.label'), render: displayMids },
-    { data: 'children', title: __('schemaPayAccounts.children.$.children.label'), render: displayLeafs },
+    { data: 'init()', title: __('schemaPayAccounts.children.label'), render: displayMids },
+    { data: 'init()', title: __('schemaPayAccounts.children.$.children.label'), render: displayLeafs },
     { data: '_id', render: Render.buttonEdit },
     { data: '_id', render: Render.buttonDelete },
   ];

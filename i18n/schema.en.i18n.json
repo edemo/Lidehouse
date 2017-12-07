@@ -230,7 +230,7 @@
       "label": "Phase"
       //"Payment type"
     },
-    "date": {
+    "valueDate": {
       "label": "Accounting date",
       "placeholder": "(eg. 2017-05-06)"
     },

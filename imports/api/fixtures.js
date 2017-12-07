@@ -512,7 +512,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    date: new Date('2017-01-01'),
+    valueDate: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 100000,
     accounts: {
@@ -523,7 +523,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    date: new Date('2017-01-01'),
+    valueDate: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 110000,
     accounts: {
@@ -534,7 +534,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    date: new Date('2017-01-01'),
+    valueDate: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 120000,
     accounts: {
@@ -547,7 +547,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    date: new Date('2017-06-01'),
+    valueDate: new Date('2017-06-01'),
     amount: 10000,
     accounts: {
       'Pénz számlák': 'Bank főszámla',
@@ -559,7 +559,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    date: new Date('2017-06-02'),
+    valueDate: new Date('2017-06-02'),
     amount: 20000,
     accounts: {
       'Pénz számlák': 'Bank főszámla',
@@ -571,7 +571,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    date: new Date('2017-06-03'),
+    valueDate: new Date('2017-06-03'),
     amount: 30000,
     accounts: {
       'Pénz számlák': 'Pénztár',
@@ -583,7 +583,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    date: new Date('2017-06-04'),
+    valueDate: new Date('2017-06-04'),
     amount: 40000,
     accounts: {
       'Pénz számlák': 'Bank felújítási alap',
@@ -611,7 +611,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'plan',
-    date: new Date(2017, 7, 1),
+    valueDate: new Date(2017, 7, 1),
     amount: -52000,
     accounts: {
       'Bevételek': 'Felújítási célbefizetés',
@@ -624,7 +624,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'plan',
-    date: new Date('2017-01-01'),
+    valueDate: new Date('2017-01-01'),
     amount: -24000,
     accounts: {
       'Kiadások': 'Anyagok',
@@ -634,7 +634,7 @@ export function insertDemoFixture(lang) {
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'plan',
-    date: new Date('2017-01-01'),
+    valueDate: new Date('2017-01-01'),
     amount: -415000,
     accounts: {
       'Kiadások': 'Üzemeltetés',

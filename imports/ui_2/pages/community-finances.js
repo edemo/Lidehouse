@@ -101,7 +101,7 @@ function newPaymentSchema() {
     const communityId = Session.get('activeCommunityId');
     const payaccounts = PayAccounts.find({ communityId });
     payaccounts.forEach((payaccount) => {
-      obj[payaccount.name] = { type: String, optional: true, label: payaccount.name, allowedValues: payaccount.leafDisplays() };
+      obj[payaccount.name] = { type: String, optional: true, label: payaccount.name, autoform: { options() { return payaccount.leafOptions(); } } };
     });
     return new SimpleSchema(obj);
   }

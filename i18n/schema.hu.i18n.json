@@ -230,8 +230,8 @@
       "label": "Fázis"
       //"Tranzakció típusa"
     },
-    "date": {
-      "label": "Könyvelési dátum",
+    "valueDate": {
+      "label": "Értéknap",
       "placeholder": "(pl. 2017-05-06)"
     },
     "amount": {
