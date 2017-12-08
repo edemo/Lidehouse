@@ -207,18 +207,27 @@
       "label": "Típus"
     },
     "children": {
-      "label": "Gyűjtő fiókok",
+      "label": "Kategória fiókok",
       "$": {
-        "name": {
-          "label": "Elnevezés (vagy * ha nem kell)",
-          "placeholder": "(pl. B. lépcsőház)"
-        },
-        "children": {
-          "label": "Al fiókok",
+          "name": {
+            "label": "Elnevezés (vagy * ha nem kell)",
+            "placeholder": "(pl. Kiadások)"
+          },
+          "children": {
+          "label": "Gyűjtő fiókok",
           "$": {
             "name": {
-              "label": "Elnevezés (vagy albetét száma)",
-              "placeholder": "(pl. Kert vagy 114)"
+              "label": "Elnevezés (vagy * ha nem kell)",
+              "placeholder": "(pl. B. lépcsőház)"
+            },
+            "children": {
+              "label": "Al fiókok",
+              "$": {
+                "name": {
+                  "label": "Elnevezés (vagy albetét száma)",
+                  "placeholder": "(pl. Kert vagy 114)"
+                }
+              }
             }
           }
         }

@@ -207,18 +207,27 @@
       "label": "Type"
     },
     "children": {
-      "label": "Container account",
+      "label": "Cathegory account",
       "$": {
         "name": {
           "label": "Name (or * if not needed)",
-          "placeholder": "(eg. Building C.)"
+          "placeholder": "(eg. Expenses)"
         },
         "children": {
-          "label": "Sub account",
+          "label": "Container account",
           "$": {
             "name": {
-              "label": "Name (or serial no. of parcel)",
-              "placeholder": "(eg. Garden or 114)"
+              "label": "Name (or * if not needed)",
+              "placeholder": "(eg. Building C.)"
+            },
+            "children": {
+              "label": "Sub account",
+              "$": {
+                "name": {
+                  "label": "Name (or serial no. of parcel)",
+                  "placeholder": "(eg. Garden or 114)"
+                }
+              }
             }
           }
         }

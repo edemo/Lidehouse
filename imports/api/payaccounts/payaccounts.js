@@ -44,17 +44,23 @@ export const choosePayAccount = {
   },
 };
 */
-PayAccounts.LeafAccountSchema = new SimpleSchema({
+PayAccounts.LeafSchema = new SimpleSchema({
   name: { type: String, max: 100 }, // or a parcel number can be placed here
 //  name: { type: String, max: 100, optional: true },
 //  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 //  parcelNo: { type: Number, decimal: true, optional: true },
 });
 
-PayAccounts.MidAccountSchema = new SimpleSchema({
+PayAccounts.Level2Schema = new SimpleSchema({
   name: { type: String, max: 100 },
   children: { type: Array },
-  'children.$': { type: PayAccounts.LeafAccountSchema },
+  'children.$': { type: PayAccounts.LeafSchema },
+});
+
+PayAccounts.Level1Schema = new SimpleSchema({
+  name: { type: String, max: 100 },
+  children: { type: Array },
+  'children.$': { type: PayAccounts.Level2Schema },
 });
 
 PayAccounts.schema = new SimpleSchema({
@@ -62,7 +68,7 @@ PayAccounts.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
 //  type: { type: String, allowedValues: PayAccounts.typeValues },
   children: { type: Array },
-  'children.$': { type: PayAccounts.MidAccountSchema },
+  'children.$': { type: PayAccounts.Level1Schema },
 });
 
 PayAccounts.helpers({
@@ -70,9 +76,18 @@ PayAccounts.helpers({
     if (!this.leafs) {
       const leafs = [];
       this.children.forEach((c) => {
-        c.children.forEach((leaf) => {
-//          leafNames.push(`${c.name}/${leaf.name}`);
-          leafs.push({ name: leaf.name, path: c.name });
+        c.children.forEach((cc) => {
+          cc.children.forEach((leaf) => {
+            leafs.push({
+              name: leaf.name, level1Name: c.name, level2Name: cc.name,
+              path() {
+                let result = '';
+                if (this.level1Name !== '*') result += `${this.level1Name}/`;
+                if (this.level2Name !== '*') result += `${this.level2Name}/`;
+                return result;
+              },
+            });
+          });
         });
       });
       this.leafs = leafs;
@@ -92,7 +107,7 @@ PayAccounts.helpers({
     return leafName;
   },
   leafFullPathDisplay(leaf) {
-    return `${leaf.path}/${this.leafDisplay(leaf.name)}`;
+    return `${leaf.path()}${this.leafDisplay(leaf.name)}`;
   },
   leafNames() {
     return this.init().leafs.map(l => l.name);

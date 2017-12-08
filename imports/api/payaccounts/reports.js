@@ -18,11 +18,11 @@ export const Reports = {
   },
   EvesBevetelek() {
     const communityId = Session.get('activeCommunityId');
-    const payins = PayAccounts.findOne({ communityId, name: 'Bevételek' });
+    const payins = PayAccounts.findOne({ communityId, name: 'Költség nemek' });
     return {
       name: 'Éves bevételek',
       rows: [
-        { field: 'accounts.Bevételek', values: payins.leafNames(), total: 'Bevételek' },
+        { field: 'accounts.Költség nemek', values: payins.leafNames(), total: 'Költség nemek' },
       ],
       cols: [
         { field: 'year', values: [2016, 2017] },
@@ -32,12 +32,12 @@ export const Reports = {
   },
   HaviBevetelek(year) {
     const communityId = Session.get('activeCommunityId');
-    const befnem = PayAccounts.findOne({ communityId, name: 'Bevételek' });
+    const befnem = PayAccounts.findOne({ communityId, name: 'Költség nemek' });
     return {
       name: `Havi bevételek (${year})`,
       filter: { year, phase: 'done' },
       rows: [
-        { field: 'accounts.Bevételek', values: befnem.leafNames(), total: 'Bevételek' },
+        { field: 'accounts.Költség nemek', values: befnem.leafNames(), total: 'Költség nemek' },
       ],
       cols: [
         { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], total: year.toString() },
@@ -47,7 +47,7 @@ export const Reports = {
   AlbetetekSzamlai(year) {
     const communityId = Session.get('activeCommunityId');
     const locator = PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' });
-    const befnem = PayAccounts.findOne({ communityId, name: 'Bevételek' });
+    const befnem = PayAccounts.findOne({ communityId, name: 'Költség nemek' });
     return {
       name: `Albetétek Számlái (${year})`,
       filter: { year },
@@ -55,7 +55,7 @@ export const Reports = {
         { field: 'accounts.Könyvelési helyek', values: locator.leafNames() },
       ],
       cols: [
-        { field: 'accounts.Bevételek', values: befnem.leafNames(), total: 'Albetét folyószámla' },
+        { field: 'accounts.Költség nemek', values: befnem.leafNames(), total: 'Albetét folyószámla' },
         { field: 'phase', values: ['plan', 'done'] },
       ],
     };
@@ -79,7 +79,7 @@ export const Reports = {
   AlbetetemElszamolasa(year) {
     const communityId = Session.get('activeCommunityId');
     const locator = PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' });
-    const payins = PayAccounts.findOne({ communityId, name: 'Bevételek' });
+    const payins = PayAccounts.findOne({ communityId, name: 'Költség nemek' });
     const myParcels = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
 
     return {
@@ -90,7 +90,7 @@ export const Reports = {
         { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], total: year.toString() },
       ],
       cols: [
-        { field: 'accounts.Bevételek', values: payins.leafNames() },
+        { field: 'accounts.Költség nemek', values: payins.leafNames() },
         { field: 'phase', values: ['plan', 'done'] },
       ],
     };

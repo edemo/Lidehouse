@@ -5,87 +5,91 @@ import { PayAccounts } from './payaccounts.js';
 
 const PayAccountsTemplate = [
 
-  { name: 'Bevételek',
+  { name: 'Költség nemek',
     children: [
-      { name: 'NEM adóköteles bevételek',
+      { name: 'Bevételek',
         children: [
-        { name: 'Közös költség befizetés' },
-        { name: 'Felújítási alap befizetés' },
-        { name: 'Felújítási célbefizetés' },
-        { name: 'Támogatás' },
-        { name: 'Víz díj' },
-        { name: 'Fűtési díj' },
-        { name: 'Kamat pénzintézetektől' },
-        { name: 'Egyéb közvetített szolgáltatás' },
+          { name: 'NEM adóköteles bevételek',
+            children: [
+            { name: 'Közös költség befizetés' },
+            { name: 'Felújítási alap befizetés' },
+            { name: 'Felújítási célbefizetés' },
+            { name: 'Támogatás' },
+            { name: 'Víz díj' },
+            { name: 'Fűtési díj' },
+            { name: 'Kamat pénzintézetektől' },
+            { name: 'Egyéb közvetített szolgáltatás' },
+            ],
+          },
+          { name: 'Adóköteles bevételek',
+            children: [
+            { name: 'Bérleti díj' },
+            { name: 'Egyéb bevétel' },
+            ],
+          },
+          { name: 'Hitelfelvétel',
+            children: [
+              { name: 'Bank hitel' },
+            ],
+          },
         ],
       },
-      { name: 'Adóköteles bevételek',
-        children: [
-        { name: 'Bérleti díj' },
-        { name: 'Egyéb bevétel' },
-        ],
-      },
-      { name: 'Hitelfelvétel',
-        children: [
-          { name: 'Bank hitel' },
-        ],
-      },
-    ],
-  },
 
-  { name: 'Kiadások',
-    children: [
-      { name: 'Költségek',
+      { name: 'Kiadások',
         children: [
-        { name: 'Víz' },
-        { name: 'Csatorna' },
-        { name: 'Áram' },
-        { name: 'Szemét' },
-        { name: 'Anyagok' },
-        { name: 'Takarítás' },
-        { name: 'Karbantartás' },
-        { name: 'Üzemeltetés' },
-        { name: 'Közösképviselet' },
-        { name: 'Megbízási díjak' },
-        { name: 'Bérek és közterhek' },
-        { name: 'Jogi költségek' },
-        { name: 'Hatósági díjak' },
-        { name: 'Adók és bírságok' },
-        { name: 'Kamat és bank költségek' },
-        { name: 'Egyéb költségek' },
+          { name: 'Költségek',
+            children: [
+            { name: 'Víz' },
+            { name: 'Csatorna' },
+            { name: 'Áram' },
+            { name: 'Szemét' },
+            { name: 'Anyagok' },
+            { name: 'Takarítás' },
+            { name: 'Karbantartás' },
+            { name: 'Üzemeltetés' },
+            { name: 'Közösképviselet' },
+            { name: 'Megbízási díjak' },
+            { name: 'Bérek és közterhek' },
+            { name: 'Jogi költségek' },
+            { name: 'Hatósági díjak' },
+            { name: 'Adók és bírságok' },
+            { name: 'Kamat és bank költségek' },
+            { name: 'Egyéb költségek' },
+            ],
+          },
+          { name: 'Beruházások',
+            children: [
+            { name: 'Épület' },
+            { name: 'Gép, berendezés' },
+            ],
+          },
+          { name: 'Hitel törlesztés',
+            children: [
+            { name: 'Bank hitel törlesztés' },
+            ],
+          },
+          { name: 'Egyéb kiadások',
+            children: [
+            { name: 'Egyéb kiadás' },
+            ],
+          },
         ],
       },
-      { name: 'Beruházások',
-        children: [
-        { name: 'Épület' },
-        { name: 'Gép, berendezés' },
-        ],
-      },
-      { name: 'Hitel törlesztés',
-        children: [
-        { name: 'Bank hitel törlesztés' },
-        ],
-      },
-      { name: 'Egyéb kiadások',
-        children: [
-        { name: 'Egyéb kiadás' },
-        ],
-      },
-    ],
-  },
 
-  { name: 'Back office műveletek',
-    children: [
-      { name: 'Pénzügyi elszámolások',
+      { name: 'Back office műveletek',
         children: [
-        { name: 'Készpénzfelvét' },
-        { name: 'Készpénz befizetés' },
-        ],
-      },
-      { name: 'Nyitó egyenleg felvitel',
-        children: [
-        { name: 'Tartozás (-)' },
-        { name: 'Túlfizetés (+)' },
+          { name: 'Pénzügyi elszámolások',
+            children: [
+            { name: 'Készpénzfelvét' },
+            { name: 'Készpénz befizetés' },
+            ],
+          },
+          { name: 'Nyitó egyenleg felvitel',
+            children: [
+            { name: 'Tartozás (-)' },
+            { name: 'Túlfizetés (+)' },
+            ],
+          },
         ],
       },
     ],
@@ -93,16 +97,20 @@ const PayAccountsTemplate = [
 
   { name: 'Pénz számlák',
     children: [
-      { name: 'Bank',
+      { name: '*',
         children: [
-        { name: 'Bank főszámla' },
-        { name: 'Bank felújítási alap' },
-        { name: 'Hitelszámla' },
-        ],
-      },
-      { name: 'Készpénz',
-        children: [
-        { name: 'Pénztár 1' },
+          { name: 'Bank',
+            children: [
+            { name: 'Bank főszámla' },
+            { name: 'Bank felújítási alap' },
+            { name: 'Hitelszámla' },
+            ],
+          },
+          { name: 'Készpénz',
+            children: [
+            { name: 'Pénztár 1' },
+            ],
+          },
         ],
       },
     ],
@@ -110,19 +118,24 @@ const PayAccountsTemplate = [
 
   { name: 'Könyvelési helyek',
     children: [
-      { name: 'Főépület',
+      { name: '*',
         children: [
-        ],
-      },
-      { name: 'Központ',
-        children: [
-        { name: 'Kert' },
-        { name: 'Kazán' },
+          { name: 'Főépület',
+            children: [
+            ],
+          },
+          { name: 'Központ',
+            children: [
+            { name: 'Kert' },
+            { name: 'Kazán' },
+            ],
+          },
         ],
       },
     ],
   },
-/*
+
+  /*
   { name: 'Vonatkozó időszak',
     children: [
       { name: '2017',

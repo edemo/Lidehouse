@@ -481,22 +481,26 @@ export function insertDemoFixture(lang) {
   }, {
     $set: {
       children: [
-        { name: 'A. lépcsőház',
-          children: [
-          { name: '1' },
-          { name: '2' },
-          ],
-        },
-        { name: 'B. lépcsőház',
-          children: [
-          { name: '3' },
-          { name: '4' },
-          ],
-        },
         { name: '*',
           children: [
-          { name: '100' },
-          { name: 'Kert' },
+            { name: 'A. lépcsőház',
+              children: [
+              { name: '1' },
+              { name: '2' },
+              ],
+            },
+            { name: 'B. lépcsőház',
+              children: [
+              { name: '3' },
+              { name: '4' },
+              ],
+            },
+            { name: '*',
+              children: [
+              { name: '100' },
+              { name: 'Kert' },
+              ],
+            },
           ],
         },
       ],
@@ -551,7 +555,7 @@ export function insertDemoFixture(lang) {
     amount: 10000,
     accounts: {
       'Pénz számlák': 'Bank főszámla',
-      'Bevételek': 'Közös költség befizetés',
+      'Költség nemek': 'Közös költség befizetés',
       'Könyvelési helyek': '1',
     },
   });
@@ -563,7 +567,7 @@ export function insertDemoFixture(lang) {
     amount: 20000,
     accounts: {
       'Pénz számlák': 'Bank főszámla',
-      'Bevételek': 'Közös költség befizetés',
+      'Költség nemek': 'Közös költség befizetés',
       'Könyvelési helyek': '2',
     },
   });
@@ -575,7 +579,7 @@ export function insertDemoFixture(lang) {
     amount: 30000,
     accounts: {
       'Pénz számlák': 'Pénztár',
-      'Bevételek': 'Közös költség befizetés',
+      'Költség nemek': 'Közös költség befizetés',
       'Könyvelési helyek': '3',
     },
   });
@@ -587,7 +591,7 @@ export function insertDemoFixture(lang) {
     amount: 40000,
     accounts: {
       'Pénz számlák': 'Bank felújítási alap',
-      'Bevételek': 'Felújítási célbefizetés',
+      'Költség nemek': 'Felújítási célbefizetés',
       'Könyvelési helyek': '4',
     },
   });
@@ -614,7 +618,7 @@ export function insertDemoFixture(lang) {
     valueDate: new Date(2017, 7, 1),
     amount: -52000,
     accounts: {
-      'Bevételek': 'Felújítási célbefizetés',
+      'Költség nemek': 'Felújítási célbefizetés',
       'Könyvelési helyek': '4',
     },
   });
@@ -627,7 +631,7 @@ export function insertDemoFixture(lang) {
     valueDate: new Date('2017-01-01'),
     amount: -24000,
     accounts: {
-      'Kiadások': 'Anyagok',
+      'Költség nemek': 'Anyagok',
     },
   });
 
@@ -637,7 +641,7 @@ export function insertDemoFixture(lang) {
     valueDate: new Date('2017-01-01'),
     amount: -415000,
     accounts: {
-      'Kiadások': 'Üzemeltetés',
+      'Költség nemek': 'Üzemeltetés',
     },
   });
 
