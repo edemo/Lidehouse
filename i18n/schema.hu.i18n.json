@@ -210,15 +210,13 @@
       "label": "Kategória fiókok",
       "$": {
           "name": {
-            "label": "Elnevezés (vagy * ha nem kell)",
-            "placeholder": "(pl. Kiadások)"
+            "label": "Elnevezés (vagy üres ha nem kell)"
           },
           "children": {
           "label": "Gyűjtő fiókok",
           "$": {
             "name": {
-              "label": "Elnevezés (vagy * ha nem kell)",
-              "placeholder": "(pl. B. lépcsőház)"
+              "label": "Elnevezés (vagy üres ha nem kell)"
             },
             "children": {
               "label": "Al fiókok",

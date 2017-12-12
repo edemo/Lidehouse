@@ -97,7 +97,7 @@ const PayAccountsTemplate = [
 
   { name: 'Pénz számlák',
     children: [
-      { name: '*',
+      { name: '',
         children: [
           { name: 'Bank',
             children: [
@@ -118,7 +118,7 @@ const PayAccountsTemplate = [
 
   { name: 'Könyvelési helyek',
     children: [
-      { name: '*',
+      { name: '',
         children: [
           { name: 'Főépület',
             children: [

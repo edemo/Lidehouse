@@ -481,7 +481,7 @@ export function insertDemoFixture(lang) {
   }, {
     $set: {
       children: [
-        { name: '*',
+        { name: '',
           children: [
             { name: 'A. lépcsőház',
               children: [
@@ -495,7 +495,7 @@ export function insertDemoFixture(lang) {
               { name: '4' },
               ],
             },
-            { name: '*',
+            { name: '',
               children: [
               { name: '100' },
               { name: 'Kert' },

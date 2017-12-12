@@ -11,7 +11,7 @@ export function payaccountColumns() {
 
   const displayNames = function displayNames(cellData, renderType, currentRow) {
     let result = '';
-    cellData.forEach(name => result += name + ', ');
+    cellData.forEach((name) => { if (name) result += name + ', '; });
     return constrainText(result, 50);
   };
 

@@ -25,16 +25,16 @@ if (Meteor.isServer) {
                 { name: 'LeafC' },
                 ],
               },
-              { name: '*',
+              { name: '',
                 children: [
                 { name: 'LeafD' },
                 ],
               },
             ],
           },
-          { name: '*',
+          { name: '',
             children: [
-              { name: '*',
+              { name: '',
                 children: [
                 { name: 'LeafE' },
                 ],

@@ -210,15 +210,13 @@
       "label": "Cathegory account",
       "$": {
         "name": {
-          "label": "Name (or * if not needed)",
-          "placeholder": "(eg. Expenses)"
+          "label": "Name (or empty if not needed)"
         },
         "children": {
           "label": "Container account",
           "$": {
             "name": {
-              "label": "Name (or * if not needed)",
-              "placeholder": "(eg. Building C.)"
+              "label": "Name (or empty if not needed)"
             },
             "children": {
               "label": "Sub account",

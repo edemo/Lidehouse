@@ -53,13 +53,13 @@ PayAccounts.LeafSchema = new SimpleSchema({
 });
 
 PayAccounts.Level2Schema = new SimpleSchema({
-  name: { type: String, max: 100 },
+  name: { type: String, max: 100, optional: true },
   children: { type: Array },
   'children.$': { type: PayAccounts.LeafSchema },
 });
 
 PayAccounts.Level1Schema = new SimpleSchema({
-  name: { type: String, max: 100 },
+  name: { type: String, max: 100, optional: true },
   children: { type: Array },
   'children.$': { type: PayAccounts.Level2Schema },
 });
@@ -83,8 +83,8 @@ PayAccounts.helpers({
               name: leaf.name, level1Name: c.name, level2Name: cc.name,
               path() {
                 let result = '';
-                if (this.level1Name !== '*') result += `${this.level1Name}/`;
-                if (this.level2Name !== '*') result += `${this.level2Name}/`;
+                if (this.level1Name) result += `${this.level1Name}/`;
+                if (this.level2Name) result += `${this.level2Name}/`;
                 return result;
               },
             });
