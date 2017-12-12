@@ -13,7 +13,7 @@ if (Meteor.isServer) {
     before(function () {
       Fixture = freshFixture();
       testPayAccount = {
-        name: 'Name',
+        name: 'Root',
         communityId: Fixture.demoCommunityId,
         children: [
           { name: 'Level1',
@@ -53,6 +53,25 @@ if (Meteor.isServer) {
     it('works', function () {
       const id = PayAccounts.insert(testPayAccount);
       const payaccount = PayAccounts.findOne(id);
+
+      const leafNames = payaccount.leafNames();
+      const expectedLeafNames = ['LeafA', 'LeafB', 'LeafC', 'LeafD', 'LeafE', 'LeafF'];
+      chai.assert.deepEqual(leafNames, expectedLeafNames);
+      
+      const nodeNames = payaccount.nodeNames();
+      const expectedNodeNames = [
+        'Root',
+        'Level1',
+        'Level2',
+        'LeafA',
+        'LeafB',
+        'LeafC',
+        'LeafD',  // under Level1
+        'LeafE',  // under Root
+        'Level3',
+        'LeafF',
+      ];
+      chai.assert.deepEqual(nodeNames, expectedNodeNames);
 
       const leafOptions = payaccount.leafOptions();
       const expectedLeafOptions = [

@@ -24,17 +24,18 @@ Template.Sumif_table.helpers({
     );
   },*/
   descartesValues(rows) {
-    return descartesProduct(rows.map(row => (row.total ? ['total'] : []).concat(row.values)));
+    return descartesProduct(rows.map(row => row.values.nodes()));
   },
   displayHeaderCell(vector, index, dim) {
     let display = vector[index];
     let classValue = 'header';
     const rowDef = this[dim][index];
-    if (display === 'total') {
-      display = rowDef.total;
-      display = display.toUpperCase();
+    if (display.isLeaf === false) {
+      display = display.name;
+      display = display.toString().toUpperCase();
       classValue += ' total';
     } else {
+      display = display.name;
       switch (rowDef.field.split('.')[0]) {
         case 'month': {
           display += `. ${__('month')}`;
@@ -56,32 +57,30 @@ Template.Sumif_table.helpers({
     const query = _.extend({}, this.filter);
 
     rowVector.forEach((elem, index) => {
-      if (elem === 'total') {
+      if (elem.isLeaf === false) {
         classValue += ' total';
-        return;
       }
       const rowKey = this.rows[index].field;
-      query[rowKey] = elem;
+      query[rowKey] = { $in: elem.children() };
     });
     colVector.forEach((elem, index) => {
-      if (elem === 'total') {
+      if (elem.isLeaf === false) {
         classValue += ' total';
-        return;
       }
       const colKey = this.cols[index].field;
-      query[colKey] = elem;
+      query[colKey] = { $in: elem.children() };
     });
 
     const payments = Payments.find(query);
     payments.forEach(pay => amount += pay.amount);
 
     rowVector.forEach((elem, index) => {
-      if (elem === 'total') {
+      if (elem.isLeaf === false) {
         if (amount < 0) classValue += ' negative';
       }
     });
     colVector.forEach((elem, index) => {
-      if (elem === 'total') {
+      if (elem.isLeaf === false) {
         if (amount < 0) classValue += ' negative';
       }
     });

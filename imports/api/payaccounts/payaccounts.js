@@ -73,12 +73,18 @@ PayAccounts.schema = new SimpleSchema({
 });
 
 PayAccounts.helpers({
-  leafs() {
+  init() {
+    const self = this;
     if (!this._leafs) {
       this._leafs = [];
+      this._nodes = [];
+      if (this.name) { this._nodes.push({ name: this.name, isLeaf: false, children() { return self.leafNames(); } }); }
       this.children.forEach((c) => {
+        if (c.name) { this._nodes.push({ name: c.name, isLeaf: false, children() { return self.leafNames(); } }); }
         c.children.forEach((cc) => {
+          if (cc.name) { this._nodes.push({ name: cc.name, isLeaf: false, children() { return self.leafNames(); } }); }
           cc.children.forEach((leaf) => {
+            this._nodes.push({ name: leaf.name, isLeaf: true, children() { return [leaf.name]; } });
             this._leafs.push({
               name: leaf.name, level1Name: c.name, level2Name: cc.name,
               path() {
@@ -92,7 +98,13 @@ PayAccounts.helpers({
         });
       });
     }
-    return this._leafs;
+    return this;
+  },
+  leafs() {
+    return this.init()._leafs;
+  },
+  nodes() {
+    return this.init()._nodes;
   },
   leafNames() {
     return this.leafs().map(leaf => this.leafDisplay(leaf.name));
@@ -102,6 +114,9 @@ PayAccounts.helpers({
   },
   level2Names() {
     return _.uniq(_.pluck(this.leafs(), 'level2Name'), true);
+  },
+  nodeNames() {
+    return this.nodes().map(node => (node.isLeaf ? this.leafDisplay(node.name) : node.name));
   },
   leafFromName(leafName) {
     const result = this.leafs().find(l => l.name === leafName);
