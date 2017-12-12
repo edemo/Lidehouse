@@ -99,7 +99,7 @@ Meteor.users.helpers({
     const memberships = this.memberships().fetch();
     const communityIds = _.pluck(memberships, 'communityId');
     const communities = Communities.find({ _id: { $in: communityIds } });
-    console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
+    // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
   isInCommunity(communityId) {
@@ -117,7 +117,7 @@ Meteor.users.helpers({
     const rolesWithThePermission = permission.roles;
     const userHasTheseRoles = this.roles(communityId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
-    console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
+    // console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
     return result;
   },
   totalOwnedUnits(communityId) {

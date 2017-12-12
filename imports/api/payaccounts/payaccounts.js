@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 //import { Session } from 'meteor/session';
+import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
@@ -38,7 +39,7 @@ PayAccounts.schema = new SimpleSchema({
 /*
 export const choosePayAccount = {
   options() {
-    return PayAccounts.findOne(this._id).init().leafs.map(function option(account) {
+    return PayAccounts.findOne(this._id).leafs().map(function option(account) {
       return { label: account.name, value: account._id };
     });
   },
@@ -72,13 +73,13 @@ PayAccounts.schema = new SimpleSchema({
 });
 
 PayAccounts.helpers({
-  init() {
-    if (!this.leafs) {
-      const leafs = [];
+  leafs() {
+    if (!this._leafs) {
+      this._leafs = [];
       this.children.forEach((c) => {
         c.children.forEach((cc) => {
           cc.children.forEach((leaf) => {
-            leafs.push({
+            this._leafs.push({
               name: leaf.name, level1Name: c.name, level2Name: cc.name,
               path() {
                 let result = '';
@@ -90,13 +91,20 @@ PayAccounts.helpers({
           });
         });
       });
-      this.leafs = leafs;
     }
-    return this;
+    return this._leafs;
+  },
+  leafNames() {
+    return this.leafs().map(leaf => this.leafDisplay(leaf.name));
+  },
+  level1Names() {
+    return _.uniq(_.pluck(this.leafs(), 'level1Name'), true);
+  },
+  level2Names() {
+    return _.uniq(_.pluck(this.leafs(), 'level2Name'), true);
   },
   leafFromName(leafName) {
-    const result = this.init().leafs.find(l => l.name === leafName);
-//    console.log(leafName, result, this.leafs);
+    const result = this.leafs().find(l => l.name === leafName);
     return result;
   },
   leafIsParcel(leafName) {
@@ -109,15 +117,9 @@ PayAccounts.helpers({
   leafFullPathDisplay(leaf) {
     return `${leaf.path()}${this.leafDisplay(leaf.name)}`;
   },
-  leafNames() {
-    return this.init().leafs.map(l => l.name);
-  },
-  leafDisplays() {
-    return this.init().leafs.map(l => this.leafDisplay(l.name));
-  },
   leafOptions() {
     const self = this;
-    return this.init().leafs.map(function option(leaf) { return { label: self.leafFullPathDisplay(leaf), value: leaf.name }; });
+    return this.leafs().map(function option(leaf) { return { label: self.leafFullPathDisplay(leaf), value: leaf.name }; });
   },
 });
 
