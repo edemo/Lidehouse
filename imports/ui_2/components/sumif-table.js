@@ -61,19 +61,19 @@ Template.Sumif_table.helpers({
         classValue += ' total';
       }
       const rowKey = this.rows[index].field;
-      query[rowKey] = { $in: elem.children() };
+      query[rowKey] = { $in: _.pluck(elem.leafs(), 'name') };
     });
     colVector.forEach((elem, index) => {
       if (elem.isLeaf === false) {
         classValue += ' total';
       }
       const colKey = this.cols[index].field;
-      query[colKey] = { $in: elem.children() };
+      query[colKey] = { $in: _.pluck(elem.leafs(), 'name') };
     });
 
     const payments = Payments.find(query);
     payments.forEach(pay => amount += pay.amount);
-
+    
     rowVector.forEach((elem, index) => {
       if (elem.isLeaf === false) {
         if (amount < 0) classValue += ' negative';

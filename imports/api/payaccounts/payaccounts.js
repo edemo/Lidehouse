@@ -78,22 +78,26 @@ PayAccounts.helpers({
     if (!this._leafs) {
       this._leafs = [];
       this._nodes = [];
-      if (this.name) { this._nodes.push({ name: this.name, isLeaf: false, children() { return self.leafNames(); } }); }
-      this.children.forEach((c) => {
-        if (c.name) { this._nodes.push({ name: c.name, isLeaf: false, children() { return self.leafNames(); } }); }
-        c.children.forEach((cc) => {
-          if (cc.name) { this._nodes.push({ name: cc.name, isLeaf: false, children() { return self.leafNames(); } }); }
-          cc.children.forEach((leaf) => {
-            this._nodes.push({ name: leaf.name, isLeaf: true, children() { return [leaf.name]; } });
-            this._leafs.push({
-              name: leaf.name, level1Name: c.name, level2Name: cc.name,
-              path() {
-                let result = '';
-                if (this.level1Name) result += `${this.level1Name}/`;
-                if (this.level2Name) result += `${this.level2Name}/`;
-                return result;
-              },
-            });
+      const root = this; root.isLeaf = false; root.level = 0;
+      if (root.name) { this._nodes.push(root); }
+      this.children.forEach((level1) => {
+        level1._leafs = []; level1.leafs = () => level1._leafs; level1.isLeaf = false; level1.level = 1;
+        if (level1.name) { this._nodes.push(level1); }
+        level1.children.forEach((level2) => {
+          level2._leafs = []; level2.leafs = () => level2._leafs; level2.isLeaf = false; level2.level = 2;
+          if (level2.name) { this._nodes.push(level2); }
+          level2.children.forEach((leaf) => {
+            this._nodes.push(leaf);
+            this._leafs.push(leaf);
+            level1._leafs.push(leaf);
+            level2._leafs.push(leaf);
+            leaf._leafs = [leaf]; leaf.leafs = () => leaf._leafs; leaf.isLeaf = true; leaf.level1 = level1; leaf.level2 = level2; leaf.level = 3;
+            leaf.path = () => {
+              let result = '';
+              if (leaf.level1.name) result += `${leaf.level1.name}/`;
+              if (leaf.level2.name) result += `${leaf.level2.name}/`;
+              return result;
+            };
           });
         });
       });
@@ -110,10 +114,10 @@ PayAccounts.helpers({
     return this.leafs().map(leaf => this.leafDisplay(leaf.name));
   },
   level1Names() {
-    return _.uniq(_.pluck(this.leafs(), 'level1Name'), true);
+    return _.pluck(this.nodes().filter(n => n.level === 1), 'name');
   },
   level2Names() {
-    return _.uniq(_.pluck(this.leafs(), 'level2Name'), true);
+    return _.pluck(this.nodes().filter(n => n.level === 2), 'name');
   },
   nodeNames() {
     return this.nodes().map(node => (node.isLeaf ? this.leafDisplay(node.name) : node.name));
