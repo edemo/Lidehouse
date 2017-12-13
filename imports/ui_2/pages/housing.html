@@ -73,8 +73,11 @@
         </div>
         <div class="row">
           <div class="col-xs-12">
-            {{#Collapse_section id='parcel' title='Albetetek' }}
-              albetetek
+            {{#Collapse_section id='parcel' title='Albetetek' collapsed=true}}
+              <div class="table-responsive">
+               {{> ReactiveDatatable tableData=reactiveTableDataFm options=optionsFm }}
+              </div>
+              <button class="js-parcel-new btn-primary">{{_ 'createNew'}}</button>
             {{/Collapse_section}}
           </div>
         </div>

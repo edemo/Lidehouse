@@ -11,6 +11,9 @@ import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Accounts } from 'meteor/accounts-base';
 
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { remove as removeParcel } from '/imports/api/parcels/methods.js';
+import { parcelColumns } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { roleshipColumns } from '/imports/api/memberships/tables.js';
 import { update as updateMembership, remove as removeMembership } from '/imports/api/memberships/methods.js';
@@ -29,6 +32,21 @@ Template.Housing_page.onCreated(function () {
 });
 
 Template.Housing_page.helpers({
+  reactiveTableDataFm() {
+    return () => {
+      const communityId = Session.get('activeCommunityId');
+      return Parcels.find({ communityId }).fetch();
+    };
+  },
+  optionsFm() {
+    return () => {
+      return {
+        columns: parcelColumns(),
+        tableClasses: 'display',
+        language: datatables_i18n[TAPi18n.getLanguage()],
+      };
+    };
+  },
   community() {
     return Communities.findOne({ _id: Session.get('activeCommunityId') });
   },
@@ -54,6 +72,7 @@ Template.Housing_page.helpers({
 });
 
 Template.Housing_page.events({
+  //roleship events
   'click .js-save-form'() {
     console.log("Update all the forms")
   },
@@ -95,6 +114,44 @@ Template.Housing_page.events({
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeMembership, { _id: id }, {
       action: 'delete roleship',
+    });
+  },
+  //parcel events
+  'click .js-parcel-new'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.parcel.insert',
+      collection: Parcels,
+      type: 'method',
+      meteormethod: 'parcels.insert',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click .js-parcel-edit'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.parcel.update',
+      collection: Parcels,
+      doc: Parcels.findOne(id),
+      type: 'method-update',
+      meteormethod: 'parcels.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click .js-parcel-view'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.parcel.view',
+      collection: Parcels,
+      doc: Parcels.findOne(id),
+      type: 'readonly',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click .js-parcel-delete'(event) {
+    const id = $(event.target).data('id');
+    Modal.confirmAndCall(removeParcel, { _id: id }, {
+      action: 'delete parcel',
     });
   },
 });
