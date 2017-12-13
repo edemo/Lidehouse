@@ -614,7 +614,7 @@ export function insertDemoFixture(lang) {
 
   Payments.insert({
     communityId: demoCommunityId,
-    phase: 'plan',
+    phase: 'bill',
     valueDate: new Date(2017, 7, 1),
     amount: -52000,
     accounts: {

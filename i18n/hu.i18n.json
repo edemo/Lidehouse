@@ -178,9 +178,11 @@
   "ParcelPayments": "Befizetések",
   "ParcelBills": "Kötelezettségek",
   "plan": "terv",
-  "bill": "számla",
+  "bill": "előírt",
   "done": "tény",
+  "balance": "egyenleg",
   "month": "hó",
+  "total": "összesen",
 
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",

@@ -27,17 +27,19 @@ Template.Sumif_table.helpers({
     return descartesProduct(rows.map(row => row.values.nodes()));
   },
   displayHeaderCell(vector, index, dim) {
-    let display = vector[index];
+    const elem = vector[index];
+    let display;
     let classValue = 'header';
     const rowDef = this[dim][index];
-    if (display.isLeaf === false) {
-      display = display.name;
-      display = display.toString().toUpperCase();
-      classValue += ' total';
+    if (elem.isLeaf === false) {
+      display = elem.name.toString();
+      if (elem.level === 0) display = __('total');
+      if (elem.level <= 1) display = display.toUpperCase();
+      if (elem.level <= 2) classValue += ' total';
     } else {
-      display = display.name;
+      display = elem.name;
       switch (rowDef.field.split('.')[0]) {
-        case 'month': {
+        case 'date': {
           display += `. ${__('month')}`;
           break;
         }
@@ -46,7 +48,7 @@ Template.Sumif_table.helpers({
           display = payAccount.leafDisplay(display);
           break;
         }
-        default: display = __(display);
+        default: display = __(elem.name);
       }
     }
     return `<td class="${classValue}">${display}</td>`;

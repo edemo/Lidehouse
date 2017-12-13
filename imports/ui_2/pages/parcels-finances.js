@@ -43,13 +43,13 @@ Template.Parcels_finances.helpers({
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
       const myParcelIds = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
-      return Payments.find({ communityId, 'accounts.Könyvelési helyek': { $in: myParcelIds }, phase: 'plan' }).fetch();
+      return Payments.find({ communityId, 'accounts.Könyvelési helyek': { $in: myParcelIds }, phase: 'bill' }).fetch();
     }
     return getTableData;
   },
   paymentsOptionsFn() {
     const communityId = Session.get('activeCommunityId');
-    const accounts = PayAccounts.find({ communityId }).fetch();;
+    const accounts = PayAccounts.find({ communityId }).fetch();
     function getOptions() {
       return {
         columns: paymentColumns(accounts),

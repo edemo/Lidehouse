@@ -55,7 +55,7 @@ export const billParcels = new ValidatedMethod({
       for (let i = 0; i < 12; i += 1) {
         const query = {
           communityId,
-          phase: 'plan',
+          phase: 'bill',
           valueDate: new Date(2017, i, 10),
           accounts: {
             'Költség nemek': 'Közös költség befizetés',

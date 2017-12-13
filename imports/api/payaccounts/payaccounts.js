@@ -74,7 +74,6 @@ PayAccounts.schema = new SimpleSchema({
 
 PayAccounts.helpers({
   init() {
-    const self = this;
     if (!this._leafs) {
       this._leafs = [];
       this._nodes = [];

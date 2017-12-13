@@ -8,9 +8,9 @@ const phaseTags = {
   children: [
     { name: '',
       children: [
-        { name: '',
+        { name: 'balance',
           children: [
-          { name: 'plan' },
+          { name: 'bill' },
           { name: 'done' },
           ],
         },
@@ -36,9 +36,9 @@ const yearTags = {
 };
 
 const monthTags = {
-  name: 2007,
+  name: '',
   children: [
-    { name: '',
+    { name: '2007',
       children: [
         { name: '',
           children: [
@@ -81,7 +81,7 @@ export const Reports = {
         { field: 'accounts.Költség nemek', values: PayAccounts.findOne({ communityId, name: 'Költség nemek' }) },
       ],
       cols: [
-        { field: 'year', values: PayAccounts._transform(monthTags) },
+        { field: 'date', values: PayAccounts._transform(monthTags) },
         { field: 'phase', values: PayAccounts._transform(phaseTags) },
       ],
     };
@@ -95,7 +95,7 @@ export const Reports = {
         { field: 'accounts.Költség nemek', values: PayAccounts.findOne({ communityId, name: 'Költség nemek' }) },
       ],
       cols: [
-        { field: 'month', values: PayAccounts._transform(monthTags) },
+        { field: 'date', values: PayAccounts._transform(monthTags) },
       ],
     };
   },
@@ -137,7 +137,7 @@ export const Reports = {
       filter: { year },
       rows: [
         { field: 'accounts.Könyvelési helyek', values: PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' }) },
-        { field: 'month', values: PayAccounts._transform(monthTags) },
+        { field: 'date', values: PayAccounts._transform(monthTags) },
       ],
       cols: [
         { field: 'accounts.Költség nemek', values: PayAccounts.findOne({ communityId, name: 'Költség nemek' }) },

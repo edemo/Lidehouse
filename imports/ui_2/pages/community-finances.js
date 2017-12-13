@@ -63,7 +63,7 @@ Template.Community_finances.helpers({
   billsTableDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
-      return Payments.find({ communityId, phase: 'plan' }).fetch();
+      return Payments.find({ communityId, phase: 'bill' }).fetch();
     }
     return getTableData;
   },
