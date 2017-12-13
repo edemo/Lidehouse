@@ -1,4 +1,17 @@
 .page-housing {
+  .form-group {
+    text-align: center;
+  }
+  @media screen and (min-width: 40em) {
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      .form-group {
+        min-width: 370px;
+      }
+    }
+  }
   .btn-primary {
     padding: 5px;
   }
@@ -34,6 +47,33 @@
         cursor: pointer;
         width: 17px;
       }
+    }
+  }
+
+  #house_avatar {
+    margin-bottom: 20px;
+  }
+
+  ul.no-style > li {
+    padding: 0 1em;
+    list-style: none;
+    line-height: 1.4em;
+  }
+
+  ul#houseInfo {
+    padding: 1em;
+
+    li:nth-child(odd) {
+      clear: left;
+    }
+    li:nth-child(even) {
+      clear: right;
+    }
+    li#houseHsz, li#houseCou, li#houseCity, li#houseIr {
+      float: left;
+    }
+    li#houseCou:after, li#houseCity:after{
+      content: ",";
     }
   }
 }

@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Communities } from '/imports/api/communities/communities.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { TAPi18n } from 'meteor/tap:i18n';
@@ -20,12 +21,24 @@ import '../modals/autoform-edit.js';
 import './housing.html';
 
 Template.Housing_page.onCreated(function () {
+  this.communityId = () => FlowRouter.getParam('_cid');
+
+  this.autorun(() => {
+    this.subscribe('communities.listing');
+  });
 });
 
 Template.Housing_page.helpers({
+  community() {
+    return Communities.findOne({ _id: Session.get('activeCommunityId') });
+  },
+  communities() {
+    return Communities;
+  },
   reactiveTableDataFn() {
     return () => {
       const communityId = Session.get('activeCommunityId');
+      console.log('warned cid:', communityId)
       return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest'] } } }).fetch();
     };
   },
@@ -41,6 +54,9 @@ Template.Housing_page.helpers({
 });
 
 Template.Housing_page.events({
+  'click .js-save-form'() {
+    console.log("Update all the forms")
+  },
   'click .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',

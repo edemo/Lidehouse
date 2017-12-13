@@ -25,6 +25,16 @@ Template.Vote_topics.onCreated(function voteTopicsOnCreated() {
 });
 
 Template.Vote_topics.helpers({
+  isMobile: true,
+  isMobileDevice() {
+      var screensize=$(window).width();
+      if (screensize<=768){
+        return true;
+      }
+      else {
+        return false;
+      }
+  },
   openVoteTopics() {
     const communityId = Session.get('activeCommunityId');
     return Topics.find({ communityId, category: 'vote', closed: false });
