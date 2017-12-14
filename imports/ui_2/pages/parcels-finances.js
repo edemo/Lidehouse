@@ -15,6 +15,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../components/collapse-section.js';
 import '../components/sumif-table.js';
+import '../components/custom-table.js';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
 import './parcels-finances.html';

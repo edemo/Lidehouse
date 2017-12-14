@@ -495,7 +495,7 @@ export function insertDemoFixture(lang) {
               { name: '4' },
               ],
             },
-            { name: '',
+            { name: 'Közös terület',
               children: [
               { name: '100' },
               { name: 'Kert' },

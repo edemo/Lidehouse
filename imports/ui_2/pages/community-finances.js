@@ -17,6 +17,7 @@ import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
 import { Reports } from '/imports/api/payaccounts/reports.js';
 import '../components/collapse-section.js';
 import '../components/sumif-table.js';
+import '../components/custom-table.js';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
 import './community-finances.html';

@@ -4,7 +4,6 @@
     {{#Collapse_section id='balances' title='ParcelBalances'}}
       <div class="row">
       <div class="col-xs-12 white-box">
-      {{> Sumif_table (report 'AlbetetemEgyenlege' 2017)}}
       </div>
       </div>
     {{/Collapse_section}}
@@ -12,7 +11,7 @@
     {{#Collapse_section id='accounting' title='ParcelAccounting' notFirst=true collapsed=true}}
       <div class="row">
       <div class="col-xs-12 white-box">
-      {{> Sumif_table (report 'AlbetetemElszamolasa' 2017)}}
+      {{> Custom_table report=(report 'AlbetetemElszamolasa' 2017)}}
       </div>
       </div>
     {{/Collapse_section}}

@@ -6,7 +6,7 @@
     {{#Collapse_section id='balances' title='Balances'}}
       <div class="row">
       <div class="col-xs-12 white-box">
-        {{> Sumif_table (report 'Egyenlegek')}}
+        {{> Custom_table report=(report 'Egyenlegek')}}
       </div>
       </div>
     {{/Collapse_section}}
@@ -32,9 +32,8 @@
     {{#Collapse_section id='report' title=communityStatusReportTitle notFirst=true collapsed=true }}
       <div class="row">
       <div class="col-xs-12 white-box">
-        {{> Sumif_table (report 'EvesBevetelek')}}
-        {{> Sumif_table (report 'HaviBevetelek' 2017)}}
-        {{> Sumif_table (report 'AlbetetekSzamlai' 2017)}}
+        {{> Custom_table report=(report 'PenzugyekReszletei' 2017)}}
+        {{> Custom_table report=(report 'AlbetetekElszamolasa' 2017)}}
       </div>
       </div>
     {{/Collapse_section}}

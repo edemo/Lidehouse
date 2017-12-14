@@ -1,0 +1,32 @@
+<template name="Custom_table">
+  <div class="row">
+    <!--div class="col-xs-12 text-center">
+      <h3>{{this.name}}</h3>
+      <hr/>
+    </div-->
+    <!--div class="table-responsive"-->
+      <table class="table table-bordered table-condensed">
+        <thead>
+          {{#let headerRows=report.createTableHeader}}
+          {{#each row in headerRows}}
+          <tr class="table-row">
+            {{#each elem in row}}
+            <td class="{{elem.class}}">{{_ elem.value}}</td>
+            {{/each}}
+          </tr>
+          {{/each}}
+          {{/let}}
+        </thead>
+        <tbody>
+          {{#each row in report.createTableBody}}
+          <tr class="table-row">
+            {{#each elem in row}}
+            <td class="{{elem.class}}">{{_ elem.value}}</td>
+            {{/each}}
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    <!--/div-->
+  </div>
+</template>
