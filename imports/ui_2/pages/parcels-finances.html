@@ -8,15 +8,23 @@
       </div>
     {{/Collapse_section}}
 
-    {{#Collapse_section id='accounting' title='ParcelAccounting' notFirst=true collapsed=true}}
+    {{#Collapse_section id='myaccounting' title='ParcelAccounting' notFirst=true collapsed=true}}
       <div class="row">
       <div class="col-xs-12 white-box">
-      {{> Custom_table report=(report 'AlbetetemElszamolasa' 2017)}}
-      </div>
+          {{> Custom_table report=(report 'AlbetetemElszamolasa' 2017)}}      
+        </div>
       </div>
     {{/Collapse_section}}
 
-    {{#Collapse_section id='payments' title='ParcelPayments' notFirst=true collapsed=true }}
+    {{#Collapse_section id='accounting' title='ParcelAccounting' notFirst=true collapsed=true}}
+    <div class="row">
+    <div class="col-xs-12 white-box">
+        {{> Custom_table report=(report 'AlbetetekElszamolasa' 2017)}}      
+      </div>
+    </div>
+  {{/Collapse_section}}
+
+  {{#Collapse_section id='payments' title='ParcelPayments' notFirst=true collapsed=true }}
       <div class="row">
       <div class="col-xs-12 white-box">
       {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}

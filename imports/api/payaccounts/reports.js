@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
+import { __ } from '/imports/localization/i18n.js';
 import { descartesProduct } from '/imports/utils/descartes.js';
 import { Payments } from '/imports/api/payments/payments.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
@@ -24,6 +25,7 @@ class PaymentReport {
     _.extend(this.filters, filter);
   }
 
+  // A lineDef is an array of filters. Each elem in the array is a filter that will show its *value* on the title bar
   addLine(dim, lineDef, asFirst = false) {
     if (asFirst) {
       this[dim].unshift(lineDef);
@@ -32,19 +34,20 @@ class PaymentReport {
     }
   }
 
+  // Adding a whole tree of lines, separately or descarting the current set of lines
   addTree(dim, treeDef, descartes = true, sumFirst = true, asFirst = false) {
     let nodes = treeDef.values.nodes();
     if (!sumFirst) nodes = nodes.reverse();
     const newLineDefs = nodes.map(node => PaymentReport.nodeToLineDef(treeDef.field, node));
     if (descartes) {
-      this[dim] = this.descartesProductDefs(this[dim], newLineDefs);
+      this.addDescartesProductLines(dim, newLineDefs);
     } else {
-      newLineDefs.forEach(lineDef => this.addLine(dim, lineDef, asFirst));
+      newLineDefs.forEach(lineDef => this.addLine(dim, [lineDef], asFirst));
     }
   }
 
   static nodeToLineDef(field, node) {
-    return [{
+    return {
       field,
       value: node.label || node.name,
       values: { $in: _.pluck(node.leafs(), 'name') },
@@ -54,7 +57,7 @@ class PaymentReport {
         obj[this.field] = this.values;
         return obj;
       },
-    }];
+    };
   }
 
   createTableHeader() {
@@ -113,68 +116,82 @@ class PaymentReport {
     return { class: classes, value: amount };
   }
 
-  descartesValues(rows) {
-    return descartesProduct(rows.map(row => row.values.nodes()));
+  addDescartesProductLines(dim, newLineDefs) {
+    const result = [];
+    const currentLines = this[dim];
+    currentLines.forEach(line =>
+      newLineDefs.forEach(newLineDef =>
+        result.push(line.concat([newLineDef]))
+      )
+    );
+    this[dim] = result;
   }
 }
 
-const phaseTags = {
-  name: '',
-  children: [
-    { name: '',
-      children: [
-        { name: 'balance',
-          children: [
-          { name: 'done' },
-          { name: 'bill' },
-          ],
-        },
-      ],
-    },
-  ],
-};
+//--------------------------------------------------------
 
-const yearTags = {
-  name: '',
-  children: [
-    { name: '',
-      children: [
-        { name: '',
-          children: [
-          { name: 2016 },
-          { name: 2017 },
-          ],
-        },
-      ],
-    },
-  ],
-};
+export function expandFrom1To3Levels(tree) {
+  const leafs = _.clone(tree.children);
+//  console.log("Expand", leafs);
+  tree.children = [];
+  tree.children[0] = {};
+  tree.children[0].name = '';
+  tree.children[0].children = [];
+  tree.children[0].children[0] = {};
+  tree.children[0].children[0].name = '';
+  tree.children[0].children[0].children = leafs;
+//  console.log(tree);
+  return tree;
+}
 
-const monthTags = {
+
+export const phaseTags = expandFrom1To3Levels({
+  name: 'balance',
+  children: [
+  { name: 'done' },
+  { name: 'bill' },
+  ],
+});
+
+export const yearTags = expandFrom1To3Levels({
   name: '',
   children: [
-    { name: '2017',
-      children: [
-        { name: '',
-          children: [
-          { name: 1, label: 'JAN' },
-          { name: 2, label: 'FEB' },
-          { name: 3, label: 'MAR' },
-          { name: 4, label: 'APR' },
-          { name: 5, label: 'MAY' },
-          { name: 6, label: 'JUN' },
-          { name: 7, label: 'JUL' },
-          { name: 8, label: 'AUG' },
-          { name: 9, label: 'SEP' },
-          { name: 10, label: 'OCT' },
-          { name: 11, label: 'NOV' },
-          { name: 12, label: 'DEC' },
-          ],
-        },
-      ],
-    },
+  { name: 2016 },
+  { name: 2017 },
   ],
-};
+});
+
+export const monthTags = expandFrom1To3Levels({
+  name: 2017,
+  children: [
+  { name: 1, label: 'JAN' },
+  { name: 2, label: 'FEB' },
+  { name: 3, label: 'MAR' },
+  { name: 4, label: 'APR' },
+  { name: 5, label: 'MAY' },
+  { name: 6, label: 'JUN' },
+  { name: 7, label: 'JUL' },
+  { name: 8, label: 'AUG' },
+  { name: 9, label: 'SEP' },
+  { name: 10, label: 'OCT' },
+  { name: 11, label: 'NOV' },
+  { name: 12, label: 'DEC' },
+  ],
+});
+
+export const TulajdonosiBefizetesek = expandFrom1To3Levels({
+  name: 'Tulajdonosi Befizetesek', label: 'Összesen',
+  children: [
+  { name: 'Közös költség befizetés' },
+  { name: 'Felújítási alap befizetés' },
+  { name: 'Felújítási célbefizetés' },
+//    { name: 'Támogatás' },
+  { name: 'Víz díj' },
+  { name: 'Fűtési díj' },
+//    { name: 'Kamat pénzintézetektől' },
+  { name: 'Egyéb közvetített szolgáltatás' },
+  ],
+});
 
 export const Reports = {
   Egyenlegek() {
@@ -227,19 +244,30 @@ export const Reports = {
   AlbetetemElszamolasa(year) {
     const report = new PaymentReport('Albetetek Elszamolasa');
     const communityId = Session.get('activeCommunityId');
-    const myParcels = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
-
+    const myParcels = {
+      name: 'Albetéteim', label: 'Összes albetét',
+      children: [],
+    };
+    Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' })
+      .map(m => myParcels.children.push({ name: m.parcel().serial.toString() /* + '. ' + __('parcel')*/ }));
+    expandFrom1To3Levels(myParcels);
+    
     report.addFilter({ phase: { $in: ['bill', 'done'] } });
+
+    report.addTree('rows', {
+      field: 'accounts.Könyvelési helyek',
+      values: PayAccounts._transform(myParcels),
+    }, false);
+
+    report.addTree('rows', {
+      field: 'accounts.Költség nemek',
+      values: PayAccounts._transform(TulajdonosiBefizetesek),
+    }, true, true);
 
     report.addTree('cols', {
       field: 'phase',
       values: PayAccounts._transform(phaseTags),
     }, false, false);
-
-    report.addTree('rows', {
-      field: 'accounts.Könyvelési helyek',
-      values: PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' }),
-    }, false);
 
     return report;
   },
@@ -249,15 +277,20 @@ export const Reports = {
 
     report.addFilter({ phase: { $in: ['bill', 'done'] } });
 
-    report.addTree('cols', {
-      field: 'phase',
-      values: PayAccounts._transform(phaseTags),
-    }, false, false);
-
     report.addTree('rows', {
       field: 'accounts.Könyvelési helyek',
       values: PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' }),
     }, false);
+
+    report.addTree('cols', {
+      field: 'accounts.Költség nemek',
+      values: PayAccounts._transform(TulajdonosiBefizetesek),
+    }, false, true);
+
+    report.addTree('cols', {
+      field: 'phase',
+      values: PayAccounts._transform(phaseTags),
+    }, true, false);
 
     return report;
   },

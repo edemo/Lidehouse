@@ -47,25 +47,29 @@ export const choosePayAccount = {
 */
 PayAccounts.LeafSchema = new SimpleSchema({
   name: { type: String, max: 100 }, // or a parcel number can be placed here
-//  name: { type: String, max: 100, optional: true },
+  label: { type: String, max: 100, optional: true },
+  //  name: { type: String, max: 100, optional: true },
 //  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 //  parcelNo: { type: Number, decimal: true, optional: true },
 });
 
 PayAccounts.Level2Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
+  label: { type: String, max: 100, optional: true },
   children: { type: Array },
   'children.$': { type: PayAccounts.LeafSchema },
 });
 
 PayAccounts.Level1Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
+  label: { type: String, max: 100, optional: true },
   children: { type: Array },
   'children.$': { type: PayAccounts.Level2Schema },
 });
 
 PayAccounts.schema = new SimpleSchema({
   name: { type: String, max: 100 },
+  label: { type: String, max: 100, optional: true },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
 //  type: { type: String, allowedValues: PayAccounts.typeValues },
   children: { type: Array },

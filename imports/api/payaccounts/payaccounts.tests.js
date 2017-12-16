@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { PayAccounts } from './payaccounts';
+import { PaymentReport, yearTags, phaseTags } from './reports';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -50,9 +51,8 @@ if (Meteor.isServer) {
       };
     });
 
-    it('works', function () {
-      const id = PayAccounts.insert(testPayAccount);
-      const payaccount = PayAccounts.findOne(id);
+    it('init', function () {
+      const payaccount = PayAccounts._transform(testPayAccount);
 
       const leafNames = payaccount.leafNames();
       const expectedLeafNames = ['LeafA', 'LeafB', 'LeafC', 'LeafD', 'LeafE', 'LeafF'];
@@ -83,6 +83,17 @@ if (Meteor.isServer) {
         { label: 'Level3/LeafF',        value: 'LeafF' },
       ];
       chai.assert.deepEqual(leafOptions, expectedLeafOptions);
+    });
+
+    it('reports', function () {
+      const rowTree1 = PayAccounts._transform(phaseTags);
+      const rowTree2 = PayAccounts._transform(yearTags);
+      const columnTree = PayAccounts._transform(testPayAccount);
+      
+      const report = new PaymentReport();
+      report.addTree('rows', rowTree1, false, false);
+      report.addTree('rows', rowTree2, true, false);
+      report.addTree('cols', columnTree, false, false);
     });
   });
 }
