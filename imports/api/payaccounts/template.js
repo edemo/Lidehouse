@@ -5,7 +5,7 @@ import { PayAccounts } from './payaccounts.js';
 
 const PayAccountsTemplate = [
 
-  { name: 'Költség nemek', label: 'Összesen',
+  { name: 'Könyvelés nem', label: 'Eredmény',
     children: [
       { name: 'Bevételek',
         children: [
@@ -95,7 +95,7 @@ const PayAccountsTemplate = [
     ],
   },
 
-  { name: 'Könyvelési helyek', label: 'Összes hely',
+  { name: 'Könyvelés helye', label: 'Összes hely',
     children: [
       { name: '',
         children: [
@@ -114,7 +114,7 @@ const PayAccountsTemplate = [
     ],
   },
 
-  { name: 'Pénz számlák', label: 'Összesen',
+  { name: 'Pénz számla', label: 'Összesen',
     children: [
       { name: '',
         children: [

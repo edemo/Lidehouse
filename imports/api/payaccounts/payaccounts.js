@@ -130,7 +130,7 @@ PayAccounts.helpers({
     return result;
   },
   leafIsParcel(leafName) {
-    return ((this.name === 'Könyvelési helyek') && parseInt(leafName, 0));
+    return ((this.name === 'Könyvelés helye') && parseInt(leafName, 0));
   },
   leafDisplay(leafName) {
     if (this.leafIsParcel(leafName)) return `${leafName}.${__('parcel')}`;

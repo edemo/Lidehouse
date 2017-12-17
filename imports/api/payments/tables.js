@@ -16,7 +16,8 @@ export function paymentColumns(accounts) {
     columns.push({ data: 'accounts', title: account.name, render: extractAccountLeaf });
   });
   columns.push({ data: 'ref', title: __('schemaPayments.ref.label') });
-  columns.push({ data: 'note', title: __('schemaPayments.note.label') });
+  columns.push({ data: 'note1', title: __('schemaPayments.note1.label') });
+  columns.push({ data: 'note2', title: __('schemaPayments.note2.label') });
   columns.push({ data: '_id', render: Render.buttonEdit });
   columns.push({ data: '_id', render: Render.buttonDelete });
 

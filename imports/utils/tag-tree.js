@@ -31,7 +31,7 @@ TagTree.prototype.leafFromName = function(leafName) {
     return result;
   };
   TagTree.prototype.leafIsParcel = function(leafName) {
-    return ((this.name === 'Könyvelési helyek') && parseInt(leafName, 0));
+    return ((this.name === 'Könyvelés helye') && parseInt(leafName, 0));
   };
   TagTree.prototype.leafDisplay = function(leafName) {
     if (this.leafIsParcel(leafName)) return `${leafName}.${__('parcel')}`;

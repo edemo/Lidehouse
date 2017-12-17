@@ -199,8 +199,8 @@ export const Reports = {
     report.addFilter({ phase: 'done' });
     report.addLine('cols', [], false);
     report.addTree('rows', {
-      field: 'accounts.Pénz számlák',
-      values: PayAccounts.findOne({ communityId, name: 'Pénz számlák' }),
+      field: 'accounts.Pénz számla',
+      values: PayAccounts.findOne({ communityId, name: 'Pénz számla' }),
     }, false);
     return report;
   },
@@ -216,12 +216,12 @@ export const Reports = {
       values: PayAccounts._transform(monthTags),
     }, false);
 
-    const koltsegNemekWoBackoffice = PayAccounts.findOne({ communityId, name: 'Költség nemek' });
+    const koltsegNemekWoBackoffice = PayAccounts.findOne({ communityId, name: 'Könyvelés nem' });
     koltsegNemekWoBackoffice.removeSubTree('Back office műveletek');
     koltsegNemekWoBackoffice.name = '';
 
     report.addTree('rows', {
-      field: 'accounts.Költség nemek',
+      field: 'accounts.Könyvelés nem',
       values: koltsegNemekWoBackoffice,
     }, false);
 
@@ -260,12 +260,12 @@ export const Reports = {
     report.addFilter({ phase: { $in: ['bill', 'done'] } });
 
     report.addTree('rows', {
-      field: 'accounts.Könyvelési helyek',
+      field: 'accounts.Könyvelés helye',
       values: PayAccounts._transform(myParcels),
     }, false);
 
     report.addTree('rows', {
-      field: 'accounts.Költség nemek',
+      field: 'accounts.Könyvelés nem',
       values: PayAccounts._transform(TulajdonosiBefizetesek),
     }, true, true);
 
@@ -284,12 +284,12 @@ export const Reports = {
     report.addFilter({ phase: { $in: ['bill', 'done'] } });
 
     report.addTree('rows', {
-      field: 'accounts.Könyvelési helyek',
-      values: PayAccounts.findOne({ communityId, name: 'Könyvelési helyek' }),
+      field: 'accounts.Könyvelés helye',
+      values: PayAccounts.findOne({ communityId, name: 'Könyvelés helye' }),
     }, false);
 
     report.addTree('cols', {
-      field: 'accounts.Költség nemek',
+      field: 'accounts.Könyvelés nem',
       values: PayAccounts._transform(TulajdonosiBefizetesek),
     }, false, true);
 

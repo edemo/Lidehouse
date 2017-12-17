@@ -36,7 +36,7 @@ Template.Parcels_finances.helpers({
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
       const myParcelIds = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
-      return Payments.find({ communityId, 'accounts.Könyvelési helyek': { $in: myParcelIds }, phase: 'done' }).fetch();
+      return Payments.find({ communityId, 'accounts.Könyvelés helye': { $in: myParcelIds }, phase: 'done' }).fetch();
     }
     return getTableData;
   },
@@ -44,7 +44,7 @@ Template.Parcels_finances.helpers({
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
       const myParcelIds = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
-      return Payments.find({ communityId, 'accounts.Könyvelési helyek': { $in: myParcelIds }, phase: 'bill' }).fetch();
+      return Payments.find({ communityId, 'accounts.Könyvelés helye': { $in: myParcelIds }, phase: 'bill' }).fetch();
     }
     return getTableData;
   },
