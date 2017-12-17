@@ -144,7 +144,6 @@ export function expandFrom1To3Levels(tree) {
   return tree;
 }
 
-
 export const phaseTags = expandFrom1To3Levels({
   name: 'balance',
   children: [
@@ -205,20 +204,25 @@ export const Reports = {
     }, false);
     return report;
   },
+
   PenzugyekReszletei(year) {
     const report = new PaymentReport('Penzugyek Reszletei');
     const communityId = Session.get('activeCommunityId');
-    
+
     report.addFilter({ phase: 'done' });
-    
+
     report.addTree('cols', {
       field: 'month',
       values: PayAccounts._transform(monthTags),
     }, false);
-    
+
+    const koltsegNemekWoBackoffice = PayAccounts.findOne({ communityId, name: 'Költség nemek' });
+    koltsegNemekWoBackoffice.removeSubTree('Back office műveletek');
+    koltsegNemekWoBackoffice.name = '';
+
     report.addTree('rows', {
       field: 'accounts.Költség nemek',
-      values: PayAccounts.findOne({ communityId, name: 'Költség nemek' }),
+      values: koltsegNemekWoBackoffice,
     }, false);
 
     const planColDef = {
@@ -228,7 +232,7 @@ export const Reports = {
       },
     };
     report.addLine('cols', [planColDef], true);
-    
+
     const prevYearColDef = {
       field: 'year',
       value: year - 1,
@@ -238,9 +242,10 @@ export const Reports = {
       },
     };
     report.addLine('cols', [prevYearColDef], true);
-    
+
     return report;
   },
+
   AlbetetemElszamolasa(year) {
     const report = new PaymentReport('Albetetek Elszamolasa');
     const communityId = Session.get('activeCommunityId');
@@ -251,7 +256,7 @@ export const Reports = {
     Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' })
       .map(m => myParcels.children.push({ name: m.parcel().serial.toString() /* + '. ' + __('parcel')*/ }));
     expandFrom1To3Levels(myParcels);
-    
+
     report.addFilter({ phase: { $in: ['bill', 'done'] } });
 
     report.addTree('rows', {
@@ -271,6 +276,7 @@ export const Reports = {
 
     return report;
   },
+
   AlbetetekElszamolasa(year) {
     const report = new PaymentReport('Albetetek Elszamolasa');
     const communityId = Session.get('activeCommunityId');

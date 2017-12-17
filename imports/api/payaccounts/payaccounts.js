@@ -81,20 +81,20 @@ PayAccounts.helpers({
     if (!this._leafs) {
       this._leafs = [];
       this._nodes = [];
-      const root = this; root.isLeaf = false; root.level = 0;
+      const root = this; root.parent = null; root.isLeaf = false; root.level = 0;
       if (root.name) { this._nodes.push(root); }
       this.children.forEach((level1) => {
-        level1._leafs = []; level1.leafs = () => level1._leafs; level1.isLeaf = false; level1.level = 1;
+        level1._leafs = []; level1.leafs = () => level1._leafs; level1.parent = root; level1.isLeaf = false; level1.level = 1;
         if (level1.name) { this._nodes.push(level1); }
         level1.children.forEach((level2) => {
-          level2._leafs = []; level2.leafs = () => level2._leafs; level2.isLeaf = false; level2.level = 2;
+          level2._leafs = []; level2.leafs = () => level2._leafs; level2.parent = level1; level2.isLeaf = false; level2.level = 2;
           if (level2.name) { this._nodes.push(level2); }
           level2.children.forEach((leaf) => {
             this._nodes.push(leaf);
             this._leafs.push(leaf);
             level1._leafs.push(leaf);
             level2._leafs.push(leaf);
-            leaf._leafs = [leaf]; leaf.leafs = () => leaf._leafs; leaf.isLeaf = true; leaf.level1 = level1; leaf.level2 = level2; leaf.level = 3;
+            leaf._leafs = [leaf]; leaf.leafs = () => leaf._leafs; leaf.parent = level2; leaf.isLeaf = true; leaf.level1 = level1; leaf.level2 = level2; leaf.level = 3;
             leaf.path = () => {
               let result = '';
               if (leaf.level1.name) result += `${leaf.level1.name}/`;
@@ -142,6 +142,11 @@ PayAccounts.helpers({
   leafOptions() {
     const self = this;
     return this.leafs().map(function option(leaf) { return { label: self.leafFullPathDisplay(leaf), value: leaf.name }; });
+  },
+  removeSubTree(name) {
+    const node = this.nodes().find(n => n.name === name);
+    node.parent.children = _.without(node.parent.children, node);
+    this._leafs = undefined; // to rerun init
   },
 });
 
