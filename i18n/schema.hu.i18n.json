@@ -249,9 +249,13 @@
       "label": "Referencia azonosító",
       "placeholder": "(pl. tranzakciós szám bankkivonatról)"
     },
-    "note": {
-      "label": "Megjegyzés",
-      "placeholder": "(pl. emlékeztető)"
+    "note1": {
+      "label": "Megjegyzés 1",
+      "placeholder": "(pl. partner azonosító)"
+    },
+    "note2": {
+      "label": "Megjegyzés 2",
+      "placeholder": "(pl. közlemény)"
     },
     "accounts": {
       "label": "Könyvelési fiókok"

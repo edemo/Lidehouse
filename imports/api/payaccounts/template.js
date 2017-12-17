@@ -95,6 +95,25 @@ const PayAccountsTemplate = [
     ],
   },
 
+  { name: 'Könyvelési helyek', label: 'Összes hely',
+    children: [
+      { name: '',
+        children: [
+          { name: 'Főépület',
+            children: [
+            ],
+          },
+          { name: 'Központ',
+            children: [
+            { name: 'Kert' },
+            { name: 'Kazán' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
   { name: 'Pénz számlák', label: 'Összesen',
     children: [
       { name: '',
@@ -109,25 +128,6 @@ const PayAccountsTemplate = [
           { name: 'Készpénz',
             children: [
             { name: 'Pénztár 1' },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-
-  { name: 'Könyvelési helyek', label: 'Összes hely',
-    children: [
-      { name: '',
-        children: [
-          { name: 'Főépület',
-            children: [
-            ],
-          },
-          { name: 'Központ',
-            children: [
-            { name: 'Kert' },
-            { name: 'Kazán' },
             ],
           },
         ],
@@ -173,7 +173,6 @@ const PayAccountsTemplate = [
     ],
   },
 */
-// { name: 'MEGJEGYZÉS', children: [ { name: '*', children: [ { name: 'Partner neve  (számlán,  bizonylaton)' }, { name: 'Számla száma' }, { name: 'Másik fél bankszámla vagy  pénztárbizonylat száma' }, { name: 'Közlemény' } ] } ], }
 ];
 
 export function insertPayAccountTemplate(communityId) {

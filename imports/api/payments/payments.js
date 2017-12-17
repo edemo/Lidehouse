@@ -18,10 +18,11 @@ Payments.schema = new SimpleSchema({
   year: { type: Number, decimal: true, autoValue() { return this.field('valueDate').value.getFullYear(); }, optional: true, autoform: { omit: true } },
   month: { type: Number, decimal: true, autoValue() { return this.field('valueDate').value.getMonth() + 1; }, optional: true, autoform: { omit: true } },
   amount: { type: Number, decimal: true },
-  ref: { type: String, max: 100, optional: true },
-  note: { type: String, max: 100, optional: true },
   accounts: { type: Object, blackbox: true },
     // rootAccountName -> leafAccountName or parcelNo
+  ref: { type: String, max: 100, optional: true },
+  note1: { type: String, max: 100, optional: true },
+  note2: { type: String, max: 100, optional: true },
 });
 
 Payments.helpers({

@@ -249,9 +249,13 @@
       "label": "Reference id",
       "placeholder": "(eg. transaction no. from bank statement)"
     },
-    "note": {
-      "label": "Note",
-      "placeholder": "(eg. reminder)"
+    "note1": {
+      "label": "Note 1",
+      "placeholder": "(eg. partner identifier)"
+    },
+    "note2": {
+      "label": "Note 2",
+      "placeholder": "(eg. message)"
     },
     "accounts": {
       "label": "Könyvelési fiókok"
