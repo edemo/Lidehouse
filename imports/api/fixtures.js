@@ -14,7 +14,8 @@ import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
-import { billParcels } from '/imports/api/payments/methods.js';
+import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
+import { insert as insertParcelBilling } from '/imports/api/payments/parcel-billings/methods.js';
 import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
 
 import '/imports/api/topics/votings/votings.js';
@@ -598,25 +599,48 @@ export function insertDemoFixture(lang) {
 
     // === Eloirasok ===
 
-  const commonCosts = {
-    ccArea: 210,
-    ccVolume: 10,
-    ccHabitants: 0,
-  };
-  updateCommunity._execute(
-    { userId: dummyUsers[0] },
-    { _id: demoCommunityId, modifier: { $set: { finances: commonCosts } } }
-  );
-  billParcels._execute(
-    { userId: dummyUsers[0] },
-    { communityId: demoCommunityId },
-  );
-
-  Payments.insert({
+  insertParcelBilling._execute({ userId: demoManagerId }, {
     communityId: demoCommunityId,
-    phase: 'bill',
-    valueDate: new Date(2017, 7, 1),
-    amount: -52000,
+    projection: 'perArea',
+    amount: 200,
+    year: '2017',
+    month: 'allMonths',
+    accounts: {
+      'Könyvelés nem': 'Közös költség befizetés',
+      'Könyvelés helye': 'Könyvelés helye',
+    },
+  });
+
+  insertParcelBilling._execute({ userId: demoManagerId }, {
+    communityId: demoCommunityId,
+    projection: 'perHabitant',
+    amount: 5000,
+    year: '2017',
+    month: 'allMonths',
+    accounts: {
+      'Könyvelés nem': 'Víz díj',
+      'Könyvelés helye': 'Könyvelés helye',
+    },
+  });
+
+  insertParcelBilling._execute({ userId: demoManagerId }, {
+    communityId: demoCommunityId,
+    projection: 'absolute',
+    amount: 41000,
+    year: '2017',
+    month: '8',
+    accounts: {
+      'Könyvelés nem': 'Felújítási célbefizetés',
+      'Könyvelés helye': 'B. lépcsőház',
+    },
+  });
+
+  insertParcelBilling._execute({ userId: demoManagerId }, {
+    communityId: demoCommunityId,
+    projection: 'absolute',
+    amount: 23000,
+    year: '2017',
+//    month: '3',
     accounts: {
       'Könyvelés nem': 'Felújítási célbefizetés',
       'Könyvelés helye': '4',

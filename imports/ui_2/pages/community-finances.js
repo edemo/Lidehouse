@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Communities } from '/imports/api/communities/communities.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
+import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
 import { remove as removePayment, billParcels } from '/imports/api/payments/methods.js';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
@@ -112,6 +113,26 @@ function newPaymentSchema() {
   ]);
 }
 
+function newParcelBillingSchema() {
+  function chooseAccountsSchema() {
+    const obj = {};
+    const communityId = Session.get('activeCommunityId');
+    const payaccount1 = PayAccounts.findOne({ communityId, name: 'Könyvelés nem' });
+    const payaccount2 = PayAccounts.findOne({ communityId, name: 'Könyvelés helye' });
+    obj[payaccount1.name] = { type: String, optional: true, label: payaccount1.name, 
+      autoform: { options() { return payaccount1.leafOptions(l => l.membersRelated); } },
+    };
+    obj[payaccount2.name] = { type: String, optional: true, label: payaccount2.name, 
+      autoform: { options() { return payaccount2.nodeOptions(); } },
+    };
+    return new SimpleSchema(obj);
+  }
+  return new SimpleSchema([
+    ParcelBillings.simpleSchema(),
+    { accounts: { type: chooseAccountsSchema(), optional: true } },
+  ]);
+}
+
 Template.Community_finances.events({
   'click #payaccounts-pane .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
@@ -177,7 +198,7 @@ Template.Community_finances.events({
   },
   'click #bills-pane .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
-      id: 'af.payments.insert',
+      id: 'af.bills.insert',
       collection: Payments,
       schema: newPaymentSchema(),
       omitFields: ['communityId', 'phase'],
@@ -189,7 +210,7 @@ Template.Community_finances.events({
   'click #bills-pane .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
-      id: 'af.payments.update',
+      id: 'af.bills.update',
       collection: Payments,
       schema: newPaymentSchema(),
       omitFields: ['communityId', 'phase'],
@@ -197,6 +218,17 @@ Template.Community_finances.events({
       type: 'method-update',
       meteormethod: 'bills.update',
       singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #bills-pane .js-many'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.billmany.insert',
+      collection: ParcelBillings,
+      schema: newParcelBillingSchema(),
+      omitFields: ['communityId'],
+      type: 'method',
+      meteormethod: 'parcelBillings.insert',
       template: 'bootstrap3-inline',
     });
   },
@@ -240,6 +272,14 @@ AutoForm.addHooks('af.bills.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.phase = 'plan';
+    return doc;
+  },
+});
+
+AutoForm.addModalHooks('af.billmany.insert');
+AutoForm.addHooks('af.billmany.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
     return doc;
   },
 });

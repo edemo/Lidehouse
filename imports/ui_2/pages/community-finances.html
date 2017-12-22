@@ -32,25 +32,8 @@
       <div class="row">
       <div class="col-xs-12 white-box">
         {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
-        <button class="js-new btn-primary">{{_ 'createNew'}}</button>
-      </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-12 text-center">
-          <h4>{{_ 'Common cost plan'}}</h4>
-          <hr/>
-        </div>
-      </div>
-      <div class="row">
-      <div class="col-xs-12 white-box">
-        {{#autoForm afCommunityFinancesData}}
-          {{> afQuickFields}}
-          <div>
-            <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
-          </div>
-        {{/autoForm}}
-        <button class="js-bill btn-primary">{{_ 'Beállított közös költség kiírása minden albetétre'}}</button>
+        <!--button class="js-new btn-primary">{{_ 'createNew'}}</button-->
+        <button class="js-many btn-primary">{{_ 'createMany'}}</button>
       </div>
       </div>
     {{/Collapse_section}}

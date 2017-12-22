@@ -260,5 +260,29 @@
     "accounts": {
       "label": "Könyvelési fiókok"
     }
+  },
+  "schemaParcelBillings": {
+    "year": {
+      "label": "Melyik év",
+      "placeholder": "(pl. 2017)"
+    },
+    "month": {
+      "label": "Melyik hónapjára",
+      "placeholder": "(pl. 11)"
+    },
+    "projection": {
+      "label": "Vetítési alap"
+    },
+    "amount": {
+      "label": "Összeg",
+      "placeholder": "(pl. 14560)"
+    },
+    "note": {
+      "label": "Megjegyzés",
+      "placeholder": "(pl. emlékeztető)"
+    },
+    "accounts": {
+      "label": "Könyvelési fiókok"
+    }
   }
 }

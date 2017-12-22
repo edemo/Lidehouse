@@ -258,7 +258,31 @@
       "placeholder": "(eg. message)"
     },
     "accounts": {
-      "label": "Könyvelési fiókok"
+      "label": "Accounting tags"
+    }
+  },
+  "schemaParcelBillings": {
+    "year": {
+      "label": "For which year",
+      "placeholder": "(eg. 2017)"
+    },
+    "month": {
+      "label": "For which month",
+      "placeholder": "(eg. 11)"
+    },
+    "projection": {
+      "label": "Projection basis"
+    },
+    "amount": {
+      "label": "Amount",
+      "placeholder": "(pl. 14560)"
+    },
+    "note": {
+      "label": "Note",
+      "placeholder": "(eg. reminder)"
+    },
+    "accounts": {
+      "label": "Accounting tags"
     }
   }
 }

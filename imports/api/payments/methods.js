@@ -38,33 +38,3 @@ export const remove = new ValidatedMethod({
     Payments.remove(_id);
   },
 });
-
-export const billParcels = new ValidatedMethod({
-  name: 'payments.billParcels',
-  validate: new SimpleSchema({
-    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
-
-  run({ communityId }) {
-    Parcels.find().forEach((parcel) => {
-      const community = Communities.findOne(communityId);
-      const commonCost = ((parcel.area || 0) * (community.finances.ccArea || 0)) +
-                          ((parcel.volume || 0) * (community.finances.ccVolume || 0)) +
-                          ((parcel.habitants || 0) * (community.finances.ccHabitants || 0));
-
-      for (let i = 0; i < 12; i += 1) {
-        const query = {
-          communityId,
-          phase: 'bill',
-          valueDate: new Date(2017, i, 10),
-          accounts: {
-            'Könyvelés nem': 'Közös költség befizetés',
-            'Könyvelés helye': parcel.serial.toString(),
-          },
-        };
-        const doc = _.extend({}, query, { amount: -1 * commonCost });
-        Payments.update(query, { $set: doc }, { upsert: true });
-      }
-    });
-  },
-});

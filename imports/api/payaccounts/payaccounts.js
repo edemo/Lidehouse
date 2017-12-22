@@ -47,7 +47,8 @@ export const choosePayAccount = {
 */
 PayAccounts.LeafSchema = new SimpleSchema({
   name: { type: String, max: 100 }, // or a parcel number can be placed here
-  label: { type: String, max: 100, optional: true },
+  label: { type: String, max: 100, optional: true, autoform: { omit: true } },
+  membersRelated: { type: Boolean, optional: true },
   //  name: { type: String, max: 100, optional: true },
 //  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 //  parcelNo: { type: Number, decimal: true, optional: true },
@@ -55,21 +56,21 @@ PayAccounts.LeafSchema = new SimpleSchema({
 
 PayAccounts.Level2Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
-  label: { type: String, max: 100, optional: true },
+  label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   children: { type: Array },
   'children.$': { type: PayAccounts.LeafSchema },
 });
 
 PayAccounts.Level1Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
-  label: { type: String, max: 100, optional: true },
+  label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   children: { type: Array },
   'children.$': { type: PayAccounts.Level2Schema },
 });
 
 PayAccounts.schema = new SimpleSchema({
   name: { type: String, max: 100 },
-  label: { type: String, max: 100, optional: true },
+  label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
 //  type: { type: String, allowedValues: PayAccounts.typeValues },
   children: { type: Array },
@@ -129,19 +130,37 @@ PayAccounts.helpers({
     const result = this.leafs().find(l => l.name === leafName);
     return result;
   },
+  leafsOf(nodeName) {
+    return this.nodes().find(n => n.name === nodeName).leafs();
+  },
   leafIsParcel(leafName) {
     return ((this.name === 'Könyvelés helye') && parseInt(leafName, 0));
   },
   leafDisplay(leafName) {
-    if (this.leafIsParcel(leafName)) return `${leafName}.${__('parcel')}`;
+    if (this.leafIsParcel(leafName)) return `${leafName}. ${__('parcel')}`;
     return leafName;
   },
   leafFullPathDisplay(leaf) {
     return `${leaf.path()}${this.leafDisplay(leaf.name)}`;
   },
-  leafOptions() {
+  nodeDisplay(node) {
+    if (node.isLeaf) return this.leafDisplay(node.name);
+    return node.label || node.name;
+  },
+  leafOptions(filter) {
     const self = this;
-    return this.leafs().map(function option(leaf) { return { label: self.leafFullPathDisplay(leaf), value: leaf.name }; });
+    return this.leafs()
+      .filter(filter || (() => true))
+      .map(function option(leaf) {
+        return { label: self.leafFullPathDisplay(leaf), value: leaf.name }; 
+      });
+  },
+  nodeOptions() {
+    const self = this;
+    return this.nodes()
+      .map(function option(node) {
+        return { label: self.nodeDisplay(node), value: node.name };
+      });
   },
   removeSubTree(name) {
     const node = this.nodes().find(n => n.name === name);

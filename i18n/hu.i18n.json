@@ -73,7 +73,7 @@
 
   "person": "magán személy",
   "legal": "jogi személyiség",
-  
+
   // commands
   "view": "Megtekintés",
   "edit": "Szerkesztés",
@@ -98,9 +98,9 @@
   "join": "Csatlakozás",
   "create": "Létrehozás",
   "createNew": "Új Létrehozása",
+  "createMany": "Új Előírás",
   "report": "Bejelentés",
   "finalize": "Véglegesítem",
-  "change": "Megváltoztatom",
   "new": "Új",
   "menuDown": "Lenyit",
   "menuUp": "Összecsuk",
@@ -183,6 +183,11 @@
   "balance": "egyenleg",
   "month": "hó",
   "total": "összesen",
+  "allMonths": "Valamennyi hónapra",
+  "absolute": "abszolút (Ft)",
+  "perArea": "terület (/m2)",
+  "perVolume": "légköbméter (/m3)",
+  "perHabitant": "lakók száma (/fő)",
 
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",
