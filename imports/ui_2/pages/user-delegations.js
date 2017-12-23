@@ -15,7 +15,7 @@ import { delegationFromMeColumns, delegationToMeColumns } from '/imports/api/del
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
-
+import '../components/collapse-section.js';
 import './user-delegations.html';
 
 Template.User_delegations.onCreated(function onCreated() {

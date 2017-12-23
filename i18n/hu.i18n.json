@@ -73,7 +73,7 @@
 
   "person": "magán személy",
   "legal": "jogi személyiség",
-  
+
   // commands
   "view": "Megtekintés",
   "edit": "Szerkesztés",
@@ -113,6 +113,7 @@
   "abstain": "tartózkodom",
   "voting": "szavazás",
   "votings": "szavazások",
+  "New voting": "Új szavazás kiírás",
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
   "Agendas": "Napirendek",

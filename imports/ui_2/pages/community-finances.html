@@ -11,7 +11,7 @@
       </div>
     {{/Collapse_section}}
 
-    {{#Collapse_section id='payaccounts' title='Payaccounts' notFirst=true collapsed=true }}
+    {{#Collapse_section id='payaccounts' title='Payaccounts' collapsed=true }}
       <div class="row">
       <div class="col-xs-12 white-box">
         {{> ReactiveDatatable tableData=payaccountsTableDataFn options=payaccountsOptionsFn }}
@@ -20,7 +20,7 @@
       </div>
     {{/Collapse_section}}
 
-    {{#Collapse_section id='payments' title='Payments' notFirst=true collapsed=true }}
+    {{#Collapse_section id='payments' title='Payments' collapsed=true }}
       <div class="row">
       <div class="col-xs-12 white-box">
         {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
@@ -29,7 +29,7 @@
       </div>
     {{/Collapse_section}}
 
-    {{#Collapse_section id='report' title=communityStatusReportTitle notFirst=true collapsed=true }}
+    {{#Collapse_section id='report' title=communityStatusReportTitle collapsed=true }}
       <div class="row">
       <div class="col-xs-12 white-box">
         {{> Sumif_table (report 'EvesBevetelek')}}
@@ -39,7 +39,7 @@
       </div>
     {{/Collapse_section}}
 
-    {{#Collapse_section id='bills' title='Bills' notFirst=true collapsed=true }}
+    {{#Collapse_section id='bills' title='Bills' collapsed=true }}
       <div class="row">
       <div class="col-xs-12 white-box">
         {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}

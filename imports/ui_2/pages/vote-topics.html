@@ -1,95 +1,48 @@
 <template name="Vote_topics">
   <div class="content-scrollable page-content page-vote">
 
-   <div style="row">
-     <ul class="tabs">
+    {{#Collapse_section id='newVoting' title='New voting' collapsed=true}}
+       <div class="white-box">
+         {{> Vote_create}}
+       </div>
+    {{/Collapse_section}}
 
-       <!-- 1st tab start -->
-       <li class="tab">
-         <input type="radio" name="tabs" checked="checked" id="tab1" />
-         <label for="tab1">{{_ 'Active votings'}}</label>
-         <!-- content -->
-         <div id="tab-content1" class="content">
-           <div class="collapse white-box" id="new-vote">
-             {{> Vote_create}}
-           </div>
-
-           <div class="row">
-             <div class="col-xs-12 text-right">
-               <a class="btn btn-primary js-new-vote" data-toggle="collapse" data-target="#new-vote" aria-expanded="true" aria-controls="new-vote">{{_ 'new'}} {{_ 'voting'}}</a>
-             </div>
-           </div>
-           <div class="row">
-             <div class="col-xs-12">
-               {{#each openVoteTopics}}
-                 {{> Votebox}}
-               {{/each}}
-             </div>
-           </div>
-
+    {{#Collapse_section id='activeVotings' title='Active votings'}}
+       <div class="row">
+         <div class="col-xs-12">
+           {{#each openVoteTopics}}
+             {{> Votebox}}
+           {{/each}}
          </div>
-       </li>
-       <!-- 1st tab end -->
+       </div>
+    {{/Collapse_section}}
 
-       <!-- 2nd tab start-->
-       <li class="tab">
-         <input type="radio" name="tabs" id="tab2" />
-         <label for="tab2">{{_ 'Closed votings'}}</label>
-         <div id="tab-content2" class="content">
-
-           <div class="row">
-             <div class="col-xs-12 text-center">
-               <h4>{{_ 'Closed votings'}}</h4>
-               <hr/>
-             </div>
-           </div>
-
-           <div class="row">
-             {{#if hasSelection}}
-             <div class="col-xs-12">
-               {{#with selectedDoc}}
-                 {{> Votebox}}
-               {{/with}}
-             </div>
-             {{/if}}
-           </div>
-
-           <div class="row">
-             <div class="col-xs-12">
-               {{> ReactiveDatatable tableData=closedVotingsTableDataFn options=closedVotingsOptionsFn }}
-               <!-- TODO add active class to selected row)-->
-             </div>
-           </div>
-
+    {{#Collapse_section id='closedVotings' title='Closed votings' collapsed=true}}
+       <div class="row">
+         {{#if hasSelection}}
+         <div class="col-xs-12">
+           {{#with selectedDoc}}
+             {{> Votebox}}
+           {{/with}}
          </div>
-       </li>
-       <!-- 2nd tab end -->
-
-       <!-- 3rd tab start-->
-       <li class="tab">
-         <input type="radio" name="tabs" id="tab3" />
-         <label for="tab3">{{_ 'Agendas'}}</label>
-         <div id="tab-content3" class="content">
-
-           <div class="row">
-             <div class="col-xs-12 text-center">
-               <h4>{{_ 'Agendas'}}</h4>
-               <hr/>
-             </div>
-           </div>
-
-           <div class="row">
-             <div class="col-xs-12">
-               {{> ReactiveDatatable tableData=agendasTableDataFn options=agendasOptionsFn }}
-             </div>
-             <button class="js-new btn-primary">{{_ 'createNew'}}</button>
-           </div>
-
+         {{/if}}
+       </div>
+       <div class="row">
+         <div class="col-xs-12">
+           {{> ReactiveDatatable tableData=closedVotingsTableDataFn options=closedVotingsOptionsFn}}
+           <!-- TODO add active class to selected row)-->
          </div>
-       </li>
-       <!-- 3rd tab end -->
-     </ul>
-   </div>
- </div>
+       </div>
+    {{/Collapse_section}}
 
+    {{#Collapse_section id='agendas' title='Agendas' collapsed=true}}
+       <div class="row">
+         <div class="col-xs-12">
+           {{> ReactiveDatatable tableData=agendasTableDataFn options=agendasOptionsFn}}
+         </div>
+         <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+       </div>
+    {{/Collapse_section}}
+
+  </div>
 </template>
