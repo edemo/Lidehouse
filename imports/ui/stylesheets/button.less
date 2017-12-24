@@ -170,7 +170,7 @@
     letter-spacing: .2em;
   }
 }
-.top-sign-in, .pip-usericon {
+.pip-usericon {
   display: none;
   @media screen and (min-width: 40em) {
     display: block;
@@ -179,3 +179,13 @@
 .top-sign-in-b {
   width: calc(~"100% - " 65px) !important;
 }
+
+// eapo hacks
+
+ul.btns-group.top-sign-in > li {
+    display: inline-block;
+    list-style: none;
+    text-align: center;
+    width: 49%;
+}
+

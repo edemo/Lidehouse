@@ -1,4 +1,5 @@
 {
+
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
@@ -54,8 +55,8 @@
   "lastName": "vezetéknév",
   "community": "közösség",
   "communities": "közösségek",
-  "Join a community": "Csatlakozás egy közösséghez",
-  "Create a community": "Létrehozok egy közösséget",
+  "Join a community": "Közösséghez csatlakozás",
+  "Create a community": "Közösség létrehozása",
   "membership": "tagság",
   "memberships": "tagságok",
   "ownership": "tulajdon",
@@ -92,8 +93,8 @@
   "ok": "OK",
   "cancel": "Mégsem",
   "close": "Bezárás",
-  "confirm": "Biztos benne?",
-  "loading...": "Betöltés folyamatban...",
+  "confirm": "Jóváhagy?",
+  "loading…": "Betöltés folyamatban…",
 
   "join": "Csatlakozás",
   "create": "Létrehozás",
@@ -116,13 +117,16 @@
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
   "Agendas": "Napirendek",
-  "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrenbe...",
+  "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrenbe…",
   "Show results": "Eredmények megtekintése",
   "Vote results": "Szavazási eredmények",
   "voter": "Szavazó",
   "casted vote": "Szavazat",
   "vote path": "Meghatalmazás lánc",
   "direct": "Közvetlen",
+  "No active votes": "Jelenleg nincs aktív szavazás!",
+  "Latest votes": "Korábbi szavazások",
+
 
   // delegations
   "Delegations from me": "Meghatalmazásaim",
@@ -163,7 +167,7 @@
   "Closed tickets": "Lezárt bejelentett hibák",
   "New ticket": "Új hibabejelentés",
   "Please dont report twice": "Kérjük csak akkor adja fel bejelentését, ha az még nem szerepel a fenti listán vagy nemrég került archiválásra hasonló. A lezárt bejelentéseket a lap alján tekinthetik meg. Köszönjük!",
-  "Describe the problem briefly": "A hiba rövid leírása ...",
+  "Describe the problem briefly": "A hiba rövid leírása …",
 
   // finances
   "Payaccounts": "Könyvelési fiókok",
@@ -184,7 +188,7 @@
 
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",
-  "FeedbackPaneTitle": "Véleményével, javaslataival nagyban segítheti az alkalmazás fejlesztését. </br> Ha technikai hibát észlel, vagy új funkciót szeretne kérni az alkalmazásba, kérjük jelezze nekünk.",
+  "FeedbackPaneTitle": "<strong>Véleményével, javaslataival segítheti az alkalmazás fejlesztését.</strong> <br /> Észrevételeit és igényeit kérjük jelezze felénk.  <br />  Köszönjük.",
   "Rating": "Értékelés",
   "opinion": "Vélemény",
   "bug": "Technikai hiba jelentése",
@@ -192,7 +196,7 @@
   "Feedback appreciated": "Köszönjük, hogy visszajelzésével segítette munkánkat!",
 
   // placeholders
-  "Make your comment": "Szóljon hozzá",
+  "Make your comment": "Hozzászólás",
 
   // errors
   "err_invalidId": "Érvénytelen azonosító",
@@ -211,15 +215,15 @@
   "login": "belépés",
   "register": "új fiók",
 
-  "tryingToConnect": "Kapcsolódás folyamatban...",
+  "tryingToConnect": "Kapcsolódás folyamatban…",
   "connectionIssue": "Valami hiba van a hálózattal",
   "pageNotFound": "Az odal nem található",
   "inviteSend": "Meghívó kiküldése",
-  "newForumTopicPlaceholder": "Dobjon fel egy témát...",
-  "newCommentPlaceholder": "Szóljon hozzá...",
+  "newForumTopicPlaceholder": "Téma feldobása…",
+  "newCommentPlaceholder": "Hozzászólás…",
   "messengerPeopleMenu": "Lakók",
-  "messengerMessagePlaceholder": "Az ön üzenete... (pl. Epertortát sütöttem. Nincs kedved átugrani megkóstolni?)",
-  "messengerHistoryPlaceholder": "Még nincsenek üzenetek közöttetek. <br> Kezdjetek el csevegni most!",
+  "messengerMessagePlaceholder": "Üzenet… (pl. Epertortát sütöttem. Van kedved átugrani megkóstolni?)",
+  "messengerHistoryPlaceholder": "Még nincsenek üzenetek. <br /> Üzenetváltás indítása!",
 
   "User data page": "Felhasználói adatlap",
   "userAccountsSubtitle": "Bejelentkezett felhasználók minden funkciót elérhetnek",
@@ -280,5 +284,13 @@
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
   "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",
   "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra.",
-  "This will not delete topics": "Ettől a benne lévő szavazások nem fognak törlődni."
+  "This will not delete topics": "Ettől a benne lévő szavazások nem fognak törlődni.",
+
+  // eapo hacks
+  "Selection": "Kiválasztása",
+  "List of": "",
+  "About": "Névjegy:",
+  "LiDeHouse": "LiDeHáz",
+
+  "":""
 }
