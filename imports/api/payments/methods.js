@@ -56,7 +56,7 @@ export const billParcels = new ValidatedMethod({
         const query = {
           communityId,
           phase: 'plan',
-          date: new Date(2017, i, 10),
+          valueDate: new Date(2017, i, 10),
           accounts: {
             'Bevételek': 'Közös költség befizetés',
             'Könyvelési helyek': parcel.serial.toString(),

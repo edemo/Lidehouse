@@ -3,7 +3,10 @@ import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { Accounts } from 'meteor/accounts-base';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
-
+import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { connectMe } from '/imports/api/memberships/methods.js';
+import { moment } from 'meteor/momentjs:moment';
 /*
 Accounts.config({
   sendVerificationEmail: true,
@@ -27,6 +30,8 @@ Accounts.ui.config({
 
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
+  sendVerificationEmail: true, 
+ // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
   defaultTemplate: 'Auth_page',
   defaultLayout: 'Custom_body',
   defaultContentRegion: 'main',
@@ -56,6 +61,24 @@ AccountsTemplates.configureRoute('enrollAccount', {
 });
 
 
+export function cleanExpiredEmails() {
+  const twoWeeksAgo = moment().subtract(2, 'week').toDate();
+  Meteor.users.find({ 'services.email.verificationTokens': { $exists: true } }).forEach((user) => {
+    const expiredTokens = user.services.email.verificationTokens.filter(token => token.when < twoWeeksAgo);
+    expiredTokens.forEach((token) => {
+      const email = token.address;
+      Meteor.users.update({ _id: user._id }, { $pull: { emails: { address: email } } }); 
+    });
+    expiredTokens.forEach((token) => {
+      const email = token.address;
+      Meteor.users.update({ _id: user._id }, { $pull: { 'services.email.verificationTokens': { address: email } } });
+    });   
+  });
+  Meteor.users.find({ 'emails.address': { $exists: false } }).forEach((user) => {
+    Meteor.users.remove({ _id: user._id });
+  });
+}
+
 if (Meteor.isClient) {
   // https://stackoverflow.com/questions/12984637/is-there-a-post-createuser-hook-in-meteor-when-using-accounts-ui-package
   Accounts.createUser = _.wrap(Accounts.createUser, function (createUser) {
@@ -84,6 +107,17 @@ if (Meteor.isClient) {
     // the original user object plus the new callback
     createUser(user, newCallback);
   });
+
+  Accounts.onEmailVerificationLink(function(token, done){
+    Accounts.verifyEmail(token, (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        connectMe.call();
+        FlowRouter.go('/board');
+      }
+    });
+  });
 }
 
 if (Meteor.isServer) {
@@ -105,4 +139,6 @@ if (Meteor.isServer) {
 
     return user;
   });
-}
+
+  Meteor.setInterval(cleanExpiredEmails, moment.duration(1, 'days').asMilliseconds());
+}    

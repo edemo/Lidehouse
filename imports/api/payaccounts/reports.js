@@ -11,7 +11,7 @@ export const Reports = {
       name: 'Egyenlegek',
       filter: { phase: 'done' },
       rows: [
-        { field: 'accounts.Pénz számlák', values: accountLots.init().leafNames },
+        { field: 'accounts.Pénz számlák', values: accountLots.leafNames() },
       ],
       cols: [],
     };
@@ -22,7 +22,7 @@ export const Reports = {
     return {
       name: 'Éves bevételek',
       rows: [
-        { field: 'accounts.Bevételek', values: payins.init().leafNames, total: 'Bevételek' },
+        { field: 'accounts.Bevételek', values: payins.leafNames(), total: 'Bevételek' },
       ],
       cols: [
         { field: 'year', values: [2016, 2017] },
@@ -37,7 +37,7 @@ export const Reports = {
       name: `Havi bevételek (${year})`,
       filter: { year, phase: 'done' },
       rows: [
-        { field: 'accounts.Bevételek', values: befnem.init().leafNames, total: 'Bevételek' },
+        { field: 'accounts.Bevételek', values: befnem.leafNames(), total: 'Bevételek' },
       ],
       cols: [
         { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], total: year.toString() },
@@ -52,10 +52,10 @@ export const Reports = {
       name: `Albetétek Számlái (${year})`,
       filter: { year },
       rows: [
-        { field: 'accounts.Könyvelési helyek', values: locator.init().leafNames },
+        { field: 'accounts.Könyvelési helyek', values: locator.leafNames() },
       ],
       cols: [
-        { field: 'accounts.Bevételek', values: befnem.init().leafNames, total: 'Albetét folyószámla' },
+        { field: 'accounts.Bevételek', values: befnem.leafNames(), total: 'Albetét folyószámla' },
         { field: 'phase', values: ['plan', 'done'] },
       ],
     };
@@ -90,7 +90,7 @@ export const Reports = {
         { field: 'month', values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], total: year.toString() },
       ],
       cols: [
-        { field: 'accounts.Bevételek', values: payins.init().leafNames },
+        { field: 'accounts.Bevételek', values: payins.leafNames() },
         { field: 'phase', values: ['plan', 'done'] },
       ],
     };
@@ -102,7 +102,7 @@ export const Reports = {
       name: 'Nyitó',
       filter: { phase: 'done', ref: 'nyitó' },
       rows: [
-        { field: 'accounts.Pénz számlák', values: accountLots.init().leafNames },
+        { field: 'accounts.Pénz számlák', values: accountLots.leafNames() },
       ],
       cols: [],
     };

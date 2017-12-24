@@ -4,18 +4,19 @@ import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 
 export function paymentColumns(accounts) {
   const columns = [
-    { data: 'date', title: __('schemaPayments.date.label'), render: Render.formatDate },
+    { data: 'date', title: __('schemaPayments.valueDate.label'), render: Render.formatDate },
 //    { data: 'phase', title: __('schemaPayments.phase.label'), render: Render.translate },
     { data: 'amount', title: __('schemaPayments.amount.label') },
-    { data: 'ref', title: __('schemaPayments.ref.label') },
-    { data: 'note', title: __('schemaPayments.note.label') },
   ];
   accounts.forEach((account) => {
     const extractAccountLeaf = function extractAccountLeaf(cellData, renderType, currentRow) {
-      return cellData ? PayAccounts.leafDisplay(cellData[account.name]) : undefined;
+      const leafName = cellData[account.name];
+      return leafName ? account.leafDisplay(leafName) : undefined;
     };
     columns.push({ data: 'accounts', title: account.name, render: extractAccountLeaf });
   });
+  columns.push({ data: 'ref', title: __('schemaPayments.ref.label') });
+  columns.push({ data: 'note', title: __('schemaPayments.note.label') });
   columns.push({ data: '_id', render: Render.buttonEdit });
   columns.push({ data: '_id', render: Render.buttonDelete });
 

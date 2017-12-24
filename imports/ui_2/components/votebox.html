@@ -30,7 +30,7 @@
         {{title}}
       </div>
       {{#if this.closed}}
-      <div class="col-xs-6 align-right">
+      <div class="col-xs-6 text-right">
         <small class="writer">
           <i>{{_ 'createdAt'}}: {{displayCreatedAtTime}}</i>
         </small>
@@ -54,7 +54,16 @@
         {{text}}
       </div>
     </div>
-    <div class="row">
+    {{#if this.closed}}
+      <div class="row">
+        <div class="col-xs-12">
+          {{#each sum in this.voteSummaryDisplay}}
+          <div>{{_ sum.choice}}: {{sum.votingShare}} ({{percentage sum.votingShare.toNumber}})</div><br>
+          {{/each}}
+        </div>
+      </div>
+      {{else}}
+      <div class="row">
       <div class="col-xs-12 vote-answer">
 
         <!-- voting buttons -->
@@ -122,7 +131,9 @@
         {{/if}}
       </div>
     </div>
-    <div class="row">
+
+    {{/if}}
+        <div class="row">
       <div class="col-xs-12">
         {{> Comments_section topicId=_id}}
       </div>

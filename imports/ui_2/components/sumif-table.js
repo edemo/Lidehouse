@@ -36,8 +36,15 @@ Template.Sumif_table.helpers({
       classValue += ' total';
     } else {
       switch (rowDef.field.split('.')[0]) {
-        case 'month': display += `. ${__('month')}`; break;
-        case 'accounts': display = PayAccounts.leafDisplay(display); break;
+        case 'month': {
+          display += `. ${__('month')}`;
+          break;
+        }
+        case 'accounts': {
+          const payAccount = PayAccounts.findOne({ name: rowDef.field.split('.')[1] });
+          display = payAccount.leafDisplay(display);
+          break;
+        }
         default: display = __(display);
       }
     }

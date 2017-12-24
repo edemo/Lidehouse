@@ -67,31 +67,44 @@ PayAccounts.schema = new SimpleSchema({
 
 PayAccounts.helpers({
   init() {
-    if (!this.leafNames) {
-      const leafNames = [];
+    if (!this.leafs) {
+      const leafs = [];
       this.children.forEach((c) => {
         c.children.forEach((leaf) => {
-          leafNames.push(leaf.name);
+//          leafNames.push(`${c.name}/${leaf.name}`);
+          leafs.push({ name: leaf.name, path: c.name });
         });
       });
-      this.leafNames = leafNames;
+      this.leafs = leafs;
     }
     return this;
   },
+  leafFromName(leafName) {
+    const result = this.init().leafs.find(l => l.name === leafName);
+//    console.log(leafName, result, this.leafs);
+    return result;
+  },
+  leafIsParcel(leafName) {
+    return ((this.name === 'Könyvelési helyek') && parseInt(leafName, 0));
+  },
+  leafDisplay(leafName) {
+    if (this.leafIsParcel(leafName)) return `${leafName}.${__('parcel')}`;
+    return leafName;
+  },
+  leafFullPathDisplay(leaf) {
+    return `${leaf.path}/${this.leafDisplay(leaf.name)}`;
+  },
+  leafNames() {
+    return this.init().leafs.map(l => l.name);
+  },
   leafDisplays() {
-    return this.init().leafNames.map(leafName => PayAccounts.leafDisplay(leafName));
+    return this.init().leafs.map(l => this.leafDisplay(l.name));
+  },
+  leafOptions() {
+    const self = this;
+    return this.init().leafs.map(function option(leaf) { return { label: self.leafFullPathDisplay(leaf), value: leaf.name }; });
   },
 });
-
-PayAccounts.leafIsParcel = function leafIsParcel(name) {
-  const number = parseInt(name, 0);
-  return number;
-};
-
-PayAccounts.leafDisplay = function leafDisplay(name) {
-  if (this.leafIsParcel(name)) return `${name}.${__('parcel')}`;
-  return name;
-};
 
 PayAccounts.attachSchema(PayAccounts.schema);
 PayAccounts.attachSchema(Timestamps);

@@ -36,7 +36,7 @@ Template.Vote_results.helpers({
         columns: voteResultsColumns(),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
-        searching: false,
+        searching: true,
         paging: false,
         info: false,
       };
