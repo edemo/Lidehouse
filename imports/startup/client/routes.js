@@ -37,12 +37,13 @@ import '/imports/ui/accounts/accounts-templates.js';
 FlowRouter.route('/', {
 	  name: 'App.home',
 	  action() {
-		if (Meteor.user()) {
+      BlazeLayout.render('Custom_body', { main: 'Housing_page' });
+		/* if (Meteor.user()) {
 			BlazeLayout.render('Custom_body', { main: 'app_rootRedirector' });
 		} else {
 			BlazeLayout.render('Communities_front_page');
 //			BlazeLayout.render('Custom_body', { main: 'Communities_front_page' });
-		}
+		} */
 	  },
 });
 
@@ -156,9 +157,9 @@ FlowRouter.route('/vote', {
 });
 
 FlowRouter.route('/housing', {
-  name: 'Housing',
+  name: 'Housing_page',
   action() {
-    BlazeLayout.render('Custom_body', { main: 'Housing' });
+    BlazeLayout.render('Custom_body', { main: 'Housing_page' });
   },
 });
 

@@ -62,6 +62,9 @@ a {
     left: 0;
     right: 0;
   }
+  @media screen and (max-width: 40em) {
+    bottom: 2em;
+  }
 }
 .right-orange {
   background-color: #dac39a;
@@ -256,19 +259,24 @@ a {
   }
 }
 #feedback-btn {
-  position: absolute;
-  bottom: 0px; right: 10px;
-  background-color: white;
-  padding: 7px;
-  color: black;
+  background-color: #fff;
+  position: fixed;
+  bottom: 0.1em;
+  right: 1em;
   box-shadow: 0 0px 4px 1.3px #b3b3b3;
   border-radius: 5px;
   color: #6c6c6c;
+  padding: 0.6em;
   a {
     color: inherit;
   }
+  a > span {
+    padding: 0.6em;
+  }
   .glyphicon {
     cursor: pointer;
+    padding: 0.8em;
+    margin: -0.6em;
   }
   &.feedback-closed {
     visibility: collapse;
@@ -279,6 +287,7 @@ a {
     font-size: .8em;
     padding-left: 20px;
     border-radius: 0;
+    right: 0;
   }
 }
 #content-container {
@@ -287,7 +296,7 @@ a {
   }
   font-size: 14px;
   background-color: @fb-bcg-lighter;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   @media screen and (max-width: 40em) {
     padding-top: 7px;
@@ -449,5 +458,53 @@ nav::after {
       width:120px;
       margin:10px;
     }
+  }
+}
+.sub, sub {
+  bottom: -.2em;
+}
+
+.sup, sup {
+  top: -.2em;
+}
+
+.b, b {
+  font-weight: bold;
+}
+
+.em, em {
+  font-style: italic;
+}
+
+// eapo hacks
+
+div#content-container > div {
+    height: 100%;
+    max-height: 100%;
+}
+
+.row > div img {
+    //max-width: 100%;
+}
+ul.no-style > li {
+    padding: 0 1em;
+    list-style: none;
+    line-height: 1.4em;
+}
+
+ul#houseInfo {
+  padding: 1em;
+
+  li:nth-child(odd) {
+    clear: left;
+  }
+  li:nth-child(even) {
+    clear: right;
+  }
+  li#houseHsz, li#houseCou, li#houseCity, li#houseIr {
+    float: left;
+  }
+  li#houseCou:after, li#houseCity:after{
+    content: ",";
   }
 }

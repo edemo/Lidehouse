@@ -36,7 +36,7 @@ Template.Community_memberships_page.helpers({
 });
 
 Template.Community_memberships_page.events({
-  'click .js-new'(event, instance) {
+  'click .js-parcel-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.parcel.insert',
       collection: Parcels,
@@ -45,7 +45,7 @@ Template.Community_memberships_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-edit'(event) {
+  'click .js-parcel-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.update',
@@ -57,7 +57,7 @@ Template.Community_memberships_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-view'(event) {
+  'click .js-parcel-view'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.view',
@@ -67,7 +67,7 @@ Template.Community_memberships_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-delete'(event) {
+  'click .js-parcel-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeParcel, { _id: id }, {
       action: 'delete parcel',
