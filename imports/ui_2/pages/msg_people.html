@@ -24,6 +24,7 @@
 </template>
 
 <template name="Msg_person">
+  {{#if user}}
   <!-- normal test item (each in people) -->
   <div class="row no-margin person {{role}} {{selectedClass}}">
     <div class="media">
@@ -34,7 +35,7 @@
       </div>
       <div class="media-body">
         <div class="">
-          {{user/fullName}}<br>
+          {{user/displayName}}<br>
           <small class="small-size">({{this}})</small>
         </div>
       </div>
@@ -53,4 +54,5 @@
       </div>
     </div>
   </div>
+  {{/if}}
 </template>
