@@ -5,6 +5,7 @@ import { Fraction } from 'fractional';
 
 import { Log } from '/imports/utils/log.js';
 import { checkExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
+import { invite as inviteUserMethod } from '/imports/api/users/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from './memberships.js';
 
@@ -47,6 +48,7 @@ function inviteUser(membershipId, email) {
   */
   Log.info(`Invitation sent to ${email}, to join community ${membership.community().name}`);
   // When user joins, with this email, she will automatically get connected to this membership
+  inviteUserMethod.call({ email: membership.userEmail, communityId: membership.communityId });
   return;
 }
 
