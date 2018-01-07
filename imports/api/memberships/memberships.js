@@ -93,6 +93,11 @@ Memberships.helpers({
     if (this.userId) return Meteor.users.findOne(this.userId);
     return undefined;
   },
+  userEmail() {
+    if (this.userId) return this.user().emails[0].address;
+    if (this.userEmail) return this.userEmail;
+    return undefined;
+  },
   displayName() {
     if (this.idCard) return this.idCard.name;
     if (this.userId) return this.user().displayName();
