@@ -31,7 +31,7 @@ Accounts.ui.config({
 
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
-  sendVerificationEmail: true, 
+  sendVerificationEmail: true,
  // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
   defaultTemplate: 'Auth_page',
   defaultLayout: 'Custom_body',
@@ -56,14 +56,21 @@ AccountsTemplates.configureRoute('resetPwd', {
   path: '/reset-password',
 });
 
-/*AccountsTemplates.configureRoute('verifyEmail', {
+AccountsTemplates.configureRoute('verifyEmail', {
   name: 'verifyEmail',
   path: '/verify-email',
-});*/
+  redirect() {
+    console.log('in redirect');
+    connectMe.call();
+  },
+});
 
 AccountsTemplates.configureRoute('enrollAccount', {
   name: 'enrollAccount',
   path: '/enroll-account',
+  redirect() {
+    connectMe.call();
+  },
 });
 
 
@@ -73,12 +80,12 @@ export function cleanExpiredEmails() {
     const expiredTokens = user.services.email.verificationTokens.filter(token => token.when < twoWeeksAgo);
     expiredTokens.forEach((token) => {
       const email = token.address;
-      Meteor.users.update({ _id: user._id }, { $pull: { emails: { address: email } } }); 
+      Meteor.users.update({ _id: user._id }, { $pull: { emails: { address: email } } });
     });
     expiredTokens.forEach((token) => {
       const email = token.address;
       Meteor.users.update({ _id: user._id }, { $pull: { 'services.email.verificationTokens': { address: email } } });
-    });   
+    });
   });
   Meteor.users.find({ 'emails.address': { $exists: false } }).forEach((user) => {
     Meteor.users.remove({ _id: user._id });
@@ -113,7 +120,7 @@ if (Meteor.isClient) {
     // the original user object plus the new callback
     createUser(user, newCallback);
   });
-
+/*
   Accounts.onEmailVerificationLink(function(token, done){
     Accounts.verifyEmail(token, (err) => {
       if (err) {
@@ -125,7 +132,7 @@ if (Meteor.isClient) {
     });
   });
 
-  /*Accounts.onEnrollmentLink(function(token, done){
+  Accounts.onEnrollmentLink(function(token, done){
     console.log('onenrollment link');
     // FlowRouter.go('/enroll-account/' + token);
     Accounts.resetPassword(token, newPassword, (err) => {
@@ -162,7 +169,7 @@ if (Meteor.isServer) {
   /*Accounts.urls.enrollAccount = function (token) {
     return Meteor.absoluteUrl('/#/enroll-account/' + token);
   };*/
-  
+
   Accounts.emailTemplates.siteName = 'Honline';
   Accounts.emailTemplates.from = 'Honline <noreply@honline.hu>';
 
@@ -172,7 +179,7 @@ if (Meteor.isServer) {
       const membership = Memberships.findOne({ userEmail: user.emails[0].address })
       const community = membership.community();
       const adminEmail = community.admin().userEmail();
-      
+
       return 'Dear ' + user + ','
       + '\nYou have been added as a member of community ' + community.name + ' with role: ' + membership.role + '.'
       + '\nIf you think you have been added by accident, or in fact not want to be part of that community,'
@@ -181,7 +188,7 @@ if (Meteor.isServer) {
       + '\n\nYou have been also invited to join the condominium management system,'
       + 'where you can follow the community issues, discuss them and even vote on them.'
       + 'You can start enjoying all its benefits as soon as you register your account with this email address.'
-  
+
       + '\n\nThe following link takes you to our simple one click registration:\n'
       + url + '\n\nThanks.';
     }
