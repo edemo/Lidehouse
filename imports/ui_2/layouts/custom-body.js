@@ -63,7 +63,7 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   this.autorun(() => {
     const activeCommunityId = Session.get('activeCommunityId');
     const user = Meteor.user();
-    if (!activeCommunityId && user) {
+    if (user && (!activeCommunityId || !user.isInCommunity(activeCommunityId))) {
       const communities = user.communities();
       if (communities.count() > 0) {
         const activeCommunity = communities.fetch()[0];

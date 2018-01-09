@@ -60,7 +60,6 @@ AccountsTemplates.configureRoute('verifyEmail', {
   name: 'verifyEmail',
   path: '/verify-email',
   redirect() {
-    console.log('in redirect');
     connectMe.call();
   },
 });
