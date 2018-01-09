@@ -8,7 +8,10 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { connectMe } from '/imports/api/memberships/methods.js';
 import { moment } from 'meteor/momentjs:moment';
+
 /*
+These not needed anymore, as we do a higher level configuration in the AccountTemplates package, which sets these
+
 Accounts.config({
   sendVerificationEmail: true,
   forbidClientAccountCreation: true,
@@ -33,10 +36,14 @@ AccountsTemplates.configure({
   showForgotPasswordLink: true,
   sendVerificationEmail: true,
  // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
+
   defaultTemplate: 'Auth_page',
   defaultLayout: 'Custom_body',
   defaultContentRegion: 'main',
   defaultLayoutRegions: {},
+
+  // https://stackoverflow.com/questions/12984637/is-there-a-post-createuser-hook-in-meteor-when-using-accounts-ui-package
+  // postSignUpHook(userId, info) { set some user settings here? },
 });
 
 AccountsTemplates.configureRoute('signIn', {
@@ -72,7 +79,6 @@ AccountsTemplates.configureRoute('enrollAccount', {
   },
 });
 
-
 export function cleanExpiredEmails() {
   const twoWeeksAgo = moment().subtract(2, 'week').toDate();
   Meteor.users.find({ 'services.email.verificationTokens': { $exists: true } }).forEach((user) => {
@@ -92,83 +98,10 @@ export function cleanExpiredEmails() {
 }
 
 if (Meteor.isClient) {
-  // https://stackoverflow.com/questions/12984637/is-there-a-post-createuser-hook-in-meteor-when-using-accounts-ui-package
-  Accounts.createUser = _.wrap(Accounts.createUser, function (createUser) {
-    console.log('overriding in func');
-    // Store the original arguments
-    const args = _.toArray(arguments).slice(1);
-    const user = args[0];
-    const origCallback = args[1];
-
-    // Create a new callback function
-    // Could also be defined elsewhere outside of this wrapped function
-    // This is called on the client
-    const newCallback = function(err) {
-      if (err) {
-        console.error(err);
-      } else {
-        console.info('success');
-      }
-    };
-
-    console.log('in createUser');
-    user.settings = {};
-    user.settings.language = TAPi18n.getLanguage();
-
-    // Now call the original create user function with
-    // the original user object plus the new callback
-    createUser(user, newCallback);
-  });
-/*
-  Accounts.onEmailVerificationLink(function(token, done){
-    Accounts.verifyEmail(token, (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        connectMe.call();
-        // done();
-      }
-    });
-  });
-
-  Accounts.onEnrollmentLink(function(token, done){
-    console.log('onenrollment link');
-    // FlowRouter.go('/enroll-account/' + token);
-    Accounts.resetPassword(token, newPassword, (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('great success');
-        connectMe.call();
-      }
-    });
-  });*/
+  // nothing to do
 }
 
 if (Meteor.isServer) {
-  // Overriding the onCreate hook
-  Accounts.onCreateUser((options, user) => {
-
-    console.log('in onCreateUser');
-    console.log(options);
-
-    // The default hook's 'profile' behavior.
-    if (options.profile) {
-      user.profile = options.profile;
-    }
-
-    // And the extra stuff we are adding
-    if (options.settings) {
-      user.settings = options.settings;
-    }
-
-    return user;
-  });
-
-  /*Accounts.urls.enrollAccount = function (token) {
-    return Meteor.absoluteUrl('/#/enroll-account/' + token);
-  };*/
-
   Accounts.emailTemplates.siteName = 'Honline';
   Accounts.emailTemplates.from = 'Honline <noreply@honline.hu>';
 

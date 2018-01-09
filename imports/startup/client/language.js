@@ -1,3 +1,4 @@
+/* globals window */
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
@@ -9,16 +10,18 @@ import { moment } from 'meteor/momentjs:moment';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { comtype } from '/imports/comtypes/comtype.js';
 
-function getDefaultLanguage() {
-  return 'en';    // Current default language is hungarian
+function getBrowserLanguage() {
+  // https://stackoverflow.com/questions/31471411/how-to-set-user-language-settings-in-meteor#31471877
+  const language = window.navigator.userLanguage || window.navigator.language;  // works IE/SAFARI/CHROME/FF
+  console.log('Browser language:', language);
+  return language.split('-')[0];
 }
 
-// TODO:  Use the session var to show loading while language loads
-// this prevents from displaying the default language while loading
-
-Meteor.startup(function setDefaultLanguage() {
+Meteor.startup(function setLanguage() {
+  // TODO:  Use the session var to show loading while language loads
+  // this prevents from displaying the default language while loading
   Session.set('showLoadingIndicator', true);
-  TAPi18n.setLanguage(getDefaultLanguage())
+  TAPi18n.setLanguage(getBrowserLanguage())
     .done(function handleSuccess() {
       Session.set('showLoadingIndicator', false);
     })
@@ -26,14 +29,17 @@ Meteor.startup(function setDefaultLanguage() {
       // TODO: Handle the situation
       console.log(errorMessage);
     });
-  T9n.setLanguage(getDefaultLanguage());
+  T9n.setLanguage(getBrowserLanguage());
 
   // Logged in users have language prefenence in their settings. So if user logs in, use that.
   Tracker.autorun(() => {
     const user = Meteor.user();
-    if (user) {
+    if (user && user.settings && user.settings.language) {
       TAPi18n.setLanguage(user.settings.language);
       T9n.setLanguage(user.settings.language);
+    } else {
+      TAPi18n.setLanguage(getBrowserLanguage());
+      T9n.setLanguage(getBrowserLanguage());
     }
   });
 

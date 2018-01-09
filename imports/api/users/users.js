@@ -43,7 +43,7 @@ const PersonProfileSchema = new SimpleSchema({
 });
 
 const UserSettingsSchema = new SimpleSchema({
-  language: { type: String, allowedValues: ['en', 'hu'], defaultValue: 'hu' },
+  language: { type: String, allowedValues: ['en', 'hu'], optional: true },
   delegatee: { type: Boolean, defaultValue: true },
 });
 
@@ -70,7 +70,7 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
-  profile: { type: PersonProfileSchema, defaultValue: {}, optional: true },
+  profile: { type: PersonProfileSchema, optional: true },
   avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar, optional: true },
   status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', optional: true, autoform: { omit: true } },
 
