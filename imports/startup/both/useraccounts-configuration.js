@@ -76,6 +76,7 @@ AccountsTemplates.configureRoute('enrollAccount', {
   path: '/enroll-account',
   redirect() {
     connectMe.call();
+    FlowRouter.go('/');
   },
 });
 
