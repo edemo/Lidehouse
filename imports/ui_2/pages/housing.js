@@ -23,44 +23,47 @@ import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
 import './housing.html';
 
-Template.Housing_page.onCreated(function () {
-  this.communityId = () => FlowRouter.getParam('_cid');
+Template.Housing_page.onCreated(function housingPageOnCreated() {
+  this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
 
   this.autorun(() => {
-    this.subscribe('communities.listing');
+    const communityId = this.getCommunityId();
+    this.subscribe('communities.byId', { _id: communityId });
   });
 });
 
 Template.Housing_page.helpers({
-  reactiveTableDataFm() {
-    return () => {
-      const communityId = Session.get('activeCommunityId');
-      return Parcels.find({ communityId }).fetch();
-    };
-  },
-  optionsFm() {
-    return () => {
-      return {
-        columns: parcelColumns(),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-      };
-    };
-  },
   community() {
-    return Communities.findOne({ _id: Session.get('activeCommunityId') });
+    const communityId = Template.instance().getCommunityId();
+    const community = Communities.findOne({ _id: communityId });
+    return community;
   },
   communities() {
     return Communities;
   },
-  reactiveTableDataFn() {
+  thingsToDisplayWithCounter() {
+    const result = [];
+    const communityId = Template.instance().getCommunityId();
+    result.push({
+      name: 'owner',
+      count: Memberships.find({ communityId, role: 'owner' }).count(),
+    });
+    Parcels.typeValues.forEach(type =>
+      result.push({
+        name: type,
+        count: Parcels.find({ communityId, type }).count(),
+      })
+    );
+    return result;
+  },
+  rolesTableDataFn() {
+    const templateInstance = Template.instance();
     return () => {
-      const communityId = Session.get('activeCommunityId');
-      console.log('warned cid:', communityId)
+      const communityId = templateInstance.getCommunityId();
       return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest'] } } }).fetch();
     };
   },
-  optionsFn() {
+  rolesOptionsFn() {
     return () => {
       return {
         columns: roleshipColumns(),
@@ -69,13 +72,29 @@ Template.Housing_page.helpers({
       };
     };
   },
+  parcelsTableDataFn() {
+    const templateInstance = Template.instance();
+    return () => {
+      const communityId = templateInstance.getCommunityId();
+      return Parcels.find({ communityId }).fetch();
+    };
+  },
+  parcelsOptionsFn() {
+    return () => {
+      return {
+        columns: parcelColumns(),
+        tableClasses: 'display',
+        language: datatables_i18n[TAPi18n.getLanguage()],
+      };
+    };
+  },
 });
 
 Template.Housing_page.events({
+  // 'click .js-save-form'() {
+  //  console.log("Update all the forms")
+  //},
   //roleship events
-  'click .js-save-form'() {
-    console.log("Update all the forms")
-  },
   'click .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',

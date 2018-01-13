@@ -40,7 +40,7 @@ export function insertDemoFixture(lang) {
     street: __('demo.street'),
     number: '86',
     lot: '123456/1234',
-    image: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
+    avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
     totalunits: 100,
   });
 

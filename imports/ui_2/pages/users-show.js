@@ -21,7 +21,7 @@ Template.Users_show.onCreated(function usersShowPageOnCreated() {
   this.getUserId = () => FlowRouter.getParam('_id');
 
   this.autorun(() => {
-    this.subscribe('users.byId', { userId: this.getUserId() });
+    this.subscribe('users.byId', { _id: this.getUserId() });
   });
 });
 

@@ -11,10 +11,10 @@ Meteor.publish(null, function self() {
 // And can subscribe to the public fields of other users
 Meteor.publish('users.byId', function userById(params) {
   new SimpleSchema({
-    userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validate(params);
 
-  const { userId } = params;
+  const { _id } = params;
 
-  return Meteor.users.find({ _id: userId }, { fields: Meteor.users.publicFields });
+  return Meteor.users.find({ _id }, { fields: Meteor.users.publicFields });
 });
