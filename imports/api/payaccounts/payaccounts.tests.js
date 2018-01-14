@@ -3,7 +3,8 @@ import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { PayAccounts } from './payaccounts';
-import { PaymentReport, yearTags, phaseTags } from './reports';
+import { PaymentReport } from './payment-report';
+import { yearTags, phaseTags } from './payaccounts-utils';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -84,16 +85,24 @@ if (Meteor.isServer) {
       ];
       chai.assert.deepEqual(leafOptions, expectedLeafOptions);
     });
-
+    
     it('reports', function () {
-      const rowTree1 = PayAccounts._transform(phaseTags);
-      const rowTree2 = PayAccounts._transform(yearTags);
-      const columnTree = PayAccounts._transform(testPayAccount);
-      
       const report = new PaymentReport();
-      report.addTree('rows', rowTree1, false, false);
-      report.addTree('rows', rowTree2, true, false);
-      report.addTree('cols', columnTree, false, false);
+
+      report.addTree('rows', {
+        field: 'phase',
+        values: PayAccounts._transform(phaseTags),
+      }, false, false);
+
+      report.addTree('rows', {
+        field: 'month',
+        values: PayAccounts._transform(yearTags),
+      }, true, false);
+
+      report.addTree('cols', {
+        field: 'accounts.test',
+        values: PayAccounts._transform(testPayAccount),
+      }, false, false);
     });
   });
 }
