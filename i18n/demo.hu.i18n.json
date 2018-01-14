@@ -32,7 +32,9 @@
       "4": {
         "firstName": "Emilia",
         "lastName": "Barna"
-      }
+      },
+      "boyNames": ["Ádám", "Dávid", "Tamás", "Jakab", "István", "András"],
+      "girlNames": ["Éva", "Margit", "Zsuzsa", "Róza", "Marika", "Júlia"]
     },
     "topic": {
       "0": {

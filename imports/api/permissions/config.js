@@ -4,7 +4,7 @@ import { _ } from 'meteor/underscore';
 import { Roles } from './roles.js';
 import { Permissions } from './permissions.js';
 
-const defaultRoles = [
+export const defaultRoles = [
   { name: 'admin' },        // Creator of the community. Can give out all other roles and take them back.
   { name: 'manager' },      // The manager (kk) of the community. Registers owners.
   { name: 'owner' },        // Title holder of a parcel. Has voting rights.

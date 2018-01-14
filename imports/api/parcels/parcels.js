@@ -58,7 +58,7 @@ Parcels.helpers({
   },
   ownedShare() {
     let total = new Fraction(0);
-    Memberships.find({ parcelId: this._id }).forEach(p => total = total.add(p.ownership.share));
+    Memberships.find({ parcelId: this._id, role: 'owner' }).forEach(p => total = total.add(p.ownership.share));
     return total;
   },
   representor() {
