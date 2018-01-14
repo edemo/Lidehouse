@@ -11,7 +11,7 @@ import { Fraction } from 'fractional';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { insert as insertMembership, update as updateMembership, remove as removeMembership  } from '/imports/api/memberships/methods.js';
-import { everybody } from '/imports/api/permissions/config.js';
+import { everybody, defaultRoles } from '/imports/api/permissions/config.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 
 if (Meteor.isServer) {
@@ -34,7 +34,7 @@ if (Meteor.isServer) {
           'memberships.inCommunity',
           { communityId: Fixture.demoCommunityId },
           (collections) => {
-            chai.assert.equal(collections.memberships.length, 13);
+            chai.assert.equal(collections.memberships.length, defaultRoles.length + 10);
             chai.assert.equal(collections.parcels.length, 5);
             done();
           }

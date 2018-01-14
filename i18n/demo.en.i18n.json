@@ -32,7 +32,9 @@
       "4": {
         "firstName": "Emilia",
         "lastName": "Brown"
-      }
+      },
+      "boyNames": ["Adam", "David","Thomas", "James", "Steve", "Andrew"],
+      "girlNames": ["Eve", "Maggie", "Sue", "Rose", "Mary", "Julie"]
     },
     "topic": {
       "0": {
