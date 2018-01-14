@@ -56,19 +56,21 @@
               <label for="houseName">Leírás</label>
               <textarea class="form-control vert" id="houseWelcome" placeholder="Welcome" rows="12"></textarea>
             </div-->
-            <div class="row">
-              <div class="col-xs-12 text-center">
-                <h4 class="page-title">{{_ 'roles'}}</h4>
+            <div class="roles-section">
+              <div class="row">
+                <div class="col-xs-12 text-center">
+                  <h4 class="page-title">{{_ 'roles'}}</h4>
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-12">
-                {{> ReactiveDatatable tableData=rolesTableDataFn options=rolesOptionsFn }}
+              <div class="row">
+                <div class="col-xs-12">
+                  {{> ReactiveDatatable tableData=rolesTableDataFn options=rolesOptionsFn }}
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-12 text-center">
-                <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
+              <div class="row">
+                <div class="col-xs-12 text-center">
+                  <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
+                </div>
               </div>
             </div>
           </div>
@@ -78,21 +80,23 @@
             {{/each}}
           </ul>
         </div>
-        <div class="row">
-          <div class="col-xs-12">
-            <hr>
-            <h4>{{_ "Parcels of community"}}</h4>
-            <br>
+        <div class="parcels-section">
+          <div class="row">
+            <div class="col-xs-12">
+              <hr>
+              <h4>{{_ "Parcels of community"}}</h4>
+              <br>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-12">
-            {{#Collapse_section id='parcel' title='parcels' collapsed=true}}
-              <div class="table-responsive">
-               {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
-              </div>
-              <button class="js-parcel-new btn-primary">{{_ 'createNew'}}</button>
-            {{/Collapse_section}}
+          <div class="row">
+            <div class="col-xs-12">
+              {{#Collapse_section id='parcel' title='parcels' collapsed=true}}
+                <div class="table-responsive">
+                {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
+                </div>
+                <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
+              {{/Collapse_section}}
+            </div>
           </div>
         </div>
       </div>

@@ -94,8 +94,8 @@ Template.Housing_page.events({
   // 'click .js-save-form'() {
   //  console.log("Update all the forms")
   //},
-  //roleship events
-  'click .js-new'() {
+  // roleship events
+  'click .roles-section .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',
       collection: Memberships,
@@ -105,7 +105,7 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-edit'(event) {
+  'click .roles-section .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.roleship.update',
@@ -118,7 +118,7 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-view'(event) {
+  'click .roles-section .js-view'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.roleship.view',
@@ -129,14 +129,14 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-delete'(event) {
+  'click .roles-section .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeMembership, { _id: id }, {
       action: 'delete roleship',
     });
   },
-  //parcel events
-  'click .js-parcel-new'(event, instance) {
+  // parcel events
+  'click .parcels-section .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.parcel.insert',
       collection: Parcels,
@@ -145,7 +145,7 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-parcel-edit'(event) {
+  'click .parcels-section .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.update',
@@ -157,7 +157,7 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-parcel-view'(event) {
+  'click .parcels-section .js-view'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.view',
@@ -167,7 +167,7 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-parcel-delete'(event) {
+  'click .parcels-section .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeParcel, { _id: id }, {
       action: 'delete parcel',

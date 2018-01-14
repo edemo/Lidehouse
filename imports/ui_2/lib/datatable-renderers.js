@@ -16,24 +16,12 @@ export const Render = {
     const html = `<span data-id=${cellData} title=${__('view')} class="js-view nav-item glyphicon glyphicon-eye-open"></span>`;
     return html;
   },
-  buttonParcelView(cellData, renderType, currentRow) {
-    const html = `<span data-id=${cellData} title=${__('view')} class="js-parcel-view nav-item glyphicon glyphicon-eye-open"></span>`;
-    return html;
-  },
   buttonEdit(cellData, renderType, currentRow) {
     const html = `<span data-id=${cellData} title=${__('edit')} class="js-edit nav-item icon-edit"></span>`;
     return html;
   },
-  buttonParcelEdit(cellData, renderType, currentRow) {
-    const html = `<span data-id=${cellData} title=${__('edit')} class="js-parcel-edit nav-item icon-edit"></span>`;
-    return html;
-  },
   buttonDelete(cellData, renderType, currentRow) {
     const html = `<span data-id=${cellData} title=${__('delete')} class="js-delete nav-item icon-trash"></span>`;
-    return html;
-  },
-  buttonParcelDelete(cellData, renderType, currentRow) {
-    const html = `<span data-id=${cellData} title=${__('delete')} class="js-parcel-delete nav-item icon-trash"></span>`;
     return html;
   },
   buttonRemove(cellData, renderType, currentRow) {

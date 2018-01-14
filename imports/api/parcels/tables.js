@@ -10,9 +10,9 @@ export function parcelColumns() {
     { data: 'area', title: __('schemaParcels.area.label') },
     { data: 'share()', title: __('schemaParcels.units.label') },
     { data: 'displayNames()', title: __('owner') + '/' + __('benefactor') },
-    { data: '_id', render: Render.buttonParcelView },
-    { data: '_id', render: Render.buttonParcelEdit },
+    { data: '_id', render: Render.buttonView },
+    { data: '_id', render: Render.buttonEdit },
     { data: '_id', render: Render.buttonAssignParcelOwner },
-    { data: '_id', render: Render.buttonParcelDelete },
+    { data: '_id', render: Render.buttonDelete },
   ];
 }
