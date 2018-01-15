@@ -1,22 +1,9 @@
 <template name="Custom_body">
   {{#HammerTouchArea gestureMap=templateGestures}}
     <div id="container" class="{{menuOpen}} {{cordova}}">
-      <div class="right-orange">
-        <a href="#" class="js-menu nav-item pull-left nav-hamburger">
-          <span class="icon-topic-unordered"></span>
-        </a>
       {{#if currentUser}}
-        <ul class="nav pull-right">
-          <li class="drop profile-drop">
-            {{currentUser.fullName}}
-            <img src="{{currentUser.avatar}}" class="img-circle" alt="" width="35"/>
-            <ul>
-              <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}">{{_ 'profile'}}</a></li>
-              <li><a class="js-logout" href="">{{_ 'logout'}}</a></li>
-            </ul>
-          </li>
-        </ul>
       {{else}}
+      <div class="right-orange">
         <div class="btns-group top-sign-in-b pull-right">
           <a href="{{pathFor 'signin'}}" class="btn-secondary">
             {{_ 'login'}}
@@ -26,9 +13,10 @@
             {{_ 'register'}}
           </a>
         </div>
-      {{/if}}
       </div>
+      {{/if}}
 
+      {{#if currentUser}}
       <!-- Side panel -->
       <section id="menu">
         <div class="pic-menu">
@@ -144,6 +132,7 @@
           </ul>
         </div>
       </section>
+      {{/if}}
 
       {{#unless connected}}
         <div class="notifications">
@@ -163,7 +152,19 @@
 
       <div class="content-overlay"></div>
 
+      {{#if currentUser}}
       <div id="content-container">
+          {{#momentum plugin="fade"}}
+          {{#if Template.subscriptionsReady}}
+            {{> Template.dynamic template=main}}
+          {{else}}
+            {{> App_loading}}
+          {{/if}}
+        {{/momentum}}
+      </div>
+
+      {{else}}
+      <div id="content-container" class="loggedoff-sidebar">
 
         {{#momentum plugin="fade"}}
           {{#if Template.subscriptionsReady}}
@@ -173,6 +174,7 @@
           {{/if}}
         {{/momentum}}
       </div>
+      {{/if}}
     </div>
 
     <div id="feedback-pane" class="collapse">
