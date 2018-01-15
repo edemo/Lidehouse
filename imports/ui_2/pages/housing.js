@@ -178,6 +178,9 @@ Template.Housing_page.events({
   },
 });
 
+AutoForm.addModalHooks('af.community.update');
+AutoForm.addModalHooks('af.community.name_update');
+
 AutoForm.addModalHooks('af.roleship.insert');
 AutoForm.addModalHooks('af.roleship.update');
 AutoForm.addHooks('af.roleship.insert', {

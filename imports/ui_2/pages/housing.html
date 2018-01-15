@@ -19,7 +19,7 @@
               <a href="{{community/avatar}}" class="simple-lightbox"><img src="{{community/avatar}}" alt="community avatar" width="100%" /></a>
             </div>
             <div>
-            {{#autoForm id="communities_show" collection=communities omitFields="name,description" doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
+            {{#autoForm id="af.community.update" collection=communities omitFields="name,description" doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
               {{> afQuickFields}}
               {{#if userHasPermission 'communities.update' community/_id}}
                 <div class="row">
@@ -38,7 +38,7 @@
           </div>
           <div class="col-xs-12 col-md-6 col-lg-8">
             <div>
-              {{#autoForm id="communities_name" collection=communities doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
+              {{#autoForm id="af.community.name_update" collection=communities doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
               {{> afQuickField name='name'}}
               {{> afQuickField name='description' rows=12}}
               <!--{{#markdown}}{{{markdown_data}}}{{/markdown}}-->
