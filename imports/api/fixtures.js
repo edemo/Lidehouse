@@ -108,8 +108,8 @@ export function insertDemoFixture(lang) {
   let demoManagerId;
   let demoAdminId;
   defaultRoles.forEach(function (role) {
-    const boyNames = __('demo.user.boyNames').split("\n");
-    const girlNames = __('demo.user.girlNames').split("\n");
+    const boyNames = __('demo.user.boyNames').split('\n');
+    const girlNames = __('demo.user.girlNames').split('\n');
     const firstNames = boyNames.concat(girlNames);
     const avatarBoys = ['http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png',
       'http://pannako.hu/wp-content/uploads/avatar-1.png',
@@ -121,8 +121,8 @@ export function insertDemoFixture(lang) {
       'http://pannako.hu/wp-content/uploads/avatar-4.png',
       'http://pannako.hu/wp-content/uploads/avatar-6.png',
       'http://pannako.hu/wp-content/uploads/avatar-8.png'];
-    const userWithRoleId = Accounts.createUser({ email: role.name + `@demo.${com}`, password: 'password', 
-      profile: { lastName: role.name.charAt(0).toUpperCase() + role.name.slice(1), firstName: _.sample(firstNames) } }); 
+    const userWithRoleId = Accounts.createUser({ email: role.name + `@demo.${com}`, password: 'password',
+      profile: { lastName: role.name.charAt(0).toUpperCase() + role.name.slice(1), firstName: _.sample(firstNames) } });
     const user = Meteor.users.findOne(userWithRoleId);
     if (boyNames.includes(user.profile.firstName)) {
       Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarBoys), 'settings.language': lang } });
@@ -130,11 +130,11 @@ export function insertDemoFixture(lang) {
       Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarGirls), 'settings.language': lang } });
     }
     if (role.name === 'owner') {
-      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name, 
+      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name,
         parcelId: dummyParcels[0], ownership: { share: new Fraction(1, 10) } });
       demoUserId = userWithRoleId;
     } else if (role.name === 'benefactor') {
-      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name, 
+      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name,
         parcelId: dummyParcels[0], benefactorship: { type: 'rental' } });
     } else {
       Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name });
@@ -144,7 +144,7 @@ export function insertDemoFixture(lang) {
   });
 
   // ===== Dummy Users =====
-  
+
   const dummyUsers = [];
   dummyUsers[0] = Meteor.users.insert({
     emails: [{ address: `user.0@demo.${com}`, verified: true }],

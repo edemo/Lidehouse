@@ -127,6 +127,7 @@ export const HouseTranslation = {
     "Join a community": "Csatlakozás egy házhoz",
     "Create a community": "Létrehozok egy házat",
     "Parcels of community": "A házhoz tartozó albetétek",
+    "Community page": "Házlap",
     "ownership": "albetét",
     "ownerships": "albetétek",
 
