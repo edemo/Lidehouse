@@ -6,6 +6,13 @@ import '/imports/api/users/users.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { canAddMemberWithRole } from '/imports/api/permissions/config.js';
 
+export function checkLoggedIn(userId) {
+  if (!userId) {
+    throw new Meteor.Error('err_notLoggedIn',
+      'Only logged in users can perform this activity.');
+  }
+}
+
 export function checkExists(collection, objectId) {
   // Checks that a *collection* already contains a doc with given *objectId*
   const object = collection.findOne(objectId);
@@ -17,12 +24,12 @@ export function checkExists(collection, objectId) {
   return object;
 }
 
-export function checkNotExists(collection, objectId) {
+export function checkNotExists(collection, predicate) {
   // Checks that a *collection* does not yet contain a doc with given *objectId*
-  const object = collection.findOne(objectId);
+  const object = collection.findOne(predicate);
   if (!object) {
     throw new Meteor.Error('err_duplicateId', 'This id is already used',
-      `Collection: ${collection._name}, id: ${objectId}`
+      `Collection: ${collection._name}, id: ${predicate}`
     );
   }
 }

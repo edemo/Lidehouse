@@ -41,6 +41,9 @@ Template.Housing_page.helpers({
   communities() {
     return Communities;
   },
+  autoformType(communityId) {
+    return Meteor.user().hasPermission('communities.update', communityId) ? 'method-update' : 'readonly';
+  },
   thingsToDisplayWithCounter() {
     const result = [];
     const communityId = Template.instance().getCommunityId();
