@@ -67,9 +67,16 @@ Template.Housing_page.helpers({
     };
   },
   rolesOptionsFn() {
+    const templateInstance = Template.instance();
     return () => {
+      const communityId = templateInstance.getCommunityId();
+      const permissions = {
+        view: Meteor.user().hasPermission('memberships.listing', communityId),
+        edit: Meteor.user().hasPermission('roleships.update', communityId),
+        delete: Meteor.user().hasPermission('roleships.update', communityId),
+      };
       return {
-        columns: roleshipColumns(),
+        columns: roleshipColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
@@ -83,9 +90,17 @@ Template.Housing_page.helpers({
     };
   },
   parcelsOptionsFn() {
+    const templateInstance = Template.instance();
     return () => {
+      const communityId = templateInstance.getCommunityId();
+      const permissions = {
+        view: Meteor.user().hasPermission('parcels.listing', communityId),
+        edit: Meteor.user().hasPermission('parcels.update', communityId),
+        delete: Meteor.user().hasPermission('parcels.update', communityId),
+        assign: Meteor.user().hasPermission('parcels.assign', communityId),
+      };
       return {
-        columns: parcelColumns(),
+        columns: parcelColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
