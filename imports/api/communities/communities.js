@@ -22,6 +22,10 @@ Communities.schema = new SimpleSchema([
   { totalunits: { type: Number } },
 ]);
 
+Communities.publicFields = {
+  totalunits: 0,
+};
+
 Communities.helpers({
   registeredUnits() {
     let total = 0;

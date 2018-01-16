@@ -30,9 +30,9 @@ export const canAddMemberWithRole = {
 };
 
 const permissions = [
+  { name: 'communities.details',    roles: exceptGuest },
 //  { name: 'communities.insert',     roles: everybody },
   { name: 'communities.update',     roles: ['admin'] },
-  { name: 'communities.listing',    roles: everybody },
   { name: 'memberships.listing',    roles: exceptGuest },
   { name: 'roleships.update',       roles: ['admin', 'manager'] },
   { name: 'ownerships.update',      roles: ['admin', 'manager'] },

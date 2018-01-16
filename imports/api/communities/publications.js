@@ -6,9 +6,16 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Communities } from './communities.js';
 import { Memberships } from '../memberships/memberships';
 
+function visibleFields(userId, communityId) {
+  const user = Meteor.users.findOne(userId);
+  if (user.hasPermission('communities.details', communityId)) {
+    return {};  // all fields
+  }
+  return Communities.publicFields;
+}
+
 Meteor.publish('communities.listing', function communitiesListing() {
-  const visibleFields = { finances: 0 };
-  return Communities.find({}, visibleFields);
+  return Communities.find({}, { fields: Communities.publicFields });
 });
 
 Meteor.publishComposite('communities.byId', function communitiesById(params) {
@@ -20,7 +27,7 @@ Meteor.publishComposite('communities.byId', function communitiesById(params) {
 
   return {
     find() {
-      return Communities.find({ _id });
+      return Communities.find({ _id }, { fields: visibleFields(this.userId, _id) });
     },
 
     children: [{
@@ -36,4 +43,3 @@ Meteor.publishComposite('communities.byId', function communitiesById(params) {
     }],
   };
 });
-
