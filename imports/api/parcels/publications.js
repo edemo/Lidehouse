@@ -7,12 +7,18 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 // import { Communities } from '../communities/communities.js';
 import { Parcels } from '../parcels/parcels.js';
 
-Meteor.publish('parcels.inCommunity', function parcelsInCommunity(params) {
+Meteor.publish('parcels.listing', function parcelsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
 
   const { communityId } = params;
 
+  // Checking permissions for visibilty
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('parcels.listing', communityId)) {
+    this.ready();
+    return;
+  }
   return Parcels.find({ communityId });
 });

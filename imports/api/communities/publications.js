@@ -2,12 +2,12 @@
 
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-
+import { nullUser } from '../users/users.js';
 import { Communities } from './communities.js';
 import { Memberships } from '../memberships/memberships';
 
 function visibleFields(userId, communityId) {
-  const user = Meteor.users.findOne(userId);
+  const user = Meteor.users.findOneOrNull(userId);
   if (user.hasPermission('communities.details', communityId)) {
     return {};  // all fields
   }
@@ -37,7 +37,7 @@ Meteor.publishComposite('communities.byId', function communitiesById(params) {
 
       children: [{
         find(membership) {
-          return Meteor.users.find({ _id: membership.userId });
+          return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
         },
       }],
     }],

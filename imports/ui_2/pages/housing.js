@@ -29,6 +29,7 @@ Template.Housing_page.onCreated(function housingPageOnCreated() {
   this.autorun(() => {
     const communityId = this.getCommunityId();
     this.subscribe('communities.byId', { _id: communityId });
+    this.subscribe('parcels.listing', { communityId });
   });
 });
 
@@ -42,7 +43,7 @@ Template.Housing_page.helpers({
     return Communities;
   },
   autoformType(communityId) {
-    return Meteor.user().hasPermission('communities.update', communityId) ? 'method-update' : 'readonly';
+    return Meteor.userOrNull().hasPermission('communities.update', communityId) ? 'method-update' : 'readonly';
   },
   thingsToDisplayWithCounter() {
     const result = [];
@@ -71,9 +72,9 @@ Template.Housing_page.helpers({
     return () => {
       const communityId = templateInstance.getCommunityId();
       const permissions = {
-        view: Meteor.user().hasPermission('memberships.listing', communityId),
-        edit: Meteor.user().hasPermission('roleships.update', communityId),
-        delete: Meteor.user().hasPermission('roleships.update', communityId),
+        view: Meteor.userOrNull().hasPermission('memberships.listing', communityId),
+        edit: Meteor.userOrNull().hasPermission('roleships.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('roleships.remove', communityId),
       };
       return {
         columns: roleshipColumns(permissions),
@@ -94,10 +95,10 @@ Template.Housing_page.helpers({
     return () => {
       const communityId = templateInstance.getCommunityId();
       const permissions = {
-        view: Meteor.user().hasPermission('parcels.listing', communityId),
-        edit: Meteor.user().hasPermission('parcels.update', communityId),
-        delete: Meteor.user().hasPermission('parcels.update', communityId),
-        assign: Meteor.user().hasPermission('parcels.assign', communityId),
+        view: Meteor.userOrNull().hasPermission('parcels.listing', communityId),
+        edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('parcels.update', communityId),
+        assign: Meteor.userOrNull().hasPermission('parcels.assign', communityId),
       };
       return {
         columns: parcelColumns(permissions),
