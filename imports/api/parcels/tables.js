@@ -1,7 +1,7 @@
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 
-export function parcelColumns() {
+export function parcelColumns(permissions) {
   return [
     { data: 'serial', title: __('schemaParcels.serial.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
@@ -10,9 +10,9 @@ export function parcelColumns() {
     { data: 'area', title: __('schemaParcels.area.label') },
     { data: 'share()', title: __('schemaParcels.units.label') },
     { data: 'displayNames()', title: __('owner') + '/' + __('benefactor') },
-    { data: '_id', render: Render.buttonParcelView },
-    { data: '_id', render: Render.buttonParcelEdit },
-    { data: '_id', render: Render.buttonAssignParcelOwner },
-    { data: '_id', render: Render.buttonParcelDelete },
+    permissions.view ? { data: '_id', render: Render.buttonView } : {},
+    permissions.edit ? { data: '_id', render: Render.buttonEdit } : {},
+    permissions.assign ? { data: '_id', render: Render.buttonAssignParcelOwner } : {},
+    permissions.delete ? { data: '_id', render: Render.buttonDelete } : {},
   ];
 }

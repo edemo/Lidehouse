@@ -23,47 +23,85 @@ import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
 import './housing.html';
 
-Template.Housing_page.onCreated(function () {
-  this.communityId = () => FlowRouter.getParam('_cid');
+Template.Housing_page.onCreated(function housingPageOnCreated() {
+  this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
 
   this.autorun(() => {
-    this.subscribe('communities.listing');
+    const communityId = this.getCommunityId();
+    this.subscribe('communities.byId', { _id: communityId });
+    this.subscribe('parcels.listing', { communityId });
   });
 });
 
 Template.Housing_page.helpers({
-  reactiveTableDataFm() {
+  community() {
+    const communityId = Template.instance().getCommunityId();
+    const community = Communities.findOne({ _id: communityId });
+    return community;
+  },
+  communities() {
+    return Communities;
+  },
+  autoformType(communityId) {
+    return Meteor.userOrNull().hasPermission('communities.update', communityId) ? 'method-update' : 'readonly';
+  },
+/*  thingsToDisplayWithCounter() {
+    const result = [];
+    const communityId = Template.instance().getCommunityId();
+    result.push({
+      name: 'owner',
+      count: Memberships.find({ communityId, role: 'owner' }).count(),
+    });
+    Parcels.typeValues.forEach(type =>
+      result.push({
+        name: type,
+        count: Parcels.find({ communityId, type }).count(),
+      })
+    );
+    return result;
+  },*/
+  rolesTableDataFn() {
+    const templateInstance = Template.instance();
     return () => {
-      const communityId = Session.get('activeCommunityId');
-      return Parcels.find({ communityId }).fetch();
+      const communityId = templateInstance.getCommunityId();
+      return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest'] } } }).fetch();
     };
   },
-  optionsFm() {
+  rolesOptionsFn() {
+    const templateInstance = Template.instance();
     return () => {
+      const communityId = templateInstance.getCommunityId();
+      const permissions = {
+        view: Meteor.userOrNull().hasPermission('memberships.listing', communityId),
+        edit: Meteor.userOrNull().hasPermission('roleships.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('roleships.remove', communityId),
+      };
       return {
-        columns: parcelColumns(),
+        columns: roleshipColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
     };
   },
-  community() {
-    return Communities.findOne({ _id: Session.get('activeCommunityId') });
-  },
-  communities() {
-    return Communities;
-  },
-  reactiveTableDataFn() {
+  parcelsTableDataFn() {
+    const templateInstance = Template.instance();
     return () => {
-      const communityId = Session.get('activeCommunityId');
-      console.log('warned cid:', communityId)
-      return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest'] } } }).fetch();
+      const communityId = templateInstance.getCommunityId();
+      return Parcels.find({ communityId }).fetch();
     };
   },
-  optionsFn() {
+  parcelsOptionsFn() {
+    const templateInstance = Template.instance();
     return () => {
+      const communityId = templateInstance.getCommunityId();
+      const permissions = {
+        view: Meteor.userOrNull().hasPermission('parcels.listing', communityId),
+        edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('parcels.update', communityId),
+        assign: Meteor.userOrNull().hasPermission('parcels.assign', communityId),
+      };
       return {
-        columns: roleshipColumns(),
+        columns: parcelColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
@@ -72,11 +110,11 @@ Template.Housing_page.helpers({
 });
 
 Template.Housing_page.events({
-  //roleship events
-  'click .js-save-form'() {
-    console.log("Update all the forms")
-  },
-  'click .js-new'() {
+  // 'click .js-save-form'() {
+  //  console.log("Update all the forms")
+  //},
+  // roleship events
+  'click .roles-section .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',
       collection: Memberships,
@@ -86,7 +124,7 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-edit'(event) {
+  'click .roles-section .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.roleship.update',
@@ -99,7 +137,7 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-view'(event) {
+  'click .roles-section .js-view'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.roleship.view',
@@ -110,14 +148,14 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-delete'(event) {
+  'click .roles-section .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeMembership, { _id: id }, {
       action: 'delete roleship',
     });
   },
-  //parcel events
-  'click .js-parcel-new'(event, instance) {
+  // parcel events
+  'click .parcels-section .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.parcel.insert',
       collection: Parcels,
@@ -126,7 +164,7 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-parcel-edit'(event) {
+  'click .parcels-section .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.update',
@@ -138,7 +176,7 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-parcel-view'(event) {
+  'click .parcels-section .js-view'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.view',
@@ -148,13 +186,16 @@ Template.Housing_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-parcel-delete'(event) {
+  'click .parcels-section .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeParcel, { _id: id }, {
       action: 'delete parcel',
     });
   },
 });
+
+AutoForm.addModalHooks('af.community.update');
+AutoForm.addModalHooks('af.community.name_update');
 
 AutoForm.addModalHooks('af.roleship.insert');
 AutoForm.addModalHooks('af.roleship.update');

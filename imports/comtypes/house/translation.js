@@ -12,14 +12,18 @@ export const HouseTranslation = {
 
     "flat": "Apartment",
     "parking": "Parking",
-    "storage": "Stroage",
+    "storage": "Storage",
 
     "schemaCommunities": {
       "name": {
         "label": "Name of the Building",
         "placeholder": "(eg. Marina Gardens)"
       },
-      "image": {
+      "description": {
+        "label": "Description",
+        "placeholder": "Welcome to our community's page!"
+      },
+      "avatar": {
         "label": "Image",
         "placeholder": "(pl. kajol-lak.jpg)"
       },
@@ -122,6 +126,8 @@ export const HouseTranslation = {
     "community": "társasház",
     "Join a community": "Csatlakozás egy házhoz",
     "Create a community": "Létrehozok egy házat",
+    "Parcels of community": "A házhoz tartozó albetétek",
+    "Community page": "Házlap",
     "ownership": "albetét",
     "ownerships": "albetétek",
 
@@ -134,7 +140,11 @@ export const HouseTranslation = {
         "label": "Társasház neve",
         "placeholder": "(pl. Rózsakert lakópark vagy Kankalin u 45)"
       },
-      "image": {
+      "description": {
+        "label": "Leírás",
+        "placeholder": "Üdvözlünk a társasházunk oldalán!"
+      },
+      "avatar": {
         "label": "Fotó",
         "placeholder": "(pl. kajol-lak.jpg)"
       },

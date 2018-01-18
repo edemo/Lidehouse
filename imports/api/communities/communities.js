@@ -12,12 +12,19 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export const Communities = new Mongo.Collection('communities');
 
+const defaultAvatar = 'http://clipart-library.com/image_gallery/215485.png';
+
 Communities.schema = new SimpleSchema([
   { name: { type: String, max: 100 } },
-  { image: { type: String, regEx: SimpleSchema.RegEx.Url, optional: true } },
+  { description: { type: String, max: 1200, optional: true } },
+  { avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar } },
   comtype.profileSchema,
   { totalunits: { type: Number } },
 ]);
+
+Communities.publicFields = {
+  totalunits: 0,
+};
 
 Communities.helpers({
   registeredUnits() {
@@ -26,8 +33,8 @@ Communities.helpers({
     return total;
   },
   admin() {
-		return Memberships.findOne({ communityId: this._id, role: 'admin' });
-	},
+    return Memberships.findOne({ communityId: this._id, role: 'admin' });
+  },
   users() {
     const users = Memberships.find({ communityId: this._id, userId: { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);

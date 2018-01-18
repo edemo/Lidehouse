@@ -2,12 +2,14 @@ import { Meteor } from 'meteor/meteor';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
+import { _ } from 'meteor/underscore';
 
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { update as updateCommunity } from '/imports/api/communities/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { defaultRoles } from '/imports/api/permissions/config.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
@@ -40,50 +42,11 @@ export function insertDemoFixture(lang) {
     street: __('demo.street'),
     number: '86',
     lot: '123456/1234',
-    image: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
+    avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
     totalunits: 100,
   });
 
-  // ===== Users =====
-
-  // Someone can log in as the demo user, if he doesn't want to register
-  const com = { en: 'com', hu: 'hu' }[lang];
-  const demoUserId = Accounts.createUser({ email: `demo.user@demo.${com}`, password: 'password', settings: { language: lang } });
-  const demoAdminId = Accounts.createUser({ email: `demo.admin@demo.${com}`, password: 'password', settings: { language: lang } });
-  const demoManagerId = Accounts.createUser({ email: `demo.manager@demo.${com}`, password: 'password', settings: { language: lang } });
-  [demoUserId, demoAdminId, demoManagerId].forEach(function (userId) {
-    Meteor.users.update({ _id: userId }, { $set: { 'emails.0.verified': true } });
-  });
-  const dummyUsers = [];
-  dummyUsers[0] = Meteor.users.insert({
-    emails: [{ address: `user.0@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.0.lastName'), firstName: __('demo.user.0.firstName'), phone: '06 30 234 5678' },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-2.png',
-    status: 'online',
-  });
-  dummyUsers[1] = Meteor.users.insert({
-    emails: [{ address: `user.1@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.1.lastName'), firstName: __('demo.user.1.firstName'), phone: '+36 70 1234 567' },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-7.png',
-  });
-  dummyUsers[2] = Meteor.users.insert({
-    emails: [{ address: `user.2@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.2.lastName'), firstName: __('demo.user.2.firstName') },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-6.png',
-    status: 'standby',
-  });
-  dummyUsers[3] = Meteor.users.insert({
-    emails: [{ address: `user.3@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.3.lastName'), firstName: __('demo.user.3.firstName') },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-5.png',
-  });
-  dummyUsers[4] = Meteor.users.insert({
-    emails: [{ address: `user.4@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.4.lastName'), firstName: __('demo.user.4.firstName') },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-3.png',
-  });
-
-  // ===== Parcels =====
+// ===== Parcels =====
 
   const dummyParcels = [];
   dummyParcels[0] = Parcels.insert({
@@ -137,27 +100,82 @@ export function insertDemoFixture(lang) {
     area: 70,
   });
 
+  // ===== Demo Users with Memberships =====
+
+  // Someone can log in as the demo user, if he doesn't want to register
+  const com = { en: 'com', hu: 'hu' }[lang];
+  let demoUserId;
+  let demoManagerId;
+  let demoAdminId;
+  defaultRoles.forEach(function (role) {
+    const boyNames = __('demo.user.boyNames').split('\n');
+    const girlNames = __('demo.user.girlNames').split('\n');
+    const firstNames = boyNames.concat(girlNames);
+    const avatarBoys = ['http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png',
+      'http://pannako.hu/wp-content/uploads/avatar-1.png',
+      'http://pannako.hu/wp-content/uploads/avatar-2.png',
+      'http://pannako.hu/wp-content/uploads/avatar-5.png',
+      'http://pannako.hu/wp-content/uploads/avatar-7.png'];
+    const avatarGirls = ['http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png',
+      'http://pannako.hu/wp-content/uploads/avatar-3.png',
+      'http://pannako.hu/wp-content/uploads/avatar-4.png',
+      'http://pannako.hu/wp-content/uploads/avatar-6.png',
+      'http://pannako.hu/wp-content/uploads/avatar-8.png'];
+    const userWithRoleId = Accounts.createUser({ email: role.name + `@demo.${com}`, password: 'password',
+      profile: { lastName: role.name.charAt(0).toUpperCase() + role.name.slice(1), firstName: _.sample(firstNames) } });
+    const user = Meteor.users.findOne(userWithRoleId);
+    if (boyNames.includes(user.profile.firstName)) {
+      Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarBoys), 'settings.language': lang } });
+    } else {
+      Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarGirls), 'settings.language': lang } });
+    }
+    if (role.name === 'owner') {
+      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name,
+        parcelId: dummyParcels[0], ownership: { share: new Fraction(1, 10) } });
+      demoUserId = userWithRoleId;
+    } else if (role.name === 'benefactor') {
+      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name,
+        parcelId: dummyParcels[0], benefactorship: { type: 'rental' } });
+    } else {
+      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name });
+    }
+    if (role.name === 'manager') demoManagerId = userWithRoleId;
+    if (role.name === 'admin') demoAdminId = userWithRoleId;
+  });
+
+  // ===== Dummy Users =====
+
+  const dummyUsers = [];
+  dummyUsers[0] = Meteor.users.insert({
+    emails: [{ address: `user.0@demo.${com}`, verified: true }],
+    profile: { lastName: __('demo.user.0.lastName'), firstName: __('demo.user.0.firstName'), phone: '06 30 234 5678' },
+    avatar: 'http://pannako.hu/wp-content/uploads/avatar-2.png',
+    status: 'online',
+  });
+  dummyUsers[1] = Meteor.users.insert({
+    emails: [{ address: `user.1@demo.${com}`, verified: true }],
+    profile: { lastName: __('demo.user.1.lastName'), firstName: __('demo.user.1.firstName'), phone: '+36 70 1234 567' },
+    avatar: 'http://pannako.hu/wp-content/uploads/avatar-7.png',
+  });
+  dummyUsers[2] = Meteor.users.insert({
+    emails: [{ address: `user.2@demo.${com}`, verified: true }],
+    profile: { lastName: __('demo.user.2.lastName'), firstName: __('demo.user.2.firstName') },
+    avatar: 'http://pannako.hu/wp-content/uploads/avatar-6.png',
+    status: 'standby',
+  });
+  dummyUsers[3] = Meteor.users.insert({
+    emails: [{ address: `user.3@demo.${com}`, verified: true }],
+    profile: { lastName: __('demo.user.3.lastName'), firstName: __('demo.user.3.firstName') },
+    avatar: 'http://pannako.hu/wp-content/uploads/avatar-5.png',
+  });
+  dummyUsers[4] = Meteor.users.insert({
+    emails: [{ address: `user.4@demo.${com}`, verified: true }],
+    profile: { lastName: __('demo.user.4.lastName'), firstName: __('demo.user.4.firstName') },
+    avatar: 'http://pannako.hu/wp-content/uploads/avatar-3.png',
+  });
+
   // ===== Memberships =====
 
-  Memberships.insert({
-    communityId: demoCommunityId,
-    userId: demoUserId,
-    role: 'owner',
-    parcelId: dummyParcels[0],
-    ownership: {
-      share: new Fraction(1, 1),
-    },
-  });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    userId: demoManagerId,
-    role: 'manager',
-  });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    userId: demoAdminId,
-    role: 'admin',
-  });
   Memberships.insert({
     communityId: demoCommunityId,
     userId: dummyUsers[0],

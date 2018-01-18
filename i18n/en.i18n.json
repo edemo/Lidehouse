@@ -36,6 +36,9 @@
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
 
+    // housing
+  "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
+
   // delegations
   "delegationsFromMeInstructions": "Here you can set up delegations. So someone else can use your vote in your name.",
   "delegationsFromMeInstructions2": "The delegations you set up here, can be revoked at any time, or can be redirected toward someone else.",

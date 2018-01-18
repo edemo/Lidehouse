@@ -2,41 +2,68 @@
   <div class="content-scrollable page-content page-housing">
     
     <div style="width:100%;" class="white-box padded">
-      {{#if currentUser}}
+      {{#if community}}
       <div id="tab-content1" class="content">
+        <div class="col-xs-8">
+          <h1 id="houseName">{{community/name}}</h1>
+        </div>
         <button type="button" class="primary" name="button"></button>
-          <div class="row">
-            <div class="col-xs-8">
-              <h4>
-                A ház adatai
-              </h4>
+        <div class="row">
+          <div class="col-xs-8">
+            <h4 class="page-title">{{_ "community"}} {{_ "data"}}</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-md-6 col-lg-4 pull-right">
+            <div id="house_avatar">
+              <a href="{{community/avatar}}" class="simple-lightbox"><img src="{{community/avatar}}" alt="community avatar" width="100%" /></a>
             </div>
-            <div class="col-xs-4 text-right">
-              <button type="submit" class="btn btn-primary">Mentés</button>
+            <div>
+            {{#autoForm id="af.community.update" collection=communities omitFields="name,description,avatar" doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
+              {{> afQuickFields}}
+              {{#if userHasPermission 'communities.update' community/_id}}
+                <div class="row">
+                  <div class="col-xs-8">
+                    <small>
+                      <label><input type="checkbox"> {{_ "Acknowledge save effects" }}</label>
+                    </small>
+                  </div>
+                  <div class="col-xs-4 text-right">
+                    <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+                  </div>
+                </div>
+              {{/if}}
+              {{/autoForm}}
             </div>
           </div>
-          <div class="row">
-            <div class="col-xs-12 col-md-6 col-lg-4 pull-right">
-              <div id="house_avatar">
-                <a href="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" class="simple-lightbox"><img src="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" alt="" width="100%" /></a>
-              </div>
-              <div>
-                {{#autoForm id="communities_show" collection=communities omitFields="finances,name" doc=community type="method-update" meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
-                {{> afQuickFields}}
-                {{/autoForm}}
-              </div>
+          <div class="col-xs-12 col-md-6 col-lg-8">
+            <div>
+              {{#autoForm id="af.community.name_update" collection=communities doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
+              {{#if userHasPermission 'communities.update' community/_id}} 
+                {{> afQuickField name='name'}}
+                {{> afQuickField name='avatar'}}
+              {{/if}}
+              {{> afQuickField name='description' rows=12}}
+              <!--{{#markdown}}{{{markdown_data}}}{{/markdown}}-->
+              {{#if userHasPermission 'communities.update' community/_id}}
+                <div class="row">
+                  <div class="col-xs-8">
+                    <small>
+                      <label><input type="checkbox"> {{_ "Acknowledge save effects" }}</label>
+                    </small>
+                  </div>
+                  <div class="col-xs-4 text-right">
+                    <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+                  </div>
+                </div>
+              {{/if}}
+              {{/autoForm}}
             </div>
-            <div class="col-xs-12 col-md-6 col-lg-8">
-              <div>
-                {{#autoForm id="communitie_name" collection=communities fields="name" doc=community type="method-update" meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
-                {{> afQuickFields}}
-                {{/autoForm}}
-              </div>
-              <div class="form-group">
-                <label for="houseName">Leírás</label>
-                <textarea class="form-control vert" id="houseWelcome" placeholder="Welcome" rows="12"></textarea>
-                <!--{{#markdown}}{{{markdown_data}}}{{/markdown}}-->
-              </div>
+            <!--div class="form-group">
+              <label for="houseName">Leírás</label>
+              <textarea class="form-control vert" id="houseWelcome" placeholder="Welcome" rows="12"></textarea>
+            </div-->
+            <div class="roles-section">
               <div class="row">
                 <div class="col-xs-12 text-center">
                   <h4 class="page-title">{{_ 'roles'}}</h4>
@@ -44,89 +71,48 @@
               </div>
               <div class="row">
                 <div class="col-xs-12">
-                  {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+                  {{> ReactiveDatatable tableData=rolesTableDataFn options=rolesOptionsFn }}
                 </div>
               </div>
-              <div class="row">
-                <div class="col-xs-12 text-center">
-                  <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
+              {{#if userHasPermission 'communities.update' community/_id}}
+                <div class="row">
+                  <div class="col-xs-12 text-center">
+                    <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
+                  </div>
                 </div>
-              </div>
+              {{/if}}
+            </div>
+          </div>
+          <!--ul class="list-group no-style">
+            {{#each countInfo in thingsToDisplayWithCounter}}
+              <li><img src="/icon/si-glyph-mail-box.svg" width="20"/>{{_ countInfo/name}}: {{countInfo/count}}</li>
+            {{/each}}
+          </ul-->
+        </div>
+        <div class="parcels-section">
+          <div class="row">
+            <div class="col-xs-12">
+              <hr>
+              <h4>{{_ "Parcels of community"}}</h4>
+              <br>
             </div>
           </div>
           <div class="row">
-            <div class="col-xs-8">
-              <small>
-                <label><input type="checkbox">Tudomásul veszem, hogy az elmentett módosítás azonnal láthatóvá válik a HázNeve nyilvános oldalán.</label>
-              </small>
+            <div class="col-xs-12">
+              {{#Collapse_section id='parcel' title='parcels' collapsed=true}}
+                <div class="table-responsive">
+                {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
+                </div>
+                {{#if userHasPermission 'communities.update' community/_id}}
+                  <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
+                {{/if}}
+              {{/Collapse_section}}
             </div>
-            <div class="col-xs-4 text-right">
-              <button type="submit" class="js-save-form btn btn-primary">Mentés</button>
-            </div>
-          </div>
-        <div class="row">
-          <div class="col-xs-12">
-            <hr>
-            <h4>A házhoz tartozó albetétek</h4>
-            <br>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-12">
-            {{#Collapse_section id='parcel' title='Albetetek' collapsed=true}}
-              <div class="table-responsive">
-               {{> ReactiveDatatable tableData=reactiveTableDataFm options=optionsFm }}
-              </div>
-              <button class="js-parcel-new btn-primary">{{_ 'createNew'}}</button>
-            {{/Collapse_section}}
           </div>
         </div>
       </div>
       {{else}}
-      <div class="white-box padded">
-        <div id="front-content" class="content">
-          <button type="button" class="primary" name="button"></button>
-          <div class="row">
-            <div class="col-xs-8">
-              <h1 id="houseName">Rózsadomb lakókert</h1>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-12 col-md-6 col-lg-4 pull-right">
-              <a href="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" class="simple-lightbox"><img src="http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg" alt="" width="100%" /></a>
-              <ul class="list-group no-style" id="houseInfo">
-                <li id="houseCou">Lonyai út</li>
-                <li id="houseHsz">52.</li>
-                <li id="houseCity">Budapest</li>
-                <li id="houseIr">1026</li>
-                <li id="houseNum">HR23432</li>
-              </ul>
-              <ul class="list-group no-style">
-                <li><img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakók száma: 120</li>
-                <li><img src="/icon/si-glyph-mail-box.svg" width="20"/>Lakások száma: 123</li>
-                <li><img src="/icon/si-glyph-mail-box.svg" width="20"/>Parkolók száma: 120</li>
-                <li><img src="/icon/si-glyph-mail-box.svg" width="20"/>Tárolók száma: 123</li>
-              </ul>
-              <!-- megerosito modal mentes elott -->
-            </div>
-            <div class="col-xs-12 col-md-6 col-lg-8">
-              <div class="form-group">
-                <div id="houseWelcome" class="markdown-render"><h4>Welcome</h4></div>
-              </div>
-              <div class="row">
-                <div class="col-xs-12 text-center">
-                  <h4 class="page-title">{{_ 'roles'}}</h4>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xs-12">
-                  <table class="table dataTable display no-footer table-responsive" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info"><thead><tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="role: activate to sort column descending" aria-sort="ascending" style="width: 0px;">role</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="user: activate to sort column ascending" style="width: 0px;">user</th></tr></thead><tbody><tr role="row" class="odd"><td class="sorting_1">admin</td><td>[demo.admin]</td></tr><tr role="row" class="even"><td class="sorting_1">admin</td><td>Andrew Bay</td></tr><tr role="row" class="odd"><td class="sorting_1">manager</td><td>[demo.manager]</td></tr><tr role="row" class="even"><td class="sorting_1">manager</td><td>Stephen Bolt</td></tr></tbody></table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        {{_ "No active community"}}
       {{/if}}
     </div>
   </div>

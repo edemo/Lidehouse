@@ -35,8 +35,15 @@ Template.Parcel_owners_page.helpers({
   },
   ownersOptionsFn() {
     return () => {
+      const parcelId = FlowRouter.getParam('_pid');
+      const communityId = Parcels.findOne(parcelId).communityId;
+      const permissions = {
+        view: Meteor.userOrNull().hasPermission('memberships.listing', communityId),
+        edit: Meteor.userOrNull().hasPermission('ownerships.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('ownerships.update', communityId),
+      };
       return {
-        columns: ownershipColumns(),
+        columns: ownershipColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
         searching: false,
@@ -53,8 +60,15 @@ Template.Parcel_owners_page.helpers({
   },
   benefactorsOptionsFn() {
     return () => {
+      const parcelId = FlowRouter.getParam('_pid');
+      const communityId = Parcels.findOne(parcelId).communityId;
+      const permissions = {
+        view: Meteor.userOrNull().hasPermission('memberships.listing', communityId),
+        edit: Meteor.userOrNull().hasPermission('benefactorships.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('benefactorships.update', communityId),
+      };
       return {
-        columns: benefactorshipColumns(),
+        columns: benefactorshipColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
         searching: false,

@@ -12,6 +12,22 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 
+export const nullUser = {
+  hasPermission(permissionName, communityId, object) {
+    const permission = Permissions.findOne({ name: permissionName });
+    debugAssert(permission);
+    return _.contains(permission.roles, 'null');
+  },
+};
+
+Meteor.userOrNull = function userOrNull() {
+  return Meteor.user() || nullUser;
+};
+
+Meteor.users.findOneOrNull = function findOneOrNull(userId) {
+  return Meteor.users.findOne(userId) || nullUser;
+};
+
 /*
 // Suggestion for full User Profile:
 // Code from https://github.com/aldeed/meteor-collection2

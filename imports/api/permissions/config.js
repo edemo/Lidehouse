@@ -4,7 +4,7 @@ import { _ } from 'meteor/underscore';
 import { Roles } from './roles.js';
 import { Permissions } from './permissions.js';
 
-const defaultRoles = [
+export const defaultRoles = [
   { name: 'admin' },        // Creator of the community. Can give out all other roles and take them back.
   { name: 'manager' },      // The manager (kk) of the community. Registers owners.
   { name: 'owner' },        // Title holder of a parcel. Has voting rights.
@@ -30,10 +30,20 @@ export const canAddMemberWithRole = {
 };
 
 const permissions = [
-  { name: 'communities.insert',     roles: everybody },
+  { name: 'communities.details',    roles: exceptGuest },
+//  { name: 'communities.insert',     roles: everybody },
   { name: 'communities.update',     roles: ['admin'] },
-  { name: 'communities.listing',    roles: everybody },
-  { name: 'memberships.listing',    roles: exceptGuest },
+  { name: 'communities.remove',     roles: ['admin'] },
+  { name: 'memberships.listing',    roles: everybody },
+  { name: 'roleships.update',       roles: ['admin', 'manager'] },
+  { name: 'roleships.remove',       roles: ['admin', 'manager'] },
+  { name: 'ownerships.update',      roles: ['admin', 'manager'] },
+  { name: 'ownerships.remove',      roles: ['admin', 'manager'] },
+  { name: 'benefactorships.update', roles: ['admin', 'manager', 'owner'] },
+  { name: 'benefactorships.remove', roles: ['admin', 'manager', 'owner'] },
+  { name: 'parcels.listing',        roles: everybody.concat('null') },
+  { name: 'parcels.update',         roles: ['admin', 'manager'] },
+  { name: 'parcels.assign',         roles: ['admin', 'manager'] },
   { name: 'forum.insert',           roles: exceptGuest },
   { name: 'forum.update',           roles: nobody, allowAuthor: true },
   { name: 'forum.remove',           roles: ['moderator'], allowAuthor: true },
