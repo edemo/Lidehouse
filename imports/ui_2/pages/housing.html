@@ -19,7 +19,7 @@
               <a href="{{community/avatar}}" class="simple-lightbox"><img src="{{community/avatar}}" alt="community avatar" width="100%" /></a>
             </div>
             <div>
-            {{#autoForm id="af.community.update" collection=communities omitFields="name,description" doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
+            {{#autoForm id="af.community.update" collection=communities omitFields="name,description,avatar" doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
               {{> afQuickFields}}
               {{#if userHasPermission 'communities.update' community/_id}}
                 <div class="row">
@@ -39,7 +39,10 @@
           <div class="col-xs-12 col-md-6 col-lg-8">
             <div>
               {{#autoForm id="af.community.name_update" collection=communities doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
-              {{> afQuickField name='name'}}
+              {{#if userHasPermission 'communities.update' community/_id}} 
+                {{> afQuickField name='name'}}
+                {{> afQuickField name='avatar'}}
+              {{/if}}
               {{> afQuickField name='description' rows=12}}
               <!--{{#markdown}}{{{markdown_data}}}{{/markdown}}-->
               {{#if userHasPermission 'communities.update' community/_id}}
@@ -80,11 +83,11 @@
               {{/if}}
             </div>
           </div>
-          <ul class="list-group no-style">
+          <!--ul class="list-group no-style">
             {{#each countInfo in thingsToDisplayWithCounter}}
               <li><img src="/icon/si-glyph-mail-box.svg" width="20"/>{{_ countInfo/name}}: {{countInfo/count}}</li>
             {{/each}}
-          </ul>
+          </ul-->
         </div>
         <div class="parcels-section">
           <div class="row">

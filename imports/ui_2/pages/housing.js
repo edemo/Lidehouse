@@ -45,7 +45,7 @@ Template.Housing_page.helpers({
   autoformType(communityId) {
     return Meteor.userOrNull().hasPermission('communities.update', communityId) ? 'method-update' : 'readonly';
   },
-  thingsToDisplayWithCounter() {
+/*  thingsToDisplayWithCounter() {
     const result = [];
     const communityId = Template.instance().getCommunityId();
     result.push({
@@ -59,7 +59,7 @@ Template.Housing_page.helpers({
       })
     );
     return result;
-  },
+  },*/
   rolesTableDataFn() {
     const templateInstance = Template.instance();
     return () => {
