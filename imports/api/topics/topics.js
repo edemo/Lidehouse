@@ -64,6 +64,10 @@ Topics.helpers({
     const newCommentCounter = this.commentCounter - lastSeenCommentCounter;
     return newCommentCounter;
   },
+  remove() {
+    Comments.remove({ topicId: this._id });
+    Topics.remove({ _id: this._id });
+  },
 });
 
 Topics.attachSchema(Topics.schema);
