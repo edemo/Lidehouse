@@ -698,3 +698,20 @@ export function insertDemoFixture(lang) {
     dummyParcels,
   };
 }
+
+export function reCreateDemoHouse() {
+  const languages = TAPi18n.getLanguages();
+  Object.keys(languages).forEach((lang) => {
+    const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
+    const com = { en: 'com', hu: 'hu' }[lang];
+    const demoCommunity = Communities.findOne({ name: __('demo.house') });
+    if (demoCommunity === undefined) {
+      return;
+    }; 
+    demoCommunity.remove();
+    //removeDemoUsers();
+    Meteor.users.remove({ 'emails.0.address': { $regex: `@demo.${com}` } });
+    insertDemoFixture(lang);     
+  });
+
+};

@@ -9,6 +9,11 @@ import { comtype } from '/imports/comtypes/comtype.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
+import { Payments } from '/imports/api/payments/payments.js';
+import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -38,6 +43,16 @@ Communities.helpers({
   users() {
     const users = Memberships.find({ communityId: this._id, userId: { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);
+  },
+  remove() {
+    Topics.find({ communityId: this._id }).forEach(topic => topic.remove());
+    Agendas.remove({ communityId: this._id });
+    Parcels.remove({ communityId: this._id });
+    ParcelBillings.remove({ communityId: this._id });
+    Payments.remove({ communityId: this._id });
+    PayAccounts.remove({ communityId: this._id });
+    Memberships.remove({ communityId: this._id });
+    Communities.remove({ _id: this._id });
   },
 });
 

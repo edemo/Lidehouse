@@ -27,7 +27,7 @@ export function checkExists(collection, objectId) {
 export function checkNotExists(collection, predicate) {
   // Checks that a *collection* does not yet contain a doc with given *objectId*
   const object = collection.findOne(predicate);
-  if (!object) {
+  if (object) {
     throw new Meteor.Error('err_duplicateId', 'This id is already used',
       `Collection: ${collection._name}, id: ${predicate}`
     );
