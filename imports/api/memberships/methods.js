@@ -34,18 +34,6 @@ export function connectUser(membershipId, userId) {
 // Sends out an invitation into the specific community to the provided email address
 function inviteUser(membershipId, email) {
   const membership = Memberships.findOne(membershipId);
-  // TODO:
-  /*
-  Dear user,
-  You have been added as a member of community '${membership.community()}', with role: ${membership.role}
-  If you think you have been added by accident, or in fact not want to be part of that community,
-  please contact the community administrator at ${admin.email}, and ask him to remove you.
-
-  You have been also invited to join the condominium management system, where you can follow the community issues,
-  discuss them and even vote on them. You can start enjoying all its benefits as soon as you redister your account
-  with this email address.
-  The following link takes you to our simple one click registration: LINK
-  */
   Log.info(`Invitation sent to ${email}, to join community ${membership.community().name}`);
   // When user joins, with this email, she will automatically get connected to this membership
   inviteUserMethod.call({ email: membership.userEmail, communityId: membership.communityId });
@@ -59,8 +47,11 @@ function connectUserIfPossible(membershipId) {
   const email = membership.userEmail;
   if (!membership.userId && email) {
     const user = Meteor.users.findOne({ 'emails.0.address': email });
-    if (user && user.emails[0].verified) {  // if not verified, connection will happen when she verifies (thats the trigger)
+    if (user && user.emails[0].verified) {  
       connectUser(membership._id, user._id);
+    } else if (user && !user.emails[0].verified) {
+      // if not verified, connection will happen when she verifies (thats the trigger)
+      Log.info(`${email} not verified, but added to ${membership.community().name}`);
     } else {
       inviteUser(membership._id, email);
     }
