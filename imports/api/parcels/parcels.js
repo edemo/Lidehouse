@@ -13,7 +13,7 @@ import { Roles } from '/imports/api/permissions/roles.js';
 
 export const Parcels = new Mongo.Collection('parcels');
 
-Parcels.typeValues = ['flat', 'parking', 'storage'];
+Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'other'];
 
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },

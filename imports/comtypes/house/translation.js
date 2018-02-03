@@ -13,6 +13,10 @@ export const HouseTranslation = {
     "flat": "Apartment",
     "parking": "Parking",
     "storage": "Storage",
+    "cellar": "Cellar",
+    "attic": "Attic",
+    "shop": "Shop",
+    "other": "Other",
 
     "schemaCommunities": {
       "name": {
@@ -134,6 +138,10 @@ export const HouseTranslation = {
     "flat": "Lakás",
     "parking": "Parkoló",
     "storage": "Tároló",
+    "cellar": "Pince",
+    "attic": "Padlás",
+    "shop": "Üzlet",
+    "other": "Egyéb",
 
     "schemaCommunities": {
       "name": {
