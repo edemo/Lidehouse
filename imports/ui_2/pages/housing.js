@@ -29,7 +29,7 @@ Template.Housing_page.onCreated(function housingPageOnCreated() {
   this.autorun(() => {
     const communityId = this.getCommunityId();
     this.subscribe('communities.byId', { _id: communityId });
-    this.subscribe('parcels.listing', { communityId });
+    this.subscribe('parcels.inCommunity', { communityId });
   });
 });
 
@@ -72,7 +72,7 @@ Template.Housing_page.helpers({
     return () => {
       const communityId = templateInstance.getCommunityId();
       const permissions = {
-        view: Meteor.userOrNull().hasPermission('memberships.listing', communityId),
+        view: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
         edit: Meteor.userOrNull().hasPermission('roleships.update', communityId),
         delete: Meteor.userOrNull().hasPermission('roleships.remove', communityId),
       };
@@ -95,10 +95,10 @@ Template.Housing_page.helpers({
     return () => {
       const communityId = templateInstance.getCommunityId();
       const permissions = {
-        view: Meteor.userOrNull().hasPermission('parcels.listing', communityId),
+        view: Meteor.userOrNull().hasPermission('parcels.inCommunity', communityId),
         edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
-        delete: Meteor.userOrNull().hasPermission('parcels.update', communityId),
-        assign: Meteor.userOrNull().hasPermission('parcels.assign', communityId),
+        delete: Meteor.userOrNull().hasPermission('parcels.remove', communityId),
+        assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
       };
       return {
         columns: parcelColumns(permissions),

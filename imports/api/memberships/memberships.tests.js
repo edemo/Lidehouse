@@ -11,7 +11,7 @@ import { Fraction } from 'fractional';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { insert as insertMembership, update as updateMembership, remove as removeMembership  } from '/imports/api/memberships/methods.js';
-import { everybody, defaultRoles } from '/imports/api/permissions/config.js';
+import { everyRole, defaultRoles } from '/imports/api/permissions/config.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 
 if (Meteor.isServer) {
@@ -123,7 +123,7 @@ if (Meteor.isServer) {
 
     describe('permissions', function () {
       let testMembershipId;
-      const randomRole = _.sample(everybody);
+      const randomRole = _.sample(everyRole);
       const createMembership = function (newrole) {
         const newMembership = {
           communityId: Fixture.demoCommunityId,

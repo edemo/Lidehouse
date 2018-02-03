@@ -77,7 +77,7 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   this.autorun(() => {
     const activeCommunityId = Session.get('activeCommunityId');
     if (activeCommunityId) {
-      this.subscribe('parcels.listing', { communityId: activeCommunityId });
+      this.subscribe('parcels.inCommunity', { communityId: activeCommunityId });
       this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
     }
   });

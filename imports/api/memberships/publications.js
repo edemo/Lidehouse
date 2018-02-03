@@ -19,7 +19,7 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
 
   // Checking permissions for visibilty
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('memberships.listing', communityId)) {
+  if (!user.hasPermission('memberships.inCommunity', communityId)) {
     this.ready();
     return;
   }
