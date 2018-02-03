@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from './communities.js';
-import { checkLoggedIn, checkNotExists, checkPermissions } from '../method-checks.js';
+import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
 
 export const create = new ValidatedMethod({
   name: 'communities.create',
@@ -30,8 +30,9 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
+    const doc = checkExists(Communities, _id);
+    checkModifier(doc, modifier, ['name'], true);     // all fields are modifiable except name
     checkPermissions(this.userId, 'communities.update', _id);
-    // all fields are modifiable
     Communities.update({ _id }, modifier);
   },
 });
