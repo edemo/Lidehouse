@@ -32,7 +32,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Parcels, _id);
-    checkModifier(doc, modifier, ['serial', 'units', 'floor', 'number', 'type', 'lot', 'area', 'volume', 'habitants']);
+    checkModifier(doc, modifier, ['communityId'], true);
     const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
     const newTotal = (total - doc.units) + modifier.$set.units;
     const totalunits = Communities.findOne({ _id: doc.communityId }).totalunits;
