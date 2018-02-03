@@ -13,6 +13,12 @@ export const HouseTranslation = {
     "flat": "Apartment",
     "parking": "Parking",
     "storage": "Storage",
+    "cellar": "Cellar",
+    "attic": "Attic",
+    "shop": "Shop",
+    "other": "Other",
+    "centralHeating": "Central heating",
+    "ownHeating": "Own heating system",
 
     "schemaCommunities": {
       "name": {
@@ -50,18 +56,6 @@ export const HouseTranslation = {
       "totalunits": {
         "label": "Total shares outstanding",
         "placeholder": "(eg. 10000)"
-      },
-      "finances": {
-        "label": "Finances",
-        "ccArea": {
-          "label": "Common cost per area (m2)"
-        },
-        "ccVolume": {
-          "label": "Common cost per volume (m3)"
-        },
-        "ccHabitants": {
-          "label": "Common cost per habitant"
-        }
       }
     },
     "schemaParcels": {
@@ -105,6 +99,12 @@ export const HouseTranslation = {
         "label": "Number of habitants",
         "placeholder": "(eg. 3)"
       },
+      "waterMetered": {
+        "label": "Water meter",
+      },
+      "heatingType": {
+        "label": "Heating type",
+      },
       "freeFields": {
         "label": "Free fields",
         "$": {
@@ -134,6 +134,12 @@ export const HouseTranslation = {
     "flat": "Lakás",
     "parking": "Parkoló",
     "storage": "Tároló",
+    "cellar": "Pince",
+    "attic": "Padlás",
+    "shop": "Üzlet",
+    "other": "Egyéb",
+    "centralHeating": "Központi fűtés",
+    "ownHeating": "Saját fűtés",
 
     "schemaCommunities": {
       "name": {
@@ -171,18 +177,6 @@ export const HouseTranslation = {
       "totalunits": {
         "label": "Összes tulajdoni hányad",
         "placeholder": "(pl. 1000 vagy 9999)"
-      },
-      "finances": {
-        "label": "Pénzügyek",
-        "ccArea": {
-          "label": "Közös költség alapterületre (m2)"
-        },
-        "ccVolume": {
-          "label": "Közös költség légköbméterre (m3)"
-        },
-        "ccHabitants": {
-          "label": "Közös költség lakó után"
-        }
       }
     },
     "schemaParcels": {
@@ -225,6 +219,12 @@ export const HouseTranslation = {
       "habitants": {
         "label": "Lakók száma",
         "placeholder": "(pl. 3)"
+      },
+      "waterMetered": {
+        "label": "Vízórás",
+      },
+      "heatingType": {
+        "label": "Fűtés típusa",
       },
       "freeFields": {
         "label": "Kötetlen mezők",

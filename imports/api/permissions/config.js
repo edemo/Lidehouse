@@ -19,31 +19,36 @@ export const defaultRoles = [
 ];
 
 // Groupings just to ease configuration
-export const everybody = defaultRoles.map(r => r.name);
-const exceptGuest = _.without(everybody, 'guest');
+export const everyRole = defaultRoles.map(r => r.name);
+const everyBody = everyRole.concat('null');
+const exceptGuest = _.without(everyRole, 'guest');
 const nobody = [];
 
 export const canAddMemberWithRole = {
-  admin: everybody,
+  admin: everyRole,
   manager: ['owner', 'benefactor'],
   owner: ['benefactor'],
 };
 
 const permissions = [
   { name: 'communities.details',    roles: exceptGuest },
-//  { name: 'communities.insert',     roles: everybody },
+//  { name: 'communities.insert',     roles: everyRole },
   { name: 'communities.update',     roles: ['admin'] },
   { name: 'communities.remove',     roles: ['admin'] },
-  { name: 'memberships.listing',    roles: everybody },
+  { name: 'memberships.inCommunity', roles: everyRole },
+  { name: 'roleships.create',       roles: ['admin', 'manager'] },
   { name: 'roleships.update',       roles: ['admin', 'manager'] },
   { name: 'roleships.remove',       roles: ['admin', 'manager'] },
+  { name: 'ownerships.create',      roles: ['admin', 'manager'] },
   { name: 'ownerships.update',      roles: ['admin', 'manager'] },
   { name: 'ownerships.remove',      roles: ['admin', 'manager'] },
+  { name: 'benefactorships.create', roles: ['admin', 'manager', 'owner'] },
   { name: 'benefactorships.update', roles: ['admin', 'manager', 'owner'] },
   { name: 'benefactorships.remove', roles: ['admin', 'manager', 'owner'] },
-  { name: 'parcels.listing',        roles: everybody.concat('null') },
+  { name: 'parcels.inCommunity',    roles: everyBody },
+  { name: 'parcels.create',         roles: ['admin', 'manager'] },
   { name: 'parcels.update',         roles: ['admin', 'manager'] },
-  { name: 'parcels.assign',         roles: ['admin', 'manager'] },
+  { name: 'parcels.remove',         roles: ['admin', 'manager'] },
   { name: 'forum.insert',           roles: exceptGuest },
   { name: 'forum.update',           roles: nobody, allowAuthor: true },
   { name: 'forum.remove',           roles: ['moderator'], allowAuthor: true },
@@ -61,9 +66,9 @@ const permissions = [
   { name: 'ticket.insert',          roles: exceptGuest },
   { name: 'ticket.update',          roles: ['manager', 'maintainer'], allowAuthor: true },
   { name: 'ticket.remove',          roles: ['manager', 'maintainer'], allowAuthor: true },
-  { name: 'room.insert',            roles: everybody },
+  { name: 'room.insert',            roles: everyRole },
   { name: 'room.update',            roles: nobody },
-  { name: 'feedback.insert',        roles: everybody },
+  { name: 'feedback.insert',        roles: everyRole },
   { name: 'feedback.update',        roles: nobody },
   { name: 'topics.listing',         roles: exceptGuest },
   { name: 'comments.insert',        roles: exceptGuest },

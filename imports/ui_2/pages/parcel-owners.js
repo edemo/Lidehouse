@@ -38,9 +38,9 @@ Template.Parcel_owners_page.helpers({
       const parcelId = FlowRouter.getParam('_pid');
       const communityId = Parcels.findOne(parcelId).communityId;
       const permissions = {
-        view: Meteor.userOrNull().hasPermission('memberships.listing', communityId),
+        view: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
         edit: Meteor.userOrNull().hasPermission('ownerships.update', communityId),
-        delete: Meteor.userOrNull().hasPermission('ownerships.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('ownerships.remove', communityId),
       };
       return {
         columns: ownershipColumns(permissions),
@@ -63,9 +63,9 @@ Template.Parcel_owners_page.helpers({
       const parcelId = FlowRouter.getParam('_pid');
       const communityId = Parcels.findOne(parcelId).communityId;
       const permissions = {
-        view: Meteor.userOrNull().hasPermission('memberships.listing', communityId),
+        view: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
         edit: Meteor.userOrNull().hasPermission('benefactorships.update', communityId),
-        delete: Meteor.userOrNull().hasPermission('benefactorships.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('benefactorships.remove', communityId),
       };
       return {
         columns: benefactorshipColumns(permissions),

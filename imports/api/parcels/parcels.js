@@ -10,10 +10,12 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Roles } from '/imports/api/permissions/roles.js';
+import { FreeFields } from '/imports/api/freefields.js';
 
 export const Parcels = new Mongo.Collection('parcels');
 
-Parcels.typeValues = ['flat', 'parking', 'storage'];
+Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'other'];
+Parcels.heatingTypeValues = ['centralHeating', 'ownHeating'];
 
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
@@ -40,6 +42,8 @@ Parcels.schema = new SimpleSchema({
   area: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
   habitants: { type: Number, decimal: true, optional: true },
+  waterMetered: { type: Boolean, optional: true },
+  heatingType: { type: String, optional: true, allowedValues: Parcels.heatingTypeValues, autoform: autoformOptions(Parcels.heatingTypeValues) },
 });
 
 Parcels.helpers({
@@ -96,6 +100,7 @@ Parcels.helpers({
 });
 
 Parcels.attachSchema(Parcels.schema);
+Parcels.attachSchema(FreeFields);
 Parcels.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {

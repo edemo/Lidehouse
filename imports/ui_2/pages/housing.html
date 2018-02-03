@@ -74,7 +74,7 @@
                   {{> ReactiveDatatable tableData=rolesTableDataFn options=rolesOptionsFn }}
                 </div>
               </div>
-              {{#if userHasPermission 'communities.update' community/_id}}
+              {{#if userHasPermission 'roleships.create' community/_id}}
                 <div class="row">
                   <div class="col-xs-12 text-center">
                     <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
@@ -103,7 +103,7 @@
                 <div class="table-responsive">
                 {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
                 </div>
-                {{#if userHasPermission 'communities.update' community/_id}}
+                {{#if userHasPermission 'parcels.create' community/_id}}
                   <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
                 {{/if}}
               {{/Collapse_section}}
