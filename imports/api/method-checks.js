@@ -71,6 +71,7 @@ export function checkAddMemberPermissions(userId, communityId, roleOfNewMember) 
 
 export function checkModifier(object, modifier, modifiableFields, exclude = false) {
   // Checks that the *modifier* only tries to modify the *modifiableFields* on the given *object*
+  // if exclude === true, then the fields given, are the ones that should NOT be modified, and all other fields can be modified
   let modifiedFields = Object.keys(modifier.$set);
   modifiedFields = _.without(modifiedFields, 'updatedAt');
   modifiedFields.forEach((mf) => {
