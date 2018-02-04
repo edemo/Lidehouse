@@ -258,7 +258,7 @@ Template.Community_finances.events({
   },
   'click #bills-pane .js-many'(event, instance) {
     Modal.show('Autoform_edit', {
-      id: 'af.billseries.insert',
+      id: 'af.parcelBilling.insert',
       collection: ParcelBillings,
       schema: newParcelBillingSchema(),
       omitFields: ['communityId'],
@@ -311,8 +311,8 @@ AutoForm.addHooks('af.bill.insert', {
   },
 });
 
-AutoForm.addModalHooks('af.billseries.insert');
-AutoForm.addHooks('af.billseries.insert', {
+AutoForm.addModalHooks('af.parcelBilling.insert');
+AutoForm.addHooks('af.parcelBilling.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;
