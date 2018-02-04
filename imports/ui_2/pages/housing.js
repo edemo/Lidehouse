@@ -6,7 +6,6 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { TAPi18n } from 'meteor/tap:i18n';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Accounts } from 'meteor/accounts-base';
@@ -19,6 +18,7 @@ import { roleshipColumns } from '/imports/api/memberships/tables.js';
 import { update as updateMembership, remove as removeMembership } from '/imports/api/memberships/methods.js';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import '/imports/api/users/users.js';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
 import './housing.html';
@@ -87,7 +87,7 @@ Template.Housing_page.helpers({
     const templateInstance = Template.instance();
     return () => {
       const communityId = templateInstance.getCommunityId();
-      return Parcels.find({ communityId }).fetch();
+      return Parcels.find({ communityId, approved: true }).fetch();
     };
   },
   parcelsOptionsFn() {
@@ -105,6 +105,17 @@ Template.Housing_page.helpers({
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
+    };
+  },
+  hasUnapprovedParcels() {
+    const communityId = Template.instance().getCommunityId();
+    return Parcels.find({ communityId, approved: false }).fetch().length > 0;
+  },
+  unapprovedParcelsTableDataFn() {
+    const templateInstance = Template.instance();
+    return () => {
+      const communityId = templateInstance.getCommunityId();
+      return Parcels.find({ communityId, approved: false }).fetch();
     };
   },
 });
@@ -203,6 +214,22 @@ AutoForm.addHooks('af.roleship.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;
+  },
+});
+
+AutoForm.addModalHooks('af.parcel.insert');
+AutoForm.addModalHooks('af.parcel.update');
+AutoForm.addHooks('af.parcel.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    return doc;
+  },
+});
+AutoForm.addHooks('af.parcel.update', {
+  formToModifier(modifier) {
+//    console.log(`modifier: ${JSON.stringify(modifier)}`);
+    modifier.$set.approved = true;
+    return modifier;
   },
 });
 

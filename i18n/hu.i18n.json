@@ -110,6 +110,7 @@
   "editing data": "Adatok szerkesztése",
 
   // housing
+  "Waiting for approval": "Elfogadásra váró",
   "Acknowledge save effects": "Tudomásul veszem, hogy az elmentett módosítás azonnal láthatóvá válik a közösség nyilvános oldalán.",
   
   // voting

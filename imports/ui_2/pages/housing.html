@@ -89,6 +89,7 @@
             {{/each}}
           </ul-->
         </div>
+        {{#if userHasPermission 'parcels.inCommunity' community/_id}}
         <div class="parcels-section">
           <div class="row">
             <div class="col-xs-12">
@@ -100,16 +101,25 @@
           <div class="row">
             <div class="col-xs-12">
               {{#Collapse_section id='parcel' title='parcels' collapsed=true}}
+                <!-- Approved section -->
                 <div class="table-responsive">
                 {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
                 </div>
-                {{#if userHasPermission 'parcels.create' community/_id}}
+                {{#if userHasPermission 'parcels.insert' community/_id}}
                   <button class="js-new btn btn-primary">{{_ 'createNew'}}</button>
+                {{/if}}
+                <!-- UnApproved section -->
+                {{#if hasUnapprovedParcels}}
+                <h4 align="center">{{_ "Waiting for approval"}}</h4>
+                <div class="table-responsive">
+                {{> ReactiveDatatable tableData=unapprovedParcelsTableDataFn options=parcelsOptionsFn }}
+                </div>
                 {{/if}}
               {{/Collapse_section}}
             </div>
           </div>
         </div>
+        {{/if}}
       </div>
       {{else}}
         {{_ "No active community"}}

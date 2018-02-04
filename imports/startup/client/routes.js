@@ -13,8 +13,6 @@ import '/imports/ui_2/layouts/custom-body.js';
 import '/imports/ui_2/pages/users-show.js';
 import '/imports/ui_2/pages/communities-create.js';
 import '/imports/ui_2/pages/communities-join.js';
-import '/imports/ui_2/pages/community-memberships.js';
-import '/imports/ui_2/pages/community-roleships.js';
 import '/imports/ui_2/pages/parcel-owners.js';
 import '/imports/ui_2/pages/user-delegations.js';
 import '/imports/ui_2/pages/board.js';
@@ -48,20 +46,6 @@ FlowRouter.route('/community/:_cid', {
   name: 'Communities.show',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Housing_page' });
-  },
-});
-
-FlowRouter.route('/memberships', {
-  name: 'Community.memberships',
-  action() {
-    BlazeLayout.render('Custom_body', { main: 'Community_memberships_page' });
-  },
-});
-
-FlowRouter.route('/roleships', {
-  name: 'Community.roleships',
-  action() {
-    BlazeLayout.render('Custom_body', { main: 'Community_roleships_page' });
   },
 });
 

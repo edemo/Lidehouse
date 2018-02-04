@@ -19,6 +19,7 @@ Parcels.heatingTypeValues = ['centralHeating', 'ownHeating'];
 
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   serial: { type: Number, optional: true },
   units: { type: Number, optional: true },
   /*  name: { type: String,
