@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import './autoform-edit.html';
@@ -11,7 +12,14 @@ import './autoform-edit.html';
 
 Template.Autoform_edit.helpers({
   title() {
-    return this.title || 'editing data';
+    if (this.title) return this.title;
+    const split = this.id.split('.'); // AutoFormId convention is 'af.object.action'
+    const objectName = split[1];
+    const actionName = split[2];
+    if (actionName === 'insert') return __('new') + ' ' + __(objectName) + ' ' + __('insertion');
+    else if (actionName === 'update') return __(objectName) + ' ' + __('editing data');
+    else if (actionName === 'view') return __(objectName) + ' ' + __('viewing data');
+    else return 'data';
   },
 });
 

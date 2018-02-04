@@ -21,6 +21,7 @@ export function payaccountColumns() {
     { data: 'level1Names()', title: __('schemaPayAccounts.children.label'), render: displayNames },
     { data: 'level2Names()', title: __('schemaPayAccounts.children.$.children.label'), render: displayNames },
     { data: 'leafNames()', title: __('schemaPayAccounts.children.$.children.$.children.label'), render: displayNames },
+    { data: '_id', render: Render.buttonView },
     { data: '_id', render: Render.buttonEdit },
     { data: '_id', render: Render.buttonDelete },
   ];

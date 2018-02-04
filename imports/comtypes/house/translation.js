@@ -7,8 +7,6 @@ export const HouseTranslation = {
     "community": "building",
     "Join a community": "Join a building",
     "Create a community": "Create a building",
-    "ownership": "parcel",
-    "ownerships": "parcels",
 
     "flat": "Apartment",
     "parking": "Parking",
@@ -128,8 +126,6 @@ export const HouseTranslation = {
     "Create a community": "Létrehozok egy házat",
     "Parcels of community": "A házhoz tartozó albetétek",
     "Community page": "Házlap",
-    "ownership": "albetét",
-    "ownerships": "albetétek",
 
     "flat": "Lakás",
     "parking": "Parkoló",

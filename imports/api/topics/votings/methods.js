@@ -9,7 +9,7 @@ import { Topics } from '../topics.js';
 import './votings.js';
 
 export const castVote = new ValidatedMethod({
-  name: 'vote.cast.update',
+  name: 'vote.cast',
   validate: new SimpleSchema({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
     castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
@@ -18,7 +18,7 @@ export const castVote = new ValidatedMethod({
 
   run({ topicId, castedVote }) {
     const topic = checkExists(Topics, topicId);
-    checkPermissions(this.userId, 'vote.cast.update', topic.communityId, topic);
+    checkPermissions(this.userId, 'vote.cast', topic.communityId, topic);
 
     const topicModifier = {};
     if (castedVote.length === 0) {
@@ -50,7 +50,7 @@ export const castVote = new ValidatedMethod({
 });
 
 export const closeVote = new ValidatedMethod({
-  name: 'vote.close.update',
+  name: 'vote.close',
   validate: new SimpleSchema({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator({ clean: true }),  // we 'clean' here to convert the vote strings (eg "1") into numbers (1)
@@ -62,7 +62,7 @@ export const closeVote = new ValidatedMethod({
         `Method: topics.closeVote, Collection: topics, id: ${topicId}`
       );
     }
-    checkPermissions(this.userId, 'vote.close.update', topic.communityId, topic);
+    checkPermissions(this.userId, 'vote.close', topic.communityId, topic);
 
     const res = Topics.update(topicId, { $set: { closed: true } });
     debugAssert(res === 1);
