@@ -6,7 +6,7 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { communityColumns } from '/imports/api/communities/tables.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { insert as insertMembership } from '../../api/memberships/methods.js';
+import { insert as insertMembership } from '/imports/api/memberships/methods.js';
 import './communities-join.html';
 
 Template.Communities_join.onCreated(function onCreated() {
@@ -39,6 +39,9 @@ Template.Communities_join.events({
   'click .js-join'(event) {
     const communityId = $(event.target).data('id');
     const communityName = Communities.findOne(communityId).name;
+
+    // fel kene dobni formot bekerni az albetet adatait
+    
     insertMembership.call({ userId: Meteor.userId(), communityId, role: 'guest' }, (err, res) => {
       if (err) {
         FlowRouter.go('App.home');

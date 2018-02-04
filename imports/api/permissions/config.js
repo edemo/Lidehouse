@@ -46,7 +46,7 @@ const permissions = [
   { name: 'benefactorships.update', roles: ['admin', 'manager', 'owner'] },
   { name: 'benefactorships.remove', roles: ['admin', 'manager', 'owner'] },
   { name: 'parcels.inCommunity',    roles: everyBody },
-  { name: 'parcels.create',         roles: ['admin', 'manager'] },
+  { name: 'parcels.insert',         roles: ['admin', 'manager'] },
   { name: 'parcels.update',         roles: ['admin', 'manager'] },
   { name: 'parcels.remove',         roles: ['admin', 'manager'] },
   { name: 'forum.insert',           roles: exceptGuest },
