@@ -35,6 +35,7 @@
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
+  "pleaseSupplyParcelData": "Please supply as much data as possible about your parcel, so your join request can be approved quickly!",
 
     // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
@@ -48,7 +49,6 @@
 
   "votedViaDelegationHint" : "casting a vote can override this",
   "notYetVotedHint": "cast your vote below, or set up a delegation",
-
 
   // Notifications
   "Joined community": "Succesfully joined community %s",

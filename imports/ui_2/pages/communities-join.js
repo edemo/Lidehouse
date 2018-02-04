@@ -49,6 +49,7 @@ Template.Communities_join.events({
     Session.set('joiningCommunityId', communityId);
 
     Modal.show('Autoform_edit', {
+      title: 'pleaseSupplyParcelData',
       id: 'af.join.parcel.insert',
       collection: Parcels,
       type: 'method',

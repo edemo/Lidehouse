@@ -10,6 +10,9 @@ import './autoform-edit.html';
 // Make sure afOptions you omitFields if it is auto filled in an Autoform.hook
 
 Template.Autoform_edit.helpers({
+  title() {
+    return this.title || 'editing data';
+  },
 });
 
 AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {

@@ -112,7 +112,8 @@
   // housing
   "Waiting for approval": "Elfogadásra váró",
   "Acknowledge save effects": "Tudomásul veszem, hogy az elmentett módosítás azonnal láthatóvá válik a közösség nyilvános oldalán.",
-  
+  "pleaseSupplyParcelData": "Kérjük adjon meg minél több adatot az albetétjéről, hogy csatlakozási kérelme minél előbb elfogadásra kerülhessen!",
+
   // voting
   "yes": "igen",
   "no": "nem",
