@@ -224,6 +224,9 @@
                 "name": {
                   "label": "Elnevezés (vagy albetét száma)",
                   "placeholder": "(pl. Kert vagy 114)"
+                },
+                "membersRelated": {
+                  "label": "Tulajdonosokkal elszámolt"
                 }
               }
             }
