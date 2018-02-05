@@ -31,7 +31,7 @@
             </a>
             <i class="small-size file-date">{{ uploadDate }}</i>
           </div>
-          {{#if userHasPermission "shareddocs.upload"}}
+          {{#if userHasPermission 'shareddocs.upload' (fromSession 'activeCommunityId')}}
           <div class="col-xs-2 text-right">
             <a class="js-delete nav-item">
               <span class="icon-trash" title={{_ 'delete'}}></span>
@@ -50,7 +50,7 @@
         </div>
       {{/if}}
 
-      {{#if userHasPermission "shareddocs.upload"}}
+      {{#if userHasPermission 'shareddocs.upload' (fromSession 'activeCommunityId')}}
       <div class="row upload-row">
         <div class="col-xs-12 text-center">
           <button type="button" class="btn btn-primary" name="upload"> + {{_ 'upload'}}</button>

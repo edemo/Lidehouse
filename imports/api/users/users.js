@@ -142,7 +142,7 @@ Meteor.users.helpers({
     const rolesWithThePermission = permission.roles;
     const userHasTheseRoles = this.roles(communityId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
-    // console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
+    console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
     return result;
   },
   totalOwnedUnits(communityId) {
