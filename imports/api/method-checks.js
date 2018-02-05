@@ -39,7 +39,7 @@ export function checkPermissions(userId, permissionName, communityId, object) {
   const user = Meteor.users.findOne(userId);
   if (!user.hasPermission(permissionName, communityId, object)) {
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-      `Permission: ${permissionName}, userId: ${userId}, communityId: ${communityId}, objectId: ${object._id}`);
+      `Permission: ${permissionName}, userId: ${userId}, communityId: ${communityId}, objectId: ${object ? object._id : '-'}`);
   }
 }
 

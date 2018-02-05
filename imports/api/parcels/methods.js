@@ -12,7 +12,7 @@ export const insert = new ValidatedMethod({
   validate: Parcels.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkPermissions(this.userId, 'parcels.insert', doc.communityId);
+    if (!(doc.approved === false)) checkPermissions(this.userId, 'parcels.insert', doc.communityId);
     const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
     const newTotal = total + doc.units;
     const totalunits = Communities.findOne({ _id: doc.communityId }).totalunits;
