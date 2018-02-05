@@ -2,7 +2,7 @@
     <div class="content-scrollable page-content page-profile">
       <div class="page-slim">
         <h1 class="page-title">{{_ 'User data page'}}</h1>
-        {{#autoForm id="users_show" collection=users omitFields="emails.$.verified" doc=document type="method-update" meteormethod="user.update" singleMethodArgument=true}}
+        {{#autoForm id="af.user.update" collection=users schema=schema omitFields="emails" doc=document type="method-update" meteormethod="user.update" singleMethodArgument=true}}
         {{> afQuickFields}}
         <div>
           <button type="submit" class="btn btn-primary">{{_ "save"}}</button>

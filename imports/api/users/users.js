@@ -102,6 +102,15 @@ Meteor.users.schema = new SimpleSchema({
 });
 
 Meteor.users.helpers({
+  getPrimaryEmail() {
+    return this.emails[0].address;
+  },
+  setPrimaryEmail(address) {
+    // TODO: Should check if email already exist in the system
+    this.emails[0].address = address;
+    this.emails[0].verified = false;
+    // TODO: A verification email has to be sent to the user now
+  },
   memberships() {
     return Memberships.find({ userId: this._id });
   },
