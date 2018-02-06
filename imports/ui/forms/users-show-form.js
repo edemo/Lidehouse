@@ -47,8 +47,8 @@ AutoForm.addHooks('af.user.update', {
       modifier.$set.emails[0].address = modifier.$set.email;
       modifier.$set.emails[0].verified = false;
       // TODO: A verification email has to be sent to the user now
-      delete modifier.$set.email;
     }
+    delete modifier.$set.email;
     // console.log(`modifier: ${JSON.stringify(modifier)}`);
     return modifier;
   },
