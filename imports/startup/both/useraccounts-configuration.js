@@ -109,7 +109,9 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
-  process.env.MAIL_URL = Meteor.settings.mailSender;
+  if (Meteor.settings.mailSender) {
+    process.env.MAIL_URL = Meteor.settings.mailSender;
+  }
 
   const tillMidnight = moment().endOf('day') - moment();
   Meteor.setTimeout(function() {
