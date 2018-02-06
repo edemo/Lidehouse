@@ -1,5 +1,4 @@
 import { moment } from 'meteor/momentjs:moment';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { __ } from '/imports/localization/i18n.js';
 
 export const Render = {
@@ -30,12 +29,6 @@ export const Render = {
   },
   buttonJoin(cellData, renderType, currentRow) {
     const html = `<a href="#" data-id=${cellData} class="js-join">${__('join')}</a>`;
-    return html;
-  },
-  buttonAssignParcelOwner(cellData, renderType, currentRow) {
-    let html = `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
-    html += `<span data-id=${cellData} title=${__('assign')} class="js-assign nav-item glyphicon glyphicon-user"></span>`;
-    html += `</a>`;
     return html;
   },
 };

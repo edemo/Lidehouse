@@ -160,6 +160,12 @@ Template.Custom_body.helpers({
     });
     return count;
   },
+  countUnapprovedEntities() {
+    const communityId = Session.get('activeCommunityId');
+    const unapprovedParcelCount = Parcels.find({ communityId, approved: false }).count();
+    const unapprovedMembershipCount = Memberships.find({ communityId, approved: false }).count();
+    return unapprovedParcelCount + unapprovedMembershipCount;
+  },
 });
 
 Template.Custom_body.events({

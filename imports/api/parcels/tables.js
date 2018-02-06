@@ -1,5 +1,17 @@
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
+import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+
+Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, renderType, currentRow) {
+  const parcelId = cellData;
+  const todo = Memberships.findOne({ parcelId, approved: false }) ? 'todo' : '';
+
+  let html = `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
+  html += `<span data-id=${cellData} title=${__('assign')} class="js-assign nav-item glyphicon glyphicon-user ${todo}"></span>`;
+  html += `</a>`;
+  return html;
+};
 
 export function parcelColumns(permissions) {
   return [
