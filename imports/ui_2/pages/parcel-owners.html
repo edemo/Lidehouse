@@ -11,6 +11,13 @@
         {{#if userHasPermission 'ownerships.create' community/_id}}
         <button class="js-new btn-primary">{{_ 'createNew'}}</button>
         {{/if}}
+        <!-- UnApproved section -->
+        {{#if hasUnapprovedMemberships}}
+        <h4 align="center">{{_ "Waiting for approval"}}</h4>
+        <div class="table-responsive">
+        {{> ReactiveDatatable tableData=unapprovedTableDataFn options=ownersOptionsFn }}
+        </div>
+        {{/if}}      
       </div>
       <div id="benefactors">
         <h3 class="page-title">{{_ 'benefactors'}}</h3>

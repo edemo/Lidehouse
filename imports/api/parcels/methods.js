@@ -7,12 +7,25 @@ import { checkExists, checkModifier, checkPermissions } from '/imports/api/metho
 import { Parcels } from './parcels.js';
 import { Memberships } from '../memberships/memberships.js';
 
+export const insertUnapproved = new ValidatedMethod({
+  name: 'parcels.insert.unapproved',
+  validate: Parcels.simpleSchema().validator({ clean: true }),
+
+  run(doc) {
+    // This can be done without any permission check. Because its unapproved.
+    if (doc.approved !== false) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to insert approved parcel', `doc: ${doc}`);
+    }
+    return Parcels.insert(doc);
+  },
+});
+
 export const insert = new ValidatedMethod({
   name: 'parcels.insert',
   validate: Parcels.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    if (!(doc.approved === false)) checkPermissions(this.userId, 'parcels.insert', doc.communityId);
+    checkPermissions(this.userId, 'parcels.insert', doc.communityId);
     const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
     const newTotal = total + doc.units;
     const totalunits = Communities.findOne({ _id: doc.communityId }).totalunits;

@@ -78,6 +78,19 @@ export const connectMe = new ValidatedMethod({
   },
 });
 
+export const insertUnapproved = new ValidatedMethod({
+  name: 'memberships.insert.unapproved',
+  validate: Memberships.simpleSchema().validator({ clean: true }),
+
+  run(doc) {
+    // This can be done without any permission check. Because its unapproved.
+    if (doc.role !== 'owner' || doc.approved !== false) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to insert approved membership', `doc: ${doc}`);
+    }
+    return Memberships.insert(doc);
+  },
+});
+
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
   validate: Memberships.simpleSchema().validator({ clean: true }),
@@ -106,7 +119,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    checkModifier(doc, modifier, Memberships.modifiableFields);
+    checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));
     const newrole = modifier.$set.role;
     if (newrole && newrole !== doc.role) {
       checkAddMemberPermissions(this.userId, doc.communityId, newrole);

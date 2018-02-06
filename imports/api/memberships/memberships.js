@@ -46,6 +46,7 @@ const IdCardSchema = new SimpleSchema({
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); },
     autoform: {
       options() {
@@ -136,11 +137,13 @@ Memberships.helpers({
     return (parcel.representor()._id === this._id);
   },
   votingUnits() {
+    if (!this.parcel().approved) return 0;
     // const votingUnits = this.parcel().units * this.ownership.share.toNumber();
     const votingUnits = this.isRepresentor() ? this.parcel().units : 0;
     return votingUnits;
   },
   votingShare() {
+    if (!this.parcel().approved) return 0;
     // const votingShare = this.parcel().share().multiply(this.ownership.share);
     const votingShare = this.isRepresentor() ? this.parcel().share() : 0;
     return votingShare;

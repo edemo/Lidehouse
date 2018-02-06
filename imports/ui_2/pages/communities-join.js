@@ -8,12 +8,13 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { communityColumns } from '/imports/api/communities/tables.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { insert as insertMembership } from '/imports/api/memberships/methods.js';
+import { insertUnapproved as insertMembershipUnapproved } from '/imports/api/memberships/methods.js';
 import './communities-join.html';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/autoform-edit.js';
+import { Fraction } from 'fractional';
 
 Template.Communities_join.onCreated(function onCreated() {
   this.subscribe('communities.listing');
@@ -44,34 +45,49 @@ Template.Communities_join.helpers({
 Template.Communities_join.events({
   'click .js-join'(event) {
     const communityId = $(event.target).data('id');
-    const communityName = Communities.findOne(communityId).name;
 
     Session.set('joiningCommunityId', communityId);
 
     Modal.show('Autoform_edit', {
       title: 'pleaseSupplyParcelData',
-      id: 'af.join.parcel.insert',
+      id: 'af.parcel.insert.unapproved',
       collection: Parcels,
       type: 'method',
-      meteormethod: 'parcels.insert',
+      meteormethod: 'parcels.insert.unapproved',
       template: 'bootstrap3-inline',
-    });
-
-    insertMembership.call({ userId: Meteor.userId(), communityId, role: 'guest' }, (err, res) => {
-      if (err) {
-        FlowRouter.go('App.home');
-        displayError(err);
-      }
-      displayMessage('success', 'Joined community', communityName);
     });
   },
 });
 
-AutoForm.addModalHooks('af.join.parcel.insert');
-AutoForm.addHooks('af.join.parcel.insert', {
+function onJoinParcelInsertSuccess(parcelId) {
+  // const parcelId = Parcels.find({ communityId }, { sort: { createdAt: -1 } }).fetch()[0]._id;
+  const communityId = Session.get('joiningCommunityId');
+  const communityName = Communities.findOne(communityId).name;
+
+  insertMembershipUnapproved.call({
+    userId: Meteor.userId(),
+    communityId,
+    approved: false,
+    role: 'owner',
+    parcelId,
+    ownership: {
+      share: new Fraction(1),
+    },
+  }, (err, res) => {
+    if (err) displayError(err);
+    else displayMessage('success', 'Joined community', communityName);
+    FlowRouter.go('App.home');
+  });
+}
+
+AutoForm.addModalHooks('af.parcel.insert.unapproved');
+AutoForm.addHooks('af.parcel.insert.unapproved', {
   formToDoc(doc) {
     doc.communityId = Session.get('joiningCommunityId');
     doc.approved = false;
     return doc;
+  },
+  onSuccess(formType, result) {
+    onJoinParcelInsertSuccess(result);
   },
 });

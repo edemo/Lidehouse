@@ -30,7 +30,7 @@ Template.Parcel_owners_page.helpers({
   ownersTableDataFn() {
     return () => {
       const parcelId = FlowRouter.getParam('_pid');
-      return Memberships.find({ role: 'owner', parcelId }).fetch();
+      return Memberships.find({ approved: true, role: 'owner', parcelId }).fetch();
     };
   },
   ownersOptionsFn() {
@@ -55,7 +55,7 @@ Template.Parcel_owners_page.helpers({
   benefactorsTableDataFn() {
     return () => {
       const parcelId = FlowRouter.getParam('_pid');
-      return Memberships.find({ role: 'benefactor', parcelId }).fetch();
+      return Memberships.find({ approved: true, role: 'benefactor', parcelId }).fetch();
     };
   },
   benefactorsOptionsFn() {
@@ -75,6 +75,16 @@ Template.Parcel_owners_page.helpers({
         paging: false,
         info: false,
       };
+    };
+  },
+  hasUnapprovedMemberships() {
+    const parcelId = FlowRouter.getParam('_pid');
+    return Memberships.find({ approved: false, role: 'owner', parcelId }).fetch().length > 0;
+  },
+  unapprovedTableDataFn() {
+    return () => {
+      const parcelId = FlowRouter.getParam('_pid');
+      return Memberships.find({ approved: false, role: 'owner', parcelId }).fetch();
     };
   },
 });
@@ -168,8 +178,15 @@ AutoForm.addHooks('af.ownership.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.parcelId = FlowRouter.getParam('_pid');
+    doc.approved = true;
     doc.role = 'owner';
     return doc;
+  },
+});
+AutoForm.addHooks('af.ownership.update', {
+  formToModifier(modifier) {
+    modifier.$set.approved = true;
+    return modifier;
   },
 });
 AutoForm.addModalHooks('af.benefactorship.insert');
@@ -178,6 +195,7 @@ AutoForm.addHooks('af.benefactorship.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.parcelId = FlowRouter.getParam('_pid');
+    doc.approved = true;
     doc.role = 'benefactor';
     return doc;
   },
