@@ -9,15 +9,8 @@ import { Shareddocs } from './shareddocs.js';
 
 Meteor.publish('shareddocs.inCommunity', function (communityId) {
   check(communityId, String);
-
-  if (!this.userId) {
-    debugAssert(false, 'Not-logged-in user accessing shareddocs');
-    return this.ready();
-  }
-
-  const user = Meteor.users.findOne(this.userId);
-  if (!user.hasPermission('shareddocs.download', communityId)) {
-    debugAssert(false, 'Unpermissioned user accessing shareddocs');
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('shareddocs.inCommunity', communityId)) {
     return this.ready();
   }
 

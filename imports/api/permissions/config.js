@@ -20,7 +20,7 @@ export const defaultRoles = [
 
 // Groupings just to ease configuration
 export const everyRole = defaultRoles.map(r => r.name);
-const everyBody = everyRole.concat('null');
+const everyBody = ['null'];
 const exceptGuest = _.without(everyRole, 'guest');
 const nobody = [];
 
@@ -35,7 +35,7 @@ const permissions = [
 //  { name: 'communities.insert',     roles: everyRole },
   { name: 'communities.update',     roles: ['admin'] },
   { name: 'communities.remove',     roles: ['admin'] },
-  { name: 'memberships.inCommunity', roles: everyRole },
+  { name: 'memberships.inCommunity',roles: everyRole },
   { name: 'roleships.create',       roles: ['admin', 'manager'] },
   { name: 'roleships.update',       roles: ['admin', 'manager'] },
   { name: 'roleships.remove',       roles: ['admin', 'manager'] },
@@ -89,7 +89,7 @@ const permissions = [
   { name: 'payments.listing',       roles: ['accountant', 'treasurer', 'overseer'] },
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
-  { name: 'shareddocs.listing',     roles: exceptGuest },
+  { name: 'shareddocs.inCommunity', roles: exceptGuest },
 ];
 
 export function initializePermissions() {

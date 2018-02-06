@@ -53,6 +53,7 @@ Memberships.schema = new SimpleSchema({
       },
     },
   },
+  // The user is connected with the membership via 3 possible ways: userId (registered user), userEmail (not registered, but invitation is sent), and idCard (confirmed identity papers)
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
     autoform: {
       options() {
