@@ -156,6 +156,19 @@
     "text": {
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
+    },
+    "vote": {
+      "procedure": {
+        "label": "Voting procedure",
+        "online": "Online",
+        "meeting": "Owner's meeting"
+      },
+      "effect": {
+        "label": "Voting effect"
+      },
+      "type": {
+        "label": "Voting type"
+      }
     }
   },
   "schemaTickets": {

@@ -3,14 +3,24 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Delegations } from '/imports/api/delegations/delegations.js';
+import { autoformOptions } from '/imports/utils/autoform.js';
 import { Topics } from '../topics.js';
-import { Memberships } from '../../memberships/memberships.js';
-import { Delegations } from '../../delegations/delegations.js';
+
+Topics.voteProcedureValues = ['online', 'meeting'];
+Topics.voteEffectValues = ['poll', 'legal'];
+Topics.voteTypeValues = ['yesNo', 'choose', 'preferential', 'petition'];
 
 const voteSchema = new SimpleSchema({
   closesAt: { type: Date },
-  type: { type: String, allowedValues: ['yesno', 'select', 'preferential'] },
-  choices: { type: Array, autoValue() { if (this.field('vote.type').value === 'yesno') return ['yes', 'no', 'abstain']; } },
+  procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.') },
+  effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: autoformOptions(Topics.voteEffectValues, 'schemaVotings.vote.effect.') },
+  type: { type: String, allowedValues: Topics.voteTypeValues, autoform: autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.') },
+  choices: { type: Array, autoValue() {
+    if (this.field('vote.type').value === 'petition') return ['support'];
+    if (this.field('vote.type').value === 'yesno') return ['yes', 'no', 'abstain'];
+  } },
   'choices.$': { type: String },
 });
 
