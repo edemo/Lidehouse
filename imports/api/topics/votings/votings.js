@@ -10,7 +10,7 @@ import { Topics } from '../topics.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
 Topics.voteEffectValues = ['poll', 'legal'];
-Topics.voteTypeValues = ['yesNo', 'choose', 'preferential', 'petition'];
+Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition'];
 
 const voteSchema = new SimpleSchema({
   closesAt: { type: Date },

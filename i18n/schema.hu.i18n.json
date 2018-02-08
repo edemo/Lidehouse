@@ -179,7 +179,7 @@
       },
       "type": {
         "label": "Szavazás típusa",
-        "yesNo": "Igen-nem-tartózkodom",
+        "yesno": "Igen-nem-tartózkodom",
         "choose": "Eldöntendő (választás a lehetőségekből)",
         "preferential": "Preferenciális (választás preferenciák alapján)",
         "petition": "Támogatásgyűjtő"
