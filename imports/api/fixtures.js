@@ -348,6 +348,8 @@ export function insertDemoFixture(lang) {
     text: __('demo.vote.0.text'),
     vote: {
       closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
+      procedure: 'online',
+      effect: 'legal',
       type: 'yesno',
     },
   });
@@ -367,6 +369,8 @@ export function insertDemoFixture(lang) {
     text: __('demo.vote.1.text'),
     vote: {
       closesAt: moment().add(2, 'week').toDate(),
+      procedure: 'online',
+      effect: 'legal',
       type: 'yesno',
     },
   });
@@ -382,6 +386,8 @@ export function insertDemoFixture(lang) {
     vote: {
       closesAt: moment().add(1, 'month').toDate(),
       type: 'preferential',
+      procedure: 'online',
+      effect: 'legal',
       choices: [
         __('demo.vote.2.choice.0'),
         __('demo.vote.2.choice.1'),
