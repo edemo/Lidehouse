@@ -59,7 +59,9 @@
         {{> afQuickField name="vote.procedure"}}
         {{> afQuickField name="vote.effect"}}
         {{> afQuickField name="vote.type"}}
+        {{#if needsChoicesSpecified }}
         {{> afQuickField name="vote.choices"}}
+        {{/if}}
         <!--div class="row">
           <div class="col-xs-12 text-center">
             Válaszlehetőségek
