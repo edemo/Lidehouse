@@ -65,39 +65,12 @@
           {{/each}}
         </div>
       </div>
-      {{else}}
+    {{else}}
       <!-- voting buttons -->
       {{#if userHasPermission 'vote.cast' this/communityId this}}
       <div class="row">
       <div class="col-xs-12 vote-answer">
           
-        {{#if voteTypeIs "yesno"}}
-        <div class="row">
-          <div class="col-xs-12 vsend-col">
-            <div class="btns-group">
-              {{#each choice in vote.choices}}
-              <a href="#" class="btn-vote {{pressedClass @index}}" data-value="{{@index}}">
-                {{_ choice}}
-              </a>
-              {{/each}}
-            </div>
-            <!--button class="btn-primary btn-golive">{{_ 'vote'}}</button-->
-            <br>
-            <br>
-            <!-- showing if you voted directly or via delegation -->
-            {{#if this.hasVotedDirect currentUser._id}}
-              {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
-            {{else}}
-              {{#if this.hasVotedIndirect currentUser._id}}
-                {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}})
-              {{else}}
-                {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedHint"}})</i>
-              {{/if}}
-            {{/if}}
-          </div>
-        </div>
-        {{/if}}
-
         {{#if voteTypeIs "preferential"}}
         <div class="row vote-answer-sort">
           {{#if voteIsFinalized}}
@@ -119,6 +92,32 @@
             {{else}}
               <button class="btn btn-primary btn-votesend">{{_ 'finalize'}}</button>
             {{/if}}
+            <br>
+            <!-- showing if you voted directly or via delegation -->
+            {{#if this.hasVotedDirect currentUser._id}}
+              {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
+            {{else}}
+              {{#if this.hasVotedIndirect currentUser._id}}
+                {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}})
+              {{else}}
+                {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedHint"}})</i>
+              {{/if}}
+            {{/if}}
+          </div>
+        </div>
+
+        {{else}}
+        <div class="row">
+          <div class="col-xs-12 vsend-col">
+            <div class="btns-group">
+              {{#each choice in vote.choices}}
+              <a href="#" class="btn-vote {{pressedClass @index}}" data-value="{{@index}}">
+                {{_ choice}}
+              </a>
+              {{/each}}
+            </div>
+            <!--button class="btn-primary btn-golive">{{_ 'vote'}}</button-->
+            <br>
             <br>
             <!-- showing if you voted directly or via delegation -->
             {{#if this.hasVotedDirect currentUser._id}}
