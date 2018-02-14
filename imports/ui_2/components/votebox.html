@@ -93,16 +93,8 @@
               <button class="btn btn-primary btn-votesend">{{_ 'finalize'}}</button>
             {{/if}}
             <br>
-            <!-- showing if you voted directly or via delegation -->
-            {{#if this.hasVotedDirect currentUser._id}}
-              {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
-            {{else}}
-              {{#if this.hasVotedIndirect currentUser._id}}
-                {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}})
-              {{else}}
-                {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedHint"}})</i>
-              {{/if}}
-            {{/if}}
+            <br>
+            {{> UserVoteStatus}}
           </div>
         </div>
 
@@ -119,16 +111,7 @@
             <!--button class="btn-primary btn-golive">{{_ 'vote'}}</button-->
             <br>
             <br>
-            <!-- showing if you voted directly or via delegation -->
-            {{#if this.hasVotedDirect currentUser._id}}
-              {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
-            {{else}}
-              {{#if this.hasVotedIndirect currentUser._id}}
-                {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}})
-              {{else}}
-                {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedHint"}})</i>
-              {{/if}}
-            {{/if}}
+            {{> UserVoteStatus}}
           </div>
         </div>
         {{/if}}
@@ -143,5 +126,20 @@
       </div>
       </div>
 
+  </div>
+</template>
+
+<template name="UserVoteStatus">
+  <!-- showing if you voted directly or via delegation -->
+  <div class="text-left">
+  {{#if this.hasVotedDirect currentUser._id}}
+    {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
+  {{else}}
+    {{#if this.hasVotedIndirect currentUser._id}}
+      {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}})
+    {{else}}
+      {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedHint"}})</i>
+    {{/if}}
+  {{/if}}
   </div>
 </template>
