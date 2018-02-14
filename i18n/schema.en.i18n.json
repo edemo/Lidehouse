@@ -157,17 +157,32 @@
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
     },
+    "createdAt": {
+      "label": "Created At"
+    },
     "vote": {
+      "choices": {
+        "label": "Vote choices"
+      },
+      "closesAt": {
+        "label": "Closes At"
+      },
       "procedure": {
         "label": "Voting procedure",
         "online": "Online",
         "meeting": "Owner's meeting"
       },
       "effect": {
-        "label": "Voting effect"
+        "label": "Voting effect",
+        "poll": "Poll",
+        "legal": "Legal power"
       },
       "type": {
-        "label": "Voting type"
+        "label": "Voting type",
+        "yesno": "Yes-no-abstain",
+        "choose": "Choose from choices",
+        "preferential": "Choose based on preference ordering",
+        "petition": "Petition"
       }
     }
   },
