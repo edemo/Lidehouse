@@ -18,10 +18,8 @@ Template.Vote_create.onCreated(function () {
   instance.choices = new ReactiveVar([]);
   this.autorun(() => {
     const currentVoteType = AutoForm.getFieldValue('vote.type', 'af.voting.insert');
-//    Tracker.nonreactive(() => {
     const newChoices = Topics.voteTypeChoices[currentVoteType] || [];
     instance.choices.set(newChoices);
-//    });
   });
 });
 
@@ -56,14 +54,12 @@ Template.Vote_create.events({
     const removeIndex = $(event.target).data('index');
     currentChoices.splice(removeIndex, 1);
     Template.instance().choices.set(currentChoices);
- //   Session.set('newVotingChoices', currentChoices);
   },
   'click .js-enter-choice'(event) {
     let currentChoices = Template.instance().choices.get();
     const newChoice = $('.editing input')[0].value;
     currentChoices = currentChoices.concat(newChoice);
     Template.instance().choices.set(currentChoices);
-//    Session.set('newVotingChoices', currentChoices);
     $('.editing')[0].classList.toggle('hidden');
     $('.js-add-choice')[0].classList.toggle('hidden');
   },
@@ -76,10 +72,12 @@ Template.Vote_create.events({
 AutoForm.addModalHooks('af.voting.insert');
 AutoForm.addHooks('af.voting.insert', {
   formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.userId = Meteor.userId();
-    doc.category = 'vote';
-//    doc.vote.choices = afVotingInsertInstance.choices.get();
+    Tracker.nonreactive(() => {   // AutoForm will run the formToDoc each time any field on the form, like the vote.type is simply queried (maybe so that if its a calculated field, it gets calculated)
+      doc.communityId = Session.get('activeCommunityId');
+      doc.userId = Meteor.userId();
+      doc.category = 'vote';
+      doc.vote.choices = afVotingInsertInstance.choices.get();
+    });
     return doc;
   },
 });
