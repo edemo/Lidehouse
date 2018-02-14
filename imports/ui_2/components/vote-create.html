@@ -11,7 +11,7 @@
       <p class="small-size"> <i>Eredeti szerző: Kecsmetéi Imre <br>Módosítva: 2017.06.15.</i></p> -->
       <!-- / -->
       <!-- ha teljesen uj szavazás -->
-      <h4>Új szavazás</h4>
+      <h4>{{_ "new"}} {{_ "voting"}}</h4>
       <!-- / -->
       <br>
     </div>
@@ -48,7 +48,7 @@
         </div>
         <div>
           <div class="col-xs-12 text-center">
-            <button type="button" class="btn btn-secondary" name="docupload">+ Feltöltés</button>
+            <button type="button" class="btn btn-secondary" name="docupload"> + {{_ "Upload"}}</button>
           </div>
         </div>
 
@@ -60,7 +60,7 @@
         {{> afQuickField name="vote.effect"}}
         {{> afQuickField name="vote.type"}}
         <div class="row">
-          <div class="col-xs-12 text-center">Choices<hr></div>
+          <div class="col-xs-12 text-center">{{_ "Choices"}}<hr></div>
         </div>
         <div class="row choice">
           {{#each choice in choices}}
@@ -77,7 +77,7 @@
         </div>
         <div class="row">
           <div class="col-xs-12 text-center">
-            <button type="button" class="btn btn-secondary js-add-choice" name="upload"> + Új válasz</button>
+            <button type="button" class="btn btn-secondary js-add-choice" name="upload"> + {{_ "new"}} {{_ "choice"}}</button>
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@
   <div class="row">
     <div class="col-xs-12 text-center">
        <!-- megerosito modal up -->
-       <button type="submit" class="btn btn-primary">Szavazás indítása</button>
+       <button type="submit" class="btn btn-primary">{{_ "Launch voting"}}</button>
        <!-- notification push-->
 
        <!-- ha nem uj hanem módosítás -->

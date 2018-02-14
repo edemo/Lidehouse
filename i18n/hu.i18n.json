@@ -126,6 +126,8 @@
   "pleaseSupplyParcelData": "Kérjük adjon meg minél több adatot az albetétjéről, hogy csatlakozási kérelme minél előbb elfogadásra kerülhessen!",
 
   // voting
+  "choice": "választási lehetőség",
+  "Choices": "Választási lehetőségek",
   "yes": "igen",
   "no": "nem",
   "abstain": "tartózkodom",
@@ -144,7 +146,7 @@
   "direct": "Közvetlen",
   "No active votes": "Jelenleg nincs aktív szavazás!",
   "Latest votes": "Korábbi szavazások",
-
+  "Launch voting": "Szavazás indítása",
 
   // delegations
   "Delegations from me": "Meghatalmazásaim",
