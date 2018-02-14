@@ -1,5 +1,4 @@
 import { $ } from 'meteor/jquery';
-import { moment } from 'meteor/momentjs:moment';
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -74,7 +73,7 @@ AutoForm.addModalHooks('af.voting.insert');
 AutoForm.addHooks('af.voting.insert', {
   formToDoc(doc) {
     Tracker.nonreactive(() => {   // AutoForm will run the formToDoc each time any field on the form, like the vote.type is simply queried (maybe so that if its a calculated field, it gets calculated)
-      doc.createdAt = moment();
+      doc.createdAt = new Date();
       doc.communityId = Session.get('activeCommunityId');
       doc.userId = Meteor.userId();
       doc.category = 'vote';
