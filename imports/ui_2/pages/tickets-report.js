@@ -22,6 +22,9 @@ Template.Tickets_report.onCreated(function () {
 });
 
 Template.Tickets_report.helpers({
+  ticketsSchema() {
+    return ticketsSchema;
+  },
   activeTicketsDataFn() {
     return () => {
       const communityId = Session.get('activeCommunityId');
@@ -58,7 +61,7 @@ Template.Tickets_report.helpers({
 });
 
 Template.Tickets_report.events({
-  'click .js-new'() {
+/*  'click .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.ticket.insert',
       collection: Topics,
@@ -69,6 +72,7 @@ Template.Tickets_report.events({
       template: 'bootstrap3-inline',
     });
   },
+*/
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {

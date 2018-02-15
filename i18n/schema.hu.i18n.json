@@ -188,23 +188,35 @@
   },
   "schemaTickets": {
     "title": {
-      "label": "Hiba rövid leírása",
-      "placeholder": "(pl. Elromlott a lift)"
+      "label": "Cím",
+      "placeholder": "PX-41"
     },
     "text": {
-      "label": "Részletek",
-      "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
+      "label": "Hiba",
+      "placeholder": "A hiba rövid leírása..."
     },
     "ticket": {
       "label": "Hibajegy",
-      "type": {
-        "label": "Hiba típusa"
+      "category": {
+        "label": "Kategória",
+        "building": "épület",
+        "garden": "kert",
+        "service": "közmű"      
       },
       "urgency": {
-        "label": "Sürgősség"
+        "label": "Sürgősség",
+        "high": "sürgős",
+        "normal": "közepes",
+        "low": "alacsony"
       },
       "status": {
-        "label": "Státusz"
+        "label": "Státusz",
+        "reported": "megerősítés alatt",
+        "confirmed": "megerősítve",
+        "progressing": "folyamatban",
+        "finished": "megoldva",
+        "checked": "ellenőrizve",
+        "closed": "lezárva"
       }
     }
   },

@@ -188,17 +188,17 @@
   },
   "schemaTickets": {
     "title": {
-      "label": "Problem description",
-      "placeholder": "(eg. Elevator out of order)"
+      "label": "Title",
+      "placeholder": "PX-41"
     },
     "text": {
-      "label": "Details",
-      "placeholder": "Longer description (if needed)..."
+      "label": "Description",
+      "placeholder": "Describe the problem briefly..."
     },
     "ticket": {
       "label": "Ticket",
-      "type": {
-        "label": "Type of problem"
+      "category": {
+        "label": "Category"
       },
       "urgency": {
         "label": "Urgency"

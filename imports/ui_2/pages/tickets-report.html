@@ -11,77 +11,6 @@
         <div class="col-xs-12 no-padding table-responsive">
           {{> ReactiveDatatable tableData=activeTicketsDataFn options=activeTicketsOptionsFn }}
         </div>
-        <!--div class="row">
-          <div class="col-xs-12 no-padding table-responsive">
-            <table class="table full-width">
-              <tr>
-                <th>
-                  Név
-                </th>
-                <th>
-                  Leírás
-                </th>
-                <th>
-                  Kategória
-                </th>
-                <th>
-                  Bejelentve
-                </th>
-                <th>
-                  Bejelentő
-                </th>
-                <th>
-                  Státusz
-                </th>
-                <th></th>
-              </tr>
-
-              <tr>
-                <td>
-                  Leszakad a teraszom, így hát fwpeofj pqo jf fpejwfáweéopjf
-                </td>
-                <td>
-                  Építészet
-                </td>
-                <td>
-                  2017.05.29.
-                </td>
-                <td>
-                  Mariann Jose
-                </td>
-                <td>
-                  <div class="text-center status-span status-span-inp">Folyamatban</div>
-                </td>
-                <td class="td-icon">
-                  <img src="/icon/si-glyph-checked.svg" alt="resolved"/> <img src="/icon/si-glyph-trash.svg" alt="delete" />
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  A lépcsőházban hullik a vakolat -2/b 8.lph. 4.emelet
-                </td>
-                <td>
-                  Építészet
-                </td>
-                <td>
-                  2017.05.29.
-                </td>
-                <td>
-                  Mariann Jose
-                </td>
-                <td>
-                  <div class="text-center status-span status-span-unc">Megerősítés alatt</div>
-                </td>
-                <td class="td-icon">
-                  <img src="/icon/si-glyph-checked.svg" alt="resolved"/> <img src="/icon/si-glyph-trash.svg" alt="delete"/>
-                </td>
-              </tr>
-
-            </table>
-          </div>
-        </div-->
-
       </div>
     </div>
     <!-- top table end -->
@@ -94,32 +23,17 @@
           <small>{{_ 'Please dont report twice'}}</small>
         </div>
         <div class="row">
-          <!--{{# autoForm id="afNewErrorTicket" collection=tickets schema=ticketsSchema type="method" meteormethod="topics.insert" template="bootstrap3"}}
-            {{> afQuickFields}}
-            <div>
-              <button type="submit" class="btn btn-primary">{{_ "send"}}</button>
+          {{#autoForm id="af.ticket.insert" schema=ticketsSchema type="method" meteormethod="topics.insert" template="bootstrap3"}}
+            <div class="col-xs-4 col-md-3 col-lg-3 col-lg-offset-1">
+                {{> afQuickField name="ticket.category"}}
             </div>
-          {{/autoForm}}-->
-          <!--div class="col-xs-4 col-md-3 col-lg-3 col-lg-offset-1">
-            <select class="form-control">
-              <option selected disabled>Kategória</option>
-              <option>Víz</option>
-              <option>Gáz</option>
-              <option>Villany</option>
-              <option>Lift</option>
-              <option>Épületszerkezet</option>
-              <option>Kert</option>
-            </select>
-          </div>
-          <div class="col-xs-8 col-md-9 col-lg-7">
-            <input type="text" class="form-control" placeholder={{_ 'Describe the problem briefly'}}>
-          </div>
-          <div class="col-xs-12 text-center">
-            <button type="button" class="btn-primary">{{_ 'send'}}</button>
-          </div-->
-          <div class="col-xs-12 text-center">
-            <button type="button" class="btn-primary js-new">{{_ 'new'}} {{_ 'ticket'}}</button>
-          </div>
+            <div class="col-xs-8 col-md-9 col-lg-7">
+                {{> afQuickField name="text"}}
+            </div>
+            <div class="col-xs-12 text-center">
+              <button type="submit" class="btn-primary">{{_ 'send'}}</button>
+            </div>
+          {{/autoForm}}
         </div>
       </div>
     </div>
@@ -141,102 +55,6 @@
         <div class="col-xs-12 no-padding table-responsive archive-div">
           {{> ReactiveDatatable tableData=closedTicketsDataFn options=closedTicketsOptionsFn }}
         </div>
-        <!--div class="row">
-          <div class="col-xs-12 no-padding table-responsive archive-div">
-            <table class="table full-width">
-              <tr>
-                <th>
-                  Leírás
-                </th>
-                <th>
-                  Kategória
-                </th>
-                <th>
-                  Bejelentve
-                </th>
-                <th>
-                  Bejelentő
-                </th>
-                <th>
-                  Lezárva
-                </th>
-                <th></th>
-              </tr>
-
-              <tr>
-                <td>
-                  Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF
-                </td>
-                <td>
-                  Építészet
-                </td>
-                <td>
-                  2017.05.29.
-                </td>
-                <td>
-                  Mariann Jose
-                </td>
-                <td>
-                  <div class="text-center status-span status-span-del">Törölve</div>
-                </td>
-                <td class="td-icon">
-                  <img src="/icon/si-glyph-delete.svg" alt="delete" />
-                </td>
-              </tr>
-
-              <tr>
-                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
-                <td>Építészet</td>
-                <td>2017.05.29.</td>
-                <td>Mariann Jose</td>
-                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
-                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
-              </tr>
-
-              <tr>
-                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
-                <td>Építészet</td>
-                <td>2017.05.29.</td>
-                <td>Mariann Jose</td>
-                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
-                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
-              </tr>
-              <tr>
-                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
-                <td>Építészet</td>
-                <td>2017.05.29.</td>
-                <td>Mariann Jose</td>
-                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
-                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
-              </tr>
-              <tr>
-                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
-                <td>Építészet</td>
-                <td>2017.05.29.</td>
-                <td>Mariann Jose</td>
-                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
-                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
-              </tr>
-              <tr>
-                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
-                <td>Építészet</td>
-                <td>2017.05.29.</td>
-                <td>Mariann Jose</td>
-                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
-                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
-              </tr>
-              <tr>
-                <td> Leszakad a teraszom, így hát  aásofjwpáe FJÁPEfjFJEWÉOF FWOEJÉJF</td>
-                <td>Építészet</td>
-                <td>2017.05.29.</td>
-                <td>Mariann Jose</td>
-                <td><div class="text-center status-span status-span-done">Megoldva</div></td>
-                <td class="td-icon"><img src="/icon/si-glyph-checked.svg" alt="resolved"/></td>
-              </tr>
-
-            </table>
-          </div>
-        </div-->
       </div>
     </div>
     <!-- archiv end -->

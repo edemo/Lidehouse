@@ -131,6 +131,7 @@
   "yes": "igen",
   "no": "nem",
   "abstain": "tartózkodom",
+  "support": "támogatom",
   "voting": "szavazás",
   "votings": "szavazások",
   "Active votings": "Aktív szavazások",
@@ -171,23 +172,10 @@
   "notYetVotedHint": "adja le szavazatát, vagy állítson be meghatalmazást",
 
   // tickets
-  "building": "épület",
-  "service": "közmű",
-  "high": "sürgős",
-  "normal": "közepes",
-  "low": "alacsony",
-  "reported": "megerősítés alatt",
-  "confirmed": "megerősítve",
-  "progressing": "folyamatban",
-  "finished": "megoldva",
-  "checked": "ellenőrizve",
-  "closed": "lezárva",
-
   "Active tickets": "Aktív bejelentett hibák",
   "Closed tickets": "Lezárt bejelentett hibák",
   "New ticket": "Új hibabejelentés",
   "Please dont report twice": "Kérjük csak akkor adja fel bejelentését, ha az még nem szerepel a fenti listán vagy nemrég került archiválásra hasonló. A lezárt bejelentéseket a lap alján tekinthetik meg. Köszönjük!",
-  "Describe the problem briefly": "A hiba rövid leírása …",
 
   // finances
   "Payaccounts": "Könyvelési fiókok",
