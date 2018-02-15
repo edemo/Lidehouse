@@ -151,6 +151,9 @@ Template.Custom_body.helpers({
         case 'vote':
           if (!t.closed && !t.hasVotedIndirect(userId)) count += 1;
           break;
+        case 'ticket':
+          if (!t.closed && t.ticket.status !== 'closed') count += 1;
+          break;
         case 'feedback':
           if (t.isUnseenBy(userId)) count += 1;
           break;
