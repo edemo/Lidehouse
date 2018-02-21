@@ -116,10 +116,10 @@ if (Meteor.isServer) {
   const tillMidnight = moment().endOf('day') - moment();
   Meteor.setTimeout(function() {
     cleanExpiredEmails();
-    reCreateDemoHouse();
+    //reCreateDemoHouse();
     Meteor.setInterval(function() {
       cleanExpiredEmails();
-      reCreateDemoHouse();
+    //reCreateDemoHouse();
       },
       moment.duration(1, 'days').asMilliseconds()
     );
