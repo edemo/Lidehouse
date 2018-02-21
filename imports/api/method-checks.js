@@ -45,6 +45,7 @@ export function checkPermissions(userId, permissionName, communityId, object) {
 
 export function checkTopicPermissions(userId, permissionName, topic) {
   // Checks that *user* has *permission* to perform things on given *topic*
+  if ((topic.category === 'vote') && (topic.vote.effect === 'poll')) return;    // no permission needed for poll vote
   const categoryPermissionName = `${topic.category}.${permissionName}`;
   const genericPermissionName = `topics.${permissionName}`;
   const categoryPermission = Permissions.findOne(categoryPermissionName);

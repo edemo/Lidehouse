@@ -11,16 +11,17 @@ import { Topics } from '../topics.js';
 Topics.voteProcedureValues = ['online', 'meeting'];
 Topics.voteEffectValues = ['poll', 'legal'];
 Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition'];
+Topics.voteTypeChoices = {
+  'yesno': ['yes', 'no', 'abstain'],
+  'petition': ['support'],
+};
 
 const voteSchema = new SimpleSchema({
   closesAt: { type: Date },
   procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.') },
   effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: autoformOptions(Topics.voteEffectValues, 'schemaVotings.vote.effect.') },
   type: { type: String, allowedValues: Topics.voteTypeValues, autoform: autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.') },
-  choices: { type: Array, autoValue() {
-    if (this.field('vote.type').value === 'petition') return ['support'];
-    if (this.field('vote.type').value === 'yesno') return ['yes', 'no', 'abstain'];
-  } },
+  choices: { type: Array, autoValue() { return Topics.voteTypeChoices[this.field('vote.type').value]; } },
   'choices.$': { type: String },
 });
 

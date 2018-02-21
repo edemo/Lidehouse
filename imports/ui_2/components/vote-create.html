@@ -11,7 +11,7 @@
       <p class="small-size"> <i>Eredeti szerző: Kecsmetéi Imre <br>Módosítva: 2017.06.15.</i></p> -->
       <!-- / -->
       <!-- ha teljesen uj szavazás -->
-      <h4>Új szavazás</h4>
+      <h4>{{_ "new"}} {{_ "voting"}}</h4>
       <!-- / -->
       <br>
     </div>
@@ -48,7 +48,7 @@
         </div>
         <div>
           <div class="col-xs-12 text-center">
-            <button type="button" class="btn btn-secondary" name="docupload">+ Feltöltés</button>
+            <button type="button" class="btn btn-secondary" name="docupload"> + {{_ "Upload"}}</button>
           </div>
         </div>
 
@@ -59,33 +59,27 @@
         {{> afQuickField name="vote.procedure"}}
         {{> afQuickField name="vote.effect"}}
         {{> afQuickField name="vote.type"}}
-        {{> afQuickField name="vote.choices"}}
-        <!--div class="row">
-          <div class="col-xs-12 text-center">
-            Válaszlehetőségek
-            <hr>
-          </div>
-        </div-->
-        <!-- válasz lsita -->
-        <!--div class="row choice">
-          <div class="col-xs-12 choice-rect">
-            Válasz 1 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-          </div>
-          <div class="col-xs-12 choice-rect">
-            Válasz 2 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-          </div>
+        <div class="row">
+          <div class="col-xs-12 text-center">{{_ "Choices"}}<hr></div>
         </div>
-        <div class="row choice choice-form hidden">
+        <div class="row choice">
+          {{#each choice in choices}}
           <div class="col-xs-12 choice-rect">
-            <span class="glyphicon glyphicon-ok js-add-answer" aria-hidden="true"></span>
+            {{choice}}<span class="glyphicon glyphicon-remove js-remove-choice" data-index="{{@index}}" data-choice={{choice}} aria-hidden="true"></span>
+          </div>
+          {{/each}}
+        </div>
+        <div class="row choice editing hidden">
+          <div class="col-xs-12 choice-rect">
+            <span class="glyphicon glyphicon-ok js-enter-choice" aria-hidden="true"></span>
             <input type="text" class="form-control" name="new-choice" placeholder="pl. Nem szeretnék, de jó ötlet">
           </div>
         </div>
         <div class="row">
           <div class="col-xs-12 text-center">
-            <button type="button" class="btn btn-secondary js-answer" name="upload"> + Új válasz</button>
+            <button type="button" class="btn btn-secondary js-add-choice" name="upload"> + {{_ "new"}} {{_ "choice"}}</button>
           </div>
-        </div-->
+        </div>
       </div>
 
       <div class="col-xs-12 form-inline vote-dates">
@@ -101,7 +95,7 @@
   <div class="row">
     <div class="col-xs-12 text-center">
        <!-- megerosito modal up -->
-       <button type="submit" class="btn btn-primary">Szavazás indítása</button>
+       <button type="submit" class="btn btn-primary">{{_ "Launch voting"}}</button>
        <!-- notification push-->
 
        <!-- ha nem uj hanem módosítás -->

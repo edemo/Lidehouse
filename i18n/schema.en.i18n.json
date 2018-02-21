@@ -157,33 +157,48 @@
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
     },
+    "createdAt": {
+      "label": "Created At"
+    },
     "vote": {
+      "choices": {
+        "label": "Vote choices"
+      },
+      "closesAt": {
+        "label": "Closes At"
+      },
       "procedure": {
         "label": "Voting procedure",
         "online": "Online",
         "meeting": "Owner's meeting"
       },
       "effect": {
-        "label": "Voting effect"
+        "label": "Voting effect",
+        "poll": "Poll",
+        "legal": "Legal power"
       },
       "type": {
-        "label": "Voting type"
+        "label": "Voting type",
+        "yesno": "Yes-no-abstain",
+        "choose": "Choose from choices",
+        "preferential": "Choose based on preference ordering",
+        "petition": "Petition"
       }
     }
   },
   "schemaTickets": {
     "title": {
-      "label": "Problem description",
-      "placeholder": "(eg. Elevator out of order)"
+      "label": "Title",
+      "placeholder": "PX-41"
     },
     "text": {
-      "label": "Details",
-      "placeholder": "Longer description (if needed)..."
+      "label": "Description",
+      "placeholder": "Describe the problem briefly..."
     },
     "ticket": {
       "label": "Ticket",
-      "type": {
-        "label": "Type of problem"
+      "category": {
+        "label": "Category"
       },
       "urgency": {
         "label": "Urgency"
