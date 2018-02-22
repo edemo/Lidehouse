@@ -2,36 +2,107 @@
   "demo": {
     "house": "Demo house",
     "city": "Boston",
-    "street": "Lavender street",
+    "street": "Primrose street",
+    "ground": "GF",
+    "attic": "attic",
+    "cellar": "BF",
     "user": {
       "0": {
         "firstName": "Stephen",
         "lastName": "Bolt"
       },
       "1": {
-        "firstName": "Andrew",
-        "lastName": "Bay",
+        "firstName": "Mary",
+        "lastName": "Woods",
         "benefactor": {
           "name": "Rosemary Bird",
-          "address": "123 Awesome street, Georgia ",
+          "address": "45 Awesome street, Georgia ",
           "mothersName": "Cethleen Pierce"
         }
       },
       "2": {
-        "firstName": "Tiffany",
-        "lastName": "Baker",
-        "company": {
-          "name": "ACME Inc.",
-          "address": "Peterson avenue 124., Philadelphia, USA"
-        }
+        "firstName": "Peter",
+        "lastName": "Baker"
+
       },
       "3": {
-        "firstName": "Peter",
-        "lastName": "Brown"
+        "firstName": "Tiffany",
+        "lastName": "Wagon",
+        "company": {
+          "name": "ACME Inc.",
+          "address": "Peterson avenue 124., Philadelphia, USA",
+          "regno": "Reg.no: 21-09-658912"
+        }
       },
       "4": {
-        "firstName": "Emilia",
-        "lastName": "Brown"
+        "firstName": "Charlie",
+        "lastName": "Collins"
+      },
+      "5": {
+        "firstName": "Adam",
+        "lastName": "Bailey"
+      },
+      "6": {
+        "firstName": "Julia",
+        "lastName": "Lawrence"
+      },
+      "7": {
+        "firstName": "Andrew",
+        "lastName": "Archer",
+        "benefactor": {
+          "name": "Eve Archer",
+          "address": "124 Wilson stret, Birmingham",
+          "mothersName": "Elizabeth Lawson"
+        }
+      },
+      "8": {
+        "firstName": "Stephanie",
+        "lastName": "Miller"
+      },
+      "9": {
+        "firstName": "Cathleen",
+        "lastName": "Glover"
+      },
+      "10": {
+        "firstName": "Daniel",
+        "lastName": "Wolf"
+      },
+      "11": {
+        "firstName": "Leslie",
+        "lastName": "Hunter"
+      },
+      "12": {
+        "firstName": "Esme",
+        "lastName": "Laws"
+      },
+      "13": {
+        "firstName": "Zachary",
+        "lastName": "Brooks",
+        "company": {
+          "name": "Virtual Choc Ltd.",
+          "address": "86 Primrose street, Boston",
+          "regno": "Reg.no: 21-09-846231"
+        }
+      },
+      "14": {
+        "firstName": "Emily",
+        "lastName": "Baker"
+      },
+      "15": {
+        "firstName": "Tom",
+        "lastName": "Pope"
+      },
+      "16": {
+        "firstName": "Ariana",
+        "lastName": "Ford"
+      },
+      "17": {
+        "firstName": "Rose",
+        "lastName": "Ingram"
+      },
+      "manager": {
+        "firstName": "Lewis",
+        "lastName": "King"
       },
       "boyNames": ["Adam", "David","Thomas", "James", "Steve", "Andrew"],
       "girlNames": ["Eve", "Maggie", "Sue", "Rose", "Mary", "Julie"]

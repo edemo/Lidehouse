@@ -22,7 +22,7 @@ const defaultAvatar = 'http://clipart-library.com/image_gallery/215485.png';
 Communities.schema = new SimpleSchema([
   { name: { type: String, max: 100 } },
   { description: { type: String, max: 1200, optional: true } },
-  { avatar: { type: String, regEx: SimpleSchema.RegEx.Url, defaultValue: defaultAvatar } },
+  { avatar: { type: String, /* regEx: SimpleSchema.RegEx.Url,*/ defaultValue: defaultAvatar } },
   comtype.profileSchema,
   { totalunits: { type: Number } },
 ]);

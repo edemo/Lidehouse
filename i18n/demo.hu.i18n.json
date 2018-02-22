@@ -3,35 +3,105 @@
     "house": "Demo ház",
     "city": "Budapest",
     "street": "Kankalin utca",
+    "ground": "Fszt.",
+    "attic": "Tetőtér",
+    "cellar": "Pince",
     "user": {
       "0": {
         "firstName": "Imre",
-        "lastName": "Baltazár"
+        "lastName": "Baltazár"  
       },
       "1": {
-        "firstName": "Andor",
-        "lastName": "Bajor",
-        "benefactor": {
+        "firstName": "Mária",
+        "lastName": "Erdei",
+        "benefactor": { 
           "name": "Bíró Rozália",
           "address": "Szolnok, Kunigunda u 45.",
           "mothersName": "Perjés Katalin"
-        }
+          }  
       },
       "2": {
+        "firstName": "Péter",
+        "lastName": "Bokor"
+      },
+      "3": {
         "firstName": "Tímea",
         "lastName": "Bakocsi",
         "company": {
           "name": "ACME Kft.",
-          "address": "Jászkunszállás, Petfőfi Sándor u 124."
+          "address": "Jászkunszállás, Petőfi Sándor u 124.",
+          "regno": "Cg.: 21-09-658912"
         }
       },
-      "3": {
-        "firstName": "Péter",
-        "lastName": "Barna"
-      },
       "4": {
-        "firstName": "Emilia",
-        "lastName": "Barna"
+        "firstName": "Károly",
+        "lastName": "Kerekes"
+      },
+      "5": {
+        "firstName": "Andor",
+        "lastName": "Bajor"
+      },
+      "6": {
+        "firstName": "Istvánné",
+        "lastName": "Lőrincz"
+      },
+      "7": {
+        "firstName": "Endre",
+        "lastName": "Apró",
+        "benefactor": {
+          "name": "Apró Éva",
+          "address": "Bélapátfalva, Kossuth u. 124.",
+          "mothersName": "Lukács Erzsébet"
+        }
+      },
+      "8": {
+        "firstName": "Stephanie",
+        "lastName": "Miller"
+      },
+      "9": {
+        "firstName": "Katalin",
+        "lastName": "Virág"
+      },
+      "10": {
+        "firstName": "Dániel",
+        "lastName": "Farkas"
+      },
+      "11": {
+        "firstName": "László",
+        "lastName": "Lovász"
+      },
+      "12": {
+        "firstName": "Eszter",
+        "lastName": "Bíró"
+      },
+      "13": {
+        "firstName": "Zoltán",
+        "lastName": "Boros",
+        "company": {
+          "name": "Virtual Choc Kft.",
+          "address": "1144 Budapest, Kankalin utca 86.",
+          "regno": "Cg.: 21-09-846231"
+        }
+      },
+      "14": {
+        "firstName": "Emília",
+        "lastName": "Bokor"
+      },
+      "15": {
+        "firstName": "Tamás",
+        "lastName": "Pásztor"
+      },
+      "16": {
+        "firstName": "Aranka",
+        "lastName": "Fodor"
+      },
+      "17": {
+        "firstName": "Ildikó",
+        "lastName": "Rózsa"
+      },
+      "manager": {
+        "firstName": "Levente",
+        "lastName": "Király"
       },
       "boyNames": ["Ádám", "Dávid", "Tamás", "Jakab", "István", "András"],
       "girlNames": ["Éva", "Margit", "Zsuzsa", "Róza", "Marika", "Júlia"]
