@@ -175,6 +175,16 @@ Template.Custom_body.events({
   'click .js-menu'(event, instance) {
     instance.state.set('menuOpen', !instance.state.get('menuOpen'));
   },
+  
+  'click .demouser-autologin' () {
+    Meteor.call('createDemoUserWithParcel', function (error, result) {
+      if (error) {
+        alert('Error');
+      } else {
+        Meteor.loginWithPassword(result, 'password');
+      }
+    });
+  },
 
   'click .content-overlay'(event, instance) {
     instance.state.set('menuOpen', false);
