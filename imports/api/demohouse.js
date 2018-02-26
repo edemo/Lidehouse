@@ -43,7 +43,7 @@ export function insertDemoHouse(lang) {
     street: __('demo.street'),
     number: '86',
     lot: '4532/8',
-    avatar: Meteor.absoluteUrl('images/demohouse.jpg'),
+    avatar: 'images/demohouse.jpg',
     totalunits: 12000,
   });
 
@@ -264,13 +264,13 @@ export function insertDemoHouse(lang) {
     demoUsers.push(Meteor.users.insert({
       emails: [{ address: `user.${userNo}@demo.${com}`, verified: true }],
       profile: { lastName: __(`demo.user.${userNo}.lastName`), firstName: __(`demo.user.${userNo}.firstName`) },
-      avatar: Meteor.absoluteUrl(`images/avatars/avatar${userNo}.jpg`),
+      avatar: `images/avatars/avatar${userNo}.jpg`,
     }));
   }
   const demoManagerId = Meteor.users.insert({
     emails: [{ address: `user.manager@demo.${com}`, verified: true }],
     profile: { lastName: __('demo.user.manager.lastName'), firstName: __('demo.user.manager.firstName'), phone: '06 30 234 5678' },
-    avatar: Meteor.absoluteUrl('images/avatars/avatar20.jpg'),
+    avatar: 'images/avatars/avatar20.jpg',
   });
   //  status: 'online',    status: 'standby',
   const demoUserId = demoUsers[5];
@@ -887,7 +887,7 @@ Meteor.methods({
     });
     Meteor.users.update({ _id: demoUserId },
       { $set: { 'emails.0.verified': true,
-        avatar: Meteor.absoluteUrl('images/avatars/avatarnull.png'),
+        avatar: 'images/avatars/avatarnull.png',
         'settings.language': 'hu' } });
     const demoCommunityId = Communities.findOne({ name: 'Demo ház' })._id;
     
