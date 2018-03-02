@@ -44,7 +44,7 @@ export function insertDemoHouse(lang) {
     number: '86',
     lot: '4532/8',
     avatar: 'images/demohouse.jpg',
-    totalunits: 12000,
+    totalunits: 10000,
   });
 
 // ===== Parcels =====
@@ -59,6 +59,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/1',
     area: 55,
+    volume: 176,
+    habitants: 2,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
@@ -71,6 +73,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/2',
     area: 48,
+    volume: 153.6,
+    habitants: 2,
     waterMetered: false,
     heatingType: 'centralHeating',
   });
@@ -83,7 +87,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/3',
     area: 66,
-    habitants: 2,
+    volume: 184.8,
+    habitants: 3,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
@@ -96,6 +101,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/4',
     area: 70,
+    volume: 196,
+    habitants: 1,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
@@ -108,6 +115,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/5',
     area: 66,
+    volume: 184.8,
+    habitants: 3,
     waterMetered: false,
     heatingType: 'centralHeating',
   });
@@ -120,6 +129,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/6',
     area: 70,
+    volume: 196,
+    habitants: 4,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
@@ -132,6 +143,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/7',
     area: 66,
+    volume: 184.8,
+    habitants: 2,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
@@ -144,6 +157,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/8',
     area: 70,
+    volume: 196,
+    habitants: 2,
     waterMetered: false,
     heatingType: 'centralHeating',
   });
@@ -156,6 +171,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/9',
     area: 66,
+    volume: 184.8,
+    habitants: 2,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
@@ -168,6 +185,8 @@ export function insertDemoHouse(lang) {
     type: 'flat',
     lot: '4532/8/A/10',
     area: 70,
+    volume: 196,
+    habitants: 3,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
@@ -178,8 +197,9 @@ export function insertDemoHouse(lang) {
     floor: __('demo.attic'),
     number: '11',
     type: 'flat',
-    lot: '4532/8/A/5',
-    area: 66,
+    lot: '4532/8/A/11',
+    area: 112,
+    habitants: 5,
     waterMetered: true,
     heatingType: 'ownHeating',
   });
@@ -192,6 +212,7 @@ export function insertDemoHouse(lang) {
     type: 'cellar',
     lot: '4532/8/A/12',
     area: 50,
+    habitants: 1,
     waterMetered: true,
     heatingType: 'ownHeating',
   });
@@ -204,6 +225,7 @@ export function insertDemoHouse(lang) {
     type: 'cellar',
     lot: '4532/8/A/13',
     area: 80,
+    habitants: 1,
     waterMetered: true,
     heatingType: 'ownHeating',
   });
@@ -212,10 +234,10 @@ export function insertDemoHouse(lang) {
     serial: 14,
     units: 241,
     floor: __('demo.ground'),
-    number: '',
     type: 'shop',
     lot: '4532/8/A/14',
     area: 22,
+    habitants: 1,
     waterMetered: false,
     heatingType: 'ownHeating',
   });
@@ -257,46 +279,46 @@ export function insertDemoHouse(lang) {
     }
   });
 
-  // ===== Demo Users =====
+  // ===== Filling demo Users =====
 
-  const demoUsers = [];
+  const fillingUsers = [];
   for (userNo = 0; userNo < 18; userNo++) {
-    demoUsers.push(Meteor.users.insert({
-      emails: [{ address: `user.${userNo}@demo.${com}`, verified: true }],
+    fillingUsers.push(Meteor.users.insert({
+      emails: [{ address: `fillinguser.${userNo}@demo.${com}`, verified: true }],
       profile: { lastName: __(`demo.user.${userNo}.lastName`), firstName: __(`demo.user.${userNo}.firstName`) },
       avatar: `images/avatars/avatar${userNo}.jpg`,
     }));
   }
-  const demoManagerId = Meteor.users.insert({
-    emails: [{ address: `user.manager@demo.${com}`, verified: true }],
+  const fillingManagerId = Meteor.users.insert({
+    emails: [{ address: `filling.manager@demo.${com}`, verified: true }],
     profile: { lastName: __('demo.user.manager.lastName'), firstName: __('demo.user.manager.firstName'), phone: '06 30 234 5678' },
     avatar: 'images/avatars/avatar20.jpg',
   });
   //  status: 'online',    status: 'standby',
-  const demoUserId = demoUsers[5];
-  const demoAdminId = demoUsers[10];
+  const fillingUserId = fillingUsers[5];
+  const fillingAdminId = fillingUsers[10];
 
   // ===== Memberships =====
 
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoManagerId,
+    userId: fillingManagerId,
     role: 'manager',
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoAdminId,
+    userId: fillingAdminId,
     role: 'admin',
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoUsers[3],
+    userId: fillingUsers[3],
     role: 'accountant',
   });
   [0, 1, 4, 5, 6, 7, 8, 9, 10, 12].forEach((parcelNo) => {
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: demoUsers[parcelNo],
+      userId: fillingUsers[parcelNo],
       role: 'owner',
       parcelId: demoParcels[parcelNo],
       ownership: {
@@ -306,7 +328,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoUsers[5],
+    userId: fillingUsers[5],
     role: 'owner',
     parcelId: demoParcels[11],
     ownership: {
@@ -315,7 +337,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoUsers[2],
+    userId: fillingUsers[2],
     role: 'owner',
     parcelId: demoParcels[2],
     ownership: {
@@ -325,7 +347,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoUsers[14],
+    userId: fillingUsers[14],
     role: 'owner',
     parcelId: demoParcels[2],
     ownership: {
@@ -351,7 +373,7 @@ export function insertDemoHouse(lang) {
     });
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: demoUsers[parcelNo],
+      userId: fillingUsers[parcelNo],
       role: 'owner',
       parcelId: demoParcels[parcelNo],
       ownership: {
@@ -380,7 +402,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoUsers[11],
+    userId: fillingUsers[11],
     role: 'benefactor',
     parcelId: demoParcels[4], 
     benefactorship: {
@@ -389,7 +411,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoUsers[15],
+    userId: fillingUsers[15],
     role: 'benefactor',
     parcelId: demoParcels[5], 
     benefactorship: {
@@ -398,7 +420,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoUsers[16],
+    userId: fillingUsers[16],
     role: 'benefactor',
     parcelId: demoParcels[8], 
     benefactorship: {
@@ -407,7 +429,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoUsers[17],
+    userId: fillingUsers[17],
     role: 'benefactor',
     parcelId: demoParcels[9], 
     benefactorship: {
@@ -417,15 +439,15 @@ export function insertDemoHouse(lang) {
 
   // ===== Forum =====
 
-  // The demo users comment one after the other, round robin style
+  // The demo (filling) users comment one after the other, round robin style
   let nextUserIndex = 1;
   function sameUser() {
-    return demoUsers[nextUserIndex];
+    return fillingUsers[nextUserIndex];
   }
   function nextUser() {
     nextUserIndex += 7; // relative prime
-    nextUserIndex %= demoUsers.length;
-    return demoUsers[nextUserIndex];
+    nextUserIndex %= fillingUsers.length;
+    return fillingUsers[nextUserIndex];
   }
 
   ['0', '1', '2'].forEach((topicNo) => {
@@ -455,7 +477,7 @@ export function insertDemoHouse(lang) {
   ['0', '1', '2'].forEach((newsNo) => {
     const newsId = Topics.insert({
       communityId: demoCommunityId,
-      userId: demoUsers[0],
+      userId: fillingUsers[0],
       category: 'news',
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
@@ -480,7 +502,7 @@ export function insertDemoHouse(lang) {
 
   const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,
-    userId: demoUserId,
+    userId: fillingUserId,
     category: 'vote',
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
@@ -505,7 +527,7 @@ export function insertDemoHouse(lang) {
   castVote._execute({ userId: ownerships[10].userId }, { topicId: voteTopic0, castedVote: [0] });
   castVote._execute({ userId: ownerships[11].userId }, { topicId: voteTopic0, castedVote: [0] });
 
-  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic0 }); // This vote is already closed
+  closeVote._execute({ userId: fillingManagerId }, { topicId: voteTopic0 }); // This vote is already closed
 
   const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
@@ -627,20 +649,20 @@ export function insertDemoHouse(lang) {
 
   const demoMessageRoom = Topics.insert({
     communityId: demoCommunityId,
-    userId: demoUserId,
+    userId: fillingUserId,
     category: 'room',
-    participantIds: [demoUserId, demoUsers[2]],
+    participantIds: [fillingUserId, fillingUsers[2]],
   });
 
   Comments.insert({
     topicId: demoMessageRoom,
-    userId: demoUsers[2],
+    userId: fillingUsers[2],
     text: __('demo.messages.0'),
   });
 
   Comments.insert({
     topicId: demoMessageRoom,
-    userId: demoUserId,
+    userId: fillingUserId,
     text: __('demo.messages.1'),
   });
 
@@ -656,7 +678,11 @@ export function insertDemoHouse(lang) {
       children: [
         { name: '',
           children: [
-            { name: 'A. épület',
+            { name: 'Központi',
+              children: [
+              ],
+            },
+            { name: 'albetétek',
               children: [
               { name: '1' },
               { name: '2' },
@@ -674,12 +700,6 @@ export function insertDemoHouse(lang) {
               { name: '14' },
               ],
             },
-            /*{ name: 'Közös terület',
-              children: [
-              { name: '100' },
-              { name: 'Kert' },
-              ],
-            },*/
           ],
         },
       ],
@@ -688,9 +708,66 @@ export function insertDemoHouse(lang) {
     { upsert: false }
   );
 
-  // ===== Payments =====
+    // === Eloirasok ===
 
-    // === Opening ===
+  insertParcelBilling._execute({ userId: fillingManagerId }, {
+    communityId: demoCommunityId,
+    projection: 'perArea',
+    amount: 275,
+    year: '2017',
+    month: 'allMonths',
+    accounts: {
+      'Könyvelés nem': 'Közös költség befizetés',
+      'Könyvelés helye': 'albetétek',
+    },
+  });
+
+  for (i = 0; i < 4; i++) {
+    const place = ['2', '5', '8', '14'];
+    insertParcelBilling._execute({ userId: fillingManagerId }, {
+      communityId: demoCommunityId,
+      projection: 'perHabitant',
+      amount: 2500,
+      year: '2017',
+      month: 'allMonths',
+      accounts: {
+        'Könyvelés nem': 'Víz díj',
+        'Könyvelés helye': place[i],
+      },
+    });
+  }
+  
+  for (i = 1; i < 11; i++) {
+    insertParcelBilling._execute({ userId: fillingManagerId }, {
+      communityId: demoCommunityId,
+      projection: 'perVolume',
+      amount: 85,
+      year: '2017',
+      month: 'allMonths',
+      accounts: {
+        'Könyvelés nem': 'Fűtési díj',
+        'Könyvelés helye': i.toString(),
+      },
+    });
+  }
+
+  insertParcelBilling._execute({ userId: fillingManagerId }, {
+    communityId: demoCommunityId,
+    projection: 'absolute',
+    amount: 60000,
+    year: '2017',
+    month: '9',
+    accounts: {
+      'Könyvelés nem': 'Felújítási célbefizetés',
+      'Könyvelés helye': 'albetétek',
+    },
+    note: __('demo.payments.note.0'),
+  });
+
+
+// ===== Payments =====
+
+  // === Opening ===
 
   Payments.insert({
     communityId: demoCommunityId,
@@ -731,103 +808,202 @@ export function insertDemoHouse(lang) {
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-06-01'),
-    amount: 10000,
+    amount: 3500,
     accounts: {
       'Pénz számla': 'Bank főszámla',
-      'Könyvelés nem': 'Közös költség befizetés',
-      'Könyvelés helye': '1',
+      'Könyvelés nem': 'Egyéb bevétel',
+      'Könyvelés helye': 'Központi',
     },
-  });
+  }); 
 
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    valueDate: new Date('2017-06-02'),
-    amount: 20000,
+    valueDate: new Date('2017-02-01'),
+    amount: 300,
     accounts: {
       'Pénz számla': 'Bank főszámla',
-      'Könyvelés nem': 'Közös költség befizetés',
-      'Könyvelés helye': '2',
+      'Könyvelés nem': 'Kamat pénzintézetektől',
+      'Könyvelés helye': 'Központi',
     },
-  });
-
+  }); 
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    valueDate: new Date('2017-06-03'),
-    amount: 30000,
+    valueDate: new Date('2017-04-01'),
+    amount: 400,
     accounts: {
-      'Pénz számla': 'Pénztár',
-      'Könyvelés nem': 'Közös költség befizetés',
-      'Könyvelés helye': '3',
+      'Pénz számla': 'Bank főszámla',
+      'Könyvelés nem': 'Kamat pénzintézetektől',
+      'Könyvelés helye': 'Központi',
     },
-  });
-
+  }); 
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
-    valueDate: new Date('2017-06-04'),
-    amount: 40000,
-    accounts: {
-      'Pénz számla': 'Bank felújítási alap',
-      'Könyvelés nem': 'Felújítási célbefizetés',
-      'Könyvelés helye': '4',
-    },
-  });
-
-    // === Eloirasok ===
-
-  insertParcelBilling._execute({ userId: demoManagerId }, {
-    communityId: demoCommunityId,
-    projection: 'perArea',
+    valueDate: new Date('2017-06-01'),
     amount: 200,
-    year: '2017',
-    month: 'allMonths',
     accounts: {
-      'Könyvelés nem': 'Közös költség befizetés',
-      'Könyvelés helye': 'Könyvelés helye',
+      'Pénz számla': 'Bank főszámla',
+      'Könyvelés nem': 'Kamat pénzintézetektől',
+      'Könyvelés helye': 'Központi',
     },
-  });
-
-  insertParcelBilling._execute({ userId: demoManagerId }, {
+  }); 
+  Payments.insert({
     communityId: demoCommunityId,
-    projection: 'perHabitant',
-    amount: 5000,
-    year: '2017',
-    month: 'allMonths',
+    phase: 'done',
+    valueDate: new Date('2017-08-01'),
+    amount: 100,
     accounts: {
-      'Könyvelés nem': 'Víz díj',
-      'Könyvelés helye': 'Könyvelés helye',
+      'Pénz számla': 'Bank főszámla',
+      'Könyvelés nem': 'Kamat pénzintézetektől',
+      'Könyvelés helye': 'Központi',
     },
-  });
-
-  insertParcelBilling._execute({ userId: demoManagerId }, {
+  }); 
+  Payments.insert({
     communityId: demoCommunityId,
-    projection: 'absolute',
-    amount: 41000,
-    year: '2017',
-    month: '8',
+    phase: 'done',
+    valueDate: new Date('2017-10-01'),
+    amount: 600,
     accounts: {
-      'Könyvelés nem': 'Felújítási célbefizetés',
-      'Könyvelés helye': 'A. épület',
+      'Pénz számla': 'Bank főszámla',
+      'Könyvelés nem': 'Kamat pénzintézetektől',
+      'Könyvelés helye': 'Központi',
     },
-  });
-
-  insertParcelBilling._execute({ userId: demoManagerId }, {
+  }); 
+  Payments.insert({
     communityId: demoCommunityId,
-    projection: 'absolute',
-    amount: 23000,
-    year: '2017',
-//    month: '3',
+    phase: 'done',
+    valueDate: new Date('2017-12-01'),
+    amount: 550,
     accounts: {
-      'Könyvelés nem': 'Felújítási célbefizetés',
-      'Könyvelés helye': '4',
+      'Pénz számla': 'Bank főszámla',
+      'Könyvelés nem': 'Kamat pénzintézetektől',
+      'Könyvelés helye': 'Központi',
     },
-  });
+  }); 
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    valueDate: new Date('2017-09-15'),
+    amount: 500000,
+    accounts: {
+      'Pénz számla': 'Bank főszámla',
+      'Könyvelés nem': 'Támogatás',
+      'Könyvelés helye': 'Központi',
+    },
+    note1: __('demo.payments.note.1'),
+  }); 
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    valueDate: new Date('2017-05-10'),
+    amount: 55000,
+    accounts: {
+      'Pénz számla': 'Bank főszámla',
+      'Könyvelés nem': 'Bérleti díj',
+      'Könyvelés helye': 'Központi',
+    },
+    note1: __('demo.payments.note.2'),
+  }); 
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    valueDate: new Date('2017-10-15'),
+    amount: 500000,
+    accounts: {
+      'Pénz számla': 'Bank főszámla',
+      'Könyvelés nem': 'Egyéb bevétel',
+      'Könyvelés helye': 'Központi',
+    },
+    note1: __('demo.payments.note.3'),
+  }); 
+
+  Payments.insert({
+    communityId: demoCommunityId,
+    phase: 'done',
+    valueDate: new Date('2017-07-21'),
+    amount: 2300000,
+    accounts: {
+      'Pénz számla': 'Hitelszámla',
+      'Könyvelés nem': 'Hitelfelvétel',
+      'Könyvelés helye': 'Központi',
+    },
+    note1: __('demo.payments.note.4'),
+  }); 
+
+  for (m = 1; m < 13; m++) {
+    for (i = 1; i < 15; i++) {
+      const payable = [0, 15125, 13200, 18150, 19250, 18150, 19250, 18150,
+        19250, 18150, 19250, 30800, 13750, 22000, 6050];
+      Payments.insert({
+        communityId: demoCommunityId,
+        phase: 'done',
+        valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
+        amount: payable[i],
+        accounts: {
+          'Pénz számla': 'Bank főszámla',
+          'Könyvelés nem': 'Közös költség befizetés',
+          'Könyvelés helye': i.toString(),
+        },
+      });
+    }
+  }
+
+  for (m = 1; m < 13; m++) {
+    for (i = 0; i < 4; i++) {
+      const payable = [5000, 7500, 5000, 2500];
+      const place = ['2', '5', '8', '14'];
+      Payments.insert({
+        communityId: demoCommunityId,
+        phase: 'done',
+        valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
+        amount: payable[i],
+        accounts: {
+          'Pénz számla': 'Bank főszámla',
+          'Könyvelés nem': 'Víz díj',
+          'Könyvelés helye': place[i],
+        },
+      });
+    }
+  }
+  for (m = 1; m < 13; m++) {
+    for (i = 1; i < 11; i++) {
+      const payable = [0, 14960, 13056, 15708, 16660, 15708, 16660, 15708, 16660, 15708, 16660];
+      Payments.insert({
+        communityId: demoCommunityId,
+        phase: 'done',
+        valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
+        amount: payable[i],
+        accounts: {
+          'Pénz számla': 'Bank főszámla',
+          'Könyvelés nem': 'Fűtési díj',
+          'Könyvelés helye': i.toString(),
+        },
+      });
+    }
+  }
+
+  for (i = 1; i < 15; i++) {
+    Payments.insert({
+      communityId: demoCommunityId,
+      phase: 'done',
+      valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
+      amount: 60000,
+      accounts: {
+        'Pénz számla': 'Bank főszámla',
+        'Könyvelés nem': 'Felújítási célbefizetés',
+        'Könyvelés helye': i.toString(),
+      },
+    });
+  }
 
     // === Tervezetek ===
 
-  Payments.insert({
+ /* Payments.insert({
     communityId: demoCommunityId,
     phase: 'plan',
     valueDate: new Date('2017-01-01'),
@@ -845,39 +1021,41 @@ export function insertDemoHouse(lang) {
     accounts: {
       'Könyvelés nem': 'Üzemeltetés',
     },
-  });
+  });*/
 
   // ===== Returning a bunch of pointers, for easy direct access
 
   return {
     demoCommunityId,
-    demoUserId,
-    demoAdminId,
-    demoManagerId,
-    demoUsers,
+    fillingUserId,
+    fillingAdminId,
+    fillingManagerId,
+    fillingUsers,
     demoParcels,
   };
 }
 
-function deleteDemoUserWithRelevancies(userId, parcelId) {
+function deleteDemoUserWithRelevancies(userId, parcelId, community) {
   Topics.remove({ userId });
   // votes?  
   // topics category: room, participantIds[]: userId
+  Topics.remove({ 'participantIds.$': userId });
   Comments.remove({ userId });
   Delegations.remove({ sourceUserId: userId });
   Delegations.remove({ targetUserId: userId });
   Memberships.remove({ parcelId }); // removing added benefactors as well
   Parcels.remove({ _id: parcelId });
+  Communities.update({ _id: community._id }, { $set: { totalunits: (community.totalunits - 300) } });
   Meteor.users.remove({ _id: userId });
 }
 
 Meteor.methods({
   createDemoUserWithParcel: function() {
-    const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } },
+    const fillingUsersList = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } },
       { sort: { createdAt: -1 } }).fetch();
     let counter = 1;
-    if (demoUsersList[0]) {
-      counter = Number(demoUsersList[0].emails[0].address.split('.')[0]) + 1;
+    if (fillingUsersList[0]) {
+      counter = Number(fillingUsersList[0].emails[0].address.split('.')[0]) + 1;
     }
     const demoUserId = Accounts.createUser({
       email: counter + '.demouser@honline.net',
@@ -889,26 +1067,37 @@ Meteor.methods({
       { $set: { 'emails.0.verified': true,
         avatar: 'images/avatars/avatarnull.png',
         'settings.language': 'hu' } });
-    const demoCommunityId = Communities.findOne({ name: 'Demo ház' })._id;
-    
+    const demoHouse = Communities.findOne({ name: 'Demo ház' });
+    const demoCommunityId = demoHouse._id;
+    const totalunits = demoHouse.totalunits;
+    Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 300) } });
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
       serial: 14 + counter,
-      units: 20,
+      units: 300,
       floor: 'V',
       number: 12 + counter,
       type: 'flat',
       lot: '4532/8/A/' + (14 + counter),
-      area: 20,
+      area: 30,
     });
     Memberships.insert({ 
       communityId: demoCommunityId,
       userId: demoUserId,
       role: 'owner',
-      parcelId: demoParcelId, 
+      parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) } });
+    
+  /*  PayAccounts.update({
+      communityId: demoCommunityId,
+      name: 'Könyvelés helye',
+      }, {
+        $push: { 'children.0.children.1.children': { name: (14 + counter) } },
+    });
+*/
+
     Meteor.setInterval(function() {
-        deleteDemoUserWithRelevancies(demoUserId, demoParcelId);
+      deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoHouse);
       },
       moment.duration(30, 'minutes').asMilliseconds());
     const email = Meteor.users.findOne({ _id: demoUserId }).emails[0].address;

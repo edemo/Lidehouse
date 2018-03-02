@@ -201,6 +201,15 @@
     "messages": {
       "0": "Hi! I've found your post box keys. You've left it in the post box. :)",
       "1": "Ooops. Thanks a lot! I was looking for it, thought I lost it. I'll drop by to pick it up after dinner."
+    },
+    "payments": {
+      "note": {
+        "0": "Decided during the year",
+        "1": "From local government",
+        "2": "Billboard on the facade",
+        "3": "Compensation, from insurance company",
+        "4": "Bank loan"
+      }
     }
   }
 }
