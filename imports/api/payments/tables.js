@@ -6,7 +6,7 @@ export function paymentColumns(accounts) {
   const columns = [
     { data: 'valueDate', title: __('schemaPayments.valueDate.label'), render: Render.formatDate },
 //    { data: 'phase', title: __('schemaPayments.phase.label'), render: Render.translate },
-    { data: 'amount', title: __('schemaPayments.amount.label') },
+    { data: 'amount', title: __('schemaPayments.amount.label'), render: Render.formatNumber },
   ];
   accounts.forEach((account) => {
     const extractAccountLeaf = function extractAccountLeaf(cellData, renderType, currentRow) {

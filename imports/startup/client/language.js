@@ -6,6 +6,8 @@ import { T9n } from 'meteor/softwarerero:accounts-t9n';
 
 import { Tracker } from 'meteor/tracker';
 import { moment } from 'meteor/momentjs:moment';
+import { numeral } from 'meteor/numeral:numeral';
+import 'meteor/numeral:languages';
 
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { comtype } from '/imports/comtypes/comtype.js';
@@ -17,35 +19,36 @@ function getBrowserLanguage() {
   return language.split('-')[0];
 }
 
-Meteor.startup(function setLanguage() {
-  // TODO:  Use the session var to show loading while language loads
-  // this prevents from displaying the default language while loading
+function setLanguage(lang) {
+  // TODO:  Use the session var to show loading while language loads - this prevents from displaying the default language while loading
   Session.set('showLoadingIndicator', true);
-  TAPi18n.setLanguage(getBrowserLanguage())
+  TAPi18n.setLanguage(lang)
     .done(function handleSuccess() {
       Session.set('showLoadingIndicator', false);
     })
     .fail(function handleError(errorMessage) {
-      // TODO: Handle the situation
-      console.log(errorMessage);
+      console.log(errorMessage);        // TODO: Handle the error
     });
-  T9n.setLanguage(getBrowserLanguage());
+  T9n.setLanguage(lang);
+}
+
+Meteor.startup(function setupLanguage() {
+  setLanguage(getBrowserLanguage());
 
   // Logged in users have language prefenence in their settings. So if user logs in, use that.
   Tracker.autorun(() => {
     const user = Meteor.user();
     if (user && user.settings && user.settings.language) {
-      TAPi18n.setLanguage(user.settings.language);
-      T9n.setLanguage(user.settings.language);
+      setLanguage(user.settings.language);
     } else {
-      TAPi18n.setLanguage(getBrowserLanguage());
-      T9n.setLanguage(getBrowserLanguage());
+      setLanguage(getBrowserLanguage());
     }
   });
 
-  // moment package is not reactive, need to localize it reactively
+  // moment, numeral package is not reactive, need to localize it reactively
   Tracker.autorun(() => {
     moment.locale(TAPi18n.getLanguage());
+    numeral.language(TAPi18n.getLanguage());
   });
 });
 

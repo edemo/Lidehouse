@@ -1,4 +1,5 @@
 import { _ } from 'meteor/underscore';
+import { numeral } from 'meteor/numeral:numeral';
 import { Payments } from '/imports/api/payments/payments.js';
 
 export class PaymentReport {
@@ -107,7 +108,7 @@ export class PaymentReport {
 
     if (amount < 0) classes += ' negative';
 //    console.log(`${x}, ${y}: filter:`); console.log(filter);
-    return { class: classes, value: amount };
+    return { class: classes, value: numeral(amount).format() };
   }
 
   addDescartesProductLines(dim, newLineDefs) {
