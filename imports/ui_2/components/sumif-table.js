@@ -12,7 +12,7 @@ Template.Sumif_table.onCreated(function financesOnCreated() {
 
 Template.Sumif_table.helpers({
   timestamp() {
-    return moment().format('YYYY.MM.DD');
+    return moment().format('L');
   },
   /*
   descartesFields(rows) {

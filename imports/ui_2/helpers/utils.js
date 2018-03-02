@@ -6,5 +6,5 @@ Template.registerHelper('percentage', function percentage(number) {
 });
 
 Template.registerHelper('currentTime', function currentTime() {
-  return moment().format('YYYY.MM.DD hh:mm');
+  return moment().format('L LT');
 });

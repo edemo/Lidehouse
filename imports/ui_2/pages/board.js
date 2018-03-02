@@ -34,7 +34,7 @@ Template.Board.helpers({
     return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
   },
   displayTime() {
-    return moment(this.createdAt).format('YYYY MMM Do');
+    return moment(this.createdAt).format('LL');
   },
 });
 
@@ -44,7 +44,7 @@ Template.News.helpers({
     return Topics.find({ communityId, category, closed: false, sticky: stickyVal }, { sort: { createdAt: -1 } });
   },
   displayTime() {
-    return moment(this.createdAt).format('YYYY MMM Do');
+    return moment(this.createdAt).format('LL');
   },
 });
 

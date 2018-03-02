@@ -7,10 +7,10 @@ export const Render = {
     return __(cellData);
   },
   formatDate(cellData, renderType, currentRow) {
-    return moment(cellData).format('YYYY.MM.DD');
+    return moment(cellData).format('L');
   },
   formatTime(cellData, renderType, currentRow) {
-    return moment(cellData).format('YYYY.MM.DD hh:mm');
+    return moment(cellData).format('L LT');
   },
   formatNumber(cellData, renderType, currentRow) {
     return numeral(cellData).format();
