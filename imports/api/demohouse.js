@@ -1035,7 +1035,7 @@ export function insertDemoHouse(lang) {
   };
 }
 
-function deleteDemoUserWithRelevancies(userId, parcelId, community) {
+function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   Topics.remove({ userId });
   // votes?  
   // topics category: room, participantIds[]: userId
@@ -1045,7 +1045,8 @@ function deleteDemoUserWithRelevancies(userId, parcelId, community) {
   Delegations.remove({ targetUserId: userId });
   Memberships.remove({ parcelId }); // removing added benefactors as well
   Parcels.remove({ _id: parcelId });
-  Communities.update({ _id: community._id }, { $set: { totalunits: (community.totalunits - 300) } });
+  const currentTotalunits = Communities.findOne({ _id: communityId }).totalunits;
+  Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 300) } });
   Meteor.users.remove({ _id: userId });
 }
 
@@ -1096,8 +1097,8 @@ Meteor.methods({
     });
 */
 
-    Meteor.setInterval(function() {
-      deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoHouse);
+    Meteor.setTimeout(function() {
+      deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
       },
       moment.duration(30, 'minutes').asMilliseconds());
     const email = Meteor.users.findOne({ _id: demoUserId }).emails[0].address;
