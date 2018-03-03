@@ -6,8 +6,8 @@ ReactiveDatatable = function(options) {
 		// object into your ReactiveDatatable template (see readme)
 		stateSave: true,
 		stateDuration: -1, // Store data for session only
-		pageLength: 5,
-		lengthMenu: [3, 5, 10, 50, 100],
+		pageLength: 10,
+		lengthMenu: [10, 25, 100, 250, 1000],
 		columnDefs: [{ // Global default blank value to avoid popup on missing data
 			targets: '_all',
 			defaultContent: '–––'

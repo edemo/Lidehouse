@@ -109,7 +109,8 @@ Template.Housing_page.helpers({
         columns: parcelColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
-        lengthMenu: [[25, 50, 100, 200, -1], [25, 50, 100, 200, __('all')]],
+        lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+        pageLength: 25,
       };
     };
   },

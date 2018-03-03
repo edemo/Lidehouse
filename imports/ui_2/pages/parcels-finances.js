@@ -63,7 +63,6 @@ Template.Parcels_finances.helpers({
         columns: paymentColumns(accounts),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
-        lengthMenu: [[25, 50, 100, 200, -1], [25, 50, 100, 200, __('all')]],
       };
     }
     return getOptions;
