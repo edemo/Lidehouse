@@ -53,7 +53,7 @@ export function insertDemoHouse(lang) {
   demoParcels[0] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 1,
-    units: 604,
+    units: 550,
     floor: __('demo.ground'),
     number: '1',
     type: 'flat',
@@ -67,7 +67,7 @@ export function insertDemoHouse(lang) {
   demoParcels[1] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 2,
-    units: 527,
+    units: 480,
     floor: __('demo.ground'),
     number: '2',
     type: 'flat',
@@ -81,7 +81,7 @@ export function insertDemoHouse(lang) {
   demoParcels[2] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 3,
-    units: 724,
+    units: 660,
     floor: 'I',
     number: '3',
     type: 'flat',
@@ -95,7 +95,7 @@ export function insertDemoHouse(lang) {
   demoParcels[3] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 4,
-    units: 768,
+    units: 700,
     floor: 'I',
     number: '4',
     type: 'flat',
@@ -109,7 +109,7 @@ export function insertDemoHouse(lang) {
   demoParcels[4] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 5,
-    units: 724,
+    units: 660,
     floor: 'II',
     number: '5',
     type: 'flat',
@@ -123,7 +123,7 @@ export function insertDemoHouse(lang) {
   demoParcels[5] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 6,
-    units: 768,
+    units: 700,
     floor: 'II',
     number: '6',
     type: 'flat',
@@ -137,7 +137,7 @@ export function insertDemoHouse(lang) {
   demoParcels[6] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 7,
-    units: 724,
+    units: 660,
     floor: 'III',
     number: '7',
     type: 'flat',
@@ -151,7 +151,7 @@ export function insertDemoHouse(lang) {
   demoParcels[7] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 8,
-    units: 768,
+    units: 700,
     floor: 'III',
     number: '8',
     type: 'flat',
@@ -165,7 +165,7 @@ export function insertDemoHouse(lang) {
   demoParcels[8] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 9,
-    units: 724,
+    units: 660,
     floor: 'IV',
     number: '9',
     type: 'flat',
@@ -179,7 +179,7 @@ export function insertDemoHouse(lang) {
   demoParcels[9] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 10,
-    units: 768,
+    units: 700,
     floor: 'IV',
     number: '10',
     type: 'flat',
@@ -193,7 +193,7 @@ export function insertDemoHouse(lang) {
   demoParcels[10] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 11,
-    units: 1229,
+    units: 1120,
     floor: __('demo.attic'),
     number: '11',
     type: 'flat',
@@ -206,7 +206,7 @@ export function insertDemoHouse(lang) {
   demoParcels[11] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 12,
-    units: 549,
+    units: 500,
     floor: __('demo.cellar'),
     number: '1',
     type: 'cellar',
@@ -219,12 +219,12 @@ export function insertDemoHouse(lang) {
   demoParcels[12] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 13,
-    units: 878,
+    units: 690,
     floor: __('demo.cellar'),
     number: '2',
     type: 'cellar',
     lot: '4532/8/A/13',
-    area: 80,
+    area: 69,
     habitants: 1,
     waterMetered: true,
     heatingType: 'ownHeating',
@@ -232,7 +232,7 @@ export function insertDemoHouse(lang) {
   demoParcels[13] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 14,
-    units: 241,
+    units: 220,
     floor: __('demo.ground'),
     type: 'shop',
     lot: '4532/8/A/14',
@@ -938,7 +938,7 @@ export function insertDemoHouse(lang) {
   for (m = 1; m < 13; m++) {
     for (i = 1; i < 15; i++) {
       const payable = [0, 15125, 13200, 18150, 19250, 18150, 19250, 18150,
-        19250, 18150, 19250, 30800, 13750, 22000, 6050];
+        19250, 18150, 19250, 30800, 13750, 19000, 6050];
       Payments.insert({
         communityId: demoCommunityId,
         phase: 'done',
@@ -1036,9 +1036,9 @@ export function insertDemoHouse(lang) {
 }
 
 function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
+  const counter = Number(Meteor.users.findOne({ _id: userId }).emails[0].address.split('.')[0]);
   Topics.remove({ userId });
   // votes?  
-  // topics category: room, participantIds[]: userId
   Topics.remove({ 'participantIds.$': userId });
   Comments.remove({ userId });
   Delegations.remove({ sourceUserId: userId });
@@ -1046,23 +1046,35 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   Memberships.remove({ parcelId }); // removing added benefactors as well
   Parcels.remove({ _id: parcelId });
   const currentTotalunits = Communities.findOne({ _id: communityId }).totalunits;
-  Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 300) } });
+  if (currentTotalunits > 10000) {
+    Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
+  }
+  ParcelBillings.remove({ 'accounts.Könyvelés helye': (14 + counter).toString() });
+  Payments.remove({ 'accounts.Könyvelés helye': (14 + counter).toString() });
+  PayAccounts.update({
+    communityId,
+    name: 'Könyvelés helye',
+    }, {
+      $pull: { 'children.0.children.1.children': { name: (14 + counter).toString() } },
+  } );
   Meteor.users.remove({ _id: userId });
 }
 
 Meteor.methods({
   createDemoUserWithParcel: function() {
-    const fillingUsersList = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } },
+    const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } },
       { sort: { createdAt: -1 } }).fetch();
     let counter = 1;
-    if (fillingUsersList[0]) {
-      counter = Number(fillingUsersList[0].emails[0].address.split('.')[0]) + 1;
+    if (demoUsersList[0]) {
+      counter = Number(demoUsersList[0].emails[0].address.split('.')[0]) + 1;
     }
+    let letter = counter + 64;
+    while (letter > 90) letter -= 26;
     const demoUserId = Accounts.createUser({
       email: counter + '.demouser@honline.net',
       password: 'password',
-      profile: { lastName: _.sample(['Gazda', 'Asztalos', 'Mezei', 'Piros']),
-        firstName: _.sample(['Ede', 'Ferenc', 'Jolán', 'Tivadar', 'Boris']) }
+      profile: { lastName: 'Vendég ' + String.fromCharCode(letter) + '.',
+        firstName: _.sample(['Ede', 'Ferenc', 'Jolán', 'Tivadar', 'Boris', 'Péter', 'Viola']) }
     });
     Meteor.users.update({ _id: demoUserId },
       { $set: { 'emails.0.verified': true,
@@ -1071,16 +1083,18 @@ Meteor.methods({
     const demoHouse = Communities.findOne({ name: 'Demo ház' });
     const demoCommunityId = demoHouse._id;
     const totalunits = demoHouse.totalunits;
-    Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 300) } });
+    if (demoUsersList.length >= 10) {
+      Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
+    };
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
       serial: 14 + counter,
-      units: 300,
+      units: 100,
       floor: 'V',
       number: 12 + counter,
       type: 'flat',
       lot: '4532/8/A/' + (14 + counter),
-      area: 30,
+      area: 25,
     });
     Memberships.insert({ 
       communityId: demoCommunityId,
@@ -1089,13 +1103,38 @@ Meteor.methods({
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) } });
     
-  /*  PayAccounts.update({
+    PayAccounts.update({
       communityId: demoCommunityId,
       name: 'Könyvelés helye',
       }, {
         $push: { 'children.0.children.1.children': { name: (14 + counter) } },
     });
-*/
+
+    const fillingManagerId = Meteor.users.findOne({ 'emails.0.address': 'filling.manager@demo.hu' })._id;
+    insertParcelBilling._execute({ userId: fillingManagerId }, {
+      communityId: demoCommunityId,
+      projection: 'perArea',
+      amount: 275,
+      year: '2017',
+      month: 'allMonths',
+      accounts: {
+        'Könyvelés nem': 'Közös költség befizetés',
+        'Könyvelés helye': (14 + counter).toString(),
+      },
+    });
+    for (m = 1; m < 12; m++) {
+      Payments.insert({
+        communityId: demoCommunityId,
+        phase: 'done',
+        valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
+        amount: 6875,
+        accounts: {
+          'Pénz számla': 'Bank főszámla',
+          'Könyvelés nem': 'Közös költség befizetés',
+          'Könyvelés helye': (14 + counter).toString(),
+        },
+      });
+    }
 
     Meteor.setTimeout(function() {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
