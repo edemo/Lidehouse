@@ -1,17 +1,21 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { TAPi18n } from 'meteor/tap:i18n';
+import { AutoForm } from 'meteor/aldeed:autoform';
+
+import { __ } from '/imports/localization/i18n.js';
+
 import { Communities } from '/imports/api/communities/communities.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { remove as removePayment, billParcels } from '/imports/api/payments/methods.js';
 import { Session } from 'meteor/session';
-import { TAPi18n } from 'meteor/tap:i18n';
 import { paymentColumns } from '/imports/api/payments/tables.js';
 import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
 import { Reports } from '/imports/api/payaccounts/reports.js';
-import { AutoForm } from 'meteor/aldeed:autoform';
+
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../components/collapse-section.js';
 import '../components/sumif-table.js';
@@ -59,6 +63,7 @@ Template.Parcels_finances.helpers({
         columns: paymentColumns(accounts),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
+        lengthMenu: [[25, 50, 100, 200, -1], [25, 50, 100, 200, __('all')]],
       };
     }
     return getOptions;

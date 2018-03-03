@@ -10,6 +10,8 @@ import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Accounts } from 'meteor/accounts-base';
 
+import { __ } from '/imports/localization/i18n.js';
+
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { parcelColumns } from '/imports/api/parcels/tables.js';
@@ -64,7 +66,7 @@ Template.Housing_page.helpers({
     const templateInstance = Template.instance();
     return () => {
       const communityId = templateInstance.getCommunityId();
-      return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest'] } } }).fetch();
+      return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest', 'delegate'] } } }).fetch();
     };
   },
   rolesOptionsFn() {
@@ -80,6 +82,9 @@ Template.Housing_page.helpers({
         columns: roleshipColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
+        searching: false,
+        paging: false,
+        info: false,
       };
     };
   },
@@ -104,6 +109,7 @@ Template.Housing_page.helpers({
         columns: parcelColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
+        lengthMenu: [[25, 50, 100, 200, -1], [25, 50, 100, 200, __('all')]],
       };
     };
   },
