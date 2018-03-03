@@ -300,6 +300,12 @@ AutoForm.addHooks('af.payment.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.phase = 'done';
+    // When entering expenses into the system, we enter them as positive number, but should appear with minus in the sheet
+    const payaccount = PayAccounts.findOne({ communityId: doc.communityId, name: 'Könyvelés nem' });
+    const leafName = doc.accounts['Könyvelés nem'];
+    const leaf = payaccount.leafFromName(leafName);
+    const category = leaf.level1;
+    if (category.name === 'Kiadások') doc.amount *= -1;
     return doc;
   },
 });
@@ -310,6 +316,7 @@ AutoForm.addHooks('af.bill.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.phase = 'plan';
+    doc.amount *= -1;
     return doc;
   },
 });

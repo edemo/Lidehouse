@@ -26,9 +26,6 @@ Payments.schema = new SimpleSchema({
 });
 
 Payments.helpers({
-  increaseAccount() {
-    return PayAccounts.findOne(this.increaseAccountId);
-  },
 });
 
 Payments.attachSchema(Payments.schema);
