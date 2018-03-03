@@ -243,9 +243,12 @@ export function insertDemoHouse(lang) {
   });
 
   // ===== Demo Users with Roles =====
-
+  
   // You can log in to try the different roles
   // will be removed from production
+  function capitalize(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
   const com = { en: 'com', hu: 'hu' }[lang];
   defaultRoles.forEach(function (role) {
     const boyNames = __('demo.user.boyNames').split('\n');
@@ -262,7 +265,7 @@ export function insertDemoHouse(lang) {
       'http://pannako.hu/wp-content/uploads/avatar-6.png',
       'http://pannako.hu/wp-content/uploads/avatar-8.png'];
     const userWithRoleId = Accounts.createUser({ email: role.name + `@demo.${com}`, password: 'password',
-      profile: { lastName: role.name.charAt(0).toUpperCase() + role.name.slice(1), firstName: _.sample(firstNames) } });
+      profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) } });
     const user = Meteor.users.findOne(userWithRoleId);
     if (boyNames.includes(user.profile.firstName)) {
       Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarBoys), 'settings.language': lang } });
