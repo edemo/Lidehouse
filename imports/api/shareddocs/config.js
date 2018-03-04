@@ -15,7 +15,7 @@ UploadFS.config.defaultStorePermissions = new UploadFS.StorePermissions({
 });
 
 // Use HTTPS in URLs
-UploadFS.config.https = true;
+UploadFS.config.https = false;
 
 // Activate simulation for slowing file reading
 UploadFS.config.simulateReadDelay = 1000; // 1 sec
