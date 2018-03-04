@@ -144,6 +144,9 @@
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
     },
+    "agendaId": {
+      "label": "Agenda (of which it is part of)"
+    },
     "sticky" : {
       "label": "Sticky"
     }

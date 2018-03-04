@@ -6,6 +6,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Parcels } from './parcels.js';
 import { Memberships } from '../memberships/memberships.js';
+import { checkNotExists } from '../method-checks';
 
 export const insertUnapproved = new ValidatedMethod({
   name: 'parcels.insert.unapproved',
@@ -25,6 +26,7 @@ export const insert = new ValidatedMethod({
   validate: Parcels.simpleSchema().validator({ clean: true }),
 
   run(doc) {
+    checkNotExists(Parcels, { communityId: doc.communityId, serial: doc.serial });
     checkPermissions(this.userId, 'parcels.insert', doc.communityId);
     const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
     const newTotal = total + doc.units;

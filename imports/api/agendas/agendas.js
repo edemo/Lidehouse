@@ -10,6 +10,7 @@ import '/imports/api/users/users.js';
 
 export const Agendas = new Mongo.Collection('agendas');
 
+/*
 const chooseTopic = {
   options() {
     return Topics.find({ category: 'vote' }).map(function option(v) {
@@ -17,12 +18,13 @@ const chooseTopic = {
     });
   },
 };
+*/
 
 Agendas.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   title: { type: String, max: 100, optional: true },
-  topicIds: { type: Array, optional: true },
-  'topicIds.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTopic },
+//  topicIds: { type: Array, defaultValue: [] },
+//  'topicIds.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTopic },
 });
 
 Agendas.helpers({
@@ -30,7 +32,8 @@ Agendas.helpers({
     return Communities.findOne(this.communityId);
   },
   topics() {
-    return Topics.find({ _id: { $in: this.topicIds } }).fetch();
+//    return Topics.find({ _id: { $in: this.topicIds } }).fetch();
+    return Topics.find({ communityId: this.communityId, agendaId: this._id }).fetch();
   },
   closed() {
     return _.any(this.topics(), topic => topic.closed);

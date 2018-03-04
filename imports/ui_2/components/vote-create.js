@@ -8,6 +8,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
 import { votingsExtensionSchema } from '/imports/api/topics/votings/votings.js';
 import './vote-create.html';
 
@@ -37,6 +38,11 @@ Template.Vote_create.helpers({
     ]);
     schema.i18n('schemaVotings');
     return schema;
+  },
+  agendaOptions() {
+    const communityId = Session.get('activeCommunityId');
+    const agendas = Agendas.find({ communityId });
+    return agendas.map(function option(a) { return { label: a.title, value: a._id }; });
   },
   needsChoicesSpecified() {
     const currentVoteType = AutoForm.getFieldValue('vote.type');
