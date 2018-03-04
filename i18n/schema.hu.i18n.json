@@ -292,16 +292,12 @@
       "placeholder": "(pl. 14560)"
     },
     "ref": {
-      "label": "Referencia azonosító",
+      "label": "Tranzakció azonosító",
       "placeholder": "(pl. tranzakciós szám bankkivonatról)"
     },
-    "note1": {
-      "label": "Megjegyzés 1",
-      "placeholder": "(pl. partner azonosító)"
-    },
-    "note2": {
-      "label": "Megjegyzés 2",
-      "placeholder": "(pl. közlemény)"
+    "note": {
+      "label": "Megjegyzés",
+      "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
     "accounts": {
       "label": "Könyvelési fiókok"

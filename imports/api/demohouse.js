@@ -904,7 +904,7 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Támogatás',
       'Könyvelés helye': 'Központi',
     },
-    note1: __('demo.payments.note.1'),
+    note: __('demo.payments.note.1'),
   });
 
   Payments.insert({
@@ -917,7 +917,7 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Bérleti díj',
       'Könyvelés helye': 'Központi',
     },
-    note1: __('demo.payments.note.2'),
+    note: __('demo.payments.note.2'),
   });
 
   Payments.insert({
@@ -930,7 +930,7 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Egyéb bevétel',
       'Könyvelés helye': 'Központi',
     },
-    note1: __('demo.payments.note.3'),
+    note: __('demo.payments.note.3'),
   });
 
   Payments.insert({
@@ -943,7 +943,7 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Hitelfelvétel',
       'Könyvelés helye': 'Központi',
     },
-    note1: __('demo.payments.note.4'),
+    note: __('demo.payments.note.4'),
   });
 
   for (let m = 1; m < 13; m++) {
