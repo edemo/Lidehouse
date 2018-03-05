@@ -8,6 +8,7 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
 
 class TopicsCollection extends Mongo.Collection {
   insert(topic, callback) {
@@ -31,6 +32,7 @@ Topics.schema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, optional: true },
+  agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   sticky: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
@@ -39,6 +41,9 @@ Topics.schema = new SimpleSchema({
 Topics.helpers({
   community() {
     return Communities.findOne(this.communityId);
+  },
+  agenda() {
+    return Agendas.findOne(this.agendaId);
   },
   createdBy() {
     return Meteor.users.findOne(this.userId);
@@ -95,6 +100,7 @@ Topics.publicFields = {
   category: 1,
   title: 1,
   text: 1,
+  agendaId: 1,
   createdAt: 1,
   closed: 1,
   sticky: 1,

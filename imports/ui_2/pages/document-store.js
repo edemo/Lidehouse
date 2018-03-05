@@ -33,7 +33,7 @@ Template.Document_store.helpers({
     }
   },
   uploadDate() {
-    return moment(this.createdAt).format('YYYY.MM.DD');
+    return moment(this.createdAt).format('L');
   },
 });
 

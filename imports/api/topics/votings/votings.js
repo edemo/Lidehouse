@@ -3,10 +3,11 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
+
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { Topics } from '../topics.js';
+import { Topics } from '/imports/api/topics/topics.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
 Topics.voteEffectValues = ['poll', 'legal'];

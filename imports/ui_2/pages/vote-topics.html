@@ -149,7 +149,9 @@
              <div class="col-xs-12">
                {{> ReactiveDatatable tableData=agendasTableDataFn options=agendasOptionsFn }}
              </div>
-             <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+             {{#if userHasPermission "agendas.insert" (fromSession "activeCommunityId") }}
+               <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+             {{/if}}
            </div>
 
          </div>

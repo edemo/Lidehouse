@@ -21,14 +21,10 @@ Payments.schema = new SimpleSchema({
   accounts: { type: Object, blackbox: true },
     // rootAccountName -> leafAccountName or parcelNo
   ref: { type: String, max: 100, optional: true },
-  note1: { type: String, max: 100, optional: true },
-  note2: { type: String, max: 100, optional: true },
+  note: { type: String, max: 100, optional: true },
 });
 
 Payments.helpers({
-  increaseAccount() {
-    return PayAccounts.findOne(this.increaseAccountId);
-  },
 });
 
 Payments.attachSchema(Payments.schema);

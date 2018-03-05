@@ -7,10 +7,10 @@ import './proposal-view.html';
 
 Template.Proposal_view.helpers({
   displayCreatedAtTime() {
-    return moment(this.createdAt).format('YYYY.MM.DD hh:mm');
+    return moment(this.createdAt).format('L LT');
   },
   displayClosesAtTime() {
-    return moment(this.vote.closesAt).format('YYYY.MM.DD hh:mm');
+    return moment(this.vote.closesAt).format('L LT');
   },
   displayUser() {
     return Meteor.users.findOne(this.userId).fullName();

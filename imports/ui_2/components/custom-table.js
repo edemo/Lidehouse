@@ -13,7 +13,7 @@ Template.Custom_table.onCreated(function financesOnCreated() {
 
 Template.Custom_table.helpers({
   timestamp() {
-    return moment().format('YYYY.MM.DD');
+    return moment().format('L');
   },
 });
 

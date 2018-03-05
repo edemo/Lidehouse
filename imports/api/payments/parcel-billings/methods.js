@@ -54,7 +54,7 @@ export const apply = new ValidatedMethod({
           valueDate: new Date(parcelBilling.year, i - 1, BILLING_DAY_OF_THE_MONTH),
           amount: -1 * amount,
           accounts: parcelBilling.accounts,
-          note2: parcelBilling.note,
+          note: parcelBilling.note,
         };
         payment.accounts['Könyvelés helye'] = parcel.serial.toString();
 //        Payments.update(query, { $set: doc }, { upsert: true });

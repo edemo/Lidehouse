@@ -1,4 +1,5 @@
 import { moment } from 'meteor/momentjs:moment';
+import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 
 export const Render = {
@@ -6,10 +7,13 @@ export const Render = {
     return __(cellData);
   },
   formatDate(cellData, renderType, currentRow) {
-    return moment(cellData).format('YYYY.MM.DD');
+    return moment(cellData).format('L');
   },
   formatTime(cellData, renderType, currentRow) {
-    return moment(cellData).format('YYYY.MM.DD hh:mm');
+    return moment(cellData).format('L LT');
+  },
+  formatNumber(cellData, renderType, currentRow) {
+    return numeral(cellData).format();
   },
   buttonView(cellData, renderType, currentRow) {
     const html = `<span data-id=${cellData} title=${__('view')} class="js-view nav-item glyphicon glyphicon-eye-open"></span>`;

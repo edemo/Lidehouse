@@ -243,9 +243,12 @@ export function insertDemoHouse(lang) {
   });
 
   // ===== Demo Users with Roles =====
-
+  
   // You can log in to try the different roles
   // will be removed from production
+  function capitalize(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
   const com = { en: 'com', hu: 'hu' }[lang];
   defaultRoles.forEach(function (role) {
     const boyNames = __('demo.user.boyNames').split('\n');
@@ -262,7 +265,7 @@ export function insertDemoHouse(lang) {
       'http://pannako.hu/wp-content/uploads/avatar-6.png',
       'http://pannako.hu/wp-content/uploads/avatar-8.png'];
     const userWithRoleId = Accounts.createUser({ email: role.name + `@demo.${com}`, password: 'password',
-      profile: { lastName: role.name.charAt(0).toUpperCase() + role.name.slice(1), firstName: _.sample(firstNames) } });
+      profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) } });
     const user = Meteor.users.findOne(userWithRoleId);
     if (boyNames.includes(user.profile.firstName)) {
       Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarBoys), 'settings.language': lang } });
@@ -498,6 +501,12 @@ export function insertDemoHouse(lang) {
 
   // ===== Votes =====
 
+  const agendaId = Agendas.insert({
+    communityId: demoCommunityId,
+    title: __('demo.agenda.0.title'),
+//    topicIds: [voteTopic0, voteTopic1, voteTopic2],
+  });
+
   const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', userId: { $exists: true } }).fetch();
 
   const voteTopic0 = Topics.insert({
@@ -506,6 +515,7 @@ export function insertDemoHouse(lang) {
     category: 'vote',
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
+    agendaId,
     vote: {
       closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
       procedure: 'online',
@@ -535,6 +545,7 @@ export function insertDemoHouse(lang) {
     category: 'vote',
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
+    agendaId,
     vote: {
       closesAt: moment().add(2, 'week').toDate(),
       procedure: 'online',
@@ -551,6 +562,7 @@ export function insertDemoHouse(lang) {
     category: 'vote',
     title: __('demo.vote.2.title'),
     text: __('demo.vote.2.text'),
+    agendaId,
     vote: {
       closesAt: moment().add(1, 'month').toDate(),
       type: 'preferential',
@@ -578,12 +590,6 @@ export function insertDemoHouse(lang) {
       text: __(`demo.vote.2.comment.${commentNo}`),
     })
   );
-
-  const agenda = Agendas.insert({
-    communityId: demoCommunityId,
-    title: __('demo.agenda.0.title'),
-    topicIds: [voteTopic0, voteTopic1, voteTopic2],
-  });
 
   // ===== Tickets =====
 
@@ -826,7 +832,8 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Kamat pénzintézetektől',
       'Könyvelés helye': 'Központi',
     },
-  }); 
+  });
+
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
@@ -837,7 +844,8 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Kamat pénzintézetektől',
       'Könyvelés helye': 'Központi',
     },
-  }); 
+  });
+
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
@@ -848,7 +856,8 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Kamat pénzintézetektől',
       'Könyvelés helye': 'Központi',
     },
-  }); 
+  });
+
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
@@ -859,7 +868,8 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Kamat pénzintézetektől',
       'Könyvelés helye': 'Központi',
     },
-  }); 
+  });
+
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
@@ -870,7 +880,8 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Kamat pénzintézetektől',
       'Könyvelés helye': 'Központi',
     },
-  }); 
+  });
+
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
@@ -881,7 +892,7 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Kamat pénzintézetektől',
       'Könyvelés helye': 'Központi',
     },
-  }); 
+  });
 
   Payments.insert({
     communityId: demoCommunityId,
@@ -893,8 +904,8 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Támogatás',
       'Könyvelés helye': 'Központi',
     },
-    note1: __('demo.payments.note.1'),
-  }); 
+    note: __('demo.payments.note.1'),
+  });
 
   Payments.insert({
     communityId: demoCommunityId,
@@ -906,8 +917,8 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Bérleti díj',
       'Könyvelés helye': 'Központi',
     },
-    note1: __('demo.payments.note.2'),
-  }); 
+    note: __('demo.payments.note.2'),
+  });
 
   Payments.insert({
     communityId: demoCommunityId,
@@ -919,8 +930,8 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Egyéb bevétel',
       'Könyvelés helye': 'Központi',
     },
-    note1: __('demo.payments.note.3'),
-  }); 
+    note: __('demo.payments.note.3'),
+  });
 
   Payments.insert({
     communityId: demoCommunityId,
@@ -932,11 +943,11 @@ export function insertDemoHouse(lang) {
       'Könyvelés nem': 'Hitelfelvétel',
       'Könyvelés helye': 'Központi',
     },
-    note1: __('demo.payments.note.4'),
-  }); 
+    note: __('demo.payments.note.4'),
+  });
 
-  for (m = 1; m < 13; m++) {
-    for (i = 1; i < 15; i++) {
+  for (let m = 1; m < 13; m++) {
+    for (let i = 1; i < 15; i++) {
       const payable = [0, 15125, 13200, 18150, 19250, 18150, 19250, 18150,
         19250, 18150, 19250, 30800, 13750, 19000, 6050];
       Payments.insert({
@@ -953,8 +964,8 @@ export function insertDemoHouse(lang) {
     }
   }
 
-  for (m = 1; m < 13; m++) {
-    for (i = 0; i < 4; i++) {
+  for (let m = 1; m < 13; m++) {
+    for (let i = 0; i < 4; i++) {
       const payable = [5000, 7500, 5000, 2500];
       const place = ['2', '5', '8', '14'];
       Payments.insert({
@@ -970,8 +981,8 @@ export function insertDemoHouse(lang) {
       });
     }
   }
-  for (m = 1; m < 13; m++) {
-    for (i = 1; i < 11; i++) {
+  for (let m = 1; m < 13; m++) {
+    for (let i = 1; i < 11; i++) {
       const payable = [0, 14960, 13056, 15708, 16660, 15708, 16660, 15708, 16660, 15708, 16660];
       Payments.insert({
         communityId: demoCommunityId,
@@ -987,7 +998,7 @@ export function insertDemoHouse(lang) {
     }
   }
 
-  for (i = 1; i < 15; i++) {
+  for (let i = 1; i < 15; i++) {
     Payments.insert({
       communityId: demoCommunityId,
       phase: 'done',

@@ -191,6 +191,7 @@
       {{/if}}
     </div>
 
+    {{#if currentUser}}
     <div id="feedback-pane" class="collapse">
       <div class="full-width text-center"> {{{_ 'FeedbackPaneTitle'}}}</div>
       <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="collapse" data-target="#feedback-pane" aria-expanded="true" aria-controls="#feedback-pane"></span>
@@ -211,6 +212,7 @@
       </a>
       <span class="glyphicon glyphicon-remove js-feedback-close pull-right" aria-hidden="true"></span>
     </div>
+    {{/if}}
 
   {{/HammerTouchArea}}
 </template>
