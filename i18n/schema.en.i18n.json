@@ -201,13 +201,25 @@
     "ticket": {
       "label": "Ticket",
       "category": {
-        "label": "Category"
+        "label": "Category",
+        "building": "Building",
+        "garden": "Garden",
+        "service": "Service"      
       },
       "urgency": {
-        "label": "Urgency"
+        "label": "Urgency",
+        "high": "High",
+        "normal": "Normal",
+        "low": "Low"
       },
       "status": {
-        "label": "Status"
+        "label": "Status",
+        "reported": "Reported",
+        "confirmed": "Confirmed",
+        "progressing": "Progressing",
+        "finished": "Finished",
+        "checked": "Checked",
+        "closed": "Closed"
       }
     }
   },
