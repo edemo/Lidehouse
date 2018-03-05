@@ -169,6 +169,9 @@ Template.Custom_body.helpers({
     const unapprovedMembershipCount = Memberships.find({ communityId, approved: false }).count();
     return unapprovedParcelCount + unapprovedMembershipCount;
   },
+  developerMode() {
+    return false;     // set this true to access developer features
+  },
 });
 
 Template.Custom_body.events({
@@ -176,7 +179,7 @@ Template.Custom_body.events({
     instance.state.set('menuOpen', !instance.state.get('menuOpen'));
   },
   
-  'click .demouser-autologin' () {
+  'click .demouser-autologin'() {
     Meteor.call('createDemoUserWithParcel', function (error, result) {
       if (error) {
         alert('Error');

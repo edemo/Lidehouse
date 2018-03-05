@@ -42,35 +42,28 @@
           </div>
           {{#if currentUser}}
           <div class="comm-drop">
-            {{#if activeCommunity}}
-              <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <div class="dropdown">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              {{#if activeCommunity}}
                 {{activeCommunity.name}}
-                <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
-                    <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'Create a community'}} </a></li>
+              {{else}}
+                {{_ 'community'}} {{_ 'Selection'}}
+              {{/if}}
+              <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
+                <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'Create a community'}} </a></li>
+                {{#if communities}}
                   <li role="separator" class="divider"></li>
                   {{#each communities}}
                   <li><a href="#" class="js-switch-community">{{name}}</a></li>
                   {{/each}}
-                </ul>
-              </div>
-            {{else}}
-              <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="emptycommunity" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                {{_ 'community'}} {{_ 'Selection'}}
-                <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="emptycommunity">
-                    <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
-                    <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'Create a community'}} </a></li>
-                </ul>
-              </div>
-            {{/if}}
+                {{/if}}
+              </ul>
+            </div>
           </div>
-		  {{/if}}
+		      {{/if}}
         </div>
 
         <div class="list-menu">
@@ -123,7 +116,7 @@
               <a href="{{pathFor 'DocumentStore'}}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>{{_ 'Documentstore'}}</a>
             </li>
           </ul>
-		  {{else}}
+		      {{else}}
           <ul class="btns-group top-sign-in">
             <li class="menu-item"><a href="{{pathFor 'signin'}}" class="btn-primary">
             {{_ 'login'}}
@@ -132,8 +125,9 @@
               {{_ 'register'}}
             </a></li>
           </ul>
-		  {{/if}}
-          <ul style="position: absolute; bottom: 0; width: 100%; display:none;">
+          {{/if}}
+          {{#if developerMode}}
+          <ul style="position: absolute; bottom: 0; width: 100%;">
             <li class="list-item">
               <a href="{{pathFor 'Feedbacks'}}"><img src="/icon/si-glyph-bolt.svg"/>Feedbacks (dev)</a>
               {{#if countNotifications 'feedback'}}
@@ -144,6 +138,7 @@
               <a href="{{pathFor 'Styleguide'}}"><img src="/icon/si-glyph-bolt.svg"/>Styleguide (dev)</a>
             </li>
           </ul>
+          {{/if}}
         </div>
       </section>
       {{/if}}
