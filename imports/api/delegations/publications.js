@@ -52,3 +52,19 @@ Meteor.publishComposite('delegations.toUser', function delegationsToUser(params)
     }],
   };
 });
+
+Meteor.publish('delegations.inCommunity', function delegationsInCommunity(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+  }).validate(params);
+  const { communityId } = params;
+
+  // Checking permissions for visibilty
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('delegations.inCommunity', communityId)) {
+    this.ready();
+    return;
+  }
+
+  return Delegations.find({ communityId });
+});

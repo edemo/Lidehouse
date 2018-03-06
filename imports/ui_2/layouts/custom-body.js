@@ -87,6 +87,13 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
     this.subscribe('topics.inCommunity', { communityId });
     this.subscribe('agendas.inCommunity', { communityId });
   });
+  this.autorun(() => {
+    const user = Meteor.userOrNull();
+    const communityId = Session.get('activeCommunityId');
+    if (user.hasPermission('delegations.inCommunity', communityId)) {
+      this.subscribe('delegations.inCommunity', { communityId });
+    }
+  });
 });
 
 Template.Custom_body.helpers({

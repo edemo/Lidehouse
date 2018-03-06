@@ -10,10 +10,9 @@ export const insert = new ValidatedMethod({
   validate: Delegations.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    // User can only delegate his own votes
+    // Normal user can only delegate his own votes, but special permission allows for others' as well
     if (this.userId !== doc.sourceUserId) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: delegations.insert, doc: {${doc}}, this.userId: {${this.userId}}`);
+      checkPermissions(this.userId, 'delegations.forOthers', doc.communityId);
     }
     // User can only delegate to those who allow incoming delegations
     const targetUser = Meteor.users.findOne(doc.targetUserId);
@@ -36,10 +35,9 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Delegations, _id);
     checkModifier(doc, modifier, ['targetUserId', 'scope', 'scopeObjectId']);
-    // User can only delegate his own votes
+    // Normal user can only delegate his own votes, but special permission allows for others' as well
     if (this.userId !== doc.sourceUserId) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: delegations.update, doc: {${doc}}, this.userId: {${this.userId}}`);
+      checkPermissions(this.userId, 'delegations.forOthers', doc.communityId);
     }
     // User can only delegate to those who allow incoming delegations
     const targetUser = Meteor.users.findOne(modifier.$set.targetUserId);
@@ -59,11 +57,10 @@ export const remove = new ValidatedMethod({
   }).validator(),
 
   run({ _id }) {
-    const delegation = checkExists(Delegations, _id);
-    // User can only remove delegations that delegetes from him, or delegates to him.
-    if (this.userId !== delegation.sourceUserId && this.userId !== delegation.targetUserId) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: delegations.remove, doc: {${delegation}}, this.userId: {${this.userId}}`);
+    const doc = checkExists(Delegations, _id);
+    // User can only remove delegations that delegetes from him, or delegates to him., unless special permissions
+    if (this.userId !== doc.sourceUserId && this.userId !== doc.targetUserId) {
+      checkPermissions(this.userId, 'delegations.forOthers', doc.communityId);
     }
 
     Delegations.remove(_id);

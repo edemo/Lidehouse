@@ -2,7 +2,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 
-export function delegationsColumns() {
+export function delegationColumns() {
   return [
     { data: 'sourceUser()', title: __('schemaDelegations.sourceUserId.label') },
     { data: 'targetUser()', title: __('schemaDelegations.targetUserId.label') },

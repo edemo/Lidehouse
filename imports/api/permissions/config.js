@@ -64,6 +64,7 @@ const permissions = [
   { name: 'agendas.insert',         roles: ['manager'] },
   { name: 'agendas.update',         roles: ['manager'] },
   { name: 'agendas.remove',         roles: ['manager'] },
+  { name: 'delegations.inCommunity',roles: ['manager'] },
   { name: 'delegations.forOthers',  roles: ['manager'] },
 //  { name: 'delegations.update',     roles: nobody, allowAuthor: true },
 //  { name: 'delegations.remove',     roles: nobody, allowAuthor: true },

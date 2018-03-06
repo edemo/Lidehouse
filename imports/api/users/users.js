@@ -15,7 +15,7 @@ import { Delegations } from '/imports/api/delegations/delegations.js';
 export const nullUser = {
   hasPermission(permissionName, communityId, object) {
     const permission = Permissions.findOne({ name: permissionName });
-    debugAssert(permission);
+    if (!permission) return false;
     return _.contains(permission.roles, 'null');
   },
 };
@@ -137,7 +137,7 @@ Meteor.users.helpers({
   },
   hasPermission(permissionName, communityId, object) {
     const permission = Permissions.findOne({ name: permissionName });
-    debugAssert(permission);
+    if (!permission) return false;
     const rolesWithThePermission = permission.roles;
     if (_.contains(rolesWithThePermission, 'null')) return true;
     if (permission.allowAuthor && object && (object.userId === this._id)) return true;

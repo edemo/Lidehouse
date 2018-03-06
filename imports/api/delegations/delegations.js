@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -44,11 +45,22 @@ if (Meteor.isClient) {
       }
       return scopeSet.map(function (o) { return { label: o.name || o.title, value: o._id }; });
     },
-    firstOption: false,
+    firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
   };
 } else {
   chooseUser = {};
   chooseScopeObject = {};
+}
+
+function communityIdAutoValue() {
+  const scope = this.field('scope').value;
+  const scopeObjectId = this.field('scopeObjectId').value;
+  if (scope === 'community') return scopeObjectId;
+  if (scope === 'agenda') return Agendas.findOne(scopeObjectId).communityId;
+  if (scope === 'topic') return Topics.findOne(scopeObjectId).communityId;
+  debugAssert(scope === 'general', `No such scope as ${scope}`);
+  debugAssert(scopeObjectId === 'none', 'General scope should not have a corresponding object');
+  return undefined;
 }
 
 Delegations.schema = new SimpleSchema({
@@ -56,6 +68,7 @@ Delegations.schema = new SimpleSchema({
   targetUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseUser },
   scope: { type: String, allowedValues: Delegations.scopeValues, autoform: autoformOptions(Delegations.scopeValues, 'schemaDelegations.scope.') },
   scopeObjectId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: chooseScopeObject },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { omit: true } },
 });
 
 Delegations.renderScopeObject = function (o) {
@@ -76,14 +89,6 @@ Delegations.helpers({
   },
   targetUser() {
     return Meteor.users.findOne(this.targetUserId);
-  },
-  communityId() {
-    if (this.scope === 'community') return this.scopeObjectId;
-    if (this.scope === 'agenda') return Agendas.findOne(this.scopeObjectId).communityId;
-    if (this.scope === 'topic') return Topics.findOne(this.scopeObjectId).communityId;
-    debugAssert(this.scope === 'general', `No such scope as ${this.scope}`);
-    debugAssert(this.scopeObjectId === 'none', 'General scope should not have a corresponding object');
-    return undefined;
   },
 });
 
