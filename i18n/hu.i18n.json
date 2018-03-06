@@ -151,6 +151,8 @@
   "No active votes": "Jelenleg nincs aktív szavazás!",
   "Latest votes": "Korábbi szavazások",
   "Launch voting": "Szavazás indítása",
+  "Proxy voting" : "Szavazás mások nevében",
+  "Please select voters": "Válassza ki kiknek a nevében szeretne szavazatot leadni",
 
   // delegations
   "Delegations from me": "Meghatalmazásaim",

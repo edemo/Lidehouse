@@ -37,13 +37,29 @@ const IdCardSchema = new SimpleSchema({
   type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues) },
   name: { type: String },
   address: { type: String },
-  identifier: { type: String }, // cegjegyzek szam vagy szig szam
+  identifier: { type: String }, // cegjegyzek szam vagy szig szam - egyedi!!!
   mothersName: { type: String, optional: true },
   dob: { type: Date, optional: true },
 });
 
+const PersonSchema = new SimpleSchema({
+    // The user is connected with the membership via 3 possible ways: userId (registered user),
+    userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
+      autoform: {
+        options() {
+          const communityId = Meteor.isClient ? Session.get('activeCommunityId') : undefined;
+          return Communities.findOne(communityId).users().map(function option(u) { return { label: u.displayName(), value: u._id }; });
+        },
+      },
+    },
+    // userEmail (not registered, but invitation is sent)
+    userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
+    // idCard (confirmed identity papers)
+    idCard: { type: IdCardSchema, optional: true },  
+});
+
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection
-Memberships.schema = new SimpleSchema({
+Memberships.schema = new SimpleSchema([{
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
@@ -54,22 +70,11 @@ Memberships.schema = new SimpleSchema({
       },
     },
   },
-  // The user is connected with the membership via 3 possible ways: userId (registered user), userEmail (not registered, but invitation is sent), and idCard (confirmed identity papers)
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
-    autoform: {
-      options() {
-        const communityId = Meteor.isClient ? Session.get('activeCommunityId') : undefined;
-        return Communities.findOne(communityId).users().map(function option(u) { return { label: u.displayName(), value: u._id }; });
-      },
-    },
-  },
-  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
-  idCard: { type: IdCardSchema, optional: true },
   // TODO should be conditional on role === 'owner'
   ownership: { type: OwnershipSchema, optional: true },
   // TODO should be conditional on role === 'benefactor'
   benefactorship: { type: BenefactorshipSchema, optional: true },
-});
+}, PersonSchema]);
 
 // Statuses of members:
 // 0. Email not given
@@ -106,6 +111,12 @@ Memberships.helpers({
     if (this.userEmail) return this.userEmail;
     return 'should never get here';
   },
+  identifier() {
+    if (this.userId) return this.userId;
+    if (this.idCard) return this.idCard.identifier;
+    if (this.userEmail) return this.userEmail;
+    return 'should never get here';
+  },  
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);

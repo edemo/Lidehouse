@@ -8,7 +8,7 @@
         </a>
         {{else}}
           {{#if userHasPermission 'vote.close' this/communityId this}}
-          <a title={{_ "Close"}}>
+          <a class="js-close" title={{_ "Close"}}>
             <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
           </a>
           {{/if}}
