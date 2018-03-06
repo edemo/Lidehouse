@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { checkExists, checkModifier } from '/imports/api/method-checks.js';
+import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Delegations } from './delegations.js';
 
 export const insert = new ValidatedMethod({
@@ -35,7 +35,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Delegations, _id);
-    checkModifier(doc, modifier, ['targetUserId']);
+    checkModifier(doc, modifier, ['targetUserId', 'scope', 'scopeObjectId']);
     // User can only delegate his own votes
     if (this.userId !== doc.sourceUserId) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',

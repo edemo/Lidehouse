@@ -121,9 +121,13 @@
       "label": "Scope of Delegation",
       "placeholder": "(pl. Community issues)"
     },
-    "objectId": {
+    "scopeObjectId": {
       "label": "Object of delegation",
-      "placeholder": "(eg. Demo community)"
+      "placeholder": "(eg. Demo community)",
+      "general": "general - all issues",
+      "community": "issues of a certain community",
+      "agenda": "issues of a certain agenda",
+      "topic": "one specific issue"
     }
   },
   "schemaAgendas": {

@@ -71,7 +71,7 @@ Template.User_delegations.events({
     Modal.show('Autoform_edit', {
       id: 'af.delegation.insert',
       collection: Delegations,
-      omitFields: ['sourceUserId', 'scope'],
+      omitFields: ['sourceUserId'],
       type: 'method',
       meteormethod: 'delegations.insert',
       template: 'bootstrap3-inline',
@@ -82,7 +82,7 @@ Template.User_delegations.events({
     Modal.show('Autoform_edit', {
       id: 'af.delegation.update',
       collection: Delegations,
-      omitFields: ['sourceUserId', 'scope'],
+      omitFields: ['sourceUserId'],
       doc: Delegations.findOne(id),
       type: 'method-update',
       meteormethod: 'delegations.update',
@@ -120,8 +120,6 @@ AutoForm.addModalHooks('af.delegation.update');
 AutoForm.addHooks('af.delegation.insert', {
   formToDoc(doc) {
     doc.sourceUserId = Meteor.userId();
-    doc.scope = 'community';
-    doc.objectId = Session.get('activeCommunityId');
     return doc;
   },
 });

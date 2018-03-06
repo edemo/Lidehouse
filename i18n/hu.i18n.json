@@ -17,6 +17,8 @@
   "false": "nem",
   "votingShare": "Szavazati hányad",
 
+  "Not applicable": "Nem szükséges megadni",
+
   // roles
   "admin": "admin",
   "manager": "közös képviselő",
@@ -71,6 +73,7 @@
   "parcels": "albetétek",
   "'s owners": " tulajdonosai",
   "agenda": "napirend",
+  "delegation": "meghatalmazás",
   "ticket": "hibajegy",
   "tickets": "hibajegyek",
   "payment": "tranzakció",
