@@ -52,6 +52,13 @@ Meteor.startup(function setupLanguage() {
   });
 });
 
+// In numeral locales replacing the ' ' with a '.' in the hu locale
+Meteor.startup(function amendNumeralLocale() {
+  const huLocale = numeral.languageData('hu');
+  huLocale.delimiters.thousands = '.';
+  numeral.language('hu', huLocale);
+});
+
 // The different community types bring in their own i18n extensions
 
 Meteor.startup(function comtypeLanguageExtensions() {
