@@ -92,7 +92,7 @@ Memberships.helpers({
     if (this.userId) return Meteor.users.findOne(this.userId);
     return undefined;
   },
-  userEmail() {
+  userEmailAddress() {
     if (this.userId) return this.user().emails[0].address;
     if (this.userEmail) return this.userEmail;
     return undefined;

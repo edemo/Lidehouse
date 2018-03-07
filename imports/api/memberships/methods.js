@@ -47,7 +47,7 @@ function connectUserIfPossible(membershipId) {
   const email = membership.userEmail;
   if (!membership.userId && email) {
     const user = Meteor.users.findOne({ 'emails.0.address': email });
-    if (user && user.emails[0].verified) {  
+    if (user && user.emails[0].verified) {
       connectUser(membership._id, user._id);
     } else if (user && !user.emails[0].verified) {
       // if not verified, connection will happen when she verifies (thats the trigger)

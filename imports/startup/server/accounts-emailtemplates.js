@@ -10,7 +10,7 @@ Accounts.emailTemplates.enrollAccount = {
   text(user, url) {
     const membership = Memberships.findOne({ userEmail: user.emails[0].address })
     const community = membership.community();
-    const adminEmail = community.admin().userEmail();
+    const adminEmail = community.admin().userEmailAddress();
 
     return `Hello,
     
