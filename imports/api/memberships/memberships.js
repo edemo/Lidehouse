@@ -9,11 +9,12 @@ import '/utils/fractional.js';  // TODO: should be automatic, but not included i
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Factory } from 'meteor/dburles:factory';
-import { autoformOptions, chooseUser } from '/imports/utils/autoform.js';
+import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Roles } from '/imports/api/permissions/roles.js';
+import { PersonSchema } from '/imports/api/users/person.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -29,25 +30,6 @@ const OwnershipSchema = new SimpleSchema({
 const benefactorTypeValues = ['rental', 'favor', 'right'];
 const BenefactorshipSchema = new SimpleSchema({
   type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues) },
-});
-
-const idCardTypeValues = ['person', 'legal'];
-const IdCardSchema = new SimpleSchema({
-  type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues) },
-  name: { type: String },
-  address: { type: String },
-  identifier: { type: String }, // cegjegyzek szam vagy szig szam - egyedi!!!
-  mothersName: { type: String, optional: true },
-  dob: { type: Date, optional: true },
-});
-
-const PersonSchema = new SimpleSchema({
-  // The user is connected with the membership via 3 possible ways: userId (registered user),
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
-  // userEmail (not registered, but invitation is sent)
-  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
-  // idCard (confirmed identity papers)
-  idCard: { type: IdCardSchema, optional: true },
 });
 
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection

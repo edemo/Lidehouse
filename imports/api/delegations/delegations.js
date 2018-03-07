@@ -9,24 +9,15 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
+import { Person, choosePerson } from '/imports/api/users/person.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export const Delegations = new Mongo.Collection('delegations');
 
 Delegations.scopeValues = ['general', 'community', 'agenda', 'topic'];
-
-export const choosePerson = {
-  options() {
-    const memberships = Memberships.find().fetch();
-    return memberships.map(function option(m) {
-      return { label: m.displayName(), value: m.personId() };
-    });
-  },
-};
 
 let chooseScopeObject = {}; // on server side, we can't import Session or AutoForm (client side packages)
 if (Meteor.isClient) {
@@ -82,25 +73,6 @@ Delegations.schema = new SimpleSchema({
 Delegations.renderScopeObject = function (o) {
   return o ? (o.name || o.title) : '---';
 };
-
-export class Person {
-  // A personId is either a userId (for registered users) or an idCard identifier (for non-registered users)
-  constructor(personId) {
-    this.id = personId;
-    const u = Meteor.users.findOne(personId);
-    if (u) this.user = u;
-    const m = Memberships.findOne({ 'idCard.identifier': personId });
-    if (m) this.idCard = m.idCard;
-  }
-  displayName() {
-    if (this.idCard) return this.idCard.name;
-    if (this.user) return this.user.displayName();
-    return '---';
-  }
-  toString() {
-    return this.displayName();
-  }
-}
 
 Delegations.helpers({
   scopeObject() {
