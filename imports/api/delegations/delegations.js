@@ -9,27 +9,18 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { autoformOptions, chooseUser } from '/imports/utils/autoform.js';
 import { __ } from '/imports/localization/i18n.js';
 
 export const Delegations = new Mongo.Collection('delegations');
 
 Delegations.scopeValues = ['general', 'community', 'agenda', 'topic'];
 
-let chooseUser;
-let chooseScopeObject;
-
+let chooseScopeObject = {}; // on server side, we can't import Session or AutoForm (client side packages)
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
   import { AutoForm } from 'meteor/aldeed:autoform';
 
-  chooseUser = {
-    options() {
-      return Meteor.users.find({}).map(function option(u) {
-        return { label: u.fullName(), value: u._id };
-      });
-    },
-  };
   chooseScopeObject = {
     options() {
       const user = Meteor.user();
@@ -47,9 +38,6 @@ if (Meteor.isClient) {
     },
     firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
   };
-} else {
-  chooseUser = {};
-  chooseScopeObject = {};
 }
 
 function communityIdAutoValue() {

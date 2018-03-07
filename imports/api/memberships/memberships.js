@@ -5,12 +5,11 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 import '/utils/fractional.js';  // TODO: should be automatic, but not included in tests
-if (Meteor.isClient) import { Session } from 'meteor/session';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Factory } from 'meteor/dburles:factory';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { autoformOptions, chooseUser } from '/imports/utils/autoform.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -43,19 +42,12 @@ const IdCardSchema = new SimpleSchema({
 });
 
 const PersonSchema = new SimpleSchema({
-    // The user is connected with the membership via 3 possible ways: userId (registered user),
-    userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
-      autoform: {
-        options() {
-          const communityId = Meteor.isClient ? Session.get('activeCommunityId') : undefined;
-          return Communities.findOne(communityId).users().map(function option(u) { return { label: u.displayName(), value: u._id }; });
-        },
-      },
-    },
-    // userEmail (not registered, but invitation is sent)
-    userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
-    // idCard (confirmed identity papers)
-    idCard: { type: IdCardSchema, optional: true },  
+  // The user is connected with the membership via 3 possible ways: userId (registered user),
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
+  // userEmail (not registered, but invitation is sent)
+  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
+  // idCard (confirmed identity papers)
+  idCard: { type: IdCardSchema, optional: true },
 });
 
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection
