@@ -18,7 +18,7 @@ if (Meteor.isServer) {
 
   const createDelegation = function (sourceId, targetId) {
     insertDelegation._execute({ userId: sourceId },
-      { sourceUserId: sourceId, targetUserId: targetId, scope: 'community', objectId: Fixture.demoCommunityId }
+      { sourcePersonId: sourceId, targetPersonId: targetId, scope: 'community', objectId: Fixture.demoCommunityId }
     );
   }
 
@@ -67,7 +67,7 @@ if (Meteor.isServer) {
 
       it('can insert delegations', function (done) {
         delegationId = insertDelegation._execute({ userId: Fixture.demoUserId },
-          { sourceUserId: Fixture.demoUserId, targetUserId: Fixture.dummyUsers[0], scope: 'community', objectId: Fixture.demoCommunityId }
+          { sourcePersonId: Fixture.demoUserId, targetPersonId: Fixture.dummyUsers[0], scope: 'community', objectId: Fixture.demoCommunityId }
         );
         const delegation = Delegations.findOne(delegationId);
         chai.assert.isDefined(delegation);
@@ -77,7 +77,7 @@ if (Meteor.isServer) {
       it('scope is limited to community for now', function (done) {
         chai.assert.throws(() => {
           insertDelegation._execute({ userId: Fixture.demoUserId },
-            { sourceUserId: Fixture.demoUserId, targetUserId: Fixture.dummyUsers[0], scope: 'topic' }
+            { sourcePersonId: Fixture.demoUserId, targetPersonId: Fixture.dummyUsers[0], scope: 'topic' }
           );
         });
         done();
@@ -96,32 +96,32 @@ if (Meteor.isServer) {
       });
 
       it('can refuse delegations', function (done) {
-        let delegation = Delegations.findOne({ sourceUserId: Fixture.dummyUsers[1], targetUserId: Fixture.demoUserId });
+        let delegation = Delegations.findOne({ sourcePersonId: Fixture.dummyUsers[1], targetPersonId: Fixture.demoUserId });
         chai.assert.isDefined(delegation);
         removeDelegation._execute({ userId: Fixture.demoUserId }, { _id: delegation._id });
-        delegation = Delegations.findOne({ sourceUserId: Fixture.dummyUsers[1], targetUserId: Fixture.demoUserId });
+        delegation = Delegations.findOne({ sourcePersonId: Fixture.dummyUsers[1], targetPersonId: Fixture.demoUserId });
         chai.assert.isUndefined(delegation);
         createDelegation(Fixture.dummyUsers[1], Fixture.demoUserId);
         done();
       });
 
       it('can refuse all inbound delegations', function (done) {
-        chai.assert.equal(Delegations.find({ targetUserId: Fixture.demoUserId }).fetch().length, 2);
+        chai.assert.equal(Delegations.find({ targetPersonId: Fixture.demoUserId }).fetch().length, 2);
 
         allowDelegations._execute({ userId: Fixture.demoUserId }, { value: false });
-        chai.assert.equal(Delegations.find({ targetUserId: Fixture.demoUserId }).fetch().length, 0);
+        chai.assert.equal(Delegations.find({ targetPersonId: Fixture.demoUserId }).fetch().length, 0);
 
         // new delegations to him cannot be added now
         chai.assert.throws(() => {
           createDelegation(Fixture.dummyUsers[1], Fixture.demoUserId);
         });
-        chai.assert.equal(Delegations.find({ targetUserId: Fixture.demoUserId }).fetch().length, 0);
+        chai.assert.equal(Delegations.find({ targetPersonId: Fixture.demoUserId }).fetch().length, 0);
 
         // until he allows it again
         allowDelegations._execute({ userId: Fixture.demoUserId }, { value: true });
         createDelegation(Fixture.dummyUsers[1], Fixture.demoUserId);
         createDelegation(Fixture.dummyUsers[2], Fixture.demoUserId);
-        chai.assert.equal(Delegations.find({ targetUserId: Fixture.demoUserId }).fetch().length, 2);
+        chai.assert.equal(Delegations.find({ targetPersonId: Fixture.demoUserId }).fetch().length, 2);
         done();
       });
 
@@ -143,14 +143,14 @@ if (Meteor.isServer) {
       it('only allows to insert the user\'s own outbound delegations', function (done) {
         chai.assert.throws(() => {
           insertDelegation._execute({ userId: Fixture.demoUserId },
-            { sourceUserId: Fixture.dummyUsers[0], targetUserId: Fixture.demoUserId, scope: 'community', objectId: Fixture.demoCommunityId }
+            { sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.demoUserId, scope: 'community', objectId: Fixture.demoCommunityId }
           );
         });
         done();
       });
 
       it('only allows to remove the user\'s own delegations', function (done) {
-        const delegation = Delegations.findOne({ sourceUserId: Fixture.dummyUsers[0], targetUserId: Fixture.dummyUsers[1] });
+        const delegation = Delegations.findOne({ sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.dummyUsers[1] });
         chai.assert.isDefined(delegation);
         chai.assert.throws(() => {
           removeDelegation._execute({ userId: Fixture.demoUserId }, { _id: delegation._id });

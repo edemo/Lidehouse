@@ -46,7 +46,7 @@ Template.User_delegations.helpers({
   },
   delegationsFromMeDataFn() {
     return () => {
-      return Delegations.find({ sourceUserId: Meteor.userId() }).fetch();
+      return Delegations.find({ sourcePersonId: Meteor.userId() }).fetch();
     };
   },
   delegationsFromMeOptionsFn() {
@@ -63,7 +63,7 @@ Template.User_delegations.helpers({
   },
   delegationsToMeDataFn() {
     return () => {
-      return Delegations.find({ targetUserId: Meteor.userId() }).fetch();
+      return Delegations.find({ targetPersonId: Meteor.userId() }).fetch();
     };
   },
   delegationsToMeOptionsFn() {
@@ -83,7 +83,7 @@ Template.User_delegations.helpers({
 Template.User_delegations.events({
   'click .js-new'(event, instance) {
     const communityId = Session.get('activeCommunityId');
-    const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourceUserId'];
+    const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
     Modal.show('Autoform_edit', {
       id: 'af.delegation.insert',
       collection: Delegations,
@@ -96,7 +96,7 @@ Template.User_delegations.events({
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
     const communityId = Session.get('activeCommunityId');
-    const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourceUserId'];
+    const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
     Modal.show('Autoform_edit', {
       id: 'af.delegation.update',
       collection: Delegations,
@@ -137,7 +137,7 @@ AutoForm.addModalHooks('af.delegation.insert');
 AutoForm.addModalHooks('af.delegation.update');
 AutoForm.addHooks('af.delegation.insert', {
   formToDoc(doc) {
-    if (!doc.sourceUserId) doc.sourceUserId = Meteor.userId();
+    if (!doc.sourcePersonId) doc.sourcePersonId = Meteor.userId();
     return doc;
   },
 });

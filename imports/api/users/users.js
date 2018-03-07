@@ -154,8 +154,8 @@ Meteor.users.helpers({
   totalDelegatedToMeUnits(communityId) {
     let total = 0;
     // TODO: needs traversing calculation
-    Delegations.find({ targetUserId: this._id }).forEach(function addUpUnits(d) {
-      const sourceUser = Meteor.users.findOne(d.sourceUserId);
+    Delegations.find({ targetPersonId: this._id }).forEach(function addUpUnits(d) {
+      const sourceUser = Meteor.users.findOne(d.sourcePersonId);
       total += sourceUser.votingUnits();
     });
     return total;

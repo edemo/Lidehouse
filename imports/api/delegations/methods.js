@@ -5,21 +5,26 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Delegations } from './delegations.js';
 
+// User can only delegate to those who allow incoming delegations
+function checkTargetUserAllowsDelegatingTo(targetPersonId, doc) {
+  const targetUser = Meteor.users.findOne(targetPersonId);
+  if (!targetUser) return;  // If user is not a registered user, then he allows delegation. His signature will be on the paper delegation form.
+  if (!targetUser.settings.delegatee) {
+    throw new Meteor.Error('err_otherPartyNotAllowed', 'Other party not allowed this activity',
+      `Method: delegations, doc: {${doc}}`);
+  }
+}
+
 export const insert = new ValidatedMethod({
   name: 'delegations.insert',
   validate: Delegations.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    // Normal user can only delegate his own votes, but special permission allows for others' as well
-    if (this.userId !== doc.sourceUserId) {
+    if (this.userId !== doc.sourcePersonId) {
+      // Normal user can only delegate his own votes, but special permission allows for others' as well
       checkPermissions(this.userId, 'delegations.forOthers', doc.communityId);
     }
-    // User can only delegate to those who allow incoming delegations
-    const targetUser = Meteor.users.findOne(doc.targetUserId);
-    if (!targetUser.settings.delegatee) {
-      throw new Meteor.Error('err_otherPartyNotAllowed', 'Other party not allowed this activity',
-        `Method: delegations.insert, doc: {${doc}}`);
-    }
+    checkTargetUserAllowsDelegatingTo(doc.targetPersonId, doc);
 
     return Delegations.insert(doc);
   },
@@ -34,17 +39,12 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Delegations, _id);
-    checkModifier(doc, modifier, ['targetUserId', 'scope', 'scopeObjectId']);
-    // Normal user can only delegate his own votes, but special permission allows for others' as well
-    if (this.userId !== doc.sourceUserId) {
+    checkModifier(doc, modifier, ['targetPersonId', 'scope', 'scopeObjectId']);
+    if (this.userId !== doc.sourcePersonId) {
+      // Normal user can only delegate his own votes, but special permission allows for others' as well
       checkPermissions(this.userId, 'delegations.forOthers', doc.communityId);
     }
-    // User can only delegate to those who allow incoming delegations
-    const targetUser = Meteor.users.findOne(modifier.$set.targetUserId);
-    if (!targetUser.settings.delegatee) {
-      throw new Meteor.Error('err_otherPartyNotAllowed', 'Other party not allowed this activity',
-        `Method: delegations.update, doc: {${doc}}`);
-    }
+    checkTargetUserAllowsDelegatingTo(modifier.$set.targetPersonId, doc);
 
     Delegations.update({ _id }, modifier);
   },
@@ -58,8 +58,8 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Delegations, _id);
-    // User can only remove delegations that delegetes from him, or delegates to him., unless special permissions
-    if (this.userId !== doc.sourceUserId && this.userId !== doc.targetUserId) {
+    if (this.userId !== doc.sourcePersonId && this.userId !== doc.targetPersonId) {
+      // User can only remove delegations that delegetes from him, or delegates to him, unless special permissions
       checkPermissions(this.userId, 'delegations.forOthers', doc.communityId);
     }
 
@@ -76,7 +76,7 @@ export const allow = new ValidatedMethod({
   run({ value }) {
     const userId = this.userId;
     if (value === false) {
-      Delegations.remove({ targetUserId: userId });
+      Delegations.remove({ targetPersonId: userId });
     }
     Meteor.users.update(userId, { $set: { 'settings.delegatee': value } });
   },

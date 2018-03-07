@@ -102,10 +102,10 @@ Topics.helpers({
           participation.units += ownership.votingUnits();
           return true;
         }
-        const delegations = Delegations.find({ sourceUserId: voterId, scope: 'community', objectId: ownership.communityId });
+        const delegations = Delegations.find({ sourcePersonId: voterId, scope: 'community', objectId: ownership.communityId });
         for (const delegation of delegations.fetch()) {
-          votePath.push(delegation.targetUserId);
-          if (getVoteResult(delegation.targetUserId)) return true;
+          votePath.push(delegation.targetPersonId);
+          if (getVoteResult(delegation.targetPersonId)) return true;
           votePath.pop();
         }
         return false;

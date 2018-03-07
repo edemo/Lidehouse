@@ -1052,8 +1052,8 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   // votes?  
   Topics.remove({ 'participantIds.$': userId });
   Comments.remove({ userId });
-  Delegations.remove({ sourceUserId: userId });
-  Delegations.remove({ targetUserId: userId });
+  Delegations.remove({ sourcePersonId: userId });
+  Delegations.remove({ targetPersonId: userId });
   Memberships.remove({ parcelId }); // removing added benefactors as well
   Parcels.remove({ _id: parcelId });
   const currentTotalunits = Communities.findOne({ _id: communityId }).totalunits;
@@ -1072,7 +1072,7 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
 }
 
 Meteor.methods({
-  createDemoUserWithParcel: function() {
+  createDemoUserWithParcel() {
     const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } },
       { sort: { createdAt: -1 } }).fetch();
     let counter = 1;
@@ -1096,7 +1096,7 @@ Meteor.methods({
     const totalunits = demoHouse.totalunits;
     if (demoUsersList.length >= 10) {
       Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
-    };
+    }
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
       serial: 14 + counter,
@@ -1107,7 +1107,7 @@ Meteor.methods({
       lot: '4532/8/A/' + (14 + counter),
       area: 25,
     });
-    Memberships.insert({ 
+    Memberships.insert({
       communityId: demoCommunityId,
       userId: demoUserId,
       role: 'owner',
@@ -1117,8 +1117,8 @@ Meteor.methods({
     PayAccounts.update({
       communityId: demoCommunityId,
       name: 'Könyvelés helye',
-      }, {
-        $push: { 'children.0.children.1.children': { name: (14 + counter) } },
+    }, {
+      $push: { 'children.0.children.1.children': { name: (14 + counter) } },
     });
 
     const fillingManagerId = Meteor.users.findOne({ 'emails.0.address': 'filling.manager@demo.hu' })._id;
@@ -1133,7 +1133,7 @@ Meteor.methods({
         'Könyvelés helye': (14 + counter).toString(),
       },
     });
-    for (m = 1; m < 12; m++) {
+    for (let m = 1; m < 12; m++) {
       Payments.insert({
         communityId: demoCommunityId,
         phase: 'done',
@@ -1147,11 +1147,10 @@ Meteor.methods({
       });
     }
 
-    Meteor.setTimeout(function() {
+    Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
-      },
-      moment.duration(30, 'minutes').asMilliseconds());
+    }, moment.duration(30, 'minutes').asMilliseconds());
     const email = Meteor.users.findOne({ _id: demoUserId }).emails[0].address;
     return email;
   },
-})
+});

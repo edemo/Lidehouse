@@ -82,11 +82,19 @@ Memberships.schema = new SimpleSchema([{
 // Küldjünk egy meghívót a címre?
 
 Memberships.helpers({
-  hasVerifiedIdCard() {
+  hasPerson() {
+    return !!(this.userId || this.userEmail || this.idCard);
+  },
+  hasVerifiedPerson() {
     return !!this.idCard;
   },
   hasUser() {
     return !!this.userId;
+  },
+  personId() {
+    if (this.userId) return this.userId;
+    if (this.idCard) return this.idCard.identifier;
+    return undefined;
   },
   user() {
     if (this.userId) return Meteor.users.findOne(this.userId);
@@ -108,7 +116,7 @@ Memberships.helpers({
     if (this.idCard) return this.idCard.identifier;
     if (this.userEmail) return this.userEmail;
     return 'should never get here';
-  },  
+  },
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);

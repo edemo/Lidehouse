@@ -109,11 +109,11 @@
     }
   },
   "schemaDelegations": {
-    "sourceUserId": {
+    "sourcePersonId": {
       "label": "Delegator",
       "placeholder": "(eg. Mike75)"
     },
-    "targetUserId": {
+    "targetPersonId": {
       "label": "Delegatee",
       "placeholder": "(eg. Mike75)"
     },

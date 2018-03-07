@@ -2,19 +2,31 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+
+import { debugAssert } from '/imports/utils/assert.js';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
+import { __ } from '/imports/localization/i18n.js';
+import { autoformOptions } from '/imports/utils/autoform.js';
+
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { debugAssert } from '/imports/utils/assert.js';
-import { Factory } from 'meteor/dburles:factory';
-import faker from 'faker';
-import { autoformOptions, chooseUser } from '/imports/utils/autoform.js';
-import { __ } from '/imports/localization/i18n.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export const Delegations = new Mongo.Collection('delegations');
 
 Delegations.scopeValues = ['general', 'community', 'agenda', 'topic'];
+
+export const choosePerson = {
+  options() {
+    const memberships = Memberships.find().fetch();
+    return memberships.map(function option(m) {
+      return { label: m.displayName(), value: m.personId() };
+    });
+  },
+};
 
 let chooseScopeObject = {}; // on server side, we can't import Session or AutoForm (client side packages)
 if (Meteor.isClient) {
@@ -51,9 +63,17 @@ function communityIdAutoValue() {
   return undefined;
 }
 
+/*
+const PersonIdSchema = new SimpleSchema({
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
+  identifier: { type: String, optional: true },
+});
+*/
+
 Delegations.schema = new SimpleSchema({
-  sourceUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseUser },
-  targetUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseUser },
+  // Either a registered user's userId or a non-registered user's idCard.identifier
+  sourcePersonId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: choosePerson },
+  targetPersonId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: choosePerson },
   scope: { type: String, allowedValues: Delegations.scopeValues, autoform: autoformOptions(Delegations.scopeValues, 'schemaDelegations.scope.') },
   scopeObjectId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: chooseScopeObject },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { omit: true } },
@@ -62,6 +82,25 @@ Delegations.schema = new SimpleSchema({
 Delegations.renderScopeObject = function (o) {
   return o ? (o.name || o.title) : '---';
 };
+
+export class Person {
+  // A personId is either a userId (for registered users) or an idCard identifier (for non-registered users)
+  constructor(personId) {
+    this.id = personId;
+    const u = Meteor.users.findOne(personId);
+    if (u) this.user = u;
+    const m = Memberships.findOne({ 'idCard.identifier': personId });
+    if (m) this.idCard = m.idCard;
+  }
+  displayName() {
+    if (this.idCard) return this.idCard.name;
+    if (this.user) return this.user.displayName();
+    return '---';
+  }
+  toString() {
+    return this.displayName();
+  }
+}
 
 Delegations.helpers({
   scopeObject() {
@@ -72,11 +111,11 @@ Delegations.helpers({
     debugAssert(this.scopeObjectId === 'none', 'General scope should not have a corresponding object');
     return undefined;
   },
-  sourceUser() {
-    return Meteor.users.findOne(this.sourceUserId);
+  sourcePerson() {
+    return new Person(this.sourcePersonId);
   },
-  targetUser() {
-    return Meteor.users.findOne(this.targetUserId);
+  targetPerson() {
+    return new Person(this.targetPersonId);
   },
 });
 

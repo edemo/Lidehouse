@@ -109,11 +109,11 @@
     }
   },
   "schemaDelegations": {
-    "sourceUserId": {
+    "sourcePersonId": {
       "label": "Meghatalmazó",
       "placeholder": "(pl. Miki75)"
     },
-    "targetUserId": {
+    "targetPersonId": {
       "label": "Meghatalmazott",
       "placeholder": "(pl. Miki75)"
     },

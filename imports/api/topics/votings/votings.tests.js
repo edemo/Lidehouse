@@ -222,7 +222,7 @@ if (Meteor.isServer) {
         // New delegation 4 => 3 (delegatee has not voted yet)
         const delegationId = insertDelegation._execute(
           { userId: Fixture.dummyUsers[4] },
-          { sourceUserId: Fixture.dummyUsers[4], targetUserId: Fixture.dummyUsers[3], scope: 'community', objectId: Fixture.demoCommunityId }
+          { sourcePersonId: Fixture.dummyUsers[4], targetPersonId: Fixture.dummyUsers[3], scope: 'community', objectId: Fixture.demoCommunityId }
         );
         assertsAfterSecondVote();
 

@@ -4,8 +4,8 @@ import { Delegations } from '/imports/api/delegations/delegations.js';
 
 export function delegationColumns() {
   return [
-    { data: 'sourceUser()', title: __('schemaDelegations.sourceUserId.label') },
-    { data: 'targetUser()', title: __('schemaDelegations.targetUserId.label') },
+    { data: 'sourcePerson().toString()', title: __('schemaDelegations.sourcePersonId.label') },
+    { data: 'targetPerson().toString()', title: __('schemaDelegations.targetPersonId.label') },
     { data: 'scope', title: __('schemaDelegations.scope.label'), render: Render.translateWithScope('schemaDelegations.scope') },
     { data: 'scopeObject()', title: __('schemaDelegations.scopeObjectId.label'), render: Delegations.renderScopeObject },
     { data: '_id', render: Render.buttonEdit },
@@ -15,7 +15,7 @@ export function delegationColumns() {
 
 export function delegationFromMeColumns() {
   return [
-    { data: 'targetUser()', title: __('schemaDelegations.targetUserId.label') },
+    { data: 'targetPerson()', title: __('schemaDelegations.targetPersonId.label') },
     { data: 'scope', title: __('schemaDelegations.scope.label'), render: Render.translateWithScope('schemaDelegations.scope') },
     { data: 'scopeObject()', title: __('schemaDelegations.scopeObjectId.label'), render: Delegations.renderScopeObject },
     { data: '_id', render: Render.buttonEdit },
@@ -25,7 +25,7 @@ export function delegationFromMeColumns() {
 
 export function delegationToMeColumns() {
   return [
-    { data: 'sourceUser()', title: __('schemaDelegations.sourceUserId.label') },
+    { data: 'sourcePerson()', title: __('schemaDelegations.sourcePersonId.label') },
     { data: 'scope', title: __('schemaDelegations.scope.label'), render: Render.translateWithScope('schemaDelegations.scope') },
     { data: 'scopeObject()', title: __('schemaDelegations.scopeObjectId.label'), render: Delegations.renderScopeObject },
     { data: '_id', render: Render.buttonRemove },
