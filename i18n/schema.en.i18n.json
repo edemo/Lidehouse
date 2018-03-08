@@ -59,36 +59,41 @@
     "role": {
       "label": "Role"
     },
-    "userId": {
-      "label": "User (from registered users)"
-    },
-    "userEmail": {
-      "label": "User's email address (if not registered)",
-      "placeholder": "(eg. jsmith45@dmail.com)"
-    },
-    "idCard": {
-      "label" : "Verified identification",
-      "type": {
-        "label": "Entity type"
+    "person": {
+      "natural": "natural person",
+      "legal": "legal entity",
+      "label": "User",
+      "userId": {
+        "label": "Select a user (from the registered users)"
       },
-      "name": {
-        "label": "Name",
-        "placeholder": "(eg. John Smith or ACME Inc.)"
+      "userEmail": {
+        "label": "User's email address (if not yet registered)",
+        "placeholder": "(eg. jsmith45@dmail.com)"
       },
-      "address": {
-        "label": "Official address",
-        "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
-      },
-      "identifier": {
-        "label": "Official identifier",
-        "placeholder": "(id card number or company registration number)"
-      },
-      "mothersName": {
-        "label": "Mother's maiden name",
-        "placeholder": "(only for person)"
-      },
-      "dob": {
-        "label": "Date of birth"
+      "idCard": {
+        "label" : "User's verified data",
+        "type": {
+          "label": "Entity type"
+        },
+        "name": {
+          "label": "Name",
+          "placeholder": "(eg. John Smith or ACME Inc.)"
+        },
+        "address": {
+          "label": "Official address",
+          "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
+        },
+        "identifier": {
+          "label": "Official identifier",
+          "placeholder": "(id card number or company registration number)"
+        },
+        "mothersName": {
+          "label": "Mother's maiden name",
+          "placeholder": "(only for person)"
+        },
+        "dob": {
+          "label": "Date of birth"
+        }
       }
     },
     "ownership": {

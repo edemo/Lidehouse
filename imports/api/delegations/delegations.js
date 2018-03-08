@@ -84,10 +84,10 @@ Delegations.helpers({
     return undefined;
   },
   sourcePerson() {
-    return new Person(this.sourcePersonId);
+    return Person.constructFromId(this.sourcePersonId);
   },
   targetPerson() {
-    return new Person(this.targetPersonId);
+    return Person.constructFromId(this.targetPersonId);
   },
 });
 

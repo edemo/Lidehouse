@@ -145,7 +145,7 @@ Template.Custom_body.helpers({
     return activeCommunity;
   },
   displayMemberships(communityId) {
-    return Memberships.find({ communityId, userId: Meteor.userId() }).fetch().toString();
+    return Memberships.find({ communityId, 'person.userId': Meteor.userId() }).fetch().toString();
   },
   countNotifications(category) {
     const communityId = Session.get('activeCommunityId');

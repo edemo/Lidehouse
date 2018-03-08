@@ -14,7 +14,7 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Roles } from '/imports/api/permissions/roles.js';
-import { PersonSchema } from '/imports/api/users/person.js';
+import { Person, PersonSchema } from '/imports/api/users/person.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -33,7 +33,7 @@ const BenefactorshipSchema = new SimpleSchema({
 });
 
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection
-Memberships.schema = new SimpleSchema([{
+Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
@@ -44,11 +44,12 @@ Memberships.schema = new SimpleSchema([{
       },
     },
   },
+  person: { type: PersonSchema },
   // TODO should be conditional on role === 'owner'
   ownership: { type: OwnershipSchema, optional: true },
   // TODO should be conditional on role === 'benefactor'
   benefactorship: { type: BenefactorshipSchema, optional: true },
-}, PersonSchema]);
+});
 
 // Statuses of members:
 // 0. Email not given
@@ -65,39 +66,11 @@ Memberships.schema = new SimpleSchema([{
 
 Memberships.helpers({
   hasPerson() {
-    return !!(this.userId || this.userEmail || this.idCard);
+    return !!(this.person);
   },
-  hasVerifiedPerson() {
-    return !!this.idCard;
-  },
-  hasUser() {
-    return !!this.userId;
-  },
-  personId() {
-    if (this.userId) return this.userId;
-    if (this.idCard) return this.idCard.identifier;
-    return undefined;
-  },
-  user() {
-    if (this.userId) return Meteor.users.findOne(this.userId);
-    return undefined;
-  },
-  userEmailAddress() {
-    if (this.userId) return this.user().emails[0].address;
-    if (this.userEmail) return this.userEmail;
-    return undefined;
-  },
-  displayName() {
-    if (this.idCard) return this.idCard.name;
-    if (this.userId) return this.user().displayName();
-    if (this.userEmail) return this.userEmail;
-    return 'should never get here';
-  },
-  identifier() {
-    if (this.userId) return this.userId;
-    if (this.idCard) return this.idCard.identifier;
-    if (this.userEmail) return this.userEmail;
-    return 'should never get here';
+  Person() {
+    debugAssert(this.person);
+    return new Person(this.person);
   },
   community() {
     const community = Communities.findOne(this.communityId);
@@ -167,9 +140,9 @@ Memberships.deny({
 });
 
 Memberships.modifiableFields = [
-  'userEmail',
-  'userId',
   'role',
+  'person.userEmail',
+  'person.userId',
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',

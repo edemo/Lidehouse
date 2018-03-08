@@ -338,7 +338,7 @@ export function insertDemoFixture(lang) {
 
   // ===== Votes =====
 
-  const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', userId: { $exists: true } }).fetch();
+  const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', 'person.userId': { $exists: true } }).fetch();
 
   const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,

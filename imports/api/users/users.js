@@ -112,13 +112,13 @@ Meteor.users.helpers({
     // TODO: A verification email has to be sent to the user now
   },
   memberships() {
-    return Memberships.find({ userId: this._id });
+    return Memberships.find({ 'person.userId': this._id });
   },
   ownerships(communityId) {
-    return Memberships.find({ userId: this._id, communityId, role: 'owner' });
+    return Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' });
   },
   roles(communityId) {
-    return Memberships.find({ userId: this._id, communityId }).fetch().map(m => m.role);
+    return Memberships.find({ 'person.userId': this._id, communityId }).fetch().map(m => m.role);
   },
   communities() {
     const memberships = this.memberships().fetch();
@@ -128,11 +128,11 @@ Meteor.users.helpers({
     return communities;
   },
   isInCommunity(communityId) {
-    return !!Memberships.findOne({ userId: this._id, communityId });
+    return !!Memberships.findOne({ 'person.userId': this._id, communityId });
   },
   votingUnits(communityId) {
     let sum = 0;
-    Memberships.find({ userId: this._id, communityId, role: 'owner' }).forEach(m => (sum += m.votingUnits()));
+    Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
   hasPermission(permissionName, communityId, object) {

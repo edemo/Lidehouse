@@ -24,6 +24,7 @@
 </template>
 
 <template name="Msg_person">
+  {{#let user=Person/user}}
   {{#if user}}
   <!-- normal test item (each in people) -->
   <div class="row no-margin person {{role}} {{selectedClass}}">
@@ -55,4 +56,5 @@
     </div>
   </div>
   {{/if}}
+  {{/let}}
 </template>

@@ -25,8 +25,8 @@ function checkUserDataConsistency(membership) {
 // from this point the user can change her email address, w/o breaking the association
 export function connectUser(membershipId, userId) {
   const modifier = {
-    $set: { userId },
-    $unset: { userEmail: '' },      // !! break the email association - the userId is the new association
+    $set: { 'person.userId': userId },
+    $unset: { 'person.userEmail': '' },      // !! break the email association - the userId is the new association
   };
   Memberships.update(membershipId, modifier);
 }
@@ -72,7 +72,7 @@ export const connectMe = new ValidatedMethod({
   run() {
     const email = Meteor.users.findOne(this.userId).emails[0].address;
     const userId = this.userId;
-    Memberships.find({ userEmail: email }).forEach((membership) => {
+    Memberships.find({ 'person.userEmail': email }).forEach((membership) => {
       connectUser(membership._id, userId);
     });
   },

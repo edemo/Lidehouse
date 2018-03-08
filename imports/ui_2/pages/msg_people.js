@@ -14,7 +14,7 @@ import './messenger.html';
 Template.Msg_people.onCreated(function onCreated() {
   const communityId = Session.get('activeCommunityId');
   const manager = Memberships.findOne({ communityId, role: 'manager' });
-  if (manager) Session.set('messengerPersonId', manager.userId);
+  if (manager) Session.set('messengerPersonId', manager.person.userId);
 });
 
 Template.Msg_people.onRendered(function onRendered() {
@@ -23,14 +23,14 @@ Template.Msg_people.onRendered(function onRendered() {
 Template.Msg_people.helpers({
   managers() {
     const communityId = Session.get('activeCommunityId');
-    return Memberships.find({ communityId, userId: { $not: Meteor.userId() }, role: 'manager' });
+    return Memberships.find({ communityId, 'person.userId': { $not: Meteor.userId() }, role: 'manager' });
   },
   members() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
-    const nonManagers = Memberships.find({ communityId, userId: { $not: Meteor.userId() }, role: { $not: 'manager' } });
+    const nonManagers = Memberships.find({ communityId, 'person.userId': { $exists: true, $not: Meteor.userId() }, role: { $not: 'manager' } });
     if (personSearch) {
-      return nonManagers.fetch().filter(m => m.user().fullName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
+      return nonManagers.fetch().filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }
     return nonManagers;
   },
@@ -76,18 +76,18 @@ Template.Msg_person.helpers({
     return params;
   },
   hasUnreadMessages() {
-    const room = Topics.messengerRoom(this.userId, Meteor.userId());
+    const room = Topics.messengerRoom(this.person.userId, Meteor.userId());
     if (!room) return false;
     return room.unseenCommentsBy(Meteor.userId()) > 0;
   },
   unreadMessagesCount() {
-    const room = Topics.messengerRoom(this.userId, Meteor.userId());
+    const room = Topics.messengerRoom(this.person.userId, Meteor.userId());
     return room.unseenCommentsBy(Meteor.userId());
   },
 });
 
 Template.Msg_person.events({
   'click .person'(event, instance) {
-    Session.set('messengerPersonId', instance.data.userId);
+    Session.set('messengerPersonId', instance.data.person.userId);
   },
 });

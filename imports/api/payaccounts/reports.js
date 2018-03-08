@@ -82,7 +82,7 @@ export const Reports = {
       name: 'Albetéteim', label: 'Összes albetét',
       children: [],
     };
-    Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' })
+    Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' })
       .map(m => myParcels.children.push({ name: m.parcel().serial.toString() /* + '. ' + __('parcel')*/ }));
     expandFrom1To3Levels(myParcels);
 

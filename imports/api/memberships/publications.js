@@ -32,7 +32,7 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
     children: [
       {
         find(membership) {
-          return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
+          return Meteor.users.find({ _id: membership.person.userId }, { fields: Meteor.users.publicFields });
         },
       }, {
         find(membership) {
@@ -56,7 +56,7 @@ Meteor.publishComposite('memberships.ofUser', function communitiesOfUser(params)
 
   return {
     find() {
-      return Memberships.find({ $or: [{ userId }, { userEmail }] });
+      return Memberships.find({ $or: [{ 'person.userId': userId }, { 'person.userEmail': userEmail }] });
     },
 
     children: [{

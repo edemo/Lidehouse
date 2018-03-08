@@ -8,7 +8,7 @@ Accounts.emailTemplates.from = 'Honline <noreply@honline.net>';
 Accounts.emailTemplates.enrollAccount = {
   subject(user) { return 'Enrollment to Honline'; },
   text(user, url) {
-    const membership = Memberships.findOne({ userEmail: user.emails[0].address })
+    const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
     const community = membership.community();
     const adminEmail = community.admin().userEmailAddress();
 
