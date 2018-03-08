@@ -4,6 +4,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
 
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
@@ -56,8 +57,9 @@ Topics.helpers({
     if (!this.vote) return undefined;
     return (this.vote.type === type);
   },
-  memberCount() {
-    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
+  eligibleVoterCount() {
+//    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
+    return Parcels.find({ communityId: this.communityId }).count();
   },
   votedCount() {
     return this.voteParticipation.count;
