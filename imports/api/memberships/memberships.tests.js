@@ -63,28 +63,28 @@ if (Meteor.isServer) {
         ownership1Id = Memberships.insert({
           communityId: Fixture.demoCommunityId,
           parcelId,
-          userId: Fixture.dummyUsers[1],
+          person: { userId: Fixture.dummyUsers[1] },
           role: 'owner',
           ownership: { share: new Fraction(1, 4), representor: false },
         });
         ownership2Id = Memberships.insert({
           communityId: Fixture.demoCommunityId,
           parcelId,
-          userId: Fixture.dummyUsers[2],
+          person: { userId: Fixture.dummyUsers[2] },
           role: 'owner',
           ownership: { share: new Fraction(1, 4), representor: true },
         });
         ownership3Id = Memberships.insert({
           communityId: Fixture.demoCommunityId,
           parcelId,
-          userId: Fixture.dummyUsers[3],
+          person: { userId: Fixture.dummyUsers[3] },
           role: 'owner',
           ownership: { share: new Fraction(1, 4) },
         });
         benefactorship1Id = Memberships.insert({
           communityId: Fixture.demoCommunityId,
           parcelId,
-          userId: Fixture.dummyUsers[1],
+          person: { userId: Fixture.dummyUsers[1] },
           role: 'benefactor',
           benefactorship: { type: 'favor' },
         });
@@ -127,7 +127,7 @@ if (Meteor.isServer) {
       const createMembership = function (newrole) {
         const newMembership = {
           communityId: Fixture.demoCommunityId,
-          userId: Fixture.demoUserId,
+          person: { userId: Fixture.demoUserId },
           role: newrole,
         };
         if (newrole === 'owner' || newrole === 'benefactor') {
@@ -238,7 +238,7 @@ if (Meteor.isServer) {
         const createMembershipWithShare = function (parcelId, share) {
           const newMembership = {
             communityId: Fixture.demoCommunityId,
-            userId: Fixture.demoUserId,
+            person: { userId: Fixture.demoUserId },
             role: 'owner',
             parcelId,
             ownership: { share },

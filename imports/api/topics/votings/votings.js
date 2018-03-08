@@ -105,7 +105,7 @@ Topics.helpers({
           participation.units += ownership.votingUnits();
           return true;
         }
-        const delegations = Delegations.find({ sourcePersonId: voterId, scope: 'community', objectId: ownership.communityId });
+        const delegations = Delegations.find({ sourcePersonId: voterId, scope: 'community', scopeObjectId: ownership.communityId });
         for (const delegation of delegations.fetch()) {
           votePath.push(delegation.targetPersonId);
           if (getVoteResult(delegation.targetPersonId)) return true;

@@ -29,6 +29,8 @@ if (Meteor.isServer) {
       text: 'Choose!',
       vote: {
         closesAt: moment().add(14, 'day').toDate(),
+        procedure: 'online',
+        effect: 'legal',
         type,
         choices: ['white', 'red', 'yellow', 'grey'],
       },
@@ -222,12 +224,13 @@ if (Meteor.isServer) {
         // New delegation 4 => 3 (delegatee has not voted yet)
         const delegationId = insertDelegation._execute(
           { userId: Fixture.dummyUsers[4] },
-          { sourcePersonId: Fixture.dummyUsers[4], targetPersonId: Fixture.dummyUsers[3], scope: 'community', objectId: Fixture.demoCommunityId }
+          { sourcePersonId: Fixture.dummyUsers[4], targetPersonId: Fixture.dummyUsers[3], scope: 'community', scopeObjectId: Fixture.demoCommunityId }
         );
         assertsAfterSecondVote();
 
         // Delegatee votes
         castVote._execute({ userId: Fixture.dummyUsers[3] }, { topicId: votingId, castedVote: [0] });
+        console.log(Topics.findOne(votingId).voteResults);
         assertsAfterIndirectVote(0);
 
         // Delegatee changes vote

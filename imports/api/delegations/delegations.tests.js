@@ -18,7 +18,7 @@ if (Meteor.isServer) {
 
   const createDelegation = function (sourceId, targetId) {
     insertDelegation._execute({ userId: sourceId },
-      { sourcePersonId: sourceId, targetPersonId: targetId, scope: 'community', objectId: Fixture.demoCommunityId }
+      { sourcePersonId: sourceId, targetPersonId: targetId, scope: 'community', scopeObjectId: Fixture.demoCommunityId }
     );
   }
 
@@ -67,7 +67,7 @@ if (Meteor.isServer) {
 
       it('can insert delegations', function (done) {
         delegationId = insertDelegation._execute({ userId: Fixture.demoUserId },
-          { sourcePersonId: Fixture.demoUserId, targetPersonId: Fixture.dummyUsers[0], scope: 'community', objectId: Fixture.demoCommunityId }
+          { sourcePersonId: Fixture.demoUserId, targetPersonId: Fixture.dummyUsers[0], scope: 'community', scopeObjectId: Fixture.demoCommunityId }
         );
         const delegation = Delegations.findOne(delegationId);
         chai.assert.isDefined(delegation);
@@ -143,7 +143,7 @@ if (Meteor.isServer) {
       it('only allows to insert the user\'s own outbound delegations', function (done) {
         chai.assert.throws(() => {
           insertDelegation._execute({ userId: Fixture.demoUserId },
-            { sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.demoUserId, scope: 'community', objectId: Fixture.demoCommunityId }
+            { sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.demoUserId, scope: 'community', scopeObjectId: Fixture.demoCommunityId }
           );
         });
         done();
