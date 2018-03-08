@@ -86,7 +86,8 @@ Topics.helpers({
     const data = this;
     const voterships = Memberships.find({ communityId: this.communityId, role: 'owner' }).fetch().filter(o => o.isRepresentor());
     voterships.forEach((ownership) => {
-      const votePath = [ownership.userId];
+      const ownerId = ownership.Person().id();
+      const votePath = [ownerId];
 
       function getVoteResult(voterId) {
         const voteResult = directVotes[voterId];
@@ -97,7 +98,7 @@ Topics.helpers({
             votePath,
           };
           results[ownership.parcelId] = result;
-          indirectVotes[ownership.userId] = voteResult;
+          indirectVotes[ownerId] = voteResult;
           summary[voteResult] = summary[voteResult] || 0;
           summary[voteResult] += ownership.votingUnits();
           participation.count += 1;
@@ -113,7 +114,7 @@ Topics.helpers({
         return false;
       }
 
-      getVoteResult(ownership.userId);
+      getVoteResult(ownerId);
     });
 
     Topics.update(this._id, { $set: { voteParticipation: participation } });
@@ -174,4 +175,4 @@ Topics.publicFields.extendForUser = function extendForUser(userId, communityId) 
 //  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
   const publicFields = _.extend({}, Topics.publicFields, { voteCasts: 1, voteCastsIndirect: 1 });
   return publicFields;
-}
+};
