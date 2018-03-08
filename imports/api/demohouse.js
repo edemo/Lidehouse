@@ -1109,7 +1109,7 @@ Meteor.methods({
     });
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: demoUserId,
+      person: { userId: demoUserId },
       role: 'owner',
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) } });
