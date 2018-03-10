@@ -3,14 +3,14 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { T9n } from 'meteor/softwarerero:accounts-t9n';
-
 import { Tracker } from 'meteor/tracker';
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import 'meteor/numeral:languages';
-
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+
 import { comtype } from '/imports/comtypes/comtype.js';
+import { update as usersUpdate } from '/imports/api/users/methods.js';
 
 function getBrowserLanguage() {
   // https://stackoverflow.com/questions/31471411/how-to-set-user-language-settings-in-meteor#31471877
@@ -42,6 +42,13 @@ Meteor.startup(function setupLanguage() {
       setLanguage(user.settings.language);
     } else {
       setLanguage(getBrowserLanguage());
+      // If the user has no language setting, set the browser language for her
+      if (user) {
+        usersUpdate.call({ _id: user._id, modifier: {
+          $set: { 'settings.language': getBrowserLanguage() },
+        },
+        });
+      }
     }
   });
 
