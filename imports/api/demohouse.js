@@ -275,10 +275,10 @@ export function insertDemoHouse(lang) {
     if (role.name === 'owner') {
       return;
     } else if (role.name === 'benefactor') {
-      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name,
+      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name,
         parcelId: demoParcels[10], benefactorship: { type: 'rental' } });
     } else {
-      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name });
+      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name });
     }
   });
 
@@ -307,23 +307,23 @@ export function insertDemoHouse(lang) {
 
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingManagerId,
+    person: { userId: fillingManagerId },
     role: 'manager',
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingAdminId,
+    person: { userId: fillingAdminId },
     role: 'admin',
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingUsers[3],
+    person: { userId: fillingUsers[3] },
     role: 'accountant',
   });
   [0, 1, 4, 5, 6, 7, 8, 9, 10, 12].forEach((parcelNo) => {
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: fillingUsers[parcelNo],
+      person: { userId: fillingUsers[parcelNo] },
       role: 'owner',
       parcelId: demoParcels[parcelNo],
       ownership: {
@@ -333,7 +333,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingUsers[5],
+    person: { userId: fillingUsers[5] },
     role: 'owner',
     parcelId: demoParcels[11],
     ownership: {
@@ -342,7 +342,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingUsers[2],
+    person: { userId: fillingUsers[2] },
     role: 'owner',
     parcelId: demoParcels[2],
     ownership: {
@@ -352,7 +352,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingUsers[14],
+    person: { userId: fillingUsers[14] },
     role: 'owner',
     parcelId: demoParcels[2],
     ownership: {
@@ -364,12 +364,12 @@ export function insertDemoHouse(lang) {
     Memberships.insert({
       communityId: demoCommunityId,
       // no userId -- This parcel is owned by a legal entity, and the representor for them is user[]
-      idCard: {
+      person: { idCard: {
         type: 'legal',
         name: __(`demo.user.${parcelNo}.company.name`),
         address: __(`demo.user.${parcelNo}.company.address`),
         identifier: __(`demo.user.${parcelNo}.company.regno`),
-      },
+      } },
       role: 'owner',
       parcelId: demoParcels[parcelNo],
       ownership: {
@@ -378,7 +378,7 @@ export function insertDemoHouse(lang) {
     });
     Memberships.insert({
       communityId: demoCommunityId,
-      userId: fillingUsers[parcelNo],
+      person: { userId: fillingUsers[parcelNo] },
       role: 'owner',
       parcelId: demoParcels[parcelNo],
       ownership: {
@@ -390,14 +390,14 @@ export function insertDemoHouse(lang) {
   [1, 7].forEach((parcelNo) => { Memberships.insert({
     communityId: demoCommunityId,
     // no userId -- This person is benefactor of parcel[], but she is not a registered user of the app
-    idCard: {
-      type: 'person',
+    person: { idCard: {
+      type: 'natural',
       name: __(`demo.user.${parcelNo}.benefactor.name`),
       address: __(`demo.user.${parcelNo}.benefactor.address`),
       identifier: `${parcelNo}87201NA`,
       dob: new Date(1965, `${parcelNo}`, 5),
       mothersName: __(`demo.user.${parcelNo}.benefactor.mothersName`),
-    },
+    } },
     role: 'benefactor',
     parcelId: demoParcels[parcelNo],
     benefactorship: {
@@ -407,36 +407,36 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingUsers[11],
+    person: { userId: fillingUsers[11] },
     role: 'benefactor',
-    parcelId: demoParcels[4], 
+    parcelId: demoParcels[4],
     benefactorship: {
       type: 'rental',
     },
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingUsers[15],
+    person: { userId: fillingUsers[15] },
     role: 'benefactor',
-    parcelId: demoParcels[5], 
+    parcelId: demoParcels[5],
     benefactorship: {
       type: 'favor',
     },
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingUsers[16],
+    person: { userId: fillingUsers[16] },
     role: 'benefactor',
-    parcelId: demoParcels[8], 
+    parcelId: demoParcels[8],
     benefactorship: {
       type: 'favor',
     },
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: fillingUsers[17],
+    person: { userId: fillingUsers[17] },
     role: 'benefactor',
-    parcelId: demoParcels[9], 
+    parcelId: demoParcels[9],
     benefactorship: {
       type: 'rental',
     },
@@ -509,7 +509,7 @@ export function insertDemoHouse(lang) {
 //    topicIds: [voteTopic0, voteTopic1, voteTopic2],
   });
 
-  const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', userId: { $exists: true } }).fetch();
+  const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', 'person.userId': { $exists: true } }).fetch();
 
   const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,
@@ -526,18 +526,18 @@ export function insertDemoHouse(lang) {
     },
   });
 
-  castVote._execute({ userId: ownerships[0].userId }, { topicId: voteTopic0, castedVote: [1] }); // no
-  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic0, castedVote: [0] }); // yes
-  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic0, castedVote: [2] }); // abstain
-  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic0, castedVote: [0] });
-  castVote._execute({ userId: ownerships[4].userId }, { topicId: voteTopic0, castedVote: [0] });
-  castVote._execute({ userId: ownerships[5].userId }, { topicId: voteTopic0, castedVote: [0] });
-  castVote._execute({ userId: ownerships[6].userId }, { topicId: voteTopic0, castedVote: [2] });
-  castVote._execute({ userId: ownerships[7].userId }, { topicId: voteTopic0, castedVote: [0] });
-  castVote._execute({ userId: ownerships[8].userId }, { topicId: voteTopic0, castedVote: [0] });
-  castVote._execute({ userId: ownerships[9].userId }, { topicId: voteTopic0, castedVote: [1] });
-  castVote._execute({ userId: ownerships[10].userId }, { topicId: voteTopic0, castedVote: [0] });
-  castVote._execute({ userId: ownerships[11].userId }, { topicId: voteTopic0, castedVote: [0] });
+  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic0, castedVote: [1] }); // no
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic0, castedVote: [0] }); // yes
+  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic0, castedVote: [2] }); // abstain
+  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic0, castedVote: [0] });
+  castVote._execute({ userId: ownerships[4].person.userId }, { topicId: voteTopic0, castedVote: [0] });
+  castVote._execute({ userId: ownerships[5].person.userId }, { topicId: voteTopic0, castedVote: [0] });
+  castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic0, castedVote: [2] });
+  castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic0, castedVote: [0] });
+  castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic0, castedVote: [0] });
+  castVote._execute({ userId: ownerships[9].person.userId }, { topicId: voteTopic0, castedVote: [1] });
+  castVote._execute({ userId: ownerships[10].person.userId }, { topicId: voteTopic0, castedVote: [0] });
+  castVote._execute({ userId: ownerships[11].person.userId }, { topicId: voteTopic0, castedVote: [0] });
 
   closeVote._execute({ userId: fillingManagerId }, { topicId: voteTopic0 }); // This vote is already closed
 
@@ -579,11 +579,11 @@ export function insertDemoHouse(lang) {
     },
   });
 
-  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
-  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
-  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
-  castVote._execute({ userId: ownerships[6].userId }, { topicId: voteTopic2, castedVote: [2, 1, 3, 4] });
-  castVote._execute({ userId: ownerships[7].userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
+  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
+  castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic2, castedVote: [2, 1, 3, 4] });
+  castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
 
   ['0', '1'].forEach(commentNo =>
     Comments.insert({
@@ -1054,8 +1054,8 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   // votes?  
   Topics.remove({ 'participantIds.$': userId });
   Comments.remove({ userId });
-  Delegations.remove({ sourceUserId: userId });
-  Delegations.remove({ targetUserId: userId });
+  Delegations.remove({ sourcePersonId: userId });
+  Delegations.remove({ targetPersonId: userId });
   Memberships.remove({ parcelId }); // removing added benefactors as well
   Parcels.remove({ _id: parcelId });
   const currentTotalunits = Communities.findOne({ _id: communityId }).totalunits;
@@ -1074,7 +1074,7 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
 }
 
 Meteor.methods({
-  createDemoUserWithParcel: function() {
+  createDemoUserWithParcel() {
     const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } },
       { sort: { createdAt: -1 } }).fetch();
     let counter = 1;
@@ -1098,7 +1098,7 @@ Meteor.methods({
     const totalunits = demoHouse.totalunits;
     if (demoUsersList.length >= 10) {
       Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
-    };
+    }
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
       serial: 14 + counter,
@@ -1109,9 +1109,9 @@ Meteor.methods({
       lot: '4532/8/A/' + (14 + counter),
       area: 25,
     });
-    Memberships.insert({ 
+    Memberships.insert({
       communityId: demoCommunityId,
-      userId: demoUserId,
+      person: { userId: demoUserId },
       role: 'owner',
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) } });
@@ -1119,8 +1119,8 @@ Meteor.methods({
     PayAccounts.update({
       communityId: demoCommunityId,
       name: 'Könyvelés helye',
-      }, {
-        $push: { 'children.0.children.1.children': { name: (14 + counter) } },
+    }, {
+      $push: { 'children.0.children.1.children': { name: (14 + counter) } },
     });
 
     const fillingManagerId = Meteor.users.findOne({ 'emails.0.address': 'filling.manager@demo.hu' })._id;
@@ -1135,7 +1135,7 @@ Meteor.methods({
         'Könyvelés helye': (14 + counter).toString(),
       },
     });
-    for (m = 1; m < 12; m++) {
+    for (let m = 1; m < 12; m++) {
       Payments.insert({
         communityId: demoCommunityId,
         phase: 'done',
@@ -1149,11 +1149,10 @@ Meteor.methods({
       });
     }
 
-    Meteor.setTimeout(function() {
+    Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
-      },
-      moment.duration(30, 'minutes').asMilliseconds());
+    }, moment.duration(30, 'minutes').asMilliseconds());
     const email = Meteor.users.findOne({ _id: demoUserId }).emails[0].address;
     return email;
   },
-})
+});

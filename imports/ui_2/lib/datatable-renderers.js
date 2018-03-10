@@ -6,6 +6,11 @@ export const Render = {
   translate(cellData, renderType, currentRow) {
     return __(cellData);
   },
+  translateWithScope(scope) {
+    return function translate(cellData, renderType, currentRow) {
+      return __(`${scope}.${cellData}`);
+    };
+  },
   formatDate(cellData, renderType, currentRow) {
     return moment(cellData).format('L');
   },

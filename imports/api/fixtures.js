@@ -130,14 +130,14 @@ export function insertDemoFixture(lang) {
       Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarGirls), 'settings.language': lang } });
     }
     if (role.name === 'owner') {
-      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name,
+      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name,
         parcelId: dummyParcels[0], ownership: { share: new Fraction(1, 10) } });
       demoUserId = userWithRoleId;
     } else if (role.name === 'benefactor') {
-      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name,
+      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name,
         parcelId: dummyParcels[0], benefactorship: { type: 'rental' } });
     } else {
-      Memberships.insert({ communityId: demoCommunityId, userId: userWithRoleId, role: role.name });
+      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name });
     }
     if (role.name === 'manager') demoManagerId = userWithRoleId;
     if (role.name === 'admin') demoAdminId = userWithRoleId;
@@ -178,17 +178,17 @@ export function insertDemoFixture(lang) {
 
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: dummyUsers[0],
+    person: { userId: dummyUsers[0] },
     role: 'manager',
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: dummyUsers[1],
+    person: { userId: dummyUsers[1] },
     role: 'admin',
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: dummyUsers[1],
+    person: { userId: dummyUsers[1] },
     role: 'owner',
     parcelId: dummyParcels[1],
     ownership: {
@@ -198,14 +198,14 @@ export function insertDemoFixture(lang) {
   Memberships.insert({
     communityId: demoCommunityId,
     // no userId -- This person is benefactor of parcel[1], but he is not a registered user of the app
-    idCard: {
-      type: 'person',
+    person: { idCard: {
+      type: 'natural',
       name: __('demo.user.1.benefactor.name'),
       address: __('demo.user.1.benefactor.address'),
       identifier: '987201NA',
       dob: new Date(1951, 1, 5),
       mothersName: __('demo.user.1.benefactor.mothersName'),
-    },
+    } },
     role: 'benefactor',
     parcelId: dummyParcels[1],
     benefactorship: {
@@ -215,12 +215,12 @@ export function insertDemoFixture(lang) {
   Memberships.insert({
     communityId: demoCommunityId,
     // no userId -- This parcel is owned by a legal entity, and the representor for them is user[2]
-    idCard: {
+    person: { idCard: {
       type: 'legal',
       name: __('demo.user.3.company.name'),
       address: __('demo.user.3.company.address'),
       identifier: 'Cg.123456-89',
-    },
+    } },
     role: 'owner',
     parcelId: dummyParcels[2],
     ownership: {
@@ -229,7 +229,7 @@ export function insertDemoFixture(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: dummyUsers[2],
+    person: { userId: dummyUsers[2] },
     role: 'owner',
     parcelId: dummyParcels[2],
     ownership: {
@@ -239,7 +239,7 @@ export function insertDemoFixture(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: dummyUsers[3],
+    person: { userId: dummyUsers[3] },
     role: 'owner',
     parcelId: dummyParcels[3],
     ownership: {
@@ -248,7 +248,7 @@ export function insertDemoFixture(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: dummyUsers[3],
+    person: { userId: dummyUsers[3] },
     role: 'owner',
     parcelId: dummyParcels[4],
     ownership: {
@@ -258,7 +258,7 @@ export function insertDemoFixture(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: dummyUsers[4],
+    person: { userId: dummyUsers[4] },
     role: 'owner',
     parcelId: dummyParcels[4],
     ownership: {
@@ -268,7 +268,7 @@ export function insertDemoFixture(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    userId: demoUserId,
+    person: { userId: demoUserId },
     role: 'owner',
     parcelId: dummyParcels[4],
     ownership: {
@@ -338,7 +338,7 @@ export function insertDemoFixture(lang) {
 
   // ===== Votes =====
 
-  const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', userId: { $exists: true } }).fetch();
+  const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', 'person.userId': { $exists: true } }).fetch();
 
   const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,
@@ -354,10 +354,10 @@ export function insertDemoFixture(lang) {
     },
   });
 
-  castVote._execute({ userId: ownerships[0].userId }, { topicId: voteTopic0, castedVote: [2] });  // no
-  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic0, castedVote: [1] });  // yes
-  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic0, castedVote: [2] });  // no
-  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
+  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic0, castedVote: [2] });  // no
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic0, castedVote: [1] });  // yes
+  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic0, castedVote: [2] });  // no
+  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
 
   closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic0 }); // This vote is already closed
 
@@ -397,9 +397,9 @@ export function insertDemoFixture(lang) {
     },
   });
 
-  castVote._execute({ userId: ownerships[1].userId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
-  castVote._execute({ userId: ownerships[2].userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
-  castVote._execute({ userId: ownerships[3].userId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
+  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
 
   ['0', '1'].forEach(commentNo =>
     Comments.insert({

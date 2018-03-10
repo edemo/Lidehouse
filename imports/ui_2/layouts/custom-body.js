@@ -83,7 +83,16 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   });
   // We subscribe to all topics in the community, so that we have access to the commentCounters
   this.autorun(() => {
-    this.subscribe('topics.inCommunity', { communityId: Session.get('activeCommunityId') });
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('topics.inCommunity', { communityId });
+    this.subscribe('agendas.inCommunity', { communityId });
+  });
+  this.autorun(() => {
+    const user = Meteor.userOrNull();
+    const communityId = Session.get('activeCommunityId');
+    if (user.hasPermission('delegations.inCommunity', communityId)) {
+      this.subscribe('delegations.inCommunity', { communityId });
+    }
   });
 });
 
@@ -136,7 +145,7 @@ Template.Custom_body.helpers({
     return activeCommunity;
   },
   displayMemberships(communityId) {
-    return Memberships.find({ communityId, userId: Meteor.userId() }).fetch().toString();
+    return Memberships.find({ communityId, 'person.userId': Meteor.userId() }).fetch().toString();
   },
   countNotifications(category) {
     const communityId = Session.get('activeCommunityId');
@@ -169,6 +178,9 @@ Template.Custom_body.helpers({
     const unapprovedMembershipCount = Memberships.find({ communityId, approved: false }).count();
     return unapprovedParcelCount + unapprovedMembershipCount;
   },
+  developerMode() {
+    return false;     // set this true to access developer features
+  },
 });
 
 Template.Custom_body.events({
@@ -176,7 +188,7 @@ Template.Custom_body.events({
     instance.state.set('menuOpen', !instance.state.get('menuOpen'));
   },
   
-  'click .demouser-autologin' () {
+  'click .demouser-autologin'() {
     Meteor.call('createDemoUserWithParcel', function (error, result) {
       if (error) {
         alert('Error');

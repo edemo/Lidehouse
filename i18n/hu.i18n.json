@@ -17,6 +17,8 @@
   "false": "nem",
   "votingShare": "Szavazati hányad",
 
+  "Not applicable": "Nem szükséges megadni",
+
   // roles
   "admin": "admin",
   "manager": "közös képviselő",
@@ -71,6 +73,7 @@
   "parcels": "albetétek",
   "'s owners": " tulajdonosai",
   "agenda": "napirend",
+  "delegation": "meghatalmazás",
   "ticket": "hibajegy",
   "tickets": "hibajegyek",
   "payment": "tranzakció",
@@ -84,9 +87,6 @@
   "comment": "hozzászólás",
   "created": "létrehozva",
   "closes": "lezárul",
-
-  "person": "magánszemély",
-  "legal": "jogi személyiség",
 
   // commands
   "view": "Megtekintés",
@@ -151,6 +151,8 @@
   "No active votes": "Jelenleg nincs aktív szavazás!",
   "Latest votes": "Korábbi szavazások",
   "Launch voting": "Szavazás indítása",
+  "Proxy voting" : "Szavazás mások nevében",
+  "Please select voters": "Válassza ki kiknek a nevében szeretne szavazatot leadni",
 
   // delegations
   "Delegations from me": "Meghatalmazásaim",
