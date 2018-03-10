@@ -79,7 +79,7 @@ AccountsTemplates.configureRoute('enrollAccount', {
   },
 });
 
-function cleanExpiredEmails() {
+export function cleanExpiredEmails() {
   const twoWeeksAgo = moment().subtract(2, 'week').toDate();
   //Meteor.users.find({ 'emails.0.verified' : false })
   Meteor.users.find({ 'services.email.verificationTokens': { $exists: true } }).forEach((user) => {
