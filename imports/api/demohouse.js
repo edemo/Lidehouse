@@ -290,12 +290,14 @@ export function insertDemoHouse(lang) {
       emails: [{ address: `fillinguser.${userNo}@demo.${com}`, verified: true }],
       profile: { lastName: __(`demo.user.${userNo}.lastName`), firstName: __(`demo.user.${userNo}.firstName`) },
       avatar: `images/avatars/avatar${userNo}.jpg`,
+      settings: { language: lang },
     }));
   }
   const fillingManagerId = Meteor.users.insert({
     emails: [{ address: `filling.manager@demo.${com}`, verified: true }],
     profile: { lastName: __('demo.user.manager.lastName'), firstName: __('demo.user.manager.firstName'), phone: '06 30 234 5678' },
     avatar: 'images/avatars/avatar20.jpg',
+    settings: { language: lang },
   });
   //  status: 'online',    status: 'standby',
   const fillingUserId = fillingUsers[5];
