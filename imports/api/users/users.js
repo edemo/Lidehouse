@@ -172,9 +172,12 @@ Meteor.users.helpers({
     const email = this.emails[0].address;
     return email.substring(0, email.indexOf('@'));
   },
+  language() {
+    return this.settings.language || 'en';
+  },
   fullName() {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
-      if (TAPi18n.getLanguage() === 'hu') {
+      if (this.language() === 'hu') {
         return this.profile.lastName + ' ' + this.profile.firstName;
       } else {
         return this.profile.firstName + ' ' + this.profile.lastName;
@@ -209,5 +212,6 @@ Meteor.users.publicFields = {
   profile: 1,
   avatar: 1,
   status: 1,
+  settings: 1,
   'emails.address': 1, // TODO: email is not public, but we now need for calculating derived username
 };
