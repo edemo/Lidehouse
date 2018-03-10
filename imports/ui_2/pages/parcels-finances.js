@@ -39,7 +39,7 @@ Template.Parcels_finances.helpers({
   paymentsTableDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
-      const myParcelIds = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
+      const myParcelIds = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
       return Payments.find({ communityId, 'accounts.Könyvelés helye': { $in: myParcelIds }, phase: 'done' }).fetch();
     }
     return getTableData;

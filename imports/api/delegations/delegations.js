@@ -1,41 +1,93 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Timestamps } from '/imports/api/timestamps.js';
-import { Communities } from '/imports/api/communities/communities.js';
+
 import { debugAssert } from '/imports/utils/assert.js';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
+import { __ } from '/imports/localization/i18n.js';
+import { autoformOptions } from '/imports/utils/autoform.js';
+
+import { Person, choosePerson } from '/imports/api/users/person.js';
+import { Timestamps } from '/imports/api/timestamps.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
+import { Topics } from '/imports/api/topics/topics.js';
 
 export const Delegations = new Mongo.Collection('delegations');
 
-Delegations.scopeValues = ['general', 'community', 'topicGroup', 'topic'];
+Delegations.scopeValues = ['general', 'community', 'agenda', 'topic'];
 
-const chooseUser = {
-  options() {
-    return Meteor.users.find({}).map(function option(u) {
-      return { label: u.fullName(), value: u._id };
-    });
-  },
-};
+let chooseScopeObject = {}; // on server side, we can't import Session or AutoForm (client side packages)
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+  import { AutoForm } from 'meteor/aldeed:autoform';
+
+  chooseScopeObject = {
+    options() {
+      const user = Meteor.user();
+      const scope = AutoForm.getFieldValue('scope', 'af.delegation.insert')
+                || AutoForm.getFieldValue('scope', 'af.delegation.update');
+      if (scope === 'general' || !scope) return [{ label: __('Not applicable'), value: 'none' }];
+      let scopeSet;
+      if (scope === 'community') scopeSet = user.communities();
+      else {
+        const communityId = Session.get('activeCommunityId');
+        if (scope === 'agenda') scopeSet = Agendas.find({ communityId });
+        if (scope === 'topic') scopeSet = Topics.find({ communityId, category: 'vote', closed: false });
+      }
+      return scopeSet.map(function (o) { return { label: o.name || o.title, value: o._id }; });
+    },
+    firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
+  };
+}
+
+function communityIdAutoValue() {
+  const scope = this.field('scope').value;
+  const scopeObjectId = this.field('scopeObjectId').value;
+  if (scope === 'community') return scopeObjectId;
+  if (scope === 'agenda') return Agendas.findOne(scopeObjectId).communityId;
+  if (scope === 'topic') return Topics.findOne(scopeObjectId).communityId;
+  debugAssert(scope === 'general', `No such scope as ${scope}`);
+  debugAssert(scopeObjectId === 'none', 'General scope should not have a corresponding object');
+  return undefined;
+}
+
+/*
+const PersonIdSchema = new SimpleSchema({
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
+  identifier: { type: String, optional: true },
+});
+*/
 
 Delegations.schema = new SimpleSchema({
-  sourceUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseUser },
-  targetUserId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseUser },
-  scope: { type: String, allowedValues: Delegations.scopeValues },
-  objectId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  // Either a registered user's userId or a non-registered user's idCard.identifier
+  sourcePersonId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: choosePerson },
+  targetPersonId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: choosePerson },
+  scope: { type: String, allowedValues: Delegations.scopeValues, autoform: autoformOptions(Delegations.scopeValues, 'schemaDelegations.scope.') },
+  scopeObjectId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: chooseScopeObject },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { omit: true } },
 });
 
+Delegations.renderScopeObject = function (o) {
+  return o ? (o.name || o.title) : '---';
+};
+
 Delegations.helpers({
-  object() {
-    debugAssert(this.scope === 'community');
-    return Communities.findOne(this.objectId);
+  scopeObject() {
+    if (this.scope === 'community') return Communities.findOne(this.scopeObjectId);
+    if (this.scope === 'agenda') return Agendas.findOne(this.scopeObjectId);
+    if (this.scope === 'topic') return Topics.findOne(this.scopeObjectId);
+    debugAssert(this.scope === 'general', `No such scope as ${this.scope}`);
+    debugAssert(this.scopeObjectId === 'none', 'General scope should not have a corresponding object');
+    return undefined;
   },
-  sourceUser() {
-    return Meteor.users.findOne(this.sourceUserId);
+  sourcePerson() {
+    return Person.constructFromId(this.sourcePersonId);
   },
-  targetUser() {
-    return Meteor.users.findOne(this.targetUserId);
+  targetPerson() {
+    return Person.constructFromId(this.targetPersonId);
   },
 });
 

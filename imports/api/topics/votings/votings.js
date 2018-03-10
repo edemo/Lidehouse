@@ -4,6 +4,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
 
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
@@ -56,8 +57,9 @@ Topics.helpers({
     if (!this.vote) return undefined;
     return (this.vote.type === type);
   },
-  memberCount() {
-    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
+  eligibleVoterCount() {
+//    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
+    return Parcels.find({ communityId: this.communityId }).count();
   },
   votedCount() {
     return this.voteParticipation.count;
@@ -84,7 +86,8 @@ Topics.helpers({
     const data = this;
     const voterships = Memberships.find({ communityId: this.communityId, role: 'owner' }).fetch().filter(o => o.isRepresentor());
     voterships.forEach((ownership) => {
-      const votePath = [ownership.userId];
+      const ownerId = ownership.Person().id();
+      const votePath = [ownerId];
 
       function getVoteResult(voterId) {
         const voteResult = directVotes[voterId];
@@ -95,23 +98,23 @@ Topics.helpers({
             votePath,
           };
           results[ownership.parcelId] = result;
-          indirectVotes[ownership.userId] = voteResult;
+          indirectVotes[ownerId] = voteResult;
           summary[voteResult] = summary[voteResult] || 0;
           summary[voteResult] += ownership.votingUnits();
           participation.count += 1;
           participation.units += ownership.votingUnits();
           return true;
         }
-        const delegations = Delegations.find({ sourceUserId: voterId, scope: 'community', objectId: ownership.communityId });
+        const delegations = Delegations.find({ sourcePersonId: voterId, scope: 'community', scopeObjectId: ownership.communityId });
         for (const delegation of delegations.fetch()) {
-          votePath.push(delegation.targetUserId);
-          if (getVoteResult(delegation.targetUserId)) return true;
+          votePath.push(delegation.targetPersonId);
+          if (getVoteResult(delegation.targetPersonId)) return true;
           votePath.pop();
         }
         return false;
       }
 
-      getVoteResult(ownership.userId);
+      getVoteResult(ownerId);
     });
 
     Topics.update(this._id, { $set: { voteParticipation: participation } });
@@ -172,4 +175,4 @@ Topics.publicFields.extendForUser = function extendForUser(userId, communityId) 
 //  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
   const publicFields = _.extend({}, Topics.publicFields, { voteCasts: 1, voteCastsIndirect: 1 });
   return publicFields;
-}
+};

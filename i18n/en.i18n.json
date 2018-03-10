@@ -1,7 +1,4 @@
 {
-  "person": "natural person",
-  "legal": "legal entity",
-
   // buttons etc.
   "confirm": "Are you sure?",
   "inviteSend": "Send invitation",
@@ -11,6 +8,10 @@
   "createNew": "Create New",
   "edit": "Edit",
   "close topic": "Close",
+
+  // voting
+  "Proxy voting" : "Voting in the name of others",
+  "Please select voters": "Please select the people you would like to vote in the name of",
 
   // feedback
   "FeedbackPaneCallout": "Tell us your opinion about the app!",

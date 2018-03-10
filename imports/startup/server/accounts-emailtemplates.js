@@ -9,9 +9,9 @@ Accounts.emailTemplates.from = 'Honline <noreply@honline.net>';
 Accounts.emailTemplates.enrollAccount = {
   subject(user) { return TAPi18n.__('emailEnrollAccountSubject', {}, user.language()); },
   text(user, url) {
-    const membership = Memberships.findOne({ userEmail: user.emails[0].address });
+    const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
     const community = membership.community();
-    const adminEmail = community.admin().userEmail();
+    const adminEmail = community.admin().person.email();
     return TAPi18n.__('emailEnrollAccount',
       { name: community.name,
         role: TAPi18n.__(membership.role, {}, user.language()),

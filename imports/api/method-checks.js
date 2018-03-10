@@ -60,7 +60,7 @@ export function checkAddMemberPermissions(userId, communityId, roleOfNewMember) 
   // Checks that *user* has permission to add new member in given *community*
   if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?
   let permissioned = false;
-  const rolesOfUser = Memberships.find({ userId, communityId }).map(m => m.role);
+  const rolesOfUser = Memberships.find({ 'person.userId': userId, communityId }).map(m => m.role);
   rolesOfUser.forEach((role) => {
     if (_.contains(canAddMemberWithRole[role], roleOfNewMember)) permissioned = true;
   });

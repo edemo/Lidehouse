@@ -80,11 +80,11 @@ Parcels.helpers({
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
     ownerships.forEach((m) => {
       const repBadge = m.isRepresentor() ? '(*)' : '';
-      result += `${m.displayName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
+      result += `${m.Person().displayName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
     });
     const benefactorships = Memberships.find({ communityId: this.communityId, role: 'benefactor', parcelId: this._id });
     benefactorships.forEach((m) => {
-      result += `${m.displayName()}<br>`;
+      result += `${m.Person().displayName()}<br>`;
     });
     return result;
   },

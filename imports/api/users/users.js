@@ -15,7 +15,7 @@ import { Delegations } from '/imports/api/delegations/delegations.js';
 export const nullUser = {
   hasPermission(permissionName, communityId, object) {
     const permission = Permissions.findOne({ name: permissionName });
-    debugAssert(permission);
+    if (!permission) return false;
     return _.contains(permission.roles, 'null');
   },
 };
@@ -112,13 +112,13 @@ Meteor.users.helpers({
     // TODO: A verification email has to be sent to the user now
   },
   memberships() {
-    return Memberships.find({ userId: this._id });
+    return Memberships.find({ 'person.userId': this._id });
   },
   ownerships(communityId) {
-    return Memberships.find({ userId: this._id, communityId, role: 'owner' });
+    return Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' });
   },
   roles(communityId) {
-    return Memberships.find({ userId: this._id, communityId }).fetch().map(m => m.role);
+    return Memberships.find({ 'person.userId': this._id, communityId }).fetch().map(m => m.role);
   },
   communities() {
     const memberships = this.memberships().fetch();
@@ -128,16 +128,16 @@ Meteor.users.helpers({
     return communities;
   },
   isInCommunity(communityId) {
-    return !!Memberships.findOne({ userId: this._id, communityId });
+    return !!Memberships.findOne({ 'person.userId': this._id, communityId });
   },
   votingUnits(communityId) {
     let sum = 0;
-    Memberships.find({ userId: this._id, communityId, role: 'owner' }).forEach(m => (sum += m.votingUnits()));
+    Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
   hasPermission(permissionName, communityId, object) {
     const permission = Permissions.findOne({ name: permissionName });
-    debugAssert(permission);
+    if (!permission) return false;
     const rolesWithThePermission = permission.roles;
     if (_.contains(rolesWithThePermission, 'null')) return true;
     if (permission.allowAuthor && object && (object.userId === this._id)) return true;
@@ -154,8 +154,8 @@ Meteor.users.helpers({
   totalDelegatedToMeUnits(communityId) {
     let total = 0;
     // TODO: needs traversing calculation
-    Delegations.find({ targetUserId: this._id }).forEach(function addUpUnits(d) {
-      const sourceUser = Meteor.users.findOne(d.sourceUserId);
+    Delegations.find({ targetPersonId: this._id }).forEach(function addUpUnits(d) {
+      const sourceUser = Meteor.users.findOne(d.sourcePersonId);
       total += sourceUser.votingUnits();
     });
     return total;

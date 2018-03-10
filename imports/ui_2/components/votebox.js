@@ -9,9 +9,11 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/proposal-view.js';
 import '../components/votebox.html';
+import '../components/select-voters.js';
 import '../components/comments-section.js';
 import '../components/vote-results.js';
 
@@ -113,7 +115,7 @@ Template.Votebox.events({
       body: 'Votebox',
       bodyContext: _.extend(this, { live: true }),
       btnClose: 'cancel',
-      btnPrimary: 'send vote',
+      btnOK: 'send vote',
     };
     Modal.show('Modal', modalContext);
   },
@@ -121,9 +123,27 @@ Template.Votebox.events({
   'click .btn-vote'(event) {
     const topicId = this._id;
     const choice = $(event.target).data('value');
-    castVote.call({ topicId, castedVote: [choice] },
-      onSuccess(res => displayMessage('success', 'Vote casted'))
-    );
+    const communityId = Session.get('activeCommunityId');
+    if (Meteor.user().hasPermission('vote.castForOthers', communityId)) {
+      const modalContext = {
+        title: 'Proxy voting',
+        body: 'Select_voters',
+        bodyContext: _.extend(this, { topicId, choice }),
+        btnClose: 'cancel',
+        btnOK: 'send vote',
+        onOK() {
+          castVote.call(
+            { topicId, castedVote: [choice], voters: AutoForm.getFieldValue('voters', 'af.select.voters') },
+            onSuccess(res => displayMessage('success', 'Vote casted'))
+          );
+        },
+      };
+      Modal.show('Modal', modalContext);
+    } else {
+      castVote.call({ topicId, castedVote: [choice] },
+        onSuccess(res => displayMessage('success', 'Vote casted'))
+      );
+    }
   },
   // event handler for the preferential vote type
   'click .btn-votesend'(event, instance) {

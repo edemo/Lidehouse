@@ -57,38 +57,43 @@
   },
   "schemaMemberships" : {
     "role": {
-      "label": "Szerep"
+      "label": "Tisztség"
     },
-    "userId": {
-      "label": "Felhasználó (a regisztráltak közül)"
-    },
-    "userEmail": {
-      "label": "Felhasználó email címe (ha nem regisztrált)",
-      "placeholder": "(pl. tibi45@dmail.com)"
-    },
-    "idCard": {
-      "label" : "Ellenőrzött adatok",
-      "type": {
-        "label": "Entitás típusa"
+    "person": {
+      "natural": "magánszemély",
+      "legal": "jogi személyiség",
+      "label": "Felhasználó",
+      "userId": {
+        "label": "Felhasználó kiválasztása (a regisztráltak közül)"
       },
-      "name": {
-        "label": "Név",
-        "placeholder": "(pl. Kovács János vagy Kulcslyuk Kft.)"
+      "userEmail": {
+        "label": "Felhasználó email címe (ha még nem regisztrált)",
+        "placeholder": "(pl. tibi45@dmail.com)"
       },
-      "address": {
-        "label": "Bejelentett cím",
-        "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
-      },
-      "identifier": {
-        "label": "Szig. szám ill. cégjegyzékszám",
-        "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
-      },
-      "mothersName": {
-        "label": "Anyja leánykori neve",
-        "placeholder": "(csak magánszemély esetén)"
-      },
-      "dob": {
-        "label": "Születési idő"
+      "idCard": {
+        "label" : "Felhasználó ellenőrzött adatai",
+        "type": {
+          "label": "Entitás típusa"
+        },
+        "name": {
+          "label": "Név",
+          "placeholder": "(pl. Kovács János vagy Kulcslyuk Kft.)"
+        },
+        "address": {
+          "label": "Bejelentett cím",
+          "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
+        },
+        "identifier": {
+          "label": "Szig. szám ill. cégjegyzékszám",
+          "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
+        },
+        "mothersName": {
+          "label": "Anyja leánykori neve",
+          "placeholder": "(csak magánszemély esetén)"
+        },
+        "dob": {
+          "label": "Születési idő"
+        }
       }
     },
     "ownership": {
@@ -109,20 +114,24 @@
     }
   },
   "schemaDelegations": {
-    "sourceUserId": {
+    "sourcePersonId": {
       "label": "Meghatalmazó",
       "placeholder": "(pl. Miki75)"
     },
-    "targetUserId": {
+    "targetPersonId": {
       "label": "Meghatalmazott",
       "placeholder": "(pl. Miki75)"
     },
     "scope": {
       "label": "Meghatalmazás köre",
-      "placeholder": "(pl. Ház ügyei)"
+      "placeholder": "(pl. Ház ügyei)",
+      "general": "általános (mindenre kiterjedő)",
+      "community": "egy adott ház ügyeire",
+      "agenda": "egy adott napirend kérdéseire",
+      "topic": "egyetlen adott kérdésre"
     },
-    "objectId": {
-      "label": "Meghatalmazás tárgya (tulajdon)",
+    "scopeObjectId": {
+      "label": "Meghatalmazás kör célpontja",
       "placeholder": "(pl. Demo ház)"
     }
   },

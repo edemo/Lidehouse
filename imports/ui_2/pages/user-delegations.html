@@ -5,6 +5,24 @@
       <ul class="tabs">
 
         <!-- 1st tab start -->
+        {{#if userHasPermission 'delegations.forOthers' (fromSession 'activeCommunityId') }}
+        <li class="tab">
+          <input type="radio" name="tabs" checked="checked" id="tab1" />
+          <label for="tab1">{{_ 'Delegations'}}</label>
+          <!-- content -->
+          <div id="tab-content1" class="content">
+            <div class="row">
+              <div class="col-xs-12 text-center">
+                <h4>{{_ 'Delegations'}}</h4>
+                <hr/>
+                <br>
+                {{> ReactiveDatatable tableData=delegationsDataFn options=delegationsOptionsFn}}
+                <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+              </div>
+            </div>
+          </div>
+        </li>
+        {{else}}
         <li class="tab">
           <input type="radio" name="tabs" checked="checked" id="tab1" />
           <label for="tab1">{{_ 'Delegations from me'}}</label>
@@ -29,6 +47,7 @@
             </div>
           </div>
         </li>
+        {{/if}}
         <!-- 1st tab end -->
         <!-- 2nd tab start-->
         <li class="tab">

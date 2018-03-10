@@ -59,36 +59,41 @@
     "role": {
       "label": "Role"
     },
-    "userId": {
-      "label": "User (from registered users)"
-    },
-    "userEmail": {
-      "label": "User's email address (if not registered)",
-      "placeholder": "(eg. jsmith45@dmail.com)"
-    },
-    "idCard": {
-      "label" : "Verified identification",
-      "type": {
-        "label": "Entity type"
+    "person": {
+      "natural": "natural person",
+      "legal": "legal entity",
+      "label": "User",
+      "userId": {
+        "label": "Select a user (from the registered users)"
       },
-      "name": {
-        "label": "Name",
-        "placeholder": "(eg. John Smith or ACME Inc.)"
+      "userEmail": {
+        "label": "User's email address (if not yet registered)",
+        "placeholder": "(eg. jsmith45@dmail.com)"
       },
-      "address": {
-        "label": "Official address",
-        "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
-      },
-      "identifier": {
-        "label": "Official identifier",
-        "placeholder": "(id card number or company registration number)"
-      },
-      "mothersName": {
-        "label": "Mother's maiden name",
-        "placeholder": "(only for person)"
-      },
-      "dob": {
-        "label": "Date of birth"
+      "idCard": {
+        "label" : "User's verified data",
+        "type": {
+          "label": "Entity type"
+        },
+        "name": {
+          "label": "Name",
+          "placeholder": "(eg. John Smith or ACME Inc.)"
+        },
+        "address": {
+          "label": "Official address",
+          "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
+        },
+        "identifier": {
+          "label": "Official identifier",
+          "placeholder": "(id card number or company registration number)"
+        },
+        "mothersName": {
+          "label": "Mother's maiden name",
+          "placeholder": "(only for person)"
+        },
+        "dob": {
+          "label": "Date of birth"
+        }
       }
     },
     "ownership": {
@@ -109,19 +114,23 @@
     }
   },
   "schemaDelegations": {
-    "sourceUserId": {
+    "sourcePersonId": {
       "label": "Delegator",
       "placeholder": "(eg. Mike75)"
     },
-    "targetUserId": {
+    "targetPersonId": {
       "label": "Delegatee",
       "placeholder": "(eg. Mike75)"
     },
     "scope": {
       "label": "Scope of Delegation",
-      "placeholder": "(pl. Community issues)"
+      "placeholder": "(pl. Community issues)",
+      "general": "general - all issues",
+      "community": "issues of a certain community",
+      "agenda": "issues of a certain agenda",
+      "topic": "one specific issue"
     },
-    "objectId": {
+    "scopeObjectId": {
       "label": "Object of delegation",
       "placeholder": "(eg. Demo community)"
     }
@@ -201,13 +210,25 @@
     "ticket": {
       "label": "Ticket",
       "category": {
-        "label": "Category"
+        "label": "Category",
+        "building": "Building",
+        "garden": "Garden",
+        "service": "Service"      
       },
       "urgency": {
-        "label": "Urgency"
+        "label": "Urgency",
+        "high": "High",
+        "normal": "Normal",
+        "low": "Low"
       },
       "status": {
-        "label": "Status"
+        "label": "Status",
+        "reported": "Reported",
+        "confirmed": "Confirmed",
+        "progressing": "Progressing",
+        "finished": "Finished",
+        "checked": "Checked",
+        "closed": "Closed"
       }
     }
   },

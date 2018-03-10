@@ -5,7 +5,6 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 import '/utils/fractional.js';  // TODO: should be automatic, but not included in tests
-if (Meteor.isClient) import { Session } from 'meteor/session';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -15,6 +14,7 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Roles } from '/imports/api/permissions/roles.js';
+import { Person, PersonSchema } from '/imports/api/users/person.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -32,16 +32,6 @@ const BenefactorshipSchema = new SimpleSchema({
   type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues) },
 });
 
-const idCardTypeValues = ['person', 'legal'];
-const IdCardSchema = new SimpleSchema({
-  type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues) },
-  name: { type: String },
-  address: { type: String },
-  identifier: { type: String }, // cegjegyzek szam vagy szig szam
-  mothersName: { type: String, optional: true },
-  dob: { type: Date, optional: true },
-});
-
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -54,17 +44,7 @@ Memberships.schema = new SimpleSchema({
       },
     },
   },
-  // The user is connected with the membership via 3 possible ways: userId (registered user), userEmail (not registered, but invitation is sent), and idCard (confirmed identity papers)
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
-    autoform: {
-      options() {
-        const communityId = Meteor.isClient ? Session.get('activeCommunityId') : undefined;
-        return Communities.findOne(communityId).users().map(function option(u) { return { label: u.displayName(), value: u._id }; });
-      },
-    },
-  },
-  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
-  idCard: { type: IdCardSchema, optional: true },
+  person: { type: PersonSchema },
   // TODO should be conditional on role === 'owner'
   ownership: { type: OwnershipSchema, optional: true },
   // TODO should be conditional on role === 'benefactor'
@@ -85,26 +65,12 @@ Memberships.schema = new SimpleSchema({
 // Küldjünk egy meghívót a címre?
 
 Memberships.helpers({
-  hasVerifiedIdCard() {
-    return !!this.idCard;
+  hasPerson() {
+    return !!(this.person);
   },
-  hasUser() {
-    return !!this.userId;
-  },
-  user() {
-    if (this.userId) return Meteor.users.findOne(this.userId);
-    return undefined;
-  },
-  userEmail() {
-    if (this.userId) return this.user().emails[0].address;
-    if (this.userEmail) return this.userEmail;
-    return undefined;
-  },
-  displayName() {
-    if (this.idCard) return this.idCard.name;
-    if (this.userId) return this.user().displayName();
-    if (this.userEmail) return this.userEmail;
-    return 'should never get here';
+  Person() {
+    debugAssert(this.person);
+    return new Person(this.person);
   },
   community() {
     const community = Communities.findOne(this.communityId);
@@ -174,9 +140,9 @@ Memberships.deny({
 });
 
 Memberships.modifiableFields = [
-  'userEmail',
-  'userId',
   'role',
+  'person.userEmail',
+  'person.userId',
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',

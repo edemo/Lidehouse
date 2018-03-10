@@ -14,19 +14,27 @@ export const castVote = new ValidatedMethod({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
     castedVote: { type: Array },    // has one element if type is yesno, multiple if preferential
     'castedVote.$': { type: Number },
+    voters: { type: Array, optional: true },
+    'voters.$': { type: String /* personId = userId or IdCard identifier */ },
   }).validator({ clean: true }),  // we 'clean' here to convert the vote strings (eg "1") into numbers (1)
 
-  run({ topicId, castedVote }) {
+  run({ topicId, castedVote, voters }) {
     const topic = checkExists(Topics, topicId);
-    checkPermissions(this.userId, 'vote.cast', topic.communityId, topic);
+    let _voters = voters;
+    if (_voters) {
+      checkPermissions(this.userId, 'vote.castForOthers', topic.communityId, topic);
+    } else {
+      checkPermissions(this.userId, 'vote.cast', topic.communityId, topic);
+      _voters = [this.userId];
+    }
 
     const topicModifier = {};
     if (castedVote.length === 0) {
       topicModifier['$unset'] = {};
-      topicModifier['$unset']['voteCasts.' + this.userId] = '';
+      _voters.forEach(voterId => topicModifier['$unset']['voteCasts.' + voterId] = '');
     } else {
       topicModifier['$set'] = {};
-      topicModifier['$set']['voteCasts.' + this.userId] = castedVote;
+      _voters.forEach(voterId => topicModifier['$set']['voteCasts.' + voterId] = castedVote);
     }
 /*
     if (Meteor.isClient) {  // a quick'n'dirty update on the client, before the calculation from server comes back
