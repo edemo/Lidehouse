@@ -1,4 +1,5 @@
 import { $ } from 'meteor/jquery';
+import { moment } from 'meteor/momentjs:moment';
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -38,6 +39,13 @@ Template.Vote_create.helpers({
     ]);
     schema.i18n('schemaVotings');
     return schema;
+  },
+  // Default values for insert autoForm: https://github.com/aldeed/meteor-autoform/issues/210
+  defaultOpenDate() {
+    return new Date();
+  },
+  defaultCloseDate() {
+    return moment().add(15, 'day').toDate();
   },
   agendaOptions() {
     const communityId = Session.get('activeCommunityId');
