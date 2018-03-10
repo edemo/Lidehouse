@@ -29,7 +29,7 @@ if (Meteor.isServer) {
     describe('publications', function () {
 
       it('sends all memberships.inCommunity', function (done) {
-        const collector = new PublicationCollector();
+        const collector = new PublicationCollector({ userId: Fixture.demoUserId });
         collector.collect(
           'memberships.inCommunity',
           { communityId: Fixture.demoCommunityId },
@@ -42,7 +42,7 @@ if (Meteor.isServer) {
       });
 
       it('sends all memberships.ofUser', function (done) {
-        const collector = new PublicationCollector();
+        const collector = new PublicationCollector({ userId: Fixture.demoUserId });
         collector.collect(
           'memberships.ofUser',
           { userId: Fixture.demoUserId },
