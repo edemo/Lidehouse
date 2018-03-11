@@ -44,6 +44,7 @@ if (Meteor.isClient) {
 }
 
 function communityIdAutoValue() {
+  if (this.isSet || this.operator) return;
   const scope = this.field('scope').value;
   const scopeObjectId = this.field('scopeObjectId').value;
   if (scope === 'community') return scopeObjectId;
@@ -51,7 +52,7 @@ function communityIdAutoValue() {
   if (scope === 'topic') return Topics.findOne(scopeObjectId).communityId;
   debugAssert(scope === 'general', `No such scope as ${scope}`);
   debugAssert(scopeObjectId === 'none', 'General scope should not have a corresponding object');
-  return undefined;
+  return;
 }
 
 /*
@@ -62,12 +63,12 @@ const PersonIdSchema = new SimpleSchema({
 */
 
 Delegations.schema = new SimpleSchema({
-  // Either a registered user's userId or a non-registered user's idCard.identifier
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { omit: true } },
+  // PersonId is either a registered user's userId or a non-registered user's idCard.identifier
   sourcePersonId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: choosePerson },
   targetPersonId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: choosePerson },
   scope: { type: String, allowedValues: Delegations.scopeValues, autoform: autoformOptions(Delegations.scopeValues, 'schemaDelegations.scope.') },
   scopeObjectId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: chooseScopeObject },
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { omit: true } },
 });
 
 Delegations.renderScopeObject = function (o) {

@@ -8,7 +8,7 @@ import { Random } from 'meteor/random';
 import { _ } from 'meteor/underscore';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { insert as insertDelegation, remove as removeDelegation, allow as allowDelegations } from './methods.js';
+import { insert as insertDelegation, update as updateDelegation, remove as removeDelegation, allow as allowDelegations } from './methods.js';
 
 if (Meteor.isServer) {
 
@@ -20,7 +20,7 @@ if (Meteor.isServer) {
     insertDelegation._execute({ userId: sourceId },
       { sourcePersonId: sourceId, targetPersonId: targetId, scope: 'community', scopeObjectId: Fixture.demoCommunityId }
     );
-  }
+  };
 
   describe('delegations', function () {
     this.timeout(5000);
@@ -71,20 +71,25 @@ if (Meteor.isServer) {
         );
         const delegation = Delegations.findOne(delegationId);
         chai.assert.isDefined(delegation);
+        console.log(delegation);
         done();
       });
 
-      it('scope is limited to community for now', function (done) {
+      it('cannot insert invalid delegation', function (done) {
         chai.assert.throws(() => {
           insertDelegation._execute({ userId: Fixture.demoUserId },
-            { sourcePersonId: Fixture.demoUserId, targetPersonId: Fixture.dummyUsers[0], scope: 'topic' }
+            { sourcePersonId: Fixture.demoUserId, targetPersonId: Fixture.dummyUsers[0], scope: 'invalid' }
           );
         });
         done();
       });
 
       it('can update delegations', function (done) {
-        // ??
+        updateDelegation._execute({ userId: Fixture.demoUserId },
+          { _id: delegationId, modifier: { $set: { targetPersonId: Fixture.dummyUsers[1] } } }
+        );
+        const delegation = Delegations.findOne(delegationId);
+        chai.assert.equal(delegation.targetPersonId, Fixture.dummyUsers[1]);
         done();
       });
 
@@ -140,21 +145,25 @@ if (Meteor.isServer) {
         done();
       });
 
-      it('only allows to insert the user\'s own outbound delegations', function (done) {
+      it('only allows to insert the user\'s own outbound delegations (unless manager)', function (done) {
         chai.assert.throws(() => {
           insertDelegation._execute({ userId: Fixture.demoUserId },
             { sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.demoUserId, scope: 'community', scopeObjectId: Fixture.demoCommunityId }
           );
         });
+        insertDelegation._execute({ userId: Fixture.demoManagerId },
+          { sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.demoUserId, scope: 'community', scopeObjectId: Fixture.demoCommunityId }
+        );
         done();
       });
 
-      it('only allows to remove the user\'s own delegations', function (done) {
+      it('only allows to remove the user\'s own delegations (unless manager)', function (done) {
         const delegation = Delegations.findOne({ sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.dummyUsers[1] });
         chai.assert.isDefined(delegation);
         chai.assert.throws(() => {
           removeDelegation._execute({ userId: Fixture.demoUserId }, { _id: delegation._id });
         });
+        removeDelegation._execute({ userId: Fixture.demoManagerId }, { _id: delegation._id });
         done();
       });
     });

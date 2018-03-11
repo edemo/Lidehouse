@@ -54,10 +54,14 @@ if (Meteor.isServer) {
         done();
       });
 
-      it('cannot create new voting without permission', function (done) {
+      it('cannot create new legal voting without permission', function (done) {
+        const voting = createVoting('yesno');
         chai.assert.throws(() => {
-          votingId = insertTopic._execute({ userId: Fixture.demoUserId }, createVoting('yesno'));
+          insertTopic._execute({ userId: Fixture.demoUserId }, voting);
         });
+        // polls on the other hand are allowed to be created by everybody
+        voting.vote.effect = 'poll';
+        insertTopic._execute({ userId: Fixture.demoUserId }, voting);
         done();
       });
 
@@ -78,6 +82,19 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[1]], [1]);
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[2]], [2]);
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[3]], [3]);
+        done();
+      });
+
+      it('only manager can vote in the name of others', function (done) {
+        chai.assert.throws(() => {
+          castVote._execute({ userId: Fixture.demoUserId }, { topicId: votingId, castedVote: [0], voters: [Fixture.dummyUsers[1]] });
+        });
+        castVote._execute({ userId: Fixture.demoManagerId }, { topicId: votingId, castedVote: [0], voters: [Fixture.dummyUsers[1], Fixture.dummyUsers[2], Fixture.dummyUsers[3]] });
+
+        const voting = Topics.findOne(votingId);
+        chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[1]], [0]);
+        chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[2]], [0]);
+        chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[3]], [0]);
         done();
       });
     });
@@ -230,7 +247,6 @@ if (Meteor.isServer) {
 
         // Delegatee votes
         castVote._execute({ userId: Fixture.dummyUsers[3] }, { topicId: votingId, castedVote: [0] });
-        console.log(Topics.findOne(votingId).voteResults);
         assertsAfterIndirectVote(0);
 
         // Delegatee changes vote

@@ -45,7 +45,7 @@ Template.Messenger.helpers({
 
 Template.Messenger.events({
   'click .js-people'(event) {
-    console.log("clicked", $('#people'));
+//  console.log("clicked", $('#people'));
     $('#people')[0].classList.toggle('people-open');
   },
   'click .content-overlay'(event, instance) {

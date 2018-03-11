@@ -37,7 +37,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
       event.preventDefault();
       const preference = $(self.find('.sortable')).sortable('toArray', { attribute: 'data-value' })
         .map(function obj(value, index) { return { text: vote.choices[value], value }; });
-        console.log('onstop:', preference);
+//      console.log('onstop:', preference);
       state.set('preference', preference);
     },
   });
@@ -56,7 +56,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
       preference = vote.choices.map(function obj(text, index) { return { text, value: index }; });
     }
     state.set('preference', preference);
-    console.log('onrender:', preference);
+//  console.log('onrender:', preference);
   });
 
   // This is where we enable/disable the sorting, dependant on the finalized state
@@ -96,7 +96,7 @@ Template.Votebox.helpers({
   // Preferential voting
   currentPreference() {
     const preference = Template.instance().state.get('preference');
-    console.log('ondisplay:', preference);
+//  console.log('ondisplay:', preference);
     return preference;
   },
   voteIsFinalized() {
@@ -151,13 +151,13 @@ Template.Votebox.events({
     const voteIsFinalized = instance.state.get('voteIsFinalized');
     if (!voteIsFinalized) {
       const preference = instance.state.get('preference');
-      console.log('casting:', preference);
+//    console.log('casting:', preference);
       const castedVote = preference.map(p => p.value);
       castVote.call({ topicId, castedVote },
         onSuccess((res) => {
           displayMessage('success', 'Vote casted');
           instance.state.set('voteIsFinalized', true);
-          console.log('casted:', preference);
+//        console.log('casted:', preference);
         })
       );
     } else { // voteIsFinalized === true
@@ -179,7 +179,7 @@ Template.Votebox.events({
       btnClose: 'close',
       btnEdit: 'edit',
     };
-    console.log(this);
+//  console.log(this);
     Modal.show('Modal', modalContext);
   },
   'click .js-close'(event, instance) {
