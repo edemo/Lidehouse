@@ -132,7 +132,7 @@
     },
     "scopeObjectId": {
       "label": "Object of delegation",
-      "placeholder": "(eg. Demo community)"
+      "placeholder": "Choose delegation scope first"
     }
   },
   "schemaAgendas": {

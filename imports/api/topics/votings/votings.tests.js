@@ -207,6 +207,14 @@ if (Meteor.isServer) {
         done();
       });
 
+      const assertsAfterThirdVote = function (choice = 0) {
+        const voting = Topics.findOne(votingId);
+        chai.assert.deepEqual(voting.voteParticipation, { count: 3, units: 60 });
+        chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[3]], [choice]);
+        chai.assert.isUndefined(voting.voteCasts[Fixture.dummyUsers[4]]);
+        chai.assert.isUndefined(voting.voteCastsIndirect[Fixture.dummyUsers[4]]);
+      };
+
       const assertsAfterIndirectVote = function (choice = 0) {
         const voting = Topics.findOne(votingId);
         chai.assert.deepEqual(voting.voteParticipation, { count: 4, units: 100 });
@@ -237,7 +245,6 @@ if (Meteor.isServer) {
       };
 
       it('evaluates well on indirect votes', function (done) {
-        let voting;
         // New delegation 4 => 3 (delegatee has not voted yet)
         const delegationId = insertDelegation._execute(
           { userId: Fixture.dummyUsers[4] },
@@ -266,16 +273,13 @@ if (Meteor.isServer) {
         // TODO it doesnt come into effect until SOME vote is cast
         castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [0] });
 
-        voting = Topics.findOne(votingId);
-        chai.assert.deepEqual(voting.voteParticipation, { count: 3, units: 60 });
-        chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[3]], [0]);
-        chai.assert.isUndefined(voting.voteCasts[Fixture.dummyUsers[4]]);
-        chai.assert.isUndefined(voting.voteCastsIndirect[Fixture.dummyUsers[4]]);
+        assertsAfterThirdVote();
 
         done();
       });
 
-      // TODO: ownership changes during vote period
+
+        // TODO: ownership changes during vote period
 
     });
   });

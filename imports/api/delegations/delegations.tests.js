@@ -71,7 +71,6 @@ if (Meteor.isServer) {
         );
         const delegation = Delegations.findOne(delegationId);
         chai.assert.isDefined(delegation);
-        console.log(delegation);
         done();
       });
 

@@ -17,7 +17,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 export const Delegations = new Mongo.Collection('delegations');
 
-Delegations.scopeValues = ['general', 'community', 'agenda', 'topic'];
+Delegations.scopeValues = ['community', 'agenda', 'topic'];
 
 let chooseScopeObject = {}; // on server side, we can't import Session or AutoForm (client side packages)
 if (Meteor.isClient) {
@@ -29,7 +29,7 @@ if (Meteor.isClient) {
       const user = Meteor.user();
       const scope = AutoForm.getFieldValue('scope', 'af.delegation.insert')
                 || AutoForm.getFieldValue('scope', 'af.delegation.update');
-      if (scope === 'general' || !scope) return [{ label: __('Not applicable'), value: 'none' }];
+      if (!scope) return [{ label: __('schemaDelegations.scopeObjectId.placeholder'), value: 'none' }];
       let scopeSet;
       if (scope === 'community') scopeSet = user.communities();
       else {
@@ -50,8 +50,7 @@ function communityIdAutoValue() {
   if (scope === 'community') return scopeObjectId;
   if (scope === 'agenda') return Agendas.findOne(scopeObjectId).communityId;
   if (scope === 'topic') return Topics.findOne(scopeObjectId).communityId;
-  debugAssert(scope === 'general', `No such scope as ${scope}`);
-  debugAssert(scopeObjectId === 'none', 'General scope should not have a corresponding object');
+  debugAssert(false, `No such scope as ${scope}`);
   return;
 }
 
@@ -80,8 +79,7 @@ Delegations.helpers({
     if (this.scope === 'community') return Communities.findOne(this.scopeObjectId);
     if (this.scope === 'agenda') return Agendas.findOne(this.scopeObjectId);
     if (this.scope === 'topic') return Topics.findOne(this.scopeObjectId);
-    debugAssert(this.scope === 'general', `No such scope as ${this.scope}`);
-    debugAssert(this.scopeObjectId === 'none', 'General scope should not have a corresponding object');
+    debugAssert(false, `No such scope as ${this.scope}`);
     return undefined;
   },
   sourcePerson() {

@@ -132,7 +132,7 @@
     },
     "scopeObjectId": {
       "label": "Meghatalmazás kör célpontja",
-      "placeholder": "(pl. Demo ház)"
+      "placeholder": "Először válassza ki a meghatalmazás kört"
     }
   },
   "schemaAgendas": {
