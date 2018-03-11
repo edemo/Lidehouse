@@ -56,7 +56,7 @@ const permissions = [
 //  { name: 'poll.update',            roles: nobody },
 //  { name: 'poll.remove',            roles: nobody, allowAuthor: true },
   { name: 'vote.insert',            roles: ['manager'] },
-  { name: 'vote.update',            roles: nobody },
+  { name: 'vote.update',            roles: ['manager'] },
   { name: 'vote.remove',            roles: ['manager'] },
   { name: 'vote.cast',              roles: ['owner', 'delegate', 'manager'] },
   { name: 'vote.castForOthers',     roles: ['manager'] },

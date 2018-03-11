@@ -125,9 +125,8 @@
     "scope": {
       "label": "Scope of Delegation",
       "placeholder": "(pl. Community issues)",
-      "general": "general - all issues",
-      "community": "issues of a certain community",
-      "agenda": "issues of a certain agenda",
+      "community": "all issues of the community",
+      "agenda": "issues in a certain agenda",
       "topic": "one specific issue"
     },
     "scopeObjectId": {

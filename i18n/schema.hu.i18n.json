@@ -125,10 +125,9 @@
     "scope": {
       "label": "Meghatalmazás köre",
       "placeholder": "(pl. Ház ügyei)",
-      "general": "általános (mindenre kiterjedő)",
-      "community": "egy adott ház ügyeire",
-      "agenda": "egy adott napirend kérdéseire",
-      "topic": "egyetlen adott kérdésre"
+      "community": "a ház ügyeire",
+      "agenda": "egy napirend ügyeire",
+      "topic": "egyetlen ügyre"
     },
     "scopeObjectId": {
       "label": "Meghatalmazás kör célpontja",

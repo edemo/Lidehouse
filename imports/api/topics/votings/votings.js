@@ -83,7 +83,7 @@ Topics.helpers({
     const summary = {};         // results by choices
     const participation = { count: 0, units: 0 };
     const directVotes = this.voteCasts || {};
-    const data = this;
+    const self = this;
     const voterships = Memberships.find({ communityId: this.communityId, role: 'owner' }).fetch().filter(o => o.isRepresentor());
     voterships.forEach((ownership) => {
       const ownerId = ownership.Person().id();
@@ -105,7 +105,13 @@ Topics.helpers({
           participation.units += ownership.votingUnits();
           return true;
         }
-        const delegations = Delegations.find({ sourcePersonId: voterId, scope: 'community', scopeObjectId: ownership.communityId });
+        const delegations = Delegations.find({ sourcePersonId: voterId,
+          $or: [
+            { scope: 'topic', scopeObjectId: self._id },
+            { scope: 'agenda', scopeObjectId: self.agendaId },
+            { scope: 'community', scopeObjectId: self.communityId },
+          ],
+        });
         for (const delegation of delegations.fetch()) {
           votePath.push(delegation.targetPersonId);
           if (getVoteResult(delegation.targetPersonId)) return true;

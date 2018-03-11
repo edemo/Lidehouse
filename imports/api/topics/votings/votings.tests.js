@@ -12,14 +12,17 @@ import { _ } from 'meteor/underscore';
 import '/imports/api/users/users.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/votings/votings.js';
-import { insert as insertTopic } from '/imports/api/topics/methods.js';
+import { insert as insertAgenda } from '/imports/api/agendas/methods.js';
+import { insert as insertTopic, update as updateTopic } from '/imports/api/topics/methods.js';
 import { insert as insertDelegation, remove as removeDelegation } from '/imports/api/delegations/methods.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 
 if (Meteor.isServer) {
   let Fixture;
+  let agendaId;
   const createVoting = function (type) {
     return {
       communityId: Fixture.demoCommunityId,
@@ -27,6 +30,7 @@ if (Meteor.isServer) {
       category: 'vote',
       title: `${type} Voting`,
       text: 'Choose!',
+      agendaId,
       vote: {
         closesAt: moment().add(14, 'day').toDate(),
         procedure: 'online',
@@ -41,6 +45,7 @@ if (Meteor.isServer) {
     this.timeout(5000);
     before(function () {
       Fixture = freshFixture();
+      agendaId = insertAgenda._execute({ userId: Fixture.demoManagerId }, { communityId: Fixture.demoCommunityId, title: 'Test Agenda' });
     });
 
     describe('permissions', function () {
@@ -273,6 +278,54 @@ if (Meteor.isServer) {
         // TODO it doesnt come into effect until SOME vote is cast
         castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [0] });
 
+        assertsAfterThirdVote();
+
+        done();
+      });
+
+      it('evaluates well on different delegation scopes', function (done) {
+        let delegationId;
+        function insertDelegation3To4(scope, scopeObjectId) {
+          delegationId = insertDelegation._execute(
+            { userId: Fixture.dummyUsers[4] },
+            { sourcePersonId: Fixture.dummyUsers[4], targetPersonId: Fixture.dummyUsers[3], scope, scopeObjectId }
+          );
+          // TODO it doesnt come into effect until SOME vote is cast
+          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [1] });
+        }
+        function revokeDelegation3To4(scope, scopeObjectId) {
+          removeDelegation._execute(
+            { userId: Fixture.dummyUsers[4] }, { _id: delegationId }
+          );
+          // TODO it doesnt come into effect until SOME vote is cast
+          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [1] });
+        }
+
+        assertsAfterThirdVote();
+
+        insertDelegation3To4('community', Fixture.demoCommunityId);
+        assertsAfterIndirectVote();
+        revokeDelegation3To4();
+        assertsAfterThirdVote();
+
+        insertDelegation3To4('agenda', Agendas.findOne({})._id);
+        assertsAfterThirdVote();  // no effect here
+        revokeDelegation3To4();
+        assertsAfterThirdVote();
+
+        insertDelegation3To4('agenda', agendaId);
+        assertsAfterIndirectVote();
+        revokeDelegation3To4();
+        assertsAfterThirdVote();
+
+        insertDelegation3To4('topic', Topics.findOne({})._id);
+        assertsAfterThirdVote();  // no effect here
+        revokeDelegation3To4();
+        assertsAfterThirdVote();
+
+        insertDelegation3To4('topic', votingId);
+        assertsAfterIndirectVote();
+        revokeDelegation3To4();
         assertsAfterThirdVote();
 
         done();
