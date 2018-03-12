@@ -13,20 +13,17 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { votingsExtensionSchema } from '/imports/api/topics/votings/votings.js';
 import './vote-create.html';
 
-let afVotingInsertInstance;
+let afVoteCreateInstance;
 
 Template.Vote_create.onCreated(function () {
   const instance = Template.instance();
   instance.choices = new ReactiveVar([]);
   this.autorun(() => {
-    const currentVoteType = AutoForm.getFieldValue('vote.type', 'af.voting.insert');
+    const currentVoteType = AutoForm.getFieldValue('vote.type', 'af.vote.create');
     const newChoices = Topics.voteTypeChoices[currentVoteType] || [];
     instance.choices.set(newChoices);
   });
-});
-
-Template.Vote_create.onRendered(function () {
-  afVotingInsertInstance = Template.instance();
+  afVoteCreateInstance = instance;
 });
 
 Template.Vote_create.helpers({
@@ -83,15 +80,15 @@ Template.Vote_create.events({
   },
 });
 
-AutoForm.addModalHooks('af.voting.insert');
-AutoForm.addHooks('af.voting.insert', {
+AutoForm.addModalHooks('af.vote.create');
+AutoForm.addHooks('af.vote.create', {
   formToDoc(doc) {
     Tracker.nonreactive(() => {   // AutoForm will run the formToDoc each time any field on the form, like the vote.type is simply queried (maybe so that if its a calculated field, it gets calculated)
       doc.createdAt = new Date();
       doc.communityId = Session.get('activeCommunityId');
       doc.userId = Meteor.userId();
       doc.category = 'vote';
-      doc.vote.choices = afVotingInsertInstance.choices.get();
+      doc.vote.choices = afVoteCreateInstance.choices.get();
     });
     return doc;
   },
