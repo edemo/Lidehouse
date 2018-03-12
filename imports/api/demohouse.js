@@ -43,7 +43,7 @@ export function insertDemoHouse(lang) {
     street: __('demo.street'),
     number: '86',
     lot: '4532/8',
-    avatar: 'images/demohouse.jpg',
+    avatar: '/images/demohouse.jpg',
     totalunits: 10000,
   });
 
@@ -289,14 +289,14 @@ export function insertDemoHouse(lang) {
     fillingUsers.push(Meteor.users.insert({
       emails: [{ address: `fillinguser.${userNo}@demo.${com}`, verified: true }],
       profile: { lastName: __(`demo.user.${userNo}.lastName`), firstName: __(`demo.user.${userNo}.firstName`) },
-      avatar: `images/avatars/avatar${userNo}.jpg`,
+      avatar: `/images/avatars/avatar${userNo}.jpg`,
       settings: { language: lang },
     }));
   }
   const fillingManagerId = Meteor.users.insert({
     emails: [{ address: `filling.manager@demo.${com}`, verified: true }],
     profile: { lastName: __('demo.user.manager.lastName'), firstName: __('demo.user.manager.firstName'), phone: '06 30 234 5678' },
-    avatar: 'images/avatars/avatar20.jpg',
+    avatar: '/images/avatars/avatar20.jpg',
     settings: { language: lang },
   });
   //  status: 'online',    status: 'standby',
@@ -1091,7 +1091,7 @@ Meteor.methods({
     });
     Meteor.users.update({ _id: demoUserId },
       { $set: { 'emails.0.verified': true,
-        avatar: 'images/avatars/avatarnull.png',
+        avatar: '/images/avatars/avatarnull.png',
         'settings.language': 'hu' } });
     const demoHouse = Communities.findOne({ name: 'Demo ház' });
     const demoCommunityId = demoHouse._id;
