@@ -65,7 +65,7 @@ function onJoinParcelInsertSuccess(parcelId) {
   const communityName = Communities.findOne(communityId).name;
 
   insertMembershipUnapproved.call({
-    userId: Meteor.userId(),
+    person: { userId: Meteor.userId() },
     communityId,
     approved: false,
     role: 'owner',
