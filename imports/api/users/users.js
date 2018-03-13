@@ -63,7 +63,7 @@ const UserSettingsSchema = new SimpleSchema({
   delegatee: { type: Boolean, defaultValue: true },
 });
 
-const defaultAvatar = 'http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png';
+const defaultAvatar = '/images/avatars/avatarnull.png';
 // const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';
 // const defaultAvatar = 'http://pannako.hu/wp-content/uploads/avatar-1.png';
 

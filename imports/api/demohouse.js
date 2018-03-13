@@ -26,24 +26,24 @@ import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 
 
-export function insertDemoHouse(lang) {
+export function insertDemoHouse(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
 
   // if Demo house data already populated, no need to do anything
-  if (Communities.findOne({ name: __('demo.house') })) {
+  if (Communities.findOne({ name: __(`${demoOrTest}.house`) })) {
     return;
   }
 
   // ===== Communities =====
 
   const demoCommunityId = Communities.insert({
-    name: __('demo.house'),
+    name: __(`${demoOrTest}.house`),
     zip: '1144',
     city: __('demo.city'),
     street: __('demo.street'),
     number: '86',
     lot: '4532/8',
-    avatar: 'images/demohouse.jpg',
+    avatar: '/images/demohouse.jpg',
     totalunits: 10000,
   });
 
@@ -53,7 +53,7 @@ export function insertDemoHouse(lang) {
   demoParcels[0] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 1,
-    units: 550,
+    units: 489,
     floor: __('demo.ground'),
     number: '1',
     type: 'flat',
@@ -67,7 +67,7 @@ export function insertDemoHouse(lang) {
   demoParcels[1] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 2,
-    units: 480,
+    units: 427,
     floor: __('demo.ground'),
     number: '2',
     type: 'flat',
@@ -81,7 +81,7 @@ export function insertDemoHouse(lang) {
   demoParcels[2] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 3,
-    units: 660,
+    units: 587,
     floor: 'I',
     number: '3',
     type: 'flat',
@@ -95,7 +95,7 @@ export function insertDemoHouse(lang) {
   demoParcels[3] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 4,
-    units: 700,
+    units: 622,
     floor: 'I',
     number: '4',
     type: 'flat',
@@ -109,7 +109,7 @@ export function insertDemoHouse(lang) {
   demoParcels[4] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 5,
-    units: 660,
+    units: 587,
     floor: 'II',
     number: '5',
     type: 'flat',
@@ -123,7 +123,7 @@ export function insertDemoHouse(lang) {
   demoParcels[5] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 6,
-    units: 700,
+    units: 622,
     floor: 'II',
     number: '6',
     type: 'flat',
@@ -137,7 +137,7 @@ export function insertDemoHouse(lang) {
   demoParcels[6] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 7,
-    units: 660,
+    units: 587,
     floor: 'III',
     number: '7',
     type: 'flat',
@@ -151,7 +151,7 @@ export function insertDemoHouse(lang) {
   demoParcels[7] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 8,
-    units: 700,
+    units: 622,
     floor: 'III',
     number: '8',
     type: 'flat',
@@ -165,7 +165,7 @@ export function insertDemoHouse(lang) {
   demoParcels[8] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 9,
-    units: 660,
+    units: 587,
     floor: 'IV',
     number: '9',
     type: 'flat',
@@ -179,7 +179,7 @@ export function insertDemoHouse(lang) {
   demoParcels[9] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 10,
-    units: 700,
+    units: 622,
     floor: 'IV',
     number: '10',
     type: 'flat',
@@ -193,7 +193,7 @@ export function insertDemoHouse(lang) {
   demoParcels[10] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 11,
-    units: 1120,
+    units: 996,
     floor: __('demo.attic'),
     number: '11',
     type: 'flat',
@@ -206,7 +206,7 @@ export function insertDemoHouse(lang) {
   demoParcels[11] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 12,
-    units: 500,
+    units: 444,
     floor: __('demo.cellar'),
     number: '1',
     type: 'cellar',
@@ -219,7 +219,7 @@ export function insertDemoHouse(lang) {
   demoParcels[12] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 13,
-    units: 690,
+    units: 613,
     floor: __('demo.cellar'),
     number: '2',
     type: 'cellar',
@@ -232,7 +232,7 @@ export function insertDemoHouse(lang) {
   demoParcels[13] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 14,
-    units: 220,
+    units: 196,
     floor: __('demo.ground'),
     type: 'shop',
     lot: '4532/8/A/14',
@@ -244,86 +244,78 @@ export function insertDemoHouse(lang) {
 
   // ===== Demo Users with Roles =====
   
-  // You can log in to try the different roles
-  // will be removed from production
-  function capitalize(text) {
-    return text.charAt(0).toUpperCase() + text.slice(1);
-  }
+  // You can log in as manager or admin 
+  
   const com = { en: 'com', hu: 'hu' }[lang];
-  defaultRoles.forEach(function (role) {
-    const boyNames = __('demo.user.boyNames').split('\n');
-    const girlNames = __('demo.user.girlNames').split('\n');
-    const firstNames = boyNames.concat(girlNames);
-    const avatarBoys = ['http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png',
-      'http://pannako.hu/wp-content/uploads/avatar-1.png',
-      'http://pannako.hu/wp-content/uploads/avatar-2.png',
-      'http://pannako.hu/wp-content/uploads/avatar-5.png',
-      'http://pannako.hu/wp-content/uploads/avatar-7.png'];
-    const avatarGirls = ['http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png',
-      'http://pannako.hu/wp-content/uploads/avatar-3.png',
-      'http://pannako.hu/wp-content/uploads/avatar-4.png',
-      'http://pannako.hu/wp-content/uploads/avatar-6.png',
-      'http://pannako.hu/wp-content/uploads/avatar-8.png'];
-    const userWithRoleId = Accounts.createUser({ email: role.name + `@demo.${com}`, password: 'password',
-      profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) } });
-    const user = Meteor.users.findOne(userWithRoleId);
-    if (boyNames.includes(user.profile.firstName)) {
-      Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarBoys), 'settings.language': lang } });
-    } else {
-      Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarGirls), 'settings.language': lang } });
-    }
-    if (role.name === 'owner') {
-      return;
-    } else if (role.name === 'benefactor') {
-      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name,
-        parcelId: demoParcels[10], benefactorship: { type: 'rental' } });
-    } else {
-      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name });
-    }
+
+  const demoManagerId = Accounts.createUser({ 
+    email: `manager@${demoOrTest}.${com}`, password: 'password',
+    profile: { lastName: __('demo.manager.lastName'), 
+      firstName: __('demo.manager.firstName'), 
+      phone: '06 60 555 4321' } 
   });
+  Meteor.users.update({ _id: demoManagerId }, 
+    { $set: { 'emails.0.verified': true, 
+      avatar: '/images/avatars/avatar20.jpg',
+      'settings.language': lang } 
+    }
+  );  
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoManagerId }, role: 'manager' });  
+
+  const demoAdminId = Accounts.createUser({ 
+    email: `admin@${demoOrTest}.${com}`, password: 'password',
+    profile: { lastName: __('demo.admin.lastName'), 
+      firstName: __('demo.admin.firstName'),
+      phone: '06 60 762 7288' } 
+  });
+  Meteor.users.update({ _id: demoAdminId }, 
+    { $set: { 'emails.0.verified': true, 
+      avatar: '/images/avatars/avatar21.jpg',
+      'settings.language': lang } 
+    }
+  );  
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoAdminId }, role: 'admin' });  
 
   // ===== Filling demo Users =====
 
-  const fillingUsers = [];
-  for (userNo = 0; userNo < 18; userNo++) {
-    fillingUsers.push(Meteor.users.insert({
-      emails: [{ address: `fillinguser.${userNo}@demo.${com}`, verified: true }],
+  const dummyUsers = [];
+  for (let userNo = 0; userNo < 18; userNo++) {
+    dummyUsers.push(Meteor.users.insert({
+      emails: [{ address: `dummyuser.${userNo}@${demoOrTest}.${com}`, verified: true }],
       profile: { lastName: __(`demo.user.${userNo}.lastName`), firstName: __(`demo.user.${userNo}.firstName`) },
-      avatar: `images/avatars/avatar${userNo}.jpg`,
+      avatar: `/images/avatars/avatar${userNo}.jpg`,
       settings: { language: lang },
     }));
   }
-  const fillingManagerId = Meteor.users.insert({
-    emails: [{ address: `filling.manager@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.manager.lastName'), firstName: __('demo.user.manager.firstName'), phone: '06 30 234 5678' },
-    avatar: 'images/avatars/avatar20.jpg',
+
+  const demoMaintainerId = (Meteor.users.insert({
+    emails: [{ address: `demo.maintainer@${demoOrTest}.${com}`, verified: true }],
+    profile: { lastName: __('demo.maintainer.lastName'), firstName: __('demo.maintainer.firstName') },
+    avatar: '/images/avatars/avatarnull.png',
     settings: { language: lang },
-  });
-  //  status: 'online',    status: 'standby',
-  const fillingUserId = fillingUsers[5];
-  const fillingAdminId = fillingUsers[10];
+  }));
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoMaintainerId }, role: 'maintainer' }); 
+
+  const dummyUserId = dummyUsers[5];
 
   // ===== Memberships =====
 
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: fillingManagerId },
-    role: 'manager',
-  });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: fillingAdminId },
-    role: 'admin',
-  });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: fillingUsers[3] },
+    person: { userId: dummyUsers[3] },
     role: 'accountant',
+  });
+  [4, 10, 16].forEach((userNo) => { 
+    Memberships.insert({
+      communityId: demoCommunityId,
+      person: { userId: dummyUsers[userNo] },
+      role: 'overseer',
+    });
   });
   [0, 1, 4, 5, 6, 7, 8, 9, 10, 12].forEach((parcelNo) => {
     Memberships.insert({
       communityId: demoCommunityId,
-      person: { userId: fillingUsers[parcelNo] },
+      person: { userId: dummyUsers[parcelNo] },
       role: 'owner',
       parcelId: demoParcels[parcelNo],
       ownership: {
@@ -333,7 +325,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: fillingUsers[5] },
+    person: { userId: dummyUsers[5] },
     role: 'owner',
     parcelId: demoParcels[11],
     ownership: {
@@ -342,7 +334,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: fillingUsers[2] },
+    person: { userId: dummyUsers[2] },
     role: 'owner',
     parcelId: demoParcels[2],
     ownership: {
@@ -352,7 +344,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: fillingUsers[14] },
+    person: { userId: dummyUsers[14] },
     role: 'owner',
     parcelId: demoParcels[2],
     ownership: {
@@ -378,7 +370,7 @@ export function insertDemoHouse(lang) {
     });
     Memberships.insert({
       communityId: demoCommunityId,
-      person: { userId: fillingUsers[parcelNo] },
+      person: { userId: dummyUsers[parcelNo] },
       role: 'owner',
       parcelId: demoParcels[parcelNo],
       ownership: {
@@ -407,7 +399,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: fillingUsers[11] },
+    person: { userId: dummyUsers[11] },
     role: 'benefactor',
     parcelId: demoParcels[4],
     benefactorship: {
@@ -416,7 +408,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: fillingUsers[15] },
+    person: { userId: dummyUsers[15] },
     role: 'benefactor',
     parcelId: demoParcels[5],
     benefactorship: {
@@ -425,7 +417,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: fillingUsers[16] },
+    person: { userId: dummyUsers[16] },
     role: 'benefactor',
     parcelId: demoParcels[8],
     benefactorship: {
@@ -434,7 +426,7 @@ export function insertDemoHouse(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: fillingUsers[17] },
+    person: { userId: dummyUsers[17] },
     role: 'benefactor',
     parcelId: demoParcels[9],
     benefactorship: {
@@ -447,12 +439,12 @@ export function insertDemoHouse(lang) {
   // The demo (filling) users comment one after the other, round robin style
   let nextUserIndex = 1;
   function sameUser() {
-    return fillingUsers[nextUserIndex];
+    return dummyUsers[nextUserIndex];
   }
   function nextUser() {
     nextUserIndex += 7; // relative prime
-    nextUserIndex %= fillingUsers.length;
-    return fillingUsers[nextUserIndex];
+    nextUserIndex %= dummyUsers.length;
+    return dummyUsers[nextUserIndex];
   }
 
   ['0', '1', '2'].forEach((topicNo) => {
@@ -482,7 +474,7 @@ export function insertDemoHouse(lang) {
   ['0', '1', '2'].forEach((newsNo) => {
     const newsId = Topics.insert({
       communityId: demoCommunityId,
-      userId: fillingUsers[0],
+      userId: dummyUsers[0],
       category: 'news',
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
@@ -513,7 +505,7 @@ export function insertDemoHouse(lang) {
 
   const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,
-    userId: fillingUserId,
+    userId: dummyUserId,
     category: 'vote',
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
@@ -539,7 +531,7 @@ export function insertDemoHouse(lang) {
   castVote._execute({ userId: ownerships[10].person.userId }, { topicId: voteTopic0, castedVote: [0] });
   castVote._execute({ userId: ownerships[11].person.userId }, { topicId: voteTopic0, castedVote: [0] });
 
-  closeVote._execute({ userId: fillingManagerId }, { topicId: voteTopic0 }); // This vote is already closed
+  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic0 }); // This vote is already closed
 
   const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
@@ -584,6 +576,7 @@ export function insertDemoHouse(lang) {
   castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
   castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic2, castedVote: [2, 1, 3, 4] });
   castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic2, castedVote: [2, 3, 1, 4] });
 
   ['0', '1'].forEach(commentNo =>
     Comments.insert({
@@ -657,20 +650,20 @@ export function insertDemoHouse(lang) {
 
   const demoMessageRoom = Topics.insert({
     communityId: demoCommunityId,
-    userId: fillingUserId,
+    userId: dummyUserId,
     category: 'room',
-    participantIds: [fillingUserId, fillingUsers[2]],
+    participantIds: [dummyUserId, dummyUsers[2]],
   });
 
   Comments.insert({
     topicId: demoMessageRoom,
-    userId: fillingUsers[2],
+    userId: dummyUsers[2],
     text: __('demo.messages.0'),
   });
 
   Comments.insert({
     topicId: demoMessageRoom,
-    userId: fillingUserId,
+    userId: dummyUserId,
     text: __('demo.messages.1'),
   });
 
@@ -718,7 +711,7 @@ export function insertDemoHouse(lang) {
 
     // === Eloirasok ===
 
-  insertParcelBilling._execute({ userId: fillingManagerId }, {
+  insertParcelBilling._execute({ userId: demoManagerId }, {
     communityId: demoCommunityId,
     projection: 'perArea',
     amount: 275,
@@ -732,7 +725,7 @@ export function insertDemoHouse(lang) {
 
   for (i = 0; i < 4; i++) {
     const place = ['2', '5', '8', '14'];
-    insertParcelBilling._execute({ userId: fillingManagerId }, {
+    insertParcelBilling._execute({ userId: demoManagerId }, {
       communityId: demoCommunityId,
       projection: 'perHabitant',
       amount: 2500,
@@ -746,7 +739,7 @@ export function insertDemoHouse(lang) {
   }
   
   for (i = 1; i < 11; i++) {
-    insertParcelBilling._execute({ userId: fillingManagerId }, {
+    insertParcelBilling._execute({ userId: demoManagerId }, {
       communityId: demoCommunityId,
       projection: 'perVolume',
       amount: 85,
@@ -759,7 +752,7 @@ export function insertDemoHouse(lang) {
     });
   }
 
-  insertParcelBilling._execute({ userId: fillingManagerId }, {
+  insertParcelBilling._execute({ userId: demoManagerId }, {
     communityId: demoCommunityId,
     projection: 'absolute',
     amount: 60000,
@@ -1014,6 +1007,50 @@ export function insertDemoHouse(lang) {
     });
   }
 
+  for (let m = 1; m < 13; m += 2) {
+    const payable = [0, -8432, 0, -7250, 0, -9251, 0, -11624, 0, -10635, 0, -8540];
+    Payments.insert({
+      communityId: demoCommunityId,
+      phase: 'done',
+      valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
+      amount: payable[m],
+      accounts: {
+        'Pénz számla': 'Bank főszámla',
+        'Könyvelés nem': 'Víz',
+        'Könyvelés helye': 'Központi',
+      },
+    });
+  }
+    
+  for (let m = 1; m < 13; m += 2) {
+    const payable = [0, -10562, 0, -9889, 0, -11210, 0, -11152, 0, -11435, 0, -9930];
+    Payments.insert({
+      communityId: demoCommunityId,
+      phase: 'done',
+      valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
+      amount: payable[m],
+      accounts: {
+        'Pénz számla': 'Bank főszámla',
+        'Könyvelés nem': 'Csatorna',
+        'Könyvelés helye': 'Központi',
+      },
+    });
+  }
+
+  for (let m = 1; m < 13; m++) {
+    Payments.insert({
+      communityId: demoCommunityId,
+      phase: 'done',
+      valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
+      amount: -10250,
+      accounts: {
+        'Pénz számla': 'Bank főszámla',
+        'Könyvelés nem': 'Áram',
+        'Könyvelés helye': 'Központi',
+      },
+    });
+  }
+
     // === Tervezetek ===
 
  /* Payments.insert({
@@ -1040,12 +1077,52 @@ export function insertDemoHouse(lang) {
 
   return {
     demoCommunityId,
-    fillingUserId,
-    fillingAdminId,
-    fillingManagerId,
-    fillingUsers,
+    dummyUserId,
+    demoAdminId,
+    demoManagerId,
+    dummyUsers,
     demoParcels,
   };
+}
+
+export function testHouseUsers(lang) {
+  const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
+  const com = { en: 'com', hu: 'hu' }[lang];
+  if (Meteor.users.findOne({ 'emails.0.address': __(`guest@test.${com}`) })) {
+    return;
+  }
+  const communityId = Communities.findOne({ name: __('test.house') })._id;
+  function capitalize(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+  defaultRoles.forEach(function (role) {
+    if (role.name === 'manager' || role.name === 'admin') {
+      return;
+    }
+    const firstNames = __('test.firstNames').split('\n');
+    const userWithRoleId = Accounts.createUser({
+      email: role.name + `@test.${com}`,
+      password: 'password',
+      profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) } });
+    const user = Meteor.users.findOne(userWithRoleId);
+    const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
+    Meteor.users.update({ _id: userWithRoleId },
+      { $set: { 
+        'emails.0.verified': true,
+        avatar: '/images/avatars/avatarTestUser.png',
+        'settings.language': lang,
+      } }); 
+    if (role.name === 'owner') {
+      Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
+      Memberships.insert({ communityId, person: { userId: userWithRoleId }, role: role.name,
+        parcelId,  ownership: { share: new Fraction(1, 2), representor: true } });
+    } else if (role.name === 'benefactor') {
+      Memberships.insert({ communityId, person: { userId: userWithRoleId }, role: role.name,
+        parcelId, benefactorship: { type: 'rental' } });
+    } else {
+      Memberships.insert({ communityId, person: { userId: userWithRoleId }, role: role.name });
+    }
+  });
 }
 
 function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
@@ -1091,7 +1168,7 @@ Meteor.methods({
     });
     Meteor.users.update({ _id: demoUserId },
       { $set: { 'emails.0.verified': true,
-        avatar: 'images/avatars/avatarnull.png',
+        avatar: '/images/avatars/avatarnull.png',
         'settings.language': 'hu' } });
     const demoHouse = Communities.findOne({ name: 'Demo ház' });
     const demoCommunityId = demoHouse._id;
@@ -1123,8 +1200,8 @@ Meteor.methods({
       $push: { 'children.0.children.1.children': { name: (14 + counter) } },
     });
 
-    const fillingManagerId = Meteor.users.findOne({ 'emails.0.address': 'filling.manager@demo.hu' })._id;
-    insertParcelBilling._execute({ userId: fillingManagerId }, {
+    const demoManagerId = Meteor.users.findOne({ 'emails.0.address': 'manager@demo.hu' })._id;
+    insertParcelBilling._execute({ userId: demoManagerId }, {
       communityId: demoCommunityId,
       projection: 'perArea',
       amount: 275,
@@ -1151,7 +1228,8 @@ Meteor.methods({
 
     Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
-    }, moment.duration(30, 'minutes').asMilliseconds());
+    }, moment.duration(120, 'minutes').asMilliseconds());
+
     const email = Meteor.users.findOne({ _id: demoUserId }).emails[0].address;
     return email;
   },
