@@ -9,13 +9,12 @@ import { numeral } from 'meteor/numeral:numeral';
 import 'meteor/numeral:languages';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { comtype } from '/imports/comtypes/comtype.js';
 import { update as usersUpdate } from '/imports/api/users/methods.js';
 
 function getBrowserLanguage() {
   // https://stackoverflow.com/questions/31471411/how-to-set-user-language-settings-in-meteor#31471877
   const language = window.navigator.userLanguage || window.navigator.language;  // works IE/SAFARI/CHROME/FF
-  console.log('Browser language:', language);
+//  console.log('Browser language:', language);
   return language.split('-')[0];
 }
 
@@ -65,15 +64,6 @@ Meteor.startup(function amendNumeralLocale() {
   huLocale.delimiters.thousands = '.';
   numeral.language('hu', huLocale);
 });
-
-// The different community types bring in their own i18n extensions
-
-Meteor.startup(function comtypeLanguageExtensions() {
-  TAPi18n.loadTranslations(comtype.translation, 'project');
-});
-
-// Note: Currently this is run on the CLIENT ONLY
-// So comtype transaltions will not be available on the server.
 
 // Known problems with this language and translation system
 // 1. If there is no english label, the other language labels are not used either
