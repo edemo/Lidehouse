@@ -535,13 +535,13 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
-    userId: nextUser(),
+    userId: demoManagerId,
     category: 'vote',
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
     agendaId,
     vote: {
-      closesAt: moment().add(2, 'week').toDate(),
+      closesAt: moment().add(2, 'month').toDate(),
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',
@@ -552,13 +552,13 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const voteTopic2 = Topics.insert({
     communityId: demoCommunityId,
-    userId: nextUser(),
+    userId: ownerships[1].person.userId,
     category: 'vote',
     title: __('demo.vote.2.title'),
     text: __('demo.vote.2.text'),
     agendaId,
     vote: {
-      closesAt: moment().add(1, 'month').toDate(),
+      closesAt: moment().add(3, 'month').toDate(),
       type: 'preferential',
       procedure: 'online',
       effect: 'legal',
@@ -585,6 +585,24 @@ export function insertDemoHouse(lang, demoOrTest) {
       text: __(`demo.vote.2.comment.${commentNo}`),
     })
   );
+
+  const voteTopic3 = Topics.insert({
+    communityId: demoCommunityId,
+    userId: ownerships[8].person.userId,
+    category: 'vote',
+    title: __('demo.vote.3.title'),
+    text: __('demo.vote.3.text'),
+    agendaId,
+    vote: {
+      closesAt: moment().add(9, 'week').toDate(),
+      procedure: 'online',
+      effect: 'legal',
+      type: 'petition',
+    },
+  });
+
+  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic3, castedVote: [0] });
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic3, castedVote: [0] });
 
   // ===== Tickets =====
 
@@ -1099,7 +1117,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
     if (role.name === 'manager' || role.name === 'admin') {
       return;
     }
-    const firstNames = __(`${demoOrTest}.firstNames`).split('\n');
+    const firstNames = __('test.firstNames').split('\n');
     const userWithRoleId = Accounts.createUser({
       email: role.name + `@${demoOrTest}.${com}`,
       password: 'password',

@@ -176,6 +176,10 @@
           "0": "A halovány színek jobban mutatnak. Világosabb hatású lesz a lépcsőház.",
           "1": "Jajj csak szürke NE legyen. Akkor költözöm"
         }
+      },
+      "3": {
+        "title": "Közös képviselő leváltása",
+        "text": "Kerüljön kiírásra írásos szavazás vagy tartsunk rendkívüli közgyűlést ebből a célból. Kérjük azokat, akik egyetértenek a közös képviselő leváltásával, támogassák ezt a javaslatot. Amennyiben a tulajdoni hányadok legalább 10%-a támogatja ezt a javaslatot, akkor a jelenlegi közös képviselőnek kötelező ebben a kérdésben szavazást kiírni. Amennyiben erre nem kerül sor ezen szavazás sikeres lezárását követő 30 napon belül, akkor a Számvizsgáló Bizottságnak kell ugyanezt megtennie."
       }
     },
     "agenda": {
