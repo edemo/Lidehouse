@@ -177,6 +177,10 @@
           "0": "Light colors are always prefered. Makes the area look brighter.",
           "1": "OMG If you choose grey, I'm moving out!"
         }
+      },
+      "3": {
+        "title": "Replacement of Manager",
+        "text": "Let's have a vote in writing or hold an extraordinary meeting for this purpose. Those who agree to replace the manager, please support this proposal. If at least 10% of the ownership ratios support this proposal the current manager is obliged to open a vote on this issue. If he fail to do this within 30 days of the successful completion of this vote, the Audit Board shall do the same."
       }
     },
     "agenda": {

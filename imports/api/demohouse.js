@@ -541,7 +541,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.vote.1.text'),
     agendaId,
     vote: {
-      closesAt: moment().add(2, 'week').toDate(),
+      closesAt: moment().add(2, 'month').toDate(),
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',
@@ -558,7 +558,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.vote.2.text'),
     agendaId,
     vote: {
-      closesAt: moment().add(1, 'month').toDate(),
+      closesAt: moment().add(3, 'month').toDate(),
       type: 'preferential',
       procedure: 'online',
       effect: 'legal',
@@ -585,6 +585,24 @@ export function insertDemoHouse(lang, demoOrTest) {
       text: __(`demo.vote.2.comment.${commentNo}`),
     })
   );
+
+  const voteTopic3 = Topics.insert({
+    communityId: demoCommunityId,
+    userId: nextUser(),
+    category: 'vote',
+    title: __('demo.vote.3.title'),
+    text: __('demo.vote.3.text'),
+    agendaId,
+    vote: {
+      closesAt: moment().add(9, 'week').toDate(),
+      procedure: 'online',
+      effect: 'legal',
+      type: 'petition',
+    },
+  });
+
+  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic3, castedVote: [0] }); // no
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic3, castedVote: [0] });
 
   // ===== Tickets =====
 
