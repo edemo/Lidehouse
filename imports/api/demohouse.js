@@ -535,7 +535,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
-    userId: nextUser(),
+    userId: demoManagerId,
     category: 'vote',
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
@@ -552,7 +552,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const voteTopic2 = Topics.insert({
     communityId: demoCommunityId,
-    userId: nextUser(),
+    userId: ownerships[1].person.userId,
     category: 'vote',
     title: __('demo.vote.2.title'),
     text: __('demo.vote.2.text'),
@@ -588,7 +588,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const voteTopic3 = Topics.insert({
     communityId: demoCommunityId,
-    userId: nextUser(),
+    userId: ownerships[8].person.userId,
     category: 'vote',
     title: __('demo.vote.3.title'),
     text: __('demo.vote.3.text'),
@@ -601,7 +601,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic3, castedVote: [0] }); // no
+  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic3, castedVote: [0] });
   castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic3, castedVote: [0] });
 
   // ===== Tickets =====
