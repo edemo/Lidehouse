@@ -1103,13 +1103,13 @@ export function insertDemoHouse(lang, demoOrTest) {
   };
 }
 
-export function testHouseUsers(lang) {
+export function insertLoginableUsersWithRoles(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const com = { en: 'com', hu: 'hu' }[lang];
-  if (Meteor.users.findOne({ 'emails.0.address': __(`guest@test.${com}`) })) {
+  if (Meteor.users.findOne({ 'emails.0.address': __(`guest@${demoOrTest}.${com}`) })) {
     return;
   }
-  const communityId = Communities.findOne({ name: __('test.house') })._id;
+  const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
   function capitalize(text) {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
@@ -1117,9 +1117,9 @@ export function testHouseUsers(lang) {
     if (role.name === 'manager' || role.name === 'admin') {
       return;
     }
-    const firstNames = __('test.firstNames').split('\n');
+    const firstNames = __(`${demoOrTest}.firstNames`).split('\n');
     const userWithRoleId = Accounts.createUser({
-      email: role.name + `@test.${com}`,
+      email: role.name + `@${demoOrTest}.${com}`,
       password: 'password',
       profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) } });
     const user = Meteor.users.findOne(userWithRoleId);
