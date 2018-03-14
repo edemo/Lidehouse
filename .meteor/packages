@@ -31,6 +31,8 @@ djk:jquery-ui
 ephemer:reactive-datatables
 flawless:meteor-toastr
 numeral:numeral
+perak:markdown
+q42:autoform-markdown
 
 # data
 mongo@1.1.14
