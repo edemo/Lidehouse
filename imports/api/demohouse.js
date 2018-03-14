@@ -1117,7 +1117,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
     if (role.name === 'manager' || role.name === 'admin') {
       return;
     }
-    const firstNames = __(`${demoOrTest}.firstNames`).split('\n');
+    const firstNames = __('test.firstNames').split('\n');
     const userWithRoleId = Accounts.createUser({
       email: role.name + `@${demoOrTest}.${com}`,
       password: 'password',
