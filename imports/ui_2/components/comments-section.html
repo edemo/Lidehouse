@@ -1,8 +1,17 @@
 <template name="Comments_section">
   <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12 col-md-9 text-left">
+      {{#if isVote}}
+        {{> UserVoteStatus}}
+      {{/if}}
+    </div>
+    <div class="col-xs-12 col-md-3 text-right">
+      <!-- ha már heartelte: -->
+      <span class="glyphicon glyphicon-heart larger-icon comment-icon-hearted" aria-hidden="true"></span> <small class="comment-icon-hearted-text">23</small>  <!-- MOCK -->
+      <!-- ha még nem heartelte: -->
+      <!-- <span class="glyphicon glyphicon-heart-empty larger-icon" aria-hidden="true"></span> -->
       <a data-toggle="collapse" data-target="#{{topicId}}" aria-expanded="true" aria-controls="#{{topicId}}">
-        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span> {{count}}
+        <span class="glyphicon glyphicon-comment larger-icon" aria-hidden="true"></span> {{count}}
         <!-- hozzászólás -->
       </a>
     </div>
@@ -17,7 +26,7 @@
       <div class="col-xs-12">
         <div class="media">
           <div class="media-left">
-            <img src="{{selfAvatar}}" alt="avatar" align="center" width="35" height="35" />
+            <img src="{{selfAvatar}}" class="img-circle" alt="avatar" align="center" width="35" height="35" />
           </div>
           <div class="media-body">
             <textarea id="text_{{topicId}}" rows="" cols="3" placeholder="{{_ 'newCommentPlaceholder'}}" class="full-width"></textarea>
@@ -38,7 +47,7 @@
       <div class="media">
         <div class="media-left">
           <a href="#">
-            <img class="media-object" src="{{avatar}}" alt="avatar" width="35" height="35" >
+            <img class="media-object img-circle" src="{{avatar}}" alt="avatar" width="35" height="35" >
           </a>
         </div>
         <div class="media-body">

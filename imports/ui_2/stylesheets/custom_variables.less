@@ -40,6 +40,7 @@
 @chat-avatar-margin: 15px;
 
 @base-link-color: #1885d8;
+@hearted-icon: #7b0f2c;
 @text-alt: #535353;
 
 //error status - w8 4 change
@@ -67,10 +68,11 @@
 
 // board
 // @section-btn-col: rgba(251, 172, 53, 0.63);
-@section-btn-col: rgba(228, 137, 0, 0.43);
+@section-btn-col: lighten(@section-btn-col-collapsed, 7%);
 // @section-btn-col-collapsed: rgba(104, 113, 151, 0.39);
-@section-btn-col-collapsed: rgba(104, 113, 151, 0.22);
-@news-title: rgba(186, 213, 169, 0.65);
+@section-btn-col-collapsed: #0f617b;
+@news-title: @section-btn-col-collapsed;
+@news-title-color: white;
 @icon-bcg-down: rgba(255, 255, 255, 0.25);
 @icon-gray: gray;
 @toolset-bcg: lighten(@pip-usericon-bcg, 23%);
@@ -84,7 +86,9 @@
 @choice-border: rgba(104, 156, 87, 0.47);
 @choice-span-col: gray;
 @vote-nope-col: gray;
-
+@sortvote-bcg: white;
+@sortvote-border: #c87b2d;
+@sortvote-li-shadow: #b6b6b6;
 // report page table
 @th-border: #c8c8c8;
 @td-border: #d5d5d5;
@@ -123,6 +127,7 @@
 @message-top-border: #d8d8d8;
 @msg-nav-bcg: white;
 @msg-nav-shadow: #c5c5c5;
+@send-icon-color: #c87b2d;
 
 //reports
 @error-tr-hover: rgba(0, 84, 255, 0.1);
