@@ -217,7 +217,7 @@
       <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="collapse" data-target="#feedback-pane" aria-expanded="true" aria-controls="#feedback-pane"></span>
       <div class="row">
         <div class="col-xs-12">
-          {{#autoForm id="af.feedback" collection=feedbackCollection schema=feedbackInsertSchema omitFields="communityId, userId, category, title" type="method" meteormethod="topics.insert" singleMethodArgument=true template="bootstrap3-inline"}}
+          {{#autoForm id="af.feedback" collection=feedbackCollection schema=feedbackInsertSchema omitFields="communityId, userId, category, title, agendaId, sticky" type="method" meteormethod="topics.insert" singleMethodArgument=true template="bootstrap3-inline"}}
           {{> afQuickFields}}
           <div>
             <button type="submit" data-toggle="collapse" data-target="#feedback-pane" class="btn btn-primary">{{_ "send"}}</button>
