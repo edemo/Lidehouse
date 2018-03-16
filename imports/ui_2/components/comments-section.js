@@ -5,6 +5,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 
 import { Comments } from '/imports/api/comments/comments.js';
+import { Topics } from '/imports/api/topics/topics.js';
 
 import '../components/comments-section.html';
 
@@ -15,6 +16,9 @@ Template.Comments_section.onCreated(function commentsSectionOnCreated() {
 });
 
 Template.Comments_section.helpers({
+  isVote() {
+    return Topics.findOne(this.topicId).category==='vote';
+  },
   count() {
     return Comments.find({ topicId: this.topicId }).count();
   },

@@ -22,9 +22,25 @@
 .text-alt {
   color: @text-alt;
 }
-
+.larger-icon::before {
+  font-size: 17px;
+}
+.comment-icon {
+  color: @base-link-color;
+  cursor: pointer;
+}
+.comment-icon-hearted {
+  color: @hearted-icon;
+  cursor: pointer;
+  &-text {
+    margin-right: 7px;
+  }
+}
+.glyphicon {
+  vertical-align: bottom;
+}
 body {
-  background-color: unset;
+  background-color: #eae5e2;
   background-image: unset;
 }
 a {
@@ -70,29 +86,82 @@ a {
   }
 }
 .right-orange {
-  background-color: #dac39a;
-  position: absolute;
+  //background-color: #dac39a;
+  background-color: white;
+  //position: absolute;
+  position: sticky;
+  top: 0;
   z-index: 1;
-  padding: 7px 13px;
   border-radius: 0 0 0 0;
   left: 0;
   right: 0;
-  height: 55px;
+  height: 77px !important;
   box-shadow: @nav-shadow;
   //display: none;
   @media screen and (max-width: 40em) {
     display: block;
   }
+  .divs {
+    .demouser-autologin, .login-btn {
+       margin-top: 10px;
+       font-size: 20px;
+       background: transparent;
+       color: white;
+       text-transform: capitalize;
+    }
+    .login-btn {
+      color: black;
+      margin: 10px;
+    }
+    height: 100%;
+    &-left {
+      background-color: #998072;
+      border-radius: 0 10px 50px 0;
+      width:67%;
+      &.logged-out {
+        width:27%;
+      }
+    }
+    &-right {
+      width:33%;
+      &.logged-out {
+        width: 73%;
+      }
+      .pip-usericon {
+        display: block;
+        position: absolute;
+        right: 17px;
+        top: 17px;
+        @media screen and (max-width: 40em) {
+          right: 57px;
+        }
+      }
+    }
+  }
+  .home-choser {
+    background: transparent;
+    font-size: 23px;
+    margin-top: 13px;
+    padding-left: 21px;
+    color: white;
+    font-weight: bold;
+  }
 }
 .nav-hamburger {
-  padding: 10px;
-  font-size: 1.7em;
+  display: none;
+  font-size: 2.3em;
   color: black;
+  position: absolute;
+  right: 17px;
+  top: 21px;
+  @media screen and (max-width: 40em) {
+    display: block;
+  }
 }
 #menu {
   padding-left: 0px;
   // padding-top: 75px;
-  box-shadow: @menu-shadow;
+  //box-shadow: @menu-shadow;
   @media screen and (min-width: 40em) {
     z-index: 1;
   }
@@ -110,10 +179,7 @@ a {
       top: 0;
       right: 0;
       height: 55px;
-      display: none;
-      @media screen and (min-width: 40em) {
-        display: block;
-      }
+      display: block !important;
       &:hover {
         background-color: lighten(@pip-usericon-bcg, 5%);
       }
@@ -125,6 +191,8 @@ a {
     .house-pic {
       max-height: 150px;
       width: 270px;
+      -webkit-filter: sepia(.7);
+      filter: sepia(.7);
 
     }
     .comm-drop {
@@ -208,26 +276,9 @@ a {
   }
 }
 .vote-container .comment-collapse {
-  margin: 0px -70px -17px -17px;
+  //margin: 0px -70px -17px -17px;
 }
-#menu::after {
-  content: "";
-  background: @new-nav-bcg;
-  opacity: 0.4;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  position: fixed;
-  width: 270px;
-  z-index: -1;
-  // background-image: url("http://static.panoramio.com/photos/original/59978318.jpg");
-  background-image: @new-nav-bcg;
-  background-position: left center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-}
+
 //feedback still in progress
 #feedback-pane {
   position: absolute;
@@ -298,11 +349,11 @@ a {
     background: none;
   }
   font-size: 14px;
-  background-color: @fb-bcg-lighter;
+  background-color: #eae5e2;
   overflow-y: auto;
   overflow-x: hidden;
   @media screen and (max-width: 40em) {
-    padding-top: 7px;
+    //padding-top: 7px;
   }
 }
 .menu-open .content-container {
@@ -369,13 +420,18 @@ nav::after {
 .page-content {
   padding: unset;
 }
+.page {
+  &.auth {
+    padding-top:90px;
+  }
+}
 [class^="page"],[class*="page"] {
   padding: 11px 31px 31px 31px;
   @media screen and (max-width: 60em) {
     padding: 0px;
   }
   @media screen and (max-width: 40em) {
-    margin-top: 53px;
+    //margin-top: 53px;
   }
 }
 .page-vote {
