@@ -71,7 +71,7 @@
       {{title}}
     </div>
     <div class="full-width">
-        {{{text}}} <!--TODO: fix this, XSS problem -->
+      {{#markdown}}{{text}}{{/markdown}}
     </div>
   </div>
   {{/each}}

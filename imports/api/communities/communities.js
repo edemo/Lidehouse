@@ -17,7 +17,7 @@ import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-bil
 
 export const Communities = new Mongo.Collection('communities');
 
-const defaultAvatar = 'http://clipart-library.com/image_gallery/215485.png';
+const defaultAvatar = '/images/defaulthouse.jpg';
 
 Communities.schema = new SimpleSchema([
   { name: { type: String, max: 100 } },

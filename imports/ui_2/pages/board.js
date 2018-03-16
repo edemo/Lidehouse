@@ -54,7 +54,7 @@ Template.News.events({
       id: 'af.news.insert',
       collection: Topics,
       schema: Topics.schema,
-      omitFields: ['communityId', 'userId', 'category'],
+      omitFields: ['communityId', 'userId', 'category', 'agendaId'],
       type: 'method',
       meteormethod: 'topics.insert',
       template: 'bootstrap3-inline',

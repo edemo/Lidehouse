@@ -99,13 +99,19 @@
       "17": {
         "firstName": "Rose",
         "lastName": "Ingram"
-      },
-      "manager": {
-        "firstName": "Lewis",
-        "lastName": "King"
-      },
-      "boyNames": ["Adam", "David","Thomas", "James", "Steve", "Andrew"],
-      "girlNames": ["Eve", "Maggie", "Sue", "Rose", "Mary", "Julie"]
+      }
+    },
+    "manager": {
+      "firstName": "Lewis",
+      "lastName": "King"
+    },
+    "admin": {
+      "firstName": "Patrick",
+      "lastName": "Shepherd"
+    },
+    "maintainer": {
+      "firstName": "Shane",
+      "lastName": "Young"
     },
     "topic": {
       "0": {
@@ -155,7 +161,8 @@
       },
       "1": {
         "title": "Bicycle storage",
-        "text": "Shall we create a bicycle storage for maximum $1000 in the basement.\nIf accepted, we will get 3 offers and choose the best."
+        "text": ["There is no safe storage for bicyles in the house. It would be advisable to construct a 12-seater storage on the garage level. In case of acceptance we will ask for 3 offers.",
+          "Proposed resolution: The house shall establish a bicycle storage from a maximum gross amount of 200,000 HUF on the garage level. The Manager is responsible for the request of offers and the execution. Deadline: 15/08/2018."]
       },
       "2": {
         "title": "Color of the building walls",
@@ -170,6 +177,10 @@
           "0": "Light colors are always prefered. Makes the area look brighter.",
           "1": "OMG If you choose grey, I'm moving out!"
         }
+      },
+      "3": {
+        "title": "Replacement of Manager",
+        "text": "Let's have a vote in writing or hold an extraordinary meeting for this purpose. Those who agree to replace the manager, please support this proposal. If at least 10% of the ownership ratios support this proposal the current manager is obliged to open a vote on this issue. If he fail to do this within 30 days of the successful completion of this vote, the Audit Board shall do the same."
       }
     },
     "agenda": {
@@ -211,5 +222,9 @@
         "4": "Bank loan"
       }
     }
+  },
+  "test": {
+    "house": "Test House",
+    "firstNames": ["Adam", "David","Thomas", "James", "Steve", "Andrew", "Eve", "Maggie", "Sue", "Rose", "Mary", "Julie"]
   }
 }

@@ -156,7 +156,7 @@
       "label": "Napirend (aminek része)"
     },
     "sticky" : {
-      "label": "Kiemelt"
+      "label": "Rögzített"
     }
   },
   "schemaVotings": {
@@ -186,7 +186,7 @@
       "effect": {
         "label": "Szavazás hatása",
         "poll": "Közvéleménykutatás",
-        "legal": "Jogegrős szavazás"
+        "legal": "Jogerős szavazás"
       },
       "type": {
         "label": "Szavazás típusa",
