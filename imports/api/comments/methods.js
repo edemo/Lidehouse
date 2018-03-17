@@ -52,6 +52,32 @@ export const remove = new ValidatedMethod({
   },
 });
 
+
+export const like = new ValidatedMethod({
+  name: 'like',
+  validate: new SimpleSchema({
+    coll: { type: String },
+    id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ coll, id, userId }) {
+    let collection;
+    if (coll === 'topics') collection = Topics;
+    else if (coll === 'comments') collection = Comments;
+    const object = checkExists(collection, id);
+
+    // toggle Like
+    const index = _.indexOf(object.likes, userId);
+    if (index >= 0) {
+      collection.update(id, { $pull: { likes: userId } });
+    } else {
+      collection.update(id, { $push: { likes: userId } });
+    }
+  },
+});
+
+//--------------------------------------------------------
+
 const COMMENTS_METHOD_NAMES = _.pluck([
   insert,
   update,

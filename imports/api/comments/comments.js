@@ -2,10 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 import { Timestamps } from '/imports/api/timestamps.js';
 import faker from 'faker';
 
-import { Topics } from '../topics/topics.js';
+import { Topics, likesHelpers } from '../topics/topics.js';
 
 class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
@@ -31,6 +32,8 @@ Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
   text: { type: String, optional: true },
+  likes: { type: Array, defaultValue: [], autoform: { omit: true } },
+  'likes.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
 });
 
 Comments.attachSchema(Comments.schema);
@@ -47,6 +50,8 @@ Comments.helpers({
     return this.userId === userId;
   },
 });
+
+Comments.helpers(likesHelpers);
 
 // Deny all client-side updates since we will be using methods to manage this collection
 Comments.deny({

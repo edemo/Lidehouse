@@ -1,3 +1,4 @@
+/* globals document */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
@@ -17,7 +18,16 @@ Template.Comments_section.onCreated(function commentsSectionOnCreated() {
 
 Template.Comments_section.helpers({
   isVote() {
-    return Topics.findOne(this.topicId).category==='vote';
+    const topic = Topics.findOne(this.topicId);
+    return topic.category === 'vote';
+  },
+  likesCount() {
+    const topic = Topics.findOne(this.topicId);
+    return topic.likesCount();
+  },
+  userLikesThis() {
+    const topic = Topics.findOne(this.topicId);
+    return topic.isLikedBy(Meteor.userId());
   },
   count() {
     return Comments.find({ topicId: this.topicId }).count();
@@ -49,8 +59,15 @@ Template.Comments_section.events({
     Meteor.call('comments.insert', {
       topicId: this.topicId,
       userId: Meteor.userId(),
-      text: document.getElementById('text_'+this.topicId).value,
+      text: document.getElementById('text_' + this.topicId).value,
     });
-    document.getElementById('text_'+this.topicId).value = '';
+    document.getElementById('text_' + this.topicId).value = '';
+  },
+  'click .js-like'(event) {
+    Meteor.call('like', {
+      coll: 'topics',
+      id: this.topicId,
+      userId: Meteor.userId(),
+    });
   },
 });

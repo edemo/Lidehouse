@@ -6,18 +6,23 @@
       {{/if}}
     </div>
     <div class="col-xs-12 col-md-3 text-right">
-      <!-- ha már heartelte: -->
-      <span class="glyphicon glyphicon-heart larger-icon comment-icon-hearted" aria-hidden="true"></span> <small class="comment-icon-hearted-text">23</small>  <!-- MOCK -->
-      <!-- ha még nem heartelte: -->
-      <!-- <span class="glyphicon glyphicon-heart-empty larger-icon" aria-hidden="true"></span> -->
+      <!-- like button -->
+      <a class="js-like"> 
+      {{#if userLikesThis}}
+        <span class="glyphicon glyphicon-heart larger-icon" aria-hidden="true"></span>
+      {{else}}
+        <span class="glyphicon glyphicon-heart-empty larger-icon" aria-hidden="true"></span>
+      {{/if}}
+        <small class="comment-icon-hearted-text">{{likesCount}}</small>
+      </a>
+      <!-- comments button -->
       <a data-toggle="collapse" data-target="#{{topicId}}" aria-expanded="true" aria-controls="#{{topicId}}">
         <span class="glyphicon glyphicon-comment larger-icon" aria-hidden="true"></span> {{count}}
-        <!-- hozzászólás -->
       </a>
     </div>
   </div>
   <div class="collapse comment-collapse" id="{{topicId}}">
-    <!-- other comment row -->
+    <!-- other people's comment rows -->
     {{#each comment in comments}}
       {{> Comment comment}}
     {{/each}}
