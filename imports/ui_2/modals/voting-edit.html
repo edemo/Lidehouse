@@ -1,0 +1,101 @@
+<template name="Voting_edit">
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content page-vote">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">{{_ title}}</h4>
+            </div>
+            {{! Needed autoform context comes from the outer modal creator: id=, collection=, schema=, doc=, type=, meteormethod=, singleMethodArgument=true, template=}}
+            {{#autoForm this}}
+            <div class="modal-body">
+                <div class="row">
+                <div class="col-xs-12 left-padded text-center">
+                    <br>
+                </div>
+                </div>
+                <div class="row">
+                <form>
+                <div class="col-xs-12 col-md-6 col-lg-6">
+                    {{> afQuickField name="title"}}
+                    {{> afQuickField name="text" rows=8}}
+                    {{> afQuickField name="agendaId" options=agendaOptions}}
+                    <div class="left-padded">
+                        <label>Csatolmányok</label>
+                        <hr>
+                    </div>
+                    <div class="form-group">
+                        <ul class="vote-files">
+                        <!-- li in files -->
+                        <li class="row file-dl">
+                            <div class="col-xs-10">
+                            Fájl.doc
+                            </div>
+                            <div class="col-xs-2">
+                            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                            </div>
+                        </li>
+                        <li class="row file-dl">
+                            <div class="col-xs-10">
+                            bizonyitek.jpg
+                            </div>
+                            <div class="col-xs-2">
+                            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
+                            </div>
+                        </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="col-xs-12 text-center">
+                        <button type="button" class="btn btn-secondary" name="docupload"> + {{_ "Upload"}}</button>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- right side -->
+                <div class="col-xs-12 col-md-6 col-lg-6">
+                    {{> afQuickField name="vote.procedure"}}
+                    {{> afQuickField name="vote.effect"}}
+                    {{> afQuickField name="vote.type"}}
+                    <div class="row">
+                        <div class="col-xs-12 text-center">{{_ "Choices"}}<hr></div>
+                    </div>
+                    <div class="row choice">
+                        {{#each choice in choices}}
+                        <div class="col-xs-12 choice-rect">
+                        {{_ choice}}<span class="glyphicon glyphicon-remove js-remove-choice" data-index="{{@index}}" data-choice={{choice}} aria-hidden="true"></span>
+                        </div>
+                        {{/each}}
+                    </div>
+                    <div class="row choice editing hidden">
+                        <div class="col-xs-12 choice-rect">
+                        <span class="glyphicon glyphicon-ok js-enter-choice" aria-hidden="true"></span>
+                        <input type="text" class="form-control" name="new-choice" placeholder="pl. Nem szeretnék, de jó ötlet">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                        <button type="button" class="btn btn-secondary js-add-choice" name="upload"> + {{_ "new"}} {{_ "choice"}}</button>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="col-xs-12 form-inline vote-dates">
+                    {{> afQuickField name="createdAt" value=defaultOpenDate }}
+                    {{> afQuickField name="vote.closesAt" value=defaultCloseDate }}
+                </div>
+                </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{_ "cancel"}}</button>
+                <button type="submit" class="btn btn-primary">{{_ btnOK}}</button>
+                </div>
+            </div>
+            {{/autoForm}}
+        </div>
+        </div>
+    </div>
+</template>
+      

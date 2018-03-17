@@ -1,16 +1,19 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '../modals/voting-edit.js';
 import '../modals/proposal-view.js';
 import '../components/votebox.html';
 import '../components/select-voters.js';
@@ -109,6 +112,23 @@ Template.Votebox.helpers({
 });
 
 Template.Votebox.events({
+  'click .js-edit'(event) {
+    const votingSchema = new SimpleSchema([
+      Topics.simpleSchema(),
+    ]);
+    votingSchema.i18n('schemaVotings');
+    const voting = Topics.findOne(this._id);
+    Modal.show('Voting_edit', {
+      id: 'af.vote.update',
+      collection: Topics,
+      schema: votingSchema,
+      type: 'method-update',
+      meteormethod: 'topics.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+      doc: voting,
+    });
+  },
   'click .btn-golive'(event) {
     const modalContext = {
       title: 'Live voting',
@@ -179,7 +199,6 @@ Template.Votebox.events({
       btnClose: 'close',
       btnEdit: 'edit',
     };
-//  console.log(this);
     Modal.show('Modal', modalContext);
   },
   'click .js-close'(event, instance) {

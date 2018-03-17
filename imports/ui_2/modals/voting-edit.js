@@ -7,35 +7,52 @@ import { Tracker } from 'meteor/tracker';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { votingsExtensionSchema } from '/imports/api/topics/votings/votings.js';
-import './vote-create.html';
+import './voting-edit.html';
 
-let afVoteCreateInstance;
 
-Template.Vote_create.onCreated(function () {
+export let votingEditInstance;
+
+Template.Voting_edit.actionFromId = function () {
+  const instance = Template.instance();
+  const split = instance.data.id.split('.'); // AutoFormId convention is 'af.object.action'
+  const objectName = split[1];
+  const actionName = split[2];
+  return actionName;
+};
+
+Template.Voting_edit.onCreated(function () {
   const instance = Template.instance();
   instance.choices = new ReactiveVar([]);
+  votingEditInstance = instance;
   this.autorun(() => {
-    const currentVoteType = AutoForm.getFieldValue('vote.type', 'af.vote.create');
+    const currentVoteType = AutoForm.getFieldValue('vote.type', `af.vote.${Template.Voting_edit.actionFromId()}`);
     const newChoices = Topics.voteTypeChoices[currentVoteType] || [];
-    instance.choices.set(newChoices);
+    if (newChoices.length) {
+        instance.choices.set(newChoices);
+    }
   });
-  afVoteCreateInstance = instance;
 });
 
-Template.Vote_create.helpers({
-  collection() {
-    return Topics;
+Template.Voting_edit.helpers({
+  title() {
+    if (this.title) return this.title;
+    const actionName = Template.Voting_edit.actionFromId();
+    if (actionName === 'insert') return __('new') + ' ' + __('vote');
+    else if (actionName === 'update') return __('vote') + ' ' + __('editing data');
+    else if (actionName === 'view') return __('vote') + ' ' + __('viewing data');
+    else return 'data';
   },
-  schema() {
-    const schema = new SimpleSchema([
-      Topics.simpleSchema(),
-    ]);
-    schema.i18n('schemaVotings');
-    return schema;
+  btnOK() {
+    const actionName = Template.Voting_edit.actionFromId();
+    if (actionName === 'insert') return 'Launch voting';
+    else if (actionName === 'update') return 'save';
+    else if (actionName === 'view') return 'OK';
+    else return '';
   },
   // Default values for insert autoForm: https://github.com/aldeed/meteor-autoform/issues/210
   defaultOpenDate() {
@@ -59,7 +76,7 @@ Template.Vote_create.helpers({
   },
 });
 
-Template.Vote_create.events({
+Template.Voting_edit.events({
   'click .js-remove-choice'(event) {
     const currentChoices = Template.instance().choices.get();
     const removeIndex = $(event.target).data('index');
@@ -80,16 +97,30 @@ Template.Vote_create.events({
   },
 });
 
-AutoForm.addModalHooks('af.vote.create');
-AutoForm.addHooks('af.vote.create', {
+AutoForm.addModalHooks('af.vote.insert');
+AutoForm.addHooks('af.vote.insert', {
   formToDoc(doc) {
     Tracker.nonreactive(() => {   // AutoForm will run the formToDoc each time any field on the form, like the vote.type is simply queried (maybe so that if its a calculated field, it gets calculated)
       doc.createdAt = new Date();
       doc.communityId = Session.get('activeCommunityId');
       doc.userId = Meteor.userId();
       doc.category = 'vote';
-      doc.vote.choices = afVoteCreateInstance.choices.get();
+      doc.vote.choices = votingEditInstance.choices.get();
     });
     return doc;
+  },
+});
+
+AutoForm.addModalHooks('af.vote.update');
+AutoForm.addHooks('af.vote.update', {
+  docToForm(doc, ss) {
+    votingEditInstance.choices.set(doc.vote.choices);
+    return doc;
+  },
+  formToModifier(modifier) {
+    delete modifier.$set.createdAt;
+    delete modifier.$set['vote.closesAt'];
+    modifier.$set['vote.choices'] = votingEditInstance.choices.get();
+    return modifier;
   },
 });
