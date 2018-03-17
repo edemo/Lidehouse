@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-xs-12 col-md-9 text-left">
       {{#if isVote}}
-        {{> UserVoteStatus}}
+        {{> UserVoteStatus this}}
       {{/if}}
     </div>
     <div class="col-xs-12 col-md-3 text-right">
@@ -17,7 +17,7 @@
       </a>
       <!-- comments button -->
       <a data-toggle="collapse" data-target="#{{topicId}}" aria-expanded="true" aria-controls="#{{topicId}}">
-        <span class="glyphicon glyphicon-comment larger-icon" aria-hidden="true"></span> {{count}}
+        <span class="glyphicon glyphicon-comment larger-icon" aria-hidden="true"></span> {{commentCount}}
       </a>
     </div>
   </div>
