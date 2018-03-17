@@ -187,7 +187,6 @@ Template.Custom_body.events({
   'click .js-menu'(event, instance) {
     instance.state.set('menuOpen', !instance.state.get('menuOpen'));
   },
-  
   'click .demouser-autologin'() {
     Meteor.call('createDemoUserWithParcel', function (error, result) {
       if (error) {
@@ -197,20 +196,16 @@ Template.Custom_body.events({
       }
     });
   },
-
   'click .content-overlay'(event, instance) {
     instance.state.set('menuOpen', false);
     event.preventDefault();
   },
-
   'click #menu a'(event, instance) {
     instance.state.set('menuOpen', false);
   },
-
   'click .js-switch-community'() {
     Session.set('activeCommunityId', this._id);
   },
-
   'click .js-logout'() {
     Meteor.logout(function onLogout(err) {
       if (err) {

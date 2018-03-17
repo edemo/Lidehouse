@@ -48,11 +48,17 @@ AccountsTemplates.configure({
 AccountsTemplates.configureRoute('signIn', {
   name: 'signin',
   path: '/signin',
+  redirect() {
+    FlowRouter.go('App.home');
+  },
 });
 
 AccountsTemplates.configureRoute('signUp', {
   name: 'join',
   path: '/join',
+  redirect() {
+    FlowRouter.go('App.home');
+  },
 });
 
 AccountsTemplates.configureRoute('forgotPwd');
@@ -75,7 +81,7 @@ AccountsTemplates.configureRoute('enrollAccount', {
   path: '/enroll-account',
   redirect() {
     connectMe.call();
-    FlowRouter.go('/');
+    FlowRouter.go('App.home');
   },
 });
 

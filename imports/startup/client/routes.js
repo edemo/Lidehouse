@@ -10,6 +10,7 @@ import '/imports/ui/forms/users-show-form.js';
 import '/imports/ui/forms/invite-form.js';
 
 import '/imports/ui_2/layouts/custom-body.js';
+import '/imports/ui_2/pages/intro-page.js';
 import '/imports/ui_2/pages/users-show.js';
 import '/imports/ui_2/pages/communities-create.js';
 import '/imports/ui_2/pages/communities-join.js';
@@ -34,11 +35,14 @@ import '/imports/ui/accounts/accounts-templates.js';
 FlowRouter.route('/', {
   name: 'App.home',
   action() {
-    if (Meteor.user()) {
-      BlazeLayout.render('Custom_body', { main: 'app_rootRedirector' });
-    } else {
-      BlazeLayout.render('Custom_body', { main: 'Housing_page' });
-    }
+    BlazeLayout.render('Custom_body', { main: 'app_rootRedirector' });
+  },
+});
+
+FlowRouter.route('/intro', {
+  name: 'App.intro',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Intro_page' });
   },
 });
 
