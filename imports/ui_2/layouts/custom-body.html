@@ -2,8 +2,8 @@
   {{#HammerTouchArea gestureMap=templateGestures}}
   <div id="container" class="{{menuOpen}} {{cordova}}">
 
-    {{#if currentUser}}
     <!-- Side panel -->
+    {{#if activeCommunity}}
     <section id="menu">
       <div class="pic-menu">
         <div class="full-width">
@@ -14,7 +14,6 @@
       </div>
 
       <div class="list-menu">
-        {{#if currentUser}}
         <ul id="main-menu">
           <li class="list-item">
             <a href="{{pathFor 'Board'}}"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>{{_ 'Main'}}</a>
@@ -63,16 +62,6 @@
             <a href="{{pathFor 'DocumentStore'}}"><span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>{{_ 'Documentstore'}}</a>
           </li>
         </ul>
-        {{else}}
-        <ul class="btns-group top-sign-in">
-          <li class="menu-item"><a href="{{pathFor 'signin'}}" class="btn-primary">
-            {{_ 'login'}}
-          </a></li>
-          <li class="menu-item"><a href="{{pathFor 'join'}}" class="btn-primary">
-            {{_ 'register'}}
-          </a></li>
-        </ul>
-        {{/if}}
         {{#if developerMode}}
         <ul style="position: absolute; bottom: 0; width: 100%;">
           <li class="list-item">
@@ -92,8 +81,8 @@
 
     <div class="content-overlay"></div>
 
+    <div id="content-container" class="{{#if activeCommunity}} {{else}}loggedoff-sidebar{{/if}}">
     {{#if currentUser}}
-    <div id="content-container">
       {{#unless connected}}
       <br>
       <div class="notifications full-width text-center">
@@ -160,16 +149,15 @@
         </a>
         </div>
       </div>
+      <!-- Main area -->
       {{#if Template.subscriptionsReady}}
       {{> Template.dynamic template=main}}
       {{else}}
       {{> App_loading}}
       {{/if}}
       {{/momentum}}
-    </div>
 
     {{else}}
-    <div id="content-container" class="loggedoff-sidebar">
       {{#momentum plugin="fade"}}
       <div class="right-orange">
         <div class="divs divs-left logged-out pull-left" style="height: 100%; padding: 10px;">
@@ -207,10 +195,11 @@
       {{> App_loading}}
       {{/if}}
       {{/momentum}}
-    </div>
     {{/if}}
+    </div>
   </div>
 
+  <!-- Feedback panel -->
   {{#if currentUser}}
   <div id="feedback-pane" class="collapse">
     <div class="full-width text-center"> {{{_ 'FeedbackPaneTitle'}}}</div>
