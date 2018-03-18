@@ -81,11 +81,11 @@
 
     <div class="content-overlay"></div>
 
-    <div id="content-container" class="{{#if activeCommunity}} {{else}}no-sidebar{{/if}}">
+    <div id="content-container" class="{{#unless activeCommunity}}no-sidebar{{/unless}}">
     {{#momentum plugin="fade"}}
       <!-- Topbar -->
       <div class="topbar">
-        <div class="divs divs-left pull-left {{#if currentUser}} {{else}}logged-out{{/if}}" style="height: 100%; padding: 10px;">
+        <div class="divs divs-left pull-left {{#unless currentUser}}logged-out{{/unless}}" style="height: 100%; padding: 10px;">
         {{#if activeCommunity}}
           <div class="dropdown">
             <button class="home-choser dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -112,7 +112,7 @@
         {{/if}}
         </div>
 
-        <div class="divs divs-right btns-group pull-right {{#if currentUser}} {{else}}logged-out{{/if}}">
+        <div class="divs divs-right btns-group pull-right {{#unless currentUser}}logged-out{{/unless}}">
         {{#if currentUser}}
           <div class="pip-usericon">
             <ul class="nav dropdown">
