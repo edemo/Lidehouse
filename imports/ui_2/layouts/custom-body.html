@@ -81,31 +81,12 @@
 
     <div class="content-overlay"></div>
 
-    <div id="content-container" class="{{#if activeCommunity}} {{else}}loggedoff-sidebar{{/if}}">
-    {{#if currentUser}}
-      {{#unless connected}}
-      <br>
-      <div class="notifications full-width text-center">
-        <div class="notification">
-          <span class="icon-sync"></span>
-          <div class="meta">
-            <div class="title-notification">
-              {{_ 'tryingToConnect'}}
-            </div>
-            <div class="description">
-              {{_ 'connectionIssue'}}
-            </div>
-          </div>
-        </div>
-      </div>
-      {{/unless}}
-      <!-- topbar end -->
-      {{#momentum plugin="fade"}}
-      <!-- topbar -->
-      <div class="right-orange">
-        <div class="divs divs-left pull-left" style="height: 100%; padding: 10px;">
-
-          {{#if activeCommunity}}
+    <div id="content-container" class="{{#if activeCommunity}} {{else}}no-sidebar{{/if}}">
+    {{#momentum plugin="fade"}}
+      <!-- Topbar -->
+      <div class="topbar">
+        <div class="divs divs-left pull-left {{#if currentUser}} {{else}}logged-out{{/if}}" style="height: 100%; padding: 10px;">
+        {{#if activeCommunity}}
           <div class="dropdown">
             <button class="home-choser dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{#if activeCommunity}}
@@ -126,53 +107,42 @@
               {{/if}}
             </ul>
           </div>
-          {{/if}}
-
-        </div>
-
-        <div class="divs divs-right btns-group pull-right">
-
-        <div class="pip-usericon">
-          <ul class="nav dropdown">
-            <li class="dropdown-toggle profile-drop" type="button" id="avatardropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              <!-- {{currentUser.fullName}} -->
-              <img src="{{currentUser.avatar}}" class="img-circle" alt="" width="35"/>
-            </li>
-            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="avatardropdown">
-              <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {{_ 'profile'}}</a></li>
-              <li><a class="js-logout" href=""><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> {{_ 'logout'}}</a></li>
-            </ul>
-          </ul>
-        </div>
-        <a href="#" class="js-menu nav-item pull-right nav-hamburger">
-          <span class="icon-topic-unordered"></span>
-        </a>
-        </div>
-      </div>
-      <!-- Main area -->
-      {{#if Template.subscriptionsReady}}
-      {{> Template.dynamic template=main}}
-      {{else}}
-      {{> App_loading}}
-      {{/if}}
-      {{/momentum}}
-
-    {{else}}
-      {{#momentum plugin="fade"}}
-      <div class="right-orange">
-        <div class="divs divs-left logged-out pull-left" style="height: 100%; padding: 10px;">
+        {{else}}
           <button class="demouser-autologin" href="">demo</button>
+        {{/if}}
         </div>
-        <div class="divs divs-right logged-out pull-right text-right" style="height: 100%; padding: 10px; padding-top: 25px;">
-          <a href="{{pathFor 'signin'}}" class="login-btn">
-            {{_ 'login'}}
+
+        <div class="divs divs-right btns-group pull-right {{#if currentUser}} {{else}}logged-out{{/if}}">
+        {{#if currentUser}}
+          <div class="pip-usericon">
+            <ul class="nav dropdown">
+              <li class="dropdown-toggle profile-drop" type="button" id="avatardropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <!-- {{currentUser.fullName}} -->
+                <img src="{{currentUser.avatar}}" class="img-circle" alt="" width="35"/>
+              </li>
+              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="avatardropdown">
+                <li><a href="{{pathFor 'Users.show' _id=currentUser._id}}"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {{_ 'profile'}}</a></li>
+                <li><a class="js-logout" href=""><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> {{_ 'logout'}}</a></li>
+              </ul>
+            </ul>
+          </div>
+          <a href="#" class="js-menu nav-item pull-right nav-hamburger">
+            <span class="icon-topic-unordered"></span>
           </a>
-          |
-          <a href="{{pathFor 'join'}}" class="login-btn">
-            {{_ 'register'}}
-          </a>
+        {{else}}
+          <div class="divs divs-right logged-out pull-right text-right" style="height: 100%; padding: 10px; padding-top: 25px;">
+            <a href="{{pathFor 'signin'}}" class="login-btn">
+              {{_ 'login'}}
+            </a>
+            |
+            <a href="{{pathFor 'join'}}" class="login-btn">
+              {{_ 'register'}}
+            </a>
+          </div>
+        {{/if}}
         </div>
       </div>
+      <!-- Connection problem warning -->
       {{#unless connected}}
       <br>
       <div class="notifications full-width text-center">
@@ -189,13 +159,13 @@
         </div>
       </div>
       {{/unless}}
+      <!-- Main area -->
       {{#if Template.subscriptionsReady}}
       {{> Template.dynamic template=main}}
       {{else}}
       {{> App_loading}}
       {{/if}}
-      {{/momentum}}
-    {{/if}}
+    {{/momentum}}
     </div>
   </div>
 
