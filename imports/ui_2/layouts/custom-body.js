@@ -1,5 +1,3 @@
-/* global alert */
-
 import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { ReactiveDict } from 'meteor/reactive-dict';
@@ -189,10 +187,12 @@ Template.Custom_body.events({
   },
   'click .demouser-autologin'() {
     Meteor.call('createDemoUserWithParcel', function (error, result) {
-      if (error) {
-        alert('Error');
-      } else {
-        Meteor.loginWithPassword(result, 'password');
+      if (error) displayError(error);
+      else {
+        Meteor.loginWithPassword(result, 'password', function (error) {
+          if (error) displayError(error);
+          else FlowRouter.go('App.home');
+        });
       }
     });
   },
