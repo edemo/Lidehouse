@@ -1125,11 +1125,11 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
     const user = Meteor.users.findOne(userWithRoleId);
     const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
     Meteor.users.update({ _id: userWithRoleId },
-      { $set: { 
+      { $set: {
         'emails.0.verified': true,
         avatar: '/images/avatars/avatarTestUser.png',
         'settings.language': lang,
-      } }); 
+      } });
     if (role.name === 'owner') {
       Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
       Memberships.insert({ communityId, person: { userId: userWithRoleId }, role: role.name,
@@ -1162,14 +1162,16 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   PayAccounts.update({
     communityId,
     name: 'Könyvelés helye',
-    }, {
-      $pull: { 'children.0.children.1.children': { name: (14 + counter).toString() } },
-  } );
+  }, {
+    $pull: { 'children.0.children.1.children': { name: (14 + counter).toString() } },
+  });
   Meteor.users.remove({ _id: userId });
 }
 
 Meteor.methods({
   createDemoUserWithParcel() {
+    if (Meteor.isClient) return;  // This should run only on the server side
+
     const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } },
       { sort: { createdAt: -1 } }).fetch();
     let counter = 1;
