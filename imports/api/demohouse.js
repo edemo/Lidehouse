@@ -1260,7 +1260,7 @@ Meteor.methods({
   },
 });
 
-export function deleteDemoUsers() {
+export function deleteDemoUsersAfterRestart() {
   const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } });
   const communityId = Communities.findOne({ name: 'Demo ház' })._id;
   demousers.forEach((user) => {
