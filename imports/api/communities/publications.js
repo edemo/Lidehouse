@@ -18,16 +18,10 @@ Meteor.publish('communities.listing', function communitiesListing() {
   return Communities.find({}, { fields: Communities.publicFields });
 });
 
-Meteor.publishComposite('communities.byId', function communitiesById(params) {
-  new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validate(params);
-
-  const { _id } = params;
-
+function communityPublication(userId, _id) {
   return {
     find() {
-      return Communities.find({ _id }, { fields: visibleFields(this.userId, _id) });
+      return Communities.find({ _id }, { fields: visibleFields(userId, _id) });
     },
 
     children: [{
@@ -37,9 +31,29 @@ Meteor.publishComposite('communities.byId', function communitiesById(params) {
 
       children: [{
         find(membership) {
-          return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
+          return Meteor.users.find({ _id: membership.person.userId }, { fields: Meteor.users.publicFields });
         },
       }],
     }],
   };
+}
+
+Meteor.publishComposite('communities.byId', function communitiesById(params) {
+  new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validate(params);
+
+  const { _id } = params;
+  return communityPublication(this.userId, _id);
 });
+
+Meteor.publishComposite('communities.byName', function communitiesById(params) {
+  new SimpleSchema({
+    name: { type: String },
+  }).validate(params);
+
+  const { name } = params;
+  const _id = Communities.findOne({ name })._id;
+  return communityPublication(this.userId, _id);
+});
+

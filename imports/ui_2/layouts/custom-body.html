@@ -115,9 +115,9 @@
         <div class="divs divs-right btns-group pull-right {{#unless currentUser}}logged-out{{/unless}}">
         {{#if currentUser}}
           <div class="pip-usericon">
+            <span class="username">{{currentUser.displayName}}</span>
             <ul class="nav dropdown">
               <li class="dropdown-toggle profile-drop" type="button" id="avatardropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <!-- {{currentUser.fullName}} -->
                 <img src="{{currentUser.avatar}}" class="img-circle" alt="" width="35"/>
               </li>
               <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="avatardropdown">

@@ -171,7 +171,8 @@
   "You voted via delegation": "Ön meghatalmazott útján szavazott",
   "votedViaDelegationHint" : "szavazat leadásával felülbírálható",
   "You have not yet voted": "Ön még nem szavazott",
-  "notYetVotedHint": "adja le szavazatát, vagy állítson be meghatalmazást",
+  "notYetVotedCastYourVoteOr": "adja le szavazatát, vagy",
+  "setupYourDelegation": "állítson be meghatalmazást",
 
   // tickets
   "Active tickets": "Aktív bejelentett hibák",
