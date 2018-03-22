@@ -1146,8 +1146,13 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
 function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   const counter = Number(Meteor.users.findOne({ _id: userId }).emails[0].address.split('.')[0]);
   Topics.remove({ userId });
-  // votes?  
   Topics.remove({ 'participantIds.$': userId });
+  const demoUserVote = 'voteCasts.' + userId;
+  const modifiedTopics = Topics.update({ [demoUserVote]: { $exists: true } },
+    { $unset: { [demoUserVote]: 1 } }, { multi: true });
+  if (Meteor.isServer) {
+    modifiedTopics.forEach(topic => topic.voteEvaluate(false));
+  }
   Comments.remove({ userId });
   Delegations.remove({ sourcePersonId: userId });
   Delegations.remove({ targetPersonId: userId });
@@ -1167,6 +1172,8 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   } );
   Meteor.users.remove({ _id: userId });
 }
+
+const demoUserLifetime = moment.duration(120, 'minutes').asMilliseconds();
 
 Meteor.methods({
   createDemoUserWithParcel() {
@@ -1246,9 +1253,23 @@ Meteor.methods({
 
     Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
-    }, moment.duration(120, 'minutes').asMilliseconds());
+    }, demoUserLifetime);
 
     const email = Meteor.users.findOne({ _id: demoUserId }).emails[0].address;
     return email;
   },
 });
+
+export function deleteDemoUsers() {
+  const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } });
+  const communityId = Communities.findOne({ name: 'Demo ház' })._id;
+  demousers.forEach((user) => {
+    const parcelNumber = Number(user.emails[0].address.split('.')[0]) + 14;
+    const parcelId = Parcels.findOne({ communityId, number: parcelNumber });
+    const currentTime = moment().valueOf();
+    let timeUntilDelete = moment(user.createdAt).add(demoUserLifetime).subtract(currentTime).valueOf();
+    if (timeUntilDelete < 0) timeUntilDelete = 0;
+    Meteor.setTimeout(() => deleteDemoUserWithRelevancies(user._id, parcelId, communityId),
+      timeUntilDelete);
+  });
+}
