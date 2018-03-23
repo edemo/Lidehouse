@@ -9,6 +9,7 @@ import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
+import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { AutoForm } from 'meteor/aldeed:autoform';
@@ -127,6 +128,12 @@ Template.Votebox.events({
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
       doc: voting,
+    });
+  },
+  'click .js-delete'(event) {
+    Modal.confirmAndCall(removeTopic, { _id: this._id }, {
+      action: 'delete topic',
+      message: 'It will disappear forever',
     });
   },
   'click .btn-golive'(event) {

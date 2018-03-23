@@ -16,8 +16,7 @@
             </div>
             <!-- dropdown at the right corner -->
             <div class="dropdown text-right chat-dd-right">
-              <button class="dropdown-toggle drop-unfoll" type="button" id="drop_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="caret"></span>
+              <button class="dropdown-toggle drop-unfoll glyphicon glyphicon-option-horizontal" type="button" id="drop_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               </button>
               <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="drop_{{_id}}">
                 {{#if userHasPermission 'forum.update' (fromSession 'activeCommunityId') this}}
