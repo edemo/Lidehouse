@@ -1178,7 +1178,7 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   Meteor.users.remove({ _id: userId });
 }
 
-const demoUserLifetime = moment.duration(1, 'minutes').asMilliseconds();
+const demoUserLifetime = moment.duration(24, 'hours').asMilliseconds();
 
 Meteor.methods({
   createDemoUserWithParcel() {
