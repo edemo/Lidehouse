@@ -1148,8 +1148,10 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   Topics.remove({ userId });
   Topics.remove({ 'participantIds.$': userId });
   const demoUserVote = 'voteCasts.' + userId;
-  const modifiedTopics = Topics.update({ [demoUserVote]: { $exists: true } },
+  const demoUserVoteIndirect = 'voteCastsIndirect.' + userId;
+  Topics.update({ [demoUserVote]: { $exists: true } },
     { $unset: { [demoUserVote]: 1 } }, { multi: true });
+  const modifiedTopics = Topics.find({ [demoUserVoteIndirect]: { $exists: true } });
   if (Meteor.isServer) {
     modifiedTopics.forEach(topic => topic.voteEvaluate(false));
   }
@@ -1173,7 +1175,7 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   Meteor.users.remove({ _id: userId });
 }
 
-const demoUserLifetime = moment.duration(120, 'minutes').asMilliseconds();
+const demoUserLifetime = moment.duration(2, 'minutes').asMilliseconds();
 
 Meteor.methods({
   createDemoUserWithParcel() {
