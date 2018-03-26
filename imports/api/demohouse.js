@@ -741,7 +741,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  for (i = 0; i < 4; i++) {
+  for (let i = 0; i < 4; i++) {
     const place = ['2', '5', '8', '14'];
     insertParcelBilling._execute({ userId: demoManagerId }, {
       communityId: demoCommunityId,
@@ -755,8 +755,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       },
     });
   }
-  
-  for (i = 1; i < 11; i++) {
+
+  for (let i = 1; i < 11; i++) {
     insertParcelBilling._execute({ userId: demoManagerId }, {
       communityId: demoCommunityId,
       projection: 'perVolume',
@@ -833,7 +833,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       'Könyvelés nem': 'Egyéb bevétel',
       'Könyvelés helye': 'Központi',
     },
-  }); 
+  });
 
   Payments.insert({
     communityId: demoCommunityId,
@@ -1039,7 +1039,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       },
     });
   }
-    
+
   for (let m = 1; m < 13; m += 2) {
     const payable = [0, -10562, 0, -9889, 0, -11210, 0, -11152, 0, -11435, 0, -9930];
     Payments.insert({
@@ -1175,7 +1175,7 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   Meteor.users.remove({ _id: userId });
 }
 
-const demoUserLifetime = moment.duration(2, 'minutes').asMilliseconds();
+const demoUserLifetime = moment.duration(2, 'hours').asMilliseconds();
 
 Meteor.methods({
   createDemoUserWithParcel() {
@@ -1221,7 +1221,7 @@ Meteor.methods({
       role: 'owner',
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) } });
-    
+
     PayAccounts.update({
       communityId: demoCommunityId,
       name: 'Könyvelés helye',
