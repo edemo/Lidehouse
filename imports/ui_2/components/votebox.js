@@ -14,6 +14,7 @@ import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import '../modals/voting-edit.js';
 import '../modals/proposal-view.js';
 import '../components/votebox.html';
@@ -23,6 +24,11 @@ import '../components/vote-results.js';
 
 Template.Votebox.onCreated(function voteboxOnCreated() {
   this.state = new ReactiveDict();
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    const topicId = this.data._id;
+    this.subscribe('shareddocs.ofTopic', { communityId, topicId });
+  });
 });
 
 Template.Votebox.onRendered(function voteboxOnRendered() {
@@ -109,6 +115,9 @@ Template.Votebox.helpers({
   pressedClassForPreferential() {
     if (Template.instance().state.get('voteIsFinalized')) return 'btn-pressed';
     return '';
+  },
+  attachments() {
+    return Shareddocs.find({ topicId: this._id });
   },
 });
 

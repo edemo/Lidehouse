@@ -153,7 +153,8 @@
   "Launch voting": "Szavazás indítása",
   "Proxy voting" : "Szavazás mások nevében",
   "Please select voters": "Válassza ki kiknek a nevében szeretne szavazatot leadni",
-
+  "Attachments" : "Csatolmányok",
+  
   // delegations
   "Delegations from me": "Meghatalmazásaim",
   "Delegations to me": "Meghatalmazottságaim",

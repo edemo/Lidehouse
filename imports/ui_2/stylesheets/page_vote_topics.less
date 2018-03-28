@@ -9,9 +9,6 @@
   .content {
     background-color: @vote-content-bcg;
   }
-  .vote-files {
-    list-style: none;
-  }
   .vote-dates {
     margin-top: 40px;
     input {
@@ -20,15 +17,6 @@
   }
   .left-padded {
     padding-left: 5%;
-  }
-  .file-dl {
-    margin-top: 7px;
-    padding: 4px;
-    color: @base-link-color;
-    &:hover {
-      cursor: pointer;
-      background-color: #f3f3f3;
-    }
   }
   .choice {
     margin-right: 10px;
@@ -43,6 +31,18 @@
         cursor: pointer;
         color: @choice-span-col;
       }
+    }
+  }
+  .file-list {
+    list-style: none;
+  }
+  .file-item {
+    margin-top: 7px;
+    padding: 4px;
+    color: @base-link-color;
+    &:hover {
+      cursor: pointer;
+      background-color: #f3f3f3;
     }
   }
 }

@@ -7,15 +7,25 @@ import { Tracker } from 'meteor/tracker';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { votingsExtensionSchema } from '/imports/api/topics/votings/votings.js';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
+import { fileUpload } from '../components/shareddoc-display.js';
 import './voting-edit.html';
 
 
 export let votingEditInstance;
+
+function getTopicId(afData) {
+  const topicId = afData.doc
+    ? afData.doc._id
+    : Meteor.userId();  // temporary placeholder until we have the topicId (we replace in onSuccess)
+  return topicId;
+}
 
 Template.Voting_edit.actionFromId = function () {
   const instance = Template.instance();
@@ -35,6 +45,11 @@ Template.Voting_edit.onCreated(function () {
     if (newChoices.length) {
         instance.choices.set(newChoices);
     }
+  });
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    const topicId = getTopicId(Template.instance().data);
+    this.subscribe('shareddocs.ofTopic', { communityId, topicId });
   });
 });
 
@@ -74,6 +89,10 @@ Template.Voting_edit.helpers({
     const instance = Template.instance();
     return instance.choices.get();
   },
+  attachments() {
+    const topicId = getTopicId(this);
+    return Shareddocs.find({ topicId });
+  },
 });
 
 Template.Voting_edit.events({
@@ -95,6 +114,10 @@ Template.Voting_edit.events({
     $('.editing')[0].classList.toggle('hidden');
     $('.js-add-choice')[0].classList.toggle('hidden');
   },
+  'click .js-upload'(event) {
+    const topicId = getTopicId(Template.instance().data);
+    Shareddocs.upload({ communityId: Session.get('activeCommunityId'), topicId });
+  },
 });
 
 AutoForm.addModalHooks('af.vote.insert');
@@ -108,6 +131,10 @@ AutoForm.addHooks('af.vote.insert', {
       doc.vote.choices = votingEditInstance.choices.get();
     });
     return doc;
+  },
+  onSuccess(formType, result) {
+    const uploadIds = Shareddocs.find({ topicId: Meteor.userId() }).fetch().map(d => d._id);
+    uploadIds.forEach(id => Shareddocs.update(id, { $set: { topicId: result } }));
   },
 });
 

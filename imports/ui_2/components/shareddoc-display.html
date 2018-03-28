@@ -1,0 +1,26 @@
+<template name="Shareddoc_display">
+    <div class="row list-item file-item border-bottom">
+      {{#if uploading}}
+      <div class="col-xs-10">
+        <span>{{completed}}%</span>
+        <img src="/images/spinner.gif" style="{ width: 1em; height: 1em; }">
+        <span>{{name}}</span>
+      </div>
+      {{else}}
+      <div class="col-xs-10">
+        <a target="_blank" href="{{url}}" title="{{name}}">
+          <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+          {{name}}
+        </a>
+        <i class="small-size file-date">{{ uploadDate }}</i>
+      </div>
+      {{#if userHasPermission 'shareddocs.upload' (fromSession 'activeCommunityId')}}
+      <div class="col-xs-2 text-right">
+        <a class="js-delete nav-item">
+          <span class="icon-trash" title={{_ 'delete'}}></span>
+        </a>
+      </div>
+      {{/if}}
+      {{/if}}
+    </div>
+  </template>

@@ -94,7 +94,6 @@ const permissions = [
   { name: 'payments.listing',       roles: ['accountant', 'treasurer', 'overseer'] },
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
-  { name: 'shareddocs.inCommunity', roles: exceptGuest },
 ];
 
 export function initializePermissions() {

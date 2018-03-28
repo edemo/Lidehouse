@@ -46,6 +46,15 @@
       <div class="col-xs-12 col-md-6">
         <br>
         {{#markdown}}{{text}}{{/markdown}}
+        {{#if attachments.count}}
+        <button class="dropdown-toggle drop-unfoll glyphicon glyphicon-paperclip" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        </button>
+        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
+          {{#each doc in attachments}}
+          <li><a class="filename" target="_blank" href="{{doc.url}}">{{doc.name}}</a></li>
+          {{/each}}
+        </ul>
+        {{/if}}
       </div>
       <div class="col-xs-12 col-md-6">
         <br>

@@ -25,7 +25,7 @@ import '/imports/ui_2/pages/housing.js';
 import '/imports/ui_2/pages/tickets-report.js';
 import '/imports/ui_2/pages/parcels-finances.js';
 import '/imports/ui_2/pages/community-finances.js';
-import '/imports/ui_2/pages/document-store.js';
+import '/imports/ui_2/pages/shareddoc-store.js';
 import '/imports/ui_2/pages/feedbacks.js';
 import '/imports/ui_2/pages/styleguide.js';
 
@@ -161,7 +161,7 @@ FlowRouter.route('/community-finances', {
 FlowRouter.route('/documents', {
   name: 'DocumentStore',
   action() {
-    BlazeLayout.render('Custom_body', { main: 'Document_store' });
+    BlazeLayout.render('Custom_body', { main: 'Shareddoc_store' });
   },
 });
 

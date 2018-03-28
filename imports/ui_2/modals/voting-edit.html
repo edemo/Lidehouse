@@ -21,33 +21,17 @@
                     {{> afQuickField name="text" rows=8}}
                     {{> afQuickField name="agendaId" options=agendaOptions}}
                     <div class="left-padded">
-                        <label>Csatolmányok</label>
+                        <label>{{_ "Attachments"}}</label>
                         <hr>
                     </div>
-                    <div class="form-group">
-                        <ul class="vote-files">
-                        <!-- li in files -->
-                        <li class="row file-dl">
-                            <div class="col-xs-10">
-                            Fájl.doc
-                            </div>
-                            <div class="col-xs-2">
-                            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                            </div>
-                        </li>
-                        <li class="row file-dl">
-                            <div class="col-xs-10">
-                            bizonyitek.jpg
-                            </div>
-                            <div class="col-xs-2">
-                            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>
-                            </div>
-                        </li>
-                        </ul>
+                    <div class="form-group file-list">
+                    {{#each doc in attachments}}
+                        {{> Shareddoc_display doc}}
+                    {{/each}}
                     </div>
                     <div>
                         <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-secondary" name="docupload"> + {{_ "Upload"}}</button>
+                        <button type="button" class="btn btn-secondary js-upload" name="docupload"> + {{_ "upload"}}</button>
                         </div>
                     </div>
                 </div>

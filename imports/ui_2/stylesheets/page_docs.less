@@ -1,3 +1,14 @@
+.file-item {
+  .file-date {
+    visibility: collapse;
+  }
+  &:hover, &:focus {
+    .file-date {
+      visibility: visible;
+    }
+  }
+}
+
 .page-docs {
   .white-box {
     padding: 20px;
@@ -17,16 +28,5 @@
   }
   .border-top {
     border-top: 1px solid @td-border;
-  }
-  .item-data {
-    .file-date {
-      visibility: collapse;
-    }
-    &:hover, &:focus {
-      .file-date {
-        visibility: visible;
-      }
-    }
-  }
-  
+  }  
 }
