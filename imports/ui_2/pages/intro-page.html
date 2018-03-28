@@ -1,7 +1,7 @@
 <template name="Intro_page">
   <div class="content-scrollable page-content page-intro">
     <header>
-      <h1 id="main-title">Az online otthon-kezelő</h1>
+      <p id="main-title">Az online otthon-kezelő</p>
       <p>Teljes pénzügyi, házkezelési és döntéshozatali megoldás társasházak számára, 
       ami a lakók és albetéttulajdonosok érdekeit szolgálja és segíti a 
       társasházkezelő/közös képviselő munkáját.
@@ -74,8 +74,56 @@
         </div>
       </div>  
     </section>
-
-    <button class="btn btn-primary demouser-autologin" href="">{{_ 'Try demo'}}</button>
+    <section id="image-container">
+      <img src="/images/intro-house.jpg" alt="House_image">
+      <button class="btn btn-primary demouser-autologin" href="">{{_ 'Try demo'}}</button>
+    </section>
+    <section class="tryit-text">
+      <p><br>A honline.hu rendszerét elsősorban az 
+        <a href=#>általunk kezelt </a>
+        társasházak használhatják, ezen felül a fejlesztési fázisban
+        50 ház számára nyitjuk meg ingyenesen a rendszert.
+      </p>
+      <form>  
+        Szeretném ingyenesen használni:
+        <input type="text" name="E-mail cím" value="cimzett@mail.com">
+        <input type="submit" value="Elküld">
+      </form>
+      <p>
+        A rendszerhasználati jogosultság az e-mailben kapott hivatkozással érvényesíthető,
+        amely egyszeri bejelentkezésre jogosít. (???)
+        Ezt követően lehet feltölteni az adatlapot a jogszabály szerinti adatokkal.
+        A Teszter házak a későbbiekben jelentős kedvezménnyel vehetik igénybe a szolgáltatást.
+      </p>
+    </section>
+    <footer>
+      <div class="footer-columns">
+        <div class="footercol newsletter">
+          <p><strong>Newsletter</strong> ???</p>
+          <form>  
+            <input type="text" name="E-mail cím" value="cimzett@mail.com">
+            <input type="submit" value="Feliratkozom">
+          </form>
+          <p class="list">
+            Jelentősebb fejlesztési fázisokról és piaci bevezetésről 
+            szóló összefoglaló e-mailt küldünk, kevesebb mint havonta 2 alkalommal. 
+            A projekt követhető 
+            <a href="https://github.com/edemo/Lidehouse" target="blank">GitHub</a>-on 
+            és Twitteren egyaránt. ???
+          </p>
+        </div>
+        <div class="footercol quotation">
+          <div class="quote-text">
+            <p class="quote">Azért vagyunk a világon,<br>hogy valahol otthon legyünk benne.</p>
+            <p class="author">Tamási Áron, 1934.<br></p>
+          </div>
+          <div class="quote-mark">
+            <p>&rdquo;</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+   
   </div>
 </template>
         
