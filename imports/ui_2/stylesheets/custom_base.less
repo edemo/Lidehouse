@@ -89,55 +89,61 @@ a {
   @media screen and (max-width: 40em) {
     display: block;
   }
-  .divs {
-    .demouser-autologin, .login-btn {
-       margin-top: 10px;
-       font-size: 20px;
-       background: transparent;
-       color: white;
-       text-transform: capitalize;
-    }
-    .login-btn {
-      color: black;
-      margin: 10px;
-    }
+  &-left {
+    background-color: #998072;
+    border-radius: 0 10px 50px 0;
     height: 100%;
-    &-left {
-      background-color: #998072;
-      border-radius: 0 10px 50px 0;
-      width:67%;
-      &.logged-out {
-        width:27%;
-      }
+    width: 67%;
+    &.logged-out {
+      width: 27%;
     }
-    &-right {
-      width:33%;
-      &.logged-out {
-        width: 73%;
-      }
-      .pip-usericon {
-        display: block;
-        position: absolute;
-        right: 17px;
-        top: 17px;
-        @media screen and (max-width: 40em) {
-          right: 57px;
-        }
-        .username {
-          @media screen and (max-width: 800px) {
-            display: none;
-          }
-        }
-      }
-    }
+    padding: 10px;
   }
-  .home-choser {
+  &-right {
+    height: 100%;
+    width: 33%;
+    &.logged-out {
+      width: 73%;
+    }
+    padding: 10px;
+    padding-top: 25px;
+  }
+  &-right > &-item {
+    position: absolute;
+    right: 17px;
+  }
+  &-item {
+    height: 100%;
+  }
+  .demouser-autologin, .login-btn {
+      font-size: 20px;
+      background: transparent;
+      color: white;
+      text-transform: capitalize;
+  }
+  .login-btn {
+    color: black;
+    margin: 10px;
+  }
+  .community-selector {
     background: transparent;
     font-size: 23px;
     margin-top: 13px;
     padding-left: 21px;
     color: white;
     font-weight: bold;
+  }
+  .pip-usericon {
+    display: block;
+    top: 17px;
+    @media screen and (max-width: 40em) {
+      right: 57px;
+    }    
+    .username {
+      @media screen and (max-width: 800px) {
+        display: none;
+      }
+    }
   }
 }
 .nav-hamburger {
@@ -153,15 +159,7 @@ a {
 }
 #menu {
   padding-left: 0px;
-  // padding-top: 75px;
-  //box-shadow: @menu-shadow;
-  @media screen and (min-width: 40em) {
-    z-index: 1;
-  }
-  @media screen and (max-width: 40em) {
-    padding-top:50px;
-  }
-  // start beta design
+ // start beta design
   .pic-menu {
     margin-bottom: 17px;
     .pip-usericon {
@@ -221,7 +219,7 @@ a {
     }
   }
   // end beta design
-  a, div a {
+   a, div a {
     color: @menu-a-color  !important;
     font-weight: bold;
   }

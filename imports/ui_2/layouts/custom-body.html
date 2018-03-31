@@ -85,10 +85,10 @@
     {{#momentum plugin="fade"}}
       <!-- Topbar -->
       <div class="topbar">
-        <div class="divs divs-left pull-left {{#unless currentUser}}logged-out{{/unless}}" style="height: 100%; padding: 10px;">
+        <div class="topbar-left pull-left {{#unless currentUser}}logged-out{{/unless}}">
         {{#if activeCommunity}}
-          <div class="dropdown">
-            <button class="home-choser dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <div class="topbar-item dropdown">
+            <button class="community-selector dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               {{#if activeCommunity}}
               {{activeCommunity.name}}
               {{else}}
@@ -108,13 +108,13 @@
             </ul>
           </div>
         {{else}}
-          <button class="demouser-autologin" href="">demo</button>
+          <button class="topbar-item demouser-autologin" href="">demo</button>
         {{/if}}
         </div>
 
-        <div class="divs divs-right btns-group pull-right {{#unless currentUser}}logged-out{{/unless}}">
+        <div class="topbar-right btns-group pull-right {{#unless currentUser}}logged-out{{/unless}}">
         {{#if currentUser}}
-          <div class="pip-usericon">
+          <div class="topbar-item pip-usericon">
             <span class="username">{{currentUser.displayName}}</span>
             <ul class="nav dropdown">
               <li class="dropdown-toggle profile-drop" type="button" id="avatardropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -126,11 +126,11 @@
               </ul>
             </ul>
           </div>
-          <a href="#" class="js-menu nav-item pull-right nav-hamburger">
+          <a href="#" class="topbar-item nav-item pull-right nav-hamburger js-menu">
             <span class="icon-topic-unordered"></span>
           </a>
         {{else}}
-          <div class="divs divs-right logged-out pull-right text-right" style="height: 100%; padding: 10px; padding-top: 25px;">
+          <div class="topbar-item login-btns pull-right text-right">
             <a href="{{pathFor 'signin'}}" class="login-btn">
               {{_ 'login'}}
             </a>
