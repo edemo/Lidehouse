@@ -18,7 +18,7 @@ export const create = new ValidatedMethod({
     
     insertPayAccountTemplate(communityId);
     // The user creating the community, becomes the first 'admin' of it.
-    Memberships.insert({ communityId, userId: this.userId, role: 'admin' });
+    Memberships.insert({ communityId, person: { userId: this.userId }, role: 'admin' });
     return communityId;
   },
 });

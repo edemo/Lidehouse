@@ -12,7 +12,6 @@ import '/imports/ui/forms/invite-form.js';
 import '/imports/ui_2/layouts/custom-body.js';
 import '/imports/ui_2/pages/intro-page.js';
 import '/imports/ui_2/pages/users-show.js';
-import '/imports/ui_2/pages/communities-create.js';
 import '/imports/ui_2/pages/communities-join.js';
 import '/imports/ui_2/pages/parcel-owners.js';
 import '/imports/ui_2/pages/user-delegations.js';
@@ -47,7 +46,7 @@ FlowRouter.route('/intro', {
 });
 
 FlowRouter.route('/community/:_cid', {
-  name: 'Communities.show',
+  name: 'Community.page',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Community_page' });
   },
@@ -78,13 +77,6 @@ FlowRouter.route('/join-community', {
   name: 'Communities.join',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Communities_join' });
-  },
-});
-
-FlowRouter.route('/create-community', {
-  name: 'Communities.create',
-  action() {
-    BlazeLayout.render('Custom_body', { main: 'Communities_create_form' });
   },
 });
 
@@ -127,13 +119,6 @@ FlowRouter.route('/vote', {
   name: 'Topics.vote',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Vote_topics' });
-  },
-});
-
-FlowRouter.route('/housing', {
-  name: 'Community_page',
-  action() {
-    BlazeLayout.render('Custom_body', { main: 'Community_page' });
   },
 });
 

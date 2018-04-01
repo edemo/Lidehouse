@@ -4,61 +4,25 @@
     <div style="width:100%;" class="white-box padded">
       {{#if community}}
       <div id="tab-content1" class="content">
-        <div class="col-xs-8">
-          <h1 id="houseName">{{community/name}}</h1>
-        </div>
         <button type="button" class="primary" name="button"></button>
-        <div class="row">
-          <div class="col-xs-8">
-            <h4 class="page-title">{{_ "community"}} {{_ "data"}}</h4>
-          </div>
-        </div>
-        <div class="row">
+        <div class="row community-section">
           <div class="col-xs-12 col-lg-4 pull-right">
             <div id="house_avatar">
               <a href="{{community/avatar}}" class="simple-lightbox"><img src="{{community/avatar}}" alt="community avatar" width="100%" /></a>
             </div>
             <div>
-            {{#autoForm id="af.community.update" collection=communities omitFields="name,description,avatar" doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
-              {{> afQuickFields}}
+            {{#autoForm id="af.community.view" collection=communities omitFields="name,description,avatar" doc=community type="readonly" template="bootstrap3"}}
               {{#if userHasPermission 'communities.update' community/_id}}
-                <div class="row">
-                  <div class="col-xs-8">
-                    <small>
-                      <label><input type="checkbox"> {{_ "Acknowledge save effects" }}</label>
-                    </small>
-                  </div>
-                  <div class="col-xs-4 text-right">
-                    <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
-                  </div>
-                </div>
+              <div class="row">
+                <button class="btn btn-primary js-edit">{{_ "edit"}}</button>
+              </div>
               {{/if}}
+              {{> afQuickFields}}
               {{/autoForm}}
             </div>
           </div>
           <div class="col-xs-12 col-lg-8">
-            <div>
-              {{#autoForm id="af.community.name_update" collection=communities doc=community type=(autoformType community/_id) meteormethod="communities.update" singleMethodArgument=true template="bootstrap3"}}
-              {{#if userHasPermission 'communities.update' community/_id}} 
-                {{> afQuickField name='name'}}
-                {{> afQuickField name='avatar'}}
-              {{/if}}
-              <!--{{> afQuickField name='description' rows=12}}-->
-              <!--{{#markdown}}{{markdown_data}}{{/markdown}}-->
-              {{#if userHasPermission 'communities.update' community/_id}}
-                <div class="row">
-                  <div class="col-xs-8">
-                    <small>
-                      <label><input type="checkbox"> {{_ "Acknowledge save effects" }}</label>
-                    </small>
-                  </div>
-                  <div class="col-xs-4 text-right">
-                    <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
-                  </div>
-                </div>
-              {{/if}}
-              {{/autoForm}}
-            </div>
+            <h1 id="houseName" class="text-center">{{community/name}} {{_ "data"}}</h1>
             <!--div class="form-group">
               <label for="houseName">Leírás</label>
               <textarea class="form-control vert" id="houseWelcome" placeholder="Welcome" rows="12"></textarea>

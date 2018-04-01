@@ -21,6 +21,7 @@ import '/imports/api/users/users.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
+import { afCommunityUpdateModal } from './communities-edit.js';
 import './community-page.html';
 
 Template.Community_page.onCreated(function housingPageOnCreated() {
@@ -126,9 +127,10 @@ Template.Community_page.helpers({
 });
 
 Template.Community_page.events({
-  // 'click .js-save-form'() {
-  //  console.log("Update all the forms")
-  //},
+  // community events
+  'click .community-section .js-edit'() {
+    afCommunityUpdateModal();
+  },
   // roleship events
   'click .roles-section .js-new'() {
     Modal.show('Autoform_edit', {
@@ -209,9 +211,6 @@ Template.Community_page.events({
     });
   },
 });
-
-AutoForm.addModalHooks('af.community.update');
-AutoForm.addModalHooks('af.community.name_update');
 
 AutoForm.addModalHooks('af.roleship.insert');
 AutoForm.addModalHooks('af.roleship.update');

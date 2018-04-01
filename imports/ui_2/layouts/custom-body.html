@@ -7,7 +7,7 @@
     <section id="menu">
       <div class="pic-menu">
         <div class="full-width">
-          <a href={{pathFor 'Community_page'}}>
+          <a href={{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}>
             <img class="house-pic" src="{{activeCommunity/avatar}}" alt="Community Avatar"/>
           </a>
         </div>
@@ -19,7 +19,7 @@
             <a href="{{pathFor 'Board'}}"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>{{_ 'Main'}}</a>
           </li>
           <li class="list-item">
-            <a href="{{pathFor 'Communities.show' _cid=(fromSession 'activeCommunityId')}}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>{{_ 'Community page'}}</a>
+            <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>{{_ 'Community page'}}</a>
             {{#if userHasPermission 'parcels.update' (fromSession activeCommunityId)}}
             {{#if countUnapprovedEntities}}
             <span class="badge pull-right">{{countUnapprovedEntities}}</span>
@@ -97,14 +97,14 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-              <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
-              <li><a href="{{pathFor 'Communities.create'}}"> + {{_ 'Create a community'}} </a></li>
               {{#if communities}}
-              <li role="separator" class="divider"></li>
-              {{#each communities}}
-              <li><a href="#" class="js-switch-community">{{name}}</a></li>
-              {{/each}}
+                {{#each communities}}
+                  <li><a href="#" class="js-switch-community">{{name}}</a></li>
+                {{/each}}
+                <li role="separator" class="divider"></li>
               {{/if}}
+              <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
+              <li><a class="js-create-community" href="#"> + {{_ 'Create a community'}} </a></li>
             </ul>
           </div>
         {{else}}

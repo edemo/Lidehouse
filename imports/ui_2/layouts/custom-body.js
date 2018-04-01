@@ -24,6 +24,7 @@ import '/imports/ui/components/loading.js';
 import '/imports/ui/components/side-panel.js';
 import '/imports/ui_2/pages/not-logged-in.html';
 import './custom-body.html';
+import { afCommunityInsertModal } from '../pages/communities-edit.js';
 
 
 const CONNECTION_ISSUE_TIMEOUT = 5000;
@@ -205,6 +206,9 @@ Template.Custom_body.events({
   },
   'click .js-switch-community'() {
     Session.set('activeCommunityId', this._id);
+  },
+  'click .js-create-community'() {
+    afCommunityInsertModal();
   },
   'click .js-logout'() {
     Meteor.logout(function onLogout(err) {
