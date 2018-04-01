@@ -21,7 +21,7 @@ import '/imports/ui_2/pages/messenger.js';
 import '/imports/ui_2/pages/msg_people.js';
 import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
-import '/imports/ui_2/pages/housing.js';
+import '/imports/ui_2/pages/community-page.js';
 import '/imports/ui_2/pages/tickets-report.js';
 import '/imports/ui_2/pages/parcels-finances.js';
 import '/imports/ui_2/pages/community-finances.js';
@@ -49,7 +49,7 @@ FlowRouter.route('/intro', {
 FlowRouter.route('/community/:_cid', {
   name: 'Communities.show',
   action() {
-    BlazeLayout.render('Custom_body', { main: 'Housing_page' });
+    BlazeLayout.render('Custom_body', { main: 'Community_page' });
   },
 });
 
@@ -131,9 +131,9 @@ FlowRouter.route('/vote', {
 });
 
 FlowRouter.route('/housing', {
-  name: 'Housing_page',
+  name: 'Community_page',
   action() {
-    BlazeLayout.render('Custom_body', { main: 'Housing_page' });
+    BlazeLayout.render('Custom_body', { main: 'Community_page' });
   },
 });
 

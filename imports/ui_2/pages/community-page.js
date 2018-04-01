@@ -9,9 +9,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Accounts } from 'meteor/accounts-base';
-
 import { __ } from '/imports/localization/i18n.js';
-
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { parcelColumns } from '/imports/api/parcels/tables.js';
@@ -23,9 +21,9 @@ import '/imports/api/users/users.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';
-import './housing.html';
+import './community-page.html';
 
-Template.Housing_page.onCreated(function housingPageOnCreated() {
+Template.Community_page.onCreated(function housingPageOnCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
 
   this.autorun(() => {
@@ -35,7 +33,7 @@ Template.Housing_page.onCreated(function housingPageOnCreated() {
   });
 });
 
-Template.Housing_page.helpers({
+Template.Community_page.helpers({
   community() {
     const communityId = Template.instance().getCommunityId();
     const community = Communities.findOne({ _id: communityId });
@@ -127,7 +125,7 @@ Template.Housing_page.helpers({
   },
 });
 
-Template.Housing_page.events({
+Template.Community_page.events({
   // 'click .js-save-form'() {
   //  console.log("Update all the forms")
   //},
