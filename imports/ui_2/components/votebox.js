@@ -101,7 +101,7 @@ Template.Votebox.helpers({
     return this.vote.type === 'preferential';
   },
   // Single choice voting
-  pressedClass(choice) {
+  pressedClassForVoteBtn(choice) {
     const userId = Meteor.userId();
     const voteOfUser = this.voteOf(userId);
     return _.isEqual(voteOfUser, [choice]) && 'btn-pressed';
@@ -115,7 +115,7 @@ Template.Votebox.helpers({
   voteIsFinalized() {
     return Template.instance().state.get('voteIsFinalized');
   },
-  pressedClassForPreferential() {
+  pressedClassForFinalizeBtn() {
     if (Template.instance().state.get('voteIsFinalized')) return 'btn-pressed';
     return '';
   },
