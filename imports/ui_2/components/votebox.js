@@ -55,7 +55,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   // this is in an autorun, so if logged in user changes, it will rerun
   // or if the vote is changed on another machine, it also gets updated here
   this.autorun(function update() {
-    const voteIsFinalized = voting.hasVotedDirect(Meteor.userId())
+    const voteIsFinalized = voting.hasVotedDirect(Meteor.userId());
     state.set('voteIsFinalized', voteIsFinalized);
 
     let preference;
@@ -96,6 +96,9 @@ Template.Votebox.helpers({
   },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
+  },
+  isButtonLayoutVertical() {
+    return this.vote.type === 'preferential';
   },
   // Single choice voting
   pressedClass(choice) {
