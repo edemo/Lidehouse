@@ -84,10 +84,10 @@ Template.Votebox.helpers({
     return Meteor.users.findOne(this.userId).fullName();
   },
   displayCreatedAtTime() {
-    return moment(this.createdAt).format('L LT');
+    return moment(this.createdAt).format('L');
   },
   displayClosesAtTime() {
-    return moment(this.vote.closesAt).format('L LT');
+    return moment(this.vote.closesAt).format('L');
   },
   displayTimeLeft() {
     // momentjs is not reactive, but TymeSync call makes this reactive
