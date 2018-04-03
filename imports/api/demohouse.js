@@ -1268,8 +1268,8 @@ export function deleteDemoUsersAfterRestart() {
   const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } });
   const communityId = Communities.findOne({ name: 'Demo ház' })._id;
   demousers.forEach((user) => {
-    const parcelNumber = Number(user.emails[0].address.split('.')[0]) + 14;
-    const parcelId = Parcels.findOne({ communityId, number: parcelNumber });
+    const parcelSerial = Number(user.emails[0].address.split('.')[0]) + 14;
+    const parcelId = Parcels.findOne({ communityId, serial: parcelSerial })._id;
     const currentTime = moment().valueOf();
     let timeUntilDelete = moment(user.createdAt).add(demoUserLifetime).subtract(currentTime).valueOf();
     if (timeUntilDelete < 0) timeUntilDelete = 0;
