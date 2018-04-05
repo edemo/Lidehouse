@@ -3,7 +3,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
-
+import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { update as updateCommunity } from '/imports/api/communities/methods.js';
@@ -25,6 +25,7 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 
+const dummyUserCount = 14;  // don't forget to change this if you add more dummy users - TODO: auto calculate
 
 export function insertDemoHouse(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
@@ -953,7 +954,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 2300000,
     accounts: {
       'Pénz számla': 'Hitelszámla',
-      'Könyvelés nem': 'Hitelfelvétel',
+      'Könyvelés nem': 'Bank hitel',
       'Könyvelés helye': 'Központi',
     },
     note: __('demo.payments.note.4'),
@@ -1144,7 +1145,9 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
 }
 
 function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
+  debugAssert(userId && parcelId && communityId, `deleteDemoUserWithRelevancies parameter not defined ${userId} ${parcelId} ${communityId}`);
   const counter = Number(Meteor.users.findOne({ _id: userId }).emails[0].address.split('.')[0]);
+  const demoUserNumber = dummyUserCount + counter;
   Topics.remove({ userId });
   Topics.remove({ 'participantIds.$': userId });
   const demoUserVote = 'voteCasts.' + userId;
@@ -1164,13 +1167,13 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   if (currentTotalunits > 10000) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
-  ParcelBillings.remove({ 'accounts.Könyvelés helye': (14 + counter).toString() });
-  Payments.remove({ 'accounts.Könyvelés helye': (14 + counter).toString() });
+  ParcelBillings.remove({ 'accounts.Könyvelés helye': demoUserNumber.toString() });
+  Payments.remove({ 'accounts.Könyvelés helye': demoUserNumber.toString() });
   PayAccounts.update({
     communityId,
     name: 'Könyvelés helye',
   }, {
-    $pull: { 'children.0.children.1.children': { name: (14 + counter).toString() } },
+    $pull: { 'children.0.children.1.children': { name: demoUserNumber.toString() } },
   });
   Meteor.users.remove({ _id: userId });
 }
@@ -1205,14 +1208,15 @@ Meteor.methods({
     if (demoUsersList.length >= 10) {
       Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
     }
+    const demoParcelSerial = dummyUserCount + counter;
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
-      serial: 14 + counter,
+      serial: demoParcelSerial,
       units: 100,
       floor: 'V',
       number: 12 + counter,
       type: 'flat',
-      lot: '4532/8/A/' + (14 + counter),
+      lot: '4532/8/A/' + demoParcelSerial,
       area: 25,
     });
     Memberships.insert({
@@ -1226,7 +1230,7 @@ Meteor.methods({
       communityId: demoCommunityId,
       name: 'Könyvelés helye',
     }, {
-      $push: { 'children.0.children.1.children': { name: (14 + counter) } },
+      $push: { 'children.0.children.1.children': { name: demoParcelSerial } },
     });
 
     const demoManagerId = Meteor.users.findOne({ 'emails.0.address': 'manager@demo.hu' })._id;
@@ -1238,7 +1242,7 @@ Meteor.methods({
       month: 'allMonths',
       accounts: {
         'Könyvelés nem': 'Közös költség befizetés',
-        'Könyvelés helye': (14 + counter).toString(),
+        'Könyvelés helye': demoParcelSerial.toString(),
       },
     });
     for (let m = 1; m < 12; m++) {
@@ -1250,7 +1254,7 @@ Meteor.methods({
         accounts: {
           'Pénz számla': 'Bank főszámla',
           'Könyvelés nem': 'Közös költség befizetés',
-          'Könyvelés helye': (14 + counter).toString(),
+          'Könyvelés helye': demoParcelSerial.toString(),
         },
       });
     }
@@ -1268,7 +1272,7 @@ export function deleteDemoUsersAfterRestart() {
   const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } });
   const communityId = Communities.findOne({ name: 'Demo ház' })._id;
   demousers.forEach((user) => {
-    const parcelSerial = Number(user.emails[0].address.split('.')[0]) + 14;
+    const parcelSerial = Number(user.emails[0].address.split('.')[0]) + dummyUserCount;
     const parcelId = Parcels.findOne({ communityId, serial: parcelSerial })._id;
     const currentTime = moment().valueOf();
     let timeUntilDelete = moment(user.createdAt).add(demoUserLifetime).subtract(currentTime).valueOf();
