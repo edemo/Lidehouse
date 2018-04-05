@@ -25,7 +25,7 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 
-const dummyUserCount = 14;  // don't forget to change this if you add more dummy users - TODO: auto calculate
+const demoParcelCounterStart = 100;
 
 export function insertDemoHouse(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
@@ -1147,7 +1147,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
 function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `deleteDemoUserWithRelevancies parameter not defined ${userId} ${parcelId} ${communityId}`);
   const counter = Number(Meteor.users.findOne({ _id: userId }).emails[0].address.split('.')[0]);
-  const demoUserNumber = dummyUserCount + counter;
+  const demoUserNumber = demoParcelCounterStart + counter;
   Topics.remove({ userId });
   Topics.remove({ 'participantIds.$': userId });
   const demoUserVote = 'voteCasts.' + userId;
@@ -1208,7 +1208,7 @@ Meteor.methods({
     if (demoUsersList.length >= 10) {
       Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
     }
-    const demoParcelSerial = dummyUserCount + counter;
+    const demoParcelSerial = demoParcelCounterStart + counter;
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
       serial: demoParcelSerial,
@@ -1272,7 +1272,7 @@ export function deleteDemoUsersAfterRestart() {
   const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } });
   const communityId = Communities.findOne({ name: 'Demo ház' })._id;
   demousers.forEach((user) => {
-    const parcelSerial = Number(user.emails[0].address.split('.')[0]) + dummyUserCount;
+    const parcelSerial = Number(user.emails[0].address.split('.')[0]) + demoParcelCounterStart;
     const parcelId = Parcels.findOne({ communityId, serial: parcelSerial })._id;
     const currentTime = moment().valueOf();
     let timeUntilDelete = moment(user.createdAt).add(demoUserLifetime).subtract(currentTime).valueOf();
