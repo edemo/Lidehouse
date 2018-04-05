@@ -108,7 +108,12 @@
             </ul>
           </div>
         {{else}}
-          <button class="topbar-item demouser-autologin" href="">demo</button>
+          <div class="topbar-extraleft pull-left logged-out">
+              <a href="{{pathFor 'App.intro'}}"><img src="/images/logo-mono-text.png"></a>
+          </div>
+            <button class="topbar-item demouser-autologin" href="">demo</button>          
+            <a class="topbar-item-a" href="{{pathFor 'Communities.join'}}">Házak</a>
+            <a class="topbar-item-a" href="">Rólunk</a>
         {{/if}}
         </div>
 
