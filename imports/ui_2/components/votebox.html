@@ -131,7 +131,7 @@
     {{#if this.hasVotedIndirect currentUser._id}}
       {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}})
     {{else}}
-      <img src="icon/warning.svg" width="17px">
+      <img src="/icon/warning.svg" width="17px">
       {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedCastYourVoteOr"}} <a href="{{pathFor 'Delegations'}}">{{_ "setupYourDelegation"}}</a>)</i>
     {{/if}}
   {{/if}}

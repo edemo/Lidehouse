@@ -95,15 +95,29 @@ a {
     height: 100%;
     width: 67%;
     &.logged-out {
-      width: 27%;
+      width: 70%;
+      padding: 0;
     }
     padding: 10px;
+  }
+  &-extraleft{
+    background-color: white;
+    border-radius: 0 10px 50px 0;
+    height: 100%;
+    width: auto;
+    margin-right: 10px;
+    padding: 10px;
+    padding-right: 20px;
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
   }
   &-right {
     height: 100%;
     width: 33%;
     &.logged-out {
-      width: 73%;
+      width: auto;
     }
     padding: 10px;
     padding-top: 25px;
@@ -114,6 +128,13 @@ a {
   }
   &-item {
     height: 100%;
+  }
+  &-item-a {
+      font-size: 20px;
+      background: transparent;
+      color: white;
+      text-transform: capitalize;
+      margin: 10px;
   }
   .demouser-autologin, .login-btn {
       font-size: 20px;
