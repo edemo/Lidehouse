@@ -11,6 +11,7 @@ import '/imports/ui/forms/invite-form.js';
 
 import '/imports/ui_2/layouts/custom-body.js';
 import '/imports/ui_2/pages/intro-page.js';
+import '/imports/ui_2/pages/about.js';
 import '/imports/ui_2/pages/users-show.js';
 import '/imports/ui_2/pages/communities-join.js';
 import '/imports/ui_2/pages/parcel-owners.js';
@@ -27,6 +28,7 @@ import '/imports/ui_2/pages/community-finances.js';
 import '/imports/ui_2/pages/shareddoc-store.js';
 import '/imports/ui_2/pages/feedbacks.js';
 import '/imports/ui_2/pages/styleguide.js';
+import '/imports/ui_2/pages/statement.js';
 
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates.js';
@@ -42,6 +44,13 @@ FlowRouter.route('/intro', {
   name: 'App.intro',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Intro_page' });
+  },
+});
+
+FlowRouter.route('/about', {
+  name: 'About.us',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'About_page' });
   },
 });
 
@@ -161,6 +170,13 @@ FlowRouter.route('/styleguide', {
   name: 'Styleguide',
   action() {
     BlazeLayout.render('Custom_body', { main: 'Styleguide' });
+  },
+});
+
+FlowRouter.route('/statement', {
+  name: 'Statement',
+  action() {
+    BlazeLayout.render('Custom_body', { main: 'Statement_page' });
   },
 });
 

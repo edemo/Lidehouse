@@ -91,18 +91,30 @@ a {
   }
   &-left {
     background-color: #998072;
-    border-radius: 0 10px 50px 0;
+    border-top-right-radius: 60px 100px;
+    border-bottom-right-radius: 60px 100px;
     height: 100%;
     width: 67%;
     &.logged-out {
       width: 70%;
       padding: 0;
+      @media screen and (max-width: 765px) {
+        width: 80%;
+       }
     }
     padding: 10px;
+    &-menu {
+      padding: 10px;
+      @media screen and (max-width: 550px) {
+       width: 250px;
+       padding: 0;
+      }
+    }
   }
   &-extraleft{
     background-color: white;
-    border-radius: 0 10px 50px 0;
+    border-top-right-radius: 60px 100px;
+    border-bottom-right-radius: 60px 100px;
     height: 100%;
     width: auto;
     margin-right: 10px;
@@ -129,30 +141,37 @@ a {
   &-item {
     height: 100%;
   }
-  &-item-a {
-      font-size: 20px;
-      background: transparent;
-      color: white;
-      text-transform: capitalize;
-      margin: 10px;
-  }
-  .demouser-autologin, .login-btn {
-      font-size: 20px;
-      background: transparent;
-      color: white;
-      text-transform: capitalize;
-  }
   .login-btn {
+    font-size: 23px;
     color: black;
     margin: 10px;
+    text-transform: capitalize;
   }
-  .community-selector {
+  .community-selector, .topbar-elem {
     background: transparent;
     font-size: 23px;
     margin-top: 13px;
     padding-left: 21px;
     color: white;
     font-weight: bold;
+  }
+  .logged-out .topbar-elem {
+    @media screen and (max-width: 550px) {
+      margin-top: 1px;
+      font-size: 20px;
+      }
+  } 
+  .demouser-autologin:hover {
+      padding-left: 0px;
+      margin-left: 21px;
+      background: darken(#998072, 5%);
+      box-shadow: 1px 1px 2px rgba(255, 255, 255, 0.973);
+      text-decoration: none;
+      text-shadow: -1px -1px 0 darken(#998072, 8%);
+      color: darken(white, 8%);
+      border-radius: 3px;
+      transition-property: background, box-shadow, text-shadow, color;
+      transition-duration: 250ms;
   }
   .pip-usericon {
     display: block;
