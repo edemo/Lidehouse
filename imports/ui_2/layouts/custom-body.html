@@ -108,13 +108,20 @@
             </ul>
           </div>
         {{else}}
-          <div class="topbar-extraleft pull-left logged-out">
-              <a href="{{pathFor 'App.intro'}}"><img src="/images/logo-mono-text.png"></a>
-          </div>
-            <button class="topbar-item demouser-autologin" href="">demo</button>          
-            <a class="topbar-item-a" href="{{pathFor 'Communities.join'}}">Házak</a>
-            <a class="topbar-item-a" href="">Rólunk</a>
         {{/if}}
+        {{#unless currentUser}}
+          <div class="topbar-extraleft pull-left logged-out">
+            <a href="{{pathFor 'App.intro'}}">
+              <img class="visible-xs" src="/favicon.png" alt="Logo">
+              <img class="visible-sm visible-md visible-lg" src="/images/logo-duo-text.png" alt="Logo">
+            </a>
+          </div>
+          <div class="topbar-left-menu">
+            <button class="demouser-autologin topbar-elem" href="">Demo-ház</button>          
+            <a class="topbar-elem" href="{{pathFor 'Communities.join'}}">Házak</a>
+            <a class="topbar-elem" href="{{pathFor 'About.us'}}">Rólunk</a>
+          </div>
+        {{/unless}}
         </div>
 
         <div class="topbar-right btns-group pull-right {{#unless currentUser}}logged-out{{/unless}}">
@@ -135,7 +142,7 @@
             <span class="icon-topic-unordered"></span>
           </a>
         {{else}}
-          <div class="topbar-item login-btns pull-right text-right">
+          <div class="visible-sm visible-md visible-lg topbar-item login-btns pull-right text-right">
             <a href="{{pathFor 'signin'}}" class="login-btn">
               {{_ 'login'}}
             </a>
@@ -144,6 +151,17 @@
               {{_ 'register'}}
             </a>
           </div>
+          <div class="visible-xs topbar-item">
+              <ul class="nav dropdown">
+                <li class="dropdown-toggle profile-drop" type="button" id="avatardropdown-nouser" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <img src="/images/avatars/avatarnull.png" class="img-circle" alt="" width="35"/>
+                </li>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="avatardropdown-nouser">
+                  <li><a href="{{pathFor 'signin'}}" class="login-btn">{{_ 'login'}}</a></li>
+                  <li><a href="{{pathFor 'join'}}" class="login-btn">{{_ 'register'}}</a></li>
+                </ul>
+              </ul>
+            </div>
         {{/if}}
         </div>
       </div>
