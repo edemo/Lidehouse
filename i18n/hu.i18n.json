@@ -1,4 +1,7 @@
 {
+  // TODO use this, instead of fixed title, so its configurable
+  "appName": "honline",
+  "appDescription": "Hatékony társasház menedzsment",
 
   // Shared
   "createdAt": "Létrehozva",
@@ -332,11 +335,6 @@
     "\n__url__\n",
     "Üdvözlettel, \nA Honline Csapata"],
 
-  // eapo hacks
-  "Selection": "Kiválasztása",
-  "List of": "",
-  "About": "Névjegy:",
-  "LiDeHouse": "LiDeHáz",
 
   "":""
 }
