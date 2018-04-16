@@ -33,6 +33,7 @@ flawless:meteor-toastr
 numeral:numeral
 perak:markdown
 q42:autoform-markdown
+fortawesome:fontawesome
 
 # data
 mongo@1.1.14

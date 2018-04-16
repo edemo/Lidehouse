@@ -33,6 +33,13 @@ import '/imports/ui_2/pages/statement.js';
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates.js';
 
+FlowRouter.route('/theme', {
+  name: 'Theme.home',
+  action() {
+    BlazeLayout.render('mainLayout', { content: 'pageOne' });
+  },
+});
+
 FlowRouter.route('/', {
   name: 'App.home',
   action() {
