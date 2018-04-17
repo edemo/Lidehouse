@@ -38,7 +38,7 @@ Template.mainLayout.rendered = function(){
     // SKIN OPTIONS
     // Uncomment this if you want to have different skin option:
     // Available skin: (skin-1 or skin-3, skin-2 deprecated)
-    // $('body').addClass('skin-1');
+    $('body').addClass('skin-2');
 
     // FIXED-SIDEBAR
     // Uncomment this if you want to have fixed left navigation
