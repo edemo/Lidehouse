@@ -1,5 +1,13 @@
-Template.mainLayout.rendered = function(){
+import { Template } from 'meteor/templating';
 
+import '../common/ibox-tools.js';
+import '../common/navigation.js';
+import '../common/top-navbar.js';
+import '../common/page-heading.js';
+import '../common/footer.js';
+import './main.html';
+
+Template.Main_layout.onRendered = function() {
     // Minimalize menu when screen is less than 768px
     $(window).bind("resize load", function () {
         if ($(this).width() < 769) {
@@ -51,6 +59,4 @@ Template.mainLayout.rendered = function(){
     // BOXED LAYOUT
     // Uncomment this if you want to have boxed layout
     // $('body').addClass('boxed-layout');
-
-
 };

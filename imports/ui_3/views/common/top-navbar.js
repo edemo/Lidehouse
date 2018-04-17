@@ -1,4 +1,7 @@
-Template.topNavbar.rendered = function(){
+import { Template } from 'meteor/templating';
+import './top-navbar.html';
+
+Template.Top_navbar.onRendered = function() {
 
     // FIXED TOP NAVBAR OPTION
     // Uncomment this if you want to have fixed top navbar
@@ -7,11 +10,9 @@ Template.topNavbar.rendered = function(){
 
 };
 
-Template.topNavbar.events({
-
+Template.Top_navbar.events({
     // Toggle left navigation
-    'click #navbar-minimalize': function(event){
-
+    'click #navbar-minimalize'(event) {
         event.preventDefault();
 
         // Toggle special class
@@ -36,6 +37,5 @@ Template.topNavbar.events({
             // Remove all inline style from jquery fadeIn function to reset menu state
             $('#side-menu').removeAttr('style');
         }
-    }
-
+    },
 });

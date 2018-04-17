@@ -1,6 +1,8 @@
-Template.iboxTools.events({
+import { Template } from 'meteor/templating';
+import './ibox-tools.html';
 
-    'click .collapse-link': function (event) {
+Template.iboxTools.events({
+    'click .collapse-link'(event) {
         var element = $(event.target);
         var ibox = element.closest('div.ibox');
         var button = element.closest("i");
@@ -13,11 +15,9 @@ Template.iboxTools.events({
             ibox.find('[id^=map-]').resize();
         }, 50);
     },
-
-    'click .close-link': function (event) {
+    'click .close-link'(event) {
         var element = $(event.target);
         var content = element.closest('div.ibox');
         content.remove();
-
-    }
+    },
 });
