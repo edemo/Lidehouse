@@ -14,4 +14,15 @@ import '/imports/api/demohouse.js';
 import './intro-page.html';
 
 Template.Intro_page.events({
+  'click .demouser-autologin'() {
+    Meteor.call('createDemoUserWithParcel', function (error, result) {
+      if (error) displayError(error);
+      else {
+        Meteor.loginWithPassword(result, 'password', function (error) {
+          if (error) displayError(error);
+          else FlowRouter.go('App.home');
+        });
+      }
+    });
+  },
 });

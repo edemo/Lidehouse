@@ -50,7 +50,7 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   this.state.setDefault({
     menuOpen: false,
   });
-
+  // Subscriptions
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });

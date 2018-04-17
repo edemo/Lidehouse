@@ -9,28 +9,133 @@
 
             <ul class="nav" id="side-menu">
                 <li class="nav-header">
+                    <!--a href={{pathFor 'Community.page' _cid=activeCommunityId}}>
+                        <img class="house-pic" src="{{activeCommunity/avatar}}" alt="Community Avatar"/>
+                    </a>
                     <div class="dropdown profile-element">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Example user</strong>
-                             </span> <span class="text-muted text-xs block">user <b class="caret"></b></span> </span> </a>
+                            <span class="clear">
+                                <span class="block m-t-xs">
+                                    <strong class="font-bold">
+                                        {{_ 'community'}} {{_ 'Selection'}}
+                                    </strong>
+                                </span>
+                                <span class="text-muted text-xs block">
+                                    {{activeCommunity.name}}
+                                    <b class="caret"></b>
+                                </span>
+                            </span>
+                        </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                            <li><a href="#">Item</a></li>
-                            <li><a href="#">Item</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Item</a></li>
+                            {{#each communities}}
+                            <li><a href="#" class="js-switch-community">{{name}}</a></li>
+                            {{/each}}
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
+                            <li><a class="js-create-community" href="#"> + {{_ 'Create a community'}} </a></li>
                         </ul>
-                    </div>
+                    </div-->
                     <div class="logo-element">
                         HL
                     </div>
                 </li>
-                <li class="{{isActivePath regex='pageOne'}}">
-                    <a href="/pageOne"><i class="fa fa-dashboard"></i> <span class="nav-label">Page one</span> </a>
-                </li>          <li class="{{isActivePath regex='pageTwo'}}">
-                    <a href="/pageTwo"><i class="fa fa-diamond"></i> <span class="nav-label">Page two</span> </a>
+                <li class="{{isActivePath regex='board'}}">
+                    <a href="{{pathFor 'Board'}}">
+                        <i class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Main'}}</span>
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='community'}}">
+                    <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
+                        <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Community page'}}</span>
+                    </a>
+                    {{#if userHasPermission 'parcels.update' (fromSession activeCommunityId)}}
+                    {{#if countUnapprovedEntities}}
+                    <span class="badge pull-right">{{countUnapprovedEntities}}</span>
+                    {{/if}}
+                    {{/if}}
+                </li>
+                <li class="{{isActivePath regex='messenger'}}">
+                    <a href="{{pathFor 'Messenger'}}">
+                        <i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Messages'}}</span>
+                    </a>
+                    {{#if countNotifications 'room'}}
+                    <span class="badge pull-right">{{countNotifications 'room'}}</span>
+                    {{/if}}
+                </li>
+                <!-- <li class="{{isActivePath regex='forum'}}">
+                    <a href="{{pathFor 'Topics.forum'}}">
+                        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+                        <span class="nav-label">{{_ 'Community page'}}</span>
+                        {{_ 'Forum'}}
+                    </a>
+                </li> -->
+                <li class="{{isActivePath regex='vote'}}">
+                    <a href="{{pathFor 'Topics.vote'}}">
+                        <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Votings'}}</span>
+                    </a>
+                    {{#if countNotifications 'vote'}}
+                    <span class="badge pull-right">{{countNotifications 'vote'}}</span>
+                    {{/if}}
+                </li>
+                <li class="{{isActivePath regex='delegations'}}">
+                    <a href="{{pathFor 'Delegations'}}">
+                        <i class="glyphicon glyphicon-share-alt" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Delegations'}}</span>
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='tickets'}}">
+                    <a href="{{pathFor 'Tickets.report'}}">
+                        <i class="glyphicon glyphicon-wrench" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Tickets'}}</span>
+                    </a>
+                    {{#if userHasPermission 'ticket.update' (fromSession activeCommunityId)}}
+                    {{#if countNotifications 'ticket'}}
+                    <span class="badge pull-right">{{countNotifications 'ticket'}}</span>
+                    {{/if}}
+                    {{/if}}
+                </li>
+                <li class="{{isActivePath regex='parcel-finances'}}">
+                    <a href="{{pathFor 'Parcels.finances'}}">
+                        <i class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Parcel finances'}}</span>
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='community-finances'}}">
+                    <a href="{{pathFor 'Community.finances'}}">
+                        <i class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Community finances'}}</span>
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='documents'}}">
+                    <a href="{{pathFor 'DocumentStore'}}">
+                        <i class="glyphicon glyphicon-paperclip" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Documentstore'}}</span>
+                    </a>
                 </li>
             </ul>
-
+            {{#if developerMode}}
+            <ul style="position: absolute; bottom: 0; width: 100%;">
+                <li class="{{isActivePath regex='feedback'}}">
+                    <a href="{{pathFor 'Feedbacks'}}">
+                        <i><img src="/icon/si-glyph-bolt.svg"/></i>
+                        <span class="nav-label">Feedbacks (dev)</span>
+                    </a>
+                    {{#if countNotifications 'feedback'}}
+                    <span class="badge pull-right">{{countNotifications 'feedback'}}</span>
+                    {{/if}}
+                </li>
+                <li class="{{isActivePath regex='styleguide'}}">
+                    <a href="{{pathFor 'Styleguide'}}">
+                        <i><img src="/icon/si-glyph-bolt.svg"/></i>
+                        <span class="nav-label">Styleguide (dev)</span>
+                    </a>
+                </li>
+            </ul>
+            {{/if}}
         </div>
     </nav>
 </template>

@@ -4,22 +4,19 @@
     <div id="wrapper">
 
         <!-- Navigation -->
+        {{#if activeCommunity}}
         {{> Navigation }}
+        {{/if}}
 
-        <!-- Page wraper -->
+        <!-- Page wrapper-->
         <div id="page-wrapper" class="gray-bg">
 
-            <!-- Page wrapper -->
             {{> Top_navbar }}
-
-            <!-- Main view  -->
             {{>Template.dynamic template=content}}
-
-            <!-- Footer -->
             {{> Footer }}
 
         </div>
-        <!-- End page wrapper-->
+        <!-- End Page wrapper-->
 
     </div>
     <!-- End wrapper-->

@@ -2,7 +2,14 @@
 
     <div class="footer">
         <div class="pull-right">
-            Lépjen velünk <strong><a href="mailto:info@honline.net">kapcsolatba</a></strong>!
+            Köszönettel vesszük
+            <strong>
+                {{#if currentUser}}
+                    <a href="#" class="js-feedback">visszajelzéseit</a>                
+                {{else}}
+                    <a href="mailto:info@honline.net">visszajelzéseit</a>
+                {{/if}}
+            </strong>!
         </div>
         <div>
             powered by <strong>honline</strong> &dash; Az online társasházkezelő

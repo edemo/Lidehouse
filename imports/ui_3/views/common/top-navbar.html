@@ -3,21 +3,36 @@
         <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <a id="navbar-minimalize" class="minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-                <form role="search" class="navbar-form-custom" action="search_results">
+                <!--form role="search" class="navbar-form-custom" action="search_results">
                     <div class="form-group">
                         <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
                     </div>
-                </form>
+                </form-->
             </div>
             <ul class="nav navbar-top-links navbar-right">
                 <li>
-                    <a href="#">
-                        <i class="fa fa-sign-out"></i> Log out
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span>
+                        <strong class="font-bold">{{currentUser.displayName}}</strong>                            
+                        <img alt="image" class="img-circle" src="{{currentUser.avatar}}" width="25"/>
+                    </span>
                     </a>
+                    <ul class="dropdown-menu dropdown-menu-right animated fadeInTop m-t-xs" aria-labelledby="user-menu-dropdown">
+                        <li>                
+                            <a href="{{pathFor 'Users.show' _id=currentUser._id}}">
+                                <i class="glyphicon glyphicon-cog" aria-hidden="true"></i> 
+                                {{_ 'profile'}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="js-logout">
+                                <i class="glyphicon glyphicon-log-out" aria-hidden="true"></i>
+                                {{_ 'logout'}}
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-
             </ul>
-
         </nav>
     </div>
 </template>
