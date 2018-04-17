@@ -4,14 +4,21 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import { afCommunityInsertModal } from '/imports/ui_2/pages/communities-edit.js';
-
+import '/imports/api/users/users.js';
 import './top-navbar.html';
 
 Template.Top_navbar.onRendered(function() {
     // FIXED TOP NAVBAR OPTION
     // Uncomment this if you want to have fixed top navbar
-    $('body').addClass('fixed-nav').addClass('fixed-nav-basic');;
+    $('body').addClass('fixed-nav').addClass('fixed-nav-basic');
     $(".navbar-static-top").removeClass('navbar-static-top').addClass('navbar-fixed-top');
+});
+
+Template.Top_navbar.helpers({
+    userCommunities() {
+        if (!Meteor.user()) { return []; }
+        return Meteor.user().communities();
+    },
 });
 
 Template.Top_navbar.events({

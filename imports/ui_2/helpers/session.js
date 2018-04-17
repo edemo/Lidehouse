@@ -12,5 +12,5 @@ Template.registerHelper('activeCommunityId', function activeCommunityId() {
 
 Template.registerHelper('activeCommunity', function activeCommunity() {
   const id = Session.get('activeCommunityId');
-  return Communities.find(id);
+  return Communities.findOne(id);
 });

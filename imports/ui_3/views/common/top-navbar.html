@@ -10,6 +10,24 @@
                 </form-->
             </div>
             <ul class="nav navbar-top-links navbar-right">
+                <li class="pull-left">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear">
+                            <strong class="text-muted text-xs block">
+                                {{activeCommunity.name}}
+                                <!--b class="caret"></b-->
+                            </strong>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        {{#each userCommunities}}
+                        <li><a href="#" class="js-switch-community">{{name}}</a></li>
+                        {{/each}}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
+                        <li><a class="js-create-community" href="#"> + {{_ 'Create a community'}} </a></li>
+                    </ul>
+                </li>
                 <li>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
                     <span>
