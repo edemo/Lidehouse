@@ -30,21 +30,21 @@
                     <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
+                        {{#if userHasPermission 'parcels.update' (fromSession activeCommunityId)}}
+                        {{#if countUnapprovedEntities}}
+                        <span class="badge badge-danger pull-right">{{countUnapprovedEntities}}</span>
+                        {{/if}}
+                        {{/if}}
                     </a>
-                    {{#if userHasPermission 'parcels.update' (fromSession activeCommunityId)}}
-                    {{#if countUnapprovedEntities}}
-                    <span class="badge pull-right">{{countUnapprovedEntities}}</span>
-                    {{/if}}
-                    {{/if}}
                 </li>
                 <li class="{{isActivePath regex='messenger'}}">
                     <a href="{{pathFor 'Messenger'}}">
                         <i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Messages'}}</span>
+                        {{#if countNotifications 'room'}}
+                        <span class="badge badge-danger pull-right">{{countNotifications 'room'}}</span>
+                        {{/if}}
                     </a>
-                    {{#if countNotifications 'room'}}
-                    <span class="badge pull-right">{{countNotifications 'room'}}</span>
-                    {{/if}}
                 </li>
                 <!-- <li class="{{isActivePath regex='forum'}}">
                     <a href="{{pathFor 'Topics.forum'}}">
@@ -57,10 +57,10 @@
                     <a href="{{pathFor 'Topics.vote'}}">
                         <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Votings'}}</span>
+                        {{#if countNotifications 'vote'}}
+                        <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
+                        {{/if}}
                     </a>
-                    {{#if countNotifications 'vote'}}
-                    <span class="badge pull-right">{{countNotifications 'vote'}}</span>
-                    {{/if}}
                 </li>
                 <li class="{{isActivePath regex='delegations'}}">
                     <a href="{{pathFor 'Delegations'}}">
@@ -72,12 +72,12 @@
                     <a href="{{pathFor 'Tickets.report'}}">
                         <i class="glyphicon glyphicon-wrench" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Tickets'}}</span>
+                        {{#if userHasPermission 'ticket.update' (fromSession activeCommunityId)}}
+                        {{#if countNotifications 'ticket'}}
+                        <span class="badge badge-danger pull-right">{{countNotifications 'ticket'}}</span>
+                        {{/if}}
+                        {{/if}}
                     </a>
-                    {{#if userHasPermission 'ticket.update' (fromSession activeCommunityId)}}
-                    {{#if countNotifications 'ticket'}}
-                    <span class="badge pull-right">{{countNotifications 'ticket'}}</span>
-                    {{/if}}
-                    {{/if}}
                 </li>
                 <li class="{{isActivePath regex='parcel-finances'}}">
                     <a href="{{pathFor 'Parcels.finances'}}">
@@ -104,10 +104,10 @@
                     <a href="{{pathFor 'Feedbacks'}}">
                         <i><img src="/icon/si-glyph-bolt.svg"/></i>
                         <span class="nav-label">Feedbacks (dev)</span>
+                        {{#if countNotifications 'feedback'}}
+                        <span class="badge badge-danger pull-right">{{countNotifications 'feedback'}}</span>
+                        {{/if}}
                     </a>
-                    {{#if countNotifications 'feedback'}}
-                    <span class="badge pull-right">{{countNotifications 'feedback'}}</span>
-                    {{/if}}
                 </li>
                 <li class="{{isActivePath regex='styleguide'}}">
                     <a href="{{pathFor 'Styleguide'}}">
