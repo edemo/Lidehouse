@@ -21,7 +21,7 @@ import '/imports/api/users/users.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
-import { afCommunityUpdateModal } from '/imports/ui_2/pages/communities-edit.js';
+import { afCommunityUpdateModal } from './communities-edit.js';
 import '../common/page-heading.js';
 import '../components/action-buttons.html';
 import './community-page.html';

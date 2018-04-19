@@ -13,7 +13,7 @@ import '/imports/ui_2/layouts/custom-body.js';
 import '/imports/ui_2/pages/intro-page.js';
 import '/imports/ui_2/pages/about.js';
 import '/imports/ui_2/pages/users-show.js';
-import '/imports/ui_2/pages/communities-join.js';
+import '/imports/ui_3/views/pages/communities-join.js';
 import '/imports/ui_3/views/pages/parcel-owners.js';
 import '/imports/ui_2/pages/user-delegations.js';
 import '/imports/ui_2/pages/board.js';
