@@ -31,7 +31,7 @@ Template.Parcel_owners_page.helpers({
     title() {
         const parcelId = FlowRouter.getParam('_pid');
         const parcel = Parcels.findOne(parcelId);
-        return `${parcel.display()} ${__('parcel')} ${__("'s owners")}`;
+        return `${__('parcel')} ${__("'s owners")} - ${parcel.display()}`;
     },
     owners() {
         const parcelId = FlowRouter.getParam('_pid');

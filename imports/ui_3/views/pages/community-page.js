@@ -47,7 +47,7 @@ Template.Community_page.helpers({
   title() {
     const communityId = Template.instance().getCommunityId();
     const community = Communities.findOne({ _id: communityId });
-    return community.name + ' ' + __('data page');
+    return `${__('Community page')} - ${community.name}`;
   },
   community() {
     const communityId = Template.instance().getCommunityId();
