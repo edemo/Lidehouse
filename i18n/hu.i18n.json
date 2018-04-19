@@ -84,6 +84,7 @@
   "payaccount": "könyvelési fiók",
   "payaccounts": "könyvelési fiókok",
   "data": "adatok",
+  "data page": "adatlapja",
   "uploads": "dokumentumtár",
   "upload": "feltöltés",
 
@@ -131,6 +132,7 @@
   "Acknowledge save effects": "Tudomásul veszem, hogy az elmentett módosítás azonnal láthatóvá válik a közösség nyilvános oldalán.",
   "pleaseSupplyParcelData": "Kérjük adjon meg minél több adatot az albetétjéről, hogy csatlakozási kérelme minél előbb elfogadásra kerülhessen!",
   "Create your own community": "Nem találta meg a keresett közösséget? Talán itt az ideje létrehozni! ",
+  "Submit join request": "Csatlakozási kérelem beadása",
 
   // voting
   "choice": "választási lehetőség",

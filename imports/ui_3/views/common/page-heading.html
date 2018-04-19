@@ -3,6 +3,7 @@
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
             <h2>{{title}}</h2>
+            {{#if breadcrumbs}}
             <ol class="breadcrumb">
                 <li>
                     <a href="/home">Home</a>
@@ -16,6 +17,7 @@
                     <strong>{{title}}</strong>
                 </li>
             </ol>
+            {{/if}}
         </div>
     </div>
 </template>

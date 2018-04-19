@@ -21,7 +21,7 @@ import '/imports/ui_2/pages/messenger.js';
 import '/imports/ui_2/pages/msg_people.js';
 import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_2/pages/vote-topics.js';
-import '/imports/ui_2/pages/community-page.js';
+import '/imports/ui_3/views/pages/community-page.js';
 import '/imports/ui_2/pages/tickets-report.js';
 import '/imports/ui_2/pages/parcels-finances.js';
 import '/imports/ui_2/pages/community-finances.js';
