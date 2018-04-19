@@ -37,32 +37,9 @@ Template.Community_page.onCreated(function() {
 
 Template.Community_page.onRendered(function() {
     // Add slimscroll to element
-//    $('.full-height-scroll').slimscroll({
-//        height: '100%'
-//    });
-
-    // Initialize dataTables
-/*    $('.dataTables-example').DataTable({
-        dom: '<"html5buttons"B>lTfgitp',
-        buttons: [
-            { extend: 'copy'},
-            {extend: 'csv'},
-            {extend: 'excel', title: 'ExampleFile'},
-            {extend: 'pdf', title: 'ExampleFile'},
-
-            {extend: 'print',
-                customize: function (win){
-                    $(win.document.body).addClass('white-bg');
-                    $(win.document.body).css('font-size', '10px');
-
-                    $(win.document.body).find('table')
-                        .addClass('compact')
-                        .css('font-size', 'inherit');
-                },
-            },
-        ],
+    $('.full-height-scroll').slimscroll({
+        height: '100%'
     });
-    */
 });
 
 Template.Community_page.helpers({
