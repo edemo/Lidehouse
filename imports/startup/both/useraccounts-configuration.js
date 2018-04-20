@@ -37,8 +37,8 @@ AccountsTemplates.configure({
  // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
 
   defaultTemplate: 'Auth_page',
-  defaultLayout: 'Custom_body',
-  defaultContentRegion: 'main',
+  defaultLayout: 'Main_layout',
+  defaultContentRegion: 'content',
   defaultLayoutRegions: {},
 
   // https://stackoverflow.com/questions/12984637/is-there-a-post-createuser-hook-in-meteor-when-using-accounts-ui-package
@@ -54,8 +54,8 @@ AccountsTemplates.configureRoute('signIn', {
 });
 
 AccountsTemplates.configureRoute('signUp', {
-  name: 'join',
-  path: '/join',
+  name: 'signup',
+  path: '/signup',
   redirect() {
     FlowRouter.go('App.home');
   },
