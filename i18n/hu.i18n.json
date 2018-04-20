@@ -87,12 +87,12 @@
   "data page": "adatlapja",
   "uploads": "dokumentumtár",
   "upload": "feltöltés",
-
   "comment": "hozzászólás",
   "created": "létrehozva",
   "closes": "lezárul",
 
   // commands
+  "important": "Fontos",
   "view": "Megtekintés",
   "edit": "Szerkesztés",
   "delete": "Törlés",
@@ -100,6 +100,7 @@
   "save": "Mentés",
   "send": "Elküldés",
   "vote": "Szavazás",
+  "send message": "Üzenet küldése",
   "send vote": "Szavazat elküldése",
   "change": "Megváltoztatom",
   "revoke": "Visszavonás",

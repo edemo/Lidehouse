@@ -1,0 +1,32 @@
+<template name="Comments_section">
+    <div class="social-footer">
+    {{#each comment in comments}}
+        {{> Comment comment}}
+    {{/each}}
+        <div class="social-comment">
+            <a href="" class="pull-left">
+                <img alt="avatar" src={{currentUser.avatar}}>
+            </a>
+            <div class="media-body">
+                <textarea class="form-control" placeholder={{_ 'newCommentPlaceholder'}}></textarea>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="Comment">
+    <div class="social-comment">
+        <a href="" class="pull-left">
+            <img alt="avatar" src={{user.avatar}}>
+        </a>
+        <div class="media-body">
+            <a href="#">
+                {{user.fullName}}
+            </a>
+            {{text}}
+            <br/>
+            <a href="#" class="small text-capitalize"><i class="fa fa-hand-o-up"></i>{{likesCount}} {{_ 'important'}}!</a> -
+            <small class="text-muted">{{displayTimeSince}}</small>
+        </div>
+    </div>
+</template>
