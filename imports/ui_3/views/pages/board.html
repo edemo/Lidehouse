@@ -1,6 +1,7 @@
 <template name="Board">
   <div class="wrapper wrapper-content animated fadeInRight">
 
+    <div class="row">
     <div class="col-xs-12 col-lg-8">
 
       {{#Collapse_section id='vote' title=activeVotingsTitle }}
@@ -36,6 +37,7 @@
     <!-- right side -->
     <div class="col-xs-12 col-lg-4  visible-lg">
       {{> News}}
+    </div>
     </div>
   </div>
 </template>
@@ -88,5 +90,5 @@
   </div>
   </div>
   {{/each}}
-
+  
 </template>
