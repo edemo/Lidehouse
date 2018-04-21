@@ -1,100 +1,32 @@
 <template name="Vote_topics">
-  <div class="content-scrollable page-content page-vote">
 
-   <div class="row">
-     <ul class="tabs">
+    <!-- Page heading -->
+    {{> Page_heading title='Votings' category='Decision making'}}
 
-       <!-- 1st tab start -->
-       <li class="tab">
-         <input type="radio" name="tabs" checked="checked" id="tab1" />
-         <label for="tab1">{{_ 'Active votings'}}</label>
-         <!-- content -->
-         <div id="tab-content1" class="content">
-           <div class="row">
-             <div class="col-xs-12 text-right">
-               <a class="btn btn-primary js-new-vote">{{_ 'new'}} {{_ 'voting'}}</a>
-             </div>
-           </div>
-           <div class="row">
-             <div class="col-xs-12">
-               {{#each openVoteTopics}}
-                <!--div id={{_id}}>
-                {{#if (editing _id)}}
-                  {{> Vote_create}}
-                {{else}}
-                  {{> Votebox}}
-                {{/if}}
-                </div-->
-                {{> Votebox}}
-               {{/each}}
-             </div>
-           </div>
+    <div class="wrapper wrapper-content animated fadeInUp">
 
-         </div>
-       </li>
-       <!-- 1st tab end -->
-
-       <!-- 2nd tab start-->
-       <li class="tab">
-         <input type="radio" name="tabs" id="tab2" />
-         <label for="tab2">{{_ 'Closed votings'}}</label>
-         <div id="tab-content2" class="content">
-
-           <div class="row">
-             <div class="col-xs-12 text-center">
-               <h4>{{_ 'Closed votings'}}</h4>
-               <hr/>
-             </div>
-           </div>
-
-           <div class="row">
-             {{#if hasSelection}}
-             <div class="col-xs-12">
-               {{#with selectedDoc}}
-                 {{> Votebox}}
-               {{/with}}
-             </div>
-             {{/if}}
-           </div>
-
-           <div class="row">
-             <div class="col-xs-12">
-               {{> ReactiveDatatable tableData=closedVotingsTableDataFn options=closedVotingsOptionsFn }}
-               <!-- TODO add active class to selected row)-->
-             </div>
-           </div>
-
-         </div>
-       </li>
-       <!-- 2nd tab end -->
-
-       <!-- 3rd tab start-->
-       <li class="tab">
-         <input type="radio" name="tabs" id="tab3" />
-         <label for="tab3">{{_ 'Agendas'}}</label>
-         <div id="tab-content3" class="content">
-
-           <div class="row">
-             <div class="col-xs-12 text-center">
-               <h4>{{_ 'Agendas'}}</h4>
-               <hr/>
-             </div>
-           </div>
-
-           <div class="row">
-             <div class="col-xs-12">
-               {{> ReactiveDatatable tableData=agendasTableDataFn options=agendasOptionsFn }}
-             </div>
-             {{#if userHasPermission "agendas.insert" (fromSession "activeCommunityId") }}
-               <button class="js-new btn-primary">{{_ 'createNew'}}</button>
-             {{/if}}
-           </div>
-
-         </div>
-       </li>
-       <!-- 3rd tab end -->
-     </ul>
-   </div>
- </div>
-
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>Aktív és lezárt szavazások teljes listája</h5>
+                <div class="ibox-tools">
+                    <a href="" class="btn btn-primary btn-xs js-new">+ {{_ 'new'}} {{_ 'voting'}}</a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div class="row m-b-sm m-t-sm">
+                    <div class="col-md-1">
+                        <button type="button" id="loading-example-btn" class="btn btn-white btn-sm" ><i class="fa fa-refresh"></i> Actives</button>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-primary"> Go!</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {{>Voting_list items=voteTopics}}
+            </div>
+        </div>
+    </div>
 </template>

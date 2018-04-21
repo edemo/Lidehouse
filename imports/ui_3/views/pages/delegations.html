@@ -1,0 +1,111 @@
+<template name="User_delegations">
+  <div class="content-scrollable page-content">
+
+    <div style="row">
+      <ul class="tabs">
+
+        <!-- 1st tab start -->
+        {{#if userHasPermission 'delegations.forOthers' (fromSession 'activeCommunityId') }}
+        <li class="tab">
+          <input type="radio" name="tabs" checked="checked" id="tab1" />
+          <label for="tab1">{{_ 'Delegations'}}</label>
+          <!-- content -->
+          <div id="tab-content1" class="content">
+            <div class="row">
+              <div class="col-xs-12 text-center">
+                <h4>{{_ 'Delegations'}}</h4>
+                <hr/>
+                <br>
+                {{> ReactiveDatatable tableData=delegationsDataFn options=delegationsOptionsFn}}
+                <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+              </div>
+            </div>
+          </div>
+        </li>
+        {{else}}
+        <li class="tab">
+          <input type="radio" name="tabs" checked="checked" id="tab1" />
+          <label for="tab1">{{_ 'Delegations from me'}}</label>
+          <!-- content -->
+          <div id="tab-content1" class="content">
+            <div class="row">
+              <div class="col-xs-12 text-center">
+                <h4>{{_ 'Delegations from me'}}</h4>
+                <hr/>
+                <!-- some instruction for the users -->
+                <div class="row margined-row">
+                  <div class="col-xs-12 text-center">
+                    <p>{{_ 'delegationsFromMeInstructions'}}
+                    {{_ 'delegationsFromMeInstructions2'}}</p>
+                  </div>
+                </div>
+                <br>
+                {{> ReactiveDatatable tableData=delegationsFromMeDataFn options=delegationsFromMeOptionsFn}}
+                <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+                {{> User_voting_power}}
+              </div>
+            </div>
+          </div>
+        </li>
+        {{/if}}
+        <!-- 1st tab end -->
+        <!-- 2nd tab start-->
+        <li class="tab">
+          <input type="radio" name="tabs" id="tab2" />
+          <label for="tab2">{{_ 'Delegations to me'}}</label>
+          <div id="tab-content2" class="content">
+            <div class="row">
+              <div class="col-xs-12 text-center">
+                <h4>{{_ 'Delegations to me'}}</h4>
+                <hr/>
+                <!-- some instruction for the users -->
+                <div class="row margined-row">
+                  <div class="col-xs-12 text-center">
+                    <p>{{_ 'delegationsToMeInstructions'}}
+                    {{_ 'delegationsToMeInstructions2'}}</p>
+                  </div>
+                </div>
+                <form>
+                  <input type="checkbox" name="allow" id="allow">
+                  <label for="allow">{{_ 'allowDelegationsToMe'}}</label>
+                </form>
+                <br>
+                {{> ReactiveDatatable tableData=delegationsToMeDataFn options=delegationsToMeOptionsFn}}
+                <br>
+                {{> User_voting_power}}
+              </div>
+            </div>
+          </div>
+        </li>
+        <!-- 2nd tab end -->
+
+      </ul>
+    </div>
+  </div>
+</template>
+
+<template name="User_voting_power">
+<div class="row margined-row">
+    <div class="col-xs-12 text-center">
+      <p>{{_ 'Your voting power'}}:
+        {{currentUser.totalOwnedUnits (fromSession 'activeCommunityId')}} {{_ 'from own voting units'}},
+        {{currentUser.totalDelegatedToMeUnits (fromSession 'activeCommunityId')}} {{_ 'from delegated voting units'}}.
+        <span style="{ font-weight: bold; }">{{_ 'In total'}}: {{currentUser.totalVotingPower (fromSession 'activeCommunityId')}}
+        </span>
+      </p>
+    </div>
+  </div>
+</template>
+<!--template name="User_delegations">
+  <div class="content-scrollable page-content">
+    <h1 class="page-title">{{_ 'Delegations'}}</h1>
+    <h2 class="page-title">{{_ 'Delegations from less specific to more specific'}}</h2>
+    {{#each scope in delegationScopes}}
+      <h3 class="page-title">{{_ scope}} {{_ 'issues'}}:</h3>
+      {{> ReactiveDatatable tableData=(reactiveDelegationsDataFn scope) options=optionsFn}}
+    {{/each}}
+  </div>
+</template-->
+
+<template name="Delegations">
+</template>

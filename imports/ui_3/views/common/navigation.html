@@ -26,17 +26,6 @@
                         <span class="nav-label">{{_ 'Main'}}</span>
                     </a>
                 </li>
-                <li class="{{isActivePath regex='community'}}">
-                    <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
-                        <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
-                        <span class="nav-label">{{_ 'Community page'}}</span>
-                        {{#if userHasPermission 'parcels.update' (fromSession activeCommunityId)}}
-                        {{#if countUnapprovedEntities}}
-                        <span class="badge badge-danger pull-right">{{countUnapprovedEntities}}</span>
-                        {{/if}}
-                        {{/if}}
-                    </a>
-                </li>
                 <li class="{{isActivePath regex='messenger'}}">
                     <a href="{{pathFor 'Messenger'}}">
                         <i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>
@@ -46,27 +35,43 @@
                         {{/if}}
                     </a>
                 </li>
-                <!-- <li class="{{isActivePath regex='forum'}}">
+                <li class="{{isActivePath regex='forum'}}">
                     <a href="{{pathFor 'Topics.forum'}}">
-                        <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
-                        <span class="nav-label">{{_ 'Community page'}}</span>
-                        {{_ 'Forum'}}
+                        <i class="glyphicon glyphicon-globe" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Forum'}}</span>
                     </a>
-                </li> -->
-                <li class="{{isActivePath regex='vote'}}">
-                    <a href="{{pathFor 'Topics.vote'}}">
-                        <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
-                        <span class="nav-label">{{_ 'Votings'}}</span>
+                </li>
+                <li class="{{isActivePath regex='votings|delegations'}}">
+                    <a href="#"><i class="fa fa-legal"></i>
+                        <span class="nav-label">{{_ 'Decision making'}}</span>
+                        <span class="fa arrow"> </span>
                         {{#if countNotifications 'vote'}}
                         <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
                         {{/if}}
                     </a>
-                </li>
-                <li class="{{isActivePath regex='delegations'}}">
-                    <a href="{{pathFor 'Delegations'}}">
-                        <i class="glyphicon glyphicon-share-alt" aria-hidden="true"></i>
-                        <span class="nav-label">{{_ 'Delegations'}}</span>
-                    </a>
+                    <ul class="nav nav-second-level collapse {{isActivePath regex='votings|votings' className='in'}}">
+                        <li class="{{isActivePath regex='/votings'}}">
+                            <a href="{{pathFor 'Topics.vote'}}">
+                                <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Votings'}}</span>
+                                {{#if countNotifications 'vote'}}
+                                <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
+                                {{/if}}
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='agendas'}}">
+                            <a href="{{pathFor 'Agendas'}}">
+                                <i class="fa fa-list" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Agendas'}}</span>
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='delegations'}}">
+                            <a href="{{pathFor 'Delegations'}}">
+                                <i class="glyphicon glyphicon-share-alt" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Delegations'}}</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="{{isActivePath regex='tickets'}}">
                     <a href="{{pathFor 'Tickets.report'}}">
@@ -89,6 +94,17 @@
                     <a href="{{pathFor 'Community.finances'}}">
                         <i class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community finances'}}</span>
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='community'}}">
+                    <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
+                        <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Community page'}}</span>
+                        {{#if userHasPermission 'parcels.update' (fromSession activeCommunityId)}}
+                        {{#if countUnapprovedEntities}}
+                        <span class="badge badge-danger pull-right">{{countUnapprovedEntities}}</span>
+                        {{/if}}
+                        {{/if}}
                     </a>
                 </li>
                 <li class="{{isActivePath regex='documents'}}">

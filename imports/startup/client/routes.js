@@ -9,18 +9,19 @@ import '/imports/ui/pages/app-not-found.js';
 import '/imports/ui/forms/users-show-form.js';
 import '/imports/ui/forms/invite-form.js';
 
-import '/imports/ui_2/layouts/custom-body.js';
+//import '/imports/ui_2/layouts/custom-body.js';
 import '/imports/ui_2/pages/intro-page.js';
 import '/imports/ui_2/pages/about.js';
 import '/imports/ui_2/pages/users-show.js';
 import '/imports/ui_3/views/pages/communities-join.js';
 import '/imports/ui_3/views/pages/parcel-owners.js';
-import '/imports/ui_2/pages/user-delegations.js';
+import '/imports/ui_3/views/pages/vote-topics.js';
+import '/imports/ui_3/views/pages/agendas.js';
+import '/imports/ui_3/views/pages/delegations.js';
 import '/imports/ui_3/views/pages/board.js';
 import '/imports/ui_2/pages/messenger.js';
 import '/imports/ui_2/pages/msg_people.js';
 // import '/imports/ui_2/pages/forum-topics.js';
-import '/imports/ui_3/views/pages/vote-topics.js';
 import '/imports/ui_3/views/pages/community-page.js';
 import '/imports/ui_2/pages/tickets-report.js';
 import '/imports/ui_2/pages/parcels-finances.js';
@@ -130,17 +131,24 @@ FlowRouter.route('/forum', {
   },
 });
 
-FlowRouter.route('/delegations', {
-  name: 'Delegations',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'User_delegations' });
-  },
-});
-
-FlowRouter.route('/vote', {
+FlowRouter.route('/votings', {
   name: 'Topics.vote',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Vote_topics' });
+  },
+});
+
+FlowRouter.route('/agendas', {
+  name: 'Agendas',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Agendas' });
+  },
+});
+
+FlowRouter.route('/delegations', {
+  name: 'Delegations',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Delegations' });
   },
 });
 
