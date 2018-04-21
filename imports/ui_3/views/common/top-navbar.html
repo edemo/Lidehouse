@@ -13,12 +13,10 @@
                 {{#if currentUser}}
                 <li>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="clear">
-                            <strong class="text-muted text-xs block">
-                                {{activeCommunity.name}}
-                                <b class="caret"></b>
-                            </strong>
-                        </span>
+                        <strong class="text-muted text-xs block">
+                            {{activeCommunity.name}}
+                            <b class="caret"></b>
+                        </strong>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
                         {{#each userCommunities}}
