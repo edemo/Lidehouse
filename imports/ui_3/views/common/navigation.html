@@ -44,7 +44,7 @@
                 <li class="{{isActivePath regex='votings|agendas|delegations'}}">
                     <a href="#"><i class="fa fa-legal"></i>
                         <span class="nav-label">{{_ 'Decision making'}}</span>
-                        <span class="fa arrow"> </span>
+                        <!--span class="fa arrow"> </span-->
                         {{#if countNotifications 'vote'}}
                         <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
                         {{/if}}
@@ -84,17 +84,25 @@
                         {{/if}}
                     </a>
                 </li>
-                <li class="{{isActivePath regex='parcel-finances'}}">
-                    <a href="{{pathFor 'Parcels.finances'}}">
-                        <i class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></i>
-                        <span class="nav-label">{{_ 'Parcel finances'}}</span>
+                <li class="{{isActivePath regex='finances'}}">
+                    <a href="#"><i class="glyphicon glyphicon-piggy-bank"></i>
+                        <span class="nav-label">{{_ 'Finances'}}</span>
+                        <!--span class="fa arrow"> </span-->
                     </a>
-                </li>
-                <li class="{{isActivePath regex='community-finances'}}">
-                    <a href="{{pathFor 'Community.finances'}}">
-                        <i class="glyphicon glyphicon-piggy-bank" aria-hidden="true"></i>
-                        <span class="nav-label">{{_ 'Community finances'}}</span>
-                    </a>
+                    <ul class="nav nav-second-level collapse {{isActivePath regex='finances' className='in'}}">
+                        <li class="{{isActivePath regex='parcel-finances'}}">
+                            <a href="{{pathFor 'Parcels.finances'}}">
+                                <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Parcel finances'}}</span>
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='community-finances'}}">
+                            <a href="{{pathFor 'Community.finances'}}">
+                                <i class="fa fa-table" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Community finances'}}</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="{{isActivePath regex='community'}}">
                     <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
