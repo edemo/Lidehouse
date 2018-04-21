@@ -32,8 +32,6 @@ import '/imports/ui_2/pages/styleguide.js';
 import '/imports/ui_2/pages/statement.js';
 
 import '/imports/ui_3/views/layouts/main.js';
-import '/imports/ui_3/views/pages/pageOne.html';
-import '/imports/ui_3/views/pages/pageTwo.html';
 
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates.js';

@@ -41,7 +41,7 @@
                         <span class="nav-label">{{_ 'Forum'}}</span>
                     </a>
                 </li>
-                <li class="{{isActivePath regex='votings|delegations'}}">
+                <li class="{{isActivePath regex='votings|agendas|delegations'}}">
                     <a href="#"><i class="fa fa-legal"></i>
                         <span class="nav-label">{{_ 'Decision making'}}</span>
                         <span class="fa arrow"> </span>
@@ -49,8 +49,8 @@
                         <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
                         {{/if}}
                     </a>
-                    <ul class="nav nav-second-level collapse {{isActivePath regex='votings|votings' className='in'}}">
-                        <li class="{{isActivePath regex='/votings'}}">
+                    <ul class="nav nav-second-level collapse {{isActivePath regex='votings|agendas|delegations' className='in'}}">
+                        <li class="{{isActivePath regex='votings'}}">
                             <a href="{{pathFor 'Topics.vote'}}">
                                 <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Votings'}}</span>
@@ -67,7 +67,7 @@
                         </li>
                         <li class="{{isActivePath regex='delegations'}}">
                             <a href="{{pathFor 'Delegations'}}">
-                                <i class="glyphicon glyphicon-share-alt" aria-hidden="true"></i>
+                                <i class="fa fa-share" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Delegations'}}</span>
                             </a>
                         </li>

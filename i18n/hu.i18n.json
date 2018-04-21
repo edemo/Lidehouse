@@ -176,6 +176,7 @@
   "delegationsToMeInstructions2": "Ezeket a meghatalmazási kérelmeket ön visszautasíthatja. Sőt, beállíthatja hogy önt egyáltalán ne lehessen meghatalmazni.",
   "allowDelegationsToMe": "Engedélyezem hogy meghatalmazzanak mások",
   "Delegations from less specific to more specific": "Meghatalmazások sorrendben a kevesbé specifikustól a legspecifikusabbig",
+  "Voting power": "Szavazó erő",
   "Your voting power": "Az ön szavazó ereje",
   "from own voting units": "egység saját tulajdonból",
   "from delegated voting units": "egység meghatalmazásokból",

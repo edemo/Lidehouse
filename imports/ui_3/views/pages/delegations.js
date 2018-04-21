@@ -3,18 +3,16 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { onSuccess, displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 import { remove as removeDelegation, allow as allowDelegations } from '/imports/api/delegations/methods.js';
-import { delegationColumns, delegationFromMeColumns, delegationToMeColumns } from '/imports/api/delegations/tables.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
+import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 
 import './delegations.html';
 
@@ -27,56 +25,40 @@ Template.Delegations.onRendered(function onRendered() {
   this.autorun(() => {
     allowCheckbox.checked = Meteor.user().settings.delegatee;
   });
+
+    // Just samle data - TODO replace with real
+    var doughnutData = {
+        labels: ["Saját erő","Meghatalmazásokból","Egyéb" ],
+        datasets: [{
+            data: [50,100,2000],
+            backgroundColor: ["#a3e1d4","#b5b8cf","#dedede"]
+        }]
+    } ;
+    var doughnutOptions = {
+        responsive: true
+    };
+    var ctx4 = document.getElementById("doughnutChart").getContext("2d");
+    new Chart(ctx4, {type: 'doughnut', data: doughnutData, options:doughnutOptions});
+});
+
+Template.Delegation_list.helpers({
+  displayScope(scope) {
+    return Render.translateWithScope('schemaDelegations.scope')(scope);
+  },
+  displayScopeObject(scopeObject) {
+    return Delegations.renderScopeObject(scopeObject);
+  },
 });
 
 Template.Delegations.helpers({
-  delegationsDataFn() {
-    return () => {
-      return Delegations.find().fetch();
-    };
+  delegations() {
+      return Delegations.find();
   },
-  delegationsOptionsFn() {
-    return () => {
-      return {
-        columns: delegationColumns(),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-      };
-    };
+  delegationsFromMe() {
+      return Delegations.find({ sourcePersonId: Meteor.userId() });
   },
-  delegationsFromMeDataFn() {
-    return () => {
-      return Delegations.find({ sourcePersonId: Meteor.userId() }).fetch();
-    };
-  },
-  delegationsFromMeOptionsFn() {
-    return () => {
-      return {
-        columns: delegationFromMeColumns(),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-        searching: false,
-        paging: false,
-        info: false,
-      };
-    };
-  },
-  delegationsToMeDataFn() {
-    return () => {
-      return Delegations.find({ targetPersonId: Meteor.userId() }).fetch();
-    };
-  },
-  delegationsToMeOptionsFn() {
-    return () => {
-      return {
-        columns: delegationToMeColumns(),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-        searching: false,
-        paging: false,
-        info: false,
-      };
-    };
+  delegationsToMe() {
+      return Delegations.find({ targetPersonId: Meteor.userId() });
   },
 });
 
