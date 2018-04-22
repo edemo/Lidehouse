@@ -45,6 +45,7 @@
 </template>
 
 <template name="Balance">
+    <a href="{{pathFor 'Parcels.finances'}}">
     <div class="widget style1 navy-bg" style="margin-top: 0px"><!--needed because our collapse section next to it has no upper margin-->
         <div class="row vertical-align">
             <div class="col-xs-4">
@@ -52,10 +53,11 @@
             </div>
             <div class="col-xs-8 text-right">
                 <span>Egyenleg:</span>
-                <h2 class="font-bold">14 500</h2>
+                <h2 class="font-bold">+14 500</h2>
             </div>
         </div>
     </div>
+    </a>
 </template>
 
 <template name="News">
