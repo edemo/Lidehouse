@@ -1,27 +1,21 @@
 <template name="Message_history">
     {{#each messages}}
         {{#if ownMessage this}}    <!-- box for my messages -->
-            <div class="chat-element right">
-                <a href="#" class="pull-right">
-                    <img alt="image" class="img-circle" src="{{user.avatar}}">
-                </a>
-                <div class="media-body text-right">
-                    <small class="pull-left">{{displayTimeFrom createdAt}}</small>
-                    <strong>{{user.toString}}</strong>
-                    <p class="m-b-xs">{{text}}</p>
-                    <small class="text-muted">{{displayTime createdAt}}</small>
+            <div class="chat-message right">
+                <img class="message-avatar" src="{{user.avatar}}" alt="avatar" >
+                <div class="message">
+                    <a class="message-author" href="#"> {{user.toString}} </a>
+                    <span class="message-date"> {{displayTimeFrom createdAt}} </span>
+                    <span class="message-content">{{text}}</span>
                 </div>
             </div>
         {{else}}                  <!-- box for recived messages -->
-            <div class="chat-element">
-                <a href="#" class="pull-left">
-                    <img alt="image" class="img-circle" src="{{user.avatar}}">
-                </a>
-                <div class="media-body">
-                    <small class="pull-right text-navy">{{displayTimeFrom createdAt}}</small>
-                    <strong>{{user.toString}}</strong>
-                    <p class="m-b-xs">{{text}}</p>
-                    <small class="text-muted">{{displayTime createdAt}}</small>
+            <div class="chat-message left">
+                <img class="message-avatar" src="{{user.avatar}}" alt="avatar" >
+                <div class="message">
+                    <a class="message-author" href="#"> {{user.toString}} </a>
+                    <span class="message-date"> {{displayTimeFrom createdAt}} </span>
+                    <span class="message-content">{{text}}</span>
                 </div>
             </div>
         {{/if}}
@@ -72,9 +66,14 @@
                 {{> Contact_long selectedPerson}}
             </div>
             <div class="col-md-9">
-                <div class="ibox float-e-margins messages">
-                    <div class="ibox-content full-height-scroll">
-                        <div class="chat-activity-list">
+                <div class="ibox chat-view messages">
+                    <div class="ibox-title">
+                        <small class="pull-right text-muted">Last message:  Mon Jan 26 2015 - 18:39:23</small>
+                        <strong>{{selectedPerson.toString}}</strong>
+                    </div>
+
+                    <div class="ibox-content">
+                        <div class="chat-discussion">
                             {{#if selectedPersonRoom}}
                             <div class="messages">
                                 {{> Message_history}}
