@@ -20,7 +20,7 @@ import '/imports/ui_3/views/pages/agendas.js';
 import '/imports/ui_3/views/pages/delegations.js';
 import '/imports/ui_3/views/pages/board.js';
 import '/imports/ui_3/views/pages/messages.js';
-// import '/imports/ui_2/pages/forum-topics.js';
+import '/imports/ui_3/views/pages/forum-topics.js';
 import '/imports/ui_3/views/pages/community-page.js';
 import '/imports/ui_2/pages/tickets-report.js';
 import '/imports/ui_3/views/pages/parcels-finances.js';
