@@ -26,15 +26,15 @@
                         <span class="nav-label">{{_ 'Main'}}</span>
                     </a>
                 </li>
-                <li class="{{isActivePath regex='messenger'}}">
-                    <a href="{{pathFor 'Messenger'}}">
+                <!--li class="{{isActivePath regex='messages'}}">
+                    <a href="{{pathFor 'Messages'}}">
                         <i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Messages'}}</span>
                         {{#if countNotifications 'room'}}
                         <span class="badge badge-danger pull-right">{{countNotifications 'room'}}</span>
                         {{/if}}
                     </a>
-                </li>
+                </li-->
                 <li class="{{isActivePath regex='forum'}}">
                     <a href="{{pathFor 'Topics.forum'}}">
                         <i class="glyphicon glyphicon-globe" aria-hidden="true"></i>

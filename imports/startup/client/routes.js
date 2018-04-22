@@ -19,8 +19,7 @@ import '/imports/ui_3/views/pages/vote-topics.js';
 import '/imports/ui_3/views/pages/agendas.js';
 import '/imports/ui_3/views/pages/delegations.js';
 import '/imports/ui_3/views/pages/board.js';
-import '/imports/ui_2/pages/messenger.js';
-import '/imports/ui_2/pages/msg_people.js';
+import '/imports/ui_3/views/pages/messages.js';
 // import '/imports/ui_2/pages/forum-topics.js';
 import '/imports/ui_3/views/pages/community-page.js';
 import '/imports/ui_2/pages/tickets-report.js';
@@ -115,10 +114,10 @@ FlowRouter.route('/board', {
   },
 });
 
-FlowRouter.route('/messenger', {
-  name: 'Messenger',
+FlowRouter.route('/messages', {
+  name: 'Messages',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Messenger' });
+    BlazeLayout.render('Main_layout', { content: 'Messages' });
   },
 });
 

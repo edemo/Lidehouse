@@ -1,0 +1,80 @@
+<template name="Members_panel">
+    <div class="sidebar-title">
+        <h3> <i class="fa fa-comments-o"></i> Küldjön üzenetet</h3>
+        <small><i class="fa fa-tim"></i> közös képviselőjének vagy lakótársának.</small>
+    </div>
+    <div class="form-group">
+        <div class="input-group">
+            <input id="search" type="text" class="form-control" placeholder={{_ "search"}}>
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </div>
+        </div>
+    </div>
+    <!-- normally there is exactly 1 manager (kk) -->
+    <div>
+        {{#each managers}}
+          {{> Member_slot}}
+        {{/each}}
+
+        {{#each members}}
+          {{> Member_slot}}
+        {{/each}}
+    </div>
+</template>
+
+<template name="Member_slot">
+    {{#if Person.user}}
+        <div class="member-slot sidebar-message">
+            <a href="{{pathFor 'Messages'}}">
+                <div class="pull-left text-center">
+                    <img alt="avatar" class="img-circle message-avatar" src="{{Person.user.avatar}}">
+                </div>
+                <div class="media-body">
+                    <strong>{{Person.user.toString}}</strong><br>
+                    <small class="text-muted">({{this}})</small>
+                </div>
+                <div class="media-body pull-right">
+                    <div class="text-right">
+                        <!-- online/offline status icon -->
+                        <svg height="10" width="10" data-tooltip="{{user/status}}">
+                        <!--circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="{{statusCircleColor user/status}}" /-->
+                        <circle {{statusCircleParameters user/status}} />
+                        </svg>
+                        <br>
+                        {{#if hasUnreadMessages}}
+                        <span class="badge badge-danger">{{unreadMessagesCount}}</span>
+                        {{else}}
+                        <span class="badge badge-danger">16</span><!--TODO: Remove this line--> 
+                        {{/if}}
+                    </div>
+                </div>
+            </a>
+        </div>
+    {{/if}}
+</template>
+
+<template name="Member_slot_Chat">
+    {{#if Person.user}}
+    <div class="chat-user">
+        <img class="chat-avatar" src="{{Person.user.avatar}}" alt="avatar" >
+        <div class="chat-user-name">
+            <a href="#">{{user.toString}}</a><br>
+            <small class="small-size">({{this}})</small>
+        </div>
+        <div class="media-body">
+          <div class="text-right">
+            <!-- online/offline status icon -->
+            <svg height="10" width="10" data-tooltip="{{user/status}}">
+              <!--circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="{{statusCircleColor user/status}}" /-->
+              <circle {{statusCircleParameters user/status}} />
+            </svg>
+            <br>
+            {{#if hasUnreadMessages}}
+            <span class="badge">{{unreadMessagesCount}}</span>
+            {{/if}}
+          </div>
+        </div>
+    </div>
+    {{/if}}
+</template>

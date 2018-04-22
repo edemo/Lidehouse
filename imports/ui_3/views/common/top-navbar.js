@@ -5,6 +5,7 @@ import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import { afCommunityInsertModal } from '/imports/ui_2/pages/communities-edit.js';
 import '/imports/api/users/users.js';
+import './right-sidebar.js';
 import './top-navbar.html';
 
 Template.Top_navbar.onRendered(function() {
@@ -48,6 +49,10 @@ Template.Top_navbar.events({
             // Remove all inline style from jquery fadeIn function to reset menu state
             $('#side-menu').removeAttr('style');
         }
+    },
+    // Toggle right sidebar
+    'click .right-sidebar-toggle': function(){
+        $('#right-sidebar').toggleClass('sidebar-open');
     },
     'click .js-switch-community'() {
         Session.set('activeCommunityId', this._id);
