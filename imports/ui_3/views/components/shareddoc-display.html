@@ -33,7 +33,7 @@
 </template>
 
 <template name="Shareddoc_inline">
-    <div class="row list-item file-item border-bottom">
+    <div class="row file-item">
       {{#if uploading}}
       <div class="col-xs-10">
         <span>{{completed}}%</span>
@@ -42,16 +42,15 @@
       </div>
       {{else}}
       <div class="col-xs-10">
-        <a target="_blank" href="{{url}}" title="{{name}}">
-          <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+        <a target="_blank" href="{{url}}" title="{{displayDate createdAt}}">
+          <i class="fa fa-file"></i>
           {{name}}
         </a>
-        <i class="small-size file-date">{{displayDate createdAt}}</i>
       </div>
       {{#if userHasPermission 'shareddocs.upload' (fromSession 'activeCommunityId')}}
       <div class="col-xs-2 text-right">
         <a class="js-delete nav-item">
-          <span class="icon-trash" title={{_ 'delete'}}></span>
+          <i class="glyphicon glyphicon-remove" title={{_ 'delete'}}></i>
         </a>
       </div>
       {{/if}}
