@@ -193,7 +193,7 @@
   "Active tickets": "Aktív bejelentett hibák",
   "Closed tickets": "Lezárt bejelentett hibák",
   "New ticket": "Új hibabejelentés",
-  "Please dont report twice": "Kérjük csak akkor adja fel bejelentését, ha az még nem szerepel a fenti listán vagy nemrég került archiválásra hasonló. A lezárt bejelentéseket a lap alján tekinthetik meg. Köszönjük!",
+  "Please dont report twice": "Karbantartó kollegáink munkáját segítendő, kérjük csak akkor adja fel bejelentését, ha az még nem szerepel az aktív listán vagy a nemrég lezárt hibajegyek között. <br><br> Köszönjük!",
 
   // finances
   "Payaccounts": "Könyvelési fiókok",
