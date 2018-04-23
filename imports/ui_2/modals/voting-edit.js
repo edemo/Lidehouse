@@ -14,7 +14,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { votingsExtensionSchema } from '/imports/api/topics/votings/votings.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
-import { fileUpload } from '../components/shareddoc-display.js';
+import '/imports/ui_3/views/components/shareddoc-display.js';
 import './voting-edit.html';
 
 

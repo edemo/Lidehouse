@@ -50,6 +50,7 @@ Template.News.helpers({
 
 Template.News.events({
   'click .js-new'(event, instance) {
+    debuggeré
     Modal.show('Autoform_edit', {
       id: 'af.news.insert',
       collection: Topics,

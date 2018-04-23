@@ -36,3 +36,7 @@ Template.registerHelper('displayTimeFrom', function displayTime(time) {
 Template.registerHelper('concat', function concat() {
     return Array.prototype.slice.call(arguments, 0, -1).join('');
 });
+
+Template.registerHelper('log', function log(stuff) {
+    console.log(stuff);
+});

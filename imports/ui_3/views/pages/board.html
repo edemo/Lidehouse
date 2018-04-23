@@ -65,7 +65,7 @@
           <div class="ibox-title">
               <h5>{{_ 'News board'}}</h5>
               {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
-                  <a href="" class="label label-primary js-new">+ {{_ 'new'}}</a>
+              <a href="" class="label label-primary js-new">+ {{_ 'new'}} {{_ 'news'}}</a>
               {{/if}}
               {{>iboxTools}}
           </div>

@@ -25,7 +25,7 @@ import '/imports/ui_3/views/pages/community-page.js';
 import '/imports/ui_3/views/pages/tickets-report.js';
 import '/imports/ui_3/views/pages/parcels-finances.js';
 import '/imports/ui_3/views/pages/community-finances.js';
-import '/imports/ui_2/pages/shareddoc-store.js';
+import '/imports/ui_3/views/pages/shareddoc-store.js';
 import '/imports/ui_2/pages/feedbacks.js';
 import '/imports/ui_2/pages/styleguide.js';
 import '/imports/ui_2/pages/statement.js';

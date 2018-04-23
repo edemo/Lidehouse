@@ -1,0 +1,60 @@
+
+
+<template name="Shareddoc_boxy">
+    <div class="file-box">
+        <div class="file">
+            {{#if uploading}}
+            <a href="">
+                <span class="corner"></span>
+                <div class="icon">
+                    <img src="/images/spinner.gif" style="{ width: 6em; height: 6em; }">
+                </div>
+                <div class="file-name">
+                    {{name}}
+                    <br/>
+                    <small>Uploading... {{completed}}%</small>
+                </div>
+            </a>
+            {{else}}
+            <a href="#">
+                <span class="corner"></span>
+                <div class="icon">
+                    <i class="fa fa-file"></i>
+                </div>
+                <div class="file-name">
+                    {{name}}
+                    <br/>
+                    <small>Added: {{displayDate createdAt}}</small>
+                </div>
+            </a>
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+<template name="Shareddoc_inline">
+    <div class="row list-item file-item border-bottom">
+      {{#if uploading}}
+      <div class="col-xs-10">
+        <span>{{completed}}%</span>
+        <img src="/images/spinner.gif" style="{ width: 1em; height: 1em; }">
+        <span>{{name}}</span>
+      </div>
+      {{else}}
+      <div class="col-xs-10">
+        <a target="_blank" href="{{url}}" title="{{name}}">
+          <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+          {{name}}
+        </a>
+        <i class="small-size file-date">{{displayDate createdAt}}</i>
+      </div>
+      {{#if userHasPermission 'shareddocs.upload' (fromSession 'activeCommunityId')}}
+      <div class="col-xs-2 text-right">
+        <a class="js-delete nav-item">
+          <span class="icon-trash" title={{_ 'delete'}}></span>
+        </a>
+      </div>
+      {{/if}}
+      {{/if}}
+    </div>    
+</template>
