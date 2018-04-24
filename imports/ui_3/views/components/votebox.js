@@ -185,7 +185,7 @@ Template.Votebox.events({
     }
   },
   // event handler for the preferential vote type
-  'click .btn-votesend'(event, instance) {
+  'click .btn-vote-finalize'(event, instance) {
     const topicId = this._id;
     const voteIsFinalized = instance.state.get('voteIsFinalized');
     if (!voteIsFinalized) {
