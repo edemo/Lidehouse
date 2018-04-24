@@ -15,7 +15,11 @@
                             <a href="#" class="file-control">Audio</a>
                             <a href="#" class="file-control">Images</a>
                             <div class="hr-line-dashed"></div>
+                            {{#if userHasPermission 'shareddocs.upload' activeCommunityId}}
                             <button name="upload" class="btn btn-primary btn-block">{{_ 'Upload file'}}</button>
+                            {{else}}
+                            <button name="upload" class="btn btn-primary btn-block" disabled>{{_ 'Upload file'}}</button>
+                            {{/if}}
                             <div class="hr-line-dashed"></div>
                             <h5>Folders</h5>
                             <ul class="folder-list" style="padding: 0">
@@ -48,7 +52,7 @@
               <div class="row">
               <div class="col-lg-12">
 
-              {{#if storeHasDocuments }}
+<!--              {{#if storeHasDocuments }}-->
                 <div class="file-list">
                   <!-- TODO remove -->
                   {{#each doc in dummyDocs}}
@@ -58,11 +62,12 @@
                   {{> Shareddoc_boxy doc }}
                   {{/each}}
                 </div>
-              {{else}} <!-- empty state -->
-                <div class="upload-row margined-row border-bottom">
+<!--              {{else}} -->
+                    <!-- empty state -->
+<!--                <div class="upload-row margined-row border-bottom">
                   <i>{{_ 'documentStorePlaceholder'}}</i>
                 </div>
-              {{/if}}
+              {{/if}}-->
 
               <!--
               {{#if userHasPermission 'shareddocs.upload' (fromSession 'activeCommunityId')}}
