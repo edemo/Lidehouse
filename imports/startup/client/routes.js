@@ -26,6 +26,7 @@ import '/imports/ui_3/views/pages/tickets-report.js';
 import '/imports/ui_3/views/pages/parcels-finances.js';
 import '/imports/ui_3/views/pages/community-finances.js';
 import '/imports/ui_3/views/pages/shareddoc-store.js';
+import '/imports/ui_3/views/pages/topic-show.js';
 import '/imports/ui_2/pages/feedbacks.js';
 import '/imports/ui_2/pages/styleguide.js';
 import '/imports/ui_2/pages/statement.js';
@@ -86,10 +87,10 @@ FlowRouter.route('/invite', {
   },
 });
 
-FlowRouter.route('/deprecated_topic/:_tid', {
-  name: 'Topics.show',
+FlowRouter.route('/topic/:_tid', {
+  name: 'Topic.show',
   action() {
-    BlazeLayout.render('App_body', { content: 'Topics_show_page' });
+    BlazeLayout.render('Main_layout', { content: 'Topic_show' });
   },
 });
 

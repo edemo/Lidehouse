@@ -15,7 +15,7 @@
                     <a href=""><img alt="image" class="img-circle" src={{createdBy/avatar}}></a>
                 </td>
                 <td class="project-title">
-                    <a href="/projectDetail">{{title}}</a>
+                    <a href="{{pathFor 'Topic.show' _tid=_id}}">{{title}}</a>
                     <br/>
                     {{#if vote.closed}}
                     <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>
@@ -35,7 +35,7 @@
                     </div>
                 </td>
                 <td class="project-actions">
-                    <a href="#" class="btn btn-white btn-sm"><i class="fa fa-eye"></i> View </a>
+                    <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-sm"><i class="fa fa-eye"></i> View </a>
                     <a href="#" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Edit </a>
                 </td>
             </tr>
