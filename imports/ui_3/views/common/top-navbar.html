@@ -12,19 +12,23 @@
             <ul class="nav navbar-top-links navbar-right">
                 {{#if currentUser}}
                 <li>
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="">
                         <strong class="text-muted text-xs block">
-                            {{activeCommunity.name}}
+                            {{#if activeCommunity}}
+                                {{activeCommunity.name}}
+                            {{else}}
+                                {{_ 'No active' }} {{_ 'community'}}
+                            {{/if}}
                             <b class="caret"></b>
                         </strong>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
                         {{#each userCommunities}}
-                        <li><a href="#" class="js-switch-community">{{name}}</a></li>
+                        <li><a href="" class="js-switch-community">{{name}}</a></li>
                         {{/each}}
                         <li role="separator" class="divider"></li>
                         <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
-                        <li><a class="js-create-community" href="#"> + {{_ 'Create a community'}} </a></li>
+                        <li><a class="js-create-community" href=""> + {{_ 'Create a community'}} </a></li>
                     </ul>
                 </li>
                  <!-- Code from MODERN theme's top-navigation>
