@@ -25,7 +25,7 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 
-const demoParcelCounterStart = 100;
+const demoParcelCounterStart = 14;
 
 export function insertDemoHouse(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
@@ -235,6 +235,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     serial: 14,
     units: 196,
     floor: __('demo.ground'),
+    number: '1',
     type: 'shop',
     lot: '4532/8/A/14',
     area: 22,
@@ -496,27 +497,33 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Votes =====
 
-  const agendaId = Agendas.insert({
+  const agendaFirstId = Agendas.insert({
     communityId: demoCommunityId,
     title: __('demo.agenda.0.title'),
-//    topicIds: [voteTopic0, voteTopic1, voteTopic2],
+//    topicIds: [voteTopic0, voteTopic1],
+  });
+  const agendaSecondId = Agendas.insert({
+    communityId: demoCommunityId,
+    title: __('demo.agenda.1.title'),
+//    topicIds: [voteTopic4, voteTopic5, voteTopic5],
   });
 
   const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', 'person.userId': { $exists: true } }).fetch();
 
   const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,
-    userId: dummyUserId,
+    userId: demoManagerId,
     category: 'vote',
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
-    agendaId,
+    agendaId: agendaFirstId,
     vote: {
-      closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
+      closesAt: new Date('2017-09-25'),  // its past close date
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',
     },
+    createdAt: new Date('2017-09-01'),
   });
 
   castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic0, castedVote: [1] }); // no
@@ -531,6 +538,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   castVote._execute({ userId: ownerships[9].person.userId }, { topicId: voteTopic0, castedVote: [1] });
   castVote._execute({ userId: ownerships[10].person.userId }, { topicId: voteTopic0, castedVote: [0] });
   castVote._execute({ userId: ownerships[11].person.userId }, { topicId: voteTopic0, castedVote: [0] });
+  castVote._execute({ userId: ownerships[12].person.userId }, { topicId: voteTopic0, castedVote: [0] });
 
   closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic0 }); // This vote is already closed
 
@@ -540,7 +548,65 @@ export function insertDemoHouse(lang, demoOrTest) {
     category: 'vote',
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
-    agendaId,
+    agendaId: agendaFirstId,
+    vote: {
+      closesAt: new Date('2017-09-25'),
+      procedure: 'online',
+      effect: 'legal',
+      type: 'yesno',
+    },
+    createdAt: "2017-09-31T14:07:30.266Z",
+  });
+
+  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[4].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[5].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[9].person.userId }, { topicId: voteTopic1, castedVote: [1] });
+  castVote._execute({ userId: ownerships[10].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+  castVote._execute({ userId: ownerships[11].person.userId }, { topicId: voteTopic1, castedVote: [0] });
+
+  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic1 }); // This vote is already closed
+
+  const voteTopic2 = Topics.insert({
+    communityId: demoCommunityId,
+    userId: dummyUserId,
+    category: 'vote',
+    title: __('demo.vote.2.title'),
+    text: __('demo.vote.2.text'),
+    vote: {
+      closesAt: new Date('2018-01-04'),
+      procedure: 'online',
+      effect: 'poll',
+      type: 'choose',
+      choices: [
+        __('demo.vote.2.choice.0'),
+        __('demo.vote.2.choice.1'),
+      ],
+    },
+    createdAt: new Date('2017-12-14'),
+  });
+
+  castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic2, castedVote: [0] });
+  castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic2, castedVote: [0] });
+  castVote._execute({ userId: ownerships[9].person.userId }, { topicId: voteTopic2, castedVote: [0] });
+  castVote._execute({ userId: ownerships[12].person.userId }, { topicId: voteTopic2, castedVote: [0] });
+  castVote._execute({ userId: ownerships[13].person.userId }, { topicId: voteTopic2, castedVote: [0] });
+
+  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic2 }); // This vote is already closed
+
+  const voteTopic3 = Topics.insert({
+    communityId: demoCommunityId,
+    userId: demoManagerId,
+    category: 'vote',
+    title: __('demo.vote.3.title'),
+    text: __('demo.vote.3.text'),
+    agendaId: agendaSecondId,
     vote: {
       closesAt: moment().add(2, 'month').toDate(),
       procedure: 'online',
@@ -551,59 +617,59 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // No one voted on this yet
 
-  const voteTopic2 = Topics.insert({
+  const voteTopic4 = Topics.insert({
     communityId: demoCommunityId,
     userId: ownerships[1].person.userId,
     category: 'vote',
-    title: __('demo.vote.2.title'),
-    text: __('demo.vote.2.text'),
-    agendaId,
+    title: __('demo.vote.4.title'),
+    text: __('demo.vote.4.text'),
+    agendaId: agendaSecondId,
     vote: {
-      closesAt: moment().add(3, 'month').toDate(),
+      closesAt: moment().add(2, 'month').toDate(),
       type: 'preferential',
       procedure: 'online',
       effect: 'legal',
       choices: [
-        __('demo.vote.2.choice.0'),
-        __('demo.vote.2.choice.1'),
-        __('demo.vote.2.choice.2'),
-        __('demo.vote.2.choice.3'),
+        __('demo.vote.4.choice.0'),
+        __('demo.vote.4.choice.1'),
+        __('demo.vote.4.choice.2'),
+        __('demo.vote.4.choice.3'),
       ],
     },
   });
 
-  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
-  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
-  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
-  castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic2, castedVote: [2, 1, 3, 4] });
-  castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
-  castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic2, castedVote: [2, 3, 1, 4] });
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic4, castedVote: [1, 2, 3, 4] });
+  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic4, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic4, castedVote: [3, 4, 1, 2] });
+  castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic4, castedVote: [2, 1, 3, 4] });
+  castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic4, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic4, castedVote: [2, 3, 1, 4] });
 
   ['0', '1'].forEach(commentNo =>
     Comments.insert({
-      topicId: voteTopic2,
+      topicId: voteTopic4,
       userId: nextUser(),
-      text: __(`demo.vote.2.comment.${commentNo}`),
+      text: __(`demo.vote.4.comment.${commentNo}`),
     })
   );
 
-  const voteTopic3 = Topics.insert({
+  const voteTopic5 = Topics.insert({
     communityId: demoCommunityId,
     userId: ownerships[8].person.userId,
     category: 'vote',
-    title: __('demo.vote.3.title'),
-    text: __('demo.vote.3.text'),
-    agendaId,
+    title: __('demo.vote.5.title'),
+    text: __('demo.vote.5.text'),
+    agendaId: agendaSecondId,
     vote: {
-      closesAt: moment().add(9, 'week').toDate(),
+      closesAt: moment().add(2, 'month').toDate(),
       procedure: 'online',
       effect: 'legal',
       type: 'petition',
     },
   });
 
-  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic3, castedVote: [0] });
-  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic3, castedVote: [0] });
+  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic5, castedVote: [0] });
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic5, castedVote: [0] });
 
   // ===== Tickets =====
 
@@ -1214,7 +1280,7 @@ Meteor.methods({
       serial: demoParcelSerial,
       units: 100,
       floor: 'V',
-      number: 12 + counter,
+      number: demoParcelSerial - 2,
       type: 'flat',
       lot: '4532/8/A/' + demoParcelSerial,
       area: 25,
@@ -1234,6 +1300,40 @@ Meteor.methods({
     });
 
     const demoManagerId = Meteor.users.findOne({ 'emails.0.address': 'manager@demo.hu' })._id;
+    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': 'dummyuser.1@demo.hu' })._id;
+
+    const demoUserMessageRoom = Topics.insert({
+      communityId: demoCommunityId,
+      userId: demoUserId,
+      category: 'room',
+      participantIds: [demoUserId, demoManagerId],
+    });
+    Comments.insert({
+      topicId: demoUserMessageRoom,
+      userId: demoManagerId,
+      text: 'Mint a Demo ház közös képviselője, szeretettel üdvözlöm honline rendszerünkben!',
+    });
+    const demoUserMessageRoom2 = Topics.insert({
+      communityId: demoCommunityId,
+      userId: demoUserId,
+      category: 'room',
+      participantIds: [demoUserId, dummyUserId],
+    });
+    Comments.insert({
+      topicId: demoUserMessageRoom2,
+      userId: demoUserId,
+      text: 'Szervusz! Megtaláltam a postaláda kulcsodat. Benne hagytad a levélszekrény ajtajában. :)',
+    });
+    Comments.insert({
+      topicId: demoUserMessageRoom2,
+      userId: dummyUserId,
+      text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
+    });
+    Meteor.users.update({ _id: demoUserId }, 
+      { $set: { lastseens: { [demoUserMessageRoom2]: 
+        { timestamp: new Date(), commentCounter: 1 } } } }
+    );
+
     insertParcelBilling._execute({ userId: demoManagerId }, {
       communityId: demoCommunityId,
       projection: 'perArea',
