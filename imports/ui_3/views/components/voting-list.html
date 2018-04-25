@@ -1,0 +1,46 @@
+<template name="Voting_list">
+    <div class="project-list">                    
+        <table class="table table-hover">
+            <tbody>
+            {{#each items}}
+            <tr>
+                <td class="project-status">
+                    {{#if vote.closed}}
+                    <span class="label label-default">{{_ 'closed'}}</span>
+                    {{else}}
+                    <span class="label label-primary">{{_ 'active'}}</span>
+                    {{/if}}
+                </td>
+                <td class="project-people">
+                    <a href=""><img alt="image" class="img-circle" src={{createdBy/avatar}}></a>
+                </td>
+                <td class="project-title">
+                    <a href="{{pathFor 'Topic.show' _tid=_id}}">{{title}}</a>
+                    <br/>
+                    {{#if vote.closed}}
+                    <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>
+                    {{else}}
+                    <small>{{_ 'closes'}}: {{displayTimeFrom vote.closesAt}}</small>
+                    {{/if}}
+                </td>
+                <td class="project-status">
+                    {{#if (equals vote.effect 'legal') }}
+                    <span class="label label-danger">{{_ vote.effect}}</span>
+                    {{/if}}
+                </td>
+                <td class="project-completion">
+                    <small>Completion with: {{votedPercent}}%</small>
+                    <div class="progress progress-mini">
+                        <div style={{concat "width: " votedPercent "%;"}} class="progress-bar"></div>
+                    </div>
+                </td>
+                <td class="project-actions">
+                    <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-sm"><i class="fa fa-eye"></i> View </a>
+                    <a href="#" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Edit </a>
+                </td>
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</template>

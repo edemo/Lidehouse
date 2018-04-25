@@ -1,0 +1,36 @@
+<template name="Communities_join">
+
+    <!-- Page heading -->
+    {{> Page_heading title=(_ 'Join a community') }}
+
+    <div class="wrapper wrapper-content  animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox parcels-section">
+                    <div class="ibox-content">
+                        <span class="text-muted small pull-right">Ha létrehoz egy új közösséget, ön lesz az Adminisztrátor!</span>
+                        <h2>{{_ "Communities list"}}</h2>
+                        <p>
+                            A rendszerünkben már létrehozott házak listája
+                        </p>
+                        <br>
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                {{_ "Create your own community"}}
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                <button class="btn btn-primary js-create">{{_ 'createNew'}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

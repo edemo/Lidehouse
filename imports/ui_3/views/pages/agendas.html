@@ -1,0 +1,29 @@
+<template name="Agendas">
+
+    <!-- Page heading -->
+    {{> Page_heading title='Agendas' category='Decision making'}}
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+
+        {{#if userHasPermission "agendas.insert" (fromSession "activeCommunityId") }}
+        <div class="ibox">
+            <div class="ibox-content">
+                <button class="btn btn-primary js-new ">{{_ 'createNew'}}</button>
+            </div>
+        </div>
+        {{/if}}
+
+        {{#each agendas}}
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>{{title}}</h5>
+                {{>iboxTools}}
+            </div>
+            <div class="ibox-content">
+                {{>Voting_list items=topics}}
+            </div>
+        </div>
+        {{/each}}
+
+    </div>
+</template>

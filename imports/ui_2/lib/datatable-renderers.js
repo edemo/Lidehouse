@@ -37,7 +37,7 @@ export const Render = {
     return html;
   },
   buttonJoin(cellData, renderType, currentRow) {
-    const html = `<a href="#" data-id=${cellData} class="js-join">${__('join')}</a>`;
+    const html = `<button class="btn-white btn btn-xs js-join"><i class="fa fa-suitcase"></i> ${__('join')}</button>`;
     return html;
   },
 };

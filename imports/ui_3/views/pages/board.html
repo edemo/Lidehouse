@@ -1,0 +1,111 @@
+<template name="Board">
+  <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+    <div class="col-xs-12 col-lg-8">
+
+      {{#Collapse_section id='vote' title=activeVotingsTitle }}
+        {{#each topics 'vote'}}
+          {{> Votebox}}
+        {{else}}
+          <!-- ha nincs szavazás ~ empty state -->
+          <div class="vote-container white-box text-center">
+            <h3>
+              {{_ 'No active votes'}}
+            </h3>
+            <h4 class="m2em">
+              {{_ 'Latest votes'}}: <br /><span class="b"><a href="{{pathFor 'Topics.vote'}}"><span class="em b">{{_ 'Votings'}}</span></a> &gt; <span class="em">{{_ 'Closed votings'}}</span></span>
+            </h4>
+         </div>
+        {{/each}}
+      {{/Collapse_section}}
+
+      <!-- right side mobile -->
+      <div class="full-width news-mid visible-xs visible-sm visible-md">
+        {{> Balance}}
+        {{> News}}
+      </div>
+      <!-- right side mobile end-->
+
+      {{#Collapse_section id='forum' title='Forum' notFirst=true uncollapsable=true}}
+        {{> Empty_chatbox}}
+        {{#each topics 'forum'}}
+        {{> Chatbox}}
+        {{/each}}
+      {{/Collapse_section}}
+    </div>
+
+    <!-- right side -->
+    <div class="col-xs-12 col-lg-4  visible-lg">
+      {{> Balance}}
+      {{> News}}
+    </div>
+    </div>
+  </div>
+</template>
+
+<template name="Balance">
+    <a href="{{pathFor 'Parcels.finances'}}">
+    <div class="widget style1 navy-bg" style="margin-top: 0px"><!--needed because our collapse section next to it has no upper margin-->
+        <div class="row vertical-align">
+            <div class="col-xs-4">
+                <i class="fa fa-thumbs-up fa-4x"></i>
+            </div>
+            <div class="col-xs-8 text-right">
+                <span>Egyenleg:</span>
+                <h2 class="font-bold">+14 500</h2>
+            </div>
+        </div>
+    </div>
+    </a>
+</template>
+
+<template name="News">
+    <div class="ibox float-e-margins">
+          <div class="ibox-title">
+              <h5>{{_ 'News board'}}</h5>
+              {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
+              <a href="" class="label label-primary js-new">+ {{_ 'new'}} {{_ 'news'}}</a>
+              {{/if}}
+              {{>iboxTools}}
+          </div>
+          <!--div class="ibox-content ibox-heading">
+              <h3><i class="fa fa-envelope-o"></i> New messages</h3>
+              <small><i class="fa fa-tim"></i> You have 22 new messages and 16 waiting in draft folder.
+              </small>
+          </div-->
+          <div class="ibox-content">
+              <div class="feed-activity-list">
+                  {{#each topics 'news' false}}
+                  <div class="feed-element">
+                      <div>
+                          <small class="pull-right text-navy">1m ago</small>
+                          <strong>{{title}}</strong>
+                          <div>{{text}}</div>
+                          <small class="text-muted">{{displayTime}}</small>
+                      </div>
+                  </div>
+                  {{/each}}
+              </div>
+          </div>
+    </div>
+
+  {{#each topics 'news' true}}
+  <div class="ibox infos">
+  <div class="ibox-content">
+    {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
+    <!-- kk: szerkeszt / unpin -->
+    <button class="btn-default" title="Edit"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></button>
+    {{/if}}
+    <div class="full-width title">
+      <strong>{{title}}</strong>
+    </div>
+    <div class="full-width">
+      {{#markdown}}{{text}}{{/markdown}}
+    </div>
+    <small class="text-muted">{{displayTime}}</small>
+  </div>
+  </div>
+  {{/each}}
+  
+</template>

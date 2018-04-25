@@ -1,0 +1,23 @@
+<template name="Page_heading">
+
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-12">
+            <h2 class="text-capitalize">{{_ title}}</h2>
+            {{#unless noBreadcrumbs}}
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/">{{_ 'Main'}}</a>
+                </li>
+                {{#if category}}
+                <li>
+                    <a class="text-capitalize">{{_ category}}</a>
+                </li>
+                {{/if}}
+                <li class="active">
+                    <strong>{{_ title}}</strong>
+                </li>
+            </ol>
+            {{/unless}}
+        </div>
+    </div>
+</template>

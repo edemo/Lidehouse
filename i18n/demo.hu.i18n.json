@@ -243,7 +243,7 @@
     }
   },
   "test": {
-    "house": "Tesztház",
+    "house": "Teszt ház",
     "firstNames": ["Ádám", "Dávid", "Tamás", "Jakab", "István", "András", "Éva", "Margit", "Zsuzsa", "Róza", "Marika", "Júlia"]
   }
 }

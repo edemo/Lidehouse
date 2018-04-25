@@ -1,0 +1,146 @@
+<template name="Navigation">
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+
+            <!-- Close canvas menu used only on OffCanvas page -->
+            <!-- You can remove this tag if you dont use offCanvas menu -->
+            <a class="close-canvas-menu"><i class="fa fa-times"></i></a>
+            <!-- End offCanvas menu toggle -->
+
+            <ul class="nav" id="side-menu">
+                <li>
+                    <div class="profile-element">
+                    <a href={{pathFor 'Community.page' _cid=activeCommunityId}}>
+                        <img class="house-pic" src="{{activeCommunity.avatar}}" alt="Community Avatar" width="100%"/>
+                    </a>
+                    </div>
+                </li>
+                <!--li class="nav-header">
+                    <div class="logo-element">
+                        HL
+                    </div>
+                </li-->
+                <li class="{{isActivePath regex='board'}}">
+                    <a href="{{pathFor 'Board'}}">
+                        <i class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Main'}}</span>
+                    </a>
+                </li>
+                <!--li class="{{isActivePath regex='messages'}}">
+                    <a href="{{pathFor 'Messages'}}">
+                        <i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Messages'}}</span>
+                        {{#if countNotifications 'room'}}
+                        <span class="badge badge-danger pull-right">{{countNotifications 'room'}}</span>
+                        {{/if}}
+                    </a>
+                </li-->
+                <li class="{{isActivePath regex='forum'}}">
+                    <a href="{{pathFor 'Topics.forum'}}">
+                        <i class="glyphicon glyphicon-globe" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Forum'}}</span>
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='votings|agendas|delegations'}}">
+                    <a href="#"><i class="fa fa-legal"></i>
+                        <span class="nav-label">{{_ 'Decision making'}}</span>
+                        <!--span class="fa arrow"> </span-->
+                        {{#if countNotifications 'vote'}}
+                        <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
+                        {{/if}}
+                    </a>
+                    <ul class="nav nav-second-level collapse {{isActivePath regex='votings|agendas|delegations' className='in'}}">
+                        <li class="{{isActivePath regex='votings'}}">
+                            <a href="{{pathFor 'Topics.vote'}}">
+                                <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Votings'}}</span>
+                                {{#if countNotifications 'vote'}}
+                                <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
+                                {{/if}}
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='agendas'}}">
+                            <a href="{{pathFor 'Agendas'}}">
+                                <i class="fa fa-list" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Agendas'}}</span>
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='delegations'}}">
+                            <a href="{{pathFor 'Delegations'}}">
+                                <i class="fa fa-share" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Delegations'}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="{{isActivePath regex='tickets'}}">
+                    <a href="{{pathFor 'Tickets.report'}}">
+                        <i class="glyphicon glyphicon-wrench" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Tickets'}}</span>
+                        {{#if userHasPermission 'ticket.update' (fromSession activeCommunityId)}}
+                        {{#if countNotifications 'ticket'}}
+                        <span class="badge badge-danger pull-right">{{countNotifications 'ticket'}}</span>
+                        {{/if}}
+                        {{/if}}
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='finances'}}">
+                    <a href="#"><i class="glyphicon glyphicon-piggy-bank"></i>
+                        <span class="nav-label">{{_ 'Finances'}}</span>
+                        <!--span class="fa arrow"> </span-->
+                    </a>
+                    <ul class="nav nav-second-level collapse {{isActivePath regex='finances' className='in'}}">
+                        <li class="{{isActivePath regex='parcel-finances'}}">
+                            <a href="{{pathFor 'Parcels.finances'}}">
+                                <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Parcel finances'}}</span>
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='community-finances'}}">
+                            <a href="{{pathFor 'Community.finances'}}">
+                                <i class="fa fa-table" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Community finances'}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="{{isActivePath regex='community'}}">
+                    <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
+                        <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Community page'}}</span>
+                        {{#if userHasPermission 'parcels.update' (fromSession activeCommunityId)}}
+                        {{#if countUnapprovedEntities}}
+                        <span class="badge badge-danger pull-right">{{countUnapprovedEntities}}</span>
+                        {{/if}}
+                        {{/if}}
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='documents'}}">
+                    <a href="{{pathFor 'DocumentStore'}}">
+                        <i class="glyphicon glyphicon-paperclip" aria-hidden="true"></i>
+                        <span class="nav-label">{{_ 'Documentstore'}}</span>
+                    </a>
+                </li>
+            </ul>
+            {{#if developerMode}}
+            <ul style="position: absolute; bottom: 0; width: 100%;">
+                <li class="{{isActivePath regex='feedback'}}">
+                    <a href="{{pathFor 'Feedbacks'}}">
+                        <i><img src="/icon/si-glyph-bolt.svg"/></i>
+                        <span class="nav-label">Feedbacks (dev)</span>
+                        {{#if countNotifications 'feedback'}}
+                        <span class="badge badge-danger pull-right">{{countNotifications 'feedback'}}</span>
+                        {{/if}}
+                    </a>
+                </li>
+                <li class="{{isActivePath regex='styleguide'}}">
+                    <a href="{{pathFor 'Styleguide'}}">
+                        <i><img src="/icon/si-glyph-bolt.svg"/></i>
+                        <span class="nav-label">Styleguide (dev)</span>
+                    </a>
+                </li>
+            </ul>
+            {{/if}}
+        </div>
+    </nav>
+</template>

@@ -9,8 +9,8 @@ Package.onUse(function(api) {
   api.versionsFrom('0.9.0');
   api.use(['templating'], 'client');
   api.addFiles([
-  	'jquery.dataTables.min.js',
-    'jquery.dataTables.min.css',
+  	'theme.datatables.min.js',
+    'theme.datatables.min.css',
     'datatables_i18n.js',
   	'reactive-datatables.js',
   	'reactive-datatable-template.html',

@@ -6,17 +6,24 @@ import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 
 import './shareddoc-display.html';
 
-Template.Shareddoc_display.helpers({
+Template.Shareddoc_inline.helpers({
   completed() {
     return Math.round(this.progress * 100);
   },
-  uploadDate() {
-    return moment(this.createdAt).format('L');
+});
+
+Template.Shareddoc_inline.events({
+  'click .js-delete'() {
+    Shareddocs.remove(this._id);
   },
 });
 
-Template.Shareddoc_display.events({
-  'click .js-delete'() {
-    Shareddocs.remove(this._id);
+
+//---------------------------
+
+
+Template.Shareddoc_boxy.helpers({
+  completed() {
+    return Math.round(this.progress * 100);
   },
 });
