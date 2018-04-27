@@ -34,7 +34,7 @@ Template.Vote_topics.helpers({
     },
     voteTopics() {
         const communityId = Session.get('activeCommunityId');
-        return Topics.find({ communityId, category: 'vote' });
+        return Topics.find({ communityId, category: 'vote' }, { sort: { createdAt: -1 } });
     },
 });
 
