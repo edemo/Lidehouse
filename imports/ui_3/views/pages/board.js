@@ -17,8 +17,8 @@ import '/imports/ui_2/components/empty-chatbox.js';
 import '../components/comments-section.js';
 import '../components/chatbox.js';
 import '../components/votebox.js';
+import '../components/balance-widget.js';
 import './board.html';
-
 
 Template.Board.onCreated(function boardOnCreated() {
 });
@@ -38,30 +38,6 @@ Template.Board.helpers({
   },
 });
 
-Template.Balance.helpers({
-  balance() {
-    const userBalance = -14500; //TODO
-    const signPrefix = userBalance > 0 ? '+' : '';
-    return signPrefix + userBalance;
-  },
-  balanceMessage() {
-    const userBalance = -14500; //TODO
-    if (userBalance > 0) return 'Önnek túlfizetése van';
-    else if (userBalance < 0) return 'Önnek tartozása van';
-    return 'Túlfizetés/tartozás';
-  },
-  balanceColorClass() {
-    const userBalance = -14500; //TODO
-    if (userBalance < 0) return 'bg-danger';
-    return 'navy-bg';
-  },
-  balanceIcon() {
-    const userBalance = -14500; //TODO
-    if (userBalance < 0) return 'glyphicon glyphicon-exclamation-sign';
-    return 'fa fa-thumbs-up';
-  },
-});
-
 Template.News.helpers({
   topics(category, stickyVal) {
     const communityId = Session.get('activeCommunityId');
@@ -74,7 +50,6 @@ Template.News.helpers({
 
 Template.News.events({
   'click .js-new'(event, instance) {
-    debuggeré
     Modal.show('Autoform_edit', {
       id: 'af.news.insert',
       collection: Topics,

@@ -1,0 +1,15 @@
+<template name="Balance_widget">
+    <a href="{{pathFor 'Parcels.finances'}}">
+        <div class="widget style1 {{balanceColorClass}}" style="margin-top: 0px"><!--needed because our collapse section next to it has no upper margin-->
+            <div class="row vertical-align">
+                <div class="col-xs-4">
+                    <i class="{{balanceIcon}} fa-4x"></i>
+                </div>
+                <div class="col-xs-8 text-right">
+                    <span>{{balanceMessage}}:</span>
+                    <h2 class="font-bold">{{balance}}</h2>
+                </div>
+            </div>
+        </div>
+    </a>
+</template>
