@@ -1,0 +1,59 @@
+<template name="Parcels_finances">
+    <!-- Page heading -->
+    {{> Page_heading title='Parcel finances' category='Finances' }}
+
+    <div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+
+    <div class="ibox ibox-dark" id='balances'>
+        <div class="ibox-title">
+            <h5>{{_ 'ParcelBalances'}}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+        </div>
+    </div>
+
+    <div class="ibox ibox-dark" id='myaccounting'>
+        <div class="ibox-title">
+            <h5>Sajat Albeteteim Elszamolasa</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+            {{> Custom_table report=(report 'AlbetetemElszamolasa' 2017)}}      
+        </div>
+    </div>
+
+    <div class="ibox ibox-dark" id='accounting'>
+        <div class="ibox-title">
+            <h5>{{_ 'ParcelAccounting'}}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+            {{> Custom_table report=(report 'AlbetetekElszamolasa' 2017)}}      
+        </div>
+    </div>
+
+    <div class="ibox ibox-dark" id='payments'>
+        <div class="ibox-title">
+            <h5>{{_ 'ParcelPayments'}}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+            {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+        </div>
+    </div>
+
+    <div class="ibox ibox-dark" id='bills'>
+        <div class="ibox-title">
+            <h5>{{_ 'ParcelBills'}}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+            {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
+        </div>
+    </div>
+
+  </div>
+  </div>
+</template>

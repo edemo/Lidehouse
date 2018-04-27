@@ -242,7 +242,7 @@
     }
   },
   "test": {
-    "house": "Test House",
+    "house": "Test house",
     "firstNames": ["Adam", "David","Thomas", "James", "Steve", "Andrew", "Eve", "Maggie", "Sue", "Rose", "Mary", "Julie"]
   }
 }

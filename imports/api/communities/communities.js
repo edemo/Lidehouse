@@ -6,6 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { comtype } from '/imports/comtypes/comtype.js';
+import { displayAddress } from '/imports/localization/localization.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -36,6 +37,9 @@ Communities.helpers({
     let total = 0;
     Parcels.find({ communityId: this._id }).forEach(p => total += p.units);
     return total;
+  },
+  displayAddress() {
+    return displayAddress(this);
   },
   admin() {
     return Memberships.findOne({ communityId: this._id, role: 'admin' });
