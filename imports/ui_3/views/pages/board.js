@@ -14,9 +14,9 @@ import '/imports/ui_2/modals/modal.js';
 import '/imports/ui_2/modals/autoform-edit.js';
 import '/imports/ui_2/components/collapse-section.js';
 import '/imports/ui_2/components/empty-chatbox.js';
-import '../components/comments-section.js';
 import '../components/chatbox.js';
 import '../components/votebox.js';
+import '../components/comments-section.js';
 import '../components/balance-widget.js';
 import './board.html';
 

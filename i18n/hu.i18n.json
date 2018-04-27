@@ -6,6 +6,8 @@
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
+  "updatedAt": "Módosítva",
+  "updatedBy": "Módosította",
   "reportedAt": "Bejelentve",
   "reportedBy": "Bejelentette",
 

@@ -9,7 +9,7 @@ import './agendas.html';
 Template.Agendas.helpers({
     agendas() {
         const communityId = Session.get('activeCommunityId');
-        return Agendas.find({ communityId });
+        return Agendas.find({ communityId }, { sort: { createdAt: -1 } });
     },
 });
 
