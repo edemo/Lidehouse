@@ -16,14 +16,21 @@ import './topic-show.html';
 
 
 Template.Topic_show.helpers({
-    pageTitle() {
-        return __('voting') + ' ' + __('data');
-    },
-    pageCategory() {
-        return __('Votings');
-    },
     topic() {
         const topic = Topics.findOne(FlowRouter.getParam('_tid'));
         return topic;
+    },
+    pageTitle() {
+        return __(this.category) + ' ' + __('details');
+    },
+    smallTitle() {
+        return this.title;
+    },
+    pageCategory() {
+        switch(this.category) {
+            case 'forum': return __('Forum'); break;
+            case 'vote': return __('Votings'); break;
+            default: return '';
+        }
     },
 });
