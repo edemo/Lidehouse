@@ -32,7 +32,6 @@ Template.Shareddoc_store.helpers({
     }
   },
   dummyDocs() { // temp hack only
-    debugger;
     return [2014, 2015, 2016, 2017, 2018].map(function(year) {
       return {
         name: 'Document_' + year.toString() + '.doc',

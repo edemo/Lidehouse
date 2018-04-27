@@ -17,8 +17,8 @@ import '/imports/ui_2/components/empty-chatbox.js';
 import '../components/comments-section.js';
 import '../components/chatbox.js';
 import '../components/votebox.js';
+import '../components/balance-widget.js';
 import './board.html';
-
 
 Template.Board.onCreated(function boardOnCreated() {
 });
@@ -50,7 +50,6 @@ Template.News.helpers({
 
 Template.News.events({
   'click .js-new'(event, instance) {
-    debuggeré
     Modal.show('Autoform_edit', {
       id: 'af.news.insert',
       collection: Topics,

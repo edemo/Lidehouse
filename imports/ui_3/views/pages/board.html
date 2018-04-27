@@ -22,7 +22,7 @@
 
       <!-- right side mobile -->
       <div class="full-width news-mid visible-xs visible-sm visible-md">
-        {{> Balance}}
+        {{> Balance_widget}}
         {{> News}}
       </div>
       <!-- right side mobile end-->
@@ -37,27 +37,11 @@
 
     <!-- right side -->
     <div class="col-xs-12 col-lg-4  visible-lg">
-      {{> Balance}}
+      {{> Balance_widget}}
       {{> News}}
     </div>
     </div>
   </div>
-</template>
-
-<template name="Balance">
-    <a href="{{pathFor 'Parcels.finances'}}">
-    <div class="widget style1 navy-bg" style="margin-top: 0px"><!--needed because our collapse section next to it has no upper margin-->
-        <div class="row vertical-align">
-            <div class="col-xs-4">
-                <i class="fa fa-thumbs-up fa-4x"></i>
-            </div>
-            <div class="col-xs-8 text-right">
-                <span>Egyenleg:</span>
-                <h2 class="font-bold">+14 500</h2>
-            </div>
-        </div>
-    </div>
-    </a>
 </template>
 
 <template name="News">
