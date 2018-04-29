@@ -30,7 +30,7 @@
             <li><a class="js-delete" href="#">{{_ 'delete'}}</a></li>
             {{/if}}
           </ul>
-      </div>        
+      </div>
       {{/if}}
       </div>
 
@@ -88,7 +88,7 @@
                 </div>
                 {{/if}}
                 <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
-                  <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
+                  <ul id="touch-punch" class="sortable droptrue {{pressedClassForFinalizeBtn}}">
                     {{#each currentPreference}}
                     <li class="btn btn-vote-choice ui-state-default" data-value="{{value}}"> <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> {{text}}</li>
                     {{/each}}
