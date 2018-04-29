@@ -6,6 +6,8 @@
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
+  "updatedAt": "Módosítva",
+  "updatedBy": "Módosította",
   "reportedAt": "Bejelentve",
   "reportedBy": "Bejelentette",
 
@@ -88,6 +90,7 @@
   "payaccounts": "könyvelési fiókok",
   "data": "adatok",
   "data page": "adatlapja",
+  "details": "részletek",
   "uploads": "dokumentumtár",
   "upload": "feltöltés",
   "comment": "hozzászólás",

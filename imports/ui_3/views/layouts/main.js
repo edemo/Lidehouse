@@ -59,6 +59,15 @@ Template.Main_layout.onCreated(function() {
 });
 
 Template.Main_layout.onRendered(function() {
+    // Minimalize menu when screen is less than 768px
+    $(window).bind("resize load", function () {
+        if ($(this).width() < 769) {
+            $('body').addClass('body-small')
+        } else {
+            $('body').removeClass('body-small')
+        }
+    });
+
      // Fix height of layout when resize, scroll and load
     $(window).bind("load resize scroll", function() {
         const windowHeight = $(window).height();
