@@ -6,7 +6,7 @@
             {{#unless noBreadcrumbs}}
             <ol class="breadcrumb">
                 <li>
-                    <a href="/">{{_ 'Main'}}</a>
+                    <a href="{{pathFor 'Board'}}">{{_ 'Main'}}</a>
                 </li>
                 {{#if category}}
                 <li>
@@ -14,7 +14,7 @@
                 </li>
                 {{/if}}
                 <li class="active">
-                    <strong>{{_ title}}</strong>
+                    <strong>{{_ smallTitle}}</strong>
                 </li>
             </ol>
             {{/unless}}

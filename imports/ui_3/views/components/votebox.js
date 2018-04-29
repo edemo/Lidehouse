@@ -20,7 +20,6 @@ import '/imports/ui_2/modals/proposal-view.js';
 import '/imports/ui_2/components/select-voters.js';
 import '/imports/ui_2/components/vote-results.js';
 import './votebox.html';
-import './comments-section.js';
 
 Template.Votebox.onCreated(function voteboxOnCreated() {
   this.state = new ReactiveDict();
