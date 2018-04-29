@@ -24,7 +24,7 @@ Template.Top_navbar.helpers({
 
 Template.Top_navbar.events({
     // Toggle left navigation
-    'click #navbar-minimalize'(event) {
+    'click #navbar-minimalize': function(event){
         event.preventDefault();
 
         // Toggle special class
