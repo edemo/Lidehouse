@@ -4,13 +4,15 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Timestamps } from '/imports/api/timestamps.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
+import { Timestamps } from '/imports/api/timestamps.js';
+import { FreeFields } from '/imports/api/freefields.js';
+
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Roles } from '/imports/api/permissions/roles.js';
-import { FreeFields } from '/imports/api/freefields.js';
+import { Payments } from '/imports/api/payments/payments.js';
+import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 
 export const Parcels = new Mongo.Collection('parcels');
 
@@ -48,6 +50,28 @@ Parcels.schema = new SimpleSchema({
 });
 
 Parcels.helpers({
+  location() {  // TODO: move this to the house package
+    return `${this.floor}/${this.number}`;
+  },
+  displayNames() {
+    let result = '';
+    const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
+    ownerships.forEach((m) => {
+      const repBadge = m.isRepresentor() ? '(*)' : '';
+      result += `${m.Person().displayName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
+    });
+    const benefactorships = Memberships.find({ communityId: this.communityId, role: 'benefactor', parcelId: this._id });
+    benefactorships.forEach((m) => {
+      result += `${m.Person().displayName()}<br>`;
+    });
+    return result;
+  },
+  display() {
+    return `${this.serial}. ${__(this.type)} ${this.location()} (${this.lot})`;
+  },
+  toString() {
+    return this.location();
+  },
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);
@@ -58,6 +82,7 @@ Parcels.helpers({
     if (!community) return undefined;
     return community.totalunits;
   },
+  // Voting
   share() {
     return new Fraction(this.units, this.totalunits());
   },
@@ -75,28 +100,13 @@ Parcels.helpers({
     if (benefactorsSorted.length > 0) return benefactorsSorted[0];
     return undefined;
   },
-  displayNames() {
-    let result = '';
-    const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
-    ownerships.forEach((m) => {
-      const repBadge = m.isRepresentor() ? '(*)' : '';
-      result += `${m.Person().displayName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
-    });
-    const benefactorships = Memberships.find({ communityId: this.communityId, role: 'benefactor', parcelId: this._id });
-    benefactorships.forEach((m) => {
-      result += `${m.Person().displayName()}<br>`;
-    });
-    return result;
-  },
-  // TODO: move this to the house package
-  location() {
-    return `${this.floor}/${this.number}`;
-  },
-  display() {
-    return `${this.serial}. ${__(this.type)} ${this.location()} (${this.lot})`;
-  },
-  toString() {
-    return this.location();
+  // Finances
+  balance() {
+    const communityId = this._id;
+    const payments = Payments.find({ communityId, 'Könyvelés helye': this.serial.toString() });
+    let parcelBalanace = 0;
+    payments.forEach(p => parcelBalanace += p.amount);
+    return parcelBalanace;
   },
 });
 
