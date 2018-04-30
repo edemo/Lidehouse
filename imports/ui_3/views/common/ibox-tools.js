@@ -5,7 +5,7 @@ Template.iboxTools.events({
     'click .collapse-link'(event) {
         var element = $(event.target);
         var ibox = element.closest('div.ibox');
-        var button = element.closest("i");
+        var button = element.closest('div.collapse-link').find('i');
         var content = ibox.find('div.ibox-content');
         content.slideToggle(200);
         button.toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
