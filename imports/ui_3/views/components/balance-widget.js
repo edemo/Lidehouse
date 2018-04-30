@@ -1,9 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
+
+import { numeral } from 'meteor/numeral:numeral';
+
 import { Payments } from '/imports/api/payments/payments.js';
 import '/imports/api/users/users.js';
-
 import './balance-widget.html';
 
 Template.Balance_widget.onCreated(function() {
@@ -24,7 +26,7 @@ Template.Balance_widget.helpers({
   },
   display(balance) {
     const signPrefix = balance > 0 ? '+' : '';
-    return signPrefix + balance;
+    return signPrefix + numeral(balance).format();
   },
   message(balance) {
     if (balance > 0) return 'Önnek túlfizetése van';
