@@ -6,7 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 
 import { Comments } from '/imports/api/comments/comments.js';
-import { Topics } from '/imports/api/topics/topics.js';
+import { like } from '/imports/api/topics/likes.js';
 
 import './comments-section.html';
 
@@ -49,10 +49,9 @@ Template.Comments_section.events({
     document.getElementById('text_' + this.topicId).value = '';
   },
   'click .js-like'(event) {
-    Meteor.call('like', {
+    like.call({
       coll: 'topics',
       id: this._id,
-      userId: Meteor.userId(),
     });
   },
 });
