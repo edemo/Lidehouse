@@ -10,8 +10,10 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
+import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/modal.js';
+import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
 import '/imports/ui_2/components/collapse-section.js';
 import '/imports/ui_2/components/empty-chatbox.js';
@@ -62,7 +64,7 @@ Template.News.events({
     });
   },
   'click .js-edit'(event, instance) {
-    const id = $(event.target).closest('div.js-edit').data('id');
+    const id = $(event.target).closest('div.news-elem').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.news.update',
       collection: Topics,
@@ -73,6 +75,12 @@ Template.News.events({
       meteormethod: 'topics.update',
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
+    });
+  },
+  'click .js-remove'(event, instance) {
+    const id = $(event.target).closest('div.news-elem').data('id');
+    Modal.confirmAndCall(removeTopic, { _id: id }, {
+      action: 'remove topic',
     });
   },
 });

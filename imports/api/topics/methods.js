@@ -33,7 +33,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'update', topic);
-    checkModifier(topic, modifier, ['title', 'text']);   // only text and title can be modified
+    checkModifier(topic, modifier, ['title', 'text', 'sticky']);
     Topics.update({ _id }, modifier);
   },
 });
