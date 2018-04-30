@@ -1,27 +1,45 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
 
+import { numeral } from 'meteor/numeral:numeral';
+
+import { Payments } from '/imports/api/payments/payments.js';
+import '/imports/api/users/users.js';
 import './balance-widget.html';
+
+Template.Balance_widget.onCreated(function() {
+  // Subscriptions
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('payments.inCommunity', { communityId });
+  });
+});
 
 Template.Balance_widget.helpers({
   balance() {
-    const userBalance = -14500; //TODO
-    const signPrefix = userBalance > 0 ? '+' : '';
-    return signPrefix + userBalance;
+    const communityId = Session.get('activeCommunityId');
+    const user = Meteor.user();
+    if (!user || !communityId) return 0;
+    const result = user.balance(communityId);
+    return result;
   },
-  balanceMessage() {
-    const userBalance = -14500; //TODO
-    if (userBalance > 0) return 'Önnek túlfizetése van';
-    else if (userBalance < 0) return 'Önnek tartozása van';
+  display(balance) {
+    const signPrefix = balance > 0 ? '+' : '';
+    return signPrefix + numeral(balance).format();
+  },
+  message(balance) {
+    if (balance > 0) return 'Önnek túlfizetése van';
+    else if (balance < 0) return 'Önnek tartozása van';
     return 'Túlfizetés/hátralék';
   },
-  balanceColorClass() {
-    const userBalance = -14500; //TODO
-    if (userBalance < 0) return 'bg-danger';
+  colorClass(balance) {
+    if (balance < 0) return 'bg-danger';
     return 'navy-bg';
   },
-  balanceIcon() {
-    const userBalance = -14500; //TODO
-    if (userBalance < 0) return 'glyphicon glyphicon-exclamation-sign';
+  icon(balance) {
+    if (balance < 0) return 'glyphicon glyphicon-exclamation-sign';
     return 'fa fa-thumbs-up';
   },
 });
+
