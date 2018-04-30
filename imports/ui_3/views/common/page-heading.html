@@ -8,11 +8,11 @@
                 <li>
                     <a href="{{pathFor 'Board'}}">{{_ 'Main'}}</a>
                 </li>
-                {{#if category}}
+                {{#each crumbs}}
                 <li>
-                    <a class="text-capitalize">{{_ category}}</a>
+                    <a href="{{this.url}}" class="text-capitalize">{{_ this.title}}</a>
                 </li>
-                {{/if}}
+                {{/each}}
                 <li class="active">
                     <strong>{{_ smallTitle}}</strong>
                 </li>

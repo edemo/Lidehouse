@@ -1,7 +1,7 @@
 <template name="Topic_show">
     {{#with topic}}
         <!-- Page heading -->
-        {{> Page_heading title=pageTitle smallTitle=smallTitle category=pageCategory }}
+        {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
 
         {{#if (equals topic.category 'vote')}}
         {{> Vote_topic_show}}

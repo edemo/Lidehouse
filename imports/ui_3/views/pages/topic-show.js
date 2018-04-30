@@ -26,11 +26,23 @@ Template.Topic_show.helpers({
     smallTitle() {
         return this.title;
     },
-    pageCategory() {
+    pageCrumbs() {
         switch(this.category) {
-            case 'forum': return __('Forum'); break;
-            case 'vote': return __('Votings'); break;
-            default: return '';
+            case 'forum': {
+                return [{
+                    title: 'Forum',
+                    url: FlowRouter.path('Topics.forum'),
+                }];
+                break;
+            }
+            case 'vote': {
+                return [{
+                    title: 'Votings',
+                    url: FlowRouter.path('Topics.vote'),
+                }];
+                break;
+            }
+            default: return [];
         }
     },
 });

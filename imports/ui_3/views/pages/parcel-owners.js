@@ -28,6 +28,14 @@ Template.Parcel_owners_page.onRendered(function () {
 });
 
 Template.Parcel_owners_page.helpers({
+    pageCrumbs() {
+      const parcelId = FlowRouter.getParam('_pid');
+      const communityId = Parcels.findOne(parcelId).communityId;
+      return [{
+        title: 'Community page',
+        url: FlowRouter.path('Community.page', { _cid: communityId }),
+      }];
+    },
     title() {
         const parcelId = FlowRouter.getParam('_pid');
         const parcel = Parcels.findOne(parcelId);
