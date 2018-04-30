@@ -24,7 +24,7 @@ Template.Top_navbar.helpers({
 
 Template.Top_navbar.events({
     // Toggle left navigation
-    'click #navbar-minimalize': function(event){
+    'click #navbar-minimalize'(event){
         event.preventDefault();
 
         // Toggle special class
@@ -51,7 +51,7 @@ Template.Top_navbar.events({
         }
     },
     // Toggle right sidebar
-    'click .right-sidebar-toggle': function(){
+    'click .right-sidebar-toggle'(){
         $('#right-sidebar').toggleClass('sidebar-open');
     },
     'click .js-switch-community'() {
