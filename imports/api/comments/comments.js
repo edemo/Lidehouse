@@ -6,7 +6,8 @@ import { _ } from 'meteor/underscore';
 import { Timestamps } from '/imports/api/timestamps.js';
 import faker from 'faker';
 
-import { Topics, likesHelpers } from '../topics/topics.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
 
 class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
@@ -32,11 +33,10 @@ Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
   text: { type: String, optional: true },
-  likes: { type: Array, defaultValue: [], autoform: { omit: true } },
-  'likes.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
 });
 
 Comments.attachSchema(Comments.schema);
+Comments.attachSchema(likesSchema);
 Comments.attachSchema(Timestamps);
 
 Comments.helpers({

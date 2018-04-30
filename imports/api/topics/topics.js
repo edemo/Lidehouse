@@ -3,12 +3,12 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
-import { _ } from 'meteor/underscore';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
+import { likesSchema, likesHelpers } from './likes.js';
 
 class TopicsCollection extends Mongo.Collection {
   insert(topic, callback) {
@@ -35,8 +35,6 @@ Topics.schema = new SimpleSchema({
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   sticky: { type: Boolean, optional: true, defaultValue: false },
-  likes: { type: Array, defaultValue: [], autoform: { omit: true } },
-  'likes.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
 });
 
@@ -77,23 +75,10 @@ Topics.helpers({
   },
 });
 
-export const likesHelpers = {
-  isLikedBy(userId) {
-    return _.contains(this.likes, userId);
-  },
-  likesCount() {
-    return this.likes.length;
-  },
-  /* To update, you need to call the 'like' meteormethod
-  toggleLike(userId) {
-    const index = _.indexOf(this.likes, userId);
-    if (index >= 0) this.likes.splice(index, 1);
-    else this.likes.push(userId);
-  },*/
-};
 Topics.helpers(likesHelpers);
 
 Topics.attachSchema(Topics.schema);
+Topics.attachSchema(likesSchema);
 Topics.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {

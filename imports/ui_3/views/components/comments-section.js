@@ -44,12 +44,6 @@ Template.Comments_section.helpers({
 });
 
 Template.Comment.helpers({
-  avatar() {
-    return this.user().avatar;
-  },
-  displayUser() {
-    return this.user().fullName();
-  },
 });
 
 Template.Comments_section.events({
