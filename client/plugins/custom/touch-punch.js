@@ -1,1 +1,1 @@
-jQuery('#touch-punch').draggable();
+$('#notExistID').draggable();
