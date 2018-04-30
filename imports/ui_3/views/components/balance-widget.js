@@ -19,8 +19,8 @@ Template.Balance_widget.helpers({
     const communityId = Session.get('activeCommunityId');
     const user = Meteor.user();
     if (!user || !communityId) return 0;
-    return -14500; // TODO remove
-    return user.balance(communityId);
+    const result = user.balance(communityId);
+    return result;
   },
   display(balance) {
     const signPrefix = balance > 0 ? '+' : '';

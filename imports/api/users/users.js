@@ -147,8 +147,8 @@ Meteor.users.helpers({
   ownedParcels(communityId) {
     const parcelIds = _.pluck(this.ownerships(communityId).fetch(), 'parcelId');
     const parcels = parcelIds.map(pid => Parcels.findOne(pid));
-    const definedParcels = parcels.filter(elem => elem);
-    return definedParcels;
+    const ownedParcels = parcels.filter(elem => elem);
+    return ownedParcels;
   },
   roles(communityId) {
     return Memberships.find({ 'person.userId': this._id, communityId }).fetch().map(m => m.role);

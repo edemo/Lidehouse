@@ -102,11 +102,11 @@ Parcels.helpers({
   },
   // Finances
   balance() {
-    const communityId = this._id;
-    const payments = Payments.find({ communityId, 'Könyvelés helye': this.serial.toString() });
-    let parcelBalanace = 0;
-    payments.forEach(p => parcelBalanace += p.amount);
-    return parcelBalanace;
+    const communityId = this.communityId;
+    const payments = Payments.find({ communityId, 'accounts.Könyvelés helye': this.serial.toString() });
+    let parcelBalance = 0;
+    payments.forEach(p => parcelBalance += p.amount);
+    return parcelBalance;
   },
 });
 
