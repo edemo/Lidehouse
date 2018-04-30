@@ -1,7 +1,7 @@
 <template name="Balance_widget">
     {{#let bal=balance}}
     <a href="{{pathFor 'Parcels.finances'}}">
-        <div class="widget style1 {{colorClass bal}}">
+        <div id="balance-widget-top" class="widget style1 {{colorClass bal}}">
             <div class="row vertical-align">
                 <div class="col-xs-4">
                     <i class="{{icon bal}} fa-4x"></i>
