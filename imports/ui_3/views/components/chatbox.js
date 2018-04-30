@@ -21,11 +21,6 @@ Template.Chatbox.helpers({
   displayUser() {
     return Meteor.users.findOne(this.userId).fullName();
   },
-  displayTimeSince() {
-    // momentjs is not reactive, but TymeSync call makes this reactive
-    const serverTimeNow = new Date(TimeSync.serverTime());
-    return moment(this.createdAt).from(serverTimeNow);
-  },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },

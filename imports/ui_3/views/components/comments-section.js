@@ -50,11 +50,6 @@ Template.Comment.helpers({
   displayUser() {
     return this.user().fullName();
   },
-  displayTimeSince() {
-    // momentjs is not reactive, but TymeSync call makes this reactive
-    const serverTimeNow = new Date(TimeSync.serverTime());
-    return moment(this.createdAt).from(serverTimeNow);
-  },
 });
 
 Template.Comments_section.events({
