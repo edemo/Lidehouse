@@ -24,16 +24,9 @@ Template.Comments_section.helpers({
     const topic = this;
     return topic.category === 'vote';
   },
-  likesCount() {
-    const topic = this;
-    return topic.likesCount();
-  },
   userLikesThis() {
     const topic = this;
     return topic.isLikedBy(Meteor.userId());
-  },
-  commentCount() {
-    return this.commentCounter;
   },
   comments() {
     return Comments.find({ topicId: this._id });
