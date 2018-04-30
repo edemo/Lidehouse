@@ -56,7 +56,7 @@
           <div class="ibox-title">
               <h5>{{_ 'News board'}}</h5>
               {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
-              <a href="" class="label label-primary js-new">+ {{_ 'new'}} {{_ 'news'}}</a>
+              <button class="label label-primary js-new">+ {{_ 'new'}} {{_ 'topic.news'}}</button>
               {{/if}}
               {{>iboxTools}}
           </div>
@@ -69,11 +69,16 @@
               <div class="feed-activity-list">
                   {{#each topics 'news' false}}
                   <div class="feed-element">
-                      <div>
-                          <small class="pull-right text-navy">1m ago</small>
+                      <div class="news-elem" data-id="{{_id}}">
+                          <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
                           <strong>{{title}}</strong>
                           <div>{{text}}</div>
-                          <small class="text-muted">{{displayTime}}</small>
+                          {{#if currentUser.hasPermission 'news.update' activeCommunityId}}
+                          <div class="btn-group pull-right m-t-sm">
+                            <button class="btn btn-white btn-xs text-capitalize js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                            <button class="btn btn-white btn-xs text-capitalize js-remove"><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                          </div>
+                          {{/if}}
                       </div>
                   </div>
                   {{/each}}
@@ -84,17 +89,21 @@
   {{#each topics 'news' true}}
   <div class="ibox infos">
   <div class="ibox-content">
-    {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
-    <!-- kk: szerkeszt / unpin -->
-    <button class="btn-default" title="Edit"><span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></button>
-    {{/if}}
-    <div class="full-width title">
-      <strong>{{title}}</strong>
-    </div>
+  <div class="feed-element">
+  <div class="news-elem" data-id="{{_id}}">
     <div class="full-width">
-      {{#markdown}}{{text}}{{/markdown}}
+      <strong>{{title}}</strong>
+      <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
+      {{#markdown}}{{text}}{{/markdown}}  
+      {{#if currentUser.hasPermission 'news.update' activeCommunityId}}
+      <div class="btn-group pull-right m-t-sm">
+        <button class="btn btn-white btn-xs text-capitalize js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+        <button class="btn btn-white btn-xs text-capitalize js-remove"><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+      </div>
+      {{/if}}
     </div>
-    <small class="text-muted">{{displayTime}}</small>
+  </div>
+  </div>
   </div>
   </div>
   {{/each}}
