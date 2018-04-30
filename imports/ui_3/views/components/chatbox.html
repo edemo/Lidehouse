@@ -34,7 +34,12 @@
             </p>
 
             <div class="btn-group">
-                <button class="btn btn-white btn-xs text-capitalize"><i class="fa fa-hand-o-up"></i> {{_ 'important'}}!</button>
+                <small class="text-muted count-box" >{{likesCount}}</small>
+                <button class="btn btn-white btn-xs text-capitalize js-like">
+                    <i class="fa {{#if userLikesThis}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                    {{_ 'important'}}!
+                </button>
+                <small class="text-muted count-box" >{{commentCounter}}</small>
                 <button class="btn btn-white btn-xs text-capitalize"><i class="fa fa-comments"></i> {{_ 'comment'}}</button>
                 <!--button class="btn btn-white btn-xs"><i class="fa fa-share"></i> Share</button-->
             </div>

@@ -4,6 +4,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { __ } from '/imports/localization/i18n.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { like } from '/imports/api/comments/methods.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/modal.js';
@@ -23,6 +24,10 @@ Template.Chatbox.helpers({
   },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
+  },
+  userLikesThis() {
+    const topic = this;
+    return topic.isLikedBy(Meteor.userId());
   },
 });
 
@@ -49,5 +54,12 @@ Template.Chatbox.events({
       btnClose: 'close',
     };
     Modal.show('Modal', modalContext);
+  },
+  'click .js-like'(event) {
+    Meteor.call('like', {
+      coll: 'topics',
+      id: this._id,
+      userId: Meteor.userId(),
+    });
   },
 });
