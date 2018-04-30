@@ -101,6 +101,7 @@ Meteor.startup(function attach() {
   // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
   // Topics.schema.i18n('schemaTopics'); // sub-type of Topics will define their own translations
   Topics.simpleSchema().i18n('schemaTopics');
+  Topics.schema.i18n('schemaTopics');
 });
 
 // Deny all client-side updates since we will be using methods to manage this collection

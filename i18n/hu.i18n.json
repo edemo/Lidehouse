@@ -97,6 +97,15 @@
   "created": "létrehozva",
   "closes": "lezárul",
 
+  "topic" : {
+    "forum": "fórum téma",
+    "vote": "szavazás",
+    "news": "hírdetmény",
+    "ticket": "hibajegy",
+    "room": "szoba",
+    "feedback": "visszajelzés"
+  },
+
   // commands
   "important": "Fontos",
   "view": "Megtekintés",
@@ -105,7 +114,6 @@
   "remove": "Eltávolítás",
   "save": "Mentés",
   "send": "Elküldés",
-  "vote": "Szavazás",
   "send message": "Üzenet küldése",
   "send vote": "Szavazat elküldése",
   "change": "Megváltoztatom",

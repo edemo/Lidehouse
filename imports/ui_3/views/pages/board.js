@@ -4,8 +4,9 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { moment } from 'meteor/momentjs:moment';
+import { $ } from 'meteor/jquery';
 
+import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
@@ -60,15 +61,19 @@ Template.News.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-view'(event, instance) {
-    const modalContext = {
-      title: this.title,
-      body: 'Proposal_view',
-      bodyContext: this,
-      btnClose: 'close',
-      btnEdit: 'edit',
-    };
-    Modal.show('Modal', modalContext);
+  'click .js-edit'(event, instance) {
+    const id = $(event.target).closest('div.js-edit').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.news.update',
+      collection: Topics,
+      schema: Topics.schema,
+      doc: Topics.findOne(id),
+      omitFields: ['communityId', 'userId', 'category', 'agendaId'],
+      type: 'method-update',
+      meteormethod: 'topics.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
   },
 });
 

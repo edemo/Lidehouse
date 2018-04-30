@@ -15,7 +15,7 @@ Important:Validation happens (1st) on the autoform, (2nd) on the method call (cl
   - autoValue only applied at the (3rd)
   solution: When you use autovalue, always pair it with optional: true , otherwise it will fail at (2nd)
 
-Autoform update crashes with internal server error or strange error message
+Autoform update crashes with internal server error (Error: When the validation object contains mongo operators, you must set the modifier option to true)
   - The autoform update-method is passing two method parameters (mongo modifier object, doc id)
   ValidatedMethod expects a single parameter object with named parameters _id, modifier
   solution: Use singleMethodArgument=true as a form attribute on a method-update type autoforms.
