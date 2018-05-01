@@ -4,8 +4,11 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 
-import { Topics } from '/imports/api/topics/topics.js';
+import { __ } from '/imports/localization/i18n.js';
+import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
 import { afCommunityInsertModal } from '/imports/ui_2/pages/communities-edit.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/users/users.js';
 import './right-sidebar.js';
 import './top-navbar.html';
@@ -67,7 +70,10 @@ Template.Top_navbar.events({
         $('#right-sidebar').toggleClass('sidebar-open');
     },
     'click .js-switch-community'() {
-        Session.set('activeCommunityId', this._id);
+        const newCommunityId = this._id;
+        const newCommunity = Communities.findOne(newCommunityId);
+        Session.set('activeCommunityId', newCommunityId);
+        displayMessage('success', `${newCommunity.name} ${__('selected')}`);
     },
     'click .js-create-community'() {
         afCommunityInsertModal();
