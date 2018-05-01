@@ -69,6 +69,25 @@ Topics.helpers({
     const newCommentCounter = this.commentCounter - lastSeenCommentCounter;
     return newCommentCounter;
   },
+  needsAttention(userId) {
+    switch (this.category) {
+      case 'room':
+        if (this.isUnseenBy(userId) || this.unseenCommentsBy(userId) > 0) return 1;
+        break;
+      case 'vote':
+        if (!this.closed && !this.hasVotedIndirect(userId)) return 1;
+        break;
+      case 'ticket':
+        if (!this.closed && this.ticket.status !== 'closed') return 1;
+        break;
+      case 'feedback':
+        if (this.isUnseenBy(userId)) return 1;
+        break;
+      default:
+        debugAssert(false);
+    }
+    return 0;
+  },
   remove() {
     Comments.remove({ topicId: this._id });
     Topics.remove({ _id: this._id });

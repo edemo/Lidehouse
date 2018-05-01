@@ -29,22 +29,7 @@ Template.Navigation.helpers({
     const topics = Topics.find({ communityId, category });
     topics.map(t => {
       const userId = Meteor.userId();
-      switch (category) {
-        case 'room':
-          if (t.isUnseenBy(userId) || t.unseenCommentsBy(userId) > 0) count += 1;
-          break;
-        case 'vote':
-          if (!t.closed && !t.hasVotedIndirect(userId)) count += 1;
-          break;
-        case 'ticket':
-          if (!t.closed && t.ticket.status !== 'closed') count += 1;
-          break;
-        case 'feedback':
-          if (t.isUnseenBy(userId)) count += 1;
-          break;
-        default:
-          debugAssert(false);
-      }
+      count += t.needsAttention(userId);
     });
     return count;
   },
