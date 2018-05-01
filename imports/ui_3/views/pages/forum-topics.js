@@ -30,7 +30,7 @@ import './forum-topics.html';
 Template.Forum_topics.helpers({
     forumTopics() {
         const topics = Topics.find({ category: 'forum' });
-        const sorted = topics.fetch().sort(function (t1, t2) { return t1.likesCount() < t2.likesCount(); });
+        const sorted = topics.fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
         return sorted;
     },
 });
