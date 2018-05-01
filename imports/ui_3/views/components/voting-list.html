@@ -25,18 +25,20 @@
                 </td>
                 <td class="project-status">
                     {{#if (equals vote.effect 'legal') }}
-                    <span class="label label-danger">{{_ vote.effect}}</span>
+                    <span class="label label-danger">{{_ 'schemaVotings.vote.effect.legal'}}</span>
                     {{/if}}
                 </td>
                 <td class="project-completion">
-                    <small>Completion with: {{votedPercent}}%</small>
+                    <small>{{_ 'Participation'}}: {{votedPercent}}%</small>
                     <div class="progress progress-mini">
                         <div style={{concat "width: " votedPercent "%;"}} class="progress-bar"></div>
                     </div>
                 </td>
                 <td class="project-actions">
                     <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-sm"><i class="fa fa-eye"></i> View </a>
+                    {{#if userHasPermission 'vote.update' activeCommunityId this}}
                     <a href="#" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Edit </a>
+                    {{/if}}
                 </td>
             </tr>
             {{/each}}
