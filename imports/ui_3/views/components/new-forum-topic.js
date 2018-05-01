@@ -4,19 +4,19 @@ import { Session } from 'meteor/session';
 import { insert as insertTopic } from '/imports/api/topics/methods.js';
 import { onSuccess } from '/imports/ui/lib/errors.js';
 
-import './empty-chatbox.html';
+import './new-forum-topic.html';
 
-Template.Empty_chatbox.events({
-  'keyup .js-send-enter'(event) {
-    if (event.keyCode !== 13) return;
-    const textarea = event.target;
+Template.New_forum_topic.events({
+  'click .js-send'(event) {
+    const titlearea = $.find('#new_forum_title')[0];
+    const textarea = $.find('#new_forum_text')[0];
     insertTopic.call({
       communityId: Session.get('activeCommunityId'),
       userId: Meteor.userId(),
       category: 'forum',
-      title: 'undefined',
+      title: titlearea.value,
       text: textarea.value,
-    }, onSuccess(res => textarea.value = '')
+    }, onSuccess(function (res) { textarea.value = ''; titlearea.value = ''; })
     );
   },
 });
