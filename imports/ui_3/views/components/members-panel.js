@@ -88,5 +88,6 @@ Template.Member_slot.helpers({
 Template.Member_slot.events({
   'click .member-slot'(event, instance) {
     Session.set('messengerPersonId', instance.data.person.userId);
+    $('#right-sidebar').toggleClass('sidebar-open');
   },
 });
