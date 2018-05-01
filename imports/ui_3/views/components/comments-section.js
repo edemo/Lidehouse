@@ -5,9 +5,10 @@ import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 
+import { onSuccess } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { insert as insertComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
-
 import './comments-section.html';
 
 Template.Comments_section.onCreated(function commentsSectionOnCreated() {
@@ -17,40 +18,37 @@ Template.Comments_section.onCreated(function commentsSectionOnCreated() {
 });
 
 Template.Comments_section.helpers({
-  topicId() {
-    return this._id;
-  },
   isVote() {
     const topic = this;
     return topic.category === 'vote';
   },
-  userLikesThis() {
-    const topic = this;
-    return topic.isLikedBy(Meteor.userId());
-  },
   comments() {
     return Comments.find({ topicId: this._id });
   },
-  selfAvatar() {
-    return Meteor.user().avatar;
+});
+
+Template.Comments_section.events({
+  'keyup .js-send-enter'(event) {
+    if (event.keyCode !== 13) return;
+    const textarea = event.target;
+    insertComment.call({
+      topicId: this._id,
+      userId: Meteor.userId(),
+      text: textarea.value,
+    }, onSuccess(res => textarea.value = '')
+    );
   },
 });
+
+//------------------------------------
 
 Template.Comment.helpers({
 });
 
-Template.Comments_section.events({
-  'click .js-send-comment'(event) {
-    Meteor.call('comments.insert', {
-      topicId: this._id,
-      userId: Meteor.userId(),
-      text: document.getElementById('text_' + this._id).value,
-    });
-    document.getElementById('text_' + this.topicId).value = '';
-  },
+Template.Comment.events({
   'click .js-like'(event) {
     like.call({
-      coll: 'topics',
+      coll: 'comments',
       id: this._id,
     });
   },

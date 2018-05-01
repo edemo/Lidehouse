@@ -8,7 +8,7 @@
                 <img alt="avatar" src={{currentUser.avatar}}>
             </a>
             <div class="media-body">
-                <textarea class="form-control" placeholder={{_ 'newCommentPlaceholder'}}></textarea>
+                <textarea class="form-control js-send-enter" placeholder={{_ 'newCommentPlaceholder'}}></textarea>
             </div>
         </div>
     </div>
@@ -25,7 +25,10 @@
             </a>
             {{text}}
             <br/>
-            <a href="#" class="small text-capitalize">({{likesCount}}) <i class="fa fa-hand-o-up"></i> {{_ 'important'}}!</a> -
+            <a href="" class="small text-capitalize js-like">
+                <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                {{_ 'important'}}! ({{likesCount}})
+            </a> -
             <small class="text-muted">{{displayTimeFrom createdAt}}</small>
         </div>
     </div>

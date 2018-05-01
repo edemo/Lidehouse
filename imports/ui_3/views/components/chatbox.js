@@ -16,18 +16,8 @@ Template.Chatbox.onRendered(function chatboxOnRendered() {
 });
 
 Template.Chatbox.helpers({
-  avatar() {
-    return Meteor.users.findOne(this.userId).avatar;
-  },
-  displayUser() {
-    return Meteor.users.findOne(this.userId).fullName();
-  },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
-  },
-  userLikesThis() {
-    const topic = this;
-    return topic.isLikedBy(Meteor.userId());
   },
 });
 
@@ -55,7 +45,7 @@ Template.Chatbox.events({
     };
     Modal.show('Modal', modalContext);
   },
-  'click .js-like'(event) {
+  'click .social-body .js-like'(event) {
     like.call({
       coll: 'topics',
       id: this._id,
