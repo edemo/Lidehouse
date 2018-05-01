@@ -1,10 +1,12 @@
 <template name="Users_show_form">
-    <div class="content-scrollable page-content page-profile">
+     <!-- Page heading -->
+    {{> Page_heading title='User data page' noBreadcrumbs=true}}
+
+    <div class="wrapper wrapper-content animated fadeInUp">
       <div class="page-slim">
-        <h1 class="page-title">{{_ 'User data page'}}</h1>
         {{#autoForm id="af.user.update" collection=users schema=schema omitFields="emails" doc=document type="method-update" meteormethod="user.update" singleMethodArgument=true}}
         {{> afQuickFields}}
-        <div>
+        <div class="m-b-lg">
           <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
         </div>
         {{/autoForm}}
