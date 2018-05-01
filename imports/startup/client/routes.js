@@ -37,6 +37,8 @@ import '/imports/ui_3/views/layouts/main.js';
 import '/imports/ui/accounts/accounts-templates.js';
 
 //
+FlowRouter.triggers.enter([() => { window.scrollTo(0, 0); }]);
+
 FlowRouter.route('/theme', {
   name: 'Theme.home',
   action() {
