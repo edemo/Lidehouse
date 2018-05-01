@@ -19,7 +19,14 @@ import './navigation.html';
 
 Template.Navigation.onRendered(function() {
     // Initialize metisMenu
-    $('#side-menu').metisMenu();
+    $('#side-menu').metisMenu({
+      toggle: true,
+      activeClass: 'active',
+      collapseClass: 'collapse',
+      collapseInClass: 'in',
+      collapsingClass: 'collapsing',
+      preventDefault: true
+ });
 });
 
 Template.Navigation.helpers({
