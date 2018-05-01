@@ -5,9 +5,10 @@ import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 
+import { onSuccess } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { insert as insertComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
-
 import './comments-section.html';
 
 Template.Comments_section.onCreated(function commentsSectionOnCreated() {
@@ -27,13 +28,15 @@ Template.Comments_section.helpers({
 });
 
 Template.Comments_section.events({
-  'click .js-send-comment'(event) {
-    Meteor.call('comments.insert', {
+  'keyup .js-send-enter'(event) {
+    if (event.keyCode !== 13) return;
+    const textarea = event.target;
+    insertComment.call({
       topicId: this._id,
       userId: Meteor.userId(),
-      text: document.getElementById('text_' + this._id).value,
-    });
-    document.getElementById('text_' + this.topicId).value = '';
+      text: textarea.value,
+    }, onSuccess(res => textarea.value = '')
+    );
   },
 });
 

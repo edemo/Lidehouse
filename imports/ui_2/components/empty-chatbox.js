@@ -7,14 +7,16 @@ import { onSuccess } from '/imports/ui/lib/errors.js';
 import './empty-chatbox.html';
 
 Template.Empty_chatbox.events({
-  'click .btn-comment'(event) {
+  'keyup .js-send-enter'(event) {
+    if (event.keyCode !== 13) return;
+    const textarea = event.target;
     insertTopic.call({
       communityId: Session.get('activeCommunityId'),
       userId: Meteor.userId(),
       category: 'forum',
       title: 'undefined',
-      text: document.getElementById('new_forumpost').value,
-    }, onSuccess(res => document.getElementById('new_forumpost').value = '')
+      text: textarea.value,
+    }, onSuccess(res => textarea.value = '')
     );
   },
 });
