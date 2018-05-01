@@ -126,7 +126,7 @@
       "label": "Meghatalmazás köre",
       "placeholder": "(pl. Ház ügyei)",
       "community": "a ház ügyeire",
-      "agenda": "egy napirend ügyeire",
+      "agenda": "egy közgyűlés ügyeire",
       "topic": "egyetlen ügyre"
     },
     "scopeObjectId": {
