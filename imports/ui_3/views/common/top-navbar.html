@@ -71,8 +71,11 @@
                 </li>
                 <li>
                     <a class="right-sidebar-toggle count-info" href="#">
-                        <i class="fa fa-envelope"></i>  <span class="label badge badge-danger">16</span>
-                   </a>                    
+                        <i class="fa fa-envelope"></i>  
+                        {{#if countNotifications 'room'}}
+                        <span class="label badge badge-danger">{{countNotifications 'room'}}</span>
+                        {{/if}}  
+                    </a>                    
                 </li>     
                 {{else}}
                 <li>
