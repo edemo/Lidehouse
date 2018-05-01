@@ -13,6 +13,7 @@ import { voteColumns } from '/imports/api/topics/votings/tables.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { agendaColumns } from '/imports/api/agendas/tables.js';
 import { remove as removeAgenda } from '/imports/api/agendas/methods.js';
+import { like } from '/imports/api/topics/likes.js';
 
 //import '/imports/ui_3/stylesheets/animatecss/animate.css';
 import '/imports/ui_2/modals/confirmation.js';
@@ -28,6 +29,15 @@ import './forum-topics.html';
 
 Template.Forum_topics.helpers({
     forumTopics() {
-        return Topics.find({ category: 'forum' });
+        const topics = Topics.find({ category: 'forum' });
+        const sorted = topics.fetch().sort(function (t1, t2) { return t1.likesCount() < t2.likesCount(); });
+        return sorted;
+    },
+});
+
+Template.Forum_topics.events({
+    'click .js-like'(event) {
+        const id = $(event.target).closest('div.vote-item').data('id');
+        like.call({ coll: 'topics', id });
     },
 });

@@ -25,7 +25,10 @@
             </a>
             {{text}}
             <br/>
-            <a href="#" class="small text-capitalize">({{likesCount}}) <i class="fa fa-hand-o-up"></i> {{_ 'important'}}!</a> -
+            <a href="" class="small text-capitalize js-like">
+                <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                {{_ 'important'}}! ({{likesCount}})
+            </a> -
             <small class="text-muted">{{displayTimeFrom createdAt}}</small>
         </div>
     </div>

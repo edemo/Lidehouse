@@ -17,26 +17,13 @@ Template.Comments_section.onCreated(function commentsSectionOnCreated() {
 });
 
 Template.Comments_section.helpers({
-  topicId() {
-    return this._id;
-  },
   isVote() {
     const topic = this;
     return topic.category === 'vote';
   },
-  userLikesThis() {
-    const topic = this;
-    return topic.isLikedBy(Meteor.userId());
-  },
   comments() {
     return Comments.find({ topicId: this._id });
   },
-  selfAvatar() {
-    return Meteor.user().avatar;
-  },
-});
-
-Template.Comment.helpers({
 });
 
 Template.Comments_section.events({
@@ -48,9 +35,17 @@ Template.Comments_section.events({
     });
     document.getElementById('text_' + this.topicId).value = '';
   },
+});
+
+//------------------------------------
+
+Template.Comment.helpers({
+});
+
+Template.Comment.events({
   'click .js-like'(event) {
     like.call({
-      coll: 'topics',
+      coll: 'comments',
       id: this._id,
     });
   },
