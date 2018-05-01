@@ -3,6 +3,8 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
+
+import { Topics } from '/imports/api/topics/topics.js';
 import { afCommunityInsertModal } from '/imports/ui_2/pages/communities-edit.js';
 import '/imports/api/users/users.js';
 import './right-sidebar.js';
@@ -20,6 +22,16 @@ Template.Top_navbar.helpers({
         if (!Meteor.user()) { return []; }
         return Meteor.user().communities();
     },
+    countNotifications(category) {
+        const communityId = Session.get('activeCommunityId');
+        let count = 0;
+        const topics = Topics.find({ communityId, category });
+        topics.map(t => {
+          const userId = Meteor.userId();
+          count += t.needsAttention(userId);
+        });
+        return count;
+      },
 });
 
 Template.Top_navbar.events({
