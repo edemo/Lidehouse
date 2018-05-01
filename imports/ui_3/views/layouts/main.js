@@ -61,8 +61,9 @@ Template.Main_layout.onCreated(function() {
 Template.Main_layout.onRendered(function() {
 
   // Minimalize menu when screen is less than 768px
-  $(window).bind("resize load", function () {
-    if ($(this).width() >= 768) {
+  // $(window).bind("resize load", function () {
+  $(document).ready(function(){
+    if ($(this).width() < 769) {
       $('body').addClass('body-small');
       $('#side-menu li a').addClass('toggleMiniNavbar');
       $("#side-menu li a[href='#']").removeClass('toggleMiniNavbar');
