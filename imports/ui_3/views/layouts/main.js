@@ -59,19 +59,35 @@ Template.Main_layout.onCreated(function() {
 });
 
 Template.Main_layout.onRendered(function() {
+
   // Minimalize menu when screen is less than 768px
-  $(window).bind("resize load", function () {
-  if ($(this).width() < 769) {
+  // $(window).bind("resize load", function () {
+  $(document).ready(function(){
+    if ($(this).width() < 769) {
       $('body').addClass('body-small');
       $('#side-menu li a').addClass('toggleMiniNavbar');
-      $("#side-menu li a[href='#']").removeClass('toggleMiniNavbar'); // for toggle links
+      $("#side-menu li a[href='#']").removeClass('toggleMiniNavbar');
       $(".toggleMiniNavbar").on('click touch', function () {
         $("body").toggleClass("mini-navbar");
       });
   } else {
-      $('body').removeClass('body-small')
+      $('body').removeClass('body-small');
   }
   });
+
+  // Active state & collapse bugfixed
+  $(document).ready(function(){
+    $('#side-menu li').on('click touch', function() {
+      $('#side-menu li').removeClass('active').filter($(this)).addClass('active');
+    });
+    $("#side-menu > li > a").on('click touch', function () {
+      $('.nav.collapse').collapse('hide');
+    });
+    $("#side-menu > li > ul > li > a").on('click touch', function () {
+      $(this).collapse('show');
+    });
+  });
+
      // Fix height of layout when resize, scroll and load
     $(window).bind("load resize scroll", function() {
         const windowHeight = $(window).height();
