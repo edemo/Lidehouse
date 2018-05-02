@@ -83,32 +83,6 @@ Template.Community_page.helpers({
     const communityId = Template.instance().getCommunityId();
     return Memberships.find({ communityId, role: { $not: { $in: ['admin', 'manager', 'owner', 'benefactor', 'guest', 'delegate'] } } }).fetch();
   },
-  rolesTableDataFn() {
-    const templateInstance = Template.instance();
-    return () => {
-      const communityId = templateInstance.getCommunityId();
-      return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest', 'delegate'] } } }).fetch();
-    };
-  },
-  rolesOptionsFn() {
-    const templateInstance = Template.instance();
-    return () => {
-      const communityId = templateInstance.getCommunityId();
-      const permissions = {
-        view: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
-        edit: Meteor.userOrNull().hasPermission('roleships.update', communityId),
-        delete: Meteor.userOrNull().hasPermission('roleships.remove', communityId),
-      };
-      return {
-        columns: roleshipColumns(permissions),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-        searching: false,
-        paging: false,
-        info: false,
-      };
-    };
-  },
   parcelsTableDataFn() {
     const templateInstance = Template.instance();
     return () => {

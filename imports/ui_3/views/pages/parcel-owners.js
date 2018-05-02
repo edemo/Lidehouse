@@ -61,56 +61,6 @@ Template.Parcel_owners_page.helpers({
     const parcel = Parcels.findOne(parcelId);
     return parcel.display();
   },
-  ownersTableDataFn() {
-    return () => {
-      const parcelId = FlowRouter.getParam('_pid');
-      return Memberships.find({ approved: true, role: 'owner', parcelId }).fetch();
-    };
-  },
-  ownersOptionsFn() {
-    return () => {
-      const parcelId = FlowRouter.getParam('_pid');
-      const communityId = Parcels.findOne(parcelId).communityId;
-      const permissions = {
-        view: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
-        edit: Meteor.userOrNull().hasPermission('ownerships.update', communityId),
-        delete: Meteor.userOrNull().hasPermission('ownerships.remove', communityId),
-      };
-      return {
-        columns: ownershipColumns(permissions),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-        searching: false,
-        paging: false,
-        info: false,
-      };
-    };
-  },
-  benefactorsTableDataFn() {
-    return () => {
-      const parcelId = FlowRouter.getParam('_pid');
-      return Memberships.find({ approved: true, role: 'benefactor', parcelId }).fetch();
-    };
-  },
-  benefactorsOptionsFn() {
-    return () => {
-      const parcelId = FlowRouter.getParam('_pid');
-      const communityId = Parcels.findOne(parcelId).communityId;
-      const permissions = {
-        view: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
-        edit: Meteor.userOrNull().hasPermission('benefactorships.update', communityId),
-        delete: Meteor.userOrNull().hasPermission('benefactorships.remove', communityId),
-      };
-      return {
-        columns: benefactorshipColumns(permissions),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-        searching: false,
-        paging: false,
-        info: false,
-      };
-    };
-  },
   hasUnapprovedMemberships() {
     const parcelId = FlowRouter.getParam('_pid');
     return Memberships.find({ approved: false, role: 'owner', parcelId }).fetch().length > 0;

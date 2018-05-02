@@ -9,7 +9,7 @@
                 <div class="ibox roles-section">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">Módosíthatja: Közös képviselő jogkör</span>
-                        <p class="cap-first">{{_ 'owners'}}/{{_ 'benefactors'}}</p>
+                        <h2>{{_ 'owners'}}/{{_ 'benefactors'}}</h2>
                         <p>
                             Az albetéthez rendelt tulajdonosok és használók listája.<br>
                             Kattintson az illető nevére az elérhetőségei megtekintéséhez.
@@ -28,8 +28,8 @@
                                 <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-group"></i> {{_ 'benefactors'}}</a></li>
                             </ul>
                             <div class="tab-content">
-                                <div id="tab-1" class="owners tab-pane active">
-                                    <div class="full-height-scroll">
+                                <div id="tab-1" class="tab-pane active">
+                                    <div id="owners" class="full-height-scroll">
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover">
                                                 <tbody>
@@ -44,16 +44,26 @@
                                                         <span class="label label-plain">{{_ 'representor'}}</span>
                                                         {{/if}}
                                                     </td>
-                                                    <td class="text-right">{{>Action_buttons}}</td>
+                                                    {{#if currentUserHasPermission 'ownerships.update'}}
+                                                    <td class="text-right">
+                                                        <div class="btn-group">
+                                                            <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                                            <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                                        </div>
+                                                    </td>
+                                                    {{/if}}
                                                 </tr>
                                                 {{/each}}
                                                 </tbody>
                                             </table>
                                         </div>
+                                        {{#if currentUserHasPermission 'ownerships.insert'}}
+                                        <button class="btn btn-primary pull-right js-new">+ {{_ 'new'}} {{_ 'ownership'}}</button>
+                                        {{/if}}
                                     </div>
                                 </div>
-                                <div id="tab-2" class="benefactors tab-pane">
-                                    <div class="full-height-scroll">
+                                <div id="tab-2" class="tab-pane">
+                                    <div id="benefactors" class="full-height-scroll">
                                         <div class="table-responsive">
                                             <table class="table table-striped table-hover">
                                                 <tbody>
@@ -62,12 +72,22 @@
                                                     <td><a data-toggle="tab" href={{concat '#' _id}} class="client-avatar"><img alt="image" src={{Person.user.avatar}}></a></td>
                                                     <td><a data-toggle="tab" href={{concat '#' _id}} class="client-link">{{Person.displayName}}</a></td>
                                                     <td><span class="label label-plain">{{_ benefactorship.type}}</span></td>
-                                                    <td class="text-right">{{>Action_buttons}}</td>
+                                                    {{#if currentUserHasPermission 'benefactorships.update'}}
+                                                    <td class="text-right">
+                                                        <div class="btn-group">
+                                                            <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                                            <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                                        </div>
+                                                    </td>
+                                                    {{/if}}
                                                 </tr>
                                                 {{/each}}
                                                 </tbody>
                                             </table>
                                         </div>
+                                        {{#if currentUserHasPermission 'benefactorships.insert'}}
+                                        <button class="btn btn-primary pull-right js-new">+ {{_ 'new'}} {{_ 'benefactorship'}}</button>
+                                        {{/if}}
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +113,7 @@
                                 </a>
                                 <div class="contact-box-footer">
                                     <button type="button" class="btn btn-primary btn-sm btn-block">
-                                        <i class="fa fa-paper-plane"></i> Send Message
+                                        <i class="fa fa-paper-plane"></i> {{_ 'Send Message'}}
                                     </button>
                                 </div>
                                 </div>

@@ -57,14 +57,16 @@ export function checkTopicPermissions(userId, permissionName, topic) {
 }
 
 export function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
-  // Checks that *user* has permission to add new member in given *community*
-  if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?
-  let permissioned = false;
-  const rolesOfUser = Memberships.find({ 'person.userId': userId, communityId }).map(m => m.role);
-  rolesOfUser.forEach((role) => {
-    if (_.contains(canAddMemberWithRole[role], roleOfNewMember)) permissioned = true;
-  });
-  if (!permissioned) {
+  // Checks that *user* has permission to add new member in given *community*  
+  const user = Meteor.users.findOne(userId);
+  let permName;
+  switch (roleOfNewMember) {
+    case ('guest'): return;  // TODO: who can join as guest? or only in Demo house?)
+    case ('owner'): permName = 'ownerships.update'; break;
+    case ('benefactor'): permName = 'benefactorships.update'; break;
+    default: permName = 'roleships.update';
+  }
+  if (!user.hasPermission(permName, communityId)) {
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
       `roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
   }

@@ -9,7 +9,10 @@
                 <div class="ibox roles-section">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">Módosíthatja: Admin jogkör</span>
-                        <h2 class="text-capitalize">{{_ 'roles'}}</h2>
+                        <h2>{{_ 'roles'}}</h2>
+                        {{#if currentUserHasPermission 'roleships.insert'}}
+                        <button class="btn btn-primary pull-right js-new">+ {{_ 'new'}} {{_ 'roleship'}}</button>
+                        {{/if}}
                         <p>
                             A ház tisztségviselőinek listája
                         </p>
@@ -41,7 +44,14 @@
                                                     <td>{{Person.email}}</td>
                                                     <td class="contact-type"><i class="fa fa-phone"></i></td>
                                                     <td>{{Person.user.profile.phone}}</td>
-                                                    <td class="text-right">{{>Action_buttons}}</td>
+                                                    {{#if currentUserHasPermission 'roleships.update'}}
+                                                    <td class="text-right">
+                                                        <div class="btn-group">
+                                                            <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                                            <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                                        </div>
+                                                    </td>
+                                                    {{/if}}
                                                 </tr>
                                                 {{/each}}
                                                 </tbody>
@@ -63,7 +73,14 @@
                                                     <td>{{Person.email}}</td>
                                                     <td class="contact-type"><i class="fa fa-phone"></i></td>
                                                     <td>{{Person.user.profile.phone}}</td>
-                                                    <td class="text-right">{{>Action_buttons}}</td>
+                                                    {{#if currentUserHasPermission 'roleships.update'}}
+                                                    <td class="text-right">
+                                                        <div class="btn-group">
+                                                            <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                                            <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                                        </div>
+                                                    </td>
+                                                    {{/if}}
                                                 </tr>
                                                 {{/each}}
                                                 </tbody>
@@ -80,9 +97,11 @@
                 <div class="ibox community-section float-e-margins">
                     <div class="ibox-title">
                         <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
+                        {{#if currentUserHasPermission 'communities.update'}}
                         <div class="pull-right">
                             <button class="btn-white btn btn-xs js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                         </div>
+                        {{/if}}
                     </div>
                     <div>
                         <div class="ibox-content no-padding border-left-right">

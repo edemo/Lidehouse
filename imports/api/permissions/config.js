@@ -24,25 +24,19 @@ const everyBody = ['null'];
 const exceptGuest = _.without(everyRole, 'guest');
 const nobody = [];
 
-export const canAddMemberWithRole = {
-  admin: everyRole,
-  manager: ['owner', 'benefactor'],
-  owner: ['benefactor'],
-};
-
 const permissions = [
   { name: 'communities.details',    roles: exceptGuest },
 //  { name: 'communities.insert',     roles: everyRole },
   { name: 'communities.update',     roles: ['admin'] },
   { name: 'communities.remove',     roles: ['admin'] },
   { name: 'memberships.inCommunity',roles: everyRole },
-  { name: 'roleships.create',       roles: ['admin', 'manager'] },
+  { name: 'roleships.insert',       roles: ['admin', 'manager'] },
   { name: 'roleships.update',       roles: ['admin', 'manager'] },
   { name: 'roleships.remove',       roles: ['admin', 'manager'] },
-  { name: 'ownerships.create',      roles: ['admin', 'manager'] },
+  { name: 'ownerships.insert',      roles: ['admin', 'manager'] },
   { name: 'ownerships.update',      roles: ['admin', 'manager'] },
   { name: 'ownerships.remove',      roles: ['admin', 'manager'] },
-  { name: 'benefactorships.create', roles: ['admin', 'manager', 'owner'] },
+  { name: 'benefactorships.insert', roles: ['admin', 'manager', 'owner'] },
   { name: 'benefactorships.update', roles: ['admin', 'manager', 'owner'] },
   { name: 'benefactorships.remove', roles: ['admin', 'manager', 'owner'] },
   { name: 'parcels.inCommunity',    roles: everyBody },
@@ -95,6 +89,48 @@ const permissions = [
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
 ];
+
+/* what if more compacted...
+const permissions = [
+  // Read permissions ('read.publication.name')
+  { name: 'read.communities.details',    roles: exceptGuest },
+  { name: 'read.memberships.inCommunity',roles: everyRole },
+  { name: 'read.parcels.inCommunity',    roles: everyBody },
+  { name: 'read.delegations.inCommunity',roles: ['manager'] },
+  { name: 'read.topics        ',         roles: exceptGuest },
+  { name: 'read.comments',               roles: exceptGuest },
+  { name: 'read.payaccounts',            roles: exceptGuest },
+  { name: 'read.payments',               roles: exceptGuest },
+  { name: 'read.shareddocs',             roles: exceptGuest },
+
+  // Write permissions ('write.collection.method')
+  { name: 'write.community',        roles: ['admin'] },
+  { name: 'write.roleships',        roles: ['admin'] },
+  { name: 'write.ownerships',       roles: ['admin', 'manager'] },
+  { name: 'write.benefactorships',  roles: ['admin', 'manager'] },
+  { name: 'write.parcels',          roles: ['manager'] },
+  { name: 'create.forum.topics',    roles: exceptGuest },
+  { name: 'write.forum.topics',     roles: ['moderator'] },
+  { name: 'write.poll.vote.topics', roles: ['owner', 'manager'] },
+  { name: 'write.legal.vote.topics',roles: ['manager'] },
+  { name: 'write.agendas',          roles: ['manager'] },
+  { name: 'write.delegations',      roles: ['manager'] },   // for others (people can naturally write their own delagations)
+  { name: 'write.news.topics',      roles: ['manager'] },
+  { name: 'create.tickets',         roles: exceptGuest },
+  { name: 'write.tickets',          roles: ['manager', 'maintainer'] },
+  { name: 'create.room.topic',      roles: everyRole },
+  { name: 'create.feedback.topic',  roles: everyRole },
+  { name: 'create.comments',        roles: exceptGuest },
+  { name: 'write.comments',         roles: ['moderator'] },
+  { name: 'write.payaccounts',      roles: ['accountant'] },
+  { name: 'write.payments',         roles: ['treasurer'] },
+  { name: 'write.shareddocs',       roles: ['manager'] },
+
+  { name: 'vote.cast',              roles: ['owner', 'delegate', 'manager'] },
+  { name: 'vote.castForOthers',     roles: ['manager'] },
+  { name: 'vote.close',             roles: ['manager'] },
+];
+*/
 
 export function initializePermissions() {
   defaultRoles.forEach(role => Roles.upsert({ _id: role.name }, { $set: _.extend(role, { protected: true }) }));
