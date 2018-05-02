@@ -33,13 +33,13 @@
             <p>{{#markdown}}{{text}}{{/markdown}}</p>
 
             <div class="btn-group">
-                <button class="btn btn-white btn-xs text-capitalize js-like">
+                <button class="btn btn-white btn-xs js-like">
                     <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
                     {{_ 'important'}}!
                     ({{likesCount}})
                 </button>
                 
-                <button class="btn btn-white btn-xs text-capitalize">
+                <button class="btn btn-white btn-xs">
                     <i class="fa fa-comments"></i>
                     {{_ 'comment'}}
                     ({{commentCounter}})
