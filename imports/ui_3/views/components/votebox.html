@@ -7,7 +7,7 @@
       </div>
       <div class="col-xs-5 small-size text-right">
         {{#if this.closed}}
-          {{_ "closed"}}<!--a href="#" class="js-view-results">: {{_ "Vote results"}}</a-->
+          {{_ "closed"}}<!--a href="" class="js-view-results">: {{_ "Vote results"}}</a-->
         {{else}}
           <span data-tooltip="{{_ 'createdAt'}}: {{displayCreatedAtTime}} {{_ "closes"}}: {{displayClosesAtTime}}">
            {{_ "closes"}}: {{displayTimeLeft}}
@@ -21,13 +21,13 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="drop_{{_id}}">
             {{#if userHasPermission 'vote.close' (fromSession 'activeCommunityId') this}}
-            <li><a class="js-close" href="#">{{_ 'close topic'}}</a></li>
+            <li><a class="js-close" href="">{{_ 'close topic'}}</a></li>
             {{/if}}
             {{#if userHasPermission 'vote.update' (fromSession 'activeCommunityId') this}}
-            <li><a class="js-edit" href="#">{{_ 'edit'}}</a></li>
+            <li><a class="js-edit" href="">{{_ 'edit'}}</a></li>
             {{/if}}
             {{#if userHasPermission 'vote.remove' (fromSession 'activeCommunityId') this}}
-            <li><a class="js-delete" href="#">{{_ 'delete'}}</a></li>
+            <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
             {{/if}}
           </ul>
       </div>

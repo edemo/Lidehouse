@@ -4,7 +4,7 @@
             <div class="chat-message right">
                 <img class="message-avatar" src="{{user.avatar}}" alt="avatar" >
                 <div class="message">
-                    <a class="message-author" href="#"> {{user.toString}} </a>
+                    <a class="message-author" href=""> {{user.toString}} </a>
                     <span class="message-date"> {{displayTimeFrom createdAt}} </span>
                     <span class="message-content">{{text}}</span>
                 </div>
@@ -13,7 +13,7 @@
             <div class="chat-message left">
                 <img class="message-avatar" src="{{user.avatar}}" alt="avatar" >
                 <div class="message">
-                    <a class="message-author" href="#"> {{user.toString}} </a>
+                    <a class="message-author" href=""> {{user.toString}} </a>
                     <span class="message-date"> {{displayTimeFrom createdAt}} </span>
                     <span class="message-content">{{text}}</span>
                 </div>
@@ -37,7 +37,7 @@
 
 <template name="Contact_long">
     <div class="contact-box center-version">
-        <a href="#">
+        <a href="">
             <img alt="image" class="img-circle" src="{{avatar}}">
             <h3 class="m-b-xs"><strong>{{this.toString}}</strong></h3>
             <div class="font-bold">{{details}}</div>

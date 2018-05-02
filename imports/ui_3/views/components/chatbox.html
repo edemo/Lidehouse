@@ -6,15 +6,15 @@
             </button>
             <ul class="dropdown-menu m-t-xs">
                 {{#if userHasPermission 'forum.update' (fromSession 'activeCommunityId') this}}
-                <li><a class="js-edit" href="#">{{_ 'edit'}}</a></li>
+                <li><a class="js-edit" href="">{{_ 'edit'}}</a></li>
                 {{/if}}
                 {{#if userHasPermission 'forum.remove' (fromSession 'activeCommunityId') this}}
-                <li><a class="js-delete" href="#">{{_ 'delete'}}</a></li>
+                <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
                 {{/if}}
                 <li role="separator" class="divider"></li>
                 <!-- megerősítő modal figyelmeztetéssel hogy nem fogja látni a többit, instrukció hogy a profil beállításokban oldhatja fel -->
-                <li><a class="js-hide" href="#">{{displayUser}} hozzászólásainak elrejtése</a></li>
-                <li><a class="js-report" href="#">Hozzászólás jelentése</a></li>
+                <li><a class="js-hide" href="">{{displayUser}} hozzászólásainak elrejtése</a></li>
+                <li><a class="js-report" href="">Hozzászólás jelentése</a></li>
             </ul>
         </div>
         <div class="social-avatar">
@@ -22,7 +22,7 @@
                 <img alt="user.avatar" src={{createdBy.avatar}}>
             </a>
             <div class="media-body">
-                <a href="#">
+                <a href="">
                     {{createdBy.fullName}}
                 </a>
                 <small class="text-muted">{{displayTimeFrom createdAt}}</small>
