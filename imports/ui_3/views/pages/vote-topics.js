@@ -39,10 +39,6 @@ Template.Vote_topics.helpers({
 });
 
 Template.Vote_topics.events({
-  'click .js-view'(event) {
-    const id = $(event.target).data('id');
-    Session.set('selectedTopicId', id);
-  },
   'click .js-new'(event) {
     const votingSchema = new SimpleSchema([
       Topics.simpleSchema(),

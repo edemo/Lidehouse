@@ -76,14 +76,16 @@ Template.Delegations.events({
     });
   },
   'click .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('.js-edit').data('id');
+    const delegation = Delegations.findOne(id);
+    debugger;
     const communityId = Session.get('activeCommunityId');
     const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
     Modal.show('Autoform_edit', {
       id: 'af.delegation.update',
       collection: Delegations,
       omitFields,
-      doc: Delegations.findOne(id),
+      doc: delegation,
       type: 'method-update',
       meteormethod: 'delegations.update',
       singleMethodArgument: true,
@@ -91,16 +93,16 @@ Template.Delegations.events({
     });
   },
   'click .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('.js-delete').data('id');
     Modal.confirmAndCall(removeDelegation, { _id: id }, {
       action: 'revoke delegation',
     });
   },
   'click .js-remove'(event) {
-    const id = $(event.target).data('id');
-    removeDelegation.call({ _id: id },
-      onSuccess(res => displayMessage('success', 'refuse delegation successful'))
-    );
+    const id = $(event.target).closest('.js-remove').data('id');
+    Modal.confirmAndCall(removeDelegation, { _id: id }, {
+      action: 'refuse delegation',
+    });
   },
   'click #allow'(event) {
     event.preventDefault();
