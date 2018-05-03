@@ -94,7 +94,7 @@ export class PaymentReport {
     const row = this.rows[y];
     const filter = _.extend({}, this.filters);
 
-    let classes = '';
+    let classes = 'cell';
     function addFilter(f) {
       _.extend(filter, f.filter());
       classes += ' ' + f.class;
