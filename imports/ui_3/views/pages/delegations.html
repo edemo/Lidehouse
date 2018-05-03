@@ -5,19 +5,19 @@
             {{#each items}}
             <tr>
                 <td class="project-people">
-                    {{sourcePerson.user.toString}}
+                    {{sourcePerson.displayName}}
                 </td>
                 <td class="project-people">
-                    <a href=""><img alt="image" class="img-circle" src={{sourcePerson.user.avatar}}></a>
+                    <a href=""><img alt="image" class="img-circle" src={{sourcePerson.avatar}}></a>
                 </td>
                 <td class="">
                   <i class="fa fa-share"></i>
                 </td>
                 <td class="project-people">
-                    <a href=""><img alt="image" class="img-circle" src={{targetPerson.user.avatar}}></a>
+                    <a href=""><img alt="image" class="img-circle" src={{targetPerson.avatar}}></a>
                 </td>
                 <td class="">
-                    {{targetPerson.user.toString}}
+                    {{targetPerson.displayName}}
                 </td>
                 <td class="project-title">
                     <a href="">{{displayScope scope}}</a>

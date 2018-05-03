@@ -67,6 +67,10 @@ export class Person {
     if (this.userEmail) return this.userEmail;
     return undefined;
   }
+  avatar() {
+    if (this.userId) return this.user().avatar;
+    return '/images/avatars/avatarnull.png';
+  }
   displayName() {
     if (this.idCard) return this.idCard.name;
     if (this.userId) return this.user().displayName();

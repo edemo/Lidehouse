@@ -28,10 +28,10 @@
         <div class="member-slot sidebar-message">
             <a href="{{pathFor 'Messages'}}">
                 <div class="pull-left text-center">
-                    <img alt="avatar" class="img-circle message-avatar" src="{{Person.user.avatar}}">
+                    <img alt="avatar" class="img-circle message-avatar" src="{{Person.avatar}}">
                 </div>
                 <div class="media-body">
-                    <strong>{{Person.user.toString}}</strong><br>
+                    <strong>{{Person.displayName}}</strong><br>
                     <small class="text-muted">({{this}})</small>
                 </div>
                 <div class="media-body pull-right">
@@ -55,7 +55,7 @@
 <template name="Member_slot_Chat">
     {{#if Person.user}}
     <div class="chat-user">
-        <img class="chat-avatar" src="{{Person.user.avatar}}" alt="avatar" >
+        <img class="chat-avatar" src="{{Person.avatar}}" alt="avatar" >
         <div class="chat-user-name">
             <a href="">{{user.toString}}</a><br>
             <small class="small-size">({{this}})</small>

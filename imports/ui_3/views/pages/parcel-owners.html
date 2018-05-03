@@ -35,7 +35,7 @@
                                                 <tbody>
                                                 {{#each owners}}
                                                 <tr>
-                                                    <td><a data-toggle="tab" href={{concat '#' _id}} class="client-avatar"><img alt="image" src={{Person.user.avatar}}></a></td>
+                                                    <td><a data-toggle="tab" href={{concat '#' _id}} class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
                                                     <td><a data-toggle="tab" href={{concat '#' _id}} class="client-link">{{Person.displayName}}</a></td>
                                                     <td class="contact-type"><i class="fa fa-pie-chart"></i></td>
                                                     <td>{{ownership.share}}</td>
@@ -69,7 +69,7 @@
                                                 <tbody>
                                                 {{#each benefactors}}
                                                 <tr>
-                                                    <td><a data-toggle="tab" href={{concat '#' _id}} class="client-avatar"><img alt="image" src={{Person.user.avatar}}></a></td>
+                                                    <td><a data-toggle="tab" href={{concat '#' _id}} class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
                                                     <td><a data-toggle="tab" href={{concat '#' _id}} class="client-link">{{Person.displayName}}</a></td>
                                                     <td><span class="label label-plain">{{_ benefactorship.type}}</span></td>
                                                     {{#if currentUserHasPermission 'benefactorships.update'}}
@@ -103,7 +103,7 @@
                             <div id={{_id}} class="tab-pane {{activeTabClass @index}}">
                                 <div class="contact-box center-version">
                                 <a href="">
-                                    <img alt="image" class="img-circle" src={{Person.user.avatar}}>
+                                    <img alt="image" class="img-circle" src={{Person.avatar}}>
                                     <h3 class="m-b-xs"><strong>{{Person.displayName}}</strong></h3>
                                     <div class="font-bold">{{this.toString}}</div>
                                     <address class="m-t-md">
