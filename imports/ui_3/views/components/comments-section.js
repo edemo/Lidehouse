@@ -29,14 +29,16 @@ Template.Comments_section.helpers({
 
 Template.Comments_section.events({
   'keyup .js-send-enter'(event) {
-    if (event.keyCode !== 13) return;
-    const textarea = event.target;
-    insertComment.call({
-      topicId: this._id,
-      userId: Meteor.userId(),
-      text: textarea.value,
-    }, onSuccess(res => textarea.value = '')
-    );
+    if (event.keyCode == 13 && !event.shiftKey) {
+      const textarea = event.target;
+      insertComment.call({
+        topicId: this._id,
+        userId: Meteor.userId(),
+        text: textarea.value,
+      }, onSuccess(res => textarea.value = '')
+      );
+    }
+    return false;
   },
 });
 

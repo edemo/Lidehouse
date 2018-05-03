@@ -6,7 +6,7 @@
                 <div class="message">
                     <a class="message-author" href=""> {{user.toString}} </a>
                     <span class="message-date"> {{displayTimeFrom createdAt}} </span>
-                    <span class="message-content">{{text}}</span>
+                    <span class="message-content newlines">{{text}}</span>
                 </div>
             </div>
         {{else}}                  <!-- box for recived messages -->
@@ -15,7 +15,7 @@
                 <div class="message">
                     <a class="message-author" href=""> {{user.toString}} </a>
                     <span class="message-date"> {{displayTimeFrom createdAt}} </span>
-                    <span class="message-content">{{text}}</span>
+                    <span class="message-content newlines">{{text}}</span>
                 </div>
             </div>
         {{/if}}
