@@ -14,7 +14,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { insert as insertMembership, update as updateMembership, remove as removeMembership  } from '/imports/api/memberships/methods.js';
 import { everyRole } from '/imports/api/permissions/config.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { cleanExpiredEmails } from '/imports/startup/both/useraccounts-configuration.js';
+import { cleanExpiredEmails } from '/imports/startup/server/accounts-verification.js';
 import { moment } from 'meteor/momentjs:moment';
 import '/imports/api/users/users.js'
 

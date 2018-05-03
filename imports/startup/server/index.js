@@ -5,7 +5,8 @@ import '/imports/api/permissions/config.js';
 import './live-fixtures.js';
 
 // This file configures the Accounts package to define the UI of the enrollment / verification / reset password email.
-import './accounts-emailtemplates.js';
+import './accounts-email.js';
+import './accounts-verification.js';
 
 // Set up some rate limiting and other important security settings.
 import './security.js';

@@ -1,7 +1,14 @@
+import { Meteor } from 'meteor/meteor';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Accounts } from 'meteor/accounts-base';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
+
+if (Meteor.settings.mailSender) {
+  process.env.MAIL_URL = Meteor.settings.mailSender;
+}
+
+// Accounts.emailTemplates
 
 Accounts.emailTemplates.siteName = 'Honline';
 Accounts.emailTemplates.from = 'Honline <noreply@honline.net>';

@@ -126,8 +126,10 @@
                                     <h5><strong>24</strong> Tároló</h5>
                                 </div>
                             </div>
+                            {{#unless (currentUser.isInCommunity community._id) }}
                             <br>
-                            <button type="button" class="btn btn-default btn-sm btn-block"><i class="fa fa-suitcase"></i> {{_ 'Submit join request'}}</button>
+                            <button type="button" class="btn btn-default btn-sm btn-block js-join"><i class="fa fa-suitcase"></i> {{_ 'Submit join request'}}</button>
+                            {{/unless}}
                         </div>
                     </div>
                 </div>

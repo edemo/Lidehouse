@@ -5,6 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Communities } from '/imports/api/communities/communities.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { setRouteBeforeSignin } from '/imports/startup/client/routes.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
@@ -51,7 +52,7 @@ Template.Community_page.helpers({
   },
   community() {
     const communityId = Template.instance().getCommunityId();
-    const community = Communities.findOne({ _id: communityId });
+    const community = Communities.findOne(communityId);
     return community;
   },
   communities() {
@@ -222,6 +223,26 @@ Template.Community_page.events({
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeParcel, { _id: id }, {
       action: 'delete parcel',
+    });
+  },
+  'click .js-join'(event) {
+    if (!Meteor.user()) {
+      setRouteBeforeSignin(FlowRouter.current());
+      FlowRouter.go('signin');
+      return;
+    }
+
+    const communityId = Template.instance().getCommunityId();
+
+    Session.set('joiningCommunityId', communityId);
+
+    Modal.show('Autoform_edit', {
+      title: 'pleaseSupplyParcelData',
+      id: 'af.parcel.insert.unapproved',
+      collection: Parcels,
+      type: 'method',
+      meteormethod: 'parcels.insert.unapproved',
+      template: 'bootstrap3-inline',
     });
   },
 });

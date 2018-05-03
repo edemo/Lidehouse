@@ -45,20 +45,6 @@ Template.Communities_join.helpers({
 });
 
 Template.Communities_join.events({
-  'click .js-join'(event) {
-    const communityId = $(event.target).data('id');
-
-    Session.set('joiningCommunityId', communityId);
-
-    Modal.show('Autoform_edit', {
-      title: 'pleaseSupplyParcelData',
-      id: 'af.parcel.insert.unapproved',
-      collection: Parcels,
-      type: 'method',
-      meteormethod: 'parcels.insert.unapproved',
-      template: 'bootstrap3-inline',
-    });
-  },
   'click .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',

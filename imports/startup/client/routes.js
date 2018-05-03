@@ -68,6 +68,12 @@ FlowRouter.route('/about', {
   },
 });
 
+FlowRouter.route('/community', {
+  name: 'Community.page',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_page' });
+  },
+});
 FlowRouter.route('/community/:_cid', {
   name: 'Community.page',
   action() {
@@ -207,3 +213,18 @@ FlowRouter.notFound = {
     BlazeLayout.render('Main_layout', { content: 'App_notFound' });
   },
 };
+
+// Automatic Redirection
+
+let routeBeforeSignin;
+
+export function signinRedirect() {
+  if (routeBeforeSignin) {
+    FlowRouter.go(routeBeforeSignin.path, routeBeforeSignin.params);
+    routeBeforeSignin = null;
+  } else FlowRouter.go('App.home');
+}
+
+export function setRouteBeforeSignin(value) {
+  routeBeforeSignin = value;
+}

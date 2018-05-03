@@ -5,8 +5,8 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { _ } from 'meteor/underscore';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { connectMe } from '/imports/api/memberships/methods.js';
-import { moment } from 'meteor/momentjs:moment';
-import { reCreateDemoHouse } from '/imports/api/fixtures';
+
+import { signinRedirect } from '/imports/startup/client/routes.js';
 
 /*
 These not needed anymore, as we do a higher level configuration in the AccountTemplates package, which sets these
@@ -49,7 +49,7 @@ AccountsTemplates.configureRoute('signIn', {
   name: 'signin',
   path: '/signin',
   redirect() {
-    FlowRouter.go('App.home');
+    signinRedirect();
   },
 });
 
@@ -57,7 +57,7 @@ AccountsTemplates.configureRoute('signUp', {
   name: 'signup',
   path: '/signup',
   redirect() {
-    FlowRouter.go('App.home');
+    signinRedirect();
   },
 });
 
@@ -85,52 +85,3 @@ AccountsTemplates.configureRoute('enrollAccount', {
   },
 });
 
-export function cleanExpiredEmails() {
-  const twoWeeksAgo = moment().subtract(2, 'week').toDate();
-  //Meteor.users.find({ 'emails.0.verified' : false })
-  Meteor.users.find({ 'services.email.verificationTokens': { $exists: true } }).forEach((user) => {
-    const expiredTokens = user.services.email.verificationTokens.filter(token => token.when < twoWeeksAgo);
-    expiredTokens.forEach((token) => {
-      const email = token.address;
-      Meteor.users.update({ _id: user._id }, { $pull: { emails: { address: email } } });
-      Meteor.users.update({ _id: user._id }, { $pull: { 'services.email.verificationTokens': { address: email } } });
-    });
-  });
-  // You can overwrite password.reset.enroll with "forgot email", whoever does not click on password reset link in two weeks should be deleted?
-  // Meteor.users.find({ 'services.password.reset': { $exists: true } }).forEach((user) => {
-  Meteor.users.find({ 'services.password.reset.reason': 'enroll' }).forEach((user) => {
-    if (user.services.password.reset.when < twoWeeksAgo) {
-      const email = user.services.password.reset.email;
-      Meteor.users.update({ _id: user._id }, { $pull: { emails: { address: email } } });
-      Meteor.users.update({ _id: user._id }, { $unset: { 'services.password.reset': { email } } });
-    }
-  });
-  Meteor.users.find({ 'emails.address': { $exists: false } }).forEach((user) => {
-    Meteor.users.remove({ _id: user._id });
-  });
-};
-
-if (Meteor.isClient) {
-  // nothing to do
-}
-
-if (Meteor.isServer) {
-  if (Meteor.settings.mailSender) {
-    process.env.MAIL_URL = Meteor.settings.mailSender;
-  }
-
-  const tillMidnight = moment().endOf('day') - moment();
-  Meteor.setTimeout(function() {
-    cleanExpiredEmails();
-    //reCreateDemoHouse();
-    Meteor.setInterval(function() {
-      cleanExpiredEmails();
-    //reCreateDemoHouse();
-      },
-      moment.duration(1, 'days').asMilliseconds()
-    );
-    },
-    tillMidnight
-  );
-
-}
