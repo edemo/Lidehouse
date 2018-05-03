@@ -74,19 +74,6 @@ Template.Main_layout.onRendered(function() {
   }
   });
 
-  // Active state & collapse bugfixed
-  $(document).ready(function(){
-    $('#side-menu li').on('click touch', function() {
-      $('#side-menu li').removeClass('active').filter($(this)).addClass('active');
-    });
-    $("#side-menu > li > a").on('click touch', function () {
-      $('.nav.collapse').collapse('hide');
-    });
-    $("#side-menu > li > ul > li > a").on('click touch', function () {
-      $(this).collapse('show');
-    });
-  });
-
      // Fix height of layout when resize, scroll and load
     $(window).bind("load resize scroll", function() {
         const windowHeight = $(window).height();
@@ -111,6 +98,21 @@ Template.Main_layout.onRendered(function() {
     // BOXED LAYOUT
     // Uncomment this if you want to have boxed layout
     // $('body').addClass('boxed-layout');
+
+    // Active state & collapse bugfixed
+    $(window).bind("load", function() {
+    // $(document).ready(function(){ <= Notice: never use in this .js => use only window-bind-load!
+      $('#side-menu li').on('click touch', function() {
+        $('#side-menu li').removeClass('active').filter($(this)).addClass('active');
+      });
+      $("#side-menu > li > a").on('click touch', function () {
+        $('.nav.collapse').collapse('hide');
+      });
+      $("#side-menu > li > ul > li > a").on('click touch', function () {
+        $(this).collapse('show');
+      });
+    });
+
 });
 
 Template.Main_layout.helpers({
