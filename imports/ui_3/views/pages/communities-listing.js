@@ -16,13 +16,13 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/autoform-edit.js';
 import { afCommunityInsertModal } from './communities-edit.js';
-import './communities-join.html';
+import './communities-listing.html';
 
-Template.Communities_join.onCreated(function onCreated() {
+Template.Communities_listing.onCreated(function onCreated() {
   this.subscribe('communities.listing');
 });
 
-Template.Communities_join.helpers({
+Template.Communities_listing.helpers({
   communities() {
     return Communities.find({});
   },
@@ -44,7 +44,7 @@ Template.Communities_join.helpers({
   },
 });
 
-Template.Communities_join.events({
+Template.Communities_listing.events({
   'click .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',

@@ -51,7 +51,7 @@
       {{#each community in communities}}
         {{> Community community=community}}
       {{/each}}
-      <a href="{{pathFor 'Communities.join'}}" title="Join a community"
+      <a href="{{pathFor 'Communities.listing'}}" title="Join a community"
         class="js-join-community link-new">
         <span class="icon-plus"></span>
         {{_ 'layouts.appBody.joinCommunity'}}

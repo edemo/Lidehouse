@@ -13,7 +13,7 @@ import '/imports/ui/forms/invite-form.js';
 import '/imports/ui_2/pages/intro-page.js';
 import '/imports/ui_2/pages/about.js';
 import '/imports/ui_2/pages/users-show.js';
-import '/imports/ui_3/views/pages/communities-join.js';
+import '/imports/ui_3/views/pages/communities-listing.js';
 import '/imports/ui_3/views/pages/parcel-owners.js';
 import '/imports/ui_3/views/pages/vote-topics.js';
 import '/imports/ui_3/views/pages/agendas.js';
@@ -102,10 +102,10 @@ FlowRouter.route('/topic/:_tid', {
   },
 });
 
-FlowRouter.route('/join-community', {
-  name: 'Communities.join',
+FlowRouter.route('/communities', {
+  name: 'Communities.listing',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Communities_join' });
+    BlazeLayout.render('Main_layout', { content: 'Communities_listing' });
   },
 });
 

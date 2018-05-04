@@ -1,7 +1,7 @@
-<template name="Communities_join">
+<template name="Communities_listing">
 
     <!-- Page heading -->
-    {{> Page_heading title=(_ 'Join a community') }}
+    {{> Page_heading title=(_ 'Communities list') }}
 
     <div class="wrapper wrapper-content  animated fadeInRight">
         <div class="row">
@@ -9,9 +9,11 @@
                 <div class="ibox parcels-section">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">Ha létrehoz egy új közösséget, ön lesz az Adminisztrátor!</span>
-                        <h2>{{_ "Communities list"}}</h2>
+                        <h2>{{_ 'Community finder'}}</h2>
                         <p>
-                            A rendszerünkben már létrehozott házak listája
+                            A rendszerünkben létrehozott olyan házakat, melyek fogadnak még új tagokat, itt látja. <br>
+                            Ha megtalálja saját házát a listában és még nem tagja a közösségnek, a ház adatlapján csatlakozási kérelmet adhat be, melyet a ház vezetői elfogadhatnak. <br>
+                            Ha a háza még nem található meg a rendszerben, akkor létrehozhatja azt és meghívhatja lakótársait is hogy csatlakozzanak.
                         </p>
                         <br>
                         <div class="table-responsive">

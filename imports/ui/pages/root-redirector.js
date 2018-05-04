@@ -13,7 +13,7 @@ Template.app_rootRedirector.onCreated(() => {
       if (Session.get('activeCommunityId')) {
         FlowRouter.go('Board');
       } else {
-        FlowRouter.go('Communities.join');
+        FlowRouter.go('Communities.listing');
       }
     } else {
       FlowRouter.go('App.intro');
