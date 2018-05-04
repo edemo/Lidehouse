@@ -473,7 +473,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== News =====
 
-  ['0', '1', '2'].forEach((newsNo) => {
+  ['0', '1'].forEach((newsNo) => {
     const newsId = Topics.insert({
       communityId: demoCommunityId,
       userId: dummyUsers[0],
@@ -482,7 +482,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       text: __(`demo.news.${newsNo}.text`),
     });
 
-    if (newsNo == 2) {
+    // This sticky news item is not displayed now
+    /* if (newsNo == 2) {
       Topics.update(newsId, {
         $set: {
           text: 'Doctor: <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +36 (1) 345-562 <br>' +
@@ -492,7 +493,7 @@ export function insertDemoHouse(lang, demoOrTest) {
           sticky: true,
         },
       });
-    }
+    }*/
   });
 
   // ===== Votes =====

@@ -2,51 +2,45 @@
   <div class="wrapper wrapper-content animated fadeInRight">
 
     <div class="row">
-    <div class="col-xs-12 col-lg-8">
 
-      {{#Collapse_section id='vote' title=activeVotingsTitle }}
-        {{#each topics 'vote'}}
-          <div class="ibox">
-            <div class="ibox-content">             
-              {{> Votebox}}
-            </div>
-            <div>  
-              {{> Comments_section this}}
-            </div>
-          </div>
-        {{else}}
-          <!-- ha nincs szavazás ~ empty state -->
-          <div class="vote-container white-box text-center">
-            <h3>
-              {{_ 'No active votes'}}
-            </h3>
-            <h4 class="m2em">
-              {{_ 'Latest votes'}}: <br /><span class="b"><a href="{{pathFor 'Topics.vote'}}"><span class="em b">{{_ 'Votings'}}</span></a> &gt; <span class="em">{{_ 'Closed votings'}}</span></span>
-            </h4>
-         </div>
-        {{/each}}
-      {{/Collapse_section}}
-
-      <!-- right side mobile -->
-      <div class="full-width news-mid visible-xs visible-sm visible-md">
+      <!-- right side -->
+      <div class="col-xs-12 col-lg-4 pull-right">
         {{> Balance_widget}}
         {{> News}}
       </div>
-      <!-- right side mobile end-->
 
-      {{#Collapse_section id='forum' title='Forum' notFirst=true}}
-        {{> New_forum_topic}}
-        {{#each topics 'forum'}}
-        {{> Chatbox}}
-        {{/each}}
-      {{/Collapse_section}}
-    </div>
+      <div class="col-xs-12 col-lg-8">
+        {{#Collapse_section id='vote' title=activeVotingsTitle }}
+          {{#each topics 'vote'}}
+            <div class="ibox">
+              <div class="ibox-content">             
+                {{> Votebox}}
+              </div>
+              <div>  
+                {{> Comments_section this}}
+              </div>
+            </div>
+          {{else}}
+            <!-- ha nincs szavazás ~ empty state -->
+            <div class="vote-container white-box text-center">
+              <h3>
+                {{_ 'No active votes'}}
+              </h3>
+              <h4 class="m2em">
+                {{_ 'Latest votes'}}: <br /><span class="b"><a href="{{pathFor 'Topics.vote'}}"><span class="em b">{{_ 'Votings'}}</span></a> &gt; <span class="em">{{_ 'Closed votings'}}</span></span>
+              </h4>
+          </div>
+          {{/each}}
+        {{/Collapse_section}}
 
-    <!-- right side -->
-    <div class="col-xs-12 col-lg-4  visible-lg">
-      {{> Balance_widget}}
-      {{> News}}
-    </div>
+        {{#Collapse_section id='forum' title='Forum' notFirst=true}}
+          {{> New_forum_topic}}
+          {{#each topics 'forum'}}
+          {{> Chatbox}}
+          {{/each}}
+        {{/Collapse_section}}
+      </div>
+
     </div>
   </div>
 </template>
