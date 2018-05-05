@@ -57,6 +57,13 @@ Topics.helpers({
     if (!this.vote) return undefined;
     return (this.vote.type === type);
   },
+  unitsToShare(units) {
+    const votingShare = new Fraction(units, this.community().totalunits);
+    return votingShare;
+  },
+  shareToPercent(share) {
+    return Math.round(100 * (share.toNumber()));
+  },
   eligibleVoterCount() {
 //    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
     return Parcels.find({ communityId: this.communityId }).count();
@@ -65,8 +72,17 @@ Topics.helpers({
     return this.voteParticipation.count;
   },
   votedPercent() {
-    const voteParticipationShares = new Fraction(this.voteParticipation.units, this.community().totalunits);
-    return Math.round(100 * (voteParticipationShares.toNumber()));
+    const voteParticipationShare = this.unitsToShare(this.voteParticipation.units);
+    const voteParticipationPercent = this.shareToPercent(voteParticipationShare);
+    return voteParticipationPercent;
+  },
+  notVotedUnits() {
+    return this.community().totalunits - this.voteParticipation.units;
+  },
+  notVotedPercent() {
+    const nonParticipationShare = this.unitsToShare(this.notVotedUnits());
+    const nonParticipationPercent = this.shareToPercent(nonParticipationShare);
+    return nonParticipationPercent;
   },
   hasVotedDirect(userId) {
     return !!(this.voteCasts && this.voteCasts[userId] && this.voteCasts[userId].length > 0);
@@ -152,7 +168,7 @@ Topics.helpers({
   voteSummaryDisplay() {
     const summary = this.voteSummary;
     return Object.keys(summary).map(key => {
-      const votingShare = new Fraction(summary[key], this.community().totalunits);
+      const votingShare = this.unitsToShare(summary[key]);
       return {
         choice: this.vote.choices[key],
         votingShare,

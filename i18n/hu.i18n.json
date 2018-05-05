@@ -23,6 +23,7 @@
   "votingShare": "Szavazati hányad",
 
   "Not applicable": "Nem szükséges megadni",
+  "by": "által",
 
   // roles
   "admin": "admin",
@@ -94,6 +95,7 @@
   "uploads": "dokumentumtár",
   "upload": "feltöltés",
   "comment": "hozzászólás",
+  "comments": "hozzászólások",
   "created": "létrehozva",
   "closes": "lezárul",
 
@@ -161,6 +163,7 @@
   "no": "nem",
   "abstain": "tartózkodom",
   "support": "támogatom",
+  "Not voted": "Nem szavazott",
   "voting": "szavazás",
   "votings": "szavazások",
   "active": "aktív",
@@ -175,6 +178,7 @@
   "Vote results": "Szavazási eredmények",
   "voter": "Szavazó",
   "casted vote": "Szavazat",
+  "Casted votes": "Szavazatok",
   "vote path": "Meghatalmazás lánc",
   "direct": "Közvetlen",
   "No active votes": "Jelenleg nincs aktív szavazás!",
@@ -183,6 +187,7 @@
   "Proxy voting" : "Szavazás mások nevében",
   "Please select voters": "Válassza ki kiknek a nevében szeretne szavazatot leadni",
   "Attachments" : "Csatolmányok",
+  "Activity": "Változások",
   
   // delegations
   "Delegations from me": "Meghatalmazásaim",
