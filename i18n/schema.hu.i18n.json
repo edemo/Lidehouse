@@ -199,12 +199,12 @@
   },
   "schemaTickets": {
     "title": {
-      "label": "Cím",
-      "placeholder": "PX-41"
+      "label": "Hiba lényege",
+      "placeholder": "(pl. Elromlott a lift)"
     },
     "text": {
-      "label": "Hiba",
-      "placeholder": "A hiba rövid leírása..."
+      "label": "Hiba leírása",
+      "placeholder": "(pl. Megakadt a harmadik és negyedik között...)"
     },
     "ticket": {
       "label": "Hibajegy",

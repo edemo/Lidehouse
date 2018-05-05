@@ -7,7 +7,20 @@ import { Topics } from '../topics.js';
 
 Topics.categoryValues = ['building', 'garden', 'service'];
 Topics.urgencyValues = ['high', 'normal', 'low'];
+Topics.urgencyColors = {
+  high: 'danger',
+  normal: 'warning',
+  low: 'primary',
+};
 Topics.statusValues = ['reported', 'confirmed', 'progressing', 'finished', 'checked', 'closed'];
+Topics.statusColors = {
+  reported: 'warning',
+  confirmed: 'info',
+  progressing: 'info',
+  finished: 'primary',
+  checked: 'primary',
+  closed: 'default',
+};
 
 const ticketsExtensionSchema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.categoryValues, autoform: autoformOptions(Topics.categoryValues, 'schemaTickets.ticket.category.'), optional: true },

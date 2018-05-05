@@ -200,11 +200,11 @@
   "schemaTickets": {
     "title": {
       "label": "Title",
-      "placeholder": "PX-41"
+      "placeholder": "(eg. Elevator not working)"
     },
     "text": {
       "label": "Description",
-      "placeholder": "Describe the problem briefly..."
+      "placeholder": "(eg. Got stuck between third and fourth floor)"
     },
     "ticket": {
       "label": "Ticket",

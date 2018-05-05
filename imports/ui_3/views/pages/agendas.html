@@ -6,11 +6,7 @@
     <div class="wrapper wrapper-content animated fadeInUp">
 
         {{#if userHasPermission "agendas.insert" (fromSession "activeCommunityId") }}
-        <div class="ibox">
-            <div class="ibox-content">
-                <button class="btn btn-primary js-new ">{{_ 'createNew'}}</button>
-            </div>
-        </div>
+            <button class="btn btn-primary btn-md pull-right m-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'agenda'}}</button>
         {{/if}}
 
         {{#each agendas}}

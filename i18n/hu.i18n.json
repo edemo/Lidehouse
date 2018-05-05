@@ -217,8 +217,12 @@
   // tickets
   "Active tickets": "Aktív bejelentett hibák",
   "Closed tickets": "Lezárt bejelentett hibák",
-  "New ticket": "Új hibabejelentés",
-  "Please dont report twice": "Karbantartó kollegáink munkáját segítendő, kérjük csak akkor adja fel bejelentését, ha az még nem szerepel az aktív listán vagy a nemrég lezárt hibajegyek között. <br><br> Köszönjük!",
+  "Recent tickets": "Legutóbbi bejelentések",
+  "Ticket archive": "Hibajegy archívum",
+  "New ticket": "Új hiba bejelentése",
+  "Please dont report twice": "Karbantartó kollegáink munkáját segítendő, kérjük csak akkor adja fel hibabejelentését, ha az még nem szerepel a közelmúltban felvett hibajegyek között.",
+  "Thank you": "Köszönjük",
+  "Create ticket": "Bejelentés elküldése",
 
   // finances
   "Payaccounts": "Könyvelési fiókok",
