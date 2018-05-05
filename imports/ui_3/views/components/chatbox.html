@@ -24,12 +24,12 @@
             <div class="media-body">
                 <a href="">
                     {{createdBy.fullName}}
-                </a>
+                </a>                
+                <strong>{{title}}</strong>
                 <small class="text-muted">{{displayTimeFrom createdAt}}</small>
             </div>
         </div>
         <div class="social-body">
-            <h4>{{#markdown}}{{title}}{{/markdown}}</h4>
             <p>{{#markdown}}{{text}}{{/markdown}}</p>
 
             <div class="btn-group">

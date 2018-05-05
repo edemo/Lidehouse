@@ -4,24 +4,30 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactiveDict } from 'meteor/reactive-dict';
+import { AutoForm } from 'meteor/aldeed:autoform';
+import { $ } from 'meteor/jquery';
+import { _ } from 'meteor/underscore';
+
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
+import { Chart } from '/client/plugins/chartJs/Chart.min.js';
+import { __ } from '/imports/localization/i18n.js';
+
 import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
-import { $ } from 'meteor/jquery';
-import { _ } from 'meteor/underscore';
-import { __ } from '/imports/localization/i18n.js';
-import { AutoForm } from 'meteor/aldeed:autoform';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/voting-edit.js';
 import '/imports/ui_2/modals/proposal-view.js';
 import '/imports/ui_2/components/select-voters.js';
 import '/imports/ui_2/components/vote-results.js';
 import './votebox.html';
+
+const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
+const notVotedColor = '#dedede';
 
 Template.Votebox.onCreated(function voteboxOnCreated() {
   this.state = new ReactiveDict();
@@ -77,23 +83,23 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   });
 
   // Filling the chart with data
-  const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59'];
-  const notVotedColor = '#dedede';
-  if (voting.closed) {
-    const doughnutData = {
-      labels: vote.choices.map(c => `${__(c)}`).concat(__('Not voted')),
-      datasets: [{
-        data: vote.choices.map((c, i) => voting.voteSummary[i]).concat(voting.notVotedUnits()),
-        backgroundColor: vote.choices.map((c, i) => choiceColors[i]).concat(notVotedColor),
-      }],
-    };
-    const doughnutOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-    const elem = document.getElementById('chart-' + voting._id).getContext('2d');
-    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
-  }
+  this.autorun(() => {
+    if (voting.closed) {
+      const doughnutData = {
+        labels: vote.choices.map(c => `${__(c)}`).concat(__('Not voted')),
+        datasets: [{
+          data: vote.choices.map((c, i) => voting.voteSummary[i]).concat(voting.notVotedUnits()),
+          backgroundColor: vote.choices.map((c, i) => choiceColors[i]).concat(notVotedColor),
+        }],
+      };
+      const doughnutOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+      };
+      const elem = document.getElementById('chart-' + voting._id).getContext('2d');
+      new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+    }
+  });
 });
 
 Template.Votebox.helpers({

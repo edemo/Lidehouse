@@ -1,20 +1,27 @@
-/* global alert */
-
+/* global alert, document */
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
+
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
+import { Chart } from '/client/plugins/chartJs/Chart.min.js';
+import { __ } from '/imports/localization/i18n.js';
+
 import { onSuccess, displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 import { remove as removeDelegation, allow as allowDelegations } from '/imports/api/delegations/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
-import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 
 import './delegations.html';
+
+const colorOwned = '#a3e1d4'; // colors taken from the theme
+const colorDelegatedToMe = '#b5b8cf';
+const colorOthers = '#dedede';
 
 Template.Delegations.onCreated(function onCreated() {
   this.subscribe('delegations.ofUser');
@@ -26,19 +33,29 @@ Template.Delegations.onRendered(function onRendered() {
     allowCheckbox.checked = Meteor.user().settings.delegatee;
   });
 
-    // Just samle data - TODO replace with real
-    var doughnutData = {
-        labels: ["Saját erő","Meghatalmazásokból","Egyéb" ],
-        datasets: [{
-            data: [50,100,2000],
-            backgroundColor: ["#a3e1d4","#b5b8cf","#dedede"]
-        }]
-    } ;
-    var doughnutOptions = {
-        responsive: true
+  // Filling the chart with data
+  this.autorun(() => {
+    const user = Meteor.user();
+    const communityId = Session.get('activeCommunityId');
+    const community = Communities.findOne(communityId);
+    const unitsOwned = user.totalOwnedUnits(communityId);
+    const unitsDelegatedToMe = user.totalDelegatedToMeUnits(communityId);
+    const unitsOthers = community.totalunits - unitsOwned - unitsDelegatedToMe;
+
+    const doughnutData = {
+      labels: [__('From ownership'), __('From delegations'), __('Others')],
+      datasets: [{
+        data: [unitsOwned, unitsDelegatedToMe, unitsOthers],
+        backgroundColor: [colorOwned, colorDelegatedToMe, colorOthers],
+      }],
     };
-    var ctx4 = document.getElementById("doughnutChart").getContext("2d");
-    new Chart(ctx4, {type: 'doughnut', data: doughnutData, options:doughnutOptions});
+    const doughnutOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+    };
+    const elem = document.getElementById('votingPowerChart').getContext('2d');
+    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+  });
 });
 
 Template.Delegation_list.helpers({
@@ -52,13 +69,13 @@ Template.Delegation_list.helpers({
 
 Template.Delegations.helpers({
   delegations() {
-      return Delegations.find();
+    return Delegations.find();
   },
   delegationsFromMe() {
-      return Delegations.find({ sourcePersonId: Meteor.userId() });
+    return Delegations.find({ sourcePersonId: Meteor.userId() });
   },
   delegationsToMe() {
-      return Delegations.find({ targetPersonId: Meteor.userId() });
+    return Delegations.find({ targetPersonId: Meteor.userId() });
   },
 });
 

@@ -59,7 +59,7 @@
                             {{>iboxTools}}
                         </div>
                     </div>
-                    <div class="ibox-content">
+                    <div class="ibox-content scrollbar-horizontal">
                         <form>
                             <input type="checkbox" name="allow" id="allow">
                             <label for="allow">{{_ 'allowDelegationsToMe'}}</label>
@@ -85,7 +85,7 @@
                             {{>iboxTools}}
                         </div>
                     </div>
-                    <div class="ibox-content">
+                    <div class="ibox-content scrollbar-horizontal">
                         <p>
                           {{_ 'delegationsFromMeInstructions'}}<br>
                           {{_ 'delegationsFromMeInstructions2'}}
@@ -107,7 +107,7 @@
                             {{>iboxTools}}
                         </div>
                     </div>
-                    <div class="ibox-content">
+                    <div class="ibox-content scrollbar-horizontal">
                         <form>
                             <input type="checkbox" name="allow" id="allow">
                             <label for="allow">{{_ 'allowDelegationsToMe'}}</label>
@@ -142,7 +142,7 @@
                       <strong>{{_ 'In total'}}: {{currentUser.totalVotingPower activeCommunityId}}</strong>
                     </p>
                     <div>
-                        <canvas id="doughnutChart" height="140"></canvas>
+                        <canvas id="votingPowerChart" height="200"></canvas>
                     </div>
                 </div>
             </div>
