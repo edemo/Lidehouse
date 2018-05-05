@@ -26,7 +26,7 @@
 <template name="Vote_topic_show">
     <div class="wrapper wrapper-content animated fadeInUp">
         <div class="row">
-            <div class="col-lg-9">
+            <div class="col-md-10">
                 <div class="ibox">
                     <div class="ibox-content">
                         {{> Votebox}}
@@ -117,10 +117,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3">
+            <div class="col-md-2">
                 <div class="wrapper wrapper-content project-manager"> 
-                    <dl class="dl-horizontal">
-                        <dt>Status:</dt> <dd>
+                    <dl class="">
+                        <dt>{{_ 'Status'}}:</dt> <dd>
                             {{#if closed}}
                             <span class="label label-default text-capitalize">{{_ 'closed'}}</span>
                             {{else}}
@@ -129,7 +129,7 @@
                         </dd>
                     </dl>
 
-                    <dl class="dl-horizontal">
+                    <dl class="">
 
                         <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy.toString}}</dd>
                         <dt>{{_ 'updatedAt'}}:</dt> <dd>{{displayDate updatedAt}}</dd>
