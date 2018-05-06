@@ -28,13 +28,6 @@ Template.Topic_show.helpers({
     },
     pageCrumbs() {
         switch(this.category) {
-            case 'forum': {
-                return [{
-                    title: 'Forum',
-                    url: FlowRouter.path('Topics.forum'),
-                }];
-                break;
-            }
             case 'vote': {
                 return [{
                     title: 'Votings',
@@ -42,7 +35,30 @@ Template.Topic_show.helpers({
                 }];
                 break;
             }
+            case 'forum': {
+                return [{
+                    title: 'Forum',
+                    url: FlowRouter.path('Topics.forum'),
+                }];
+                break;
+            }
+            case 'ticket': {
+                return [{
+                    title: 'Tickets',
+                    url: FlowRouter.path('Tickets.report'),
+                }];
+                break;
+            }
             default: return [];
         }
     },
+});
+
+Template.Ticket_topic_show.helpers({
+  statusColor(value) {
+    return Topics.statusColors[value];
+  },
+  urgencyColor(value) {
+    return Topics.urgencyColors[value];
+  },
 });

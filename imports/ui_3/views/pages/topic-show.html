@@ -10,17 +10,12 @@
         {{#if (equals topic.category 'forum')}}
         {{> Forum_topic_show}}
         {{/if}}
-    {{/with}}
-</template>
 
-<template name="Forum_topic_show">    
-    <div class="wrapper wrapper-content animated fadeInUp">
-        <div class="row">
-            <div class="col-md-9">
-                {{> Chatbox}}
-            </div>
-        </div>
-    </div>
+        {{#if (equals topic.category 'ticket')}}
+        {{> Ticket_topic_show}}
+        {{/if}}
+
+    {{/with}}
 </template>
 
 <template name="Vote_topic_show">
@@ -134,14 +129,6 @@
                         <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy.toString}}</dd>
                         <dt>{{_ 'updatedAt'}}:</dt> <dd>{{displayDate updatedAt}}</dd>
                         <dt>{{_ 'createdAt'}}:</dt> <dd>{{displayDate createdAt}}</dd>
-                        <!--dt>Participants:</dt>
-                        <dd class="project-people">
-                            <a href=""><img alt="image" class="img-circle" src="img/a3.jpg"></a>
-                            <a href=""><img alt="image" class="img-circle" src="img/a1.jpg"></a>
-                            <a href=""><img alt="image" class="img-circle" src="img/a2.jpg"></a>
-                            <a href=""><img alt="image" class="img-circle" src="img/a4.jpg"></a>
-                            <a href=""><img alt="image" class="img-circle" src="img/a5.jpg"></a>
-                        </dd-->
                     </dl>
 
                     <!--h4>Project description</h4>
@@ -172,6 +159,45 @@
                         <a href="" class="btn btn-xs btn-primary">Report contact</a>
 
                     </div-->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="Forum_topic_show">    
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-md-9">
+                {{> Chatbox}}
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="Ticket_topic_show">    
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-md-9">
+                {{> Chatbox}}
+            </div>
+            <div class="col-md-3">
+                <div class="wrapper wrapper-content project-manager"> 
+                    <dl class="">
+                        <dt>{{_ 'schemaTickets.ticket.status.label'}}:</dt> <dd>
+                          <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
+                        </dd>
+                    </dl>
+                    <dl class="">
+                        <dt>{{_ 'schemaTickets.ticket.urgency.label'}}:</dt> <dd>
+                          <span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span>
+                        </dd>
+                    </dl>
+                    <dl class="">
+                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy.toString}}</dd>
+                        <dt>{{_ 'updatedAt'}}:</dt> <dd>{{displayDate updatedAt}}</dd>
+                        <dt>{{_ 'createdAt'}}:</dt> <dd>{{displayDate createdAt}}</dd>
+                    </dl>
                 </div>
             </div>
         </div>

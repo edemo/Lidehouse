@@ -158,7 +158,7 @@ FlowRouter.route('/delegations', {
   },
 });
 
-FlowRouter.route('/report', {
+FlowRouter.route('/tickets', {
   name: 'Tickets.report',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Tickets_report' });

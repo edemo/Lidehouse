@@ -23,14 +23,20 @@
                           <small class="text-navy">{{displayTimeFrom createdAt}}</small>
                       </div>
                       <div class="col-xs-7 content no-top-border">
-                          <p class="m-b-xs">
-                            <strong>{{title}}</strong>
-                            <span class="btn btn-white btn-xs">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
-                            <!--span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span-->
-                          </p>
-                          <p>
-                            {{text}}
-                          </p>
+                            <p class="m-b-xs">
+                              <strong>{{title}}</strong>
+                              <!--span class="label label-white text-white label-xs">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span-->
+                              <!--span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span-->
+                            </p>
+                            <p class="m-b-xs">
+                              {{text}}
+                            </p>
+                            <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-xs">
+                                <i class="fa fa-comments"></i>
+                                {{_ 'comment'}}
+                                ({{commentCounter}})
+                            </a>
+
                       </div>
                   </div>
               </div>
@@ -136,7 +142,7 @@
                           <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
                       </td>
                       <td class="issue-info">
-                          <a href="">{{title}}</a>
+                          <a href="{{pathFor 'Topic.show' _tid=_id}}">{{title}}</a>
                           <small>{{text}}</small>
                       </td>
                       <td>
@@ -149,7 +155,9 @@
                           <span class="label label-default">{{_ (concat 'schemaTickets.ticket.category.' ticket.category)}}</span>
                       </td>
                       <td class="text-right">
-                          <button class="btn btn-white btn-xs"><i class="fa fa-eye"></i> {{_ 'view'}}</button>
+                          <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-xs">
+                            <i class="fa fa-eye"></i> {{_ 'view'}}
+                          </a>
                       </td>
                   </tr>
                   {{/each}}
