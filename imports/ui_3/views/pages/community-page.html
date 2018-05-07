@@ -115,17 +115,15 @@
                             <p> Az adminisztrátor üdvözli önt itt a ház adatlapján.
                                 Ha ön albetét tulajdonos a házban, csatlakozási kérelmet tud beadni a lenti gomb megnyomásával.
                             </p>
-                            <div class="row m-t-lg">
-                                <div class="col-md-4">
-                                    <h5><strong>169</strong> Lakás</h5>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5><strong>28</strong> Parkoló</h5>
-                                </div>
-                                <div class="col-md-4">
-                                    <h5><strong>24</strong> Tároló</h5>
-                                </div>
-                            </div>
+                            <table class="m-t-lg" width="100%">
+                            <tr>
+                                {{#each parcelTypesWithCount}}
+                                <td>
+                                    <h5><strong>{{this.count}}</strong> {{_ this.type}}</h5>
+                                </td>
+                                {{/each}}
+                            </tr>
+                            </table>
                             {{#unless (currentUser.isInCommunity community._id) }}
                             <br>
                             <button type="button" class="btn btn-primary btn-sm btn-block js-join">

@@ -8,6 +8,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { setRouteBeforeSignin } from '/imports/startup/client/routes.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { $ } from 'meteor/jquery';
+import { _ } from 'meteor/underscore';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Accounts } from 'meteor/accounts-base';
 import { __ } from '/imports/localization/i18n.js';
@@ -60,6 +61,19 @@ Template.Community_page.helpers({
   },
   autoformType(communityId) {
     return Meteor.userOrNull().hasPermission('communities.update', communityId) ? 'method-update' : 'readonly';
+  },
+  parcelTypesWithCount() {
+    const communityId = Template.instance().getCommunityId();
+    const parcels = Parcels.find({ communityId }).fetch();
+    const sumsResult = _(parcels).reduce(function (sums, parcel) {
+      sums[parcel.type] = (sums[parcel.type] || 0) + 1;
+      return sums;
+    }, {});
+    const result = [];
+    Object.keys(sumsResult).forEach(k => {
+      result.push({ type: k, count: sumsResult[k] });
+    });
+    return result;
   },
 /*  thingsToDisplayWithCounter() {
     const result = [];
