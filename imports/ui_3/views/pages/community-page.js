@@ -13,7 +13,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { __ } from '/imports/localization/i18n.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { remove as removeParcel } from '/imports/api/parcels/methods.js';
-import { parcelColumns } from '/imports/api/parcels/tables.js';
+import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { roleshipColumns } from '/imports/api/memberships/tables.js';
 import { update as updateMembership, remove as removeMembership } from '/imports/api/memberships/methods.js';
@@ -103,6 +103,7 @@ Template.Community_page.helpers({
       };
       return {
         columns: parcelColumns(permissions),
+        createdRow: highlightMyRow,
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
         lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
