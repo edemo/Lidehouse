@@ -22,7 +22,7 @@
                 <img alt="avatar" src={{createdBy.avatar}}>
             </a>
             <div class="media-body">
-                <a href="">
+                <a href="{{pathFor 'User.show' _id=createdBy._id}}">
                     {{createdBy.fullName}}
                 </a>                
                 <strong>{{title}}</strong>

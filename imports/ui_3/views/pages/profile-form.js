@@ -7,23 +7,19 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import './users-show-form.html';
-import '../../api/users/users.js';
+import '/imports/api/users/users.js';
+import './profile-form.html';
 
-Template.Users_show_form.onCreated(function usersShowPageOnCreated() {
-  this.getUserId = () => FlowRouter.getParam('_id');
-
-  this.autorun(() => {
-    this.subscribe('users.byId', { _id: this.getUserId() });
-  });
+Template.Profile_form.onCreated(function usersShowPageOnCreated() {
+  this.getUserId = () => Meteor.userId();
 });
 
-Template.Users_show_form.helpers({
+Template.Profile_form.helpers({
   users() {
     return Meteor.users;
   },
   document() {
-    return Meteor.users.findOne({ _id: FlowRouter.getParam('_id') });
+    return Meteor.users.findOne({ _id: Template.instance().getUserId() });
   },
   schema() {
     return new SimpleSchema([

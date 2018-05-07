@@ -21,7 +21,6 @@ import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
 import '/imports/ui/components/loading.js';
-import '/imports/ui/components/side-panel.js';
 import '/imports/ui_2/pages/not-logged-in.html';
 import './custom-body.html';
 import { afCommunityInsertModal } from '../pages/communities-edit.js';

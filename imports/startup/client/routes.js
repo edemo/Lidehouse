@@ -4,14 +4,13 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 
 // Import to load these templates
-import '/imports/ui/layouts/app-body.js';
 import '/imports/ui/pages/root-redirector.js';
 import '/imports/ui/pages/app-not-found.js';
-import '/imports/ui/forms/users-show-form.js';
 
 import '/imports/ui_2/pages/intro-page.js';
 import '/imports/ui_2/pages/about.js';
-import '/imports/ui_2/pages/users-show.js';
+import '/imports/ui_3/views/pages/profile-form.js';
+import '/imports/ui_3/views/pages/user-show.js';
 import '/imports/ui_3/views/pages/communities-listing.js';
 import '/imports/ui_3/views/pages/parcel-owners.js';
 import '/imports/ui_3/views/pages/vote-topics.js';
@@ -103,10 +102,17 @@ FlowRouter.route('/communities', {
   },
 });
 
-FlowRouter.route('/user/:_id', {
-  name: 'Users.show',
+FlowRouter.route('/profile', {
+  name: 'Profile.show',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Users_show_form' });
+    BlazeLayout.render('Main_layout', { content: 'Profile_form' });
+  },
+});
+
+FlowRouter.route('/user/:_id', {
+  name: 'User.show',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'User_show' });
   },
 });
 

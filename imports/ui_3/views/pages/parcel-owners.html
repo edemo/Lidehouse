@@ -25,7 +25,7 @@
                             <ul class="nav nav-tabs">
                                 <span class="pull-right small text-muted">1 Ember</span>
                                 <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> {{_ 'owners'}}</a></li>
-                                <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-group"></i> {{_ 'benefactors'}}</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-user-o"></i> {{_ 'benefactors'}}</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div id="tab-1" class="tab-pane active">
@@ -35,8 +35,8 @@
                                                 <tbody>
                                                 {{#each owners}}
                                                 <tr>
-                                                    <td><a data-toggle="tab" href={{concat '#' _id}} class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
-                                                    <td><a data-toggle="tab" href={{concat '#' _id}} class="client-link">{{Person.displayName}}</a></td>
+                                                    <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
+                                                    <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
                                                     <td class="contact-type"><i class="fa fa-pie-chart"></i></td>
                                                     <td>{{ownership.share}}</td>
                                                     <td>
@@ -69,8 +69,8 @@
                                                 <tbody>
                                                 {{#each benefactors}}
                                                 <tr>
-                                                    <td><a data-toggle="tab" href={{concat '#' _id}} class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
-                                                    <td><a data-toggle="tab" href={{concat '#' _id}} class="client-link">{{Person.displayName}}</a></td>
+                                                    <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
+                                                    <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
                                                     <td><span class="label label-plain">{{_ benefactorship.type}}</span></td>
                                                     {{#if currentUserHasPermission 'benefactorships.update'}}
                                                     <td class="text-right">
@@ -95,7 +95,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4">
+            <!--div class="col-sm-4">
                 <div class="ibox contact-cards">
                     <div class="ibox-content">
                         <div class="tab-content">
@@ -122,7 +122,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div-->
         </div>
     </div>
 </template>

@@ -16,11 +16,11 @@
 
 <template name="Comment">
     <div class="social-comment">
-        <a href="" class="pull-left">
+        <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
             <img alt="avatar" src={{user.avatar}}>
         </a>
         <div class="media-body">
-            <a href="">
+            <a href="{{pathFor 'User.show' _id=user._id}}">
                 {{user.fullName}}
             </a>
             <span class="newlines">{{text}}</span>

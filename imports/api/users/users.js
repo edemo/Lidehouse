@@ -138,8 +138,8 @@ Meteor.users.helpers({
     return this.settings.language || 'en';
   },
   // Memberships
-  memberships() {
-    return Memberships.find({ 'person.userId': this._id });
+  memberships(communityId) {
+    return Memberships.find({ 'person.userId': this._id, communityId });
   },
   ownerships(communityId) {
     return Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' });
@@ -154,7 +154,7 @@ Meteor.users.helpers({
     return Memberships.find({ 'person.userId': this._id, communityId }).fetch().map(m => m.role);
   },
   communities() {
-    const memberships = this.memberships().fetch();
+    const memberships = Memberships.find({ 'person.userId': this._id }).fetch();
     const communityIds = _.pluck(memberships, 'communityId');
     const communities = Communities.find({ _id: { $in: communityIds } });
     // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));

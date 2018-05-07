@@ -145,7 +145,7 @@ Template.Community_page.helpers({
   },
   hasUnapprovedParcels() {
     const communityId = Template.instance().getCommunityId();
-    return Parcels.find({ communityId, approved: false }).fetch().length > 0;
+    return Parcels.find({ communityId, approved: false }).count() > 0;
   },
   unapprovedParcelsTableDataFn() {
     const templateInstance = Template.instance();

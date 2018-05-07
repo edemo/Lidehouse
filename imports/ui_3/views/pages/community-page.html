@@ -11,7 +11,7 @@
                         <span class="text-muted small pull-right">Módosíthatja: Admin jogkör</span>
                         <h2>{{_ 'roles'}}</h2>
                         {{#if currentUserHasPermission 'roleships.insert'}}
-                        <button class="btn btn-primary pull-right js-new">+ {{_ 'new'}} {{_ 'roleship'}}</button>
+                        <button class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'roleship'}}</strong></button>
                         {{/if}}
                         <p>
                             A ház tisztségviselőinek listája
@@ -25,7 +25,6 @@
                         </div-->
                         <div class="member-list">
                             <ul class="nav nav-tabs">
-                                <span class="pull-right small text-muted">14 Ember</span>
                                 <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> Vezetők</a></li>
                                 <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-user-o"></i> Egyéb tisztségek</a></li>
                             </ul>
@@ -37,8 +36,8 @@
                                                 <tbody>
                                                 {{#each leaders}}
                                                 <tr>
-                                                    <td class="client-avatar"><img alt="image" src={{Person.avatar}}></td>
-                                                    <td><a data-toggle="tab" href="#contact-1" class="client-link">{{Person.displayName}}</a></td>
+                                                    <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
+                                                    <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
                                                     <td><span class="label label-plain">{{_ role}}</span></td>
                                                     <td class="contact-type"><i class="fa fa-envelope"></i></td>
                                                     <td>{{Person.email}}</td>
@@ -66,8 +65,8 @@
                                                 <tbody>
                                                 {{#each nonLeaders}}
                                                 <tr>
-                                                    <td class="client-avatar"><img alt="image" src={{Person.avatar}}></td>
-                                                    <td><a data-toggle="tab" href="#contact-1" class="client-link">{{Person.displayName}}</a></td>
+                                                    <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
+                                                    <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
                                                     <td><span class="label label-plain">{{_ role}}</span></td>
                                                     <td class="contact-type"><i class="fa fa-envelope"></i></td>
                                                     <td>{{Person.email}}</td>
@@ -136,20 +135,28 @@
                 </div>
             </div>
         </div>
-        {{#if userHasPermission 'parcels.inCommunity' community/_id}}
+        {{#if userHasPermission 'parcels.inCommunity' community._id}}
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox parcels-section">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">Módosíthatja: Közös képviselő jogkör</span>
                         <h2 class="text-capitalize">{{_ "parcels"}}</h2>
-                        <p>
-                            A házhoz tartozó albetétek listája
-                        </p>
-                        <br>
+                        {{#if userHasPermission 'parcels.insert' community._id}}
+                            <button class="js-new btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcel'}}</strong></button>
+                        {{/if}}
+                        <p>A házhoz tartozó albetétek listája</p><br>
                         <div class="table-responsive">
                             {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
                         </div>
+                        {{#if hasUnapprovedParcels}}
+                        <hr>
+                        <p>{{_ 'Waiting for approval'}}</p><br>
+                        <div class="table-responsive">
+                        {{> ReactiveDatatable tableData=unapprovedParcelsTableDataFn options=parcelsOptionsFn }}
+                        </div>
+                        {{/if}}
+
                     </div>
                 </div>
             </div>

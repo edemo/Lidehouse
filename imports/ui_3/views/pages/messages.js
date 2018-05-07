@@ -10,6 +10,7 @@ import { update as updateUser } from '/imports/api/users/methods.js';
 import '/imports/api/topics/rooms/rooms.js';
 
 import '../components/members-panel.js';
+import '../components/contact-long.js';
 import './messages.html';
 
 Template.Messages.onCreated(function onCreated() {
