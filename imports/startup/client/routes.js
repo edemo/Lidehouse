@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 
@@ -7,9 +8,7 @@ import '/imports/ui/layouts/app-body.js';
 import '/imports/ui/pages/root-redirector.js';
 import '/imports/ui/pages/app-not-found.js';
 import '/imports/ui/forms/users-show-form.js';
-import '/imports/ui/forms/invite-form.js';
 
-//import '/imports/ui_2/layouts/custom-body.js';
 import '/imports/ui_2/pages/intro-page.js';
 import '/imports/ui_2/pages/about.js';
 import '/imports/ui_2/pages/users-show.js';
@@ -28,7 +27,6 @@ import '/imports/ui_3/views/pages/community-finances.js';
 import '/imports/ui_3/views/pages/shareddoc-store.js';
 import '/imports/ui_3/views/pages/topic-show.js';
 import '/imports/ui_2/pages/feedbacks.js';
-import '/imports/ui_2/pages/styleguide.js';
 import '/imports/ui_2/pages/statement.js';
 
 import '/imports/ui_3/views/layouts/main.js';
@@ -39,20 +37,14 @@ import '/imports/ui/accounts/accounts-templates.js';
 //
 FlowRouter.triggers.enter([() => { window.scrollTo(0, 0); }]);
 
-FlowRouter.route('/theme', {
-  name: 'Theme.home',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'pageOne' });
-  },
-});
-//
-
 FlowRouter.route('/', {
   name: 'App.home',
   action() {
     BlazeLayout.render('Main_layout', { content: 'app_rootRedirector' });
   },
 });
+
+// Business info pages
 
 FlowRouter.route('/intro', {
   name: 'App.intro',
@@ -67,6 +59,15 @@ FlowRouter.route('/about', {
     BlazeLayout.render('Main_layout', { content: 'About_page' });
   },
 });
+
+FlowRouter.route('/statement', {
+  name: 'Statement',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Statement_page' });
+  },
+});
+
+// --------------------------------------------
 
 FlowRouter.route('/community', {
   name: 'Community.page',
@@ -85,13 +86,6 @@ FlowRouter.route('/owners/:_pid', {
   name: 'Parcel.owners',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Parcel_owners_page' });
-  },
-});
-
-FlowRouter.route('/invite', {
-  name: 'Invite',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Invite_form' });
   },
 });
 
@@ -116,76 +110,6 @@ FlowRouter.route('/user/:_id', {
   },
 });
 
-FlowRouter.route('/board', {
-  name: 'Board',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Board' });
-  },
-});
-
-FlowRouter.route('/messages', {
-  name: 'Messages',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Messages' });
-  },
-});
-
-FlowRouter.route('/forum', {
-  name: 'Topics.forum',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Forum_topics' });
-  },
-});
-
-FlowRouter.route('/votings', {
-  name: 'Topics.vote',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Vote_topics' });
-  },
-});
-
-FlowRouter.route('/agendas', {
-  name: 'Agendas',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Agendas' });
-  },
-});
-
-FlowRouter.route('/delegations', {
-  name: 'Delegations',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Delegations' });
-  },
-});
-
-FlowRouter.route('/tickets', {
-  name: 'Tickets.report',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Tickets_report' });
-  },
-});
-
-FlowRouter.route('/parcels-finances', {
-  name: 'Parcels.finances',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Parcels_finances' });
-  },
-});
-
-FlowRouter.route('/community-finances', {
-  name: 'Community.finances',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Community_finances' });
-  },
-});
-
-FlowRouter.route('/documents', {
-  name: 'DocumentStore',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Shareddoc_store' });
-  },
-});
-
 FlowRouter.route('/feedbacks', {
   name: 'Feedbacks',
   action() {
@@ -193,19 +117,91 @@ FlowRouter.route('/feedbacks', {
   },
 });
 
-FlowRouter.route('/styleguide', {
-  name: 'Styleguide',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Styleguide' });
-  },
-});
+// CommunityRelatedRoutes
 
-FlowRouter.route('/statement', {
-  name: 'Statement',
+const CommunityRelatedRoutes = [];
+
+FlowRouter.route('/board', {
+  name: 'Board',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Statement_page' });
+    BlazeLayout.render('Main_layout', { content: 'Board' });
   },
 });
+CommunityRelatedRoutes.push('Board');
+
+FlowRouter.route('/messages', {
+  name: 'Messages',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Messages' });
+  },
+});
+CommunityRelatedRoutes.push('Messages');
+
+FlowRouter.route('/forum', {
+  name: 'Topics.forum',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Forum_topics' });
+  },
+});
+CommunityRelatedRoutes.push('Topics.forum');
+
+FlowRouter.route('/votings', {
+  name: 'Topics.vote',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Vote_topics' });
+  },
+});
+CommunityRelatedRoutes.push('Topics.vote');
+
+FlowRouter.route('/agendas', {
+  name: 'Agendas',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Agendas' });
+  },
+});
+CommunityRelatedRoutes.push('Agendas');
+
+FlowRouter.route('/delegations', {
+  name: 'Delegations',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Delegations' });
+  },
+});
+CommunityRelatedRoutes.push('Delegations');
+
+FlowRouter.route('/tickets', {
+  name: 'Tickets.report',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Tickets_report' });
+  },
+});
+CommunityRelatedRoutes.push('Tickets.report');
+
+FlowRouter.route('/parcels-finances', {
+  name: 'Parcels.finances',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Parcels_finances' });
+  },
+});
+CommunityRelatedRoutes.push('Parcels.finances');
+
+FlowRouter.route('/community-finances', {
+  name: 'Community.finances',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_finances' });
+  },
+});
+CommunityRelatedRoutes.push('Community.finances');
+
+FlowRouter.route('/documents', {
+  name: 'DocumentStore',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Shareddoc_store' });
+  },
+});
+CommunityRelatedRoutes.push('DocumentStore');
+
+// --------------------------------------------------
 
 // the App_notFound template is used for unknown routes and missing topics
 FlowRouter.notFound = {
@@ -214,7 +210,25 @@ FlowRouter.notFound = {
   },
 };
 
-// Automatic Redirection
+// Automatic redirection
+// if no user is logged in, or no active house selected then let us not show the house related pages 
+
+Meteor.autorun(() => {
+  // FlowRouter.watchPathChange();
+  const currentRoute = FlowRouter.getRouteName();
+  if (CommunityRelatedRoutes.includes(currentRoute)) {
+    if (!Session.get('activeCommunityId')) {
+      if (Meteor.userId()) { // a user is logged in but is in no community
+        FlowRouter.go('Communities.listing'); // TODO: would be nice to send him to a community page (if we knew which)
+      } else {
+        FlowRouter.go('signin');
+      }
+    }
+  }
+});
+
+// Automatic redirection after sign in
+// if user is coming from a page where he would have needed to be logged in, and we sent him to sign in.
 
 let routeBeforeSignin;
 
