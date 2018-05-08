@@ -223,11 +223,13 @@ Meteor.autorun(() => {
   // FlowRouter.watchPathChange();
   const currentRoute = FlowRouter.getRouteName();
   if (CommunityRelatedRoutes.includes(currentRoute)) {
-    if (Meteor.userId()) { 
-      if (!Session.get('activeCommunityId')) { // a user is logged in but is in no community
-        FlowRouter.go('Communities.listing'); // TODO: would be nice to send him to a community page (if we knew which)
-      }
-      return; 
+    if (Meteor.userId()) {
+      Meteor.setTimeout(() => {
+        if (!Session.get('activeCommunityId')) { // a user is logged in but is in no community
+          FlowRouter.go('Communities.listing'); // TODO: would be nice to send him to a community page (if we knew which)
+        }
+        return;
+      }, 1000);
     } else {
       FlowRouter.go('signin');
     }
