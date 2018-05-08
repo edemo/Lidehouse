@@ -1,27 +1,29 @@
 <template name="Main_layout">
+    <div id="{{#unless currentUser}}no-user{{/unless}}">
+        <!-- Wrapper-->
+        <div id="wrapper">
 
-    <!-- Wrapper-->
-    <div id="wrapper">
+            <!-- Navigation -->
+            {{#if currentUser}}
+            {{> Navigation }}
+            {{/if}}
 
-        <!-- Navigation -->
-        {{> Navigation }}
+            <!-- Page wrapper-->
+            <div id="page-wrapper" class="gray-bg">
 
-        <!-- Page wrapper-->
-        <div id="page-wrapper" class="gray-bg">
+                {{> Top_navbar }}
+                {{> Template.dynamic template=content}}
+                {{> Footer }}
 
-            {{> Top_navbar }}
-            {{> Template.dynamic template=content}}
-            {{> Footer }}
+            </div>
+            <!-- End Page wrapper-->
+
+            <!-- Right Sidebar -->
+            <div>
+                {{> Right_sidebar }}
+            </div>
 
         </div>
-        <!-- End Page wrapper-->
-
-       <!-- Right Sidebar -->
-       <div>
-        {{> Right_sidebar }}
-       </div>
-
+        <!-- End wrapper-->
     </div>
-    <!-- End wrapper-->
-
 </template>

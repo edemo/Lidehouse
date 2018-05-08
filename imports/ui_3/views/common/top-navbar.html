@@ -2,12 +2,19 @@
     <div class="row border-bottom">
         <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
-                <a id="navbar-minimalize" class="minimalize-styl-2 btn btn-primary " href=""><i class="fa fa-bars"></i> </a>
-                <!--form role="search" class="navbar-form-custom" action="search_results">
-                    <div class="form-group">
-                        <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
-                    </div>
-                </form-->
+                {{#if currentUser}}
+                    <a id="navbar-minimalize" class="minimalize-styl-2 btn btn-primary " href=""><i class="fa fa-bars"></i> </a>
+                    <!--form role="search" class="navbar-form-custom" action="search_results">
+                        <div class="form-group">
+                            <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                        </div>
+                    </form-->
+                {{else}}
+                    <a href="{{pathFor 'App.intro'}}" id="logo" class="minimalize-styl-2">
+                        <img class="visible-sm visible-md visible-lg" src="/images/logo-duo-text.png" width="100" alt="Logo">
+                        <img class="visible-xs" src="/favicon.png" width="40" alt="Logo">
+                    </a>
+                {{/if}}
             </div>
             <ul class="nav navbar-top-links navbar-right">
                 {{#if currentUser}}
@@ -78,6 +85,12 @@
                     </a>                    
                 </li>     
                 {{else}}
+                <li>
+                    <a href="{{pathFor 'Communities.listing'}}">{{_ 'Houses'}}</a> 
+                </li>
+                <li>
+                    <a href="{{pathFor 'About.us'}}">{{_ 'About'}}</a>
+                </li>
                 <li>
                     <a href="{{pathFor 'signin'}}">
                         <i class="fa fa-sign-in"></i>{{_ 'login'}}
