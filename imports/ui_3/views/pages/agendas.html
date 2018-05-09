@@ -6,7 +6,7 @@
     <div class="wrapper wrapper-content animated fadeInUp">
 
         {{#if userHasPermission "agendas.insert" (fromSession "activeCommunityId") }}
-            <button class="btn btn-primary btn-md pull-right m-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'agenda'}}</button>
+            <button class="btn btn-primary btn-sm pull-right m-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'agenda'}}</button>
         {{/if}}
 
         {{#each agendas}}

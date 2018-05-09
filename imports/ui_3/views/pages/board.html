@@ -57,7 +57,7 @@
           <div class="feed-activity-list">
               {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
               <div class="feed-element">
-                  <button class="btn btn-primary js-new">+ {{_ 'new'}} {{_ 'topic.news'}}</button>
+                  <button class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'topic.news'}}</button>
               </div>
               {{/if}}
               {{#each topics 'news' false}}
