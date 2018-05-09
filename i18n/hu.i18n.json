@@ -10,6 +10,7 @@
   "updatedBy": "Módosította",
   "reportedAt": "Bejelentve",
   "reportedBy": "Bejelentette",
+  "Last activity": "Utolsó aktivitás",
 
   "role": "tisztség",
   "roles": "tisztségek",
@@ -58,6 +59,9 @@
 
   "News board": "Faliújság",
   "Useful Informations": "Hasznos Információk",
+
+  "Houses": "Házak",
+  "About": "Rólunk",
 
   // api
   "name": "név",
