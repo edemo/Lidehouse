@@ -67,9 +67,10 @@
                         <p>
                           {{_ 'A házban lévő összes aktív meghatalmazás listája'}}<br>
                         </p>
-                        <a href="" class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
+                        <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
                         {{#if delegations.count}}
-                            {{>Delegation_list items=delegations}}
+                            <br>
+                            {{> ReactiveDatatable tableData=delegationsDataFn options=delegationsOptionsFn}}
                         {{else}}
                         <div class="text-center m-t-lg">
                             <small>Nincsenek meghatalmazások</small>

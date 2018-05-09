@@ -11,6 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { onSuccess, displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+import { delegationColumns } from '/imports/api/delegations/tables.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 import { remove as removeDelegation, allow as allowDelegations } from '/imports/api/delegations/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -77,6 +78,21 @@ Template.Delegations.helpers({
   delegationsToMe() {
     return Delegations.find({ targetPersonId: Meteor.userId() });
   },
+  delegationsDataFn() {
+    return () => {
+      return Delegations.find().fetch();
+    };
+  },
+  delegationsOptionsFn() {
+    return () => {
+      return {
+        columns: delegationColumns(),
+        tableClasses: 'display',
+        language: datatables_i18n[TAPi18n.getLanguage()],
+      };
+    };
+  },
+
 });
 
 Template.Delegations.events({
