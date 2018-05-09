@@ -25,11 +25,11 @@ export const Render = {
     return html;
   },
   buttonEdit(cellData, renderType, currentRow) {
-    const html = `<span data-id=${cellData} title=${__('edit')} class="js-edit nav-item icon-edit"></span>`;
+    const html = `<span data-id=${cellData} title=${__('edit')} class="js-edit nav-item glyphicon glyphicon-pencil"></span>`;
     return html;
   },
   buttonDelete(cellData, renderType, currentRow) {
-    const html = `<span data-id=${cellData} title=${__('delete')} class="js-delete nav-item icon-trash"></span>`;
+    const html = `<span data-id=${cellData} title=${__('delete')} class="js-delete nav-item glyphicon glyphicon-trash"></span>`;
     return html;
   },
   buttonRemove(cellData, renderType, currentRow) {
