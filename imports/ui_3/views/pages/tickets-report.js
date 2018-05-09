@@ -76,25 +76,25 @@ Template.Tickets_report.helpers({
 });
 
 Template.Tickets_report.events({
-/*  'click .js-new'() {
+  'click .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.ticket.insert',
       collection: Topics,
       schema: ticketsSchema,
-      omitFields: ['communityId', 'userId', 'category', 'ticket.status'],
+      omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky', 'ticket.status'],
       type: 'method',
       meteormethod: 'topics.insert',
       template: 'bootstrap3-inline',
+      btnOK: 'Create ticket',
     });
   },
-*/
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.ticket.update',
       collection: Topics,
       schema: ticketsSchema,
-      omitFields: ['communityId', 'userId', 'category'],
+      omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky'],
       doc: Topics.findOne(id),
       type: 'method-update',
       meteormethod: 'topics.update',
