@@ -64,6 +64,9 @@ Topics.helpers({
   shareToPercent(share) {
     return Math.round(100 * (share.toNumber()));
   },
+  voteSuccessLimit() {
+    return this.vote.type === 'petition' ? 10 : 50;
+  },
   eligibleVoterCount() {
 //    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
     return Parcels.find({ communityId: this.communityId }).count();
