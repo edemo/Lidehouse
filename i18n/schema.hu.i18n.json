@@ -194,6 +194,9 @@
         "choose": "Eldöntendő (választás a lehetőségekből)",
         "preferential": "Preferenciális (választás preferenciák alapján)",
         "petition": "Támogatásgyűjtő"
+      },
+      "voters": {
+        "label": "Szavazatot leadók"
       }
     }
   },

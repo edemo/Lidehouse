@@ -194,6 +194,9 @@
         "choose": "Choose from choices",
         "preferential": "Choose based on preference ordering",
         "petition": "Petition"
+      },
+      "voters": {
+        "label": "Voters"
       }
     }
   },

@@ -7,8 +7,8 @@ import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '../modals/modal.js';
-import '../components/select-voters.html';
+import '/imports/ui_2/modals/modal.js';
+import './select-voters.html';
 
 Template.Select_voters.onCreated(function selectVotersOnCreated() {
 });
@@ -22,6 +22,7 @@ Template.Select_voters.helpers({
       voters: { type: Array },
       'voters.$': { type: String /* userId or IdCard identifier */, autoform: choosePerson },
     });
+    schema.i18n('schemaVotings.vote');
     return schema;
   },
 });

@@ -22,8 +22,8 @@ import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/voting-edit.js';
 import '/imports/ui_2/modals/proposal-view.js';
-import '/imports/ui_2/components/select-voters.js';
 import '/imports/ui_2/components/vote-results.js';
+import '../components/select-voters.js';
 import './votebox.html';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
@@ -150,6 +150,28 @@ Template.Votebox.helpers({
   },
 });
 
+function castVoteBasedOnPermission(topicId, castedVote, callback) {
+  const communityId = Session.get('activeCommunityId');
+  if (Meteor.user().hasPermission('vote.castForOthers', communityId)) {
+    const modalContext = {
+      title: 'Proxy voting',
+      body: 'Select_voters',
+      bodyContext: _.extend(this, { topicId, castedVote }),
+      btnClose: 'cancel',
+      btnOK: 'send vote',
+      onOK() {
+        castVote.call(
+          { topicId, castedVote, voters: AutoForm.getFieldValue('voters', 'af.select.voters') },
+          callback
+        );
+      },
+    };
+    Modal.show('Modal', modalContext);
+  } else {
+    castVote.call({ topicId, castedVote }, callback);
+  }
+}
+
 Template.Votebox.events({
   'click .js-edit'(event) {
     const votingSchema = new SimpleSchema([
@@ -188,27 +210,9 @@ Template.Votebox.events({
   'click .btn-vote'(event) {
     const topicId = this._id;
     const choice = $(event.target).data('value');
-    const communityId = Session.get('activeCommunityId');
-    if (Meteor.user().hasPermission('vote.castForOthers', communityId)) {
-      const modalContext = {
-        title: 'Proxy voting',
-        body: 'Select_voters',
-        bodyContext: _.extend(this, { topicId, choice }),
-        btnClose: 'cancel',
-        btnOK: 'send vote',
-        onOK() {
-          castVote.call(
-            { topicId, castedVote: [choice], voters: AutoForm.getFieldValue('voters', 'af.select.voters') },
-            onSuccess(res => displayMessage('success', 'Vote casted'))
-          );
-        },
-      };
-      Modal.show('Modal', modalContext);
-    } else {
-      castVote.call({ topicId, castedVote: [choice] },
-        onSuccess(res => displayMessage('success', 'Vote casted'))
-      );
-    }
+    castVoteBasedOnPermission(topicId, [choice],
+      onSuccess(res => displayMessage('success', 'Vote casted'))
+    );
   },
   // event handler for the preferential vote type
   'click .btn-vote-finalize'(event, instance) {
@@ -216,13 +220,11 @@ Template.Votebox.events({
     const voteIsFinalized = instance.state.get('voteIsFinalized');
     if (!voteIsFinalized) {
       const preference = instance.state.get('preference');
-//    console.log('casting:', preference);
       const castedVote = preference.map(p => p.value);
-      castVote.call({ topicId, castedVote },
+      castVoteBasedOnPermission(topicId, castedVote,
         onSuccess((res) => {
           displayMessage('success', 'Vote casted');
           instance.state.set('voteIsFinalized', true);
-//        console.log('casted:', preference);
         })
       );
     } else { // voteIsFinalized === true
