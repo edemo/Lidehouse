@@ -85,6 +85,15 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   // Filling the chart with data
   this.autorun(() => {
     if (voting.closed) {
+      const barData = {
+        labels: vote.choices.map(c => `${__(c)}`),
+        datasets: [{
+          label: __('Support'),
+          data: vote.choices.map((c, i) => voting.voteSummary[i]),
+          backgroundColor: choiceColors[2],
+          borderWidth: 2,
+        }],
+      };
       const doughnutData = {
         labels: vote.choices.map(c => `${__(c)}`).concat(__('Not voted')),
         datasets: [{
@@ -92,12 +101,14 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
           backgroundColor: vote.choices.map((c, i) => choiceColors[i]).concat(notVotedColor),
         }],
       };
-      const doughnutOptions = {
+      const chartData = (vote.type === 'preferential') ? barData : doughnutData;
+      const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
       };
       const elem = document.getElementById('chart-' + voting._id).getContext('2d');
-      new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+      const chartType = (vote.type === 'preferential') ? 'bar' : 'doughnut';
+      new Chart(elem, { type: chartType, data: chartData, options: chartOptions });
     }
   });
 });
@@ -158,7 +169,7 @@ function castVoteBasedOnPermission(topicId, castedVote, callback) {
       body: 'Select_voters',
       bodyContext: _.extend(this, { topicId, castedVote }),
       btnClose: 'cancel',
-      btnOK: 'send vote',
+      btnOK: 'Send vote',
       onOK() {
         castVote.call(
           { topicId, castedVote, voters: AutoForm.getFieldValue('voters', 'af.select.voters') },

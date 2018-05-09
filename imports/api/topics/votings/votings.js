@@ -109,17 +109,19 @@ Topics.helpers({
       const votePath = [ownerId];
 
       function getVoteResult(voterId) {
-        const voteResult = directVotes[voterId];
-        if (voteResult) {
+        const castedVote = directVotes[voterId];
+        if (castedVote) {
           const result = {
             votingShare: ownership.votingShare(),
-            voteResult,
+            castedVote,
             votePath,
           };
           results[ownership.parcelId] = result;
-          indirectVotes[ownerId] = voteResult;
-          summary[voteResult] = summary[voteResult] || 0;
-          summary[voteResult] += ownership.votingUnits();
+          indirectVotes[ownerId] = castedVote;
+          castedVote.forEach((choice, i) => {
+            summary[choice] = summary[choice] || 0;
+            summary[choice] += ownership.votingUnits() * (1 - (i / castedVote.length));
+          });
           participation.count += 1;
           participation.units += ownership.votingUnits();
           return true;
@@ -156,7 +158,11 @@ Topics.helpers({
           return Meteor.users.findOne(this.votePath[0]);
         },
         voteResultDisplay() {
-          return topic.vote.choices[this.voteResult[0]];
+          let display = topic.vote.choices[this.castedVote[0]];
+          this.castedVote.forEach((r, i) => {
+            if (i > 0) display += ', ' + topic.vote.choices[r];
+          });
+          return display;
         },
         votePathDisplay() {
           if (this.votePath.length === 1) return 'direct';

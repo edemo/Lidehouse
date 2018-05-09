@@ -66,16 +66,23 @@
           <br>
           {{#if this.closed}}
           <!-- voting results -->
-          <div class="row">
-            <div class="col-lg-12 text-center">
-              {{#each sum in this.voteSummaryDisplay}}
-              <div>{{_ sum.choice}}: {{sum.votingShare}} ({{percentage sum.votingShare.toNumber}})</div>
-              {{/each}}
-              <div>
-                <canvas id={{concat "chart-" this._id}} height="200"></canvas>
+            <h4 class="text-center">
+            {{#if voteTypeIs "preferential"}}
+              Opciók támogatottsága:            
+            {{else}}
+              Szavazatok összesítése:
+            {{/if}}
+            </h4>
+            <div class="row">
+              <div class="col-lg-12 text-center">
+                {{#each sum in this.voteSummaryDisplay}}
+                <div>{{_ sum.choice}}: {{sum.votingShare}} ({{percentage sum.votingShare.toNumber}})</div>
+                {{/each}}
+                <div>
+                  <canvas id={{concat "chart-" this._id}} height="200"></canvas>
+                </div>
               </div>
             </div>
-          </div>
           {{else}}
           <!-- voting buttons -->
           {{#if userHasPermission 'vote.cast' this.communityId this}}
