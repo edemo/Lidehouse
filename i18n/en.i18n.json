@@ -1,4 +1,13 @@
 {
+  "topic" : {
+    "forum": "forum topic",
+    "vote": "voting",
+    "news": "news post",
+    "ticket": "error ticket",
+    "room": "room",
+    "feedback": "feedback"
+  },
+
   // buttons etc.
   "confirm": "Are you sure?",
   "inviteSend": "Send invitation",

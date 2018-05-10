@@ -57,9 +57,9 @@ Template.Voting_edit.helpers({
   title() {
     if (this.title) return this.title;
     const actionName = Template.Voting_edit.actionFromId();
-    if (actionName === 'insert') return __('new') + ' ' + __('vote');
-    else if (actionName === 'update') return __('vote') + ' ' + __('editing data');
-    else if (actionName === 'view') return __('vote') + ' ' + __('viewing data');
+    if (actionName === 'insert') return __('new') + ' ' + __('topic.vote');
+    else if (actionName === 'update') return __('topic.vote') + ' ' + __('editing data');
+    else if (actionName === 'view') return __('topic.vote') + ' ' + __('viewing data');
     else return 'data';
   },
   btnOK() {
