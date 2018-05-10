@@ -7,7 +7,7 @@ import { TimeSync } from 'meteor/mizzao:timesync';
 
 import { onSuccess } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { insert as insertComment } from '/imports/api/comments/methods.js';
+import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
 import './comments-section.html';
 
@@ -52,6 +52,25 @@ Template.Comment.events({
     like.call({
       coll: 'comments',
       id: this._id,
+    });
+  },
+  'click .js-edit'(event, instance) {
+    $("#" + instance.data._id + "> span").attr("contenteditable","true").focus();
+    $("#" + instance.data._id + "> .js-send-edited").toggle();
+  },
+  'click .js-send-edited'(event, instance) {
+    const editedText = $("#" + instance.data._id + "> span").text();
+    updateComment.call({
+      commentId: instance.data._id,
+      modifier: { $set: { text: editedText } },
+    });
+    $("#" + instance.data._id + "> span").attr("contenteditable","false");
+    $("#" + instance.data._id + "> .js-send-edited").toggle();
+  },
+  'click .js-delete'(event, instance) {
+    Modal.confirmAndCall(removeComment, { commentId: this._id }, {
+      action: 'delete comment',
+      message: 'It will disappear forever',
     });
   },
 });
