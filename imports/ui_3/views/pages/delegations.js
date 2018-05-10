@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { $ } from 'meteor/jquery';
 
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
@@ -95,23 +96,27 @@ Template.Delegations.helpers({
 
 });
 
+export function insertDelegationForm(doc) {
+  const communityId = Session.get('activeCommunityId');
+  const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
+  Modal.show('Autoform_edit', {
+    id: 'af.delegation.insert',
+    collection: Delegations,
+    omitFields,
+    doc,
+    type: 'method',
+    meteormethod: 'delegations.insert',
+    template: 'bootstrap3-inline',
+  });
+}
+
 Template.Delegations.events({
   'click .js-new'(event, instance) {
-    const communityId = Session.get('activeCommunityId');
-    const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
-    Modal.show('Autoform_edit', {
-      id: 'af.delegation.insert',
-      collection: Delegations,
-      omitFields,
-      type: 'method',
-      meteormethod: 'delegations.insert',
-      template: 'bootstrap3-inline',
-    });
+    insertDelegationForm();
   },
   'click .js-edit'(event) {
     const id = $(event.target).closest('.js-edit').data('id');
     const delegation = Delegations.findOne(id);
-    debugger;
     const communityId = Session.get('activeCommunityId');
     const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
     Modal.show('Autoform_edit', {
