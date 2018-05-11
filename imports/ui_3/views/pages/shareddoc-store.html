@@ -9,7 +9,7 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <div class="file-manager">
-                            <h5>{{_ 'Show'}}:</h5>
+                            <!--h5>{{_ 'Show'}}:</h5>
                             <a href="" class="file-control active">{{_ 'All'}}</a>
                             {{#each extensions}}
                                 <a href="" class="file-control" data-ext="{{this}}">.{{this}}</a>
@@ -19,7 +19,7 @@
                                 <i class="fa fa-upload"></i>
                                 {{_ 'Upload file'}}
                             </button>
-                            <div class="hr-line-dashed"></div>
+                            <div class="hr-line-dashed"></div-->
                             <h5>{{_ 'Sharedfolders'}}</h5>
                             <ul class="folder-list" style="padding: 0">
                                 {{#each builtinFolders}}
@@ -50,17 +50,22 @@
                                 <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'sharedfolder'}}
                             </button>
                             {{/if}}
+                            <div class="hr-line-dashed"></div>
+                            <button name="upload" class="btn btn-primary btn-block {{#unless userHasPermission 'shareddocs.upload' activeCommunityId}}disabled{{/unless}}">
+                                <i class="fa fa-upload"></i>
+                                {{_ 'Upload file'}}
+                            </button>
                             <div class="clearfix"></div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-8 animated fadeInUp text-center">
-              <!--h1 class="page-title">{{_ activeFolder.title}}</h1-->
-              <!-- some instruction for the users 
-              {{_ 'documentStoreSubtitle'}}-->
-              <div class="row">
-              <div class="col-lg-12">
+                <!--h1 class="page-title">{{_ activeFolder.name}}</h1-->
+                <!-- some instruction for the users 
+                {{_ 'documentStoreSubtitle'}}-->
+                <div class="row">
+                <div class="col-lg-12">
 
 <!--              {{#if storeHasDocuments }}-->
                 <div class="file-list">

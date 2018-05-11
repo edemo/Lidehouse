@@ -12,11 +12,11 @@
                 <div class="file-name">
                     {{name}}
                     <br/>
-                    <small>Uploading... {{completed}}%</small>
+                    <small>{{_ 'Uploading'}}... {{completed}}%</small>
                 </div>
             </a>
             {{else}}
-            <a href="">
+            <a target="_blank" href="{{url}}">
                 <span class="corner"></span>
                 <div class="icon">
                     <i class="fa fa-file"></i>
@@ -24,7 +24,7 @@
                 <div class="file-name">
                     {{name}}
                     <br/>
-                    <small>Added: {{displayDate createdAt}}</small>
+                    <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>
                 </div>
             </a>
             {{/if}}
