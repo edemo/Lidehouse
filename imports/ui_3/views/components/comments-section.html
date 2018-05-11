@@ -15,21 +15,30 @@
 </template>
 
 <template name="Comment">
-    <div class="social-comment">
+    <div class="social-comment">         
         <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
             <img alt="avatar" src={{user.avatar}}>
         </a>
-        <div class="media-body">
+        <div class="media-body" id="{{_id}}">
             <a href="{{pathFor 'User.show' _id=user._id}}">
                 {{user.fullName}}
             </a>
             <span class="newlines">{{text}}</span>
+            <button class="js-send-edited" style="display:none">{{_ 'send'}}</button>
             <br/>
             <a href="" class="small cap-first js-like">
                 <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
                 {{_ 'important'}}! ({{likesCount}})
             </a> -
             <small class="text-muted">{{displayTimeFrom createdAt}}</small>
+            {{#if userHasPermission 'comments.remove' (fromSession 'activeCommunityId') this}}
+                <div class="btn-group">
+                    {{#if userHasPermission 'comments.update' (fromSession 'activeCommunityId') this}}
+                    <button class="btn-white btn btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
+                    {{/if}}
+                    <button class="btn-white btn btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
+                </div>
+            {{/if}}
         </div>
     </div>
 </template>
