@@ -65,6 +65,8 @@ Template.Shareddoc_store.helpers({
 
 Template.Shareddoc_store.events({
   'click button[name=upload]'(event) {
+    const button = $(event.target.closest('button'));
+    if (button.hasClass('disabled')) return;
     Shareddocs.upload({
       communityId: Session.get('activeCommunityId'),
       folderId: Template.instance().activeFolderId.get(),

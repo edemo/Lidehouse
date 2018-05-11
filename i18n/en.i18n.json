@@ -47,7 +47,7 @@
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
   "pleaseSupplyParcelData": "Please supply as much data as possible about your parcel, so your join request can be approved quickly!",
-  "NoPermissionToUpload": "You have no permission to upload documents, please ask your manager's help",
+  "No permission to upload": "You have no permission to upload documents, please ask the community manager's help",
   
     // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",

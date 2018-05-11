@@ -311,7 +311,7 @@
   "userAccountsSubtitle": "Bejelentkezett felhasználók minden funkciót elérhetnek",
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
-  "NoPermissionToUpload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közösképviselő segítségét.",
+  "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közösképviselő segítségét.",
 
   "Not implemented yet": "Ez a funkció még nem elérhető",
 

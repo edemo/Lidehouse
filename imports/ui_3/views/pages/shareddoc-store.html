@@ -33,8 +33,10 @@
                                 <li>
                                     <a href="" data-id={{_id}} class="{{#if (isActive _id)}}text-bold{{/if}}">
                                         <span class="js-select"><i class="fa {{#if (isActive _id)}}fa-folder-open-o fa-lg{{else}}fa-folder-o{{/if}}"></i> {{_ name}}</span>
+                                        {{#if userHasPermission 'shareddocs.upload' activeCommunityId}}
                                         <i class="fa fa-trash pull-right js-delete"></i>
                                         <i class="fa fa-pencil pull-right js-edit"></i>
+                                        {{/if}}
                                     </a>
                                 </li>
                                 {{/each}}
@@ -51,7 +53,7 @@
                             </button>
                             {{/if}}
                             <div class="hr-line-dashed"></div>
-                            <button name="upload" class="btn btn-primary btn-block {{#unless userHasPermission 'shareddocs.upload' activeCommunityId}}disabled{{/unless}}">
+                            <button name="upload" class="btn btn-primary btn-block {{#unless userHasPermission 'shareddocs.upload' activeCommunityId}}disabled{{/unless}}" title={{_ 'No permission to upload'}}>
                                 <i class="fa fa-upload"></i>
                                 {{_ 'Upload file'}}
                             </button>
