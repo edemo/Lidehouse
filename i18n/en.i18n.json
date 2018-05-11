@@ -66,6 +66,7 @@
 
   // tickets
   "Please dont report twice": "To help our maintanance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
+  "New ticket": "Report a new problem",
 
   // Notifications
   "Joined community": "Succesfully joined community %s",
