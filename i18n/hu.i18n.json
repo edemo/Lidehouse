@@ -255,6 +255,17 @@
   "perVolume": "légköbméter (/m3)",
   "perHabitant": "lakók száma (/fő)",
 
+  // docstore
+  "Show": "Listázva",
+  "All": "Minden",
+  "sharedfolder": "mappa",
+  "Sharedfolders": "Mappák",
+  "Main folder": "Főmappa",
+  "Founding documents": "Alapító iratok / SZMSZ / Házirend",
+  "Voting attachments": "Szavazás mellékletek",
+  "Agenda records": "Jegyzőkönyvek",
+  "Decision logs": "Határozatok könyve",
+
   // feedback
   "FeedbackPaneCallout": "Mondja el a véleményét az alkalmazásról!",
   "FeedbackPaneTitle": "<strong>Véleményével, javaslataival segítheti az alkalmazás fejlesztését.</strong> <br /> Észrevételeit és igényeit kérjük jelezze felénk.  <br />  Köszönjük.",
@@ -335,6 +346,9 @@
   "insert agenda successful": "Közgyűlés létrehozva",
   "update agenda successful": "Közgyűlés módosítva",
   "delete agenda successful": "Közgyűlés törölve",
+  "insert sharedfolder successful": "Új mappa létrehozva",
+  "update sharedfolder successful": "Mappa módosítva",
+  "delete sharedfolder successful": "Mappa véglegesen törölve",
 
   "Are you sure you want to": "Biztos benne, hogy",
   "delete parcel": "törli az albetétet",
@@ -349,12 +363,14 @@
   "refuse delegation": "visszautasítja a meghatalmazást",
   "bill parcels": "kírója a beállított közös költséget az összes albetétre",
   "delete agenda": "törli a közgyűlést",
+  "delete sharedfolder": "törli a mappát",
 
   "It will disappear forever": "A bejegyzés végleg törlödni fog",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
   "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",
   "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra.",
   "This will not delete topics": "Ettől a benne lévő szavazások nem fognak törlődni.",
+  "This will delete all contained files as well": "Ezzel egyúttal véglegesen letörli az összes benne lévő fájlt is",
 
   // Email Templates
   "emailEnrollAccountSubject": "Meghívó a Honline használatára",

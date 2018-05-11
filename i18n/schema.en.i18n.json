@@ -337,5 +337,11 @@
     "accounts": {
       "label": "Accounting tags"
     }
+  },
+  "schemaSharedfolders": {
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Legal documents)"
+    }
   }
 }

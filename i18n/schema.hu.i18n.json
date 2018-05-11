@@ -337,5 +337,11 @@
     "accounts": {
       "label": "Könyvelési fiókok"
     }
+  },
+  "schemaSharedfolders": {
+    "name": {
+      "label": "Név",
+      "placeholder": "(pl. Jogi papírok)"
+    }
   }
 }

@@ -116,7 +116,11 @@ Template.Voting_edit.events({
   },
   'click .js-upload'(event) {
     const topicId = getTopicId(Template.instance().data);
-    Shareddocs.upload({ communityId: Session.get('activeCommunityId'), topicId });
+    Shareddocs.upload({ 
+      communityId: Session.get('activeCommunityId'),
+      folderId: 'voting',
+      topicId,
+    });
   },
 });
 
