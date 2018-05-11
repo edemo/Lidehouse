@@ -54,6 +54,7 @@
           {{#markdown}}{{text}}{{/markdown}}
           {{#if attachments.count}}
           <button class="dropdown-toggle drop-unfoll glyphicon glyphicon-paperclip" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{_ 'Attachments'}}({{attachments.count}})
           </button>
           <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
             {{#each doc in attachments}}
