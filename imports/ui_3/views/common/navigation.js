@@ -18,15 +18,15 @@ import { debugAssert } from '/imports/utils/assert.js';
 import './navigation.html';
 
 Template.Navigation.onRendered(function() {
-    // Initialize metisMenu
-    $('#side-menu').metisMenu({
-      toggle: true,
-      activeClass: 'active',
-      collapseClass: 'collapse',
-      collapseInClass: 'in',
-      collapsingClass: 'collapsing',
-      preventDefault: true
- });
+  // Initialize metisMenu
+  $('#side-menu').metisMenu({
+    toggle: true,
+    activeClass: 'active',
+    collapseClass: 'collapse',
+    collapseInClass: 'in',
+    collapsingClass: 'collapsing',
+    preventDefault: true,
+  });
 });
 
 Template.Navigation.helpers({

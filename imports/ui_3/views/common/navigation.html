@@ -1,4 +1,5 @@
 <template name="Navigation">
+    <div class="{{#unless currentUser}}hidden{{/unless}}">
     <nav class="navbar-default navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
 
@@ -143,4 +144,5 @@
             {{/if}}
         </div>
     </nav>
+    </div>
 </template>

@@ -26,5 +26,3 @@ import '/imports/api/payments/methods.js';
 import '/imports/api/payments/publications.js';
 import '/imports/api/permissions/publications.js';
 import '/imports/api/shareddocs/publications.js';
-
-import '/imports/api/views/community-members.js';
