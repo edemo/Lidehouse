@@ -28,7 +28,7 @@ Template.Comments_section.helpers({
 });
 
 Template.Comments_section.events({
-  'keyup .js-send-enter'(event) {
+  'keydown .js-send-enter'(event) {
     if (event.keyCode == 13 && !event.shiftKey) {
       const textarea = event.target;
       insertComment.call({
@@ -38,7 +38,6 @@ Template.Comments_section.events({
       }, onSuccess(res => textarea.value = '')
       );
     }
-    return false;
   },
 });
 
@@ -56,16 +55,19 @@ Template.Comment.events({
   },
   'click .js-edit'(event, instance) {
     $("#" + instance.data._id + "> span").attr("contenteditable","true").focus();
-    $("#" + instance.data._id + "> .js-send-edited").toggle();
+    $("#" + instance.data._id + "> span").toggleClass("js-send-edited");
   },
-  'click .js-send-edited'(event, instance) {
-    const editedText = $("#" + instance.data._id + "> span").text();
-    updateComment.call({
-      commentId: instance.data._id,
-      modifier: { $set: { text: editedText } },
-    });
-    $("#" + instance.data._id + "> span").attr("contenteditable","false");
-    $("#" + instance.data._id + "> .js-send-edited").toggle();
+  'keydown .js-send-edited'(event, instance) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+      const editedText = $("#" + instance.data._id + "> span").text();
+      updateComment.call({
+        commentId: instance.data._id,
+        modifier: { $set: { text: editedText } },
+      });
+      $("#" + instance.data._id + "> span").attr("contenteditable","false");
+      $("#" + instance.data._id + "> span").toggleClass("js-send-edited");
+    }
   },
   'click .js-delete'(event, instance) {
     Modal.confirmAndCall(removeComment, { commentId: this._id }, {
