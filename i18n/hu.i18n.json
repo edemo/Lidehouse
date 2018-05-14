@@ -351,6 +351,7 @@
   "insert sharedfolder successful": "Új mappa létrehozva",
   "update sharedfolder successful": "Mappa módosítva",
   "delete sharedfolder successful": "Mappa véglegesen törölve",
+  "delete comment successful": "Hozzászólás törölve",
 
   "Are you sure you want to": "Biztos benne, hogy",
   "delete parcel": "törli az albetétet",
