@@ -54,19 +54,21 @@ Template.Comment.events({
     });
   },
   'click .js-edit'(event, instance) {
-    $("#" + instance.data._id + "> span").attr("contenteditable","true").focus();
-    $("#" + instance.data._id + "> span").toggleClass("js-send-edited");
+    const commentSpan = 'span[data-id="' + instance.data._id + '"]';
+    $(commentSpan).attr("contenteditable","true").focus();
+    $(commentSpan).toggleClass("js-send-edited");
   },
   'keydown .js-send-edited'(event, instance) {
     if (event.keyCode == 13) {
       event.preventDefault();
-      const editedText = $("#" + instance.data._id + "> span").text();
+      const commentSpan = 'span[data-id="' + instance.data._id + '"]';
+      const editedText = $(commentSpan).text();
       updateComment.call({
         commentId: instance.data._id,
         modifier: { $set: { text: editedText } },
       });
-      $("#" + instance.data._id + "> span").attr("contenteditable","false");
-      $("#" + instance.data._id + "> span").toggleClass("js-send-edited");
+      $(commentSpan).attr("contenteditable","false");
+      $(commentSpan).toggleClass("js-send-edited");
     }
   },
   'click .js-delete'(event, instance) {
