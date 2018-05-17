@@ -10,6 +10,9 @@ Template.New_forum_topic.events({
   'click .js-send'(event) {
     const titlearea = $.find('#new_forum_title')[0];
     const textarea = $.find('#new_forum_text')[0];
+    if (!titlearea.value) {
+      titlearea.value = textarea.value.substring(0, 25) + '...';
+    }
     insertTopic.call({
       communityId: Session.get('activeCommunityId'),
       userId: Meteor.userId(),

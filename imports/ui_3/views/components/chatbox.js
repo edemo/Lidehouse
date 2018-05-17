@@ -31,7 +31,7 @@ Template.Chatbox.events({
   },
   'click .js-save-edited'(event, instance) {
     const editedText = $('#textareaEditText').val();
-    const editedTitle = $('#textareaEditTitle').val();
+    const editedTitle = $('#textareaEditTitle').val() || editedText.substring(0, 25) + '...';
     updateTopic.call({
       _id: instance.data._id,
       modifier: { $set: { text: editedText, title: editedTitle } },

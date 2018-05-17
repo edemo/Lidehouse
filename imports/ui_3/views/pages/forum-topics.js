@@ -19,6 +19,7 @@ import { like } from '/imports/api/topics/likes.js';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
 import '/imports/ui_2/modals/voting-edit.js';
+import '/imports/ui_3/views/components/new-forum-topic.js';
 import '../common/page-heading.js';
 import '../components/votebox.js';
 import '../components/voting-list.html';
@@ -39,5 +40,13 @@ Template.Forum_topics.events({
     'click .js-like'(event) {
         const id = $(event.target).closest('div.vote-item').data('id');
         like.call({ coll: 'topics', id });
+    },
+    'click .js-show' (event) {
+        $('.new-topic').toggleClass("hidden");
+        $('.js-show').toggleClass("m-b");
+    },
+    'click .js-send' (event) {
+        $('.new-topic').toggleClass("hidden");
+        $('.js-show').toggleClass("m-b");
     },
 });

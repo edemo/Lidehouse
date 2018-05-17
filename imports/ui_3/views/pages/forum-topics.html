@@ -4,6 +4,14 @@
     {{> Page_heading title='Forum' }}
 
     <div class="wrapper wrapper-content animated fadeInUp">
+        <div>
+            <div class="text-right">
+                <span class="js-show btn btn-sm btn-white m-b">{{_ 'Start new topic'}} <i class="caret"></i></span>
+            </div>        
+            <div class="new-topic hidden"> 
+                {{> New_forum_topic}}
+            </div> 
+        </div>
         {{#each forumTopics}}
         <div class="vote-item" data-id={{_id}}>
             <div class="row">
