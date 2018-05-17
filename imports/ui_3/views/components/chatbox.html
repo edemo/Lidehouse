@@ -6,7 +6,7 @@
             </button>
             <ul class="dropdown-menu m-t-xs">
                 {{#if userHasPermission 'forum.update' (fromSession 'activeCommunityId') this}}
-                <li><a class="js-edit" href="">{{_ 'edit'}}</a></li>
+                <li><a class="js-edit-topic" href="">{{_ 'edit'}}</a></li>
                 {{/if}}
                 {{#if userHasPermission 'forum.remove' (fromSession 'activeCommunityId') this}}
                 <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
@@ -25,12 +25,12 @@
                 <a href="{{pathFor 'User.show' _id=createdBy._id}}">
                     {{createdBy.fullName}}
                 </a>                
-                <strong>{{title}}</strong>
+                <strong data-id="{{_id}}">{{title}}</strong>
                 <small class="text-muted">{{displayTimeFrom createdAt}}</small>
             </div>
         </div>
         <div class="social-body">
-            <p>{{#markdown}}{{text}}{{/markdown}}</p>
+            <p data-id="{{_id}}">{{#markdown}}{{text}}{{/markdown}}</p>
 
             <div class="btn-group">
                 <button class="btn btn-white btn-xs js-like">
@@ -45,6 +45,9 @@
                     ({{commentCounter}})
                 </button>
                 <!--button class="text-muted count-box" >{{commentCounter}}</button-->
+            </div>
+            <div class="text-right">
+                <span class="js-save-edited hidden btn btn-sm btn-primary m-t-n-xs" data-id="{{_id}}"><strong>{{_ 'Save'}}</strong></span>
             </div>
         </div>
 

@@ -152,6 +152,8 @@
   "viewing data": "adatok megtekintése",
   "insertion": "felvitele",
 
+  "Start new topic": "Új téma indítása",
+
   // housing
   "representor": "képviselője",
   "Communities list": "Házak listája",
@@ -359,6 +361,7 @@
   "delete benefactorship": "megszünteti a használati viszonyt",
   "delete roleship": "visszavonja a kiadott tisztséget",
   "delete topic": "törli a bejegyzést",
+  "delete comment": "törli a hozzászólást",
   "delete ticket": "törli a hibajegyet",
   "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
   "disable delegations": "visszautasítja a bejövő meghatalmazásokat",

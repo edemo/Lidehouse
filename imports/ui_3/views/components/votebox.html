@@ -53,9 +53,10 @@
           <!-- voting text -->
           {{#markdown}}{{text}}{{/markdown}}
           {{#if attachments.count}}
-          <button class="dropdown-toggle drop-unfoll" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
              <i class="glyphicon glyphicon-paperclip"></i> 
              {{_ 'Attachments'}} ({{attachments.count}})
+             <b class="caret"></b>
           </button>
           <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
             {{#each doc in attachments}}
