@@ -25,8 +25,9 @@
                         </div-->
                         <div class="member-list">
                             <ul class="nav nav-tabs">
-                                <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> Vezetők</a></li>
-                                <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-user-o"></i> Egyéb tisztségek</a></li>
+                                <span class="pull-right small text-muted">{{roleships.count}} {{_ 'schemaMemberships.person.label'}}</span>
+                                <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> {{_ 'Leaders'}}</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-user-o"></i> {{_ 'Other roles'}}</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div id="tab-1" class="tab-pane active">

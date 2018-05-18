@@ -92,11 +92,15 @@ Template.Community_page.helpers({
   },*/
   leaders() {
     const communityId = Template.instance().getCommunityId();
-    return Memberships.find({ communityId, role: { $in: ['admin', 'manager'] } }).fetch();
+    return Memberships.find({ communityId, role: { $in: ['admin', 'manager'] } });
   },
   nonLeaders() {
     const communityId = Template.instance().getCommunityId();
-    return Memberships.find({ communityId, role: { $not: { $in: ['admin', 'manager', 'owner', 'benefactor', 'guest', 'delegate'] } } }).fetch();
+    return Memberships.find({ communityId, role: { $not: { $in: ['admin', 'manager', 'owner', 'benefactor', 'guest', 'delegate'] } } });
+  },
+  roleships() {
+    const communityId = Template.instance().getCommunityId();
+    return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest', 'delegate'] } } });
   },
   parcelsTableDataFn() {
     const templateInstance = Template.instance();
