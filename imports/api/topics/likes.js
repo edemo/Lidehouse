@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
 import { _ } from 'meteor/underscore';
-import { checkExists } from '/imports/api/method-checks.js';
+import { checkExists, checkPermissions } from '/imports/api/method-checks.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -42,7 +42,9 @@ export const like = new ValidatedMethod({
     const object = checkExists(collection, id);
     const userId = this.userId;
 
-    // toggle Like
+    checkPermissions(userId, 'like.toggle', object.community()._id, object);
+
+    // toggle Like status of this user
     const index = _.indexOf(object.likes, userId);
     if (index >= 0) {
       collection.update(id, { $pull: { likes: userId } });

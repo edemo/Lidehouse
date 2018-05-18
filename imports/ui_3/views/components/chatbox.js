@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { __ } from '/imports/localization/i18n.js';
+import { handleError } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { like } from '/imports/api/topics/likes.js';
 import { remove as removeTopic, update as updateTopic } from '/imports/api/topics/methods.js';
@@ -64,6 +65,6 @@ Template.Chatbox.events({
     like.call({
       coll: 'topics',
       id: this._id,
-    });
+    }, handleError);
   },
 });

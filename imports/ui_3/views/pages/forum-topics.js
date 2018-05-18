@@ -26,6 +26,7 @@ import '../components/voting-list.html';
 import './vote-topics.html';
 
 import './forum-topics.html';
+import { handleError } from '../../../ui/lib/errors.js';
 
 
 Template.Forum_topics.helpers({
@@ -39,7 +40,7 @@ Template.Forum_topics.helpers({
 Template.Forum_topics.events({
     'click .js-like'(event) {
         const id = $(event.target).closest('div.vote-item').data('id');
-        like.call({ coll: 'topics', id });
+        like.call({ coll: 'topics', id }, handleError);
     },
     'click .js-show' (event) {
         $('.new-topic').toggleClass("hidden");

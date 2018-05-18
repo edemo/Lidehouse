@@ -77,6 +77,7 @@ const permissions = [
   { name: 'comments.update',        roles: nobody, allowAuthor: true },
   { name: 'comments.remove',        roles: ['moderator'], allowAuthor: true },
   { name: 'comments.listing',       roles: exceptGuest },
+  { name: 'like.toggle',            roles: exceptGuest },
   { name: 'finances.view',          roles: exceptGuest },
   { name: 'payaccounts.insert',     roles: ['accountant'] },
   { name: 'payaccounts.update',     roles: ['accountant'] },
