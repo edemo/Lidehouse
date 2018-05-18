@@ -30,13 +30,21 @@
                 {{_ 'important'}}! ({{likesCount}})
             </a> -
             <small class="text-muted">{{displayTimeFrom createdAt}}</small>
-            {{#if userHasPermission 'comments.remove' (fromSession 'activeCommunityId') this}}
-                <div class="btn-group">
-                    {{#if userHasPermission 'comments.update' (fromSession 'activeCommunityId') this}}
-                    <button class="btn-white btn btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
-                    {{/if}}
-                    <button class="btn-white btn btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
-                </div>
+            {{#if (or (userHasPermission 'comments.update' activeCommunityId this)
+                (userHasPermission 'comments.remove' activeCommunityId this) ) }}
+                <span class="dropdown"> 
+                    <button data-toggle="dropdown" class="dropdown-toggle btn-white btn-xs">
+                        <i class="glyphicon glyphicon-option-horizontal"></i>
+                    </button>
+                    <ul class="dropdown-menu m-t-xs">   
+                            {{#if userHasPermission 'comments.update' activeCommunityId this}}
+                                <li><a class="js-edit" href=""><i class="fa fa-pencil"> {{_ 'edit'}}</i></a></li>
+                            {{/if}}
+                            {{#if userHasPermission 'comments.remove' activeCommunityId this}}
+                                <li><a class="js-delete" href=""><i class="fa fa-trash"> {{_ 'delete'}}</i></a></li>
+                            {{/if}}
+                    </ul> 
+                </span>
             {{/if}}
         </div>
     </div>
