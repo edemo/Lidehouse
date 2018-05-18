@@ -38,19 +38,6 @@ export const update = new ValidatedMethod({
   },
 });
 
-export const setSticky = new ValidatedMethod({
-  name: 'topics.sticky.update',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    value: { type: Boolean },
-  }).validator(),
-  run({ _id, value }) {
-    const topic = checkExists(Topics, _id);
-    checkTopicPermissions(this.userId, 'sticky.update', topic);
-    Topics.update({ _id }, { $set: { sticky: value } });
-  },
-});
-
 export const remove = new ValidatedMethod({
   name: 'topics.remove',
   validate: new SimpleSchema({
