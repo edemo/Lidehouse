@@ -6,6 +6,14 @@ Template.registerHelper('equals', function equals(a, b) {
     return a == b;
 });
 
+Template.registerHelper('and', function and(a,b) {
+    return a && b;
+  });
+
+Template.registerHelper('or', function or(a,b) {
+    return a || b;
+});
+
 Template.registerHelper('percentage', function percentage(number) {
     return (Math.floor(number * 100)).toString() + '%';
 });
