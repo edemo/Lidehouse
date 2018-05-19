@@ -31,7 +31,7 @@ export function parcelColumns(permissions) {
     { data: 'area', title: 'm2' },
     { data: 'share()', title: __('schemaParcels.units.label') },
     { data: 'displayNames()', title: __('occupants') },
-    { data: '_id', render: Render.buttonGroup(buttonRenderers) },
+    { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
   ];
 }
 
