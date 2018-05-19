@@ -217,7 +217,7 @@ Template.Community_page.events({
     });
   },
   'click .parcels-section .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.update',
       collection: Parcels,
@@ -229,7 +229,7 @@ Template.Community_page.events({
     });
   },
   'click .parcels-section .js-view'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.view',
       collection: Parcels,
@@ -239,7 +239,7 @@ Template.Community_page.events({
     });
   },
   'click .parcels-section .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(removeParcel, { _id: id }, {
       action: 'delete parcel',
     });
