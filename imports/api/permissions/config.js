@@ -19,7 +19,7 @@ export const defaultRoles = [
 ];
 
 // Groupings just to ease configuration
-export const ownershipRoles = ['owner', 'benefactor'];
+export const occupantRoles = ['owner', 'benefactor'];
 export const leaderRoles = ['admin', 'manager'];
 export const nonLeaderRoles = ['moderator', 'accountant', 'treasurer', 'overseer', 'maintainer'];
 export const officerRoles = _.union(leaderRoles, nonLeaderRoles);
