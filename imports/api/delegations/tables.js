@@ -8,8 +8,7 @@ export function delegationColumns() {
     { data: 'targetPerson().toString()', title: __('schemaDelegations.targetPersonId.label') },
     { data: 'scope', title: __('schemaDelegations.scope.label'), render: Render.translateWithScope('schemaDelegations.scope') },
     { data: 'scopeObject()', title: __('schemaDelegations.scopeObjectId.label'), render: Delegations.renderScopeObject },
-    { data: '_id', render: Render.buttonEdit },
-    { data: '_id', render: Render.buttonDelete },
+    { data: '_id', title: __('Actions'), render: Render.buttonGroup([Render.buttonEdit, Render.buttonDelete]) },
   ];
 }
 
@@ -18,8 +17,7 @@ export function delegationFromMeColumns() {
     { data: 'targetPerson()', title: __('schemaDelegations.targetPersonId.label') },
     { data: 'scope', title: __('schemaDelegations.scope.label'), render: Render.translateWithScope('schemaDelegations.scope') },
     { data: 'scopeObject()', title: __('schemaDelegations.scopeObjectId.label'), render: Delegations.renderScopeObject },
-    { data: '_id', render: Render.buttonEdit },
-    { data: '_id', render: Render.buttonDelete },
+    { data: '_id', title: __('Actions'), render: Render.buttonGroup([Render.buttonEdit, Render.buttonDelete]) },
   ];
 }
 
@@ -28,6 +26,6 @@ export function delegationToMeColumns() {
     { data: 'sourcePerson()', title: __('schemaDelegations.sourcePersonId.label') },
     { data: 'scope', title: __('schemaDelegations.scope.label'), render: Render.translateWithScope('schemaDelegations.scope') },
     { data: 'scopeObject()', title: __('schemaDelegations.scopeObjectId.label'), render: Delegations.renderScopeObject },
-    { data: '_id', render: Render.buttonRemove },
+    { data: '_id', title: __('Actions'), render: Render.buttonRemove },
   ];
 }
