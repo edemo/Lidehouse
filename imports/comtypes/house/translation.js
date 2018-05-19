@@ -25,7 +25,7 @@ export const HouseTranslation = {
       },
       "description": {
         "label": "Description",
-        "placeholder": "Welcome to our community's page!"
+        "placeholder": "The administrator welcomes you on the community's page! If you own a parcel in this building, you can apply to join by pressing the button below."
       },
       "avatar": {
         "label": "Image",
@@ -145,7 +145,7 @@ export const HouseTranslation = {
       },
       "description": {
         "label": "Leírás",
-        "placeholder": "Üdvözlünk a társasházunk oldalán!"
+        "placeholder": "Az adminisztrátor üdvözli önt itt a ház adatlapján. Ha ön albetét tulajdonos a házban, csatlakozási kérelmet tud beadni a lenti gomb megnyomásával."
       },
       "avatar": {
         "label": "Fotó",

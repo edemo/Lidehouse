@@ -1,24 +1,24 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Communities } from '/imports/api/communities/communities.js';
+import { $ } from 'meteor/jquery';
+import { _ } from 'meteor/underscore';
+
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { setRouteBeforeSignin } from '/imports/startup/client/routes.js';
 import { TAPi18n } from 'meteor/tap:i18n';
-import { $ } from 'meteor/jquery';
-import { _ } from 'meteor/underscore';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { Accounts } from 'meteor/accounts-base';
+
 import { __ } from '/imports/localization/i18n.js';
+import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/config.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { roleshipColumns } from '/imports/api/memberships/tables.js';
 import { update as updateMembership, remove as removeMembership } from '/imports/api/memberships/methods.js';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import '/imports/api/users/users.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/confirmation.js';
@@ -92,15 +92,15 @@ Template.Community_page.helpers({
   },*/
   leaders() {
     const communityId = Template.instance().getCommunityId();
-    return Memberships.find({ communityId, role: { $in: ['admin', 'manager'] } });
+    return Memberships.find({ communityId, role: { $in: leaderRoles } });
   },
   nonLeaders() {
     const communityId = Template.instance().getCommunityId();
-    return Memberships.find({ communityId, role: { $not: { $in: ['admin', 'manager', 'owner', 'benefactor', 'guest', 'delegate'] } } });
+    return Memberships.find({ communityId, role: { $in: nonLeaderRoles } });
   },
-  roleships() {
+  officers() {
     const communityId = Template.instance().getCommunityId();
-    return Memberships.find({ communityId, role: { $not: { $in: ['owner', 'benefactor', 'guest', 'delegate'] } } });
+    return Memberships.find({ communityId, role: { $in: officerRoles } });
   },
   parcelsTableDataFn() {
     const templateInstance = Template.instance();

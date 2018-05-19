@@ -8,6 +8,7 @@ import '/utils/fractional.js';  // TODO: should be automatic, but not included i
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { officerRoles } from '/imports/api/permissions/config.js';
 import { Factory } from 'meteor/dburles:factory';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamps } from '/imports/api/timestamps.js';
@@ -37,10 +38,10 @@ Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
-  role: { type: String, allowedValues() { return Roles.find({}).map(r => r.name); },
+  role: { type: String, allowedValues() { return officerRoles; },
     autoform: {
       options() {
-        return Roles.find({}).map(function option(r) { return { label: __(r.name), value: r._id }; });
+        return Roles.find({ name: { $in: officerRoles } }).map(function option(r) { return { label: __(r.name), value: r._id }; });
       },
     },
   },
