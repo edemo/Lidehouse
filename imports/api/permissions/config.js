@@ -13,14 +13,19 @@ export const defaultRoles = [
   { name: 'accountant' },   // Can set the PayAccount structure.
   { name: 'treasurer' },    // Can add new financial transactions.
   { name: 'overseer' },     // Can oversee financial transactions.
-  { name: 'delegate' },     // Can vote for someone else.
   { name: 'maintainer' },   // Works on the reported errors. Sees them, can coment on them.
+  { name: 'delegate' },     // Can vote for someone else.
   { name: 'guest' },        // Just poking around. Somone invited him/her to take a look.
 ];
 
 // Groupings just to ease configuration
+export const occupantRoles = ['owner', 'benefactor'];
+export const leaderRoles = ['admin', 'manager'];
+export const nonLeaderRoles = ['moderator', 'accountant', 'treasurer', 'overseer', 'maintainer'];
+export const officerRoles = _.union(leaderRoles, nonLeaderRoles);
+export const autoAssignedRoles = ['delegate', 'guest'];
 export const everyRole = defaultRoles.map(r => r.name);
-const everyBody = ['null'];
+const everyBody = ['null']; // Even the not-logged-in user
 const exceptGuest = _.without(everyRole, 'guest');
 const nobody = [];
 
@@ -77,6 +82,7 @@ const permissions = [
   { name: 'comments.update',        roles: nobody, allowAuthor: true },
   { name: 'comments.remove',        roles: ['moderator'], allowAuthor: true },
   { name: 'comments.listing',       roles: exceptGuest },
+  { name: 'like.toggle',            roles: exceptGuest },
   { name: 'finances.view',          roles: exceptGuest },
   { name: 'payaccounts.insert',     roles: ['accountant'] },
   { name: 'payaccounts.update',     roles: ['accountant'] },

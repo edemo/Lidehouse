@@ -30,21 +30,21 @@ Template.Topic_show.helpers({
         switch(this.category) {
             case 'vote': {
                 return [{
-                    title: 'Votings',
+                    title: __('Votings'),
                     url: FlowRouter.path('Topics.vote'),
                 }];
                 break;
             }
             case 'forum': {
                 return [{
-                    title: 'Forum',
+                    title: __('Forum'),
                     url: FlowRouter.path('Topics.forum'),
                 }];
                 break;
             }
             case 'ticket': {
                 return [{
-                    title: 'Tickets',
+                    title: __('Tickets'),
                     url: FlowRouter.path('Tickets.report'),
                 }];
                 break;

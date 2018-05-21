@@ -62,16 +62,16 @@
     "person": {
       "natural": "natural person",
       "legal": "legal entity",
-      "label": "User",
+      "label": "Person",
       "userId": {
-        "label": "Select a user (from the registered users)"
+        "label": "Select a person (from the registered users)"
       },
       "userEmail": {
-        "label": "User's email address (if not yet registered)",
+        "label": "Person's email address (if not yet registered)",
         "placeholder": "(eg. jsmith45@dmail.com)"
       },
       "idCard": {
-        "label" : "User's verified data",
+        "label" : "Person's verified data",
         "type": {
           "label": "Entity type"
         },
@@ -89,7 +89,7 @@
         },
         "mothersName": {
           "label": "Mother's maiden name",
-          "placeholder": "(only for person)"
+          "placeholder": "(only for natural person)"
         },
         "dob": {
           "label": "Date of birth"

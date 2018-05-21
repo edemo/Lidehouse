@@ -62,16 +62,16 @@
     "person": {
       "natural": "magánszemély",
       "legal": "jogi személyiség",
-      "label": "Felhasználó",
+      "label": "Személy",
       "userId": {
-        "label": "Felhasználó kiválasztása (a regisztráltak közül)"
+        "label": "Személy kiválasztása (a regisztráltak közül)"
       },
       "userEmail": {
-        "label": "Felhasználó email címe (ha még nem regisztrált)",
+        "label": "Személy email címe (ha még nem regisztrált)",
         "placeholder": "(pl. tibi45@dmail.com)"
       },
       "idCard": {
-        "label" : "Felhasználó ellenőrzött adatai",
+        "label" : "Személy ellenőrzött adatai",
         "type": {
           "label": "Entitás típusa"
         },

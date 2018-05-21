@@ -1,11 +1,12 @@
 /* globals document */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
+import { $ } from 'meteor/jquery';
 
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 
-import { onSuccess } from '/imports/ui/lib/errors.js';
+import { onSuccess, handleError } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
@@ -29,7 +30,7 @@ Template.Comments_section.helpers({
 
 Template.Comments_section.events({
   'keydown .js-send-enter'(event) {
-    if (event.keyCode == 13 && !event.shiftKey) {
+    if (event.keyCode === 13 && !event.shiftKey) {
       const textarea = event.target;
       insertComment.call({
         topicId: this._id,
@@ -51,7 +52,7 @@ Template.Comment.events({
     like.call({
       coll: 'comments',
       id: this._id,
-    });
+    }, handleError);
   },
   'click .js-edit'(event, instance) {
     const commentSpan = 'span[data-id="' + instance.data._id + '"]';
@@ -59,7 +60,7 @@ Template.Comment.events({
     $(commentSpan).toggleClass("js-send-edited");
   },
   'keydown .js-send-edited'(event, instance) {
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       event.preventDefault();
       const commentSpan = 'span[data-id="' + instance.data._id + '"]';
       const editedText = $(commentSpan).text();

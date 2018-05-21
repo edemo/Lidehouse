@@ -1,7 +1,7 @@
 <template name="Parcel_owners_page">
 
     <!-- Page heading -->
-    {{> Page_heading title=title crumbs=pageCrumbs}}
+    {{> Page_heading title=title smallTitle=smallTitle crumbs=pageCrumbs}}
 
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -23,7 +23,7 @@
                         </div-->
                         <div class="member-list">
                             <ul class="nav nav-tabs">
-                                <span class="pull-right small text-muted">1 Ember</span>
+                                <span class="pull-right small text-muted">{{members.count}} {{_ 'schemaMemberships.person.label'}}</span>
                                 <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> {{_ 'owners'}}</a></li>
                                 <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-user-o"></i> {{_ 'benefactors'}}</a></li>
                             </ul>

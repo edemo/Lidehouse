@@ -8,25 +8,30 @@ Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, rend
   const parcelId = cellData;
   const notification = Memberships.findOne({ parcelId, approved: false }) ? 'text-danger' : '';
 
-  let html = `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
-  html += `<span data-id=${cellData} title=${__('assign')} class="js-assign nav-item glyphicon glyphicon-user ${notification}"></span>`;
-  html += `</a>`;
+  let html = '';
+  html += `<button data-id=${cellData} title=${__('assign')} class="btn btn-white btn-xs js-assign ${notification}">`;
+  html += `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
+  html += '<i class="fa fa-user"></i>';
+  html += '</a></button>';
   return html;
 };
 
 export function parcelColumns(permissions) {
+  const buttonRenderers = [];
+  if (permissions.view) buttonRenderers.push(Render.buttonView);
+  if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
+  if (permissions.assign) buttonRenderers.push(Render.buttonAssignParcelOwner);
+  if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
+
   return [
     { data: 'serial', title: __('schemaParcels.serial.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'lot', title: __('schemaParcels.lot.label') },
-    { data: 'area', title: __('schemaParcels.area.label') },
+    { data: 'area', title: 'm2' },
     { data: 'share()', title: __('schemaParcels.units.label') },
-    { data: 'displayNames()', title: __('owner') + '/' + __('benefactor') },
-    permissions.view ? { data: '_id', render: Render.buttonView } : {},
-    permissions.edit ? { data: '_id', render: Render.buttonEdit } : {},
-    permissions.assign ? { data: '_id', render: Render.buttonAssignParcelOwner } : {},
-    permissions.delete ? { data: '_id', render: Render.buttonDelete } : {},
+    { data: 'displayNames()', title: __('occupants') },
+    { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
   ];
 }
 

@@ -12,10 +12,17 @@
   "reportedBy": "Bejelentette",
   "Last activity": "Utolsó aktivitás",
 
-  "role": "tisztség",
-  "roles": "tisztségek",
+  "role": "jogkör",
+  "roles": "jogkörök",
+  "officer": "tisztség",
+  "officers": "tisztségek",
   "owners": "tulajdonosok",
   "benefactors": "használók",
+  "occupant": "birtokos",
+  "occupants": "birtokosok",
+  "Modifiable by": "Módosíthatja",
+  "List of officers": "A ház tisztségviselőinek listája",
+  "List of parcels": "A házhoz tartozó albetétek listája",
 
   "all": "összes",
   "undefined": "nincs megadva",
@@ -38,6 +45,9 @@
   "delegate": "meghatalmazott",
   "maintainer": "gondnok",
   "guest": "vendég",
+
+  "Leaders": "Vezetők",
+  "Other roles": "Egyéb tisztségek",
 
   "rental": "Bérlet",
   "favor": "Szívességi használat",
@@ -62,6 +72,7 @@
 
   "Houses": "Házak",
   "About": "Rólunk",
+  "Action buttons": "Akció gombok",
 
   // api
   "name": "név",
@@ -294,6 +305,7 @@
   "err_otherPartyNotAllowed": "Nincs engedélyezve a másik fél részéről",
   "Other party not allowed this activity": "A másik fél nem engedélyezte ezt a műveletet.",
   "No active": "Nincs aktív",
+  "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon.",
 
   "logout": "kilépés",
   "login": "belépés",

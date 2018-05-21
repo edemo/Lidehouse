@@ -2,7 +2,7 @@
 
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-12">
-            <h2>{{_ title}}</h2>
+            <h2>{{title}}</h2>
             {{#unless noBreadcrumbs}}
             <ol class="breadcrumb">
                 <li>
@@ -10,11 +10,11 @@
                 </li>
                 {{#each crumbs}}
                 <li>
-                    <a href="{{this.url}}" class="cap-first">{{_ this.title}}</a>
+                    <a href="{{this.url}}" class="cap-first">{{this.title}}</a>
                 </li>
                 {{/each}}
                 <li class="active">
-                    <strong class="cap-first">{{_ smallTitle}}</strong>
+                    <strong class="cap-first">{{smallTitle}}</strong>
                 </li>
             </ol>
             {{/unless}}

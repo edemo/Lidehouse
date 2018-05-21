@@ -43,8 +43,7 @@ export const onSuccess = cb =>
     cb(res);
   };
 
-export const handleError = () =>
-  onSuccess(() => {});
+export const handleError = onSuccess(() => {});
 
 export const displayMessage = (level, ...params) =>
   toastr[level](__(...params));

@@ -32,26 +32,29 @@ Template.Parcel_owners_page.helpers({
       const parcelId = FlowRouter.getParam('_pid');
       const communityId = Parcels.findOne(parcelId).communityId;
       return [{
-        title: 'Community page',
+        title: __('Community page'),
         url: FlowRouter.path('Community.page', { _cid: communityId }),
       }];
     },
     title() {
+        return `${__('parcel')} ${__("'s owners")}`;
+    },
+    smallTitle() {
         const parcelId = FlowRouter.getParam('_pid');
         const parcel = Parcels.findOne(parcelId);
-        return `${__('parcel')} ${__("'s owners")} - ${parcel.display()}`;
+        return `${parcel.display()} ${__("'s owners")}`;
     },
     owners() {
         const parcelId = FlowRouter.getParam('_pid');
-        return Memberships.find({ approved: true, role: 'owner', parcelId }).fetch();
+        return Memberships.find({ approved: true, role: 'owner', parcelId });
     },
     benefactors() {
         const parcelId = FlowRouter.getParam('_pid');
-        return Memberships.find({ approved: true, role: 'benefactor', parcelId }).fetch();
+        return Memberships.find({ approved: true, role: 'benefactor', parcelId });
     },
     members() {
         const parcelId = FlowRouter.getParam('_pid');
-        return Memberships.find({ approved: true, parcelId, role: { $in: ['owner', 'benefactor'] } }).fetch();
+        return Memberships.find({ approved: true, parcelId, role: { $in: ['owner', 'benefactor'] } });
     },
     activeTabClass(index) {
         return index === 0 ? 'active' : '';

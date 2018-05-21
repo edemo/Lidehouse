@@ -46,6 +46,9 @@ Comments.helpers({
   topic() {
     return Topics.findOne(this.topicId);
   },
+  community() {
+    return this.topic().community();
+  },
   editableBy(userId) {
     return this.userId === userId;
   },
