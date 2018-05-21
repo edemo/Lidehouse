@@ -147,9 +147,13 @@ Template.Community_page.helpers({
       };
     };
   },
-  hasUnapprovedParcels() {
+  parcels() {
     const communityId = Template.instance().getCommunityId();
-    return Parcels.find({ communityId, approved: false }).count() > 0;
+    return Parcels.find({ communityId, approved: true });
+  },
+  unapprovedParcels() {
+    const communityId = Template.instance().getCommunityId();
+    return Parcels.find({ communityId, approved: false });
   },
   unapprovedParcelsTableDataFn() {
     const templateInstance = Template.instance();
