@@ -39,8 +39,14 @@
     },
     "settings": {
       "label": "Settings",
+      "language": {
+        "label": "Language"
+      },
       "delegatee": {
         "label": "Allow incoming delegations"
+      },
+      "newsletter": {
+        "label": "I would like to receive the newsletter about the application"
       }
     },
     "emails": {

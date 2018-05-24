@@ -62,6 +62,7 @@ const PersonProfileSchema = new SimpleSchema({
 const UserSettingsSchema = new SimpleSchema({
   language: { type: String, allowedValues: ['en', 'hu'], optional: true },
   delegatee: { type: Boolean, defaultValue: true },
+  newsletter: { type: Boolean, defaultValue: false },
 });
 
 const defaultAvatar = '/images/avatars/avatarnull.png';
