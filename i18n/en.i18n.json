@@ -41,6 +41,7 @@
   "messengerPeopleMenu": "People",
   "messengerMessagePlaceholder": "Your message here... (eg. I just baked a strawberry cake. Want to come over and taste it?)",
   "messengerHistoryPlaceholder": "No messages yet between you. <br> Start chatting today!",
+  "commentEditInstruction": "Press enter to save, escape to cancel.",
   "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
   "userAccountsSubtitle": "Log in to enjoy all functionalities of this app",
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
@@ -48,7 +49,7 @@
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
   "pleaseSupplyParcelData": "Please supply as much data as possible about your parcel, so your join request can be approved quickly!",
   "No permission to upload": "You have no permission to upload documents, please ask the community manager's help",
-  
+    
     // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",

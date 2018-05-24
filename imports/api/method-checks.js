@@ -29,7 +29,7 @@ export function checkNotExists(collection, predicate) {
   const object = collection.findOne(predicate);
   if (object) {
     throw new Meteor.Error('err_duplicateId', 'This id is already used',
-      `Collection: ${collection._name}, id: ${predicate}`
+      `Collection: ${collection._name}, predicate: ${JSON.stringify(predicate)}` 
     );
   }
 }

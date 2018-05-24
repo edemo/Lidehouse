@@ -325,6 +325,7 @@
   "messengerPeopleMenu": "Lakók",
   "messengerMessagePlaceholder": "Üzenet… (pl. Epertortát sütöttem. Van kedved átugrani megkóstolni?)",
   "messengerHistoryPlaceholder": "Még nincsenek üzenetek. <br /> Üzenetváltás indítása!",
+  "commentEditInstruction": "Mentéshez nyomja meg az enter, elvetéshez az escape billentyűt.",
 
   "User data page": "Felhasználói adatlap",
   "userAccountsSubtitle": "Bejelentkezett felhasználók minden funkciót elérhetnek",

@@ -63,20 +63,19 @@ export class Person {
     return undefined;
   }
   email() {
-    if (this.userId) return this.user().emails[0].address;
+    if (this.userId && this.user()) return this.user().emails[0].address;
     if (this.userEmail) return this.userEmail;
     return undefined;
   }
   avatar() {
-    if (this.userId) return this.user().avatar;
+    if (this.userId && this.user()) return this.user().avatar;
     return '/images/avatars/avatarnull.png';
   }
   displayName() {
     if (this.idCard) return this.idCard.name;
-    if (this.userId) return this.user().displayName();
+    if (this.userId && this.user()) return this.user().displayName();
     if (this.userEmail) return this.userEmail;
-    debugAssert(false);
-    return 'should never get here';
+    return undefined;
   }
   id() {
     if (this.userId) return this.userId;
