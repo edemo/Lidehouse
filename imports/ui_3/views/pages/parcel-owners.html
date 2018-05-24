@@ -78,12 +78,14 @@
                         </p>
                         <br>
                         <div class="member-list">
-                            {{#if unapprovedOwnerships.count}}
+                            {{#if currentUserHasPermission 'ownerships.update'}}
                             <ul class="nav nav-tabs">
                                 <span class="pull-right small text-muted"></span>
                                 <li class="active"><a data-toggle="tab" href="#tab-o1"><i class="fa fa-user"></i> {{_ 'Approved'}}</a></li>
                                 <li class=""><a data-toggle="tab" href="#tab-o2"><i class="fa fa-user-o"></i> {{_ 'Waiting for approval'}}
+                                    {{#if unapprovedOwnerships.count}}
                                     <span class="label badge badge-danger">{{unapprovedOwnerships.count}}</span>
+                                    {{/if}}
                                 </a></li>
                             </ul>
                             {{/if}}
@@ -113,12 +115,14 @@
                         </p>
                         <br>
                         <div class="member-list">
-                            {{#if unapprovedBenefactorships.count}}
+                            {{#if currentUserHasPermission 'benefactorships.update'}}
                             <ul class="nav nav-tabs">
                                 <span class="pull-right small text-muted"></span>
                                 <li class="active"><a data-toggle="tab" href="#tab-b1"><i class="fa fa-user"></i> {{_ 'Approved'}}</a></li>
                                 <li class=""><a data-toggle="tab" href="#tab-b2"><i class="fa fa-user-o"></i> {{_ 'Waiting for approval'}}
+                                    {{#if unapprovedBenefactorships.count}}
                                     <span class="label badge badge-danger">{{unapprovedBenefactorships.count}}</span>
+                                    {{/if}}
                                 </a></li>
                             </ul>
                             {{/if}}
