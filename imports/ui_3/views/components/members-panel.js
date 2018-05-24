@@ -4,6 +4,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 
+import { leaderRoles } from '/imports/api/permissions/config.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/rooms/rooms.js';
@@ -20,17 +21,27 @@ Template.Members_panel.onRendered(function onRendered() {
 });
 
 Template.Members_panel.helpers({
-  managers() {
+  leaders() {
     const communityId = Session.get('activeCommunityId');
-    return Memberships.find({ communityId, 'person.userId': { $not: Meteor.userId() }, role: 'manager' });
+    const personSearch = Session.get('messengerPersonSearch');
+    let managers = Memberships.find({ communityId, 'person.userId': { $ne: Meteor.userId() }, role: { $in: leaderRoles } }).fetch();
+    if (personSearch) {
+      managers = managers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
+    }
+    return managers;
   },
   members() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
-    const nonManagers = Memberships.find({ communityId, 'person.userId': { $exists: true, $not: Meteor.userId() }, role: { $not: 'manager' } });
+    let nonManagers = Memberships.find({ communityId, 'person.userId': { $exists: true, $ne: Meteor.userId() }, role: { $not: { $in: leaderRoles } } }).fetch();
     if (personSearch) {
-      return nonManagers.fetch().filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
+      nonManagers = nonManagers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }
+    nonManagers = _.uniq(nonManagers, false, m => m.person.userId);
+    nonManagers = _.sortBy(nonManagers, m => {
+      const room = Topics.messengerRoom(Meteor.userId(), m.person.userId);
+      return room ? -1 * room.updatedAt : 0;
+    });
     return nonManagers;
   },
 });
