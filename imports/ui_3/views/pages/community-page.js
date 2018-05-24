@@ -49,7 +49,7 @@ Template.Community_page.helpers({
   title() {
     const communityId = Template.instance().getCommunityId();
     const community = Communities.findOne({ _id: communityId });
-    return `${__('Community page')} - ${community.name}`;
+    return `${__('Community page')} - ${community ? community.name : ''}`;
   },
   community() {
     const communityId = Template.instance().getCommunityId();
