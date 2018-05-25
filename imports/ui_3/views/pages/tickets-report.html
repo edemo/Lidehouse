@@ -120,7 +120,9 @@
                   {{#each tickets}}
                   <tr>
                       <td>
+                          {{#if ticket.status}}                        
                           <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
+                          {{/if}}
                       </td>
                       <td class="issue-info">
                           <a href="{{pathFor 'Topic.show' _tid=_id}}">{{title}}</a>
@@ -133,7 +135,9 @@
                           {{displayTime createdAt}}
                       </td>
                       <td>
+                          {{#if ticket.category}}
                           <span class="label label-default">{{_ (concat 'schemaTickets.ticket.category.' ticket.category)}}</span>
+                          {{/if}}
                       </td>
                       <td class="text-right">
                           <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-xs">

@@ -191,12 +191,18 @@
                 <div class="wrapper wrapper-content project-manager"> 
                     <dl class="">
                         <dt>{{_ 'schemaTickets.ticket.status.label'}}:</dt> <dd>
-                          <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
+                            {{#if ticket.status}}
+                            <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
+                            {{else}}---
+                            {{/if}}
                         </dd>
                     </dl>
                     <dl class="">
                         <dt>{{_ 'schemaTickets.ticket.urgency.label'}}:</dt> <dd>
-                          <span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span>
+                            {{#if ticket.urgency}}
+                            <span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span>
+                            {{else}}---
+                            {{/if}}
                         </dd>
                     </dl>
                     <dl class="">
