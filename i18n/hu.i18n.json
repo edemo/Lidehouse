@@ -317,6 +317,8 @@
 
   "tryingToConnect": "Kapcsolódás folyamatban…",
   "connectionIssue": "Valami hiba van a hálózattal",
+  "connectionIssueLine1": "Még nem sikerült elérni a szervert.",
+  "connectionIssueLine2": "Az oldalon látható adatok nem frissek.",
   "pageNotFound": "Az odal nem található",
   "inviteSend": "Meghívó kiküldése",
   "newForumTitlePlaceholder": "Új téma címe…",

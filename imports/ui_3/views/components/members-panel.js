@@ -52,7 +52,7 @@ Template.Members_panel.events({
   },
 });
 
-// ---------------------- Msg_person ----------------------
+// ---------------------- Member_slot ----------------------
 
 Template.Member_slot.onCreated(function onMsgPersonCreated() {
 });
