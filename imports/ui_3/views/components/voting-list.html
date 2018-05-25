@@ -9,6 +9,9 @@
                     <span class="label label-default">{{_ 'closed'}}</span>
                     {{else}}
                     <span class="label label-primary">{{_ 'active'}}</span>
+                        {{#unless hasVotedIndirect currentUser._id}}
+                            <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" title={{_ "You have not yet voted"}}></i>
+                        {{/unless}}
                     {{/if}}
                 </td>
                 <td class="project-people">
