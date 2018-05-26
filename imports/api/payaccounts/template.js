@@ -5,20 +5,24 @@ import { PayAccounts } from './payaccounts.js';
 
 const PayAccountsTemplate = [
 
-  { name: 'Könyvelés nem', label: 'Eredmény',
+  { name: 'Bevételek', locked: true,
     children: [
-      { name: 'Bevételek',
+      { name: '',
         children: [
-          { name: 'NEM adóköteles bevételek',
+          { name: 'Tulajdonosi befizetések', locked: true,
             children: [
             { name: 'Közös költség befizetés', membersRelated: true },
             { name: 'Felújítási alap befizetés', membersRelated: true },
             { name: 'Felújítási célbefizetés', membersRelated: true },
-            { name: 'Támogatás' },
             { name: 'Víz díj', membersRelated: true },
             { name: 'Fűtési díj', membersRelated: true },
-            { name: 'Kamat pénzintézetektől' },
             { name: 'Egyéb közvetített szolgáltatás', membersRelated: true },
+            ],
+          },
+          { name: 'NEM adóköteles bevételek',
+            children: [
+            { name: 'Támogatás' },
+            { name: 'Kamat pénzintézetektől' },
             ],
           },
           { name: 'Adóköteles bevételek',
@@ -34,8 +38,12 @@ const PayAccountsTemplate = [
           },
         ],
       },
+    ],
+  },
 
-      { name: 'Kiadások',
+  { name: 'Kiadások',  negative: true, locked: true,
+    children: [
+      { name: '',
         children: [
           { name: 'Költségek',
             children: [
@@ -75,19 +83,37 @@ const PayAccountsTemplate = [
           },
         ],
       },
+    ],
+  },
 
-      { name: 'Back office műveletek',
+  // Ez lesz az Eszközök szamla csoport
+  { name: 'Pénz számla', locked: true,
+    children: [
+      { name: '',
         children: [
-          { name: 'Pénzügyi elszámolások',
+          { name: 'Bank',
             children: [
-            { name: 'Készpénzfelvét' },
-            { name: 'Készpénz befizetés' },
+            { name: 'Bank főszámla' },
+            { name: 'Bank felújítási alap' },
             ],
           },
-          { name: 'Nyitó egyenleg felvitel',
+          { name: 'Készpénz',
             children: [
-            { name: 'Tartozás (-)' },
-            { name: 'Túlfizetés (+)' },
+            { name: 'Pénztár 1' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  { name: 'Források', negative: true, locked: true,
+    children: [
+      { name: '',
+        children: [
+          { name: 'Hitelek',
+            children: [
+            { name: 'Hitelszámla' },
             ],
           },
         ],
@@ -107,27 +133,6 @@ const PayAccountsTemplate = [
             children: [
             { name: 'Kert' },
             { name: 'Kazán' },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-
-  { name: 'Pénz számla', label: 'Összesen',
-    children: [
-      { name: '',
-        children: [
-          { name: 'Bank',
-            children: [
-            { name: 'Bank főszámla' },
-            { name: 'Bank felújítási alap' },
-            { name: 'Hitelszámla' },
-            ],
-          },
-          { name: 'Készpénz',
-            children: [
-            { name: 'Pénztár 1' },
             ],
           },
         ],

@@ -48,7 +48,8 @@ export const choosePayAccount = {
 PayAccounts.LeafSchema = new SimpleSchema({
   name: { type: String, max: 100 }, // or a parcel number can be placed here
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
-  membersRelated: { type: Boolean, optional: true },
+  locked: { type: Boolean, optional: true, autoform: { omit: true } },
+  membersRelated: { type: Boolean, optional: true, autoform: { omit: true } },
   //  name: { type: String, max: 100, optional: true },
 //  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 //  parcelNo: { type: Number, decimal: true, optional: true },
@@ -57,6 +58,7 @@ PayAccounts.LeafSchema = new SimpleSchema({
 PayAccounts.Level2Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
+  locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array },
   'children.$': { type: PayAccounts.LeafSchema },
 });
@@ -64,6 +66,7 @@ PayAccounts.Level2Schema = new SimpleSchema({
 PayAccounts.Level1Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
+  locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array },
   'children.$': { type: PayAccounts.Level2Schema },
 });
@@ -71,6 +74,8 @@ PayAccounts.Level1Schema = new SimpleSchema({
 PayAccounts.schema = new SimpleSchema({
   name: { type: String, max: 100 },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
+  negative: { type: Boolean, optional: true, autoform: { omit: true } },
+  locked: { type: Boolean, optional: true, autoform: { omit: true } },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
 //  type: { type: String, allowedValues: PayAccounts.typeValues },
   children: { type: Array },

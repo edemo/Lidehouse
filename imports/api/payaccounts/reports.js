@@ -8,7 +8,7 @@ import { expandFrom1To3Levels, monthTags, phaseTags } from './payaccounts-utils'
 
 
 export const TulajdonosiBefizetesek = expandFrom1To3Levels({
-  name: 'Tulajdonosi Befizetesek', label: 'Összesen',
+  name: 'Tulajdonosi befizetések', label: 'Összesen',
   children: [
   { name: 'Közös költség befizetés' },
   { name: 'Felújítási alap befizetés' },
@@ -38,20 +38,19 @@ export const Reports = {
     const report = new PaymentReport('Penzugyek Reszletei');
     const communityId = Session.get('activeCommunityId');
 
-    report.addFilter({ phase: 'done' });
+    report.addFilter({
+      'accounts.Bevételek': { $exists: true },
+      phase: 'done',
+    });
 
     report.addTree('cols', {
       field: 'month',
       values: PayAccounts._transform(monthTags),
     }, false);
 
-    const koltsegNemekWoBackoffice = PayAccounts.findOne({ communityId, name: 'Könyvelés nem' });
-    koltsegNemekWoBackoffice.removeSubTree('Back office műveletek');
-    koltsegNemekWoBackoffice.name = '';
-
     report.addTree('rows', {
-      field: 'accounts.Könyvelés nem',
-      values: koltsegNemekWoBackoffice,
+      field: 'accounts.Bevételek',
+      values: PayAccounts.findOne({ communityId, name: 'Bevételek' }),
     }, false);
 
     const planColDef = {
@@ -86,7 +85,10 @@ export const Reports = {
       .map(m => myParcels.children.push({ name: m.parcel().serial.toString() /* + '. ' + __('parcel')*/ }));
     expandFrom1To3Levels(myParcels);
 
-    report.addFilter({ phase: { $in: ['bill', 'done'] } });
+    report.addFilter({
+      'accounts.Bevételek': { $exists: true },
+      phase: { $in: ['bill', 'done'] },
+    });
 
     report.addTree('rows', {
       field: 'accounts.Könyvelés helye',
@@ -94,7 +96,7 @@ export const Reports = {
     }, false);
 
     report.addTree('rows', {
-      field: 'accounts.Könyvelés nem',
+      field: 'accounts.Bevételek',
       values: PayAccounts._transform(TulajdonosiBefizetesek),
     }, true, true);
 
@@ -110,7 +112,10 @@ export const Reports = {
     const report = new PaymentReport('Albetetek Elszamolasa');
     const communityId = Session.get('activeCommunityId');
 
-    report.addFilter({ phase: { $in: ['bill', 'done'] } });
+    report.addFilter({
+      'accounts.Bevételek': { $exists: true },
+      phase: { $in: ['bill', 'done'] },
+    });
 
     report.addTree('rows', {
       field: 'accounts.Könyvelés helye',
@@ -118,7 +123,7 @@ export const Reports = {
     }, false);
 
     report.addTree('cols', {
-      field: 'accounts.Könyvelés nem',
+      field: 'accounts.Bevételek',
       values: PayAccounts._transform(TulajdonosiBefizetesek),
     }, false, true);
 

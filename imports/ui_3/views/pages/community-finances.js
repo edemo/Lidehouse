@@ -117,7 +117,7 @@ function newParcelBillingSchema() {
   function chooseAccountsSchema() {
     const obj = {};
     const communityId = Session.get('activeCommunityId');
-    const payaccount1 = PayAccounts.findOne({ communityId, name: 'Könyvelés nem' });
+    const payaccount1 = PayAccounts.findOne({ communityId, name: 'Bevételek' });
     const payaccount2 = PayAccounts.findOne({ communityId, name: 'Könyvelés helye' });
     obj[payaccount1.name] = { type: String, optional: true, label: payaccount1.name, 
       autoform: { options() { return payaccount1.leafOptions(l => l.membersRelated); } },
@@ -146,7 +146,7 @@ Template.Community_finances.events({
     });
   },
   'click #payaccounts-pane .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.update',
       collection: PayAccounts,
@@ -160,7 +160,7 @@ Template.Community_finances.events({
     });
   },
   'click #payaccounts-pane .js-view'(event, instance) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.view',
       collection: PayAccounts,
@@ -171,7 +171,7 @@ Template.Community_finances.events({
     });
   },
   'click #payaccounts-pane .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(PayAccounts.remove, { _id: id }, {
       action: 'delete payaccount',
     });
@@ -188,7 +188,7 @@ Template.Community_finances.events({
     });
   },
   'click #payments-pane .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payment.update',
       collection: Payments,
@@ -202,7 +202,7 @@ Template.Community_finances.events({
     });
   },
   'click #payments-pane .js-view'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payment.view',
       collection: Payments,
@@ -214,7 +214,7 @@ Template.Community_finances.events({
     });
   },
   'click #payments-pane .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(removePayment, { _id: id }, {
       action: 'delete payment',
     });
@@ -231,7 +231,7 @@ Template.Community_finances.events({
     });
   },
   'click #bills-pane .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.bill.update',
       collection: Payments,
@@ -245,7 +245,7 @@ Template.Community_finances.events({
     });
   },
   'click #bills-pane .js-view'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.bill.view',
       collection: Payments,
@@ -268,7 +268,7 @@ Template.Community_finances.events({
     });
   },
   'click #bills-pane .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(removePayment, { _id: id }, {
       action: 'delete bill',
     });
@@ -298,11 +298,11 @@ AutoForm.addHooks('af.payment.insert', {
     doc.communityId = Session.get('activeCommunityId');
     doc.phase = 'done';
     // When entering expenses into the system, we enter them as positive number, but should appear with minus in the sheet
-    const payaccount = PayAccounts.findOne({ communityId: doc.communityId, name: 'Könyvelés nem' });
-    const leafName = doc.accounts['Könyvelés nem'];
-    const leaf = payaccount.leafFromName(leafName);
-    const category = leaf.level1;
-    if (category.name === 'Kiadások') doc.amount *= -1;
+//    const payaccount = PayAccounts.findOne({ communityId: doc.communityId, name: 'Könyvelés nem' });
+//    const leafName = doc.accounts['Könyvelés nem'];
+//    const leaf = payaccount.leafFromName(leafName);
+//    const category = leaf.level1;
+//    if (category.negative) doc.amount *= -1;
     return doc;
   },
 });
