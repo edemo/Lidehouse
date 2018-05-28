@@ -9,6 +9,7 @@ import '/imports/ui/pages/app-not-found.js';
 
 import '/imports/ui_2/pages/intro-page.js';
 import '/imports/ui_2/pages/about.js';
+import '/imports/ui_3/views/pages/intro-page.js';
 import '/imports/ui_3/views/pages/profile-form.js';
 import '/imports/ui_3/views/pages/user-show.js';
 import '/imports/ui_3/views/pages/communities-listing.js';
@@ -45,10 +46,17 @@ FlowRouter.route('/', {
 
 // Business info pages
 
+FlowRouter.route('/newintro', {
+  name: 'New.intro',
+  action() {
+    BlazeLayout.render('Intro_page');
+  },
+});
+
 FlowRouter.route('/intro', {
   name: 'App.intro',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Intro_page' });
+    BlazeLayout.render('Main_layout', { content: 'Old_intro_page' });
   },
 });
 
