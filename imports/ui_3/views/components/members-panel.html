@@ -13,10 +13,12 @@
     </div>
     <!-- normally there is exactly 1 manager (kk) -->
     <div>
-        {{#each managers}}
+        {{#each leaders}}
           {{> Member_slot}}
         {{/each}}
-
+        <div class="line">
+            <hr class="m-t-none"/>
+        </div>
         {{#each members}}
           {{> Member_slot}}
         {{/each}}

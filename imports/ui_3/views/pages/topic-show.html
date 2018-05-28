@@ -115,13 +115,20 @@
             <div class="col-md-2">
                 <div class="wrapper wrapper-content project-manager"> 
                     <dl class="">
-                        <dt>{{_ 'Status'}}:</dt> <dd>
+                        <dt>{{_ 'Status'}}:</dt>
+                        <dd>
                             {{#if closed}}
                             <span class="label label-default text-capitalize">{{_ 'closed'}}</span>
                             {{else}}
                             <span class="label label-primary text-capitalize">{{_ 'active'}}</span>
                             {{/if}}
                         </dd>
+                    </dl>
+
+                    <dl class="">
+                        {{#if agendaId}}
+                        <dt>{{_ 'agenda'}}:</dt><dd>{{agenda.title}}</dd>
+                        {{/if}}
                     </dl>
 
                     <dl class="">

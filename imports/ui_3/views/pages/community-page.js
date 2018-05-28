@@ -49,7 +49,7 @@ Template.Community_page.helpers({
   title() {
     const communityId = Template.instance().getCommunityId();
     const community = Communities.findOne({ _id: communityId });
-    return `${__('Community page')} - ${community.name}`;
+    return `${__('Community page')} - ${community ? community.name : ''}`;
   },
   community() {
     const communityId = Template.instance().getCommunityId();
@@ -147,9 +147,13 @@ Template.Community_page.helpers({
       };
     };
   },
-  hasUnapprovedParcels() {
+  parcels() {
     const communityId = Template.instance().getCommunityId();
-    return Parcels.find({ communityId, approved: false }).count() > 0;
+    return Parcels.find({ communityId, approved: true });
+  },
+  unapprovedParcels() {
+    const communityId = Template.instance().getCommunityId();
+    return Parcels.find({ communityId, approved: false });
   },
   unapprovedParcelsTableDataFn() {
     const templateInstance = Template.instance();
@@ -217,7 +221,7 @@ Template.Community_page.events({
     });
   },
   'click .parcels-section .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.update',
       collection: Parcels,
@@ -229,7 +233,7 @@ Template.Community_page.events({
     });
   },
   'click .parcels-section .js-view'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.parcel.view',
       collection: Parcels,
@@ -239,7 +243,7 @@ Template.Community_page.events({
     });
   },
   'click .parcels-section .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(removeParcel, { _id: id }, {
       action: 'delete parcel',
     });

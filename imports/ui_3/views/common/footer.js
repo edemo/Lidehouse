@@ -1,3 +1,6 @@
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
 import { feedbacksSchema } from '/imports/api/topics/feedbacks/feedbacks.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { displayError, displayMessage } from '/imports/ui/lib/errors.js';

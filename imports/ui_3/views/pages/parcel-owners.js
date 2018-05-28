@@ -44,13 +44,21 @@ Template.Parcel_owners_page.helpers({
         const parcel = Parcels.findOne(parcelId);
         return `${parcel.display()} ${__("'s owners")}`;
     },
-    owners() {
+    ownerships() {
         const parcelId = FlowRouter.getParam('_pid');
         return Memberships.find({ approved: true, role: 'owner', parcelId });
     },
-    benefactors() {
+    unapprovedOwnerships() {
+        const parcelId = FlowRouter.getParam('_pid');
+        return Memberships.find({ approved: false, role: 'owner', parcelId });
+    },
+    benefactorships() {
         const parcelId = FlowRouter.getParam('_pid');
         return Memberships.find({ approved: true, role: 'benefactor', parcelId });
+    },
+    unapprovedBenefactorships() {
+        const parcelId = FlowRouter.getParam('_pid');
+        return Memberships.find({ approved: false, role: 'benefactor', parcelId });
     },
     members() {
         const parcelId = FlowRouter.getParam('_pid');

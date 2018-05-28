@@ -10,6 +10,7 @@ import '../common/top-navbar.js';
 import '../common/page-heading.js';
 import '../common/footer.js';
 import '../common/right-sidebar.js';
+import '../common/connection-issue.js';
 import './main.html';
 
 Template.Main_layout.onCreated(function() {
@@ -69,51 +70,61 @@ Template.Main_layout.onRendered(function() {
       $(".toggleMiniNavbar").on('click touch', function () {
         $("body").toggleClass("mini-navbar");
       });
-  } else {
-      $('body').removeClass('body-small');
-  }
+    } else {
+        $('body').removeClass('body-small');
+    }
   });
 
-     // Fix height of layout when resize, scroll and load
-    $(window).bind("load resize scroll", function() {
-        const windowHeight = $(window).height();
-        const topbarHeight = $('nav.navbar-fixed-top').height();
-        $('#page-wrapper').css("min-height", (windowHeight - topbarHeight) + "px");
+  // Fix height of layout when resize, scroll and load
+  $(window).bind("load resize scroll", function() {
+    const windowHeight = $(window).height();
+    const topbarHeight = $('nav.navbar-fixed-top').height();
+    $('#page-wrapper').css("min-height", (windowHeight - topbarHeight) + "px");
+  });
+
+
+  // SKIN OPTIONS
+  // Uncomment this if you want to have different skin option:
+  // Available skin: (skin-1 or skin-3, skin-2 deprecated)
+  // $('body').addClass('skin-1');
+
+  // FIXED-SIDEBAR
+  // Uncomment this if you want to have fixed left navigation
+  $('body').addClass('fixed-sidebar');
+  $('.sidebar-collapse').slimScroll({
+      height: '100%',
+      railOpacity: 0.9
+  });
+
+  // BOXED LAYOUT
+  // Uncomment this if you want to have boxed layout
+  // $('body').addClass('boxed-layout');
+
+  // Active state & collapse bugfixed
+  $(window).bind("load", function() {
+  // $(document).ready(function(){ <= Notice: never use in this .js => use only window-bind-load!
+    $('#side-menu li').on('click touch', function() {
+      $('#side-menu li').removeClass('active').filter($(this)).addClass('active');
     });
-
-
-    // SKIN OPTIONS
-    // Uncomment this if you want to have different skin option:
-    // Available skin: (skin-1 or skin-3, skin-2 deprecated)
-    // $('body').addClass('skin-1');
-
-    // FIXED-SIDEBAR
-    // Uncomment this if you want to have fixed left navigation
-    $('body').addClass('fixed-sidebar');
-    $('.sidebar-collapse').slimScroll({
-        height: '100%',
-        railOpacity: 0.9
+    $("#side-menu > li > a").on('click touch', function () {
+      $('.nav.collapse').collapse('hide');
     });
-
-    // BOXED LAYOUT
-    // Uncomment this if you want to have boxed layout
-    // $('body').addClass('boxed-layout');
-
-    // Active state & collapse bugfixed
-    $(window).bind("load", function() {
-    // $(document).ready(function(){ <= Notice: never use in this .js => use only window-bind-load!
-      $('#side-menu li').on('click touch', function() {
-        $('#side-menu li').removeClass('active').filter($(this)).addClass('active');
-      });
-      $("#side-menu > li > a").on('click touch', function () {
-        $('.nav.collapse').collapse('hide');
-      });
-      $("#side-menu > li > ul > li > a").on('click touch', function () {
-        $(this).collapse('show');
-      });
+    $("#side-menu > li > ul > li > a").on('click touch', function () {
+      $(this).collapse('show');
     });
-
+  });
 });
 
 Template.Main_layout.helpers({
+});
+
+Template.Main_layout.events({
+  'click #wrapper'(event, instance) {
+    const rightSidebar = $("#right-sidebar");
+    const envelope = $(".right-sidebar-toggle");
+    if (!rightSidebar.is(event.target) && rightSidebar.has(event.target).length === 0 && 
+      !envelope.is(event.target) && envelope.has(event.target).length === 0) {
+      rightSidebar.removeClass('sidebar-open');
+    }
+  },
 });

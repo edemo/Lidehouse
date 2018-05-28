@@ -39,8 +39,14 @@
     },
     "settings": {
       "label": "Beálítások",
+      "language": {
+        "label": "Nyelv"
+      },
       "delegatee": {
         "label": "Bejövő meghatalmazások engedélyezése"
+      },
+      "newsletter": {
+        "label": "Szeretnék feliratkozni az applikációval kapcsolatos hírlevélre"
       }
     },
     "emails": {

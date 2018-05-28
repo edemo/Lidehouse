@@ -1,0 +1,20 @@
+<template name="Connection_issue">
+    {{#unless connected}}
+    <div id="connection-issue" class="theme-config animated fadeInRightBig">
+        <div class="theme-config-box show">
+            <div class="spin-icon">
+                <i class="fa fa-spinner fa-spin"></i>
+            </div>
+            <div class="skin-settings">
+                <div class="title">{{_ 'tryingToConnect'}}<br>
+                <small style="text-transform: none;font-weight: 400">
+                    {{_ 'connectionIssueLine1'}}<br>
+                    {{_ 'connectionIssueLine2'}}
+                </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/unless}}    
+</template>
+
