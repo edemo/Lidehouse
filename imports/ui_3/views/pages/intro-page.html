@@ -1,0 +1,317 @@
+<template name="Intro_page">
+
+    <div class="navbar-wrapper">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header page-scroll">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">HONLINE</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a class="page-scroll" href="#page-top">Home</a></li>
+                        <li><a class="page-scroll" href="#features">Jellemzők</a></li>
+                        <li><a class="page-scroll" href="#demo">Demo</a></li>
+                        <li><a class="page-scroll" href="#team">Rólunk</a></li>
+                        <li><a class="page-scroll" href="#contact">Kapcsolat</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+
+    <div>
+        <div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#inSlider" data-slide-to="0" class="active"></li>
+                <li data-target="#inSlider" data-slide-to="1"></li>
+            </ol>
+            <div class="carousel-inner" role="listbox">
+                <div class="item active">
+                    <div class="container">
+                        <div class="carousel-caption blank">
+                            <h1>Az online<br/>
+                                otthonkezelő</h1>
+                            <p>Teljes pénzügyi, házkezelési <br/>
+                                és döntéshozatali megoldás társasházak számára</p>
+                            <p>
+                                <a class="btn btn-lg btn-primary" href="{{pathFor 'signin'}}" role="button">
+                                    <i class="fa fa-sign-in"></i> {{_ 'login'}}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Set background for slide in css -->
+                    <div class="header-back one"></div>
+                </div>
+                <div class="item">
+                    <div class="container">
+                        <div class="carousel-caption">
+                            <h1>Megbízható közös képviselet <br> 
+                                és automatizált <br>költséghatékony társasházkezelés</h1>
+                            <p>A lakók és albetéttulajdonosok érdekeit szolgálja <br/>
+                               és segíti a társasházkezelő/közös képviselő munkáját</p>
+                            <p><a class="btn btn-lg btn-primary" href="#" role="button">Tovább</a></p>
+                        </div>
+                    </div>
+                    <!-- Set background for slide in css -->
+                    <div class="header-back two"></div>
+                </div>
+            </div>
+            <a class="left carousel-control" href="#inSlider" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#inSlider" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+        <section id="features" class="container services">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h2>Transzparens gazdasági rendszer</h2>
+                    <p>1. Átlátható közös képviselet<br>
+                        2. Nyílt pénzügyi elszámolás<br>
+                        3. Valós eredménybeszámoló és számlanapló</p>
+                    <p><a class="navy-link" href="#" role="button">Tovább &raquo;</a></p>
+                </div>
+                <div class="col-sm-4">
+                    <h2>Hatékony problémakezelés</h2>
+                    <p>1. Egyszerű hibabejelentés és visszakövetés<br>
+                        2. Átlátható változáskezelés<br>
+                        3. Automatizált feladatleosztás/kiszervezés</p>
+                    <p><a class="navy-link" href="#" role="button">Tovább &raquo;</a></p>
+                </div>
+                <div class="col-sm-4">
+                    <h2>Demokratikus döntéshozatal</h2>
+                    <p>A jogszabályoknak és a Szervezeti és Működési Szabályzatnak 
+                        (SzMSz) megfelelő elektronikus szavazási és nyomonkövetési rendszer 
+                        a felelős közösségi döntéshozatal érdekében: lekövethető 
+                        meghatalmazásos rendszer és transzparens döntési folyamat.</p>
+                    <p><a class="navy-link" href="#" role="button">Tovább &raquo;</a></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container features">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="navy-line"></div>
+                    <h1>Kényelmes ügykezelés<br/> <span class="navy">bármilyen eszközön</span> </h1>
+                    <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 text-center wow fadeInLeft">
+                    <div>
+                        <i class="fa fa-mobile features-icon"></i>
+                        <h2>Full responsive</h2>
+                        <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
+                    </div>
+                    <div class="m-t-lg">
+                        <i class="fa fa-bar-chart features-icon"></i>
+                        <h2>Albetét pénzügyek</h2>
+                        <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center  wow zoomIn">
+                    <img src="images/screenshot.png" alt="screenshot" class="img-responsive">
+                </div>
+                <div class="col-md-3 text-center wow fadeInRight">
+                    <div>
+                        <i class="fa fa-envelope features-icon"></i>
+                        <h2>Üzenetküldés</h2>
+                        <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
+                    </div>
+                    <div class="m-t-lg">
+                        <i class="fa fa-google features-icon"></i>
+                        <h2>Egyéb szuperség</h2>
+                        <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="navy-line"></div>
+                    <h1>Fedezze fel a lehetőségeket!</h1>
+                    <p>Egyszerűen kezelhető, minden információt tartalmazó rendszer.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="demo" class="container features">
+            <div class="row">
+                <div class="row features-block">
+                    <div class="col-md-6 features-text wow fadeInLeft">
+                        <small>HONLINE</small>
+                        <h2>Az online otthonkezelő</h2>
+                        <p>A Honline rendszere minden felhasználó számára az otthon kényelméhez igazítja a társasházi ügyek kezelését.
+                           Próbálja ki demo-házunkban a lehetőségeket!</p>
+                        <button class="btn btn-primary demouser-autologin" href="">{{_ 'Try demo'}}</button>
+                    </div>
+                    <div class="col-md-6 text-right wow fadeInRight">
+                        <img src="images/screenshot2.png" alt="demohouse" class="img-responsive pull-right">
+                    </div>
+                </div>
+            </div>
+        </section>
+                    
+        <section id="team" class="gray-section team">
+            <div class="container">
+                <div class="row m-b-lg">
+                    <div class="col-lg-12 text-center">
+                        <div class="navy-line"></div>
+                        <h1>Our Team</h1>
+                        <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod.</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 wow fadeInLeft">
+                        <div class="team-member">
+                            <img src="img/avatar3.jpg" class="img-responsive img-circle img-small" alt="">
+                            <h4><span class="navy">Amelia</span> Smith</h4>
+                            <p>Lorem ipsum dolor sit amet, illum fastidii dissentias quo ne. Sea ne sint animal iisque, nam an soluta sensibus. </p>
+                            <ul class="list-inline social-icon">
+                                <li><a href="#"><i class="fa fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="team-member wow zoomIn">
+                            <img src="img/avatar1.jpg" class="img-responsive img-circle" alt="">
+                            <h4><span class="navy">John</span> Novak</h4>
+                            <p>Lorem ipsum dolor sit amet, illum fastidii dissentias quo ne. Sea ne sint animal iisque, nam an soluta sensibus.</p>
+                            <ul class="list-inline social-icon">
+                                <li><a href="#"><i class="fa fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 wow fadeInRight">
+                        <div class="team-member">
+                            <img src="img/avatar2.jpg" class="img-responsive img-circle img-small" alt="">
+                            <h4><span class="navy">Peter</span> Johnson</h4>
+                            <p>Lorem ipsum dolor sit amet, illum fastidii dissentias quo ne. Sea ne sint animal iisque, nam an soluta sensibus.</p>
+                            <ul class="list-inline social-icon">
+                                <li><a href="#"><i class="fa fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-linkedin"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="features">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <div class="navy-line"></div>
+                        <h1>Even more great features</h1>
+                        <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. </p>
+                    </div>
+                </div>
+                <div class="row features-block">
+                    <div class="col-lg-3 features-text wow fadeInLeft">
+                        <small>HONLINE</small>
+                        <h2>Az online otthonkezelő </h2>
+                        <p>Az általunk kezelt társasházakban a honline.hu rendszerével 
+                            a lakók és tulajdonosok a házügyek kezelésének átlátható, kényelmes 
+                            és költséghatékony módját valósíthatják meg.</p>
+                        <a href="" class="btn btn-primary">Learn more</a>
+                    </div>
+                    <div class="col-lg-6 text-right m-t-n-lg wow zoomIn">
+                        <img src="img/iphone.jpg" class="img-responsive" alt="dashboard">
+                    </div>
+                    <div class="col-lg-3 features-text text-right wow fadeInRight">
+                        <small>HONLINE</small>
+                        <h2>Az online otthonkezelő </h2>
+                        <p>Ha érdekli a honline.hu megoldásait alkalmazó társasházi közös képviselet,  
+                            vegye fel velünk a kapcsolatot <a href="mailto:info@honline.net?Subject=Közös%20képviselet">e-mailben.</a></p>
+                        <a href="" class="btn btn-primary">Learn more</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="contact" class="gray-section contact">
+            <div class="container">
+                <div class="row m-b-lg">
+                    <div class="col-lg-12 text-center">
+                        <div class="navy-line"></div>
+                        <h1>Kapcsolat</h1>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="row m-b-lg">
+                    <div class="col-lg-3 col-lg-offset-3">
+                        <address>
+                            <strong><span class="navy">Üzemeltető cég</span></strong><br/>
+                            utca házszám<br/>
+                            1065<br/>
+                            E-mail: info@honline.net
+                        </address>
+                    </div>
+                    <div class="col-lg-4">
+                        <p class="text-color">
+                            Ha érdekli a honline.hu megoldásait alkalmazó társasházi közös képviselet,  
+                            vegye fel velünk a kapcsolatot e-mailben.
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <a href="mailto:info@honline.net?Subject=Közös%20képviselet" class="btn btn-primary">Send us mail</a>
+                        <p class="m-t-sm">
+                            Vagy keressen meg bennünket a közösségi oldalakon:
+                        </p>
+                        <ul class="list-inline social-icon">
+                            <li><a href="#"><i class="fa fa-twitter"></i></a>
+                            </li>
+                            <li><a href="#"><i class="fa fa-facebook"></i></a>
+                            </li>
+                            <li><a href="#"><i class="fa fa-linkedin"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg">
+                        <p><strong>&copy; 2015 Company Name</strong></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    
+    </div>
+</template>

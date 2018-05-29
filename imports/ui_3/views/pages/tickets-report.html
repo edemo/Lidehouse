@@ -24,7 +24,7 @@
                       </div>
                       <div class="col-xs-7 content no-top-border">
                             <p class="m-b-xs">
-                              <strong>{{title}}</strong>
+                                <a class="text-primary" href="{{pathFor 'Topic.show' _tid=_id}}"><strong>{{title}}</strong></a>
                               <!--span class="label label-white text-white label-xs">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span-->
                               <!--span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span-->
                             </p>
