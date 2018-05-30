@@ -1,0 +1,15 @@
+<template name="Profile_form">
+     <!-- Page heading -->
+    {{> Page_heading title=(_ 'User data page') noBreadcrumbs=true}}
+
+    <div class="wrapper wrapper-content animated fadeInUp">
+      <div class="page-slim">
+        {{#autoForm id="af.user.update" collection=users schema=schema omitFields="emails" doc=document type="method-update" meteormethod="user.update" singleMethodArgument=true}}
+        {{> afQuickFields}}
+        <div class="m-b-lg text-right">
+          <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+        </div>
+        {{/autoForm}}
+      </div>
+    </div>
+</template>

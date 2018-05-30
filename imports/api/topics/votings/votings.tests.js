@@ -130,7 +130,7 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(voting.voteCastsIndirect, castsShouldBe);
         chai.assert.equal(_.keys(voting.voteResults).length, 1);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].votingShare, new Fraction(10, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].voteResult, [choice]);
+        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].castedVote, [choice]);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].votePath, [Fixture.dummyUsers[1]]);
         const summaryShouldBe = {};
         summaryShouldBe[choice] = 10;
@@ -147,10 +147,10 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(voting.voteCastsIndirect, castsShouldBe);
         chai.assert.equal(_.keys(voting.voteResults).length, 2);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].votingShare, new Fraction(10, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].voteResult, [1]);
+        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].castedVote, [1]);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].votePath, [Fixture.dummyUsers[1]]);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[2]].votingShare, new Fraction(20, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[2]].voteResult, [choice]);
+        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[2]].castedVote, [choice]);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[2]].votePath, [Fixture.dummyUsers[2]]);
         const summaryShouldBe = {};
         if (choice === 1) {
@@ -232,10 +232,10 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(voting.voteCastsIndirect, castsShouldBe);
         chai.assert.equal(_.keys(voting.voteResults).length, 4);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].votingShare, new Fraction(30, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].voteResult, [choice]);
+        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].castedVote, [choice]);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].votePath, [Fixture.dummyUsers[3]]);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].votingShare, new Fraction(40, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].voteResult, [choice]);
+        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].castedVote, [choice]);
         chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].votePath, [Fixture.dummyUsers[4], Fixture.dummyUsers[3]]);
         const summaryShouldBe = {};
         if (choice === 0) {

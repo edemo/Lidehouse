@@ -1,0 +1,103 @@
+<template name="Top_navbar">
+    <div class="row border-bottom">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                {{#if currentUser}}
+                    <a id="navbar-minimalize" class="minimalize-styl-2 btn btn-primary " href=""><i class="fa fa-bars"></i> </a>
+                    <!--form role="search" class="navbar-form-custom" action="search_results">
+                        <div class="form-group">
+                            <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                        </div>
+                    </form-->
+                {{else}}
+                    <a href="{{pathFor 'App.intro'}}" id="logo" class="minimalize-styl-2">
+                        <img class="visible-sm visible-md visible-lg" src="/images/logo-duo-text.png" width="100" alt="Logo">
+                        <img class="visible-xs" src="/favicon.png" width="40" alt="Logo">
+                    </a>
+                {{/if}}
+            </div>
+            <ul class="nav navbar-top-links navbar-right">
+                {{#if currentUser}}
+                <li>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="">
+                        <strong class="text-muted text-xs block">
+                            {{#if activeCommunity}}
+                                {{activeCommunity.name}}
+                            {{else}}
+                                {{_ 'No active' }} {{_ 'community'}}
+                            {{/if}}
+                            <b class="caret"></b>
+                        </strong>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInDown m-t-xs">
+                        {{#each userCommunities}}
+                        <li><a href="" class="js-switch-community">{{name}}</a></li>
+                        {{/each}}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{pathFor 'Communities.listing'}}"> + {{_ 'Join a community'}} </a></li>
+                        <li><a class="js-create-community" href=""> + {{_ 'Create a community'}} </a></li>
+                    </ul>
+                </li>
+                 <!-- Code from MODERN theme's top-navigation>
+                 <li class="dropdown">
+                    <a href="" class="dropdown-toggle waves-effect waves-button waves-classic" data-toggle="dropdown">
+                        <span class="user-name">David<i class="fa fa-angle-down"></i></span>
+                        <img class="img-circle avatar" src="{{currentUser.avatar}}" width="40" height="40" alt="">
+                    </a>
+                    <ul class="dropdown-menu dropdown-list" role="menu">
+                        <li role="presentation"><a href="profile.html"><i class="fa fa-user"></i>Profile</a></li>
+                        <li role="presentation"><a href="calendar.html"><i class="fa fa-calendar"></i>Calendar</a></li>
+                        <li role="presentation"><a href="inbox.html"><i class="fa fa-envelope"></i>Inbox<span class="badge badge-success pull-right">4</span></a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a href="lock-screen.html"><i class="fa fa-lock"></i>Lock screen</a></li>
+                        <li role="presentation"><a href="login.html"><i class="fa fa-sign-out m-r-xs"></i>Log out</a></li>
+                    </ul>
+                </li-->
+                <li>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span>
+                        <strong id="username" class="font-bold hidden-xs hidden-sm">{{currentUser.displayName}}</strong>                            
+                        <img alt="image" class="img-circle" src="{{currentUser.avatar}}" width="25"/>
+                        <b class="caret"></b>
+                    </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right animated fadeInDown m-t-xs" aria-labelledby="user-menu-dropdown">
+                        <li>                
+                            <a href="{{pathFor 'Profile.show' _id=currentUser._id}}">
+                                <i class="glyphicon glyphicon-cog" aria-hidden="true"></i> 
+                                {{_ 'profile'}}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="" class="js-logout">
+                                <i class="glyphicon glyphicon-log-out" aria-hidden="true"></i>
+                                {{_ 'logout'}}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="right-sidebar-toggle count-info" href="">
+                        <i class="fa fa-envelope"></i>  
+                        {{#if countNotifications 'room'}}
+                        <span class="label badge badge-danger">{{countNotifications 'room'}}</span>
+                        {{/if}}  
+                    </a>                    
+                </li>     
+                {{else}}
+                <li>
+                    <a href="{{pathFor 'Communities.listing'}}">{{_ 'Houses'}}</a> 
+                </li>
+                <li>
+                    <a href="{{pathFor 'About.us'}}">{{_ 'About'}}</a>
+                </li>
+                <li>
+                    <a href="{{pathFor 'signin'}}">
+                        <i class="fa fa-sign-in"></i>{{_ 'login'}}
+                    </a>
+                </li>
+                {{/if}}
+            </ul>
+        </nav>
+    </div>
+</template>

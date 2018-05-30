@@ -33,21 +33,8 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'update', topic);
-    checkModifier(topic, modifier, ['title', 'text']);   // only text and title can be modified
+    checkModifier(topic, modifier, ['title', 'text', 'sticky']);
     Topics.update({ _id }, modifier);
-  },
-});
-
-export const setSticky = new ValidatedMethod({
-  name: 'topics.sticky.update',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    value: { type: Boolean },
-  }).validator(),
-  run({ _id, value }) {
-    const topic = checkExists(Topics, _id);
-    checkTopicPermissions(this.userId, 'sticky.update', topic);
-    Topics.update({ _id }, { $set: { sticky: value } });
   },
 });
 

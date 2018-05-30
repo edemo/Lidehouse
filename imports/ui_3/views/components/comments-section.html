@@ -1,0 +1,43 @@
+<template name="Comments_section">
+    <div class="social-footer">
+    {{#each comment in comments}}
+        {{> Comment comment}}
+    {{/each}}
+        <div class="social-comment">
+            <a href="" class="pull-left">
+                <img alt="avatar" src={{currentUser.avatar}}>
+            </a>
+            <div class="media-body">
+                <textarea class="form-control js-send-enter" placeholder={{_ 'newCommentPlaceholder'}}></textarea>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="Comment">
+    <div class="social-comment">         
+        <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
+            <img alt="avatar" src={{user.avatar}}>
+        </a>
+        <div class="media-body" >
+            <a href="{{pathFor 'User.show' _id=user._id}}">
+                {{user.fullName}}
+            </a>
+            <span class="newlines" data-id="{{_id}}">{{text}}</span>
+            <br/>
+            <a href="" class="small cap-first js-like">
+                <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                {{_ 'important'}}! ({{likesCount}})
+            </a> -
+            <small class="text-muted">{{displayTimeFrom createdAt}}</small>
+            {{#if userHasPermission 'comments.remove' (fromSession 'activeCommunityId') this}}
+                <div class="btn-group">
+                    {{#if userHasPermission 'comments.update' (fromSession 'activeCommunityId') this}}
+                    <button class="btn btn-white btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
+                    {{/if}}
+                    <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</template>

@@ -29,7 +29,7 @@ export function checkNotExists(collection, predicate) {
   const object = collection.findOne(predicate);
   if (object) {
     throw new Meteor.Error('err_duplicateId', 'This id is already used',
-      `Collection: ${collection._name}, id: ${predicate}`
+      `Collection: ${collection._name}, predicate: ${JSON.stringify(predicate)}` 
     );
   }
 }
@@ -57,14 +57,16 @@ export function checkTopicPermissions(userId, permissionName, topic) {
 }
 
 export function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
-  // Checks that *user* has permission to add new member in given *community*
-  if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?
-  let permissioned = false;
-  const rolesOfUser = Memberships.find({ 'person.userId': userId, communityId }).map(m => m.role);
-  rolesOfUser.forEach((role) => {
-    if (_.contains(canAddMemberWithRole[role], roleOfNewMember)) permissioned = true;
-  });
-  if (!permissioned) {
+  // Checks that *user* has permission to add new member in given *community*  
+  const user = Meteor.users.findOne(userId);
+  let permName;
+  switch (roleOfNewMember) {
+    case ('guest'): return;  // TODO: who can join as guest? or only in Demo house?)
+    case ('owner'): permName = 'ownerships.update'; break;
+    case ('benefactor'): permName = 'benefactorships.update'; break;
+    default: permName = 'roleships.update';
+  }
+  if (!user.hasPermission(permName, communityId)) {
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
       `roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
   }
@@ -79,7 +81,7 @@ export function checkModifier(object, modifier, modifiableFields, exclude = fals
     if ((exclude && _.contains(modifiableFields, mf) && !_.isEqual(Object.byString(object, mf), modifier.$set[mf]))
       || (!exclude && !_.contains(modifiableFields, mf) && !_.isEqual(Object.byString(object, mf), modifier.$set[mf]))) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Modifier: ${JSON.stringify(modifier)}, field: ${mf}, object: ${JSON.stringify(object)}`);
+        `Field: ${mf}\n Modifier: ${JSON.stringify(modifier)}\n Object: ${JSON.stringify(object)}`);
     }
   });
 }

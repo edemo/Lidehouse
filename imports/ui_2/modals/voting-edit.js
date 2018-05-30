@@ -14,7 +14,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { votingsExtensionSchema } from '/imports/api/topics/votings/votings.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
-import { fileUpload } from '../components/shareddoc-display.js';
+import '/imports/ui_3/views/components/shareddoc-display.js';
 import './voting-edit.html';
 
 
@@ -57,9 +57,9 @@ Template.Voting_edit.helpers({
   title() {
     if (this.title) return this.title;
     const actionName = Template.Voting_edit.actionFromId();
-    if (actionName === 'insert') return __('new') + ' ' + __('vote');
-    else if (actionName === 'update') return __('vote') + ' ' + __('editing data');
-    else if (actionName === 'view') return __('vote') + ' ' + __('viewing data');
+    if (actionName === 'insert') return __('new') + ' ' + __('topic.vote');
+    else if (actionName === 'update') return __('topic.vote') + ' ' + __('editing data');
+    else if (actionName === 'view') return __('topic.vote') + ' ' + __('viewing data');
     else return 'data';
   },
   btnOK() {
@@ -102,21 +102,29 @@ Template.Voting_edit.events({
     currentChoices.splice(removeIndex, 1);
     Template.instance().choices.set(currentChoices);
   },
-  'click .js-enter-choice'(event) {
-    let currentChoices = Template.instance().choices.get();
-    const newChoice = $('.editing input')[0].value;
-    currentChoices = currentChoices.concat(newChoice);
-    Template.instance().choices.set(currentChoices);
-    $('.editing')[0].classList.toggle('hidden');
-    $('.js-add-choice')[0].classList.toggle('hidden');
+  'keyup .js-enter-choice'(event) {
+    if (event.keyCode == 13 ){
+      let currentChoices = Template.instance().choices.get();
+      const newChoice = $('.editing input')[0].value;
+      currentChoices = currentChoices.concat(newChoice);
+      Template.instance().choices.set(currentChoices);
+      $('.js-enter-choice').val("");
+      $('.editing')[0].classList.toggle('hidden');
+      $('.js-add-choice')[0].classList.toggle('hidden');
+    }
   },
   'click .js-add-choice'(event) {
     $('.editing')[0].classList.toggle('hidden');
     $('.js-add-choice')[0].classList.toggle('hidden');
+    $('.js-enter-choice').focus();
   },
   'click .js-upload'(event) {
     const topicId = getTopicId(Template.instance().data);
-    Shareddocs.upload({ communityId: Session.get('activeCommunityId'), topicId });
+    Shareddocs.upload({ 
+      communityId: Session.get('activeCommunityId'),
+      folderId: 'voting',
+      topicId,
+    });
   },
 });
 

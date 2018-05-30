@@ -1,0 +1,30 @@
+<template name="Main_layout">
+    <div id="{{#unless currentUser}}no-user{{/unless}}">
+        <!-- Wrapper-->
+        <div id="wrapper">
+
+            <!-- Navigation -->
+            {{> Navigation }}
+
+            <!-- Page wrapper-->
+            <div id="page-wrapper" class="gray-bg">
+
+                {{> Top_navbar }}
+                {{> Template.dynamic template=content}}
+                {{> Footer }}
+
+            </div>
+            <!-- End Page wrapper-->
+
+            <!-- Right Sidebar -->
+            <div>
+                {{> Right_sidebar }}
+            </div>
+
+        </div>
+        <!-- End wrapper-->
+    </div>
+
+    {{> Connection_issue}}
+
+</template>

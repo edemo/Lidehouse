@@ -1,0 +1,38 @@
+<template name="Communities_listing">
+
+    <!-- Page heading -->
+    {{> Page_heading title=(_ 'Communities list') }}
+
+    <div class="wrapper wrapper-content  animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox parcels-section">
+                    <div class="ibox-content">
+                        <span class="text-muted small pull-right">Ha létrehoz egy új közösséget, ön lesz az Adminisztrátor!</span>
+                        <h2>{{_ 'Community finder'}}</h2>
+                        <p>
+                            A rendszerünkben létrehozott olyan házakat, melyek fogadnak még új tagokat, itt látja. <br>
+                            Ha megtalálja saját házát a listában és még nem tagja a közösségnek, a ház adatlapján csatlakozási kérelmet adhat be, melyet a ház vezetői elfogadhatnak. <br>
+                            Ha a háza még nem található meg a rendszerben, akkor létrehozhatja azt és meghívhatja lakótársait is hogy csatlakozzanak.
+                        </p>
+                        <br>
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=reactiveTableDataFn options=optionsFn }}
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                {{_ "Create your own community"}}
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                <button class="btn btn-primary js-create">{{_ 'createNew'}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

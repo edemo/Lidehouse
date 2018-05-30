@@ -1,3 +1,4 @@
+/* global alert */
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
@@ -26,6 +27,8 @@ Template.Autoform_edit.helpers({
 AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
   AutoForm.addHooks(afId, {
     onError(formType, error) {
+      // const errorMessage = __('errorInFormFieldValidation');
+      // error.message = errorMessage + '\n' + error.message;
       displayError(error);
     },
     onSuccess(formType, result) {

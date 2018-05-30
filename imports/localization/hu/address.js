@@ -6,3 +6,7 @@ export const HungarianAddressSchema = new SimpleSchema({
   street: { type: String, max: 100 },
   number: { type: String, max: 100 },
 });
+
+export function hungarianDisplayAddress(c) {
+  return ` ${c.zip} ${c.city}, ${c.street} ${c.number}`;
+}

@@ -18,11 +18,11 @@ import '../modals/autoform-edit.js';
 import { afCommunityInsertModal } from './communities-edit.js';
 import './communities-join.html';
 
-Template.Communities_join.onCreated(function onCreated() {
+Template.Communities_listing.onCreated(function onCreated() {
   this.subscribe('communities.listing');
 });
 
-Template.Communities_join.helpers({
+Template.Communities_listing.helpers({
   communities() {
     return Communities.find({});
   },
@@ -44,7 +44,7 @@ Template.Communities_join.helpers({
   },
 });
 
-Template.Communities_join.events({
+Template.Communities_listing.events({
   'click .js-join'(event) {
     const communityId = $(event.target).data('id');
 

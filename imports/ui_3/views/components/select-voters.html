@@ -1,0 +1,6 @@
+<template name="Select_voters">
+  <p>{{_ "Please select voters"}}</p>
+  {{#autoForm id="af.select.voters" schema=schema type=method meteormethod="vote.castForOthers"}}
+    {{> afQuickField name="voters"}}
+  {{/autoForm}}
+</template>

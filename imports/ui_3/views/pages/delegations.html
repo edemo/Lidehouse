@@ -1,0 +1,156 @@
+<template name="Delegation_list">
+    <div class="project-list">                    
+        <table class="table table-hover">
+            <tbody>
+            {{#each items}}
+            <tr>
+                <td class="project-people">
+                    {{sourcePerson.displayName}}
+                </td>
+                <td class="project-people">
+                    <a href=""><img alt="image" class="img-circle" src={{sourcePerson.avatar}}></a>
+                </td>
+                <td class="">
+                  <i class="fa fa-share"></i>
+                </td>
+                <td class="project-people">
+                    <a href=""><img alt="image" class="img-circle" src={{targetPerson.avatar}}></a>
+                </td>
+                <td class="">
+                    {{targetPerson.displayName}}
+                </td>
+                <td class="project-title">
+                    <a href="">{{displayScope scope}}</a>
+                    <!--br/>
+                    {{#if vote.closed}}
+                    <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>
+                    {{else}}
+                    <small>{{_ 'closes'}}: {{displayTimeFrom vote.closesAt}}</small>
+                    {{/if}}-->
+                </td>
+                <td class="project-title">
+                    <a href="">{{displayScopeObject scopeObject}}</a>
+                </td>
+                <td class="project-actions">
+                    <a href="" class="btn btn-white btn-sm js-edit" data-id="{{_id}}" title={{_ 'edit'}}><i class="fa fa-pencil text-capitalize"></i></a>
+                    <a href="" class="btn btn-white btn-sm js-remove" data-id="{{_id}}" title={{_ 'delete'}}><i class="fa fa-times text-capitalize"></i></a>
+                </td>
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</template>
+
+<template name="Delegations">
+
+    <!-- Page heading -->
+    {{> Page_heading title=(_ 'Delegations')}}
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+
+        <div class="row">
+            <div class="col-lg-8"> 
+            {{#if userHasPermission 'delegations.forOthers' (fromSession 'activeCommunityId') }}
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>{{_ 'Delegations'}} </h5>
+                        <div class="ibox-tools">
+                            {{>iboxTools}}
+                        </div>
+                    </div>
+                    <div class="ibox-content scrollbar-horizontal">
+                        <form>
+                            <input type="checkbox" name="allow" id="allow">
+                            <label for="allow">{{_ 'allowDelegationsToMe'}}</label>
+                        </form>
+                        <p>
+                          {{_ 'A házban lévő összes aktív meghatalmazás listája'}}<br>
+                        </p>
+                        <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
+                        {{#if delegations.count}}
+                            <br>
+                            {{> ReactiveDatatable tableData=delegationsDataFn options=delegationsOptionsFn}}
+                        {{else}}
+                        <div class="text-center m-t-lg">
+                            <small>Nincsenek meghatalmazások</small>
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>    
+            {{else}}
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>{{_ 'Delegations from me'}} </h5>
+                        <div class="ibox-tools">
+                            {{>iboxTools}}
+                        </div>
+                    </div>
+                    <div class="ibox-content scrollbar-horizontal">
+                        <p>
+                          {{_ 'delegationsFromMeInstructions'}}<br>
+                          {{_ 'delegationsFromMeInstructions2'}}
+                        </p>
+                        <a href="" class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
+                        {{#if delegationsFromMe.count}}
+                            {{>Delegation_list items=delegationsFromMe}}
+                        {{else}}
+                        <div class="text-center m-t-lg">
+                            <small>Nincsenek meghatalmazások</small>
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>    
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>{{_ 'Delegations to me'}}</h5>
+                        <div class="ibox-tools">
+                            {{>iboxTools}}
+                        </div>
+                    </div>
+                    <div class="ibox-content scrollbar-horizontal">
+                        <form>
+                            <input type="checkbox" name="allow" id="allow">
+                            <label for="allow">{{_ 'allowDelegationsToMe'}}</label>
+                        </form>
+                        <p>
+                          {{_ 'delegationsToMeInstructions'}}<br>
+                          {{_ 'delegationsToMeInstructions2'}}
+                        </p>
+                        {{#if delegationsToMe.count}}
+                          {{>Delegation_list items=delegationsToMe}}
+                        {{else}}
+                        <div class="text-center m-t-lg">
+                            <small>Nincsenek meghatalmazások</small>
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>              
+            {{/if}}
+            </div>
+
+            <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{{_ 'Voting power'}}</h5>
+                    {{>iboxTools}}
+                </div>
+                <div class="ibox-content">
+                    <p>
+                      <strong>{{_ 'Your voting power'}}:</strong><br>
+                      {{currentUser.totalOwnedUnits activeCommunityId}} {{_ 'from own voting units'}}<br>
+                      {{currentUser.totalDelegatedToMeUnits activeCommunityId}} {{_ 'from delegated voting units'}}<br>
+                      <strong>{{_ 'In total'}}: {{currentUser.totalVotingPower activeCommunityId}}</strong>
+                    </p>
+                    <div>
+                        <canvas id="votingPowerChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+        </div>
+ 
+    </div>
+
+</template>

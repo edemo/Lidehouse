@@ -1,0 +1,105 @@
+<template name="Board">
+  <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+
+      <!-- right side -->
+      <div class="col-xs-12 col-lg-4 pull-right">
+        {{> Balance_widget}}
+        {{> News}}
+      </div>
+
+      <div class="col-xs-12 col-lg-8">
+        {{#Collapse_section id='vote' title=activeVotingsTitle }}
+          {{#each topics 'vote'}}
+            <div class="ibox">
+              <div class="ibox-content">             
+                {{> Votebox}}
+              </div>
+              <div>  
+                {{> Comments_section this}}
+              </div>
+            </div>
+          {{else}}
+            <!-- ha nincs szavazás ~ empty state -->
+            <div class="vote-container white-box text-center">
+              <h3>
+                {{_ 'No active votes'}}
+              </h3>
+              <h4 class="m2em">
+                {{_ 'Latest votes'}}: <br /><span class="b"><a href="{{pathFor 'Topics.vote'}}"><span class="em b">{{_ 'Votings'}}</span></a> &gt; <span class="em">{{_ 'Closed votings'}}</span></span>
+              </h4>
+          </div>
+          {{/each}}
+        {{/Collapse_section}}
+
+        {{#Collapse_section id='forum' title='Forum' notFirst=true}}
+          {{> New_forum_topic}}
+          {{#each topics 'forum'}}
+          {{> Chatbox}}
+          {{/each}}
+        {{/Collapse_section}}
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<template name="News">
+    {{#Collapse_section id='news' title='News board' }}
+    <div class="ibox float-e-margins">
+      <!--div class="ibox-content ibox-heading">
+          <h3><i class="fa fa-envelope-o"></i> New messages</h3>
+          <small><i class="fa fa-tim"></i> You have 22 new messages and 16 waiting in draft folder.
+          </small>
+      </div-->
+      <div class="ibox-content">
+          <div class="feed-activity-list">
+              {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
+              <div class="feed-element">
+                  <button class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'topic.news'}}</button>
+              </div>
+              {{/if}}
+              {{#each topics 'news' false}}
+              <div class="feed-element">
+                  <div class="news-elem" data-id="{{_id}}">
+                      <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
+                      <strong>{{title}}</strong>
+                      <div>{{text}}</div>
+                      {{#if currentUser.hasPermission 'news.update' activeCommunityId}}
+                      <div class="btn-group pull-right m-t-sm">
+                        <button class="btn btn-white btn-xs text-capitalize js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                        <button class="btn btn-white btn-xs text-capitalize js-remove"><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                      </div>
+                      {{/if}}
+                  </div>
+              </div>
+              {{/each}}
+          </div>
+      </div>
+    </div>
+    {{/Collapse_section}}
+
+  {{#each topics 'news' true}}
+  <div class="ibox infos">
+  <div class="ibox-content">
+  <div class="feed-element">
+  <div class="news-elem" data-id="{{_id}}">
+    <div class="full-width">
+      <strong>{{title}}</strong>
+      <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
+      {{#markdown}}{{text}}{{/markdown}}  
+      {{#if currentUser.hasPermission 'news.update' activeCommunityId}}
+      <div class="btn-group pull-right m-t-sm">
+        <button class="btn btn-white btn-xs text-capitalize js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+        <button class="btn btn-white btn-xs text-capitalize js-remove"><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  {{/each}}
+  
+</template>

@@ -94,7 +94,7 @@ export class PaymentReport {
     const row = this.rows[y];
     const filter = _.extend({}, this.filters);
 
-    let classes = '';
+    let classes = 'cell';
     function addFilter(f) {
       _.extend(filter, f.filter());
       classes += ' ' + f.class;
@@ -106,7 +106,7 @@ export class PaymentReport {
     const payments = Payments.find(filter);
     payments.forEach(pay => amount += pay.amount);
 
-    if (amount < 0) classes += ' negative';
+    if (amount < -0.001) classes += ' negative';
 //    console.log(`${x}, ${y}: filter:`); console.log(filter);
     return { class: classes, value: numeral(amount).format() };
   }

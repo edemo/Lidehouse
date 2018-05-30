@@ -7,8 +7,9 @@ import 'meteor/accounts-base';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 
@@ -61,6 +62,7 @@ const PersonProfileSchema = new SimpleSchema({
 const UserSettingsSchema = new SimpleSchema({
   language: { type: String, allowedValues: ['en', 'hu'], optional: true },
   delegatee: { type: Boolean, defaultValue: true },
+  newsletter: { type: Boolean, defaultValue: false },
 });
 
 const defaultAvatar = '/images/avatars/avatarnull.png';
@@ -102,6 +104,28 @@ Meteor.users.schema = new SimpleSchema({
 });
 
 Meteor.users.helpers({
+  safeUsername() {
+    // If we have a username in db return that, otherwise generate one from her email address
+    if (this.username) return this.username;
+    const email = this.emails[0].address;
+    return email.substring(0, email.indexOf('@'));
+  },
+  fullName() {
+    if (this.profile && this.profile.lastName && this.profile.firstName) {
+      if (this.language() === 'hu') {
+        return this.profile.lastName + ' ' + this.profile.firstName;
+      } else {
+        return this.profile.firstName + ' ' + this.profile.lastName;
+      }
+    }
+    return undefined;
+  },
+  displayName() {
+    return this.fullName() || `[${this.safeUsername()}]`;     // or fallback to the username
+  },
+  toString() {
+    return this.displayName();
+  },
   getPrimaryEmail() {
     return this.emails[0].address;
   },
@@ -111,17 +135,27 @@ Meteor.users.helpers({
     this.emails[0].verified = false;
     // TODO: A verification email has to be sent to the user now
   },
-  memberships() {
-    return Memberships.find({ 'person.userId': this._id });
+  language() {
+    return this.settings.language || 'en';
+  },
+  // Memberships
+  memberships(communityId) {
+    return Memberships.find({ 'person.userId': this._id, communityId });
   },
   ownerships(communityId) {
     return Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' });
+  },
+  ownedParcels(communityId) {
+    const parcelIds = _.pluck(this.ownerships(communityId).fetch(), 'parcelId');
+    const parcels = parcelIds.map(pid => Parcels.findOne(pid));
+    const ownedParcels = parcels.filter(elem => elem);
+    return ownedParcels;
   },
   roles(communityId) {
     return Memberships.find({ 'person.userId': this._id, communityId }).fetch().map(m => m.role);
   },
   communities() {
-    const memberships = this.memberships().fetch();
+    const memberships = Memberships.find({ 'person.userId': this._id }).fetch();
     const communityIds = _.pluck(memberships, 'communityId');
     const communities = Communities.find({ _id: { $in: communityIds } });
     // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
@@ -130,6 +164,7 @@ Meteor.users.helpers({
   isInCommunity(communityId) {
     return !!Memberships.findOne({ 'person.userId': this._id, communityId });
   },
+  // Voting
   votingUnits(communityId) {
     let sum = 0;
     Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' }).forEach(m => (sum += m.votingUnits()));
@@ -137,7 +172,7 @@ Meteor.users.helpers({
   },
   hasPermission(permissionName, communityId, object) {
     const permission = Permissions.findOne({ name: permissionName });
-    if (!permission) return false;
+    debugAssert(permission, `No such permission "${permissionName}"`);
     const rolesWithThePermission = permission.roles;
     if (_.contains(rolesWithThePermission, 'null')) return true;
     if (permission.allowAuthor && object && (object.userId === this._id)) return true;
@@ -166,30 +201,14 @@ Meteor.users.helpers({
     const totalVotingUnits = this.totalOwnedUnits(communityId) + this.totalDelegatedToMeUnits(communityId);
     return new Fraction(totalVotingUnits, community.totalunits);
   },
-  safeUsername() {
-    // If we have a username in db return that, otherwise generate one from her email address
-    if (this.username) return this.username;
-    const email = this.emails[0].address;
-    return email.substring(0, email.indexOf('@'));
-  },
-  language() {
-    return this.settings.language || 'en';
-  },
-  fullName() {
-    if (this.profile && this.profile.lastName && this.profile.firstName) {
-      if (this.language() === 'hu') {
-        return this.profile.lastName + ' ' + this.profile.firstName;
-      } else {
-        return this.profile.firstName + ' ' + this.profile.lastName;
-      }
-    }
-    return undefined;
-  },
-  displayName() {
-    return this.fullName() || `[${this.safeUsername()}]`;     // or fallback to the username
-  },
-  toString() {
-    return this.displayName();
+  // Finances
+  balance(communityId) {
+    const parcels = this.ownedParcels(communityId);
+    let totalBalance = 0;
+    parcels.forEach((parcel) => {
+      totalBalance += parcel.balance();
+    });
+    return totalBalance;
   },
 });
 

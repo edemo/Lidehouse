@@ -1,0 +1,64 @@
+<template name="Community_finances">
+    <!-- Page heading -->
+    {{> Page_heading title=(_ 'Community finances') }}
+
+    <div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+
+    <div class="ibox ibox-dark" id='balances'>
+        <div class="ibox-title">
+            <h5>{{_ 'Balances'}}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+        {{> Custom_table report=(report 'Egyenlegek')}}
+        </div>
+    </div>
+
+    <div class="ibox ibox-dark" id='payments'>
+        <div class="ibox-title">
+            <h5>{{_ 'Payments'}}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+        {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+        <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+      </div>
+    </div>
+   
+    <div class="ibox ibox-dark" id='report'>
+        <div class="ibox-title">
+            <h5 class="text=capitalize">{{communityStatusReportTitle}}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+          {{> Custom_table report=(report 'PenzugyekReszletei' 2017)}}
+        </div>
+    </div>
+
+    <div class="ibox ibox-dark" id='bills'>
+        <div class="ibox-title">
+            <h5>{{_ 'Bills'}}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+        {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
+        <!--button class="js-new btn-primary">{{_ 'createNew'}}</button-->
+        <button class="js-many btn-primary">{{_ 'createMany'}}</button>
+      </div>
+    </div>
+    
+    <div class="ibox ibox-dark" id='payaccounts'>
+        <div class="ibox-title">
+            <h5>{{_ 'Payaccounts' }}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+          {{> ReactiveDatatable tableData=payaccountsTableDataFn options=payaccountsOptionsFn }}
+          <button class="js-new btn-primary">{{_ 'createNew'}}</button>
+        </div>
+    </div>
+
+  </div>
+  </div>
+</template>

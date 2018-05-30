@@ -8,7 +8,7 @@ import './config.js';
 // Declare store collection
 export const Shareddocs = new Mongo.Collection('shareddocs');
 
-function hasPermissionToUpload(userId, doc) {
+export function hasPermissionToUpload(userId, doc) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
   return user.hasPermission('shareddocs.upload', doc.communityId);

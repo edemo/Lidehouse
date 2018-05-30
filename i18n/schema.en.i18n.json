@@ -39,8 +39,14 @@
     },
     "settings": {
       "label": "Settings",
+      "language": {
+        "label": "Language"
+      },
       "delegatee": {
         "label": "Allow incoming delegations"
+      },
+      "newsletter": {
+        "label": "I would like to receive the newsletter about the application"
       }
     },
     "emails": {
@@ -62,16 +68,16 @@
     "person": {
       "natural": "natural person",
       "legal": "legal entity",
-      "label": "User",
+      "label": "Person",
       "userId": {
-        "label": "Select a user (from the registered users)"
+        "label": "Select a person (from the registered users)"
       },
       "userEmail": {
-        "label": "User's email address (if not yet registered)",
+        "label": "Person's email address (if not yet registered)",
         "placeholder": "(eg. jsmith45@dmail.com)"
       },
       "idCard": {
-        "label" : "User's verified data",
+        "label" : "Person's verified data",
         "type": {
           "label": "Entity type"
         },
@@ -89,7 +95,7 @@
         },
         "mothersName": {
           "label": "Mother's maiden name",
-          "placeholder": "(only for person)"
+          "placeholder": "(only for natural person)"
         },
         "dob": {
           "label": "Date of birth"
@@ -194,17 +200,20 @@
         "choose": "Choose from choices",
         "preferential": "Choose based on preference ordering",
         "petition": "Petition"
+      },
+      "voters": {
+        "label": "Voters"
       }
     }
   },
   "schemaTickets": {
     "title": {
       "label": "Title",
-      "placeholder": "PX-41"
+      "placeholder": "(eg. Elevator not working)"
     },
     "text": {
       "label": "Description",
-      "placeholder": "Describe the problem briefly..."
+      "placeholder": "(eg. Got stuck between third and fourth floor)"
     },
     "ticket": {
       "label": "Ticket",
@@ -333,6 +342,12 @@
     },
     "accounts": {
       "label": "Accounting tags"
+    }
+  },
+  "schemaSharedfolders": {
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Legal documents)"
     }
   }
 }

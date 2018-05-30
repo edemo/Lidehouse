@@ -1,0 +1,59 @@
+
+
+<template name="Shareddoc_boxy">
+    <div class="file-box">
+        <div class="file">
+            {{#if uploading}}
+            <a href="">
+                <span class="corner"></span>
+                <div class="icon">
+                    <img src="/images/spinner.gif" style="{ width: 6em; height: 6em; }">
+                </div>
+                <div class="file-name">
+                    {{name}}
+                    <br/>
+                    <small>{{_ 'Uploading'}}... {{completed}}%</small>
+                </div>
+            </a>
+            {{else}}
+            <a target="_blank" href="{{url}}">
+                <span class="corner"></span>
+                <div class="icon">
+                    <i class="fa fa-file"></i>
+                </div>
+                <div class="file-name">
+                    {{name}}
+                    <br/>
+                    <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>
+                </div>
+            </a>
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+<template name="Shareddoc_inline">
+    <div class="row file-item">
+      {{#if uploading}}
+      <div class="col-xs-10">
+        <span>{{completed}}%</span>
+        <img src="/images/spinner.gif" style="{ width: 1em; height: 1em; }">
+        <span>{{name}}</span>
+      </div>
+      {{else}}
+      <div class="col-xs-10">
+        <a target="_blank" href="{{url}}" title="{{displayDate createdAt}}">
+          <i class="fa fa-file"></i>
+          {{name}}
+        </a>
+      </div>
+      {{#if userHasPermission 'shareddocs.upload' (fromSession 'activeCommunityId')}}
+      <div class="col-xs-2 text-right">
+        <a class="js-delete nav-item">
+          <i class="glyphicon glyphicon-remove" title={{_ 'delete'}}></i>
+        </a>
+      </div>
+      {{/if}}
+      {{/if}}
+    </div>    
+</template>

@@ -57,6 +57,16 @@ Topics.helpers({
     if (!this.vote) return undefined;
     return (this.vote.type === type);
   },
+  unitsToShare(units) {
+    const votingShare = new Fraction(units, this.community().totalunits);
+    return votingShare;
+  },
+  shareToPercent(share) {
+    return Math.round(100 * (share.toNumber()));
+  },
+  voteSuccessLimit() {
+    return this.vote.type === 'petition' ? 10 : 50;
+  },
   eligibleVoterCount() {
 //    return Memberships.find({ communityId: this.communityId, role: 'owner' }).count();
     return Parcels.find({ communityId: this.communityId }).count();
@@ -65,8 +75,17 @@ Topics.helpers({
     return this.voteParticipation.count;
   },
   votedPercent() {
-    const voteParticipationShares = new Fraction(this.voteParticipation.units, this.community().totalunits);
-    return Math.round(100 * (voteParticipationShares.toNumber()));
+    const voteParticipationShare = this.unitsToShare(this.voteParticipation.units);
+    const voteParticipationPercent = this.shareToPercent(voteParticipationShare);
+    return voteParticipationPercent;
+  },
+  notVotedUnits() {
+    return this.community().totalunits - this.voteParticipation.units;
+  },
+  notVotedPercent() {
+    const nonParticipationShare = this.unitsToShare(this.notVotedUnits());
+    const nonParticipationPercent = this.shareToPercent(nonParticipationShare);
+    return nonParticipationPercent;
   },
   hasVotedDirect(userId) {
     return !!(this.voteCasts && this.voteCasts[userId] && this.voteCasts[userId].length > 0);
@@ -90,17 +109,19 @@ Topics.helpers({
       const votePath = [ownerId];
 
       function getVoteResult(voterId) {
-        const voteResult = directVotes[voterId];
-        if (voteResult) {
+        const castedVote = directVotes[voterId];
+        if (castedVote) {
           const result = {
             votingShare: ownership.votingShare(),
-            voteResult,
+            castedVote,
             votePath,
           };
           results[ownership.parcelId] = result;
-          indirectVotes[ownerId] = voteResult;
-          summary[voteResult] = summary[voteResult] || 0;
-          summary[voteResult] += ownership.votingUnits();
+          indirectVotes[ownerId] = castedVote;
+          castedVote.forEach((choice, i) => {
+            summary[choice] = summary[choice] || 0;
+            summary[choice] += ownership.votingUnits() * (1 - (i / castedVote.length));
+          });
           participation.count += 1;
           participation.units += ownership.votingUnits();
           return true;
@@ -137,7 +158,11 @@ Topics.helpers({
           return Meteor.users.findOne(this.votePath[0]);
         },
         voteResultDisplay() {
-          return topic.vote.choices[this.voteResult[0]];
+          let display = topic.vote.choices[this.castedVote[0]];
+          this.castedVote.forEach((r, i) => {
+            if (i > 0) display += ', ' + topic.vote.choices[r];
+          });
+          return display;
         },
         votePathDisplay() {
           if (this.votePath.length === 1) return 'direct';
@@ -152,7 +177,7 @@ Topics.helpers({
   voteSummaryDisplay() {
     const summary = this.voteSummary;
     return Object.keys(summary).map(key => {
-      const votingShare = new Fraction(summary[key], this.community().totalunits);
+      const votingShare = this.unitsToShare(summary[key]);
       return {
         choice: this.vote.choices[key],
         votingShare,

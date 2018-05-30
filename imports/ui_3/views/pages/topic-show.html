@@ -1,0 +1,216 @@
+<template name="Topic_show">
+    {{#with topic}}
+        <!-- Page heading -->
+        {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
+
+        {{#if (equals topic.category 'vote')}}
+        {{> Vote_topic_show}}
+        {{/if}}
+
+        {{#if (equals topic.category 'forum')}}
+        {{> Forum_topic_show}}
+        {{/if}}
+
+        {{#if (equals topic.category 'ticket')}}
+        {{> Ticket_topic_show}}
+        {{/if}}
+
+    {{/with}}
+</template>
+
+<template name="Vote_topic_show">
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        {{> Votebox}}
+
+                        <!--div class="row">
+                            <div class="col-lg-12">
+                                <div class="m-b-md">
+                                    <a href="" class="btn btn-white btn-xs pull-right">Edit project</a>
+                                    <h2>{{title}}</h2>
+                                </div>
+                            </div>
+                        </div-->
+                        <!--div class="row">
+                            <div class="col-lg-12">
+                                <dl class="dl-horizontal">
+                                    <dt>Completed:</dt>
+                                    <dd>
+                                        <div class="progress progress-striped active m-b-sm">
+                                            <div style="{{concat 'width: ' votedPercent '%;'}}" class="progress-bar"></div>
+                                        </div>
+                                        <p>{{_ 'Participation'}}: <strong>{{votedPercent}}%</strong>. Eredményesség feltétele: <strong>50%</strong>.</p>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div-->
+                        <div class="row m-t-sm">
+                            <div class="col-lg-12">
+                                <div class="panel blank-panel">
+                                    <div class="panel-heading">
+                                        <div class="panel-options">
+                                            <ul class="nav nav-tabs">
+                                                <li class="active"><a href="#tab-1" data-toggle="tab" class="cap-first">{{_ 'comments'}}</a></li>
+                                                <li class=""><a href="#tab-2" data-toggle="tab">{{_ 'Activity'}}</a></li>
+                                                {{#if closed}}
+                                                <li class=""><a href="#tab-3" data-toggle="tab">{{_ 'Casted votes'}}</a></li>
+                                                {{/if}}
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="panel-body">
+
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="tab-1">
+                                                {{> Comments_section}}
+                                            </div>
+                                            <div class="tab-pane" id="tab-2">
+                                                <div class="feed-activity-list">
+                                                    <div class="feed-element">
+                                                        <a href="" class="pull-left">
+                                                            <img alt="image" class="img-circle" src="{{createdBy.avatar}}">
+                                                        </a>
+                                                        <div class="media-body ">
+                                                            <small class="pull-right">{{displayTimeFrom createdAt}}</small>
+                                                            <strong>{{createdBy}}</strong> {{_ 'by'}} {{_ 'created'}} <br>
+                                                            <small class="text-muted">{{displayTime createdAt}}</small>
+                                                            <div class="well">
+                                                                {{text}}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {{#if closed}}
+                                                    <div class="feed-element">
+                                                        <a href="" class="pull-left">
+                                                            <img alt="image" class="img-circle" src="{{createdBy.avatar}}">
+                                                        </a>
+                                                        <div class="media-body ">
+                                                            <small class="pull-right">{{displayTimeFrom vote.closesAt}}</small>
+                                                            <strong>{{createdBy}}</strong> {{_ 'by'}} {{_ 'closed'}} <br>
+                                                            <small class="text-muted">{{displayTime vote.closesAt}}</small>
+                                                        </div>
+                                                    </div>
+                                                    {{/if}}
+                                                </div>
+                                            </div>
+                                            {{#if closed}}
+                                            <div class="tab-pane" id="tab-3">
+                                                {{> Vote_results}}
+                                            </div>
+                                            {{/if}}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="wrapper wrapper-content project-manager"> 
+                    <dl class="">
+                        <dt>{{_ 'Status'}}:</dt>
+                        <dd>
+                            {{#if closed}}
+                            <span class="label label-default text-capitalize">{{_ 'closed'}}</span>
+                            {{else}}
+                            <span class="label label-primary text-capitalize">{{_ 'active'}}</span>
+                            {{/if}}
+                        </dd>
+                    </dl>
+
+                    <dl class="">
+                        {{#if agendaId}}
+                        <dt>{{_ 'agenda'}}:</dt><dd>{{agenda.title}}</dd>
+                        {{/if}}
+                    </dl>
+
+                    <dl class="">
+                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy.toString}}</dd>
+                        <dt>{{_ 'createdAt'}}:</dt> <dd>{{displayDate createdAt}}</dd>
+                        <dt>{{_ 'Last activity'}}:</dt> <dd>{{displayDate updatedAt}}</dd>
+                    </dl>
+
+                    <!--h4>Project description</h4>
+                    <img src="img/zender_logo.png" class="img-responsive">
+                    <p class="small">
+                        There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look
+                        even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing
+                    </p>
+                    <p class="small font-bold">
+                        <span><i class="fa fa-circle text-warning"></i> High priority</span>
+                    </p>
+                    <h5>Project tag</h5>
+                    <ul class="tag-list" style="padding: 0">
+                        <li><a href=""><i class="fa fa-tag"></i> Zender</a></li>
+                        <li><a href=""><i class="fa fa-tag"></i> Lorem ipsum</a></li>
+                        <li><a href=""><i class="fa fa-tag"></i> Passages</a></li>
+                        <li><a href=""><i class="fa fa-tag"></i> Variations</a></li>
+                    </ul>
+                    <h5>Project files</h5>
+                    <ul class="list-unstyled project-files">
+                        <li><a href=""><i class="fa fa-file"></i> Project_document.docx</a></li>
+                        <li><a href=""><i class="fa fa-file-picture-o"></i> Logo_zender_company.jpg</a></li>
+                        <li><a href=""><i class="fa fa-stack-exchange"></i> Email_from_Alex.mln</a></li>
+                        <li><a href=""><i class="fa fa-file"></i> Contract_20_11_2014.docx</a></li>
+                    </ul>
+                    <div class="text-center m-t-md">
+                        <a href="" class="btn btn-xs btn-primary">Add files</a>
+                        <a href="" class="btn btn-xs btn-primary">Report contact</a>
+
+                    </div-->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="Forum_topic_show">    
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-md-9">
+                {{> Chatbox}}
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="Ticket_topic_show">    
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="row">
+            <div class="col-md-9">
+                {{> Chatbox}}
+            </div>
+            <div class="col-md-3">
+                <div class="wrapper wrapper-content project-manager"> 
+                    <dl class="">
+                        <dt>{{_ 'schemaTickets.ticket.status.label'}}:</dt> <dd>
+                            {{#if ticket.status}}
+                            <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
+                            {{else}}---
+                            {{/if}}
+                        </dd>
+                    </dl>
+                    <dl class="">
+                        <dt>{{_ 'schemaTickets.ticket.urgency.label'}}:</dt> <dd>
+                            {{#if ticket.urgency}}
+                            <span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span>
+                            {{else}}---
+                            {{/if}}
+                        </dd>
+                    </dl>
+                    <dl class="">
+                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy.toString}}</dd>
+                        <dt>{{_ 'createdAt'}}:</dt> <dd>{{displayDate createdAt}}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -39,8 +39,14 @@
     },
     "settings": {
       "label": "Beálítások",
+      "language": {
+        "label": "Nyelv"
+      },
       "delegatee": {
         "label": "Bejövő meghatalmazások engedélyezése"
+      },
+      "newsletter": {
+        "label": "Szeretnék feliratkozni az applikációval kapcsolatos hírlevélre"
       }
     },
     "emails": {
@@ -62,16 +68,16 @@
     "person": {
       "natural": "magánszemély",
       "legal": "jogi személyiség",
-      "label": "Felhasználó",
+      "label": "Személy",
       "userId": {
-        "label": "Felhasználó kiválasztása (a regisztráltak közül)"
+        "label": "Személy kiválasztása (a regisztráltak közül)"
       },
       "userEmail": {
-        "label": "Felhasználó email címe (ha még nem regisztrált)",
+        "label": "Személy email címe (ha még nem regisztrált)",
         "placeholder": "(pl. tibi45@dmail.com)"
       },
       "idCard": {
-        "label" : "Felhasználó ellenőrzött adatai",
+        "label" : "Személy ellenőrzött adatai",
         "type": {
           "label": "Entitás típusa"
         },
@@ -126,7 +132,7 @@
       "label": "Meghatalmazás köre",
       "placeholder": "(pl. Ház ügyei)",
       "community": "a ház ügyeire",
-      "agenda": "egy napirend ügyeire",
+      "agenda": "egy közgyűlés ügyeire",
       "topic": "egyetlen ügyre"
     },
     "scopeObjectId": {
@@ -153,7 +159,7 @@
       "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
     },
     "agendaId": {
-      "label": "Napirend (aminek része)"
+      "label": "Közgyűlés (aminek része)"
     },
     "sticky" : {
       "label": "Rögzített"
@@ -194,17 +200,20 @@
         "choose": "Eldöntendő (választás a lehetőségekből)",
         "preferential": "Preferenciális (választás preferenciák alapján)",
         "petition": "Támogatásgyűjtő"
+      },
+      "voters": {
+        "label": "Szavazatot leadók"
       }
     }
   },
   "schemaTickets": {
     "title": {
-      "label": "Cím",
-      "placeholder": "PX-41"
+      "label": "Hiba lényege",
+      "placeholder": "(pl. Elromlott a lift)"
     },
     "text": {
-      "label": "Hiba",
-      "placeholder": "A hiba rövid leírása..."
+      "label": "Hiba leírása",
+      "placeholder": "(pl. Megakadt a harmadik és negyedik között...)"
     },
     "ticket": {
       "label": "Hibajegy",
@@ -333,6 +342,12 @@
     },
     "accounts": {
       "label": "Könyvelési fiókok"
+    }
+  },
+  "schemaSharedfolders": {
+    "name": {
+      "label": "Név",
+      "placeholder": "(pl. Jogi papírok)"
     }
   }
 }

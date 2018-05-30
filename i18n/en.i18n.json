@@ -1,4 +1,13 @@
 {
+  "topic" : {
+    "forum": "forum topic",
+    "vote": "voting",
+    "news": "news post",
+    "ticket": "error ticket",
+    "room": "room",
+    "feedback": "feedback"
+  },
+
   // buttons etc.
   "confirm": "Are you sure?",
   "inviteSend": "Send invitation",
@@ -24,21 +33,25 @@
   "err_notLoggedIn": "Must be logged in",
   "err_permissionDenied": "You don't have permission",
   "pageNotFound": "Page not found",
+  "tryingToConnect": "Trying to connect…",
   "connectionIssue": "There seems to be a connection issue",
-  "tryingToConnect": "Trying to connect",
-  "newForumTopicPlaceholder": "Start a discussion...",
+  "connectionIssueLine1": "The server is not yet accessable.",
+  "connectionIssueLine2": "Data on the page might be stale.",
+  "newForumTitlePlaceholder": "New topic title…",
+  "newForumTextPlaceholder": "New topic text…",
   "newCommentPlaceholder": "Make your comment...",
   "messengerPeopleMenu": "People",
   "messengerMessagePlaceholder": "Your message here... (eg. I just baked a strawberry cake. Want to come over and taste it?)",
   "messengerHistoryPlaceholder": "No messages yet between you. <br> Start chatting today!",
-
+  "commentEditInstruction": "Press enter to save, escape to cancel.",
+  "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
   "userAccountsSubtitle": "Log in to enjoy all functionalities of this app",
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
   "pleaseSupplyParcelData": "Please supply as much data as possible about your parcel, so your join request can be approved quickly!",
-  "NoPermissionToUpload": "You have no permission to upload documents, please ask your manager's help",
-  
+  "No permission to upload": "You have no permission to upload documents, please ask the community manager's help",
+    
     // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",
@@ -53,6 +66,10 @@
   "votedViaDelegationHint" : "casting a vote can override this",
   "notYetVotedCastYourVoteOr": "cast your vote below, or",
   "setupYourDelegation": "set up a delegation",
+
+  // tickets
+  "Please dont report twice": "To help our maintanance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
+  "New ticket": "Report a new problem",
 
   // Notifications
   "Joined community": "Succesfully joined community %s",

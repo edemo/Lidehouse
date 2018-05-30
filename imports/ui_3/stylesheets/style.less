@@ -1,0 +1,66 @@
+
+@import "vote.less";
+@import "reports.less";
+
+h1, h2, h3, h4, h5, h6,
+button, button p,
+.cap-first {
+    &::first-letter {
+        text-transform: uppercase;
+    }
+}
+// on the main page
+.collapse-container {
+    margin-bottom: 20px;
+}
+
+#balance-widget-top {
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
+// likes and messages countbox if not in brackets on the button
+.count-box {
+    float: left;
+    border: 1px solid #e7eaec;
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.scrollbar-horizontal {
+    overflow-x: auto;
+}
+
+.newlines {
+    white-space: pre-line;
+}
+
+.tr-bold {
+    td {
+        font-weight: bold;
+    }
+}
+
+.page-slim {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1em;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.dropdown-menu {
+  animation-duration: .5s;
+}
+
+.widget .btn-primary {
+    border: 2px solid white;
+}
+
+//.nav li > a > i  { transition: all .2s ease-in-out; }
+.nav li.active > a > i { transform: scale(1.35); }

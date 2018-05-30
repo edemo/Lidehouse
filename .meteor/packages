@@ -33,6 +33,8 @@ flawless:meteor-toastr
 numeral:numeral
 perak:markdown
 q42:autoform-markdown
+fortawesome:fontawesome
+onokumus:metismenu
 
 # data
 mongo@1.1.14
@@ -94,3 +96,4 @@ dburles:factory
 
 # security
 audit-argument-checks@1.0.7
+

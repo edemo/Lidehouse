@@ -1,0 +1,89 @@
+<template name="Shareddoc_store">
+
+    <!-- Page heading -->
+    {{> Page_heading title=(_ 'Documentstore') }}
+
+    <div class="wrapper wrapper-content page-docs">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div class="file-manager">
+                            <!--h5>{{_ 'Show'}}:</h5>
+                            <a href="" class="file-control active">{{_ 'All'}}</a>
+                            {{#each extensions}}
+                                <a href="" class="file-control" data-ext="{{this}}">.{{this}}</a>
+                            {{/each}}
+                            <div class="hr-line-dashed"></div>
+                            <button name="upload" class="btn btn-primary btn-block {{#unless userHasPermission 'shareddocs.upload' activeCommunityId}}disabled{{/unless}}">
+                                <i class="fa fa-upload"></i>
+                                {{_ 'Upload file'}}
+                            </button>
+                            <div class="hr-line-dashed"></div-->
+                            <h5>{{_ 'Sharedfolders'}}</h5>
+                            <ul class="folder-list" style="padding: 0">
+                                {{#each builtinFolders}}
+                                <li>
+                                    <a href="" data-id={{_id}} class="{{#if (isActive _id)}}text-bold{{/if}}">
+                                        <span class="js-select"><i class="fa {{#if (isActive _id)}}fa-folder-open fa-lg{{else}}fa-folder{{/if}}"></i> {{_ name}}</span>
+                                    </a>
+                                </li>
+                                {{/each}}
+                                {{#each communityFolders}}
+                                <li>
+                                    <a href="" data-id={{_id}} class="{{#if (isActive _id)}}text-bold{{/if}}">
+                                        <span class="js-select"><i class="fa {{#if (isActive _id)}}fa-folder-open-o fa-lg{{else}}fa-folder-o{{/if}}"></i> {{_ name}}</span>
+                                        {{#if userHasPermission 'shareddocs.upload' activeCommunityId}}
+                                        <i class="fa fa-trash pull-right js-delete"></i>
+                                        <i class="fa fa-pencil pull-right js-edit"></i>
+                                        {{/if}}
+                                    </a>
+                                </li>
+                                {{/each}}
+                            </ul>
+                            <!--h5 class="tag-title">Tags</h5>
+                            <ul class="tag-list" style="padding: 0">
+                                <li><a href="">Work</a></li>
+                                <li><a href="">Home</a></li>
+                                <li><a href="">Holidays</a></li>
+                            </ul-->
+                            {{#if userHasPermission 'shareddocs.upload' activeCommunityId}}
+                            <button name="newdir" class="btn btn-default btn-xs js-new">
+                                <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'sharedfolder'}}
+                            </button>
+                            {{/if}}
+                            <div class="hr-line-dashed"></div>
+                            <button name="upload" class="btn btn-primary btn-block {{#unless userHasPermission 'shareddocs.upload' activeCommunityId}}disabled{{/unless}}" title={{_ 'No permission to upload'}}>
+                                <i class="fa fa-upload"></i>
+                                {{_ 'Upload file'}}
+                            </button>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 animated fadeInUp text-center">
+                <!--h1 class="page-title">{{_ activeFolder.name}}</h1-->
+                <!-- some instruction for the users 
+                {{_ 'documentStoreSubtitle'}}-->
+                <div class="row">
+                <div class="col-lg-12">
+
+<!--              {{#if storeHasDocuments }}-->
+                <div class="file-list">
+                  {{#each doc in shareddocs}}
+                  {{> Shareddoc_boxy doc }}
+                  {{/each}}
+                </div>
+<!--              {{else}} -->
+                    <!-- empty state -->
+<!--                <div class="upload-row margined-row border-bottom">
+                  <i>{{_ 'documentStorePlaceholder'}}</i>
+                </div>
+              {{/if}}-->
+              </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</template>

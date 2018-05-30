@@ -21,7 +21,6 @@ import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
 import '/imports/ui/components/loading.js';
-import '/imports/ui/components/side-panel.js';
 import '/imports/ui_2/pages/not-logged-in.html';
 import './custom-body.html';
 import { afCommunityInsertModal } from '../pages/communities-edit.js';
@@ -50,7 +49,7 @@ Template.Custom_body.onCreated(function customBodyOnCreated() {
   this.state.setDefault({
     menuOpen: false,
   });
-
+  // Subscriptions
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });

@@ -473,7 +473,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== News =====
 
-  ['0', '1', '2'].forEach((newsNo) => {
+  ['0', '1'].forEach((newsNo) => {
     const newsId = Topics.insert({
       communityId: demoCommunityId,
       userId: dummyUsers[0],
@@ -482,7 +482,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       text: __(`demo.news.${newsNo}.text`),
     });
 
-    if (newsNo == 2) {
+    // This sticky news item is not displayed now
+    /* if (newsNo == 2) {
       Topics.update(newsId, {
         $set: {
           text: 'Doctor: <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +36 (1) 345-562 <br>' +
@@ -492,7 +493,7 @@ export function insertDemoHouse(lang, demoOrTest) {
           sticky: true,
         },
       });
-    }
+    }*/
   });
 
   // ===== Votes =====
@@ -638,12 +639,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic4, castedVote: [1, 2, 3, 4] });
-  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic4, castedVote: [2, 3, 4, 1] });
-  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic4, castedVote: [3, 4, 1, 2] });
-  castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic4, castedVote: [2, 1, 3, 4] });
-  castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic4, castedVote: [2, 3, 4, 1] });
-  castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic4, castedVote: [2, 3, 1, 4] });
+  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic4, castedVote: [0, 1, 2, 3] });
+  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic4, castedVote: [1, 2, 3, 0] });
+  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic4, castedVote: [2, 3, 0, 1] });
+  castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic4, castedVote: [1, 0, 2, 3] });
+  castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic4, castedVote: [1, 2, 3, 0] });
+  castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic4, castedVote: [1, 2, 0, 3] });
 
   ['0', '1'].forEach(commentNo =>
     Comments.insert({

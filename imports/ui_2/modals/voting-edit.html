@@ -22,16 +22,19 @@
                     {{> afQuickField name="agendaId" options=agendaOptions}}
                     <div class="left-padded">
                         <label>{{_ "Attachments"}}</label>
-                        <hr>
                     </div>
-                    <div class="form-group file-list">
-                    {{#each doc in attachments}}
-                        {{> Shareddoc_display doc}}
-                    {{/each}}
+                    <div class="form-group">
+                        <ul class="file-list list-unstyled">
+                            {{#each doc in attachments}}
+                                <li>
+                                {{> Shareddoc_inline doc}}
+                                </li>
+                            {{/each}}
+                        </ul>
                     </div>
                     <div>
                         <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-secondary js-upload" name="docupload"> + {{_ "upload"}}</button>
+                        <button type="button" class="btn btn-info js-upload" name="docupload"> + {{_ 'Upload file'}}</button>
                         </div>
                     </div>
                 </div>
@@ -41,32 +44,43 @@
                     {{> afQuickField name="vote.procedure"}}
                     {{> afQuickField name="vote.effect"}}
                     {{> afQuickField name="vote.type"}}
-                    <div class="row">
-                        <div class="col-xs-12 text-center">{{_ "Choices"}}<hr></div>
-                    </div>
-                    <div class="row choice">
-                        {{#each choice in choices}}
-                        <div class="col-xs-12 choice-rect">
-                        {{_ choice}}<span class="glyphicon glyphicon-remove js-remove-choice" data-index="{{@index}}" data-choice={{choice}} aria-hidden="true"></span>
-                        </div>
-                        {{/each}}
+                    <div class="form-group">
+                        <label>{{_ "Choices"}}</label>
+                        <ul class="file-list list-unstyled">
+                            {{#each choice in choices}}
+                            <li>
+                                <div class="row">
+                                <div class="col-xs-10">{{_ choice}}</div>
+                                <div class="col-xs-2 text-right">
+                                    <i class="text-right glyphicon glyphicon-remove js-remove-choice" data-index="{{@index}}" data-choice={{choice}} aria-hidden="true"></i>
+                                </div>
+                                </div>
+                            </li>
+                            {{/each}}
+                        </ul>
                     </div>
                     <div class="row choice editing hidden">
                         <div class="col-xs-12 choice-rect">
-                        <span class="glyphicon glyphicon-ok js-enter-choice" aria-hidden="true"></span>
-                        <input type="text" class="form-control" name="new-choice" placeholder="pl. Nem szeretnék, de jó ötlet">
+                        <input type="text" class="form-control js-enter-choice" name="new-choice" placeholder="pl. Nem szeretnék, de jó ötlet">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-secondary js-add-choice" name="upload"> + {{_ "new"}} {{_ "choice"}}</button>
+                        <button type="button" class="btn btn-info js-add-choice" name="upload"> + {{_ "new"}} {{_ "choice"}}</button>
                         </div>
                     </div>
                 </div>
-        
-                <div class="col-xs-12 form-inline vote-dates">
-                    {{> afQuickField name="createdAt" value=defaultOpenDate }}
+
+                <div class="row">
+                <div class="col-xs-12 left-padded text-center">
+                    <br>
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-xs-12 form-inline vote-dates text-center">
+                    {{> afQuickField name="createdAt" value=defaultOpenDate }}  
                     {{> afQuickField name="vote.closesAt" value=defaultCloseDate }}
+                </div>
                 </div>
                 </form>
                 </div>

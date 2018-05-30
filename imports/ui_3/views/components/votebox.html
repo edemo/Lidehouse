@@ -1,0 +1,165 @@
+<template name="Votebox">
+      <div class="row m-b-sm">
+      <div class="col-xs-6 title-size">
+        <!--a href="{{pathFor 'Topic.show' _tid=_id}}"-->
+          <h2>{{title}}</h2>
+        <!--/a-->
+      </div>
+      <div class="col-xs-5 small-size text-right">
+        {{#if this.closed}}
+          {{_ "closed"}}<!--a href="" class="js-view-results">: {{_ "Vote results"}}</a-->
+        {{else}}
+          <span data-tooltip="{{_ 'createdAt'}}: {{displayCreatedAtTime}} {{_ "closes"}}: {{displayClosesAtTime}}">
+           {{_ "closes"}}: {{displayTimeLeft}}
+          </span>
+        {{/if}}
+      </div>
+      <!-- editing options at the right corner -->
+      {{#if userHasPermission 'vote.close' this.communityId this}}
+      <div class="col-xs-1 dropdown">
+          <button class="dropdown-toggle drop-unfoll glyphicon glyphicon-option-horizontal" type="button" id="drop_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="drop_{{_id}}">
+            {{#if userHasPermission 'vote.close' this.communityId this}}
+            <li><a class="js-close" href="">{{_ 'close topic'}}</a></li>
+            {{/if}}
+            {{#if userHasPermission 'vote.update' this.communityId this}}
+            <li><a class="js-edit" href="">{{_ 'edit'}}</a></li>
+            {{/if}}
+            {{#if userHasPermission 'vote.remove' this.communityId this}}
+            <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
+            {{/if}}
+          </ul>
+      </div>
+      {{/if}}
+      </div>
+
+      <div class="row m-b-md">
+      <div class="col-lg-12">
+          <div class="progress {{#unless closed}}progress-striped active{{/unless}} m-b-xs">
+            <div style="{{concat 'width: ' votedPercent '%;'}}" class="progress-bar"></div>
+          </div>
+          <div class="col-sm-6 text-left">
+            <p>{{_ 'Participation'}}: <strong>{{votedPercent}}%</strong>. </p>
+          </div>
+          <div class="col-sm-6 text-right">
+            <p>{{_ 'Participation necessary'}}: <strong>{{voteSuccessLimit}}%</strong>.</p>
+          </div>
+      </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12 {{#if isButtonLayoutVertical}}col-md-6{{/if}}">
+          <!-- voting text -->
+          {{#markdown}}{{text}}{{/markdown}}
+          {{#if attachments.count}}
+          <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             <i class="glyphicon glyphicon-paperclip"></i> 
+             {{_ 'Attachments'}} ({{attachments.count}})
+             <b class="caret"></b>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
+            {{#each doc in attachments}}
+            <li><a class="filename" target="_blank" href="{{doc.url}}">{{doc.name}}</a></li>
+            {{/each}}
+          </ul>
+          {{/if}}
+        </div>
+        <div class="col-xs-12 {{#if isButtonLayoutVertical}}col-md-6{{/if}}">
+          <br>
+          {{#if this.closed}}
+          <!-- voting results -->
+            <h4 class="text-center">
+            {{#if voteTypeIs "preferential"}}
+              Opciók támogatottsága:            
+            {{else}}
+              Szavazatok összesítése:
+            {{/if}}
+            </h4>
+            <div class="row">
+              <div class="col-lg-12 text-center">
+                {{#each sum in this.voteSummaryDisplay}}
+                <div>{{_ sum.choice}}: {{sum.votingShare}} ({{percentage sum.votingShare.toNumber}})</div>
+                {{/each}}
+                <div>
+                  <canvas id={{concat "chart-" this._id}} height="200"></canvas>
+                </div>
+              </div>
+            </div>
+          {{else}}
+          <!-- voting buttons -->
+          {{#if userHasPermission 'vote.cast' this.communityId this}}
+          <div class="row">
+            <div class="col-xs-12 vote-answer text-center">
+
+              {{#if voteTypeIs "preferential"}}
+              <div class="row vote-answer-sort">
+                {{#if voteIsFinalized}}
+                {{else}}
+                <div class="col-xs-12 text-center">
+                  {{_ 'rankedVotingInstructions'}}
+                </div>
+                {{/if}}
+                <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
+                  <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
+                    {{#each currentPreference}}
+                    <li class="btn btn-vote-choice ui-state-default" data-value="{{value}}"> <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> {{text}}</li>
+                    {{/each}}
+                  </ul>
+                  {{#if voteIsFinalized}}
+                  <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}">{{_ 'change'}}</button>
+                  {{else}}
+                  <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}">{{_ 'finalize'}}</button>
+                  {{/if}}
+                </div>
+              </div>
+
+              {{else}}
+              <div class="row">
+                <div class="col-xs-12">
+                  <div class="btns-group">
+                    {{#each choice in vote.choices}}
+                    <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
+                      {{_ choice}}
+                    </button>
+                    {{/each}}
+                  </div>
+                  <!--button class="btn-primary btn-golive">{{_ 'vote'}}</button-->
+                </div>
+              </div>
+              {{/if}}
+            </div>
+          </div>
+          {{/if}}
+
+          {{/if}}
+        </div>
+      </div>
+
+      {{#unless closed}}
+      {{#if userHasPermission 'vote.cast' this.communityId this}}
+        <div class="row m-t-md">
+        <div class="col-xs-12">
+          {{> User_vote_status this}}
+        </div>
+        </div>
+      {{/if}}
+      {{/unless}}
+
+</template>
+
+<template name="User_vote_status">
+  <!-- showing if you voted directly or via delegation -->
+  <div class="text-left">
+  {{#if this.hasVotedDirect currentUser._id}}
+      <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
+  {{else}}
+    {{#if this.hasVotedIndirect currentUser._id}}
+      {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}})
+    {{else}}
+      <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
+      {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedCastYourVoteOr"}} <a href="{{pathFor 'Delegations'}}">{{_ "setupYourDelegation"}}</a>)</i>
+    {{/if}}
+  {{/if}}
+  </div>
+</template>

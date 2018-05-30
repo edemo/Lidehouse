@@ -1,0 +1,150 @@
+<template name="Roleship_table">
+    <div class="full-height-scroll">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {{#each rows}}
+                    <tr>
+                        <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
+                        <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
+                        <td><span class="label label-plain">{{_ role}}</span></td>
+                        <td>
+                            <i class="contact-type fa fa-envelope"></i>{{Person.email}}
+                            {{#if Person.user.profile.phone}}<br>
+                            <i class="contact-type fa fa-phone"></i>{{Person.user.profile.phone}}
+                            {{/if}}
+                        </td>
+                        {{#if currentUserHasPermission 'roleships.update'}}
+                        <td class="text-right">
+                            <div class="btn-group">
+                                <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                            </div>
+                        </td>
+                        {{/if}}
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+
+
+<template name="Community_page">
+
+    <!-- Page heading -->
+    {{> Page_heading title=title }}
+
+    <div class="wrapper wrapper-content  animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="ibox roles-section">
+                    <div class="ibox-content">
+                        <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
+                        <h2>{{_ 'officers'}}</h2>
+                        {{#if currentUserHasPermission 'roleships.insert'}}
+                        <button class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong></button>
+                        {{/if}}
+                        <p>
+                            {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.count}}<br>
+                            {{_ "Click person's name to see contact info"}}
+                        </p>
+                        <br>
+                        <!--div class="input-group">
+                            <input type="text" placeholder="Search client " class="input form-control">
+                                <span class="input-group-btn">
+                                        <button type="button" class="btn btn btn-primary"> <i class="fa fa-search"></i> Search</button>
+                                </span>
+                        </div-->
+                        <div class="member-list">
+                            {{> Roleship_table rows=officers}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox community-section float-e-margins">
+                    <div class="ibox-title">
+                        <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
+                        {{#if currentUserHasPermission 'communities.update'}}
+                        <div class="pull-right">
+                            <button class="btn-white btn btn-xs js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                        </div>
+                        {{/if}}
+                    </div>
+                    <div>
+                        <div class="ibox-content no-padding border-left-right">
+                            <img alt="image" class="img-responsive" src="{{community.avatar}}">
+                        </div>
+                        <div class="ibox-content profile-content">
+                            <h4><strong>{{community.name}}</strong></h4>
+                            <p><i class="fa fa-map-marker"></i>{{community.displayAddress}}</p>
+                            <br>
+                            <h5>{{_ 'schemaCommunities.description.label'}}</h5>
+                            <p> {{_ 'schemaCommunities.description.placeholder'}}</p>
+                            <table class="m-t-lg" width="100%">
+                            <tr>
+                                {{#each parcelTypesWithCount}}
+                                <td>
+                                    <h5><strong>{{this.count}}</strong> {{_ this.type}}</h5>
+                                </td>
+                                {{/each}}
+                            </tr>
+                            </table>
+                            {{#unless (currentUser.isInCommunity community._id) }}
+                            <br>
+                            <button type="button" class="btn btn-primary btn-sm btn-block js-join">
+                                <i class="fa fa-suitcase"></i>
+                                {{_ 'Submit join request'}}
+                            </button>
+                            {{/unless}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{#if userHasPermission 'parcels.inCommunity' community._id}}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox parcels-section">
+                    <div class="ibox-content">
+                        <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
+                        <h2 class="text-capitalize">{{_ "parcels"}}</h2>
+                        {{#if userHasPermission 'parcels.insert' community._id}}
+                            <button class="js-new btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcel'}}</strong></button>
+                        {{/if}}
+                        <p>
+                            {{_ 'List of parcels'}} - <i class="fa fa-building"></i> {{parcels.count}}<br>
+                            {{_ "Click the little person buttons to see the occupants"}}
+                        </p>
+                        <br>
+                        {{#if currentUserHasPermission 'parcels.update'}}
+                        <ul class="nav nav-tabs m-b-md">
+                            <li class="active"><a data-toggle="tab" href="#tab-p1"><i class="fa fa-building"></i> {{_ 'Approved'}}</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-p2"><i class="fa fa-building-o"></i> {{_ 'Waiting for approval'}}
+                                {{#if unapprovedParcels.count}}
+                                <span class="label badge badge-danger">{{unapprovedParcels.count}}</span>
+                                {{/if}}
+                            </a></li>
+                        </ul>
+                        {{/if}}
+                        <div class="tab-content">
+                            <div id="tab-p1" class="tab-pane active">
+                                <div class="table-responsive">
+                                    {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
+                                </div>
+                            </div>
+                            <div id="tab-p2" class="tab-pane">
+                                <div class="table-responsive">
+                                    {{> ReactiveDatatable tableData=unapprovedParcelsTableDataFn options=parcelsOptionsFn }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+</template>

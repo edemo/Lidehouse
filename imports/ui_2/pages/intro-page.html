@@ -1,4 +1,4 @@
-<template name="Intro_page">
+<template name="Old_intro_page">
   <div class="content-scrollable page-content page-intro">
     <header>
       <p id="main-title">Az online otthon-kezelő</p>
@@ -76,7 +76,7 @@
     </section>
     <section id="image-container">
       <img src="/images/intro-house.jpg" alt="House_image">
-      <button class="btn btn-primary demouser-autologin" href="">{{_ 'Try demo'}}</button>
+      <button class="btn btn-primary btn-outline btn-lg demouser-autologin" href="">{{_ 'Try demo'}}</button>
     </section>
     <section class="tryit-text">
       <p><br>Az általunk kezelt társasházakban a honline.hu rendszerével 
@@ -90,9 +90,8 @@
       <div class="footer-columns">
         <div class="footercol newsletter">
           <p class="list">
-            Ha új fiók létrehozásával regisztrál rendszerünkbe (egy e-mail cím és jelszó
-            megadásával) az alkalmazás jelentősebb fejlesztési fázisairól 
-            összefoglaló e-mailt küldünk, kevesebb mint havonta 2 alkalommal. 
+            Ha szeretne e-mailben értesülni az alkalmazás jelentősebb fejlesztési fázisairól (évente legfeljebb 1-2 alkalommal),
+            akkor <a href="{{pathFor 'Signup'}}">regisztráljon rendszerünkbe,</a> majd profil beállításai között pipálja be legalul a "szeretnék hírlevelet kapni" opciót. 
           </p>
           <p class="list">
             <a class= "list" href="{{pathFor 'Statement'}}">Adatkezelési tájékoztató</a>

@@ -99,12 +99,12 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
               {{#if communities}}
                 {{#each communities}}
-                  <li><a href="#" class="js-switch-community">{{name}}</a></li>
+                  <li><a href="" class="js-switch-community">{{name}}</a></li>
                 {{/each}}
                 <li role="separator" class="divider"></li>
               {{/if}}
-              <li><a href="{{pathFor 'Communities.join'}}"> + {{_ 'Join a community'}} </a></li>
-              <li><a class="js-create-community" href="#"> + {{_ 'Create a community'}} </a></li>
+              <li><a href="{{pathFor 'Communities.listing'}}"> + {{_ 'Join a community'}} </a></li>
+              <li><a class="js-create-community" href=""> + {{_ 'Create a community'}} </a></li>
             </ul>
           </div>
         {{else}}
@@ -117,7 +117,7 @@
             </a>
           </div>
           <div class="topbar-left-menu">
-            <a class="topbar-elem" href="{{pathFor 'Communities.join'}}">Házak</a>
+            <a class="topbar-elem" href="{{pathFor 'Communities.listing'}}">Házak</a>
             <a class="topbar-elem" href="{{pathFor 'About.us'}}">Rólunk</a>
           </div>
         {{/unless}}
@@ -137,7 +137,7 @@
               </ul>
             </ul>
           </div>
-          <a href="#" class="topbar-item nav-item pull-right nav-hamburger js-menu">
+          <a href="" class="topbar-item nav-item pull-right nav-hamburger js-menu">
             <span class="icon-topic-unordered"></span>
           </a>
         {{else}}
