@@ -21,13 +21,13 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="drop_{{_id}}">
             {{#if userHasPermission 'vote.close' this.communityId this}}
-            <li><a class="js-close" href="">{{_ 'close topic'}}</a></li>
+            <li><a class="js-close" href=""><i class="fa fa-legal"></i> {{_ 'close topic'}}</a></li>
             {{/if}}
             {{#if userHasPermission 'vote.update' this.communityId this}}
-            <li><a class="js-edit" href="">{{_ 'edit'}}</a></li>
+            <li><a class="js-edit" href=""><i class="fa fa-pencil"></i> {{_ 'edit'}}</a></li>
             {{/if}}
             {{#if userHasPermission 'vote.remove' this.communityId this}}
-            <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
+            <li><a class="js-delete" href=""><i class="fa fa-trash"></i> {{_ 'delete'}}</a></li>
             {{/if}}
           </ul>
       </div>
