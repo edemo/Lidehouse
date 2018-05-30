@@ -8,7 +8,6 @@ export const Render = {
   },
   translateWithScope(scope) {
     return function translate(cellData, renderType, currentRow) {
-      debugger;
       if (!cellData) return '---';
       return __(`${scope}.${cellData}`);
     };
