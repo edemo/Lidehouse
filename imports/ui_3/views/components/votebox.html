@@ -104,15 +104,12 @@
                   <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
                     {{#each currentPreference}}
                     <li class="btn btn-vote-choice ui-state-default btn-block btn-w-m btn-default" data-value="{{value}}"> <span class="glyphicon glyphicon-sort glyphicon-honline-float-left" aria-hidden="true"></span> {{text}}</li>
-                    <!-- Before inspinia: <li class="btn btn-vote-choice ui-state-default" data-value="{{value}}"> <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> {{text}}</li> -->
                     {{/each}}
                   </ul>
                   {{#if voteIsFinalized}}
                   <button class="btn btn-vote-finalize btn-block btn-w-m btn-primary {{pressedClassForFinalizeBtn}}">{{_ 'change'}}</button>
-                  <!-- Before inspinia: <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}">{{_ 'change'}}</button> -->
                   {{else}}
                   <button class="btn btn-vote-finalize btn-block btn-w-m btn-primary {{pressedClassForFinalizeBtn}}">{{_ 'finalize'}}</button>
-                  <!-- Before inspinia: <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}">{{_ 'finalize'}}</button> -->
                   {{/if}}
                 </div>
               </div>
@@ -123,7 +120,6 @@
                   <div class="btns-group">
                     {{#each choice in vote.choices}}
                     <button class="btn btn-vote btn-w-m btn-primary {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
-                    <!-- Before inspinia: <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}"> -->
                       {{_ choice}}
                     </button>
                     {{/each}}
