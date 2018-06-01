@@ -73,6 +73,12 @@ Template.Intro_page.onDestroyed(function() {
 });
 
 Template.Intro_page.events({
+  'click .read-more'(event) {
+    event.preventDefault();
+    $(event.target).closest('div').find('.more-text').show();
+    $(event.target).closest('p').hide();
+  },
+
   'click .demouser-autologin'() {
     Meteor.call('createDemoUserWithParcel', function (error, result) {
       if (error) displayError(error);
