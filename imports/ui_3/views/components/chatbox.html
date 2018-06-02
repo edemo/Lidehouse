@@ -31,14 +31,12 @@
         </div>
         <div class="social-body">
             <p data-id="{{_id}}">{{#markdown}}{{text}}{{/markdown}}</p>
-
             <div class="btn-group">
                 <button class="btn btn-white btn-xs js-like">
                     <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
                     {{_ 'important'}}!
                     ({{likesCount}})
                 </button>
-                
                 <button class="btn btn-white btn-xs">
                     <i class="fa fa-comments"></i>
                     {{_ 'Comment'}}
@@ -47,8 +45,9 @@
                 <!--button class="text-muted count-box" >{{commentCounter}}</button-->
             </div>
             <div class="text-right">
-                <span class="js-save-edited hidden btn btn-sm btn-primary m-t-n-xs" data-id="{{_id}}"><strong>{{_ 'Save'}}</strong></span>
-            </div>
+                <button class="js-cancel hidden btn btn-sm btn-default m-t-n-xs" data-id="{{_id}}"><strong>{{_ 'cancel'}}</strong></button>
+                <button class="js-save-edited hidden btn btn-sm btn-primary m-t-n-xs" data-id="{{_id}}"><strong>{{_ 'save'}}</strong></button>
+             </div>
         </div>
 
         {{> Comments_section this}}
