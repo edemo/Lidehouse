@@ -38,7 +38,7 @@ FlowRouter.triggers.enter([() => { window.scrollTo(0, 0); }]);
 FlowRouter.route('/', {
   name: 'App.home',
   action() {
-    BlazeLayout.render('app_rootRedirector');
+    BlazeLayout.render('Main_layout', { content: 'app_rootRedirector' });
   },
 });
 
