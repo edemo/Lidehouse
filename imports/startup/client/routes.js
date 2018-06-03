@@ -8,7 +8,6 @@ import '/imports/ui/pages/root-redirector.js';
 import '/imports/ui/pages/app-not-found.js';
 
 import '/imports/ui_2/pages/intro-page.js';
-import '/imports/ui_2/pages/about.js';
 import '/imports/ui_3/views/pages/intro-page.js';
 import '/imports/ui_3/views/pages/profile-form.js';
 import '/imports/ui_3/views/pages/user-show.js';
@@ -26,8 +25,6 @@ import '/imports/ui_3/views/pages/parcels-finances.js';
 import '/imports/ui_3/views/pages/community-finances.js';
 import '/imports/ui_3/views/pages/shareddoc-store.js';
 import '/imports/ui_3/views/pages/topic-show.js';
-import '/imports/ui_2/pages/feedbacks.js';
-import '/imports/ui_2/pages/statement.js';
 
 import '/imports/ui_3/views/layouts/main.js';
 
@@ -40,37 +37,23 @@ FlowRouter.triggers.enter([() => { window.scrollTo(0, 0); }]);
 FlowRouter.route('/', {
   name: 'App.home',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'app_rootRedirector' });
+    BlazeLayout.render('app_rootRedirector');
   },
 });
 
 // Business info pages
 
-FlowRouter.route('/newintro', {
-  name: 'New.intro',
+FlowRouter.route('/oldintro', {
+  name: 'Old.intro',
   action() {
-    BlazeLayout.render('Intro_page');
+    BlazeLayout.render('Main_layout', { content: 'Old_intro_page' });
   },
 });
 
 FlowRouter.route('/intro', {
   name: 'App.intro',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Old_intro_page' });
-  },
-});
-
-FlowRouter.route('/about', {
-  name: 'About.us',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'About_page' });
-  },
-});
-
-FlowRouter.route('/statement', {
-  name: 'Statement',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Statement_page' });
+    BlazeLayout.render('Intro_page');
   },
 });
 
