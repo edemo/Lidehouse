@@ -27,6 +27,7 @@ import '/imports/ui_3/views/pages/shareddoc-store.js';
 import '/imports/ui_3/views/pages/topic-show.js';
 
 import '/imports/ui_3/views/layouts/main.js';
+import '/imports/ui_3/views/layouts/blank.js';
 
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates.js';
@@ -203,7 +204,7 @@ CommunityRelatedRoutes.push('DocumentStore');
 // the App_notFound template is used for unknown routes and missing topics
 FlowRouter.notFound = {
   action() {
-    BlazeLayout.render('Main_layout', { content: 'App_notFound' });
+    BlazeLayout.render('Blank_layout', { content: 'App_notFound' });
   },
 };
 

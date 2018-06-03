@@ -37,7 +37,7 @@ AccountsTemplates.configure({
  // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
 
   defaultTemplate: 'Auth_page',
-  defaultLayout: 'Main_layout',
+  defaultLayout: 'Blank_layout',
   defaultContentRegion: 'content',
   defaultLayoutRegions: {},
 
