@@ -14,6 +14,7 @@
     "@babel/runtime": "^7.0.0-beta.49",
     "autoprefixer": "^6.4.1",
     "babel-runtime": "^6.26.0",
+    "bcrypt": "^2.0.1",
     "faker": "^3.1.0",
     "fractional": "^1.0.0"
   },
