@@ -57,7 +57,7 @@ Parcels.helpers({
     let result = '';
     const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
     ownerships.forEach((m) => {
-      const repBadge = m.isRepresentor() ? '(*)' : '';
+      const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
       result += `${m.Person().displayName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
     });
     const benefactorships = Memberships.find({ communityId: this.communityId, role: 'benefactor', parcelId: this._id });
