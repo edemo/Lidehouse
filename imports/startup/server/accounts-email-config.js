@@ -18,7 +18,7 @@ Accounts.emailTemplates.enrollAccount = {
   text(user, url) {
     const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
     const community = membership.community();
-    const adminEmail = community.admin().person.email();
+    const adminEmail = community.admin().person.userEmail;
     return TAPi18n.__('emailEnrollAccount',
       { name: community.name,
         role: TAPi18n.__(membership.role, {}, user.language()),
@@ -27,22 +27,20 @@ Accounts.emailTemplates.enrollAccount = {
       },
       user.language()
     );
-  }
+  },
 };
 
 Accounts.emailTemplates.verifyEmail = {
   subject(user) { return TAPi18n.__('emailVerifyEmailSubject', {}, user.language()); },
   text(user, url) {
-    return TAPi18n.__('emailVerifyEmail', { url }, user.language()
-  );
-  }
+    return TAPi18n.__('emailVerifyEmail', { url }, user.language());
+  },
 };
 
 Accounts.emailTemplates.resetPassword = {
   subject(user) { return TAPi18n.__('emailResetPasswordSubject', {}, user.language()); },
   text(user, url) {
-    return TAPi18n.__('emailResetPassword', { url }, user.language()
-  );
+    return TAPi18n.__('emailResetPassword', { url }, user.language());
   },
 };
 

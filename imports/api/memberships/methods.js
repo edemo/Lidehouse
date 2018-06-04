@@ -36,7 +36,7 @@ function inviteUser(membershipId, email) {
   const membership = Memberships.findOne(membershipId);
   Log.info(`Invitation sent to ${email}, to join community ${membership.community().name}`);
   // When user joins, with this email, she will automatically get connected to this membership
-  inviteUserMethod.call({ email: membership.userEmail, communityId: membership.communityId });
+  inviteUserMethod.call({ email: membership.person.userEmail, communityId: membership.communityId });
   return;
 }
 
@@ -44,7 +44,7 @@ function inviteUser(membershipId, email) {
 // and then connect her to this membership. Or if not, we can send invitation to this email.
 function connectUserIfPossible(membershipId) {
   const membership = Memberships.findOne(membershipId);
-  const email = membership.userEmail;
+  const email = membership.person.userEmail;
   if (!membership.userId && email) {
     const user = Meteor.users.findOne({ 'emails.0.address': email });
     if (user && user.emails[0].verified) {
@@ -96,6 +96,7 @@ export const insert = new ValidatedMethod({
   validate: Memberships.simpleSchema().validator({ clean: true }),
 
   run(doc) {
+    debugger;
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     if (doc.role === 'owner') {
       const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
