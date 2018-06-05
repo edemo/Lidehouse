@@ -53,7 +53,7 @@ if (Meteor.isClient) {
   Meteor.users.helpers({
     hasNowSeen(topic) {
       // The user has just seen this topic, so the lastseen info needs to be updated
-      const oldLastSeenInfo = this.lastseens[topic._id];
+      const oldLastSeenInfo = this.lastSeens[topic._id];
       let newLastSeenInfo;
       const comments = topic.comments().fetch(); // returns newest-first order
       if (!comments || comments.length === 0) {
@@ -67,7 +67,8 @@ if (Meteor.isClient) {
 
       const modifier = {};
       modifier['$set'] = {};
-      modifier['$set']['lastseens.' + topic._id] = newLastSeenInfo;
+      modifier['$set']['lastSeens.' + topic._id] = newLastSeenInfo;
+      modifier['$set']['lastNotifs.' + topic._id] = newLastSeenInfo;
 
       update.call({ _id: this._id, modifier }, handleError);
     },

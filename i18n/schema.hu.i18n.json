@@ -5,6 +5,17 @@
       "label": "Felhasználónév",
       "placeholder": "(pl. Miki75)"
     },
+    "emails": {
+      "$": {
+        "address": {
+          "label": "E-mail cím",
+          "placeholder": "(pl. margitka21@ingyenmail.com)"
+        },
+        "verified": {
+          "label": "Ellenőrzött"
+        }
+      }
+    },
     "avatar": {
       "label": "Avatár",
       "placeholder": "(pl. kockásfülünyúl.jpg)"
@@ -45,19 +56,22 @@
       "delegatee": {
         "label": "Bejövő meghatalmazások engedélyezése"
       },
+      "notifFrequency": {
+        "label": "Email értesítések gyakorisága",
+        "never": "Soha",
+        "weekly": "Hetente legfeljebb egyszer",
+        "daily": "Naponta legfeljebb egyszer",
+        "frequent": "Naponta töbször is jöhet"
+      },
+      "notifLevel": {
+        "label": "Email értesítéseket milyen eseményekről kérek",
+        "never": "Semmiről",
+        "high": "Csak a legfontosabbakról (szavazások, üzenetek, faliújság)",
+        "medium": "Minden új felvetett témáról, de a hozzászólásokról nem",
+        "low": "Minden témáról, hozzászólásról és téma változásról"
+      },
       "newsletter": {
         "label": "Szeretnék feliratkozni az applikációval kapcsolatos hírlevélre"
-      }
-    },
-    "emails": {
-      "$": {
-        "address": {
-          "label": "E-mail cím",
-          "placeholder": "(pl. margitka21@ingyenmail.com)"
-        },
-        "verified": {
-          "label": "Ellenőrzött"
-        }
       }
     }
   },

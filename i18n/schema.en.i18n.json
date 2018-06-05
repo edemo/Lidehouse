@@ -5,6 +5,17 @@
       "label": "Username",
       "placeholder": "(eg. Mike75)"
     },
+    "emails": {
+      "$": {
+        "address": {
+          "label": "Address",
+          "placeholder": "(eg. margaret21@freemail.com)"
+        },
+        "verified": {
+          "label": "Verified"
+        }
+      }
+    },
     "avatar": {
       "label": "Avatar",
       "placeholder": "(eg. heart.jpg)"
@@ -45,19 +56,22 @@
       "delegatee": {
         "label": "Allow incoming delegations"
       },
+      "notifFrequency": {
+        "label": "Email notifications frequency",
+        "never": "Never",
+        "weekly": "Once a week max",
+        "daily": "Once a day max",
+        "frequent": "Several times a day"
+      },
+      "notifLevel": {
+        "label": "Email notifications I'd like about",
+        "never": "Nothing",
+        "high": "Most important events only (votings, messages, newsboard)",
+        "medium": "Every new topic created, but not the comments",
+        "low": "Every new comment and status update on topics"
+      },
       "newsletter": {
         "label": "I would like to receive the newsletter about the application"
-      }
-    },
-    "emails": {
-      "$": {
-        "address": {
-          "label": "Address",
-          "placeholder": "(eg. margaret21@freemail.com)"
-        },
-        "verified": {
-          "label": "Verified"
-        }
       }
     }
   },
