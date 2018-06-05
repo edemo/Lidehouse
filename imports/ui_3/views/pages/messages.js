@@ -13,16 +13,11 @@ import '../components/members-panel.js';
 import '../components/contact-long.js';
 import './messages.html';
 
-Template.Messages.onCreated(function onCreated() {
-  this.state = new ReactiveDict();
-  this.state.set('peopleOpen', false);
+Template.Messages.onRendered(function() {
+  $('.js-focused').focus();
 });
 
 Template.Messages.helpers({
-  peopleOpen() {
-    const instance = Template.instance();
-    return instance.state.get('peopleOpen') && 'people-open';
-  },
   selectedPersonId() {
     return Session.get('messengerPersonId');
   },
@@ -34,28 +29,6 @@ Template.Messages.helpers({
     const selectedPersonId = Session.get('messengerPersonId');
     const room = Topics.messengerRoom(Meteor.userId(), selectedPersonId);
     return room;
-  },
-  templateGestures: {
-    'swiperight .cordova'(event, instance) {
-      $('#people')[0].classList.remove('people-open');
-    },
-    'swipeleft .cordova'(event, instance) {
-      $('#people')[0].classList.add('people-open');
-    },
-  },
-});
-
-Template.Messages.events({
-  'click .js-people'(event) {
-//  console.log("clicked", $('#people'));
-    $('#people')[0].classList.toggle('people-open');
-  },
-  'click .content-overlay'(event, instance) {
-    instance.state.set('peopleOpen', false);
-    event.preventDefault();
-  },
-  'click #people .person'(event, instance) {
-    $('#people')[0].classList.remove('people-open');
   },
 });
 
