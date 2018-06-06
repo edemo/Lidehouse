@@ -60,12 +60,6 @@ FlowRouter.route('/intro', {
 
 // --------------------------------------------
 
-FlowRouter.route('/community', {
-  name: 'Community.page',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Community_page' });
-  },
-});
 FlowRouter.route('/community/:_cid', {
   name: 'Community.page',
   action() {
@@ -191,6 +185,14 @@ FlowRouter.route('/community-finances', {
 });
 CommunityRelatedRoutes.push('Community.finances');
 
+FlowRouter.route('/community', {
+  name: 'Community.page.default',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_page' });
+  },
+});
+CommunityRelatedRoutes.push('Community.page.default');
+
 FlowRouter.route('/documents', {
   name: 'DocumentStore',
   action() {
@@ -208,19 +210,6 @@ FlowRouter.notFound = {
   },
 };
 
-// Automatic redirection
-// if no user is logged in, then let us not show the house related pages 
-// (should we do something when or no active house selected?)
-
-Meteor.autorun(() => {
-  const currentRoute = FlowRouter.getRouteName();
-  if (CommunityRelatedRoutes.includes(currentRoute)) {
-    if (!Meteor.userId()) {
-      FlowRouter.go('signin');
-    }
-  }
-});
-
 // Automatic redirection after sign in
 // if user is coming from a page where he would have needed to be logged in, and we sent him to sign in.
 
@@ -236,3 +225,17 @@ export function signinRedirect() {
 export function setRouteBeforeSignin(value) {
   routeBeforeSignin = value;
 }
+
+// Automatic redirection
+// if no user is logged in, then let us not show the house related pages 
+// (should we do something when or no active house selected?)
+
+Meteor.autorun(() => {
+  const currentRoute = FlowRouter.getRouteName();
+  if (CommunityRelatedRoutes.includes(currentRoute) || currentRoute === 'Profile.show') {
+    if (!Meteor.userId()) {
+      setRouteBeforeSignin(FlowRouter.current());
+      FlowRouter.go('signin');
+    }
+  }
+});
