@@ -220,19 +220,3 @@ Meteor.autorun(() => {
     }
   }
 });
-
-// Automatic redirection after sign in
-// if user is coming from a page where he would have needed to be logged in, and we sent him to sign in.
-
-let routeBeforeSignin;
-
-export function signinRedirect() {
-  if (routeBeforeSignin) {
-    FlowRouter.go(routeBeforeSignin.path, routeBeforeSignin.params);
-    routeBeforeSignin = null;
-  } else FlowRouter.go('App.home');
-}
-
-export function setRouteBeforeSignin(value) {
-  routeBeforeSignin = value;
-}
