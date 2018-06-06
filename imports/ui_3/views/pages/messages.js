@@ -13,8 +13,27 @@ import '../components/members-panel.js';
 import '../components/contact-long.js';
 import './messages.html';
 
+function messageFooterToBottom() {
+  const windowHeight = $(window).height();
+  const topbarHeight = $('nav.navbar-fixed-top').height();
+  const titleHeight = $('div.ibox-title').height();
+  const footerHeight = $('div.ibox-footer').height();
+  const paddings = 60;
+  const largeScreenHeight = windowHeight - topbarHeight - titleHeight - footerHeight - (2 * paddings);
+  const smallScreenHeight = windowHeight - topbarHeight - titleHeight - footerHeight - paddings - 10;
+  if (windowHeight > 700) {
+    $('div.ibox-content').css("height", largeScreenHeight + "px");
+  } else {
+    $('div.ibox-content').css("height", smallScreenHeight + "px");
+  }
+}
+
 Template.Messages.onRendered(function() {
   $('.js-focused').focus();
+  messageFooterToBottom();
+  $(window).bind("load resize scroll", function() {
+    messageFooterToBottom();    
+  });
 });
 
 Template.Messages.helpers({
@@ -48,11 +67,12 @@ Template.Message_history.onCreated(function tmplMsgBoxOnCreated() {
 
 Template.Message_history.onRendered(function tmplMsgBoxOnRendered() {
   this.autorun(() => {
+    $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
     const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
     if (!room) return;
     if (this.subscriptionsReady()) {
       Meteor.user().hasNowSeen(room);
-    }
+    }  
   });
 
   $('.full-height-scroll').slimscroll({
@@ -85,9 +105,10 @@ Template.Message_send.events({
         text,
       },
       onSuccess((res) => {
-        textarea.value = '';
+        textarea.value = '';       
+        $('.js-focused').focus();
         Meteor.user().hasNowSeen(roomId);
-      }));
+       }));
     };
 
     const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));

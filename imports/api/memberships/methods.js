@@ -96,7 +96,6 @@ export const insert = new ValidatedMethod({
   validate: Memberships.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    debugger;
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     if (doc.role === 'owner') {
       const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
