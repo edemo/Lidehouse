@@ -56,15 +56,15 @@
       "delegatee": {
         "label": "Allow incoming delegations"
       },
-      "notifFrequency": {
-        "label": "Email notifications frequency",
+      "notiFrequency": {
+        "label": "Email notification frequency about the events in the community",
         "never": "Never",
         "weekly": "Once a week max",
         "daily": "Once a day max",
         "frequent": "Several times a day"
       },
-      "notifLevel": {
-        "label": "Email notifications I'd like about",
+      "notiLevel": {
+        "label": "Email notifications I'd like about these types of events in the community",
         "never": "Nothing",
         "high": "Most important events only (votings, messages, newsboard)",
         "medium": "Every new topic created, but not the comments",

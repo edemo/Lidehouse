@@ -56,15 +56,15 @@
       "delegatee": {
         "label": "Bejövő meghatalmazások engedélyezése"
       },
-      "notifFrequency": {
-        "label": "Email értesítések gyakorisága",
+      "notiFrequency": {
+        "label": "Email értesítések gyakorisága a házban történő eseményekről",
         "never": "Soha",
         "weekly": "Hetente legfeljebb egyszer",
         "daily": "Naponta legfeljebb egyszer",
         "frequent": "Naponta töbször is jöhet"
       },
-      "notifLevel": {
-        "label": "Email értesítéseket milyen eseményekről kérek",
+      "notiLevel": {
+        "label": "Email értesítéseket mely eseményekről kérek a házban",
         "never": "Semmiről",
         "high": "Csak a legfontosabbakról (szavazások, üzenetek, faliújság)",
         "medium": "Minden új felvetett témáról, de a hozzászólásokról nem",

@@ -78,7 +78,7 @@ Template.Message_history.onRendered(function tmplMsgBoxOnRendered() {
     const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
     if (!room) return;
     if (this.subscriptionsReady()) {
-      Meteor.user().hasNowSeen(room);
+      Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY_EYES);
     }
   });
 
@@ -113,7 +113,7 @@ Template.Message_send.events({
       },
       onSuccess((res) => {
         textarea.value = '';
-        Meteor.user().hasNowSeen(roomId);
+        Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY_EYES);
       }));
     };
 

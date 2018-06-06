@@ -66,14 +66,17 @@ const levelValues = ['never', 'high', 'medium', 'low'];
 const UserSettingsSchema = new SimpleSchema({
   language: { type: String, allowedValues: ['en', 'hu'], optional: true },
   delegatee: { type: Boolean, defaultValue: true },
-  notifFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'daily', autoform: autoformOptions(frequencyValues, 'schemaUsers.settings.notifFrequency.') },
-  notifLevel: { type: String, allowedValues: levelValues, defaultValue: 'low', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notifLevel.') },
+  notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: autoformOptions(frequencyValues, 'schemaUsers.settings.notiFrequency.') },
+  notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notiLevel.') },
   newsletter: { type: Boolean, defaultValue: false },
 });
 
 const defaultAvatar = '/images/avatars/avatarnull.png';
-// const defaultAvatar = 'https://yt3.ggpht.com/-MlnvEdpKY2w/AAAAAAAAAAI/AAAAAAAAAAA/tOyTWDyUvgQ/s900-c-k-no-mo-rj-c0xffffff/photo.jpg';
 // const defaultAvatar = 'http://pannako.hu/wp-content/uploads/avatar-1.png';
+
+// index in the user.lastSeens array (so no need to use magic numbers)
+Meteor.users.SEEN_BY_EYES = 0;
+Meteor.users.SEEN_BY_NOTI = 1;
 
 Meteor.users.schema = new SimpleSchema({
   // For accounts-password, either emails or username is required, but not both.
@@ -99,8 +102,9 @@ Meteor.users.schema = new SimpleSchema({
   status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', optional: true, autoform: { omit: true } },
 
   settings: { type: UserSettingsSchema },
-  lastSeens: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
-  lastNotifs: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
+  // lastSeens.0 is what was seen on screen, lastSeens.1 is to which the email notification was sent out
+  lastSeens: { type: Array, autoValue() { if (this.isInsert) return [{}, {}]; }, autoform: { omit: true } },
+  'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
     // topicId -> { timestamp: lastseen comment's createdAt (if seen any), commentCounter }
 
   // Make sure this services field is in your schema if you're using any of the accounts packages
