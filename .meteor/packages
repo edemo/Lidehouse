@@ -96,5 +96,6 @@ dburles:factory
 
 # security
 audit-argument-checks@1.0.7
+browser-policy
 
 dynamic-import
