@@ -16,15 +16,15 @@ import './messages.html';
 function messageFooterToBottom() {
   const windowHeight = $(window).height();
   const topbarHeight = $('nav.navbar-fixed-top').height();
-  const titleHeight = $('div.ibox-title').height();
-  const footerHeight = $('div.ibox-footer').height();
-  const paddings = 60;
+  const titleHeight = $('.messages > .ibox-title').height();
+  const footerHeight = $('.messages > .ibox-footer').height();
+  const paddings = 70;
   const largeScreenHeight = windowHeight - topbarHeight - titleHeight - footerHeight - (2 * paddings);
-  const smallScreenHeight = windowHeight - topbarHeight - titleHeight - footerHeight - paddings - 10;
+  const smallScreenHeight = windowHeight - topbarHeight - titleHeight - footerHeight - paddings;
   if (windowHeight > 700) {
-    $('div.ibox-content').css("height", largeScreenHeight + "px");
+    $('.messages > .ibox-content').css("height", largeScreenHeight + "px");
   } else {
-    $('div.ibox-content').css("height", smallScreenHeight + "px");
+    $('.messages > .ibox-content').css("height", smallScreenHeight + "px");
   }
 }
 
