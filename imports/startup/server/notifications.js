@@ -44,7 +44,7 @@ function processNotifications(frequency) {
 }
 
 let counter = 0;
-const checkPeriod = moment.duration(6, 'seconds');
+const checkPeriod = moment.duration(6, 'hours');
 
 function checkNotifications() {
   counter++;
