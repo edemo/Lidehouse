@@ -97,6 +97,7 @@ Template.Message_send.events({
   'click .js-send'(event, instance) {
     const textarea = instance.find('textarea');
     const text = textarea.value;
+    let room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
     let roomId;
     const insertMessage = () => {
       Meteor.call('comments.insert', {
@@ -107,11 +108,10 @@ Template.Message_send.events({
       onSuccess((res) => {
         textarea.value = '';       
         $('.js-focused').focus();
-        Meteor.user().hasNowSeen(roomId);
+        Meteor.user().hasNowSeen(room);
        }));
     };
-
-    const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
+    
     if (room) {
       roomId = room._id;
       insertMessage();
@@ -123,6 +123,7 @@ Template.Message_send.events({
         category: 'room',
       }, onSuccess((res) => {
         roomId = res;
+        room = Topics.findOne(roomId);
         insertMessage();
       }),
       );
