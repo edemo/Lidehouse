@@ -3,8 +3,6 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Accounts } from 'meteor/accounts-base';
 
-import { handleError } from '/imports/ui/lib/errors.js';
-
 import { debugAssert } from '/imports/utils/assert.js';
 import { insert as insertMember } from '/imports/api/memberships/methods.js';
 import './users.js';
@@ -50,7 +48,17 @@ export const update = new ValidatedMethod({
   },
 });
 
+let updateCall;
 if (Meteor.isClient) {
+  import { handleError } from '/imports/ui/lib/errors.js';
+
+  updateCall = function (context, params) {
+    update.call(params, handleError);
+  };
+} else if (Meteor.isServer) {
+  updateCall = function (context, params) {
+    update._execute(context, params);
+  };
 }
 
 Meteor.users.helpers({
@@ -76,10 +84,6 @@ Meteor.users.helpers({
       modifier['$set']['lastSeens.' + seenType + '.' + topic._id] = newLastSeenInfo;
     }
 
-    if (Meteor.isClient) {
-      update.call({ _id: this._id, modifier }, handleError);
-    } else if (Meteor.isServer) {
-      update._execute({ userId: this._id }, { _id: this._id, modifier });
-    }
+    updateCall({ userId: this._id }, { _id: this._id, modifier });
   },
 });

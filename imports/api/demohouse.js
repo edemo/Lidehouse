@@ -1330,10 +1330,12 @@ Meteor.methods({
       userId: dummyUserId,
       text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
     });
-    Meteor.users.update({ _id: demoUserId }, 
-      { $set: { lastSeens: { [demoUserMessageRoom2]: 
-        { timestamp: new Date(), commentCounter: 1 } } } }
-    );
+    Meteor.users.update({ _id: demoUserId }, { $set: {
+      lastSeens: [
+        { [demoUserMessageRoom2]: { timestamp: new Date(), commentCounter: 1 } },
+        { [demoUserMessageRoom2]: { timestamp: new Date(), commentCounter: 1 } },
+      ],
+    } });
 
     insertParcelBilling._execute({ userId: demoManagerId }, {
       communityId: demoCommunityId,
