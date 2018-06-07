@@ -38,6 +38,7 @@
 <template name="Messages">
     <div class="wrapper wrapper-content animated fadeInUp">
 
+        {{#if selectedPerson}}
         <div class="row">
             <div class="col-md-3 visible-md visible-lg pull-right">
                 {{> Contact_long selectedPerson}}
@@ -71,5 +72,8 @@
                 </div>
             </div>
         </div>
+        {{else}}
+        <div>{{_ 'Please select a person on right panel!'}}</div>
+        {{/if}}
     </div>    
 </template>

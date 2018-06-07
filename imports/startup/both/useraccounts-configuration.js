@@ -1,26 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
-import { Accounts } from 'meteor/accounts-base';
-import { TAPi18n } from 'meteor/tap:i18n';
-import { _ } from 'meteor/underscore';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { connectMe } from '/imports/api/memberships/methods.js';
-
-// Automatic redirection after sign in
-// if user is coming from a page where he would have needed to be logged in, and we sent him to sign in.
-
-let routeBeforeSignin;
-
-export function signinRedirect() {
-  if (routeBeforeSignin) {
-    FlowRouter.go(routeBeforeSignin.path, routeBeforeSignin.params);
-    routeBeforeSignin = null;
-  } else FlowRouter.go('App.home');
-}
-
-export function setRouteBeforeSignin(value) {
-  routeBeforeSignin = value;
-}
 
 /*
 These not needed anymore, as we do a higher level configuration in the AccountTemplates package, which sets these
@@ -58,44 +37,3 @@ AccountsTemplates.configure({
   // https://stackoverflow.com/questions/12984637/is-there-a-post-createuser-hook-in-meteor-when-using-accounts-ui-package
   // postSignUpHook(userId, info) { set some user settings here? },
 });
-
-AccountsTemplates.configureRoute('signIn', {
-  name: 'signin',
-  path: '/signin',
-  redirect() {
-    signinRedirect();
-  },
-});
-
-AccountsTemplates.configureRoute('signUp', {
-  name: 'signup',
-  path: '/signup',
-  redirect() {
-    signinRedirect();
-  },
-});
-
-AccountsTemplates.configureRoute('forgotPwd');
-
-AccountsTemplates.configureRoute('resetPwd', {
-  name: 'resetPwd',
-  path: '/reset-password',
-});
-
-AccountsTemplates.configureRoute('verifyEmail', {
-  name: 'verifyEmail',
-  path: '/verify-email',
-  redirect() {
-    connectMe.call();
-  },
-});
-
-AccountsTemplates.configureRoute('enrollAccount', {
-  name: 'enrollAccount',
-  path: '/enroll-account',
-  redirect() {
-    connectMe.call();
-    FlowRouter.go('App.home');
-  },
-});
-

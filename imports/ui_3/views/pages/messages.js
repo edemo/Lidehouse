@@ -71,8 +71,8 @@ Template.Message_history.onRendered(function tmplMsgBoxOnRendered() {
     const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
     if (!room) return;
     if (this.subscriptionsReady()) {
-      Meteor.user().hasNowSeen(room);
-    }  
+      Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY_EYES);
+    }
   });
 
   $('.full-height-scroll').slimscroll({
@@ -106,10 +106,10 @@ Template.Message_send.events({
         text,
       },
       onSuccess((res) => {
-        textarea.value = '';       
+        textarea.value = '';
         $('.js-focused').focus();
-        Meteor.user().hasNowSeen(room);
-       }));
+        Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY_EYES);
+      }));
     };
     
     if (room) {

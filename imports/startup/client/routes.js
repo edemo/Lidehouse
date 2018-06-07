@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import { AccountsTemplates } from 'meteor/useraccounts:core';
+import { connectMe } from '/imports/api/memberships/methods.js';
 
 // Import to load these templates
 import '/imports/ui/pages/root-redirector.js';
@@ -60,12 +61,6 @@ FlowRouter.route('/intro', {
 
 // --------------------------------------------
 
-FlowRouter.route('/community', {
-  name: 'Community.page',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Community_page' });
-  },
-});
 FlowRouter.route('/community/:_cid', {
   name: 'Community.page',
   action() {
@@ -191,6 +186,14 @@ FlowRouter.route('/community-finances', {
 });
 CommunityRelatedRoutes.push('Community.finances');
 
+FlowRouter.route('/community', {
+  name: 'Community.page.default',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_page' });
+  },
+});
+CommunityRelatedRoutes.push('Community.page.default');
+
 FlowRouter.route('/documents', {
   name: 'DocumentStore',
   action() {
@@ -208,15 +211,75 @@ FlowRouter.notFound = {
   },
 };
 
+// Automatic redirection after sign in
+// if user is coming from a page where he would have needed to be logged in, and we sent him to sign in.
+
+let routeBeforeSignin;
+
+export function signinRedirect() {
+  if (routeBeforeSignin) {
+    FlowRouter.go(routeBeforeSignin.path, routeBeforeSignin.params);
+    routeBeforeSignin = null;
+  } else FlowRouter.go('App.home');
+}
+
+export function setRouteBeforeSignin(value) {
+  routeBeforeSignin = value;
+}
+
 // Automatic redirection
 // if no user is logged in, then let us not show the house related pages 
 // (should we do something when or no active house selected?)
 
 Meteor.autorun(() => {
   const currentRoute = FlowRouter.getRouteName();
-  if (CommunityRelatedRoutes.includes(currentRoute)) {
+  if (CommunityRelatedRoutes.includes(currentRoute) || currentRoute === 'Profile.show') {
     if (!Meteor.userId()) {
+      setRouteBeforeSignin(FlowRouter.current());
       FlowRouter.go('signin');
     }
   }
 });
+
+// SignIn/SignUp routes
+
+AccountsTemplates.configureRoute('signIn', {
+  name: 'signin',
+  path: '/signin',
+  redirect() {
+    signinRedirect();
+  },
+});
+
+AccountsTemplates.configureRoute('signUp', {
+  name: 'signup',
+  path: '/signup',
+  redirect() {
+    signinRedirect();
+  },
+});
+
+AccountsTemplates.configureRoute('forgotPwd');
+
+AccountsTemplates.configureRoute('resetPwd', {
+  name: 'resetPwd',
+  path: '/reset-password',
+});
+
+AccountsTemplates.configureRoute('verifyEmail', {
+  name: 'verifyEmail',
+  path: '/verify-email',
+  redirect() {
+    connectMe.call();
+  },
+});
+
+AccountsTemplates.configureRoute('enrollAccount', {
+  name: 'enrollAccount',
+  path: '/enroll-account',
+  redirect() {
+    connectMe.call();
+    FlowRouter.go('App.home');
+  },
+});
+
