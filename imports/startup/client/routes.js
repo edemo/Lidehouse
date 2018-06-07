@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import { AccountsTemplates } from 'meteor/useraccounts:core';
+import { connectMe } from '/imports/api/memberships/methods.js';
 
 // Import to load these templates
 import '/imports/ui/pages/root-redirector.js';
@@ -239,3 +240,46 @@ Meteor.autorun(() => {
     }
   }
 });
+
+// SignIn/SignUp routes
+
+AccountsTemplates.configureRoute('signIn', {
+  name: 'signin',
+  path: '/signin',
+  redirect() {
+    signinRedirect();
+  },
+});
+
+AccountsTemplates.configureRoute('signUp', {
+  name: 'signup',
+  path: '/signup',
+  redirect() {
+    signinRedirect();
+  },
+});
+
+AccountsTemplates.configureRoute('forgotPwd');
+
+AccountsTemplates.configureRoute('resetPwd', {
+  name: 'resetPwd',
+  path: '/reset-password',
+});
+
+AccountsTemplates.configureRoute('verifyEmail', {
+  name: 'verifyEmail',
+  path: '/verify-email',
+  redirect() {
+    connectMe.call();
+  },
+});
+
+AccountsTemplates.configureRoute('enrollAccount', {
+  name: 'enrollAccount',
+  path: '/enroll-account',
+  redirect() {
+    connectMe.call();
+    FlowRouter.go('App.home');
+  },
+});
+

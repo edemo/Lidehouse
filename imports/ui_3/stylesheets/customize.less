@@ -77,9 +77,16 @@
 //    background-color: yellow;
 }
 
-.messages .ibox-content {
-    max-height: 70vh;
+@media screen and (max-width: 767px) {
+    .chat-message {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
 
+.chat-discussion {
+    background:  #eee url('/images/msg-back.png') 50% repeat;
+    height: 100%;
 }
 
 .sidebar-container .sidebar-message .media-body{
