@@ -1,3 +1,4 @@
+/* globals document */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
@@ -11,8 +12,10 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
+import { monthTags } from '/imports/api/payaccounts/payaccounts-utils.js';
 import { paymentColumns } from '/imports/api/payments/tables.js';
 import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
 import { Reports } from '/imports/api/payaccounts/reports.js';
@@ -21,11 +24,92 @@ import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
 import './community-finances.html';
 
+const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
+const notVotedColor = '#dedede';
+
 Template.Community_finances.onCreated(function communityFinancesOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('payaccounts.inCommunity', { communityId });
     this.subscribe('payments.inCommunity', { communityId });
+  });
+});
+
+Template.Community_finances.onRendered(function communityFinancesOnRendered() {
+  // Filling the Balance Sheet chart with DEMO data
+  this.autorun(() => {
+    const doughnutData = {
+      labels: [__('Bank főszámla'), __('Bank felújítási alap'), __('Hitelszámla'), __('Pénztár')],
+      datasets: [{
+        data: [6943500, 120000, 2300000, 100000],
+        backgroundColor: choiceColors,
+      }],
+    };
+    const doughnutOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+    };
+    const elem = document.getElementById('balanceSheetChart').getContext('2d');
+    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+  });
+
+  // Filling the History chart with DEMO data
+  this.autorun(() => {
+    const monthsArray = monthTags.children[0].children[0].children.map(c => c.label);
+    const barData = {
+      labels: monthsArray,
+      datasets: [{
+        label: __('Bevételek (e Ft)'),
+        data: [425, 425, 425, 425, 480, 428, 2725, 425, 1765, 925, 425, 425],
+        backgroundColor: choiceColors[0],
+        borderWidth: 2,
+      }, {
+        label: __('Kiadások (e Ft)'),
+        data: [510, 520, 530, 500, 550, 510, 800, 1800, 880, 510, 550, 520],
+        backgroundColor: choiceColors[1],
+        borderWidth: 2,
+      }],
+    };
+    const barOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+    };
+    const elem = document.getElementById('historyChart').getContext('2d');
+    new Chart(elem, { type: 'bar', data: barData, options: barOptions });
+  });
+
+  // Filling the Incomes chart with DEMO data
+  this.autorun(() => {
+    const doughnutData = {
+      labels: [__('Lakói befizetések'), __('Kamat pénzintézetektől'), __('Hitelfelvétel'), __('Adóköteles bevételek'), __('Támogatás')],
+      datasets: [{
+        data: [6440000, 2150, 2300000, 558500, 500000],
+        backgroundColor: choiceColors,
+      }],
+    };
+    const doughnutOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+    };
+    const elem = document.getElementById('incomesChart').getContext('2d');
+    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
+  });
+
+  // Filling the Expenses chart with DEMO data
+  this.autorun(() => {
+    const doughnutData = {
+      labels: [__('Költségek'), __('Beruházások'), __('Hiteltörlesztés')],
+      datasets: [{
+        data: [5000000, 2000000, 1000000],
+        backgroundColor: choiceColors,
+      }],
+    };
+    const doughnutOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+    };
+    const elem = document.getElementById('expensesChart').getContext('2d');
+    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
   });
 });
 
