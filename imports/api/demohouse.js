@@ -282,9 +282,11 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const dummyUsers = [];
   for (let userNo = 0; userNo < 18; userNo++) {
+    const lastName = __(`demo.user.${userNo}.lastName`);
+    const firstName = __(`demo.user.${userNo}.firstName`);
     dummyUsers.push(Meteor.users.insert({
-      emails: [{ address: `dummyuser.${userNo}@${demoOrTest}.${com}`, verified: true }],
-      profile: { lastName: __(`demo.user.${userNo}.lastName`), firstName: __(`demo.user.${userNo}.firstName`) },
+      emails: [{ address: `${firstName.normalize('NFD').replace(/[\u0300-\u036f]/g, "")}.${lastName.normalize('NFD').replace(/[\u0300-\u036f]/g, "")}.${userNo}@${demoOrTest}.${com}`, verified: true }],
+      profile: { lastName, firstName },
       avatar: `/images/avatars/avatar${userNo}.jpg`,
       settings: { language: lang },
     }));
@@ -1301,7 +1303,7 @@ Meteor.methods({
     });
 
     const demoManagerId = Meteor.users.findOne({ 'emails.0.address': 'manager@demo.hu' })._id;
-    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': 'dummyuser.1@demo.hu' })._id;
+    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex: '.1@demo.hu' } })._id;
 
     const demoUserMessageRoom = Topics.insert({
       communityId: demoCommunityId,
