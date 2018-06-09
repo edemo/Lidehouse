@@ -103,13 +103,14 @@
                 <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
                   <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
                     {{#each currentPreference}}
-                    <li class="btn btn-vote-choice ui-state-default" data-value="{{value}}"> <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> {{text}}</li>
+                    <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
+                    <li class="btn btn-vote-choice ui-state-default" data-value="{{value}}"><i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{text}}</li>
                     {{/each}}
                   </ul>
                   {{#if voteIsFinalized}}
-                  <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}">{{_ 'change'}}</button>
+                  <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}"><i class="fa fa-lg fa-circle"></i><img src="images/x-mark.png"> {{_ 'change'}}</button>
                   {{else}}
-                  <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}">{{_ 'finalize'}}</button>
+                  <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}"><i class="fa fa-lg fa-circle"></i><img src="images/x-mark.png"> {{_ 'finalize'}}</button>
                   {{/if}}
                 </div>
               </div>
@@ -120,7 +121,7 @@
                   <div class="btns-group">
                     {{#each choice in vote.choices}}
                     <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
-                      {{_ choice}}
+                      <i class="fa fa-lg fa-circle"></i><img src="images/x-mark.png"> {{_ choice}}
                     </button>
                     {{/each}}
                   </div>

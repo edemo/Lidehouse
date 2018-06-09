@@ -219,7 +219,7 @@ Template.Votebox.events({
   // event handler for the single choice vote type
   'click .btn-vote'(event) {
     const topicId = this._id;
-    const choice = $(event.target).data('value');
+    const choice = $(event.target).closest('.btn').data('value');
     castVoteBasedOnPermission(topicId, [choice],
       onSuccess(res => displayMessage('success', 'Vote casted'))
     );

@@ -1,5 +1,7 @@
 import { BrowserPolicy } from 'meteor/browser-policy';
 
+// https://stackoverflow.com/questions/30280370/how-does-content-security-policy-work#30280371
+
 BrowserPolicy.content.disallowInlineScripts();
 
 BrowserPolicy.content.allowSameOriginForAll();
