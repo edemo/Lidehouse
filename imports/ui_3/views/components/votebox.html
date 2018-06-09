@@ -54,7 +54,7 @@
           {{#markdown}}{{text}}{{/markdown}}
           {{#if attachments.count}}
           <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-             <i class="glyphicon glyphicon-paperclip"></i> 
+             <i class="glyphicon glyphicon-paperclip"></i>
              {{_ 'Attachments'}} ({{attachments.count}})
              <b class="caret"></b>
           </button>
@@ -71,7 +71,7 @@
           <!-- voting results -->
             <h4 class="text-center">
             {{#if voteTypeIs "preferential"}}
-              Opciók támogatottsága:            
+              Opciók támogatottsága:
             {{else}}
               Szavazatok összesítése:
             {{/if}}
@@ -103,13 +103,13 @@
                 <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
                   <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
                     {{#each currentPreference}}
-                    <li class="btn btn-vote-choice ui-state-default" data-value="{{value}}"> <span class="glyphicon glyphicon-lock" aria-hidden="true"></span> {{text}}</li>
+                    <li class="btn btn-vote-choice ui-state-default btn-block btn-w-m btn-default" data-value="{{value}}"> <span class="glyphicon glyphicon-sort glyphicon-honline-float-left" aria-hidden="true"></span> {{text}}</li>
                     {{/each}}
                   </ul>
                   {{#if voteIsFinalized}}
-                  <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}">{{_ 'change'}}</button>
+                  <button class="btn btn-vote-finalize btn-block btn-w-m btn-info {{pressedClassForFinalizeBtn}}">{{_ 'change'}}</button>
                   {{else}}
-                  <button class="btn btn-vote-finalize {{pressedClassForFinalizeBtn}}">{{_ 'finalize'}}</button>
+                  <button class="btn btn-vote-finalize btn-block btn-w-m btn-info {{pressedClassForFinalizeBtn}}">{{_ 'finalize'}}</button>
                   {{/if}}
                 </div>
               </div>
@@ -119,7 +119,7 @@
                 <div class="col-xs-12">
                   <div class="btns-group">
                     {{#each choice in vote.choices}}
-                    <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
+                    <button class="btn btn-vote btn-w-m btn-info {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
                       {{_ choice}}
                     </button>
                     {{/each}}
