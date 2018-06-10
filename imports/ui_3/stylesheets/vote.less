@@ -1,7 +1,10 @@
+@import '../theme/globals/variables.import.less';
+
+// TODO: find good colors for this
+@btn-vote-color: darken(orange, 20%);
+@btn-vote-mark: mix( #69b125, green, 75%);
 @btn-vote-border: black;
 @btn-vote-shadow: darkgrey;
-// TODO: find good color for this
-@btn-vote-color: darken(orange, 20%);
 
 .btn-vote, .btn-vote-choice, .btn-vote-finalize {
     border: 1px solid @btn-vote-border;
@@ -27,14 +30,13 @@
         border-radius: 50%;
         color: white;
       }
-      &.fa-lock, &.fa-sort {
-        color: black;
-      }
-      &.fa-lock { 
+      &.fa-lock {
+        color: @btn-vote-mark;
         top: 6.5px;
         left: 9px;
       }
       &.fa-sort {
+        color: black;
         top: 7px;
         left: 9.5px;
       }
@@ -44,8 +46,6 @@
       left: 6px;
       top: 6px;
       height: 15px;      
-    }
-    i.fa-lock, img {
       display: none;
     }
 }
@@ -60,7 +60,7 @@
 .btn.btn-pressed,
 .ui-sortable-disabled, .ui-sortable-disabled > li {
     cursor: default;
-    i.fa-lock, img {
+    img {
       display: block;
     }
     i.fa-sort {
