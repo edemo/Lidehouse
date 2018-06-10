@@ -23,6 +23,7 @@ reactive-var@1.0.11
 aldeed:template-extension
 percolate:momentum
 aldeed:autoform
+twbs:bootstrap
 peppelg:bootstrap-3-modal
 momentjs:moment
 mizzao:timesync
