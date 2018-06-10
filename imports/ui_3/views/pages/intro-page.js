@@ -1,4 +1,4 @@
-/* globals window */
+/* globals window WOW */
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import '/imports/api/demohouse.js';
@@ -56,7 +56,7 @@ Template.Intro_page.onRendered(function(){
     })();
 
     // Activate WOW.js plugin for animation on scroll
-    //new WOW().init();
+    new WOW({ offset: 50 }).init();
 
 });
 
