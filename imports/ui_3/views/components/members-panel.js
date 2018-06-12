@@ -4,7 +4,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 
-import { leaderRoles } from '/imports/api/permissions/config.js';
+import { leaderRoles } from '/imports/api/permissions/roles.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/rooms/rooms.js';

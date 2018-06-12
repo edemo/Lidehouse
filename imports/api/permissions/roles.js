@@ -1,11 +1,42 @@
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
+
+export const defaultRoles = [
+  { name: 'admin' },        // Creator of the community. Can give out all other roles and take them back.
+  { name: 'manager' },      // The manager (kk) of the community. Registers owners.
+  { name: 'owner' },        // Title holder of a parcel. Has voting rights.
+  { name: 'benefactor' },   // Uses the parcel. Owner handed over beneficiary rights to him/her.
+  { name: 'moderator' },    // Moderates the conversations on topics. Can remove comments.
+  { name: 'accountant' },   // Can set the PayAccount structure.
+  { name: 'treasurer' },    // Can add new financial transactions.
+  { name: 'overseer' },     // Can oversee financial transactions.
+  { name: 'maintainer' },   // Works on the reported errors. Sees them, can coment on them.
+  { name: 'delegate' },     // Can vote for someone else.
+  { name: 'guest' },        // Just poking around. Somone invited him/her to take a look.
+];
+
+// Groupings just to ease configuration
+export const occupantRoles = ['owner', 'benefactor'];
+export const leaderRoles = ['admin', 'manager'];
+export const nonLeaderRoles = ['moderator', 'accountant', 'treasurer', 'overseer', 'maintainer'];
+export const officerRoles = _.union(leaderRoles, nonLeaderRoles);
+export const autoAssignedRoles = ['delegate', 'guest'];
+export const everyRole = defaultRoles.map(r => r.name);
+export const everyBody = ['null']; // Even the not-logged-in user
+export const exceptGuest = _.without(everyRole, 'guest');
+export const nobody = [];
+
+// =====================================
 
 export const Roles = new Mongo.Collection('roles');
 
 Roles.schema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+              // If not exist, that is a built-in role for all communities
   name: { type: String, max: 100 },
-  protected: { type: Boolean, optional: true },
+  permissions: { type: Array },
+  'permissions.$': { type: String },
 });
 
 Roles.attachSchema(Roles.schema);

@@ -11,7 +11,7 @@ import { Fraction } from 'fractional';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { insert as insertMembership, update as updateMembership, remove as removeMembership  } from '/imports/api/memberships/methods.js';
-import { everyRole, defaultRoles } from '/imports/api/permissions/config.js';
+import { everyRole, defaultRoles } from '/imports/api/permissions/roles.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 
 if (Meteor.isServer) {
