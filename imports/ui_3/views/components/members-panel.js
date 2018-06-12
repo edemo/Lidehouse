@@ -88,11 +88,11 @@ Template.Member_slot.helpers({
   hasUnreadMessages() {
     const room = Topics.messengerRoom(this.person.userId, Meteor.userId());
     if (!room) return false;
-    return room.unseenCommentsBy(Meteor.userId()) > 0;
+    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES) > 0;
   },
   unreadMessagesCount() {
     const room = Topics.messengerRoom(this.person.userId, Meteor.userId());
-    return room.unseenCommentsBy(Meteor.userId());
+    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES);
   },
 });
 
@@ -100,5 +100,6 @@ Template.Member_slot.events({
   'click .member-slot'(event, instance) {
     Session.set('messengerPersonId', instance.data.person.userId);
     $('#right-sidebar').toggleClass('sidebar-open');
+    $('.js-focused').focus();
   },
 });

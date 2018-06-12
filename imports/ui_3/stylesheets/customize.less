@@ -9,6 +9,13 @@
     position: relative;
     display: inline-block;
 }
+
+// in order to fit in bigger avatar img to top-navbar
+#user-menu-dropdown {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 // To change the margins of page-wrapper when no left-sidebar menu is needed
 // we need to target another id to overwrite the page-wrapper's css properties.
 #no-user #page-wrapper{
@@ -22,6 +29,43 @@
 #logo {
     padding: 0;
 }
+
+// intro-page
+.landing-page {
+    // carousel images
+    .header-back.one {
+        background: url('/images/intro/intro-carousel-1.jpg') 50% 0 no-repeat;
+    }
+    .header-back.two {
+        background: url('/images/intro/intro-carousel-2.jpg') 50% 0 no-repeat;
+    }
+    .header-back.three {
+        background: url('/images/intro/intro-carousel-3.jpg') 50% 0 no-repeat;
+    }
+    .header-back.four {
+        background: url('/images/intro/intro-carousel-4.jpg') 50% 10% no-repeat;
+    }
+
+    .gray-section {
+        margin-top: 0;
+    }
+    section p, ul {
+        color:  #919191; // @text-color;
+       // font-size: 13px;
+    }
+    .more-text {
+        display: none;
+    }
+    .read-more {
+        padding: 1px 5px;
+        border: 1px solid @navy;
+        border-radius: 3px;
+    }
+    .img-responsive {
+        display: inline;
+    }
+}
+
 .member-list .tab-content {
 //    height: 400px;
 }
@@ -43,9 +87,16 @@
 //    background-color: yellow;
 }
 
-.messages .ibox-content {
-    max-height: 70vh;
+@media screen and (max-width: 767px) {
+    .chat-message {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
 
+.chat-discussion {
+    background:  #eee url('/images/msg-back.png') 50% repeat;
+    height: 100%;
 }
 
 .sidebar-container .sidebar-message .media-body{
@@ -65,7 +116,7 @@
 }
 
 .page-heading {
-    border-top: solid 1px lighten(gray, 25%);
+    // border-top: solid 1px lighten(gray, 25%);
     border-bottom: solid 1px lighten(gray, 25%);
 }
 
@@ -89,6 +140,26 @@
     margin-right: 0px;
 }
 
+// Dividing the comments from each other
+.social-comment {
+    margin-top: 0px;
+    margin-bottom: 7px;
+    padding-top: 7px;
+    border-top: 1px solid #E8E8E8
+}
+.social-comment:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+.social-comment:last-child {
+    margin-bottom: 0;
+}
+
+.social-footer .social-comment img {
+    width: 32px;
+    height: 32px;
+}
+
 // Using the theme-config panel as the connection issue warning
 #connection-issue {
   z-index: 3000;
@@ -106,4 +177,10 @@
 .skin-settings {
   border: 2px solid @red;
   border-right: none;
+}
+
+//
+.carousel-caption {
+//  background: black 50%;
+//  border-radius: 10px;
 }

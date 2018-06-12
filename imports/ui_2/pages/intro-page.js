@@ -13,7 +13,7 @@ import { displayError } from '/imports/ui/lib/errors.js';
 import '/imports/api/demohouse.js';
 import './intro-page.html';
 
-Template.Intro_page.events({
+Template.Old_intro_page.events({
   'click .demouser-autologin'() {
     Meteor.call('createDemoUserWithParcel', function (error, result) {
       if (error) displayError(error);

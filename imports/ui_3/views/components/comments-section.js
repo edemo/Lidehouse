@@ -56,29 +56,30 @@ Template.Comment.events({
     }, handleError);
   },
   'click .js-edit'(event, instance) {
-    const commentSpan = $('span[data-id="' + instance.data._id + '"]');
-    $(commentSpan).replaceWith('<span data-id="' + instance.data._id + '"><textarea class="form-control js-send-edited">' + commentSpan.text() + '</textarea>' +
-     `<small class="text-muted">${__('commentEditInstruction')} </small></span>`);
-    $('span[data-id="' + instance.data._id + '"] textarea').focus();
+    $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+    const originalText = Comments.findOne({ _id: instance.data._id }).text;
+    const textareaEdit = '<span id="editableSpan"><textarea class="form-control js-send-edited">' + 
+      originalText + '</textarea>' + `<small class="text-muted">${__('commentEditInstruction')} </small></span>`;
+    $(textareaEdit).insertAfter('span[data-id="' + instance.data._id + '"]');
+    $('#editableSpan > textarea').focus();
   },
   'keydown .js-send-edited'(event, instance) {
-    const editCommentSpan = $('span[data-id="' + instance.data._id + '"]');
-    const editCommentTextarea = editCommentSpan.find('textarea');
     // pressing escape key
     if (event.keyCode === 27) { 
       event.preventDefault();
-      const originalText = Comments.findOne({ _id: instance.data._id }).text;
-      $(editCommentSpan).replaceWith('<span class="newlines" data-id="' + instance.data._id + '">' + originalText + '</span>');
+      $('#editableSpan').remove();
+      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
     }
     // pressing enter key
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 && !event.shiftKey) {
       event.preventDefault();
-      const editedText = editCommentTextarea.val();
+      const editedText = $('#editableSpan > textarea').val();
       updateComment.call({
         commentId: instance.data._id,
         modifier: { $set: { text: editedText } },
       });
-      $(editCommentSpan).replaceWith('<span class="newlines" data-id="' + instance.data._id + '">' + editedText + '</span>');
+      $('#editableSpan').remove();
+      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
     }
   },
   'click .js-delete'(event, instance) {

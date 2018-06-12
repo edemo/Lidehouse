@@ -21,8 +21,7 @@ import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/voting-edit.js';
-import '/imports/ui_2/modals/proposal-view.js';
-import '/imports/ui_2/components/vote-results.js';
+import '/imports/ui_3/views/components/vote-results.js';
 import '../components/select-voters.js';
 import './votebox.html';
 
@@ -220,7 +219,7 @@ Template.Votebox.events({
   // event handler for the single choice vote type
   'click .btn-vote'(event) {
     const topicId = this._id;
-    const choice = $(event.target).data('value');
+    const choice = $(event.target).closest('.btn').data('value');
     castVoteBasedOnPermission(topicId, [choice],
       onSuccess(res => displayMessage('success', 'Vote casted'))
     );
@@ -248,16 +247,6 @@ Template.Votebox.events({
     castVote.call({ topicId, castedVote: vote },
       onSuccess(res => displayMessage('success', 'Vote revoked'))
     );
-  },
-  'click .js-view-proposal'(event, instance) {
-    const modalContext = {
-      title: 'Official proposal',
-      body: 'Proposal_view',
-      bodyContext: this,
-      btnClose: 'close',
-      btnEdit: 'edit',
-    };
-    Modal.show('Modal', modalContext);
   },
   'click .js-close'(event, instance) {
     closeVote.call({ topicId: this._id },

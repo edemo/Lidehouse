@@ -1,14 +1,15 @@
 import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import { AccountsTemplates } from 'meteor/useraccounts:core';
+import { connectMe } from '/imports/api/memberships/methods.js';
 
 // Import to load these templates
 import '/imports/ui/pages/root-redirector.js';
 import '/imports/ui/pages/app-not-found.js';
 
-import '/imports/ui_2/pages/intro-page.js';
-import '/imports/ui_2/pages/about.js';
+import '/imports/ui_3/views/pages/intro-page.js';
+import '/imports/ui_3/views/pages/demo-login.js';
 import '/imports/ui_3/views/pages/profile-form.js';
 import '/imports/ui_3/views/pages/user-show.js';
 import '/imports/ui_3/views/pages/communities-listing.js';
@@ -25,10 +26,9 @@ import '/imports/ui_3/views/pages/parcels-finances.js';
 import '/imports/ui_3/views/pages/community-finances.js';
 import '/imports/ui_3/views/pages/shareddoc-store.js';
 import '/imports/ui_3/views/pages/topic-show.js';
-import '/imports/ui_2/pages/feedbacks.js';
-import '/imports/ui_2/pages/statement.js';
 
 import '/imports/ui_3/views/layouts/main.js';
+import '/imports/ui_3/views/layouts/blank.js';
 
 // Import to override accounts templates
 import '/imports/ui/accounts/accounts-templates.js';
@@ -48,32 +48,19 @@ FlowRouter.route('/', {
 FlowRouter.route('/intro', {
   name: 'App.intro',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Intro_page' });
+    BlazeLayout.render('Intro_page');
   },
 });
 
-FlowRouter.route('/about', {
-  name: 'About.us',
+FlowRouter.route('/demo', {
+  name: 'Demo.login',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'About_page' });
-  },
-});
-
-FlowRouter.route('/statement', {
-  name: 'Statement',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Statement_page' });
+    BlazeLayout.render('Blank_layout', { content: 'Demo_login' });
   },
 });
 
 // --------------------------------------------
 
-FlowRouter.route('/community', {
-  name: 'Community.page',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Community_page' });
-  },
-});
 FlowRouter.route('/community/:_cid', {
   name: 'Community.page',
   action() {
@@ -199,6 +186,14 @@ FlowRouter.route('/community-finances', {
 });
 CommunityRelatedRoutes.push('Community.finances');
 
+FlowRouter.route('/community', {
+  name: 'Community.page.default',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Community_page' });
+  },
+});
+CommunityRelatedRoutes.push('Community.page.default');
+
 FlowRouter.route('/documents', {
   name: 'DocumentStore',
   action() {
@@ -212,22 +207,9 @@ CommunityRelatedRoutes.push('DocumentStore');
 // the App_notFound template is used for unknown routes and missing topics
 FlowRouter.notFound = {
   action() {
-    BlazeLayout.render('Main_layout', { content: 'App_notFound' });
+    BlazeLayout.render('Blank_layout', { content: 'App_notFound' });
   },
 };
-
-// Automatic redirection
-// if no user is logged in, then let us not show the house related pages 
-// (should we do something when or no active house selected?)
-
-Meteor.autorun(() => {
-  const currentRoute = FlowRouter.getRouteName();
-  if (CommunityRelatedRoutes.includes(currentRoute)) {
-    if (!Meteor.userId()) {
-      FlowRouter.go('signin');
-    }
-  }
-});
 
 // Automatic redirection after sign in
 // if user is coming from a page where he would have needed to be logged in, and we sent him to sign in.
@@ -244,3 +226,60 @@ export function signinRedirect() {
 export function setRouteBeforeSignin(value) {
   routeBeforeSignin = value;
 }
+
+// Automatic redirection
+// if no user is logged in, then let us not show the house related pages 
+// (should we do something when or no active house selected?)
+
+Meteor.autorun(() => {
+  const currentRoute = FlowRouter.getRouteName();
+  if (CommunityRelatedRoutes.includes(currentRoute) || currentRoute === 'Profile.show') {
+    if (!Meteor.userId()) {
+      setRouteBeforeSignin(FlowRouter.current());
+      FlowRouter.go('signin');
+    }
+  }
+});
+
+// SignIn/SignUp routes
+
+AccountsTemplates.configureRoute('signIn', {
+  name: 'signin',
+  path: '/signin',
+  redirect() {
+    signinRedirect();
+  },
+});
+
+AccountsTemplates.configureRoute('signUp', {
+  name: 'signup',
+  path: '/signup',
+  redirect() {
+    signinRedirect();
+  },
+});
+
+AccountsTemplates.configureRoute('forgotPwd');
+
+AccountsTemplates.configureRoute('resetPwd', {
+  name: 'resetPwd',
+  path: '/reset-password',
+});
+
+AccountsTemplates.configureRoute('verifyEmail', {
+  name: 'verifyEmail',
+  path: '/verify-email',
+  redirect() {
+    connectMe.call();
+  },
+});
+
+AccountsTemplates.configureRoute('enrollAccount', {
+  name: 'enrollAccount',
+  path: '/enroll-account',
+  redirect() {
+    connectMe.call();
+    FlowRouter.go('App.home');
+  },
+});
+

@@ -5,6 +5,7 @@ import { TimeSync } from 'meteor/mizzao:timesync';
 import { __ } from '/imports/localization/i18n.js';
 import { handleError } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import { like } from '/imports/api/topics/likes.js';
 import { remove as removeTopic, update as updateTopic } from '/imports/api/topics/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -22,24 +23,57 @@ Template.Chatbox.helpers({
   },
 });
 
+function toggleFinishEditButtons(instance) {
+  $('.js-save-edited[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+  $('.js-cancel[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+};
+function toggleTopic(instance) {
+  $('p[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+  $('strong[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+};
+function finishEditing(instance) {
+  $('.js-text[data-id="' + instance.data._id + '"]').remove();
+  $('.js-title[data-id="' + instance.data._id + '"]').remove();
+  toggleFinishEditButtons(instance);
+  toggleTopic(instance);
+};
+
 Template.Chatbox.events({
   'click .js-edit-topic'(event, instance) {
-    const textP = $('p[data-id="' + instance.data._id + '"]');
-    const title = $('strong[data-id="' + instance.data._id + '"]');
-    $(textP).replaceWith('<textarea id="textareaEditText" rows="3" cols="" class="full-width">' + textP.text() + '</textarea>');
-    $(title).replaceWith('<textarea id="textareaEditTitle" rows="1" cols="">' + title.text() + '</textarea>');
-    $('.js-save-edited[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+    const originalText = Topics.findOne({ _id: instance.data._id }).text;
+    const originalTitle = Topics.findOne({ _id: instance.data._id }).title;
+    const textareaText = '<textarea data-id="' + instance.data._id + '" rows="3" cols="" class="js-text full-width">' + originalText + '</textarea>';
+    const textareaTitle = '<textarea data-id="' + instance.data._id + '" class="js-title" rows="1" cols="">' + originalTitle + '</textarea>';
+    $(textareaTitle).insertAfter('strong[data-id="' + instance.data._id + '"]');
+    $(textareaText).insertAfter('p[data-id="' + instance.data._id + '"]');
+    toggleTopic(instance);
+    toggleFinishEditButtons(instance);
   },
   'click .js-save-edited'(event, instance) {
-    const editedText = $('#textareaEditText').val();
-    const editedTitle = $('#textareaEditTitle').val() || editedText.substring(0, 25) + '...';
+    const editedText = $('.js-text[data-id="' + instance.data._id + '"]').val();
+    const editedTitle = $('.js-title[data-id="' + instance.data._id + '"]').val() || editedText.substring(0, 25) + '...';
     updateTopic.call({
       _id: instance.data._id,
       modifier: { $set: { text: editedText, title: editedTitle } },
     });
-    $('#textareaEditText').replaceWith('<p data-id="' + instance.data._id + '">' + editedText + '</p>');
-    $('#textareaEditTitle').replaceWith('<strong data-id="' + instance.data._id + '">' + editedTitle + '</strong>');
-    $('.js-save-edited[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+    finishEditing(instance);
+  },
+  'click .js-cancel'(event, instance) {
+    finishEditing(instance);
+  },
+  'keydown .js-text'(event, instance) {
+    // pressing escape key
+    if (event.keyCode === 27) { 
+      event.preventDefault();
+      finishEditing(instance);
+    }
+  },
+  'keydown .js-title'(event, instance) {
+    // pressing escape key
+    if (event.keyCode === 27) { 
+      event.preventDefault();
+      finishEditing(instance);
+    }
   },
   'click .js-delete'(event, instance) {
     Modal.confirmAndCall(removeTopic, { _id: this._id }, {

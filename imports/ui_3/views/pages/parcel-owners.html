@@ -11,7 +11,7 @@
                     <td>{{ownership.share}}</td>
                     <td>
                         {{#if ownership.representor}}
-                        <span class="label label-plain">{{_ 'representor'}}</span>
+                        <span class="label label-plain"><i class="fa fa-star"></i> {{_ 'representor'}}</span>
                         {{/if}}
                     </td>
                     {{#if currentUserHasPermission 'ownerships.update'}}

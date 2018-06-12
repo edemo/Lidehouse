@@ -17,7 +17,6 @@ import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
 import { Reports } from '/imports/api/payaccounts/reports.js';
 
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_2/components/sumif-table.js';
 import '/imports/ui_2/components/custom-table.js';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';

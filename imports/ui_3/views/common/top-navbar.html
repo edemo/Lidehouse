@@ -9,11 +9,6 @@
                             <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
                         </div>
                     </form-->
-                {{else}}
-                    <a href="{{pathFor 'App.intro'}}" id="logo" class="minimalize-styl-2">
-                        <img class="visible-sm visible-md visible-lg" src="/images/logo-duo-text.png" width="100" alt="Logo">
-                        <img class="visible-xs" src="/favicon.png" width="40" alt="Logo">
-                    </a>
                 {{/if}}
             </div>
             <ul class="nav navbar-top-links navbar-right">
@@ -57,7 +52,7 @@
                     <a data-toggle="dropdown" class="dropdown-toggle" href="" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
                     <span>
                         <strong id="username" class="font-bold hidden-xs hidden-sm">{{currentUser.displayName}}</strong>                            
-                        <img alt="image" class="img-circle" src="{{currentUser.avatar}}" width="25"/>
+                        <img alt="image" class="img-circle" src="{{currentUser.avatar}}" width="32"/>
                         <b class="caret"></b>
                     </span>
                     </a>
@@ -84,18 +79,6 @@
                         {{/if}}  
                     </a>                    
                 </li>     
-                {{else}}
-                <li>
-                    <a href="{{pathFor 'Communities.listing'}}">{{_ 'Houses'}}</a> 
-                </li>
-                <li>
-                    <a href="{{pathFor 'About.us'}}">{{_ 'About'}}</a>
-                </li>
-                <li>
-                    <a href="{{pathFor 'signin'}}">
-                        <i class="fa fa-sign-in"></i>{{_ 'login'}}
-                    </a>
-                </li>
                 {{/if}}
             </ul>
         </nav>

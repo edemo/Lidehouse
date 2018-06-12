@@ -1,10 +1,15 @@
+@import '../theme/globals/variables.import.less';
+
+// TODO: find good colors for this
+@btn-vote-color: darken(orange, 20%);
+@btn-vote-mark: mix( #69b125, green, 75%);
 @btn-vote-border: black;
+@btn-vote-shadow: darkgrey;
 
 .btn-vote, .btn-vote-choice, .btn-vote-finalize {
     border: 1px solid @btn-vote-border;
     color: white;
-    background-color: darken(orange, 20%);
-    padding-left: 20px;
+    padding-left: 25px;
     position: relative;
     cursor: pointer;
     text-align: left;
@@ -15,54 +20,79 @@
     font-size: 1em;
     height: auto;
     border-radius: 15px;
-    box-shadow: 1px 1px 8px 1px darkgray;
-    span {
+    box-shadow: 2px 2px 2px @btn-vote-shadow;
+
+    i {
+      position: absolute;
+      &.fa-circle {
+        left: 5px;
+        border: 1px solid @btn-vote-border;
+        border-radius: 50%;
+        color: white;
+      }
+      &.fa-lock {
+        color: @btn-vote-mark;
+        top: 6.5px;
+        left: 9px;
+      }
+      &.fa-sort {
+        color: black;
+        top: 7px;
+        left: 9.5px;
+      }
+    }
+    img {
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      height: 15px;      
       display: none;
     }
 }
 
-.btn.btn-pressed {
-    box-shadow: 1px 1px 8px 3px darkorange;
+.btn-vote, .btn-vote-finalize {
+    background-color: @btn-vote-color;
+}
+.btn-vote-choice {
+    background-color: lighten(@btn-vote-color, 15%);
+}
+
+.btn.btn-pressed,
+.ui-sortable-disabled, .ui-sortable-disabled > li {
+    cursor: default;
+    img {
+      display: block;
+    }
+    i.fa-sort {
+      //display: none;
+      color: lighten(grey, 25%);
+    }
 }
 
 .sortable {
-  text-align: center;
-  list-style-type: none;
-  margin: 0;
-  padding: 10px;
-  // border: 1px solid #ddd;
   padding: 5px;
-  // width: 70%;
-  background: white none repeat scroll 0% 0% !important;
-  // box-shadow: .2px .1px .2px .15px rgba(35, 35, 35, 0.18);
-  transition: box-shadow 0.30s ease;
-  display: inline-block;
   max-width: 100%;
-  &:hover {
-    // box-shadow: 3px 4px 7px 2px rgba(35, 35, 35, 0.18);
-  }
 }
-.ui-state-default{
-  border: 1px solid @btn-vote-border;
-  background: white;
-  font-weight: normal;
-  color: #555555;
-  width: 100%;
+
+.btn-vote-choice{
+    background: white;
+    font-weight: normal;
+    color: #555555;
+    width: 100%;
+    &:hover {
+      box-shadow: 3px 4px 7px 2px rgba(35, 35, 35, 0.18);
+    }
+    transition: box-shadow 0.30s ease;    
+
+    i.fa-circle {
+      display: none;
+//      color: transparent;
+    }
 }
 
 .ui-sortable-handle {
   -ms-touch-action: none;
   touch-action: none;
-}
-
-.ui-sortable-disabled, .ui-sortable-disabled > li {
-  cursor: default;
-  span {
-    position: absolute;
-    left: 5px;
-    top: 5px;
-    display: block;
-  }
 }
 
 /* START Touch Punch Desktop Cursor */

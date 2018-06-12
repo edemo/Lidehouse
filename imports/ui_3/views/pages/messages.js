@@ -13,16 +13,30 @@ import '../components/members-panel.js';
 import '../components/contact-long.js';
 import './messages.html';
 
-Template.Messages.onCreated(function onCreated() {
-  this.state = new ReactiveDict();
-  this.state.set('peopleOpen', false);
+function messageFooterToBottom() {
+  const windowHeight = $(window).height();
+  const topbarHeight = $('nav.navbar-fixed-top').height();
+  const titleHeight = $('.messages > .ibox-title').height();
+  const footerHeight = $('.messages > .ibox-footer').height();
+  const paddings = 70;
+  const largeScreenHeight = windowHeight - topbarHeight - titleHeight - footerHeight - (2 * paddings);
+  const smallScreenHeight = windowHeight - topbarHeight - titleHeight - footerHeight - paddings;
+  if (windowHeight > 700) {
+    $('.messages > .ibox-content').css("height", largeScreenHeight + "px");
+  } else {
+    $('.messages > .ibox-content').css("height", smallScreenHeight + "px");
+  }
+}
+
+Template.Messages.onRendered(function() {
+  $('.js-focused').focus();
+  messageFooterToBottom();
+  $(window).bind("load resize scroll", function() {
+    messageFooterToBottom();    
+  });
 });
 
 Template.Messages.helpers({
-  peopleOpen() {
-    const instance = Template.instance();
-    return instance.state.get('peopleOpen') && 'people-open';
-  },
   selectedPersonId() {
     return Session.get('messengerPersonId');
   },
@@ -34,28 +48,6 @@ Template.Messages.helpers({
     const selectedPersonId = Session.get('messengerPersonId');
     const room = Topics.messengerRoom(Meteor.userId(), selectedPersonId);
     return room;
-  },
-  templateGestures: {
-    'swiperight .cordova'(event, instance) {
-      $('#people')[0].classList.remove('people-open');
-    },
-    'swipeleft .cordova'(event, instance) {
-      $('#people')[0].classList.add('people-open');
-    },
-  },
-});
-
-Template.Messages.events({
-  'click .js-people'(event) {
-//  console.log("clicked", $('#people'));
-    $('#people')[0].classList.toggle('people-open');
-  },
-  'click .content-overlay'(event, instance) {
-    instance.state.set('peopleOpen', false);
-    event.preventDefault();
-  },
-  'click #people .person'(event, instance) {
-    $('#people')[0].classList.remove('people-open');
   },
 });
 
@@ -75,10 +67,11 @@ Template.Message_history.onCreated(function tmplMsgBoxOnCreated() {
 
 Template.Message_history.onRendered(function tmplMsgBoxOnRendered() {
   this.autorun(() => {
+    $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
     const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
     if (!room) return;
     if (this.subscriptionsReady()) {
-      Meteor.user().hasNowSeen(room);
+      Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY_EYES);
     }
   });
 
@@ -104,6 +97,7 @@ Template.Message_send.events({
   'click .js-send'(event, instance) {
     const textarea = instance.find('textarea');
     const text = textarea.value;
+    let room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
     let roomId;
     const insertMessage = () => {
       Meteor.call('comments.insert', {
@@ -113,11 +107,11 @@ Template.Message_send.events({
       },
       onSuccess((res) => {
         textarea.value = '';
-        Meteor.user().hasNowSeen(roomId);
+        $('.js-focused').focus();
+        Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY_EYES);
       }));
     };
-
-    const room = Topics.messengerRoom(Meteor.userId(), Session.get('messengerPersonId'));
+    
     if (room) {
       roomId = room._id;
       insertMessage();
@@ -129,6 +123,7 @@ Template.Message_send.events({
         category: 'room',
       }, onSuccess((res) => {
         roomId = res;
+        room = Topics.findOne(roomId);
         insertMessage();
       }),
       );

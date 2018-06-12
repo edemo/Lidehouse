@@ -15,7 +15,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_2/modals/modal.js';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
-import '/imports/ui_2/components/collapse-section.js';
+import '/imports/ui_3/views/components/collapse-section.js';
 import '/imports/ui_3/views/components/new-forum-topic.js';
 import '../components/chatbox.js';
 import '../components/votebox.js';
