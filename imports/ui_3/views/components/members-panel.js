@@ -100,6 +100,6 @@ Template.Member_slot.events({
   'click .member-slot'(event, instance) {
     Session.set('messengerPersonId', instance.data.person.userId);
     $('#right-sidebar').toggleClass('sidebar-open');
-    $('.js-focused').focus();
+    if ($(window).width() > 768) $('.js-focused').focus();
   },
 });
