@@ -8,13 +8,12 @@ import '/utils/fractional.js';  // TODO: should be automatic, but not included i
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { officerRoles, everyRole } from '/imports/api/permissions/config.js';
+import { officerRoles, everyRole, Roles } from '/imports/api/permissions/roles.js';
 import { Factory } from 'meteor/dburles:factory';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Roles } from '/imports/api/permissions/roles.js';
 import { Person, PersonSchema } from '/imports/api/users/person.js';
 
 export const Memberships = new Mongo.Collection('memberships');

@@ -218,7 +218,7 @@ function newParcelBillingSchema() {
 }
 
 Template.Community_finances.events({
-  'click #payaccounts-pane .js-new'(event, instance) {
+  'click #payaccounts .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.insert',
       collection: PayAccounts,
@@ -229,7 +229,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payaccounts-pane .js-edit'(event) {
+  'click #payaccounts .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.update',
@@ -243,7 +243,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payaccounts-pane .js-view'(event, instance) {
+  'click #payaccounts .js-view'(event, instance) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.view',
@@ -254,13 +254,13 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payaccounts-pane .js-delete'(event) {
+  'click #payaccounts .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(PayAccounts.remove, { _id: id }, {
       action: 'delete payaccount',
     });
   },
-  'click #payments-pane .js-new'(event, instance) {
+  'click #payments .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.payment.insert',
       collection: Payments,
@@ -271,7 +271,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payments-pane .js-edit'(event) {
+  'click #payments .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payment.update',
@@ -285,7 +285,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payments-pane .js-view'(event) {
+  'click #payments .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payment.view',
@@ -297,13 +297,13 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payments-pane .js-delete'(event) {
+  'click #payments .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(removePayment, { _id: id }, {
       action: 'delete payment',
     });
   },
-  'click #bills-pane .js-new'(event, instance) {
+  'click #bills .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.bill.insert',
       collection: Payments,
@@ -314,7 +314,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #bills-pane .js-edit'(event) {
+  'click #bills .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.bill.update',
@@ -328,7 +328,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #bills-pane .js-view'(event) {
+  'click #bills .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.bill.view',
@@ -340,7 +340,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #bills-pane .js-many'(event, instance) {
+  'click #bills .js-many'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.parcelBilling.insert',
       collection: ParcelBillings,
@@ -351,13 +351,13 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #bills-pane .js-delete'(event) {
+  'click #bills .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(removePayment, { _id: id }, {
       action: 'delete bill',
     });
   },
-  'click #bills-pane .js-bill'(event) {
+  'click #bills .js-bill'(event) {
     const communityId = Session.get('activeCommunityId');
     Modal.confirmAndCall(billParcels, { communityId }, {
       action: 'bill parcels',
