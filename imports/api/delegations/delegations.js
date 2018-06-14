@@ -88,6 +88,13 @@ Delegations.helpers({
   targetPerson() {
     return Person.constructFromId(this.targetPersonId);
   },
+  getAffectedVotings() {
+    if (this.scope === 'community') return Topics.find({ communityId: this.scopeObjectId, category: 'vote', closed: false });
+    if (this.scope === 'agenda') return Topics.find({ agendaId: this.scopeObjectId, category: 'vote', closed: false });
+    if (this.scope === 'topic') return Topics.find({ _id: this.scopeObjectId, category: 'vote', closed: false });
+    debugAssert(false, `No such scope as ${this.scope}`);
+    return undefined;
+  }
 });
 
 Delegations.attachSchema(Delegations.schema);

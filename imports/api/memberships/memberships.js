@@ -100,15 +100,18 @@ Memberships.helpers({
   },
   isRepresentor() {
     const parcel = this.parcel();
+    debugAssert(parcel);
     return (parcel.representor()._id === this._id);
   },
   votingUnits() {
+    if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
     // const votingUnits = this.parcel().units * this.ownership.share.toNumber();
     const votingUnits = this.isRepresentor() ? this.parcel().units : 0;
     return votingUnits;
   },
   votingShare() {
+    if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
     // const votingShare = this.parcel().share().multiply(this.ownership.share);
     const votingShare = this.isRepresentor() ? this.parcel().share() : 0;
