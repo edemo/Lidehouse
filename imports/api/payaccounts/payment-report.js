@@ -1,5 +1,7 @@
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
+
+import { debugAssert } from '/imports/utils/assert.js';
 import { Payments } from '/imports/api/payments/payments.js';
 
 export class PaymentReport {
@@ -29,7 +31,7 @@ export class PaymentReport {
     }
   }
 
-  // Adding a whole tree of lines, separately or descarting the current set of lines
+  // Adding a whole tree of lines, separately or descarting the current set of lines 
   addTree(dim, treeDef, descartes = true, sumFirst = true, asFirst = false) {
     let nodes = treeDef.values.nodes();
     if (!sumFirst) nodes = nodes.reverse();
@@ -45,12 +47,26 @@ export class PaymentReport {
     return {
       field,
       value: node.label || node.name,
-      values: { $in: _.pluck(node.leafs(), 'name') },
+      values: _.pluck(node.leafs(), 'name'),
       class: 'header-level' + node.level,
-      filter() {
-        const obj = {};
-        obj[this.field] = this.values;
+      mongoFilter() {
+        let obj = {};
+        obj[this.field] = { $in: this.values };
+        if (this.field.split('.')[0] === 'account') {
+          obj = Payments.accountFilter(obj);
+        }
         return obj;
+      },
+      arrayFilterFunc() {
+        return (a => {
+          if (this.field.indexOf('.') > 0) {
+            const split = this.field.split('.');
+            debugAssert(split[0] === 'account');
+            return !!a.account && _.contains(this.values, a.account[split[1]]);
+          } else {
+            return _.contains(this.values, a[field]);
+          }
+        });
       },
     };
   }
@@ -90,25 +106,37 @@ export class PaymentReport {
   }
 
   cell(x, y) {
-    const col = this.cols[x];
-    const row = this.rows[y];
+    const colDefs = this.cols[x];
+    const rowDefs = this.rows[y];
     const filter = _.extend({}, this.filters);
+    const arrayFilterFuncs = [];
 
     let classes = 'cell';
-    function addFilter(f) {
-      _.extend(filter, f.filter());
-      classes += ' ' + f.class;
+    function addFilter(lineDef) {
+      filter.$and = filter.$and || [];
+      filter.$and.push(lineDef.mongoFilter());
+      classes += ' ' + lineDef.class;
+      arrayFilterFuncs.push(lineDef.arrayFilterFunc());
     }
-    col.forEach(addFilter);
-    row.forEach(addFilter);
+    const lineDefs = colDefs.concat(rowDefs);
+    lineDefs.forEach(addFilter);
 
-    let amount = 0;
+    let totalAmount = 0;
     const payments = Payments.find(filter);
-    payments.forEach(pay => amount += pay.amount);
+    let signOfImpact = +1;
+    payments.forEach(payment => {
+//      lineDefs.forEach(lineDef => {
+//        const calculatedSign = Payments.signOfImpact(payment, lineDef.field, lineDef.values);
+//        if (!calculatedSign) ;
+//        else if (!signOfImpact) signOfImpact = calculatedSign;
+//        else debugAssert(signOfImpact === calculatedSign); // It is NOT OK to set up a table where the calculated impact sign would be different from the perspective of different effected fields
+//      });
+      totalAmount += signOfImpact * payment.amount;
+    });
 
-    if (amount < -0.001) classes += ' negative';
+    if (totalAmount < -0.001) classes += ' negative';
 //    console.log(`${x}, ${y}: filter:`); console.log(filter);
-    return { class: classes, value: numeral(amount).format() };
+    return { class: classes, value: numeral(totalAmount).format() };
   }
 
   addDescartesProductLines(dim, newLineDefs) {

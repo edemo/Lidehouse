@@ -502,7 +502,7 @@ export function insertDemoFixture(lang) {
 
   const locator = PayAccounts.update({
     communityId: demoCommunityId,
-    name: 'Könyvelés helye',
+    name: 'Localizer',
   }, {
     $set: {
       children: [

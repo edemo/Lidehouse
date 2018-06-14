@@ -32,6 +32,7 @@ Template.Community_finances.onCreated(function communityFinancesOnCreated() {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('payaccounts.inCommunity', { communityId });
     this.subscribe('payments.inCommunity', { communityId });
+    this.subscribe('legs.inCommunity', { communityId });
   });
 });
 
@@ -155,10 +156,9 @@ Template.Community_finances.helpers({
   },
   paymentsOptionsFn() {
     const communityId = Session.get('activeCommunityId');
-    const accounts = PayAccounts.find({ communityId }).fetch();
     function getOptions() {
       return {
-        columns: paymentColumns(accounts),
+        columns: paymentColumns(),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
@@ -193,7 +193,8 @@ function newPaymentSchema() {
   }
   return new SimpleSchema([
     Payments.simpleSchema(),
-    { accounts: { type: chooseAccountsSchema(), optional: true } },
+    { accountFrom: { type: chooseAccountsSchema(), optional: true } },
+    { accountTo: { type: chooseAccountsSchema(), optional: true } },
   ]);
 }
 
@@ -201,8 +202,8 @@ function newParcelBillingSchema() {
   function chooseAccountsSchema() {
     const obj = {};
     const communityId = Session.get('activeCommunityId');
-    const payaccount1 = PayAccounts.findOne({ communityId, name: 'Bevételek' });
-    const payaccount2 = PayAccounts.findOne({ communityId, name: 'Könyvelés helye' });
+    const payaccount1 = PayAccounts.findOne({ communityId, name: 'Incomes' });
+    const payaccount2 = PayAccounts.findOne({ communityId, name: 'Localizer' });
     obj[payaccount1.name] = { type: String, optional: true, label: payaccount1.name, 
       autoform: { options() { return payaccount1.leafOptions(l => l.membersRelated); } },
     };
@@ -213,7 +214,7 @@ function newParcelBillingSchema() {
   }
   return new SimpleSchema([
     ParcelBillings.simpleSchema(),
-    { accounts: { type: chooseAccountsSchema(), optional: true } },
+    { accountFrom: { type: chooseAccountsSchema(), optional: true } },
   ]);
 }
 
@@ -383,7 +384,7 @@ AutoForm.addHooks('af.payment.insert', {
     doc.phase = 'done';
     // When entering expenses into the system, we enter them as positive number, but should appear with minus in the sheet
 //    const payaccount = PayAccounts.findOne({ communityId: doc.communityId, name: 'Könyvelés nem' });
-//    const leafName = doc.accounts['Könyvelés nem'];
+//    const leafName = doc.account['Könyvelés nem'];
 //    const leaf = payaccount.leafFromName(leafName);
 //    const category = leaf.level1;
 //    if (category.negative) doc.amount *= -1;

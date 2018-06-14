@@ -28,8 +28,8 @@ export const Reports = {
     report.addFilter({ phase: 'done' });
     report.addLine('cols', [], false);
     report.addTree('rows', {
-      field: 'accounts.Pénz számla',
-      values: PayAccounts.findOne({ communityId, name: 'Pénz számla' }),
+      field: 'accounts.Assets',
+      values: PayAccounts.findOne({ communityId, name: 'Assets' }),
     }, false);
     return report;
   },
@@ -39,7 +39,7 @@ export const Reports = {
     const communityId = Session.get('activeCommunityId');
 
     report.addFilter({
-      'accounts.Bevételek': { $exists: true },
+//      'accounts.Incomes': { $exists: true },
       phase: 'done',
     });
 
@@ -49,8 +49,8 @@ export const Reports = {
     }, false);
 
     report.addTree('rows', {
-      field: 'accounts.Bevételek',
-      values: PayAccounts.findOne({ communityId, name: 'Bevételek' }),
+      field: 'accounts.Incomes',
+      values: PayAccounts.findOne({ communityId, name: 'Incomes' }),
     }, false);
 
     const planColDef = {
@@ -86,17 +86,17 @@ export const Reports = {
     expandFrom1To3Levels(myParcels);
 
     report.addFilter({
-      'accounts.Bevételek': { $exists: true },
+//      'accounts.Incomes': { $exists: true },
       phase: { $in: ['bill', 'done'] },
     });
 
     report.addTree('rows', {
-      field: 'accounts.Könyvelés helye',
+      field: 'accounts.Localizer',
       values: PayAccounts._transform(myParcels),
     }, false);
 
     report.addTree('rows', {
-      field: 'accounts.Bevételek',
+      field: 'accounts.Incomes',
       values: PayAccounts._transform(TulajdonosiBefizetesek),
     }, true, true);
 
@@ -113,17 +113,17 @@ export const Reports = {
     const communityId = Session.get('activeCommunityId');
 
     report.addFilter({
-      'accounts.Bevételek': { $exists: true },
+//      'accounts.Incomes': { $exists: true },
       phase: { $in: ['bill', 'done'] },
     });
 
     report.addTree('rows', {
-      field: 'accounts.Könyvelés helye',
-      values: PayAccounts.findOne({ communityId, name: 'Könyvelés helye' }),
+      field: 'accounts.Localizer',
+      values: PayAccounts.findOne({ communityId, name: 'Localizer' }),
     }, false);
 
     report.addTree('cols', {
-      field: 'accounts.Bevételek',
+      field: 'accounts.Incomes',
       values: PayAccounts._transform(TulajdonosiBefizetesek),
     }, false, true);
 

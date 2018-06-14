@@ -89,20 +89,22 @@ if (Meteor.isServer) {
     it('reports', function () {
       const report = new PaymentReport();
 
-      report.addTree('rows', {
+      report.addTree('cols', {
         field: 'phase',
         values: PayAccounts._transform(phaseTags),
       }, false, false);
 
-      report.addTree('rows', {
+      report.addTree('cols', {
         field: 'month',
         values: PayAccounts._transform(yearTags),
       }, true, false);
 
-      report.addTree('cols', {
-        field: 'accounts.test',
+      report.addTree('rows', {
+        field: 'accounts.Root',
         values: PayAccounts._transform(testPayAccount),
       }, false, false);
+
+
     });
   });
 }

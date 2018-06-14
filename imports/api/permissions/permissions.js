@@ -60,6 +60,7 @@ export const Permissions = [
   { name: 'payaccounts.update',     roles: ['accountant'] },
   { name: 'payaccounts.remove',     roles: ['accountant'] },
   { name: 'payaccounts.listing',    roles: ['accountant', 'treasurer', 'overseer'] },
+  { name: 'payments.inCommunity',   roles: exceptGuest },
   { name: 'payments.insert',        roles: ['treasurer'] },
   { name: 'payments.update',        roles: ['treasurer'] },
   { name: 'payments.remove',        roles: ['treasurer'] },

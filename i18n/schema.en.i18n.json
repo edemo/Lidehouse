@@ -330,8 +330,11 @@
       "label": "Note",
       "placeholder": "(eg. reason or partner identifier)"
     },
-    "accounts": {
-      "label": "Accounting tags"
+    "accountFrom": {
+      "label": "From account"
+    },
+    "accountTo": {
+      "label": "To account"
     }
   },
   "schemaParcelBillings": {
@@ -354,8 +357,11 @@
       "label": "Note",
       "placeholder": "(eg. reminder)"
     },
-    "accounts": {
-      "label": "Accounting tags"
+    "accountFrom": {
+      "label": "From account"
+    },
+    "accountTo": {
+      "label": "To account"
     }
   },
   "schemaSharedfolders": {

@@ -11,7 +11,7 @@
           {{#each row in headerRows}}
           <tr class="table-row">
             {{#each elem in row}}
-            <td class="{{elem.class}}">{{_ elem.value}}</td>
+            <td class="{{elem.class}}">{{render elem}}</td>
             {{/each}}
           </tr>
           {{/each}}
@@ -21,7 +21,7 @@
           {{#each row in report.createTableBody}}
           <tr class="table-row">
             {{#each elem in row}}
-            <td class="{{elem.class}}">{{_ elem.value}}</td>
+            <td class="{{elem.class}}">{{render elem}}</td>
             {{/each}}
           </tr>
           {{/each}}

@@ -330,8 +330,11 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
-    "accounts": {
-      "label": "Könyvelési fiókok"
+    "accountFrom": {
+      "label": "Honnan"
+    },
+    "accountTo": {
+      "label": "Hová"
     }
   },
   "schemaParcelBillings": {
@@ -354,8 +357,11 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. emlékeztető)"
     },
-    "accounts": {
-      "label": "Könyvelési fiókok"
+    "accountFrom": {
+      "label": "Honnan"
+    },
+    "accountTo": {
+      "label": "Hová"
     }
   },
   "schemaSharedfolders": {

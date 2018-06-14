@@ -15,5 +15,8 @@ Template.Custom_table.helpers({
   timestamp() {
     return moment().format('L');
   },
+  render(elem) {
+    return __(elem.value);
+  },
 });
 

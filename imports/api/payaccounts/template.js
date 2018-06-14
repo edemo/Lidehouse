@@ -5,7 +5,7 @@ import { PayAccounts } from './payaccounts.js';
 
 const PayAccountsTemplate = [
 
-  { name: 'Bevételek', locked: true,
+  { name: 'Incomes', locked: true, sign: -1,
     children: [
       { name: '',
         children: [
@@ -41,7 +41,7 @@ const PayAccountsTemplate = [
     ],
   },
 
-  { name: 'Kiadások',  negative: true, locked: true,
+  { name: 'Expenses', locked: true, sign: +1,
     children: [
       { name: '',
         children: [
@@ -86,10 +86,9 @@ const PayAccountsTemplate = [
     ],
   },
 
-  // Ez lesz az Eszközök szamla csoport
-  { name: 'Pénz számla', locked: true,
+  { name: 'Assets', locked: true, sign: +1,
     children: [
-      { name: '',
+      { name: 'Pénz számlák',
         children: [
           { name: 'Bank',
             children: [
@@ -107,7 +106,7 @@ const PayAccountsTemplate = [
     ],
   },
 
-  { name: 'Források', negative: true, locked: true,
+  { name: 'Liabilities', locked: true, sign: -1,
     children: [
       { name: '',
         children: [
@@ -121,7 +120,7 @@ const PayAccountsTemplate = [
     ],
   },
 
-  { name: 'Könyvelés helye', label: 'Összes hely',
+  { name: 'Localizer', label: 'Összes hely', sign: -1,
     children: [
       { name: '',
         children: [

@@ -344,6 +344,13 @@
 
   "Not implemented yet": "Ez a funkció még nem elérhető",
 
+  // Finances
+  "Incomes" : "Bevételek",
+  "Expenses" : "Kiadások",
+  "Assets": "Eszközök",
+  "Liabilities": "Források",
+  "Localizer": "Localizer",
+
   // Notifications
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
   "Created community": "Közösség sikeresen létrehozva.",

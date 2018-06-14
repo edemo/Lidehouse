@@ -53,10 +53,10 @@ export const apply = new ValidatedMethod({
           phase: 'bill',
           valueDate: new Date(parcelBilling.year, i - 1, BILLING_DAY_OF_THE_MONTH),
           amount: -1 * amount,
-          accounts: parcelBilling.accounts,
+          accountFrom: parcelBilling.accountFrom,
           note: parcelBilling.note,
         };
-        payment.accounts['Könyvelés helye'] = parcel.serial.toString();
+        payment.accountFrom['Localizer'] = parcel.serial.toString();
 //        Payments.update(query, { $set: doc }, { upsert: true });
         Payments.insert(payment);
       });

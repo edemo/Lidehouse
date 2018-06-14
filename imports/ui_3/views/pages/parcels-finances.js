@@ -3,7 +3,7 @@ import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
-
+import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
 import { Communities } from '/imports/api/communities/communities.js';
@@ -29,6 +29,7 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('payaccounts.inCommunity', { communityId });
     this.subscribe('payments.inCommunity', { communityId });
+    this.subscribe('legs.inCommunity', { communityId });
   });
 });
 
@@ -40,7 +41,7 @@ Template.Parcels_finances.helpers({
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
       const myParcelIds = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
-      return Payments.find({ communityId, 'accounts.Könyvelés helye': { $in: myParcelIds }, phase: 'done' }).fetch();
+      return Payments.find(_.extend({ communityId, phase: 'done' }, Payments.accountFilter({ 'accounts.Localizer': { $in: myParcelIds } }))).fetch();
     }
     return getTableData;
   },
@@ -49,7 +50,7 @@ Template.Parcels_finances.helpers({
       const communityId = Session.get('activeCommunityId');
       const myParcelIds = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
 //      console.log('myParcelIds', myParcelIds);
-      const myBills = Payments.find({ communityId, 'accounts.Könyvelés helye': { $in: myParcelIds }, phase: 'bill' }).fetch();
+      const myBills = Payments.find(_.extend({ communityId, phase: 'bill' }, Payments.accountFilter({ 'accounts.Localizer': { $in: myParcelIds } }))).fetch();
 //      console.log('myBills', myBills);
       return myBills;
     }
@@ -57,10 +58,9 @@ Template.Parcels_finances.helpers({
   },
   paymentsOptionsFn() {
     const communityId = Session.get('activeCommunityId');
-    const accounts = PayAccounts.find({ communityId }).fetch();
     function getOptions() {
       return {
-        columns: paymentColumns(accounts),
+        columns: paymentColumns(),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };

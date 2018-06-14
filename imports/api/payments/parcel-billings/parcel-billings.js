@@ -19,15 +19,15 @@ ParcelBillings.schema = new SimpleSchema({
   amount: { type: Number, decimal: true },
   year: { type: Number, decimal: true },
   month: { type: String, optional: true, allowedValues: ParcelBillings.monthValues, autoform: autoformOptions(ParcelBillings.monthValues) },
-  accounts: { type: Object, blackbox: true },
+  accountFrom: { type: Object, blackbox: true },
     // rootAccountName -> leafAccountName or parcelNo
   note: { type: String, max: 100, optional: true },
 });
 
 ParcelBillings.helpers({
   parcels() {
-    const payAccount = PayAccounts.findOne({ communityId: this.communityId, name: 'Könyvelés helye' });
-    const nodeName = this.accounts[payAccount.name];
+    const payAccount = PayAccounts.findOne({ communityId: this.communityId, name: 'Localizer' });
+    const nodeName = this.accountFrom[payAccount.name];
 //    console.log('nodeName', nodeName);
     const leafs = payAccount.leafsOf(nodeName);
 //    console.log('leafs', leafs);

@@ -82,6 +82,14 @@ PayAccounts.schema = new SimpleSchema({
   'children.$': { type: PayAccounts.Level1Schema },
 });
 
+PayAccounts.signs = {
+  'Incomes': -1,
+  'Expenses': +1,
+  'Assets': +1,
+  'Liabilities': -1,
+  'Equity': +1,
+}
+
 PayAccounts.helpers({
   init() {
     if (!this._leafs) {
@@ -139,7 +147,7 @@ PayAccounts.helpers({
     return this.nodes().find(n => n.name === nodeName).leafs();
   },
   leafIsParcel(leafName) {
-    return ((this.name === 'Könyvelés helye') && parseInt(leafName, 0));
+    return ((this.name === 'Localizer') && parseInt(leafName, 0));
   },
   leafDisplay(leafName) {
     if (this.leafIsParcel(leafName)) return `${leafName}. ${__('parcel')}`;

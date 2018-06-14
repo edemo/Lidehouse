@@ -761,7 +761,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const locator = PayAccounts.update({
     communityId: demoCommunityId,
-    name: 'Könyvelés helye',
+    name: 'Localizer',
   }, {
     $set: {
       children: [
@@ -805,9 +805,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 275,
     year: '2017',
     month: 'allMonths',
-    accounts: {
-      'Bevételek': 'Közös költség befizetés',
-      'Könyvelés helye': 'albetétek',
+    accountFrom: {
+      'Incomes': 'Közös költség befizetés',
+      'Localizer': 'albetétek',
     },
   });
 
@@ -819,9 +819,9 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 2500,
       year: '2017',
       month: 'allMonths',
-      accounts: {
-        'Bevételek': 'Víz díj',
-        'Könyvelés helye': place[i],
+      accountFrom: {
+        'Incomes': 'Víz díj',
+        'Localizer': place[i],
       },
     });
   }
@@ -833,9 +833,9 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 85,
       year: '2017',
       month: 'allMonths',
-      accounts: {
-        'Bevételek': 'Fűtési díj',
-        'Könyvelés helye': i.toString(),
+      accountFrom: {
+        'Incomes': 'Fűtési díj',
+        'Localizer': i.toString(),
       },
     });
   }
@@ -846,9 +846,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 60000,
     year: '2017',
     month: '9',
-    accounts: {
-      'Bevételek': 'Felújítási célbefizetés',
-      'Könyvelés helye': 'albetétek',
+    accountFrom: {
+      'Incomes': 'Felújítási célbefizetés',
+      'Localizer': 'albetétek',
     },
     note: __('demo.payments.note.0'),
   });
@@ -864,8 +864,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 100000,
-    accounts: {
-      'Pénz számla': 'Pénztár 1',
+    accountTo: {
+      'Assets': 'Pénztár 1',
     },
   });
 
@@ -875,8 +875,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 110000,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
   });
 
@@ -886,8 +886,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 120000,
-    accounts: {
-      'Pénz számla': 'Bank felújítási alap',
+    accountTo: {
+      'Assets': 'Bank felújítási alap',
     },
   });
 
@@ -898,10 +898,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-06-01'),
     amount: 3500,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Egyéb bevétel',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Egyéb bevétel',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
   });
 
@@ -910,10 +912,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-02-01'),
     amount: 300,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Kamat pénzintézetektől',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Kamat pénzintézetektől',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
   });
 
@@ -922,10 +926,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-04-01'),
     amount: 400,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Kamat pénzintézetektől',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Kamat pénzintézetektől',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
   });
 
@@ -934,10 +940,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-06-01'),
     amount: 200,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Kamat pénzintézetektől',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Kamat pénzintézetektől',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
   });
 
@@ -946,10 +954,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-08-01'),
     amount: 100,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Kamat pénzintézetektől',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Kamat pénzintézetektől',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
   });
 
@@ -958,10 +968,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-10-01'),
     amount: 600,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Kamat pénzintézetektől',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Kamat pénzintézetektől',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
   });
 
@@ -970,10 +982,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-12-01'),
     amount: 550,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Kamat pénzintézetektől',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Kamat pénzintézetektől',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
   });
 
@@ -982,10 +996,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-09-15'),
     amount: 500000,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Támogatás',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Támogatás',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
     note: __('demo.payments.note.1'),
   });
@@ -995,10 +1011,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-05-10'),
     amount: 55000,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Bérleti díj',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Bérleti díj',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
     note: __('demo.payments.note.2'),
   });
@@ -1008,10 +1026,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-10-15'),
     amount: 500000,
-    accounts: {
-      'Pénz számla': 'Bank főszámla',
-      'Bevételek': 'Egyéb bevétel',
-      'Könyvelés helye': 'Központi',
+    accountFrom: {
+      'Incomes': 'Egyéb bevétel',
+      'Localizer': 'Központi',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
     note: __('demo.payments.note.3'),
   });
@@ -1021,10 +1041,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
-    accounts: {
-      'Pénz számla': 'Hitelszámla',
-      'Bevételek': 'Bank hitel',
-      'Könyvelés helye': 'Központi',
+    account: {
+      'Assets': 'Hitelszámla',
+      'Incomes': 'Bank hitel',
+      'Localizer': 'Központi',
     },
     note: __('demo.payments.note.4'),
   });
@@ -1038,10 +1058,12 @@ export function insertDemoHouse(lang, demoOrTest) {
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
-        accounts: {
-          'Pénz számla': 'Bank főszámla',
-          'Bevételek': 'Közös költség befizetés',
-          'Könyvelés helye': i.toString(),
+        accountFrom: {
+          'Incomes': 'Közös költség befizetés',
+          'Localizer': i.toString(),
+        },
+        accountTo: {
+          'Assets': 'Bank főszámla',
         },
       });
     }
@@ -1056,10 +1078,12 @@ export function insertDemoHouse(lang, demoOrTest) {
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        accounts: {
-          'Pénz számla': 'Bank főszámla',
-          'Bevételek': 'Víz díj',
-          'Könyvelés helye': place[i],
+        accountFrom: {
+          'Incomes': 'Víz díj',
+          'Localizer': place[i],
+        },
+        accountTo: {
+          'Assets': 'Bank főszámla',
         },
       });
     }
@@ -1072,10 +1096,12 @@ export function insertDemoHouse(lang, demoOrTest) {
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        accounts: {
-          'Pénz számla': 'Bank főszámla',
-          'Bevételek': 'Fűtési díj',
-          'Könyvelés helye': i.toString(),
+        accountFrom: {
+          'Incomes': 'Fűtési díj',
+          'Localizer': i.toString(),
+        },
+        accountTo: {
+          'Assets': 'Bank főszámla',
         },
       });
     }
@@ -1087,10 +1113,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
-      accounts: {
-        'Pénz számla': 'Bank főszámla',
-        'Bevételek': 'Felújítási célbefizetés',
-        'Könyvelés helye': i.toString(),
+      accountFrom: {
+        'Incomes': 'Felújítási célbefizetés',
+        'Localizer': i.toString(),
+      },
+      accountTo: {
+        'Assets': 'Bank főszámla',
       },
     });
   }
@@ -1102,10 +1130,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
-      accounts: {
-        'Pénz számla': 'Bank főszámla',
-        'Bevételek': 'Víz',
-        'Könyvelés helye': 'Központi',
+      accountFrom: {
+        'Incomes': 'Víz',
+        'Localizer': 'Központi',
+      },
+      accountTo: {
+        'Assets': 'Bank főszámla',
       },
     });
   }
@@ -1117,10 +1147,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
-      accounts: {
-        'Pénz számla': 'Bank főszámla',
-        'Bevételek': 'Csatorna',
-        'Könyvelés helye': 'Központi',
+      accountFrom: {
+        'Incomes': 'Csatorna',
+        'Localizer': 'Központi',
+      },
+      accountTo: {
+        'Assets': 'Bank főszámla',
       },
     });
   }
@@ -1131,10 +1163,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: -10250,
-      accounts: {
-        'Pénz számla': 'Bank főszámla',
-        'Bevételek': 'Áram',
-        'Könyvelés helye': 'Központi',
+      accountFrom: {
+        'Incomes': 'Áram',
+        'Localizer': 'Központi',
+      },
+      accountTo: {
+        'Assets': 'Bank főszámla',
       },
     });
   }
@@ -1146,8 +1180,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'plan',
     valueDate: new Date('2017-01-01'),
     amount: -24000,
-    accounts: {
-      'Kiadások': 'Anyagok',
+    account: {
+      'Expenses': 'Anyagok',
     },
   });
 
@@ -1156,8 +1190,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'plan',
     valueDate: new Date('2017-01-01'),
     amount: -415000,
-    accounts: {
-      'Kiadások': 'Üzemeltetés',
+    account: {
+      'Expenses': 'Üzemeltetés',
     },
   });*/
 
@@ -1236,11 +1270,13 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   if (currentTotalunits > 10000) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
-  ParcelBillings.remove({ 'accounts.Könyvelés helye': demoUserNumber.toString() });
-  Payments.remove({ 'accounts.Könyvelés helye': demoUserNumber.toString() });
+  ParcelBillings.remove({ 'accountFrom.Localizer': demoUserNumber.toString() });
+  ParcelBillings.remove({ 'accountTo.Localizer': demoUserNumber.toString() });
+  Payments.remove({ 'accountFrom.Localizer': demoUserNumber.toString() });
+  Payments.remove({ 'accountTo.Localizer': demoUserNumber.toString() });
   PayAccounts.update({
     communityId,
-    name: 'Könyvelés helye',
+    name: 'Localizer',
   }, {
     $pull: { 'children.0.children.1.children': { name: demoUserNumber.toString() } },
   });
@@ -1297,7 +1333,7 @@ Meteor.methods({
 
     PayAccounts.update({
       communityId: demoCommunityId,
-      name: 'Könyvelés helye',
+      name: 'Localizer',
     }, {
       $push: { 'children.0.children.1.children': { name: demoParcelSerial } },
     });
@@ -1345,9 +1381,9 @@ Meteor.methods({
       amount: 275,
       year: '2017',
       month: 'allMonths',
-      accounts: {
-        'Bevételek': 'Közös költség befizetés',
-        'Könyvelés helye': demoParcelSerial.toString(),
+      accountFrom: {
+        'Incomes': 'Közös költség befizetés',
+        'Localizer': demoParcelSerial.toString(),
       },
     });
     for (let m = 1; m < 12; m++) {
@@ -1356,10 +1392,12 @@ Meteor.methods({
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
         amount: 6875,
-        accounts: {
-          'Pénz számla': 'Bank főszámla',
-          'Bevételek': 'Közös költség befizetés',
-          'Könyvelés helye': demoParcelSerial.toString(),
+        accountFrom: {
+          'Incomes': 'Közös költség befizetés',
+          'Localizer': demoParcelSerial.toString(),
+        },
+        accountTo: {
+          'Assets': 'Bank főszámla',
         },
       });
     }
