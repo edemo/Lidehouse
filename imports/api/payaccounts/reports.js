@@ -22,6 +22,11 @@ export const TulajdonosiBefizetesek = expandFrom1To3Levels({
 });
 
 export const Reports = {
+  Blank() {
+    const report = new PaymentReport('Blank');
+    return report;
+  },
+
   Egyenlegek() {
     const report = new PaymentReport('Egyenlegek');
     const communityId = Session.get('activeCommunityId');

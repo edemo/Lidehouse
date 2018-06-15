@@ -1,0 +1,37 @@
+<template name="Nestable_edit">
+    <div id="nestable" class="dd">
+    <ol class="dd-list">
+        <li class="dd-item" data-name="{{json.name}}">
+            <div class="dd-handle">{{json.name}}</div>
+                {{#if json.children}}
+                <ol class="dd-list">
+                    {{#each l1 in json.children}}
+                    <li class="dd-item" data-name="{{l1.name}}">
+                        <div class="dd-handle">{{l1.name}}</div>
+                        {{#if l1.children}}
+                        <ol class="dd-list">
+                            {{#each l2 in l1.children}}
+                            <li class="dd-item" data-name="{{l2.name}}">
+                                <div class="dd-handle">{{l2.name}}</div>
+                                {{#if l2.children}}
+                                <ol class="dd-list">
+                                    {{#each leaf in l2.children}}
+                                    <li class="dd-item" data-name="{{leaf.name}}">
+                                        <div class="dd-handle">{{leaf.name}}</div>
+                                    </li>
+                                    {{/each}}
+                                </ol>
+                                {{/if}}
+                            </li>
+                            {{/each}}
+                        </ol>
+                        {{/if}}
+                    </li>
+                    {{/each}}
+                </ol>
+                {{/if}}
+            </li>
+        </ol>
+    </div>
+    <div class="m-t-md">{{serialize}}</div>
+</template>
