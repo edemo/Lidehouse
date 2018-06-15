@@ -14,7 +14,7 @@
                             <i class="contact-type fa fa-phone"></i>{{Person.user.profile.phone}}
                             {{/if}}
                         </td>
-                        {{#if currentUserHasPermission 'roleships.update'}}
+                        {{#if userHasPermission 'roleships.update' communityId}}
                         <td class="text-right">
                             <div class="btn-group">
                                 <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
@@ -43,7 +43,7 @@
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
                         <h2>{{_ 'officers'}}</h2>
-                        {{#if currentUserHasPermission 'roleships.insert'}}
+                        {{#if userHasPermission 'roleships.insert' communityId}}
                         <button class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong></button>
                         {{/if}}
                         <p>
@@ -67,7 +67,7 @@
                 <div class="ibox community-section float-e-margins">
                     <div class="ibox-title">
                         <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
-                        {{#if currentUserHasPermission 'communities.update'}}
+                        {{#if userHasPermission 'communities.update' communityId}}
                         <div class="pull-right">
                             <button class="btn-white btn btn-xs js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                         </div>
@@ -92,7 +92,7 @@
                                 {{/each}}
                             </tr>
                             </table>
-                            {{#unless (currentUser.isInCommunity community._id) }}
+                            {{#unless (currentUser.isInCommunity communityId) }}
                             <br>
                             <button type="button" class="btn btn-primary btn-sm btn-block js-join">
                                 <i class="fa fa-suitcase"></i>
@@ -104,14 +104,14 @@
                 </div>
             </div>
         </div>
-        {{#if userHasPermission 'parcels.inCommunity' community._id}}
+        {{#if userHasPermission 'parcels.inCommunity' communityId}}
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox parcels-section">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
                         <h2 class="text-capitalize">{{_ "parcels"}}</h2>
-                        {{#if userHasPermission 'parcels.insert' community._id}}
+                        {{#if userHasPermission 'parcels.insert' communityId}}
                             <button class="js-new btn btn-primary btn-sm pull-right"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcel'}}</strong></button>
                         {{/if}}
                         <p>
@@ -119,7 +119,7 @@
                             {{_ "Click the little person buttons to see the occupants"}}
                         </p>
                         <br>
-                        {{#if currentUserHasPermission 'parcels.update'}}
+                        {{#if userHasPermission 'parcels.update' communityId}}
                         <ul class="nav nav-tabs m-b-md">
                             <li class="active"><a data-toggle="tab" href="#tab-p1"><i class="fa fa-building"></i> {{_ 'Approved'}}</a></li>
                             <li class=""><a data-toggle="tab" href="#tab-p2"><i class="fa fa-building-o"></i> {{_ 'Waiting for approval'}}

@@ -14,7 +14,7 @@
                         <span class="label label-plain"><i class="fa fa-star"></i> {{_ 'representor'}}</span>
                         {{/if}}
                     </td>
-                    {{#if currentUserHasPermission 'ownerships.update'}}
+                    {{#if userHasPermission 'ownerships.update' communityId}}
                     <td class="text-right">
                         <div class="btn-group">
                             <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
@@ -40,7 +40,7 @@
                     <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
                     <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
                     <td><span class="label label-plain">{{_ benefactorship.type}}</span></td>
-                    {{#if currentUserHasPermission 'benefactorships.update'}}
+                    {{#if userHasPermission 'benefactorships.update' communityId}}
                     <td class="text-right">
                         <div class="btn-group">
                             <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
@@ -68,7 +68,7 @@
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
                         <h2>{{_ 'owners'}}</h2>
-                        {{#if currentUserHasPermission 'ownerships.insert'}}
+                        {{#if userHasPermission 'ownerships.insert' communityId}}
                         <button class="btn btn-primary btn-sm pull-right js-new"><strong>+ {{_ 'new'}} {{_ 'owner'}}</strong></button>
                         {{/if}}
                         <p>
@@ -77,7 +77,7 @@
                         </p>
                         <br>
                         <div class="member-list">
-                            {{#if currentUserHasPermission 'ownerships.update'}}
+                            {{#if userHasPermission 'ownerships.update' communityId}}
                             <ul class="nav nav-tabs">
                                 <span class="pull-right small text-muted"></span>
                                 <li class="active"><a data-toggle="tab" href="#tab-o1"><i class="fa fa-user"></i> {{_ 'Approved'}}</a></li>
@@ -104,7 +104,7 @@
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
                         <h2>{{_ 'benefactors'}}</h2>
-                        {{#if currentUserHasPermission 'benefactorships.insert'}}
+                        {{#if userHasPermission 'benefactorships.insert' communityId}}
                         <button class="btn btn-primary btn-sm pull-right js-new"><strong>+ {{_ 'new'}} {{_ 'benefactor'}}</strong></button>
                         {{/if}}
                         <p>
@@ -113,7 +113,7 @@
                         </p>
                         <br>
                         <div class="member-list">
-                            {{#if currentUserHasPermission 'benefactorships.update'}}
+                            {{#if userHasPermission 'benefactorships.update' communityId}}
                             <ul class="nav nav-tabs">
                                 <span class="pull-right small text-muted"></span>
                                 <li class="active"><a data-toggle="tab" href="#tab-b1"><i class="fa fa-user"></i> {{_ 'Approved'}}</a></li>
