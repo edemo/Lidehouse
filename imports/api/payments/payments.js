@@ -4,53 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { Timestamps } from '/imports/api/timestamps.js';
-import { Communities } from '/imports/api/communities/communities.js';
-import { debugAssert } from '/imports/utils/assert.js';
-import { PayAccounts, choosePayAccount } from '/imports/api/payaccounts/payaccounts.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-
-export const Legs = new Mongo.Collection('legs');
-
-function legsOf(tx) {
-  const legs = [];
-  if (tx.accountFrom) {
-    const legFrom = _.clone(tx);
-    legFrom.account = _.clone(tx.accountFrom);
-    legFrom.txId = tx._id;
-    delete legFrom._id;
-    delete legFrom.accountFrom;
-    delete legFrom.accountTo;
-    delete legFrom.legs;
-    legFrom.amount *= -1;
-    legs.push(legFrom);
-  }
-  if (tx.accountTo) {
-    const legTo = _.clone(tx);
-    legTo.account = _.clone(tx.accountTo);
-    legTo.txId = tx._id;
-    delete legTo._id;
-    delete legTo.accountFrom;
-    delete legTo.accountTo;
-    delete legTo.legs;
-    legs.push(legTo);
-  }
-  return legs;
-}
-
-class PaymentsCollection extends Mongo.Collection {
-  insert(tx, callback) {
-    const _id = super.insert(tx, callback);
-    _.extend(tx, { _id });
-    console.log("insert tx:", tx);
-    legsOf(tx).forEach(leg => { /*console.log("leg", leg);*/ Legs.insert(leg); });
-    return _id;
-  }
-  remove(selector, callback) {
-    Legs.remove({ txId: selector });
-    console.log("remove tx:", selector);
-    return super.remove(selector, callback);
-  }
-}
 
 export const Payments = new Mongo.Collection('payments');
 
@@ -76,17 +30,6 @@ Payments.schema = new SimpleSchema([
   }]
 );
 
-Legs.schema = new SimpleSchema([
-  BasicTxSchema, {
-    // affected accounts
-    account: { type: Object, blackbox: true, optional: true },
-      // rootAccountName -> leafAccountName or parcelNo
-    ref: { type: String, max: 100, optional: true },
-    note: { type: String, max: 100, optional: true },
-    txId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }]
-);
-
 // A *payment* is effecting a certain field (in pivot tables) with the *amount* of the payment,
 // but the Sign of the effect is depending on 3 components:
 // - Sign of the amount field
@@ -104,17 +47,6 @@ Meteor.startup(function attach() {
 
 // Deny all client-side updates since we will be using methods to manage this collection
 Payments.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
-
-//------------------------------------
-
-Legs.attachSchema(Legs.schema);
-
-// Deny all updates, it is updated only indirectly through the Payments collection updates
-Legs.deny({
   insert() { return true; },
   update() { return true; },
   remove() { return true; },

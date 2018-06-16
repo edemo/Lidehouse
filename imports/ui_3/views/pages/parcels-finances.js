@@ -29,7 +29,6 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('payaccounts.inCommunity', { communityId });
     this.subscribe('payments.inCommunity', { communityId });
-    this.subscribe('legs.inCommunity', { communityId });
   });
 });
 

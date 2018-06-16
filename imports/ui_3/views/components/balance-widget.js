@@ -13,7 +13,6 @@ Template.Balance_widget.onCreated(function() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('payments.inCommunity', { communityId });
-    this.subscribe('legs.inCommunity', { communityId });
   });
 });
 
