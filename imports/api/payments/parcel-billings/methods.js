@@ -47,16 +47,27 @@ export const apply = new ValidatedMethod({
       else
         months = [BILLING_MONTH_OF_THE_YEAR];
 
+      const accountFrom = {
+        'Localizer': parcel.serial.toString(),
+        'Liabilities': 'Owner obligations',
+        'Owner payins': parcelBilling.account['Owner payins'],
+      };
+      const accountTo = {
+        'Localizer': parcel.serial.toString(),
+        'Assets': 'Owner payins',
+        'Owner payins': parcelBilling.account['Owner payins'],
+      };
+
       months.forEach((i) => {
         const payment = {
           communityId: parcelBilling.communityId,
           phase: 'bill',
           valueDate: new Date(parcelBilling.year, i - 1, BILLING_DAY_OF_THE_MONTH),
-          amount: -1 * amount,
-          accountFrom: parcelBilling.accountFrom,
+          amount,
+          accountFrom,
+          accountTo,
           note: parcelBilling.note,
         };
-        payment.accountFrom['Localizer'] = parcel.serial.toString();
 //        Payments.update(query, { $set: doc }, { upsert: true });
         Payments.insert(payment);
       });

@@ -298,9 +298,6 @@
                 "name": {
                   "label": "Name (or serial no. of parcel)",
                   "placeholder": "(eg. Garden or 114)"
-                },
-                "membersRelated": {
-                  "label": "Relates to members"
                 }
               }
             }

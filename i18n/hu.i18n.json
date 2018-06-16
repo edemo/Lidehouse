@@ -258,8 +258,6 @@
   "Reports": "Kimutatások",
   "Common cost plan": "Előírás minden albetétre",
   "Balances": "Egyenlegek",
-  "Incomes": "Bevételek",
-  "Expenses": "Kiadások",
   "chart": "eloszlása",
   "status report": "helyzete beszámoló",
   "Incomes/Expenses history": "Bevétel/Kiadás alakulása",
@@ -279,6 +277,16 @@
   "perArea": "terület (/m2)",
   "perVolume": "légköbméter (/m3)",
   "perHabitant": "lakók száma (/fő)",
+  // accounts
+  "Incomes" : "Bevételek",
+  "Expenses" : "Kiadások",
+  "Assets": "Eszközök",
+  "Liabilities": "Források",
+  "Localizer": "Localizer",
+  "Owner payins": "Tulajdonosi befizetések",
+  "Owner obligatons": "Tulajdonosi kötelezettségek",
+  "Opening": "Nyitó egyenleg",
+  "Carry over": "Átvezetés",
 
   // docstore
   "Show": "Listázva",
@@ -343,13 +351,6 @@
   "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közösképviselő segítségét.",
 
   "Not implemented yet": "Ez a funkció még nem elérhető",
-
-  // Finances
-  "Incomes" : "Bevételek",
-  "Expenses" : "Kiadások",
-  "Assets": "Eszközök",
-  "Liabilities": "Források",
-  "Localizer": "Localizer",
 
   // Notifications
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",

@@ -805,8 +805,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 275,
     year: '2017',
     month: 'allMonths',
-    accountFrom: {
-      'Incomes': 'Közös költség befizetés',
+    account: {
+      'Owner payins': 'Közös költség befizetés',
       'Localizer': 'albetétek',
     },
   });
@@ -819,8 +819,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 2500,
       year: '2017',
       month: 'allMonths',
-      accountFrom: {
-        'Incomes': 'Víz díj',
+      account: {
+        'Owner payins': 'Víz díj',
         'Localizer': place[i],
       },
     });
@@ -833,8 +833,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 85,
       year: '2017',
       month: 'allMonths',
-      accountFrom: {
-        'Incomes': 'Fűtési díj',
+      account: {
+        'Owner payins': 'Fűtési díj',
         'Localizer': i.toString(),
       },
     });
@@ -846,8 +846,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 60000,
     year: '2017',
     month: '9',
-    accountFrom: {
-      'Incomes': 'Felújítási célbefizetés',
+    account: {
+      'Owner payins': 'Felújítási célbefizetés',
       'Localizer': 'albetétek',
     },
     note: __('demo.payments.note.0'),
@@ -864,6 +864,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 100000,
+    accountFrom: {
+      'Liabilities': 'Opening',
+    },
     accountTo: {
       'Assets': 'Pénztár 1',
     },
@@ -875,6 +878,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 110000,
+    accountFrom: {
+      'Liabilities': 'Opening',
+    },
     accountTo: {
       'Assets': 'Bank főszámla',
     },
@@ -886,6 +892,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     ref: 'nyitó',
     amount: 120000,
+    accountFrom: {
+      'Liabilities': 'Opening',
+    },
     accountTo: {
       'Assets': 'Bank felújítási alap',
     },
@@ -1035,20 +1044,21 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
     note: __('demo.payments.note.3'),
   });
-/* TODO
+
   Payments.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
-    account: {
-      'Assets': 'Hitelszámla',
-      'Incomes': 'Bank hitel',
-      'Localizer': 'Központi',
+    accountFrom: {
+      'Liabilities': 'Bank hitel',
+    },
+    accountTo: {
+      'Assets': 'Bank főszámla',
     },
     note: __('demo.payments.note.4'),
   });
-*/
+
   for (let m = 1; m < 13; m++) {
     for (let i = 1; i < 15; i++) {
       const payable = [0, 15125, 13200, 18150, 19250, 18150, 19250, 18150,
@@ -1059,7 +1069,8 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
         accountFrom: {
-          'Incomes': 'Közös költség befizetés',
+          'Incomes': 'Owner payins',
+          'Owner payins': 'Közös költség befizetés',
           'Localizer': i.toString(),
         },
         accountTo: {
@@ -1079,7 +1090,8 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         accountFrom: {
-          'Incomes': 'Víz díj',
+          'Incomes': 'Owner payins',
+          'Owner payins': 'Víz díj',
           'Localizer': place[i],
         },
         accountTo: {
@@ -1097,7 +1109,8 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         accountFrom: {
-          'Incomes': 'Fűtési díj',
+          'Incomes': 'Owner payins',
+          'Owner payins': 'Fűtési díj',
           'Localizer': i.toString(),
         },
         accountTo: {
@@ -1114,7 +1127,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
       accountFrom: {
-        'Incomes': 'Felújítási célbefizetés',
+        'Incomes': 'Owner payins',
+        'Owner payins': 'Felújítási célbefizetés',
         'Localizer': i.toString(),
       },
       accountTo: {
@@ -1124,35 +1138,35 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   for (let m = 1; m < 13; m += 2) {
-    const payable = [0, -8432, 0, -7250, 0, -9251, 0, -11624, 0, -10635, 0, -8540];
+    const payable = [0, 8432, 0, 7250, 0, 9251, 0, 11624, 0, 10635, 0, 8540];
     Payments.insert({
       communityId: demoCommunityId,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
       accountFrom: {
-        'Incomes': 'Víz',
-        'Localizer': 'Központi',
+        'Assets': 'Bank főszámla',
       },
       accountTo: {
-        'Assets': 'Bank főszámla',
+        'Expenses': 'Víz',
+        'Localizer': 'Központi',
       },
     });
   }
 
   for (let m = 1; m < 13; m += 2) {
-    const payable = [0, -10562, 0, -9889, 0, -11210, 0, -11152, 0, -11435, 0, -9930];
+    const payable = [0, 10562, 0, 9889, 0, 11210, 0, 11152, 0, 11435, 0, 9930];
     Payments.insert({
       communityId: demoCommunityId,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
       accountFrom: {
-        'Incomes': 'Csatorna',
-        'Localizer': 'Központi',
+        'Assets': 'Bank főszámla',
       },
       accountTo: {
-        'Assets': 'Bank főszámla',
+        'Expenses': 'Csatorna',
+        'Localizer': 'Központi',
       },
     });
   }
@@ -1162,13 +1176,13 @@ export function insertDemoHouse(lang, demoOrTest) {
       communityId: demoCommunityId,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
-      amount: -10250,
+      amount: 10250,
       accountFrom: {
-        'Incomes': 'Áram',
-        'Localizer': 'Központi',
+        'Assets': 'Bank főszámla',
       },
       accountTo: {
-        'Assets': 'Bank főszámla',
+        'Expenses': 'Áram',
+        'Localizer': 'Központi',
       },
     });
   }
@@ -1270,10 +1284,8 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   if (currentTotalunits > 10000) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
-  ParcelBillings.remove({ 'accountFrom.Localizer': demoUserNumber.toString() });
-  ParcelBillings.remove({ 'accountTo.Localizer': demoUserNumber.toString() });
-  Payments.remove({ 'accountFrom.Localizer': demoUserNumber.toString() });
-  Payments.remove({ 'accountTo.Localizer': demoUserNumber.toString() });
+  ParcelBillings.remove({ 'account.Localizer': demoUserNumber.toString() });
+  Payments.remove({ $or: [{ 'accountFrom.Localizer': demoUserNumber.toString() }, { 'accountTo.Localizer': demoUserNumber.toString() }] });
   PayAccounts.update({
     communityId,
     name: 'Localizer',
@@ -1381,8 +1393,8 @@ Meteor.methods({
       amount: 275,
       year: '2017',
       month: 'allMonths',
-      accountFrom: {
-        'Incomes': 'Közös költség befizetés',
+      account: {
+        'Owner payins': 'Közös költség befizetés',
         'Localizer': demoParcelSerial.toString(),
       },
     });
@@ -1393,7 +1405,8 @@ Meteor.methods({
         valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
         amount: 6875,
         accountFrom: {
-          'Incomes': 'Közös költség befizetés',
+          'Incomes': 'Owner payins',
+          'Owner payins': 'Közös költség befizetés',
           'Localizer': demoParcelSerial.toString(),
         },
         accountTo: {

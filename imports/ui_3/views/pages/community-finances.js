@@ -208,7 +208,7 @@ function newParcelBillingSchema() {
     const payaccount1 = PayAccounts.findOne({ communityId, name: 'Incomes' });
     const payaccount2 = PayAccounts.findOne({ communityId, name: 'Localizer' });
     obj[payaccount1.name] = { type: String, optional: true, label: payaccount1.name, 
-      autoform: { options() { return payaccount1.leafOptions(l => l.membersRelated); } },
+      autoform: { options() { return payaccount1.leafOptions(l => true); } },
     };
     obj[payaccount2.name] = { type: String, optional: true, label: payaccount2.name, 
       autoform: { options() { return payaccount2.nodeOptions(); } },
@@ -417,12 +417,6 @@ AutoForm.addHooks('af.payment.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.phase = 'done';
-    // When entering expenses into the system, we enter them as positive number, but should appear with minus in the sheet
-//    const payaccount = PayAccounts.findOne({ communityId: doc.communityId, name: 'Könyvelés nem' });
-//    const leafName = doc.account['Könyvelés nem'];
-//    const leaf = payaccount.leafFromName(leafName);
-//    const category = leaf.level1;
-//    if (category.negative) doc.amount *= -1;
     return doc;
   },
 });

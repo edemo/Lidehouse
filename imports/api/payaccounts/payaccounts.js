@@ -49,7 +49,6 @@ PayAccounts.LeafSchema = new SimpleSchema({
   name: { type: String, max: 100 }, // or a parcel number can be placed here
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
-  membersRelated: { type: Boolean, optional: true, autoform: { omit: true } },
   //  name: { type: String, max: 100, optional: true },
 //  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 //  parcelNo: { type: Number, decimal: true, optional: true },
@@ -59,7 +58,7 @@ PayAccounts.Level2Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
-  children: { type: Array },
+  children: { type: Array, optional: true },
   'children.$': { type: PayAccounts.LeafSchema },
 });
 
@@ -67,7 +66,7 @@ PayAccounts.Level1Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
-  children: { type: Array },
+  children: { type: Array, optional: true },
   'children.$': { type: PayAccounts.Level2Schema },
 });
 
@@ -95,30 +94,23 @@ PayAccounts.helpers({
     if (!this._leafs) {
       this._leafs = [];
       this._nodes = [];
-      const root = this; root.parent = null; root.isLeaf = false; root.level = 0;
-      if (root.name) { this._nodes.push(root); }
-      this.children.forEach((level1) => {
-        level1._leafs = []; level1.leafs = () => level1._leafs; level1.parent = root; level1.isLeaf = false; level1.level = 1;
-        if (level1.name) { this._nodes.push(level1); }
-        level1.children.forEach((level2) => {
-          level2._leafs = []; level2.leafs = () => level2._leafs; level2.parent = level1; level2.isLeaf = false; level2.level = 2;
-          if (level2.name) { this._nodes.push(level2); }
-          level2.children.forEach((leaf) => {
-            this._nodes.push(leaf);
-            this._leafs.push(leaf);
-            level1._leafs.push(leaf);
-            level2._leafs.push(leaf);
-            leaf._leafs = [leaf]; leaf.leafs = () => leaf._leafs; leaf.parent = level2; leaf.isLeaf = true; leaf.level1 = level1; leaf.level2 = level2; leaf.level = 3;
-            leaf.path = () => {
-              let result = '';
-              if (leaf.level1.name) result += `${leaf.level1.name}/`;
-              if (leaf.level2.name) result += `${leaf.level2.name}/`;
-              return result;
-            };
-          });
-        });
-      });
+      let currentLevel = 0;
+      const root = this; root.parent = null; root.isLeaf = false; root.level = 0; root.pushLeaf = l => this._leafs.push(l);
+      if (root.name) { root.path = root.name; this._nodes.push(root); }
+      function handleNode(node, parent, pac) {
+        ++currentLevel;
+        node.parent = parent;
+        node._leafs = []; node.leafs = () => node._leafs; node.pushLeaf = l => { node._leafs.push(l); parent.pushLeaf(l); };
+        node.isLeaf = false;
+        node.level = currentLevel;
+        if (node.name) { node.path = parent.path + '/' + node.name; pac._nodes.push(node); }
+        if (!node.children) { parent.pushLeaf(node); node._leafs.push(node); node.isLeaf = true; }
+        else { node.children.forEach(child => handleNode(child, node, pac)); }
+        --currentLevel;
+      }
+      this.children.forEach(node => handleNode(node, root, this));
     }
+    if (this.name === "Assets") debugger;
     return this;
   },
   leafs() {
@@ -130,14 +122,8 @@ PayAccounts.helpers({
   leafNames() {
     return this.leafs().map(leaf => this.leafDisplay(leaf.name));
   },
-  level1Names() {
-    return _.pluck(this.nodes().filter(n => n.level === 1), 'name');
-  },
-  level2Names() {
-    return _.pluck(this.nodes().filter(n => n.level === 2), 'name');
-  },
   nodeNames() {
-    return this.nodes().map(node => (node.isLeaf ? this.leafDisplay(node.name) : node.name));
+    return this.nodes().map(node => (node.isLeaf ? this.leafDisplay(node.name) : __(node.name)));
   },
   leafFromName(leafName) {
     const result = this.leafs().find(l => l.name === leafName);
@@ -151,7 +137,7 @@ PayAccounts.helpers({
   },
   leafDisplay(leafName) {
     if (this.leafIsParcel(leafName)) return `${leafName}. ${__('parcel')}`;
-    return leafName;
+    return __(leafName);
   },
   leafFullPathDisplay(leaf) {
     return `${leaf.path()}${this.leafDisplay(leaf.name)}`;
