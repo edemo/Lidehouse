@@ -32,7 +32,7 @@ Template.Delegations.onCreated(function onCreated() {
 Template.Delegations.onRendered(function onRendered() {
   const allowCheckbox = this.find('#allow');
   this.autorun(() => {
-    allowCheckbox.checked = Meteor.user().settings.delegatee;
+    if (Meteor.user()) allowCheckbox.checked = Meteor.user().settings.delegatee;
   });
 
   // Filling the chart with data
@@ -40,6 +40,7 @@ Template.Delegations.onRendered(function onRendered() {
     const user = Meteor.user();
     const communityId = Session.get('activeCommunityId');
     const community = Communities.findOne(communityId);
+    if (!user || !community) return;
     const unitsOwned = user.totalOwnedUnits(communityId);
     const unitsDelegatedToMe = user.totalDelegatedToMeUnits(communityId);
     const unitsOthers = community.totalunits - unitsOwned - unitsDelegatedToMe;

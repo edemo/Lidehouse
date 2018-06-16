@@ -9,10 +9,3 @@ Template.registerHelper('userHasPermission', function userHasPermission(permissi
   if (!objectCommunityId) return false;
   return user.hasPermission(permissionName, objectCommunityId, object);
 });
-
-Template.registerHelper('currentUserHasPermission', function currentuUserHasPermission(permissionName) {
-  const user = Meteor.user();
-  if (!user) return false;
-  const communityId = Session.get('activeCommunityId');
-  return user.hasPermission(permissionName, communityId);
-});

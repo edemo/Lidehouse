@@ -15,6 +15,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
+import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
 import { monthTags } from '/imports/api/payaccounts/payaccounts-utils.js';
 import { paymentColumns } from '/imports/api/payments/tables.js';
 import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
@@ -22,6 +23,7 @@ import { Reports } from '/imports/api/payaccounts/reports.js';
 import '/imports/ui_2/components/custom-table.js';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
+import { serializeNestable } from '/imports/ui_2/modals/nestable-edit.js';
 import './community-finances.html';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
@@ -119,6 +121,8 @@ Template.Community_finances.helpers({
     return `${__('community')} ${__('status report')}`;
   },
   report(name, year) {
+    if (!PayAccounts.find().count()) return Reports['Blank']();
+    if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
   },
   payaccountsTableDataFn() {
@@ -232,6 +236,28 @@ Template.Community_finances.events({
   },
   'click #payaccounts .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
+    const payaccount = PayAccounts.findOne(id);
+    const modalContext = {
+      title: 'Edit Payaccount',
+      body: 'Nestable_edit',
+      bodyContext: { json: payaccount },
+      btnClose: 'cancel',
+      btnOK: 'save',
+      onOK() {
+        const json = serializeNestable();
+        // console.log('saving nestable:', JSON.stringify(json));
+        // assert json.length === 1
+        // assert json[0].name === payaccount.name
+        // assert locked elements are still there 
+        PayAccounts.update(id, { $set: { children: json[0].children } },
+          onSuccess(res => displayMessage('success', 'PayAccount saved'))
+        );
+      },
+    };
+    Modal.show('Modal', modalContext);
+  },
+  'click #payaccounts .js-edit-af'(event) {
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.update',
       collection: PayAccounts,
@@ -245,6 +271,16 @@ Template.Community_finances.events({
     });
   },
   'click #payaccounts .js-view'(event, instance) {
+    const id = $(event.target).closest('button').data('id');
+    const payaccount = PayAccounts.findOne(id);
+    const modalContext = {
+      title: 'View Payaccount',
+      body: 'Nestable_edit',
+      bodyContext: { json: payaccount, disabled: true },
+    };
+    Modal.show('Modal', modalContext);
+  },
+  'click #payaccounts .js-view-af'(event, instance) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.view',

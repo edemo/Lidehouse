@@ -51,6 +51,9 @@ Template.Community_page.helpers({
     const community = Communities.findOne({ _id: communityId });
     return `${__('Community page')} - ${community ? community.name : ''}`;
   },
+  communityId() {
+    return Template.instance().getCommunityId();
+  },
   community() {
     const communityId = Template.instance().getCommunityId();
     const community = Communities.findOne(communityId);
