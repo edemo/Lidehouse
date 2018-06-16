@@ -275,7 +275,7 @@ Template.Community_finances.events({
     const modalContext = {
       title: 'View Payaccount',
       body: 'Nestable_edit',
-      bodyContext: { json: payaccount },
+      bodyContext: { json: payaccount, disabled: true },
     };
     Modal.show('Modal', modalContext);
   },
