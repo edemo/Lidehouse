@@ -1,3 +1,4 @@
+import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
@@ -7,7 +8,9 @@ Render.payAccounts = function (cellData, renderType, currentRow) {
   if (!accounts) return undefined;
   let html = '';
   Object.keys(accounts).forEach(key => {
-    html += `<span class="label label-default label-xs">${accounts[key]}</span>`;
+    const payaccount = PayAccounts.findOne({ communityId: Session.get('activeCommunityId'), name: key });
+    const labelText = payaccount.leafDisplay(accounts[key]);
+    html += `<span class="label label-default label-xs">${labelText}</span> `;
   });
   return html;
 };
