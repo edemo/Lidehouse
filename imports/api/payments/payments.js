@@ -41,17 +41,18 @@ class PaymentsCollection extends Mongo.Collection {
   insert(tx, callback) {
     const _id = super.insert(tx, callback);
     _.extend(tx, { _id });
-//    console.log("tx", tx);
+    console.log("insert tx:", tx);
     legsOf(tx).forEach(leg => { /*console.log("leg", leg);*/ Legs.insert(leg); });
     return _id;
   }
   remove(selector, callback) {
     Legs.remove({ txId: selector });
+    console.log("remove tx:", selector);
     return super.remove(selector, callback);
   }
 }
 
-export const Payments = new PaymentsCollection('payments');
+export const Payments = new Mongo.Collection('payments');
 
 Payments.phaseValues = ['plan', 'bill', 'done'];
 
@@ -86,24 +87,6 @@ Legs.schema = new SimpleSchema([
   }]
 );
 
-Payments.accountFilter = function createAccountFilterFrom(filter) {
-  // To handle both 'from' and 'to' side. This func from a filter like { 'Income': 'CommonCost' }
-  // creates a filter like { $or [{ 'accountFrom.Income': 'CommonCost' }, { 'accountTo.Income': 'CommonCost' }] }
-  const accounts = Object.keys(filter);
-  debugAssert(accounts.length === 1);
-  const account = accounts[0];
-  const splitted = account.split('.');
-  debugAssert(splitted[0] === 'accounts');
-  const accountName = splitted[1];
-  const value = filter[account];
-  const fromCondition = {};
-  fromCondition[`accountFrom.${accountName}`] = value;
-  const toCondition = {};
-  toCondition[`accountTo.${accountName}`] = value;
-  const modifiedFilter = { $or: [fromCondition, toCondition] };
-  return modifiedFilter;
-};
-
 // A *payment* is effecting a certain field (in pivot tables) with the *amount* of the payment,
 // but the Sign of the effect is depending on 3 components:
 // - Sign of the amount field
@@ -111,20 +94,6 @@ Payments.accountFilter = function createAccountFilterFrom(filter) {
 // - Sign of the direction (in case of accounts only) if field appears in accountFrom => -1, if in accountTo => +1
 // The final sign of the impact of this tx, is the multiplication of these 3 signs.
 // Note: Sign of the account type itself will control how we display it, and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
-Payments.signOfImpact = function (payment, field, values) {
-  const splitted = field.split('.');
-  let result = +1;
-  result *= payment.phase === 'done' ? +1 : -1;
-  if (splitted[0] === 'accounts') {  // in case of account tags
-    const accountName = splitted[1];
-//    if (PayAccounts.signs[accountName]) result *= PayAccounts.signs[accountName];
-//    else return undefined;
-    if (payment.goesFrom(accountName, values)) result *= -1;
-    else if (payment.goesTo(accountName, values)) result *= +1;
-//    else /* its in none of the two, or is in both of them */ debugAssert(false);
-  }
-  return result;
-};
 
 Payments.attachSchema(Payments.schema);
 Payments.attachSchema(Timestamps);

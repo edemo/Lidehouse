@@ -49,24 +49,10 @@ export class PaymentReport {
       value: node.label || node.name,
       values: _.pluck(node.leafs(), 'name'),
       class: 'header-level' + node.level,
-      mongoFilter() {
-        let obj = {};
+      filter() {
+        const obj = {};
         obj[this.field] = { $in: this.values };
-        if (this.field.split('.')[0] === 'account') {
-          obj = Payments.accountFilter(obj);
-        }
         return obj;
-      },
-      arrayFilterFunc() {
-        return (a => {
-          if (this.field.indexOf('.') > 0) {
-            const split = this.field.split('.');
-            debugAssert(split[0] === 'account');
-            return !!a.account && _.contains(this.values, a.account[split[1]]);
-          } else {
-            return _.contains(this.values, a[field]);
-          }
-        });
       },
     };
   }
@@ -109,32 +95,41 @@ export class PaymentReport {
     const colDefs = this.cols[x];
     const rowDefs = this.rows[y];
     const filter = _.extend({}, this.filters);
-    const arrayFilterFuncs = [];
 
-    let classes = 'cell';
+    let classes = '';
     function addFilter(lineDef) {
-      filter.$and = filter.$and || [];
-      filter.$and.push(lineDef.mongoFilter());
+      _.extend(filter, lineDef.filter());
       classes += ' ' + lineDef.class;
-      arrayFilterFuncs.push(lineDef.arrayFilterFunc());
     }
     const lineDefs = colDefs.concat(rowDefs);
     lineDefs.forEach(addFilter);
 
-    let totalAmount = 0;
-    const payments = Payments.find(filter);
-    let signOfImpact = +1;
-    payments.forEach(payment => {
-//      lineDefs.forEach(lineDef => {
-//        const calculatedSign = Payments.signOfImpact(payment, lineDef.field, lineDef.values);
-//        if (!calculatedSign) ;
-//        else if (!signOfImpact) signOfImpact = calculatedSign;
-//        else debugAssert(signOfImpact === calculatedSign); // It is NOT OK to set up a table where the calculated impact sign would be different from the perspective of different effected fields
-//      });
-      totalAmount += signOfImpact * payment.amount;
+    // From this filter, we need to make two filters for the 'From' and 'To' aggregation runs
+    const fromFilter = {};
+    const toFilter = {};
+    const filterKeys = Object.keys(filter);
+    filterKeys.forEach((fKey) => {
+      const splitted = fKey.split('.');
+      if (splitted[0] === 'accounts') {
+        const accountName = splitted[1];
+        fromFilter['accountFrom.' + accountName] = filter[fKey];
+        toFilter['accountTo.' + accountName] = filter[fKey];
+      } else {
+        fromFilter[fKey] = filter[fKey];
+        toFilter[fKey] = filter[fKey];
+      }
     });
 
-    if (totalAmount < -0.001) classes += ' negative';
+    let fromAmount = 0;
+    const fromPayments = Payments.find(fromFilter);
+    fromPayments.forEach(tx => fromAmount += tx.amount);
+
+    let toAmount = 0;
+    const toPayments = Payments.find(toFilter);
+    toPayments.forEach(tx => toAmount += tx.amount);
+
+    const totalAmount = toAmount - fromAmount;
+    if (totalAmount < 0) classes += ' negative';
 //    console.log(`${x}, ${y}: filter:`); console.log(filter);
     return { class: classes, value: numeral(totalAmount).format() };
   }

@@ -41,7 +41,7 @@ Template.Parcels_finances.helpers({
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
       const myParcelIds = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
-      return Payments.find(_.extend({ communityId, phase: 'done' }, Payments.accountFilter({ 'accounts.Localizer': { $in: myParcelIds } }))).fetch();
+      return Payments.find(_.extend({ communityId, phase: 'done', 'accountFrom.Localizer': { $in: myParcelIds } })).fetch();
     }
     return getTableData;
   },
@@ -50,7 +50,7 @@ Template.Parcels_finances.helpers({
       const communityId = Session.get('activeCommunityId');
       const myParcelIds = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
 //      console.log('myParcelIds', myParcelIds);
-      const myBills = Payments.find(_.extend({ communityId, phase: 'bill' }, Payments.accountFilter({ 'accounts.Localizer': { $in: myParcelIds } }))).fetch();
+      const myBills = Payments.find(_.extend({ communityId, phase: 'bill', 'accountFrom.Localizer': { $in: myParcelIds } })).fetch();
 //      console.log('myBills', myBills);
       return myBills;
     }
