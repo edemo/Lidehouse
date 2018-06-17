@@ -48,14 +48,14 @@ export const apply = new ValidatedMethod({
         months = [BILLING_MONTH_OF_THE_YEAR];
 
       const accountFrom = {
-        'Localizer': parcel.serial.toString(),
-        'Liabilities': 'Owner obligations',
+        'Liabilities': 'Owner payins',
         'Owner payins': parcelBilling.account['Owner payins'],
+        'Localizer': parcel.serial.toString(),
       };
       const accountTo = {
-        'Localizer': parcel.serial.toString(),
-        'Assets': 'Owner payins',
+        'Assets': 'Owner obligations',
         'Owner payins': parcelBilling.account['Owner payins'],
+        'Localizer': parcel.serial.toString(),
       };
 
       months.forEach((i) => {

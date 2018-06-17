@@ -328,10 +328,10 @@
       "placeholder": "(eg. reason or partner identifier)"
     },
     "accountFrom": {
-      "label": "From account"
+      "label": "From (D)"
     },
     "accountTo": {
-      "label": "To account"
+      "label": "To (C)"
     }
   },
   "schemaParcelBillings": {
@@ -354,11 +354,8 @@
       "label": "Note",
       "placeholder": "(eg. reminder)"
     },
-    "accountFrom": {
-      "label": "From account"
-    },
-    "accountTo": {
-      "label": "To account"
+    "account": {
+      "label": "Account"
     }
   },
   "schemaSharedfolders": {

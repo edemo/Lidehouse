@@ -1,8 +1,10 @@
+import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { Payments } from '/imports/api/payments/payments.js';
+import { PayAccounts } from './payaccounts';
 
 export class PaymentReport {
   constructor() {
@@ -96,7 +98,7 @@ export class PaymentReport {
     const rowDefs = this.rows[y];
     const filter = _.extend({}, this.filters);
 
-    let classes = '';
+    let classes = 'cell';
     function addFilter(lineDef) {
       _.extend(filter, lineDef.filter());
       classes += ' ' + lineDef.class;
@@ -107,6 +109,7 @@ export class PaymentReport {
     // From this filter, we need to make two filters for the 'From' and 'To' aggregation runs
     const fromFilter = {};
     const toFilter = {};
+    let displaySign = 0;  // the displaySign is the main Account's sign
     const filterKeys = Object.keys(filter);
     filterKeys.forEach((fKey) => {
       const splitted = fKey.split('.');
@@ -114,6 +117,8 @@ export class PaymentReport {
         const accountName = splitted[1];
         fromFilter['accountFrom.' + accountName] = filter[fKey];
         toFilter['accountTo.' + accountName] = filter[fKey];
+        const pac = PayAccounts.findOne({ communityId: Session.get('activeCommunityId'), name: accountName });
+        if (pac.sign) displaySign = pac.sign;
       } else {
         fromFilter[fKey] = filter[fKey];
         toFilter[fKey] = filter[fKey];
@@ -128,7 +133,7 @@ export class PaymentReport {
     const toPayments = Payments.find(toFilter);
     toPayments.forEach(tx => toAmount += tx.amount);
 
-    const totalAmount = toAmount - fromAmount;
+    const totalAmount = displaySign * (toAmount - fromAmount);
     if (totalAmount < 0) classes += ' negative';
 //    console.log(`${x}, ${y}: filter:`); console.log(filter);
     return { class: classes, value: numeral(totalAmount).format() };

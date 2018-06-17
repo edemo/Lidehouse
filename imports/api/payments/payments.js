@@ -36,7 +36,8 @@ Payments.schema = new SimpleSchema([
 // - Sign of the phase (done => +1, bill, plan => -1)
 // - Sign of the direction (in case of accounts only) if field appears in accountFrom => -1, if in accountTo => +1
 // The final sign of the impact of this tx, is the multiplication of these 3 signs.
-// Note: Sign of the account type itself will control how we display it, and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
+// Note: in addition the Sign of the payaccount itself (in the schema) will control how we display it, 
+// and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
 
 Payments.attachSchema(Payments.schema);
 Payments.attachSchema(Timestamps);

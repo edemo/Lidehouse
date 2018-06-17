@@ -75,27 +75,20 @@ PayAccounts.schema = new SimpleSchema({
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   negative: { type: Boolean, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
+  sign: { type: Number, allowedValues: [+1, -1], optional: true },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
 //  type: { type: String, allowedValues: PayAccounts.typeValues },
   children: { type: Array },
   'children.$': { type: PayAccounts.Level1Schema },
 });
 
-PayAccounts.signs = {
-  'Incomes': -1,
-  'Expenses': +1,
-  'Assets': +1,
-  'Liabilities': -1,
-  'Equity': +1,
-}
-
 PayAccounts.helpers({
   init() {
     if (!this._leafs) {
       this._leafs = [];
       this._nodes = [];
-      let currentLevel = 0;
-      const root = this; root.parent = null; root.isLeaf = false; root.level = 0; root.pushLeaf = l => this._leafs.push(l);
+      let currentLevel = 1;   // should start at 0, but bumping it up to 1 as we use 1 less depth in the payaccounts now
+      const root = this; root.parent = null; root.isLeaf = false; root.level = currentLevel; root.pushLeaf = l => this._leafs.push(l);
       if (root.name) { root.path = root.name; this._nodes.push(root); }
       function handleNode(node, parent, pac) {
         ++currentLevel;
@@ -110,7 +103,6 @@ PayAccounts.helpers({
       }
       this.children.forEach(node => handleNode(node, root, this));
     }
-    if (this.name === "Assets") debugger;
     return this;
   },
   leafs() {

@@ -328,10 +328,10 @@
       "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
     "accountFrom": {
-      "label": "Honnan"
+      "label": "Honnan (T)"
     },
     "accountTo": {
-      "label": "Hová"
+      "label": "Hová (K)"
     }
   },
   "schemaParcelBillings": {
@@ -354,11 +354,8 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. emlékeztető)"
     },
-    "accountFrom": {
-      "label": "Honnan"
-    },
-    "accountTo": {
-      "label": "Hová"
+    "account": {
+      "label": "Számla"
     }
   },
   "schemaSharedfolders": {

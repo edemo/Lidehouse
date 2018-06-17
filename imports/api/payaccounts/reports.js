@@ -36,6 +36,11 @@ export const Reports = {
       field: 'accounts.Assets',
       values: PayAccounts.findOne({ communityId, name: 'Assets' }),
     }, false);
+    report.addTree('rows', {
+      field: 'accounts.Liabilities',
+      values: PayAccounts.findOne({ communityId, name: 'Liabilities' }),
+    }, false);
+
     return report;
   },
 
@@ -56,6 +61,10 @@ export const Reports = {
     report.addTree('rows', {
       field: 'accounts.Incomes',
       values: PayAccounts.findOne({ communityId, name: 'Incomes' }),
+    }, false);
+    report.addTree('rows', {
+      field: 'accounts.Expenses',
+      values: PayAccounts.findOne({ communityId, name: 'Expenses' }),
     }, false);
 
     const planColDef = {
