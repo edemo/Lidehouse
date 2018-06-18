@@ -19,7 +19,7 @@ export function insertJournal(name, txBase, journalParams) {
   if (name === 'Obligation') {
     txAccountProps.push({
       accountFrom: {
-        'Liabilities': params.get('Owner payins'),
+        'Owners': params.get('Owner payins'),
         'Localizer': params.get('Localizer'),
       },
       accountTo: {
@@ -43,7 +43,7 @@ export function insertJournal(name, txBase, journalParams) {
         'Localizer': params.get('Localizer'),
       },
       accountTo: {
-        'Liabilities': params.get('Owner payins'),
+        'Owners': params.get('Owner payins'),
         'Localizer': params.get('Localizer'),
       },
     });

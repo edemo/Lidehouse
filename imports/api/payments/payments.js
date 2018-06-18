@@ -8,11 +8,11 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const Payments = new Mongo.Collection('payments');
 
-Payments.phaseValues = ['plan', 'bill', 'done'];
+Payments.phaseValues = ['done', 'plan'];
 
 const BasicTxSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  phase: { type: String, allowedValues: Payments.phaseValues, autoform: autoformOptions(Payments.phaseValues) },
+  phase: { type: String, defaultValue: 'done', allowedValues: Payments.phaseValues, autoform: autoformOptions(Payments.phaseValues) },
   valueDate: { type: Date },
   year: { type: Number, decimal: true, autoValue() { return this.field('valueDate').value.getFullYear(); }, optional: true, autoform: { omit: true } },
   month: { type: Number, decimal: true, autoValue() { return this.field('valueDate').value.getMonth() + 1; }, optional: true, autoform: { omit: true } },

@@ -111,18 +111,19 @@ const PayAccountsTemplate = [
         { name: 'Carry' },
         ],
       },
-      { name: 'Owner payins',
-        children: [
-        { name: 'Unidentified payins' },
-        ],
-        include: 'Owner payins',
-      },
       { name: 'Hitelek',
         children: [
         { name: 'Bank hitel' },
         ],
       },
     ],
+  },
+
+  { name: 'Owners',
+    children: [
+    { name: 'Unidentified payins' },
+    ],
+    include: 'Owner payins',
   },
 
   { name: 'Localizer', label: 'Összes hely',

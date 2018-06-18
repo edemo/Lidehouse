@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { PaymentReport } from '/imports/api/payaccounts/payment-report.js';
-import { expandFrom1To3Levels, monthTags, phaseTags } from './payaccounts-utils';
+import { expandFrom1To3Levels, monthTags, moveTags } from './payaccounts-utils';
 
 export const Reports = {
   Blank() {
@@ -86,10 +86,7 @@ export const Reports = {
       .map(m => myParcels.children.push({ name: m.parcel().serial.toString() /* + '. ' + __('parcel')*/ }));
     expandFrom1To3Levels(myParcels);
 
-    report.addFilter({
-//      'accounts.Incomes': { $exists: true },
-      phase: { $in: ['bill', 'done'] },
-    });
+    report.addFilter({ phase: 'done' });
 
     report.addTree('rows', {
       field: 'accounts.Localizer',
@@ -97,13 +94,13 @@ export const Reports = {
     }, false);
 
     report.addTree('rows', {
-      field: 'accounts.Incomes',
+      field: 'accounts.Assets',
       values: PayAccounts.findOne({ communityId, name: 'Owner payins' }),
     }, true, true);
 
     report.addTree('cols', {
-      field: 'phase',
-      values: PayAccounts._transform(phaseTags),
+      field: 'move',
+      values: PayAccounts._transform(moveTags),
     }, false, false);
 
     return report;
@@ -113,10 +110,7 @@ export const Reports = {
     const report = new PaymentReport('Albetetek Elszamolasa');
     const communityId = Session.get('activeCommunityId');
 
-    report.addFilter({
-//      'accounts.Incomes': { $exists: true },
-      phase: { $in: ['bill', 'done'] },
-    });
+    report.addFilter({ phase: 'done' });
 
     report.addTree('rows', {
       field: 'accounts.Localizer',
@@ -129,8 +123,8 @@ export const Reports = {
     }, false, true);
 
     report.addTree('cols', {
-      field: 'phase',
-      values: PayAccounts._transform(phaseTags),
+      field: 'move',
+      values: PayAccounts._transform(moveTags),
     }, true, false);
 
     return report;

@@ -151,16 +151,7 @@ Template.Community_finances.helpers({
     }
     return getTableData;
   },
-  billsTableDataFn() {
-    function getTableData() {
-      if (!Template.instance().subscriptionsReady()) return [];
-      const communityId = Session.get('activeCommunityId');
-      return Payments.find({ communityId, phase: 'bill' }).fetch();
-    }
-    return getTableData;
-  },
   paymentsOptionsFn() {
-    const communityId = Session.get('activeCommunityId');
     function getOptions() {
       return {
         columns: paymentColumns(),

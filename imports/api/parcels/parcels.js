@@ -103,8 +103,8 @@ Parcels.helpers({
   // Finances
   balance() {
     const communityId = this.communityId;
-    const paymentsIn = Payments.find({ communityId, 'accountTo.Localizer': this.serial.toString() });
-    const paymentsOut = Payments.find({ communityId, 'accountFrom.Localizer': this.serial.toString() });
+    const paymentsIn = Payments.find({ communityId, 'accountTo.Owners': { $exists: true }, 'OwneraccountTo.Localizer': this.serial.toString() });
+    const paymentsOut = Payments.find({ communityId, 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': this.serial.toString() });
     let parcelBalance = 0;
     paymentsIn.forEach(p => parcelBalance += p.amount);
     paymentsOut.forEach(p => parcelBalance -= p.amount);

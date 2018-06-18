@@ -5,7 +5,14 @@
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
 
-    {{> Balance_widget}}
+    <div class="col-md-6">
+        Choose your parcel to watch:<br>
+        <strong>{{activeParcelId}}</strong>
+    </div>
+
+    <div class="col-md-6">
+        {{> Balance_widget}}
+    </div>
 
     <div class="ibox ibox-dark" id='myaccounting'>
         <div class="ibox-title">
@@ -29,21 +36,11 @@
 
     <div class="ibox ibox-dark" id='payments'>
         <div class="ibox-title">
-            <h5>{{_ 'ParcelPayments'}}</h5>
+            <h5>{{_ 'ParcelPayments'}} & {{_ 'ParcelBills'}}</h5>
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">
             {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
-        </div>
-    </div>
-
-    <div class="ibox ibox-dark" id='bills'>
-        <div class="ibox-title">
-            <h5>{{_ 'ParcelBills'}}</h5>
-            {{>iboxTools}}
-        </div>  
-        <div class="ibox-content">
-            {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
         </div>
     </div>
 

@@ -30,33 +30,44 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
     this.subscribe('payaccounts.inCommunity', { communityId });
     this.subscribe('payments.inCommunity', { communityId });
   });
+
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    const myParcelIds = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
+    // const allParcelIds = Communities.find(communityId).parcels().map(p => p.serial.toString());
+    this.getActiveParcelId = function () {
+      return myParcelIds[0] || 'all';
+    };
+  });
 });
 
 Template.Parcels_finances.helpers({
+  activeParcelId() {
+    return Template.instance().getActiveParcelId();
+  },
   report(name, year) {
     return Reports[name](year);
   },
   paymentsTableDataFn() {
     function getTableData() {
+      if (!Template.instance().subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      const myParcelIds = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
-      return Payments.find(_.extend({ communityId, phase: 'done', 'accountFrom.Localizer': { $in: myParcelIds } })).fetch();
-    }
-    return getTableData;
-  },
-  billsTableDataFn() {
-    function getTableData() {
-      const communityId = Session.get('activeCommunityId');
-      const myParcelIds = Memberships.find({ communityId, userId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
-//      console.log('myParcelIds', myParcelIds);
-      const myBills = Payments.find(_.extend({ communityId, phase: 'bill', 'accountFrom.Localizer': { $in: myParcelIds } })).fetch();
-//      console.log('myBills', myBills);
-      return myBills;
+/*      const filter = _.extend({ communityId },
+        { $or: [{ 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': { $in: myParcelIds } },
+                { 'accountTo.Owners': { $exists: true }, 'accountTo.Localizer': { $in: myParcelIds } },
+        ] },
+      );*/
+      const filter = _.extend({ communityId },
+        { $or: [{ 'accountFrom.Owners': { $exists: true } },
+                { 'accountTo.Owners': { $exists: true } },
+        ] },
+      );
+      const data = Payments.find(filter).fetch();
+      return data;
     }
     return getTableData;
   },
   paymentsOptionsFn() {
-    const communityId = Session.get('activeCommunityId');
     function getOptions() {
       return {
         columns: paymentColumns(),

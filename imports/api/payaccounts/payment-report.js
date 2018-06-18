@@ -36,7 +36,6 @@ export class PaymentReport {
   // Adding a whole tree of lines, separately or descarting the current set of lines 
   addTree(dim, treeDef, descartes = true, sumFirst = true, asFirst = false) {
     let nodes = treeDef.values.nodes();
-    console.log('addtree nodes:', nodes);
     if (!sumFirst) nodes = nodes.reverse();
     const newLineDefs = nodes.map(node => PaymentReport.nodeToLineDef(treeDef.field, node));
     if (descartes) {
@@ -127,12 +126,16 @@ export class PaymentReport {
     });
 
     let fromAmount = 0;
-    const fromPayments = Payments.find(fromFilter);
-    fromPayments.forEach(tx => fromAmount += tx.amount);
+    if (filter.move !== 'to') {
+      const fromPayments = Payments.find(fromFilter);
+      fromPayments.forEach(tx => fromAmount += tx.amount);
+    }
 
     let toAmount = 0;
-    const toPayments = Payments.find(toFilter);
-    toPayments.forEach(tx => toAmount += tx.amount);
+    if (filter.move !== 'from') {
+      const toPayments = Payments.find(toFilter);
+      toPayments.forEach(tx => toAmount += tx.amount);
+    }
 
     const totalAmount = displaySign * (toAmount - fromAmount);
     if (totalAmount < 0) classes += ' negative';

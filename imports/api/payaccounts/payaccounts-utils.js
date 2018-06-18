@@ -13,11 +13,11 @@ export function expandFrom1To3Levels(tree) {
   return tree;
 }
 
-export const phaseTags = expandFrom1To3Levels({
-  name: 'balance',
+export const moveTags = expandFrom1To3Levels({
+  name: 'move', label: 'balance',
   children: [
-  { name: 'done' },
-  { name: 'bill' },
+  { name: 'from', label: 'bill' },
+  { name: 'to', label: 'done' },
   ],
 });
 

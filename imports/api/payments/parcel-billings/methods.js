@@ -56,7 +56,6 @@ export const apply = new ValidatedMethod({
       months.forEach((i) => {
         const txBase = {
           communityId: parcelBilling.communityId,
-          phase: 'bill',
           valueDate: new Date(parcelBilling.year, i - 1, BILLING_DAY_OF_THE_MONTH),
           amount,
           note: parcelBilling.note,
