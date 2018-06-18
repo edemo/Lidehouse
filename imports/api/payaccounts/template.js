@@ -86,9 +86,8 @@ const PayAccountsTemplate = [
     children: [
       { name: 'Tárgyi és immateriális',
         children: [
-        { name: 'Bank főszámla' },
-        { name: 'Bank felújítási alap' },
-        { name: 'Pénztár 1' },
+        { name: 'Vagyoni értékű jogok' },
+        { name: 'Műszaki berendezések' },
         ],
       },
       { name: 'Pénz számlák',

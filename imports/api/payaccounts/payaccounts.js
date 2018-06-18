@@ -60,6 +60,7 @@ PayAccounts.Level2Schema = new SimpleSchema({
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array, optional: true },
   'children.$': { type: PayAccounts.LeafSchema },
+  include: { type: String, optional: true },
 });
 
 PayAccounts.Level1Schema = new SimpleSchema({
@@ -68,6 +69,7 @@ PayAccounts.Level1Schema = new SimpleSchema({
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array, optional: true },
   'children.$': { type: PayAccounts.Level2Schema },
+  include: { type: String, optional: true },
 });
 
 PayAccounts.schema = new SimpleSchema({
@@ -91,6 +93,13 @@ PayAccounts.helpers({
       const root = this; root.parent = null; root.isLeaf = false; root.level = currentLevel; root.pushLeaf = l => this._leafs.push(l);
       if (root.name) { root.path = root.name; this._nodes.push(root); }
       function handleNode(node, parent, pac) {
+        if (node.include) {
+//          console.log('Before include', pac);
+          node.children = node.children || [];
+          const pacToInclude = PayAccounts.findOne({ communityId: pac.communityId, name: node.include });
+          if (pacToInclude) node.children = node.children.concat(pacToInclude.children);
+//          console.log('After include', pac);
+        }
         ++currentLevel;
         node.parent = parent;
         node._leafs = []; node.leafs = () => node._leafs; node.pushLeaf = l => { node._leafs.push(l); parent.pushLeaf(l); };

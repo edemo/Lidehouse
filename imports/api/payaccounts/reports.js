@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
+import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -13,6 +14,7 @@ export const Reports = {
   },
 
   Egyenlegek() {
+//    console.log(Template.instance().subscriptionsReady());
     const report = new PaymentReport('Egyenlegek');
     const communityId = Session.get('activeCommunityId');
     report.addFilter({ phase: 'done' });

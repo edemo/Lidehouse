@@ -36,6 +36,7 @@ export class PaymentReport {
   // Adding a whole tree of lines, separately or descarting the current set of lines 
   addTree(dim, treeDef, descartes = true, sumFirst = true, asFirst = false) {
     let nodes = treeDef.values.nodes();
+    console.log('addtree nodes:', nodes);
     if (!sumFirst) nodes = nodes.reverse();
     const newLineDefs = nodes.map(node => PaymentReport.nodeToLineDef(treeDef.field, node));
     if (descartes) {

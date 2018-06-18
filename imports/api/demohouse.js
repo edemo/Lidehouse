@@ -20,6 +20,7 @@ import { Payments } from '/imports/api/payments/payments.js';
 import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/payments/parcel-billings/methods.js';
 import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
+import { insertJournal } from '/imports/api/payments/journals.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -1060,19 +1061,15 @@ export function insertDemoHouse(lang, demoOrTest) {
     for (let i = 1; i < 15; i++) {
       const payable = [0, 15125, 13200, 18150, 19250, 18150, 19250, 18150,
         19250, 18150, 19250, 30800, 13750, 19000, 6050];
-      Payments.insert({
+      insertJournal('Payin', {
         communityId: demoCommunityId,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
-        accountFrom: {
-          'Incomes': 'Owner payins',
-          'Owner payins': 'Közös költség befizetés',
-          'Localizer': i.toString(),
-        },
-        accountTo: {
-          'Assets': 'Bank főszámla',
-        },
+      }, {
+        'Owner payins': 'Közös költség befizetés',
+        'Localizer': i.toString(),
+        'Assets': 'Bank főszámla',
       });
     }
   }
@@ -1081,56 +1078,44 @@ export function insertDemoHouse(lang, demoOrTest) {
     for (let i = 0; i < 4; i++) {
       const payable = [5000, 7500, 5000, 2500];
       const place = ['2', '5', '8', '14'];
-      Payments.insert({
+      insertJournal('Payin', {
         communityId: demoCommunityId,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        accountFrom: {
-          'Incomes': 'Owner payins',
-          'Owner payins': 'Víz díj',
-          'Localizer': place[i],
-        },
-        accountTo: {
-          'Assets': 'Bank főszámla',
-        },
+      }, {
+        'Owner payins': 'Víz díj',
+        'Localizer': place[i],
+        'Assets': 'Bank főszámla',
       });
     }
   }
   for (let m = 1; m < 13; m++) {
     for (let i = 1; i < 11; i++) {
       const payable = [0, 14960, 13056, 15708, 16660, 15708, 16660, 15708, 16660, 15708, 16660];
-      Payments.insert({
+      insertJournal('Payin', {
         communityId: demoCommunityId,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        accountFrom: {
-          'Incomes': 'Owner payins',
-          'Owner payins': 'Fűtési díj',
-          'Localizer': i.toString(),
-        },
-        accountTo: {
-          'Assets': 'Bank főszámla',
-        },
+      }, {
+        'Owner payins': 'Fűtési díj',
+        'Localizer': i.toString(),
+        'Assets': 'Bank főszámla',
       });
     }
   }
 
   for (let i = 1; i < 15; i++) {
-    Payments.insert({
+    insertJournal('Payin', {
       communityId: demoCommunityId,
       phase: 'done',
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
-      accountFrom: {
-        'Incomes': 'Owner payins',
-        'Owner payins': 'Felújítási célbefizetés',
-        'Localizer': i.toString(),
-      },
-      accountTo: {
-        'Assets': 'Bank főszámla',
-      },
+    }, {
+      'Owner payins': 'Felújítási célbefizetés',
+      'Localizer': i.toString(),
+      'Assets': 'Bank főszámla',
     });
   }
 
@@ -1396,34 +1381,18 @@ Meteor.methods({
       },
     });
     for (let m = 1; m < 12; m++) {
-      const txPayin = {
+      const txBase = {
         communityId: demoCommunityId,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
         amount: 6875,
       };
-      Payments.insert(_.extend({}, txPayin, {
-        accountFrom: {
-          'Incomes': 'Owner payins',
-          'Owner payins': 'Közös költség befizetés',
-          'Localizer': demoParcelSerial.toString(),
-        },
-        accountTo: {
-          'Assets': 'Bank főszámla',
-        },
-      }));
-      Payments.insert(_.extend({}, txPayin, {
-        accountFrom: {
-          'Assets': 'Owner obligations',
-          'Owner payins': 'Közös költség befizetés',
-          'Localizer': demoParcelSerial.toString(),
-        },
-        accountTo: {
-          'Liabilities': 'Owner payins',
-          'Owner payins': 'Közös költség befizetés',
-          'Localizer': demoParcelSerial.toString(),
-        },
-      }));
+      const journalParams = {
+        'Owner payins': 'Közös költség befizetés',
+        'Localizer': demoParcelSerial.toString(),
+        'Assets': 'Bank főszámla',
+      };
+      insertJournal('Payin', txBase, journalParams);
     }
 
     Meteor.setTimeout(function () {

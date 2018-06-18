@@ -1,13 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Payments } from '/imports/api/payments/payments.js';
+import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
-import { _ } from 'meteor/underscore';
-import { debugAssert } from '/imports/utils/assert.js';
+import { Payments } from '/imports/api/payments/payments.js';
+import { insertJournal } from '/imports/api/payments/journals.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
@@ -47,29 +48,20 @@ export const apply = new ValidatedMethod({
       else
         months = [BILLING_MONTH_OF_THE_YEAR];
 
-      const accountFrom = {
-        'Liabilities': 'Owner payins',
-        'Owner payins': parcelBilling.account['Owner payins'],
-        'Localizer': parcel.serial.toString(),
-      };
-      const accountTo = {
-        'Assets': 'Owner obligations',
+      const journalParams = {
         'Owner payins': parcelBilling.account['Owner payins'],
         'Localizer': parcel.serial.toString(),
       };
 
       months.forEach((i) => {
-        const payment = {
+        const txBase = {
           communityId: parcelBilling.communityId,
           phase: 'bill',
           valueDate: new Date(parcelBilling.year, i - 1, BILLING_DAY_OF_THE_MONTH),
           amount,
-          accountFrom,
-          accountTo,
           note: parcelBilling.note,
         };
-//        Payments.update(query, { $set: doc }, { upsert: true });
-        Payments.insert(payment);
+        insertJournal('Obligation', txBase, journalParams);
       });
     });
   },

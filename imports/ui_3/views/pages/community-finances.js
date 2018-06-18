@@ -120,12 +120,12 @@ Template.Community_finances.helpers({
     return `${__('community')} ${__('status report')}`;
   },
   report(name, year) {
-    if (!PayAccounts.find().count()) return Reports['Blank']();
     if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
   },
   payaccountsTableDataFn() {
     function getTableData() {
+      if (!Template.instance().subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
       return PayAccounts.find({ communityId }).fetch();
     }
@@ -145,6 +145,7 @@ Template.Community_finances.helpers({
   },
   paymentsTableDataFn() {
     function getTableData() {
+      if (!Template.instance().subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
       return Payments.find({ communityId, phase: 'done' }).fetch();
     }
@@ -152,6 +153,7 @@ Template.Community_finances.helpers({
   },
   billsTableDataFn() {
     function getTableData() {
+      if (!Template.instance().subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
       return Payments.find({ communityId, phase: 'bill' }).fetch();
     }

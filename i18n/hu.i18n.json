@@ -252,7 +252,7 @@
   "Create ticket": "Bejelentés elküldése",
 
   // finances
-  "Payaccounts": "Könyvelési fiókok",
+  "Payaccounts": "Könyvelési bontások",
   "Payments": "Tranzakciók",
   "Bills": "Előírások",
   "Reports": "Kimutatások",
@@ -285,7 +285,7 @@
   "Localizer": "Localizer",
   "Owner payins": "Tulajdonosi befizetések",
   "Owner obligations": "Tulajdonosi kötelezettségek",
-  "Unidentified payins" : "Beazonsítatlan befizetések",
+  "Unidentified payins" : "Beazonosítatlan befizetések",
   "Opening": "Nyitó egyenleg",
   "Carry over": "Átvezetés",
 

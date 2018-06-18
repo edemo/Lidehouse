@@ -22,6 +22,9 @@
   "Proxy voting" : "Voting in the name of others",
   "Please select voters": "Please select the people you would like to vote in the name of",
 
+  // finances
+    "Payaccounts": "Accounting breakdowns",
+
   // feedback
   "FeedbackPaneCallout": "Tell us your opinion about the app!",
   "FeedbackPaneTitle": "Your feedback can help the app develepment a lot. </br> If you notice technical errors, or you have a suggestion for a new feature, please let us know.",
