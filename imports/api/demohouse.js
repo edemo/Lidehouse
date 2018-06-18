@@ -558,7 +558,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       effect: 'legal',
       type: 'yesno',
     },
-    createdAt: "2017-09-31T14:07:30.266Z",
+    createdAt: new Date('2017-09-31T14:07:30.266Z'),
   });
 
   castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic1, castedVote: [0] });
@@ -803,7 +803,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     communityId: demoCommunityId,
     projection: 'perArea',
     amount: 275,
-    year: '2017',
+    year: 2017,
     month: 'allMonths',
     account: {
       'Owner payins': 'Közös költség befizetés',
@@ -817,7 +817,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       communityId: demoCommunityId,
       projection: 'perHabitant',
       amount: 2500,
-      year: '2017',
+      year: 2017,
       month: 'allMonths',
       account: {
         'Owner payins': 'Víz díj',
@@ -831,7 +831,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       communityId: demoCommunityId,
       projection: 'perVolume',
       amount: 85,
-      year: '2017',
+      year: 2017,
       month: 'allMonths',
       account: {
         'Owner payins': 'Fűtési díj',
@@ -844,7 +844,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     communityId: demoCommunityId,
     projection: 'absolute',
     amount: 60000,
-    year: '2017',
+    year: 2017,
     month: '9',
     account: {
       'Owner payins': 'Felújítási célbefizetés',
@@ -862,7 +862,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
-    ref: 'nyitó',
     amount: 100000,
     accountFrom: {
       'Liabilities': 'Opening',
@@ -876,7 +875,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
-    ref: 'nyitó',
     amount: 110000,
     accountFrom: {
       'Liabilities': 'Opening',
@@ -890,7 +888,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
-    ref: 'nyitó',
     amount: 120000,
     accountFrom: {
       'Liabilities': 'Opening',
@@ -1391,7 +1388,7 @@ Meteor.methods({
       communityId: demoCommunityId,
       projection: 'perArea',
       amount: 275,
-      year: '2017',
+      year: 2017,
       month: 'allMonths',
       account: {
         'Owner payins': 'Közös költség befizetés',
@@ -1399,11 +1396,13 @@ Meteor.methods({
       },
     });
     for (let m = 1; m < 12; m++) {
-      Payments.insert({
+      const txPayin = {
         communityId: demoCommunityId,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
         amount: 6875,
+      };
+      Payments.insert(_.extend({}, txPayin, {
         accountFrom: {
           'Incomes': 'Owner payins',
           'Owner payins': 'Közös költség befizetés',
@@ -1412,7 +1411,19 @@ Meteor.methods({
         accountTo: {
           'Assets': 'Bank főszámla',
         },
-      });
+      }));
+      Payments.insert(_.extend({}, txPayin, {
+        accountFrom: {
+          'Assets': 'Owner obligations',
+          'Owner payins': 'Közös költség befizetés',
+          'Localizer': demoParcelSerial.toString(),
+        },
+        accountTo: {
+          'Liabilities': 'Owner payins',
+          'Owner payins': 'Közös költség befizetés',
+          'Localizer': demoParcelSerial.toString(),
+        },
+      }));
     }
 
     Meteor.setTimeout(function () {

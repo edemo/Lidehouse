@@ -33,11 +33,11 @@ const PayAccountsTemplate = [
         { name: 'Egyéb bevétel' },
         ],
       },
-      { name: 'Hitelfelvétel',
-        children: [
-          { name: 'Bank hitel' },
-        ],
-      },
+//      { name: 'Hitelfelvétel',
+//        children: [
+//          { name: 'Bank hitel' },
+//        ],
+//      },
     ],
   },
 
@@ -84,6 +84,13 @@ const PayAccountsTemplate = [
 
   { name: 'Assets', locked: true, sign: +1,
     children: [
+      { name: 'Tárgyi és immateriális',
+        children: [
+        { name: 'Bank főszámla' },
+        { name: 'Bank felújítási alap' },
+        { name: 'Pénztár 1' },
+        ],
+      },
       { name: 'Pénz számlák',
         children: [
         { name: 'Bank főszámla' },
@@ -106,6 +113,9 @@ const PayAccountsTemplate = [
         ],
       },
       { name: 'Owner payins',
+        children: [
+        { name: 'Unidentified payins' },
+        ],
         include: 'Owner payins',
       },
       { name: 'Hitelek',

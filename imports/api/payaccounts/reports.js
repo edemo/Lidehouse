@@ -6,21 +6,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { PaymentReport } from '/imports/api/payaccounts/payment-report.js';
 import { expandFrom1To3Levels, monthTags, phaseTags } from './payaccounts-utils';
 
-
-export const TulajdonosiBefizetesek = expandFrom1To3Levels({
-  name: 'Tulajdonosi befizetések', label: 'Összesen',
-  children: [
-  { name: 'Közös költség befizetés' },
-  { name: 'Felújítási alap befizetés' },
-  { name: 'Felújítási célbefizetés' },
-//    { name: 'Támogatás' },
-  { name: 'Víz díj' },
-  { name: 'Fűtési díj' },
-//    { name: 'Kamat pénzintézetektől' },
-  { name: 'Egyéb közvetített szolgáltatás' },
-  ],
-});
-
 export const Reports = {
   Blank() {
     const report = new PaymentReport('Blank');
@@ -111,7 +96,7 @@ export const Reports = {
 
     report.addTree('rows', {
       field: 'accounts.Incomes',
-      values: PayAccounts._transform(TulajdonosiBefizetesek),
+      values: PayAccounts.findOne({ communityId, name: 'Owner payins' }),
     }, true, true);
 
     report.addTree('cols', {
@@ -138,7 +123,7 @@ export const Reports = {
 
     report.addTree('cols', {
       field: 'accounts.Incomes',
-      values: PayAccounts._transform(TulajdonosiBefizetesek),
+      values: PayAccounts.findOne({ communityId, name: 'Owner payins' }),
     }, false, true);
 
     report.addTree('cols', {
