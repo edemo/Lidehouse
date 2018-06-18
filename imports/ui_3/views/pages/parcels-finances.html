@@ -6,8 +6,28 @@
     <div class="row">
 
     <div class="col-md-6">
-        Choose your parcel to watch:<br>
-        <strong>{{activeParcelId}}</strong>
+        <div class="ibox ibox-dark">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label" for="quantity">{{_ 'Year'}}</label>
+                        <input type="text" id="quantity" name="quantity" value="" placeholder="2015" class="form-control">
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        <label class="control-label" for="localizer">{{_ 'Parcel'}}</label>
+                        <select name="localizer" id="localizer" class="form-control">
+                            {{#each option in localizerOptions}}
+                            <option value="{{option.name}}">{{option.label}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
     </div>
 
     <div class="col-md-6">
@@ -16,13 +36,39 @@
 
     <div class="ibox ibox-dark" id='myaccounting'>
         <div class="ibox-title">
-            <h5>Sajat Albeteteim Elszamolasa</h5>
+            <h5>Albetet Egyenlegei</h5>
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">
             {{> Custom_table report=(report 'AlbetetemElszamolasa' 2017)}}      
         </div>
     </div>
+
+    <div class="ibox ibox-dark" id='payments'>
+        <div class="ibox-title">
+            <h5>Albetet Tortenete</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tbody>
+                    {{#each payment in parcelHistory}}
+                    <tr>
+                        <td>{{@index}}</td>
+                        <td>{{displayTime payment.valueDate}}</td>
+                        <td>{{displayPhase payment}}</td>
+                        <td>{{payment.amount}}</td>
+                        <td><strong>100%</strong></td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 
     <div class="ibox ibox-dark" id='accounting'>
         <div class="ibox-title">

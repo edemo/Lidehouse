@@ -35,18 +35,46 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
     const communityId = Session.get('activeCommunityId');
     const myParcelIds = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
     // const allParcelIds = Communities.find(communityId).parcels().map(p => p.serial.toString());
-    this.getActiveParcelId = function () {
-      return myParcelIds[0] || 'all';
+    // $('select#localizer').val(myParcelIds[0] || 'Localizer');
+    this.getActiveLocalizer = function () {
+      return $('select#localizer').val();
+    };
+    this.getActiveParcelFilter = function () {
+      const activeLocalizer = this.getActiveLocalizer();
+      const localizerPac = PayAccounts.findOne({ communityId, name: 'Localizer' });
+      const filter = { $in: localizerPac.leafsOf(activeLocalizer) };
+      return filter;
     };
   });
 });
 
 Template.Parcels_finances.helpers({
-  activeParcelId() {
-    return Template.instance().getActiveParcelId();
+  getActiveLocalizer() {
+    return Template.instance().getActiveLocalizer();
+  },
+  localizerOptions() {
+    if (!Template.instance().subscriptionsReady()) return [];
+    const communityId = Session.get('activeCommunityId');
+    const localizerPac = PayAccounts.findOne({ communityId, name: 'Localizer' });
+    return localizerPac.nodeOptions();
   },
   report(name, year) {
     return Reports[name](year);
+  },
+  parcelHistory() {
+    if (!Template.instance().subscriptionsReady()) return [];
+    const communityId = Session.get('activeCommunityId');
+    const parcelFilter = Template.instance().getActiveParcelFilter();
+
+    return Payments.find({ communityId,
+      $or: [{ 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': parcelFilter },
+            { 'accountTo.Owners': { $exists: true }, 'accountTo.Localizer': parcelFilter },
+      ] }).sort({ valueDate: 1 });
+  },
+  displayPhase(payment) {
+    if (payment.accountFrom.Owners) return __('bill');
+    if (payment.accountTo.Owners) return __('done');
+    return undefined;
   },
   paymentsTableDataFn() {
     function getTableData() {
