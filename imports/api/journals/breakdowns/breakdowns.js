@@ -135,15 +135,7 @@ Breakdowns.helpers({
   leafsOf(nodeName) {
     return this.nodes().find(n => n.name === nodeName).leafs();
   },
-//  leafIsParcel(leafName) {
-//    return ((this.name === 'Localizer') && parseInt(leafName, 0));
-//  },
-//  displayLeafName(leafName) {
-//    if (this.leafIsParcel(leafName)) return `${leafName}. ${__('parcel')}`;
-//    return __(leafName);
-//  },
   display(node) {
-//    if (node.isLeaf) return this.displayLeafName(node.name);
     return node.label || node.name;
   },
   displayFullPath(node) {

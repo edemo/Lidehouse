@@ -24,16 +24,20 @@ ParcelBillings.schema = new SimpleSchema({
   note: { type: String, max: 100, optional: true },
 });
 
+function leafIsParcel(leafName) {
+  return parseInt(leafName, 0);
+}
+
 ParcelBillings.helpers({
   parcels() {
-    const payAccount = Breakdowns.findOne({ communityId: this.communityId, name: 'Localizer' });
-    const nodeName = this.account[payAccount.name];
+    const localizer = Breakdowns.findOne({ communityId: this.communityId, name: 'Localizer' });
+    const nodeName = this.account[localizer.name];
 //    console.log('nodeName', nodeName);
-    const leafs = payAccount.leafsOf(nodeName);
+    const leafs = localizer.leafsOf(nodeName);
 //    console.log('leafs', leafs);
-    const parcelLeafs = leafs.filter(l => payAccount.leafIsParcel(l.name));
+    const parcelLeafs = leafs.filter(l => leafIsParcel(l.name));
 //    console.log('parcelLeafs', parcelLeafs);
-    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, serial: parseInt(l.name) }));
+    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, serial: parseInt(l.name, 0) }));
 //    console.log('parcels', parcels);
     return parcels;
   },
