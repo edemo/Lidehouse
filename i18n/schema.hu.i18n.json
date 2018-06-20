@@ -318,8 +318,11 @@
       "label": "Összeg",
       "placeholder": "(pl. 14560)"
     },
+    "txId": {
+      "label": "Tranzakció azonosító"
+    },
     "ref": {
-      "label": "Tranzakció azonosító",
+      "label": "Referencia azonosító",
       "placeholder": "(pl. tranzakciós szám bankkivonatról)"
     },
     "note": {

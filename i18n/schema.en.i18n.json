@@ -318,8 +318,11 @@
       "label": "Amount",
       "placeholder": "(eg. 14560)"
     },
+    "txId": {
+      "label": "Transaction id"
+    },
     "ref": {
-      "label": "Transaction id",
+      "label": "Reference id",
       "placeholder": "(eg. transaction no. from bank statement)"
     },
     "note": {
