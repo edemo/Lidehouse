@@ -12,7 +12,7 @@ import { Journals } from '/imports/api/journals/journals.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { remove as removeJournal, billParcels } from '/imports/api/journals/methods.js';
 import { Session } from 'meteor/session';
-import { paymentColumns } from '/imports/api/journals/tables.js';
+import { journalColumns } from '/imports/api/journals/tables.js';
 import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
 import { Reports } from '/imports/api/journals/breakdowns/reports.js';
 
@@ -76,9 +76,10 @@ Template.Parcels_finances.helpers({
     if (journal.accountTo.Owners) return __('done');
     return undefined;
   },
-  paymentsTableDataFn() {
+  journalsTableDataFn() {
+    const templateInstance = Template.instance();
     function getTableData() {
-      if (!Template.instance().subscriptionsReady()) return [];
+      if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
 /*      const filter = _.extend({ communityId },
         { $or: [{ 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': { $in: myParcelIds } },
@@ -95,10 +96,10 @@ Template.Parcels_finances.helpers({
     }
     return getTableData;
   },
-  paymentsOptionsFn() {
+  journalsOptionsFn() {
     function getOptions() {
       return {
-        columns: paymentColumns(),
+        columns: journalColumns(),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };

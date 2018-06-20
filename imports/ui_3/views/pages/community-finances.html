@@ -65,7 +65,7 @@
                     <li><a href="" class="js-new-def"> + {{_ 'new'}} {{_ 'tx'}} {{_ 'def'}}</a></li>
                 </ul>
                 <div class="m-b-lg"></div>
-                {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+                {{> ReactiveDatatable tableData=journalsTableDataFn options=journalsOptionsFn }}
             </div>
         </div>
     </div>
@@ -125,7 +125,7 @@
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
-            {{> ReactiveDatatable tableData=billsTableDataFn options=paymentsOptionsFn }}
+            {{> ReactiveDatatable tableData=billsTableDataFn options=journalsOptionsFn }}
             <button class="js-many btn-primary">{{_ 'createMany'}}</button>
           </div>
         </div>

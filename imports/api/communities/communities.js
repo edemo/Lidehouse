@@ -14,7 +14,7 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
-import { ParcelBillings } from '/imports/api/journals/parcel-billings/parcel-billings.js';
+import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 
 export const Communities = new Mongo.Collection('communities');
 

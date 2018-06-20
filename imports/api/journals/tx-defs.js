@@ -11,7 +11,7 @@ export const TxDefs = new Mongo.Collection('txDefs');
 
 let chooseAccountFamily = {};
 let chooseAccountNode = () => { return {}; };
-let chooseAccountGroup = () => { return {}; };
+let chooseAccountGroup = {};
 
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
@@ -39,38 +39,25 @@ if (Meteor.isClient) {
     };
   };
 
-  chooseAccountGroup = function (move) {
-    return {
-      options() {
-        const communityId = Session.get('activeCommunityId');
-        const accountFamilies = Breakdowns.find({ communityId, sign: { $exists: true } });
-        let accountTree = { name: 'Accounts', children: [] };
-        accountFamilies.forEach(family => accountTree.children.push(family));
-        accountTree = Breakdowns._transform(accountTree);
-        return accountTree.leafOptions();
-      },
-    };
+  chooseAccountGroup = {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const accountMirror = Breakdowns.accountMirror(communityId);
+      return accountMirror.nodeOptions();
+    },
   };
 }
 
-const accountNodeSchema = function (move) {
-  return new SimpleSchema({
-//    accountFamily: { type: 'String', autoform: chooseAccountFamily },
-    accountGroup: { type: 'String', autoform: chooseAccountGroup(move) },
-//    localizerNeeded: { type: Boolean, defaultValue: false },
-  });
-};
-
-const TransactionSchema = new SimpleSchema({
-  accountFrom: { type: accountNodeSchema('accountFrom') },
-  accountTo: { type: accountNodeSchema('accountTo') },
+const JournalDefSchema = new SimpleSchema({
+  accountFrom: { type: String, autoform: chooseAccountGroup },
+  accountTo: { type: String, autoform: chooseAccountGroup },
 });
 
 TxDefs.schema = new SimpleSchema({
   name: { type: String },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   journals: { type: Array },
-  'journals.$': { type: TransactionSchema },
+  'journals.$': { type: JournalDefSchema },
 });
 
 TxDefs.attachSchema(TxDefs.schema);
@@ -78,4 +65,11 @@ TxDefs.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
   TxDefs.simpleSchema().i18n('schemaTxDefs');
+});
+
+// TODO: restrict
+TxDefs.allow({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
 });

@@ -8,14 +8,15 @@ Render.breakdowns = function (cellData, renderType, currentRow) {
   if (!accounts) return undefined;
   let html = '';
   Object.keys(accounts).forEach(key => {
-    const breakdown = Breakdowns.findOne({ communityId: Session.get('activeCommunityId'), name: key });
-    const labelText = breakdown.leafDisplay(accounts[key]);
+//    const breakdown = Breakdowns.findOne({ communityId: Session.get('activeCommunityId'), name: key });
+//    const labelText = breakdown.displayLeafName(accounts[key]);
+    const labelText = accounts[key];
     html += `<span class="label label-default label-xs">${labelText}</span> `;
   });
   return html;
 };
 
-export function paymentColumns() {
+export function journalColumns() {
   const columns = [
     { data: 'valueDate', title: __('schemaJournals.valueDate.label'), render: Render.formatDate },
 //    { data: 'phase', title: __('schemaJournals.phase.label'), render: Render.translate },

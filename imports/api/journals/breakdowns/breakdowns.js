@@ -78,6 +78,14 @@ Breakdowns.schema = new SimpleSchema({
   'children.$': { type: Breakdowns.Level1Schema },
 });
 
+Breakdowns.accountMirror = function accountMirror(communityId) {
+  const accountFamilies = Breakdowns.find({ communityId, sign: { $exists: true } });
+  let accountTree = { name: '.', children: [] };
+  accountFamilies.forEach(family => accountTree.children.push(family));
+  accountTree = Breakdowns._transform(accountTree);
+  return accountTree;
+};
+
 Breakdowns.helpers({
   init() {
     if (!this._leafs) {
@@ -115,45 +123,45 @@ Breakdowns.helpers({
     return this.init()._nodes;
   },
   leafNames() {
-    return this.leafs().map(leaf => this.leafDisplay(leaf.name));
+    return this.leafs().map(this.display);
   },
   nodeNames() {
-    return this.nodes().map(node => (node.isLeaf ? this.leafDisplay(node.name) : __(node.name)));
+    return this.nodes().map(this.display);
   },
-  leafFromName(leafName) {
-    const result = this.leafs().find(l => l.name === leafName);
-    return result;
-  },
+//  leafFromName(leafName) {
+//    const result = this.leafs().find(l => l.name === leafName);
+//    return result;
+//  },
   leafsOf(nodeName) {
     return this.nodes().find(n => n.name === nodeName).leafs();
   },
-  leafIsParcel(leafName) {
-    return ((this.name === 'Localizer') && parseInt(leafName, 0));
-  },
-  leafDisplay(leafName) {
-    if (this.leafIsParcel(leafName)) return `${leafName}. ${__('parcel')}`;
-    return __(leafName);
-  },
-  leafFullPathDisplay(leaf) {
-    return `${leaf.path}`; // ${this.leafDisplay(leaf.name)}`;
-  },
-  nodeDisplay(node) {
-    if (node.isLeaf) return this.leafDisplay(node.name);
+//  leafIsParcel(leafName) {
+//    return ((this.name === 'Localizer') && parseInt(leafName, 0));
+//  },
+//  displayLeafName(leafName) {
+//    if (this.leafIsParcel(leafName)) return `${leafName}. ${__('parcel')}`;
+//    return __(leafName);
+//  },
+  display(node) {
+//    if (node.isLeaf) return this.displayLeafName(node.name);
     return node.label || node.name;
+  },
+  displayFullPath(node) {
+    return `${node.path}`; // ${this.leafDisplay(leaf.name)}`;
   },
   leafOptions(filter) {
     const self = this;
     return this.leafs()
       .filter(filter || (() => true))
       .map(function option(leaf) {
-        return { label: self.leafFullPathDisplay(leaf), value: leaf.name }; 
+        return { label: self.displayFullPath(leaf), value: leaf.name };
       });
   },
   nodeOptions() {
     const self = this;
     return this.nodes()
       .map(function option(node) {
-        return { label: self.nodeDisplay(node), value: node.name };
+        return { label: self.displayFullPath(node), value: node.name };
       });
   },
   removeSubTree(name) {

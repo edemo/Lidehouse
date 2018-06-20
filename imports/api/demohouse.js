@@ -17,8 +17,8 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
-import { ParcelBillings } from '/imports/api/journals/parcel-billings/parcel-billings.js';
-import { insert as insertParcelBilling } from '/imports/api/journals/parcel-billings/methods.js';
+import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
+import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
 import { insertBreakdownTemplate } from '/imports/api/journals//template.js';
 import { insertTx } from '/imports/api/journals/txs.js';
 

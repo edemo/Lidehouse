@@ -42,7 +42,7 @@ Meteor.startup(function attach() {
   Journals.simpleSchema().i18n('schemaJournals');
 });
 
-// Deny all client-side updates since we will be using methods to manage this collection
+// Deny all journal updates - we manipulate transactions only
 Journals.deny({
   insert() { return true; },
   update() { return true; },

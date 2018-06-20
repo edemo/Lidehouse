@@ -1,9 +1,15 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { debugAssert } from '/imports/utils/assert.js';
+
+import { Timestamps } from '/imports/api/timestamps.js';
+import { autoformOptions } from '/imports/utils/autoform.js';
+
 import { Journals } from './journals.js';
 import { Breakdowns } from '../journals/breakdowns/breakdowns.js';
+
 
 class AssertiveObject {
   constructor(obj) {
@@ -57,3 +63,29 @@ export function insertTx(name, txBase, txParams) {
     Journals.insert(tx);
   });
 }
+;
+
+//--------
+export const Txs = new Mongo.Collection('txs');
+
+Txs.schema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  defId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  params: { type: Object, blackbox: true },
+  valueDate: { type: Date },
+  ref: { type: String, max: 100, optional: true },
+  note: { type: String, max: 100, optional: true },
+});
+
+Txs.attachSchema(Txs.schema);
+Txs.attachSchema(Timestamps);
+
+Meteor.startup(function attach() {
+  Txs.simpleSchema().i18n('schemaTxs');
+});
+
+Txs.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});

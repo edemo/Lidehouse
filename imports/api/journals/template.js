@@ -115,14 +115,13 @@ const BreakdownsTemplate = [
         { name: 'Bank hitel' },
         ],
       },
+      { name: 'Owners',
+        children: [
+        { name: 'Unidentified payins' },
+        ],
+        include: 'Owner payins',
+      },
     ],
-  },
-
-  { name: 'Owners',
-    children: [
-    { name: 'Unidentified payins' },
-    ],
-    include: 'Owner payins',
   },
 
   { name: 'Localizer', label: 'Összes hely',
@@ -185,41 +184,24 @@ const BreakdownsTemplate = [
 ];
 
 const TxDefsTemplate = [
-/*
+
   { name: 'Obligation',
     journals: [{
-      accountFrom: {
-//        accountGroup: 'alma'//'Accounts/Owners/Owner payins',
- //       localizerNeeded: true,
-      },
-      accountTo: {
-//        accountGroup: 'alma'//Accounts/Assets/Owner obligatons',
-//        localizerNeeded: true,
-      },
+      accountFrom: 'Accounts/Liabilities/Owners/Owner payins',
+      accountTo: 'Accounts/Assets/Owner obligatons',
     }],
   },
-/*
+
   { name: 'Payin',
-      journals: [{
-      accountFrom: {
-        accountGroup: 'Accounts/Incomes/Owner payins',
-        localizerNeeded: true,
-      },
-      accountTo: {
-        accountGroup: 'Accounts/Assets/Pénz számlák',
-      },
+    journals: [{
+      accountFrom: 'Accounts/Incomes/Owner payins',
+      accountTo: 'Accounts/Assets/Pénz számlák',
     }, {
-      accountFrom: {
-        accountGroup: 'Accounts/Assets/Owner obligatons',
-        localizerNeeded: true,
-      },
-      accountTo: {
-        accountGroup: 'Accounts/Owners/Owner payins',
-        localizerNeeded: true,
-      },
+      accountFrom: 'Accounts/Assets/Owner obligatons',
+      accountTo: 'Accounts/Liabilities/Owners/Owner payins',
     }],
   },
-*/
+
 ];
 
 export function insertBreakdownTemplate(communityId) {
