@@ -4,8 +4,8 @@ import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Timestamps } from '/imports/api/timestamps.js';
-import { Payments } from './payments.js';
-import { PayAccounts } from '../payaccounts/payaccounts.js';
+import { Journals } from './journals.js';
+import { Breakdowns } from '../journals/breakdowns/breakdowns.js';
 
 export const TxDefs = new Mongo.Collection('txDefs');
 
@@ -21,7 +21,7 @@ if (Meteor.isClient) {
   chooseAccountFamily = {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const accountFamilies = PayAccounts.find({ communityId, sign: { $exists: true } });
+      const accountFamilies = Breakdowns.find({ communityId, sign: { $exists: true } });
       return accountFamilies.map((family) => { return { value: family._id, label: family.name }; });
     },
   };
@@ -32,8 +32,8 @@ if (Meteor.isClient) {
         const communityId = Session.get('activeCommunityId');
         const accountFamily = AutoForm.getFieldValue(move + '.accountFamily', 'af.txtype.insert')
                           || AutoForm.getFieldValue(move + '.accountFamily', 'af.txtype.update');
-        if (!accountFamily) return [{ label: __('schemaPayments.account.placeholder'), value: 'none' }];
-        const pac = PayAccounts.findOne({ communityId, name: accountFamily });
+        if (!accountFamily) return [{ label: __('schemaJournals.account.placeholder'), value: 'none' }];
+        const pac = Breakdowns.findOne({ communityId, name: accountFamily });
         return pac.leafOptions();
       },
     };
@@ -43,10 +43,10 @@ if (Meteor.isClient) {
     return {
       options() {
         const communityId = Session.get('activeCommunityId');
-        const accountFamilies = PayAccounts.find({ communityId, sign: { $exists: true } });
+        const accountFamilies = Breakdowns.find({ communityId, sign: { $exists: true } });
         let accountTree = { name: 'Accounts', children: [] };
         accountFamilies.forEach(family => accountTree.children.push(family));
-        accountTree = PayAccounts._transform(accountTree);
+        accountTree = Breakdowns._transform(accountTree);
         return accountTree.leafOptions();
       },
     };

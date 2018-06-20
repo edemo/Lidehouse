@@ -30,9 +30,9 @@
     </div>
 
     <div class="col-md-12">
-        <div class="ibox ibox-dark" id='payments'>
+        <div class="ibox ibox-dark" id='journals'>
             <div class="ibox-title">
-                <h5>{{_ 'Payments'}}</h5>
+                <h5>{{_ 'Journals'}}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
@@ -115,9 +115,9 @@
     </div-->
     
     <!--div class="col-md-12">
-        <div class="ibox ibox-dark" id='payaccounts-nestable'>
+        <div class="ibox ibox-dark" id='breakdowns-nestable'>
             <div class="ibox-title">
-                <h5>{{_ 'Payaccounts'}}</h5>
+                <h5>{{_ 'Breakdowns'}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
@@ -127,14 +127,14 @@
     </div-->
 
     <div class="col-md-12">
-        <div class="ibox ibox-dark" id='payaccounts'>
+        <div class="ibox ibox-dark" id='breakdowns'>
             <div class="ibox-title">
-                <h5>{{_ 'Payaccounts' }}</h5>
+                <h5>{{_ 'Breakdowns' }}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
-              <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'payaccount'}}</a>
-              {{> ReactiveDatatable tableData=payaccountsTableDataFn options=payaccountsOptionsFn }}
+              <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
+              {{> ReactiveDatatable tableData=breakdownsTableDataFn options=breakdownsOptionsFn }}
             </div>
         </div>
     </div>

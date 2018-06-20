@@ -3,10 +3,10 @@ import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { Payments } from '/imports/api/payments/payments.js';
-import { PayAccounts } from './payaccounts';
+import { Journals } from '/imports/api/journals/journals.js';
+import { Breakdowns } from './breakdowns';
 
-export class PaymentReport {
+export class TableReport {
   constructor() {
     this.filters = {};
     this.rows = [];
@@ -37,7 +37,7 @@ export class PaymentReport {
   addTree(dim, treeDef, descartes = true, sumFirst = true, asFirst = false) {
     let nodes = treeDef.values.nodes();
     if (!sumFirst) nodes = nodes.reverse();
-    const newLineDefs = nodes.map(node => PaymentReport.nodeToLineDef(treeDef.field, node));
+    const newLineDefs = nodes.map(node => TableReport.nodeToLineDef(treeDef.field, node));
     if (descartes) {
       this.addDescartesProductLines(dim, newLineDefs);
     } else {
@@ -117,7 +117,7 @@ export class PaymentReport {
         const accountName = splitted[1];
         fromFilter['accountFrom.' + accountName] = filter[fKey];
         toFilter['accountTo.' + accountName] = filter[fKey];
-        const pac = PayAccounts.findOne({ communityId: Session.get('activeCommunityId'), name: accountName });
+        const pac = Breakdowns.findOne({ communityId: Session.get('activeCommunityId'), name: accountName });
         if (pac.sign) displaySign = pac.sign;
       } else {
         fromFilter[fKey] = filter[fKey];
@@ -127,14 +127,14 @@ export class PaymentReport {
 
     let fromAmount = 0;
     if (filter.move !== 'to') {
-      const fromPayments = Payments.find(fromFilter);
-      fromPayments.forEach(tx => fromAmount += tx.amount);
+      const fromJournals = Journals.find(fromFilter);
+      fromJournals.forEach(tx => fromAmount += tx.amount);
     }
 
     let toAmount = 0;
     if (filter.move !== 'from') {
-      const toPayments = Payments.find(toFilter);
-      toPayments.forEach(tx => toAmount += tx.amount);
+      const toJournals = Journals.find(toFilter);
+      toJournals.forEach(tx => toAmount += tx.amount);
     }
 
     const totalAmount = displaySign * (toAmount - fromAmount);

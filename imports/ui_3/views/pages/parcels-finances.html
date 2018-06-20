@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <div class="ibox ibox-dark" id='payments'>
+    <div class="ibox ibox-dark" id='journals'>
         <div class="ibox-title">
             <h5>Albetet Tortenete</h5>
             {{>iboxTools}}
@@ -53,12 +53,12 @@
             <div class="table-responsive">
                 <table class="table table-striped">
                     <tbody>
-                    {{#each payment in parcelHistory}}
+                    {{#each journal in parcelHistory}}
                     <tr>
                         <td>{{@index}}</td>
-                        <td>{{displayTime payment.valueDate}}</td>
-                        <td>{{displayPhase payment}}</td>
-                        <td>{{payment.amount}}</td>
+                        <td>{{displayTime journal.valueDate}}</td>
+                        <td>{{displayPhase journal}}</td>
+                        <td>{{journal.amount}}</td>
                         <td><strong>100%</strong></td>
                         <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
                     </tr>
@@ -80,9 +80,9 @@
         </div>
     </div>
 
-    <div class="ibox ibox-dark" id='payments'>
+    <div class="ibox ibox-dark" id='journals'>
         <div class="ibox-title">
-            <h5>{{_ 'ParcelPayments'}} & {{_ 'ParcelBills'}}</h5>
+            <h5>{{_ 'ParcelHistory'}}</h5>
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">

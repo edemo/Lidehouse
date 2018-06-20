@@ -8,28 +8,28 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
-export const PayAccounts = new Mongo.Collection('payaccounts');
+export const Breakdowns = new Mongo.Collection('breakdowns');
 
 // Physical is 'bank acount', 'cash register', 'paypal account'... must have exactly one
 // Virtual is a category for mental accounting, can have many
 // Locator is a type of Virtual that already has the Parcels included, plus you can define others
-PayAccounts.typeValues = ['physical', 'virtual', 'locator'];
+Breakdowns.typeValues = ['physical', 'virtual', 'locator'];
 
-export const choosePayAccount = {
+export const chooseBreakdown = {
   options() {
-    return PayAccounts.find(/*{ communityId: Session.get('activeCommunityId') }*/).map(function option(account) {
+    return Breakdowns.find(/*{ communityId: Session.get('activeCommunityId') }*/).map(function option(account) {
       return { label: account.name, value: account._id };
     });
   },
 };
 
 /*
-PayAccounts.schema = new SimpleSchema({
+Breakdowns.schema = new SimpleSchema({
   name: { type: String },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
 
   // An account is either a root (then it has a type)...
-  type: { type: String, allowedValues: PayAccounts.typeValues, optional: true },
+  type: { type: String, allowedValues: Breakdowns.typeValues, optional: true },
   // or not a root (then it has a root and a parent)
   rootId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   parentId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
@@ -37,15 +37,15 @@ PayAccounts.schema = new SimpleSchema({
 });
 */
 /*
-export const choosePayAccount = {
+export const chooseBreakdown = {
   options() {
-    return PayAccounts.findOne(this._id).leafs().map(function option(account) {
+    return Breakdowns.findOne(this._id).leafs().map(function option(account) {
       return { label: account.name, value: account._id };
     });
   },
 };
 */
-PayAccounts.LeafSchema = new SimpleSchema({
+Breakdowns.LeafSchema = new SimpleSchema({
   name: { type: String, max: 100 }, // or a parcel number can be placed here
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -54,49 +54,49 @@ PayAccounts.LeafSchema = new SimpleSchema({
 //  parcelNo: { type: Number, decimal: true, optional: true },
 });
 
-PayAccounts.Level2Schema = new SimpleSchema({
+Breakdowns.Level2Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array, optional: true },
-  'children.$': { type: PayAccounts.LeafSchema },
+  'children.$': { type: Breakdowns.LeafSchema },
   include: { type: String, optional: true },
 });
 
-PayAccounts.Level1Schema = new SimpleSchema({
+Breakdowns.Level1Schema = new SimpleSchema({
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array, optional: true },
-  'children.$': { type: PayAccounts.Level2Schema },
+  'children.$': { type: Breakdowns.Level2Schema },
   include: { type: String, optional: true },
 });
 
-PayAccounts.schema = new SimpleSchema({
+Breakdowns.schema = new SimpleSchema({
   name: { type: String, max: 100 },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   negative: { type: Boolean, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   sign: { type: Number, allowedValues: [+1, -1], optional: true },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-//  type: { type: String, allowedValues: PayAccounts.typeValues },
+//  type: { type: String, allowedValues: Breakdowns.typeValues },
   children: { type: Array },
-  'children.$': { type: PayAccounts.Level1Schema },
+  'children.$': { type: Breakdowns.Level1Schema },
 });
 
-PayAccounts.helpers({
+Breakdowns.helpers({
   init() {
     if (!this._leafs) {
       this._leafs = [];
       this._nodes = [];
-      let currentLevel = 1;   // should start at 0, but bumping it up to 1 as we use 1 less depth in the payaccounts now
+      let currentLevel = 1;   // should start at 0, but bumping it up to 1 as we use 1 less depth in the breakdowns now
       const root = this; root.parent = null; root.isLeaf = false; root.level = currentLevel; root.pushLeaf = l => this._leafs.push(l);
       if (root.name) { root.path = root.name; this._nodes.push(root); }
       function handleNode(node, parent, pac) {
         if (node.include) {
 //          console.log('Before include', pac);
           node.children = node.children || [];
-          const pacToInclude = PayAccounts.findOne({ communityId: pac.communityId, name: node.include });
+          const pacToInclude = Breakdowns.findOne({ communityId: pac.communityId, name: node.include });
           if (pacToInclude) node.children = node.children.concat(pacToInclude.children);
 //          console.log('After include', pac);
         }
@@ -169,20 +169,20 @@ PayAccounts.helpers({
   },
 });
 
-PayAccounts.attachSchema(PayAccounts.schema);
-PayAccounts.attachSchema(Timestamps);
+Breakdowns.attachSchema(Breakdowns.schema);
+Breakdowns.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
-  PayAccounts.simpleSchema().i18n('schemaPayAccounts');
+  Breakdowns.simpleSchema().i18n('schemaBreakdowns');
 });
 
 // Setting up collection permissions
 const hasPermission = function hasPermission(userId, doc) {
   const user = Meteor.users.findOne(userId);
-  return true; //user.hasPermission('payaccounts.update', doc.communityId);
+  return true; //user.hasPermission('breakdowns.update', doc.communityId);
 };
 
-PayAccounts.allow({
+Breakdowns.allow({
   insert(userId, doc) {
     return hasPermission(userId, doc);
   },

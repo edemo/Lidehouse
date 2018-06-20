@@ -2,37 +2,37 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { PaymentReport } from '/imports/api/payaccounts/payment-report.js';
-import { expandFrom1To3Levels, monthTags, moveTags } from './payaccounts-utils';
+import { TableReport } from '/imports/api/journals/breakdowns/table-report.js';
+import { expandFrom1To3Levels, monthTags, moveTags } from './breakdowns-utils';
 
 export const Reports = {
   Blank() {
-    const report = new PaymentReport('Blank');
+    const report = new TableReport('Blank');
     return report;
   },
 
   Egyenlegek() {
 //    console.log(Template.instance().subscriptionsReady());
-    const report = new PaymentReport('Egyenlegek');
+    const report = new TableReport('Egyenlegek');
     const communityId = Session.get('activeCommunityId');
     report.addFilter({ phase: 'done' });
     report.addLine('cols', [], false);
     report.addTree('rows', {
       field: 'accounts.Assets',
-      values: PayAccounts.findOne({ communityId, name: 'Assets' }),
+      values: Breakdowns.findOne({ communityId, name: 'Assets' }),
     }, false);
     report.addTree('rows', {
       field: 'accounts.Liabilities',
-      values: PayAccounts.findOne({ communityId, name: 'Liabilities' }),
+      values: Breakdowns.findOne({ communityId, name: 'Liabilities' }),
     }, false);
 
     return report;
   },
 
   PenzugyekReszletei(year) {
-    const report = new PaymentReport('Penzugyek Reszletei');
+    const report = new TableReport('Penzugyek Reszletei');
     const communityId = Session.get('activeCommunityId');
 
     report.addFilter({
@@ -42,16 +42,16 @@ export const Reports = {
 
     report.addTree('cols', {
       field: 'month',
-      values: PayAccounts._transform(monthTags),
+      values: Breakdowns._transform(monthTags),
     }, false);
 
     report.addTree('rows', {
       field: 'accounts.Incomes',
-      values: PayAccounts.findOne({ communityId, name: 'Incomes' }),
+      values: Breakdowns.findOne({ communityId, name: 'Incomes' }),
     }, false);
     report.addTree('rows', {
       field: 'accounts.Expenses',
-      values: PayAccounts.findOne({ communityId, name: 'Expenses' }),
+      values: Breakdowns.findOne({ communityId, name: 'Expenses' }),
     }, false);
 
     const planColDef = {
@@ -76,7 +76,7 @@ export const Reports = {
   },
 
   AlbetetemElszamolasa(year) {
-    const report = new PaymentReport('Albetetek Elszamolasa');
+    const report = new TableReport('Albetetek Elszamolasa');
     const communityId = Session.get('activeCommunityId');
     const myParcels = {
       name: 'Albetéteim', label: 'Összes albetét',
@@ -90,41 +90,41 @@ export const Reports = {
 
     report.addTree('rows', {
       field: 'accounts.Localizer',
-      values: PayAccounts._transform(myParcels),
+      values: Breakdowns._transform(myParcels),
     }, false);
 
     report.addTree('rows', {
       field: 'accounts.Assets',
-      values: PayAccounts.findOne({ communityId, name: 'Owner payins' }),
+      values: Breakdowns.findOne({ communityId, name: 'Owner payins' }),
     }, true, true);
 
     report.addTree('cols', {
       field: 'move',
-      values: PayAccounts._transform(moveTags),
+      values: Breakdowns._transform(moveTags),
     }, false, false);
 
     return report;
   },
 
   AlbetetekElszamolasa(year) {
-    const report = new PaymentReport('Albetetek Elszamolasa');
+    const report = new TableReport('Albetetek Elszamolasa');
     const communityId = Session.get('activeCommunityId');
 
     report.addFilter({ phase: 'done' });
 
     report.addTree('rows', {
       field: 'accounts.Localizer',
-      values: PayAccounts.findOne({ communityId, name: 'Localizer' }),
+      values: Breakdowns.findOne({ communityId, name: 'Localizer' }),
     }, false);
 
     report.addTree('cols', {
       field: 'accounts.Incomes',
-      values: PayAccounts.findOne({ communityId, name: 'Owner payins' }),
+      values: Breakdowns.findOne({ communityId, name: 'Owner payins' }),
     }, false, true);
 
     report.addTree('cols', {
       field: 'move',
-      values: PayAccounts._transform(moveTags),
+      values: Breakdowns._transform(moveTags),
     }, true, false);
 
     return report;

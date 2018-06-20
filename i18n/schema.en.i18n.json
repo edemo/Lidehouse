@@ -272,10 +272,10 @@
       }
     }
   },
-  "schemaPayAccounts": {
+  "schemaBreakdowns": {
     "name": {
       "label": "Name",
-      "placeholder": "(eg. Payment target)"
+      "placeholder": "(eg. Division breakdown)"
     },
     "type": {
       "label": "Type"
@@ -306,10 +306,9 @@
       }
     }
   },
-  "schemaPayments": {
+  "schemaJournals": {
     "phase": {
       "label": "Phase"
-      //"Payment type"
     },
     "valueDate": {
       "label": "Accounting date",
@@ -336,7 +335,7 @@
   },
   "schemaTxDefs": {
     "journals": {
-      "label": "Movements",
+      "label": "Journals",
       "$": {
         "accountFrom": {
           "label": "Account from",

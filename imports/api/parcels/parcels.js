@@ -11,8 +11,8 @@ import { FreeFields } from '/imports/api/freefields.js';
 
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Payments } from '/imports/api/payments/payments.js';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
+import { Journals } from '/imports/api/journals/journals.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 
 export const Parcels = new Mongo.Collection('parcels');
 
@@ -103,8 +103,8 @@ Parcels.helpers({
   // Finances
   balance() {
     const communityId = this.communityId;
-    const paymentsIn = Payments.find({ communityId, 'accountTo.Owners': { $exists: true }, 'OwneraccountTo.Localizer': this.serial.toString() });
-    const paymentsOut = Payments.find({ communityId, 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': this.serial.toString() });
+    const paymentsIn = Journals.find({ communityId, 'accountTo.Owners': { $exists: true }, 'accountTo.Localizer': this.serial.toString() });
+    const paymentsOut = Journals.find({ communityId, 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': this.serial.toString() });
     let parcelBalance = 0;
     paymentsIn.forEach(p => parcelBalance += p.amount);
     paymentsOut.forEach(p => parcelBalance -= p.amount);

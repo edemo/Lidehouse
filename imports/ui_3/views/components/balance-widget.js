@@ -4,7 +4,7 @@ import { Session } from 'meteor/session';
 
 import { numeral } from 'meteor/numeral:numeral';
 
-import { Payments } from '/imports/api/payments/payments.js';
+import { Journals } from '/imports/api/journals/journals.js';
 import '/imports/api/users/users.js';
 import './balance-widget.html';
 
@@ -12,7 +12,7 @@ Template.Balance_widget.onCreated(function() {
   // Subscriptions
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
-    this.subscribe('payments.inCommunity', { communityId });
+    this.subscribe('journals.inCommunity', { communityId });
   });
 });
 

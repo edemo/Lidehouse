@@ -1,8 +1,8 @@
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 
-export function payaccountColumns() {
+export function breakdownColumns() {
   const constrainText = function constrainText(text, charCount) {
     return (text.length > charCount) ?
       text.substr(0, charCount - 3) + '...' :
@@ -16,9 +16,9 @@ export function payaccountColumns() {
   };
 
   return [
-    { data: 'name', title: __('schemaPayAccounts.name.label') },
-//    { data: 'type', title: __('schemaPayAccounts.type.label'), render: Render.translate },
-    { data: 'leafNames()', title: __('schemaPayAccounts.children.$.children.$.children.label'), render: displayNames },
+    { data: 'name', title: __('schemaBreakdowns.name.label') },
+//    { data: 'type', title: __('schemaBreakdowns.type.label'), render: Render.translate },
+    { data: 'leafNames()', title: __('schemaBreakdowns.children.$.children.$.children.label'), render: displayNames },
     { data: '_id', render: Render.buttonView },
     { data: '_id', render: Render.buttonEdit },
     { data: '_id', render: Render.buttonDelete },

@@ -12,9 +12,9 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
-import { Payments } from '/imports/api/payments/payments.js';
-import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Journals } from '/imports/api/journals/journals.js';
+import { ParcelBillings } from '/imports/api/journals/parcel-billings/parcel-billings.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -53,8 +53,8 @@ Communities.helpers({
     Agendas.remove({ communityId: this._id });
     Parcels.remove({ communityId: this._id });
     ParcelBillings.remove({ communityId: this._id });
-    Payments.remove({ communityId: this._id });
-    PayAccounts.remove({ communityId: this._id });
+    Journals.remove({ communityId: this._id });
+    Breakdowns.remove({ communityId: this._id });
     Memberships.remove({ communityId: this._id });
     Communities.remove({ _id: this._id });
   },

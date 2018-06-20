@@ -5,7 +5,7 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { PayAccounts, choosePayAccount } from '/imports/api/payaccounts/payaccounts.js';
+import { Breakdowns, chooseBreakdown } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
@@ -26,7 +26,7 @@ ParcelBillings.schema = new SimpleSchema({
 
 ParcelBillings.helpers({
   parcels() {
-    const payAccount = PayAccounts.findOne({ communityId: this.communityId, name: 'Localizer' });
+    const payAccount = Breakdowns.findOne({ communityId: this.communityId, name: 'Localizer' });
     const nodeName = this.account[payAccount.name];
 //    console.log('nodeName', nodeName);
     const leafs = payAccount.leafsOf(nodeName);

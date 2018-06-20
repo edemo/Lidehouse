@@ -2,13 +2,13 @@
 
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { PayAccounts } from './payaccounts.js';
+import { Breakdowns } from './breakdowns.js';
 
-Meteor.publish('payaccounts.inCommunity', function payaccountsInCommunity(params) {
+Meteor.publish('breakdowns.inCommunity', function breakdownsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
   const { communityId } = params;
 
-  return PayAccounts.find({ communityId });
+  return Breakdowns.find({ communityId });
 });

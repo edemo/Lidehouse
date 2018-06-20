@@ -1,8 +1,8 @@
 import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
 import { Session } from 'meteor/session';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
-import { Payments } from '/imports/api/payments/payments.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Journals } from '/imports/api/journals/journals.js';
 import { __ } from '/imports/localization/i18n.js';
 import { _ } from 'meteor/underscore';
 import { descartesProduct } from '/imports/utils/descartes.js';

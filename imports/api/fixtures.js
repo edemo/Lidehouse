@@ -14,11 +14,11 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
-import { Payments } from '/imports/api/payments/payments.js';
-import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
-import { insert as insertParcelBilling } from '/imports/api/payments/parcel-billings/methods.js';
-import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Journals } from '/imports/api/journals/journals.js';
+import { ParcelBillings } from '/imports/api/journals/parcel-billings/parcel-billings.js';
+import { insert as insertParcelBilling } from '/imports/api/journals/parcel-billings/methods.js';
+import { insertBreakdownTemplate } from '/imports/api/journals//template.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -496,11 +496,11 @@ export function insertDemoFixture(lang) {
     text: __('demo.messages.1'),
   });
 
-  // ===== PayAccounts =====
+  // ===== Breakdowns =====
 
-  insertPayAccountTemplate(demoCommunityId);
+  insertBreakdownTemplate(demoCommunityId);
 
-  const locator = PayAccounts.update({
+  const locator = Breakdowns.update({
     communityId: demoCommunityId,
     name: 'Localizer',
   }, {
@@ -534,7 +534,7 @@ export function insertDemoFixture(lang) {
     { upsert: false }
   );
 
-  // ===== Payments =====
+  // ===== Journals =====
 
   // ===== Returning a bunch of pointers, for easy direct access
 

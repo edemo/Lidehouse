@@ -3,11 +3,11 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Communities } from '/imports/api/communities/communities.js';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
-import { Payments } from '/imports/api/payments/payments.js';
-import { TxDefs } from '/imports/api/payments/tx-defs.js';
-import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
-import { remove as removePayment, billParcels } from '/imports/api/payments/methods.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Journals } from '/imports/api/journals/journals.js';
+import { TxDefs } from '/imports/api/journals/tx-defs.js';
+import { ParcelBillings } from '/imports/api/journals/parcel-billings/parcel-billings.js';
+import { remove as removeJournal, billParcels } from '/imports/api/journals/methods.js';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
@@ -17,10 +17,10 @@ import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
-import { monthTags } from '/imports/api/payaccounts/payaccounts-utils.js';
-import { paymentColumns } from '/imports/api/payments/tables.js';
-import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
-import { Reports } from '/imports/api/payaccounts/reports.js';
+import { monthTags } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
+import { paymentColumns } from '/imports/api/journals/tables.js';
+import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
+import { Reports } from '/imports/api/journals/breakdowns/reports.js';
 import '/imports/ui_2/components/custom-table.js';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
@@ -33,8 +33,8 @@ const notVotedColor = '#dedede';
 Template.Community_finances.onCreated(function communityFinancesOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
-    this.subscribe('payaccounts.inCommunity', { communityId });
-    this.subscribe('payments.inCommunity', { communityId });
+    this.subscribe('breakdowns.inCommunity', { communityId });
+    this.subscribe('journals.inCommunity', { communityId });
   });
 });
 
@@ -128,18 +128,18 @@ Template.Community_finances.helpers({
     const types = ['Payin', 'Obligation', 'Income', 'Expense', 'Backoffice op'];
     return types;
   },
-  payaccountsTableDataFn() {
+  breakdownsTableDataFn() {
     function getTableData() {
       if (!Template.instance().subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return PayAccounts.find({ communityId }).fetch();
+      return Breakdowns.find({ communityId }).fetch();
     }
     return getTableData;
   },
-  payaccountsOptionsFn() {
+  breakdownsOptionsFn() {
     function getOptions() {
       return {
-        columns: payaccountColumns(),
+        columns: breakdownColumns(),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
         paging: false,
@@ -152,7 +152,7 @@ Template.Community_finances.helpers({
     function getTableData() {
       if (!Template.instance().subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Payments.find({ communityId, phase: 'done' }).fetch();
+      return Journals.find({ communityId, phase: 'done' }).fetch();
     }
     return getTableData;
   },
@@ -186,10 +186,10 @@ const chooseLeafObject = function (move) {
   return {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const account = AutoForm.getFieldValue(move + '.account', 'af.payment.insert')
-                || AutoForm.getFieldValue(move + '.account', 'af.payment.update');
-      if (!account) return [{ label: __('schemaPayments.account.placeholder'), value: 'none' }];
-      const pac = PayAccounts.findOne({ communityId, name: account });
+      const account = AutoForm.getFieldValue(move + '.account', 'af.journal.insert')
+                || AutoForm.getFieldValue(move + '.account', 'af.journal.update');
+      if (!account) return [{ label: __('schemaJournals.account.placeholder'), value: 'none' }];
+      const pac = Breakdowns.findOne({ communityId, name: account });
       return pac.leafOptions();
     },
     firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
@@ -197,11 +197,11 @@ const chooseLeafObject = function (move) {
 };
 
 
-function newPaymentSchema() {
+function newJournalSchema() {
   function chooseAccountsSchema(move) {
     const communityId = Session.get('activeCommunityId');
-    const mainAccounts = PayAccounts.find({ communityId, sign: { $exists: true } });
-    const localizerPac = PayAccounts.findOne({ communityId, name: 'Localizer' });
+    const mainAccounts = Breakdowns.find({ communityId, sign: { $exists: true } });
+    const localizerPac = Breakdowns.findOne({ communityId, name: 'Localizer' });
    
     return new SimpleSchema({
       account: { type: String, autoform: { options() { return mainAccounts.map(a => { return { value: a.name, label: a.name }; }); } } },
@@ -210,7 +210,7 @@ function newPaymentSchema() {
     });
   }
   return new SimpleSchema([
-    Payments.simpleSchema(),
+    Journals.simpleSchema(),
     { accountFrom: { type: chooseAccountsSchema('accountFrom'), optional: true } },
     { accountTo: { type: chooseAccountsSchema('accountTo'), optional: true } },
   ]);
@@ -220,13 +220,13 @@ function newParcelBillingSchema() {
   function chooseAccountsSchema() {
     const obj = {};
     const communityId = Session.get('activeCommunityId');
-    const payaccount1 = PayAccounts.findOne({ communityId, name: 'Incomes' });
-    const payaccount2 = PayAccounts.findOne({ communityId, name: 'Localizer' });
-    obj[payaccount1.name] = { type: String, optional: true, label: payaccount1.name, 
-      autoform: { options() { return payaccount1.leafOptions(l => true); } },
+    const breakdown1 = Breakdowns.findOne({ communityId, name: 'Incomes' });
+    const breakdown2 = Breakdowns.findOne({ communityId, name: 'Localizer' });
+    obj[breakdown1.name] = { type: String, optional: true, label: breakdown1.name, 
+      autoform: { options() { return breakdown1.leafOptions(l => true); } },
     };
-    obj[payaccount2.name] = { type: String, optional: true, label: payaccount2.name, 
-      autoform: { options() { return payaccount2.nodeOptions(); } },
+    obj[breakdown2.name] = { type: String, optional: true, label: breakdown2.name, 
+      autoform: { options() { return breakdown2.nodeOptions(); } },
     };
     return new SimpleSchema(obj);
   }
@@ -237,95 +237,95 @@ function newParcelBillingSchema() {
 }
 
 Template.Community_finances.events({
-  'click #payaccounts .js-new'(event, instance) {
+  'click #breakdowns .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
-      id: 'af.payaccount.insert',
-      collection: PayAccounts,
+      id: 'af.breakdown.insert',
+      collection: Breakdowns,
       omitFields: ['communityId'],
       type: 'insert',
       //      type: 'method',
-//      meteormethod: 'payaccounts.insert',
+//      meteormethod: 'breakdowns.insert',
       template: 'bootstrap3-inline',
     });
   },
-  'click #payaccounts .js-edit'(event) {
+  'click #breakdowns .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
-    const payaccount = PayAccounts.findOne(id);
+    const breakdown = Breakdowns.findOne(id);
     const modalContext = {
-      title: 'Edit Payaccount',
+      title: 'Edit Breakdown',
       body: 'Nestable_edit',
-      bodyContext: { json: payaccount },
+      bodyContext: { json: breakdown },
       btnClose: 'cancel',
       btnOK: 'save',
       onOK() {
         const json = serializeNestable();
         // console.log('saving nestable:', JSON.stringify(json));
         // assert json.length === 1
-        // assert json[0].name === payaccount.name
+        // assert json[0].name === breakdown.name
         // assert locked elements are still there 
-        PayAccounts.update(id, { $set: { children: json[0].children } },
-          onSuccess(res => displayMessage('success', 'PayAccount saved'))
+        Breakdowns.update(id, { $set: { children: json[0].children } },
+          onSuccess(res => displayMessage('success', 'Breakdown saved'))
         );
       },
     };
     Modal.show('Modal', modalContext);
   },
-  'click #payaccounts .js-edit-af'(event) {
+  'click #breakdowns .js-edit-af'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
-      id: 'af.payaccount.update',
-      collection: PayAccounts,
+      id: 'af.breakdown.update',
+      collection: Breakdowns,
       omitFields: ['communityId'],
-      doc: PayAccounts.findOne(id),
+      doc: Breakdowns.findOne(id),
       type: 'update',
 //      type: 'method-update',
-//      meteormethod: 'payments.update',
+//      meteormethod: 'journals.update',
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
     });
   },
-  'click #payaccounts .js-view'(event, instance) {
+  'click #breakdowns .js-view'(event, instance) {
     const id = $(event.target).closest('button').data('id');
-    const payaccount = PayAccounts.findOne(id);
+    const breakdown = Breakdowns.findOne(id);
     const modalContext = {
-      title: 'View Payaccount',
+      title: 'View Breakdown',
       body: 'Nestable_edit',
-      bodyContext: { json: payaccount, disabled: true },
+      bodyContext: { json: breakdown, disabled: true },
     };
     Modal.show('Modal', modalContext);
   },
-  'click #payaccounts .js-view-af'(event, instance) {
+  'click #breakdowns .js-view-af'(event, instance) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
-      id: 'af.payaccount.view',
-      collection: PayAccounts,
+      id: 'af.breakdown.view',
+      collection: Breakdowns,
       omitFields: ['communityId'],
-      doc: PayAccounts.findOne(id),
+      doc: Breakdowns.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',
     });
   },
-  'click #payaccounts .js-delete'(event) {
+  'click #breakdowns .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(PayAccounts.remove, { _id: id }, {
-      action: 'delete payaccount',
+    Modal.confirmAndCall(Breakdowns.remove, { _id: id }, {
+      action: 'delete breakdown',
     });
   },
-  'click #payments .js-new'(event, instance) {
+  'click #journals .js-new'(event, instance) {
     /* 
     Modal.show('Autoform_edit', {
-      id: 'af.payment.insert',
-      collection: Payments,
-      schema: newPaymentSchema(),
+      id: 'af.journal.insert',
+      collection: Journals,
+      schema: newJournalSchema(),
       omitFields: ['communityId', 'phase'],
       type: 'method',
-      meteormethod: 'payments.insert',
+      meteormethod: 'journals.insert',
       template: 'bootstrap3-inline',
     });
     */
     const type = $(event.target).data("id");
   },
-  'click #payments .js-new-def'(event, instance) {
+  'click #journals .js-new-def'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.txdef.insert',
       collection: TxDefs,
@@ -335,43 +335,43 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payments .js-edit'(event) {
+  'click #journals .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
-      id: 'af.payment.update',
-      collection: Payments,
-      schema: newPaymentSchema(),
+      id: 'af.journal.update',
+      collection: Journals,
+      schema: newJournalSchema(),
       omitFields: ['communityId', 'phase'],
-      doc: Payments.findOne(id),
+      doc: Journals.findOne(id),
       type: 'method-update',
-      meteormethod: 'payments.update',
+      meteormethod: 'journals.update',
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
     });
   },
-  'click #payments .js-view'(event) {
+  'click #journals .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
-      id: 'af.payment.view',
-      collection: Payments,
-      schema: newPaymentSchema(),
+      id: 'af.journal.view',
+      collection: Journals,
+      schema: newJournalSchema(),
       omitFields: ['communityId', 'phase'],
-      doc: Payments.findOne(id),
+      doc: Journals.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',
     });
   },
-  'click #payments .js-delete'(event) {
+  'click #journals .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(removePayment, { _id: id }, {
-      action: 'delete payment',
+    Modal.confirmAndCall(removeJournal, { _id: id }, {
+      action: 'delete journal',
     });
   },
   'click #bills .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.bill.insert',
-      collection: Payments,
-      schema: newPaymentSchema(),
+      collection: Journals,
+      schema: newJournalSchema(),
       omitFields: ['communityId', 'phase'],
       type: 'method',
       meteormethod: 'bills.insert',
@@ -382,10 +382,10 @@ Template.Community_finances.events({
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.bill.update',
-      collection: Payments,
-      schema: newPaymentSchema(),
+      collection: Journals,
+      schema: newJournalSchema(),
       omitFields: ['communityId', 'phase'],
-      doc: Payments.findOne(id),
+      doc: Journals.findOne(id),
       type: 'method-update',
       meteormethod: 'bills.update',
       singleMethodArgument: true,
@@ -396,10 +396,10 @@ Template.Community_finances.events({
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.bill.view',
-      collection: Payments,
-      schema: newPaymentSchema(),
+      collection: Journals,
+      schema: newJournalSchema(),
       omitFields: ['communityId', 'phase'],
-      doc: Payments.findOne(id),
+      doc: Journals.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',
     });
@@ -417,7 +417,7 @@ Template.Community_finances.events({
   },
   'click #bills .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(removePayment, { _id: id }, {
+    Modal.confirmAndCall(removeJournal, { _id: id }, {
       action: 'delete bill',
     });
   },
@@ -430,18 +430,18 @@ Template.Community_finances.events({
   },
 });
 
-AutoForm.addModalHooks('af.payaccount.insert');
-AutoForm.addModalHooks('af.payaccount.update');
-AutoForm.addHooks('af.payaccount.insert', {
+AutoForm.addModalHooks('af.breakdown.insert');
+AutoForm.addModalHooks('af.breakdown.update');
+AutoForm.addHooks('af.breakdown.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;
   },
 });
 
-AutoForm.addModalHooks('af.payment.insert');
-AutoForm.addModalHooks('af.payment.update');
-AutoForm.addHooks('af.payment.insert', {
+AutoForm.addModalHooks('af.journal.insert');
+AutoForm.addModalHooks('af.journal.update');
+AutoForm.addHooks('af.journal.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;

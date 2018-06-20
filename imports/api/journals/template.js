@@ -1,10 +1,8 @@
 import { _ } from 'meteor/underscore';
-import { PayAccounts } from './payaccounts.js';
-import { TxDefs } from '../payments/tx-defs.js';
+import { Breakdowns } from './breakdowns/breakdowns.js';
+import { TxDefs } from './tx-defs.js';
 
-// TODO: AccountCathegories  would be better  than PayAccounts
-
-const PayAccountsTemplate = [
+const BreakdownsTemplate = [
 
   { name: 'Owner payins', locked: true,
     children: [
@@ -224,9 +222,9 @@ const TxDefsTemplate = [
 */
 ];
 
-export function insertPayAccountTemplate(communityId) {
-  PayAccountsTemplate.forEach((payaccount) => {
-    PayAccounts.insert(_.extend({}, payaccount, { communityId }));
+export function insertBreakdownTemplate(communityId) {
+  BreakdownsTemplate.forEach((breakdown) => {
+    Breakdowns.insert(_.extend({}, breakdown, { communityId }));
   });
   TxDefsTemplate.forEach((txDef) => {
     TxDefs.insert(_.extend({}, txDef, { communityId }));

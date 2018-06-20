@@ -15,12 +15,12 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
-import { Payments } from '/imports/api/payments/payments.js';
-import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
-import { insert as insertParcelBilling } from '/imports/api/payments/parcel-billings/methods.js';
-import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
-import { insertTx } from '/imports/api/payments/txs.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Journals } from '/imports/api/journals/journals.js';
+import { ParcelBillings } from '/imports/api/journals/parcel-billings/parcel-billings.js';
+import { insert as insertParcelBilling } from '/imports/api/journals/parcel-billings/methods.js';
+import { insertBreakdownTemplate } from '/imports/api/journals//template.js';
+import { insertTx } from '/imports/api/journals/txs.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -756,11 +756,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.messages.1'),
   });
 
-  // ===== PayAccounts =====
+  // ===== Breakdowns =====
 
-  insertPayAccountTemplate(demoCommunityId);
+  insertBreakdownTemplate(demoCommunityId);
 
-  const locator = PayAccounts.update({
+  const locator = Breakdowns.update({
     communityId: demoCommunityId,
     name: 'Localizer',
   }, {
@@ -851,15 +851,15 @@ export function insertDemoHouse(lang, demoOrTest) {
       'Owner payins': 'Felújítási célbefizetés',
       'Localizer': 'albetétek',
     },
-    note: __('demo.payments.note.0'),
+    note: __('demo.journals.note.0'),
   });
 
 
-// ===== Payments =====
+// ===== Journals =====
 
   // === Opening ===
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
@@ -872,7 +872,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
@@ -885,7 +885,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
@@ -900,7 +900,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     // === Befizetesek ===
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-06-01'),
@@ -914,7 +914,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-02-01'),
@@ -928,7 +928,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-04-01'),
@@ -942,7 +942,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-06-01'),
@@ -956,7 +956,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-08-01'),
@@ -970,7 +970,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-10-01'),
@@ -984,7 +984,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-12-01'),
@@ -998,7 +998,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-09-15'),
@@ -1010,10 +1010,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     accountTo: {
       'Assets': 'Bank főszámla',
     },
-    note: __('demo.payments.note.1'),
+    note: __('demo.journals.note.1'),
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-05-10'),
@@ -1025,10 +1025,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     accountTo: {
       'Assets': 'Bank főszámla',
     },
-    note: __('demo.payments.note.2'),
+    note: __('demo.journals.note.2'),
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-10-15'),
@@ -1040,10 +1040,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     accountTo: {
       'Assets': 'Bank főszámla',
     },
-    note: __('demo.payments.note.3'),
+    note: __('demo.journals.note.3'),
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'done',
     valueDate: new Date('2017-07-21'),
@@ -1054,7 +1054,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     accountTo: {
       'Assets': 'Bank főszámla',
     },
-    note: __('demo.payments.note.4'),
+    note: __('demo.journals.note.4'),
   });
 
   for (let m = 1; m < 13; m++) {
@@ -1121,7 +1121,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   for (let m = 1; m < 13; m += 2) {
     const payable = [0, 8432, 0, 7250, 0, 9251, 0, 11624, 0, 10635, 0, 8540];
-    Payments.insert({
+    Journals.insert({
       communityId: demoCommunityId,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
@@ -1138,7 +1138,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   for (let m = 1; m < 13; m += 2) {
     const payable = [0, 10562, 0, 9889, 0, 11210, 0, 11152, 0, 11435, 0, 9930];
-    Payments.insert({
+    Journals.insert({
       communityId: demoCommunityId,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
@@ -1154,7 +1154,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   for (let m = 1; m < 13; m++) {
-    Payments.insert({
+    Journals.insert({
       communityId: demoCommunityId,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
@@ -1171,7 +1171,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     // === Tervezetek ===
 
- /* Payments.insert({
+ /* Journals.insert({
     communityId: demoCommunityId,
     phase: 'plan',
     valueDate: new Date('2017-01-01'),
@@ -1181,7 +1181,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Payments.insert({
+  Journals.insert({
     communityId: demoCommunityId,
     phase: 'plan',
     valueDate: new Date('2017-01-01'),
@@ -1267,8 +1267,8 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
   ParcelBillings.remove({ 'account.Localizer': demoUserNumber.toString() });
-  Payments.remove({ $or: [{ 'accountFrom.Localizer': demoUserNumber.toString() }, { 'accountTo.Localizer': demoUserNumber.toString() }] });
-  PayAccounts.update({
+  Journals.remove({ $or: [{ 'accountFrom.Localizer': demoUserNumber.toString() }, { 'accountTo.Localizer': demoUserNumber.toString() }] });
+  Breakdowns.update({
     communityId,
     name: 'Localizer',
   }, {
@@ -1325,7 +1325,7 @@ Meteor.methods({
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) } });
 
-    PayAccounts.update({
+    Breakdowns.update({
       communityId: demoCommunityId,
       name: 'Localizer',
     }, {

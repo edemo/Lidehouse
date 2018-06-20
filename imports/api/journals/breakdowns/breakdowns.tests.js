@@ -2,19 +2,19 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
-import { PayAccounts } from './payaccounts';
-import { PaymentReport } from './payment-report';
-import { yearTags, phaseTags } from './payaccounts-utils';
+import { Breakdowns } from './breakdowns';
+import { TableReport } from './table-report';
+import { yearTags, phaseTags } from './breakdowns-utils';
 
 if (Meteor.isServer) {
   let Fixture;
-  let testPayAccount;
+  let testBreakdown;
 
-  describe('payaccounts', function () {
+  describe('breakdowns', function () {
     this.timeout(5000);
     before(function () {
       Fixture = freshFixture();
-      testPayAccount = {
+      testBreakdown = {
         name: 'Root',
         communityId: Fixture.demoCommunityId,
         children: [
@@ -53,13 +53,13 @@ if (Meteor.isServer) {
     });
 
     it('init', function () {
-      const payaccount = PayAccounts._transform(testPayAccount);
+      const breakdown = Breakdowns._transform(testBreakdown);
 
-      const leafNames = payaccount.leafNames();
+      const leafNames = breakdown.leafNames();
       const expectedLeafNames = ['LeafA', 'LeafB', 'LeafC', 'LeafD', 'LeafE', 'LeafF'];
       chai.assert.deepEqual(leafNames, expectedLeafNames);
       
-      const nodeNames = payaccount.nodeNames();
+      const nodeNames = breakdown.nodeNames();
       const expectedNodeNames = [
         'Root',
         'Level1',
@@ -74,7 +74,7 @@ if (Meteor.isServer) {
       ];
       chai.assert.deepEqual(nodeNames, expectedNodeNames);
 
-      const leafOptions = payaccount.leafOptions();
+      const leafOptions = breakdown.leafOptions();
       const expectedLeafOptions = [
         { label: 'Level1/Level2/LeafA', value: 'LeafA' },
         { label: 'Level1/Level2/LeafB', value: 'LeafB' },
@@ -87,21 +87,21 @@ if (Meteor.isServer) {
     });
     
     it('reports', function () {
-      const report = new PaymentReport();
+      const report = new TableReport();
 
       report.addTree('cols', {
         field: 'phase',
-        values: PayAccounts._transform(phaseTags),
+        values: Breakdowns._transform(phaseTags),
       }, false, false);
 
       report.addTree('cols', {
         field: 'month',
-        values: PayAccounts._transform(yearTags),
+        values: Breakdowns._transform(yearTags),
       }, true, false);
 
       report.addTree('rows', {
         field: 'accounts.Root',
-        values: PayAccounts._transform(testPayAccount),
+        values: Breakdowns._transform(testBreakdown),
       }, false, false);
 
 

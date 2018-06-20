@@ -2,8 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Payments } from './payments.js';
-import { PayAccounts } from '../payaccounts/payaccounts.js';
+import { Journals } from './journals.js';
+import { Breakdowns } from '../journals/breakdowns/breakdowns.js';
 
 class AssertiveObject {
   constructor(obj) {
@@ -54,6 +54,6 @@ export function insertTx(name, txBase, txParams) {
 
   txAccountProps.forEach((txAP) => {
     const tx = _.extend({}, txBase, txAP);
-    Payments.insert(tx);
+    Journals.insert(tx);
   });
 }

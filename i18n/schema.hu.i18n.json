@@ -272,7 +272,7 @@
       }
     }
   },
-  "schemaPayAccounts": {
+  "schemaBreakdowns": {
     "name": {
       "label": "Elnevezés",
       "placeholder": "(pl. Kifizetési hely)"
@@ -306,10 +306,9 @@
       }
     }
   },
-  "schemaPayments": {
+  "schemaJournals": {
     "phase": {
       "label": "Fázis"
-      //"Tranzakció típusa"
     },
     "valueDate": {
       "label": "Értéknap",
@@ -336,7 +335,7 @@
   },
   "schemaTxDefs": {
     "journals": {
-      "label": "Mozgások",
+      "label": "Pénzmozgások",
       "$": {
         "accountFrom": {
           "label": "Honnan (T)",

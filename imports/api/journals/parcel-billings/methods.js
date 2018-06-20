@@ -6,9 +6,9 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
-import { Payments } from '/imports/api/payments/payments.js';
-import { insertTx } from '/imports/api/payments/txs.js';
+import { ParcelBillings } from '/imports/api/journals/parcel-billings/parcel-billings.js';
+import { Journals } from '/imports/api/journals/journals.js';
+import { insertTx } from '/imports/api/journals/txs.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;

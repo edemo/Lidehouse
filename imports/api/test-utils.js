@@ -13,8 +13,8 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
-import { Payments } from '/imports/api/payments/payments.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Journals } from '/imports/api/journals/journals.js';
 
 chai.config.truncateThreshold = Infinity;
 
@@ -26,8 +26,8 @@ export function logDB() {
   console.log('Memberships:', '\n', Memberships.find().fetch());
   console.log('Agendas:', '\n', Agendas.find().fetch());
   console.log('Topics:', '\n', Topics.find().fetch());
-  console.log('PayAccounts:', '\n', PayAccounts.find().fetch());
-  console.log('Payments:', '\n', Payments.find().fetch());
+  console.log('Breakdowns:', '\n', Breakdowns.find().fetch());
+  console.log('Journals:', '\n', Journals.find().fetch());
 }
 
 export function emptyFixture() {
