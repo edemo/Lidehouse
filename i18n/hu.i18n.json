@@ -255,6 +255,8 @@
 
   // finances
   "Breakdowns": "Könyvelési bontások",
+  "Main breakdowns": "Számla tükör",
+  "Other breakdowns": "Egyéb bontások",
   "Journals": "Pénzmozgások",
   "Bills": "Előírások",
   "Reports": "Kimutatások",

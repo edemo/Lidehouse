@@ -128,11 +128,17 @@ Template.Community_finances.helpers({
     const types = ['Payin', 'Obligation', 'Income', 'Expense', 'Backoffice op'];
     return types;
   },
-  breakdownsTableDataFn() {
+  mainBreakdownsTableDataFn() {
     function getTableData() {
-      if (!Template.instance().subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId }).fetch();
+      return Breakdowns.find({ communityId, sign: { $exists: true } }).fetch();
+    }
+    return getTableData;
+  },
+  otherBreakdownsTableDataFn() {
+    function getTableData() {
+      const communityId = Session.get('activeCommunityId');
+      return Breakdowns.find({ communityId, sign: { $exists: false } }).fetch();
     }
     return getTableData;
   },

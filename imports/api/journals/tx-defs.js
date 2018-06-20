@@ -57,7 +57,7 @@ const accountNodeSchema = function (move) {
   return new SimpleSchema({
 //    accountFamily: { type: 'String', autoform: chooseAccountFamily },
     accountGroup: { type: 'String', autoform: chooseAccountGroup(move) },
-    localizerNeeded: { type: Boolean, defaultValue: false },
+//    localizerNeeded: { type: Boolean, defaultValue: false },
   });
 };
 

@@ -277,8 +277,8 @@
       "label": "Name",
       "placeholder": "(eg. Division breakdown)"
     },
-    "type": {
-      "label": "Type"
+    "sign": {
+      "label": "Sign (Debit +, Credit -)"
     },
     "children": {
       "label": "Cathegory account",

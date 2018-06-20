@@ -134,7 +134,10 @@
             </div>  
             <div class="ibox-content">
               <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
-              {{> ReactiveDatatable tableData=breakdownsTableDataFn options=breakdownsOptionsFn }}
+              <h2>{{_ 'Main breakdowns'}}</h2>
+              {{> ReactiveDatatable tableData=mainBreakdownsTableDataFn options=breakdownsOptionsFn }}
+              <h2 clas="m-t-md">{{_ 'Other breakdowns'}}</h2>
+              {{> ReactiveDatatable tableData=otherBreakdownsTableDataFn options=breakdownsOptionsFn }}
             </div>
         </div>
     </div>

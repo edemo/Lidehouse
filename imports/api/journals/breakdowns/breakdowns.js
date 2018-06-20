@@ -10,11 +10,6 @@ import { debugAssert } from '/imports/utils/assert.js';
 
 export const Breakdowns = new Mongo.Collection('breakdowns');
 
-// Physical is 'bank acount', 'cash register', 'paypal account'... must have exactly one
-// Virtual is a category for mental accounting, can have many
-// Locator is a type of Virtual that already has the Parcels included, plus you can define others
-Breakdowns.typeValues = ['physical', 'virtual', 'locator'];
-
 export const chooseBreakdown = {
   options() {
     return Breakdowns.find(/*{ communityId: Session.get('activeCommunityId') }*/).map(function option(account) {
@@ -75,7 +70,6 @@ Breakdowns.Level1Schema = new SimpleSchema({
 Breakdowns.schema = new SimpleSchema({
   name: { type: String, max: 100 },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
-  negative: { type: Boolean, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   sign: { type: Number, allowedValues: [+1, -1], optional: true },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
