@@ -13,16 +13,26 @@ export const Reports = {
     return report;
   },
 
-  Egyenlegek() {
-//    console.log(Template.instance().subscriptionsReady());
-    const report = new TableReport('Egyenlegek');
+  Assets() {
+    const report = new TableReport('Assets');
     const communityId = Session.get('activeCommunityId');
+    
     report.addFilter({ phase: 'done' });
     report.addLine('cols', [], false);
     report.addTree('rows', {
       field: 'accounts.Assets',
       values: Breakdowns.findOne({ communityId, name: 'Assets' }),
     }, false);
+
+    return report;
+  },
+
+  Liabilities() {
+    const report = new TableReport('Liabilities');
+    const communityId = Session.get('activeCommunityId');
+    
+    report.addFilter({ phase: 'done' });
+    report.addLine('cols', [], false);
     report.addTree('rows', {
       field: 'accounts.Liabilities',
       values: Breakdowns.findOne({ communityId, name: 'Liabilities' }),

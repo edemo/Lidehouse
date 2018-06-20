@@ -5,22 +5,39 @@
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
 
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="ibox ibox-dark" id='balances-report'>
             <div class="ibox-title">
-                <h5>{{_ 'Balances'}}</h5>
+                <h5>{{_ 'Balance sheet'}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
-                {{> Custom_table report=(report 'Egyenlegek')}}
+                <div class="row">
+                    <div class="col-md-6 p-md">
+                    {{> Custom_table report=(report 'Assets')}}
+                    </div>
+                    <div class="col-md-6 p-md">
+                    {{> Custom_table report=(report 'Liabilities')}}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
     <div class="col-md-6">
-        <div class="ibox ibox-dark" id='balances-chart'>
+        <div class="ibox ibox-dark" id='assets-chart'>
             <div class="ibox-title">
-                <h5>{{_ 'Balances'}} {{_ 'chart'}}</h5>
+                <h5>{{_ 'Assets'}} {{_ 'chart'}}</h5>
+                {{>iboxTools}}
+            </div>
+            <div class="ibox-content">
+                <canvas id="balanceSheetChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="ibox ibox-dark" id='liabilities-chart'>
+            <div class="ibox-title">
+                <h5>{{_ 'Liabilities'}} {{_ 'chart'}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">

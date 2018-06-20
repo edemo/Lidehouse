@@ -261,7 +261,7 @@
   "Bills": "Előírások",
   "Reports": "Kimutatások",
   "Common cost plan": "Előírás minden albetétre",
-  "Balances": "Egyenlegek",
+  "Balance sheet": "Aktuális vagyoni helyzet (Mérleg)",
   "chart": "eloszlása",
   "history": "alakulása",
   "status report": "helyzete beszámoló",
@@ -291,8 +291,9 @@
   "Owner payins": "Tulajdonosi befizetések",
   "Owner obligations": "Tulajdonosi kötelezettségek",
   "Unidentified payins" : "Beazonosítatlan befizetések",
+  "Opening/Carry": "Nyitó/Áthozatal",
   "Opening": "Nyitó egyenleg",
-  "Carry over": "Átvezetés",
+  "Carry": "Áthozatal előző évről",
 
   // docstore
   "Show": "Listázva",
