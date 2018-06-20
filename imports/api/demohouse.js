@@ -20,7 +20,7 @@ import { Payments } from '/imports/api/payments/payments.js';
 import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/payments/parcel-billings/methods.js';
 import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
-import { insertJournal } from '/imports/api/payments/journals.js';
+import { insertTx } from '/imports/api/payments/txs.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -1061,7 +1061,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     for (let i = 1; i < 15; i++) {
       const payable = [0, 15125, 13200, 18150, 19250, 18150, 19250, 18150,
         19250, 18150, 19250, 30800, 13750, 19000, 6050];
-      insertJournal('Payin', {
+      insertTx('Payin', {
         communityId: demoCommunityId,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
@@ -1078,7 +1078,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     for (let i = 0; i < 4; i++) {
       const payable = [5000, 7500, 5000, 2500];
       const place = ['2', '5', '8', '14'];
-      insertJournal('Payin', {
+      insertTx('Payin', {
         communityId: demoCommunityId,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
@@ -1093,7 +1093,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   for (let m = 1; m < 13; m++) {
     for (let i = 1; i < 11; i++) {
       const payable = [0, 14960, 13056, 15708, 16660, 15708, 16660, 15708, 16660, 15708, 16660];
-      insertJournal('Payin', {
+      insertTx('Payin', {
         communityId: demoCommunityId,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
@@ -1107,7 +1107,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   for (let i = 1; i < 15; i++) {
-    insertJournal('Payin', {
+    insertTx('Payin', {
       communityId: demoCommunityId,
       phase: 'done',
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
@@ -1387,12 +1387,12 @@ Meteor.methods({
         valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
         amount: 6875,
       };
-      const journalParams = {
+      const txParams = {
         'Owner payins': 'Közös költség befizetés',
         'Localizer': demoParcelSerial.toString(),
         'Assets': 'Bank főszámla',
       };
-      insertJournal('Payin', txBase, journalParams);
+      insertTx('Payin', txBase, txParams);
     }
 
     Meteor.setTimeout(function () {

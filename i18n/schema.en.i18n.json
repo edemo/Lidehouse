@@ -334,6 +334,31 @@
       "label": "To (C)"
     }
   },
+  "schemaTxDefs": {
+    "journals": {
+      "label": "Movements",
+      "$": {
+        "accountFrom": {
+          "label": "Account from",
+          "accountGroup": {
+            "label": "Account group"
+          },
+          "localizerNeeded": {
+            "label": "Localizer needed"
+          }
+        },
+        "accountTo": {
+          "label": "Account to",
+          "accountGroup": {
+            "label": "Account group"
+          },
+          "localizerNeeded": {
+            "label": "Localizer needed"
+          }
+        }
+      }
+    }
+  },
   "schemaParcelBillings": {
     "year": {
       "label": "For which year",

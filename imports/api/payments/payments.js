@@ -10,25 +10,20 @@ export const Payments = new Mongo.Collection('payments');
 
 Payments.phaseValues = ['done', 'plan'];
 
-const BasicTxSchema = new SimpleSchema({
+Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   phase: { type: String, defaultValue: 'done', allowedValues: Payments.phaseValues, autoform: autoformOptions(Payments.phaseValues) },
   valueDate: { type: Date },
   year: { type: Number, decimal: true, autoValue() { return this.field('valueDate').value.getFullYear(); }, optional: true, autoform: { omit: true } },
   month: { type: Number, decimal: true, autoValue() { return this.field('valueDate').value.getMonth() + 1; }, optional: true, autoform: { omit: true } },
   amount: { type: Number, decimal: true },
+  // affected accounts
+  accountFrom: { type: Object, blackbox: true, optional: true },
+  accountTo: { type: Object, blackbox: true, optional: true },
+    // rootAccountName -> leafAccountName or parcelNo
+  ref: { type: String, max: 100, optional: true },
+  note: { type: String, max: 100, optional: true },
 });
-
-Payments.schema = new SimpleSchema([
-  BasicTxSchema, {
-    // affected accounts
-    accountFrom: { type: Object, blackbox: true, optional: true },
-    accountTo: { type: Object, blackbox: true, optional: true },
-      // rootAccountName -> leafAccountName or parcelNo
-    ref: { type: String, max: 100, optional: true },
-    note: { type: String, max: 100, optional: true },
-  }]
-);
 
 // A *payment* is effecting a certain field (in pivot tables) with the *amount* of the payment,
 // but the Sign of the effect is depending on 3 components:

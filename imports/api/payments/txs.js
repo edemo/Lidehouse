@@ -1,6 +1,9 @@
+import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Payments } from './payments.js';
+import { PayAccounts } from '../payaccounts/payaccounts.js';
 
 class AssertiveObject {
   constructor(obj) {
@@ -8,14 +11,14 @@ class AssertiveObject {
   }
   get(key) {
     const val = this._obj[key];
-    debugAssert(val, `Journal param missing: ${key} \nfrom ${this._obj}`);
+    debugAssert(val, `Tx param missing: ${key} \nfrom ${this._obj}`);
     return val;
   }
 }
 
-export function insertJournal(name, txBase, journalParams) {
+export function insertTx(name, txBase, txParams) {
   const txAccountProps = [];
-  const params = new AssertiveObject(journalParams);
+  const params = new AssertiveObject(txParams);
   if (name === 'Obligation') {
     txAccountProps.push({
       accountFrom: {

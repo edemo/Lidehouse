@@ -5,6 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Communities } from '/imports/api/communities/communities.js';
 import { PayAccounts } from '/imports/api/payaccounts/payaccounts.js';
 import { Payments } from '/imports/api/payments/payments.js';
+import { TxDefs } from '/imports/api/payments/tx-defs.js';
 import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
 import { remove as removePayment, billParcels } from '/imports/api/payments/methods.js';
 import { Session } from 'meteor/session';
@@ -123,6 +124,10 @@ Template.Community_finances.helpers({
     if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
   },
+  txDefs() {
+    const types = ['Payin', 'Obligation', 'Income', 'Expense', 'Backoffice op'];
+    return types;
+  },
   payaccountsTableDataFn() {
     function getTableData() {
       if (!Template.instance().subscriptionsReady()) return [];
@@ -177,20 +182,37 @@ Template.Community_finances.helpers({
   },
 });
 
+const chooseLeafObject = function (move) {
+  return {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const account = AutoForm.getFieldValue(move + '.account', 'af.payment.insert')
+                || AutoForm.getFieldValue(move + '.account', 'af.payment.update');
+      if (!account) return [{ label: __('schemaPayments.account.placeholder'), value: 'none' }];
+      const pac = PayAccounts.findOne({ communityId, name: account });
+      return pac.leafOptions();
+    },
+    firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
+  };
+};
+
+
 function newPaymentSchema() {
-  function chooseAccountsSchema() {
-    const obj = {};
+  function chooseAccountsSchema(move) {
     const communityId = Session.get('activeCommunityId');
-    const payaccounts = PayAccounts.find({ communityId });
-    payaccounts.forEach((payaccount) => {
-      obj[payaccount.name] = { type: String, optional: true, label: payaccount.name, autoform: { options() { return payaccount.leafOptions(); } } };
+    const mainAccounts = PayAccounts.find({ communityId, sign: { $exists: true } });
+    const localizerPac = PayAccounts.findOne({ communityId, name: 'Localizer' });
+   
+    return new SimpleSchema({
+      account: { type: String, autoform: { options() { return mainAccounts.map(a => { return { value: a.name, label: a.name }; }); } } },
+      leaf: { type: String, autoform: chooseLeafObject(move) },
+      localizer: { type: String, autoform: { options() { return localizerPac.leafOptions(); } } },
     });
-    return new SimpleSchema(obj);
   }
   return new SimpleSchema([
     Payments.simpleSchema(),
-    { accountFrom: { type: chooseAccountsSchema(), optional: true } },
-    { accountTo: { type: chooseAccountsSchema(), optional: true } },
+    { accountFrom: { type: chooseAccountsSchema('accountFrom'), optional: true } },
+    { accountTo: { type: chooseAccountsSchema('accountTo'), optional: true } },
   ]);
 }
 
@@ -290,6 +312,7 @@ Template.Community_finances.events({
     });
   },
   'click #payments .js-new'(event, instance) {
+    /* 
     Modal.show('Autoform_edit', {
       id: 'af.payment.insert',
       collection: Payments,
@@ -297,6 +320,18 @@ Template.Community_finances.events({
       omitFields: ['communityId', 'phase'],
       type: 'method',
       meteormethod: 'payments.insert',
+      template: 'bootstrap3-inline',
+    });
+    */
+    const type = $(event.target).data("id");
+  },
+  'click #payments .js-new-def'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.txdef.insert',
+      collection: TxDefs,
+      omitFields: ['communityId'],
+      type: 'method',
+      meteormethod: 'txDefs.insert',
       template: 'bootstrap3-inline',
     });
   },
@@ -409,7 +444,15 @@ AutoForm.addModalHooks('af.payment.update');
 AutoForm.addHooks('af.payment.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.phase = 'done';
+    return doc;
+  },
+});
+
+AutoForm.addModalHooks('af.txdef.insert');
+AutoForm.addModalHooks('af.txdef.update');
+AutoForm.addHooks('af.txdef.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
     return doc;
   },
 });

@@ -1,5 +1,6 @@
 import { _ } from 'meteor/underscore';
 import { PayAccounts } from './payaccounts.js';
+import { TxDefs } from '../payments/tx-defs.js';
 
 // TODO: AccountCathegories  would be better  than PayAccounts
 
@@ -185,8 +186,49 @@ const PayAccountsTemplate = [
 */
 ];
 
+const TxDefsTemplate = [
+/*
+  { name: 'Obligation',
+    journals: [{
+      accountFrom: {
+//        accountGroup: 'alma'//'Accounts/Owners/Owner payins',
+ //       localizerNeeded: true,
+      },
+      accountTo: {
+//        accountGroup: 'alma'//Accounts/Assets/Owner obligatons',
+//        localizerNeeded: true,
+      },
+    }],
+  },
+/*
+  { name: 'Payin',
+      journals: [{
+      accountFrom: {
+        accountGroup: 'Accounts/Incomes/Owner payins',
+        localizerNeeded: true,
+      },
+      accountTo: {
+        accountGroup: 'Accounts/Assets/Pénz számlák',
+      },
+    }, {
+      accountFrom: {
+        accountGroup: 'Accounts/Assets/Owner obligatons',
+        localizerNeeded: true,
+      },
+      accountTo: {
+        accountGroup: 'Accounts/Owners/Owner payins',
+        localizerNeeded: true,
+      },
+    }],
+  },
+*/
+];
+
 export function insertPayAccountTemplate(communityId) {
   PayAccountsTemplate.forEach((payaccount) => {
     PayAccounts.insert(_.extend({}, payaccount, { communityId }));
+  });
+  TxDefsTemplate.forEach((txDef) => {
+    TxDefs.insert(_.extend({}, txDef, { communityId }));
   });
 }

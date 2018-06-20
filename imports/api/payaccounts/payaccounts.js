@@ -141,7 +141,7 @@ PayAccounts.helpers({
     return __(leafName);
   },
   leafFullPathDisplay(leaf) {
-    return `${leaf.path()}${this.leafDisplay(leaf.name)}`;
+    return `${leaf.path}`; // ${this.leafDisplay(leaf.name)}`;
   },
   nodeDisplay(node) {
     if (node.isLeaf) return this.leafDisplay(node.name);

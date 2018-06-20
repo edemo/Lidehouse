@@ -334,6 +334,31 @@
       "label": "Hová (K)"
     }
   },
+  "schemaTxDefs": {
+    "journals": {
+      "label": "Mozgások",
+      "$": {
+        "accountFrom": {
+          "label": "Honnan (T)",
+          "accountGroup": {
+            "label": "Számla csoport"
+          },
+          "localizerNeeded": {
+            "label": "Könyvelési hely megadása szükséges-e"
+          }
+        },
+        "accountTo": {
+          "label": "Hová (K)",
+          "accountGroup": {
+            "label": "Számla csoport"
+          },
+          "localizerNeeded": {
+            "label": "Könyvelési hely megadása szükséges-e"
+          }
+        }
+      }
+    }
+  },
   "schemaParcelBillings": {
     "year": {
       "label": "Melyik év",

@@ -8,7 +8,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/payments/parcel-billings/parcel-billings.js';
 import { Payments } from '/imports/api/payments/payments.js';
-import { insertJournal } from '/imports/api/payments/journals.js';
+import { insertTx } from '/imports/api/payments/txs.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
@@ -48,7 +48,7 @@ export const apply = new ValidatedMethod({
       else
         months = [BILLING_MONTH_OF_THE_YEAR];
 
-      const journalParams = {
+      const txParams = {
         'Owner payins': parcelBilling.account['Owner payins'],
         'Localizer': parcel.serial.toString(),
       };
@@ -60,7 +60,7 @@ export const apply = new ValidatedMethod({
           amount,
           note: parcelBilling.note,
         };
-        insertJournal('Obligation', txBase, journalParams);
+        insertTx('Obligation', txBase, txParams);
       });
     });
   },
