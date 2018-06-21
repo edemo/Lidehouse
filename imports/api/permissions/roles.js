@@ -8,12 +8,12 @@ export const defaultRoles = [
   { name: 'owner' },        // Title holder of a parcel. Has voting rights.
   { name: 'benefactor' },   // Uses the parcel. Owner handed over beneficiary rights to him/her.
   { name: 'moderator' },    // Moderates the conversations on topics. Can remove comments.
-  { name: 'accountant' },   // Can set the Breakdown structure.
+  { name: 'accountant' },   // Can set the Account and Transaction structure.
   { name: 'treasurer' },    // Can add new financial trransactions.
   { name: 'overseer' },     // Can oversee financial trransactions.
   { name: 'maintainer' },   // Works on the reported errors. Sees them, can coment on them.
   { name: 'delegate' },     // Can vote for someone else.
-  { name: 'guest' },        // Just poking around. Somone invited him/her to take a look.
+  { name: 'guest' },        // Just looking around. Somone invited him/her to take a look.
 ];
 
 // Groupings just to ease configuration

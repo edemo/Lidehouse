@@ -41,7 +41,7 @@ export const Reports = {
     return report;
   },
 
-  PenzugyekReszletei(year) {
+  Performance(year) {
     const report = new TableReport('Penzugyek Reszletei');
     const communityId = Session.get('activeCommunityId');
 

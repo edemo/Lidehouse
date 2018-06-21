@@ -8,7 +8,7 @@
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='balances-report'>
             <div class="ibox-title">
-                <h5>{{_ 'Balance sheet'}}</h5>
+                <h5>{{_ 'community'}} {{_ "'s status report"}} ({{_ 'Balance sheet'}})</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
@@ -26,7 +26,7 @@
     <div class="col-md-6">
         <div class="ibox ibox-dark" id='assets-chart'>
             <div class="ibox-title">
-                <h5>{{_ 'Assets'}} {{_ 'chart'}}</h5>
+                <h5>{{_ 'Assets'}} {{_ "'s chart"}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
@@ -37,7 +37,7 @@
     <div class="col-md-6">
         <div class="ibox ibox-dark" id='liabilities-chart'>
             <div class="ibox-title">
-                <h5>{{_ 'Liabilities'}} {{_ 'chart'}}</h5>
+                <h5>{{_ 'Liabilities'}} {{_ "'s chart"}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
@@ -73,7 +73,7 @@
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='incomes-expenses-history'>
             <div class="ibox-title">
-                <h5>{{_ 'Incomes/Expenses history'}}</h5>
+                <h5>{{_ 'Incomes'}}/{{_ 'Expenses'}} {{_ "'s history"}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
@@ -85,11 +85,11 @@
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='community-status-report'>
             <div class="ibox-title">
-                <h5 class="text=capitalize">{{communityStatusReportTitle}}</h5>
+                <h5 class="text=capitalize">{{_ 'community'}} {{_ "'s performance"}}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
-              {{> Custom_table report=(report 'PenzugyekReszletei' 2017)}}
+              {{> Custom_table report=(report 'Performance' 2017)}}
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@
     <div class="col-md-6">
         <div class="ibox ibox-dark" id='incomes-chart'>
             <div class="ibox-title">
-                <h5>{{_ 'Incomes'}} {{_ 'chart'}}</h5>
+                <h5>{{_ 'Incomes'}} {{_ "'s chart"}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
@@ -109,7 +109,7 @@
     <div class="col-md-6">
         <div class="ibox ibox-dark" id='expenses-chart'>
             <div class="ibox-title">
-                <h5>{{_ 'Expenses'}} {{_ 'chart'}}</h5>
+                <h5>{{_ 'Expenses'}} {{_ "'s chart"}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
@@ -146,7 +146,7 @@
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='breakdowns'>
             <div class="ibox-title">
-                <h5>{{_ 'Breakdowns' }}</h5>
+                <h5>{{_ 'Account system' }}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">

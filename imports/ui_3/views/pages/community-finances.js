@@ -117,9 +117,6 @@ Template.Community_finances.onRendered(function communityFinancesOnRendered() {
 });
 
 Template.Community_finances.helpers({
-  communityStatusReportTitle() {
-    return `${__('community')} ${__('status report')}`;
-  },
   report(name, year) {
     if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
