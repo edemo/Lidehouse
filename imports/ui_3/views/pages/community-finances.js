@@ -5,6 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
+import { Txs } from '/imports/api/journals/txs.js';
 import { TxDefs } from '/imports/api/journals/tx-defs.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { remove as removeJournal, billParcels } from '/imports/api/journals/methods.js';
@@ -35,6 +36,8 @@ Template.Community_finances.onCreated(function communityFinancesOnCreated() {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('breakdowns.inCommunity', { communityId });
     this.subscribe('journals.inCommunity', { communityId });
+    this.subscribe('txs.inCommunity', { communityId });
+    this.subscribe('txDefs.inCommunity', { communityId });
   });
 });
 
@@ -122,8 +125,10 @@ Template.Community_finances.helpers({
     return Reports[name](year);
   },
   txDefs() {
-    const types = ['Payin', 'Obligation', 'Income', 'Expense', 'Backoffice op'];
-    return types;
+//    const txDefs = ['Payin', 'Obligation', 'Income', 'Expense', 'Backoffice op'];
+    const communityId = Session.get('activeCommunityId');
+    const txDefs = TxDefs.find({ communityId });
+    return txDefs;
   },
   mainBreakdownsTableDataFn() {
     const templateInstance = Template.instance();

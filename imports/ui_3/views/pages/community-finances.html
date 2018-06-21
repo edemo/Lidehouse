@@ -58,8 +58,8 @@
                 </a>
                 <!--ul class="dropdown-menu animated fadeInDown m-t-xs"-->
                 <ul class="m-t-xs">
-                    {{#each type in txDefs}}
-                    <li><a href="" class="js-new" data-id="{{type}}">{{type}}</a></li>
+                    {{#each def in txDefs}}
+                    <li><a href="" class="js-new" data-id="{{def._id}}">{{def.name}}</a></li>
                     {{/each}}
                     <li role="separator" class="divider"></li>
                     <li><a href="" class="js-new-def"> + {{_ 'new'}} {{_ 'tx'}} {{_ 'def'}}</a></li>
