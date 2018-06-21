@@ -1,0 +1,30 @@
+<template name="DD_list">
+    <ol class="dd-list">
+        {{#each subItem in item.children}}
+        <li class="dd-item" data-name="{{subItem.name}}">
+            <div class="dd-handle">{{subItem.name}}
+                <!--{{#unless subItem.locked}}
+                    <i class="fa fa-trash pull-right js-delete"></i>
+                    <i class="fa fa-pencil pull-right js-edit"></i>
+                {{/unless}}-->
+            </div>
+            {{#if subItem.children}}
+                {{>DD_list item=subItem}}
+            {{/if}}
+        </li>
+        {{/each}}
+    </ol>
+</template>
+
+<template name="Nestable_edit">
+    <div id="nestable" class="dd">
+    <ol class="dd-list">
+        <li class="dd-item" data-name="{{json.name}}">
+            <div class="dd-handle">{{json.name}}</div>
+                {{#if json.children}}
+                    {{>DD_list item=json}}
+                {{/if}}
+            </li>
+        </ol>
+    </div>
+</template>

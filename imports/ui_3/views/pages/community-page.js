@@ -11,7 +11,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
 import { __ } from '/imports/localization/i18n.js';
-import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/config.js';
+import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { remove as removeParcel } from '/imports/api/parcels/methods.js';
@@ -50,6 +50,9 @@ Template.Community_page.helpers({
     const communityId = Template.instance().getCommunityId();
     const community = Communities.findOne({ _id: communityId });
     return `${__('Community page')} - ${community ? community.name : ''}`;
+  },
+  communityId() {
+    return Template.instance().getCommunityId();
   },
   community() {
     const communityId = Template.instance().getCommunityId();

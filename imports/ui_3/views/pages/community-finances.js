@@ -15,6 +15,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
+import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
 import { monthTags } from '/imports/api/payaccounts/payaccounts-utils.js';
 import { paymentColumns } from '/imports/api/payments/tables.js';
 import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
@@ -22,6 +23,7 @@ import { Reports } from '/imports/api/payaccounts/reports.js';
 import '/imports/ui_2/components/custom-table.js';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
+import { serializeNestable } from '/imports/ui_2/modals/nestable-edit.js';
 import './community-finances.html';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
@@ -118,6 +120,8 @@ Template.Community_finances.helpers({
     return `${__('community')} ${__('status report')}`;
   },
   report(name, year) {
+    if (!PayAccounts.find().count()) return Reports['Blank']();
+    if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
   },
   payaccountsTableDataFn() {
@@ -218,7 +222,7 @@ function newParcelBillingSchema() {
 }
 
 Template.Community_finances.events({
-  'click #payaccounts-pane .js-new'(event, instance) {
+  'click #payaccounts .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.insert',
       collection: PayAccounts,
@@ -229,7 +233,29 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payaccounts-pane .js-edit'(event) {
+  'click #payaccounts .js-edit'(event) {
+    const id = $(event.target).data('id');
+    const payaccount = PayAccounts.findOne(id);
+    const modalContext = {
+      title: 'Edit Payaccount',
+      body: 'Nestable_edit',
+      bodyContext: { json: payaccount },
+      btnClose: 'cancel',
+      btnOK: 'save',
+      onOK() {
+        const json = serializeNestable();
+        // console.log('saving nestable:', JSON.stringify(json));
+        // assert json.length === 1
+        // assert json[0].name === payaccount.name
+        // assert locked elements are still there 
+        PayAccounts.update(id, { $set: { children: json[0].children } },
+          onSuccess(res => displayMessage('success', 'PayAccount saved'))
+        );
+      },
+    };
+    Modal.show('Modal', modalContext);
+  },
+  'click #payaccounts .js-edit-af'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.update',
@@ -243,7 +269,17 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payaccounts-pane .js-view'(event, instance) {
+  'click #payaccounts .js-view'(event, instance) {
+    const id = $(event.target).data('id');
+    const payaccount = PayAccounts.findOne(id);
+    const modalContext = {
+      title: 'View Payaccount',
+      body: 'Nestable_edit',
+      bodyContext: { json: payaccount, disabled: true },
+    };
+    Modal.show('Modal', modalContext);
+  },
+  'click #payaccounts .js-view-af'(event, instance) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payaccount.view',
@@ -254,13 +290,13 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payaccounts-pane .js-delete'(event) {
+  'click #payaccounts .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(PayAccounts.remove, { _id: id }, {
       action: 'delete payaccount',
     });
   },
-  'click #payments-pane .js-new'(event, instance) {
+  'click #payments .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.payment.insert',
       collection: Payments,
@@ -271,7 +307,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payments-pane .js-edit'(event) {
+  'click #payments .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payment.update',
@@ -285,7 +321,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payments-pane .js-view'(event) {
+  'click #payments .js-view'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.payment.view',
@@ -297,13 +333,13 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #payments-pane .js-delete'(event) {
+  'click #payments .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removePayment, { _id: id }, {
       action: 'delete payment',
     });
   },
-  'click #bills-pane .js-new'(event, instance) {
+  'click #bills .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.bill.insert',
       collection: Payments,
@@ -314,7 +350,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #bills-pane .js-edit'(event) {
+  'click #bills .js-edit'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.bill.update',
@@ -328,7 +364,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #bills-pane .js-view'(event) {
+  'click #bills .js-view'(event) {
     const id = $(event.target).data('id');
     Modal.show('Autoform_edit', {
       id: 'af.bill.view',
@@ -340,7 +376,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #bills-pane .js-many'(event, instance) {
+  'click #bills .js-many'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.parcelBilling.insert',
       collection: ParcelBillings,
@@ -351,13 +387,13 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #bills-pane .js-delete'(event) {
+  'click #bills .js-delete'(event) {
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removePayment, { _id: id }, {
       action: 'delete bill',
     });
   },
-  'click #bills-pane .js-bill'(event) {
+  'click #bills .js-bill'(event) {
     const communityId = Session.get('activeCommunityId');
     Modal.confirmAndCall(billParcels, { communityId }, {
       action: 'bill parcels',
