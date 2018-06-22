@@ -9,6 +9,13 @@
                             <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
                         </div>
                     </form-->
+                {{else}}
+                <a href="{{pathFor 'App.intro'}}" id="logo" class="minimalize-styl-2">
+                    <img src="/images/logo-duo-text.png" width="80" alt="Logo">
+                </a>
+                <a class="minimalize-styl-2 btn btn-primary " href="{{pathFor 'signin'}}">
+                    <i class="fa fa-sign-in"></i> {{_ 'login'}}
+                </a>
                 {{/if}}
             </div>
             <ul class="nav navbar-top-links navbar-right">
