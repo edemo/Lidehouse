@@ -29,7 +29,7 @@ function messageFooterToBottom() {
 }
 
 Template.Messages.onRendered(function() {
-  $('.js-focused').focus();
+  if ($(window).width() > 768) $('.js-focused').focus();
   messageFooterToBottom();
   $(window).bind("load resize scroll", function() {
     messageFooterToBottom();    
@@ -107,7 +107,7 @@ Template.Message_send.events({
       },
       onSuccess((res) => {
         textarea.value = '';
-        $('.js-focused').focus();
+        if ($(window).width() > 768) $('.js-focused').focus();
         Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY_EYES);
       }));
     };
