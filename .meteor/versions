@@ -45,7 +45,7 @@ dispatch:mocha-phantomjs@0.1.7
 dispatch:phantomjs-tests@0.0.5
 djk:jquery-ui@1.12.1
 dynamic-import@0.3.0
-ecmascript@0.10.0
+ecmascript@0.10.6
 ecmascript-runtime@0.5.0
 ecmascript-runtime-client@0.6.2
 ecmascript-runtime-server@0.5.0
