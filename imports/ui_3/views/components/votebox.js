@@ -40,7 +40,7 @@ Template.Votebox.onCreated(function voteboxOnCreated() {
 Template.Votebox.onRendered(function voteboxOnRendered() {
   const self = this;
   const state = this.state;
-  const voting = this.data;
+  const topicId = this.data._id;
   const vote = this.data.vote;
   const voteCasts = this.data.voteCasts;
 
@@ -61,12 +61,13 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   // this is in an autorun, so if logged in user changes, it will rerun
   // or if the vote is changed on another machine, it also gets updated here
   this.autorun(function update() {
-    const voteIsFinalized = voting.hasVotedDirect(Meteor.userId());
-    state.set('voteIsFinalized', voteIsFinalized);
 
+    const voting = Topics.findOne(topicId);
+    const voteIsFinalized = voting.hasVoted(Meteor.userId());
+    state.set('voteIsFinalized', voteIsFinalized);
     let preference;
     if (voteIsFinalized) {
-      const castedPreference = voteCasts[Meteor.userId()];
+      const castedPreference = voting.voteOf(Meteor.userId());
       preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
     } else { // no vote yet, preference is then the original vote choices in that order
       preference = vote.choices.map(function obj(text, index) { return { text, value: index }; });
@@ -74,15 +75,19 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
     state.set('preference', preference);
 //  console.log('onrender:', preference);
   });
-
+  
   // This is where we enable/disable the sorting, dependant on the finalized state
   this.autorun(function update() {
     const voteIsFinalized = state.get('voteIsFinalized');
     $(self.find('.sortable')).sortable(voteIsFinalized ? 'disable' : 'enable');
-  });
-
+   /* const voting = Topics.findOne(topicId);
+    const hasVoted = voting.hasVoted(Meteor.userId());
+    $(Template.instance().find('.sortable')).sortable(hasVoted ? 'disable' : 'enable');
+  */
+ });
   // Filling the chart with data
   this.autorun(() => {
+    const voting = Topics.findOne(topicId);
     if (voting.closed) {
       const barData = {
         labels: vote.choices.map(c => `${__(c)}`),
@@ -148,12 +153,13 @@ Template.Votebox.helpers({
 //  console.log('ondisplay:', preference);
     return preference;
   },
+  voteOfUser() {
+    return this.voteOf(Meteor.userId());
+  },
   voteIsFinalized() {
     return Template.instance().state.get('voteIsFinalized');
-  },
-  pressedClassForFinalizeBtn() {
-    if (Template.instance().state.get('voteIsFinalized')) return 'btn-pressed';
-    return '';
+    //const hasVoted = this.hasVoted(Meteor.userId());
+   // return hasVoted;
   },
   attachments() {
     return Shareddocs.find({ topicId: this._id });
@@ -234,7 +240,6 @@ Template.Votebox.events({
       castVoteBasedOnPermission(topicId, castedVote,
         onSuccess((res) => {
           displayMessage('success', 'Vote casted');
-          instance.state.set('voteIsFinalized', true);
         })
       );
     } else { // voteIsFinalized === true
