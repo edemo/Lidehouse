@@ -36,7 +36,7 @@ Agendas.helpers({
     return Topics.find({ communityId: this.communityId, agendaId: this._id }).fetch();
   },
   closed() {
-    return _.any(this.topics(), topic => topic.closed);
+    return _.all(this.topics(), topic => topic.closed);
   },
 });
 

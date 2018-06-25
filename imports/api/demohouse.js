@@ -9,7 +9,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { update as updateCommunity } from '/imports/api/communities/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { defaultRoles } from '/imports/api/permissions/config.js';
+import { defaultRoles } from '/imports/api/permissions/roles.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';

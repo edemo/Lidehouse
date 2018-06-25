@@ -1,11 +1,13 @@
 {
   "scripts": {
     "start": "meteor",
+    "debug": "meteor run --inspect --inspect-brk",
     "pretest": "npm run lint --silent",
-    "test": "meteor test --once --driver-package dispatch:mocha-phantomjs",
+    "test": "meteor test --once --driver-package meteortesting:mocha",
+    "test-debug": "meteor test --inspect --inspect-brk --driver-package=meteortesting:mocha --port 3001",
     "test-app": "meteor test --full-app --once --driver-package dispatch:mocha-phantomjs",
-    "test-watch": "meteor test --driver-package practicalmeteor:mocha",
-    "test-app-watch": "meteor test --full-app --driver-package practicalmeteor:mocha",
+    "test-watch": "meteor test --driver-package meteortesting:mocha",
+    "test-app-watch": "meteor test --full-app --driver-package meteortesting:mocha",
     "test-watch-terminal": "TEST_WATCH=1 meteor test --driver-package dispatch:mocha-phantomjs",
     "test-app-watch-terminal": "TEST_WATCH=1 meteor test --full-app --driver-package dispatch:mocha-phantomjs",
     "lint": "eslint ."
@@ -16,7 +18,8 @@
     "babel-runtime": "^6.26.0",
     "bcrypt": "^2.0.1",
     "faker": "^3.1.0",
-    "fractional": "^1.0.0"
+    "fractional": "^1.0.0",
+    "nestable": "^0.2.0"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",

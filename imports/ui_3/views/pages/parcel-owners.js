@@ -42,7 +42,12 @@ Template.Parcel_owners_page.helpers({
     smallTitle() {
         const parcelId = FlowRouter.getParam('_pid');
         const parcel = Parcels.findOne(parcelId);
-        return `${parcel.display()} ${__("'s owners")}`;
+        return parcel ? `${parcel.display()} ${__("'s owners")}` : __('unknown');
+    },
+    communityId() {
+        const parcelId = FlowRouter.getParam('_pid');
+        const parcel = Parcels.findOne(parcelId);
+        return parcel ? parcel.communityId : undefined;
     },
     ownerships() {
         const parcelId = FlowRouter.getParam('_pid');

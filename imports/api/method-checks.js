@@ -3,8 +3,6 @@ import { _ } from 'meteor/underscore';
 
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import '/imports/api/users/users.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { canAddMemberWithRole } from '/imports/api/permissions/config.js';
 
 export function checkLoggedIn(userId) {
   if (!userId) {
@@ -48,7 +46,7 @@ export function checkTopicPermissions(userId, permissionName, topic) {
   if ((topic.category === 'vote') && (topic.vote.effect === 'poll')) return;    // no permission needed for poll vote
   const categoryPermissionName = `${topic.category}.${permissionName}`;
   const genericPermissionName = `topics.${permissionName}`;
-  const categoryPermission = Permissions.findOne(categoryPermissionName);
+  const categoryPermission = Permissions.find(perm => perm.name === categoryPermissionName);
   if (categoryPermission) {
     checkPermissions(userId, categoryPermission.name, topic.communityId, topic);
   } else {

@@ -26,7 +26,7 @@ if (Meteor.isServer) {
     this.timeout(5000);
     before(function () {
       Fixture = freshFixture();
-      createDelegation(Fixture.dummyUsers[0], Fixture.dummyUsers[1]);
+//      createDelegation(Fixture.dummyUsers[0], Fixture.dummyUsers[1]);
       createDelegation(Fixture.dummyUsers[1], Fixture.demoUserId);
       createDelegation(Fixture.dummyUsers[2], Fixture.demoUserId);
       createDelegation(Fixture.demoUserId, Fixture.dummyUsers[3]);
@@ -85,10 +85,28 @@ if (Meteor.isServer) {
 
       it('can update delegations', function (done) {
         updateDelegation._execute({ userId: Fixture.demoUserId },
+          { _id: delegationId, modifier: { $set: { targetPersonId: Fixture.dummyUsers[3] } } }
+        );
+        const delegation = Delegations.findOne(delegationId);
+        chai.assert.equal(delegation.targetPersonId, Fixture.dummyUsers[3]);
+        done();
+      });
+
+      it('circular delegation does not cause problem', function (done) {
+        updateDelegation._execute({ userId: Fixture.demoUserId },
           { _id: delegationId, modifier: { $set: { targetPersonId: Fixture.dummyUsers[1] } } }
         );
         const delegation = Delegations.findOne(delegationId);
         chai.assert.equal(delegation.targetPersonId, Fixture.dummyUsers[1]);
+        done();
+      });
+
+      it('self delegation not allowed', function (done) {
+        chai.assert.throws(() => {
+          updateDelegation._execute({ userId: Fixture.demoUserId },
+            { _id: delegationId, modifier: { $set: { targetPersonId: Fixture.demoUserId } } }
+          );
+        });
         done();
       });
 

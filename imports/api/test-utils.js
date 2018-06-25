@@ -21,8 +21,7 @@ chai.config.truncateThreshold = Infinity;
 export function logDB() {
   console.log('Communities:', '\n', Communities.find().fetch());
   console.log('Users:', '\n', Meteor.users.find().fetch());
-  console.log('Roles:', '\n', Roles.find().fetch());
-  console.log('Permissions:', '\n', Permissions.find().fetch());
+//  console.log('Roles:', '\n', Roles.find().fetch());
   console.log('Parcels:', '\n', Parcels.find().fetch());
   console.log('Memberships:', '\n', Memberships.find().fetch());
   console.log('Agendas:', '\n', Agendas.find().fetch());
