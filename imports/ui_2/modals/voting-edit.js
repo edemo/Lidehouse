@@ -9,6 +9,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
+import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
@@ -71,7 +72,7 @@ Template.Voting_edit.helpers({
   },
   // Default values for insert autoForm: https://github.com/aldeed/meteor-autoform/issues/210
   defaultOpenDate() {
-    return new Date();
+    return Clock.currentTime();
   },
   defaultCloseDate() {
     return moment().add(15, 'day').toDate();
@@ -132,7 +133,7 @@ AutoForm.addModalHooks('af.vote.insert');
 AutoForm.addHooks('af.vote.insert', {
   formToDoc(doc) {
     Tracker.nonreactive(() => {   // AutoForm will run the formToDoc each time any field on the form, like the vote.type is simply queried (maybe so that if its a calculated field, it gets calculated)
-      doc.createdAt = new Date();
+      doc.createdAt = Clock.currentTime();
       doc.communityId = Session.get('activeCommunityId');
       doc.userId = Meteor.userId();
       doc.category = 'vote';

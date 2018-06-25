@@ -1,4 +1,5 @@
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Clock } from '/imports/utils/clock.js';
 
 // The way to add Timestamps to a Schema:
 //
@@ -15,13 +16,14 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 //
 // New way: createdAt is optional: true, so validation doesn't complain
 //
+
 export const Timestamps = new SimpleSchema({
   createdAt: {
     type: Date,
     optional: true,
     autoValue() {
       if (this.isInsert) {
-        return new Date();
+        return Clock.currentTime();
       }
       return undefined;   // means leave it alone
     },
@@ -32,7 +34,7 @@ export const Timestamps = new SimpleSchema({
     type: Date,
     optional: true,
     autoValue() {
-      return new Date();
+      return Clock.currentTime();
     },
     autoform: { omit: true },
   },
