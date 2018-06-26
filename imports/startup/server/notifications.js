@@ -2,17 +2,11 @@
 import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { Topics } from '/imports/api/topics/topics.js';
-
-function sendEmail(emailAddress, emailTitle, emailBody) {
-  console.log('Sending out notification email to ' + emailAddress);
-  console.log('Title: ' + emailTitle);
-  console.log('Body: ' + emailBody);
-  // TODO: Lets send him this wonderful notification email!
-}
+import { EmailSender } from './email-sender.js';
 
 function sendNotifications(user) {
   let thingsHappened = false;
-  let emailBody = 'Dear user! \n' +
+  let body = 'Dear user! \n' +
   'Things happened since you last logged in:\n';
 
   user.communities().forEach(community => {
@@ -20,19 +14,18 @@ function sendNotifications(user) {
       const topicNotification = topic.notifications(user._id);
       if (topicNotification) {
         thingsHappened = true;
-        emailBody += topicNotification + '\n';
+        body += topicNotification + '\n';
         user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI);
       }
     });
   });
   if (!thingsHappened) return;
 
-  const emailAddress = user.getPrimaryEmail();
-  const emailTitle = 'Updates from honline';
-  emailBody += `You are getting these notifications, because you have email notifications sent ${user.settings.notiFrequency}, \n` +
-  'You can change your email notification settings on this link https://honline.hu/profile \n' +
+  const title = 'Updates from honline';
+  const footer = `You are getting these notifications, because you have email notifications sent ${user.settings.notiFrequency}, \n` +
+  'You can change your email notification settings <a href="https://honline.hu/profile"> on this link </a> \n' +
   'Greetings by the honline team';
-  sendEmail(emailAddress, emailTitle, emailBody);
+  EmailSender.send('email-template-noti', { to: user.getPrimaryEmail(), subject: title }, { title, body, footer });
 }
 
 function processNotifications(frequency) {
@@ -44,7 +37,7 @@ function processNotifications(frequency) {
 }
 
 let counter = 0;
-const checkPeriod = moment.duration(6, 'hours');
+const checkPeriod = moment.duration(6, 'seconds');
 
 function checkNotifications() {
   counter++;

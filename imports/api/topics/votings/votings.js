@@ -93,6 +93,9 @@ Topics.helpers({
   hasVotedIndirect(userId) {
     return !!(this.voteCastsIndirect && this.voteCastsIndirect[userId] && this.voteCastsIndirect[userId].length > 0);
   },
+  hasVoted(userId) {
+    return this.hasVotedDirect(userId) || this.hasVotedIndirect(userId);
+  },
   voteOf(userId) {
     return (this.voteCasts && this.voteCasts[userId]) || (this.voteCastsIndirect && this.voteCastsIndirect[userId]);
   },

@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { Clock } from '/imports/utils/clock.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders';
 import '/imports/ui_2/modals/modal.js';
@@ -52,7 +53,7 @@ Template.Shareddoc_store.helpers({
     const dummyFiles = [2014, 2015, 2016, 2017, 2018].map(function (year) {
       return {
         name: 'Document_' + year.toString() + '.doc',
-        createdAt: new Date(),
+        createdAt: Clock.currentTime(),
       };
     });
     if (folderId === 'main') containedFiles = dummyFiles.concat(containedFiles.fetch());
