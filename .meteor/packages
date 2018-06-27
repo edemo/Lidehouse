@@ -100,3 +100,4 @@ audit-argument-checks@1.0.7
 browser-policy@1.1.0
 
 dynamic-import@0.3.0
+meteorhacks:ssr

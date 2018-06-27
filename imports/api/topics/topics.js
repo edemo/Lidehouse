@@ -97,7 +97,7 @@ Topics.helpers({
   notifications(userId, seenType = Meteor.users.SEEN_BY_NOTI) {
     if (this.participantIds && !_.contains(this.participantIds, userId)) return '';
     if (this.category === 'room') {
-      if (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0) {
+      if (this.unseenCommentsBy(userId, seenType) > 0) {
         return `You have ${this.unseenCommentsBy(userId, seenType)} new messages from ${this.participantIds.map(id => Meteor.users.findOne(id).displayName())}`; // TODO: print messages
       }
     } else /* this.category !== 'room' */ {

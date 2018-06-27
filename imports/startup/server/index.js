@@ -10,6 +10,7 @@ import './accounts-email-config.js';
 import './accounts-verification.js';
 
 import './notifications.js';
+import './email-sender.js';
 
 // Set up some rate limiting and other important security settings.
 import './security.js';
