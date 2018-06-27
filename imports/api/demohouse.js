@@ -1322,6 +1322,8 @@ Meteor.methods({
       userId: dummyUserId,
       text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
     });
+    // TODO: Do this thing in the comments.insert method,
+    // Everyone has seen his own comments! So set it to be seen by him, when he comments.
     Meteor.users.update({ _id: demoUserId }, { $set: {
       lastSeens: [
         { [demoUserMessageRoom2]: { timestamp: new Date(), commentCounter: 1 } },
