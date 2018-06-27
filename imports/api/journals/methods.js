@@ -9,14 +9,24 @@ import { TxDefs } from '/imports/api/journals/tx-defs.js';
 
 export const insertTx = new ValidatedMethod({
   name: 'txs.insert',
-  validate: Journals.simpleSchema().validator({ clean: true }),
+  validate: Txs.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    return Txs.insert(doc);
+    const txId = Txs.insert(doc);
+    const txDef = TxDefs.findOne(doc.defId);
+    txDef.journals.forEach(journalDef => {
+      Object._keys(journalDef.accountFrom).forEach(key => {
+
+      });
+      const journal = _.extend(journalDef);
+      const jid = Journals.insert(journal);
+      Txs.update(txId, { $push: jid });
+    });
+    return txId;
   },
 });
 
-export const revert = new ValidatedMethod({
+export const revertTx = new ValidatedMethod({
   name: 'txs.revert',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },

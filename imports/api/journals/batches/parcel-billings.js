@@ -25,7 +25,7 @@ ParcelBillings.schema = new SimpleSchema({
 });
 
 function leafIsParcel(leafName) {
-  return parseInt(leafName, 0);
+  return parseInt(leafName, 10);
 }
 
 ParcelBillings.helpers({
@@ -37,7 +37,7 @@ ParcelBillings.helpers({
 //    console.log('leafs', leafs);
     const parcelLeafs = leafs.filter(l => leafIsParcel(l.name));
 //    console.log('parcelLeafs', parcelLeafs);
-    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, serial: parseInt(l.name, 0) }));
+    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, serial: parseInt(l.name, 10) }));
 //    console.log('parcels', parcels);
     return parcels;
   },

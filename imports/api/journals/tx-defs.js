@@ -60,6 +60,38 @@ TxDefs.schema = new SimpleSchema({
   'journals.$': { type: JournalDefSchema },
 });
 
+TxDefs.helpers({
+  newTxSchema() {
+    function chooseAccountsSchema() {
+      const communityId = Session.get('activeCommunityId');
+      const mainAccounts = Breakdowns.find({ communityId, sign: { $exists: true } });
+      const localizerPac = Breakdowns.findOne({ communityId, name: 'Localizer' });
+    
+      return new SimpleSchema({
+        account: { type: String, autoform: { options() { return mainAccounts.map(a => { return { value: a.name, label: a.name }; }); } } },
+        localizer: { type: String, autoform: { options() { return localizerPac.leafOptions(); } } },
+      });
+    }
+/*
+    return new SimpleSchema([
+      Journals.simpleSchema(),
+      { accountFrom: { type: chooseAccountsSchema('accountFrom'), optional: true } },
+      { accountTo: { type: chooseAccountsSchema('accountTo'), optional: true } },
+    ]);
+*/
+    return new SimpleSchema({
+      valueDate: { type: Date },
+      amount: { type: Number, decimal: true },
+      accounts: { type: Array, optional: true },
+      'accounts.$': { type: Object, blackbox: true },
+      ref: { type: String, max: 100, optional: true },
+      note: { type: String, max: 100, optional: true },
+    });
+
+  },
+});
+
+
 TxDefs.attachSchema(TxDefs.schema);
 TxDefs.attachSchema(Timestamps);
 

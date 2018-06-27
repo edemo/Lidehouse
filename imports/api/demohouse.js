@@ -17,6 +17,7 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
+import { TxDefs } from '/imports/api/journals/tx-defs.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
 import { insertBreakdownTemplate } from '/imports/api/journals//template.js';
@@ -857,42 +858,44 @@ export function insertDemoHouse(lang, demoOrTest) {
 
 // ===== Journals =====
 
+  const defPayin = TxDefs.findOne({ communityId: demoCommunityId, name: 'Payin' });
+  const defObligation = TxDefs.findOne({ communityId: demoCommunityId, name: 'Obligation' });
+  const defIncome = TxDefs.findOne({ communityId: demoCommunityId, name: 'Income' });
+  const defExpense = TxDefs.findOne({ communityId: demoCommunityId, name: 'Expense' });
+  const defLoan = TxDefs.findOne({ communityId: demoCommunityId, name: 'Loan' });
+  const defOpening = TxDefs.findOne({ communityId: demoCommunityId, name: 'Opening' });
+  const defBackofficeOp = TxDefs.findOne({ communityId: demoCommunityId, name: 'BackofficeOp' });
+
   // === Opening ===
 
-  Journals.insert({
+  insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
+    defId: defOpening,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 100000,
-    accountFrom: {
-      'Liabilities': 'Opening',
-    },
     accountTo: {
       'Assets': 'Pénztár 1',
     },
   });
 
-  Journals.insert({
+  insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
+    defId: defOpening,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 110000,
-    accountFrom: {
-      'Liabilities': 'Opening',
-    },
     accountTo: {
       'Assets': 'Bank főszámla',
     },
   });
 
-  Journals.insert({
+  insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
+    defId: defOpening,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 120000,
-    accountFrom: {
-      'Liabilities': 'Opening',
-    },
     accountTo: {
       'Assets': 'Bank felújítási alap',
     },
@@ -900,8 +903,9 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     // === Befizetesek ===
 
-  Journals.insert({
+  insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
+    defId: defIncome,
     phase: 'done',
     valueDate: new Date('2017-06-01'),
     amount: 3500,
@@ -914,92 +918,26 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Journals.insert({
-    communityId: demoCommunityId,
-    phase: 'done',
-    valueDate: new Date('2017-02-01'),
-    amount: 300,
-    accountFrom: {
-      'Incomes': 'Kamat pénzintézetektől',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
+  ['02', '04', '06', '08', '10', '12'].forEach(mm => {
+    insertTx._execute({ userId: demoAccountantId }, {
+      communityId: demoCommunityId,
+      defId: defIncome,
+      phase: 'done',
+      valueDate: new Date(`2017-${mm}-01`),
+      amount: 400,
+      accountFrom: {
+        'Incomes': 'Kamat pénzintézetektől',
+        'Localizer': 'Központi',
+      },
+      accountTo: {
+        'Assets': 'Bank főszámla',
+      },
+    });
   });
 
-  Journals.insert({
+  insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
-    phase: 'done',
-    valueDate: new Date('2017-04-01'),
-    amount: 400,
-    accountFrom: {
-      'Incomes': 'Kamat pénzintézetektől',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
-  });
-
-  Journals.insert({
-    communityId: demoCommunityId,
-    phase: 'done',
-    valueDate: new Date('2017-06-01'),
-    amount: 200,
-    accountFrom: {
-      'Incomes': 'Kamat pénzintézetektől',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
-  });
-
-  Journals.insert({
-    communityId: demoCommunityId,
-    phase: 'done',
-    valueDate: new Date('2017-08-01'),
-    amount: 100,
-    accountFrom: {
-      'Incomes': 'Kamat pénzintézetektől',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
-  });
-
-  Journals.insert({
-    communityId: demoCommunityId,
-    phase: 'done',
-    valueDate: new Date('2017-10-01'),
-    amount: 600,
-    accountFrom: {
-      'Incomes': 'Kamat pénzintézetektől',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
-  });
-
-  Journals.insert({
-    communityId: demoCommunityId,
-    phase: 'done',
-    valueDate: new Date('2017-12-01'),
-    amount: 550,
-    accountFrom: {
-      'Incomes': 'Kamat pénzintézetektől',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
-  });
-
-  Journals.insert({
-    communityId: demoCommunityId,
+    defId: defIncome,
     phase: 'done',
     valueDate: new Date('2017-09-15'),
     amount: 500000,
@@ -1013,8 +951,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.journals.note.1'),
   });
 
-  Journals.insert({
+  insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
+    defId: defIncome,
     phase: 'done',
     valueDate: new Date('2017-05-10'),
     amount: 55000,
@@ -1028,8 +967,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.journals.note.2'),
   });
 
-  Journals.insert({
+  insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
+    defId: defIncome,
     phase: 'done',
     valueDate: new Date('2017-10-15'),
     amount: 500000,
@@ -1043,8 +983,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.journals.note.3'),
   });
 
-  Journals.insert({
+  insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
+    defId: defLoan,
     phase: 'done',
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
@@ -1061,15 +1002,19 @@ export function insertDemoHouse(lang, demoOrTest) {
     for (let i = 1; i < 15; i++) {
       const payable = [0, 15125, 13200, 18150, 19250, 18150, 19250, 18150,
         19250, 18150, 19250, 30800, 13750, 19000, 6050];
-      insertTx('Payin', {
+      insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
+        defId: defPayin,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
-      }, {
-        'Owner payins': 'Közös költség befizetés',
-        'Localizer': i.toString(),
-        'Assets': 'Bank főszámla',
+        accountFrom: {
+          'Owner payins': 'Közös költség befizetés',
+          'Localizer': i.toString(),
+        },
+        accountTo: {
+          'Assets': 'Bank főszámla',
+        },
       });
     }
   }
@@ -1078,51 +1023,64 @@ export function insertDemoHouse(lang, demoOrTest) {
     for (let i = 0; i < 4; i++) {
       const payable = [5000, 7500, 5000, 2500];
       const place = ['2', '5', '8', '14'];
-      insertTx('Payin', {
+      insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
+        defId: defPayin,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-      }, {
-        'Owner payins': 'Víz díj',
-        'Localizer': place[i],
-        'Assets': 'Bank főszámla',
+        accountFrom: {
+          'Owner payins': 'Víz díj',
+          'Localizer': place[i],
+        },
+        accountTo: {
+          'Assets': 'Bank főszámla',
+        },
       });
     }
   }
   for (let m = 1; m < 13; m++) {
     for (let i = 1; i < 11; i++) {
       const payable = [0, 14960, 13056, 15708, 16660, 15708, 16660, 15708, 16660, 15708, 16660];
-      insertTx('Payin', {
+      insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
+        defId: defPayin,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-      }, {
-        'Owner payins': 'Fűtési díj',
-        'Localizer': i.toString(),
-        'Assets': 'Bank főszámla',
+        accountFrom: {
+          'Owner payins': 'Fűtési díj',
+          'Localizer': i.toString(),
+        },
+        accountTo: {
+          'Assets': 'Bank főszámla',
+        },
       });
     }
   }
 
   for (let i = 1; i < 15; i++) {
-    insertTx('Payin', {
+    insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
+      defId: defPayin,
       phase: 'done',
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
-    }, {
-      'Owner payins': 'Felújítási célbefizetés',
-      'Localizer': i.toString(),
-      'Assets': 'Bank főszámla',
+      accountFrom: {
+        'Owner payins': 'Felújítási célbefizetés',
+        'Localizer': i.toString(),
+      },
+      accountTo: {
+        'Assets': 'Bank főszámla',
+      },
     });
   }
 
   for (let m = 1; m < 13; m += 2) {
     const payable = [0, 8432, 0, 7250, 0, 9251, 0, 11624, 0, 10635, 0, 8540];
-    Journals.insert({
+    insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
+      defId: defExpense,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
@@ -1138,8 +1096,9 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   for (let m = 1; m < 13; m += 2) {
     const payable = [0, 10562, 0, 9889, 0, 11210, 0, 11152, 0, 11435, 0, 9930];
-    Journals.insert({
+    insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
+      defId: defExpense,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
@@ -1154,8 +1113,9 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   for (let m = 1; m < 13; m++) {
-    Journals.insert({
+    insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
+      defId: defExpense,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 10250,

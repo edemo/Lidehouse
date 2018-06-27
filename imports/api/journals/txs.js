@@ -10,7 +10,35 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 import { Journals } from './journals.js';
 import { Breakdowns } from '../journals/breakdowns/breakdowns.js';
 
+export const Txs = new Mongo.Collection('txs');
 
+Txs.schema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  defId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  valueDate: { type: Date },
+  amount: { type: Number, decimal: true },
+  accounts: { type: Array, optional: true },
+  'accounts.$': { type: Object, blackbox: true },
+  ref: { type: String, max: 100, optional: true },
+  note: { type: String, max: 100, optional: true },
+  journalIds: { type: Array, defaultValue: [] },
+  'journalIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },
+});
+
+Txs.attachSchema(Txs.schema);
+Txs.attachSchema(Timestamps);
+
+Meteor.startup(function attach() {
+  Txs.simpleSchema().i18n('schemaTxs');
+});
+
+Txs.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
+});
+
+/*
 class AssertiveObject {
   constructor(obj) {
     this._obj = obj;
@@ -64,28 +92,5 @@ export function insertTx(name, txBase, txParams) {
   });
 }
 ;
+*/
 
-//--------
-export const Txs = new Mongo.Collection('txs');
-
-Txs.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  defId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  params: { type: Object, blackbox: true },
-  valueDate: { type: Date },
-  ref: { type: String, max: 100, optional: true },
-  note: { type: String, max: 100, optional: true },
-});
-
-Txs.attachSchema(Txs.schema);
-Txs.attachSchema(Timestamps);
-
-Meteor.startup(function attach() {
-  Txs.simpleSchema().i18n('schemaTxs');
-});
-
-Txs.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});

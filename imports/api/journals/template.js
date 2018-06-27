@@ -104,7 +104,7 @@ const BreakdownsTemplate = [
 
   { name: 'Liabilities', locked: true, sign: -1,
     children: [
-      { name: 'Opening/Carry',
+      { name: 'Initialize',
         children: [
         { name: 'Opening' },
         { name: 'Carry' },
@@ -202,6 +202,40 @@ const TxDefsTemplate = [
     }],
   },
 
+  { name: 'Income',
+    journals: [{
+      accountFrom: 'Accounts/Incomes',
+      accountTo: 'Accounts/Assets/Pénz számlák',
+    }],
+  },
+
+  { name: 'Expense',
+    journals: [{
+      accountFrom: 'Accounts/Assets/Pénz számlák',
+      accountTo: 'Accounts/Expenses',
+    }],
+  },
+
+  { name: 'Loan',
+    journals: [{
+      accountFrom: 'Accounts/Liabilities/Hitelek',
+      accountTo: 'Accounts/Assets/Pénz számlák',
+    }],
+  },
+
+  { name: 'Opening',
+    journals: [{
+      accountFrom: 'Accounts/Liabilities/Initialize/Opening',
+      accountTo: 'Accounts/Assets',
+    }],
+  },
+
+  { name: 'Backoffice Op',
+    journals: [{
+      accountFrom: 'Accounts',
+      accountTo: 'Accounts',
+    }],
+  },
 ];
 
 export function insertBreakdownTemplate(communityId) {

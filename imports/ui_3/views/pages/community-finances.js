@@ -209,7 +209,6 @@ const chooseLeafObject = function (move) {
   };
 };
 
-
 function newJournalSchema() {
   function chooseAccountsSchema(move) {
     const communityId = Session.get('activeCommunityId');
@@ -325,7 +324,8 @@ Template.Community_finances.events({
     });
   },
   'click #journals .js-new'(event, instance) {
-    /* 
+    const defId = $(event.target).data("id");
+    const def = TxDefs.findOne(defId);
     Modal.show('Autoform_edit', {
       id: 'af.journal.insert',
       collection: Journals,
@@ -335,8 +335,6 @@ Template.Community_finances.events({
       meteormethod: 'journals.insert',
       template: 'bootstrap3-inline',
     });
-    */
-    const type = $(event.target).data("id");
   },
   'click #journals .js-new-def'(event, instance) {
     Modal.show('Autoform_edit', {

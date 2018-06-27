@@ -22,8 +22,6 @@ Journals.schema = new SimpleSchema({
   accountTo: { type: Object, blackbox: true, optional: true },
     // rootAccountName -> leafAccountName or parcelNo
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  ref: { type: String, max: 100, optional: true },
-  note: { type: String, max: 100, optional: true },
 });
 
 // A *journal* is effecting a certain field (in pivot tables) with the *amount* of the journal,
