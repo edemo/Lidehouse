@@ -2,7 +2,8 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
-import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
+import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 
 export const insert = new ValidatedMethod({
   name: 'sharedfolders.insert',
@@ -43,6 +44,7 @@ export const remove = new ValidatedMethod({
     const doc = checkExists(Sharedfolders, _id);
     checkPermissions(this.userId, 'shareddocs.upload', doc.communityId);
 
+    Shareddocs.remove({ communityId: doc.communityId, folderId: _id });
     Sharedfolders.remove(_id);
   },
 });
