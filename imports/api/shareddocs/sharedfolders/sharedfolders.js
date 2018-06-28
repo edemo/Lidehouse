@@ -5,23 +5,18 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { Shareddocs, hasPermissionToUpload } from './shareddocs.js';
+import { Shareddocs, hasPermissionToUpload } from '/imports/api/shareddocs/shareddocs.js';
 
 // Declare store collection
 export const Sharedfolders = new Mongo.Collection('sharedfolders');
 
 // Setting up collection permissions
-Sharedfolders.allow({
-  insert(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
-  update(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
-  remove(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
+Sharedfolders.deny({
+  insert() { return true; },
+  update() { return true; },
+  remove() { return true; },
 });
+
 
 Sharedfolders.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true, optional: true },

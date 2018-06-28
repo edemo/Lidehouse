@@ -124,17 +124,6 @@ Template.Votebox.helpers({
   displayUser() {
     return Meteor.users.findOne(this.userId).fullName();
   },
-  displayCreatedAtTime() {
-    return moment(this.createdAt).format('L');
-  },
-  displayClosesAtTime() {
-    return moment(this.vote.closesAt).format('L');
-  },
-  displayTimeLeft() {
-    // momentjs is not reactive, but TymeSync call makes this reactive
-    const serverTimeNow = new Date(TimeSync.serverTime());
-    return moment(this.vote.closesAt).from(serverTimeNow);
-  },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },

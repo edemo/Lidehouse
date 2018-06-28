@@ -29,7 +29,7 @@
                 <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
                 {{_ 'important'}}! ({{likesCount}})
             </a> -
-            <small class="text-muted">{{displayTimeFrom createdAt}}</small>
+            <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
             {{#if userHasPermission 'comments.remove' (fromSession 'activeCommunityId') this}}
                 <div class="btn-group">
                     {{#if userHasPermission 'comments.update' (fromSession 'activeCommunityId') this}}
