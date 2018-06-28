@@ -1,6 +1,6 @@
 // Initial db data
 import '/imports/api/permissions/config.js';
-import '/imports/api/shareddocs/builtin.js';
+import '/imports/api/shareddocs/sharedfolders/builtin.js';
 
 // This defines a starting set of data to be loaded if the app is loaded with an empty db.
 import './live-fixtures.js';
