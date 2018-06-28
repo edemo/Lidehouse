@@ -38,12 +38,12 @@ Template.Tickets_report.helpers({
   },
   recentTickets() {
     const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category: 'ticket', 'ticket.status': { $not: 'closed' } }, { sort: { createdAt: -1 } });
+    return Topics.find({ communityId, category: 'ticket', 'ticket.status': { $ne: 'closed' } }, { sort: { createdAt: -1 } });
   },
   activeTicketsDataFn() {
     return () => {
       const communityId = Session.get('activeCommunityId');
-      return Topics.find({ communityId, category: 'ticket', 'ticket.status': { $not: 'closed' } }).fetch();
+      return Topics.find({ communityId, category: 'ticket', 'ticket.status': { $ne: 'closed' } }).fetch();
     };
   },
   closedTicketsDataFn() {
