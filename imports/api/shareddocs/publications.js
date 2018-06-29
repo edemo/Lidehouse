@@ -6,21 +6,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Shareddocs } from './shareddocs.js';
-import { Sharedfolders } from './sharedfolders.js';
 import { checkExists } from '../method-checks.js';
-
-Meteor.publish('sharedfolders.ofCommunity', function (params) {
-  new SimpleSchema({
-    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validate(params);
-  const { communityId } = params;
-  const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('shareddocs.download', communityId)) {
-    return this.ready();
-  }
-
-  return Sharedfolders.find({ $or: [{ communityId }, { communityId: { $exists: false } }] });
-});
 
 Meteor.publish('shareddocs.ofCommunity', function (params) {
   new SimpleSchema({

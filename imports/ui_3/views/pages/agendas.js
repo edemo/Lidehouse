@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Agendas } from '/imports/api/agendas/agendas.js';
+import { remove as removeAgenda } from '/imports/api/agendas/methods.js';
 
 import '../components/voting-list.html';
 import './agendas.html';
