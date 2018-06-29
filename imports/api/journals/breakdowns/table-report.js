@@ -1,9 +1,8 @@
-import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { Journals } from '/imports/api/journals/journals.js';
+import { Legs } from '/imports/api/journals/legs.js';
 import { Breakdowns } from './breakdowns';
 
 export class TableReport {
@@ -106,38 +105,24 @@ export class TableReport {
     const lineDefs = colDefs.concat(rowDefs);
     lineDefs.forEach(addFilter);
 
-    // From this filter, we need to make two filters for the 'From' and 'To' aggregation runs
-    const fromFilter = {};
-    const toFilter = {};
     let displaySign = 0;  // the displaySign is the main Account's sign
     const filterKeys = Object.keys(filter);
     filterKeys.forEach((fKey) => {
       const splitted = fKey.split('.');
-      if (splitted[0] === 'accounts') {
+      if (splitted[0] === 'account') {
         const accountName = splitted[1];
-        fromFilter['accountFrom.' + accountName] = filter[fKey];
-        toFilter['accountTo.' + accountName] = filter[fKey];
-        const pac = Breakdowns.findOne({ communityId: Session.get('activeCommunityId'), name: accountName });
+        const pac = Breakdowns.findOne({ name: accountName });  // TODO
         if (pac.sign) displaySign = pac.sign;
-      } else {
-        fromFilter[fKey] = filter[fKey];
-        toFilter[fKey] = filter[fKey];
       }
     });
 
-    let fromAmount = 0;
-    if (filter.move !== 'to') {
-      const fromJournals = Journals.find(fromFilter);
-      fromJournals.forEach(tx => fromAmount += tx.amount);
-    }
+    let amount = 0;
+    Legs.find(filter).forEach(leg => {
+      amount += leg.amount * (leg.move === 'to' ? +1 : -1);
+    });
 
-    let toAmount = 0;
-    if (filter.move !== 'from') {
-      const toJournals = Journals.find(toFilter);
-      toJournals.forEach(tx => toAmount += tx.amount);
-    }
 
-    const totalAmount = displaySign * (toAmount - fromAmount);
+    const totalAmount = displaySign * amount;
     if (totalAmount < 0) classes += ' negative';
 //    console.log(`${x}, ${y}: filter:`); console.log(filter);
     return { class: classes, value: numeral(totalAmount).format() };

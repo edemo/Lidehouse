@@ -1,3 +1,4 @@
+/*
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
@@ -72,13 +73,13 @@ TxDefs.helpers({
         localizer: { type: String, autoform: { options() { return localizerPac.leafOptions(); } } },
       });
     }
-/*
-    return new SimpleSchema([
-      Journals.simpleSchema(),
-      { accountFrom: { type: chooseAccountsSchema('accountFrom'), optional: true } },
-      { accountTo: { type: chooseAccountsSchema('accountTo'), optional: true } },
-    ]);
-*/
+
+//    return new SimpleSchema([
+//      Journals.simpleSchema(),
+//      { accountFrom: { type: chooseAccountsSchema('accountFrom'), optional: true } },
+//      { accountTo: { type: chooseAccountsSchema('accountTo'), optional: true } },
+//    ]);
+
     return new SimpleSchema({
       valueDate: { type: Date },
       amount: { type: Number, decimal: true },
@@ -105,3 +106,4 @@ TxDefs.allow({
   update() { return true; },
   remove() { return true; },
 });
+*/

@@ -35,6 +35,7 @@ Template.Main_layout.onCreated(function() {
     }
     // although this is too early, but if we sub it in Finances page, the datatables has no way to refresh
     this.subscribe('breakdowns.inCommunity', { communityId: activeCommunityId });
+    this.subscribe('journals.inCommunity', { communityId: activeCommunityId });
   });
   // We run this in autorun, so when User switches his community, the subscription changes
   this.autorun(() => {

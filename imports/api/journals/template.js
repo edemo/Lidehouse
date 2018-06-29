@@ -19,6 +19,9 @@ const BreakdownsTemplate = [
     children: [
       { name: 'Owner payins', locked: true,
         include: 'Owner payins',
+        children: [
+          { name: 'Unidentified payins' },
+        ],
       },
       { name: 'NEM adóköteles bevételek',
         children: [
@@ -93,6 +96,7 @@ const BreakdownsTemplate = [
         children: [
         { name: 'Bank főszámla' },
         { name: 'Bank felújítási alap' },
+        { name: 'Hitel számla' },
         { name: 'Pénztár 1' },
         ],
       },
@@ -104,22 +108,21 @@ const BreakdownsTemplate = [
 
   { name: 'Liabilities', locked: true, sign: -1,
     children: [
-      { name: 'Initialize',
-        children: [
-        { name: 'Opening' },
-        { name: 'Carry' },
-        ],
-      },
       { name: 'Hitelek',
         children: [
         { name: 'Bank hitel' },
         ],
       },
-      { name: 'Owners',
+    ],
+  },
+
+  { name: 'Equity', locked: true, sign: -1,
+    children: [
+      { name: 'Initialize',
         children: [
-        { name: 'Unidentified payins' },
+        { name: 'Opening' },
+        { name: 'Carry' },
         ],
-        include: 'Owner payins',
       },
     ],
   },
@@ -141,6 +144,11 @@ const BreakdownsTemplate = [
         ],
       },
     ],
+  },
+
+  { name: 'Owners', locked: true, sign: 1,
+    include: 'Owner payins',
+    children: [],
   },
 
   /*
@@ -183,6 +191,7 @@ const BreakdownsTemplate = [
 */
 ];
 
+/*
 const TxDefsTemplate = [
 
   { name: 'Obligation',
@@ -237,12 +246,14 @@ const TxDefsTemplate = [
     }],
   },
 ];
+*/
 
 export function insertBreakdownTemplate(communityId) {
   BreakdownsTemplate.forEach((breakdown) => {
     Breakdowns.insert(_.extend({}, breakdown, { communityId }));
   });
-  TxDefsTemplate.forEach((txDef) => {
+/*  TxDefsTemplate.forEach((txDef) => {
     TxDefs.insert(_.extend({}, txDef, { communityId }));
   });
+  */
 }

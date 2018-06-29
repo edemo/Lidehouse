@@ -9,6 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
+import { Legs } from '/imports/api/journals/legs.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { remove as removeJournal, billParcels } from '/imports/api/journals/methods.js';
 import { Session } from 'meteor/session';
@@ -29,8 +30,8 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('breakdowns.inCommunity', { communityId });
     this.subscribe('journals.inCommunity', { communityId });
-    this.subscribe('txs.inCommunity', { communityId });
-    this.subscribe('txDefs.inCommunity', { communityId });
+//    this.subscribe('txs.inCommunity', { communityId });
+//    this.subscribe('txDefs.inCommunity', { communityId });
   });
 
   this.autorun(() => {
@@ -68,10 +69,9 @@ Template.Parcels_finances.helpers({
     const communityId = Session.get('activeCommunityId');
     const parcelFilter = Template.instance().getActiveParcelFilter();
 
-    return Journals.find({ communityId,
-      $or: [{ 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': parcelFilter },
-            { 'accountTo.Owners': { $exists: true }, 'accountTo.Localizer': parcelFilter },
-      ] }).sort({ valueDate: 1 });
+    return Legs.find({ communityId,
+      'account.Owners': { $exists: true }, 'account.Localizer': parcelFilter },
+    ).sort({ valueDate: 1 });
   },
   displayPhase(journal) {
     if (journal.accountFrom.Owners) return __('bill');

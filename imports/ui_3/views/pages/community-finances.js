@@ -36,8 +36,8 @@ Template.Community_finances.onCreated(function communityFinancesOnCreated() {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('breakdowns.inCommunity', { communityId });
     this.subscribe('journals.inCommunity', { communityId });
-    this.subscribe('txs.inCommunity', { communityId });
-    this.subscribe('txDefs.inCommunity', { communityId });
+//    this.subscribe('txs.inCommunity', { communityId });
+//    this.subscribe('txDefs.inCommunity', { communityId });
   });
 });
 
@@ -125,9 +125,15 @@ Template.Community_finances.helpers({
     return Reports[name](year);
   },
   txDefs() {
-//    const txDefs = ['Payin', 'Obligation', 'Income', 'Expense', 'Backoffice op'];
-    const communityId = Session.get('activeCommunityId');
-    const txDefs = TxDefs.find({ communityId });
+    const txDefs = [
+      { _id: '1', name: 'Payin' },
+      { _id: '2', name: 'Obligation' }, 
+      { _id: '3', name: 'Income' },
+      { _id: '4', name: 'Expense'},
+      { _id: '5', name: 'Backoffice op'},
+    ];
+//    const communityId = Session.get('activeCommunityId');
+//    const txDefs = TxDefs.find({ communityId });
     return txDefs;
   },
   mainBreakdownsTableDataFn() {

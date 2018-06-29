@@ -20,7 +20,7 @@ export const Reports = {
     report.addFilter({ phase: 'done' });
     report.addLine('cols', [], false);
     report.addTree('rows', {
-      field: 'accounts.Assets',
+      field: 'account.Assets',
       values: Breakdowns.findOne({ communityId, name: 'Assets' }),
     }, false);
 
@@ -34,8 +34,22 @@ export const Reports = {
     report.addFilter({ phase: 'done' });
     report.addLine('cols', [], false);
     report.addTree('rows', {
-      field: 'accounts.Liabilities',
+      field: 'account.Liabilities',
       values: Breakdowns.findOne({ communityId, name: 'Liabilities' }),
+    }, false);
+
+    return report;
+  },
+
+  Equity() {
+    const report = new TableReport('Equity');
+    const communityId = Session.get('activeCommunityId');
+    
+    report.addFilter({ phase: 'done' });
+    report.addLine('cols', [], false);
+    report.addTree('rows', {
+      field: 'account.Equity',
+      values: Breakdowns.findOne({ communityId, name: 'Equity' }),
     }, false);
 
     return report;
@@ -46,7 +60,7 @@ export const Reports = {
     const communityId = Session.get('activeCommunityId');
 
     report.addFilter({
-//      'accounts.Incomes': { $exists: true },
+//      'account.Incomes': { $exists: true },
       phase: 'done',
     });
 
@@ -56,11 +70,11 @@ export const Reports = {
     }, false);
 
     report.addTree('rows', {
-      field: 'accounts.Incomes',
+      field: 'account.Incomes',
       values: Breakdowns.findOne({ communityId, name: 'Incomes' }),
     }, false);
     report.addTree('rows', {
-      field: 'accounts.Expenses',
+      field: 'account.Expenses',
       values: Breakdowns.findOne({ communityId, name: 'Expenses' }),
     }, false);
 
@@ -99,12 +113,12 @@ export const Reports = {
     report.addFilter({ phase: 'done' });
 
     report.addTree('rows', {
-      field: 'accounts.Localizer',
+      field: 'account.Localizer',
       values: Breakdowns._transform(myParcels),
     }, false);
 
     report.addTree('rows', {
-      field: 'accounts.Assets',
+      field: 'account.Owners',
       values: Breakdowns.findOne({ communityId, name: 'Owner payins' }),
     }, true, true);
 
@@ -123,12 +137,12 @@ export const Reports = {
     report.addFilter({ phase: 'done' });
 
     report.addTree('rows', {
-      field: 'accounts.Localizer',
+      field: 'account.Localizer',
       values: Breakdowns.findOne({ communityId, name: 'Localizer' }),
     }, false);
 
     report.addTree('cols', {
-      field: 'accounts.Incomes',
+      field: 'account.Owners',
       values: Breakdowns.findOne({ communityId, name: 'Owner payins' }),
     }, false, true);
 

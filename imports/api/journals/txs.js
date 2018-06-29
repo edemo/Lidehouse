@@ -1,3 +1,4 @@
+/*
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
@@ -38,7 +39,7 @@ Txs.deny({
   remove() { return true; },
 });
 
-/*
+
 class AssertiveObject {
   constructor(obj) {
     this._obj = obj;

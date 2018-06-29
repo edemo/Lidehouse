@@ -17,11 +17,11 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
-import { TxDefs } from '/imports/api/journals/tx-defs.js';
+// import { TxDefs } from '/imports/api/journals/tx-defs.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
 import { insertBreakdownTemplate } from '/imports/api/journals//template.js';
-import { insertTx } from '/imports/api/journals/txs.js';
+import { insert as insertTx } from '/imports/api/journals/methods.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -306,9 +306,10 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Memberships =====
 
+  const demoAccountantId = dummyUsers[3];
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: dummyUsers[3] },
+    person: { userId: demoAccountantId },
     role: 'accountant',
   });
   [4, 10, 16].forEach((userNo) => { 
@@ -761,7 +762,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   insertBreakdownTemplate(demoCommunityId);
 
-  const locator = Breakdowns.update({
+  const localizer = Breakdowns.update({
     communityId: demoCommunityId,
     name: 'Localizer',
   }, {
@@ -857,7 +858,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
 
 // ===== Journals =====
-
+/*
   const defPayin = TxDefs.findOne({ communityId: demoCommunityId, name: 'Payin' });
   const defObligation = TxDefs.findOne({ communityId: demoCommunityId, name: 'Obligation' });
   const defIncome = TxDefs.findOne({ communityId: demoCommunityId, name: 'Income' });
@@ -865,136 +866,178 @@ export function insertDemoHouse(lang, demoOrTest) {
   const defLoan = TxDefs.findOne({ communityId: demoCommunityId, name: 'Loan' });
   const defOpening = TxDefs.findOne({ communityId: demoCommunityId, name: 'Opening' });
   const defBackofficeOp = TxDefs.findOne({ communityId: demoCommunityId, name: 'BackofficeOp' });
-
+*/
   // === Opening ===
 
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
-    defId: defOpening,
+  //  defId: defOpening,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 100000,
-    accountTo: {
-      'Assets': 'Pénztár 1',
-    },
+    legs: [{
+      move: 'from',
+      account: { 'Equity': 'Opening' },
+    }, {
+      move: 'to',
+      account: { 'Assets': 'Pénztár 1' },
+    }],
   });
 
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
-    defId: defOpening,
+//    defId: defOpening,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 110000,
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
+    legs: [{
+      move: 'from',
+      account: { 'Equity': 'Opening' },
+    }, {
+      move: 'to',
+      account: { 'Assets': 'Bank főszámla' },
+    }],
   });
 
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
-    defId: defOpening,
+//    defId: defOpening,
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 120000,
-    accountTo: {
-      'Assets': 'Bank felújítási alap',
-    },
+    legs: [{
+      move: 'from',
+      account: { 'Equity': 'Opening' },
+    }, {
+      move: 'to',
+      account: { 'Assets': 'Bank felújítási alap' },
+    }],
   });
 
     // === Befizetesek ===
 
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
-    defId: defIncome,
+//    defId: defIncome,
     phase: 'done',
     valueDate: new Date('2017-06-01'),
     amount: 3500,
-    accountFrom: {
-      'Incomes': 'Egyéb bevétel',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
+    legs: [{
+      move: 'from',
+      account: {
+        'Incomes': 'Egyéb bevétel',
+        'Localizer': 'Központi',
+      },
+    }, {
+      move: 'to',
+      account: {
+        'Assets': 'Bank főszámla',
+      },
+    }],
   });
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
-      defId: defIncome,
+//      defId: defIncome,
       phase: 'done',
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
-      accountFrom: {
-        'Incomes': 'Kamat pénzintézetektől',
-        'Localizer': 'Központi',
-      },
-      accountTo: {
-        'Assets': 'Bank főszámla',
-      },
+      legs: [{
+        move: 'from',
+        account: {
+          'Incomes': 'Kamat pénzintézetektől',
+          'Localizer': 'Központi',
+        },
+      }, {
+        move: 'to',
+        account: { 
+          'Assets': 'Bank főszámla',
+        },
+      }],
     });
   });
 
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
-    defId: defIncome,
+//    defId: defIncome,
     phase: 'done',
     valueDate: new Date('2017-09-15'),
     amount: 500000,
-    accountFrom: {
-      'Incomes': 'Támogatás',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
+    legs: [{
+      move: 'from',
+      account: {
+        'Incomes': 'Támogatás',
+        'Localizer': 'Központi',
+      },
+    }, {
+      move: 'to',
+      account: {
+        'Assets': 'Bank főszámla',
+      },
+    }],
     note: __('demo.journals.note.1'),
   });
 
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
-    defId: defIncome,
+//    defId: defIncome,
     phase: 'done',
     valueDate: new Date('2017-05-10'),
     amount: 55000,
-    accountFrom: {
-      'Incomes': 'Bérleti díj',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
+    legs: [{
+      move: 'from',
+      account: {
+        'Incomes': 'Bérleti díj',
+        'Localizer': 'Központi',
+      },
+    }, {
+      move: 'to',
+      account: {
+        'Assets': 'Bank főszámla',
+      },
+    }],
     note: __('demo.journals.note.2'),
   });
 
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
-    defId: defIncome,
+//    defId: defIncome,
     phase: 'done',
     valueDate: new Date('2017-10-15'),
     amount: 500000,
-    accountFrom: {
-      'Incomes': 'Egyéb bevétel',
-      'Localizer': 'Központi',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
+    legs: [{
+      move: 'from',
+      account: {
+        'Incomes': 'Egyéb bevétel',
+        'Localizer': 'Központi',
+      },
+    }, {
+      move: 'to',
+      account: {
+        'Assets': 'Bank főszámla',
+      },
+    }],
     note: __('demo.journals.note.3'),
   });
 
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
-    defId: defLoan,
+//    defId: defLoan,
     phase: 'done',
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
-    accountFrom: {
-      'Liabilities': 'Bank hitel',
-    },
-    accountTo: {
-      'Assets': 'Bank főszámla',
-    },
+    legs: [{
+      move: 'from',
+      account: {
+        'Liabilities': 'Bank hitel',
+     },
+    }, {
+      move: 'to',
+      account: {
+        'Assets': 'Hitel számla',
+      },
+    }],
     note: __('demo.journals.note.4'),
   });
 
@@ -1004,17 +1047,22 @@ export function insertDemoHouse(lang, demoOrTest) {
         19250, 18150, 19250, 30800, 13750, 19000, 6050];
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
-        defId: defPayin,
+//        defId: defPayin,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
-        accountFrom: {
-          'Owner payins': 'Közös költség befizetés',
-          'Localizer': i.toString(),
-        },
-        accountTo: {
-          'Assets': 'Bank főszámla',
-        },
+        legs: [{
+          move: 'from',
+          account: {
+            'Incomes': 'Közös költség befizetés',
+            'Localizer': i.toString(),
+          },
+        }, {
+          move: 'to',
+          account: {
+            'Assets': 'Bank főszámla',
+          },
+        }],
       });
     }
   }
@@ -1025,17 +1073,22 @@ export function insertDemoHouse(lang, demoOrTest) {
       const place = ['2', '5', '8', '14'];
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
-        defId: defPayin,
+//        defId: defPayin,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        accountFrom: {
-          'Owner payins': 'Víz díj',
-          'Localizer': place[i],
-        },
-        accountTo: {
-          'Assets': 'Bank főszámla',
-        },
+        legs: [{
+          move: 'from',
+          account: {
+            'Incomes': 'Víz díj',
+            'Localizer': place[i],
+          },
+        }, {
+          move: 'to',
+          account: {
+            'Assets': 'Bank főszámla',
+          },
+        }],
       });
     }
   }
@@ -1044,17 +1097,22 @@ export function insertDemoHouse(lang, demoOrTest) {
       const payable = [0, 14960, 13056, 15708, 16660, 15708, 16660, 15708, 16660, 15708, 16660];
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
-        defId: defPayin,
+//        defId: defPayin,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        accountFrom: {
-          'Owner payins': 'Fűtési díj',
-          'Localizer': i.toString(),
-        },
-        accountTo: {
-          'Assets': 'Bank főszámla',
-        },
+        legs: [{
+          move: 'from',
+          account: {
+            'Incomes': 'Fűtési díj',
+            'Localizer': i.toString(),
+          },
+        }, {
+          move: 'to',
+          account: {
+            'Assets': 'Bank főszámla',
+          },
+        }],
       });
     }
   }
@@ -1062,17 +1120,22 @@ export function insertDemoHouse(lang, demoOrTest) {
   for (let i = 1; i < 15; i++) {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
-      defId: defPayin,
+//      defId: defPayin,
       phase: 'done',
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
-      accountFrom: {
-        'Owner payins': 'Felújítási célbefizetés',
-        'Localizer': i.toString(),
-      },
-      accountTo: {
-        'Assets': 'Bank főszámla',
-      },
+      legs: [{
+        move: 'from',
+        account: {
+          'Incomes': 'Felújítási célbefizetés',
+          'Localizer': i.toString(),
+        },
+      }, {
+        move: 'to',
+        account: {
+          'Assets': 'Bank főszámla',
+        },
+      }],
     });
   }
 
@@ -1080,17 +1143,22 @@ export function insertDemoHouse(lang, demoOrTest) {
     const payable = [0, 8432, 0, 7250, 0, 9251, 0, 11624, 0, 10635, 0, 8540];
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
-      defId: defExpense,
+//      defId: defExpense,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
-      accountFrom: {
-        'Assets': 'Bank főszámla',
-      },
-      accountTo: {
-        'Expenses': 'Víz',
-        'Localizer': 'Központi',
-      },
+      legs: [{
+        move: 'from',
+        account: {
+          'Assets': 'Bank főszámla',
+        },
+      }, {
+        move: 'to',
+        account: {
+          'Expenses': 'Víz',
+          'Localizer': 'Központi',
+        },
+      }],
     });
   }
 
@@ -1098,34 +1166,44 @@ export function insertDemoHouse(lang, demoOrTest) {
     const payable = [0, 10562, 0, 9889, 0, 11210, 0, 11152, 0, 11435, 0, 9930];
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
-      defId: defExpense,
+//      defId: defExpense,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
-      accountFrom: {
-        'Assets': 'Bank főszámla',
-      },
-      accountTo: {
-        'Expenses': 'Csatorna',
-        'Localizer': 'Központi',
-      },
+      legs: [{
+        move: 'from',
+        account: {
+          'Assets': 'Bank főszámla',
+        },
+      }, {
+        move: 'to',
+        account: {
+          'Expenses': 'Csatorna',
+          'Localizer': 'Központi',
+        },
+      }],
     });
   }
 
   for (let m = 1; m < 13; m++) {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
-      defId: defExpense,
+//      defId: defExpense,
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 10250,
-      accountFrom: {
-        'Assets': 'Bank főszámla',
-      },
-      accountTo: {
-        'Expenses': 'Áram',
-        'Localizer': 'Központi',
-      },
+      legs: [{
+        move: 'from',
+        account: {
+          'Assets': 'Bank főszámla',
+        },
+      }, {
+        move: 'to',
+        account: {
+          'Expenses': 'Áram',
+          'Localizer': 'Központi',
+        },
+      }],
     });
   }
 
@@ -1292,7 +1370,8 @@ Meteor.methods({
       $push: { 'children.0.children.1.children': { name: demoParcelSerial } },
     });
 
-    const demoManagerId = Meteor.users.findOne({ 'emails.0.address': 'manager@demo.hu' })._id;
+    const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;
+    const demoAccountantId = Memberships.findOne({ communityId: demoCommunityId, role: 'accountant' }).person.userId;
     const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex: '.1@demo.hu' } })._id;
 
     const demoUserMessageRoom = Topics.insert({
@@ -1343,18 +1422,24 @@ Meteor.methods({
       },
     });
     for (let m = 1; m < 12; m++) {
-      const txBase = {
+      insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
         amount: 6875,
-      };
-      const txParams = {
-        'Owner payins': 'Közös költség befizetés',
-        'Localizer': demoParcelSerial.toString(),
-        'Assets': 'Bank főszámla',
-      };
-      insertTx('Payin', txBase, txParams);
+        legs: [{
+          move: 'from',
+          account: {
+            'Incomes': 'Közös költség befizetés',
+            'Localizer': demoParcelSerial.toString(),
+          },
+        }, {
+          move: 'to',
+          account: {
+            'Assets': 'Bank főszámla',
+          },
+        }],
+      });
     }
 
     Meteor.setTimeout(function () {

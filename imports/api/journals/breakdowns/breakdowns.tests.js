@@ -100,7 +100,7 @@ if (Meteor.isServer) {
       }, true, false);
 
       report.addTree('rows', {
-        field: 'accounts.Root',
+        field: 'account.Root',
         values: Breakdowns._transform(testBreakdown),
       }, false, false);
 

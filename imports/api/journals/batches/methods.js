@@ -8,8 +8,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { Journals } from '/imports/api/journals/journals.js';
-import { TxDefs } from '/imports/api/journals/tx-defs.js';
-import { insertTx } from '/imports/api/journals/methods.js';
+//  import { TxDefs } from '/imports/api/journals/tx-defs.js';
+import { insert as insertTx } from '/imports/api/journals/methods.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
@@ -50,21 +50,27 @@ export const apply = new ValidatedMethod({
         months = [BILLING_MONTH_OF_THE_YEAR];
       }
 
-      const tx = {
-        communityId: parcelBilling.communityId,
-        amount,
-        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
-        accounts: {
-          'Owner payins': parcelBilling.account['Owner payins'],
-          'Localizer': parcel.serial.toString(),
-        },
-        note: parcelBilling.note,
-      };
-
       months.forEach((i) => {
-        const txForMonth = _.extend(tx, {
+        const txForMonth = {
+          communityId: parcelBilling.communityId,
           valueDate: new Date(parcelBilling.year, i - 1, BILLING_DAY_OF_THE_MONTH),
-        });
+          amount,
+  //        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
+          legs: [{
+            move: 'from',
+            account: {
+              'Owners': parcelBilling.account['Owner payins'],
+              'Localizer': parcel.serial.toString(),
+            },
+          }, {
+            move: 'to',
+            account: {
+              'Assets': parcelBilling.account['Owner payins'],
+              'Localizer': parcel.serial.toString(),
+            },
+          }],
+          note: parcelBilling.note,
+        };
         insertTx._execute({ userId: this.userId }, txForMonth);
       });
     });

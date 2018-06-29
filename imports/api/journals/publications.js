@@ -3,8 +3,8 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Journals } from './journals.js';
-import { Txs } from './txs.js';
-import { TxDefs } from './tx-defs.js';
+// import { Txs } from './txs.js';
+// import { TxDefs } from './tx-defs.js';
 
 Meteor.publish('journals.inCommunity', function journalsInCommunity(params) {
   new SimpleSchema({
@@ -20,6 +20,7 @@ Meteor.publish('journals.inCommunity', function journalsInCommunity(params) {
   return Journals.find({ communityId });
 });
 
+/*
 Meteor.publish('txs.inCommunity', function txsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
@@ -47,3 +48,4 @@ Meteor.publish('txDefs.inCommunity', function txDefsInCommunity(params) {
   }
   return TxDefs.find({ communityId });
 });
+*/
