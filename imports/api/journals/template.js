@@ -129,24 +129,20 @@ const BreakdownsTemplate = [
 
   { name: 'Localizer', label: 'Összes hely',
     children: [
-      { name: '',
+      { name: 'Főépület',
         children: [
-          { name: 'Főépület',
-            children: [
-            ],
-          },
-          { name: 'Központ',
-            children: [
-            { name: 'Kert' },
-            { name: 'Kazán' },
-            ],
-          },
+        ],
+      },
+      { name: 'Központ',
+        children: [
+        { name: 'Kert' },
+        { name: 'Kazán' },
         ],
       },
     ],
   },
 
-  { name: 'Owners', locked: true, sign: 1,
+  { name: 'Owners', locked: true, sign: -1,
     include: 'Owner payins',
     children: [],
   },

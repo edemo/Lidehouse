@@ -1,35 +1,21 @@
 
-export function expandFrom1To3Levels(tree) {
-  const leafs = _.clone(tree.children);
-//  console.log("Expand", leafs);
-  tree.children = [];
-  tree.children[0] = {};
-  tree.children[0].name = '';
-  tree.children[0].children = [];
-  tree.children[0].children[0] = {};
-  tree.children[0].children[0].name = '';
-  tree.children[0].children[0].children = leafs;
-//  console.log(tree);
-  return tree;
-}
-
-export const moveTags = expandFrom1To3Levels({
+export const moveTags = {
   name: 'move', label: 'balance',
   children: [
-  { name: 'from', label: 'bill' },
   { name: 'to', label: 'done' },
+  { name: 'from', label: 'bill' },
   ],
-});
+};
 
-export const yearTags = expandFrom1To3Levels({
-  name: '',
+export const yearTags = {
+  name: 'year',
   children: [
   { name: 2016 },
   { name: 2017 },
   ],
-});
+};
 
-export const monthTags = expandFrom1To3Levels({
+export const monthTags = {
   name: 2017,
   children: [
   { name: 1, label: 'JAN' },
@@ -45,5 +31,4 @@ export const monthTags = expandFrom1To3Levels({
   { name: 11, label: 'NOV' },
   { name: 12, label: 'DEC' },
   ],
-});
-
+};

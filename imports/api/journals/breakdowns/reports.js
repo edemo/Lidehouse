@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { TableReport } from '/imports/api/journals/breakdowns/table-report.js';
-import { expandFrom1To3Levels, monthTags, moveTags } from './breakdowns-utils';
+import { monthTags, moveTags } from './breakdowns-utils';
 
 export const Reports = {
   Blank() {
@@ -108,7 +108,6 @@ export const Reports = {
     };
     Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' })
       .map(m => myParcels.children.push({ name: m.parcel().serial.toString() /* + '. ' + __('parcel')*/ }));
-    expandFrom1To3Levels(myParcels);
 
     report.addFilter({ phase: 'done' });
 

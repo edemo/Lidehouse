@@ -113,6 +113,7 @@ export class TableReport {
         const accountName = splitted[1];
         const pac = Breakdowns.findOne({ name: accountName });  // TODO
         if (pac.sign) displaySign = pac.sign;
+        if (accountName === 'Owners') displaySign *= -1; // The owner's perspective is the opposite of the community's
       }
     });
 
