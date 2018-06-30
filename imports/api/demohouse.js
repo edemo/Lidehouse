@@ -762,43 +762,15 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   insertBreakdownTemplate(demoCommunityId);
 
-  const localizer = Breakdowns.update({
+  const localizer = Breakdowns.findOne({
     communityId: demoCommunityId,
     name: 'Localizer',
-  }, {
-    $set: {
-      children: [
-        { name: '',
-          children: [
-            { name: 'Központi',
-              children: [
-              ],
-            },
-            { name: 'albetétek',
-              children: [
-              { name: '1' },
-              { name: '2' },
-              { name: '3' },
-              { name: '4' },
-              { name: '5' },
-              { name: '6' },
-              { name: '7' },
-              { name: '8' },
-              { name: '9' },
-              { name: '10' },
-              { name: '11' },
-              { name: '12' },
-              { name: '13' },
-              { name: '14' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  },
-    { upsert: false }
-  );
+  });
+  Parcels.find({ communityId: demoCommunityId }).forEach(parcel => {
+    Breakdowns.update(localizer._id, {
+      $push: { 'children.0.children': { name: parcel.serial } },
+    });
+  });
 
     // === Eloirasok ===
 
@@ -810,7 +782,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     month: 'allMonths',
     account: {
       'Owner payins': 'Közös költség befizetés',
-      'Localizer': 'albetétek',
+      'Localizer': 'Main building',
     },
   });
 
@@ -851,7 +823,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     month: '9',
     account: {
       'Owner payins': 'Felújítási célbefizetés',
-      'Localizer': 'albetétek',
+      'Localizer': 'Main building',
     },
     note: __('demo.journals.note.0'),
   });
@@ -926,7 +898,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       move: 'from',
       account: {
         'Incomes': 'Egyéb bevétel',
-        'Localizer': 'Központi',
+        'Localizer': 'Central',
       },
     }, {
       move: 'to',
@@ -947,7 +919,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         move: 'from',
         account: {
           'Incomes': 'Kamat pénzintézetektől',
-          'Localizer': 'Központi',
+          'Localizer': 'Central',
         },
       }, {
         move: 'to',
@@ -968,7 +940,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       move: 'from',
       account: {
         'Incomes': 'Támogatás',
-        'Localizer': 'Központi',
+        'Localizer': 'Central',
       },
     }, {
       move: 'to',
@@ -989,7 +961,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       move: 'from',
       account: {
         'Incomes': 'Bérleti díj',
-        'Localizer': 'Központi',
+        'Localizer': 'Central',
       },
     }, {
       move: 'to',
@@ -1010,7 +982,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       move: 'from',
       account: {
         'Incomes': 'Egyéb bevétel',
-        'Localizer': 'Központi',
+        'Localizer': 'Central',
       },
     }, {
       move: 'to',
@@ -1156,7 +1128,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         move: 'to',
         account: {
           'Expenses': 'Víz',
-          'Localizer': 'Központi',
+          'Localizer': 'Central',
         },
       }],
     });
@@ -1179,7 +1151,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         move: 'to',
         account: {
           'Expenses': 'Csatorna',
-          'Localizer': 'Központi',
+          'Localizer': 'Central',
         },
       }],
     });
@@ -1201,7 +1173,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         move: 'to',
         account: {
           'Expenses': 'Áram',
-          'Localizer': 'Központi',
+          'Localizer': 'Central',
         },
       }],
     });
@@ -1367,7 +1339,7 @@ Meteor.methods({
       communityId: demoCommunityId,
       name: 'Localizer',
     }, {
-      $push: { 'children.0.children.1.children': { name: demoParcelSerial } },
+      $push: { 'children.0.children': { name: demoParcelSerial } },
     });
 
     const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;

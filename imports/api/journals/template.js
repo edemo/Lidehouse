@@ -127,16 +127,16 @@ const BreakdownsTemplate = [
     ],
   },
 
-  { name: 'Localizer', label: 'Összes hely',
+  { name: 'Localizer', label: 'All locations',
     children: [
-      { name: 'Főépület',
+      { name: 'Main building',
         children: [
         ],
       },
-      { name: 'Központ',
+      { name: 'Central',
         children: [
-        { name: 'Kert' },
-        { name: 'Kazán' },
+        { name: 'Garden' },
+        { name: 'Heating system' },
         ],
       },
     ],

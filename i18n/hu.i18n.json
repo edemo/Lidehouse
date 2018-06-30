@@ -289,13 +289,19 @@
   "Liabilities": "Tartozások",
   "Equity": "Saját tőke",
   "Owners": "Tulajdonosok",
-  "Localizer": "Localizer",
+  "Localizer": "Könyvelési hely",
   "Owner payins": "Tulajdonosi befizetések",
   "Owner obligations": "Tulajdonosi kötelezettségek",
   "Unidentified payins" : "Beazonosítatlan befizetések",
   "Opening/Carry": "Nyitó/Áthozatal",
   "Opening": "Nyitó egyenleg",
-  "Carry": "Áthozatal előző évről",
+  "Carry": "Áthozatal előző évekről",
+
+  "All locations": "Összes hely",
+  "Main building": "Főépület",
+  "Central": "Központi",
+  "Garden": "Kert",
+  "Heating system": "Kazán",
 
   // docstore
   "Show": "Listázva",
