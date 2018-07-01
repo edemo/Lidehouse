@@ -1277,12 +1277,12 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
   ParcelBillings.remove({ 'account.Localizer': demoUserNumber.toString() });
-  Journals.remove({ $or: [{ 'accountFrom.Localizer': demoUserNumber.toString() }, { 'accountTo.Localizer': demoUserNumber.toString() }] });
+  Journals.remove({ 'legs.0.account.Localizer': demoUserNumber.toString() });
   Breakdowns.update({
     communityId,
     name: 'Localizer',
   }, {
-    $pull: { 'children.0.children.1.children': { name: demoUserNumber.toString() } },
+    $pull: { 'children.0.children': { name: demoUserNumber.toString() } },
   });
   Meteor.users.remove({ _id: userId });
 }

@@ -37,7 +37,7 @@ Topics.schema = new SimpleSchema({
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   sticky: { type: Boolean, optional: true, defaultValue: false },
-  commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
+  commentCounter: { type: Number, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
 });
 
 Topics.helpers({

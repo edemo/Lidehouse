@@ -17,7 +17,7 @@ Txs.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   defId: { type: String, regEx: SimpleSchema.RegEx.Id },
   valueDate: { type: Date },
-  amount: { type: Number, decimal: true },
+  amount: { type: Number },
   accounts: { type: Array, optional: true },
   'accounts.$': { type: Object, blackbox: true },
   ref: { type: String, max: 100, optional: true },

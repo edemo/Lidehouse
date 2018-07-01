@@ -46,7 +46,7 @@ Breakdowns.LeafSchema = new SimpleSchema({
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   //  name: { type: String, max: 100, optional: true },
 //  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-//  parcelNo: { type: Number, decimal: true, optional: true },
+//  parcelNo: { type: Number, optional: true },
 });
 
 Breakdowns.Level2Schema = new SimpleSchema({
@@ -78,9 +78,9 @@ Breakdowns.schema = new SimpleSchema({
   'children.$': { type: Breakdowns.Level1Schema },
 });
 
-Breakdowns.accountMirror = function accountMirror(communityId) {
+Breakdowns.chartOfAccounts = function chartOfAccounts(communityId) {
   const accountFamilies = Breakdowns.find({ communityId, sign: { $exists: true } });
-  let accountTree = { name: '.', children: [] };
+  let accountTree = { name: ' ', children: [] };
   accountFamilies.forEach(family => accountTree.children.push(family));
   accountTree = Breakdowns._transform(accountTree);
   return accountTree;
@@ -107,7 +107,7 @@ Breakdowns.helpers({
         node._leafs = []; node.leafs = () => node._leafs; node.pushLeaf = l => { node._leafs.push(l); parent.pushLeaf(l); };
         node.isLeaf = false;
         node.level = currentLevel;
-        if (node.name) { node.path = parent.path + '/' + node.name; pac._nodes.push(node); }
+        if (node.name) { node.path = parent.path + ':' + node.name; pac._nodes.push(node); }
         if (!node.children) { parent.pushLeaf(node); node._leafs.push(node); node.isLeaf = true; }
         else { node.children.forEach(child => handleNode(child, node, pac)); }
         --currentLevel;
@@ -136,10 +136,10 @@ Breakdowns.helpers({
     return this.nodes().find(n => n.name === nodeName).leafs();
   },
   display(node) {
-    return node.label || node.name;
+    return __(node.label || node.name);
   },
   displayFullPath(node) {
-    return `${node.path}`; // ${this.leafDisplay(leaf.name)}`;
+    return node.path.split(':').map(__).join(':');
   },
   leafOptions(filter) {
     const self = this;
@@ -153,7 +153,7 @@ Breakdowns.helpers({
     const self = this;
     return this.nodes()
       .map(function option(node) {
-        return { label: self.displayFullPath(node), value: node.name };
+        return { label: self.displayFullPath(node), value: node.path };
       });
   },
   removeSubTree(name) {

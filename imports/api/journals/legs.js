@@ -15,7 +15,7 @@ if (Meteor.isClient) {
         });
       },
       changed(newDoc, oldDoc) {
-        debugAssert(false);
+        console.log("Changed journal noticed:", oldDoc);
       },
       removed(doc) {
         Legs.remove({ txId: doc._id });

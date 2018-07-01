@@ -16,8 +16,8 @@ ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
-  amount: { type: Number, decimal: true },
-  year: { type: Number, decimal: true },
+  amount: { type: Number },
+  year: { type: Number },
   month: { type: String, optional: true, allowedValues: ParcelBillings.monthValues, autoform: autoformOptions(ParcelBillings.monthValues) },
   account: { type: Object, blackbox: true },
     // rootAccountName -> leafAccountName or parcelNo

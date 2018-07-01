@@ -329,16 +329,28 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
-    "accountFrom": {
-      "label": "Honnan (T)"
+    "from": {
+      "label": "Honnan (T)",
+      "account": {
+        "label": "Számla"
+      },
+      "localizer": {
+        "label": "Könyvelési hely"
+      }
     },
-    "accountTo": {
-      "label": "Hová (K)"
+    "to": {
+      "label": "Hová (K)",
+      "account": {
+        "label": "Számla"
+      },
+      "localizer": {
+        "label": "Könyvelési hely"
+      }
     }
   },
   "schemaTxDefs": {
     "journals": {
-      "label": "Pénzmozgások",
+      "label": "Tranzakciók",
       "$": {
         "accountFrom": {
           "label": "Honnan (T)",

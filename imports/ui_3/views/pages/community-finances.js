@@ -5,10 +5,10 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
+import { insert as insertTx, revert as revertTx } from '/imports/api/journals/methods.js';
 import { Txs } from '/imports/api/journals/txs.js';
-import { TxDefs } from '/imports/api/journals/tx-defs.js';
+import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
-import { remove as removeJournal, billParcels } from '/imports/api/journals/methods.js';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
@@ -17,7 +17,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
-import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
+import { onSuccess, handleError, displayMessage } from '/imports/ui/lib/errors.js';
 import { monthTags } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
 import { journalColumns } from '/imports/api/journals/tables.js';
 import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
@@ -61,7 +61,7 @@ Template.Community_finances.onRendered(function communityFinancesOnRendered() {
 
   // Filling the History chart with DEMO data
   this.autorun(() => {
-    const monthsArray = monthTags.children[0].children[0].children.map(c => c.label);
+    const monthsArray = monthTags.children.map(c => c.label);
     const barData = {
       labels: monthsArray,
       datasets: [{
@@ -125,16 +125,17 @@ Template.Community_finances.helpers({
     return Reports[name](year);
   },
   txDefs() {
-    const txDefs = [
+/*    const txDefs = [
       { _id: '1', name: 'Payin' },
       { _id: '2', name: 'Obligation' }, 
       { _id: '3', name: 'Income' },
       { _id: '4', name: 'Expense'},
       { _id: '5', name: 'Backoffice op'},
     ];
+    */
 //    const communityId = Session.get('activeCommunityId');
 //    const txDefs = TxDefs.find({ communityId });
-    return txDefs;
+    return TxDefRegistry;
   },
   mainBreakdownsTableDataFn() {
     const templateInstance = Template.instance();
@@ -200,39 +201,6 @@ Template.Community_finances.helpers({
     };
   },
 });
-
-const chooseLeafObject = function (move) {
-  return {
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const account = AutoForm.getFieldValue(move + '.account', 'af.journal.insert')
-                || AutoForm.getFieldValue(move + '.account', 'af.journal.update');
-      if (!account) return [{ label: __('schemaJournals.account.placeholder'), value: 'none' }];
-      const pac = Breakdowns.findOne({ communityId, name: account });
-      return pac.leafOptions();
-    },
-    firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
-  };
-};
-
-function newJournalSchema() {
-  function chooseAccountsSchema(move) {
-    const communityId = Session.get('activeCommunityId');
-    const mainAccounts = Breakdowns.find({ communityId, sign: { $exists: true } });
-    const localizerPac = Breakdowns.findOne({ communityId, name: 'Localizer' });
-   
-    return new SimpleSchema({
-      account: { type: String, autoform: { options() { return mainAccounts.map(a => { return { value: a.name, label: a.name }; }); } } },
-      leaf: { type: String, autoform: chooseLeafObject(move) },
-      localizer: { type: String, autoform: { options() { return localizerPac.leafOptions(); } } },
-    });
-  }
-  return new SimpleSchema([
-    Journals.simpleSchema(),
-    { accountFrom: { type: chooseAccountsSchema('accountFrom'), optional: true } },
-    { accountTo: { type: chooseAccountsSchema('accountTo'), optional: true } },
-  ]);
-}
 
 function newParcelBillingSchema() {
   function chooseAccountsSchema() {
@@ -331,18 +299,20 @@ Template.Community_finances.events({
   },
   'click #journals .js-new'(event, instance) {
     const defId = $(event.target).data("id");
-    const def = TxDefs.findOne(defId);
+    Session.set('activeTxDef', defId);
+//    const def = TxDefs.findOne(defId);
+    const def = TxDefRegistry.find(d => d.name === defId);
     Modal.show('Autoform_edit', {
       id: 'af.journal.insert',
       collection: Journals,
-      schema: newJournalSchema(),
+      schema: def.schema,
       omitFields: ['communityId', 'phase'],
-      type: 'method',
-      meteormethod: 'journals.insert',
+//      type: 'method',
+//      meteormethod: 'journals.insert',
       template: 'bootstrap3-inline',
     });
   },
-  'click #journals .js-new-def'(event, instance) {
+/*  'click #journals .js-new-def'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.txdef.insert',
       collection: TxDefs,
@@ -365,13 +335,12 @@ Template.Community_finances.events({
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
     });
-  },
+  },*/
   'click #journals .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.journal.view',
       collection: Journals,
-      schema: newJournalSchema(),
       omitFields: ['communityId', 'phase'],
       doc: Journals.findOne(id),
       type: 'readonly',
@@ -380,8 +349,8 @@ Template.Community_finances.events({
   },
   'click #journals .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(removeJournal, { _id: id }, {
-      action: 'delete journal',
+    Modal.confirmAndCall(revertTx, { _id: id }, {
+      action: 'revert journal',
     });
   },
   'click #bills .js-new'(event, instance) {
@@ -461,10 +430,20 @@ AutoForm.addModalHooks('af.journal.update');
 AutoForm.addHooks('af.journal.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
+    doc.phase = 'done';
     return doc;
   },
+  onSubmit(insertDoc, updateDoc, currentDoc) {
+    AutoForm.validateForm('af.journal.insert');
+    const defId = Session.get('activeTxDef');
+    const def = TxDefRegistry.find(d => d.name === defId);
+    def.transformToJournal(insertDoc);
+    const id = insertTx.call(insertDoc, handleError);
+    this.done(null, id);
+    return false;
+  },
 });
-
+/*
 AutoForm.addModalHooks('af.txdef.insert');
 AutoForm.addModalHooks('af.txdef.update');
 AutoForm.addHooks('af.txdef.insert', {
@@ -473,7 +452,7 @@ AutoForm.addHooks('af.txdef.insert', {
     return doc;
   },
 });
-
+*/
 AutoForm.addModalHooks('af.bill.insert');
 AutoForm.addModalHooks('af.bill.update');
 AutoForm.addHooks('af.bill.insert', {

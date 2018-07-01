@@ -44,7 +44,7 @@ Parcels.schema = new SimpleSchema({
   // cost calculation purposes
   area: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
-  habitants: { type: Number, decimal: true, optional: true },
+  habitants: { type: Number, optional: true },
   waterMetered: { type: Boolean, optional: true },
   heatingType: { type: String, optional: true, allowedValues: Parcels.heatingTypeValues, autoform: autoformOptions(Parcels.heatingTypeValues) },
 });

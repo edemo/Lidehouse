@@ -10,25 +10,30 @@ export const Journals = new Mongo.Collection('journals');
 
 Journals.phaseValues = ['done', 'plan'];
 
-const LegSchema = new SimpleSchema({
-  amount: { type: Number, decimal: true, optional: true },
+Journals.baseSchema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  phase: { type: String, defaultValue: 'done', allowedValues: Journals.phaseValues, autoform: autoformOptions(Journals.phaseValues) },
+  valueDate: { type: Date },
+  year: { type: Number, autoValue() { return this.field('valueDate').value.getFullYear(); }, optional: true, autoform: { omit: true } },
+  month: { type: Number, autoValue() { return this.field('valueDate').value.getMonth() + 1; }, optional: true, autoform: { omit: true } },
+  amount: { type: Number },
+  ref: { type: String, max: 100, optional: true },
+  note: { type: String, max: 100, optional: true },
+});
+
+Journals.legSchema = new SimpleSchema({
+  amount: { type: Number, optional: true },
   move: { type: String, allowedValues: ['from', 'to'] },
   account: { type: Object, blackbox: true },
     // rootAccountName -> leafAccountName or parcelNo
 });
 
-Journals.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  phase: { type: String, defaultValue: 'done', allowedValues: Journals.phaseValues, autoform: autoformOptions(Journals.phaseValues) },
-  valueDate: { type: Date },
-  year: { type: Number, decimal: true, autoValue() { return this.field('valueDate').value.getFullYear(); }, optional: true, autoform: { omit: true } },
-  month: { type: Number, decimal: true, autoValue() { return this.field('valueDate').value.getMonth() + 1; }, optional: true, autoform: { omit: true } },
-  amount: { type: Number, decimal: true, optional: true },
-  legs: { type: Array },
-  'legs.$': { type: LegSchema },
-  ref: { type: String, max: 100, optional: true },
-  note: { type: String, max: 100, optional: true },
-});
+Journals.schema = new SimpleSchema([
+  Journals.baseSchema, {
+    legs: { type: Array },
+    'legs.$': { type: Journals.legSchema },
+  },
+]);
 
 // A *journal* is effecting a certain field (in pivot tables) with the *amount* of the journal,
 // but the Sign of the effect is depending on 3 components:

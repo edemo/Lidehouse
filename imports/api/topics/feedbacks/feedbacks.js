@@ -9,7 +9,7 @@ const typeValues = ['opinion', 'bug', 'feature'];
 
 const feedbacksExtensionSchema = new SimpleSchema({
   type: { type: String, allowedValues: typeValues, autoform: autoformOptions(typeValues) },
-  rating: { type: Number, decimal: true, optional: true, allowedValues: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] },
+  rating: { type: Number, optional: true, allowedValues: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] },
 });
 
 Topics.helpers({

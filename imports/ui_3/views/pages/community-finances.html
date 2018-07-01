@@ -55,15 +55,15 @@
             </div>  
             <div class="ibox-content">
                 <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-primary btn-sm">
-                    <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'tx'}} <b class="caret"></b>
+                    <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'journal'}} <b class="caret"></b>
                 </a>
                 <!--ul class="dropdown-menu animated fadeInDown m-t-xs"-->
                 <ul class="m-t-xs">
                     {{#each def in txDefs}}
-                    <li><a href="" class="js-new" data-id="{{def._id}}">{{def.name}}</a></li>
+                    <li><a href="" class="js-new" data-id="{{def.name}}">{{_ 'new'}} {{_ def.name}}</a></li>
                     {{/each}}
-                    <li role="separator" class="divider"></li>
-                    <li><a href="" class="js-new-def"> + {{_ 'new'}} {{_ 'tx'}} {{_ 'def'}}</a></li>
+                    <!--li role="separator" class="divider"></li>
+                    <li><a href="" class="js-new-def"> + {{_ 'new'}} {{_ 'tx'}} {{_ 'def'}}</a></li-->
                 </ul>
                 <div class="m-b-lg"></div>
                 {{> ReactiveDatatable tableData=journalsTableDataFn options=journalsOptionsFn }}
@@ -147,7 +147,7 @@
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='breakdowns'>
             <div class="ibox-title">
-                <h5>{{_ 'Account system' }}</h5>
+                <h5>{{_ 'Chart of accounts' }}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">

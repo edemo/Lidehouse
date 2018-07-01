@@ -329,11 +329,23 @@
       "label": "Note",
       "placeholder": "(eg. reason or partner identifier)"
     },
-    "accountFrom": {
-      "label": "From (D)"
+    "from": {
+      "label": "From (C)",
+      "account": {
+        "label": "Account"
+      },
+      "localizer": {
+        "label": "Accounting location"
+      }
     },
-    "accountTo": {
-      "label": "To (C)"
+    "to": {
+      "label": "To (D)",
+      "account": {
+        "label": "Account"
+      },
+      "localizer": {
+        "label": "Accounting location"
+      }
     }
   },
   "schemaTxDefs": {

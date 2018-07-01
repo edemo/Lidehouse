@@ -100,10 +100,8 @@
   "delegation": "meghatalmazás",
   "ticket": "hibajegy",
   "tickets": "hibajegyek",
-  "journal": "pénzmozgás",
-  "journals": "pénzmozgások",
-  "tx": "tranzakció",  
-  "txs": "tranzakciók",  
+  "journal": "tranzakció",
+  "journals": "tranzakciók",
   "breakdown": "könyvelési bontás",
   "breakdowns": "könyvelési bontások",
   "data": "adatok",
@@ -254,11 +252,11 @@
   "Create ticket": "Bejelentés elküldése",
 
   // finances
-  "Account system": "Számla tükör",
+  "Chart of accounts": "Számla tükör",
   "Breakdowns": "Könyvelési bontások",
   "Main breakdowns": "Számlarend",
   "Other breakdowns": "Egyéb bontások",
-  "Journals": "Pénzmozgások",
+  "Journals": "Tranzakciók",
   "Bills": "Előírások",
   "Reports": "Kimutatások",
   "Common cost plan": "Előírás minden albetétre",
@@ -302,6 +300,9 @@
   "Central": "Központi",
   "Garden": "Kert",
   "Heating system": "Kazán",
+
+  "Opening balance tx": "Nyitó egyenleg",
+  "Back office tx": "Back office művelet",
 
   // docstore
   "Show": "Listázva",
