@@ -369,6 +369,9 @@
       "placeholder": "(eg. reason or partner identifier)"
     },
     // Following lines are for the different txDefs
+    "account": {
+      "label": "Account"
+    },
     "incomeAccount": {
       "label": "Income account"
     },

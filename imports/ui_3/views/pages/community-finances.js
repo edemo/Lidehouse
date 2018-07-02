@@ -209,7 +209,7 @@ function newParcelBillingSchema() {
     const breakdown1 = Breakdowns.findOne({ communityId, name: 'Incomes' });
     const breakdown2 = Breakdowns.findOne({ communityId, name: 'Localizer' });
     obj[breakdown1.name] = { type: String, optional: true, label: breakdown1.name, 
-      autoform: { options() { return breakdown1.leafOptions(l => true); } },
+      autoform: { options() { return breakdown1.leafOptions(); } },
     };
     obj[breakdown2.name] = { type: String, optional: true, label: breakdown2.name, 
       autoform: { options() { return breakdown2.nodeOptions(); } },

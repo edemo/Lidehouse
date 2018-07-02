@@ -5,22 +5,20 @@ import { _ } from 'meteor/underscore';
 import { Journals } from '/imports/api/journals/journals.js';
 import { AccountSpecification, chooseLeafAccountFromGroup } from '../account-specification.js';
 
-export const OpeningBalanceTx = {
-  name: 'Opening balance tx',
+export const MoneyTransferTx = {
+  name: 'Money trasfer tx',
   schema: new SimpleSchema([
     _.clone(Journals.rawSchema), {
-      account: { type: String, autoform: chooseLeafAccountFromGroup() },
-      localizer: { type: String, autoform: chooseLeafAccountFromGroup('Localizer') },
-    },
+      from: { type: String, autoform: chooseLeafAccountFromGroup('Assets', 'Money accounts') },
+      to: { type: String, autoform: chooseLeafAccountFromGroup('Assets', 'Money accounts') },
+    }, _.clone(Journals.noteSchema),
   ]),
   transformToJournal(doc) {
+    const fromAccount = new AccountSpecification(doc.from);
     doc.from = [{
-      account: {
-        'Equity': 'Opening',
-        'Localizer': doc.localizer.split(':').pop(),
-      },
+      account: fromAccount.toSchemaDef(),
     }];
-    const toAccount = new AccountSpecification(doc.account, doc.localizer);
+    const toAccount = new AccountSpecification(doc.to);
     doc.to = [{
       account: toAccount.toSchemaDef(),
     }];
@@ -29,5 +27,5 @@ export const OpeningBalanceTx = {
 };
 
 Meteor.startup(function attach() {
-  OpeningBalanceTx.schema.i18n('schemaJournals');
+  MoneyTransferTx.schema.i18n('schemaJournals');
 });

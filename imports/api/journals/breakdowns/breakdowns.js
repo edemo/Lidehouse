@@ -86,9 +86,9 @@ Breakdowns.chartOfAccounts = function chartOfAccounts(communityId) {
   return accountTree;
 };
 
-Breakdowns.isSubAccountOf = function isSubAccountOf(leaf, group, main) {
+Breakdowns.isSubAccountOf = function isSubAccountOf(leaf, group, brk) {
   const communityId = this.communityId;
-  const breakdown = Breakdowns.findOne({ communityId, name: main });
+  const breakdown = Breakdowns.findOne({ communityId, name: brk });
   return _.contains(breakdown.leafsOf(group).map(l => l.name), leaf);
 };
 
@@ -139,7 +139,8 @@ Breakdowns.helpers({
 //    return result;
 //  },
   leafsOf(nodeName) {
-    return this.nodes().find(n => n.name === nodeName).leafs();
+    if (nodeName) return this.nodes().find(n => n.name === nodeName).leafs();
+    return this.leafs();
   },
   display(node) {
     return __(node.label || node.name);
@@ -147,10 +148,9 @@ Breakdowns.helpers({
   displayFullPath(node) {
     return node.path.split(':').map(__).join(':');
   },
-  leafOptions(filter) {
+  leafOptions(nodeName) {
     const self = this;
-    return this.leafs()
-      .filter(filter || (() => true))
+    return this.leafsOf(nodeName)
       .map(function option(leaf) {
         return { label: self.displayFullPath(leaf), value: leaf.name };
       });

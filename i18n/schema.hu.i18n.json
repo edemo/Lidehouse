@@ -369,17 +369,20 @@
       "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
     // Following lines are for the different txDefs
+    "account": {
+      "label": "Számla"
+    },
     "incomeAccount": {
-      "label": "Bevétel számla"
+      "label": "Bevétel nem"
     },
     "expenseAccount": {
-      "label": "Kiadás számla"
+      "label": "Kiadás nem"
     },
     "moneyAccount": {
       "label": "Pénz számla"
     },
     "localizer": {
-      "label": "Könyvelési hely (ha van megadható)"
+      "label": "Könyvelési hely (ha van megadandó)"
     }
   },
   "schemaParcelBillings": {
