@@ -40,6 +40,8 @@ export const apply = new ValidatedMethod({
           break;
         default: debugAssert(false);
       }
+      // Not dealing with fractions of a dollar or forint
+      amount = Math.round(amount);
 
       let months;
       if (parcelBilling.month === 'allMonths') {
@@ -56,14 +58,13 @@ export const apply = new ValidatedMethod({
           valueDate: new Date(parcelBilling.year, i - 1, BILLING_DAY_OF_THE_MONTH),
           amount,
   //        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
-          legs: [{
-            move: 'from',
+          from: [{
             account: {
               'Owners': parcelBilling.account['Owner payins'],
               'Localizer': parcel.serial.toString(),
             },
-          }, {
-            move: 'to',
+          }],
+          to: [{
             account: {
               'Assets': parcelBilling.account['Owner payins'],
               'Localizer': parcel.serial.toString(),

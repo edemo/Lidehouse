@@ -54,7 +54,8 @@
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
   "pleaseSupplyParcelData": "Please supply as much data as possible about your parcel, so your join request can be approved quickly!",
   "No permission to upload": "You have no permission to upload documents, please ask the community manager's help",
-    
+  "Remove not possible after 24 hours": "NOTICE: Transaction cannot be removed directly, because its older than 24 hours. So a negating transaction will be inserted.",
+
     // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",

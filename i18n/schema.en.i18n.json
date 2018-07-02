@@ -321,6 +321,42 @@
     "txId": {
       "label": "Transaction id"
     },
+    "from": {
+      "label": "From (C)",
+      "$": {
+        "amount": {
+          "label": "Amount",
+          "placeholder": "Leave blank if its the whole amount"
+        },
+        "account": {
+          "label": "Account specification",
+          "account": {
+            "label": "Account"
+          },
+          "localizer": {
+            "label": "Accounting location"
+          }
+        }
+      }
+    },
+    "to": {
+      "label": "To (D)",
+      "$": {
+        "amount": {
+          "label": "Amount",
+          "placeholder": "Leave blank if its the whole amount"
+        },
+        "account": {
+          "label": "Account specification",
+          "account": {
+            "label": "Account"
+          },
+          "localizer": {
+            "label": "Accounting location"
+          }
+        }
+      }
+    },
     "ref": {
       "label": "Reference id",
       "placeholder": "(eg. transaction no. from bank statement)"
@@ -329,23 +365,18 @@
       "label": "Note",
       "placeholder": "(eg. reason or partner identifier)"
     },
-    "from": {
-      "label": "From (C)",
-      "account": {
-        "label": "Account"
-      },
-      "localizer": {
-        "label": "Accounting location"
-      }
+    // Following lines are for the different txDefs
+    "incomeAccount": {
+      "label": "Income account"
     },
-    "to": {
-      "label": "To (D)",
-      "account": {
-        "label": "Account"
-      },
-      "localizer": {
-        "label": "Accounting location"
-      }
+    "expenseAccount": {
+      "label": "Expense account"
+    },
+    "moneyAccount": {
+      "label": "Money account"
+    },
+    "localizer": {
+      "label": "Accounting location (when applicable)"
     }
   },
   "schemaTxDefs": {

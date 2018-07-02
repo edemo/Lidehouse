@@ -6,6 +6,7 @@ export let chooseAccountFamily = {};
 export let chooseAccountNode = {};
 export let chooseAccountGroup = {};
 export let chooseAccountLocalizer = {};
+export let chooseLeafAccountFromGroup = () => {};
 
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
@@ -46,21 +47,19 @@ if (Meteor.isClient) {
       return localizer.nodeOptions();
     },
   };
-  /*
-  const chooseLeafObject = function (move) {
+
+  chooseLeafAccountFromGroup = function (family, group) {
     return {
       options() {
         const communityId = Session.get('activeCommunityId');
-        const account = AutoForm.getFieldValue(move + '.account', 'af.journal.insert')
-                  || AutoForm.getFieldValue(move + '.account', 'af.journal.update');
-        if (!account) return [{ label: __('schemaJournals.account.placeholder'), value: 'none' }];
-        const pac = Breakdowns.findOne({ communityId, name: account });
-        return pac.leafOptions();
+        const brk = Breakdowns.findOne({ communityId, name: family });
+//        if (group) brk.nodeByName(group).leafOptions();
+        return brk.leafOptions();
       },
       firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
     };
   };
-
+/*
   function chooseAccountsSchema(move) {
     const communityId = Session.get('activeCommunityId');
     const mainAccounts = Breakdowns.find({ communityId, sign: { $exists: true } });
@@ -71,8 +70,7 @@ if (Meteor.isClient) {
       leaf: { type: String, autoform: chooseLeafObject(move) },
       localizer: { type: String, autoform: { options() { return localizerPac.leafOptions(); } } },
     });
-  }
-  */
+  }*/
 }
 
 export const AccountInputSchema = new SimpleSchema({

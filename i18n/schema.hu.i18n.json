@@ -318,8 +318,47 @@
       "label": "Összeg",
       "placeholder": "(pl. 14560)"
     },
-    "txId": {
-      "label": "Tranzakció azonosító"
+    "sourceId": {
+      "label": "Forrás tranzakció azonosítója"
+    },
+    "batchId": {
+      "label": "Batch azonosító"
+    },
+    "from": {
+      "label": "Honnan (T)",
+      "$": {
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "Hagyja üresen, ha megegyezik a teljes összeggel"
+        },
+        "account": {
+          "label": "Számla specifikáció",
+          "account": {
+            "label": "Számla"
+          },
+          "localizer": {
+            "label": "Könyvelési hely"
+          }
+        }          
+      }
+    },
+    "to": {
+      "label": "Hová (K)",
+      "$": {
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "Hagyja üresen, ha megegyezik a teljes összeggel"
+        },
+        "account": {
+          "label": "Számla specifikáció",
+          "account": {
+            "label": "Számla"
+          },
+          "localizer": {
+            "label": "Könyvelési hely"
+          }
+        }          
+      }
     },
     "ref": {
       "label": "Referencia azonosító",
@@ -329,48 +368,18 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
-    "from": {
-      "label": "Honnan (T)",
-      "account": {
-        "label": "Számla"
-      },
-      "localizer": {
-        "label": "Könyvelési hely"
-      }
+    // Following lines are for the different txDefs
+    "incomeAccount": {
+      "label": "Bevétel számla"
     },
-    "to": {
-      "label": "Hová (K)",
-      "account": {
-        "label": "Számla"
-      },
-      "localizer": {
-        "label": "Könyvelési hely"
-      }
-    }
-  },
-  "schemaTxDefs": {
-    "journals": {
-      "label": "Tranzakciók",
-      "$": {
-        "accountFrom": {
-          "label": "Honnan (T)",
-          "accountGroup": {
-            "label": "Számla csoport"
-          },
-          "localizerNeeded": {
-            "label": "Könyvelési hely megadása szükséges-e"
-          }
-        },
-        "accountTo": {
-          "label": "Hová (K)",
-          "accountGroup": {
-            "label": "Számla csoport"
-          },
-          "localizerNeeded": {
-            "label": "Könyvelési hely megadása szükséges-e"
-          }
-        }
-      }
+    "expenseAccount": {
+      "label": "Kiadás számla"
+    },
+    "moneyAccount": {
+      "label": "Pénz számla"
+    },
+    "localizer": {
+      "label": "Könyvelési hely (ha van megadható)"
     }
   },
   "schemaParcelBillings": {

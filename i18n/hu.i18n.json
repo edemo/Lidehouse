@@ -301,6 +301,8 @@
   "Garden": "Kert",
   "Heating system": "Kazán",
 
+  "Income tx": "Bevétel",
+  "Expense tx": "Kiadás",
   "Opening balance tx": "Nyitó egyenleg",
   "Back office tx": "Back office művelet",
 
@@ -340,6 +342,7 @@
   "Other party not allowed this activity": "A másik fél nem engedélyezte ezt a műveletet.",
   "No active": "Nincs aktív",
   "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon.",
+  "Remove not possible after 24 hours": "MEGJEGYZÉS: Mivel a tranzakció 24 óránál régebbi, a törlése nem lehetséges. Így egy ellentétes előjelű tranzakció bevitelére kerül sor.",
 
   "logout": "kilépés",
   "login": "belépés",
@@ -400,6 +403,8 @@
   "insert agenda successful": "Közgyűlés létrehozva",
   "update agenda successful": "Közgyűlés módosítva",
   "delete agenda successful": "Közgyűlés törölve",
+  "insert journal successful": "Tranzakció létrehozva",
+  "delete journal successful": "Tranzakció törölve",
   "insert sharedfolder successful": "Új mappa létrehozva",
   "update sharedfolder successful": "Mappa módosítva",
   "delete sharedfolder successful": "Mappa véglegesen törölve",
@@ -413,6 +418,7 @@
   "delete topic": "törli a bejegyzést",
   "delete comment": "törli a hozzászólást",
   "delete ticket": "törli a hibajegyet",
+  "delete journal": "törli a tranzakciót",
   "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
   "disable delegations": "visszautasítja a bejövő meghatalmazásokat",
   "revoke delegation": "visszavonja a meghatalmazást",

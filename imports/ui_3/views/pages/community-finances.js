@@ -2,13 +2,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Communities } from '/imports/api/communities/communities.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { insert as insertTx, revert as revertTx } from '/imports/api/journals/methods.js';
-import { Txs } from '/imports/api/journals/txs.js';
-import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
-import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
@@ -22,10 +15,17 @@ import { monthTags } from '/imports/api/journals/breakdowns/breakdowns-utils.js'
 import { journalColumns } from '/imports/api/journals/tables.js';
 import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
 import { Reports } from '/imports/api/journals/breakdowns/reports.js';
+import { Communities } from '/imports/api/communities/communities.js';
+import { AccountSpecification } from '/imports/api/journals/account-specification.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Journals } from '/imports/api/journals/journals.js';
+import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
+import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
+import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
+import { serializeNestable } from '/imports/ui_2/modals/nestable-edit.js';
 import '/imports/ui_2/components/custom-table.js';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
-import { serializeNestable } from '/imports/ui_2/modals/nestable-edit.js';
 import './community-finances.html';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
@@ -341,6 +341,7 @@ Template.Community_finances.events({
     Modal.show('Autoform_edit', {
       id: 'af.journal.view',
       collection: Journals,
+      schema: Journals.inputSchema,
       omitFields: ['communityId', 'phase'],
       doc: Journals.findOne(id),
       type: 'readonly',
@@ -349,8 +350,10 @@ Template.Community_finances.events({
   },
   'click #journals .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(revertTx, { _id: id }, {
-      action: 'revert journal',
+    const tx = Journals.findOne(id);
+    Modal.confirmAndCall(removeTx, { _id: id }, {
+      action: 'delete journal',
+      message: tx.isOld() ? 'Remove not possible after 24 hours' : '',
     });
   },
   'click #bills .js-new'(event, instance) {
@@ -433,13 +436,20 @@ AutoForm.addHooks('af.journal.insert', {
     doc.phase = 'done';
     return doc;
   },
-  onSubmit(insertDoc, updateDoc, currentDoc) {
+  onSubmit(doc) {
     AutoForm.validateForm('af.journal.insert');
     const defId = Session.get('activeTxDef');
     const def = TxDefRegistry.find(d => d.name === defId);
-    def.transformToJournal(insertDoc);
-    const id = insertTx.call(insertDoc, handleError);
-    this.done(null, id);
+    def.transformToJournal(doc);
+    const afContext = this;
+    insertTx.call(doc, function handler(err, res) {
+      if (err) {
+//        displayError(err);
+        afContext.done(err);
+        return;
+      }
+      afContext.done(null, res);
+    });
     return false;
   },
 });

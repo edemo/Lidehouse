@@ -92,7 +92,7 @@ const BreakdownsTemplate = [
         { name: 'Műszaki berendezések' },
         ],
       },
-      { name: 'Pénz számlák',
+      { name: 'Money accounts',
         children: [
         { name: 'Bank főszámla' },
         { name: 'Bank felújítási alap' },
@@ -200,7 +200,7 @@ const TxDefsTemplate = [
   { name: 'Payin',
     journals: [{
       accountFrom: 'Accounts/Incomes/Owner payins',
-      accountTo: 'Accounts/Assets/Pénz számlák',
+      accountTo: 'Accounts/Assets/Money accounts',
     }, {
       accountFrom: 'Accounts/Assets/Owner obligatons',
       accountTo: 'Accounts/Liabilities/Owners/Owner payins',
@@ -210,13 +210,13 @@ const TxDefsTemplate = [
   { name: 'Income',
     journals: [{
       accountFrom: 'Accounts/Incomes',
-      accountTo: 'Accounts/Assets/Pénz számlák',
+      accountTo: 'Accounts/Assets/Money accounts',
     }],
   },
 
   { name: 'Expense',
     journals: [{
-      accountFrom: 'Accounts/Assets/Pénz számlák',
+      accountFrom: 'Accounts/Assets/Money accounts',
       accountTo: 'Accounts/Expenses',
     }],
   },
@@ -224,7 +224,7 @@ const TxDefsTemplate = [
   { name: 'Loan',
     journals: [{
       accountFrom: 'Accounts/Liabilities/Hitelek',
-      accountTo: 'Accounts/Assets/Pénz számlák',
+      accountTo: 'Accounts/Assets/Money accounts',
     }],
   },
 

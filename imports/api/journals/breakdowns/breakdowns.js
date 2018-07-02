@@ -86,6 +86,12 @@ Breakdowns.chartOfAccounts = function chartOfAccounts(communityId) {
   return accountTree;
 };
 
+Breakdowns.isSubAccountOf = function isSubAccountOf(leaf, group, main) {
+  const communityId = this.communityId;
+  const breakdown = Breakdowns.findOne({ communityId, name: main });
+  return _.contains(breakdown.leafsOf(group).map(l => l.name), leaf);
+};
+
 Breakdowns.helpers({
   init() {
     if (!this._leafs) {

@@ -10,7 +10,7 @@ if (Meteor.isClient) {
   Meteor.startup(function syncLegsWithTxs() {
     const callbacks = {
       added(doc) {
-        doc.separateLegs().forEach(leg => {
+        doc.legs().forEach(leg => {
           Legs.insert(_.extend(leg, { txId: doc._id }));
         });
       },

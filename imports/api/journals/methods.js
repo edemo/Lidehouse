@@ -3,48 +3,60 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
+import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Journals } from '/imports/api/journals/journals.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 // import { Txs } from '/imports/api/journals/txs.js';
 // import { TxDefs } from '/imports/api/journals/tx-defs.js';
+
+function runPositingRules(context, doc) {
+  const isSubAccountOf = Breakdowns.isSubAccountOf.bind({ communityId: doc.communityId });
+  if (doc.from[0].account['Incomes'] && isSubAccountOf(doc.from[0].account['Incomes'], 'Owner payins', 'Incomes')
+    && doc.to[0].account['Assets'] && isSubAccountOf(doc.to[0].account['Assets'], 'Money accounts', 'Assets')) {
+    const newDoc = _.clone(doc);
+    newDoc.from = [{
+      account: {
+        'Assets': doc.from[0].account['Incomes'],  // Obligation decreases
+        'Localizer': doc.from[0].account['Localizer'],
+      },
+    }];
+    newDoc.to = [{
+      account: {
+        'Owners': doc.from[0].account['Incomes'],
+        'Localizer': doc.from[0].account['Localizer'],
+      },
+    }];
+    Journals.insert(newDoc);
+  }
+}
 
 export const insert = new ValidatedMethod({
   name: 'journals.insert',
   validate: Journals.simpleSchema().validator({ clean: true }),
 
   run(doc) {
+    checkPermissions(this.userId, 'journals.insert', doc.communityId);
     const id = Journals.insert(doc);
-    
-    // Posting rules
-    if (doc.legs[0].account['Incomes'] && doc.legs[0].move === 'from' &&
-        doc.legs[1].account['Assets'] ) {
-      const newDoc = _.clone(doc);
-      newDoc.legs = [{
-        move: 'from',
-        account: {
-          'Assets': doc.legs[0].account['Incomes'],  // Obligation decreases
-          'Localizer': doc.legs[0].account['Localizer'],
-        },
-      }, {
-        move: 'to',
-        account: {
-          'Owners': doc.legs[0].account['Incomes'],
-          'Localizer': doc.legs[0].account['Localizer'],
-        },
-      }];
-      Journals.insert(newDoc);
-    }
+    runPositingRules(this, doc);
     return id;
   },
 });
 
-export const revert = new ValidatedMethod({
-  name: 'journals.revert',
+export const remove = new ValidatedMethod({
+  name: 'journals.remove',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
 
   run({ _id }) {
-    // TODO
+    const doc = checkExists(Journals, _id);
+    checkPermissions(this.userId, 'journals.remove', doc.communityId);
+    if (doc.isOld()) {      // Not possible to delete tx after 24 hours
+      Journals.insert(doc.negator());
+      // throw new Meteor.Error('err_permissionDenied', 'No permission to remove transaction after 24 hours');
+    } else {
+      Journals.remove(_id);
+    }
   },
 });
 

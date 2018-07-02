@@ -774,7 +774,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     // === Eloirasok ===
 
-  insertParcelBilling._execute({ userId: demoManagerId }, {
+  insertParcelBilling._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
     projection: 'perArea',
     amount: 275,
@@ -788,7 +788,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   for (let i = 0; i < 4; i++) {
     const place = ['2', '5', '8', '14'];
-    insertParcelBilling._execute({ userId: demoManagerId }, {
+    insertParcelBilling._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
       projection: 'perHabitant',
       amount: 2500,
@@ -802,7 +802,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   for (let i = 1; i < 11; i++) {
-    insertParcelBilling._execute({ userId: demoManagerId }, {
+    insertParcelBilling._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
       projection: 'perVolume',
       amount: 85,
@@ -815,7 +815,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 
-  insertParcelBilling._execute({ userId: demoManagerId }, {
+  insertParcelBilling._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
     projection: 'absolute',
     amount: 60000,
@@ -847,11 +847,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 100000,
-    legs: [{
-      move: 'from',
+    from: [{
       account: { 'Equity': 'Opening' },
-    }, {
-      move: 'to',
+    }],
+    to: [{
       account: { 'Assets': 'Pénztár 1' },
     }],
   });
@@ -862,11 +861,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 110000,
-    legs: [{
-      move: 'from',
+    from: [{
       account: { 'Equity': 'Opening' },
-    }, {
-      move: 'to',
+    }],
+    to: [{
       account: { 'Assets': 'Bank főszámla' },
     }],
   });
@@ -877,11 +875,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 120000,
-    legs: [{
-      move: 'from',
+    from: [{
       account: { 'Equity': 'Opening' },
-    }, {
-      move: 'to',
+    }],
+    to: [{
       account: { 'Assets': 'Bank felújítási alap' },
     }],
   });
@@ -894,14 +891,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-06-01'),
     amount: 3500,
-    legs: [{
-      move: 'from',
+    from: [{
       account: {
         'Incomes': 'Egyéb bevétel',
         'Localizer': 'Central',
       },
-    }, {
-      move: 'to',
+    }],
+    to: [{
       account: {
         'Assets': 'Bank főszámla',
       },
@@ -915,15 +911,14 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
-      legs: [{
-        move: 'from',
+      from: [{
         account: {
           'Incomes': 'Kamat pénzintézetektől',
           'Localizer': 'Central',
         },
-      }, {
-        move: 'to',
-        account: { 
+      }],
+      to: [{
+        account: {
           'Assets': 'Bank főszámla',
         },
       }],
@@ -936,14 +931,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-09-15'),
     amount: 500000,
-    legs: [{
-      move: 'from',
+    from: [{
       account: {
         'Incomes': 'Támogatás',
         'Localizer': 'Central',
       },
-    }, {
-      move: 'to',
+    }], 
+    to: [{
       account: {
         'Assets': 'Bank főszámla',
       },
@@ -957,14 +951,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-05-10'),
     amount: 55000,
-    legs: [{
-      move: 'from',
+    from: [{
       account: {
         'Incomes': 'Bérleti díj',
         'Localizer': 'Central',
       },
-    }, {
-      move: 'to',
+    }],
+    to: [{
       account: {
         'Assets': 'Bank főszámla',
       },
@@ -978,14 +971,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-10-15'),
     amount: 500000,
-    legs: [{
-      move: 'from',
+    from: [{
       account: {
         'Incomes': 'Egyéb bevétel',
         'Localizer': 'Central',
       },
-    }, {
-      move: 'to',
+    }],
+    to: [{
       account: {
         'Assets': 'Bank főszámla',
       },
@@ -999,13 +991,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
-    legs: [{
-      move: 'from',
+    from: [{
       account: {
         'Liabilities': 'Bank hitel',
-     },
-    }, {
-      move: 'to',
+      },
+    }],
+    to: [{
       account: {
         'Assets': 'Hitel számla',
       },
@@ -1023,14 +1014,13 @@ export function insertDemoHouse(lang, demoOrTest) {
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
-        legs: [{
-          move: 'from',
+        from: [{
           account: {
             'Incomes': 'Közös költség befizetés',
             'Localizer': i.toString(),
           },
-        }, {
-          move: 'to',
+        }],
+        to: [{
           account: {
             'Assets': 'Bank főszámla',
           },
@@ -1049,14 +1039,13 @@ export function insertDemoHouse(lang, demoOrTest) {
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        legs: [{
-          move: 'from',
+        from: [{
           account: {
             'Incomes': 'Víz díj',
             'Localizer': place[i],
           },
-        }, {
-          move: 'to',
+        }],
+        to: [{
           account: {
             'Assets': 'Bank főszámla',
           },
@@ -1073,14 +1062,13 @@ export function insertDemoHouse(lang, demoOrTest) {
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        legs: [{
-          move: 'from',
+        from: [{
           account: {
             'Incomes': 'Fűtési díj',
             'Localizer': i.toString(),
           },
-        }, {
-          move: 'to',
+        }],
+        to: [{
           account: {
             'Assets': 'Bank főszámla',
           },
@@ -1096,14 +1084,13 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
-      legs: [{
-        move: 'from',
+      from: [{
         account: {
           'Incomes': 'Felújítási célbefizetés',
           'Localizer': i.toString(),
         },
-      }, {
-        move: 'to',
+      }],
+      to: [{
         account: {
           'Assets': 'Bank főszámla',
         },
@@ -1119,13 +1106,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
-      legs: [{
-        move: 'from',
+      from: [{
         account: {
           'Assets': 'Bank főszámla',
         },
-      }, {
-        move: 'to',
+      }],
+      to: [{
         account: {
           'Expenses': 'Víz',
           'Localizer': 'Central',
@@ -1142,13 +1128,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
-      legs: [{
-        move: 'from',
+      from: [{
         account: {
           'Assets': 'Bank főszámla',
         },
-      }, {
-        move: 'to',
+      }],
+      to: [{
         account: {
           'Expenses': 'Csatorna',
           'Localizer': 'Central',
@@ -1164,13 +1149,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 10250,
-      legs: [{
-        move: 'from',
+      from: [{
         account: {
           'Assets': 'Bank főszámla',
         },
-      }, {
-        move: 'to',
+      }],
+      to: [{
         account: {
           'Expenses': 'Áram',
           'Localizer': 'Central',
@@ -1382,7 +1366,7 @@ Meteor.methods({
       ],
     } });
 
-    insertParcelBilling._execute({ userId: demoManagerId }, {
+    insertParcelBilling._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
       projection: 'perArea',
       amount: 275,
@@ -1399,14 +1383,13 @@ Meteor.methods({
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
         amount: 6875,
-        legs: [{
-          move: 'from',
+        from: [{
           account: {
             'Incomes': 'Közös költség befizetés',
             'Localizer': demoParcelSerial.toString(),
           },
-        }, {
-          move: 'to',
+        }],
+        to: [{
           account: {
             'Assets': 'Bank főszámla',
           },
