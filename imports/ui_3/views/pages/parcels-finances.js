@@ -9,7 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
-import { Legs } from '/imports/api/journals/legs.js';
+import { JournalEntries } from '/imports/api/journals/entries.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { remove as removeJournal, billParcels } from '/imports/api/journals/methods.js';
 import { Session } from 'meteor/session';
@@ -69,7 +69,7 @@ Template.Parcels_finances.helpers({
     const communityId = Session.get('activeCommunityId');
     const parcelFilter = Template.instance().getActiveParcelFilter();
 
-    return Legs.find({ communityId,
+    return JournalEntries.find({ communityId,
       'account.Owners': { $exists: true }, 'account.Localizer': parcelFilter },
     ).sort({ valueDate: 1 });
   },

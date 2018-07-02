@@ -12,13 +12,13 @@ export const Journals = new Mongo.Collection('journals');
 
 Journals.phaseValues = ['done', 'plan'];
 
-Journals.legDbSchema = new SimpleSchema({
+Journals.entryDbSchema = new SimpleSchema({
   amount: { type: Number, optional: true },
   account: { type: Object, blackbox: true },
     // rootAccountName -> leafAccountName or parcelNo
 });
 
-Journals.legAfSchema = new SimpleSchema({
+Journals.entryAfSchema = new SimpleSchema({
   amount: { type: Number, optional: true },
   account: { type: AccountInputSchema },
 });
@@ -39,15 +39,15 @@ Journals.noteSchema = {
 
 Journals.schema = new SimpleSchema([
   _.clone(Journals.rawSchema),
-  { from: { type: [Journals.legDbSchema] } },
-  { to: { type: [Journals.legDbSchema] } },
+  { from: { type: [Journals.entryDbSchema] } },
+  { to: { type: [Journals.entryDbSchema] } },
   _.clone(Journals.noteSchema),
 ]);
 
 Journals.inputSchema = new SimpleSchema([
   _.clone(Journals.rawSchema),
-  { from: { type: [Journals.legAfSchema] } },
-  { to: { type: [Journals.legAfSchema] } },
+  { from: { type: [Journals.entryAfSchema] } },
+  { to: { type: [Journals.entryAfSchema] } },
   _.clone(Journals.noteSchema),
 ]);
 
@@ -66,23 +66,23 @@ Journals.helpers({
     const elapsed = moment.duration(now.diff(moment(this.CreatedAt)), 'hours');
     return (elapsed > 24);
   },
-  legs() {
-    const legs = [];
+  journalEntries() {
+    const entries = [];
     this.from.forEach(l => {
       const txBase = _.clone(this);
       delete txBase._id;
       delete txBase.from;
       delete txBase.to;
-      legs.push(_.extend(txBase, l, { move: 'from' }));
+      entries.push(_.extend(txBase, l, { move: 'from' }));
     });
     this.to.forEach(l => {
       const txBase = _.clone(this);
       delete txBase._id;
       delete txBase.from;
       delete txBase.to;
-      legs.push(_.extend(txBase, l, { move: 'to' }));
+      entries.push(_.extend(txBase, l, { move: 'to' }));
     });
-    return legs;
+    return entries;
   },
   negator() {
     const tx = _.clone(this);

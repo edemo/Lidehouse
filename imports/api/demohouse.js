@@ -1261,7 +1261,7 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
   ParcelBillings.remove({ 'account.Localizer': demoUserNumber.toString() });
-  Journals.remove({ 'legs.0.account.Localizer': demoUserNumber.toString() });
+  Journals.remove({ 'entries.0.account.Localizer': demoUserNumber.toString() });
   Breakdowns.update({
     communityId,
     name: 'Localizer',

@@ -5,20 +5,20 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Journals } from './journals.js';
 
 if (Meteor.isClient) {
-  export const Legs = new Mongo.Collection(null);
+  export const JournalEntries = new Mongo.Collection(null);
 
-  Meteor.startup(function syncLegsWithTxs() {
+  Meteor.startup(function syncEntriesWithJournals() {
     const callbacks = {
       added(doc) {
-        doc.legs().forEach(leg => {
-          Legs.insert(_.extend(leg, { txId: doc._id }));
+        doc.journalEntries().forEach(entry => {
+          JournalEntries.insert(_.extend(entry, { txId: doc._id }));
         });
       },
       changed(newDoc, oldDoc) {
         console.log("Changed journal noticed:", oldDoc);
       },
       removed(doc) {
-        Legs.remove({ txId: doc._id });
+        JournalEntries.remove({ txId: doc._id });
       },
     };
     Journals.find().observe(callbacks);

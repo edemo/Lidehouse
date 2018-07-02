@@ -7,13 +7,13 @@ export const BackOfficeTx = {
   name: 'Back office tx',
   schema: Journals.inputSchema,
   transformToJournal(doc) {
-    doc.from.forEach(leg => {
-      const as = new AccountSpecification(leg.account.account, leg.account.localizer);
-      leg.account = as.toSchemaDef();
+    doc.from.forEach(entry => {
+      const as = new AccountSpecification(entry.account.account, entry.account.localizer);
+      entry.account = as.toSchemaDef();
     });
-    doc.to.forEach(leg => {
-      const as = new AccountSpecification(leg.account.account, leg.account.localizer);
-      leg.account = as.toSchemaDef();
+    doc.to.forEach(entry => {
+      const as = new AccountSpecification(entry.account.account, entry.account.localizer);
+      entry.account = as.toSchemaDef();
     });
     return doc;
   },

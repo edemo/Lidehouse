@@ -2,7 +2,7 @@ import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { Legs } from '/imports/api/journals/legs.js';
+import { JournalEntries } from '/imports/api/journals/entries.js';
 import { Breakdowns } from './breakdowns';
 
 export class TableReport {
@@ -118,8 +118,8 @@ export class TableReport {
     });
 
     let amount = 0;
-    Legs.find(filter).forEach(leg => {
-      amount += leg.amount * (leg.move === 'to' ? +1 : -1);
+    JournalEntries.find(filter).forEach(entry => {
+      amount += entry.amount * (entry.move === 'to' ? +1 : -1);
     });
 
 
