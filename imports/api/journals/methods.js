@@ -26,6 +26,7 @@ function runPositingRules(context, doc) {
         'Localizer': doc.from[0].account['Localizer'],
       },
     }];
+    newDoc.sourceId = doc._id;
     Journals.insert(newDoc);
   }
 }

@@ -25,6 +25,8 @@ Journals.entryAfSchema = new SimpleSchema({
 
 Journals.rawSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating journal (by posting rule)
+  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   phase: { type: String, defaultValue: 'done', allowedValues: Journals.phaseValues, autoform: autoformOptions(Journals.phaseValues) },
   valueDate: { type: Date },
   year: { type: Number, autoValue() { return this.field('valueDate').value.getFullYear(); }, optional: true, autoform: { omit: true } },

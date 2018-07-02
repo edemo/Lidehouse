@@ -318,8 +318,11 @@
       "label": "Amount",
       "placeholder": "(eg. 14560)"
     },
-    "txId": {
-      "label": "Transaction id"
+    "sourceId": {
+      "label": "Source transaction id"
+    },
+    "batchId": {
+      "label": "Batch id"
     },
     "from": {
       "label": "From (C)",

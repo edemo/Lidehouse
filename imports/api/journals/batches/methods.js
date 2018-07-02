@@ -72,6 +72,7 @@ export const apply = new ValidatedMethod({
           }],
           note: parcelBilling.note,
         };
+        txForMonth.batchId = id;
         insertTx._execute({ userId: this.userId }, txForMonth);
       });
     });
