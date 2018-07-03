@@ -11,7 +11,12 @@ export const Shareddocs = new Mongo.Collection('shareddocs');
 export function hasPermissionToUpload(userId, doc) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
-  return user.hasPermission('shareddocs.upload', doc.communityId);
+  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId);
+    // TODO: create the specific permission for vote.insert for poll votes!
+  else if (doc.folderId === 'voting') return user.hasPermission('comments.insert', doc.communityId);
+  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.insert', doc.communityId);
+  else if (doc.folderId === 'decision') return false;
+  else return user.hasPermission('shareddocs.upload', doc.communityId);
 }
 
 // Setting up collection permissions

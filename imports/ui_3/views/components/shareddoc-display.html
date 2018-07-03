@@ -47,7 +47,7 @@
           {{name}}
         </a>
       </div>
-      {{#if userHasPermission 'shareddocs.upload' (fromSession 'activeCommunityId')}}
+      {{#if userHasPermissionToUpload currentUser._id this}}
       <div class="col-xs-2 text-right">
         <a class="js-delete nav-item">
           <i class="glyphicon glyphicon-remove" title={{_ 'delete'}}></i>
