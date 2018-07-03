@@ -2,13 +2,20 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Shareddocs, hasPermissionToUpload } from '/imports/api/shareddocs/shareddocs.js';
+import { Shareddocs, hasPermissionToUpload, hasPermissionToRemoveUploaded } from '/imports/api/shareddocs/shareddocs.js';
 import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 
 function checkPermissionsToUpload(userId, doc) {
   if (!hasPermissionToUpload(userId, doc)) {
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
       `Permission: ${"Upload"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
+  }
+}
+
+function checkPermissionsToRemoveUploaded(userId, doc) {
+  if (!hasPermissionToRemoveUploaded(userId, doc)) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `Permission: ${"Remove"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
   }
 }
 
@@ -37,7 +44,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Shareddocs, _id);
-    checkPermissions(this.userId, 'shareddocs.upload', doc.communityId);
+    checkPermissionsToRemoveUploaded(this.userId, doc);
 
     Shareddocs.remove(_id);
   },

@@ -16,7 +16,12 @@
                 </div>
             </a>
             {{else}}
-            <a target="_blank" href="{{url}}">
+                {{#if userHasPermissionToRemoveUploaded}}
+                    <span class="js-delete nav-item trash">
+                    <i class="fa fa-trash" title={{_ 'delete'}}></i>
+                    </span>
+                {{/if}}
+            <a target="_blank" data-id={{_id}} href="{{url}}">
                 <span class="corner"></span>
                 <div class="icon">
                     <i class="fa fa-file"></i>
@@ -24,7 +29,7 @@
                 <div class="file-name">
                     {{name}}
                     <br/>
-                    <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>
+                    <small>{{_ 'createdAt'}}: {{displayDate this.uploadedAt}}</small>
                 </div>
             </a>
             {{/if}}
@@ -47,10 +52,10 @@
           {{name}}
         </a>
       </div>
-      {{#if userHasPermissionToUpload currentUser._id this}}
+      {{#if userHasPermissionToRemoveUploaded}}
       <div class="col-xs-2 text-right">
         <a class="js-delete nav-item">
-          <i class="glyphicon glyphicon-remove" title={{_ 'delete'}}></i>
+          <i class="fa fa-trash" title={{_ 'delete'}}></i>
         </a>
       </div>
       {{/if}}
