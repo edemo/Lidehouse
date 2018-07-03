@@ -105,7 +105,7 @@ Template.Shareddoc_store.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-delete'(event) {
+  'click .file-manager .js-delete'(event) {
     const a = event.target.closest('a');
     const _id = $(a).data('id');
     Modal.confirmAndCall(removeSharedfolders, { _id }, {

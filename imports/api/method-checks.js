@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 
 import { Permissions } from '/imports/api/permissions/permissions.js';
+import { debugAssert } from '/imports/utils/assert.js';
 import '/imports/api/users/users.js';
 
 export function checkLoggedIn(userId) {
@@ -43,15 +44,12 @@ export function checkPermissions(userId, permissionName, communityId, object) {
 
 export function checkTopicPermissions(userId, permissionName, topic) {
   // Checks that *user* has *permission* to perform things on given *topic*
-  if ((topic.category === 'vote') && (topic.vote.effect === 'poll')) return;    // no permission needed for poll vote
-  const categoryPermissionName = `${topic.category}.${permissionName}`;
-  const genericPermissionName = `topics.${permissionName}`;
-  const categoryPermission = Permissions.find(perm => perm.name === categoryPermissionName);
-  if (categoryPermission) {
-    checkPermissions(userId, categoryPermission.name, topic.communityId, topic);
-  } else {
-    checkPermissions(userId, genericPermissionName, topic.communityId, topic);
+  let derivedPermissionName = `${topic.category}.${permissionName}`;
+  if ((topic.category === 'vote') && (topic.vote.effect === 'poll')) {
+    derivedPermissionName = `poll.${permissionName}`;
   }
+  debugAssert(Permissions.find(perm => perm.name === derivedPermissionName));
+  checkPermissions(userId, derivedPermissionName, topic.communityId, topic);
 }
 
 export function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {

@@ -11,24 +11,29 @@ export const Shareddocs = new Mongo.Collection('shareddocs');
 export function hasPermissionToUpload(userId, doc) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
-  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId);
-    // TODO: create the specific permission for vote.insert for poll votes!
-  else if (doc.folderId === 'voting') return user.hasPermission('comments.insert', doc.communityId);
-  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.insert', doc.communityId);
+  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId, doc);
+  else if (doc.folderId === 'voting') return user.hasPermission('poll.insert', doc.communityId, doc);
+  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.insert', doc.communityId, doc);
   else if (doc.folderId === 'decision') return false;
-  else return user.hasPermission('shareddocs.upload', doc.communityId);
+  else return user.hasPermission('shareddocs.upload', doc.communityId, doc);
 }
 
-// Setting up collection permissions
+export function hasPermissionToRemoveUploaded(userId, doc) {
+  if (!userId) return false;
+  const user = Meteor.users.findOne(userId);
+  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId, doc);
+  else if (doc.folderId === 'voting') return user.hasPermission('poll.remove', doc.communityId, doc);
+  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.remove', doc.communityId, doc);
+  else if (doc.folderId === 'decision') return false;
+  else return user.hasPermission('shareddocs.upload', doc.communityId, doc);
+}
+
+// Can be manipulated only through the ShareddocStore interface
 Shareddocs.allow({
-  insert(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
-  update(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
+  insert() { return false; },
+  update() { return false; },
   remove(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
+    return hasPermissionToRemoveUploaded(userId, doc);
   },
 });
 
@@ -45,10 +50,10 @@ ShareddocsStore.setPermissions(new UploadFS.StorePermissions({
     return hasPermissionToUpload(userId, doc);
   },
   update(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
+    return false;
   },
   remove(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
+    return hasPermissionToRemoveUploaded(userId, doc);
   },
 }));
 
