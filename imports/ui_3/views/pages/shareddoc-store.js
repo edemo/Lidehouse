@@ -2,9 +2,12 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { AutoForm } from 'meteor/aldeed:autoform';
+
 import { Clock } from '/imports/utils/clock.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
-import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders';
+import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
+import { remove as removeSharedfolders } from '/imports/api/shareddocs/sharedfolders/methods.js';
 import '/imports/ui_2/modals/modal.js';
 import '/imports/ui_2/modals/confirmation.js';
 import '../common/page-heading.html';
@@ -83,7 +86,8 @@ Template.Shareddoc_store.events({
       id: 'af.sharedfolder.insert',
       collection: Sharedfolders,
       omitFields: ['communityId'],
-      type: 'insert',
+      type: 'method',
+      meteormethod: 'sharedfolders.insert',
       template: 'bootstrap3-inline',
     });
   },
@@ -95,14 +99,16 @@ Template.Shareddoc_store.events({
       collection: Sharedfolders,
       doc: Sharedfolders.findOne(_id),
       omitFields: ['communityId'],
-      type: 'update',
+      type: 'method-update',
+      meteormethod: 'sharedfolders.update',
+      singleMethodArgument: true,
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-delete'(event) {
+  'click .file-manager .js-delete'(event) {
     const a = event.target.closest('a');
     const _id = $(a).data('id');
-    Modal.confirmAndCall(Sharedfolders.remove, _id, {
+    Modal.confirmAndCall(removeSharedfolders, { _id }, {
       action: 'delete sharedfolder',
       message: 'This will delete all contained files as well',
     });

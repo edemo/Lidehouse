@@ -26,3 +26,6 @@ import '/imports/api/journals/methods.js';
 import '/imports/api/journals/publications.js';
 import '/imports/api/permissions/publications.js';
 import '/imports/api/shareddocs/publications.js';
+import '/imports/api/shareddocs/methods.js';
+import '/imports/api/shareddocs/sharedfolders/publications.js';
+import '/imports/api/shareddocs/sharedfolders/methods.js';

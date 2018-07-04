@@ -9,9 +9,11 @@
             <div class="ibox-title">
                 <h3>Aktív és lezárt szavazások teljes listája</h3>
                 <!--a href="" class="label label-primary js-new">+ {{_ 'new'}} {{_ 'voting'}}</a-->
+                {{#if userHasPermission 'poll.insert' (fromSession 'activeCommunityId')  }}
                 <div class="ibox-tools">
                     <a href="" class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'voting'}}</a>
                 </div>
+                {{/if}}
             </div>
             <div class="ibox-content">
                 <div class="row m-b-sm m-t-sm">

@@ -9,13 +9,13 @@
         {{#if this.closed}}
           {{_ "closed"}}<!--a href="" class="js-view-results">: {{_ "Vote results"}}</a-->
         {{else}}
-          <span data-tooltip="{{_ 'createdAt'}}: {{displayCreatedAtTime}} {{_ "closes"}}: {{displayClosesAtTime}}">
-           {{_ "closes"}}: {{displayTimeLeft}}
+          <span title="{{_ 'createdAt'}}: {{displayDate createdAt}} {{_ "closes"}}: {{displayDate vote.closesAt}}">
+           {{_ "closes"}}: {{displayTimeFrom vote.closesAt}}
           </span>
         {{/if}}
       </div>
       <!-- editing options at the right corner -->
-      {{#if userHasPermission 'vote.close' this.communityId this}}
+      {{#if userHasPermission 'vote.update' this.communityId this}}
       <div class="col-xs-1 dropdown">
           <button class="dropdown-toggle drop-unfoll glyphicon glyphicon-option-horizontal" type="button" id="drop_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           </button>

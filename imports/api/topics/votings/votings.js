@@ -18,10 +18,23 @@ Topics.voteTypeChoices = {
   'petition': ['support'],
 };
 
+let currentUsersPossibleEffectValues = () => Topics.voteEffectValues;
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+
+  currentUsersPossibleEffectValues = function() {
+    const user = Meteor.user();
+    if (!user.hasPermission('vote.insert', Session.get('activeCommunityId'))) {
+      return ['poll'];
+    }
+    return Topics.voteEffectValues;      
+  }
+}
+
 const voteSchema = new SimpleSchema({
   closesAt: { type: Date },
   procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.') },
-  effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: autoformOptions(Topics.voteEffectValues, 'schemaVotings.vote.effect.') },
+  effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.') },
   type: { type: String, allowedValues: Topics.voteTypeValues, autoform: autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.') },
   choices: { type: Array, autoValue() { return Topics.voteTypeChoices[this.field('vote.type').value]; } },
   'choices.$': { type: String },

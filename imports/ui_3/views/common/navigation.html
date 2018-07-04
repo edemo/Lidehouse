@@ -78,7 +78,7 @@
                     <a href="{{pathFor 'Tickets.report'}}">
                         <i class="glyphicon glyphicon-wrench" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Tickets'}}</span>
-                        {{#if userHasPermission 'ticket.update' (fromSession activeCommunityId)}}
+                        {{#if userHasPermission 'ticket.update' (fromSession 'activeCommunityId')}}
                         {{#if countNotifications 'ticket'}}
                         <span class="badge badge-danger pull-right">{{countNotifications 'ticket'}}</span>
                         {{/if}}
@@ -109,7 +109,7 @@
                     <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
-                        {{#if userHasPermission 'parcels.update' (fromSession activeCommunityId)}}
+                        {{#if userHasPermission 'parcels.update' (fromSession 'activeCommunityId')}}
                         {{#if countUnapprovedEntities}}
                         <span class="badge badge-danger pull-right">{{countUnapprovedEntities}}</span>
                         {{/if}}
