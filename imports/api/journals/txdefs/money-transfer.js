@@ -14,13 +14,13 @@ export const MoneyTransferTx = {
     }, _.clone(Journals.noteSchema),
   ]),
   transformToJournal(doc) {
-    const fromAccount = new AccountSpecification(doc.from);
+    const fromAccount = AccountSpecification.fromNames(doc.from);
     doc.from = [{
-      account: fromAccount.toSchemaDef(),
+      account: fromAccount.toTags(),
     }];
-    const toAccount = new AccountSpecification(doc.to);
+    const toAccount = AccountSpecification.fromNames(doc.to);
     doc.to = [{
-      account: toAccount.toSchemaDef(),
+      account: toAccount.toTags(),
     }];
     return doc;
   },

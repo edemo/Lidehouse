@@ -325,7 +325,7 @@
       "label": "Batch id"
     },
     "from": {
-      "label": "From (C)",
+      "label": "From (Cr)",
       "$": {
         "amount": {
           "label": "Amount",
@@ -343,7 +343,7 @@
       }
     },
     "to": {
-      "label": "To (D)",
+      "label": "To (Dr)",
       "$": {
         "amount": {
           "label": "Amount",

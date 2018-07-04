@@ -253,10 +253,15 @@
 
   // finances
   "Chart of accounts": "Számla tükör",
+  "Account history": "Számla történet",
+  "Account group": "Számla csoport",
+  "Reconciled": "Egyeztetve",
+  "Reconcile pending": "Egyeztetésre vár",
   "Breakdowns": "Könyvelési bontások",
   "Main breakdowns": "Számlarend",
   "Other breakdowns": "Egyéb bontások",
   "Journals": "Tranzakciók",
+  "Split": "Felosztott",
   "Bills": "Előírások",
   "Reports": "Kimutatások",
   "Common cost plan": "Előírás minden albetétre",

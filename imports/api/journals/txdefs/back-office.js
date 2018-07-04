@@ -8,12 +8,12 @@ export const BackOfficeTx = {
   schema: Journals.inputSchema,
   transformToJournal(doc) {
     doc.from.forEach(entry => {
-      const as = new AccountSpecification(entry.account.account, entry.account.localizer);
-      entry.account = as.toSchemaDef();
+      const as = AccountSpecification.fromNames(entry.account.account, entry.account.localizer);
+      entry.account = as.toTags();
     });
     doc.to.forEach(entry => {
-      const as = new AccountSpecification(entry.account.account, entry.account.localizer);
-      entry.account = as.toSchemaDef();
+      const as = AccountSpecification.fromNames(entry.account.account, entry.account.localizer);
+      entry.account = as.toTags();
     });
     return doc;
   },

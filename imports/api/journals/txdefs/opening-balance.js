@@ -20,9 +20,9 @@ export const OpeningBalanceTx = {
         'Localizer': doc.localizer.split(':').pop(),
       },
     }];
-    const toAccount = new AccountSpecification(doc.account, doc.localizer);
+    const toAccount = AccountSpecification.fromNames(doc.account, doc.localizer);
     doc.to = [{
-      account: toAccount.toSchemaDef(),
+      account: toAccount.toTags(),
     }];
     return doc;
   },

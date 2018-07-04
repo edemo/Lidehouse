@@ -118,10 +118,7 @@ export class TableReport {
     });
 
     let amount = 0;
-    JournalEntries.find(filter).forEach(entry => {
-      amount += entry.amount * (entry.move === 'to' ? +1 : -1);
-    });
-
+    JournalEntries.find(filter).forEach(e => amount += e.effectiveAmount());
 
     const totalAmount = displaySign * amount;
     if (totalAmount < 0) classes += ' negative';

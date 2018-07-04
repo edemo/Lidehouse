@@ -79,17 +79,42 @@ export const AccountInputSchema = new SimpleSchema({
 });
 
 export class AccountSpecification {
-  constructor(mainAccountFullName, localizerLeafName) {
+  constructor(mainFamily, mainLeaf, localizerLeaf)  {
+    this.mainFamily = mainFamily;
+    this.mainLeaf = mainLeaf;
+    this.localizerLeaf = localizerLeaf;
+  }
+  static fromNames(mainAccountFullName, localizerLeafName) {
     const mainSplit = mainAccountFullName.split(':');
-    this.mainFamily = mainSplit[0] || mainSplit[1];
-    this.mainLeaf = mainSplit[mainSplit.length - 1];
-    this.localizerLeaf = localizerLeafName;
+    const mainFamily = mainSplit[0] || mainSplit[1];
+    const mainLeaf = mainSplit[mainSplit.length - 1];
+    const localizerLeaf = localizerLeafName;
+    return new AccountSpecification(mainFamily, mainLeaf, localizerLeaf);
+  }
+  static fromTags(accountTags) {
+    let mainFamily, mainLeaf, localizerLeaf;
+    Object.keys(accountTags).forEach(key => {
+      if (key === 'Localizer') localizerLeaf = accountTags[key];
+      else {
+        mainFamily = key;
+        mainLeaf = accountTags[key];
+      }
+    });
+    return new AccountSpecification(mainFamily, mainLeaf, localizerLeaf);
   }
 
-  toSchemaDef() {
+  toTags() {
     return {
       [this.mainFamily]: this.mainLeaf,
       'Localizer': this.localizerLeaf,
     };
+  }
+  display() {
+    let parcelSuffix = '';
+    if (this.localizerLeaf instanceof Number) parcelSuffix = '. ' + __('parcel');
+    let html = '';
+    html += `<span class="label label-default label-xs">${this.mainFamily}::${this.mainLeaf}</span> `;
+    html += `<span class="label label-navy label-xs">${this.localizerLeaf}${parcelSuffix}</span> `;
+    return html;
   }
 }

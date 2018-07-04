@@ -1,4 +1,5 @@
 import { Template } from 'meteor/templating';
+import { numeral } from 'meteor/numeral:numeral';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 
@@ -10,11 +11,15 @@ Template.registerHelper('percentage', function percentage(number) {
     return (Math.floor(number * 100)).toString() + '%';
 });
 
+Template.registerHelper('displayMoney', function displayMoney(number) {
+    return numeral(number).format();
+});
+
 Template.registerHelper('currentTime', function currentTime() {
     return moment().format('L LT');
 });
 
-Template.registerHelper('currentDate', function currentTime() {
+Template.registerHelper('currentDate', function currentDate() {
     return moment().format('L');
 });
 
@@ -22,11 +27,11 @@ Template.registerHelper('displayTime', function displayTime(time) {
     return moment(time).format('L LT');
 });
 
-Template.registerHelper('displayDate', function displayTime(time) {
+Template.registerHelper('displayDate', function displayDate(time) {
     return moment(time).format('L');
 });
 
-Template.registerHelper('displayTimeFrom', function displayTime(time) {
+Template.registerHelper('displayTimeFrom', function displayTimeFrom(time) {
     // momentjs is not reactive, but TymeSync call makes this reactive
     const serverTimeNow = new Date(TimeSync.serverTime());
     return moment(time).from(serverTimeNow);

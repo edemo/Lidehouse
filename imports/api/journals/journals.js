@@ -70,19 +70,19 @@ Journals.helpers({
   },
   journalEntries() {
     const entries = [];
-    this.from.forEach(l => {
-      const txBase = _.clone(this);
-      delete txBase._id;
-      delete txBase.from;
-      delete txBase.to;
-      entries.push(_.extend(txBase, l, { move: 'from' }));
-    });
     this.to.forEach(l => {
       const txBase = _.clone(this);
       delete txBase._id;
       delete txBase.from;
       delete txBase.to;
       entries.push(_.extend(txBase, l, { move: 'to' }));
+    });
+    this.from.forEach(l => {
+      const txBase = _.clone(this);
+      delete txBase._id;
+      delete txBase.from;
+      delete txBase.to;
+      entries.push(_.extend(txBase, l, { move: 'from' }));
     });
     return entries;
   },

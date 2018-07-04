@@ -16,9 +16,9 @@ import { journalColumns } from '/imports/api/journals/tables.js';
 import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
 import { Reports } from '/imports/api/journals/breakdowns/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { AccountSpecification } from '/imports/api/journals/account-specification.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
+import { JournalEntries } from '/imports/api/journals/entries.js';
 import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
 import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
@@ -166,6 +166,19 @@ Template.Community_finances.helpers({
       };
     }
     return getOptions;
+  },
+  journalEntries() {
+    const account = '';
+    let total = 0;
+    const entries = JournalEntries.find({ 'account.Assets': 'Bank főszámla' }, { sort: { valueDate: 1 } }).fetch();
+    const entriesWithTotal = entries.map(e => {
+      total += e.effectiveAmount();
+      return _.extend(e, { total });
+    });
+    return entriesWithTotal;
+  },
+  negativeClass(entry) {
+    return entry.effectiveAmount() < 0 ? 'negative' : '';
   },
   journalsTableDataFn() {
     const templateInstance = Template.instance();
@@ -336,7 +349,7 @@ Template.Community_finances.events({
       template: 'bootstrap3-inline',
     });
   },*/
-  'click #journals .js-view'(event) {
+  'click #journals .js-view, #account-history .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.journal.view',
