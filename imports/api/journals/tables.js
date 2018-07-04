@@ -2,6 +2,7 @@ import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { AccountSpecification } from './account-specification';
 
 Render.breakdowns = function (cellData, renderType, currentRow) {
   const entries = cellData;
@@ -9,14 +10,7 @@ Render.breakdowns = function (cellData, renderType, currentRow) {
   if (entry.amount) return `<span class="label label-warning label-xs">${__('Split')}</span> `;
   const accountTags = entry.account;
   if (!accountTags) return undefined;
-  let html = '';
-  Object.keys(accountTags).forEach(key => {
-//    const breakdown = Breakdowns.findOne({ communityId: Session.get('activeCommunityId'), name: key });
-//    const labelText = breakdown.displayLeafName(accounts[key]);
-    const labelText = accountTags[key];
-    html += `<span class="label label-default label-xs">${labelText}</span> `;
-  });
-  return html;
+  return AccountSpecification.fromTags(accountTags).display();
 };
 
 export function journalColumns() {

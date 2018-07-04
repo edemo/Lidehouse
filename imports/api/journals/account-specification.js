@@ -114,7 +114,9 @@ export class AccountSpecification {
     if (this.localizerLeaf instanceof Number) parcelSuffix = '. ' + __('parcel');
     let html = '';
     html += `<span class="label label-default label-xs">${this.mainFamily}::${this.mainLeaf}</span> `;
-    html += `<span class="label label-navy label-xs">${this.localizerLeaf}${parcelSuffix}</span> `;
+    if (this.localizerLeaf) {
+      html += `<span class="label label-success label-xs">${this.localizerLeaf}${parcelSuffix}</span> `;
+    }
     return html;
   }
 }
