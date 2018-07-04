@@ -57,20 +57,20 @@
                 <div class="row">
                     <div class="col-sm-3">
                         <div class="form-group">
-                            <label class="control-label" for="price">From date</label>
-                            <input type="date" id="from_date" name="from_date" value="" placeholder="starting" class="form-control">
+                            <label class="control-label" for="start_date">Start date</label>
+                            <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
                         </div>
                     </div>
                     <div class="col-sm-3">
                         <div class="form-group">
-                            <label class="control-label" for="quantity">To date</label>
-                            <input type="date" id="to_date" name="to_date" value="" placeholder="until" class="form-control">
+                            <label class="control-label" for="end_date">End date</label>
+                            <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label class="control-label" for="product_name">{{_ 'Account group'}}</label>
-                            <input type="text" id="account_group" name="account_group" value="" placeholder="Account group" class="form-control">
+                            <label class="control-label" for="account_group">{{_ 'Account'}}</label>
+                            <input type="text" id="account_group" name="account_group" {{b "value: accountGroup"}} class="form-control">
                         </div>
                     </div>
                     <div class="col-sm-2">
@@ -78,7 +78,7 @@
                             <label class="control-label" for="status">{{_ 'Status'}}</label>
                             <select name="status" id="status" class="form-control">
                                 <option value="1" selected="">{{_ 'Reconciled'}}</option>
-                                <option value="0">{{_ 'Reconcile pending'}}</option>
+                                <option value="0">{{_ 'Pending'}}</option>
                             </select>
                         </div>
                     </div>

@@ -41,6 +41,31 @@ Template.Community_finances.onCreated(function communityFinancesOnCreated() {
   });
 });
 
+Template.Community_finances.viewmodel({
+  startDate: '',
+  endDate: '',
+  accountGroup: '',
+  status: 'Reconciled',
+  onCreated() {
+    this.startDate('2017-01-01');
+    this.endDate('2017-01-31');
+    this.accountGroup('Assets:Money accounts:Bank főszámla');
+  },
+  journalEntries() {
+    let total = 0;
+    const entries = JournalEntries.find({
+      'account.Assets': 'Bank főszámla',
+      valueDate: { $gte: new Date(this.startDate()), $lte: new Date(this.endDate()) },
+    }, { sort: { valueDate: 1 } }).fetch();
+    const entriesWithRunningTotal = entries.map(e => {
+      total += e.effectiveAmount();
+      return _.extend(e, { total });
+    });
+    return entriesWithRunningTotal;
+  },
+
+});
+
 Template.Community_finances.onRendered(function communityFinancesOnRendered() {
   // Filling the Balance Sheet chart with DEMO data
   this.autorun(() => {
@@ -166,16 +191,6 @@ Template.Community_finances.helpers({
       };
     }
     return getOptions;
-  },
-  journalEntries() {
-    const account = '';
-    let total = 0;
-    const entries = JournalEntries.find({ 'account.Assets': 'Bank főszámla' }, { sort: { valueDate: 1 } }).fetch();
-    const entriesWithTotal = entries.map(e => {
-      total += e.effectiveAmount();
-      return _.extend(e, { total });
-    });
-    return entriesWithTotal;
   },
   negativeClass(entry) {
     return entry.effectiveAmount() < 0 ? 'negative' : '';
