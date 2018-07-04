@@ -34,59 +34,34 @@
         {{> Balance_widget}}
     </div>
 
-    <div class="ibox ibox-dark" id='myaccounting'>
+    <div class="ibox ibox-dark" id='parcel-balances'>
         <div class="ibox-title">
-            <h5>Albetet Egyenlegei</h5>
+            <h5>{{_ 'My parcel balances'}}</h5>
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">
-            {{> Custom_table report=(report 'AlbetetemElszamolasa' 2017)}}      
+            {{> Custom_table report=(report 'MyParcelBalances' 2017)}}      
         </div>
     </div>
 
-    <div class="ibox ibox-dark" id='journals'>
+    <div class="ibox ibox-dark" id='parcel-history'>
         <div class="ibox-title">
-            <h5>Albetet Tortenete</h5>
+            <h5>{{_ 'My parcel history'}}</h5>
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <tbody>
-                    {{#each journal in parcelHistory}}
-                    <tr>
-                        <td>{{@index}}</td>
-                        <td>{{displayTime journal.valueDate}}</td>
-                        <td>{{displayPhase journal}}</td>
-                        <td>{{journal.amount}}</td>
-                        <td><strong>100%</strong></td>
-                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
-                    </tr>
-                    {{/each}}
-                    </tbody>
-                </table>
-            </div>
+            {{>Account_history startDate='2017-01-01' endDate='2017-01-31' account='Owners:Owner payins'}}
         </div>
     </div>
 
 
     <div class="ibox ibox-dark" id='accounting'>
         <div class="ibox-title">
-            <h5>{{_ 'ParcelAccounting'}}</h5>
+            <h5>{{_ 'Parcel balances'}}</h5>
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">
-            {{> Custom_table report=(report 'AlbetetekElszamolasa' 2017)}}      
-        </div>
-    </div>
-
-    <div class="ibox ibox-dark" id='journals'>
-        <div class="ibox-title">
-            <h5>{{_ 'ParcelHistory'}}</h5>
-            {{>iboxTools}}
-        </div>  
-        <div class="ibox-content">
-            {{> ReactiveDatatable tableData=journalsTableDataFn options=journalsOptionsFn }}
+            {{> Custom_table report=(report 'ParcelBalances' 2017)}}      
         </div>
     </div>
 

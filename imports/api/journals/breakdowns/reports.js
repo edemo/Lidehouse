@@ -99,8 +99,8 @@ export const Reports = {
     return report;
   },
 
-  AlbetetemElszamolasa(year) {
-    const report = new TableReport('Albetetek Elszamolasa');
+  MyParcelBalances(year) {
+    const report = new TableReport('My parcel balances');
     const communityId = Session.get('activeCommunityId');
     const myParcels = {
       name: 'Albetéteim', label: 'Összes albetét',
@@ -129,8 +129,8 @@ export const Reports = {
     return report;
   },
 
-  AlbetetekElszamolasa(year) {
-    const report = new TableReport('Albetetek Elszamolasa');
+  ParcelBalances(year) {
+    const report = new TableReport('Parcel balances');
     const communityId = Session.get('activeCommunityId');
 
     report.addFilter({ phase: 'done' });

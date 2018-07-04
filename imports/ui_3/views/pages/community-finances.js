@@ -18,7 +18,6 @@ import { Reports } from '/imports/api/journals/breakdowns/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
-import { JournalEntries } from '/imports/api/journals/entries.js';
 import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
 import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
@@ -26,6 +25,7 @@ import { serializeNestable } from '/imports/ui_2/modals/nestable-edit.js';
 import '/imports/ui_2/components/custom-table.js';
 import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
+import '/imports/ui_3/views/components/account-history.js';
 import './community-finances.html';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
@@ -39,31 +39,6 @@ Template.Community_finances.onCreated(function communityFinancesOnCreated() {
 //    this.subscribe('txs.inCommunity', { communityId });
 //    this.subscribe('txDefs.inCommunity', { communityId });
   });
-});
-
-Template.Community_finances.viewmodel({
-  startDate: '',
-  endDate: '',
-  accountGroup: '',
-  status: 'Reconciled',
-  onCreated() {
-    this.startDate('2017-01-01');
-    this.endDate('2017-01-31');
-    this.accountGroup('Assets:Money accounts:Bank főszámla');
-  },
-  journalEntries() {
-    let total = 0;
-    const entries = JournalEntries.find({
-      'account.Assets': 'Bank főszámla',
-      valueDate: { $gte: new Date(this.startDate()), $lte: new Date(this.endDate()) },
-    }, { sort: { valueDate: 1 } }).fetch();
-    const entriesWithRunningTotal = entries.map(e => {
-      total += e.effectiveAmount();
-      return _.extend(e, { total });
-    });
-    return entriesWithRunningTotal;
-  },
-
 });
 
 Template.Community_finances.onRendered(function communityFinancesOnRendered() {
@@ -191,9 +166,6 @@ Template.Community_finances.helpers({
       };
     }
     return getOptions;
-  },
-  negativeClass(entry) {
-    return entry.effectiveAmount() < 0 ? 'negative' : '';
   },
   journalsTableDataFn() {
     const templateInstance = Template.instance();
