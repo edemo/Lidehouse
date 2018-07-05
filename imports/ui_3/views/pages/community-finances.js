@@ -27,6 +27,7 @@ import '/imports/ui_2/modals/confirmation.js';
 import '/imports/ui_2/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
 import './community-finances.html';
+import { AccountSpecification } from '../../../api/journals/account-specification';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
 const notVotedColor = '#dedede';
@@ -166,6 +167,13 @@ Template.Community_finances.helpers({
       };
     }
     return getOptions;
+  },
+  nodesOf(accountName) {
+    const communityId = Session.get('activeCommunityId');
+    const account = AccountSpecification.fromNames(accountName);
+//    const brk = Breakdowns.findOne({ communityId, name: account.mainFamily });
+//    if (brk) return brk.leafsOf(account.mainLeaf).map(brk.displayFullPath);
+    return ['Assets:Money accounts:Bank főszámla', 'Assets:Money accounts:Bank felújítási alap', 'Assets:Money accounts:Hitel számla'];
   },
   journalsTableDataFn() {
     const templateInstance = Template.instance();

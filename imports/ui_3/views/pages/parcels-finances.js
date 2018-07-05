@@ -30,11 +30,9 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('breakdowns.inCommunity', { communityId });
     this.subscribe('journals.inCommunity', { communityId });
-//    this.subscribe('txs.inCommunity', { communityId });
-//    this.subscribe('txDefs.inCommunity', { communityId });
   });
 
-  this.autorun(() => {
+/*  this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     const myParcelIds = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
     // const allParcelIds = Communities.find(communityId).parcels().map(p => p.serial.toString());
@@ -48,7 +46,7 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
       const filter = { $in: localizerPac.leafsOf(activeLocalizer) };
       return filter;
     };
-  });
+  }); */
 });
 
 Template.Parcels_finances.helpers({
