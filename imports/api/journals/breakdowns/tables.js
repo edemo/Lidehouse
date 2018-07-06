@@ -11,12 +11,12 @@ export function breakdownColumns() {
 
   const displayNames = function displayNames(cellData, renderType, currentRow) {
     let result = '';
-    cellData.forEach((name) => { if (name) result += name + ', '; });
+    cellData.forEach((name) => { if (name) result += __(name) + ', '; });
     return constrainText(result, 50);
   };
 
   return [
-    { data: 'name', title: __('schemaBreakdowns.name.label') },
+    { data: 'name', title: __('schemaBreakdowns.name.label'), render: Render.translate },
 //    { data: 'type', title: __('schemaBreakdowns.type.label'), render: Render.translate },
     { data: 'leafNames()', title: __('schemaBreakdowns.children.$.children.$.children.label'), render: displayNames },
     { data: '_id', render: Render.buttonView },

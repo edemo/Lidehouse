@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { __ } from '/imports/localization/i18n.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 
 export let chooseAccountFamily = {};
@@ -11,7 +12,6 @@ export let chooseLeafAccountFromGroup = () => {};
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
   import { AutoForm } from 'meteor/aldeed:autoform';
-  import { __ } from '/imports/localization/i18n.js';
 
   chooseAccountFamily = {
     options() {
@@ -113,9 +113,9 @@ export class AccountSpecification {
     let parcelSuffix = '';
     if (this.localizerLeaf instanceof Number) parcelSuffix = '. ' + __('parcel');
     let html = '';
-    html += `<span class="label label-default label-xs">${this.mainFamily}::${this.mainLeaf}</span> `;
+    html += `<span class="label label-default label-xs">${__(this.mainFamily)}::${__(this.mainLeaf)}</span> `;
     if (this.localizerLeaf) {
-      html += `<span class="label label-success label-xs">${this.localizerLeaf}${parcelSuffix}</span> `;
+      html += `<span class="label label-success label-xs">${__(this.localizerLeaf)}${parcelSuffix}</span> `;
     }
     return html;
   }
