@@ -25,6 +25,46 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 
+if (Meteor.isServer) {
+  import fs from 'fs';
+  import { ShareddocsStore as store } from '/imports/api/shareddocs/shareddocs.js';
+
+  function uploadFileSimulation(storeParams, path) {
+     // the object passed can potentially be empty, BUT if you do custom-checks in `transformWrite`
+    //  be sure to pass it the information it needs there. It is important, that in `transformWrite`
+    //  you link up from & to parameters, otherwise nothing will happen
+    const fileId = store.create(
+      storeParams
+    );
+    const readStream = fs.createReadStream(path)  // create the stream
+    readStream.on('error', (err) => {
+      console.log('error in readStream', err);
+    });
+    // Save the file to the store
+    store.write(readStream, fileId, Meteor.bindEnvironment((err, file) => {
+      if (err) {
+        console.log('error in Store.write', err, file);
+      }
+    }));
+  }  
+
+  function runWithFakeUserId(userId, toRun) {
+    const DDPCommon = Package['ddp-common'].DDPCommon;
+    const invocation = new DDPCommon.MethodInvocation({
+      isSimulation: false,
+      userId,
+      setUserId: ()=>{},
+      unblock: ()=>{},
+      connection: {},
+      randomSeed: Math.random()
+    });
+  
+    DDP._CurrentInvocation.withValue(invocation, () => {
+      toRun();
+    });  
+  }
+}
+
 const demoParcelCounterStart = 14;
 
 export function insertDemoHouse(lang, demoOrTest) {
@@ -673,6 +713,59 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic5, castedVote: [0] });
   castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic5, castedVote: [0] });
+
+  // ===== Shareddocs =====
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'Alaprajz.jpg',
+      type: 'image/jpg',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'main',
+    }, 'assets/app/demohouseDocs/alaprajz.jpg');  
+  });
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'Fontos_telefonszámok.xls',
+      type: 'application/vnd.ms-excel',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'main',
+    }, 'assets/app/demohouseDocs/telefon.xls');  
+  });
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'Társasházi_törvény.pdf',
+      type: 'application/pdf',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'main',
+    }, 'assets/app/demohouseDocs/tv.pdf');  
+  });
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'SZMSZ_201508.pdf',
+      type: 'application/pdf',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'community',
+    }, 'assets/app/demohouseDocs/szmsz.pdf');  
+  });
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'bikestorage.jpg',
+      type: 'image/jpg',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'voting',
+      topicId: voteTopic3,
+    }, 'assets/app/demohouseDocs/kerekpartarolo.jpg');  
+  });
 
   // ===== Tickets =====
 
