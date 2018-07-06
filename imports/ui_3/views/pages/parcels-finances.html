@@ -38,9 +38,13 @@
         <div class="ibox-title">
             <h5>{{_ 'My parcel balances'}}</h5>
             {{>iboxTools}}
-        </div>  
+        </div>
         <div class="ibox-content">
-            {{> Custom_table report=(report 'MyParcelBalances' 2017)}}      
+            {{#if Template.subscriptionsReady}}
+            {{> Custom_table report=(report 'MyParcelBalances' 2017)}}
+            {{else}}
+            {{_ 'Loading'}}...
+            {{/if}}
         </div>
     </div>
 
@@ -61,7 +65,11 @@
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">
+            {{#if Template.subscriptionsReady}}
             {{> Custom_table report=(report 'ParcelBalances' 2017)}}      
+            {{else}}
+            {{_ 'Loading'}}...
+            {{/if}}
         </div>
     </div>
 

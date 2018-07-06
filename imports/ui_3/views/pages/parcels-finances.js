@@ -50,7 +50,7 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
 });
 
 Template.Parcels_finances.helpers({
-  getActiveLocalizer() {
+/*  getActiveLocalizer() {
     return Template.instance().getActiveLocalizer();
   },
   localizerOptions() {
@@ -58,8 +58,9 @@ Template.Parcels_finances.helpers({
     const communityId = Session.get('activeCommunityId');
     const localizerPac = Breakdowns.findOne({ communityId, name: 'Localizer' });
     return localizerPac.nodeOptions();
-  },
+  },*/
   report(name, year) {
+    if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
   },
   parcelHistory() {

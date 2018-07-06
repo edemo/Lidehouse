@@ -44,13 +44,15 @@ Template.Account_history.viewmodel({
 Template.Parcel_history.viewmodel({
   startDate: '',
   endDate: '',
-  localizer: '',
+  localizerSelected: '',
   localizerOptions: '',
   onCreated() {
     const communityId = Session.get('activeCommunityId');
     const myParcelSerials = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel() ? m.parcel().serial : null);
     this.localizerOptions(myParcelSerials.map(ps => ps.toString()));
-//    if (myParcelSerials && myParcelSerials[0]) this.localizer(myParcelSerials[0].toString());
+    if (myParcelSerials && myParcelSerials[0]) {
+      this.localizerSelected(myParcelSerials[0].toString());
+    }
 //    const today = moment().format('L');
 //    this.endDate(today);
   },
@@ -58,7 +60,7 @@ Template.Parcel_history.viewmodel({
     let total = 0;
     const entries = JournalEntries.find({
       'account.Owners': { $exists: true },
-      'account.Localizer': this.localizer(),
+      'account.Localizer': this.localizerSelected(),
       valueDate: { $gte: new Date(this.startDate()), $lte: new Date(this.endDate()) },
     }, { sort: { valueDate: 1 } }).fetch();
     const entriesWithRunningTotal = entries.map(e => {
