@@ -152,7 +152,7 @@ Breakdowns.helpers({
     const self = this;
     return this.leafsOf(nodeName)
       .map(function option(leaf) {
-        return { label: self.displayFullPath(leaf), value: leaf.name };
+        return { label: self.displayFullPath(leaf), value: leaf.path };
       });
   },
   nodeOptions() {

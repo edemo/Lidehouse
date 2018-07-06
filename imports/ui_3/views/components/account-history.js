@@ -14,15 +14,15 @@ import { AccountSpecification } from '../../../api/journals/account-specificatio
 Template.Account_history.viewmodel({
   startDate: '',
   endDate: '',
-  account: '',
-  accountOptions: '',
+  accountSelected: '',
+  accountOptions: [],
   status: 'Reconciled',
   onCreated() {
 //    const today = moment().format('L');
 //    this.endDate(today);
   },
   journalEntries() {
-    const accountSpec = AccountSpecification.fromNames(this.account());
+    const accountSpec = AccountSpecification.fromNames(this.accountSelected());
     const entries = JournalEntries.find({
       ['account.' + accountSpec.mainFamily]: accountSpec.mainLeaf,
       valueDate: { $gte: new Date(this.startDate()), $lte: new Date(this.endDate()) },

@@ -168,12 +168,12 @@ Template.Community_finances.helpers({
     }
     return getOptions;
   },
-  nodesOf(accountName) {
+  optionsOf(accountName) {
     const communityId = Session.get('activeCommunityId');
     const account = AccountSpecification.fromNames(accountName);
-//    const brk = Breakdowns.findOne({ communityId, name: account.mainFamily });
-//    if (brk) return brk.leafsOf(account.mainLeaf).map(brk.displayFullPath);
-    return ['Assets:Money accounts:Bank főszámla', 'Assets:Money accounts:Bank felújítási alap', 'Assets:Money accounts:Hitel számla'];
+    const brk = Breakdowns.findOne({ communityId, name: account.mainFamily });
+    if (brk) return brk.leafOptions(account.mainLeaf);
+    return [];
   },
   journalsTableDataFn() {
     const templateInstance = Template.instance();

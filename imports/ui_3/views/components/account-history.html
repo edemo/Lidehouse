@@ -15,7 +15,7 @@
         <div class="col-sm-4">
             <div class="form-group">
                 <label class="control-label" for="account_group">{{_ 'Account'}}</label>
-                <select id="account_group" name="account_group" {{b "options: accountOptions, value: account"}} class="form-control"></select>
+                <select id="account_group" name="account_group" {{b "options: accountOptions, optionsValue: value, optionsText: label, value: accountSelected"}} class="form-control"></select>
                 <!--input type="text" id="account_group" name="account_group" {{b "value: account"}} class="form-control"-->
             </div>
         </div>
