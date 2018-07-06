@@ -12,6 +12,7 @@
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
+                {{#if Template.subscriptionsReady}}
                 <div class="row">
                     <div class="col-md-6 p-md">
                     {{> Custom_table report=(report 'Assets')}}
@@ -21,6 +22,9 @@
                     {{> Custom_table report=(report 'Liabilities')}}
                     </div>
                 </div>
+                {{else}}
+                {{_ 'Loading'}}...
+                {{/if}}
             </div>
         </div>
     </div>
@@ -103,8 +107,12 @@
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
+              {{#if Template.subscriptionsReady}}
               {{> Custom_table report=(report 'Performance' 2017)}}
-            </div>
+              {{else}}
+              {{_ 'Loading'}}...
+              {{/if}}
+          </div>
         </div>
     </div>
 
