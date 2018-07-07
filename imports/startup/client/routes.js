@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
-import { connectMe } from '/imports/api/memberships/methods.js';
 
 // Import to load these templates
 import '/imports/ui/pages/root-redirector.js';
@@ -242,6 +241,9 @@ Meteor.autorun(() => {
 });
 
 // SignIn/SignUp routes
+// AccountsTemplates routes that need url generation from token are in 
+// imports/startup/both/useraccounts-configuration.js
+// because they need both server and client side for proper url generation
 
 AccountsTemplates.configureRoute('signIn', {
   name: 'signin',
@@ -257,29 +259,4 @@ AccountsTemplates.configureRoute('signUp', {
   redirect() {
     signinRedirect();
   },
-});
-
-AccountsTemplates.configureRoute('forgotPwd');
-
-AccountsTemplates.configureRoute('resetPwd', {
-  name: 'resetPwd',
-  path: '/reset-password',
-});
-
-AccountsTemplates.configureRoute('verifyEmail', {
-  name: 'verifyEmail',
-  path: '/verify-email',
-  redirect() {
-    connectMe.call();
-  },
-});
-
-AccountsTemplates.configureRoute('enrollAccount', {
-  name: 'enrollAccount',
-  path: '/enroll-account',
-  redirect() {
-    connectMe.call();
-    FlowRouter.go('App.home');
-  },
-});
-
+}); 
