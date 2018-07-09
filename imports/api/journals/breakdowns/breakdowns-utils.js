@@ -1,6 +1,6 @@
 
 export const moveTags = {
-  name: 'move', label: 'balance',
+  name: 'move', label: 'Balance',
   children: [
   { name: 'to', label: 'done' },
   { name: 'from', label: 'bill' },

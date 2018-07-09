@@ -96,7 +96,7 @@ const BreakdownsTemplate = [
         children: [
         { name: 'Bank főszámla' },
         { name: 'Bank felújítási alap' },
-        { name: 'Hitel számla' },
+        { name: 'Fundamenta felújítási hitel' },
         { name: 'Pénztár 1' },
         ],
       },

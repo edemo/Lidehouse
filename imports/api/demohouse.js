@@ -998,7 +998,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     }],
     to: [{
       account: {
-        'Assets': 'Hitel számla',
+        'Assets': 'Fundamenta felújítási hitel',
       },
     }],
     note: __('demo.journals.note.4'),
