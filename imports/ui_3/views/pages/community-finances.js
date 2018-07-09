@@ -46,7 +46,7 @@ Template.Community_finances.onRendered(function communityFinancesOnRendered() {
   // Filling the Balance Sheet chart with DEMO data
   this.autorun(() => {
     const doughnutData = {
-      labels: [__('Bank főszámla'), __('Bank felújítási alap'), __('Hitelszámla'), __('Pénztár')],
+      labels: [__('Bank főszámla'), __('Bank felújítási alap'), __('Fundamenta felújítási hitel'), __('Pénztár')],
       datasets: [{
         data: [6943500, 120000, 2300000, 100000],
         backgroundColor: choiceColors,

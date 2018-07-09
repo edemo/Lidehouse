@@ -118,12 +118,9 @@ const BreakdownsTemplate = [
 
   { name: 'Equity', locked: true, sign: -1,
     children: [
-      { name: 'Initialize',
-        children: [
         { name: 'Opening' },
         { name: 'Carry' },
-        ],
-      },
+        { name: 'Performance' },
     ],
   },
 
@@ -230,7 +227,7 @@ const TxDefsTemplate = [
 
   { name: 'Opening',
     journals: [{
-      accountFrom: 'Accounts/Liabilities/Initialize/Opening',
+      accountFrom: 'Accounts/Liabilities/Opening',
       accountTo: 'Accounts/Assets',
     }],
   },
