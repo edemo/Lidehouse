@@ -111,7 +111,7 @@ export class AccountSpecification {
   }
   display() {
     let parcelSuffix = '';
-    if (this.localizerLeaf instanceof Number) parcelSuffix = '. ' + __('parcel');
+    if (parseInt(this.localizerLeaf, 10)) parcelSuffix = '. ' + __('parcel');
     let html = '';
     html += `<span class="label label-default label-xs">${__(this.mainFamily)}::${__(this.mainLeaf)}</span> `;
     if (this.localizerLeaf) {
