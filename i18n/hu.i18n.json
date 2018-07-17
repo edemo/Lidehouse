@@ -216,6 +216,7 @@
   "Please select voters": "Válassza ki kiknek a nevében szeretné ezt a szavazatot leadni",
   "Attachments" : "Csatolmányok",
   "Activity": "Változások",
+  "All votings": "Aktív és lezárt szavazások teljes listája",
   
   // delegations
   "Delegations from me": "Meghatalmazásaim",
@@ -240,6 +241,7 @@
   "You have not yet voted": "Ön még nem szavazott",
   "notYetVotedCastYourVoteOr": "adja le szavazatát, vagy",
   "setupYourDelegation": "állítson be meghatalmazást",
+  "No delegations": "Nincsenek meghatalmazások",
 
   // tickets
   "Active tickets": "Aktív bejelentett hibák",
@@ -428,7 +430,6 @@
     "Az alábbi linkre kattintva helyreállíthatja jelszavát a honline.hu rendszerében:",
     "\n__url__\n",
     "Üdvözlettel, \nA Honline Csapata"],
-
 
   "":""
 }

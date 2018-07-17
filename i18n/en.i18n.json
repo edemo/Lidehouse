@@ -62,7 +62,6 @@
   "delegationsToMeInstructions": "Here you can see those who have set up delegations toward you, asking you to vote for them.",
   "delegationsToMeInstructions2": "These delegations you may refuse to accept. You can also disallow others delegating to you, completely.",
   "allowDelegationsToMe": "Allow others to delegate to me",
-
   "votedViaDelegationHint" : "casting a vote can override this",
   "notYetVotedCastYourVoteOr": "cast your vote below, or",
   "setupYourDelegation": "set up a delegation",
