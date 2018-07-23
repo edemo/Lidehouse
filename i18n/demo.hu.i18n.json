@@ -135,7 +135,7 @@
         "title": "Hangos kutya a negyediken",
         "text": "A negyediken a kutya egész álló nap vonyít. Szólni kéne a gazdinak, hogy ne hagyja egyedül.",
         "comment": {
-          "0": "Engem is rohadtul idegesít!!!",
+          "0": "Engem is nagyon idegesít!!!",
           "1": "Elnézést kérek a lakóktól. Mienk a kutyus, nem szokott vonyítani. A nagyi sajnos három hétig kórházban, és szegény kutyus nagyon rosszul bírja az egyedüllétet.",
           "2": "Szerencsére a nagyit már hazaengedték, tegnap óta már otthon van. Úgyhogy nem lesz többet gond, és tényeg elnézést kérek mindenkitől."
         }
@@ -143,12 +143,12 @@
     },
     "news": {
       "0": {
-        "title": "Lomtalanítás lesz május 4.-én",
-        "text": "A lomokat előző nap (tehát május 3.-án) 18 órától lehet kihelyezni az utcára, amit a FKFV 4.-én szállít el.\nA veszélyes hulladékokat a külön erre kijelölt helyre kell vinni. Azokat NEM szabad az utcára kitenni!"
+        "title": "Lomtalanítás lesz 29-én",
+        "text": "A lomokat előző nap (tehát 28-án) 18 órától lehet kihelyezni az utcára, amit a FKFV 29-én szállít el.\nA veszélyes hulladékokat a külön erre kijelölt helyre kell vinni. Azokat NEM szabad az utcára kitenni!"
       },
       "1": {
         "title": "Kémények ellenörzéséhez időpontot szükséges kérni",
-        "text": "Hónap végéig kötelező a kémények ellenőrzése. Három lehetséges időpont van. 2017.05.11, 2017.05.13, 2017.05.24.\nEzek közül lehet választani és a kéményseprőkkel egyeztetni a 06(20)2569875 telefonszámon hogy kinek melyik felel meg."
+        "text": "Hónap végéig kötelező a kémények ellenőrzése.\n Kérjük egyeztessenek a kéményseprőkkel a 06(20)2569875 telefonszámon hogy kinek melyik időpont felel meg."
       },
       "2": {
         "title": "Hasznos informáciok",
@@ -201,7 +201,7 @@
     },
     "agenda": {
       "0": {
-        "title": "Rendkívüli közgyűlés 2017.09.25."
+        "title": "Rendkívüli közgyűlés 2017/3."
       },
       "1": {
         "title": "Közgyűlés 2018-I."
