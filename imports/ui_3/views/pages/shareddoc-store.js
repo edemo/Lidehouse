@@ -53,13 +53,6 @@ Template.Shareddoc_store.helpers({
     const folderId = Template.instance().activeFolderId.get();
     if (!communityId || !folderId) return [];
     let containedFiles = Shareddocs.find({ communityId, folderId }, { sort: { createdAt: -1 } });
-    const dummyFiles = [2014, 2015, 2016, 2017, 2018].map(function (year) {
-      return {
-        name: 'Document_' + year.toString() + '.doc',
-        createdAt: Clock.currentTime(),
-      };
-    });
-    if (folderId === 'main') containedFiles = dummyFiles.concat(containedFiles.fetch());
     return containedFiles;
   },
   extensions() {

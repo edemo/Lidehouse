@@ -24,6 +24,47 @@ import { insertPayAccountTemplate } from '/imports/api/payaccounts/template.js';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
+import { Clock } from '/imports/utils/clock';
+
+if (Meteor.isServer) {
+  import fs from 'fs';
+  import { ShareddocsStore as store } from '/imports/api/shareddocs/shareddocs.js';
+
+  function uploadFileSimulation(storeParams, path) {
+     // the object passed can potentially be empty, BUT if you do custom-checks in `transformWrite`
+    //  be sure to pass it the information it needs there. It is important, that in `transformWrite`
+    //  you link up from & to parameters, otherwise nothing will happen
+    const fileId = store.create(
+      storeParams
+    );
+    const readStream = fs.createReadStream(path)  // create the stream
+    readStream.on('error', (err) => {
+      console.log('error in readStream', err);
+    });
+    // Save the file to the store
+    store.write(readStream, fileId, Meteor.bindEnvironment((err, file) => {
+      if (err) {
+        console.log('error in Store.write', err, file);
+      }
+    }));
+  }  
+
+  function runWithFakeUserId(userId, toRun) {
+    const DDPCommon = Package['ddp-common'].DDPCommon;
+    const invocation = new DDPCommon.MethodInvocation({
+      isSimulation: false,
+      userId,
+      setUserId: ()=>{},
+      unblock: ()=>{},
+      connection: {},
+      randomSeed: Math.random()
+    });
+  
+    DDP._CurrentInvocation.withValue(invocation, () => {
+      toRun();
+    });  
+  }
+}
 
 const demoParcelCounterStart = 14;
 
@@ -451,7 +492,14 @@ export function insertDemoHouse(lang, demoOrTest) {
     return dummyUsers[nextUserIndex];
   }
 
+  const demoTopicDates = [
+    moment('2017-08-03 17:32').toDate(),
+    moment('2017-09-16 08:25').toDate(),
+    moment('2018-07-09 15:10').toDate(),
+  ];
+
   ['0', '1', '2'].forEach((topicNo) => {
+    Clock.setSimulatedTime(demoTopicDates[topicNo]);
     const topicId = Topics.insert({
       communityId: demoCommunityId,
       userId: nextUser(),
@@ -461,6 +509,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     ['0', '1', '2'].forEach((commentNo) => {
+      Clock.setSimulatedTime(moment(demoTopicDates[topicNo]).add((commentNo + 1) * 45, 'minutes').toDate());
       const path = `demo.topic.${topicNo}.comment.${commentNo}`;
       const commentText = __(path);
       if (commentText !== path) {
@@ -472,10 +521,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       }
     });
   });
+  Clock.clear();
 
   // ===== News =====
 
   ['0', '1'].forEach((newsNo) => {
+    Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
     const newsId = Topics.insert({
       communityId: demoCommunityId,
       userId: dummyUsers[0],
@@ -483,7 +534,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
     });
-
+   
     // This sticky news item is not displayed now
     /* if (newsNo == 2) {
       Topics.update(newsId, {
@@ -497,6 +548,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       });
     }*/
   });
+  Clock.clear();
 
   // ===== Votes =====
 
@@ -513,6 +565,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const ownerships = Memberships.find({ communityId: demoCommunityId, role: 'owner', 'person.userId': { $exists: true } }).fetch();
 
+  Clock.setSimulatedTime(moment(demoTopicDates[1]).add(1, 'weeks').toDate());
   const voteTopic0 = Topics.insert({
     communityId: demoCommunityId,
     userId: demoManagerId,
@@ -521,12 +574,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.vote.0.text'),
     agendaId: agendaFirstId,
     vote: {
-      closesAt: new Date('2017-09-25'),  // its past close date
+      closesAt: moment(demoTopicDates[1]).add(5, 'weeks').toDate(),  // its past close date
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',
     },
-    createdAt: new Date('2017-09-01'),
   });
 
   castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic0, castedVote: [1] }); // no
@@ -542,9 +594,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   castVote._execute({ userId: ownerships[10].person.userId }, { topicId: voteTopic0, castedVote: [0] });
   castVote._execute({ userId: ownerships[11].person.userId }, { topicId: voteTopic0, castedVote: [0] });
   castVote._execute({ userId: ownerships[12].person.userId }, { topicId: voteTopic0, castedVote: [0] });
-
+  Clock.setSimulatedTime(moment(demoTopicDates[1]).add(5, 'weeks').toDate());
   closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic0 }); // This vote is already closed
-
+  Clock.clear();
+  
+  Clock.setSimulatedTime(moment('2017-09-20 09:04').toDate());
   const voteTopic1 = Topics.insert({
     communityId: demoCommunityId,
     userId: demoManagerId,
@@ -553,12 +607,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.vote.1.text'),
     agendaId: agendaFirstId,
     vote: {
-      closesAt: new Date('2017-09-25'),
+      closesAt: moment('2017-10-14 09:04').toDate(),
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',
     },
-    createdAt: "2017-09-31T14:07:30.266Z",
   });
 
   castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic1, castedVote: [0] });
@@ -573,9 +626,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   castVote._execute({ userId: ownerships[9].person.userId }, { topicId: voteTopic1, castedVote: [1] });
   castVote._execute({ userId: ownerships[10].person.userId }, { topicId: voteTopic1, castedVote: [0] });
   castVote._execute({ userId: ownerships[11].person.userId }, { topicId: voteTopic1, castedVote: [0] });
-
+  Clock.setSimulatedTime(moment('2017-10-14 09:04').toDate());
   closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic1 }); // This vote is already closed
+  Clock.clear();
 
+  Clock.setSimulatedTime(moment('2018-01-03 13:12').toDate());
   const voteTopic2 = Topics.insert({
     communityId: demoCommunityId,
     userId: dummyUserId,
@@ -583,7 +638,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.2.title'),
     text: __('demo.vote.2.text'),
     vote: {
-      closesAt: new Date('2018-01-04'),
+      closesAt: moment('2018-01-18 22:45').toDate(),
       procedure: 'online',
       effect: 'poll',
       type: 'choose',
@@ -592,7 +647,6 @@ export function insertDemoHouse(lang, demoOrTest) {
         __('demo.vote.2.choice.1'),
       ],
     },
-    createdAt: new Date('2017-12-14'),
   });
 
   castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic2, castedVote: [0] });
@@ -600,9 +654,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   castVote._execute({ userId: ownerships[9].person.userId }, { topicId: voteTopic2, castedVote: [0] });
   castVote._execute({ userId: ownerships[12].person.userId }, { topicId: voteTopic2, castedVote: [0] });
   castVote._execute({ userId: ownerships[13].person.userId }, { topicId: voteTopic2, castedVote: [0] });
-
+  Clock.setSimulatedTime(moment('2018-01-18 22:45').toDate());
   closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic2 }); // This vote is already closed
+  Clock.clear();
 
+  Clock.setSimulatedTime(moment().subtract(3, 'weeks').toDate());
   const voteTopic3 = Topics.insert({
     communityId: demoCommunityId,
     userId: demoManagerId,
@@ -620,6 +676,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // No one voted on this yet
 
+  Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
   const voteTopic4 = Topics.insert({
     communityId: demoCommunityId,
     userId: ownerships[1].person.userId,
@@ -647,15 +704,18 @@ export function insertDemoHouse(lang, demoOrTest) {
   castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic4, castedVote: [1, 0, 2, 3] });
   castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic4, castedVote: [1, 2, 3, 0] });
   castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic4, castedVote: [1, 2, 0, 3] });
-
-  ['0', '1'].forEach(commentNo =>
+  
+  ['0', '1'].forEach((commentNo) => {
+    Clock.setSimulatedTime(moment().subtract(3, 'days').add(commentNo + 2, 'minutes').toDate());
     Comments.insert({
       topicId: voteTopic4,
       userId: nextUser(),
       text: __(`demo.vote.4.comment.${commentNo}`),
     })
-  );
+  });
+  Clock.clear();
 
+  Clock.setSimulatedTime(moment().subtract(3, 'days').toDate());
   const voteTopic5 = Topics.insert({
     communityId: demoCommunityId,
     userId: ownerships[8].person.userId,
@@ -673,6 +733,60 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic5, castedVote: [0] });
   castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic5, castedVote: [0] });
+  Clock.clear();
+
+  // ===== Shareddocs =====
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'Alaprajz.jpg',
+      type: 'image/jpg',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'main',
+    }, 'assets/app/demohouseDocs/alaprajz.jpg');  
+  });
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'Fontos_telefonszámok.xls',
+      type: 'application/vnd.ms-excel',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'main',
+    }, 'assets/app/demohouseDocs/telefon.xls');  
+  });
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'Társasházi_törvény.pdf',
+      type: 'application/pdf',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'main',
+    }, 'assets/app/demohouseDocs/tv.pdf');  
+  });
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'SZMSZ_201508.pdf',
+      type: 'application/pdf',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'community',
+    }, 'assets/app/demohouseDocs/szmsz.pdf');  
+  });
+
+  runWithFakeUserId(demoManagerId, () => {
+    uploadFileSimulation({
+      name: 'bikestorage.jpg',
+      type: 'image/jpg',
+      communityId: demoCommunityId,
+      userId: demoManagerId,
+      folderId: 'voting',
+      topicId: voteTopic3,
+    }, 'assets/app/demohouseDocs/kerekpartarolo.jpg');  
+  });
 
   // ===== Tickets =====
 
@@ -689,6 +803,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
+  Clock.setSimulatedTime(moment().subtract(3, 'months').add(25, 'minutes').toDate());
   const ticket1 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
@@ -701,7 +816,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       status: 'closed',
     },
   });
-
+  Clock.setSimulatedTime(moment().subtract(3982, 'minutes').toDate());
   const ticket2 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
@@ -714,13 +829,14 @@ export function insertDemoHouse(lang, demoOrTest) {
       status: 'reported',
     },
   });
-
+  Clock.setSimulatedTime(moment().subtract(3950, 'minutes').toDate())
   Comments.insert({
     topicId: ticket2,
     userId: nextUser(),
     text: __('demo.ticket.2.comment.0'),
   });
 
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(123, 'minutes').toDate());
   const ticket3 = Topics.insert({
     communityId: demoCommunityId,
     userId: nextUser(),
@@ -733,10 +849,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       status: 'closed',
     },
   });
+  Clock.clear();
 
   // ===== Rooms =====
 
-  const demoMessageRoom = Topics.insert({
+ /* const demoMessageRoom = Topics.insert({
     communityId: demoCommunityId,
     userId: dummyUserId,
     category: 'room',
@@ -753,7 +870,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     topicId: demoMessageRoom,
     userId: dummyUserId,
     text: __('demo.messages.1'),
-  });
+  });*/
 
   // ===== PayAccounts =====
 
@@ -1322,16 +1439,19 @@ Meteor.methods({
       category: 'room',
       participantIds: [demoUserId, dummyUserId],
     });
+    Clock.setSimulatedTime(moment().subtract(6, 'hours').toDate());
     Comments.insert({
       topicId: demoUserMessageRoom2,
       userId: demoUserId,
       text: 'Szervusz! Megtaláltam a postaláda kulcsodat. Benne hagytad a levélszekrény ajtajában. :)',
     });
+    Clock.setSimulatedTime(moment().subtract(3, 'hours').toDate());
     Comments.insert({
       topicId: demoUserMessageRoom2,
       userId: dummyUserId,
       text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
-    });
+    }); 
+    Clock.clear();
     // TODO: Do this thing in the comments.insert method,
     // Everyone has seen his own comments! So set it to be seen by him, when he comments.
     Meteor.users.update({ _id: demoUserId }, { $set: {

@@ -11,7 +11,6 @@ export const Clock = {
   // Dont forget to call clear after you are done!!!
   setSimulatedTime(time) {
     simulatedTime = time;
-    Meteor.setTimeout(this.clear(), 60 * 1000);
   },
   clear() {
     simulatedTime = null;

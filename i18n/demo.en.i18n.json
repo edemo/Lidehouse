@@ -144,12 +144,12 @@
     },
     "news": {
       "0": {
-        "title": "Garbage Day on May 4",
+        "title": "Garbage Day on next Friday",
         "text": "Any dangerous materials and special garbage can be placed outside the front door on the previous day. And it will be taken away"
       },
       "1": {
         "title": "Mandatory chimney checking",
-        "text": "Has to be done until the end of the month. Three possible dates: 2017.05.11, 2017.05.13, 2017.05.24.\nPlease choose one and schedule an appointment with the chimney checkers at +36(20)2569875."
+        "text": "Has to be done until the end of the month.\nPlease choose an appropriate date and schedule an appointment with the chimney checkers at +36(20)2569875."
       },
       "2": {
         "title": "Useful information",
@@ -200,7 +200,7 @@
     },
     "agenda": {
       "0": {
-        "title": "Owners Association Meeting 25-09-2017"
+        "title": "Owners Association Meeting 2017/3."
       },
       "1": {
         "title": "Owners Association Meeting 2018-I."

@@ -38,7 +38,7 @@ Shareddocs.allow({
 });
 
 // Declare store
-const ShareddocsStore = new GridFSStore({
+export const ShareddocsStore = new GridFSStore({
   collection: Shareddocs,
   name: 'shareddocs',
   chunkSize: 1024 * 255,
