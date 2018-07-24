@@ -152,6 +152,7 @@ Topics.publicFields = {
   text: 1,
   agendaId: 1,
   createdAt: 1,
+  updatedAt: 1,
   closed: 1,
   sticky: 1,
   likes: 1,
