@@ -100,11 +100,13 @@
       "17": {
         "firstName": "Ildikó",
         "lastName": "Rózsa"
-      }
+      },
+      "firstNames": ["0", "Aladár", "Boris", "Cecília", "Dávid", "Ede", "Ferenc", "Gabi", "Hedvig", "István", "Jolán", "Klára", "Lajos", "Margit", "Nándor", "Olivér", "Péter", "Róza", "Sarolta", "Tivadar", "Zsuzsanna"]
     },
     "manager": {
         "firstName": "Levente",
-        "lastName": "Király"
+        "lastName": "Király",
+        "message": "Mint a Demo ház közös képviselője, szeretettel üdvözlöm honline rendszerünkben!"
     },
     "admin": {
       "firstName": "Patrik",
@@ -243,7 +245,6 @@
     }
   },
   "test": {
-    "house": "Teszt ház",
-    "firstNames": ["Ádám", "Dávid", "Tamás", "Jakab", "István", "András", "Éva", "Margit", "Zsuzsa", "Róza", "Marika", "Júlia"]
+    "house": "Teszt ház"
   }
 }

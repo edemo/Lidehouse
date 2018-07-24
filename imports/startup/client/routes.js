@@ -51,7 +51,7 @@ FlowRouter.route('/intro', {
   },
 });
 
-FlowRouter.route('/demo', {
+FlowRouter.route('/demo/:_lang', {
   name: 'Demo.login',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Demo_login' });
