@@ -3,6 +3,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
 import { numeral } from 'meteor/numeral:numeral';
+import { __ } from '/imports/localization/i18n.js';
 
 import { Payments } from '/imports/api/payments/payments.js';
 import '/imports/api/users/users.js';
@@ -29,9 +30,9 @@ Template.Balance_widget.helpers({
     return signPrefix + numeral(balance).format();
   },
   message(balance) {
-    if (balance > 0) return 'Önnek túlfizetése van';
-    else if (balance < 0) return 'Önnek tartozása van';
-    return 'Túlfizetés/hátralék';
+    if (balance > 0) return __('You have overpayment');
+    else if (balance < 0) return __('You have due payments');
+    return __('Your Parcel Balance');
   },
   colorClass(balance) {
     if (balance < 0) return 'bg-danger';
