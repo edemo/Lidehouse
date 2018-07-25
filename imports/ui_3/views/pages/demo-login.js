@@ -6,7 +6,9 @@ import { displayError } from '/imports/ui/lib/errors.js';
 import './demo-login.html';
 
 Template.Demo_login.onRendered(function onRendered() {
-  Meteor.call('createDemoUserWithParcel', function (error, result) {
+  this.getLang = () => FlowRouter.getParam('_lang');
+  const lang = this.getLang();
+  Meteor.call('createDemoUserWithParcel', lang, function (error, result) {
     if (error) displayError(error);
     else {
       Meteor.loginWithPassword(result, 'password', function (error) {

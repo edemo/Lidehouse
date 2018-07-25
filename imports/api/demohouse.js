@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
@@ -1290,6 +1291,10 @@ export function insertDemoHouse(lang, demoOrTest) {
   };
 }
 
+function capitalize(text) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export function insertLoginableUsersWithRoles(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const com = { en: 'com', hu: 'hu' }[lang];
@@ -1297,14 +1302,11 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
     return;
   }
   const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
-  function capitalize(text) {
-    return text.charAt(0).toUpperCase() + text.slice(1);
-  }
   defaultRoles.forEach(function (role) {
     if (role.name === 'manager' || role.name === 'admin') {
       return;
     }
-    const firstNames = __('test.firstNames').split('\n');
+    const firstNames = __('demo.user.firstNames').split('\n');
     const userWithRoleId = Accounts.createUser({
       email: role.name + `@${demoOrTest}.${com}`,
       password: 'password',
@@ -1367,28 +1369,31 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
 const demoUserLifetime = moment.duration(2, 'hours').asMilliseconds();
 
 Meteor.methods({
-  createDemoUserWithParcel() {
+  createDemoUserWithParcel(lang) {
+    check(lang, String);
     if (Meteor.isClient) return;  // This should run only on the server side
 
-    const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } },
+    const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
+    const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.net` } },
       { sort: { createdAt: -1 } }).fetch();
     let counter = 1;
     if (demoUsersList[0]) {
       counter = Number(demoUsersList[0].emails[0].address.split('.')[0]) + 1;
     }
-    let letter = counter + 64;
-    while (letter > 90) letter -= 26;
+    let nameCounter = counter;
+    while (nameCounter > 20) nameCounter -= 20;
+    const firstNames = __('demo.user.firstNames').split('\n');
+    
     const demoUserId = Accounts.createUser({
-      email: counter + '.demouser@honline.net',
+      email: counter + `.${lang}demouser@honline.net`,
       password: 'password',
-      profile: { lastName: 'Vendég ' + String.fromCharCode(letter) + '.',
-        firstName: _.sample(['Ede', 'Ferenc', 'Jolán', 'Tivadar', 'Boris', 'Péter', 'Viola']) }
+      profile: { lastName: capitalize(__('guest')), firstName: firstNames[nameCounter] },
     });
     Meteor.users.update({ _id: demoUserId },
       { $set: { 'emails.0.verified': true,
         avatar: '/images/avatars/avatarnull.png',
-        'settings.language': 'hu' } });
-    const demoHouse = Communities.findOne({ name: 'Demo ház' });
+        'settings.language': lang } });
+    const demoHouse = Communities.findOne({ name: __('demo.house') });
     const demoCommunityId = demoHouse._id;
     const totalunits = demoHouse.totalunits;
     if (demoUsersList.length >= 10) {
@@ -1419,9 +1424,9 @@ Meteor.methods({
       $push: { 'children.0.children.1.children': { name: demoParcelSerial } },
     });
 
-    const demoManagerId = Meteor.users.findOne({ 'emails.0.address': 'manager@demo.hu' })._id;
-    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex: '.1@demo.hu' } })._id;
-
+    const com = { en: 'com', hu: 'hu' }[lang];
+    const demoManagerId = Meteor.users.findOne({ 'emails.0.address': `manager@demo.${com}` })._id;
+    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex: `.1@demo.${com}` } })._id;
     const demoUserMessageRoom = Topics.insert({
       communityId: demoCommunityId,
       userId: demoUserId,
@@ -1431,7 +1436,7 @@ Meteor.methods({
     Comments.insert({
       topicId: demoUserMessageRoom,
       userId: demoManagerId,
-      text: 'Mint a Demo ház közös képviselője, szeretettel üdvözlöm honline rendszerünkben!',
+      text: __('demo.manager.message'),
     });
     const demoUserMessageRoom2 = Topics.insert({
       communityId: demoCommunityId,
@@ -1443,13 +1448,13 @@ Meteor.methods({
     Comments.insert({
       topicId: demoUserMessageRoom2,
       userId: demoUserId,
-      text: 'Szervusz! Megtaláltam a postaláda kulcsodat. Benne hagytad a levélszekrény ajtajában. :)',
+      text: __('demo.messages.0'),
     });
     Clock.setSimulatedTime(moment().subtract(3, 'hours').toDate());
     Comments.insert({
       topicId: demoUserMessageRoom2,
       userId: dummyUserId,
-      text: 'Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után.',
+      text: __('demo.messages.1'),
     }); 
     Clock.clear();
     // TODO: Do this thing in the comments.insert method,
@@ -1472,7 +1477,7 @@ Meteor.methods({
         'Könyvelés helye': demoParcelSerial.toString(),
       },
     });
-    for (let m = 1; m < 12; m++) {
+    for (let m = 1; m < 13; m++) {
       Payments.insert({
         communityId: demoCommunityId,
         phase: 'done',
@@ -1497,8 +1502,12 @@ Meteor.methods({
 
 export function deleteDemoUsersAfterRestart() {
   const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } });
-  const communityId = Communities.findOne({ name: 'Demo ház' })._id;
+  const huCommunityId = Communities.findOne({ name: 'Demo ház' })._id;
+  const enCommunityId = Communities.findOne({ name: 'Demo house' })._id;
+  let communityId;
   demousers.forEach((user) => {
+    if (user.emails[0].address.includes('hudemouser')) communityId = huCommunityId;
+    if (user.emails[0].address.includes('endemouser')) communityId = enCommunityId;
     const parcelSerial = Number(user.emails[0].address.split('.')[0]) + demoParcelCounterStart;
     const parcelId = Parcels.findOne({ communityId, serial: parcelSerial })._id;
     const currentTime = moment().valueOf();

@@ -101,11 +101,13 @@
       "17": {
         "firstName": "Rose",
         "lastName": "Ingram"
-      }
+      },
+      "firstNames": ["0", "Adam", "Bonnie", "Cecil", "David", "Eve", "Frank", "Gabe", "Hellen", "Ike", "James", "Kitty", "Louis", "Maggie", "Nick", "Oliver", "Peter", "Rose", "Sarah", "Thomas", "Zachary"]
     },
     "manager": {
       "firstName": "Lewis",
-      "lastName": "King"
+      "lastName": "King",
+      "message": "As Manager of Demo House I welcome you in our honline system."
     },
     "admin": {
       "firstName": "Patrick",
@@ -242,7 +244,6 @@
     }
   },
   "test": {
-    "house": "Test house",
-    "firstNames": ["Adam", "David","Thomas", "James", "Steve", "Andrew", "Eve", "Maggie", "Sue", "Rose", "Mary", "Julie"]
+    "house": "Test house"
   }
 }

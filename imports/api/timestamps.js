@@ -17,6 +17,7 @@ import { Clock } from '/imports/utils/clock.js';
 // New way: createdAt is optional: true, so validation doesn't complain
 //
 
+// TODO: Would be advisable to refer to these fields together at Mongo projections (publicFields)
 export const Timestamps = new SimpleSchema({
   createdAt: {
     type: Date,
