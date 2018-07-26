@@ -738,55 +738,85 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Shareddocs =====
 
+  let filename1;
+  let filename2;
+  let filename3;
+  let filename4;
+  let filename5 = 'bikestorage.jpg';
+  let demofile1 = 'assets/app/demohouseDocs/alaprajz.jpg';
+  let demofile2;
+  let demofile3;
+  let demofile4;
+  let demofile5 = 'assets/app/demohouseDocs/kerekpartarolo.jpg';
+
+  if (lang === 'hu') {
+    filename1 = 'Alaprajz.jpg';
+    filename2 = 'Fontos_telefonszámok.xls';
+    filename3 = 'Társasházi_törvény.pdf';
+    filename4 = 'SZMSZ_201508.pdf';
+    demofile2 = 'assets/app/demohouseDocs/telefon.xls';
+    demofile3 = 'assets/app/demohouseDocs/tv.pdf';
+    demofile4 = 'assets/app/demohouseDocs/szmsz.pdf';
+  }
+  if (lang === 'en') {
+    filename1 = 'Floorplan.jpg';
+    filename2 = 'Important_phone_numbers.xls';
+    filename3 = 'Act.pdf';
+    filename4 = 'ByLaws.pdf';
+    demofile2 = 'assets/app/demohouseDocs/phone.xls';
+    demofile3 = 'assets/app/demohouseDocs/act.pdf';
+    demofile4 = 'assets/app/demohouseDocs/bylaws.pdf';
+  }
+
   runWithFakeUserId(demoManagerId, () => {
     uploadFileSimulation({
-      name: 'Alaprajz.jpg',
+      name: filename1,
       type: 'image/jpg',
       communityId: demoCommunityId,
       userId: demoManagerId,
       folderId: 'main',
-    }, 'assets/app/demohouseDocs/alaprajz.jpg');  
+    }, demofile1);
   });
 
   runWithFakeUserId(demoManagerId, () => {
     uploadFileSimulation({
-      name: 'Fontos_telefonszámok.xls',
+      name: filename2,
       type: 'application/vnd.ms-excel',
       communityId: demoCommunityId,
       userId: demoManagerId,
       folderId: 'main',
-    }, 'assets/app/demohouseDocs/telefon.xls');  
+    }, demofile2);
   });
 
   runWithFakeUserId(demoManagerId, () => {
     uploadFileSimulation({
-      name: 'Társasházi_törvény.pdf',
+      name: filename3,
       type: 'application/pdf',
       communityId: demoCommunityId,
       userId: demoManagerId,
       folderId: 'main',
-    }, 'assets/app/demohouseDocs/tv.pdf');  
+    }, demofile3);
   });
 
   runWithFakeUserId(demoManagerId, () => {
     uploadFileSimulation({
-      name: 'SZMSZ_201508.pdf',
+      name: filename4,
       type: 'application/pdf',
       communityId: demoCommunityId,
       userId: demoManagerId,
       folderId: 'community',
-    }, 'assets/app/demohouseDocs/szmsz.pdf');  
+    }, demofile4);
   });
 
   runWithFakeUserId(demoManagerId, () => {
     uploadFileSimulation({
-      name: 'bikestorage.jpg',
+      name: filename5,
       type: 'image/jpg',
       communityId: demoCommunityId,
       userId: demoManagerId,
       folderId: 'voting',
       topicId: voteTopic3,
-    }, 'assets/app/demohouseDocs/kerekpartarolo.jpg');  
+    }, demofile5);
   });
 
   // ===== Tickets =====
