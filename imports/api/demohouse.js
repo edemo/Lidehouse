@@ -848,7 +848,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     amount: 100000,
     from: [{
-      account: { 'Equity': 'Opening' },
+      account: { 'Liabilities': 'Opening' },
     }],
     to: [{
       account: { 'Assets': 'Pénztár 1' },
@@ -862,7 +862,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     amount: 110000,
     from: [{
-      account: { 'Equity': 'Opening' },
+      account: { 'Liabilities': 'Opening' },
     }],
     to: [{
       account: { 'Assets': 'Bank főszámla' },
@@ -876,7 +876,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     amount: 120000,
     from: [{
-      account: { 'Equity': 'Opening' },
+      account: { 'Liabilities': 'Opening' },
     }],
     to: [{
       account: { 'Assets': 'Bank felújítási alap' },

@@ -22,7 +22,7 @@ function runPositingRules(context, doc) {
     }];
     newDoc.to = [{
       account: {
-        'Owners': doc.from[0].account['Incomes'],
+        'Liabilities': doc.from[0].account['Incomes'],
         'Localizer': doc.from[0].account['Localizer'],
       },
     }];

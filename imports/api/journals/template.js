@@ -108,19 +108,22 @@ const BreakdownsTemplate = [
 
   { name: 'Liabilities', locked: true, sign: -1,
     children: [
+      { name: 'Equity', locked: true,
+        children: [
+            { name: 'Opening' },
+            { name: 'Carry' },
+            { name: 'Performance' },
+        ],
+      },
       { name: 'Hitelek',
         children: [
         { name: 'Bank hitel' },
         ],
       },
-    ],
-  },
-
-  { name: 'Equity', locked: true, sign: -1,
-    children: [
-        { name: 'Opening' },
-        { name: 'Carry' },
-        { name: 'Performance' },
+      { name: 'Owners', locked: true,
+        include: 'Owner payins',
+        children: [],
+      },
     ],
   },
 
@@ -137,11 +140,6 @@ const BreakdownsTemplate = [
         ],
       },
     ],
-  },
-
-  { name: 'Owners', locked: true, sign: -1,
-    include: 'Owner payins',
-    children: [],
   },
 
   /*

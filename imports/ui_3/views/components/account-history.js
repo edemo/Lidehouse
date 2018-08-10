@@ -59,7 +59,7 @@ Template.Parcel_history.viewmodel({
   journalEntries() {
     let total = 0;
     const entries = JournalEntries.find({
-      'account.Owners': { $exists: true },
+      'account.Liabilities': { $exists: true },
       'account.Localizer': this.localizerSelected(),
       valueDate: { $gte: new Date(this.startDate()), $lte: new Date(this.endDate()) },
     }, { sort: { valueDate: 1 } }).fetch();

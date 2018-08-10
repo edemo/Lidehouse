@@ -41,20 +41,6 @@ export const Reports = {
     return report;
   },
 
-  Equity() {
-    const report = new TableReport('Equity');
-    const communityId = Session.get('activeCommunityId');
-    
-    report.addFilter({ phase: 'done' });
-    report.addLine('cols', [], false);
-    report.addTree('rows', {
-      field: 'account.Equity',
-      values: Breakdowns.findOne({ communityId, name: 'Equity' }),
-    }, false);
-
-    return report;
-  },
-
   Performance(year) {
     const report = new TableReport('Penzugyek Reszletei');
     const communityId = Session.get('activeCommunityId');
@@ -117,7 +103,7 @@ export const Reports = {
     }, false);
 
     report.addTree('rows', {
-      field: 'account.Owners',
+      field: 'account.Liabilities',
       values: Breakdowns.findOne({ communityId, name: 'Owner payins' }),
     }, true, true);
 
@@ -141,7 +127,7 @@ export const Reports = {
     }, false);
 
     report.addTree('cols', {
-      field: 'account.Owners',
+      field: 'account.Liabilities',
       values: Breakdowns.findOne({ communityId, name: 'Owner payins' }),
     }, false, true);
 

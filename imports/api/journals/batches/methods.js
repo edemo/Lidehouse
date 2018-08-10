@@ -60,7 +60,7 @@ export const apply = new ValidatedMethod({
   //        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
           from: [{
             account: {
-              'Owners': parcelBilling.account['Owner payins'],
+              'Liabilities': parcelBilling.account['Owner payins'],
               'Localizer': parcel.serial.toString(),
             },
           }],
