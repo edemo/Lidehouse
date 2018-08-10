@@ -21,21 +21,28 @@ import '../components/voting-list.html';
 import './vote-topics.html';
 
 Template.Vote_topics.onCreated(function voteTopicsOnCreated() {
-    this.autorun(() => {
-        const communityId = Session.get('activeCommunityId');
-        this.subscribe('agendas.inCommunity', { communityId });
-    });
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('agendas.inCommunity', { communityId });
+  });    
+  delete Session.keys.voteTopicSearch;
 });
 
 Template.Vote_topics.helpers({
-    openVoteTopics() {
-        const communityId = Session.get('activeCommunityId');
-        return Topics.find({ communityId, category: 'vote', closed: false });
-    },
-    voteTopics() {
-        const communityId = Session.get('activeCommunityId');
-        return Topics.find({ communityId, category: 'vote' }, { sort: { createdAt: -1 } });
-    },
+  openVoteTopics() {
+    const communityId = Session.get('activeCommunityId');
+    return Topics.find({ communityId, category: 'vote', closed: false });
+  },
+  voteTopics() {
+    const communityId = Session.get('activeCommunityId');
+    const topicSearch = Session.get('voteTopicSearch');
+    let topicsList = Topics.find({ communityId, category: 'vote' }, { sort: { createdAt: -1 } }).fetch();
+    if (topicSearch) {
+      topicsList = topicsList.filter(t => t.title.toLowerCase().search(topicSearch.toLowerCase()) >= 0
+       || t.text.toLowerCase().search(topicSearch.toLowerCase()) >= 0);    
+    }
+    return topicsList;
+  },
 });
 
 Template.Vote_topics.events({
@@ -53,4 +60,7 @@ Template.Vote_topics.events({
       template: 'bootstrap3-inline',
     });
   },
+  'keyup .js-search' (event) {
+    Session.set('voteTopicSearch', event.target.value);
+  }
 });
