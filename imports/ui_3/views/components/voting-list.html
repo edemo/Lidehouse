@@ -38,7 +38,7 @@
                     </div>
                 </td>
                 <td class="project-actions">
-                    <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-sm"><i class="fa fa-eye"></i> View </a>
+                    <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-sm"><i class="fa fa-eye" title="{{_ 'view'}}"></i></a>
                     <!--{{#if userHasPermission 'vote.update' activeCommunityId this}}
                     <a href="" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Edit </a>
                     {{/if}}-->
