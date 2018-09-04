@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { SSR } from 'meteor/meteorhacks:ssr';
 import { Email } from 'meteor/email';
 
-export function templateToHTML(name, data) {
+export function templateToHTML(name, context) {
   try {
     SSR.compileTemplate(
       name,
@@ -11,7 +11,7 @@ export function templateToHTML(name, data) {
       // relative to .meteor/local/build/programs/server.
       fs.readFileSync(`assets/app/email/${name}.html`, 'utf8')
     );
-    return SSR.render(name, data);
+    return SSR.render(name, context);
   } catch (exception) {
     throw new Meteor.Error('500', exception);
   }

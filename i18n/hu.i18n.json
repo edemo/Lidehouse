@@ -350,10 +350,10 @@
 
   // Notifications
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
-  "Created community": "Közösség sikeresen létrehozva.",
   "Vote casted": "Szavazat sikeresen leadva",
   "Vote revoked": "Szavazat sikeresen visszavonva",
 
+  "insert community successful": "Közösség sikeresen létrehozva.",
   "insert parcel successful": "Albetét rögzítésre került",
   "update parcel successful": "Albetét adatai módosítva",
   "delete parcel successful": "Albetét törölve",
