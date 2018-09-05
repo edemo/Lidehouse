@@ -15,7 +15,7 @@
             {{#unless (equals ../type 'readonly')}}
             <div>
               <button type="button" class="btn btn-default" data-dismiss="modal">{{_ "cancel"}}</button>
-              <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+              <button type="submit" class="btn btn-primary {{#unless userHasPermission 'parcels.update' communityId}}disabled{{/unless}}">{{_ "save"}}</button>
             </div>
             {{/unless}}
           </div>
