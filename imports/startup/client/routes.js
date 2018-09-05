@@ -67,20 +67,6 @@ FlowRouter.route('/community/:_cid', {
   },
 });
 
-FlowRouter.route('/owners/:_pid', {
-  name: 'Parcel.owners',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Parcel_owners_page' });
-  },
-});
-
-FlowRouter.route('/topic/:_tid', {
-  name: 'Topic.show',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Topic_show' });
-  },
-});
-
 FlowRouter.route('/communities', {
   name: 'Communities.listing',
   action() {
@@ -145,6 +131,14 @@ FlowRouter.route('/votings', {
 });
 CommunityRelatedRoutes.push('Topics.vote');
 
+FlowRouter.route('/topic/:_tid', {
+  name: 'Topic.show',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Topic_show' });
+  },
+});
+CommunityRelatedRoutes.push('Topics.show');
+
 FlowRouter.route('/agendas', {
   name: 'Agendas',
   action() {
@@ -152,6 +146,14 @@ FlowRouter.route('/agendas', {
   },
 });
 CommunityRelatedRoutes.push('Agendas');
+
+FlowRouter.route('/owners/:_pid', {
+  name: 'Parcel.owners',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Parcel_owners_page' });
+  },
+});
+CommunityRelatedRoutes.push('Parcel.owners');
 
 FlowRouter.route('/delegations', {
   name: 'Delegations',
@@ -227,8 +229,8 @@ export function setRouteBeforeSignin(value) {
 }
 
 // Automatic redirection
-// if no user is logged in, then let us not show the house related pages 
-// (should we do something when or no active house selected?)
+// if no user is logged in, then let us not show the community related pages 
+// (should we do something when ... or no active community selected?)
 
 Meteor.autorun(() => {
   const currentRoute = FlowRouter.getRouteName();
