@@ -92,6 +92,9 @@ Topics.helpers({
     const voteParticipationPercent = this.shareToPercent(voteParticipationShare);
     return voteParticipationPercent;
   },
+  isVoteSuccessful() {
+    return this.votedPercent() >= this.voteSuccessLimit();
+  },
   notVotedUnits() {
     return this.community().totalunits - this.voteParticipation.units;
   },

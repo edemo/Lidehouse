@@ -43,7 +43,15 @@
             <p>{{_ 'Participation'}}: <strong>{{votedPercent}}%</strong>. </p>
           </div>
           <div class="col-sm-6 text-right">
+            {{#if closed}}
+              {{#if isVoteSuccessful}}
+              <strong>{{_ 'Successful voting'}}</strong>
+              {{else}}
+              <strong>{{_ 'Unsuccessful voting'}}</strong>
+              {{/if}}
+            {{else}}
             <p>{{_ 'Participation necessary'}}: <strong>{{voteSuccessLimit}}%</strong>.</p>
+            {{/if}}
           </div>
       </div>
       </div>
