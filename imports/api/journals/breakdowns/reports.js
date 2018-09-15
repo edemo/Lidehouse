@@ -17,7 +17,7 @@ export const Reports = {
     const report = new TableReport('Assets');
     const communityId = Session.get('activeCommunityId');
     
-    report.addFilter({ phase: 'done' });
+    report.addFilter({ phase: 'done', communityId });
     report.addLine('cols', [], false);
     report.addTree('rows', {
       field: 'account.Assets',
@@ -31,7 +31,7 @@ export const Reports = {
     const report = new TableReport('Liabilities');
     const communityId = Session.get('activeCommunityId');
     
-    report.addFilter({ phase: 'done' });
+    report.addFilter({ phase: 'done', communityId });
     report.addLine('cols', [], false);
     report.addTree('rows', {
       field: 'account.Liabilities',
@@ -48,6 +48,7 @@ export const Reports = {
     report.addFilter({
 //      'account.Incomes': { $exists: true },
       phase: 'done',
+      communityId,
     });
 
     report.addTree('cols', {
@@ -95,7 +96,7 @@ export const Reports = {
     Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' })
       .map(m => myParcels.children.push({ name: m.parcel().serial.toString() /* + '. ' + __('parcel')*/ }));
 
-    report.addFilter({ phase: 'done' });
+    report.addFilter({ phase: 'done', communityId });
 
     report.addTree('rows', {
       field: 'account.Localizer',
@@ -119,7 +120,7 @@ export const Reports = {
     const report = new TableReport('Parcel balances');
     const communityId = Session.get('activeCommunityId');
 
-    report.addFilter({ phase: 'done' });
+    report.addFilter({ phase: 'done', communityId });
 
     report.addTree('rows', {
       field: 'account.Localizer',
