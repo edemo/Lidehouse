@@ -7,7 +7,6 @@ export function revision(selector, modifier, fields) {
   let replacedData = null;
   let toBePushed = [];
   for (let i = 2; i < arguments.length; i++) {
-    debugger;
     const field = arguments[i];
     if (modifier.$set && modifier.$set[field]) {
       const selectorId = selector._id || selector;
