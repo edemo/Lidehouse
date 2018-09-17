@@ -8,16 +8,21 @@ import { checkExists, checkModifier, checkAddMemberPermissions } from '/imports/
 import { invite as inviteUserMethod } from '/imports/api/users/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from './memberships.js';
+import { Person } from '../users/person.js';
 
 // We need a check of userEmail and userId matches.
 // Easy solution is to not allow setting both fields in inserts and updates. Eg. userId will be the stronger.
 // Alternatively we could throw an Error if they dont match.
-function checkUserDataConsistency(membership) {
-  if (membership.person.userId) {
-    if (membership.person.userEmail) {
-      Log.warning('Membership data contains both userId and userEmail', membership);
-      delete membership.person.userEmail;
-    }
+function checkUserDataConsistency(doc) {
+  let personData = doc.person;
+  if (!personData) {  // update needs this, because $set has dotted keys
+    personData = {};
+    personData.userId = doc['person.userId'];
+    personData.userEmail = doc['person.userEmail'];
+  }
+  const person = new Person(personData)
+  if (!person.isConsistent()) {
+    throw new Meteor.Error('Membership data contains both userId and userEmail', personData);
   }
 }
 

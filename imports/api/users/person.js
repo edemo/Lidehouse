@@ -47,6 +47,10 @@ export class Person {
     }
     return new Person(data);
   }
+  isConsistent() {
+    if (this.userId && this.userEmail) return false;
+    return true; 
+  }
   isVerified() {
     return !!this.idCard;
   }
