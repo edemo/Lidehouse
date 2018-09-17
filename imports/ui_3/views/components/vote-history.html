@@ -1,0 +1,40 @@
+<template name="Vote_history">
+
+     {{#each version in sortedRevisions}}
+        
+        {{#if (equals version.replacedField 'closed')}}
+        <div class="feed-element">
+            <a href="" class="pull-left">
+                <img alt="image" class="img-circle" src="{{createdBy.avatar}}">
+            </a>
+            <div class="media-body ">
+                <small class="pull-right">{{displayTimeFrom vote.closesAt}}</small>
+                {{createdBy}} {{_ 'by'}} <strong>{{_ 'closed'}} </strong><br>
+                <small class="text-muted">{{displayTime vote.closesAt}}</small>
+            </div>
+        </div>
+        {{else}}
+        <div class="feed-activity-list">
+            <div class="feed-element">
+                <a href="" class="pull-left">
+                    <img alt="image" class="img-circle" src="{{createdBy.avatar}}">
+                </a>
+                <div class="media-body ">
+                    <small class="pull-right">{{displayTimeFrom version.replaceDate}}</small>
+                    A <strong>{{_ version.replacedField}} </strong>{{createdBy}} {{_ 'by'}} módosítva, korábbi szöveg: <br>
+                    <small class="text-muted">{{displayTime version.replaceDate}}</small>
+                    <div class="well">
+                        {{version.oldData}}                
+                    </div>
+                </div>
+            </div>
+        </div> 
+        {{/if}}
+     {{/each}}
+
+            
+            
+       
+
+    
+</template>

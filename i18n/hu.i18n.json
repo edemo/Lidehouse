@@ -3,6 +3,9 @@
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
 
+  "title": "cím",
+  "text": "szöveg",
+
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
