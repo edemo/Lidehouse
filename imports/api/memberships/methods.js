@@ -13,10 +13,10 @@ import { Memberships } from './memberships.js';
 // Easy solution is to not allow setting both fields in inserts and updates. Eg. userId will be the stronger.
 // Alternatively we could throw an Error if they dont match.
 function checkUserDataConsistency(membership) {
-  if (membership.userId) {
-    if (membership.userEmail) {
+  if (membership.person.userId) {
+    if (membership.person.userEmail) {
       Log.warning('Membership data contains both userId and userEmail', membership);
-      delete membership.userEmail;
+      delete membership.person.userEmail;
     }
   }
 }
@@ -45,7 +45,7 @@ function inviteUser(membershipId, email) {
 function connectUserIfPossible(membershipId) {
   const membership = Memberships.findOne(membershipId);
   const email = membership.person.userEmail;
-  if (!membership.userId && email) {
+  if (!membership.person.userId && email) {
     const user = Meteor.users.findOne({ 'emails.0.address': email });
     if (user && user.emails[0].verified) {
       connectUser(membership._id, user._id);
