@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 
 import { Log } from '/imports/utils/log.js';
-import { checkExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
 import { invite as inviteUserMethod } from '/imports/api/users/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from './memberships.js';
@@ -102,6 +102,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
+    checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, person: doc.person });
     if (doc.role === 'owner') {
       const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
       const newTotal = total.add(doc.ownership.share);
@@ -126,6 +127,11 @@ export const update = new ValidatedMethod({
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));
     const newrole = modifier.$set.role;
+    const newperson = {
+      userId: modifier.$set['person.userId'],
+      userEmail: modifier.$set['person.userEmail'],
+      idCard: modifier.$set['person.idCard'],
+    }
     if (newrole && newrole !== doc.role) {
       checkAddMemberPermissions(this.userId, doc.communityId, newrole);
     }
@@ -134,6 +140,7 @@ export const update = new ValidatedMethod({
       const newTotal = total.subtract(doc.ownership.share).add(modifier.$set['ownership.share']);
       checkSanityOfTotalShare(doc.parcelId, newTotal);
     }
+    checkNotExists(Memberships, { communityId: doc.communityId, role: newrole, parcelId: doc.parcelId, person: newperson });
     checkUserDataConsistency(modifier.$set);
     Memberships.update({ _id }, modifier);
     connectUserIfPossible(_id);
