@@ -12,6 +12,7 @@ import '../common/page-heading.js';
 import '../components/chatbox.js';
 import '../components/votebox.js';
 import '../components/comments-section.js';
+import '../components/vote-history.js';
 import './topic-show.html';
 
 

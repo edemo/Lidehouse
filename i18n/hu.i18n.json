@@ -3,6 +3,9 @@
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
 
+  "title": "cím",
+  "text": "szöveg",
+
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
@@ -310,10 +313,10 @@
   "Make your comment": "Hozzászólás",
 
   // errors
-  "err_invalidId": "Érvénytelen azonosító",
-  "No such object": "Ilyen azonosítójú objektum nem létezik",
-  "err_duplicateId": "Már használt  azonosító",
-  "This id is already used": "Ilyen azonosítójú objektum már létezik",
+  "err_notExists": "Nincs ilyen objektum",
+  "No such object": "Ilyen objektum nem létezik a rendszerben",
+  "err_alreadyExists": "Már van ilyen objektum",
+  "Already has such object": "Ilyen objektum már létezik a rendszerben",
   "err_permissionDenied": "Jogosultság megtagadva",
   "No permission to perform this activity": "Önnek nincs megfelelő jogosultsága a kért művelethez",
   "err_notLoggedIn": "Nincs bejelentkezve felhasználó",

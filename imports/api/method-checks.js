@@ -16,8 +16,8 @@ export function checkExists(collection, predicate) {
   // Checks that a *collection* already contains a doc with given *objectId*
   const object = collection.findOne(predicate);
   if (!object) {
-    throw new Meteor.Error('err_invalidId', 'No such object',
-      `Collection: ${collection._name}, id: ${predicate}`
+    throw new Meteor.Error('err_notExists', 'No such object',
+      `Collection: ${collection._name}, predicate: ${predicate}`
     );
   }
   return object;
@@ -27,7 +27,7 @@ export function checkNotExists(collection, predicate) {
   // Checks that a *collection* does not yet contain a doc with given *objectId*
   const object = collection.findOne(predicate);
   if (object) {
-    throw new Meteor.Error('err_duplicateId', 'This id is already used',
+    throw new Meteor.Error('err_alreadyExists', 'Already has such object',
       `Collection: ${collection._name}, predicate: ${JSON.stringify(predicate)}` 
     );
   }
