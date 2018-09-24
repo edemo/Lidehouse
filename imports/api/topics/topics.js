@@ -18,7 +18,6 @@ class TopicsCollection extends Mongo.Collection {
     return super.insert(topic, callback);
   }
   update(selector, modifier) {
-    console.log("selector", selector, "modifier= ", modifier);
     revision(selector, modifier, 'text', 'title', 'closed');
     return super.update(selector, modifier);
   }
