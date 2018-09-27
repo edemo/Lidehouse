@@ -191,7 +191,7 @@ function newPaymentSchema() {
     const communityId = Session.get('activeCommunityId');
     const payaccounts = PayAccounts.find({ communityId });
     payaccounts.forEach((payaccount) => {
-      obj[payaccount.name] = { type: String, optional: true, label: payaccount.name, autoform: { options() { return payaccount.leafOptions(); } } };
+      obj[payaccount.name] = { type: String, optional: true, label: payaccount.name, autoform: { options() { return payaccount.leafOptions(); }, firstOption: () => __('(Select one)') } };
     });
     return new SimpleSchema(obj);
   }
@@ -208,10 +208,10 @@ function newParcelBillingSchema() {
     const payaccount1 = PayAccounts.findOne({ communityId, name: 'Könyvelés nem' });
     const payaccount2 = PayAccounts.findOne({ communityId, name: 'Könyvelés helye' });
     obj[payaccount1.name] = { type: String, optional: true, label: payaccount1.name, 
-      autoform: { options() { return payaccount1.leafOptions(l => l.membersRelated); } },
+      autoform: { options() { return payaccount1.leafOptions(l => l.membersRelated); }, firstOption: () => __('(Select one)') },
     };
     obj[payaccount2.name] = { type: String, optional: true, label: payaccount2.name, 
-      autoform: { options() { return payaccount2.nodeOptions(); } },
+      autoform: { options() { return payaccount2.nodeOptions(); }, firstOption: () => __('(Select one)') },
     };
     return new SimpleSchema(obj);
   }

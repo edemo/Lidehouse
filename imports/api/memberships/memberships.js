@@ -42,6 +42,7 @@ Memberships.schema = new SimpleSchema({
       options() {
         return Roles.find({ name: { $in: officerRoles } }).map(function option(r) { return { label: __(r.name), value: r._id }; });
       },
+      firstOption: () => __('(Select one)'),
     },
   },
   person: { type: PersonSchema },

@@ -64,7 +64,7 @@ const frequencyValues = ['never', 'weekly', 'daily', 'frequent'];
 const levelValues = ['never', 'high', 'medium', 'low'];
 
 const UserSettingsSchema = new SimpleSchema({
-  language: { type: String, allowedValues: ['en', 'hu'], optional: true },
+  language: { type: String, allowedValues: ['en', 'hu'], optional: true, autoform: { firstOption: false } },
   delegatee: { type: Boolean, defaultValue: true },
   notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: autoformOptions(frequencyValues, 'schemaUsers.settings.notiFrequency.') },
   notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notiLevel.') },
