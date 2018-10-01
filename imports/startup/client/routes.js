@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
-import { connectMe } from '/imports/api/memberships/methods.js';
 
 // Import to load these templates
 import '/imports/ui/pages/root-redirector.js';
@@ -52,7 +51,7 @@ FlowRouter.route('/intro', {
   },
 });
 
-FlowRouter.route('/demo', {
+FlowRouter.route('/demo/:_lang', {
   name: 'Demo.login',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Demo_login' });
@@ -65,20 +64,6 @@ FlowRouter.route('/community/:_cid', {
   name: 'Community.page',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Community_page' });
-  },
-});
-
-FlowRouter.route('/owners/:_pid', {
-  name: 'Parcel.owners',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Parcel_owners_page' });
-  },
-});
-
-FlowRouter.route('/topic/:_tid', {
-  name: 'Topic.show',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Topic_show' });
   },
 });
 
@@ -146,6 +131,14 @@ FlowRouter.route('/votings', {
 });
 CommunityRelatedRoutes.push('Topics.vote');
 
+FlowRouter.route('/topic/:_tid', {
+  name: 'Topic.show',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Topic_show' });
+  },
+});
+CommunityRelatedRoutes.push('Topics.show');
+
 FlowRouter.route('/agendas', {
   name: 'Agendas',
   action() {
@@ -153,6 +146,14 @@ FlowRouter.route('/agendas', {
   },
 });
 CommunityRelatedRoutes.push('Agendas');
+
+FlowRouter.route('/owners/:_pid', {
+  name: 'Parcel.owners',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Parcel_owners_page' });
+  },
+});
+CommunityRelatedRoutes.push('Parcel.owners');
 
 FlowRouter.route('/delegations', {
   name: 'Delegations',
@@ -228,8 +229,8 @@ export function setRouteBeforeSignin(value) {
 }
 
 // Automatic redirection
-// if no user is logged in, then let us not show the house related pages 
-// (should we do something when or no active house selected?)
+// if no user is logged in, then let us not show the community related pages 
+// (should we do something when ... or no active community selected?)
 
 Meteor.autorun(() => {
   const currentRoute = FlowRouter.getRouteName();
@@ -242,6 +243,9 @@ Meteor.autorun(() => {
 });
 
 // SignIn/SignUp routes
+// AccountsTemplates routes that need url generation from token are in 
+// imports/startup/both/useraccounts-configuration.js
+// because they need both server and client side for proper url generation
 
 AccountsTemplates.configureRoute('signIn', {
   name: 'signin',
@@ -257,29 +261,4 @@ AccountsTemplates.configureRoute('signUp', {
   redirect() {
     signinRedirect();
   },
-});
-
-AccountsTemplates.configureRoute('forgotPwd');
-
-AccountsTemplates.configureRoute('resetPwd', {
-  name: 'resetPwd',
-  path: '/reset-password',
-});
-
-AccountsTemplates.configureRoute('verifyEmail', {
-  name: 'verifyEmail',
-  path: '/verify-email',
-  redirect() {
-    connectMe.call();
-  },
-});
-
-AccountsTemplates.configureRoute('enrollAccount', {
-  name: 'enrollAccount',
-  path: '/enroll-account',
-  redirect() {
-    connectMe.call();
-    FlowRouter.go('App.home');
-  },
-});
-
+}); 

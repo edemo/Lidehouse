@@ -7,7 +7,7 @@
 
         <div class="ibox">
             <div class="ibox-title">
-                <h3>Aktív és lezárt szavazások teljes listája</h3>
+                <h3>{{_ 'All votings'}}</h3>
                 <!--a href="" class="label label-primary js-new">+ {{_ 'new'}} {{_ 'voting'}}</a-->
                 {{#if userHasPermission 'poll.insert' (fromSession 'activeCommunityId')  }}
                 <div class="ibox-tools">
@@ -17,13 +17,14 @@
             </div>
             <div class="ibox-content">
                 <div class="row m-b-sm m-t-sm">
-                    <div class="col-md-1">
-                        <button type="button" id="loading-example-btn" class="btn btn-white btn-sm" ><i class="fa fa-refresh"></i> Actives</button>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline btn-primary btn-sm js-active"><i class="fa fa-refresh"></i> {{_ 'Active votings'}}</button>
                     </div>
-                    <div class="col-md-11">
-                        <div class="input-group"><input type="text" placeholder="Search" class="input-sm form-control">
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-sm btn-primary"> Go!</button>
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <input type="text" placeholder="Search" class="input-sm form-control js-search">
+                            <span class="input-group-addon">
+                                <i class="fa fa-search"></i>
                             </span>
                         </div>
                     </div>

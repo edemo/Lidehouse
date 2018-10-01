@@ -3,6 +3,9 @@
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
 
+  "title": "cím",
+  "text": "szöveg",
+
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
@@ -195,6 +198,8 @@
   "Status": "Státusz",
   "active": "aktív",
   "closed": "lezárult",
+  "Successful voting": "Eredményes szavazás",
+  "Unsuccessful voting": "Eredménytelen szavazás",
   "participation": "részvételi",
   "Participation": "Részvételi arány",  
   "Participation necessary": "Eredményesség feltétele",  
@@ -216,6 +221,7 @@
   "Please select voters": "Válassza ki kiknek a nevében szeretné ezt a szavazatot leadni",
   "Attachments" : "Csatolmányok",
   "Activity": "Változások",
+  "All votings": "Aktív és lezárt szavazások teljes listája",
   
   // delegations
   "Delegations from me": "Meghatalmazásaim",
@@ -240,6 +246,7 @@
   "You have not yet voted": "Ön még nem szavazott",
   "notYetVotedCastYourVoteOr": "adja le szavazatát, vagy",
   "setupYourDelegation": "állítson be meghatalmazást",
+  "No delegations": "Nincsenek meghatalmazások",
 
   // tickets
   "Active tickets": "Aktív bejelentett hibák",
@@ -281,6 +288,9 @@
   "My parcel history": "Albetéteim története",
   "Total change in this period": "Egyenleg változása az adott időszak alatt",
   "Select account to view": "Válasszon megtekintendő számlát",
+  "Your Parcel Balance": "Túlfizetés/Hátralék",
+  "You have overpayment": "Önnek túlfizetése van",
+  "You have due payments": "Önnek tartozása van",
   "plan": "terv",
   "bill": "előírás",
   "done": "tény",
@@ -345,10 +355,10 @@
   "Make your comment": "Hozzászólás",
 
   // errors
-  "err_invalidId": "Érvénytelen azonosító",
-  "No such object": "Ilyen azonosítójú objektum nem létezik",
-  "err_duplicateId": "Már használt  azonosító",
-  "This id is already used": "Ilyen azonosítójú objektum már létezik",
+  "err_notExists": "Nincs ilyen objektum",
+  "No such object": "Ilyen objektum nem létezik a rendszerben",
+  "err_alreadyExists": "Már van ilyen objektum",
+  "Already has such object": "Ilyen objektum már létezik a rendszerben",
   "err_permissionDenied": "Jogosultság megtagadva",
   "No permission to perform this activity": "Önnek nincs megfelelő jogosultsága a kért művelethez",
   "err_notLoggedIn": "Nincs bejelentkezve felhasználó",
@@ -388,10 +398,10 @@
 
   // Notifications
   "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
-  "Created community": "Közösség sikeresen létrehozva.",
   "Vote casted": "Szavazat sikeresen leadva",
   "Vote revoked": "Szavazat sikeresen visszavonva",
 
+  "insert community successful": "Közösség sikeresen létrehozva.",
   "insert parcel successful": "Albetét rögzítésre került",
   "update parcel successful": "Albetét adatai módosítva",
   "delete parcel successful": "Albetét törölve",
@@ -473,7 +483,6 @@
     "Az alábbi linkre kattintva helyreállíthatja jelszavát a honline.hu rendszerében:",
     "\n__url__\n",
     "Üdvözlettel, \nA Honline Csapata"],
-
 
   "":""
 }

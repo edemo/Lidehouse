@@ -11,10 +11,15 @@ import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { likesSchema, likesHelpers } from './likes.js';
+import { revision } from '/imports/api/revision.js'; 
 
 class TopicsCollection extends Mongo.Collection {
   insert(topic, callback) {
     return super.insert(topic, callback);
+  }
+  update(selector, modifier) {
+    revision(selector, modifier, 'text', 'title', 'closed');
+    return super.update(selector, modifier);
   }
   remove(selector, callback) {
     Comments.remove({ topicId: selector });
@@ -37,7 +42,9 @@ Topics.schema = new SimpleSchema({
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   sticky: { type: Boolean, optional: true, defaultValue: false },
-  commentCounter: { type: Number, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
+  commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
+  revision: { type: Array, optional: true, autoform: { omit: true } },
+  'revision.$': { type: Object, blackbox: true, optional: true },
 });
 
 Topics.helpers({
@@ -152,10 +159,12 @@ Topics.publicFields = {
   text: 1,
   agendaId: 1,
   createdAt: 1,
+  updatedAt: 1,
   closed: 1,
   sticky: 1,
   likes: 1,
   commentCounter: 1,
+  revision: 1,
 };
 
 Factory.define('topic', Topics, {

@@ -73,7 +73,7 @@
                             {{> ReactiveDatatable tableData=delegationsDataFn options=delegationsOptionsFn}}
                         {{else}}
                         <div class="text-center m-t-lg">
-                            <small>Nincsenek meghatalmazások</small>
+                            <small>{{_ 'No delegations'}}</small>
                         </div>
                         {{/if}}
                     </div>
@@ -96,7 +96,7 @@
                             {{>Delegation_list items=delegationsFromMe}}
                         {{else}}
                         <div class="text-center m-t-lg">
-                            <small>Nincsenek meghatalmazások</small>
+                            <small>{{_ 'No delegations'}}</small>
                         </div>
                         {{/if}}
                     </div>
@@ -121,7 +121,7 @@
                           {{>Delegation_list items=delegationsToMe}}
                         {{else}}
                         <div class="text-center m-t-lg">
-                            <small>Nincsenek meghatalmazások</small>
+                            <small>{{_ 'No delegations'}}</small>
                         </div>
                         {{/if}}
                     </div>
