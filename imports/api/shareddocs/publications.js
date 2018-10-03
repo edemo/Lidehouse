@@ -15,7 +15,8 @@ Meteor.publish('shareddocs.ofCommunity', function (params) {
   const { communityId } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('shareddocs.download', communityId)) {
-    return this.ready();
+    this.ready();
+    return;
   }
 
   return Shareddocs.find({ communityId });
@@ -32,7 +33,8 @@ Meteor.publish('shareddocs.ofTopic', function (params) {
   const user = Meteor.users.findOneOrNull(this.userId);
   if (topic) {  // A topic might not be found, while topic is being created, but attachments need to be already disalyed on the insert autoform
     if ((topic.communityId !== communityId) || !user.hasPermission('shareddocs.download', communityId)) {
-      return this.ready();
+      this.ready();
+      return;
     }
   }
 
