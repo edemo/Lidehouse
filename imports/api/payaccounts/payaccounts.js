@@ -21,6 +21,7 @@ export const choosePayAccount = {
       return { label: account.name, value: account._id };
     });
   },
+  firstOption: () => __('(Select one)'),
 };
 
 /*

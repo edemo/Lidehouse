@@ -8,6 +8,7 @@ export const autoformOptions = function autoformOptions(values, i18Path = '') {
       const valuesArray = (values instanceof Function) ? values() : values;
       return valuesArray.map(function option(t) { return { label: __(i18Path + t), value: t }; });
     },
+    firstOption: () => __('(Select one)'),
   };
 };
 
@@ -20,5 +21,6 @@ export const chooseUser = {
     const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
     return sortedOptions;
   },
+  firstOption: () => __('(Select one)'),
 };
 

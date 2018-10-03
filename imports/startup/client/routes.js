@@ -81,13 +81,6 @@ FlowRouter.route('/profile', {
   },
 });
 
-FlowRouter.route('/user/:_id', {
-  name: 'User.show',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'User_show' });
-  },
-});
-
 FlowRouter.route('/feedbacks', {
   name: 'Feedbacks',
   action() {
@@ -202,6 +195,14 @@ FlowRouter.route('/documents', {
   },
 });
 CommunityRelatedRoutes.push('DocumentStore');
+
+FlowRouter.route('/user/:_id', {
+  name: 'User.show',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'User_show' });
+  },
+});
+CommunityRelatedRoutes.push('User.show');
 
 // --------------------------------------------------
 

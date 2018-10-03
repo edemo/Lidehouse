@@ -4,6 +4,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions, chooseUser } from '/imports/utils/autoform.js';
+import { __ } from '/imports/localization/i18n.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
 const idCardTypeValues = ['natural', 'legal'];
@@ -102,4 +103,5 @@ export const choosePerson = {
     const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
     return sortedOptions;
   },
+  firstOption: () => __('(Select one)'),
 };
