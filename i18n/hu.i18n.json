@@ -253,6 +253,9 @@
   "setupYourDelegation": "állítson be meghatalmazást",
   "No delegations": "Nincsenek meghatalmazások",
 
+  // rooms
+  "noSelectedPerson": "Válasszon címzettet a jobb oldali panelen!",
+
   // tickets
   "Active tickets": "Aktív bejelentett hibák",
   "Closed tickets": "Lezárt bejelentett hibák",
