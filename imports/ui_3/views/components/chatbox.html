@@ -12,7 +12,6 @@
                 <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
                 {{/if}}
                 <li role="separator" class="divider"></li>
-                <!-- megerősítő modal figyelmeztetéssel hogy nem fogja látni a többit, instrukció hogy a profil beállításokban oldhatja fel -->
                 <li>
                   <a class="js-block" href="">
                   {{#if currentUser.hasBlocked createdBy._id}}
@@ -22,7 +21,9 @@
                   {{/if}}
                   </a>
                 </li>
+                {{#unless this.isFlaggedBy currentUser._id}}
                 <li><a class="js-report" href="">{{_ 'Report this'}}</a></li>
+                {{/unless}}
             </ul>
         </div>
         <div class="social-avatar">
@@ -37,8 +38,8 @@
                 <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
             </div>
         </div>
-        {{#if currentUser.hasBlocked createdBy._id}}
-          {{_ 'Content hidden by' (_ 'you')}}
+        {{#if hiddenBy}}
+          {{_ 'Content hidden by' (_ hiddenBy)}}
         {{else}}
           <div class="social-body">
               <p data-id="{{_id}}">{{#markdown}}{{text}}{{/markdown}}</p>

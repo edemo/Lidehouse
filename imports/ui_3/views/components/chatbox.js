@@ -7,6 +7,7 @@ import { handleError } from '/imports/ui/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { like } from '/imports/api/topics/likes.js';
+import { flag } from '/imports/api/topics/flags.js';
 import { block } from '/imports/api/users/methods.js';
 import { remove as removeTopic, update as updateTopic } from '/imports/api/topics/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -21,6 +22,12 @@ Template.Chatbox.onRendered(function chatboxOnRendered() {
 Template.Chatbox.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
+  },
+  hiddenBy() {
+    if (Meteor.user().hasBlocked(this.createdBy()._id)) {
+      return 'you';
+    }
+    return this.flaggedBy();
   },
 });
 
@@ -88,11 +95,10 @@ Template.Chatbox.events({
     }, handleError);
   },
   'click .js-report'(event, instance) {
-    const modalContext = {
-      title: __('Not implemented yet'),
-      btnClose: 'close',
-    };
-    Modal.show('Modal', modalContext);
+    flag.call({
+      coll: 'topics',
+      id: this._id,
+    }, handleError);
   },
   'click .social-body .js-like'(event) {
     like.call({
