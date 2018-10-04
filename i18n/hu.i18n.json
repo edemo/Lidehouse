@@ -190,6 +190,9 @@
   "was modified, previous": "módosításra került, korábbi",
   "Report this": "Hozzászólás jelentése",
   "Hide comments from": "%s hozzászólásainak elrejtése",
+  "Unhide comments from": "%s hozzászólásainak mutatása",
+  "Content hidden by": "A tartalmat nem mutatjuk a(z) %s kérésére",
+  "you": "ön",
 
   // voting
   "choice": "választási lehetőség",

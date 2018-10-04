@@ -1,10 +1,9 @@
-import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
 import { _ } from 'meteor/underscore';
 import { checkExists, checkPermissions } from '/imports/api/method-checks.js';
+import { toggleElementInArray } from '/imports/api/utils.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -45,11 +44,6 @@ export const like = new ValidatedMethod({
     checkPermissions(userId, 'like.toggle', object.community()._id, object);
 
     // toggle Like status of this user
-    const index = _.indexOf(object.likes, userId);
-    if (index >= 0) {
-      collection.update(id, { $pull: { likes: userId } });
-    } else {
-      collection.update(id, { $push: { likes: userId } });
-    }
+    toggleElementInArray(collection, id, 'likes', userId);
   },
 });

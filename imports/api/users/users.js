@@ -107,6 +107,9 @@ Meteor.users.schema = new SimpleSchema({
   'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
     // topicId -> { timestamp: lastseen comment's createdAt (if seen any), commentCounter }
 
+  blocked: { type: Array, defaultValue: [], autoform: { omit: true } }, // blocked users
+  'blocked.$': { type: String, regEx: SimpleSchema.RegEx.Id }, // userIds
+
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },
 
@@ -221,6 +224,9 @@ Meteor.users.helpers({
       totalBalance += parcel.balance();
     });
     return totalBalance;
+  },
+  hasBlocked(userId) {
+    return _.contains(this.blocked, userId);
   },
 });
 
