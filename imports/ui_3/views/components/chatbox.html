@@ -13,8 +13,8 @@
                 {{/if}}
                 <li role="separator" class="divider"></li>
                 <!-- megerősítő modal figyelmeztetéssel hogy nem fogja látni a többit, instrukció hogy a profil beállításokban oldhatja fel -->
-                <li><a class="js-hide" href="">{{displayUser}} hozzászólásainak elrejtése</a></li>
-                <li><a class="js-report" href="">Hozzászólás jelentése</a></li>
+                <li><a class="js-hide" href="">{{_ 'Hide comments from' createdBy.displayName}}</a></li>
+                <li><a class="js-report" href="">{{_ 'Report this'}}</a></li>
             </ul>
         </div>
         <div class="social-avatar">
@@ -23,7 +23,7 @@
             </a>
             <div class="media-body">
                 <a href="{{pathFor 'User.show' _id=createdBy._id}}">
-                    {{createdBy.fullName}}
+                    {{createdBy.displayName}}
                 </a>                
                 <strong data-id="{{_id}}">{{title}}</strong>
                 <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>

@@ -114,6 +114,10 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
+function currentUserLanguage() {
+  return Meteor.user().settings.language || 'en';
+}
+
 Meteor.users.helpers({
   safeUsername() {
     // If we have a username in db return that, otherwise generate one from her email address
@@ -123,7 +127,7 @@ Meteor.users.helpers({
   },
   fullName() {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
-      if (this.language() === 'hu') {
+      if (currentUserLanguage() === 'hu') {
         return this.profile.lastName + ' ' + this.profile.firstName;
       } else {
         return this.profile.firstName + ' ' + this.profile.lastName;
@@ -145,9 +149,6 @@ Meteor.users.helpers({
     this.emails[0].address = address;
     this.emails[0].verified = false;
     // TODO: A verification email has to be sent to the user now
-  },
-  language() {
-    return this.settings.language || 'en';
   },
   // Memberships
   memberships(communityId) {

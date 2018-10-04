@@ -188,6 +188,8 @@
   // topics
   "The": "A",
   "was modified, previous": "módosításra került, korábbi",
+  "Report this": "Hozzászólás jelentése",
+  "Hide comments from": "%s hozzászólásainak elrejtése",
 
   // voting
   "choice": "választási lehetőség",
