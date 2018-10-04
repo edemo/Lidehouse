@@ -31,7 +31,8 @@ import { handleError } from '../../../ui/lib/errors.js';
 
 Template.Forum_topics.helpers({
     forumTopics() {
-        const topics = Topics.find({ category: 'forum' });
+        const communityId = Session.get('activeCommunityId');
+        const topics = Topics.find({ communityId, category: 'forum' });
         const sorted = topics.fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
         return sorted;
     },
