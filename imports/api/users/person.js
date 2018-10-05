@@ -94,15 +94,21 @@ export class Person {
   }
 }
 
-export const choosePerson = {
-  options() { 
-    const communityId = Session.get('activeCommunityId');
-    const memberships = Memberships.find({ communityId });
-    const options = memberships.map(function option(m) {
-      return { label: m.Person().displayName(), value: m.Person().id() };
-    });
-    const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
-    return sortedOptions;
-  },
-  firstOption: () => __('(Select one)'),
+export let choosePerson = {};
+
+if (Meteor.isClient) {
+      import { Session } from 'meteor/session';
+
+  choosePerson = {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const memberships = Memberships.find({ communityId });
+      const options = memberships.map(function option(m) {
+        return { label: (m.Person().displayName() + ', ' + m.toString()), value: m.Person().id() };
+      });
+      const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+      return sortedOptions;
+    },
+    firstOption: () => __('(Select one)'),
+  };
 };
