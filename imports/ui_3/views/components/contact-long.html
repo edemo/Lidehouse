@@ -8,8 +8,8 @@
             {{/each}}
             <address class="m-t-sm">
                 {{#if profile.bio}}<i>"{{profile.bio}}"</i><br><br>{{/if}}
+                {{#if profile.publicEmail}}{{profile.publicEmail}}<br>{{/if}}
                 {{#if profile.address}}{{profile.address}}<br>{{/if}}
-                {{getPrimaryEmail}}<br>
                 {{#if profile.phone}}<i class="fa fa-phone"></i> {{profile.phone}}<br>{{/if}}
             </address>
         </a>

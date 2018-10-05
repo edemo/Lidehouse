@@ -95,8 +95,9 @@ export class Person {
 }
 
 export const choosePerson = {
-  options() {
-    const memberships = Memberships.find({});
+  options() { 
+    const communityId = Session.get('activeCommunityId');
+    const memberships = Memberships.find({ communityId });
     const options = memberships.map(function option(m) {
       return { label: m.Person().displayName(), value: m.Person().id() };
     });
