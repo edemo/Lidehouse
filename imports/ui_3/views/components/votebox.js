@@ -121,9 +121,6 @@ Template.Votebox.helpers({
   avatar() {
     return Meteor.users.findOne(this.userId).avatar;
   },
-  displayUser() {
-    return Meteor.users.findOne(this.userId).fullName();
-  },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },

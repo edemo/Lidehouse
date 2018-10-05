@@ -4,7 +4,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Accounts } from 'meteor/accounts-base';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { insert as insertMember } from '/imports/api/memberships/methods.js';
+import { toggleElementInArray } from '/imports/api/utils.js';
+
 import './users.js';
 
 export const invite = new ValidatedMethod({
@@ -45,6 +46,21 @@ export const update = new ValidatedMethod({
     }
 
     Meteor.users.update({ _id }, modifier);
+  },
+});
+
+export const block = new ValidatedMethod({
+  name: 'user.block',
+  validate: new SimpleSchema({
+    blockedUserId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ blockedUserId }) {
+    if (blockedUserId === this.userId) {
+      throw new Meteor.Error('err_notAllowed', 'Not allowed to perform this activity',
+        `Method: users.block, userId: ${this.userId}`);
+    }
+    toggleElementInArray(Meteor.users, this.userId, 'blocked', blockedUserId);
   },
 });
 

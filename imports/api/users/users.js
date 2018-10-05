@@ -107,12 +107,19 @@ Meteor.users.schema = new SimpleSchema({
   'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
     // topicId -> { timestamp: lastseen comment's createdAt (if seen any), commentCounter }
 
+  blocked: { type: Array, defaultValue: [], autoform: { omit: true } }, // blocked users
+  'blocked.$': { type: String, regEx: SimpleSchema.RegEx.Id }, // userIds
+
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },
 
   // In order to avoid an 'Exception in setInterval callback' from Meteor
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
+
+function currentUserLanguage() {
+  return Meteor.user().settings.language || 'en';
+}
 
 Meteor.users.helpers({
   safeUsername() {
@@ -123,7 +130,7 @@ Meteor.users.helpers({
   },
   fullName() {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
-      if (this.language() === 'hu') {
+      if (currentUserLanguage() === 'hu') {
         return this.profile.lastName + ' ' + this.profile.firstName;
       } else {
         return this.profile.firstName + ' ' + this.profile.lastName;
@@ -145,9 +152,6 @@ Meteor.users.helpers({
     this.emails[0].address = address;
     this.emails[0].verified = false;
     // TODO: A verification email has to be sent to the user now
-  },
-  language() {
-    return this.settings.language || 'en';
   },
   // Memberships
   memberships(communityId) {
@@ -220,6 +224,9 @@ Meteor.users.helpers({
       totalBalance += parcel.balance();
     });
     return totalBalance;
+  },
+  hasBlocked(userId) {
+    return _.contains(this.blocked, userId);
   },
 });
 

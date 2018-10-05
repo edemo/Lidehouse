@@ -12,9 +12,18 @@
                 <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
                 {{/if}}
                 <li role="separator" class="divider"></li>
-                <!-- megerősítő modal figyelmeztetéssel hogy nem fogja látni a többit, instrukció hogy a profil beállításokban oldhatja fel -->
-                <li><a class="js-hide" href="">{{displayUser}} hozzászólásainak elrejtése</a></li>
-                <li><a class="js-report" href="">Hozzászólás jelentése</a></li>
+                <li>
+                  <a class="js-block" href="">
+                  {{#if currentUser.hasBlocked createdBy._id}}
+                    {{_ 'Unhide comments from' createdBy.displayName}}
+                  {{else}}
+                    {{_ 'Hide comments from' createdBy.displayName}}
+                  {{/if}}
+                  </a>
+                </li>
+                {{#unless this.isFlaggedBy currentUser._id}}
+                <li><a class="js-report" href="">{{_ 'Report this'}}</a></li>
+                {{/unless}}
             </ul>
         </div>
         <div class="social-avatar">
@@ -23,33 +32,36 @@
             </a>
             <div class="media-body">
                 <a href="{{pathFor 'User.show' _id=createdBy._id}}">
-                    {{createdBy.fullName}}
+                    {{createdBy.displayName}}
                 </a>                
                 <strong data-id="{{_id}}">{{title}}</strong>
                 <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
             </div>
         </div>
-        <div class="social-body">
-            <p data-id="{{_id}}">{{#markdown}}{{text}}{{/markdown}}</p>
-            <div class="btn-group">
-                <button class="btn btn-white btn-xs js-like">
-                    <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
-                    {{_ 'important'}}!
-                    ({{likesCount}})
-                </button>
-                <button class="btn btn-white btn-xs">
-                    <i class="fa fa-comments"></i>
-                    {{_ 'Comment'}}
-                    ({{commentCounter}})
-                </button>
-                <!--button class="text-muted count-box" >{{commentCounter}}</button-->
-            </div>
-            <div class="text-right">
-                <button class="js-cancel hidden btn btn-sm btn-default m-t-n-xs" data-id="{{_id}}"><strong>{{_ 'cancel'}}</strong></button>
-                <button class="js-save-edited hidden btn btn-sm btn-primary m-t-n-xs" data-id="{{_id}}"><strong>{{_ 'save'}}</strong></button>
-             </div>
-        </div>
-
-        {{> Comments_section this}}
+        {{#if hiddenBy}}
+          {{_ 'Content hidden by' (_ hiddenBy)}}
+        {{else}}
+          <div class="social-body">
+              <p data-id="{{_id}}">{{#markdown}}{{text}}{{/markdown}}</p>
+              <div class="btn-group">
+                  <button class="btn btn-white btn-xs js-like">
+                      <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                      {{_ 'important'}}!
+                      ({{likesCount}})
+                  </button>
+                  <button class="btn btn-white btn-xs">
+                      <i class="fa fa-comments"></i>
+                      {{_ 'Comment'}}
+                      ({{commentCounter}})
+                  </button>
+                  <!--button class="text-muted count-box" >{{commentCounter}}</button-->
+              </div>
+              <div class="text-right">
+                  <button class="js-cancel hidden btn btn-sm btn-default m-t-n-xs" data-id="{{_id}}"><strong>{{_ 'cancel'}}</strong></button>
+                  <button class="js-save-edited hidden btn btn-sm btn-primary m-t-n-xs" data-id="{{_id}}"><strong>{{_ 'save'}}</strong></button>
+              </div>
+          </div>
+          {{> Comments_section this}}
+        {{/if}}
     </div>
 </template>
