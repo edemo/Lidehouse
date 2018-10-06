@@ -9,7 +9,7 @@ import { $ } from 'meteor/jquery';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Accounts } from 'meteor/accounts-base';
 import { __ } from '/imports/localization/i18n.js';
-import { displayError } from '/imports/ui/lib/errors.js';
+import { displayError } from '/imports/ui_3/lib/errors.js';
 import './about.html';
 
 Template.About_page.events({

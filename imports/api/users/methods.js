@@ -66,7 +66,7 @@ export const block = new ValidatedMethod({
 
 let updateCall;
 if (Meteor.isClient) {
-  import { handleError } from '/imports/ui/lib/errors.js';
+  import { handleError } from '/imports/ui_3/lib/errors.js';
 
   updateCall = function (context, params) {
     update.call(params, handleError);

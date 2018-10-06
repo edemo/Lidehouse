@@ -5,7 +5,7 @@ import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import './autoform-edit.html';
 
 // How to instantiate an Autoform_edit window: Modal.show('Autoform_edit', afOptions)

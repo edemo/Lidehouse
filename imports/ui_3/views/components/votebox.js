@@ -13,14 +13,14 @@ import { TimeSync } from 'meteor/mizzao:timesync';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
-import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
+import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_2/modals/voting-edit.js';
+import '/imports/ui_3/views/modals/voting-edit.js';
 import '/imports/ui_3/views/components/vote-results.js';
 import '../components/select-voters.js';
 import './votebox.html';

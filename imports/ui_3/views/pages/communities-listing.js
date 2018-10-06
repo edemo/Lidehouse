@@ -6,7 +6,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Fraction } from 'fractional';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { communityColumns } from '/imports/api/communities/tables.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { insertUnapproved as insertMembershipUnapproved } from '/imports/api/memberships/methods.js';
@@ -14,8 +14,8 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_2/modals/autoform-edit.js';
-import { afCommunityInsertModal } from './communities-edit.js';
+import '/imports/ui_3/views/modals/autoform-edit.js';
+import { afCommunityInsertModal } from '/imports/ui_3/views/components/communities-edit.js';
 import './communities-listing.html';
 
 Template.Communities_listing.onCreated(function onCreated() {

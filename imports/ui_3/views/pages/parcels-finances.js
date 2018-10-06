@@ -17,9 +17,9 @@ import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
 import { Reports } from '/imports/api/payaccounts/reports.js';
 
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_2/components/custom-table.js';
-import '/imports/ui_2/modals/confirmation.js';
-import '/imports/ui_2/modals/autoform-edit.js';
+import '/imports/ui_3/views/components/custom-table.js';
+import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/modals/autoform-edit.js';
 import '../common/ibox-tools.js';
 import '../components/balance-widget.js';
 import './parcels-finances.html';

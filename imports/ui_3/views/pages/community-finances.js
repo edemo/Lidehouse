@@ -15,15 +15,15 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
-import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
+import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { monthTags } from '/imports/api/payaccounts/payaccounts-utils.js';
 import { paymentColumns } from '/imports/api/payments/tables.js';
 import { payaccountColumns } from '/imports/api/payaccounts/tables.js';
 import { Reports } from '/imports/api/payaccounts/reports.js';
-import '/imports/ui_2/components/custom-table.js';
-import '/imports/ui_2/modals/confirmation.js';
-import '/imports/ui_2/modals/autoform-edit.js';
-import { serializeNestable } from '/imports/ui_2/modals/nestable-edit.js';
+import '/imports/ui_3/views/components/custom-table.js';
+import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/modals/autoform-edit.js';
+import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
 import './community-finances.html';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme

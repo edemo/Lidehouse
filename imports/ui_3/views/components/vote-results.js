@@ -4,7 +4,7 @@ import { Session } from 'meteor/session';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
-import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
+import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { update } from '/imports/api/topics/methods.js';

@@ -4,7 +4,7 @@ import { Session } from 'meteor/session';
 import { feedbacksSchema } from '/imports/api/topics/feedbacks/feedbacks.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { displayError, displayMessage, handleError, onSuccess } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage, handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import '/imports/startup/both/version.js';
 import './footer.html';

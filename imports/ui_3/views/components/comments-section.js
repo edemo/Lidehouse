@@ -7,7 +7,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 
 import { __ } from '/imports/localization/i18n.js';
-import { onSuccess, handleError } from '/imports/ui/lib/errors.js';
+import { onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';

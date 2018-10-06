@@ -9,15 +9,15 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
-import { onSuccess, displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { delegationColumns } from '/imports/api/delegations/tables.js';
-import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
+import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { remove as removeDelegation, allow as allowDelegations } from '/imports/api/delegations/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_2/modals/confirmation.js';
-import '/imports/ui_2/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/modals/autoform-edit.js';
 
 import './delegations.html';
 

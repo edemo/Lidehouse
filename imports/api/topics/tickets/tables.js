@@ -1,5 +1,5 @@
 import { __ } from '/imports/localization/i18n.js';
-import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
+import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 
 export function ticketColumns() {
   return [

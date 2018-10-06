@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { insert as insertTopic } from '/imports/api/topics/methods.js';
-import { onSuccess } from '/imports/ui/lib/errors.js';
+import { onSuccess } from '/imports/ui_3/lib/errors.js';
 
 import './new-forum-topic.html';
 
