@@ -21,7 +21,7 @@
       "placeholder": "(pl. kockásfülünyúl.jpg)"
     },
     "profile": {
-      "label": "Profil",
+      "label": "Profil  (Az itt megadott adatokat a ház lakói és tisztségviselői láthatják.)",
 
       "firstName": {
         "label": "Keresztnév",
@@ -31,9 +31,9 @@
         "label": "Vezetéknév",
         "placeholder": "(pl. Galambos)"
       },
-      "nick": {
-        "label": "Becenév",
-        "placeholder": "(pl. Miki75)"
+      "publicEmail": {
+        "label": "Publikus email cím",
+        "placeholder": "(pl. Miki75@leveledjott.hu)"
       },
       "address": {
         "label": "Kapcsolati cím",

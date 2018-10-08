@@ -54,7 +54,7 @@ export const PersonProfileSchema = new SimpleSchema({
 const PersonProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
-  nick: { type: String, optional: true },
+  publicEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
   address: { type: String, optional: true },
   phone: { type: String, max: 20, optional: true },
   bio: { type: String, optional: true },
