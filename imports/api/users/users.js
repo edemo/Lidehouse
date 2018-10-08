@@ -155,10 +155,10 @@ Meteor.users.helpers({
   },
   // Memberships
   memberships(communityId) {
-    return Memberships.find({ 'person.userId': this._id, communityId });
+    return Memberships.find({ communityId, 'active.now': true, 'person.userId': this._id });
   },
   ownerships(communityId) {
-    return Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' });
+    return Memberships.find({ communityId, 'active.now': true, role: 'owner', 'person.userId': this._id });
   },
   ownedParcels(communityId) {
     const parcelIds = _.pluck(this.ownerships(communityId).fetch(), 'parcelId');
@@ -166,23 +166,23 @@ Meteor.users.helpers({
     const ownedParcels = parcels.filter(elem => elem);
     return ownedParcels;
   },
-  roles(communityId) {
-    return Memberships.find({ 'person.userId': this._id, communityId }).fetch().map(m => m.role);
+  activeRoles(communityId) {
+    return Memberships.find({ communityId, 'active.now': true, 'person.userId': this._id }).fetch().map(m => m.role);
   },
   communities() {
-    const memberships = Memberships.find({ 'person.userId': this._id }).fetch();
+    const memberships = Memberships.find({ 'active.now': true, 'person.userId': this._id }).fetch();
     const communityIds = _.pluck(memberships, 'communityId');
     const communities = Communities.find({ _id: { $in: communityIds } });
     // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
   isInCommunity(communityId) {
-    return !!Memberships.findOne({ 'person.userId': this._id, communityId });
+    return !!Memberships.findOne({ communityId, 'active.now': true, 'person.userId': this._id });
   },
   // Voting
   votingUnits(communityId) {
     let sum = 0;
-    Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' }).forEach(m => (sum += m.votingUnits()));
+    Memberships.find({ communityId, 'active.now': true, role: 'owner', 'person.userId': this._id }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
   hasPermission(permissionName, communityId, object) {
@@ -191,7 +191,7 @@ Meteor.users.helpers({
     const rolesWithThePermission = permission.roles;
     if (_.contains(rolesWithThePermission, 'null')) return true;
     if (permission.allowAuthor && object && (object.userId === this._id)) return true;
-    const userHasTheseRoles = this.roles(communityId);
+    const userHasTheseRoles = this.activeRoles(communityId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
 //  console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
     return result;

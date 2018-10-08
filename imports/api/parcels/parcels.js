@@ -53,14 +53,14 @@ Parcels.helpers({
   location() {  // TODO: move this to the house package
     return `${this.floor}/${this.number}`;
   },
-  displayNames() {
+  displayActiveOccupants() {
     let result = '';
-    const ownerships = Memberships.find({ communityId: this.communityId, role: 'owner', parcelId: this._id });
+    const ownerships = Memberships.find({ communityId: this.communityId, 'active.now': true, role: 'owner', parcelId: this._id });
     ownerships.forEach((m) => {
       const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
       result += `${m.Person().displayName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
     });
-    const benefactorships = Memberships.find({ communityId: this.communityId, role: 'benefactor', parcelId: this._id });
+    const benefactorships = Memberships.find({ communityId: this.communityId, 'active.now': true, role: 'benefactor', parcelId: this._id });
     benefactorships.forEach((m) => {
       result += `${m.Person().displayName()}<br>`;
     });
@@ -88,15 +88,15 @@ Parcels.helpers({
   },
   ownedShare() {
     let total = new Fraction(0);
-    Memberships.find({ parcelId: this._id, role: 'owner' }).forEach(p => total = total.add(p.ownership.share));
+    Memberships.find({ parcelId: this._id, 'active.now': true, role: 'owner' }).forEach(p => total = total.add(p.ownership.share));
     return total;
   },
   representor() {
-    const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, parcelId: this._id, role: 'owner', 'ownership.representor': true });
+    const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, 'active.now': true, role: 'owner', parcelId: this._id, 'ownership.representor': true });
     if (firstDefinedRep) return firstDefinedRep;
-    const ownersSorted = Memberships.find({ communityId: this.communityId, parcelId: this._id, role: 'owner' }, { sort: { createdAt: 1 } }).fetch();
+    const ownersSorted = Memberships.find({ communityId: this.communityId, 'active.now': true, role: 'owner', parcelId: this._id }, { sort: { createdAt: 1 } }).fetch();
     if (ownersSorted.length > 0) return ownersSorted[0];
-    const benefactorsSorted = Memberships.find({ communityId: this.communityId, parcelId: this._id, role: 'benefactor' }, { sort: { createdAt: 1 } }).fetch();
+    const benefactorsSorted = Memberships.find({ communityId: this.communityId, 'active.now': true, role: 'benefactor', parcelId: this._id }, { sort: { createdAt: 1 } }).fetch();
     if (benefactorsSorted.length > 0) return benefactorsSorted[0];
     return undefined;
   },

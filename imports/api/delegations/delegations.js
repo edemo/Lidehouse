@@ -94,7 +94,7 @@ Delegations.helpers({
     if (this.scope === 'topic') return Topics.find({ _id: this.scopeObjectId, category: 'vote', closed: false });
     debugAssert(false, `No such scope as ${this.scope}`);
     return undefined;
-  }
+  },
 });
 
 Delegations.attachSchema(Delegations.schema);

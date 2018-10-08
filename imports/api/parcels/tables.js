@@ -30,7 +30,7 @@ export function parcelColumns(permissions) {
     { data: 'lot', title: __('schemaParcels.lot.label') },
     { data: 'area', title: 'm2' },
     { data: 'share()', title: __('schemaParcels.units.label') },
-    { data: 'displayNames()', title: __('occupants') },
+    { data: 'displayActiveOccupants()', title: __('occupants') },
     { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
   ];
 }

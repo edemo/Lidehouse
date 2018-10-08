@@ -14,15 +14,17 @@ const IdCardSchema = new SimpleSchema({
   address: { type: String },
   identifier: { type: String }, // cegjegyzek szam vagy szig szam - egyedi!!!
   mothersName: { type: String, optional: true },
-  dob: { type: Date, optional: true },
+  dob: { type: Date, optional: true },  // date of birth
 });
 
 export const PersonSchema = new SimpleSchema({
-  // The user is connected with the membership via 3 possible ways: userId (registered user),
+  // The membership is connecting to a person via 3 possible ways: 
+  // *userId* (connecting to a registered user in the system),
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
-  // userEmail (not yet registered, but invitation is sent)
+  // *userEmail* (not yet registered, but invitation is sent)
   userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
-  // idCard (confirmed identity papers - this person does not wish to register)
+  // *idCard* (identity papers confirmed by manager, so person can officially vote now)
+  // this person might or might not wish to register in the system ever, but still can do voting (if manager votes in his name)
   idCard: { type: IdCardSchema, optional: true },
 });
 

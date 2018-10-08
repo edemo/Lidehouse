@@ -26,7 +26,7 @@ function communityPublication(userId, _id) {
 
     children: [{
       find(community) {
-        return Memberships.find({ communityId: community._id, role: { $in: ['admin', 'manager'] } });
+        return Memberships.find({ communityId: community._id, 'active.now': true, role: { $in: ['admin', 'manager'] } });
       },
 
       children: [{

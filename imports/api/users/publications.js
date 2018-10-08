@@ -34,7 +34,7 @@ Meteor.publish('users.inCommunitybyId', function userInCommunitybyId(params) {
     return; 
   }
 
-  const userInCommunity = Memberships.findOne({ communityId, 'person.userId': _id });
+  const userInCommunity = Memberships.findOne({ communityId, 'active.now': true, 'person.userId': _id });
   if (!userInCommunity) {
     this.ready();
     return; 

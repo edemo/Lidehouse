@@ -28,50 +28,61 @@ Template.Parcel_owners_page.onRendered(function () {
 });
 
 Template.Parcel_owners_page.helpers({
-    pageCrumbs() {
-      const parcelId = FlowRouter.getParam('_pid');
-      const communityId = Parcels.findOne(parcelId).communityId;
-      return [{
-        title: __('Community page'),
-        url: FlowRouter.path('Community.page', { _cid: communityId }),
-      }];
-    },
-    title() {
-        return `${__('parcel')} ${__("'s owners")}`;
-    },
-    smallTitle() {
-        const parcelId = FlowRouter.getParam('_pid');
-        const parcel = Parcels.findOne(parcelId);
-        return parcel ? `${parcel.display()} ${__("'s owners")}` : __('unknown');
-    },
-    communityId() {
-        const parcelId = FlowRouter.getParam('_pid');
-        const parcel = Parcels.findOne(parcelId);
-        return parcel ? parcel.communityId : undefined;
-    },
-    ownerships() {
-        const parcelId = FlowRouter.getParam('_pid');
-        return Memberships.find({ approved: true, role: 'owner', parcelId });
-    },
-    unapprovedOwnerships() {
-        const parcelId = FlowRouter.getParam('_pid');
-        return Memberships.find({ approved: false, role: 'owner', parcelId });
-    },
-    benefactorships() {
-        const parcelId = FlowRouter.getParam('_pid');
-        return Memberships.find({ approved: true, role: 'benefactor', parcelId });
-    },
-    unapprovedBenefactorships() {
-        const parcelId = FlowRouter.getParam('_pid');
-        return Memberships.find({ approved: false, role: 'benefactor', parcelId });
-    },
-    members() {
-        const parcelId = FlowRouter.getParam('_pid');
-        return Memberships.find({ approved: true, parcelId, role: { $in: ['owner', 'benefactor'] } });
-    },
-    activeTabClass(index) {
-        return index === 0 ? 'active' : '';
-    },
+  pageCrumbs() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const communityId = Parcels.findOne(parcelId).communityId;
+    return [{
+      title: __('Community page'),
+      url: FlowRouter.path('Community.page', { _cid: communityId }),
+    }];
+  },
+  title() {
+    return `${__('parcel')} ${__("'s owners")}`;
+  },
+  smallTitle() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    return parcel ? `${parcel.display()} ${__("'s owners")}` : __('unknown');
+  },
+  communityId() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    const communityId = parcel ? parcel.communityId : undefined;
+    return communityId;
+  },
+  ownerships() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    const communityId = parcel ? parcel.communityId : undefined;
+    return Memberships.find({ communityId, 'active.now': true, role: 'owner', parcelId, approved: true });
+  },
+  unapprovedOwnerships() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    const communityId = parcel ? parcel.communityId : undefined;
+    return Memberships.find({ communityId, role: 'owner', parcelId, approved: false });
+  },
+  benefactorships() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    const communityId = parcel ? parcel.communityId : undefined;
+    return Memberships.find({ communityId, 'active.now': true, role: 'benefactor', parcelId, approved: true });
+  },
+  unapprovedBenefactorships() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    const communityId = parcel ? parcel.communityId : undefined;
+    return Memberships.find({ communityId, role: 'benefactor', parcelId, approved: false });
+  },
+  members() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    const communityId = parcel ? parcel.communityId : undefined;
+    return Memberships.find({ communityId, 'active.now': true, role: { $in: ['owner', 'benefactor'] }, parcelId, approved: true });
+  },
+  activeTabClass(index) {
+    return index === 0 ? 'active' : '';
+  },
   display() {
     const parcelId = FlowRouter.getParam('_pid');
     const parcel = Parcels.findOne(parcelId);
@@ -79,12 +90,12 @@ Template.Parcel_owners_page.helpers({
   },
   hasUnapprovedMemberships() {
     const parcelId = FlowRouter.getParam('_pid');
-    return Memberships.find({ approved: false, role: 'owner', parcelId }).fetch().length > 0;
+    return Memberships.find({ parcelId, role: 'owner', approved: false }).fetch().length > 0;
   },
   unapprovedTableDataFn() {
     return () => {
       const parcelId = FlowRouter.getParam('_pid');
-      return Memberships.find({ approved: false, role: 'owner', parcelId }).fetch();
+      return Memberships.find({ parcelId, role: 'owner', approved: false }).fetch();
     };
   },
 });

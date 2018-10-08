@@ -131,6 +131,15 @@
       "type": {
         "label": "Type"
       }
+    },
+    "active": {
+      "label": "Active (Can leave blank, if no time constraint)",
+      "begin": {
+        "label": "From"
+      },
+      "end": {
+        "label": "Until"
+      }
     }
   },
   "schemaDelegations": {

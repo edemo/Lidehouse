@@ -15,6 +15,7 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Person, PersonSchema } from '/imports/api/users/person.js';
+import { ActivePeriodSchema } from '/imports/api/active-period.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -51,6 +52,14 @@ Memberships.schema = new SimpleSchema({
   // TODO should be conditional on role === 'benefactor'
   benefactorship: { type: BenefactorshipSchema, optional: true },
 });
+
+if (Meteor.isServer) {
+  Memberships._ensureIndex({ communityId: 1, 'active.now': 1, role: 1 });
+  Memberships._ensureIndex({ parcelId: 1 }, { sparse: true });
+  Memberships._ensureIndex({ 'person.userId': 1 }, { sparse: true });
+  Memberships._ensureIndex({ 'person.userEmail': 1 }, { sparse: true });
+  Memberships._ensureIndex({ 'person.idCard.identifier': 1 }, { sparse: true });
+}
 
 // Statuses of members:
 // 0. Email not given
@@ -127,6 +136,7 @@ Memberships.helpers({
 });
 
 Memberships.attachSchema(Memberships.schema);
+Memberships.attachSchema(ActivePeriodSchema);
 Memberships.attachSchema(Timestamps);
 
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
@@ -150,6 +160,8 @@ Memberships.modifiableFields = [
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',
+  'active.from',
+  'active.to',
 ];
 
 Factory.define('membership', Memberships, {

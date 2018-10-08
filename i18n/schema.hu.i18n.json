@@ -131,6 +131,15 @@
       "type": {
         "label": "Típus"
       }
+    },
+    "active": {
+      "label": "Aktív (Nem kötelező megadni, ha nincs időben korlátozva)",
+      "begin": {
+        "label": "Időponttól"
+      },
+      "end": {
+        "label": "Időpontig"
+      }
     }
   },
   "schemaDelegations": {
