@@ -83,7 +83,7 @@ Template.Community_page.helpers({
     const communityId = Template.instance().getCommunityId();
     result.push({
       name: 'owner',
-      count: Memberships.find({ communityId, 'active.now': true, role: 'owner' }).count(),
+      count: Memberships.find({ communityId, active: true, role: 'owner' }).count(),
     });
     Parcels.typeValues.forEach(type =>
       result.push({
@@ -95,15 +95,15 @@ Template.Community_page.helpers({
   },*/
   leaders() {
     const communityId = Template.instance().getCommunityId();
-    return Memberships.find({ communityId, 'active.now': true, role: { $in: leaderRoles } });
+    return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } });
   },
   nonLeaders() {
     const communityId = Template.instance().getCommunityId();
-    return Memberships.find({ communityId, 'active.now': true, role: { $in: nonLeaderRoles } });
+    return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } });
   },
   officers() {
     const communityId = Template.instance().getCommunityId();
-    return Memberships.find({ communityId, 'active.now': true, role: { $in: officerRoles } });
+    return Memberships.find({ communityId, active: true, role: { $in: officerRoles } });
   },
   parcelsTableDataFn() {
     const templateInstance = Template.instance();

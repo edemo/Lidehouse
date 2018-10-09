@@ -13,7 +13,7 @@ import './members-panel.html';
 
 Template.Members_panel.onCreated(function onCreated() {
   const communityId = Session.get('activeCommunityId');
-  const manager = Memberships.findOne({ communityId, 'active.now': true, role: 'manager' });
+  const manager = Memberships.findOne({ communityId, active: true, role: 'manager' });
   if (manager) Session.set('messengerPersonId', manager.person.userId);
 });
 
@@ -24,7 +24,7 @@ Template.Members_panel.helpers({
   leaders() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
-    let managers = Memberships.find({ communityId, 'active.now': true, role: { $in: leaderRoles }, 'person.userId': { $ne: Meteor.userId() } }).fetch();
+    let managers = Memberships.find({ communityId, active: true, role: { $in: leaderRoles }, 'person.userId': { $ne: Meteor.userId() } }).fetch();
     if (personSearch) {
       managers = managers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }
@@ -33,7 +33,7 @@ Template.Members_panel.helpers({
   members() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
-    let nonManagers = Memberships.find({ communityId, 'active.now': true, role: { $not: { $in: leaderRoles } }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
+    let nonManagers = Memberships.find({ communityId, active: true, role: { $not: { $in: leaderRoles } }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
     if (personSearch) {
       nonManagers = nonManagers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }

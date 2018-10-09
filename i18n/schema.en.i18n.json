@@ -132,7 +132,7 @@
         "label": "Type"
       }
     },
-    "active": {
+    "activeTime": {
       "label": "Active (Can leave blank, if no time constraint)",
       "begin": {
         "label": "From"

@@ -564,7 +564,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 //    topicIds: [voteTopic4, voteTopic5, voteTopic5],
   });
 
-  const ownerships = Memberships.find({ communityId: demoCommunityId, 'active.now': true, role: 'owner', 'person.userId': { $exists: true } }).fetch();
+  const ownerships = Memberships.find({ communityId: demoCommunityId, active: true, role: 'owner', 'person.userId': { $exists: true } }).fetch();
 
   Clock.setSimulatedTime(moment(demoTopicDates[1]).add(1, 'weeks').toDate());
   const voteTopic0 = Topics.insert({
