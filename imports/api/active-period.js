@@ -34,3 +34,9 @@ const ActiveFieldsSchema = new SimpleSchema({
 export const ActivePeriodSchema = new SimpleSchema({
   active: { type: ActiveFieldsSchema },
 });
+
+ActivePeriodSchema.fields = [
+  'active.begin',
+  'active.end',
+  'active.now',
+];

@@ -155,14 +155,11 @@ Memberships.deny({
 
 Memberships.modifiableFields = [
   'role',
-  'person.userEmail',
-  'person.userId',
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',
-  'active.from',
-  'active.to',
-];
+].concat(PersonSchema.fields)
+.concat(ActivePeriodSchema.fields);
 
 Factory.define('membership', Memberships, {
   communityId: () => Factory.get('community'),
