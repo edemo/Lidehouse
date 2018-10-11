@@ -428,6 +428,8 @@
   "This will not delete topics": "Ettől a benne lévő szavazások nem fognak törlődni.",
   "This will delete all contained files as well": "Ezzel egyúttal véglegesen letörli az összes benne lévő fájlt is",
 
+  "deletedUser": "Törölt felhasználó",
+
   // Email Templates
   "emailEnrollAccountSubject": "Meghívó a Honline használatára",
   "emailEnrollAccount": ["Üdvözöljük!\n",

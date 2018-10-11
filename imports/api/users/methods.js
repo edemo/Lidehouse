@@ -64,6 +64,30 @@ export const block = new ValidatedMethod({
   },
 });
 
+export const deleteUser = new ValidatedMethod({
+  name: 'user.delete',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id }) {
+    if (_id !== this.userId) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: user.delete, userId: ${this.userId}, _id: ${_id}`);
+    };
+    Meteor.users.remove(_id);
+    Meteor.users.insert({ 
+      _id, 
+      emails: [{ address: `${_id}@deleted.hu`, verified: true }], 
+      settings: { delegatee: false } 
+    });
+  } 
+});
+    /* const findOneAndReplace = Meteor.wrapAsync(Meteor.users.rawCollection().findOneAndReplace);
+    findOneAndReplace({ _id: _id }, 
+    { 'emails': [{ 'address': `deleteduser@${_id}.hu` }] }
+    );*/
+
 let updateCall;
 if (Meteor.isClient) {
   import { handleError } from '/imports/ui_3/lib/errors.js';
