@@ -213,22 +213,6 @@ FlowRouter.notFound = {
   },
 };
 
-// Automatic redirection after sign in
-// if user is coming from a page where he would have needed to be logged in, and we sent him to sign in.
-
-let routeBeforeSignin;
-
-export function signinRedirect() {
-  if (routeBeforeSignin) {
-    FlowRouter.go(routeBeforeSignin.path, routeBeforeSignin.params);
-    routeBeforeSignin = null;
-  } else FlowRouter.go('App.home');
-}
-
-export function setRouteBeforeSignin(value) {
-  routeBeforeSignin = value;
-}
-
 // Automatic redirection
 // if no user is logged in, then let us not show the community related pages 
 // (should we do something when ... or no active community selected?)
@@ -236,30 +220,6 @@ export function setRouteBeforeSignin(value) {
 Meteor.autorun(() => {
   const currentRoute = FlowRouter.getRouteName();
   if (CommunityRelatedRoutes.includes(currentRoute) || currentRoute === 'Profile.show') {
-    if (!Meteor.userId()) {
-      setRouteBeforeSignin(FlowRouter.current());
-      FlowRouter.go('signin');
-    }
+    AccountsTemplates.forceLogin();
   }
 });
-
-// SignIn/SignUp routes
-// AccountsTemplates routes that need url generation from token are in 
-// imports/startup/both/useraccounts-configuration.js
-// because they need both server and client side for proper url generation
-
-AccountsTemplates.configureRoute('signIn', {
-  name: 'signin',
-  path: '/signin',
-  redirect() {
-    signinRedirect();
-  },
-});
-
-AccountsTemplates.configureRoute('signUp', {
-  name: 'signup',
-  path: '/signup',
-  redirect() {
-    signinRedirect();
-  },
-}); 

@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { AccountsTemplates } from 'meteor/useraccounts:core';
 
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
@@ -252,14 +253,9 @@ Template.Community_page.events({
     });
   },
   'click .js-join'(event) {
-    if (!Meteor.user()) {
-      setRouteBeforeSignin(FlowRouter.current());
-      FlowRouter.go('signin');
-      return;
-    }
+    if (AccountsTemplates.forceLogin()) return;
 
     const communityId = Template.instance().getCommunityId();
-
     Session.set('joiningCommunityId', communityId);
 
     Modal.show('Autoform_edit', {
