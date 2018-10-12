@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
 import 'meteor/accounts-base';
+import { __ } from '/imports/localization/i18n.js';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
@@ -126,7 +127,10 @@ Meteor.users.helpers({
     // If we have a username in db return that, otherwise generate one from her email address
     if (this.username) return this.username;
     const email = this.emails[0].address;
-    return email.substring(0, email.indexOf('@'));
+    const emailSplit = email.split('@');
+    if (emailSplit[1] === 'deleted.hu') return __('deletedUser');
+    const emailName = emailSplit[0];
+    return emailName;
   },
   fullName() {
     if (this.profile && this.profile.lastName && this.profile.firstName) {

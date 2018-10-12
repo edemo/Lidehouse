@@ -82,6 +82,8 @@
   "Joined community": "Succesfully joined community %s",
   "Vote casted": "Vote casted succesfully",
 
+  "deletedUser": "Deleted user",
+
   // Email Templates
   "emailEnrollAccountSubject": "Enrollment to Honline",
   "emailEnrollAccount": ["Hello, \n",
