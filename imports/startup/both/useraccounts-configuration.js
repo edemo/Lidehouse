@@ -48,14 +48,16 @@ if (Meteor.isClient) {
   import { FlowRouter } from 'meteor/kadira:flow-router';
   import { connectMe } from '/imports/api/memberships/methods.js';
 
-  let routeBeforeSignin = null;
+  let signinRedirectRoute;
+  let signinRedirectAction;
 
   // Automatic redirection after sign in
   // if user is coming from a page where he would have needed to be logged in, and we sent him to sign in.
   signinRedirect = function () {
-    if (routeBeforeSignin) {
-      FlowRouter.go(routeBeforeSignin.path, routeBeforeSignin.params);
-      routeBeforeSignin = null;
+    if (signinRedirectRoute) {
+      FlowRouter.go(signinRedirectRoute.path, signinRedirectRoute.params);
+      Meteor.setTimeout(signinRedirectAction, 500);
+      signinRedirectRoute = null;
     } else FlowRouter.go('App.home');
   };
 
@@ -64,13 +66,14 @@ if (Meteor.isClient) {
     FlowRouter.go('App.home');
   };
 
-  AccountsTemplates.forceLogin = function forceLogin() {
+  // Use this function if you need to perform some action that only logged in users can
+  // to enforce a signin before continuing with the callback
+  AccountsTemplates.forceLogin = function forceLogin(callback = () => {}) {
     if (!Meteor.userId()) {
-      routeBeforeSignin = FlowRouter.current();
+      signinRedirectRoute = FlowRouter.current();
+      signinRedirectAction = callback;
       FlowRouter.go('signin');
-      return true;
-    }
-    return false;
+    } else callback();
   };
 }
 
