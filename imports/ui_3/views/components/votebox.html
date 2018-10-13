@@ -37,7 +37,7 @@
       <div class="row m-b-md">
       <div class="col-lg-12">
           <div class="progress {{#unless closed}}progress-striped active{{/unless}} m-b-xs">
-            <div style="{{concat 'width: ' votedPercent '%;'}}" class="progress-bar"></div>
+            <div style="{{concat 'width: ' votedPercent '%;'}}" class="progress-bar {{#unless isVoteSuccessful}}progress-bar-warning{{/unless}}"></div>
           </div>
           <div class="col-sm-6 text-left">
             <p>{{_ 'Participation'}}: <strong>{{votedPercent}}%</strong>. </p>
