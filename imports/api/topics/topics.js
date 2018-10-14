@@ -11,6 +11,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { likesSchema, likesHelpers } from './likes.js';
+import { flagsSchema, flagsHelpers } from './flags.js';
 import { revision } from '/imports/api/revision.js'; 
 
 class TopicsCollection extends Mongo.Collection {
@@ -129,9 +130,11 @@ Topics.helpers({
 });
 
 Topics.helpers(likesHelpers);
+Topics.helpers(flagsHelpers);
 
 Topics.attachSchema(Topics.schema);
 Topics.attachSchema(likesSchema);
+Topics.attachSchema(flagsSchema);
 Topics.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
@@ -163,6 +166,7 @@ Topics.publicFields = {
   closed: 1,
   sticky: 1,
   likes: 1,
+  flags: 1,
   commentCounter: 1,
   revision: 1,
 };

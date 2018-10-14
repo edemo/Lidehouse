@@ -1,8 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 
-import { connectMe } from '/imports/api/memberships/methods.js';
+import { debugAssert } from '/imports/utils/assert.js';
 
 /*
 These not needed anymore, as we do a higher level configuration in the AccountTemplates package, which sets these
@@ -41,6 +40,58 @@ AccountsTemplates.configure({
   // postSignUpHook(userId, info) { set some user settings here? },
 });
 
+// Here are some blank functions, so we can configure AccountsTemplates on server side without pulling in UI libraries
+let signinRedirect = () => { debugAssert(false); };
+let enrollRedirect = () => { debugAssert(false); };
+
+if (Meteor.isClient) {
+  import { FlowRouter } from 'meteor/kadira:flow-router';
+  import { connectMe } from '/imports/api/memberships/methods.js';
+
+  let signinRedirectRoute;
+  let signinRedirectAction;
+
+  // Automatic redirection after sign in
+  // if user is coming from a page where he would have needed to be logged in, and we sent him to sign in.
+  signinRedirect = function () {
+    if (signinRedirectRoute) {
+      FlowRouter.go(signinRedirectRoute.path, signinRedirectRoute.params);
+      Meteor.setTimeout(signinRedirectAction, 500);
+      signinRedirectRoute = null;
+    } else FlowRouter.go('App.home');
+  };
+
+  enrollRedirect = function () {
+    connectMe.call();
+    FlowRouter.go('App.home');
+  };
+
+  // Use this function if you need to perform some action that only logged in users can
+  // to enforce a signin before continuing with the callback
+  AccountsTemplates.forceLogin = function forceLogin(callback = () => {}) {
+    if (!Meteor.userId()) {
+      signinRedirectRoute = FlowRouter.current();
+      signinRedirectAction = callback;
+      FlowRouter.go('signin');
+    } else callback();
+  };
+}
+
+// AccountsTemplates routes that need url generation from token are here in startup/both
+// because they need both server and client side for proper url generation
+
+AccountsTemplates.configureRoute('signIn', {
+  name: 'signin',
+  path: '/signin',
+  redirect: signinRedirect,
+});
+
+AccountsTemplates.configureRoute('signUp', {
+  name: 'signup',
+  path: '/signup',
+  redirect: signinRedirect,
+});
+
 AccountsTemplates.configureRoute('forgotPwd');
 
 AccountsTemplates.configureRoute('resetPwd', {
@@ -51,16 +102,11 @@ AccountsTemplates.configureRoute('resetPwd', {
 AccountsTemplates.configureRoute('verifyEmail', {
   name: 'verifyEmail',
   path: '/verify-email',
-  redirect() {
-    connectMe.call();
-  },
+  redirect: enrollRedirect,
 });
 
 AccountsTemplates.configureRoute('enrollAccount', {
   name: 'enrollAccount',
   path: '/enroll-account',
-  redirect() {
-    connectMe.call();
-    FlowRouter.go('App.home');
-  },
+  redirect: enrollRedirect,
 });

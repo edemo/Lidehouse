@@ -3,7 +3,7 @@ import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { feedbackColumns } from '/imports/api/topics/feedbacks/tables.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';

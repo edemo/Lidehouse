@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 
 import './confirmation.html';
 

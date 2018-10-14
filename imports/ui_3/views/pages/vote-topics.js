@@ -13,9 +13,9 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { agendaColumns } from '/imports/api/agendas/tables.js';
 import { remove as removeAgenda } from '/imports/api/agendas/methods.js';
 
-import '/imports/ui_2/modals/confirmation.js';
-import '/imports/ui_2/modals/autoform-edit.js';
-import '/imports/ui_2/modals/voting-edit.js';
+import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/voting-edit.js';
 import '../common/page-heading.js';
 import '../components/votebox.js';
 import '../components/voting-list.html';

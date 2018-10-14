@@ -7,7 +7,7 @@ import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_2/modals/modal.js';
+import '/imports/ui_3/views/modals/modal.js';
 import './select-voters.html';
 
 Template.Select_voters.onCreated(function selectVotersOnCreated() {

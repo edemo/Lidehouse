@@ -4,7 +4,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Accounts } from 'meteor/accounts-base';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { insert as insertMember } from '/imports/api/memberships/methods.js';
+import { toggleElementInArray } from '/imports/api/utils.js';
+
 import './users.js';
 
 export const invite = new ValidatedMethod({
@@ -48,9 +49,48 @@ export const update = new ValidatedMethod({
   },
 });
 
+export const block = new ValidatedMethod({
+  name: 'user.block',
+  validate: new SimpleSchema({
+    blockedUserId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ blockedUserId }) {
+    if (blockedUserId === this.userId) {
+      throw new Meteor.Error('err_notAllowed', 'Not allowed to perform this activity',
+        `Method: users.block, userId: ${this.userId}`);
+    }
+    toggleElementInArray(Meteor.users, this.userId, 'blocked', blockedUserId);
+  },
+});
+
+export const deleteUser = new ValidatedMethod({
+  name: 'user.delete',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id }) {
+    if (_id !== this.userId) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+        `Method: user.delete, userId: ${this.userId}, _id: ${_id}`);
+    };
+    Meteor.users.remove(_id);
+    Meteor.users.insert({ 
+      _id, 
+      emails: [{ address: `${_id}@deleted.hu`, verified: true }], 
+      settings: { delegatee: false } 
+    });
+  } 
+});
+    /* const findOneAndReplace = Meteor.wrapAsync(Meteor.users.rawCollection().findOneAndReplace);
+    findOneAndReplace({ _id: _id }, 
+    { 'emails': [{ 'address': `deleteduser@${_id}.hu` }] }
+    );*/
+
 let updateCall;
 if (Meteor.isClient) {
-  import { handleError } from '/imports/ui/lib/errors.js';
+  import { handleError } from '/imports/ui_3/lib/errors.js';
 
   updateCall = function (context, params) {
     update.call(params, handleError);

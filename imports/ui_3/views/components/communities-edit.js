@@ -3,7 +3,7 @@
 import { Template } from 'meteor/templating';
 import { Communities } from '/imports/api/communities/communities.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../modals/confirmation.js';
 import '../modals/autoform-edit.js';

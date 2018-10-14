@@ -15,7 +15,8 @@ Template.User_show.onCreated(function usersShowPageOnCreated() {
   this.getUserId = () => FlowRouter.getParam('_id');
 
   this.autorun(() => {
-    this.subscribe('users.byId', { _id: this.getUserId() });
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('users.inCommunitybyId', { _id: this.getUserId(), communityId });
   });
 });
 

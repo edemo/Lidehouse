@@ -50,7 +50,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Parcels, _id);
     checkModifier(doc, modifier, ['communityId'], true);
-    checkNotExists(Parcels, { communityId: doc.communityId, _id: { $ne: doc._id }, serial: modifier.$set.serial });
+    checkNotExists(Parcels, { _id: { $ne: doc._id }, communityId: doc.communityId, serial: modifier.$set.serial });
     checkPermissions(this.userId, 'parcels.update', doc.communityId);
     const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
     const newTotal = (total - doc.units) + modifier.$set.units;

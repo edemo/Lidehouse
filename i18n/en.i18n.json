@@ -60,6 +60,11 @@
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",
 
+  // topics
+  "Hide comments from": "Hide comments from %s",
+  "Unhide comments from": "Reveal comments from %s",
+  "Content hidden by": "Content hidden by %s",
+
   // delegations
   "delegationsFromMeInstructions": "Here you can set up delegations. So someone else can use your vote in your name.",
   "delegationsFromMeInstructions2": "The delegations you set up here, can be revoked at any time, or can be redirected toward someone else.",
@@ -69,6 +74,9 @@
   "votedViaDelegationHint" : "casting a vote can override this",
   "notYetVotedCastYourVoteOr": "cast your vote below, or",
   "setupYourDelegation": "set up a delegation",
+
+  // rooms
+  "noSelectedPerson": "Please select a person on right panel.",
 
   // tickets
   "Please dont report twice": "To help our maintanance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
@@ -80,6 +88,8 @@
   // Notifications
   "Joined community": "Succesfully joined community %s",
   "Vote casted": "Vote casted succesfully",
+
+  "deletedUser": "Deleted user",
 
   // Email Templates
   "emailEnrollAccountSubject": "Enrollment to Honline",

@@ -16,6 +16,7 @@ export const chooseBreakdown = {
       return { label: account.name, value: account._id };
     });
   },
+  firstOption: () => __('(Select one)'),
 };
 
 /*
@@ -38,6 +39,7 @@ export const chooseBreakdown = {
       return { label: account.name, value: account._id };
     });
   },
+  firstOption: () => __('(Select one)'),
 };
 */
 Breakdowns.LeafSchema = new SimpleSchema({

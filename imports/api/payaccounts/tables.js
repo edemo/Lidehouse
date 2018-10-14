@@ -1,7 +1,7 @@
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 
-export function breakdownColumns() {
+export function payaccountColumns() {
   const constrainText = function constrainText(text, charCount) {
     return (text.length > charCount) ?
       text.substr(0, charCount - 3) + '...' :
@@ -10,14 +10,16 @@ export function breakdownColumns() {
 
   const displayNames = function displayNames(cellData, renderType, currentRow) {
     let result = '';
-    cellData.forEach((name) => { if (name) result += __(name) + ', '; });
+    cellData.forEach((name) => { if (name) result += name + ', '; });
     return constrainText(result, 50);
   };
 
   return [
-    { data: 'name', title: __('schemaBreakdowns.name.label'), render: Render.translate },
-//    { data: 'type', title: __('schemaBreakdowns.type.label'), render: Render.translate },
-    { data: 'leafNames()', title: __('schemaBreakdowns.children.$.children.$.children.label'), render: displayNames },
+    { data: 'name', title: __('schemaPayAccounts.name.label') },
+//    { data: 'type', title: __('schemaPayAccounts.type.label'), render: Render.translate },
+    { data: 'level1Names()', title: __('schemaPayAccounts.children.label'), render: displayNames },
+    { data: 'level2Names()', title: __('schemaPayAccounts.children.$.children.label'), render: displayNames },
+    { data: 'leafNames()', title: __('schemaPayAccounts.children.$.children.$.children.label'), render: displayNames },
     { data: '_id', render: Render.buttonView },
     { data: '_id', render: Render.buttonEdit },
     { data: '_id', render: Render.buttonDelete },

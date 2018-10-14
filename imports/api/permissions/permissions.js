@@ -55,6 +55,8 @@ export const Permissions = [
   { name: 'comments.remove',        roles: ['moderator'], allowAuthor: true },
   { name: 'comments.listing',       roles: exceptGuest },
   { name: 'like.toggle',            roles: exceptGuest },
+  { name: 'flag.toggle',            roles: exceptGuest },
+  { name: 'topic.hide.forOthers',   roles: ['moderator'] },
   { name: 'finances.view',          roles: exceptGuest },
   { name: 'breakdowns.insert',     roles: ['accountant'] },
   { name: 'breakdowns.update',     roles: ['accountant'] },

@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-import { displayError } from '/imports/ui/lib/errors.js';
+import { displayError } from '/imports/ui_3/lib/errors.js';
 import './demo-login.html';
 
 Template.Demo_login.onRendered(function onRendered() {

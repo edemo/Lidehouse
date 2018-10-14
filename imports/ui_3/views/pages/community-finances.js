@@ -10,7 +10,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
-import { onSuccess, handleError, displayMessage } from '/imports/ui/lib/errors.js';
+import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { monthTags } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
 import { journalColumns } from '/imports/api/journals/tables.js';
 import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
@@ -21,10 +21,10 @@ import { Journals } from '/imports/api/journals/journals.js';
 import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
 import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
-import { serializeNestable } from '/imports/ui_2/modals/nestable-edit.js';
-import '/imports/ui_2/components/custom-table.js';
-import '/imports/ui_2/modals/confirmation.js';
-import '/imports/ui_2/modals/autoform-edit.js';
+import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
+import '/imports/ui_3/views/components/custom-table.js';
+import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
 import './community-finances.html';
 import { AccountSpecification } from '../../../api/journals/account-specification';
@@ -217,10 +217,10 @@ function newParcelBillingSchema() {
     const breakdown1 = Breakdowns.findOne({ communityId, name: 'Incomes' });
     const breakdown2 = Breakdowns.findOne({ communityId, name: 'Localizer' });
     obj[breakdown1.name] = { type: String, optional: true, label: breakdown1.name, 
-      autoform: { options() { return breakdown1.leafOptions(); } },
+      autoform: { options() { return breakdown1.leafOptions(); }, firstOption: () => __('(Select one)') },
     };
     obj[breakdown2.name] = { type: String, optional: true, label: breakdown2.name, 
-      autoform: { options() { return breakdown2.nodeOptions(); } },
+      autoform: { options() { return breakdown2.nodeOptions(); }, firstOption: () => __('(Select one)') },
     };
     return new SimpleSchema(obj);
   }

@@ -7,7 +7,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 
 import { __ } from '/imports/localization/i18n.js';
-import { onSuccess, handleError } from '/imports/ui/lib/errors.js';
+import { onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 import './vote-history.html';

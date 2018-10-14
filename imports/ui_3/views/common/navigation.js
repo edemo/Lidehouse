@@ -12,7 +12,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { feedbacksSchema } from '/imports/api/topics/feedbacks/feedbacks.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
 import './navigation.html';

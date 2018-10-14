@@ -1,7 +1,7 @@
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
+import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 // import { Agendas } from '/imports/api/agendas/agendas.js';
 
 export function agendaColumns() {

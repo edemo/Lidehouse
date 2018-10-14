@@ -3,10 +3,10 @@
 import { Template } from 'meteor/templating';
 import { Communities } from '/imports/api/communities/communities.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { displayError, displayMessage } from '/imports/ui/lib/errors.js';
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_2/modals/confirmation.js';
-import '/imports/ui_2/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/modals/autoform-edit.js';
 
 export function afCommunityInsertModal() {
   Modal.show('Autoform_edit', {

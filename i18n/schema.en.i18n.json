@@ -21,7 +21,7 @@
       "placeholder": "(eg. heart.jpg)"
     },
     "profile": {
-      "label": "Profile",
+      "label": "Profile  (This data is public to the members of your community)",
 
       "firstName": {
         "label": "First name",
@@ -31,9 +31,9 @@
         "label": "Last name",
         "placeholder": "(eg. Keaton)"
       },
-      "nick": {
-        "label": "Nick name",
-        "placeholder": "(eg. Mikey75)"
+      "publicEmail": {
+        "label": "Public email",
+        "placeholder": "(eg. Mikey75@cats.com)"
       },
       "address": {
         "label": "Contact address",
@@ -130,6 +130,15 @@
       "label": "Benefactor",
       "type": {
         "label": "Type"
+      }
+    },
+    "activeTime": {
+      "label": "Active (Can leave blank, if no time constraint)",
+      "begin": {
+        "label": "From"
+      },
+      "end": {
+        "label": "Until"
       }
     }
   },

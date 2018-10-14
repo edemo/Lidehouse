@@ -9,14 +9,14 @@ import { $ } from 'meteor/jquery';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
-import { onSuccess } from '/imports/ui/lib/errors.js';
+import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_2/modals/autoform-edit.js';
-import '/imports/ui_2/modals/confirmation.js';
+import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/confirmation.js';
 import './tickets-report.html';
 
 Template.Tickets_report.onCreated(function () {

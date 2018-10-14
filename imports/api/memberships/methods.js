@@ -98,7 +98,8 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, person: doc.person });
+    // This check is not good, if we have activePeriods (same guy can have same role at a different time)
+    // checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, person: doc.person });
     if (doc.role === 'owner') {
       const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
       const newTotal = total.add(doc.ownership.share);
@@ -133,7 +134,8 @@ export const update = new ValidatedMethod({
       const newTotal = total.subtract(doc.ownership.share).add(modifier.$set['ownership.share']);
       checkSanityOfTotalShare(doc.parcelId, newTotal);
     }
-    checkNotExists(Memberships, { communityId: doc.communityId, role: newrole, parcelId: doc.parcelId, person: newPerson });
+    // This check is not good, if we have activePeriods (same guy can have same role at a different time)
+    // checkNotExists(Memberships, { _id: { $ne: doc._id }, communityId: doc.communityId, role: newrole, parcelId: doc.parcelId, person: newPerson });
     checkUserDataConsistency(unflattenedModifier);
     Memberships.update({ _id }, modifier);
     connectUserIfPossible(_id);

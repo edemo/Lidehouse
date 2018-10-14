@@ -35,6 +35,7 @@
 
   "Not applicable": "Nem szükséges megadni",
   "by": "által",
+  "(Select one)": "(Válasszon a listából)",
 
   // roles
   "admin": "admin",
@@ -184,6 +185,15 @@
   "Create your own community": "Nem találta meg a keresett közösséget? Talán itt az ideje létrehozni! ",
   "Submit join request": "Csatlakozási kérelem beadása",
 
+  // topics
+  "The": "A",
+  "was modified, previous": "módosításra került, korábbi",
+  "Report this": "Hozzászólás jelentése",
+  "Hide comments from": "%s hozzászólásainak elrejtése",
+  "Unhide comments from": "%s hozzászólásainak mutatása",
+  "Content hidden by": "A tartalmat nem mutatjuk a(z) %s kérésére",
+  "you": "ön",
+
   // voting
   "choice": "választási lehetőség",
   "Choices": "Választási lehetőségek",
@@ -247,6 +257,9 @@
   "notYetVotedCastYourVoteOr": "adja le szavazatát, vagy",
   "setupYourDelegation": "állítson be meghatalmazást",
   "No delegations": "Nincsenek meghatalmazások",
+
+  // rooms
+  "noSelectedPerson": "Válasszon címzettet a jobb oldali panelen!",
 
   // tickets
   "Active tickets": "Aktív bejelentett hibák",
@@ -460,6 +473,8 @@
   "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra.",
   "This will not delete topics": "Ettől a benne lévő szavazások nem fognak törlődni.",
   "This will delete all contained files as well": "Ezzel egyúttal véglegesen letörli az összes benne lévő fájlt is",
+
+  "deletedUser": "Törölt felhasználó",
 
   // Email Templates
   "emailEnrollAccountSubject": "Meghívó a Honline használatára",

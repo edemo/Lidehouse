@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { __ } from '/imports/localization/i18n.js';
-import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
+import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
@@ -30,7 +30,7 @@ export function parcelColumns(permissions) {
     { data: 'lot', title: __('schemaParcels.lot.label') },
     { data: 'area', title: 'm2' },
     { data: 'share()', title: __('schemaParcels.units.label') },
-    { data: 'displayNames()', title: __('occupants') },
+    { data: 'displayActiveOccupants()', title: __('occupants') },
     { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
   ];
 }

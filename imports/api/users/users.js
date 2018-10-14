@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
 import 'meteor/accounts-base';
+import { __ } from '/imports/localization/i18n.js';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
@@ -54,7 +55,7 @@ export const PersonProfileSchema = new SimpleSchema({
 const PersonProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
-  nick: { type: String, optional: true },
+  publicEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
   address: { type: String, optional: true },
   phone: { type: String, max: 20, optional: true },
   bio: { type: String, optional: true },
@@ -64,7 +65,7 @@ const frequencyValues = ['never', 'weekly', 'daily', 'frequent'];
 const levelValues = ['never', 'high', 'medium', 'low'];
 
 const UserSettingsSchema = new SimpleSchema({
-  language: { type: String, allowedValues: ['en', 'hu'], optional: true },
+  language: { type: String, allowedValues: ['en', 'hu'], optional: true, autoform: { firstOption: false } },
   delegatee: { type: Boolean, defaultValue: true },
   notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: autoformOptions(frequencyValues, 'schemaUsers.settings.notiFrequency.') },
   notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notiLevel.') },
@@ -107,6 +108,9 @@ Meteor.users.schema = new SimpleSchema({
   'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
     // topicId -> { timestamp: lastseen comment's createdAt (if seen any), commentCounter }
 
+  blocked: { type: Array, defaultValue: [], autoform: { omit: true } }, // blocked users
+  'blocked.$': { type: String, regEx: SimpleSchema.RegEx.Id }, // userIds
+
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },
 
@@ -114,16 +118,23 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
+function currentUserLanguage() {
+  return Meteor.user().settings.language || 'en';
+}
+
 Meteor.users.helpers({
   safeUsername() {
     // If we have a username in db return that, otherwise generate one from her email address
     if (this.username) return this.username;
     const email = this.emails[0].address;
-    return email.substring(0, email.indexOf('@'));
+    const emailSplit = email.split('@');
+    if (emailSplit[1] === 'deleted.hu') return __('deletedUser');
+    const emailName = emailSplit[0];
+    return emailName;
   },
   fullName() {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
-      if (this.language() === 'hu') {
+      if (currentUserLanguage() === 'hu') {
         return this.profile.lastName + ' ' + this.profile.firstName;
       } else {
         return this.profile.firstName + ' ' + this.profile.lastName;
@@ -146,15 +157,12 @@ Meteor.users.helpers({
     this.emails[0].verified = false;
     // TODO: A verification email has to be sent to the user now
   },
-  language() {
-    return this.settings.language || 'en';
-  },
   // Memberships
   memberships(communityId) {
-    return Memberships.find({ 'person.userId': this._id, communityId });
+    return Memberships.find({ communityId, active: true, 'person.userId': this._id });
   },
   ownerships(communityId) {
-    return Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' });
+    return Memberships.find({ communityId, active: true, role: 'owner', 'person.userId': this._id });
   },
   ownedParcels(communityId) {
     const parcelIds = _.pluck(this.ownerships(communityId).fetch(), 'parcelId');
@@ -162,23 +170,23 @@ Meteor.users.helpers({
     const ownedParcels = parcels.filter(elem => elem);
     return ownedParcels;
   },
-  roles(communityId) {
-    return Memberships.find({ 'person.userId': this._id, communityId }).fetch().map(m => m.role);
+  activeRoles(communityId) {
+    return Memberships.find({ communityId, active: true, 'person.userId': this._id }).fetch().map(m => m.role);
   },
   communities() {
-    const memberships = Memberships.find({ 'person.userId': this._id }).fetch();
+    const memberships = Memberships.find({ active: true, 'person.userId': this._id }).fetch();
     const communityIds = _.pluck(memberships, 'communityId');
     const communities = Communities.find({ _id: { $in: communityIds } });
     // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
   isInCommunity(communityId) {
-    return !!Memberships.findOne({ 'person.userId': this._id, communityId });
+    return !!Memberships.findOne({ communityId, active: true, 'person.userId': this._id });
   },
   // Voting
   votingUnits(communityId) {
     let sum = 0;
-    Memberships.find({ 'person.userId': this._id, communityId, role: 'owner' }).forEach(m => (sum += m.votingUnits()));
+    Memberships.find({ communityId, active: true, role: 'owner', 'person.userId': this._id }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
   hasPermission(permissionName, communityId, object) {
@@ -187,7 +195,7 @@ Meteor.users.helpers({
     const rolesWithThePermission = permission.roles;
     if (_.contains(rolesWithThePermission, 'null')) return true;
     if (permission.allowAuthor && object && (object.userId === this._id)) return true;
-    const userHasTheseRoles = this.roles(communityId);
+    const userHasTheseRoles = this.activeRoles(communityId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
 //  console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
     return result;
@@ -220,6 +228,9 @@ Meteor.users.helpers({
       totalBalance += parcel.balance();
     });
     return totalBalance;
+  },
+  hasBlocked(userId) {
+    return _.contains(this.blocked, userId);
   },
 });
 

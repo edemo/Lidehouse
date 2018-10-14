@@ -1,6 +1,6 @@
 import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
-import { Render } from '/imports/ui_2/lib/datatable-renderers.js';
+import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { AccountSpecification } from './account-specification';
 

@@ -5,8 +5,8 @@ import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
-import { onSuccess, displayMessage } from '/imports/ui/lib/errors.js';
-import { afCommunityInsertModal } from '/imports/ui_2/pages/communities-edit.js';
+import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { afCommunityInsertModal } from '/imports/ui_3/views/components/communities-edit.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/users/users.js';
