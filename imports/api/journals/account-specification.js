@@ -19,6 +19,7 @@ if (Meteor.isClient) {
       const accountFamilies = Breakdowns.find({ communityId, sign: { $exists: true } });
       return accountFamilies.map((family) => { return { value: family._id, label: family.name }; });
     },
+    firstOption: () => __('(Select one)'),
   };
 
   chooseAccountNode = {
@@ -30,6 +31,7 @@ if (Meteor.isClient) {
       const breakdown = Breakdowns.findOne({ communityId, name: accountFamily });
       return breakdown.leafOptions();
     },
+    firstOption: () => __('(Select one)'),
   };
 
   chooseAccountGroup = {
@@ -38,6 +40,7 @@ if (Meteor.isClient) {
       const chartOfAccounts = Breakdowns.chartOfAccounts(communityId);
       return chartOfAccounts.nodeOptions();
     },
+    firstOption: () => __('(Select one)'),
   };
 
   chooseAccountLocalizer = {
@@ -46,6 +49,7 @@ if (Meteor.isClient) {
       const localizer = Breakdowns.findOne({ communityId, name: 'Localizer' });
       return localizer.nodeOptions();
     },
+    firstOption: () => __('(Select one)'),
   };
 
   chooseLeafAccountFromGroup = function (brk, group) {
