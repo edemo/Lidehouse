@@ -430,6 +430,8 @@
 
   "deletedUser": "Törölt felhasználó",
 
+  "welcomeMessage": "Üdvözöljük a Honline rendszerben. Kérjük állítsa be az alábbi adatait. Beállításait később is módosíthatja a profil oldalon, ahol megadhatja profil adatait is.",
+  
   // Email Templates
   "emailEnrollAccountSubject": "Meghívó a Honline használatára",
   "emailEnrollAccount": ["Üdvözöljük!\n",

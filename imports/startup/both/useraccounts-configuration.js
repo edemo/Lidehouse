@@ -47,6 +47,7 @@ let enrollRedirect = () => { debugAssert(false); };
 if (Meteor.isClient) {
   import { FlowRouter } from 'meteor/kadira:flow-router';
   import { connectMe } from '/imports/api/memberships/methods.js';
+  import { showWelcomeModal } from '/imports/ui_3/views/modals/welcome-modal.js';
 
   let signinRedirectRoute;
   let signinRedirectAction;
@@ -64,6 +65,7 @@ if (Meteor.isClient) {
   enrollRedirect = function () {
     connectMe.call();
     FlowRouter.go('App.home');
+    showWelcomeModal();
   };
 
   // Use this function if you need to perform some action that only logged in users can
