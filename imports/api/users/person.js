@@ -80,7 +80,7 @@ export class Person {
     if (this.userId) return Meteor.users.findOne(this.userId);
     return undefined;
   }
-  email() {
+  primaryEmail() {
     if (this.userId && this.user()) return this.user().emails[0].address;
     if (this.userEmail) return this.userEmail;
     return undefined;
@@ -92,7 +92,11 @@ export class Person {
   displayName() {
     if (this.idCard) return this.idCard.name;
     if (this.userId && this.user()) return this.user().displayName();
-    if (this.userEmail) return this.userEmail;
+    if (this.userEmail) {
+      const emailSplit = this.userEmail.split('@');
+      const emailName = emailSplit[0]; 
+      return `[${emailName}]`;
+    } 
     return undefined;
   }
   id() {

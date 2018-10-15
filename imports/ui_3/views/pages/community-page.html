@@ -9,8 +9,13 @@
                         <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
                         <td><span class="label label-plain">{{_ role}}</span></td>
                         <td>
-                            <i class="contact-type fa fa-envelope"></i>{{Person.email}}
-                            {{#if Person.user.profile.phone}}<br>
+                            {{#if Person.user.profile.publicEmail}}
+                            <i class="contact-type fa fa-at"></i>{{Person.user.profile.publicEmail}}
+                            {{/if}}
+                            {{#if and Person.user.profile.publicEmail Person.user.profile.phone}}
+                            <br>
+                            {{/if}}
+                            {{#if Person.user.profile.phone}}
                             <i class="contact-type fa fa-phone"></i>{{Person.user.profile.phone}}
                             {{/if}}
                         </td>
