@@ -84,6 +84,8 @@
 
   "deletedUser": "Deleted user",
 
+  "welcomeMessage": "Welcome on Honline. Please set the following information. You can also change your settings later on the profile page, where you can enter your profile information.",
+
   // Email Templates
   "emailEnrollAccountSubject": "Enrollment to Honline",
   "emailEnrollAccount": ["Hello, \n",

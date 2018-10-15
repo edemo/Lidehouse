@@ -1,10 +1,13 @@
+import { Meteor } from 'meteor/meteor';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { AutoForm } from 'meteor/aldeed:autoform';
+
+import { __ } from '/imports/localization/i18n.js';
 
 export function showWelcomeModal() {
   Modal.show('Autoform_edit', {
     id: 'af.welcome.update',
-    title: 'Üdvözöljük a honline rendszerben. Kérjük adja meg alább a beállításait, valamint a profil oldalon a megfelelő adatokat. Beállításait később is módosíthatja a profil oldalon.',
+    title: __('welcomeMessage'),
     collection: Meteor.users,
     omitFields: ['username', 'emails', 'profile', 'avatar'],
     doc: Meteor.user(), 
