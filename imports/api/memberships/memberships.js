@@ -54,7 +54,7 @@ Memberships.schema = new SimpleSchema({
 });
 
 if (Meteor.isServer) {
-  Memberships._ensureIndex({ communityId: 1, 'active.now': 1, role: 1 });
+  Memberships._ensureIndex({ communityId: 1, active: 1, role: 1 });
   Memberships._ensureIndex({ parcelId: 1 }, { sparse: true });
   Memberships._ensureIndex({ 'person.userId': 1 }, { sparse: true });
   Memberships._ensureIndex({ 'person.userEmail': 1 }, { sparse: true });
@@ -155,14 +155,11 @@ Memberships.deny({
 
 Memberships.modifiableFields = [
   'role',
-  'person.userEmail',
-  'person.userId',
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',
-  'active.from',
-  'active.to',
-];
+].concat(PersonSchema.fields)
+.concat(ActivePeriodSchema.fields);
 
 Factory.define('membership', Memberships, {
   communityId: () => Factory.get('community'),

@@ -59,36 +59,3 @@ Template.Communities_listing.events({
     afCommunityInsertModal();
   },
 });
-
-function onJoinParcelInsertSuccess(parcelId) {
-  // const parcelId = Parcels.find({ communityId }, { sort: { createdAt: -1 } }).fetch()[0]._id;
-  const communityId = Session.get('joiningCommunityId');
-  const communityName = Communities.findOne(communityId).name;
-
-  insertMembershipUnapproved.call({
-    person: { userId: Meteor.userId() },
-    communityId,
-    approved: false,
-    role: 'owner',
-    parcelId,
-    ownership: {
-      share: new Fraction(1),
-    },
-  }, (err, res) => {
-    if (err) displayError(err);
-    else displayMessage('success', 'Joined community', communityName);
-    FlowRouter.go('App.home');
-  });
-}
-
-AutoForm.addModalHooks('af.parcel.insert.unapproved');
-AutoForm.addHooks('af.parcel.insert.unapproved', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('joiningCommunityId');
-    doc.approved = false;
-    return doc;
-  },
-  onSuccess(formType, result) {
-    onJoinParcelInsertSuccess(result);
-  },
-});

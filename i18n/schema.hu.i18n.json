@@ -132,7 +132,7 @@
         "label": "Típus"
       }
     },
-    "active": {
+    "activeTime": {
       "label": "Aktív (Nem kötelező megadni, ha nincs időben korlátozva)",
       "begin": {
         "label": "Időponttól"

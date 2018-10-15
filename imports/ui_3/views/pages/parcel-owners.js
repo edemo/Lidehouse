@@ -54,7 +54,7 @@ Template.Parcel_owners_page.helpers({
     const parcelId = FlowRouter.getParam('_pid');
     const parcel = Parcels.findOne(parcelId);
     const communityId = parcel ? parcel.communityId : undefined;
-    return Memberships.find({ communityId, 'active.now': true, role: 'owner', parcelId, approved: true });
+    return Memberships.find({ communityId, active: true, role: 'owner', parcelId, approved: true });
   },
   unapprovedOwnerships() {
     const parcelId = FlowRouter.getParam('_pid');
@@ -66,7 +66,7 @@ Template.Parcel_owners_page.helpers({
     const parcelId = FlowRouter.getParam('_pid');
     const parcel = Parcels.findOne(parcelId);
     const communityId = parcel ? parcel.communityId : undefined;
-    return Memberships.find({ communityId, 'active.now': true, role: 'benefactor', parcelId, approved: true });
+    return Memberships.find({ communityId, active: true, role: 'benefactor', parcelId, approved: true });
   },
   unapprovedBenefactorships() {
     const parcelId = FlowRouter.getParam('_pid');
@@ -78,7 +78,7 @@ Template.Parcel_owners_page.helpers({
     const parcelId = FlowRouter.getParam('_pid');
     const parcel = Parcels.findOne(parcelId);
     const communityId = parcel ? parcel.communityId : undefined;
-    return Memberships.find({ communityId, 'active.now': true, role: { $in: ['owner', 'benefactor'] }, parcelId, approved: true });
+    return Memberships.find({ communityId, active: true, role: { $in: ['owner', 'benefactor'] }, parcelId, approved: true });
   },
   activeTabClass(index) {
     return index === 0 ? 'active' : '';
@@ -209,5 +209,11 @@ AutoForm.addHooks('af.benefactorship.insert', {
     doc.approved = true;
     doc.role = 'benefactor';
     return doc;
+  },
+});
+AutoForm.addHooks('af.benefactorship.update', {
+  formToModifier(modifier) {
+    modifier.$set.approved = true;
+    return modifier;
   },
 });

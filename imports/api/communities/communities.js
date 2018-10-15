@@ -42,10 +42,10 @@ Communities.helpers({
     return displayAddress(this);
   },
   admin() {
-    return Memberships.findOne({ communityId: this._id, 'active.now': true, role: 'admin' });
+    return Memberships.findOne({ communityId: this._id, active: true, role: 'admin' });
   },
   users() {
-    const users = Memberships.find({ communityId: this._id, 'active.now': true, 'person.userId': { $exists: true } }).map(m => m.user());
+    const users = Memberships.find({ communityId: this._id, active: true, 'person.userId': { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);
   },
   remove() {

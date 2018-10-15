@@ -28,6 +28,17 @@ export const PersonSchema = new SimpleSchema({
   idCard: { type: IdCardSchema, optional: true },
 });
 
+PersonSchema.fields = [
+  'person.userId',
+  'person.userEmail',
+  'person.idCard.type',
+  'person.idCard.name',
+  'person.idCard.address',
+  'person.idCard.identifier',
+  'person.idCard.mothersName',
+  'person.idCard.dob',
+];
+
 export class Person {
   constructor(data) {
 //    console.log("construct Person", data);

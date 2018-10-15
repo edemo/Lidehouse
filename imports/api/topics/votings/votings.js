@@ -122,7 +122,7 @@ Topics.helpers({
     const participation = { count: 0, units: 0 };
     const directVotes = this.voteCasts || {};
     const self = this;
-    const voterships = Memberships.find({ communityId: this.communityId, 'active.now': true, role: 'owner' }).fetch().filter(o => o.isRepresentor());
+    const voterships = Memberships.find({ communityId: this.communityId, active: true, role: 'owner' }).fetch().filter(o => o.isRepresentor());
     voterships.forEach((ownership) => {
       const ownerId = ownership.Person().id();
       const votePath = [ownerId];

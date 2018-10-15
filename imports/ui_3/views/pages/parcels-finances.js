@@ -39,7 +39,7 @@ Template.Parcels_finances.helpers({
   paymentsTableDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
-      const myParcelIds = Memberships.find({ communityId, 'active.now': true, role: 'owner', 'person.userId': Meteor.userId() }).map(m => m.parcel().serial.toString());
+      const myParcelIds = Memberships.find({ communityId, active: true, role: 'owner', 'person.userId': Meteor.userId() }).map(m => m.parcel().serial.toString());
       return Payments.find({ communityId, 'accounts.Könyvelés helye': { $in: myParcelIds }, phase: 'done' }).fetch();
     }
     return getTableData;
@@ -47,7 +47,7 @@ Template.Parcels_finances.helpers({
   billsTableDataFn() {
     function getTableData() {
       const communityId = Session.get('activeCommunityId');
-      const myParcelIds = Memberships.find({ communityId, 'active.now': true, role: 'owner', 'person.userId': Meteor.userId() }).map(m => m.parcel().serial.toString());
+      const myParcelIds = Memberships.find({ communityId, active: true, role: 'owner', 'person.userId': Meteor.userId() }).map(m => m.parcel().serial.toString());
 //      console.log('myParcelIds', myParcelIds);
       const myBills = Payments.find({ communityId, 'accounts.Könyvelés helye': { $in: myParcelIds }, phase: 'bill' }).fetch();
 //      console.log('myBills', myBills);
