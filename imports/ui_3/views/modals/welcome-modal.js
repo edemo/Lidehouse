@@ -7,7 +7,8 @@ import { __ } from '/imports/localization/i18n.js';
 export function showWelcomeModal() {
   Modal.show('Autoform_edit', {
     id: 'af.welcome.update',
-    title: __('welcomeMessage'),
+    title: __('welcome'),
+    description: __('welcomeMessage'),
     collection: Meteor.users,
     omitFields: ['username', 'emails', 'profile', 'avatar'],
     doc: Meteor.user(), 

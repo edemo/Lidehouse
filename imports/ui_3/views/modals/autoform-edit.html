@@ -9,6 +9,13 @@
           {{! Needed autoform context comes from the outer modal creator: id=, collection=, schema=, doc=, type=, meteormethod=, singleMethodArgument=true, template=}}
           {{#autoForm}}
           <div class="modal-body">
+            {{#if ../description}}
+            <div class="panel panel-default">
+            <div class="panel-body bg-warning">
+              {{_ ../description}}
+            </div>
+            </div>
+            {{/if}}
             {{> afQuickFields}}
           </div>
           <div class="modal-footer">
