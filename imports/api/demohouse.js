@@ -1328,7 +1328,7 @@ function capitalize(text) {
 export function insertLoginableUsersWithRoles(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const com = { en: 'com', hu: 'hu' }[lang];
-  if (Meteor.users.findOne({ 'emails.0.address': __(`guest@${demoOrTest}.${com}`) })) {
+  if (Meteor.users.findOne({ 'emails.0.address': `guest@${demoOrTest}.${com}` })) {
     return;
   }
   const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
