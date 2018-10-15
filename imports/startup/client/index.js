@@ -1,6 +1,6 @@
 /* eslint-disable import/imports-first */
 
-import './comtype-language-extensions.js';
+// import './comtype-language-extensions.js';  // This is imported in client/main.js
 import './language.js';
 import './routes.js';
 import '/imports/ui_3/helpers';
