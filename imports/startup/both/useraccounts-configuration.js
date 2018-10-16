@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
-
+import { ServiceConfiguration } from 'meteor/service-configuration';
 import { debugAssert } from '/imports/utils/assert.js';
 
 /*
@@ -40,6 +40,29 @@ AccountsTemplates.configure({
   // postSignUpHook(userId, info) { set some user settings here? },
 });
 
+// Configuring services
+
+ServiceConfiguration.configurations.upsert({
+  service: 'facebook',
+}, {
+  $set: {
+    appId: Meteor.settings.facebook.appId,
+    loginStyle: 'popup',
+    secret: Meteor.settings.facebook.secret,
+  },
+});
+
+ServiceConfiguration.configurations.upsert({
+  service: 'google',
+}, {
+  $set: {
+    clientId: Meteor.settings.google.clientId,
+    loginStyle: 'popup',
+    secret: Meteor.settings.google.client_secret,
+  },
+});
+
+// --- ROUTING ---
 // Here are some blank functions, so we can configure AccountsTemplates on server side without pulling in UI libraries
 let signinRedirect = () => { debugAssert(false); };
 let enrollRedirect = () => { debugAssert(false); };
