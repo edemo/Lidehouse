@@ -289,7 +289,7 @@ Template.Community_page.events({
       const maxSerial = Math.max.apply(Math, _.pluck(Parcels.find().fetch(), 'serial')) || 0;
       Meteor.call('parcels.insert.unapproved',
         { communityId, approved: false, serial: maxSerial + 1, units: 300, type: 'flat' },
-        (result) => { onJoinParcelInsertSuccess(result); },
+        (error, result) => { onJoinParcelInsertSuccess(result); },
       );
     });
   },
