@@ -2,6 +2,10 @@ import { Template } from 'meteor/templating';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 
+Template.registerHelper('and', function and(a, b) {
+    return a && b;
+});
+
 Template.registerHelper('equals', function equals(a, b) {
     return a == b;
 });
