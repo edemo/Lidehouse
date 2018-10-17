@@ -169,6 +169,26 @@ Template.Community_page.helpers({
   },
 });
 
+function onJoinParcelInsertSuccess(parcelId) {
+  // const parcelId = Parcels.find({ communityId }, { sort: { createdAt: -1 } }).fetch()[0]._id;
+  const communityId = FlowRouter.current().params._cid;
+  const communityName = Communities.findOne(communityId).name;
+  insertMembershipUnapproved.call({
+    person: { userId: Meteor.userId() },
+    communityId,
+    approved: false,
+    role: 'owner',
+    parcelId,
+    ownership: {
+      share: new Fraction(1),
+    },
+  }, (err, res) => {
+    if (err) displayError(err);
+    else displayMessage('success', 'Joined community', communityName);
+    FlowRouter.go('App.home');
+  });
+}
+
 Template.Community_page.events({
   // community events
   'click .community-section .js-edit'() {
@@ -255,7 +275,7 @@ Template.Community_page.events({
   },
   'click .js-join'(event) {
     AccountsTemplates.forceLogin(() => {
-      Modal.show('Autoform_edit', {
+/*      Modal.show('Autoform_edit', {
         title: 'pleaseSupplyParcelData',
         id: 'af.parcel.insert.unapproved',
         collection: Parcels,
@@ -264,6 +284,13 @@ Template.Community_page.events({
         meteormethod: 'parcels.insert.unapproved',
         template: 'bootstrap3-inline',
       });
+*/
+      const communityId = FlowRouter.current().params._cid;
+      const maxSerial = Math.max.apply(Math, _.pluck(Parcels.find().fetch(), 'serial')) || 0;
+      Meteor.call('parcels.insert.unapproved',
+        { communityId, approved: false, serial: maxSerial + 1, units: 300, type: 'flat' },
+        (result) => { onJoinParcelInsertSuccess(result); },
+      );
     });
   },
 });
@@ -292,26 +319,6 @@ AutoForm.addHooks('af.parcel.update', {
     return modifier;
   },
 });
-
-function onJoinParcelInsertSuccess(parcelId) {
-  // const parcelId = Parcels.find({ communityId }, { sort: { createdAt: -1 } }).fetch()[0]._id;
-  const communityId = FlowRouter.current().params._cid;
-  const communityName = Communities.findOne(communityId).name;
-  insertMembershipUnapproved.call({
-    person: { userId: Meteor.userId() },
-    communityId,
-    approved: false,
-    role: 'owner',
-    parcelId,
-    ownership: {
-      share: new Fraction(1),
-    },
-  }, (err, res) => {
-    if (err) displayError(err);
-    else displayMessage('success', 'Joined community', communityName);
-    FlowRouter.go('App.home');
-  });
-}
 
 AutoForm.addModalHooks('af.parcel.insert.unapproved');
 AutoForm.addHooks('af.parcel.insert.unapproved', {
