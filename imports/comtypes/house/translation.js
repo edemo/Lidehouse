@@ -66,6 +66,10 @@ export const HouseTranslation = {
         "label": "Voting share units",
         "placeholder": "(eg. 135)"
       },
+      "building": {
+        "label": "Building",
+        "placeholder": "(eg. F)"
+      },
       "floor": {
         "label": "Floor",
         "placeholder": "(eg. 4 or IV)"
@@ -185,6 +189,10 @@ export const HouseTranslation = {
       "units": {
         "label": "Tulajdoni hányad",
         "placeholder": "(pl. 135)"
+      },
+      "building": {
+        "label": "Épület",
+        "placeholder": "(pl. K)"
       },
       "floor": {
         "label": "Emelet",

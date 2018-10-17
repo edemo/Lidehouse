@@ -37,8 +37,9 @@ Parcels.schema = new SimpleSchema({
     },
   */
   // TODO: move these into the House package
-  floor: { type: String, optional: true },
-  number: { type: String, optional: true },
+  building: { type: String, max: 10, optional: true },
+  floor: { type: String, max: 10, optional: true },
+  number: { type: String, max: 10, optional: true },
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
   lot: { type: String, max: 100, optional: true },
   // cost calculation purposes
