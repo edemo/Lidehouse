@@ -55,7 +55,7 @@
                                             <ul class="nav nav-tabs">
                                                 <li class="active"><a href="#tab-1" data-toggle="tab" class="cap-first">{{_ 'comments'}}</a></li>
                                                 <li class=""><a href="#tab-2" data-toggle="tab">{{_ 'Activity'}}</a></li>
-                                                {{#if closed}}
+                                                {{#if or closed (currentUser.hasPermission 'vote.peek' communityId)}}
                                                 <li class=""><a href="#tab-3" data-toggle="tab">{{_ 'Casted votes'}}</a></li>
                                                 {{/if}}
                                             </ul>
@@ -71,7 +71,7 @@
                                             <div class="tab-pane" id="tab-2">
                                                 {{> Vote_history}}
                                             </div>
-                                            {{#if closed}}
+                                            {{#if or closed (currentUser.hasPermission 'vote.peek' communityId)}}
                                             <div class="tab-pane" id="tab-3">
                                                 {{> Vote_results}}
                                             </div>

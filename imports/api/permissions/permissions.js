@@ -32,6 +32,7 @@ export const Permissions = [
   { name: 'vote.cast',              roles: ['owner', 'delegate', 'manager'] },
   { name: 'vote.castForOthers',     roles: ['manager'] },
   { name: 'vote.close',             roles: ['manager'] },
+  { name: 'vote.peek',              roles: ['manager'] },
   { name: 'agendas.insert',         roles: ['manager'] },
   { name: 'agendas.update',         roles: ['manager'] },
   { name: 'agendas.remove',         roles: ['manager'] },

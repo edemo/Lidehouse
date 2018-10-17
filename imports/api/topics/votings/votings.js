@@ -47,12 +47,12 @@ const voteParticipationSchema = new SimpleSchema({
 
 const votingsExtensionSchema = new SimpleSchema({
   vote: { type: voteSchema, optional: true },
-  voteCasts: { type: Object, optional: true, blackbox: true },
-  voteCastsIndirect: { type: Object, optional: true, blackbox: true },
+  voteCasts: { type: Object, optional: true, defaultValue: {}, blackbox: true },
+  voteCastsIndirect: { type: Object, optional: true, defaultValue: {}, blackbox: true },
     // userId -> ranked array of choice indexes (or single entry in the array)
-  voteResults: { type: Object, optional: true, blackbox: true },
+  voteResults: { type: Object, optional: true, defaultValue: {}, blackbox: true },
     // ownershipId -> {}
-  voteSummary: { type: Object, optional: true, blackbox: true },
+  voteSummary: { type: Object, optional: true, defaultValue: {}, blackbox: true },
     // choiceIndex -> {}
   voteParticipation: {
     type: voteParticipationSchema,

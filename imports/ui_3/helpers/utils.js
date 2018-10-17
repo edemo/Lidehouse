@@ -6,6 +6,10 @@ Template.registerHelper('and', function and(a, b) {
     return a && b;
 });
 
+Template.registerHelper('or', function and(a, b) {
+    return a || b;
+});
+
 Template.registerHelper('equals', function equals(a, b) {
     return a == b;
 });
