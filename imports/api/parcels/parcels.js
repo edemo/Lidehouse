@@ -52,7 +52,7 @@ Parcels.schema = new SimpleSchema({
 
 Parcels.helpers({
   location() {  // TODO: move this to the house package
-    return `${this.floor}/${this.number}`;
+    return `${this.floor || '?'}/${this.number || '?'}`;
   },
   displayActiveOccupants() {
     let result = '';
@@ -68,7 +68,7 @@ Parcels.helpers({
     return result;
   },
   display() {
-    return `${this.serial}. ${__(this.type)} ${this.location()} (${this.lot})`;
+    return `${this.serial || '?'}. ${__(this.type)} ${this.location()} (${this.lot})`;
   },
   toString() {
     return this.location();
