@@ -13,7 +13,6 @@ export const insertUnapproved = new ValidatedMethod({
   validate: Parcels.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    if (doc.serial) checkNotExists(Parcels, { communityId: doc.communityId, serial: doc.serial });
     // This can be done without any permission check. Because its unapproved.
     if (doc.approved !== false) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to insert approved parcel', `doc: ${doc}`);

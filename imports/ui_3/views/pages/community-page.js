@@ -259,6 +259,7 @@ Template.Community_page.events({
         title: 'pleaseSupplyParcelData',
         id: 'af.parcel.insert.unapproved',
         collection: Parcels,
+        omitFields: ['serial'],
         type: 'method',
         meteormethod: 'parcels.insert.unapproved',
         template: 'bootstrap3-inline',
