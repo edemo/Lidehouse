@@ -336,6 +336,7 @@
   "This operation requires that you log in": "Ehhez a művelethez be kell jelentkeznie",
   "err_otherPartyNotAllowed": "Nincs engedélyezve a másik fél részéről",
   "Other party not allowed this activity": "A másik fél nem engedélyezte ezt a műveletet.",
+  "err_unableToRemove": "Az objektum nem törölhető",
   "No active": "Nincs aktív",
   "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon.",
 
@@ -372,6 +373,7 @@
   "Vote revoked": "Szavazat sikeresen visszavonva",
 
   "insert community successful": "Közösség sikeresen létrehozva.",
+  "delete community successful": "Közösség törölve",
   "insert parcel successful": "Albetét rögzítésre került",
   "update parcel successful": "Albetét adatai módosítva",
   "delete parcel successful": "Albetét törölve",
@@ -405,6 +407,7 @@
   "delete comment successful": "Hozzászólás törölve",
 
   "Are you sure you want to": "Biztos benne, hogy",
+  "delete community": "törli a közösséget a rendszerből",
   "delete parcel": "törli az albetétet",
   "delete ownership": "megszünteti a tulajdonviszonyt",
   "delete benefactorship": "megszünteti a használati viszonyt",
@@ -421,7 +424,7 @@
   "delete shareddoc": "törli a dokumentumot",
   "delete sharedfolder": "törli a mappát",
 
-  "It will disappear forever": "Ezzel végleg törlödni fog",
+  "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
   "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",
   "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra.",
@@ -429,6 +432,8 @@
   "This will delete all contained files as well": "Ezzel egyúttal véglegesen letörli az összes benne lévő fájlt is",
 
   "deletedUser": "Törölt felhasználó",
+
+  "Community cannot be deleted while it has active officers" : "A közösség nem törölhető amíg még vannak aktív tisztségviselői. Először törölnie kell ezeket.",
 
   "welcome": "Üdvözöljük a Honline rendszerben!",
   "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket persze később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",

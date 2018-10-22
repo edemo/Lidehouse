@@ -14,6 +14,7 @@ import { Fraction } from 'fractional';
 import { __ } from '/imports/localization/i18n.js';
 import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { remove as removeCommunity } from '/imports/api/communities/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
@@ -193,6 +194,13 @@ Template.Community_page.events({
   // community events
   'click .community-section .js-edit'() {
     afCommunityUpdateModal();
+  },
+  'click .community-section .js-delete'() {
+    const communityId = FlowRouter.current().params._cid;
+    Modal.confirmAndCall(removeCommunity, { _id: communityId }, {
+      message: 'It will disappear forever',
+      action: 'delete community',
+    });
   },
   // roleship events
   'click .roles-section .js-new'() {

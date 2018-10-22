@@ -74,19 +74,21 @@ export const deleteUser = new ValidatedMethod({
     if (_id !== this.userId) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
         `Method: user.delete, userId: ${this.userId}, _id: ${_id}`);
-    };
-    Meteor.users.remove(_id);
-    Meteor.users.insert({ 
-      _id, 
-      emails: [{ address: `${_id}@deleted.hu`, verified: true }], 
-      settings: { delegatee: false } 
-    });
-  } 
-});
+    }
+    // We are not removing the user document, because many references to it would be dangling
+    // Just blanking out the personal user data
     /* const findOneAndReplace = Meteor.wrapAsync(Meteor.users.rawCollection().findOneAndReplace);
-    findOneAndReplace({ _id: _id }, 
+    findOneAndReplace({ _id: _id },
     { 'emails': [{ 'address': `deleteduser@${_id}.hu` }] }
     );*/
+    Meteor.users.remove(_id);
+    Meteor.users.insert({
+      _id,
+      emails: [{ address: `${_id}@deleted.hu`, verified: true }],
+      settings: { delegatee: false }
+    });
+  },
+});
 
 let updateCall;
 if (Meteor.isClient) {

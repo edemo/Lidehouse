@@ -72,11 +72,14 @@
                 <div class="ibox community-section float-e-margins">
                     <div class="ibox-title">
                         <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
-                        {{#if userHasPermission 'communities.update' communityId}}
-                        <div class="pull-right">
+                        <div class="pull-right btn-group">
+                          {{#if userHasPermission 'communities.update' communityId}}
                             <button class="btn-white btn btn-xs js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                          {{/if}}
+                          {{#if userHasPermission 'communities.remove' communityId}}
+                            <button class="btn-white btn btn-xs js-delete"><i class="fa fa-pencil"></i> {{_ 'delete'}}</button>
+                          {{/if}}
                         </div>
-                        {{/if}}
                     </div>
                     <div>
                         <div class="ibox-content no-padding border-left-right">

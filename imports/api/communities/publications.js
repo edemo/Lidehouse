@@ -2,7 +2,7 @@
 
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { nullUser } from '../users/users.js';
+import { leaderRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from './communities.js';
 import { Memberships } from '../memberships/memberships';
 
@@ -26,7 +26,7 @@ function communityPublication(userId, _id) {
 
     children: [{
       find(community) {
-        return Memberships.find({ communityId: community._id, active: true, role: { $in: ['admin', 'manager'] } });
+        return Memberships.find({ communityId: community._id, active: true, role: { $in: leaderRoles } });
       },
 
       children: [{
