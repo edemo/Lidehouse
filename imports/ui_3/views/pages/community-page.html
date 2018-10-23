@@ -72,14 +72,9 @@
                 <div class="ibox community-section float-e-margins">
                     <div class="ibox-title">
                         <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
-                        <div class="pull-right btn-group">
-                          {{#if userHasPermission 'communities.update' communityId}}
-                            <button class="btn-white btn btn-xs js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                          {{/if}}
-                          {{#if userHasPermission 'communities.remove' communityId}}
-                            <button class="btn-white btn btn-xs js-delete"><i class="fa fa-pencil"></i> {{_ 'delete'}}</button>
-                          {{/if}}
-                        </div>
+                        {{#if userHasPermission 'communities.update' communityId}}
+                          <button class="btn-white btn btn-xs js-edit pull-right"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                        {{/if}}
                     </div>
                     <div>
                         <div class="ibox-content no-padding border-left-right">
@@ -107,6 +102,9 @@
                                 {{_ 'Submit join request'}}
                             </button>
                             {{/unless}}
+                            {{#if userHasPermission 'communities.remove' communityId}}
+                              <button class="btn btn-danger btn-block btn-outline js-delete"><!--i class="fa fa-trash"></i--> {{_ 'Delete community'}}</button>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
