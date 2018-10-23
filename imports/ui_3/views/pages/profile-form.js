@@ -6,7 +6,10 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { remove as removeUser } from '/imports/api/users/methods.js';
+import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/api/users/users.js';
 import './profile-form.html';
 
@@ -26,6 +29,15 @@ Template.Profile_form.helpers({
       { email: { type: String, regEx: SimpleSchema.RegEx.Email } },
       Meteor.users.simpleSchema(),
     ]);
+  },
+});
+
+Template.Profile_form.events({
+  'click .js-delete'(event, instance) {
+    Modal.confirmAndCall(removeUser, { _id: Meteor.userId() }, {
+      action: 'delete user',
+      message: 'deleteUserWarning',
+    });
   },
 });
 

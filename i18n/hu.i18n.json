@@ -133,6 +133,7 @@
   "view": "Megtekintés",
   "edit": "Szerkesztés",
   "delete": "Törlés",
+  "Delete user account": "Felhasználói fiók törlése",
   "remove": "Eltávolítás",
   "save": "Mentés",
   "send": "Elküldés",
@@ -372,6 +373,7 @@
   "Vote casted": "Szavazat sikeresen leadva",
   "Vote revoked": "Szavazat sikeresen visszavonva",
 
+  "delete user successful": "Felhasználói fiók törölve",
   "insert community successful": "Közösség sikeresen létrehozva.",
   "delete community successful": "Közösség törölve",
   "insert parcel successful": "Albetét rögzítésre került",
@@ -407,6 +409,7 @@
   "delete comment successful": "Hozzászólás törölve",
 
   "Are you sure you want to": "Biztos benne, hogy",
+  "delete user": "véglegesen törli a felhasználói fiókját a rendszerből",
   "delete community": "törli a közösséget a rendszerből",
   "delete parcel": "törli az albetétet",
   "delete ownership": "megszünteti a tulajdonviszonyt",
@@ -432,7 +435,10 @@
   "This will delete all contained files as well": "Ezzel egyúttal véglegesen letörli az összes benne lévő fájlt is",
 
   "deletedUser": "Törölt felhasználó",
-
+  "deleteUserWarning": ["FIGYELEM: Ön ezzel végérvényesen elveszíti a felhasználói fiókját! <br /><br />",
+    "Tájékoztatjuk, hogy a közösségében történt megnyilvánulásai ezzel nem törlődnek. ",
+    "Azok a közösség tulajdonát képezik, és törlésüket a közösség rendszergazdájától tudja kérni. <br /><br />",
+    "Olvassa át <a href='privacy'>Adatvédelmi Tájékóztatónkat</a>"],
   "Community cannot be deleted while it has active officers" : "A közösség nem törölhető amíg még vannak aktív tisztségviselői. Először törölnie kell ezeket.",
 
   "welcome": "Üdvözöljük a Honline rendszerben!",
