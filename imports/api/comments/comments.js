@@ -33,9 +33,8 @@ Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
   text: { type: String, optional: true },
-
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id,
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true,
     autoValue() {
       const topicId = this.field('topicId').value;
       const topic = Topics.find(topicId);
@@ -65,12 +64,6 @@ Comments.helpers({
 
 Comments.helpers(likesHelpers);
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Comments.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
 
 // TODO This factory has a name - do we have a code style for this?
 //   - usually I've used the singular, sometimes you have more than one though, like
