@@ -439,7 +439,7 @@
   "deleteUserWarning": ["FIGYELEM: Ön ezzel végérvényesen elveszíti a felhasználói fiókját! <br /><br />",
     "Tájékoztatjuk, hogy a közösségében történt megnyilvánulásai ezzel nem törlődnek. ",
     "Azok a közösség tulajdonát képezik, és törlésüket a közösség rendszergazdájától tudja kérni. <br /><br />",
-    "Olvassa át <a href='privacy'>Adatvédelmi Tájékóztatónkat</a>"],
+    "Olvassa át <a href='privacy' target='blank'>Adatvédelmi Tájékoztatónkat</a>"],
   "Community cannot be deleted while it has active officers" : "A közösség nem törölhető amíg még vannak aktív tisztségviselői. Először törölnie kell ezeket.",
 
   "welcome": "Üdvözöljük a Honline rendszerben!",

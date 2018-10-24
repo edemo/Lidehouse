@@ -25,6 +25,7 @@ import '/imports/ui_3/views/pages/parcels-finances.js';
 import '/imports/ui_3/views/pages/community-finances.js';
 import '/imports/ui_3/views/pages/shareddoc-store.js';
 import '/imports/ui_3/views/pages/topic-show.js';
+import '/imports/ui_3/views/pages/privacy.js';
 
 import '/imports/ui_3/views/layouts/main.js';
 import '/imports/ui_3/views/layouts/blank.js';
@@ -55,6 +56,13 @@ FlowRouter.route('/demo/:_lang', {
   name: 'Demo.login',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Demo_login' });
+  },
+});
+
+FlowRouter.route('/privacy', {
+  name: 'Privacy',
+  action() {
+    BlazeLayout.render('Blank_layout', { content: 'Privacy_page' });
   },
 });
 
