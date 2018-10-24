@@ -441,7 +441,9 @@
     "Azok a közösség tulajdonát képezik, és törlésüket a közösség rendszergazdájától tudja kérni. <br /><br />",
     "Olvassa át <a href='privacy' target='blank'>Adatvédelmi Tájékoztatónkat</a>"],
   "Community cannot be deleted while it has active officers" : "A közösség nem törölhető amíg még vannak aktív tisztségviselői. Először törölnie kell ezeket.",
-
+  "Parcel cannot be deleted while it has active owners": "Az albetét nem törölhető, amíg aktív tulajdonosai vannak. Előszőr a tulajdonosokat kell törölnie.",
+  "Admin cannot be deleted if no other admin is appointed.": "Az adminisztrátor nem törölhető, amíg nincs másik kijelölve.",
+  
   "welcome": "Üdvözöljük a Honline rendszerben!",
   "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket persze később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",
   
