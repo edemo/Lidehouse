@@ -9,10 +9,10 @@ Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, rend
   const notification = Memberships.findOne({ parcelId, approved: false }) ? 'text-danger' : '';
 
   let html = '';
-  html += `<button data-id=${cellData} title=${__('assign')} class="btn btn-white btn-xs js-assign">`;
   html += `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
+  html += `<button data-id=${cellData} title=${__('assign')} class="btn btn-white btn-xs js-assign">`;
   html += `<i class="fa fa-user ${notification}"></i>`;
-  html += `</a></button>`;
+  html += `</button></a>`;
   return html;
 };
 
