@@ -67,13 +67,6 @@ Meteor.startup(function attach() {
   Communities.simpleSchema().i18n('schemaCommunities');
 });
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Communities.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
-
 Factory.define('community', Communities, {
   name: () => faker.lorem.sentence(),
   totalunits: 10000,

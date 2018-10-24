@@ -46,9 +46,3 @@ Agendas.attachSchema(Timestamps);
 Meteor.startup(function attach() {
   Agendas.simpleSchema().i18n('schemaAgendas');
 });
-
-Agendas.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});

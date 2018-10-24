@@ -145,13 +145,6 @@ Meteor.startup(function attach() {
   Topics.schema.i18n('schemaTopics');
 });
 
-// Deny all client-side updates since we will be using methods to manage this collection
-Topics.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
-
 // This represents the keys from Topics objects that should be published to the client.
 // If we add secret properties to Topic objects, don't list them here to keep them private to the server.
 Topics.publicFields = {

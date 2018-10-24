@@ -118,10 +118,3 @@ Parcels.attachSchema(Timestamps);
 Meteor.startup(function attach() {
   Parcels.simpleSchema().i18n('schemaParcels');
 });
-
-// Deny all client-side updates since we will be using methods to manage this collection
-Parcels.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});
