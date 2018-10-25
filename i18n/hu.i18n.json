@@ -408,6 +408,7 @@
   "delete sharedfolder successful": "Mappa véglegesen törölve",
   "delete shareddoc successful": "Dokumentum véglegesen törölve",
   "delete comment successful": "Hozzászólás törölve",
+  "close vote successful": "Szavazás lezárva",
 
   "Are you sure you want to": "Biztos benne, hogy",
   "delete user": "véglegesen törli a felhasználói fiókját a rendszerből",
@@ -427,6 +428,7 @@
   "delete agenda": "törli a közgyűlést",
   "delete shareddoc": "törli a dokumentumot",
   "delete sharedfolder": "törli a mappát",
+  "close vote": "lezárja a szavazást",
 
   "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
@@ -434,6 +436,7 @@
   "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra.",
   "This will not delete topics": "Ettől a benne lévő szavazások nem fognak törlődni.",
   "This will delete all contained files as well": "Ezzel egyúttal véglegesen letörli az összes benne lévő fájlt is",
+  "The planned date of closure was ": "A lezárás eredetileg tervezett időpontja ",
 
   "deletedUser": "Törölt felhasználó",
   "deleteUserWarning": ["FIGYELEM: Ön ezzel végérvényesen elveszíti a felhasználói fiókját! <br /><br />",
