@@ -86,6 +86,7 @@
                                     <span class="label badge badge-danger">{{unapprovedOwnerships.count}}</span>
                                     {{/if}}
                                 </a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-o3"><i class="fa fa-archive"></i> {{_ 'Archived'}}</a></li>
                             </ul>
                             {{/if}}
                             <div class="tab-content">
@@ -95,6 +96,9 @@
                                 <div id="tab-o2" class="tab-pane">
                                     {{> Ownership_table rows=unapprovedOwnerships}}
                                 </div>
+                                <div id="tab-o3" class="tab-pane">
+                                    {{> Ownership_table rows=archivedOwnerships}}
+                                </div>    
                             </div>
                         </div>
                     </div>
@@ -122,6 +126,7 @@
                                     <span class="label badge badge-danger">{{unapprovedBenefactorships.count}}</span>
                                     {{/if}}
                                 </a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-b3"><i class="fa fa-archive"></i> {{_ 'Archived'}}</a></li>
                             </ul>
                             {{/if}}
                             <div class="tab-content">
@@ -130,6 +135,9 @@
                                 </div>
                                 <div id="tab-b2" class="tab-pane">
                                     {{> Benefactorship_table rows=unapprovedBenefactorships}}
+                                </div>
+                                <div id="tab-b3" class="tab-pane">
+                                    {{> Benefactorship_table rows=archivedBenefactorships}}
                                 </div>
                             </div>
                         </div>
