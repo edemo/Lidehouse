@@ -71,7 +71,12 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Parcels, _id);
     checkPermissions(this.userId, 'parcels.remove', doc.communityId);
-
+    // Parcel cannot be deleted while it has any active owners 
+    const activeOwners = Memberships.find({ parcelId: _id, role: 'owner', active: true });
+    if (activeOwners.count() > 0) {
+      throw new Meteor.Error('err_unableToRemove', 'Parcel cannot be deleted while it has active owners',
+       `Found: {${activeOwners.count()}}`);
+    }
     Parcels.remove(_id);
     Memberships.remove({ parcelId: _id });
   },
