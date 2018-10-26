@@ -20,10 +20,10 @@
           <button class="dropdown-toggle drop-unfoll glyphicon glyphicon-option-horizontal" type="button" id="drop_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           </button>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="drop_{{_id}}">
-            {{#if userHasPermission 'vote.close' this.communityId this}}
+            {{#if and (userHasPermission 'vote.close' this.communityId this) (equals this.closed false)}}
             <li><a class="js-close" href=""><i class="fa fa-legal"></i> {{_ 'close topic'}}</a></li>
             {{/if}}
-            {{#if userHasPermission 'vote.update' this.communityId this}}
+            {{#if and (userHasPermission 'vote.update' this.communityId this) (equals this.closed false) }}
             <li><a class="js-edit" href=""><i class="fa fa-pencil"></i> {{_ 'edit'}}</a></li>
             {{/if}}
             {{#if userHasPermission 'vote.remove' this.communityId this}}

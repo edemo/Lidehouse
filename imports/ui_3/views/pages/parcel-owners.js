@@ -62,6 +62,12 @@ Template.Parcel_owners_page.helpers({
     const communityId = parcel ? parcel.communityId : undefined;
     return Memberships.find({ communityId, role: 'owner', parcelId, approved: false });
   },
+  archivedOwnerships() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    const communityId = parcel ? parcel.communityId : undefined;
+    return Memberships.find({ communityId, role: 'owner', parcelId, active: false });
+  },
   benefactorships() {
     const parcelId = FlowRouter.getParam('_pid');
     const parcel = Parcels.findOne(parcelId);
@@ -73,6 +79,12 @@ Template.Parcel_owners_page.helpers({
     const parcel = Parcels.findOne(parcelId);
     const communityId = parcel ? parcel.communityId : undefined;
     return Memberships.find({ communityId, role: 'benefactor', parcelId, approved: false });
+  },
+  archivedBenefactorships() {
+    const parcelId = FlowRouter.getParam('_pid');
+    const parcel = Parcels.findOne(parcelId);
+    const communityId = parcel ? parcel.communityId : undefined;
+    return Memberships.find({ communityId, role: 'benefactor', parcelId, active: false });
   },
   members() {
     const parcelId = FlowRouter.getParam('_pid');
