@@ -93,7 +93,7 @@
       "idCard": {
         "label" : "Person's verified data",
         "type": {
-          "label": "Entity type"
+          "label": "Person type"
         },
         "name": {
           "label": "Name",
@@ -135,10 +135,12 @@
     "activeTime": {
       "label": "Active (Can leave blank, if no time constraint)",
       "begin": {
-        "label": "From"
+        "label": "From",
+        "placeholder": "yyyy-mm-dd"
       },
       "end": {
-        "label": "Until"
+        "label": "Until",
+        "placeholder": "yyyy-mm-dd"
       }
     }
   },
