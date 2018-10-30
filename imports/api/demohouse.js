@@ -298,7 +298,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       firstName: __('demo.manager.firstName'), 
       publicEmail: `manager@${demoOrTest}.${com}`,
       phone: '06 60 555 4321',
-      bio: __('demo.manager.profile.bio'), 
+      bio: __('demo.manager.bio'), 
      } 
   });
   Meteor.users.update({ _id: demoManagerId }, 

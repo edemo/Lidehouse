@@ -3,6 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Accounts } from 'meteor/accounts-base';
 
+import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { toggleElementInArray } from '/imports/api/utils.js';
 
@@ -40,10 +41,12 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
+    const doc = checkExists(Meteor.users, _id);
     if (_id !== this.userId) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
         `Method: users.update, userId: ${this.userId}, _id: ${_id}`);
     }
+    checkModifier(doc, modifier, ['emails', 'status', 'services', 'heartbeat'], true);
 
     Meteor.users.update({ _id }, modifier);
   },

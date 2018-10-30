@@ -98,11 +98,12 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
-  profile: { type: PersonProfileSchema, optional: true },
   avatar: { type: String, /* regEx: SimpleSchema.RegEx.Url,*/ defaultValue: defaultAvatar, optional: true },
+  profile: { type: PersonProfileSchema, optional: true },
+  settings: { type: UserSettingsSchema },
+
   status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', optional: true, autoform: { omit: true } },
 
-  settings: { type: UserSettingsSchema },
   // lastSeens.0 is what was seen on screen, lastSeens.1 is to which the email notification was sent out
   lastSeens: { type: Array, autoValue() { if (this.isInsert) return [{}, {}]; }, autoform: { omit: true } },
   'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
