@@ -195,6 +195,7 @@
   "Unhide comments from": "%s hozzászólásainak mutatása",
   "Content hidden by": "A tartalmat nem mutatjuk a(z) %s kérésére",
   "you": "ön",
+  "Do show content": "Mégis mutassuk",
 
   // voting
   "choice": "választási lehetőség",
