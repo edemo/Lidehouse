@@ -108,6 +108,7 @@ mongo@1.4.2
 mongo-dev-server@1.1.0
 mongo-id@1.0.6
 msavin:mongol@2.0.1
+msavin:sjobs@3.0.6
 npm-bcrypt@0.9.3
 npm-mongo@2.2.33
 numeral:languages@1.5.3

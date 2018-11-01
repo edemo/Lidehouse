@@ -137,6 +137,9 @@ export const update = new ValidatedMethod({
     // This check is not good, if we have activePeriods (same guy can have same role at a different time)
     // checkNotExists(Memberships, { _id: { $ne: doc._id }, communityId: doc.communityId, role: newrole, parcelId: doc.parcelId, person: newPerson });
     checkUserDataConsistency(unflattenedModifier);
+    /* if (doc.person.userId && doc.person.userId !== unflattenedModifier.person.userId) {
+      throw new Meteor.Error('Not allowed to modify user connected to the membership. Archive this membership and create a new one for the new user.');
+    } */
     Memberships.update({ _id }, modifier);
     connectUserIfPossible(_id);
   },

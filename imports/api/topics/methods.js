@@ -5,6 +5,8 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
+import { Jobs } from 'meteor/msavin:sjobs';
+
 import { checkExists, checkNotExists, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -21,8 +23,15 @@ export const insert = new ValidatedMethod({
   run(doc) {
     if (doc._id) checkNotExists(Topics, doc._id);
     checkTopicPermissions(this.userId, 'insert', doc);
-    return Topics.insert(doc);
-  },
+    const topicId = Topics.insert(doc);  
+    if (doc.category === 'vote') {
+      if (Meteor.isServer) { 
+        const date = doc.vote.closesAt;
+        Jobs.run('autoCloseVote', topicId, { date });
+      };
+    };
+    return topicId;
+  }
 });
 
 export const update = new ValidatedMethod({
