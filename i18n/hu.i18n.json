@@ -410,6 +410,7 @@
   "delete sharedfolder successful": "Mappa véglegesen törölve",
   "delete shareddoc successful": "Dokumentum véglegesen törölve",
   "delete comment successful": "Hozzászólás törölve",
+  "insert vote successful": "Szavazás létrehozva",
   "close vote successful": "Szavazás lezárva",
 
   "Are you sure you want to": "Biztos benne, hogy",
