@@ -121,6 +121,7 @@ Template.Message_send.events({
         userId: Meteor.userId(),
         participantIds: [Meteor.userId(), Session.get('messengerPersonId')],
         category: 'room',
+        title: 'private chat',
       }, onSuccess((res) => {
         roomId = res;
         room = Topics.findOne(roomId);

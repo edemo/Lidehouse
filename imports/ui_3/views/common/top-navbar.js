@@ -25,10 +25,10 @@ Template.Top_navbar.helpers({
         if (!Meteor.user()) { return []; }
         return Meteor.user().communities();
     },
-    countNotifications(category) {
+    countNotifications() {
         const communityId = Session.get('activeCommunityId');
         let count = 0;
-        const topics = Topics.find({ communityId, category });
+        const topics = Topics.find({ communityId, category: 'room', title: 'private chat' });
         topics.map(t => {
           const userId = Meteor.userId();
           count += t.needsAttention(userId);

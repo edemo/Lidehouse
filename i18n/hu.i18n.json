@@ -77,6 +77,11 @@
   "Houses": "Házak",
   "About": "Rólunk",
   "Action buttons": "Akció gombok",
+  
+  "Technical support": "Technikai segítségnyújtás",
+  "We are here to answer your questions": "Ha bármi kérdése van a rendszer használatával kapcsolatban, örömmel állunk rendelkezésére.",
+  "How may I help you": "Miben segíthetek önnek",
+  "your question": "kérdés, észrevétel",
 
   // api
   "name": "név",

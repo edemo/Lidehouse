@@ -9,6 +9,7 @@ import '../common/navigation.js';
 import '../common/top-navbar.js';
 import '../common/page-heading.js';
 import '../common/footer.js';
+import '../common/tech-chat.js';
 import '../common/right-sidebar.js';
 import '../common/connection-issue.js';
 import './main.html';

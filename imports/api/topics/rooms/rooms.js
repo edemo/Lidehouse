@@ -10,3 +10,7 @@ Topics.messengerRoom = function messengerRoom(userId, otherUserId) {
   debugAssert(userId && otherUserId);
   return Topics.findOne({ category: 'room', participantIds: { $size: 2, $all: [userId, otherUserId] } });
 };
+
+Topics.techSupportRoom = function techSupportRoom(userId) {
+  return Topics.findOne({ category: 'room', title: 'tech support', participantIds: userId });
+};
