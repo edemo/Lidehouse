@@ -4,15 +4,15 @@ import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Rooms } from '/imports/api/topics/rooms/rooms.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import '/imports/api/topics/rooms/rooms.js';
 
 import './tech-chat.html';
 
 Template.Tech_chat.onCreated(function tehcChatOnCreated() {
   this.autorun(() => {
-    const room = Topics.techSupportRoom(Meteor.userId());
+    const room = Rooms.techSupportRoom(Meteor.userId());
     if (room) {
       this.subscribe('comments.onTopic', { topicId: room._id });
     }
@@ -29,17 +29,17 @@ Template.Tech_chat.onRendered(function() {
 
 Template.Tech_chat.helpers({
   messages() {
-    const room = Topics.techSupportRoom(Meteor.userId());
+    const room = Rooms.techSupportRoom(Meteor.userId());
     if (!room) return [];
     return Comments.find({ topicId: room._id });
   },
   hasUnreadMessages() {
-    const room = Topics.techSupportRoom(Meteor.userId());
+    const room = Rooms.techSupportRoom(Meteor.userId());
     if (!room) return false;
     return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES) > 0;
   },
   unreadMessagesCount() {
-    const room = Topics.techSupportRoom(Meteor.userId());
+    const room = Rooms.techSupportRoom(Meteor.userId());
     if (!room) return 0;
     return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES);
   },
@@ -55,7 +55,7 @@ Template.Tech_chat.events({
     event.preventDefault();
     $(event.target).closest('a').children().toggleClass('fa-question').toggleClass('fa-times');
     $('.small-chat-box').toggleClass('active');
-    const room = Topics.techSupportRoom(Meteor.userId());
+    const room = Rooms.techSupportRoom(Meteor.userId());
     if (room) Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY_EYES);
   },
   'click .small-chat-box .js-send'(event, instance) {
@@ -63,7 +63,7 @@ Template.Tech_chat.events({
     const text = textarea.value;
     const communityId = Session.get('activeCommunityId');
     const community = Communities.findOne(communityId);
-    let room = Topics.techSupportRoom(Meteor.userId());
+    let room = Rooms.techSupportRoom(Meteor.userId());
     let roomId;
     const insertMessage = () => {
       Meteor.call('comments.insert', {

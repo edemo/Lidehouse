@@ -27,14 +27,14 @@ Template.Top_navbar.helpers({
     },
     countNotifications() {
         const communityId = Session.get('activeCommunityId');
+        const userId = Meteor.userId();
         let count = 0;
-        const topics = Topics.find({ communityId, category: 'room', title: 'private chat' });
-        topics.map(t => {
-          const userId = Meteor.userId();
-          count += t.needsAttention(userId);
+        const rooms = Topics.find({ communityId, category: 'room', title: 'private chat' });
+        rooms.map(room => {
+          count += room.unseenCommentsBy(userId, Meteor.users.SEEN_BY_EYES);
         });
         return count;
-      },
+    },
 });
 
 Template.Top_navbar.events({

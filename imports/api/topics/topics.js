@@ -88,6 +88,9 @@ Topics.helpers({
       case 'room':
         if (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0) return 1;
         break;
+      case 'forum':
+        if (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0) return 1;
+        break;
       case 'vote':
         if (!this.hasVotedIndirect(userId)) return 1;
         break;
