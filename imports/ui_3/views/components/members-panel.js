@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { _ } from 'meteor/underscore';
 
 import { leaderRoles } from '/imports/api/permissions/roles.js';
@@ -37,7 +38,7 @@ Template.Members_panel.helpers({
     }
     nonManagers = _.uniq(nonManagers, false, m => m.person.userId);
     nonManagers = _.sortBy(nonManagers, m => {
-      const room = Rooms.privateChatRoom(Meteor.userId(), m.person.userId);
+      const room = Rooms.getRoom(Session.get('roomMode'), m.person.userId);
       return room ? -1 * room.updatedAt : 0;
     });
     return nonManagers;
@@ -57,8 +58,8 @@ Template.Member_slot.onCreated(function onMsgPersonCreated() {
 
 Template.Member_slot.helpers({
   selectedClass() {
-    const room = Rooms.privateChatRoom(this.person.userId, Meteor.userId());
-    if (room && _.contains(room.participantIds, this.person.userId)) return 'selected';
+    const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
+    if (room && room._id === FlowRouter.getParam('_rid')) return 'selected';
     return '';
   },
   /* statusCircleColor(status) {
@@ -85,19 +86,19 @@ Template.Member_slot.helpers({
     return params;
   },
   hasUnreadMessages() {
-    const room = Rooms.privateChatRoom(this.person.userId, Meteor.userId());
+    const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
     if (!room) return false;
     return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES) > 0;
   },
   unreadMessagesCount() {
-    const room = Rooms.privateChatRoom(this.person.userId, Meteor.userId());
+    const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
     return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES);
   },
 });
 
 Template.Member_slot.events({
   'click .member-slot'(event, instance) {
-    Rooms.goToPrivateRoomWith(instance.data.person.userId);
+    Rooms.goToRoom(Session.get('roomMode'), instance.data.person.userId);
     $('#right-sidebar').toggleClass('sidebar-open');
     if ($(window).width() > 768) $('.js-focused').focus();
   },

@@ -17,7 +17,9 @@
             <!-- End Page wrapper-->
             
             <div>
+                {{#unless userHasPermission 'do.techsupport' (fromSession 'activeCommunityId')}}
                 {{> Tech_chat}}
+                {{/unless}}
             </div>
 
             <!-- Right Sidebar -->

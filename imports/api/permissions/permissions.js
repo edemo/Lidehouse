@@ -69,6 +69,7 @@ export const Permissions = [
   { name: 'payments.listing',       roles: ['accountant', 'treasurer', 'overseer'] },
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
+  { name: 'do.techsupport',         roles: ['admin'] },
 ];
 
 /* what if more compacted...

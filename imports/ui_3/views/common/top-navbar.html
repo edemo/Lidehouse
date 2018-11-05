@@ -79,13 +79,23 @@
                     </ul>
                 </li>
                 <li>
-                    <a class="right-sidebar-toggle count-info" href="">
+                    <a id="privatechat" class="right-sidebar-toggle count-info" href="">
                         <i class="fa fa-envelope"></i>  
-                        {{#if countNotifications 'room'}}
-                        <span class="label badge badge-danger">{{countNotifications 'room'}}</span>
+                        {{#if countNotifications 'private chat'}}
+                        <span class="label badge badge-danger">{{countNotifications 'private chat'}}</span>
+                        {{/if}}  
+                    </a>                    
+                </li>
+                {{#if userHasPermission 'do.techsupport' (fromSession 'activeCommunityId')}}
+                <li>
+                    <a id="techsupport" class="right-sidebar-toggle count-info" href="">
+                        <i class="fa fa-lg fa-question-circle"></i>  
+                        {{#if countNotifications 'tech support'}}
+                        <span class="label badge badge-danger">{{countNotifications 'tech support'}}</span>
                         {{/if}}  
                     </a>                    
                 </li>     
+                {{/if}}
                 {{/if}}
             </ul>
         </nav>

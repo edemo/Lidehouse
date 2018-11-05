@@ -11,19 +11,22 @@ if (Meteor.isClient) {
   import { FlowRouter } from 'meteor/kadira:flow-router';
   import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 
-  Rooms.privateChatRoom = function privateChatRoom(userId, otherUserId) {
-    debugAssert(userId && otherUserId);
+  Rooms.getRoom = function getRoom(roomType, otherUserId) {
+    if (!roomType || !otherUserId) return undefined;
+    const userId = Meteor.userId();
     const communityId = Session.get('activeCommunityId');
-    return Topics.findOne({ communityId, category: 'room', title: 'private chat', participantIds: { $size: 2, $all: [userId, otherUserId] } });
+    if (roomType === 'private chat') {
+      return Topics.findOne({ communityId, category: 'room', title: 'private chat', participantIds: { $size: 2, $all: [userId, otherUserId] } });
+    } else if (roomType === 'tech support') {
+      return Topics.findOne({ communityId, category: 'room', title: 'tech support', participantIds: { $all: [userId, otherUserId] } });
+    } else {
+      debugAssert(false);
+      return null;
+    }
   };
 
-  Rooms.techSupportRoom = function techSupportRoom(userId) {
-    const communityId = Session.get('activeCommunityId');
-    return Topics.findOne({ communityId, category: 'room', title: 'tech support', participantIds: userId });
-  };
-
-  Rooms.goToPrivateRoomWith = function goToPrivateRoomWith(otherUserId) {
-    const room = Rooms.privateChatRoom(Meteor.userId(), otherUserId);
+  Rooms.goToRoom = function goToRoom(roomType, otherUserId) {
+    const room = Rooms.getRoom(roomType, otherUserId);
     if (room) {
       FlowRouter.go('Room.show', { _rid: room._id });
     } else {
@@ -32,7 +35,7 @@ if (Meteor.isClient) {
         userId: Meteor.userId(),
         participantIds: [Meteor.userId(), otherUserId],
         category: 'room',
-        title: 'private chat',
+        title: roomType,
       }, onSuccess((res) => {
         FlowRouter.go('Room.show', { _rid: res });
       }),

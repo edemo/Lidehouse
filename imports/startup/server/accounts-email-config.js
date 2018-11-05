@@ -18,7 +18,7 @@ Accounts.emailTemplates.enrollAccount = {
   text(user, url) {
     const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
     const community = membership.community();
-    const adminEmail = community.admin().person.userEmail;
+    const adminEmail = community.admin().getPrimaryEmail();
     return TAPi18n.__('emailEnrollAccount',
       { name: community.name,
         role: TAPi18n.__(membership.role, {}, user.language()),

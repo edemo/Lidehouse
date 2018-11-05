@@ -6,7 +6,7 @@ import './contact-long.html';
 
 Template.Contact_long.events({
   'click .js-message-addressee'(event, instance) {
-    Rooms.goToPrivateRoomWith(instance.data._id);
+    Rooms.goToRoom('private chat', instance.data._id);
   },
 
   'click .js-delegate'(event, instance) {

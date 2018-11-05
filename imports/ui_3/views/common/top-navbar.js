@@ -25,11 +25,11 @@ Template.Top_navbar.helpers({
         if (!Meteor.user()) { return []; }
         return Meteor.user().communities();
     },
-    countNotifications() {
+    countNotifications(roomType) {
         const communityId = Session.get('activeCommunityId');
         const userId = Meteor.userId();
         let count = 0;
-        const rooms = Topics.find({ communityId, category: 'room', title: 'private chat' });
+        const rooms = Topics.find({ communityId, category: 'room', title: roomType });
         rooms.map(room => {
           count += room.unseenCommentsBy(userId, Meteor.users.SEEN_BY_EYES);
         });
@@ -66,8 +66,14 @@ Template.Top_navbar.events({
         }
     },
     // Toggle right sidebar
-    'click .right-sidebar-toggle'(){
+    'click .right-sidebar-toggle'() {
         $('#right-sidebar').toggleClass('sidebar-open');
+    },
+    'click #privatechat'() {
+        Session.set('roomMode', 'private chat');
+    },
+    'click #techsupport'() {
+        Session.set('roomMode', 'tech support');
     },
     'click .js-switch-community'() {
         const newCommunityId = this._id;

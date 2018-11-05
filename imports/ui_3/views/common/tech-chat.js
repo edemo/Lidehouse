@@ -10,9 +10,15 @@ import { Communities } from '/imports/api/communities/communities.js';
 
 import './tech-chat.html';
 
+function getMyTechSupportRoom() {
+  const myUserId = Meteor.userId();
+  const communityId = Session.get('activeCommunityId');
+  return Topics.findOne({ communityId, category: 'room', title: 'tech support', participantIds: myUserId });
+}
+
 Template.Tech_chat.onCreated(function tehcChatOnCreated() {
   this.autorun(() => {
-    const room = Rooms.techSupportRoom(Meteor.userId());
+    const room = getMyTechSupportRoom();
     if (room) {
       this.subscribe('comments.onTopic', { topicId: room._id });
     }
@@ -29,17 +35,17 @@ Template.Tech_chat.onRendered(function() {
 
 Template.Tech_chat.helpers({
   messages() {
-    const room = Rooms.techSupportRoom(Meteor.userId());
+    const room = getMyTechSupportRoom();
     if (!room) return [];
     return Comments.find({ topicId: room._id });
   },
   hasUnreadMessages() {
-    const room = Rooms.techSupportRoom(Meteor.userId());
+    const room = getMyTechSupportRoom();
     if (!room) return false;
     return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES) > 0;
   },
   unreadMessagesCount() {
-    const room = Rooms.techSupportRoom(Meteor.userId());
+    const room = getMyTechSupportRoom();
     if (!room) return 0;
     return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES);
   },
@@ -55,7 +61,7 @@ Template.Tech_chat.events({
     event.preventDefault();
     $(event.target).closest('a').children().toggleClass('fa-question').toggleClass('fa-times');
     $('.small-chat-box').toggleClass('active');
-    const room = Rooms.techSupportRoom(Meteor.userId());
+    const room = getMyTechSupportRoom();
     if (room) Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY_EYES);
   },
   'click .small-chat-box .js-send'(event, instance) {
@@ -63,7 +69,7 @@ Template.Tech_chat.events({
     const text = textarea.value;
     const communityId = Session.get('activeCommunityId');
     const community = Communities.findOne(communityId);
-    let room = Rooms.techSupportRoom(Meteor.userId());
+    const room = getMyTechSupportRoom();
     let roomId;
     const insertMessage = () => {
       Meteor.call('comments.insert', {
@@ -83,15 +89,15 @@ Template.Tech_chat.events({
       roomId = room._id;
       insertMessage();
     } else {
+      // Create my tech support room
       Meteor.call('topics.insert', {
         communityId,
         userId: Meteor.userId(),
-        participantIds: [Meteor.userId(), community.admin()._id],
+        participantIds: [Meteor.userId(), community.techsupport()._id],
         category: 'room',
         title: 'tech support',
       }, onSuccess((res) => {
         roomId = res;
-        room = Topics.findOne(roomId);
         insertMessage();
       }),
       );
