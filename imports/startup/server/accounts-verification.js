@@ -24,9 +24,10 @@ export function cleanExpiredEmails() {
   Meteor.users.find({ 'emails.address': { $exists: false } }).forEach((user) => {
     Meteor.users.remove({ _id: user._id });
   });
+  return true;
 }
 
-const tillMidnight = moment().endOf('day') - moment();
+/*const tillMidnight = moment().endOf('day') - moment();
 Meteor.setTimeout(function () {
   cleanExpiredEmails();
   // reCreateDemoHouse();
@@ -35,4 +36,6 @@ Meteor.setTimeout(function () {
   // reCreateDemoHouse();
   }, moment.duration(1, 'days').asMilliseconds()
   );
-}, tillMidnight);
+}, tillMidnight);*/
+
+
