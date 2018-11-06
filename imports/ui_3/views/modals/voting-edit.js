@@ -138,6 +138,7 @@ AutoForm.addHooks('af.vote.insert', {
       doc.userId = Meteor.userId();
       doc.category = 'vote';
       doc.vote.choices = votingEditInstance.choices.get();
+      doc.vote.closesAt = moment(doc.vote.closesAt).add(23, 'hours').add(59, 'minutes').add(59, 'seconds').toDate();
     });
     return doc;
   },
