@@ -1,48 +1,20 @@
 import { Meteor } from 'meteor/meteor';
-import { Jobs, JobsInternal } from 'meteor/msavin:sjobs';
-import { moment } from 'meteor/momentjs:moment';
-import { closeVoteFulfill } from '/imports/api/topics/votings/methods.js';
+import { later } from 'meteor/mrt:later';
+
+import { closeClosableVotings } from '/imports/api/topics/votings/methods.js';
 import { cleanExpiredEmails } from '/imports/startup/server/accounts-verification.js';
+import { processNotifications } from '/imports/startup/server/notifications.js';
 
-Jobs.register({
-  'autoCloseVote': function (topicId) {
-    const close = closeVoteFulfill(topicId);
-    if (close) {
-      this.success();
-    } else {
-      this.reschedule({
-        in: {
-          minutes: 5,
-        },
-      });
-    }
-  },
-  'autoCleanExpiredEmails': function () {
-    const clean = cleanExpiredEmails();
-    if (clean) {
-      this.replicate({
-        in: {
-          hours: 24,
-        },
-      });
-      this.success();
-    } else {
-      this.reschedule({
-        in: {
-          minutes: 5,
-        },
-      });
-    }
-  },
-});
+const bindEnv = func => Meteor.bindEnvironment(func, (err) => { throw err; });
 
-const tillMidnight = moment.utc().endOf('day') - moment.utc();
+Meteor.startup(() => {
+  const dailySchedule = later.parse.recur().on(0).hour();
 
-Meteor.startup(function() {
-  Jobs.clear('*', 'autoCleanExpiredEmails');
-  Jobs.run('autoCleanExpiredEmails', {
-    in: {
-      milliseconds: tillMidnight,
-    },
-  });
+  closeClosableVotings();
+  later.setInterval(bindEnv(closeClosableVotings), dailySchedule);
+  later.setInterval(bindEnv(cleanExpiredEmails), dailySchedule);
+
+  later.setInterval(bindEnv(() => processNotifications('frequent')), later.parse.recur().on(8, 12, 16, 20).hour());
+  later.setInterval(bindEnv(() => processNotifications('daily')), later.parse.recur().on(18).hour());
+  later.setInterval(bindEnv(() => processNotifications('weekly')), later.parse.recur().on(6).dayOfWeek().on(14).hour());
 });

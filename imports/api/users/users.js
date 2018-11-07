@@ -15,6 +15,13 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 
+let getCurrentUserLang = () => 'en';  // on the server we dont have a current user, so we use this
+if (Meteor.isClient) {
+  import { currentUserLanguage } from '/imports/startup/client/language.js';
+
+  getCurrentUserLang = currentUserLanguage;
+}
+
 export const nullUser = {
   hasPermission(permissionName, communityId, object) {
     const permission = Permissions.find(perm => perm.name === permissionName);
@@ -119,10 +126,6 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
-function currentUserLanguage() {
-  return Meteor.user().settings.language || 'en';
-}
-
 Meteor.users.helpers({
   language() {	
     return this.settings.language || 'en';	
@@ -136,9 +139,9 @@ Meteor.users.helpers({
     const emailName = emailSplit[0];
     return emailName;
   },
-  fullName() {
+  fullName(lang = getCurrentUserLang()) {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
-      if (currentUserLanguage() === 'hu') {
+      if (lang === 'hu') {
         return this.profile.lastName + ' ' + this.profile.firstName;
       } else {
         return this.profile.firstName + ' ' + this.profile.lastName;
@@ -146,11 +149,11 @@ Meteor.users.helpers({
     }
     return undefined;
   },
-  displayName() {
-    return this.fullName() || `[${this.safeUsername()}]`;     // or fallback to the username
+  displayName(lang = getCurrentUserLang()) {
+    return this.fullName(lang) || `[${this.safeUsername()}]`;     // or fallback to the username
   },
-  toString() {
-    return this.displayName();
+  toString(lang = getCurrentUserLang()) {
+    return this.displayName(lang);
   },
   getPrimaryEmail() {
     return this.emails[0].address;

@@ -109,7 +109,7 @@ Topics.helpers({
     if (this.participantIds && !_.contains(this.participantIds, userId)) return '';
     if (this.category === 'room') {
       if (this.unseenCommentsBy(userId, seenType) > 0) {
-        return `You have ${this.unseenCommentsBy(userId, seenType)} new messages from ${this.participantIds.map(id => Meteor.users.findOne(id).displayName())}`; // TODO: print messages
+        return `You have ${this.unseenCommentsBy(userId, seenType)} new messages from ${this.participantIds.map(id => Meteor.users.findOne(id).profile.firstName)}`; // TODO: print messages
       }
     } else /* this.category !== 'room' */ {
       if (this.isUnseenBy(userId, seenType)) {

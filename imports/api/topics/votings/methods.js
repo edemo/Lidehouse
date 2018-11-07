@@ -57,7 +57,7 @@ export const castVote = new ValidatedMethod({
   },
 });
 
-export function closeVoteFulfill(topicId) {
+function closeVoteFulfill(topicId) {
   const res = Topics.update(topicId, { $set: { closed: true } });
   debugAssert(res === 1);
   const topic = Topics.findOne(topicId);
@@ -84,3 +84,9 @@ export const closeVote = new ValidatedMethod({
     closeVoteFulfill(topicId);
   },
 });
+
+export function closeClosableVotings() {
+  const now = new Date();
+  const expiredVotings = Topics.find({ category: 'vote', closed: false, 'vote.closesAt': { $lt: now } });
+  expiredVotings.forEach(voting => closeVoteFulfill(voting._id));
+}
