@@ -49,4 +49,7 @@ export const remove = new ValidatedMethod({
     Shareddocs.remove(_id);
   },
 });
-  
+
+export function cleanCanceledVoteAttachments() {
+  Shareddocs.remove({ $where: 'this.topicId === this.userId' });
+}
