@@ -1,20 +1,19 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-// import { ReactiveDict } from 'meteor/reactive-dict';
 import { Session } from 'meteor/session';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { _ } from 'meteor/underscore';
 
 import { leaderRoles } from '/imports/api/permissions/roles.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Topics } from '/imports/api/topics/topics.js';
-import '/imports/api/topics/rooms/rooms.js';
+import { Rooms } from '/imports/api/topics/rooms/rooms.js';
 
 import './members-panel.html';
 
 Template.Members_panel.onCreated(function onCreated() {
-  const communityId = Session.get('activeCommunityId');
-  const manager = Memberships.findOne({ communityId, active: true, role: 'manager' });
-  if (manager) Session.set('messengerPersonId', manager.person.userId);
+//  const communityId = Session.get('activeCommunityId');
+//  const manager = Memberships.findOne({ communityId, active: true, role: 'manager' });
+//  if (manager) Session.set('messengerPersonId', manager.person.userId);
 });
 
 Template.Members_panel.onRendered(function onRendered() {
@@ -39,7 +38,7 @@ Template.Members_panel.helpers({
     }
     nonManagers = _.uniq(nonManagers, false, m => m.person.userId);
     nonManagers = _.sortBy(nonManagers, m => {
-      const room = Topics.messengerRoom(Meteor.userId(), m.person.userId);
+      const room = Rooms.getRoom(Session.get('roomMode'), m.person.userId);
       return room ? -1 * room.updatedAt : 0;
     });
     return nonManagers;
@@ -59,7 +58,8 @@ Template.Member_slot.onCreated(function onMsgPersonCreated() {
 
 Template.Member_slot.helpers({
   selectedClass() {
-    if (Session.get('messengerPersonId') === this.userId) return 'selected';
+    const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
+    if (room && room._id === FlowRouter.getParam('_rid')) return 'selected';
     return '';
   },
   /* statusCircleColor(status) {
@@ -86,19 +86,19 @@ Template.Member_slot.helpers({
     return params;
   },
   hasUnreadMessages() {
-    const room = Topics.messengerRoom(this.person.userId, Meteor.userId());
+    const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
     if (!room) return false;
     return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES) > 0;
   },
   unreadMessagesCount() {
-    const room = Topics.messengerRoom(this.person.userId, Meteor.userId());
+    const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
     return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES);
   },
 });
 
 Template.Member_slot.events({
   'click .member-slot'(event, instance) {
-    Session.set('messengerPersonId', instance.data.person.userId);
+    Rooms.goToRoom(Session.get('roomMode'), instance.data.person.userId);
     $('#right-sidebar').toggleClass('sidebar-open');
     if ($(window).width() > 768) $('.js-focused').focus();
   },

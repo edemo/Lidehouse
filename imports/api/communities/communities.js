@@ -42,7 +42,13 @@ Communities.helpers({
     return displayAddress(this);
   },
   admin() {
-    return Memberships.findOne({ communityId: this._id, active: true, role: 'admin' });
+    const adminMembership = Memberships.findOne({ communityId: this._id, active: true, role: 'admin' });
+    if (!adminMembership) return undefined;
+    const adminId = adminMembership.person.userId;
+    return Meteor.users.findOne(adminId);
+  },
+  techsupport() {
+    return this.admin(); // TODO: should be the person with do.techsupport permission
   },
   users() {
     const users = Memberships.find({ communityId: this._id, active: true, 'person.userId': { $exists: true } }).map(m => m.user());

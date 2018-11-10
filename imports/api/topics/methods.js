@@ -5,6 +5,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
+
 import { checkExists, checkNotExists, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -21,7 +22,8 @@ export const insert = new ValidatedMethod({
   run(doc) {
     if (doc._id) checkNotExists(Topics, doc._id);
     checkTopicPermissions(this.userId, 'insert', doc);
-    return Topics.insert(doc);
+    const topicId = Topics.insert(doc);
+    return topicId;
   },
 });
 

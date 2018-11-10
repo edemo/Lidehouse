@@ -7,7 +7,6 @@ import { Tracker } from 'meteor/tracker';
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import 'meteor/numeral:languages';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { update as usersUpdate } from '/imports/api/users/methods.js';
 
@@ -64,6 +63,10 @@ Meteor.startup(function amendNumeralLocale() {
   huLocale.delimiters.thousands = '.';
   numeral.language('hu', huLocale);
 });
+
+export function currentUserLanguage() {
+  return Meteor.user().settings.language || 'en';
+}
 
 // Known problems with this language and translation system
 // 1. If there is no english label, the other language labels are not used either

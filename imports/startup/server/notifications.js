@@ -1,6 +1,5 @@
 
 import { Meteor } from 'meteor/meteor';
-import { moment } from 'meteor/momentjs:moment';
 import fs from 'fs';
 import { Topics } from '/imports/api/topics/topics.js';
 import { EmailSender } from './email-sender.js';
@@ -31,23 +30,10 @@ function sendNotifications(user) {
   EmailSender.send('email-template-noti', { to: user.getPrimaryEmail(), subject: title }, { stylesheet, title, body, footer });
 }
 
-function processNotifications(frequency) {
+export function processNotifications(frequency) {
   const usersToBeNotified = Meteor.users.find({ 'settings.notiFrequency': frequency });
   // console.log(usersToBeNotified.fetch());
   usersToBeNotified.forEach(user => {
     sendNotifications(user);
   });
 }
-
-let counter = 0;
-const checkPeriod = moment.duration(6, 'hours');
-
-function checkNotifications() {
-  counter++;
-  // console.log(counter);
-  if (counter % (4 * 7) === 0) processNotifications('weekly');
-  if (counter % 4 === 0) processNotifications('daily');
-  processNotifications('frequent');
-}
-
-Meteor.setInterval(checkNotifications, checkPeriod);

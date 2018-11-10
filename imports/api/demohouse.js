@@ -896,6 +896,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     communityId: demoCommunityId,
     userId: dummyUserId,
     category: 'room',
+    title: 'private chat',
     participantIds: [dummyUserId, dummyUsers[2]],
   });
 
@@ -1469,6 +1470,7 @@ Meteor.methods({
       communityId: demoCommunityId,
       userId: demoUserId,
       category: 'room',
+      title: 'private chat',
       participantIds: [demoUserId, demoManagerId],
     });
     Comments.insert({
@@ -1480,6 +1482,7 @@ Meteor.methods({
       communityId: demoCommunityId,
       userId: demoUserId,
       category: 'room',
+      title: 'private chat',
       participantIds: [demoUserId, dummyUserId],
     });
     Clock.setSimulatedTime(moment().subtract(6, 'hours').toDate());

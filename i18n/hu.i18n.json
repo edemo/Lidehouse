@@ -37,6 +37,8 @@
   "by": "által",
   "(Select one)": "(Válasszon a listából)",
 
+  "Archived": "Archív",
+
   // roles
   "admin": "admin",
   "manager": "közös képviselő",
@@ -77,6 +79,11 @@
   "Houses": "Házak",
   "About": "Rólunk",
   "Action buttons": "Akció gombok",
+  
+  "Technical support": "Technikai segítségnyújtás",
+  "We are here to answer your questions": "Ha bármi kérdése van a rendszer használatával kapcsolatban, örömmel állunk rendelkezésére.",
+  "How may I help you": "Miben segíthetek önnek",
+  "your question": "kérdés, észrevétel",
 
   // api
   "name": "név",
@@ -409,6 +416,7 @@
   "delete sharedfolder successful": "Mappa véglegesen törölve",
   "delete shareddoc successful": "Dokumentum véglegesen törölve",
   "delete comment successful": "Hozzászólás törölve",
+  "insert vote successful": "Szavazás létrehozva",
   "close vote successful": "Szavazás lezárva",
 
   "Are you sure you want to": "Biztos benne, hogy",
