@@ -42,3 +42,17 @@ Template.Navigation.helpers({
     return false;     // set this true to access developer features
   },
 });
+
+Template.Navigation.events({
+  'click .js-submenu-toggle'(event) {
+    const submenuTitle = $(event.target).closest('a');
+    submenuTitle.siblings('.nav-second-level').toggleClass('in');
+    $(submenuTitle).addClass('darker-nav-bg');
+    $('.nav-second-level').not(submenuTitle.siblings('.nav-second-level')).removeClass('in');
+    $('.js-submenu-toggle').not(submenuTitle).removeClass('darker-nav-bg');
+  },
+  'click #side-menu>li>a:not(.js-submenu-toggle)'(event) {
+    $('.nav-second-level').removeClass('in');
+    $('.js-submenu-toggle').removeClass('darker-nav-bg');
+  },
+})

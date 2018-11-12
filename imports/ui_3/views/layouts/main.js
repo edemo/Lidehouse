@@ -102,7 +102,7 @@ Template.Main_layout.onRendered(function() {
   // $('body').addClass('boxed-layout');
 
   // Active state & collapse bugfixed
-  $(window).bind("load", function() {
+  /*$(window).bind("load", function() {
   // $(document).ready(function(){ <= Notice: never use in this .js => use only window-bind-load!
     $('#side-menu li').on('click touch', function() {
       $('#side-menu li').removeClass('active').filter($(this)).addClass('active');
@@ -113,7 +113,7 @@ Template.Main_layout.onRendered(function() {
     $("#side-menu > li > ul > li > a").on('click touch', function () {
       $(this).collapse('show');
     });
-  });
+  });*/
 });
 
 Template.Main_layout.helpers({
