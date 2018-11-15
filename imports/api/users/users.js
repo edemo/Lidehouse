@@ -127,8 +127,8 @@ Meteor.users.schema = new SimpleSchema({
 });
 
 Meteor.users.helpers({
-  language() {	
-    return this.settings.language || 'en';	
+  language() {
+    return this.settings.language || 'en';
   },
   safeUsername() {
     // If we have a username in db return that, otherwise generate one from her email address

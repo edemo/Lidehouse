@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { ServiceConfiguration } from 'meteor/service-configuration';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -37,9 +38,25 @@ AccountsTemplates.configure({
   defaultContentRegion: 'content',
   defaultLayoutRegions: {},
 
+  // We need to set the language on SignUp, so we put it into the options on the Client to send it to the Server
+  preSignUpHook(password, options) {
+    if (Meteor.isClient) {
+      import { getBrowserLanguage } from '/imports/startup/client/language.js';
+
+      options.language = getBrowserLanguage();
+    }
+  },
   // https://stackoverflow.com/questions/12984637/is-there-a-post-createuser-hook-in-meteor-when-using-accounts-ui-package
-  // postSignUpHook(userId, info) { set some user settings here? },
 });
+
+// We retrieve the language from the options on the server, and use it to set the language of the new user object
+if (Meteor.isServer) {
+  Accounts.onCreateUser((options, user) => {
+    user.settings = user.settings || {};
+    user.settings.language = options.language;
+    return user;
+  });
+}
 
 // --- SERVICES ---
 // Signin services can be configured in the Settings file

@@ -10,7 +10,7 @@ import 'meteor/numeral:languages';
 
 import { update as usersUpdate } from '/imports/api/users/methods.js';
 
-function getBrowserLanguage() {
+export function getBrowserLanguage() {
   // https://stackoverflow.com/questions/31471411/how-to-set-user-language-settings-in-meteor#31471877
   const language = window.navigator.userLanguage || window.navigator.language;  // works IE/SAFARI/CHROME/FF
 //  console.log('Browser language:', language);
