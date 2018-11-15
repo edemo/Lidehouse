@@ -52,4 +52,6 @@ export const remove = new ValidatedMethod({
 
 export function cleanCanceledVoteAttachments() {
   Shareddocs.remove({ $where: 'this.topicId === this.userId' });
+  // Using $expr would be faster, but only mongo 3.6 supports it (and currently we are on 3.4)
+  // Shareddocs.remove({ $expr: { $eq: ['$topicId', '$userId'] } });
 }
