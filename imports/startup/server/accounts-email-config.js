@@ -8,39 +8,50 @@ if (Meteor.settings.mailSender) {
   process.env.MAIL_URL = Meteor.settings.mailSender;
 }
 
+// When translating to non-english languages, we include the english version at the end, as an extra safety against wrong lang setting
+function dualTranslate(symbol, context, lang, separator) {
+  let result = TAPi18n.__(symbol, context, lang);
+  if (lang !== 'en') {
+    if (separator === '/') result += ' (' + TAPi18n.__(symbol, context, 'en') + ')';
+    if (separator === '-') result += '\n\n[English]\n' + TAPi18n.__(symbol, context, 'en');
+  }
+  return result;
+}
+
 // Accounts.emailTemplates
 
 Accounts.emailTemplates.siteName = 'Honline';
 Accounts.emailTemplates.from = 'Honline <noreply@honline.net>';
 
 Accounts.emailTemplates.enrollAccount = {
-  subject(user) { return TAPi18n.__('emailEnrollAccountSubject', {}, user.language()); },
+  subject(user) { return dualTranslate('emailEnrollAccountSubject', {}, user.language(), '/'); },
   text(user, url) {
     const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
     const community = membership.community();
     const adminEmail = community.admin().getPrimaryEmail();
-    return TAPi18n.__('emailEnrollAccount',
+    return dualTranslate('emailEnrollAccount',
       { name: community.name,
         role: TAPi18n.__(membership.role, {}, user.language()),
         email: adminEmail,
         url,
       },
-      user.language()
+      user.language(),
+      '-',
     );
   },
 };
 
 Accounts.emailTemplates.verifyEmail = {
-  subject(user) { return TAPi18n.__('emailVerifyEmailSubject', {}, user.language()); },
+  subject(user) { return dualTranslate('emailVerifyEmailSubject', {}, user.language(), '/'); },
   text(user, url) {
-    return TAPi18n.__('emailVerifyEmail', { url }, user.language());
+    return dualTranslate('emailVerifyEmail', { url }, user.language(), '-');
   },
 };
 
 Accounts.emailTemplates.resetPassword = {
-  subject(user) { return TAPi18n.__('emailResetPasswordSubject', {}, user.language()); },
+  subject(user) { return dualTranslate('emailResetPasswordSubject', {}, user.language(), '/'); },
   text(user, url) {
-    return TAPi18n.__('emailResetPassword', { url }, user.language());
+    return dualTranslate('emailResetPassword', { url }, user.language(), '-');
   },
 };
 
