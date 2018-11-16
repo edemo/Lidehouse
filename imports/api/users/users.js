@@ -6,6 +6,7 @@ import { Fraction } from 'fractional';
 import 'meteor/accounts-base';
 import { __ } from '/imports/localization/i18n.js';
 
+import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamps } from '/imports/api/timestamps.js';
@@ -72,7 +73,7 @@ const frequencyValues = ['never', 'weekly', 'daily', 'frequent'];
 const levelValues = ['never', 'high', 'medium', 'low'];
 
 const UserSettingsSchema = new SimpleSchema({
-  language: { type: String, allowedValues: ['en', 'hu'], optional: true, autoform: { firstOption: false } },
+  language: { type: String, allowedValues: availableLanguages, optional: true, autoform: { firstOption: false } },
   delegatee: { type: Boolean, defaultValue: true },
   notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: autoformOptions(frequencyValues, 'schemaUsers.settings.notiFrequency.') },
   notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notiLevel.') },
