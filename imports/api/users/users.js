@@ -179,7 +179,7 @@ Meteor.users.helpers({
     return ownedParcels;
   },
   activeRoles(communityId) {
-    return Memberships.find({ communityId, active: true, 'person.userId': this._id }).fetch().map(m => m.role);
+    return Memberships.find({ communityId, active: true, approved: true, 'person.userId': this._id }).fetch().map(m => m.role);
   },
   communities() {
     const memberships = Memberships.find({ active: true, 'person.userId': this._id }).fetch();
