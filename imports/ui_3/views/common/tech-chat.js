@@ -30,6 +30,7 @@ Template.Tech_chat.onRendered(function() {
   $('.small-chat-box .content').slimScroll({
     height: '234px',
     railOpacity: 0.4,
+    start: 'bottom',
   });
 });
 
