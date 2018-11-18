@@ -240,11 +240,12 @@ Template.Votebox.events({
     );
   },
   'click .js-close'(event, instance) {
-    closeVote.call({ topicId: this._id },
-      onSuccess((res) => {
-        displayMessage('success', 'Vote closed');
-      })
-    );
+    const serverTimeNow = new Date(TimeSync.serverTime());
+    const closureDate = moment(this.vote.closesAt).from(serverTimeNow);
+    Modal.confirmAndCall(closeVote, { topicId: this._id }, {
+      action: 'close vote',
+      message: __('The planned date of closure was ') + closureDate, 
+    });
   },
   'click .js-view-results'(event, instance) {
     const modalContext = {

@@ -6,7 +6,11 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { remove as removeUser } from '/imports/api/users/methods.js';
+import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/api/users/users.js';
 import './profile-form.html';
 
@@ -29,6 +33,15 @@ Template.Profile_form.helpers({
   },
 });
 
+Template.Profile_form.events({
+  'click .js-delete'(event, instance) {
+    Modal.confirmAndCall(removeUser, { _id: Meteor.userId() }, {
+      action: 'delete user',
+      message: 'deleteUserWarning',
+    });
+  },
+});
+
 AutoForm.addHooks('af.user.update', {
   docToForm(doc) {
     doc.email = doc.emails[0].address;
@@ -48,7 +61,7 @@ AutoForm.addHooks('af.user.update', {
     // console.log(`modifier: ${JSON.stringify(modifier)}`);
     return modifier;
   },
-  onError(formType, error) {    // Called when any submit operation fails
-    alert(error); // eslint-disable-line no-alert
+  onError(formType, error) {    // Called when any submit operation fails/
+    displayError(error); // eslint-disable-line no-alert
   },
 });

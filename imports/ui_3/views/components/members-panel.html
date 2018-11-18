@@ -28,7 +28,7 @@
 <template name="Member_slot">
     {{#if Person.user}}
         <div class="member-slot sidebar-message">
-            <a href="{{pathFor 'Messages'}}">
+            <a href="">
                 <div class="pull-left text-center">
                     <img alt="avatar" class="img-circle message-avatar" src="{{Person.avatar}}">
                 </div>
@@ -51,30 +51,5 @@
                 </div>
             </a>
         </div>
-    {{/if}}
-</template>
-
-<template name="Member_slot_Chat">
-    {{#if Person.user}}
-    <div class="chat-user">
-        <img class="chat-avatar" src="{{Person.avatar}}" alt="avatar" >
-        <div class="chat-user-name">
-            <a href="">{{user.toString}}</a><br>
-            <small class="small-size">({{this}})</small>
-        </div>
-        <div class="media-body">
-          <div class="text-right">
-            <!-- online/offline status icon -->
-            <svg height="10" width="10" data-tooltip="{{user/status}}">
-              <!--circle cx="5" cy="5" r="4" stroke="black" stroke-width="1" fill="{{statusCircleColor user/status}}" /-->
-              <circle {{statusCircleParameters user/status}} />
-            </svg>
-            <br>
-            {{#if hasUnreadMessages}}
-            <span class="badge">{{unreadMessagesCount}}</span>
-            {{/if}}
-          </div>
-        </div>
-    </div>
     {{/if}}
 </template>

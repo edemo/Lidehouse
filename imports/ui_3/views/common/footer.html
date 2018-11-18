@@ -7,10 +7,17 @@
                 <a href="mailto:feedback@honline.net">visszajelzéseit</a>
             </strong>!
         </div>
-        <div>
+        <div class="pull-left">
             <span title="Frissítve: {{displayTimeFrom version}} ({{displayTime version}})">powered by</span> 
-            <a href="{{pathFor 'App.intro'}}"><strong>honline</strong></a> &dash; Az online társasházkezelő
+            <a href="{{pathFor 'App.intro'}}"><strong>honline</strong></a>
+            <!--&dash; Az online társasházkezelő-->
+        </div>
+        <div class="col-lg-offset-2 text-center"> 
+             <span class="nowrap">
+            <a href="{{pathFor 'Terms'}}" target="_blank">Szabályzat</a>
+            &emsp; 
+            <a href="{{pathFor 'Privacy'}}" target="_blank">Adatkezelés</a> 
+        </span>
         </div>
     </div>
-
 </template>

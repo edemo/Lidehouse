@@ -9,8 +9,13 @@
                         <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
                         <td><span class="label label-plain">{{_ role}}</span></td>
                         <td>
-                            <i class="contact-type fa fa-envelope"></i>{{Person.email}}
-                            {{#if Person.user.profile.phone}}<br>
+                            {{#if Person.user.profile.publicEmail}}
+                            <i class="contact-type fa fa-at"></i>{{Person.user.profile.publicEmail}}
+                            {{/if}}
+                            {{#if and Person.user.profile.publicEmail Person.user.profile.phone}}
+                            <br>
+                            {{/if}}
+                            {{#if Person.user.profile.phone}}
                             <i class="contact-type fa fa-phone"></i>{{Person.user.profile.phone}}
                             {{/if}}
                         </td>
@@ -68,9 +73,7 @@
                     <div class="ibox-title">
                         <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
                         {{#if userHasPermission 'communities.update' communityId}}
-                        <div class="pull-right">
-                            <button class="btn-white btn btn-xs js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                        </div>
+                          <button class="btn-white btn btn-xs js-edit pull-right"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                         {{/if}}
                     </div>
                     <div>
@@ -99,12 +102,15 @@
                                 {{_ 'Submit join request'}}
                             </button>
                             {{/unless}}
+                            {{#if userHasPermission 'communities.remove' communityId}}
+                              <button class="btn btn-danger btn-block btn-outline js-delete"><!--i class="fa fa-trash"></i--> {{_ 'Delete community'}}</button>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        {{#if userHasPermission 'parcels.inCommunity' communityId}}
+        {{#if userHasPermission 'memberships.inCommunity' communityId}}
         <div class="row">
             <div class="col-lg-12">
                 <div class="ibox parcels-section">

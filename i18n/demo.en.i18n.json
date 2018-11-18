@@ -107,6 +107,7 @@
     "manager": {
       "firstName": "Lewis",
       "lastName": "King",
+      "bio": "I have more than 15 years of experience in house-management.",
       "message": "As Manager of Demo House I welcome you in our honline system."
     },
     "admin": {

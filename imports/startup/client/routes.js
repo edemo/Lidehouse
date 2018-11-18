@@ -17,7 +17,7 @@ import '/imports/ui_3/views/pages/vote-topics.js';
 import '/imports/ui_3/views/pages/agendas.js';
 import '/imports/ui_3/views/pages/delegations.js';
 import '/imports/ui_3/views/pages/board.js';
-import '/imports/ui_3/views/pages/messages.js';
+import '/imports/ui_3/views/pages/room-show.js';
 import '/imports/ui_3/views/pages/forum-topics.js';
 import '/imports/ui_3/views/pages/community-page.js';
 import '/imports/ui_3/views/pages/tickets-report.js';
@@ -25,6 +25,7 @@ import '/imports/ui_3/views/pages/parcels-finances.js';
 import '/imports/ui_3/views/pages/community-finances.js';
 import '/imports/ui_3/views/pages/shareddoc-store.js';
 import '/imports/ui_3/views/pages/topic-show.js';
+import '/imports/ui_3/views/pages/privacy.js';
 
 import '/imports/ui_3/views/layouts/main.js';
 import '/imports/ui_3/views/layouts/blank.js';
@@ -55,6 +56,13 @@ FlowRouter.route('/demo/:_lang', {
   name: 'Demo.login',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Demo_login' });
+  },
+});
+
+FlowRouter.route('/privacy', {
+  name: 'Privacy',
+  action() {
+    BlazeLayout.render('Blank_layout', { content: 'Privacy_page' });
   },
 });
 
@@ -100,10 +108,10 @@ FlowRouter.route('/board', {
 });
 CommunityRelatedRoutes.push('Board');
 
-FlowRouter.route('/messages', {
-  name: 'Messages',
+FlowRouter.route('/room/:_rid', {
+  name: 'Room.show',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Messages' });
+    BlazeLayout.render('Main_layout', { content: 'Room_show' });
   },
 });
 CommunityRelatedRoutes.push('Messages');

@@ -6,6 +6,7 @@ import { Fraction } from 'fractional';
 import 'meteor/accounts-base';
 import { __ } from '/imports/localization/i18n.js';
 
+import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamps } from '/imports/api/timestamps.js';
@@ -14,6 +15,13 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+
+let getCurrentUserLang = () => 'en';  // on the server we dont have a current user, so we use this
+if (Meteor.isClient) {
+  import { currentUserLanguage } from '/imports/startup/client/language.js';
+
+  getCurrentUserLang = currentUserLanguage;
+}
 
 export const nullUser = {
   hasPermission(permissionName, communityId, object) {
@@ -65,7 +73,7 @@ const frequencyValues = ['never', 'weekly', 'daily', 'frequent'];
 const levelValues = ['never', 'high', 'medium', 'low'];
 
 const UserSettingsSchema = new SimpleSchema({
-  language: { type: String, allowedValues: ['en', 'hu'], optional: true, autoform: { firstOption: false } },
+  language: { type: String, allowedValues: availableLanguages, optional: true, autoform: { firstOption: false } },
   delegatee: { type: Boolean, defaultValue: true },
   notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: autoformOptions(frequencyValues, 'schemaUsers.settings.notiFrequency.') },
   notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notiLevel.') },
@@ -98,11 +106,12 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
-  profile: { type: PersonProfileSchema, optional: true },
   avatar: { type: String, /* regEx: SimpleSchema.RegEx.Url,*/ defaultValue: defaultAvatar, optional: true },
+  profile: { type: PersonProfileSchema, optional: true },
+  settings: { type: UserSettingsSchema },
+
   status: { type: String, allowedValues: ['online', 'standby', 'offline'], defaultValue: 'offline', optional: true, autoform: { omit: true } },
 
-  settings: { type: UserSettingsSchema },
   // lastSeens.0 is what was seen on screen, lastSeens.1 is to which the email notification was sent out
   lastSeens: { type: Array, autoValue() { if (this.isInsert) return [{}, {}]; }, autoform: { omit: true } },
   'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
@@ -118,11 +127,10 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
-function currentUserLanguage() {
-  return Meteor.user().settings.language || 'en';
-}
-
 Meteor.users.helpers({
+  language() {
+    return this.settings.language || 'en';
+  },
   safeUsername() {
     // If we have a username in db return that, otherwise generate one from her email address
     if (this.username) return this.username;
@@ -132,9 +140,9 @@ Meteor.users.helpers({
     const emailName = emailSplit[0];
     return emailName;
   },
-  fullName() {
+  fullName(lang = getCurrentUserLang()) {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
-      if (currentUserLanguage() === 'hu') {
+      if (lang === 'hu') {
         return this.profile.lastName + ' ' + this.profile.firstName;
       } else {
         return this.profile.firstName + ' ' + this.profile.lastName;
@@ -142,11 +150,11 @@ Meteor.users.helpers({
     }
     return undefined;
   },
-  displayName() {
-    return this.fullName() || `[${this.safeUsername()}]`;     // or fallback to the username
+  displayName(lang = getCurrentUserLang()) {
+    return this.fullName(lang) || `[${this.safeUsername()}]`;     // or fallback to the username
   },
-  toString() {
-    return this.displayName();
+  toString(lang = getCurrentUserLang()) {
+    return this.displayName(lang);
   },
   getPrimaryEmail() {
     return this.emails[0].address;
@@ -171,7 +179,7 @@ Meteor.users.helpers({
     return ownedParcels;
   },
   activeRoles(communityId) {
-    return Memberships.find({ communityId, active: true, 'person.userId': this._id }).fetch().map(m => m.role);
+    return Memberships.find({ communityId, active: true, approved: true, 'person.userId': this._id }).fetch().map(m => m.role);
   },
   communities() {
     const memberships = Memberships.find({ active: true, 'person.userId': this._id }).fetch();

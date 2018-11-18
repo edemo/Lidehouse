@@ -103,10 +103,3 @@ Delegations.attachSchema(Timestamps);
 Meteor.startup(function attach() {
   Delegations.simpleSchema().i18n('schemaDelegations');
 });
-
-// Deny all client-side updates since we will be using methods to manage this collection
-Delegations.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
-});

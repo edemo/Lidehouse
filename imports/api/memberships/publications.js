@@ -5,45 +5,6 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Memberships } from './memberships.js';
 import { Communities } from '../communities/communities.js';
-import { Parcels } from '../parcels/parcels.js';
-
-// might be better to go with peerlibrary:meteor-reactive-publish
-// https://github.com/aldeed/meteor-tabular/issues/332
-
-Meteor.publishComposite('memberships.inCommunity', function membershipsInCommunity(params) {
-  new SimpleSchema({
-    communityId: { type: String },
-  }).validate(params);
-
-  const { communityId } = params;
-
-  // Checking permissions for visibilty
-  const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('memberships.inCommunity', communityId)) {
-    this.ready();
-    return;
-  }
-
-  return {
-    find() {
-      return Memberships.find({ communityId });
-    },
-
-    children: [
-      {
-        find(membership) {
-          return Meteor.users.find({ _id: membership.person.userId }, { fields: Meteor.users.publicFields });
-        },
-      }, {
-        find(membership) {
-          if (membership.parcelId) {
-            return Parcels.find({ _id: membership.parcelId });
-          }
-        },
-      },
-    ],
-  };
-});
 
 Meteor.publishComposite('memberships.ofUser', function communitiesOfUser(params) {
   new SimpleSchema({

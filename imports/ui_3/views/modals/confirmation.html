@@ -7,7 +7,13 @@
           <h4 class="modal-title" id="confirmModalLabel">{{_ 'Are you sure you want to'}} {{_ action}}?</h4>
         </div>
         <div class="modal-body">
-          {{_ body}}
+            {{#if body}}
+            <div class="panel panel-default">
+            <div class="panel-body bg-warning">
+              {{{_ body}}}
+            </div>
+            </div>
+            {{/if}}
         </div>
         <div class="modal-footer">
           <button id="btn-cancel" type="button" class="btn btn-default" data-dismiss="modal">{{_ 'cancel'}}</button>

@@ -1,0 +1,75 @@
+<template name="Tech_chat">
+    <div class="small-chat-box fadeInRight animated">
+
+        <div class="heading" draggable="true">
+            {{_ 'Technical support'}}
+            <!--small class="chat-date float-right">
+            10:02 am
+            </small-->
+        </div>
+
+        <div class="content" style="overflow: hidden; width: auto; height: 234px;">
+
+            <div class="left">
+                <div class="author-name">
+                    Admin <small class="chat-date">
+                    10:02 am
+                </small>
+                </div>
+                <div class="chat-message active">
+                    {{_ 'We are here to answer your questions'}}
+                </div>
+            </div>
+            <div class="left">
+                <div class="author-name">
+                    Admin <small class="chat-date">
+                    10:02 am
+                </small>
+                </div>
+                <div class="chat-message active">
+                    {{_ 'How may I help you'}}?
+                </div>
+            </div>
+            {{#each message in messages}}
+            <div class="{{sideOfMessage message.userId}}">
+                <div class="author-name">
+                    <small class="chat-date">
+                        {{displayTimeFrom message.createdAt}}
+                    </small>
+                    {{message.user.displayName}}
+                </div>
+                <div class="chat-message">
+                    {{message.text}}
+                </div>
+            </div>
+            {{/each}}
+            <!--div class="left">
+                <div class="author-name">
+                    Alice Novak
+                    <small class="chat-date">
+                        08:45 pm
+                    </small>
+                </div>
+                <div class="chat-message active">
+                    Check this stock char.
+                </div>
+            </div-->
+        </div>
+        <div class="form-chat">
+            <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="{{_ 'your question'}}...">
+                <span class="input-group-btn"> <button class="btn btn-primary text-capitalize js-send" type="button">{{_ 'send'}}
+            </button> </span></div>
+        </div>
+
+    </div>
+    
+    <div id="small-chat">
+        {{#if hasUnreadMessages}}
+            <span class="badge badge-danger float-right">{{unreadMessagesCount}}</span>
+        {{/if}}
+        <a class="open-small-chat" href="#" title="{{_ 'Technical support'}}">
+            <i class="fa fa-lg fa-question"></i>
+        </a>
+    </div>
+</template>

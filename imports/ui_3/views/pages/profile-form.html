@@ -6,9 +6,14 @@
       <div class="page-slim">
         {{#autoForm id="af.user.update" collection=users schema=schema omitFields="emails" doc=document type="method-update" meteormethod="user.update" singleMethodArgument=true}}
         {{> afQuickFields}}
-        <div class="m-b-lg text-right">
-          <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
-        </div>
+        <div class="row normalize">
+          <div class="pull-left">
+            <button type="button" class="btn btn-danger btn-outline js-delete">{{_ "Delete user account"}}</button>
+          </div>
+          <div class="pull-right">
+            <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+          </div>
+          </div>
         {{/autoForm}}
       </div>
     </div>

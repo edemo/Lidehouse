@@ -298,7 +298,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     email: `manager@${demoOrTest}.${com}`, password: 'password',
     profile: { lastName: __('demo.manager.lastName'), 
       firstName: __('demo.manager.firstName'), 
-      phone: '06 60 555 4321' } 
+      publicEmail: `manager@${demoOrTest}.${com}`,
+      phone: '06 60 555 4321',
+      bio: __('demo.manager.bio'), 
+     } 
   });
   Meteor.users.update({ _id: demoManagerId }, 
     { $set: { 'emails.0.verified': true, 
@@ -312,6 +315,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     email: `admin@${demoOrTest}.${com}`, password: 'password',
     profile: { lastName: __('demo.admin.lastName'), 
       firstName: __('demo.admin.firstName'),
+      publicEmail: `admin@${demoOrTest}.${com}`,
       phone: '06 60 762 7288' } 
   });
   Meteor.users.update({ _id: demoAdminId }, 
@@ -329,7 +333,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     const lastName = __(`demo.user.${userNo}.lastName`);
     const firstName = __(`demo.user.${userNo}.firstName`);
     dummyUsers.push(Meteor.users.insert({
-      emails: [{ address: `${firstName.normalize('NFD').replace(/[\u0300-\u036f]/g, "")}.${lastName.normalize('NFD').replace(/[\u0300-\u036f]/g, "")}.${userNo}@${demoOrTest}.${com}`, verified: true }],
+      emails: [{ address: `${firstName.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()}.${lastName.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()}.${userNo}@${demoOrTest}.${com}`, verified: true }],
       profile: { lastName, firstName },
       avatar: `/images/avatars/avatar${userNo}.jpg`,
       settings: { language: lang },
@@ -338,7 +342,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const demoMaintainerId = (Meteor.users.insert({
     emails: [{ address: `demo.maintainer@${demoOrTest}.${com}`, verified: true }],
-    profile: { lastName: __('demo.maintainer.lastName'), firstName: __('demo.maintainer.firstName') },
+    profile: { lastName: __('demo.maintainer.lastName'), firstName: __('demo.maintainer.firstName'), phone: '06 60 555 6321' },
     avatar: '/images/avatars/avatarnull.png',
     settings: { language: lang },
   }));
@@ -354,6 +358,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     person: { userId: demoAccountantId },
     role: 'accountant',
   });
+  const dummy3Email = Meteor.users.findOne({_id : dummyUsers[3]}).emails[0].address;
+  Meteor.users.update({ _id: dummyUsers[3] }, 
+    { $set: { 'profile.publicEmail': dummy3Email }}
+  );
   [4, 10, 16].forEach((userNo) => { 
     Memberships.insert({
       communityId: demoCommunityId,
@@ -891,6 +899,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     communityId: demoCommunityId,
     userId: dummyUserId,
     category: 'room',
+    title: 'private chat',
     participantIds: [dummyUserId, dummyUsers[2]],
   });
 
@@ -1352,7 +1361,7 @@ function capitalize(text) {
 export function insertLoginableUsersWithRoles(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const com = { en: 'com', hu: 'hu' }[lang];
-  if (Meteor.users.findOne({ 'emails.0.address': __(`guest@${demoOrTest}.${com}`) })) {
+  if (Meteor.users.findOne({ 'emails.0.address': `guest@${demoOrTest}.${com}` })) {
     return;
   }
   const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
@@ -1486,6 +1495,7 @@ Meteor.methods({
       communityId: demoCommunityId,
       userId: demoUserId,
       category: 'room',
+      title: 'private chat',
       participantIds: [demoUserId, demoManagerId],
     });
     Comments.insert({
@@ -1497,6 +1507,7 @@ Meteor.methods({
       communityId: demoCommunityId,
       userId: demoUserId,
       category: 'room',
+      title: 'private chat',
       participantIds: [demoUserId, dummyUserId],
     });
     Clock.setSimulatedTime(moment().subtract(6, 'hours').toDate());

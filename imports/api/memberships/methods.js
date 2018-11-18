@@ -100,7 +100,7 @@ export const insert = new ValidatedMethod({
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     // This check is not good, if we have activePeriods (same guy can have same role at a different time)
     // checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, person: doc.person });
-    if (doc.role === 'owner') {
+    if (doc.role === 'owner' && doc.active) {
       const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
       const newTotal = total.add(doc.ownership.share);
       checkSanityOfTotalShare(doc.parcelId, newTotal);
@@ -129,14 +129,17 @@ export const update = new ValidatedMethod({
     if (newrole && newrole !== doc.role) {
       checkAddMemberPermissions(this.userId, doc.communityId, newrole);
     }
-    if (doc.role === 'owner') {
+    if (doc.role === 'owner' && modifier.$set.active) {
       const total = Parcels.findOne({ _id: doc.parcelId }).ownedShare();
-      const newTotal = total.subtract(doc.ownership.share).add(modifier.$set['ownership.share']);
+      const newTotal = total.subtract(doc.active ? doc.ownership.share : 0).add(modifier.$set['ownership.share']);
       checkSanityOfTotalShare(doc.parcelId, newTotal);
     }
     // This check is not good, if we have activePeriods (same guy can have same role at a different time)
     // checkNotExists(Memberships, { _id: { $ne: doc._id }, communityId: doc.communityId, role: newrole, parcelId: doc.parcelId, person: newPerson });
     checkUserDataConsistency(unflattenedModifier);
+    /* if (doc.person.userId && doc.person.userId !== unflattenedModifier.person.userId) {
+      throw new Meteor.Error('Not allowed to modify user connected to the membership. Archive this membership and create a new one for the new user.');
+    } */
     Memberships.update({ _id }, modifier);
     connectUserIfPossible(_id);
   },
@@ -151,6 +154,13 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
+    if (doc.role === 'admin') {
+      const admins = Memberships.find({ communityId: doc.communityId, active: true, role: 'admin' });
+      if (admins.count() < 2) {
+        throw new Meteor.Error('err_unableToRemove', 'Admin cannot be deleted if no other admin is appointed.',
+        `Found: {${admins.count()}}`);
+      }
+    }
     Memberships.remove(_id);
   },
 });

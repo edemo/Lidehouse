@@ -16,6 +16,9 @@ import './email-sender.js';
 import './security.js';
 import './browser-policy.js';
 
+// This contains registered jobs to be executed in the future
+import '/imports/api/jobs-timers.js';
+
 // This defines all the collections, publications and methods that the application provides
 // as an API to the client.
 import './register-api.js';

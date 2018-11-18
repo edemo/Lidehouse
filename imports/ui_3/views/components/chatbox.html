@@ -39,8 +39,9 @@
             </div>
         </div>
         {{#if hiddenBy}}
-          {{_ 'Content hidden by' (_ hiddenBy)}}
-        {{else}}
+          {{_ 'Content hidden by' (_ hiddenBy)}} - <i><a href="#content-{{this._id}}" data-toggle="collapse">{{_ "Do show content"}}</a></i>
+        {{/if}}
+        <div class="{{#if hiddenBy}}collapse{{/if}}" id="content-{{this._id}}">
           <div class="social-body">
               <p data-id="{{_id}}">{{#markdown}}{{text}}{{/markdown}}</p>
               <div class="btn-group">
@@ -62,6 +63,6 @@
               </div>
           </div>
           {{> Comments_section this}}
-        {{/if}}
+        </div>
     </div>
 </template>

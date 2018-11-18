@@ -93,7 +93,7 @@
       "idCard": {
         "label" : "Személy ellenőrzött adatai",
         "type": {
-          "label": "Entitás típusa"
+          "label": "Személy típusa"
         },
         "name": {
           "label": "Név",
@@ -135,10 +135,12 @@
     "activeTime": {
       "label": "Aktív (Nem kötelező megadni, ha nincs időben korlátozva)",
       "begin": {
-        "label": "Időponttól"
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
       },
       "end": {
-        "label": "Időpontig"
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
       }
     }
   },

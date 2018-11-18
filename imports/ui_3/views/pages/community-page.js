@@ -14,6 +14,7 @@ import { Fraction } from 'fractional';
 import { __ } from '/imports/localization/i18n.js';
 import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { remove as removeCommunity } from '/imports/api/communities/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
@@ -36,7 +37,6 @@ Template.Community_page.onCreated(function() {
   this.autorun(() => {
     const communityId = this.getCommunityId();
     this.subscribe('communities.byId', { _id: communityId });
-    this.subscribe('parcels.inCommunity', { communityId });
   });
 });
 
@@ -169,10 +169,37 @@ Template.Community_page.helpers({
   },
 });
 
+function onJoinParcelInsertSuccess(parcelId) {
+  // const parcelId = Parcels.find({ communityId }, { sort: { createdAt: -1 } }).fetch()[0]._id;
+  const communityId = FlowRouter.current().params._cid;
+  const communityName = Communities.findOne(communityId).name;
+  insertMembershipUnapproved.call({
+    person: { userId: Meteor.userId() },
+    communityId,
+    approved: false,
+    role: 'owner',
+    parcelId,
+    ownership: {
+      share: new Fraction(1),
+    },
+  }, (err, res) => {
+    if (err) displayError(err);
+    else displayMessage('success', 'Joined community', communityName);
+    FlowRouter.go('App.home');
+  });
+}
+
 Template.Community_page.events({
   // community events
   'click .community-section .js-edit'() {
     afCommunityUpdateModal();
+  },
+  'click .community-section .js-delete'() {
+    const communityId = FlowRouter.current().params._cid;
+    Modal.confirmAndCall(removeCommunity, { _id: communityId }, {
+      message: 'It will disappear forever',
+      action: 'delete community',
+    });
   },
   // roleship events
   'click .roles-section .js-new'() {
@@ -255,14 +282,22 @@ Template.Community_page.events({
   },
   'click .js-join'(event) {
     AccountsTemplates.forceLogin(() => {
-      Modal.show('Autoform_edit', {
+/*      Modal.show('Autoform_edit', {
         title: 'pleaseSupplyParcelData',
         id: 'af.parcel.insert.unapproved',
         collection: Parcels,
+        omitFields: ['serial'],
         type: 'method',
         meteormethod: 'parcels.insert.unapproved',
         template: 'bootstrap3-inline',
       });
+*/
+      const communityId = FlowRouter.current().params._cid;
+      const maxSerial = Math.max.apply(Math, _.pluck(Parcels.find().fetch(), 'serial')) || 0;
+      Meteor.call('parcels.insert.unapproved',
+        { communityId, approved: false, serial: maxSerial + 1, units: 300, type: 'flat' },
+        (error, result) => { onJoinParcelInsertSuccess(result); },
+      );
     });
   },
 });
@@ -291,26 +326,6 @@ AutoForm.addHooks('af.parcel.update', {
     return modifier;
   },
 });
-
-function onJoinParcelInsertSuccess(parcelId) {
-  // const parcelId = Parcels.find({ communityId }, { sort: { createdAt: -1 } }).fetch()[0]._id;
-  const communityId = FlowRouter.current().params._cid;
-  const communityName = Communities.findOne(communityId).name;
-  insertMembershipUnapproved.call({
-    person: { userId: Meteor.userId() },
-    communityId,
-    approved: false,
-    role: 'owner',
-    parcelId,
-    ownership: {
-      share: new Fraction(1),
-    },
-  }, (err, res) => {
-    if (err) displayError(err);
-    else displayMessage('success', 'Joined community', communityName);
-    FlowRouter.go('App.home');
-  });
-}
 
 AutoForm.addModalHooks('af.parcel.insert.unapproved');
 AutoForm.addHooks('af.parcel.insert.unapproved', {

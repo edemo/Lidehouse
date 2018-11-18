@@ -35,10 +35,10 @@
     </div>
 </template>
 
-<template name="Messages">
+<template name="Room_show">
     <div class="wrapper wrapper-content animated fadeInUp">
 
-        {{#if selectedPerson}}
+        {{#if selectedRoom}}
         <div class="row">
             <div class="col-md-3 visible-md visible-lg pull-right">
                 {{> Contact_long selectedPerson}}
@@ -46,16 +46,16 @@
             <div class="col-md-9">
                 <div class="ibox chat-view messages">
                     <div class="ibox-title">
-                        {{#if selectedPersonRoom}}
+                        {{#if hasMessages}}
                         <small class="pull-right text-muted">{{_ 'Last message'}}: 
-                            <br class="rwd-break">{{selectedPersonRoom.updatedAt.toLocaleString}}</small>
+                            <br class="rwd-break">{{selectedRoom.updatedAt.toLocaleString}}</small>
                         {{/if}}
-                        <strong>{{selectedPerson.toString}}</strong>
+                        <strong>{{selectedPerson.toString}} [{{_ selectedRoom.title}}]</strong>
                     </div>
 
                     <div class="ibox-content">
                         <div class="chat-discussion">
-                            {{#if selectedPersonRoom}}
+                            {{#if hasMessages}}
                             <div class="messages">
                                 {{> Message_history}}
                             </div>

@@ -5,8 +5,10 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
+
 import { checkExists, checkNotExists, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
+import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
@@ -20,7 +22,8 @@ export const insert = new ValidatedMethod({
   run(doc) {
     if (doc._id) checkNotExists(Topics, doc._id);
     checkTopicPermissions(this.userId, 'insert', doc);
-    return Topics.insert(doc);
+    const topicId = Topics.insert(doc);
+    return topicId;
   },
 });
 
@@ -33,7 +36,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'update', topic);
-    checkModifier(topic, modifier, ['title', 'text', 'sticky']);
+    checkModifier(topic, modifier, ['title', 'text', 'sticky', 'agendaId']);
     Topics.update({ _id }, modifier);
   },
 });
@@ -46,7 +49,9 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'remove', topic);
+
     Topics.remove(_id);
+    Comments.remove({ topicId: _id });
   },
 });
 

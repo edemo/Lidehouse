@@ -37,6 +37,8 @@
   "by": "által",
   "(Select one)": "(Válasszon a listából)",
 
+  "Archived": "Archív",
+
   // roles
   "admin": "admin",
   "manager": "közös képviselő",
@@ -77,6 +79,11 @@
   "Houses": "Házak",
   "About": "Rólunk",
   "Action buttons": "Akció gombok",
+  
+  "Technical support": "Technikai segítségnyújtás",
+  "We are here to answer your questions": "Ha bármi kérdése van a rendszer használatával kapcsolatban, örömmel állunk rendelkezésére.",
+  "How may I help you": "Miben segíthetek önnek",
+  "your question": "kérdés, észrevétel",
 
   // api
   "name": "név",
@@ -133,6 +140,8 @@
   "view": "Megtekintés",
   "edit": "Szerkesztés",
   "delete": "Törlés",
+  "Delete user account": "Felhasználói fiók törlése",
+  "Delete community": "Közösség törlése",
   "remove": "Eltávolítás",
   "save": "Mentés",
   "send": "Elküldés",
@@ -193,6 +202,7 @@
   "Unhide comments from": "%s hozzászólásainak mutatása",
   "Content hidden by": "A tartalmat nem mutatjuk a(z) %s kérésére",
   "you": "ön",
+  "Do show content": "Mégis mutassuk",
 
   // voting
   "choice": "választási lehetőség",
@@ -378,6 +388,7 @@
   "This operation requires that you log in": "Ehhez a művelethez be kell jelentkeznie",
   "err_otherPartyNotAllowed": "Nincs engedélyezve a másik fél részéről",
   "Other party not allowed this activity": "A másik fél nem engedélyezte ezt a műveletet.",
+  "err_unableToRemove": "Az objektum nem törölhető",
   "No active": "Nincs aktív",
   "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon.",
   "Remove not possible after 24 hours": "MEGJEGYZÉS: Mivel a tranzakció 24 óránál régebbi, a törlése nem lehetséges. Így egy ellentétes előjelű tranzakció bevitelére kerül sor.",
@@ -414,7 +425,9 @@
   "Vote casted": "Szavazat sikeresen leadva",
   "Vote revoked": "Szavazat sikeresen visszavonva",
 
+  "delete user successful": "Felhasználói fiók törölve",
   "insert community successful": "Közösség sikeresen létrehozva.",
+  "delete community successful": "Közösség törölve",
   "insert parcel successful": "Albetét rögzítésre került",
   "update parcel successful": "Albetét adatai módosítva",
   "delete parcel successful": "Albetét törölve",
@@ -448,8 +461,12 @@
   "delete sharedfolder successful": "Mappa véglegesen törölve",
   "delete shareddoc successful": "Dokumentum véglegesen törölve",
   "delete comment successful": "Hozzászólás törölve",
+  "insert vote successful": "Szavazás létrehozva",
+  "close vote successful": "Szavazás lezárva",
 
   "Are you sure you want to": "Biztos benne, hogy",
+  "delete user": "véglegesen törli a felhasználói fiókját a rendszerből",
+  "delete community": "törli a közösséget a rendszerből",
   "delete parcel": "törli az albetétet",
   "delete ownership": "megszünteti a tulajdonviszonyt",
   "delete benefactorship": "megszünteti a használati viszonyt",
@@ -466,16 +483,28 @@
   "delete agenda": "törli a közgyűlést",
   "delete shareddoc": "törli a dokumentumot",
   "delete sharedfolder": "törli a mappát",
+  "close vote": "lezárja a szavazást",
 
-  "It will disappear forever": "Ezzel végleg törlödni fog",
+  "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
   "This will refuse all existing delegations": "Ezzel egyben törli az összes jelenleg érvényben lévő önnek adott meghatalmazást.",
   "This will bill all parcels": "Ezzel minden albetét számára kirójja a számított közös költséget minden hónapra.",
   "This will not delete topics": "Ettől a benne lévő szavazások nem fognak törlődni.",
   "This will delete all contained files as well": "Ezzel egyúttal véglegesen letörli az összes benne lévő fájlt is",
+  "The planned date of closure was ": "A lezárás eredetileg tervezett időpontja ",
 
   "deletedUser": "Törölt felhasználó",
-
+  "deleteUserWarning": ["FIGYELEM: Ön ezzel végérvényesen elveszíti a felhasználói fiókját! <br /><br />",
+    "Tájékoztatjuk, hogy a közösségében történt megnyilvánulásai ezzel nem törlődnek. ",
+    "Azok a közösség tulajdonát képezik, és törlésüket a közösség rendszergazdájától tudja kérni. <br /><br />",
+    "Olvassa át <a href='privacy' target='blank'>Adatvédelmi Tájékoztatónkat</a>"],
+  "Community cannot be deleted while it has active officers" : "A közösség nem törölhető amíg még vannak aktív tisztségviselői. Először törölnie kell ezeket.",
+  "Parcel cannot be deleted while it has active owners": "Az albetét nem törölhető, amíg aktív tulajdonosai vannak. Előszőr a tulajdonosokat kell törölnie.",
+  "Admin cannot be deleted if no other admin is appointed.": "Az adminisztrátor nem törölhető, amíg nincs másik kijelölve.",
+  
+  "welcome": "Üdvözöljük a Honline rendszerben!",
+  "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket persze később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",
+  
   // Email Templates
   "emailEnrollAccountSubject": "Meghívó a Honline használatára",
   "emailEnrollAccount": ["Üdvözöljük!\n",

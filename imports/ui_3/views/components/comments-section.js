@@ -15,7 +15,8 @@ import './comments-section.html';
 
 Template.Comments_section.onCreated(function commentsSectionOnCreated() {
   this.autorun(() => {
-    this.subscribe('comments.onTopic', { topicId: this.data._id });
+    // not needed any more, we subscribe to all comments in main now
+    // this.subscribe('comments.onTopic', { topicId: this.data._id });
   });
 });
 

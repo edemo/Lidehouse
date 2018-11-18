@@ -1,17 +1,16 @@
 /* globals window */
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
+import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { Tracker } from 'meteor/tracker';
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import 'meteor/numeral:languages';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { availableLanguages } from '/imports/startup/both/language.js';
 
-import { update as usersUpdate } from '/imports/api/users/methods.js';
-
-function getBrowserLanguage() {
+export function getBrowserLanguage() {
   // https://stackoverflow.com/questions/31471411/how-to-set-user-language-settings-in-meteor#31471877
   const language = window.navigator.userLanguage || window.navigator.language;  // works IE/SAFARI/CHROME/FF
 //  console.log('Browser language:', language);
@@ -19,36 +18,33 @@ function getBrowserLanguage() {
 }
 
 function setLanguage(lang) {
+  const supportedLang = _.contains(availableLanguages, lang) ? lang : 'en';
   // TODO:  Use the session var to show loading while language loads - this prevents from displaying the default language while loading
   Session.set('showLoadingIndicator', true);
-  TAPi18n.setLanguage(lang)
+  TAPi18n.setLanguage(supportedLang)
     .done(function handleSuccess() {
       Session.set('showLoadingIndicator', false);
     })
     .fail(function handleError(errorMessage) {
       console.log(errorMessage);        // TODO: Handle the error
     });
-  T9n.setLanguage(lang);
+  T9n.setLanguage(supportedLang);
+}
+
+// Logged in users have language prefenence in their settings. So if user logged in, use that. 
+// Otherwise use the browser language as default
+export function currentUserLanguage() {
+  const user = Meteor.user();
+  if (user && user.settings && user.settings.language) {
+    return user.settings.language;
+  } else {
+    return getBrowserLanguage();
+  }
 }
 
 Meteor.startup(function setupLanguage() {
-  setLanguage(getBrowserLanguage());
-
-  // Logged in users have language prefenence in their settings. So if user logs in, use that.
   Tracker.autorun(() => {
-    const user = Meteor.user();
-    if (user && user.settings && user.settings.language) {
-      setLanguage(user.settings.language);
-    } else {
-      setLanguage(getBrowserLanguage());
-      // If the user has no language setting, set the browser language for her
-      if (user) {
-        usersUpdate.call({ _id: user._id, modifier: {
-          $set: { 'settings.language': getBrowserLanguage() },
-        },
-        });
-      }
-    }
+    setLanguage(currentUserLanguage());
   });
 
   // moment, numeral package is not reactive, need to localize it reactively

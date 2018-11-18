@@ -35,6 +35,8 @@
   // errors and messages
   "err_notLoggedIn": "Must be logged in",
   "err_permissionDenied": "You don't have permission",
+  "err_unableToRemove": "Object cannot be deleted",
+
   "pageNotFound": "Page not found",
   "tryingToConnect": "Trying to connect…",
   "connectionIssue": "There seems to be a connection issue",
@@ -89,7 +91,14 @@
   "Joined community": "Succesfully joined community %s",
   "Vote casted": "Vote casted succesfully",
 
+  "delete user": "delete your account permanently",
   "deletedUser": "Deleted user",
+  "deleteUserWarning": ["BEWARE: Your user account will be permanently deleted! <br /><br />",
+    "Note that this will NOT delete your activity in your communities. ",
+    "Those belong to the community, and you need to ask the community's admin to delete them. <br /><br />",
+    "You may read our <a href='privacy' target='blank'>Privacy Statement</a>"],
+  "welcome": "Welcome on Honline!",
+  "welcomeMessage": "Please set your most important settings. You will be able to change these settings later on the profile page, where you can also enter your personal information.",
 
   // Email Templates
   "emailEnrollAccountSubject": "Enrollment to Honline",

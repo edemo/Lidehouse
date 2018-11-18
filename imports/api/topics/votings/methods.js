@@ -57,6 +57,15 @@ export const castVote = new ValidatedMethod({
   },
 });
 
+function closeVoteFulfill(topicId) {
+  const res = Topics.update(topicId, { $set: { closed: true } });
+  debugAssert(res === 1);
+  const topic = Topics.findOne(topicId);
+  if (Meteor.isServer) {
+    topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
+  }
+}
+
 export const closeVote = new ValidatedMethod({
   name: 'vote.close',
   validate: new SimpleSchema({
@@ -72,11 +81,12 @@ export const closeVote = new ValidatedMethod({
     }
     checkPermissions(this.userId, 'vote.close', topic.communityId, topic);
 
-    const res = Topics.update(topicId, { $set: { closed: true } });
-    debugAssert(res === 1);
-
-    if (Meteor.isServer) {
-      topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
-    }
+    closeVoteFulfill(topicId);
   },
 });
+
+export function closeClosableVotings() {
+  const now = new Date();
+  const expiredVotings = Topics.find({ category: 'vote', closed: false, 'vote.closesAt': { $lt: now } });
+  expiredVotings.forEach(voting => closeVoteFulfill(voting._id));
+}

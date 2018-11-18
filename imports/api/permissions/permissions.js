@@ -32,6 +32,8 @@ export const Permissions = [
   { name: 'vote.cast',              roles: ['owner', 'delegate', 'manager'] },
   { name: 'vote.castForOthers',     roles: ['manager'] },
   { name: 'vote.close',             roles: ['manager'] },
+  { name: 'vote.peek',              roles: ['manager'] },
+  { name: 'agendas.inCommunity',    roles: everyRole },
   { name: 'agendas.insert',         roles: ['manager'] },
   { name: 'agendas.update',         roles: ['manager'] },
   { name: 'agendas.remove',         roles: ['manager'] },
@@ -39,6 +41,7 @@ export const Permissions = [
   { name: 'delegations.forOthers',  roles: ['manager'] },
 //  { name: 'delegations.update',     roles: nobody, allowAuthor: true },
 //  { name: 'delegations.remove',     roles: nobody, allowAuthor: true },
+  { name: 'topics.inCommunity',     roles: exceptGuest },
   { name: 'news.insert',            roles: ['manager'] },
   { name: 'news.update',            roles: ['manager'] },
   { name: 'news.remove',            roles: ['manager'] },
@@ -49,7 +52,6 @@ export const Permissions = [
   { name: 'room.update',            roles: nobody },
   { name: 'feedback.insert',        roles: everyRole },
   { name: 'feedback.update',        roles: nobody },
-  { name: 'topics.listing',         roles: exceptGuest },
   { name: 'comments.insert',        roles: exceptGuest },
   { name: 'comments.update',        roles: nobody, allowAuthor: true },
   { name: 'comments.remove',        roles: ['moderator'], allowAuthor: true },
@@ -69,6 +71,7 @@ export const Permissions = [
   { name: 'journals.listing',       roles: ['accountant', 'treasurer', 'overseer'] },
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
+  { name: 'do.techsupport',         roles: ['admin'] },
 ];
 
 /* what if more compacted...

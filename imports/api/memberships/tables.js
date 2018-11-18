@@ -5,7 +5,7 @@ export function roleshipColumns(permissions) {
   return [
     { data: 'role', title: __('role'), render: Render.translate },
     { data: 'Person().displayName()', title: __('user') },
-    { data: 'Person().email()', title: __('schemaUsers.emails.$.address.label') },
+    { data: 'Person().user().profile.publicEmail', title: __('schemaUsers.emails.$.address.label') },
     { data: 'Person().user().profile.phone', title: __('schemaUsers.profile.phone.label') },
     permissions.view ? { data: '_id', render: Render.buttonView } : {},
     permissions.edit ? { data: '_id', render: Render.buttonEdit } : {},

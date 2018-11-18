@@ -37,8 +37,9 @@ Parcels.schema = new SimpleSchema({
     },
   */
   // TODO: move these into the House package
-  floor: { type: String, optional: true },
-  number: { type: String, optional: true },
+  building: { type: String, max: 10, optional: true },
+  floor: { type: String, max: 10, optional: true },
+  number: { type: String, max: 10, optional: true },
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
   lot: { type: String, max: 100, optional: true },
   // cost calculation purposes
@@ -51,7 +52,7 @@ Parcels.schema = new SimpleSchema({
 
 Parcels.helpers({
   location() {  // TODO: move this to the house package
-    return `${this.floor}/${this.number}`;
+    return `${this.floor || '?'}/${this.number || '?'}`;
   },
   displayActiveOccupants() {
     let result = '';
@@ -67,7 +68,7 @@ Parcels.helpers({
     return result;
   },
   display() {
-    return `${this.serial}. ${__(this.type)} ${this.location()} (${this.lot})`;
+    return `${this.serial || '?'}. ${__(this.type)} ${this.location()} (${this.lot})`;
   },
   toString() {
     return this.location();
@@ -118,11 +119,4 @@ Parcels.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
   Parcels.simpleSchema().i18n('schemaParcels');
-});
-
-// Deny all client-side updates since we will be using methods to manage this collection
-Parcels.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
 });
