@@ -9,6 +9,8 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Journals } from '/imports/api/journals/journals.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from './communities.js';
 import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
@@ -66,6 +68,7 @@ export const remove = new ValidatedMethod({
     Topics.remove({ communityId: _id });
     Comments.remove({ communityId: _id });
     Delegations.remove({ communityId: _id });
-    // TODO: journals/tramsactions, payaccounts/breakdowns..
+    Breakdowns.remove({ communityId: _id });
+    Journals.remove({ communityId: _id });
   },
 });
