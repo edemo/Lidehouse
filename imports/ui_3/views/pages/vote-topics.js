@@ -2,16 +2,9 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { AutoForm } from 'meteor/aldeed:autoform';
-import { TAPi18n } from 'meteor/tap:i18n';
-import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
+import { $ } from 'meteor/jquery';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { voteColumns } from '/imports/api/topics/votings/tables.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
-import { agendaColumns } from '/imports/api/agendas/tables.js';
-import { remove as removeAgenda } from '/imports/api/agendas/methods.js';
 
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -23,10 +16,6 @@ import './vote-topics.html';
 
 Template.Vote_topics.onCreated(function voteTopicsOnCreated() {
   this.topicsDict = new ReactiveDict();
-  this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
-    this.subscribe('agendas.inCommunity', { communityId });
-  });    
 });
 
 Template.Vote_topics.helpers({
@@ -73,8 +62,7 @@ Template.Vote_topics.events({
     $(event.target).blur();
     if (event.target.classList.contains('active')) {
       instance.topicsDict.set('activesPressed', true)
-    }
-    else { 
+    } else {
       instance.topicsDict.set('activesPressed', false)
     }
   },

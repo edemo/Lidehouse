@@ -26,7 +26,6 @@ const colorDelegatedToMe = '#b5b8cf';
 const colorOthers = '#dedede';
 
 Template.Delegations.onCreated(function onCreated() {
-  this.subscribe('delegations.ofUser');
 });
 
 Template.Delegations.onRendered(function onRendered() {

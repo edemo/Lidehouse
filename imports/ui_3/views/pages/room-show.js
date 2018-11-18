@@ -63,8 +63,9 @@ Template.Room_show.helpers({
 
 Template.Message_history.onCreated(function tmplMsgBoxOnCreated() {
   this.autorun(() => {
-    const roomId = FlowRouter.getParam('_rid');
-    this.subscribe('comments.onTopic', { topicId: roomId });
+    // not needed anymore, we are subscribing to this implicitly in main -- 
+    // const roomId = FlowRouter.getParam('_rid');
+    // this.subscribe('comments.onTopic', { topicId: roomId });
   });
 });
 

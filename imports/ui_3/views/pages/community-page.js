@@ -37,7 +37,6 @@ Template.Community_page.onCreated(function() {
   this.autorun(() => {
     const communityId = this.getCommunityId();
     this.subscribe('communities.byId', { _id: communityId });
-    this.subscribe('parcels.inCommunity', { communityId });
   });
 });
 
