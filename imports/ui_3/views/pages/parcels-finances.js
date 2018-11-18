@@ -27,9 +27,9 @@ import './parcels-finances.html';
 
 Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
-    this.subscribe('breakdowns.inCommunity', { communityId });
-    this.subscribe('journals.inCommunity', { communityId });
+//    const communityId = Session.get('activeCommunityId');
+//    this.subscribe('breakdowns.inCommunity', { communityId });
+//    this.subscribe('journals.inCommunity', { communityId });
   });
 
 /*  this.autorun(() => {

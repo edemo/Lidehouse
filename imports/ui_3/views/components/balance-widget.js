@@ -12,8 +12,8 @@ import './balance-widget.html';
 Template.Balance_widget.onCreated(function() {
   // Subscriptions
   this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
-    this.subscribe('journals.inCommunity', { communityId });
+//    const communityId = Session.get('activeCommunityId');
+//    this.subscribe('journals.inCommunity', { communityId });
   });
 });
 
