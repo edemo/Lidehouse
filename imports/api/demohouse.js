@@ -292,37 +292,43 @@ export function insertDemoHouse(lang, demoOrTest) {
   
   const com = { en: 'com', hu: 'hu' }[lang];
 
-  const demoManagerId = Accounts.createUser({ 
-    email: `manager@${demoOrTest}.${com}`, password: 'password',
-    profile: { lastName: __('demo.manager.lastName'), 
-      firstName: __('demo.manager.firstName'), 
-      publicEmail: `manager@${demoOrTest}.${com}`,
-      phone: '06 60 555 4321',
-      bio: __('demo.manager.bio'), 
-     } 
+  const demoManagerId = Accounts.createUser({
+    email: `manager@${demoOrTest}.${com}`,
+    password: 'password',
+    language: lang,
   });
-  Meteor.users.update({ _id: demoManagerId }, 
-    { $set: { 'emails.0.verified': true, 
+  Meteor.users.update({ _id: demoManagerId }, {
+    $set: {
+      'emails.0.verified': true,
       avatar: '/images/avatars/avatar20.jpg',
-      'settings.language': lang } 
-    }
-  );  
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoManagerId }, role: 'manager' });  
-
-  const demoAdminId = Accounts.createUser({ 
-    email: `admin@${demoOrTest}.${com}`, password: 'password',
-    profile: { lastName: __('demo.admin.lastName'), 
-      firstName: __('demo.admin.firstName'),
-      publicEmail: `admin@${demoOrTest}.${com}`,
-      phone: '06 60 762 7288' } 
+      profile: { lastName: __('demo.manager.lastName'),
+        firstName: __('demo.manager.firstName'),
+        publicEmail: `manager@${demoOrTest}.${com}`,
+        phone: '06 60 555 4321',
+        bio: __('demo.manager.bio'),
+      },
+    },
   });
-  Meteor.users.update({ _id: demoAdminId }, 
-    { $set: { 'emails.0.verified': true, 
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoManagerId }, role: 'manager' });
+
+  const demoAdminId = Accounts.createUser({
+    email: `admin@${demoOrTest}.${com}`,
+    password: 'password',
+    language: lang,
+  });
+  Meteor.users.update({ _id: demoAdminId }, {
+    $set: {
+      'emails.0.verified': true,
       avatar: '/images/avatars/avatar21.jpg',
-      'settings.language': lang } 
-    }
-  );  
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoAdminId }, role: 'admin' });  
+      profile: {
+        lastName: __('demo.admin.lastName'),
+        firstName: __('demo.admin.firstName'),
+        publicEmail: `admin@${demoOrTest}.${com}`,
+        phone: '06 60 762 7288',
+      },
+    },
+  });
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoAdminId }, role: 'admin' });
 
   // ===== Filling demo Users =====
 
