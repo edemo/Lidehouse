@@ -44,15 +44,21 @@ Template.Navigation.helpers({
 });
 
 Template.Navigation.events({
+  'click #arrow-icon'() {
+    $('.navbar-static-side').removeClass('navigation-open');
+  },
   'click .js-submenu-toggle'(event) {
     const submenuTitle = $(event.target).closest('a');
-    submenuTitle.siblings('.nav-second-level').toggleClass('in');
+    submenuTitle.siblings('.nav-second-level').toggleClass('submenu-open');
     $(submenuTitle).addClass('darker-nav-bg');
-    $('.nav-second-level').not(submenuTitle.siblings('.nav-second-level')).removeClass('in');
-    $('.js-submenu-toggle').not(submenuTitle).removeClass('darker-nav-bg');
+    $('.nav-second-level').not(submenuTitle.siblings('.nav-second-level')).removeClass('submenu-open');
   },
   'click #side-menu>li>a:not(.js-submenu-toggle)'(event) {
-    $('.nav-second-level').removeClass('in');
-    $('.js-submenu-toggle').removeClass('darker-nav-bg');
+    $('.nav-second-level').removeClass('submenu-open');
   },
-})
+  'transitionend .nav-second-level'(event) {
+    if(!($(event.target).hasClass('submenu-open'))) {
+      $(event.target).siblings('.js-submenu-toggle').removeClass('darker-nav-bg');
+    }
+  },
+});
