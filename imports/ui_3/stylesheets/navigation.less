@@ -1,15 +1,14 @@
+@navbar-open-time: .4s;
+@submenu-open-time: .4s;
+
 .nav-second-level {
     max-height: 0px;
     overflow-y: hidden;
-    transition: all .4s;
+    transition: all @submenu-open-time;
 }
 
 .submenu-open {
-    max-height: 200px !important;
-}
-
-.nav.nav-second-level.collapse[style] {
-    max-height: 200px !important;
+    max-height: 200px;
 }
 
 #arrow-icon {
@@ -23,7 +22,12 @@
     min-height: 100vh;
     left: -220px;
     background-color: @nav-bg;
-    transition: left .4s;
+}
+
+.navbar-static-side,
+#page-wrapper,
+.navbar-fixed-top {
+    transition: all @navbar-open-time !important;
 }
 
 .navigation-open {
