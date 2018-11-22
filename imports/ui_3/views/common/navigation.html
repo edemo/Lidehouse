@@ -11,9 +11,10 @@
             <ul class="nav" id="side-menu">
                 <li>
                     <div class="profile-element">
-                    <a href={{pathFor 'Community.page' _cid=activeCommunityId}}>
-                        <img class="house-pic" src="{{activeCommunity.avatar}}" alt="Community Avatar" width="100%"/>
-                    </a>
+                        <a href={{pathFor 'Community.page' _cid=activeCommunityId}}>
+                            <img class="house-pic" src="{{activeCommunity.avatar}}" alt="Community Avatar" width="100%"/>
+                        </a>
+                        <i id='arrow-icon' class="fa fa-arrow-circle-left" aria-hidden="true"></i>
                     </div>
                 </li>
                 <!--li class="nav-header">
@@ -50,7 +51,7 @@
                         <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
                         {{/if}}
                     </a>
-                    <ul class="nav nav-second-level collapse {{isActivePath regex='votings|agendas|delegations' className='in'}}">
+                    <ul class="nav nav-second-level {{isActivePath regex='votings|agendas|delegations' className='submenu-open'}}">
                         <li class="{{isActivePath regex='votings'}}">
                             <a href="{{pathFor 'Topics.vote'}}">
                                 <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
@@ -90,7 +91,7 @@
                         <span class="nav-label">{{_ 'Finances'}}</span>
                         <!--span class="fa arrow"> </span-->
                     </a>
-                    <ul class="nav nav-second-level collapse {{isActivePath regex='finances' className='in'}}">
+                    <ul class="nav nav-second-level {{isActivePath regex='finances' className='submenu-open'}}">
                         <li class="{{isActivePath regex='parcel-finances'}}">
                             <a href="{{pathFor 'Parcels.finances'}}">
                                 <i class="fa fa-pie-chart" aria-hidden="true"></i>

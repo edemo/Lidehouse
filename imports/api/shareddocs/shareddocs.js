@@ -19,6 +19,7 @@ export function hasPermissionToUpload(userId, doc) {
 }
 
 export function hasPermissionToRemoveUploaded(userId, doc) {
+  if (Meteor.isServer) return true;
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
   if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId, doc);
