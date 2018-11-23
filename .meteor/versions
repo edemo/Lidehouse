@@ -168,9 +168,9 @@ twbs:bootstrap@3.3.6
 ui@1.0.12
 underscore@1.0.10
 url@1.2.0
+useraccounts:bootstrap@1.14.2
 useraccounts:core@1.14.2
 useraccounts:flow-routing@1.14.2
-useraccounts:unstyled@1.14.2
 webapp@1.5.0
 webapp-hashing@1.0.9
 xolvio:cleaner@0.3.3
