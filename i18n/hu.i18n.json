@@ -370,7 +370,14 @@
   "commentEditInstruction": "Mentéshez nyomja meg az enter, elvetéshez az escape billentyűt.",
 
   "User data page": "Felhasználói adatlap",
-  "userAccountsSubtitle": "Bejelentkezett felhasználók minden funkciót elérhetnek",
+  "userAccountsSubtitle": {
+    "signIn": "A rendszer használatához lépjen be",
+    "signUp": "",
+    "forgotPwd": "",
+    "changePwd": "",
+    "resetPwd": "",
+    "enrollAccount": "Kérjük adjon meg egy legalább 6 karakter hosszú jelszót fiókja létrehozásához"
+  },
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
   "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közösképviselő segítségét.",

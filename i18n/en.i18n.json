@@ -47,7 +47,14 @@
   "messengerHistoryPlaceholder": "No messages yet between you. <br> Start chatting today!",
   "commentEditInstruction": "Press enter to save, escape to cancel.",
   "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
-  "userAccountsSubtitle": "Log in to enjoy all functionalities of this app",
+  "userAccountsSubtitle": {
+    "signIn": "Please log in to use the app",
+    "signUp": "",
+    "forgotPwd": "",
+    "changePwd": "",
+    "resetPwd": "",
+    "enrollAccount": "Please give a min 6 character password, to create your account"
+  },
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
   "rankedVotingInstructions": "Please rank the choices below according to your preference...",
