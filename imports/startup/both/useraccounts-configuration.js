@@ -31,7 +31,8 @@ Accounts.ui.config({
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
   sendVerificationEmail: true,
- // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
+  // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
+  enablePasswordChange: true,
 
   defaultTemplate: 'Auth_page',
   defaultLayout: 'Blank_layout',
@@ -54,6 +55,7 @@ if (Meteor.isServer) {
   Accounts.onCreateUser((options, user) => {
     user.settings = user.settings || {};
     user.settings.language = options.language;
+//    user.profile = options.profile;
     return user;
   });
 }
@@ -140,6 +142,11 @@ AccountsTemplates.configureRoute('signUp', {
 });
 
 AccountsTemplates.configureRoute('forgotPwd');
+
+AccountsTemplates.configureRoute('changePwd', {
+  name: 'changePwd',
+  path: '/change-password',
+});
 
 AccountsTemplates.configureRoute('resetPwd', {
   name: 'resetPwd',
