@@ -3,6 +3,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { ServiceConfiguration } from 'meteor/service-configuration';
 import { debugAssert } from '/imports/utils/assert.js';
+import { T9n } from 'meteor/softwarerero:accounts-t9n';
 
 /**
  * The useraccounts package must be configured for both client and server to work properly.
@@ -31,7 +32,8 @@ Accounts.ui.config({
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
   sendVerificationEmail: true,
-  // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
+  enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
+  showResendVerificationEmailLink: true,
   enablePasswordChange: true,
 
   defaultTemplate: 'Auth_page',
@@ -164,3 +166,21 @@ AccountsTemplates.configureRoute('enrollAccount', {
   path: '/enroll-account',
   redirect: enrollRedirect,
 });
+
+// TODO: Find a good place for the t9n transaltions, or get this issue fixed in softwarerero:meteor-accounts-t9n
+// https://github.com/softwarerero/meteor-accounts-t9n/issues/105
+const hu = {
+  "Required Field" : "Mező kitöltése kötelező",
+  "Invalid email": "Érvénytelen email cím",
+  "Minimum required length: 6": "Legalább 6 karakter hosszúnak kell lennie",
+  "Verification email lost?": "Nem érkezett meg a megerősítő link?",
+  "Send again": "Újraküldés",
+  "Send email again": "Email újraküldése",
+  "Send the verification email again": "Email megerősítő link újraküldése",
+  error: {
+    accounts: {
+      "Please verify your email first. Check the email and follow the link!": "Az ön email címe még nincs megerősítve. Emailben elküldtük önnek a megerősítéshez szükséges link-et.",
+    },
+  },
+};
+T9n.map('hu', hu);

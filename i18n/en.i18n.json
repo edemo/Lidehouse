@@ -50,6 +50,7 @@
   "userAccountsSubtitle": {
     "signIn": "Please log in to use the app",
     "signUp": "",
+    "resendVerificationEmail": "",
     "forgotPwd": "",
     "changePwd": "",
     "resetPwd": "",

@@ -373,6 +373,7 @@
   "userAccountsSubtitle": {
     "signIn": "A rendszer használatához lépjen be",
     "signUp": "",
+    "resendVerificationEmail": "",
     "forgotPwd": "",
     "changePwd": "",
     "resetPwd": "",
