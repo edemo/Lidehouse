@@ -175,11 +175,15 @@ const hu = {
   "Minimum required length: 6": "Legalább 6 karakter hosszúnak kell lennie",
   "Verification email lost?": "Nem érkezett meg a megerősítő link?",
   "Send again": "Újraküldés",
-  "Send email again": "Email újraküldése",
+  "Send email again": "Újraküldés",
   "Send the verification email again": "Email megerősítő link újraküldése",
+  "A new email has been sent to you. If the email doesn't show up in your inbox, be sure to check your spam folder.": "Újból elküldtük a megerősítéshez szükséges linket. Ha nem jelenik meg a levelei között, nézze meg a Spam mappában, hátha oda került.",
+  "Successful Registration! Please check your email and follow the instructions.": "Sikeres regisztráció! Emailben elküldtük a belépéshez szükséges instrukciókat.",
   error: {
     accounts: {
+      "Address must be a valid e-mail address": "Érvénytelen email cím",
       "Please verify your email first. Check the email and follow the link!": "Az ön email címe még nincs megerősítve. Emailben elküldtük önnek a megerősítéshez szükséges link-et.",
+      "Already verified": "Az email cím már korábban meg lett erősítve",
     },
   },
 };

@@ -75,3 +75,14 @@
     <p class="text-muted text-center"><small>{{suffText}}</small></p> 
   </div>
 </template>
+
+<!--This is a copy of the original, except we only show it if there is error, and we use the preText as the link text-->
+<template name="override-atResendVerificationEmailLink">
+  {{#if errorOrMessage}}
+  <div class="at-resend-verification-email-link at-wrap">
+    <p>
+      <a href="{{resendVerificationEmailLink}}" id="at-resend-verification-email" class="at-link at-resend-verification-email {{disabled}}">{{preText}}</a>
+    </p>
+  </div>
+  {{/if}}
+</template>

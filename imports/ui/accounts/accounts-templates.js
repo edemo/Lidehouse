@@ -14,9 +14,16 @@ Template['override-atTitle'].replaces('atTitle');
 // Template['override-atError'].replaces('atError');
 Template['override-atSignupLink'].replaces('atSignupLink');
 Template['override-atSigninLink'].replaces('atSigninLink');
+Template['override-atResendVerificationEmailLink'].replaces('atResendVerificationEmailLink');
 
 Template.atTitle.helpers({
   subtitle() {
     return __('userAccountsSubtitle.' + AccountsTemplates.getState());
+  },
+});
+
+Template.atResendVerificationEmailLink.helpers({
+  errorOrMessage() {
+    return AccountsTemplates.state.form.get('error') || AccountsTemplates.state.form.get('message');
   },
 });
