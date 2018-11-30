@@ -91,10 +91,12 @@ if (Meteor.settings.google) {
 // --- ROUTING ---
 // Here are some blank functions, so we can configure AccountsTemplates on server side without pulling in UI libraries
 let signinRedirect = () => { debugAssert(false); };
+let verifyRedirect = () => { debugAssert(false); };
 let enrollRedirect = () => { debugAssert(false); };
 
 if (Meteor.isClient) {
   import { FlowRouter } from 'meteor/kadira:flow-router';
+  import { setCurrentUserLanguage } from '/imports/startup/client/language.js';
   import { connectMe } from '/imports/api/memberships/methods.js';
   import { showWelcomeModal } from '/imports/ui_3/views/modals/welcome-modal.js';
 
@@ -111,8 +113,15 @@ if (Meteor.isClient) {
     } else FlowRouter.go('App.home');
   };
 
+  verifyRedirect = function () {
+    connectMe.call();
+    FlowRouter.go('App.home');
+    showWelcomeModal();
+  };
+
   enrollRedirect = function () {
     connectMe.call();
+    setCurrentUserLanguage();
     FlowRouter.go('App.home');
     showWelcomeModal();
   };
@@ -158,7 +167,7 @@ AccountsTemplates.configureRoute('resetPwd', {
 AccountsTemplates.configureRoute('verifyEmail', {
   name: 'verifyEmail',
   path: '/verify-email',
-  redirect: enrollRedirect,
+  redirect: verifyRedirect,
 });
 
 AccountsTemplates.configureRoute('enrollAccount', {
@@ -184,6 +193,7 @@ const hu = {
       "Address must be a valid e-mail address": "Érvénytelen email cím",
       "Please verify your email first. Check the email and follow the link!": "Az ön email címe még nincs megerősítve. Emailben elküldtük önnek a megerősítéshez szükséges link-et.",
       "Already verified": "Az email cím már korábban meg lett erősítve",
+      "Token expired": "Lejárt token",
     },
   },
 };
