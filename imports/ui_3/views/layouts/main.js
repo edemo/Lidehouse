@@ -45,7 +45,46 @@ Template.Main_layout.onCreated(function() {
 });
 
 Template.Main_layout.onRendered(function() {
+  let touchstartX = 0;
+  let touchendX = 0;
+  function swipeNavigation() {
+    if (touchstartX <= 220 && touchstartX - touchendX > 70) {
+      $('.navbar-static-side').removeClass('navigation-open');
+    }
+    if (touchstartX <= 30 && touchendX - touchstartX > 70) {
+      $('.navbar-static-side').addClass('navigation-open');
+    }
+  }
+  window.addEventListener('touchstart', function(event) {
+    touchstartX = event.changedTouches[0].screenX;
+  }, false);
+  window.addEventListener('touchend', function(event) {
+    touchendX = event.changedTouches[0].screenX;
+    swipeNavigation();
+  }, false); 
 
+  const windowWith = window.matchMedia('(max-width: 768px)');
+  function navbarToScreenSize(windowWidth) {
+    if (windowWidth.matches) {
+      $('.navbar-static-side').removeClass('navigation-open');
+      $('#page-wrapper').addClass('body-resize');
+      $('.navbar-fixed-top').addClass('body-resize');
+      $('#side-menu li a:not(a[href="#"])').addClass('toggleMiniNavbar');
+      $(".toggleMiniNavbar").on('click touch', function () {
+        $('.navbar-static-side').toggleClass('navigation-open');
+      });
+    } else {
+      $('.navbar-static-side').addClass('navigation-open');
+      $('.toggleMiniNavbar').off();
+      $('#side-menu li a').removeClass('toggleMiniNavbar');
+      $('#page-wrapper').removeClass('body-resize');
+      $('.navbar-fixed-top').removeClass('body-resize');
+    }
+  }
+  navbarToScreenSize(windowWith);
+  windowWith.addListener(navbarToScreenSize);
+
+  /*
   // Minimalize menu when screen is less than 768px
   $(window).bind("resize load", function () {
     if ($(this).width() < 769) {
@@ -59,7 +98,7 @@ Template.Main_layout.onRendered(function() {
         $('body').removeClass('body-small');
     }
   });
-
+*/
   // Fix height of layout when resize, scroll and load
   $(window).bind("load resize scroll", function() {
     const windowHeight = $(window).height();
@@ -86,7 +125,7 @@ Template.Main_layout.onRendered(function() {
   // $('body').addClass('boxed-layout');
 
   // Active state & collapse bugfixed
-  $(window).bind("load", function() {
+  /*$(window).bind("load", function() {
   // $(document).ready(function(){ <= Notice: never use in this .js => use only window-bind-load!
     $('#side-menu li').on('click touch', function() {
       $('#side-menu li').removeClass('active').filter($(this)).addClass('active');
@@ -97,7 +136,7 @@ Template.Main_layout.onRendered(function() {
     $("#side-menu > li > ul > li > a").on('click touch', function () {
       $(this).collapse('show');
     });
-  });
+  });*/
 });
 
 Template.Main_layout.helpers({

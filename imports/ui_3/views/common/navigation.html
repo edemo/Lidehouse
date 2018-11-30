@@ -11,9 +11,10 @@
             <ul class="nav" id="side-menu">
                 <li>
                     <div class="profile-element">
-                    <a href={{pathFor 'Community.page' _cid=activeCommunityId}}>
-                        <img class="house-pic" src="{{activeCommunity.avatar}}" alt="Community Avatar" width="100%"/>
-                    </a>
+                        <a href={{pathFor 'Community.page' _cid=activeCommunityId}}>
+                            <img class="house-pic" src="{{activeCommunity.avatar}}" alt="Community Avatar" width="100%"/>
+                        </a>
+                        <i id='arrow-icon' class="fa fa-arrow-circle-left" aria-hidden="true"></i>
                     </div>
                 </li>
                 <!--li class="nav-header">
@@ -43,14 +44,14 @@
                     </a>
                 </li>
                 <li class="{{isActivePath regex='votings|agendas|delegations'}}">
-                    <a href="#"><i class="fa fa-legal"></i>
+                    <a class="js-submenu-toggle" href="#"><i class="fa fa-legal"></i>
                         <span class="nav-label">{{_ 'Decision making'}}</span>
                         <!--span class="fa arrow"> </span-->
                         {{#if countNotifications 'vote'}}
                         <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
                         {{/if}}
                     </a>
-                    <ul class="nav nav-second-level collapse {{isActivePath regex='votings|agendas|delegations' className='in'}}">
+                    <ul class="nav nav-second-level {{isActivePath regex='votings|agendas|delegations' className='submenu-open'}}">
                         <li class="{{isActivePath regex='votings'}}">
                             <a href="{{pathFor 'Topics.vote'}}">
                                 <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
@@ -86,11 +87,11 @@
                     </a>
                 </li>
                 <li class="{{isActivePath regex='finances'}}">
-                    <a href="#"><i class="glyphicon glyphicon-piggy-bank"></i>
+                    <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-piggy-bank"></i>
                         <span class="nav-label">{{_ 'Finances'}}</span>
                         <!--span class="fa arrow"> </span-->
                     </a>
-                    <ul class="nav nav-second-level collapse {{isActivePath regex='finances' className='in'}}">
+                    <ul class="nav nav-second-level {{isActivePath regex='finances' className='submenu-open'}}">
                         <li class="{{isActivePath regex='parcel-finances'}}">
                             <a href="{{pathFor 'Parcels.finances'}}">
                                 <i class="fa fa-pie-chart" aria-hidden="true"></i>
@@ -105,7 +106,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="{{isActivePath regex='community'}}">
+                <li class="{{isActivePath regex='community/'}} {{isActivePath path='/community'}}">
                     <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
