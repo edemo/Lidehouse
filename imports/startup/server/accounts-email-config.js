@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Accounts } from 'meteor/accounts-base';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Communities } from '/imports/api/communities/communities.js';
 
 if (Meteor.settings.mailSender) {
   process.env.MAIL_URL = Meteor.settings.mailSender;
@@ -11,10 +10,12 @@ if (Meteor.settings.mailSender) {
 // When translating to non-english languages, we include the english version at the end, as an extra safety against wrong lang setting
 function dualTranslate(symbol, context, lang, separator) {
   let result = TAPi18n.__(symbol, context, lang);
-  if (lang !== 'en') {
-    if (separator === '/') result += ' (' + TAPi18n.__(symbol, context, 'en') + ')';
-    if (separator === '-') result += '\n\n[English]\n' + TAPi18n.__(symbol, context, 'en');
-  }
+// Transalting to one language, then translating to a different one, does not work (something in TAPI keeps transalting to the first lang)
+// so we now make the hungarian translation itself include an english translation as well (for enrollment)
+//  if (lang !== 'en') {
+//    if (separator === '/') result += ' (' + TAPi18n.__(symbol, context, 'en') + ')';
+//    if (separator === '-') result += '\n\n[English]\n' + TAPi18n.__(symbol, context, 'en');
+//  }
   return result;
 }
 
