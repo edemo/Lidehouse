@@ -1355,14 +1355,15 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
     const userWithRoleId = Accounts.createUser({
       email: role.name + `@${demoOrTest}.${com}`,
       password: 'password',
-      profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) } });
+      language: lang,
+      });
     const user = Meteor.users.findOne(userWithRoleId);
     const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
     Meteor.users.update({ _id: userWithRoleId },
       { $set: {
         'emails.0.verified': true,
         avatar: '/images/avatars/avatarTestUser.png',
-        'settings.language': lang,
+        profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) },
       } });
     if (role.name === 'owner') {
       Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
@@ -1432,12 +1433,15 @@ Meteor.methods({
     const demoUserId = Accounts.createUser({
       email: counter + `.${lang}demouser@honline.net`,
       password: 'password',
-      profile: { lastName: capitalize(__('guest')), firstName: firstNames[nameCounter] },
+      language: lang,
     });
     Meteor.users.update({ _id: demoUserId },
       { $set: { 'emails.0.verified': true,
         avatar: '/images/avatars/avatarnull.png',
-        'settings.language': lang } });
+        profile: { lastName: capitalize(__('guest')), firstName: firstNames[nameCounter] },
+        } 
+      }
+    );
     const demoHouse = Communities.findOne({ name: __('demo.house') });
     const demoCommunityId = demoHouse._id;
     const totalunits = demoHouse.totalunits;
