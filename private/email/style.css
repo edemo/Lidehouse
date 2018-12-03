@@ -22,10 +22,36 @@ body {
     line-height: 1.6;
 }
 
+/* -------------------------------------
+    Tables
+------------------------------------- */
+
 /* Let's make sure all tables have defaults */
 table td {
     vertical-align: top;
 }
+
+.table {
+    border-collapse: collapse;
+}
+
+.project-list table tr {
+    border-top: none;
+    border-bottom: 1px solid #e7eaec;
+
+}
+.project-list table tr td {
+    padding: 10px 0px 10px 0px;
+}
+
+
+.message-avatar {
+    height: 48px;
+    width: 48px;
+    border: 1px solid #e7eaec;
+    border-radius: 4px;
+    margin-top: 1px;
+  }
 
 /* -------------------------------------
     BODY & CONTAINER
@@ -95,7 +121,7 @@ body {
 h1, h2, h3 {
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     color: #000;
-    margin: 40px 0 0;
+   /* margin: 40px 0 0;*/
     line-height: 1.2;
     font-weight: 400;
 }
@@ -107,6 +133,8 @@ h1 {
 
 h2 {
     font-size: 24px;
+    color: white;
+    background-color: #2e4050;
 }
 
 h3 {
@@ -148,6 +176,7 @@ a {
     display: inline-block;
     border-radius: 5px;
     text-transform: capitalize;
+    max-height: 40px;
 }
 
 /* -------------------------------------
@@ -235,7 +264,7 @@ a {
 @media only screen and (max-width: 640px) {
     h1, h2, h3, h4 {
         font-weight: 600 !important;
-        margin: 20px 0 5px !important;
+       /* margin: 20px 0 5px !important;*/
     }
 
     h1 {

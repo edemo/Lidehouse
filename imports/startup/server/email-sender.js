@@ -1,9 +1,10 @@
 import fs from 'fs';
 import { Meteor } from 'meteor/meteor';
-import { SSR } from 'meteor/meteorhacks:ssr';
+import { SSR, Template } from 'meteor/meteorhacks:ssr';
 import { Email } from 'meteor/email';
 
-export function templateToHTML(name, context) {
+// name (filename!) should be snake_case, as template names cannot contain hyphens
+export function templateToHTML(name, context, helpers) {
   try {
     SSR.compileTemplate(
       name,
@@ -11,6 +12,7 @@ export function templateToHTML(name, context) {
       // relative to .meteor/local/build/programs/server.
       fs.readFileSync(`assets/app/email/${name}.html`, 'utf8')
     );
+    if (helpers) { Template[name].helpers(helpers); };
     return SSR.render(name, context);
   } catch (exception) {
     throw new Meteor.Error('500', exception);
@@ -18,12 +20,12 @@ export function templateToHTML(name, context) {
 }
 
 export const EmailSender = {
-  send(templateName, options, context) {        
+  send(templateName, options, context) {        //helpers
     Email.send({
       to: options.to,
       from: 'Honline <noreply@honline.net>',
       subject: options.subject,
-      html: templateToHTML(templateName, context),
+      html: templateToHTML(templateName, context), //helpers
     });
   },
 };

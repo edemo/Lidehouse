@@ -1,10 +1,73 @@
 
 import { Meteor } from 'meteor/meteor';
 import fs from 'fs';
+import { moment } from 'meteor/momentjs:moment';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { Topics } from '/imports/api/topics/topics.js';
-import { EmailSender } from './email-sender.js';
+import { Comments } from '/imports/api/comments/comments.js';
+import { EmailSender, templateToHTML } from './email-sender.js';
 
 const stylesheet = fs.readFileSync('assets/app/email/style.css', 'utf8');
+
+function renderTopicToHtml(community, user) {   // TODO: take notiLevel into account
+  const seenType = Meteor.users.SEEN_BY_NOTI;
+  let thingsHappened = false;
+  const liveTopics = Topics.find({ communityId: community._id, closed: false }).fetch();
+  const categoryValues = ['forum', 'vote', 'news', 'ticket', 'feedback', 'room'];
+  let bodyOfEmail = 'Community: ' + community.name;
+  const helpers = {
+    displayDate(date) {
+      return moment(date).format('L');
+    },
+    _(text) {
+      return TAPi18n.__(text, {}, 'hu');
+    },
+    author() {
+      const userFile = Meteor.users.findOne(this.userId);
+      const email = userFile.emails[0].address;
+      const emailName = email.split('@')[0];
+      if (userFile.profile && userFile.profile.lastName && userFile.profile.firstName) {
+        return userFile.profile.lastName + ' ' + userFile.profile.firstName;
+      }
+      return emailName;
+    },
+    generateURL(topicId) {
+      return 'https://honline.hu/topic/' + topicId; // TODO: different for news and room!
+    }
+  };
+
+  categoryValues.forEach((category) => {
+    const topicsByCategory = liveTopics.filter(topic => topic.category === category);
+    const topicItems = [];
+    let commentSection = '';
+    topicsByCategory.forEach((topic) => {
+      if (topic.isUnseenBy(user._id, seenType) && category !== 'room') {
+        topicItems.push(topic);
+        //user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI); //TODO: in case of room as well?
+      };
+      if (topic.unseenCommentsBy(user._id, seenType) > 0) {
+        if (topic.participantIds && !_.contains(topic.participantIds, user._id)) return;
+        const lastSeenInfo = user.lastSeens[seenType][topic._id];
+        const timeStamp = lastSeenInfo ? lastSeenInfo.timestamp : user.createdAt;
+        const commentItems = Comments.find({ topicId: topic._id, createdAt: { $gt: timeStamp } }).fetch();
+        if (commentItems.length > 0) {
+          commentSection += templateToHTML('template4comments', { commentItems, category, topic }, helpers );
+          // TODO: change commentCounter in user.lastSeens;
+        }
+        return commentSection;
+      };
+    });
+    if (topicItems.length > 0 || commentSection.length > 0 ) {
+      bodyOfEmail += templateToHTML('template4topics', { topicItems, commentSection, category }, helpers);
+      thingsHappened = true;
+    }
+  })
+
+  if (!thingsHappened) return;
+   //user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI); This should be here when everything is fine.
+  return bodyOfEmail;
+};
+
 
 function sendNotifications(user) {
   let thingsHappened = false;
@@ -12,14 +75,15 @@ function sendNotifications(user) {
   'Things happened since you last logged in: <br>';
 
   user.communities().forEach(community => {
-    Topics.find({ communityId: community._id, closed: false }).forEach(topic => {
+
+    /*Topics.find({ communityId: community._id, closed: false }).forEach(topic => {
       const topicNotification = topic.notifications(user._id);
-      if (topicNotification) {
+      if (topicNotification) {*/
         thingsHappened = true;
-        body += topicNotification + '<br>';
-        user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI);
-      }
-    });
+        body += renderTopicToHtml(community, user);//topicNotification + '<br>';
+        //user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI);
+      /*   }
+    });*/
   });
   if (!thingsHappened) return;
 
