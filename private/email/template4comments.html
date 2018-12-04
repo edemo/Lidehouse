@@ -1,0 +1,39 @@
+
+    <div class="project-list"> 
+          
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td class>
+                        <h4>{{topic.title}}</h4>
+                    </td>
+                    <td class>
+                        <a href="https://honline.hu/" class="btn btn-primary btn-sm"><img alt="image" src='http://tmsbk.hu/Picz/font-awesome_eye_30.png'></a>
+                    </td>
+                </tr>
+            </thead>
+        </table>
+        <table class="table table-hover">
+            <tbody>
+                {{#each commentItems}}
+                <tr class="social-comment">   
+                    <td>      
+                        <a href="" class="pull-left">
+                            <img alt="avatar" class="message-avatar" src='https://honline.hu/images/avatars/avatarnull.png'>
+                            <!--img alt="image" class="img-circle" src={{createdBy.avatar}}-->
+                        </a>
+                    </td>
+                    <td class="media-body" >
+                        <a href="">
+                           {{author}} 
+                        </a>
+                        <span>{{text}}</span>
+                        <br/>
+                        <small class="text-muted" >{{displayDate createdAt}}</small>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
