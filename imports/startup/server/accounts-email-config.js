@@ -25,12 +25,12 @@ Accounts.emailTemplates.siteName = 'Honline';
 Accounts.emailTemplates.from = 'Honline <noreply@honline.net>';
 
 Accounts.emailTemplates.enrollAccount = {
-  subject(user) { return dualTranslate('emailEnrollAccountSubject', {}, user.language(), '/'); },
+  subject(user) { return dualTranslate('email.EnrollAccountSubject', {}, user.language(), '/'); },
   text(user, url) {
     const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
     const community = membership.community();
     const adminEmail = community.admin().getPrimaryEmail();
-    return dualTranslate('emailEnrollAccount',
+    return dualTranslate('email.EnrollAccount',
       { name: community.name,
         role: TAPi18n.__(membership.role, {}, user.language()),
         email: adminEmail,
@@ -43,16 +43,16 @@ Accounts.emailTemplates.enrollAccount = {
 };
 
 Accounts.emailTemplates.verifyEmail = {
-  subject(user) { return dualTranslate('emailVerifyEmailSubject', {}, user.language(), '/'); },
+  subject(user) { return dualTranslate('email.VerifyEmailSubject', {}, user.language(), '/'); },
   text(user, url) {
-    return dualTranslate('emailVerifyEmail', { url }, user.language(), '-');
+    return dualTranslate('email.VerifyEmail', { url }, user.language(), '-');
   },
 };
 
 Accounts.emailTemplates.resetPassword = {
-  subject(user) { return dualTranslate('emailResetPasswordSubject', {}, user.language(), '/'); },
+  subject(user) { return dualTranslate('email.ResetPasswordSubject', {}, user.language(), '/'); },
   text(user, url) {
-    return dualTranslate('emailResetPassword', { url }, user.language(), '-');
+    return dualTranslate('email.ResetPassword', { url }, user.language(), '-');
   },
 };
 

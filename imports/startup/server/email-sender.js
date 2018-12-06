@@ -35,12 +35,6 @@ export const EmailSender = {
 };
 */
 
-/*
-if (!process.env.MAIL_URL) {
-  process.env.MAIL_URL = Meteor.settings.MAIL_URL;
-}
-*/
-
 Mailer.config({
   from: 'Honline <noreply@honline.net>',
 //  replyTo: 'Honline <noreply@honline.net>',

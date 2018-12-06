@@ -99,27 +99,5 @@
     "Those belong to the community, and you need to ask the community's admin to delete them. <br /><br />",
     "You may read our <a href='privacy' target='blank'>Privacy Statement</a>"],
   "welcome": "Welcome on Honline!",
-  "welcomeMessage": "Please set your most important settings. You will be able to change these settings later on the profile page, where you can also enter your personal information.",
-
-  // Email Templates
-  "emailEnrollAccountSubject": "Enrollment to Honline",
-  "emailEnrollAccount": ["Hello, \n",
-    "You have been added as a member of community __name__ with role: __role__. ",
-    "If you think you have been added by accident, or in fact not want to be part of that community, please contact ",
-    "the community administrator at __email__, and ask him to remove you.",
-    "You have been also invited to join the condominium management system, ",
-    "where you can follow the community issues, discuss them and even vote on them. ",
-    "You can start enjoying all of its benefits as soon as you register your account with this email address.",
-    "\nThe following link takes you to our simple one click registration: \n __url__ \n",
-    "Thanks, \nThe Honline team"],
-  "emailVerifyEmailSubject": "Verify your email address on Honline",
-  "emailVerifyEmail": ["Hello,\n",
-    "You have been registered as a user at honline.hu with this email address. ",
-    "To confirm your registration please verify your email address within two weeks. ",
-    "To verify your account email simply click the link below: \n\n __url__",
-    "\nThanks,\nThe Honline team"],
-  "emailResetPasswordSubject": "Reset your password on Honline",
-  "emailResetPassword": ["Hello,\n\nClick the link below to reset your password on Honline:",
-    "\n__url__\n\nIf you didn't request this email, please ignore it.",
-    "\nThanks,\nThe Honline team"]
+  "welcomeMessage": "Please set your most important settings. You will be able to change these settings later on the profile page, where you can also enter your personal information."
 }
