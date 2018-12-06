@@ -3,7 +3,7 @@ import { Mailer } from 'meteor/lookback:emails';
 import { EmailTemplates, SampleEmailTemplates } from './email-templates.js';
 import { EmailTemplateHelpers, SampleEmailTemplateHelpers } from './email-template-helpers.js';
 
-import { Communities } from '/imports/api/communities/communities.js';
+import { Notification_Layout } from './notification-layout.js';
 
 /* SSR EmailSender
 import fs from 'fs';
@@ -51,6 +51,11 @@ Mailer.config({
 });
 
 Meteor.startup(() => {
+  Mailer.init({
+    templates: EmailTemplates,     // Global Templates namespace, see lib/templates.js.
+    helpers: EmailTemplateHelpers, // Global template helper namespace.
+    layout: Notification_Layout,
+  });
   /* --Sample--
   Mailer.init({
     templates: SampleEmailTemplates,     // Global Templates namespace, see lib/templates.js.
@@ -61,23 +66,4 @@ Meteor.startup(() => {
       scss: 'sample-email/layout.scss',
     },
   });-- -- */
-  Mailer.init({
-    templates: EmailTemplates,     // Global Templates namespace, see lib/templates.js.
-    helpers: EmailTemplateHelpers, // Global template helper namespace.
-    layout: {
-      name: 'emailLayout',
-      path: 'email/email-template-noti.html',   // Relative to 'private' dir.
-      css: 'email/style.css',
-      helpers: {
-        title() {
-          return `Updates from ${Communities.findOne(this.communityId).name}`;
-        },
-        footer() {
-          return `You are getting these notifications, because you have email notifications sent ${Meteor.users.findOne(this.userId).settings.notiFrequency}.<br>` +
-            'You can change your email notification settings <a href="https://honline.hu/profile"> on this link </a> <br>' +
-            'Greetings by the honline team';
-        },
-      },
-    },
-  });
 });

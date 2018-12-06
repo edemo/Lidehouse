@@ -8,7 +8,7 @@ function sendNotifications(user) {
     Mailer.send({
       to: user.getPrimaryEmail(),
       subject: 'Updates from honline',
-      template: 'notifications',
+      template: 'Notification_Email',
       data: {
         userId: user._id,
         communityId: community._id,
