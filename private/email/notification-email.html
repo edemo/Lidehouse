@@ -8,7 +8,9 @@
                 </td>
                 <td class="project-title {{oldTopic}}">
                     <h3 class = "topicTitle">{{topic.title}}</h3>
-                    <p>{{topic.text}} </p>
+                    {{#if (isUnseen topic)}}
+                      <p>{{topic.text}} </p>
+                    {{/if}}
                     <div class='btn-container'>
                         <a href="{{generateURL _id}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
                     </div>

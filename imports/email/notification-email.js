@@ -19,6 +19,9 @@ export const Notification_Email = {
         .filter(t => t.isUnseenBy(this.userId) || t.unseenCommentsBy(this.userId) > 0)
         .sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
     },
+    isUnseen(topic) {
+      return topic.isUnseenBy(this.userId);
+    },
     hasUnseenComments(topic) {
       return topic.unseenCommentsBy(this.userId) > 0;
     },

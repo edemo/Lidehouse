@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Communities } from '/imports/api/communities/communities.js';
 
 export const Notification_Layout = {
