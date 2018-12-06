@@ -16,8 +16,8 @@ function renderTopicToHtml(community, user) {   // TODO: take notiLevel into acc
   const categoryValues = ['forum', 'vote', 'news', 'ticket', 'feedback', 'room'];
   let bodyOfEmail = 'Community: ' + community.name;
   const helpers = {
-    displayDate(date) {
-      return moment(date).format('L');
+    displayTime(time) {
+      return moment(time).format('L LT');;
     },
     _(text) {
       return TAPi18n.__(text, {}, 'hu');
@@ -33,6 +33,13 @@ function renderTopicToHtml(community, user) {   // TODO: take notiLevel into acc
     },
     generateURL(topicId) {
       return 'https://honline.hu/topic/' + topicId; // TODO: different for news and room!
+    },
+    oldTopic(data) {
+      if (data) { 
+        return 'oldTopic';
+      } else {
+        return '';
+      }
     }
   };
 
@@ -41,24 +48,27 @@ function renderTopicToHtml(community, user) {   // TODO: take notiLevel into acc
     const topicItems = [];
     let commentSection = '';
     topicsByCategory.forEach((topic) => {
-      if (topic.isUnseenBy(user._id, seenType) && category !== 'room') {
-        topicItems.push(topic);
+      let commentItems = [];
+      if (!topic.isUnseenBy(user._id, seenType) && category !== 'room') {
+        
+       // topicItems.push(topic);
         //user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI); //TODO: in case of room as well?
       };
       if (topic.unseenCommentsBy(user._id, seenType) > 0) {
         if (topic.participantIds && !_.contains(topic.participantIds, user._id)) return;
         const lastSeenInfo = user.lastSeens[seenType][topic._id];
         const timeStamp = lastSeenInfo ? lastSeenInfo.timestamp : user.createdAt;
-        const commentItems = Comments.find({ topicId: topic._id, createdAt: { $gt: timeStamp } }).fetch();
-        if (commentItems.length > 0) {
-          commentSection += templateToHTML('template4comments', { commentItems, category, topic }, helpers );
+        commentItems = Comments.find({ topicId: topic._id, createdAt: { $gt: timeStamp } }).fetch();
+        //if (commentItems.length > 0) {
+         
           // TODO: change commentCounter in user.lastSeens;
-        }
-        return commentSection;
-      };
+        //}
+        //return commentItems;
+      }; 
+      commentSection += templateToHTML('template4comments', { commentItems, category, topic }, helpers );
     });
     if (topicItems.length > 0 || commentSection.length > 0 ) {
-      bodyOfEmail += templateToHTML('template4topics', { topicItems, commentSection, category }, helpers);
+      bodyOfEmail += templateToHTML('template4topics', { commentSection, category }, helpers);
       thingsHappened = true;
     }
   })
@@ -71,8 +81,7 @@ function renderTopicToHtml(community, user) {   // TODO: take notiLevel into acc
 
 function sendNotifications(user) {
   let thingsHappened = false;
-  let body = 'Dear user! <br>' +
-  'Things happened since you last logged in: <br>';
+  let body = '';
 
   user.communities().forEach(community => {
 
