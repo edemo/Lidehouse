@@ -14,6 +14,11 @@ export const EmailTemplates = {
       community() {
         return Communities.findOne(this.communityId);
       },
+      topics() {
+        const topics = Topics.find({ communityId: this.communityId, closed: false });
+        const sorted = topics.fetch().sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
+        return sorted;
+      },
       text() {
         let thingsHappened = false;
         let body = 'Dear user! <br>' +

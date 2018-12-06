@@ -30,7 +30,8 @@ class TopicsCollection extends Mongo.Collection {
 
 export const Topics = new TopicsCollection('topics');
 
-Topics.categoryValues = ['forum', 'vote', 'news', 'ticket', 'room', 'feedback'];
+// Topic categories in order of increasing importance
+Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
 
 Topics.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },

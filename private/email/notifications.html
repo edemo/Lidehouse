@@ -1,1 +1,8 @@
-<div>{{{text}}}</div>
+<div>
+  {{#each topic in topics}}
+  <div class="topic mb-l">
+    <h1>{{topic.title}}</h1>
+    <p>{{topic.text}}</p>
+  </div>
+  {{/each}}
+</div>
