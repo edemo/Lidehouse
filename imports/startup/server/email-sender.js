@@ -1,9 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Mailer } from 'meteor/lookback:emails';
-import { EmailTemplates, SampleEmailTemplates } from './email-templates.js';
-import { EmailTemplateHelpers, SampleEmailTemplateHelpers } from './email-template-helpers.js';
-
-import { Notification_Layout } from './notification-layout.js';
+import { EmailTemplates, SampleEmailTemplates } from '/imports/email/email-templates.js';
+import { EmailTemplateHelpers, SampleEmailTemplateHelpers } from '/imports/email/email-template-helpers.js';
+import { Notification_Layout } from '/imports/email/notification-layout.js';
 
 /* SSR EmailSender
 import fs from 'fs';
@@ -36,9 +35,11 @@ export const EmailSender = {
 };
 */
 
+/*
 if (!process.env.MAIL_URL) {
   process.env.MAIL_URL = Meteor.settings.MAIL_URL;
 }
+*/
 
 Mailer.config({
   from: 'Honline <noreply@honline.net>',
