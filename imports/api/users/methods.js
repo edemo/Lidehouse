@@ -118,7 +118,7 @@ Meteor.users.helpers({
     modifier['$set'] = {};
     for (let i = seenType; i <= Meteor.users.SEEN_BY_NOTI; i++) {
       // When user seen it by eyes than it implies also no NOTI needed - so it propagates upwards (SEEN_BY_EYES=0, SEEN_BY_NOTI=1)
-      modifier['$set']['lastSeens.' + seenType + '.' + topic._id] = newLastSeenInfo;
+      modifier['$set']['lastSeens.' + i + '.' + topic._id] = newLastSeenInfo;
     }
 
     updateCall({ userId: this._id }, { _id: this._id, modifier });
