@@ -22,9 +22,62 @@ body {
     line-height: 1.6;
 }
 
+/* -------------------------------------
+    Tables
+------------------------------------- */
+
 /* Let's make sure all tables have defaults */
 table td {
     vertical-align: top;
+}
+
+.table {
+    border-collapse: collapse;
+    width:100%;
+    display: table;
+}
+
+.table tr {
+    border-top: none;
+    border-bottom: 1px solid #e7eaec;
+    width: 100%;
+}
+.table tr td {
+    padding: 12px 0px 5px 0px;
+    display: table-cell;
+}
+
+.message-avatar {
+    height: 48px;
+    width: 48px;
+    border-radius: 4px;
+}
+
+.avatar-container,
+.topic-icon-container {
+    width: 60px;
+}
+
+.puffer {
+    width: 40px;
+}
+
+.avatar-container img {
+    padding: 5px;
+}
+
+.media-body td {
+    padding-top: 5px;
+    width: 100%;
+}
+
+.oldTopic .topicTitle {
+    color: grey;
+    font-style: italic;
+}
+
+.oldTopic p {
+    display: none;
 }
 
 /* -------------------------------------
@@ -40,7 +93,7 @@ body {
 }
 
 .container {
-    display: block !important;
+    /*display: block !important;*/
     max-width: 600px !important;
     margin: 0 auto !important;
     /* makes it centered */
@@ -95,7 +148,7 @@ body {
 h1, h2, h3 {
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     color: #000;
-    margin: 40px 0 0;
+   /* margin: 40px 0 0;*/
     line-height: 1.2;
     font-weight: 400;
 }
@@ -107,6 +160,10 @@ h1 {
 
 h2 {
     font-size: 24px;
+    color: white;
+    background-color: #2e4050;
+    text-align: center;
+    padding: 2px;
 }
 
 h3 {
@@ -116,6 +173,7 @@ h3 {
 h4 {
     font-size: 14px;
     font-weight: 600;
+    line-height: 30px;
 }
 
 p, ul, ol {
@@ -137,17 +195,26 @@ a {
 
 .btn-primary {
     text-decoration: none;
-    color: #FFF;
+    color: #FFF !important;
     background-color: #1ab394;
     border: solid #1ab394;
     border-width: 5px 10px;
-    line-height: 2;
     font-weight: bold;
     text-align: center;
     cursor: pointer;
     display: inline-block;
     border-radius: 5px;
     text-transform: capitalize;
+    width: auto;
+}
+
+.btn-sm {
+    font-size: 12px;
+}
+
+.btn-container {
+    width: 100%;
+    text-align: right;
 }
 
 /* -------------------------------------
@@ -184,7 +251,7 @@ a {
 .alert {
     font-size: 16px;
     color: #fff;
-    font-weight: 500;
+    font-weight: 600;
     padding: 20px;
     text-align: center;
     border-radius: 3px 3px 0 0;
@@ -235,7 +302,7 @@ a {
 @media only screen and (max-width: 640px) {
     h1, h2, h3, h4 {
         font-weight: 600 !important;
-        margin: 20px 0 5px !important;
+       /* margin: 20px 0 5px !important;*/
     }
 
     h1 {

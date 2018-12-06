@@ -62,12 +62,12 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
-  isUnseenBy(userId, seenType) {
+  isUnseenBy(userId, seenType = Meteor.users.SEEN_BY_NOTI) {
     const user = Meteor.users.findOne(userId);
     const lastSeenInfo = user.lastSeens[seenType][this._id];
     return lastSeenInfo ? false : true;
   },
-  unseenCommentsBy(userId, seenType) {
+  unseenCommentsBy(userId, seenType = Meteor.users.SEEN_BY_NOTI) {
     const user = Meteor.users.findOne(userId);
     const lastSeenInfo = user.lastSeens[seenType][this._id];
     const lastSeenCommentCounter = lastSeenInfo ? lastSeenInfo.commentCounter : 0;

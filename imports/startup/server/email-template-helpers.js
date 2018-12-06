@@ -1,5 +1,14 @@
+import { moment } from 'meteor/momentjs:moment';
+import { TAPi18n } from 'meteor/tap:i18n';
+
 // Global helpers for all email templates
 export const EmailTemplateHelpers = {
+  displayTime(time) {
+    return moment(time).format('L LT');
+  },
+  _(text) {
+    return TAPi18n.__(text, {}, 'hu');
+  },
 };
 
 // ------------- Sample ----------------

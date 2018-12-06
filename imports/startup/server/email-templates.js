@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Comments } from '/imports/api/comments/comments.js';
 
 export const EmailTemplates = {
   notifications: {
@@ -15,15 +16,21 @@ export const EmailTemplates = {
         return Communities.findOne(this.communityId);
       },
       topics() {
-        const topics = Topics.find({ communityId: this.communityId, closed: false });
-        const sorted = topics.fetch().sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
-        return sorted;
+        return Topics.find({ communityId: this.communityId, closed: false }).fetch()
+          .filter(t => t.isUnseenBy(this.userId) || t.unseenCommentsBy(this.userId) > 0)
+          .sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
+      },
+      hasUnseenComments(topic) {
+        return topic.unseenCommentsBy(this.userId) > 0;
       },
       unseenCommentList(topic) {
         const comments = topic.unseenCommentListBy(this.userId);
         const user = Meteor.users.findOne(this.userId);
         user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI);
         return comments;
+      },
+      generateURL(topicId) {
+        return 'https://honline.hu/topic/' + topicId; // TODO: different for news and room
       },
       text() {
         let thingsHappened = false;

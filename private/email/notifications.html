@@ -1,12 +1,48 @@
 <div>
   {{#each topic in topics}}
-  <div class="topic mb-l">
-    <h1>{{topic.title}}</h1>
-    <p>{{topic.text}}</p>
-    <li role="separator"></li>
-    {{#each comment in (unseenCommentList topic)}}
-      <p>{{comment.text}}</p>
-    {{/each}}
-  </div>
+    <table class="table table-hover">
+        <tbody>    
+            <tr>
+                <td class='topic-icon-container'>
+                    <a href=""><img alt="image" class="img-icon" src='http://tmsbk.hu/Picz/font-awesome_commenting_40_navy.png'></a>
+                </td>
+                <td class="project-title {{oldTopic}}">
+                    <h3 class = "topicTitle">{{topic.title}}</h3>
+                    <p>{{topic.text}} </p>
+                    <div class='btn-container'>
+                        <a href="{{generateURL _id}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                    </div>
+                </td>
+                <td class>
+                    <!--small>{{displayDate vote.closesAt}}</small-->
+                </td>                     
+            </tr>
+        </tbody>
+    </table>
+    
+    {{#if (hasUnseenComments topic)}}
+    <table class="table table-hover">
+        <tbody>
+            {{#each comment in (unseenCommentList topic)}}
+            <tr class="social-comment">   
+                <td class='puffer'>
+                </td>
+                <td class='avatar-container'>      
+                    <a href="" class="pull-left">
+                        <img alt="avatar" class="message-avatar" src='https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png'>
+                        <!--img alt="avatar" class="message-avatar" src="{{comment.user.avatar}}"-->
+                    </a>
+                </td>
+                <td class="media-body" >
+                    <a href="">{{comment.user}}</a>
+                    <span>{{comment.text}}</span>
+                    <br/>
+                    <small class="text-muted" >{{displayTime comment.createdAt}}</small>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{/if}}
   {{/each}}
 </div>
