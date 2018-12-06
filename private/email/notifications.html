@@ -3,6 +3,10 @@
   <div class="topic mb-l">
     <h1>{{topic.title}}</h1>
     <p>{{topic.text}}</p>
+    <li role="separator"></li>
+    {{#each comment in (unseenCommentList topic)}}
+      <p>{{comment.text}}</p>
+    {{/each}}
   </div>
   {{/each}}
 </div>

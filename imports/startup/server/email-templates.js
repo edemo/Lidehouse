@@ -19,6 +19,12 @@ export const EmailTemplates = {
         const sorted = topics.fetch().sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
         return sorted;
       },
+      unseenCommentList(topic) {
+        const comments = topic.unseenCommentListBy(this.userId);
+        const user = Meteor.users.findOne(this.userId);
+        user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI);
+        return comments;
+      },
       text() {
         let thingsHappened = false;
         let body = 'Dear user! <br>' +

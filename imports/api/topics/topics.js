@@ -69,16 +69,18 @@ Topics.helpers({
   },
   unseenCommentsBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
-/*    const lastseenTimestamp = user.lastSeens[seenType][this._id];
-    const messages = lastseenTimestamp ?
-       Comments.find({ topicId: this._id, createdAt: { $gt: lastseenTimestamp } }) :
-       Comments.find({ topicId: this._id });
-    return messages.count();
-    */
     const lastSeenInfo = user.lastSeens[seenType][this._id];
     const lastSeenCommentCounter = lastSeenInfo ? lastSeenInfo.commentCounter : 0;
     const newCommentCounter = this.commentCounter - lastSeenCommentCounter;
     return newCommentCounter;
+  },
+  unseenCommentListBy(userId, seenType = Meteor.users.SEEN_BY_NOTI) {
+    const user = Meteor.users.findOne(userId);
+    const lastSeenInfo = user.lastSeens[seenType][this._id];
+    const messages = lastSeenInfo ?
+       Comments.find({ topicId: this._id, createdAt: { $gt: lastSeenInfo.timestamp } }) :
+       Comments.find({ topicId: this._id });
+    return messages.fetch();
   },
   unseenEventsBy(userId, seenType) {
     return 0; // TODO
