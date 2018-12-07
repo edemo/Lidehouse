@@ -1,13 +1,19 @@
 import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 
 // Global helpers for all email templates
+// TODO: duplicates from the clients side - maybe we should try reference in the client helpers here?
 export const EmailTemplateHelpers = {
   displayTime(time) {
     return moment(time).format('L LT');
   },
   _(text) {
     return TAPi18n.__(text, {}, 'hu');
+  },
+  pathFor(params, hash = {}) {
+    const result = FlowRouterHelpers.pathFor(params, hash);
+    return result;
   },
 };
 

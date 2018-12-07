@@ -31,9 +31,6 @@ export const Notification_Email = {
       user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI);
       return comments;
     },
-    generateURL(topicId) {
-      return 'https://honline.hu/topic/' + topicId; // TODO: different for news and room
-    },
     text() {
       let thingsHappened = false;
       let body = 'Dear user! <br>' +

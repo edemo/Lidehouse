@@ -12,7 +12,7 @@
                       <p>{{topic.text}} </p>
                     {{/if}}
                     <div class='btn-container'>
-                        <a href="{{generateURL _id}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                        <a href="{{pathFor 'Topic.show' _tid=topic._id}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
                     </div>
                 </td>
                 <td class>
@@ -30,13 +30,13 @@
                 <td class='puffer'>
                 </td>
                 <td class='avatar-container'>      
-                    <a href="" class="pull-left">
+                    <a href="{{pathFor 'User.show' _id=comment.user._id}}" class="pull-left">
                         <img alt="avatar" class="message-avatar" src='https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png'>
                         <!--img alt="avatar" class="message-avatar" src="{{comment.user.avatar}}"-->
                     </a>
                 </td>
                 <td class="media-body" >
-                    <a href="">{{comment.user}}</a>
+                    <a href="{{pathFor 'User.show' _id=comment.user._id}}">{{comment.user}}</a>
                     <span>{{comment.text}}</span>
                     <br/>
                     <small class="text-muted" >{{displayTime comment.createdAt}}</small>
