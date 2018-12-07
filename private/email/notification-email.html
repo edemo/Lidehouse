@@ -4,7 +4,7 @@
         <tbody>    
             <tr>
                 <td class='topic-icon-container'>
-                    <a href=""><img alt="image" class="img-icon" src='http://tmsbk.hu/Picz/font-awesome_commenting_40_navy.png'></a>
+                    <a href=""><img alt="image" class="img-icon" src="{{urlFor topic.category}}"></a>
                 </td>
                 <td class="project-title {{oldTopic}}">
                     <h3 class = "topicTitle">{{topic.title}}</h3>
@@ -31,7 +31,7 @@
                 </td>
                 <td class='avatar-container'>      
                     <a href="{{pathFor 'User.show' _id=comment.user._id}}" class="pull-left">
-                        <img alt="avatar" class="message-avatar" src='https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png'>
+                        <img alt="avatar" class="message-avatar" src='{{comment.user.avatar}}'>
                         <!--img alt="avatar" class="message-avatar" src="{{comment.user.avatar}}"-->
                     </a>
                 </td>

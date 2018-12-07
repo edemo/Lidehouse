@@ -43,7 +43,7 @@ table td {
     width: 100%;
 }
 .table tr td {
-    padding: 12px 0px 5px 0px;
+    padding: 0px 0px 5px 0px;
     display: table-cell;
 }
 
@@ -58,12 +58,24 @@ table td {
     width: 60px;
 }
 
+.avatar-container img {
+    border-radius: 50%;
+}
+
 .puffer {
     width: 40px;
 }
 
 .avatar-container img {
     padding: 5px;
+}
+
+.project-title {
+    padding-left: 10px;
+    padding-top: 6px;
+}
+ .img-icon {
+    padding: 10px;
 }
 
 .media-body td {

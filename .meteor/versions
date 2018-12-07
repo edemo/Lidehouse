@@ -84,7 +84,7 @@ livedata@1.0.18
 lmieulet:meteor-coverage@1.1.4
 localstorage@1.2.0
 logging@1.1.19
-lookback:emails@0.7.8
+lookback:emails@0.7.7
 lookback:html-to-text@2.1.3_2
 matb33:collection-hooks@0.8.4
 mdg:validated-method@1.1.0
