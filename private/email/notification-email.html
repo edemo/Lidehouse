@@ -22,10 +22,11 @@
         </tbody>
     </table>
     
-    {{#if (hasUnseenComments topic)}}
+    {{#let comments=(unseenCommentList topic)}}
+    {{#if comments}}
     <table class="table table-hover">
         <tbody>
-            {{#each comment in (unseenCommentList topic)}}
+            {{#each comment in comments}}
             <tr class="social-comment">   
                 <td class='puffer'>
                 </td>
@@ -46,5 +47,6 @@
         </tbody>
     </table>
     {{/if}}
+    {{/let}}
   {{/each}}
 </div>

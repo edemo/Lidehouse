@@ -105,10 +105,10 @@ Meteor.users.helpers({
     const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
     let newLastSeenInfo;
     const comments = topic.comments().fetch(); // returns newest-first order
+    const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
     if (!comments || comments.length === 0) {
-      newLastSeenInfo = { timestamp: null, commentCounter: 0 };
+      newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: 0 };
     } else {
-      const lastseenTimestamp = comments[0].createdAt;
       newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: topic.commentCounter };
     }
 
