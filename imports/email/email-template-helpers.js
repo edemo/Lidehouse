@@ -15,6 +15,17 @@ export const EmailTemplateHelpers = {
     const result = FlowRouterHelpers.pathFor(params, hash);
     return result;
   },
+  urlFor(category) {
+    const url = {
+      //feedback: '', 
+      forum: 'http://tmsbk.hu/HonIcons/font-awesome_4-7-0_commenting_100_0_2d4050_none.png',
+      ticket: 'http://tmsbk.hu/HonIcons/font-awesome_4-7-0_wrench_100_0_2d4050_none.png',
+      room: 'http://tmsbk.hu/HonIcons/font-awesome_4-7-0_envelope_100_0_2d4050_none.png',
+      vote: 'http://tmsbk.hu/HonIcons/font-awesome_4-7-0_gavel_100_0_2d4050_none.png',
+      news: 'http://tmsbk.hu/HonIcons/font-awesome_4-7-0_exclamation-circle_100_0_2d4050_none.png',
+    };
+    return url[category];
+  },
 };
 
 // ------------- Sample ----------------
