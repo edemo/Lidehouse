@@ -39,7 +39,6 @@ table td {
 
 .topic-row {
     border-top: 1px solid #e7eaec;
-    border-bottom: 1px solid #e7eaec;
     width: 100%;
 }
 
@@ -273,7 +272,7 @@ a {
     font-size: 16px;
     color: #fff;
     font-weight: 600;
-    padding: 40px;
+    padding: 20px;
     text-align: center;
     border-radius: 3px 3px 0 0;
 }
