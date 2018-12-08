@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
@@ -12,7 +13,8 @@ export const EmailTemplateHelpers = {
     return moment(time).format('L LT');
   },
   _(text) {
-    return TAPi18n.__(text, {}, 'hu');
+    const user = Meteor.users.findOne(this.userId);
+    return TAPi18n.__(text, {}, user.settings.language);
   },
   pathFor(params, hash = {}) {
     const result = FlowRouterHelpers.pathFor(params, hash);
