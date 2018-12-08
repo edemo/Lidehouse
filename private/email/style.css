@@ -42,8 +42,9 @@ table td {
     border-bottom: 1px solid #e7eaec;
     width: 100%;
 }
+
 .table tr td {
-    padding: 0px 0px 5px 0px;
+    padding: 20px 0px;
     display: table-cell;
 }
 
@@ -56,6 +57,11 @@ table td {
 .avatar-container,
 .topic-icon-container {
     width: 60px;
+}
+
+.topic-icon-container {
+    padding-top: 20px;
+    background-color: #e7eaec;
 }
 
 .avatar-container img {
@@ -72,20 +78,20 @@ table td {
 
 .project-title {
     padding-left: 10px;
-    padding-top: 6px;
+    padding-top: 30px;
 }
  .img-icon {
     padding: 10px;
 }
 
 .media-body td {
-    padding-top: 5px;
     width: 100%;
 }
 
 .oldTopic .topicTitle {
     color: grey;
     font-style: italic;
+    margin-bottom: 20px;
 }
 
 .oldTopic p {
@@ -129,7 +135,7 @@ body {
 }
 
 .content-wrap {
-    padding: 20px;
+    padding: 0px;
 }
 
 .content-block {
@@ -162,7 +168,6 @@ h1, h2, h3 {
     color: #000;
    /* margin: 40px 0 0;*/
     line-height: 1.2;
-    font-weight: 400;
 }
 
 h1 {
@@ -176,10 +181,12 @@ h2 {
     background-color: #2e4050;
     text-align: center;
     padding: 2px;
+    font-weight: 400;
 }
 
 h3 {
     font-size: 18px;
+    font-weight: 550;
 }
 
 h4 {
@@ -196,6 +203,7 @@ p li, ul li, ol li {
     margin-left: 5px;
     list-style-position: inside;
 }
+
 
 /* -------------------------------------
     LINKS & BUTTONS
@@ -218,6 +226,8 @@ a {
     border-radius: 5px;
     text-transform: capitalize;
     width: auto;
+    margin-top: 10px;
+    margin-right: 15px;
 }
 
 .btn-sm {
@@ -264,7 +274,7 @@ a {
     font-size: 16px;
     color: #fff;
     font-weight: 600;
-    padding: 20px;
+    padding: 40px;
     text-align: center;
     border-radius: 3px 3px 0 0;
 }
