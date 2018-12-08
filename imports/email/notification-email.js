@@ -17,17 +17,17 @@ export const Notification_Email = {
     },
     topics() {
       return Topics.find({ communityId: this.communityId, closed: false }).fetch()
-        .filter(t => t.isUnseenBy(this.userId) || t.unseenCommentsBy(this.userId) > 0)
+        .filter(t => t.needsAttention(this.userId, Meteor.users.SEEN_BY_NOTI))
         .sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
     },
     isUnseen(topic) {
-      return topic.isUnseenBy(this.userId);
+      return topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY_NOTI);
     },
     hasUnseenComments(topic) {
-      return topic.unseenCommentsBy(this.userId) > 0;
+      return topic.unseenCommentsBy(this.userId, Meteor.users.SEEN_BY_NOTI) > 0;
     },
     unseenCommentList(topic) {
-      const comments = topic.unseenCommentListBy(this.userId);
+      const comments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY_NOTI);
       const user = Meteor.users.findOne(this.userId);
       user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI);
       return comments;

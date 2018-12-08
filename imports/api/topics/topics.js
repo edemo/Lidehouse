@@ -3,8 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import { _ } from 'meteor/underscore';
-import faker from 'faker';
-import { check } from 'meteor/check';
+
+import { debugAssert } from '/imports/utils/assert.js';
 
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -62,19 +62,19 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
-  isUnseenBy(userId, seenType = Meteor.users.SEEN_BY_NOTI) {
+  isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
     const lastSeenInfo = user.lastSeens[seenType][this._id];
     return lastSeenInfo ? false : true;
   },
-  unseenCommentsBy(userId, seenType = Meteor.users.SEEN_BY_NOTI) {
+  unseenCommentsBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
     const lastSeenInfo = user.lastSeens[seenType][this._id];
     const lastSeenCommentCounter = lastSeenInfo ? lastSeenInfo.commentCounter : 0;
     const newCommentCounter = this.commentCounter - lastSeenCommentCounter;
     return newCommentCounter;
   },
-  unseenCommentListBy(userId, seenType = Meteor.users.SEEN_BY_NOTI) {
+  unseenCommentListBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
     const lastSeenInfo = user.lastSeens[seenType][this._id];
     const messages = lastSeenInfo ?
@@ -85,20 +85,30 @@ Topics.helpers({
   unseenEventsBy(userId, seenType) {
     return 0; // TODO
   },
-  needsAttention(userId, seenType = Meteor.users.SEEN_BY_EYES) {
+  needsAttention(userId, seenType) {
     if (this.closed) return 0;
+    if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
     switch (this.category) {
+      case 'news':
+        if (this.isUnseenBy(userId, seenType)) return 1;
+        break;
       case 'room':
-        if (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0) return 1;
+        if (this.unseenCommentsBy(userId, seenType) > 0) return 1;
         break;
       case 'forum':
         if (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0) return 1;
         break;
       case 'vote':
-        if (!this.hasVotedIndirect(userId)) return 1;
+        if (seenType === Meteor.users.SEEN_BY_EYES
+          && !this.hasVotedIndirect(userId)) return 1;
+        if (seenType === Meteor.users.SEEN_BY_NOTI
+          && (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0)) return 1;
         break;
       case 'ticket':
-        if (this.ticket.status !== 'closed') return 1;
+        if (seenType === Meteor.users.SEEN_BY_EYES
+          && this.ticket.status !== 'closed') return 1;
+        if (seenType === Meteor.users.SEEN_BY_NOTI
+          && (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0)) return 1;
         break;
       case 'feedback':
         if (this.isUnseenBy(userId, seenType)) return 1;
@@ -107,27 +117,6 @@ Topics.helpers({
         debugAssert(false);
     }
     return 0;
-  },
-  notifications(userId, seenType = Meteor.users.SEEN_BY_NOTI) {
-    if (this.participantIds && !_.contains(this.participantIds, userId)) return '';
-    if (this.category === 'room') {
-      if (this.unseenCommentsBy(userId, seenType) > 0) {
-        return `You have ${this.unseenCommentsBy(userId, seenType)} new messages from ${this.participantIds.map(id => Meteor.users.findOne(id).profile.firstName)}`; // TODO: print messages
-      }
-    } else /* this.category !== 'room' */ {
-      if (this.isUnseenBy(userId, seenType)) {
-        return `There is a new topic: "${this.title}"`;
-      }
-      // else
-      let result = '';
-      if (this.unseenCommentsBy(userId, seenType) > 0) {
-        result += `There are ${this.unseenCommentsBy(userId, seenType)} new comments on topic "${this.title}" \n`; // TODO: print comments
-      }
-      if (this.unseenEventsBy(userId, seenType) > 0) {
-        result += `There are ${this.unseenEventsBy(userId, seenType)} new events on topic "${this.title}" \n`; // TODO: print events
-      }
-      return result;
-    }
   },
   remove() {
     Comments.remove({ topicId: this._id });
