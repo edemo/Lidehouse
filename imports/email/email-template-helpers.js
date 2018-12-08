@@ -5,6 +5,9 @@ import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 // Global helpers for all email templates
 // TODO: duplicates from the clients side - maybe we should try reference in the client helpers here?
 export const EmailTemplateHelpers = {
+  equals(a, b) {
+    return a == b;
+  },
   displayTime(time) {
     return moment(time).format('L LT');
   },

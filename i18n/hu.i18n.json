@@ -203,6 +203,8 @@
   "Content hidden by": "A tartalmat nem mutatjuk a(z) %s kérésére",
   "you": "ön",
   "Do show content": "Mégis mutassuk",
+  "private chat": "privát üzenet",
+  "tech support": "technikai segítség",
 
   // voting
   "choice": "választási lehetőség",

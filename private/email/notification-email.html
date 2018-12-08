@@ -6,6 +6,14 @@
                 <td class='topic-icon-container'>
                     <a href=""><img alt="image" class="img-icon" src="{{categoryImgUrlFor topic.category}}"></a>
                 </td>
+                {{#if equals topic.category 'room'}}
+                <td class="project-title">
+                    <h3 class = "topicTitle">{{_ topic.title}}</h3>
+                    <div class='btn-container'>
+                        <a href="{{pathFor 'Room.show' _rid=topic._id}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                    </div>
+                </td>
+                {{else}}
                 <td class="project-title {{oldTopic}}">
                     <h3 class = "topicTitle">{{topic.title}}</h3>
                     {{#if (isUnseen topic)}}
@@ -17,7 +25,8 @@
                 </td>
                 <td class>
                     <!--small>{{displayDate vote.closesAt}}</small-->
-                </td>                     
+                </td>
+                {{/if}}                     
             </tr>
         </tbody>
     </table>
