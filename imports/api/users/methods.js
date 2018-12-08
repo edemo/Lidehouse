@@ -100,24 +100,13 @@ if (Meteor.isClient) {
 
 Meteor.users.helpers({
   hasNowSeen(topic, seenType) {
-    debugAssert(seenType === Meteor.users.SEEN_BY_EYES || seenType === Meteor.users.SEEN_BY_NOTI);
     // The user has just seen this topic, so the lastseen info needs to be updated  
-    const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
-    let newLastSeenInfo;
-    const comments = topic.comments().fetch(); // returns newest-first order
-    const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
-    if (!comments || comments.length === 0) {
-      newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: 0 };
-    } else {
-      newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: topic.commentCounter };
-    }
-
-    if (oldLastSeenInfo && oldLastSeenInfo.commentCounter === newLastSeenInfo.commentCounter) return; // this avoids infinite loop
-
+    debugAssert(seenType === Meteor.users.SEEN_BY.EYES || seenType === Meteor.users.SEEN_BY.NOTI);
+    const newLastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
     const modifier = {};
     modifier['$set'] = {};
-    for (let i = seenType; i <= Meteor.users.SEEN_BY_NOTI; i++) {
-      // When user seen it by eyes than it implies also no NOTI needed - so it propagates upwards (SEEN_BY_EYES=0, SEEN_BY_NOTI=1)
+    // When user seen it by EYES, it implies no NOTI needed - so lastSeen info propagates upwards (SEEN_BY.EYES=0, SEEN_BY.NOTI=1)
+    for (let i = seenType; i <= Meteor.users.SEEN_BY.NOTI; i++) {
       modifier['$set']['lastSeens.' + i + '.' + topic._id] = newLastSeenInfo;
     }
 

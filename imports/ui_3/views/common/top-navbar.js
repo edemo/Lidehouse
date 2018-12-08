@@ -31,7 +31,7 @@ Template.Top_navbar.helpers({
         let count = 0;
         const rooms = Topics.find({ communityId, category: 'room', title: roomType });
         rooms.map(room => {
-          count += room.unseenCommentsBy(userId, Meteor.users.SEEN_BY_EYES);
+          count += room.unseenCommentsBy(userId, Meteor.users.SEEN_BY.EYES);
         });
         return count;
     },

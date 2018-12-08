@@ -46,6 +46,6 @@ Template.Feedbacks.events({
       bodyContext: topic,
     };
     Modal.show('Modal', modalContext);
-    Meteor.user().hasNowSeen(topic, Meteor.users.SEEN_BY_EYES);
+    Meteor.user().hasNowSeen(topic, Meteor.users.SEEN_BY.EYES);
   },
 });

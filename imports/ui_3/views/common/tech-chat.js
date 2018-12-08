@@ -44,12 +44,12 @@ Template.Tech_chat.helpers({
   hasUnreadMessages() {
     const room = getMyTechSupportRoom();
     if (!room) return false;
-    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES) > 0;
+    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES) > 0;
   },
   unreadMessagesCount() {
     const room = getMyTechSupportRoom();
     if (!room) return 0;
-    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES);
+    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
   },
   sideOfMessage(userId) {
     if (userId === Meteor.userId()) return 'right';
@@ -64,7 +64,7 @@ Template.Tech_chat.events({
     $(event.target).closest('a').children().toggleClass('fa-question').toggleClass('fa-times');
     $('.small-chat-box').toggleClass('active');
     const room = getMyTechSupportRoom();
-    if (room) Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY_EYES);
+    if (room) Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY.EYES);
   },
   'click .small-chat-box .js-send'(event, instance) {
     const textarea = instance.find('input');
@@ -83,7 +83,7 @@ Template.Tech_chat.events({
       onSuccess((res) => {
         textarea.value = '';
         // if ($(window).width() > 768) $('.js-focused').focus();
-        Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY_EYES);
+        Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
       }));
     };
 

@@ -84,8 +84,10 @@ const defaultAvatar = '/images/avatars/avatarnull.png';
 // const defaultAvatar = 'http://pannako.hu/wp-content/uploads/avatar-1.png';
 
 // index in the user.lastSeens array (so no need to use magic numbers)
-Meteor.users.SEEN_BY_EYES = 0;
-Meteor.users.SEEN_BY_NOTI = 1;
+Meteor.users.SEEN_BY = {
+  EYES: 0,
+  NOTI: 1,
+};
 
 Meteor.users.schema = new SimpleSchema({
   // For accounts-password, either emails or username is required, but not both.

@@ -88,11 +88,11 @@ Template.Member_slot.helpers({
   hasUnreadMessages() {
     const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
     if (!room) return false;
-    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES) > 0;
+    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES) > 0;
   },
   unreadMessagesCount() {
     const room = Rooms.getRoom(Session.get('roomMode'), this.person.userId);
-    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY_EYES);
+    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
   },
 });
 

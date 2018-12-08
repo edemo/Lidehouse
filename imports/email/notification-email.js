@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Comments } from '/imports/api/comments/comments.js';
+import '/imports/api/users/users.js';
 
 export const Notification_Email = {
   path: 'email/notification-email.html',    // Relative to the 'private' dir.
@@ -16,20 +16,17 @@ export const Notification_Email = {
       return Communities.findOne(this.communityId);
     },
     topics() {
-      return Topics.find({ communityId: this.communityId, closed: false }).fetch()
-        .filter(t => t.needsAttention(this.userId, Meteor.users.SEEN_BY_NOTI))
-        .sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
+      const topics = Topics.topicsNeedingAttention(this.userId, this.communityId, Meteor.users.SEEN_BY.NOTI);
+      return topics.sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
     },
     isUnseen(topic) {
-      return topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY_NOTI);
+      return topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY.NOTI);
     },
     hasUnseenComments(topic) {
-      return topic.unseenCommentsBy(this.userId, Meteor.users.SEEN_BY_NOTI) > 0;
+      return topic.unseenCommentsBy(this.userId, Meteor.users.SEEN_BY.NOTI) > 0;
     },
     unseenCommentList(topic) {
-      const comments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY_NOTI);
-      const user = Meteor.users.findOne(this.userId);
-      user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI);
+      const comments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY.NOTI);
       return comments;
     },
     categoryImgUrlFor(category) {
@@ -42,22 +39,6 @@ export const Notification_Email = {
         news: 'font-awesome_4-7-0_exclamation-circle_100_0_2d4050_none.png',
       };
       return FlowRouterHelpers.urlFor('/images/email/' + file[category]);
-    },
-    text() {
-      let thingsHappened = false;
-      let body = 'Dear user! <br>' +
-        'Things happened since you last logged in: <br>';
-      Topics.find({ communityId: this.communityId, closed: false }).forEach((topic) => {
-        const topicNotification = topic.notifications(this.userId);
-        if (topicNotification) {
-          thingsHappened = true;
-          body += topicNotification + '<br>';
-          const user = Meteor.users.findOne(this.userId);
-          user.hasNowSeen(topic, Meteor.users.SEEN_BY_NOTI);
-        }
-      });
-      if (!thingsHappened) return '';
-      return body;
     },
   },
 

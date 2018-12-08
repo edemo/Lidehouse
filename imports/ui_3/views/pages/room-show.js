@@ -75,7 +75,7 @@ Template.Message_history.onRendered(function tmplMsgBoxOnRendered() {
     const roomId = FlowRouter.getParam('_rid');
     const room = Topics.findOne(roomId);
     if (this.subscriptionsReady()) {
-      Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY_EYES);
+      Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY.EYES);
     }
   });
 
@@ -109,7 +109,7 @@ Template.Message_send.events({
       text,
     },
     onSuccess((res) => {
-      Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY_EYES);
+      Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY.EYES);
       textarea.value = '';
       if ($(window).width() > 768) $('.js-focused').focus();
     }));

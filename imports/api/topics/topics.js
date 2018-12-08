@@ -99,15 +99,15 @@ Topics.helpers({
         if (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0) return 1;
         break;
       case 'vote':
-        if (seenType === Meteor.users.SEEN_BY_EYES
+        if (seenType === Meteor.users.SEEN_BY.EYES
           && !this.hasVotedIndirect(userId)) return 1;
-        if (seenType === Meteor.users.SEEN_BY_NOTI
+        if (seenType === Meteor.users.SEEN_BY.NOTI
           && (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0)) return 1;
         break;
       case 'ticket':
-        if (seenType === Meteor.users.SEEN_BY_EYES
+        if (seenType === Meteor.users.SEEN_BY.EYES
           && this.ticket.status !== 'closed') return 1;
-        if (seenType === Meteor.users.SEEN_BY_NOTI
+        if (seenType === Meteor.users.SEEN_BY.NOTI
           && (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0)) return 1;
         break;
       case 'feedback':
@@ -123,6 +123,11 @@ Topics.helpers({
     Topics.remove({ _id: this._id });
   },
 });
+
+Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
+  return Topics.find({ communityId, closed: false }).fetch()
+    .filter(t => t.needsAttention(userId, seenType));
+};
 
 Topics.helpers(likesHelpers);
 Topics.helpers(flagsHelpers);

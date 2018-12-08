@@ -28,7 +28,7 @@ Template.Navigation.helpers({
     const topics = Topics.find({ communityId, category });
     topics.map(t => {
       const userId = Meteor.userId();
-      count += t.needsAttention(userId, Meteor.users.SEEN_BY_EYES);
+      count += t.needsAttention(userId, Meteor.users.SEEN_BY.EYES);
     });
     return count;
   },
