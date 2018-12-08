@@ -61,7 +61,6 @@ table td {
 
 .topic-icon-container {
     padding-top: 20px;
-    background-color: #e7eaec;
 }
 
 .avatar-container img {
@@ -135,7 +134,7 @@ body {
 }
 
 .content-wrap {
-    padding: 0px;
+    padding: 20px;
 }
 
 .content-block {
