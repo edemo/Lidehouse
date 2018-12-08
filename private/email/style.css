@@ -37,14 +37,19 @@ table td {
     display: table;
 }
 
-.table tr {
-    border-top: none;
+.topic-row {
+    border-top: 1px solid #e7eaec;
     border-bottom: 1px solid #e7eaec;
     width: 100%;
 }
 
+.social-comment {
+    width: 100%;
+    border-top: none;
+}
+
 .table tr td {
-    padding: 20px 0px;
+    padding: 0px 0px 5px 0px;
     display: table-cell;
 }
 
@@ -57,11 +62,6 @@ table td {
 .avatar-container,
 .topic-icon-container {
     width: 60px;
-}
-
-.topic-icon-container {
-    padding-top: 20px;
-    background-color: #e7eaec;
 }
 
 .avatar-container img {
@@ -78,20 +78,20 @@ table td {
 
 .project-title {
     padding-left: 10px;
-    padding-top: 30px;
+    padding-top: 6px;
 }
  .img-icon {
     padding: 10px;
 }
 
 .media-body td {
+    padding-top: 5px;
     width: 100%;
 }
 
 .oldTopic .topicTitle {
     color: grey;
     font-style: italic;
-    margin-bottom: 20px;
 }
 
 .oldTopic p {
@@ -135,7 +135,7 @@ body {
 }
 
 .content-wrap {
-    padding: 0px;
+    padding: 20px;
 }
 
 .content-block {
@@ -227,7 +227,6 @@ a {
     text-transform: capitalize;
     width: auto;
     margin-top: 10px;
-    margin-right: 15px;
 }
 
 .btn-sm {
