@@ -30,6 +30,10 @@
     "ResetPassword": ["Üdvözöljük!\n",
       "Az alábbi linkre kattintva helyreállíthatja jelszavát a honline.hu rendszerében:",
       "\n__url__\n",
-      "Üdvözlettel, \nA Honline Csapata"]
+      "Üdvözlettel, \nA Honline Csapata"],
+    "NotificationTitle": "Értesítések a __name__ társasházból",
+    "NotificationFooter": ["Ön azért kapja ezeket az értesítéseket, mert beállításaiban az szerepel, hogy a társasházban történő eseményekről email értesítőt küldjünk __frequency__.<br>",
+      "Az email értesítések gyakoriságát átállíthatja vagy teljesen ki is kapcsolhatja <a href=\"__link__\"> ezen a linken</a>.<br>",
+      "Ha bármi egyéb kérdése lenne, lépjen kapcsolatba a társasház <a href=\"mailto:__adminEmail__\">adminisztrátorával</a>."]
   }
 }

@@ -19,6 +19,10 @@
     "ResetPasswordSubject": "Reset your password on Honline",
     "ResetPassword": ["Hello,\n\nClick the link below to reset your password on Honline:",
       "\n__url__\n\nIf you didn't request this email, please ignore it.",
-      "\nThanks,\nThe Honline team"]
+      "\nThanks,\nThe Honline team"],
+    "NotificationTitle": "Updates from __name__ community",
+    "NotificationFooter": ["You are receiving these notifications, because you have asked us to send you email notifications about the activities in your community __frequency__.<br>",
+      "You can change your email notification settings or turn it off completely <a href=\"__link__\"> on this link</a>.<br>",
+      "Should you have any questions, feel free to contact the community's <a href=\"mailto:__adminEmail__\">administrator<br>."]
   }
 }

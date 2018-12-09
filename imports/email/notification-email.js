@@ -9,12 +9,6 @@ export const Notification_Email = {
   // scss: 'email/style.css',             // Mail specific SCSS.
 
   helpers: {
-    user() {
-      return Meteor.users.findOne(this.userId);
-    },
-    community() {
-      return Communities.findOne(this.communityId);
-    },
     topics() {
       const topics = Topics.topicsNeedingAttention(this.userId, this.communityId, Meteor.users.SEEN_BY.NOTI);
       return topics.sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
@@ -38,6 +32,7 @@ export const Notification_Email = {
         vote: 'font-awesome_4-7-0_gavel_100_0_2d4050_none.png',
         news: 'font-awesome_4-7-0_exclamation-circle_100_0_2d4050_none.png',
       };
+      // return 'https://honline.hu/images/email/' + file[category]; // use this for testing, because localhost may not be accessible by mail clients
       return FlowRouterHelpers.urlFor('/images/email/' + file[category]);
     },
   },

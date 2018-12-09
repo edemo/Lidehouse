@@ -12,9 +12,9 @@ export const EmailTemplateHelpers = {
   displayTime(time) {
     return moment(time).format('L LT');
   },
-  _(text) {
+  _(text, kw) {
     const user = Meteor.users.findOne(this.userId);
-    return TAPi18n.__(text, {}, user.settings.language);
+    return TAPi18n.__(text, kw.hash, user.settings.language);
   },
   pathFor(params, hash = {}) {
     const result = FlowRouterHelpers.pathFor(params, hash);
