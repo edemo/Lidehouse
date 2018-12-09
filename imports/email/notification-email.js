@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -14,6 +15,16 @@ export const Notification_Email = {
     },
     community() {
       return Communities.findOne(this.communityId);
+    },
+    curb(text, chars) {
+      if (text.length < chars) return text;
+      return text.substr(0, chars) + `... [${TAPi18n.__('see full text with View button', {}, Meteor.users.findOne(this.userId).settings.language)}]`;
+    },
+    linkPath(topic) {
+      if (topic.category === 'room') {
+        return FlowRouterHelpers.pathFor('Room.show', { _rid: topic._id });
+      }
+      return FlowRouterHelpers.pathFor('Topic.show', { _tid: topic._id });
     },
     topics() {
       const topics = Topics.topicsNeedingAttention(this.userId, this.communityId, Meteor.users.SEEN_BY.NOTI);
