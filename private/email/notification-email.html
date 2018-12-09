@@ -45,8 +45,8 @@
                         <!--img alt="avatar" class="message-avatar" src="{{comment.user.avatar}}"-->
                     </a>
                 </td>
-                <td class="media-body" >
-                    <a href="{{pathFor 'User.show' _id=comment.user._id}}">{{comment.user}}</a>
+                <td class="media-body">
+                    <a href="{{pathFor 'User.show' _id=comment.user._id}}">{{comment.user.displayName user.settings.language}}</a>
                     <span>{{comment.text}}</span>
                     <br/>
                     <small class="text-muted" >{{displayTime comment.createdAt}}</small>

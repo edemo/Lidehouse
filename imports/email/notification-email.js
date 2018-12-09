@@ -9,6 +9,12 @@ export const Notification_Email = {
   // scss: 'email/style.css',             // Mail specific SCSS.
 
   helpers: {
+    user() {
+      return Meteor.users.findOne(this.userId);
+    },
+    community() {
+      return Communities.findOne(this.communityId);
+    },
     topics() {
       const topics = Topics.topicsNeedingAttention(this.userId, this.communityId, Meteor.users.SEEN_BY.NOTI);
       return topics.sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));

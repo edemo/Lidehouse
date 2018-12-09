@@ -16,7 +16,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 
-let getCurrentUserLang = () => 'en';  // on the server we dont have a current user, so we use this
+let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {
   import { currentUserLanguage } from '/imports/startup/client/language.js';
 
