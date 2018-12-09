@@ -17,5 +17,12 @@ export function showWelcomeModal() {
     singleMethodArgument: true,
     template: 'bootstrap3-inline',
   });
-  AutoForm.addModalHooks('af.welcome.update');
 }
+
+AutoForm.addModalHooks('af.welcome.update');
+AutoForm.addHooks('af.welcome.update', {
+  docToForm(doc) {
+    doc.settings.notiFrequency = 'weekly';
+    return doc;
+  },
+});
