@@ -7,6 +7,10 @@ export const HouseTranslation = {
     "community": "building",
     "Join a community": "Join a building",
     "Create a community": "Create a building",
+    "Community finder note": "If you create a new building, you will be its Administrator.",
+    "Community finder text": ["Here you can see the houses created in our system that receive new members. ",
+       "If you find your house in the list and are not yet a member of the community, you can submit a request to join on the house page, which can be approved by the house's executives. ",
+       "If your house is not already in your system, you can create it and invite your housemates to join."],
 
     "flat": "Apartment",
     "parking": "Parking",
@@ -129,6 +133,11 @@ export const HouseTranslation = {
     "Community finder": "Házkereső",
     "Join a community": "Csatlakozás egy házhoz",
     "Create a community": "Létrehozok egy házat",
+    "Community finder note": "Ha létrehoz egy új közösséget, ön lesz az Adminisztrátor!",
+    "Community finder text": ["Itt láthatja azokat a rendszerünkben létrehozott házakat, melyek fogadnak még új tagokat. ",
+      "Ha megtalálja saját házát a listában és még nem tagja a közösségnek, a ház adatlapján csatlakozási kérelmet adhat be, melyet a ház vezetői hagyhatnak jóvá. ",
+      "Ha a háza még nem található meg a rendszerben, akkor létrehozhatja azt és meghívhatja lakótársait is, hogy csatlakozzanak."],
+
     "Parcels of community": "A házhoz tartozó albetétek",
     "Community page": "Házlap",
 

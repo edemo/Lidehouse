@@ -22,7 +22,7 @@ import { handleError } from '../../../ui_3/lib/errors';
 Template.Forum_topics.helpers({
     forumTopics() {
         const communityId = Session.get('activeCommunityId');
-        const topics = Topics.find({ communityId, category: 'forum' });
+        const topics = Topics.find({ communityId, category: 'forum' }, { sort: { createdAt: -1 } });
         const sorted = topics.fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
         return sorted;
     },
