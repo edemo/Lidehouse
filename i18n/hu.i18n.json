@@ -22,7 +22,7 @@
   "owners": "tulajdonosok",
   "benefactors": "használók",
   "occupant": "birtokos",
-  "occupants": "birtokosok",
+  "occupants": "Birtokosok",
   "Modifiable by": "Módosíthatja",
   "List of officers": "A ház tisztségviselőinek listája",
   "List of parcels": "A házhoz tartozó albetétek listája",
@@ -428,7 +428,9 @@
   "delete shareddoc successful": "Dokumentum véglegesen törölve",
   "delete comment successful": "Hozzászólás törölve",
   "insert vote successful": "Szavazás létrehozva",
+  "update vote successful": "Szavazás módosítva",
   "close vote successful": "Szavazás lezárva",
+  "update settings successful": "Beállítások módosítva",
 
   "Are you sure you want to": "Biztos benne, hogy",
   "delete user": "véglegesen törli a felhasználói fiókját a rendszerből",
@@ -468,7 +470,7 @@
   "Admin cannot be deleted if no other admin is appointed.": "Az adminisztrátor nem törölhető, amíg nincs másik kijelölve.",
   
   "welcome": "Üdvözöljük a Honline rendszerben!",
-  "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket persze később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",
+  "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",
 
   "":""
 }
