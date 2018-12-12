@@ -102,7 +102,9 @@ Meteor.users.helpers({
   hasNowSeen(topic, seenType) {
     // The user has just seen this topic, so the lastseen info needs to be updated  
     debugAssert(seenType === Meteor.users.SEEN_BY.EYES || seenType === Meteor.users.SEEN_BY.NOTI);
+    const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
     const newLastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
+    if (oldLastSeenInfo && oldLastSeenInfo.commentCounter === newLastSeenInfo.commentCounter) return; // this avoids infinite loop
     const modifier = {};
     modifier['$set'] = {};
     // When user seen it by EYES, it implies no NOTI needed - so lastSeen info propagates upwards (SEEN_BY.EYES=0, SEEN_BY.NOTI=1)
