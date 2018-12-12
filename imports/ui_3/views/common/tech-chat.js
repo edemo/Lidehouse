@@ -55,6 +55,14 @@ Template.Tech_chat.helpers({
     if (userId === Meteor.userId()) return 'right';
     return 'left';
   },
+  authorStyle(userId) {
+    if (userId !== Meteor.userId()) return 'active';
+    return '';
+  },
+  questioner(userId) {
+    if (userId === Meteor.userId()) return true;
+    return false;
+  }
 });
 
 Template.Tech_chat.events({
@@ -65,6 +73,8 @@ Template.Tech_chat.events({
     $('.small-chat-box').toggleClass('active');
     const room = getMyTechSupportRoom();
     if (room) Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY.EYES);
+    $('.small-chat-box .content').slimScroll({ scrollTo: ($('.small-chat-box .content')[0].scrollHeight) });
+    $('.small-chat-box .slimScrollBar').css('top', '234px'); 
   },
   'click .small-chat-box .js-send'(event, instance) {
     const textarea = instance.find('input');
@@ -82,9 +92,12 @@ Template.Tech_chat.events({
       },
       onSuccess((res) => {
         textarea.value = '';
+        $('.small-chat-box .content').slimScroll({ scrollTo: ($('.small-chat-box .content')[0].scrollHeight) });
+        $('.small-chat-box .slimScrollBar').css('top', '234px'); 
         // if ($(window).width() > 768) $('.js-focused').focus();
-        Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
       }));
+      const updatedRoom = getMyTechSupportRoom()
+      Meteor.user().hasNowSeen(updatedRoom, Meteor.users.SEEN_BY.EYES);
     };
 
     if (room) {

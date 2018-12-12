@@ -33,27 +33,17 @@
             {{#each message in messages}}
             <div class="{{sideOfMessage message.userId}}">
                 <div class="author-name">
+                    {{#unless questioner message.userId}} {{message.user.displayName}} {{/unless}}
                     <small class="chat-date">
                         {{displayTimeFrom message.createdAt}}
                     </small>
-                    {{message.user.displayName}}
+                    {{#if questioner message.userId}} {{message.user.displayName}} {{/if}}
                 </div>
-                <div class="chat-message">
+                <div class="chat-message {{authorStyle message.userId}}">
                     {{message.text}}
                 </div>
             </div>
             {{/each}}
-            <!--div class="left">
-                <div class="author-name">
-                    Alice Novak
-                    <small class="chat-date">
-                        08:45 pm
-                    </small>
-                </div>
-                <div class="chat-message active">
-                    Check this stock char.
-                </div>
-            </div-->
         </div>
         <div class="form-chat">
             <div class="input-group input-group-sm">
