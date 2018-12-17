@@ -4,6 +4,7 @@ import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { ServiceConfiguration } from 'meteor/service-configuration';
 import { debugAssert } from '/imports/utils/assert.js';
 import { T9n } from 'meteor/softwarerero:accounts-t9n';
+import { firstUsername } from '/imports/api/users/users.js';
 
 /**
  * The useraccounts package must be configured for both client and server to work properly.
@@ -57,6 +58,7 @@ if (Meteor.isServer) {
   Accounts.onCreateUser((options, user) => {
     user.settings = user.settings || {};
     user.settings.language = options.language;
+    user.username = firstUsername(user); 
 //    user.profile = options.profile;
     return user;
   });

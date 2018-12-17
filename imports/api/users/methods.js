@@ -80,6 +80,7 @@ export const remove = new ValidatedMethod({
       Meteor.users.rawCollection().replaceOne({ _id }, {
         emails: [{ address: `deleteduser@${_id}.hu`, verified: true }],
         settings: { delegatee: false },
+        username: 'deletedAccount_' + _id,
       }); // TODO .catch(); ?
     }
   },

@@ -129,18 +129,24 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
+export function firstUsername(user) { 
+  const email = user.emails[0].address;
+  const emailChunk = email.split('@')[0].substring(0, 5);
+  const userId = user._id;
+  const idChunk = userId.substring(0, 5);
+  const userName = emailChunk + '_' + idChunk;
+  return userName;
+};
+
 Meteor.users.helpers({
   language() {
     return this.settings.language || 'en';
   },
   safeUsername() {
-    // If we have a username in db return that, otherwise generate one from her email address
+    // If we have a username in db return that, otherwise let it be anonymous
+    if (this.username && this.username.substring(0, 15) === 'deletedAccount_') return `[${__('deletedUser')}]`;
     if (this.username) return this.username;
-    const email = this.emails[0].address;
-    const emailSplit = email.split('@');
-    if (emailSplit[1] === 'deleted.hu') return __('deletedUser');
-    const emailName = emailSplit[0];
-    return emailName;
+    return `[${__('anonymous')}]`;
   },
   fullName(lang = getCurrentUserLang()) {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
@@ -153,7 +159,7 @@ Meteor.users.helpers({
     return undefined;
   },
   displayName(lang = getCurrentUserLang()) {
-    return this.fullName(lang) || `[${this.safeUsername()}]`;     // or fallback to the username
+    return this.fullName(lang) || this.safeUsername();     // or fallback to the username
   },
   toString(lang = getCurrentUserLang()) {
     return this.displayName(lang);
