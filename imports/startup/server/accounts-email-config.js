@@ -25,20 +25,24 @@ Accounts.emailTemplates.siteName = 'Honline';
 Accounts.emailTemplates.from = 'Honline <noreply@honline.net>';
 
 Accounts.emailTemplates.enrollAccount = {
-  subject(user) { return dualTranslate('email.EnrollAccountSubject', {}, user.language(), '/'); },
+  subject(user) {
+    const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
+    const community = membership.community();
+    return dualTranslate('email.EnrollAccountSubject', {
+      name: community.name,
+    }, user.language(), '/');
+  },
   text(user, url) {
     const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
     const community = membership.community();
     const adminEmail = community.admin().getPrimaryEmail();
-    return dualTranslate('email.EnrollAccount',
-      { name: community.name,
-        role: TAPi18n.__(membership.role, {}, user.language()),
-        email: adminEmail,
-        url,
-      },
-      user.language(),
-      '-',
-    );
+    return dualTranslate('email.EnrollAccount', {
+      name: community.name,
+      role: TAPi18n.__(membership.role, {}, user.language()),
+      email: adminEmail,
+      url,
+    },
+    user.language(), '-');
   },
 };
 
