@@ -384,7 +384,7 @@
   },
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
-  "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közösképviselő segítségét.",
+  "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közös képviselő segítségét.",
 
   "Not implemented yet": "Ez a funkció még nem elérhető",
 
@@ -460,6 +460,7 @@
   "This will delete all contained files as well": "Ezzel egyúttal véglegesen letörli az összes benne lévő fájlt is",
   "The planned date of closure was ": "A lezárás eredetileg tervezett időpontja ",
 
+  "anonymous": "névtelen",
   "deletedUser": "Törölt felhasználó",
   "deleteUserWarning": ["FIGYELEM: Ön ezzel végérvényesen elveszíti a felhasználói fiókját! <br /><br />",
     "Tájékoztatjuk, hogy a közösségében történt megnyilvánulásai ezzel nem törlődnek. ",
