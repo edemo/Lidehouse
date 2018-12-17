@@ -15,6 +15,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
 let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {
@@ -118,9 +119,6 @@ Meteor.users.schema = new SimpleSchema({
   lastSeens: { type: Array, autoValue() { if (this.isInsert) return [{}, {}]; }, autoform: { omit: true } },
   'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
     // topicId -> { timestamp: lastseen comment's createdAt (if seen any), commentCounter }
-
-  blocked: { type: Array, defaultValue: [], autoform: { omit: true } }, // blocked users
-  'blocked.$': { type: String, regEx: SimpleSchema.RegEx.Id }, // userIds
 
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },
@@ -240,11 +238,15 @@ Meteor.users.helpers({
     return totalBalance;
   },
   hasBlocked(userId) {
-    return _.contains(this.blocked, userId);
+    const user = Meteor.users.findOne(userId);
+    return user.isFlaggedBy(this._id);
   },
 });
 
+Meteor.users.helpers(flagsHelpers);
+
 Meteor.users.attachSchema(Meteor.users.schema);
+Meteor.users.attachSchema(flagsSchema);
 Meteor.users.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
@@ -264,5 +266,6 @@ Meteor.users.publicFields = {
   avatar: 1,
   status: 1,
   settings: 1,
+  flags: 1,
   'emails.address': 1, // TODO: email is not public, but we now need for calculating derived username
 };
