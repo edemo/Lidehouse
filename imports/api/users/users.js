@@ -127,7 +127,7 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
-export function firstUsername(user) { 
+export function initialUsername(user) { 
   const email = user.emails[0].address;
   const emailChunk = email.split('@')[0].substring(0, 5);
   const userId = user._id;
@@ -273,5 +273,4 @@ Meteor.users.publicFields = {
   status: 1,
   settings: 1,
   flags: 1,
-  'emails.address': 1, // TODO: email is not public, but we now need for calculating derived username
 };
