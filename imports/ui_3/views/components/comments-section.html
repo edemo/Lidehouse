@@ -21,7 +21,7 @@
         </a>
         <div class="media-body" >
             <a href="{{pathFor 'User.show' _id=user._id}}">
-                {{user.fullName}}
+                {{or user.fullName user.safeUsername}}
             </a>
             <span class="newlines" data-id="{{_id}}">{{text}}</span>
             <br/>

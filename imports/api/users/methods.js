@@ -81,6 +81,7 @@ export const remove = new ValidatedMethod({
         emails: [{ address: `deleteduser@${_id}.hu`, verified: true }],
         settings: { delegatee: false },
         username: 'deletedAccount_' + _id,
+        avatar: '/images/avatars/avatarnull.png',
       }); // TODO .catch(); ?
     }
   },
