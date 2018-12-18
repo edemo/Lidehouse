@@ -184,8 +184,15 @@ function onJoinParcelInsertSuccess(parcelId) {
     },
   }, (err, res) => {
     if (err) displayError(err);
-    else displayMessage('success', 'Joined community', communityName);
-    FlowRouter.go('App.home');
+    else displayMessage('success', 'Join request submitted', communityName);
+    Meteor.setTimeout(() => Modal.show('Modal', {
+      title: __('Join request submitted', communityName),
+      text: __('Join request notification'),
+      btnOK: 'ok',
+//      btnClose: 'cancel',
+      onOK() { FlowRouter.go('App.home'); },
+//      onClose() { removeMembership.call({ _id: res }); }, -- has no permission to do it, right now
+    }), 3000);
   });
 }
 

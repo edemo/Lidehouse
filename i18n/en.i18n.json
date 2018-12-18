@@ -89,7 +89,8 @@
   "New ticket": "Report a new problem",
 
   // Notifications
-  "Joined community": "Succesfully joined community %s",
+  "Join request submitted": "Join request submitted to community %s",
+  "Join request notification": "Your join request need to be approved by the managers. Until your request becomes approved, you will not yet be able to see data and interact with the community.",
   "Vote casted": "Vote casted succesfully",
 
   "delete user": "delete your account permanently",
