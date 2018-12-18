@@ -97,11 +97,18 @@
                             </table>
                             {{#unless (currentUser.isInCommunity communityId) }}
                             <br>
-                            <button type="button" class="btn btn-primary btn-sm btn-block js-join">
-                                <i class="fa fa-suitcase"></i>
-                                {{_ 'Submit join request'}}
-                            </button>
-                            {{/unless}}
+                                {{#if (currentUser.isUnapprovedInCommunity communityId)}}
+                                <button type="button" class="btn btn-primary btn-sm btn-block btn-outline">
+                                    <i class="fa fa-suitcase"></i>
+                                    {{_ 'Submitted join request'}}
+                                </button>
+                                {{else}}
+                                <button type="button" class="btn btn-primary btn-sm btn-block js-join">
+                                    <i class="fa fa-suitcase"></i>
+                                    {{_ 'Submit join request'}}
+                                </button>
+                                {{/if}}
+                              {{/unless}}
                             {{#if userHasPermission 'communities.remove' communityId}}
                               <button class="btn btn-danger btn-block btn-outline js-delete"><!--i class="fa fa-trash"></i--> {{_ 'Delete community'}}</button>
                             {{/if}}
