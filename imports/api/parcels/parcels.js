@@ -54,18 +54,9 @@ Parcels.helpers({
   location() {  // TODO: move this to the house package
     return `${this.floor || '?'}/${this.number || '?'}`;
   },
-  displayActiveOccupants() {
-    let result = '';
-    const ownerships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner', parcelId: this._id });
-    ownerships.forEach((m) => {
-      const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
-      result += `${m.Person().displayName()} (${m.ownership.share.toStringLong()}) ${repBadge}<br>`;
-    });
-    const benefactorships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'benefactor', parcelId: this._id });
-    benefactorships.forEach((m) => {
-      result += `${m.Person().displayName()}<br>`;
-    });
-    return result;
+  occupants() {
+    const occupants = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: { $in: ['owner', 'benefactor'] }, parcelId: this._id });
+    return occupants;
   },
   display() {
     return `${this.serial || '?'}. ${__(this.type)} ${this.location()} (${this.lot})`;
