@@ -193,6 +193,7 @@
   "pleaseSupplyParcelData": "Kérjük adjon meg minél több adatot az albetétjéről, hogy csatlakozási kérelme minél előbb elfogadásra kerülhessen!",
   "Create your own community": "Nem találta meg a keresett közösséget? Talán itt az ideje létrehozni! ",
   "Submit join request": "Csatlakozási kérelem beadása",
+  "Submitted join request": "Csatlakozási kérelem beadva",
 
   // topics
   "The": "A",
@@ -389,7 +390,8 @@
   "Not implemented yet": "Ez a funkció még nem elérhető",
 
   // Notifications
-  "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
+  "Join request submitted": "Csatlakozási kérelem beadva a(z) %s közösséghez",
+  "Join request notification": "A csatlakozási kérelmet a képviselőknek jóvá kell hagyniuk. Amikor ez megtörténik, csak akkortól fognak látszani a ház adatai az ön számára, és akkortól fog tudni hozzászólni a témákhoz.",
   "Vote casted": "Szavazat sikeresen leadva",
   "Vote revoked": "Szavazat sikeresen visszavonva",
 

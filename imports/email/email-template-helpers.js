@@ -16,8 +16,8 @@ export const EmailTemplateHelpers = {
     const user = Meteor.users.findOne(this.userId);
     return TAPi18n.__(text, kw.hash, user.settings.language);
   },
-  pathFor(params, hash = {}) {
-    const result = FlowRouterHelpers.pathFor(params, hash);
+  urlFor(params, hash = {}) {
+    const result = FlowRouterHelpers.urlFor(params, hash);
     return result;
   },
 };

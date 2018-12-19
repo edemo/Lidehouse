@@ -10,7 +10,7 @@
                 <td class="project-title">
                     <h3 class = "topicTitle">{{_ topic.title}}</h3>
                     <div class='btn-container'>
-                        <a href="{{linkPath topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                        <a href="{{topicUrlFor topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
                     </div>
                 </td>
                 {{else}}
@@ -20,7 +20,7 @@
                       <p>{{curb topic.text 1000}}</p>
                     {{/if}}
                     <div class='btn-container'>
-                        <a href="{{linkPath topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                        <a href="{{topicUrlFor topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
                     </div>
                 </td>
                 <td class>
@@ -40,13 +40,13 @@
                 <td class='puffer'>
                 </td>
                 <td class='avatar-container'>      
-                    <a href="{{pathFor 'User.show' _id=comment.user._id}}" class="pull-left">
+                    <a href="{{urlFor 'User.show' _id=comment.user._id}}" class="pull-left">
                         <img alt="avatar" class="message-avatar" src='{{comment.user.avatar}}'>
                         <!--img alt="avatar" class="message-avatar" src="{{comment.user.avatar}}"-->
                     </a>
                 </td>
                 <td class="media-body">
-                    <a href="{{pathFor 'User.show' _id=comment.user._id}}">{{comment.user.displayName user.settings.language}}</a>
+                    <a href="{{urlFor 'User.show' _id=comment.user._id}}">{{comment.user.displayName user.settings.language}}</a>
                     <span>{{curb comment.text 500 }}</span>
                     <br/>
                     <small class="text-muted" >{{displayTime comment.createdAt}}</small>

@@ -8,6 +8,7 @@ import { toggleElementInArray } from '/imports/api/utils.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import '/imports/api/users/users.js';
 
 export const flagsSchema = new SimpleSchema({
   flags: { type: Array, defaultValue: [], autoform: { omit: true } },
@@ -21,16 +22,17 @@ export const flagsHelpers = {
   flagsCount() {
     return this.flags.length;
   },
-  flaggedBy() {
+  flaggedStatus(communityId) {
     if (this.flagsCount() >= 2
-      && this.flagsCount() >= this.likesCount()) {
+      /* && this.flagsCount() >= this.likesCount() */) {
       return 'community';
     }
     let result;
     this.flags.forEach((flag) => {
       const userId = flag;
+      if (userId === Meteor.userId()) result = 'you';
       const user = Meteor.users.findOne(userId);
-      if (user.hasPermission('topic.hide.forOthers', this.communityId)) result = 'moderator';
+      if (user.hasPermission('topic.hide.forOthers', communityId)) result = 'moderator';
     });
     return result;
   },
@@ -46,10 +48,11 @@ export const flag = new ValidatedMethod({
     let collection;
     if (coll === 'topics') collection = Topics;
     else if (coll === 'comments') collection = Comments;
+    else if (coll === 'users') collection = Meteor.users;
     const object = checkExists(collection, id);
     const userId = this.userId;
 
-    checkPermissions(userId, 'flag.toggle', object.community()._id, object);
+    if (coll !== 'users') checkPermissions(userId, 'flag.toggle', object.community()._id, object);
 
     // toggle Flag status of this user
     toggleElementInArray(collection, id, 'flags', userId);

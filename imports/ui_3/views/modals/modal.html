@@ -7,7 +7,9 @@
           <h4 class="modal-title" id="myModalLabel">{{_ title}}</h4>
         </div>
         <div class="modal-body">
+          {{#if body}}
           {{> Template.dynamic template=body data=bodyContext}}
+          {{else}} {{text}} {{/if}}
         </div>
         <div class="modal-footer">
           {{#if btnClose}}

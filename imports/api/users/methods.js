@@ -48,21 +48,6 @@ export const update = new ValidatedMethod({
   },
 });
 
-export const block = new ValidatedMethod({
-  name: 'user.block',
-  validate: new SimpleSchema({
-    blockedUserId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
-
-  run({ blockedUserId }) {
-    if (blockedUserId === this.userId) {
-      throw new Meteor.Error('err_notAllowed', 'Not allowed to perform this activity',
-        `Method: users.block, userId: ${this.userId}`);
-    }
-    toggleElementInArray(Meteor.users, this.userId, 'blocked', blockedUserId);
-  },
-});
-
 export const remove = new ValidatedMethod({
   name: 'user.remove',
   validate: new SimpleSchema({

@@ -20,11 +20,11 @@ export const Notification_Email = {
       if (text.length < chars) return text;
       return text.substr(0, chars) + `... [${TAPi18n.__('see full text with View button', {}, Meteor.users.findOne(this.userId).settings.language)}]`;
     },
-    linkPath(topic) {
+    topicUrlFor(topic) {
       if (topic.category === 'room') {
-        return FlowRouterHelpers.pathFor('Room.show', { _rid: topic._id });
+        return FlowRouterHelpers.urlFor('Room.show', { _rid: topic._id });
       }
-      return FlowRouterHelpers.pathFor('Topic.show', { _tid: topic._id });
+      return FlowRouterHelpers.urlFor('Topic.show', { _tid: topic._id });
     },
     topics() {
       const topics = Topics.topicsNeedingAttention(this.userId, this.communityId, Meteor.users.SEEN_BY.NOTI);
