@@ -29,6 +29,9 @@ Template.Chatbox.helpers({
     }
     return this.flaggedBy();
   },
+  join(memberships) {
+    return memberships.map(m => m.toString()).join(', ');
+  },
 });
 
 function toggleFinishEditButtons(instance) {
