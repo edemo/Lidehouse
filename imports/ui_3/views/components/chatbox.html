@@ -1,6 +1,7 @@
 <template name="Chatbox">
    <div class="social-feed-box">
         <div class="pull-right social-action dropdown">
+            <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
             <button data-toggle="dropdown" class="dropdown-toggle btn-white">
                 <i class="glyphicon glyphicon-option-horizontal"></i>
             </button>
@@ -33,9 +34,10 @@
             <div class="media-body">
                 <a href="{{pathFor 'User.show' _id=createdBy._id}}">
                     {{createdBy.displayName}}
-                </a>                
-                <strong data-id="{{_id}}">{{title}}</strong>
-                <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+                </a>                  
+                <small class="text-muted" title="{{_ 'memberships'}}">
+                    {{join (createdBy.memberships activeCommunityId)}}
+                </small>
             </div>
         </div>
         {{#if hiddenBy}}
@@ -43,6 +45,7 @@
         {{/if}}
         <div class="{{#if hiddenBy}}collapse{{/if}}" id="content-{{this._id}}">
           <div class="social-body">
+              <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
               <p data-id="{{_id}}">{{#markdown}}{{text}}{{/markdown}}</p>
               <div class="btn-group">
                   <button class="btn btn-white btn-xs js-like">

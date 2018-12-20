@@ -26,6 +26,9 @@ Template.Chatbox.helpers({
     const communityId = Session.get('activeCommunityId');
     return this.flaggedStatus(communityId) || this.createdBy().flaggedStatus(communityId);
   },
+  join(memberships) {
+    return memberships.map(m => m.toString()).join(', ');
+  },
 });
 
 function toggleFinishEditButtons(instance) {
