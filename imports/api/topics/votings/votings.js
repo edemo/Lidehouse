@@ -156,9 +156,11 @@ Topics.helpers({
           ],
         });
         for (const delegation of delegations.fetch()) {
-          votePath.push(delegation.targetPersonId);
-          if (getVoteResult(delegation.targetPersonId)) return true;
-          votePath.pop();
+          if (!_.contains(votePath, delegation.targetPersonId)) {
+            votePath.push(delegation.targetPersonId);
+            if (getVoteResult(delegation.targetPersonId)) return true;
+            votePath.pop();
+          }
         }
         return false;
       }
