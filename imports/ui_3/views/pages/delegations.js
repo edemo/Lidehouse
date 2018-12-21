@@ -130,16 +130,16 @@ Template.Delegations.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .js-delete'(event) {
+  'click .delegations-from .js-delete'(event) {
+    const id = $(event.target).closest('.js-delete').data('id');
+    Modal.confirmAndCall(removeDelegation, { _id: id }, {
+      action: 'revoke delegation',
+    });
+  },
+  'click .delegations-to .js-delete'(event) {
     const id = $(event.target).closest('.js-delete').data('id');
     Modal.confirmAndCall(removeDelegation, { _id: id }, {
       action: 'refuse delegation',
-    });
-  },
-  'click .js-remove'(event) {
-    const id = $(event.target).closest('.js-remove').data('id');
-    Modal.confirmAndCall(removeDelegation, { _id: id }, {
-      action: 'revoke delegation',
     });
   },
   'click #allow'(event) {
