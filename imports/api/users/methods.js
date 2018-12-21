@@ -43,7 +43,7 @@ export const update = new ValidatedMethod({
         `Method: users.update, userId: ${this.userId}, _id: ${_id}`);
     }
     checkModifier(doc, modifier, ['emails', 'status', 'services', 'heartbeat'], true);
-    checkNotExists(Meteor.users, { username: modifier.$set.username });
+    checkNotExists(Meteor.users, { _id: { $ne: doc._id }, username: modifier.$set.username });
     Meteor.users.update({ _id }, modifier);
   },
 });
