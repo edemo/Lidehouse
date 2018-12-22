@@ -34,7 +34,6 @@ numeral:numeral
 perak:markdown
 q42:autoform-markdown
 fortawesome:fontawesome
-onokumus:metismenu
 meteorhacks:ssr
 manuel:viewmodel
 
@@ -68,7 +67,7 @@ accounts-password@1.5.0
 accounts-google
 accounts-facebook
 useraccounts:core
-useraccounts:unstyled
+useraccounts:bootstrap
 useraccounts:flow-routing
 softwarerero:accounts-t9n
 
@@ -105,3 +104,4 @@ browser-policy@1.1.0
 
 dynamic-import@0.3.0
 mrt:later
+lookback:emails

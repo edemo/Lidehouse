@@ -3,6 +3,8 @@ import { Accounts } from 'meteor/accounts-base';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { ServiceConfiguration } from 'meteor/service-configuration';
 import { debugAssert } from '/imports/utils/assert.js';
+import { T9n } from 'meteor/softwarerero:accounts-t9n';
+import { initialUsername } from '/imports/api/users/users.js';
 
 /**
  * The useraccounts package must be configured for both client and server to work properly.
@@ -31,7 +33,9 @@ Accounts.ui.config({
 AccountsTemplates.configure({
   showForgotPasswordLink: true,
   sendVerificationEmail: true,
- // enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
+  enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
+  showResendVerificationEmailLink: true,
+  enablePasswordChange: true,
 
   defaultTemplate: 'Auth_page',
   defaultLayout: 'Blank_layout',
@@ -54,6 +58,8 @@ if (Meteor.isServer) {
   Accounts.onCreateUser((options, user) => {
     user.settings = user.settings || {};
     user.settings.language = options.language;
+    user.username = initialUsername(user);
+//    user.profile = options.profile;
     return user;
   });
 }
@@ -87,10 +93,12 @@ if (Meteor.settings.google) {
 // --- ROUTING ---
 // Here are some blank functions, so we can configure AccountsTemplates on server side without pulling in UI libraries
 let signinRedirect = () => { debugAssert(false); };
+let verifyRedirect = () => { debugAssert(false); };
 let enrollRedirect = () => { debugAssert(false); };
 
 if (Meteor.isClient) {
   import { FlowRouter } from 'meteor/kadira:flow-router';
+  import { setCurrentUserLanguage } from '/imports/startup/client/language.js';
   import { connectMe } from '/imports/api/memberships/methods.js';
   import { showWelcomeModal } from '/imports/ui_3/views/modals/welcome-modal.js';
 
@@ -107,8 +115,15 @@ if (Meteor.isClient) {
     } else FlowRouter.go('App.home');
   };
 
+  verifyRedirect = function () {
+    connectMe.call();
+    FlowRouter.go('App.home');
+    showWelcomeModal();
+  };
+
   enrollRedirect = function () {
     connectMe.call();
+    setCurrentUserLanguage();
     FlowRouter.go('App.home');
     showWelcomeModal();
   };
@@ -141,6 +156,11 @@ AccountsTemplates.configureRoute('signUp', {
 
 AccountsTemplates.configureRoute('forgotPwd');
 
+AccountsTemplates.configureRoute('changePwd', {
+  name: 'changePwd',
+  path: '/change-password',
+});
+
 AccountsTemplates.configureRoute('resetPwd', {
   name: 'resetPwd',
   path: '/reset-password',
@@ -149,7 +169,7 @@ AccountsTemplates.configureRoute('resetPwd', {
 AccountsTemplates.configureRoute('verifyEmail', {
   name: 'verifyEmail',
   path: '/verify-email',
-  redirect: enrollRedirect,
+  redirect: verifyRedirect,
 });
 
 AccountsTemplates.configureRoute('enrollAccount', {
@@ -157,3 +177,26 @@ AccountsTemplates.configureRoute('enrollAccount', {
   path: '/enroll-account',
   redirect: enrollRedirect,
 });
+
+// TODO: Find a good place for the t9n transaltions, or get this issue fixed in softwarerero:meteor-accounts-t9n
+// https://github.com/softwarerero/meteor-accounts-t9n/issues/105
+const hu = {
+  "Required Field" : "Mező kitöltése kötelező",
+  "Invalid email": "Érvénytelen email cím",
+  "Minimum required length: 6": "Legalább 6 karakter hosszúnak kell lennie",
+  "Verification email lost?": "Nem érkezett meg a megerősítő link?",
+  "Send again": "Újraküldés",
+  "Send email again": "Újraküldés",
+  "Send the verification email again": "Email megerősítő link újraküldése",
+  "A new email has been sent to you. If the email doesn't show up in your inbox, be sure to check your spam folder.": "Újból elküldtük a megerősítéshez szükséges linket. Ha nem jelenik meg a levelei között, nézze meg a Spam mappában, hátha oda került.",
+  "Successful Registration! Please check your email and follow the instructions.": "Sikeres regisztráció! Emailben elküldtük a belépéshez szükséges instrukciókat.",
+  error: {
+    accounts: {
+      "Address must be a valid e-mail address": "Érvénytelen email cím",
+      "Please verify your email first. Check the email and follow the link!": "Az ön email címe még nincs megerősítve. Emailben elküldtük önnek a megerősítéshez szükséges link-et.",
+      "Already verified": "Az email cím már korábban meg lett erősítve",
+      "Token expired": "Lejárt token",
+    },
+  },
+};
+T9n.map('hu', hu);

@@ -4,7 +4,7 @@ import { Meteor } from 'meteor/meteor';
 
 export function debugAssert(expr, msg) {
   if (!expr) {
-    console.assert(false, msg);
+    console.log('Debug assertion failed:', msg);
     debugger;
     throw new Meteor.Error('Debug assertion failed', msg, expr);
   }

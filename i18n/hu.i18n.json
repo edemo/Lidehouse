@@ -22,7 +22,7 @@
   "owners": "tulajdonosok",
   "benefactors": "használók",
   "occupant": "birtokos",
-  "occupants": "birtokosok",
+  "occupants": "Birtokosok",
   "Modifiable by": "Módosíthatja",
   "List of officers": "A ház tisztségviselőinek listája",
   "List of parcels": "A házhoz tartozó albetétek listája",
@@ -89,7 +89,7 @@
   "name": "név",
   "user": "felhasználó",
   "username": "felhasználónév",
-  "profile": "profil",
+  "Profile settings": "Profil beállítások",
   "firstName": "keresztnév",
   "lastName": "vezetéknév",
   "community": "közösség",
@@ -193,6 +193,7 @@
   "pleaseSupplyParcelData": "Kérjük adjon meg minél több adatot az albetétjéről, hogy csatlakozási kérelme minél előbb elfogadásra kerülhessen!",
   "Create your own community": "Nem találta meg a keresett közösséget? Talán itt az ideje létrehozni! ",
   "Submit join request": "Csatlakozási kérelem beadása",
+  "Submitted join request": "Csatlakozási kérelem beadva",
 
   // topics
   "The": "A",
@@ -203,6 +204,9 @@
   "Content hidden by": "A tartalmat nem mutatjuk a(z) %s kérésére",
   "you": "ön",
   "Do show content": "Mégis mutassuk",
+  "private chat": "privát üzenet",
+  "tech support": "technikai segítség",
+  "see full text with View button": "teljes szöveg a Megtekintés gombbal",
 
   // voting
   "choice": "választási lehetőség",
@@ -413,15 +417,24 @@
   "commentEditInstruction": "Mentéshez nyomja meg az enter, elvetéshez az escape billentyűt.",
 
   "User data page": "Felhasználói adatlap",
-  "userAccountsSubtitle": "Bejelentkezett felhasználók minden funkciót elérhetnek",
+  "userAccountsSubtitle": {
+    "signIn": "A rendszer használatához lépjen be",
+    "signUp": "",
+    "resendVerificationEmail": "",
+    "forgotPwd": "",
+    "changePwd": "",
+    "resetPwd": "",
+    "enrollAccount": "Kérjük adjon meg egy legalább 6 karakter hosszú jelszót fiókja létrehozásához"
+  },
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
-  "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közösképviselő segítségét.",
+  "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közös képviselő segítségét.",
 
   "Not implemented yet": "Ez a funkció még nem elérhető",
 
   // Notifications
-  "Joined community": "Sikeresen csatlakozott a(z) %s közösséghez.",
+  "Join request submitted": "Csatlakozási kérelem beadva a(z) %s közösséghez",
+  "Join request notification": "A csatlakozási kérelmet a képviselőknek jóvá kell hagyniuk. A ház adatait csak a kérelem jóváhagyását követően fogja látni, és akkortól fog tudni hozzászólni a témákhoz.",
   "Vote casted": "Szavazat sikeresen leadva",
   "Vote revoked": "Szavazat sikeresen visszavonva",
 
@@ -462,7 +475,9 @@
   "delete shareddoc successful": "Dokumentum véglegesen törölve",
   "delete comment successful": "Hozzászólás törölve",
   "insert vote successful": "Szavazás létrehozva",
+  "update vote successful": "Szavazás módosítva",
   "close vote successful": "Szavazás lezárva",
+  "update settings successful": "Beállítások módosítva",
 
   "Are you sure you want to": "Biztos benne, hogy",
   "delete user": "véglegesen törli a felhasználói fiókját a rendszerből",
@@ -493,6 +508,7 @@
   "This will delete all contained files as well": "Ezzel egyúttal véglegesen letörli az összes benne lévő fájlt is",
   "The planned date of closure was ": "A lezárás eredetileg tervezett időpontja ",
 
+  "anonymous": "névtelen",
   "deletedUser": "Törölt felhasználó",
   "deleteUserWarning": ["FIGYELEM: Ön ezzel végérvényesen elveszíti a felhasználói fiókját! <br /><br />",
     "Tájékoztatjuk, hogy a közösségében történt megnyilvánulásai ezzel nem törlődnek. ",
@@ -503,30 +519,7 @@
   "Admin cannot be deleted if no other admin is appointed.": "Az adminisztrátor nem törölhető, amíg nincs másik kijelölve.",
   
   "welcome": "Üdvözöljük a Honline rendszerben!",
-  "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket persze később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",
-  
-  // Email Templates
-  "emailEnrollAccountSubject": "Meghívó a Honline használatára",
-  "emailEnrollAccount": ["Üdvözöljük!\n",
-    "A __name__ közösséghez mint __role__ került hozzáadásra.",
-    "Ezúttal meghívjuk a társasház kezelő rendszerhez történő csatlakozásra, ahol nyomon követheti ",
-    "a társasházi eseményeket, megvitathatja az aktuális kérdéseket és még szavazhat is online formában. ",
-    "\nAz alábbi linkre kattintva megerősítheti az e-mail címéhez kapcsolódó regisztrációját ",
-    "egy jelszó megadásával, és máris élvezheti az online társasház kezelés előnyeit:",
-    "\n__url__ \n",
-    "Ha úgy véli, tévedésből kapta ezt az e-mailt vagy nem kíván a közösséghez csatlakozni, ",
-    "vegye fel a kapcsolatot az adminisztrátorral a(z) __email__ e-mail címen, és kérje a törlését.",
-    "\nÜdvözlettel, \nA Honline Csapata"],
-  "emailVerifyEmailSubject": "E-mail cím megerősítés a Honline használatához",
-  "emailVerifyEmail": ["Üdvözöljük!\n",
-    "Ezzel az e-mail címmel rögzítettük regisztrációját a honline.hu rendszerében. A regisztráció megerősítéséhez, ",
-    "kérjük, igazolja vissza e-mail címét két héten belül az alábbi linkre kattintással:\n__url__\n",
-    "Üdvözlettel, \nA Honline Csapata"],
-  "emailResetPasswordSubject": "Jelszóhelyreállítás a Honline rendszerében",
-  "emailResetPassword": ["Üdvözöljük!\n",
-    "Az alábbi linkre kattintva helyreállíthatja jelszavát a honline.hu rendszerében:",
-    "\n__url__\n",
-    "Üdvözlettel, \nA Honline Csapata"],
+  "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",
 
   "":""
 }

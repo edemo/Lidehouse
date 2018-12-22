@@ -43,23 +43,11 @@ export const update = new ValidatedMethod({
         `Method: users.update, userId: ${this.userId}, _id: ${_id}`);
     }
     checkModifier(doc, modifier, ['emails', 'status', 'services', 'heartbeat'], true);
-
-    Meteor.users.update({ _id }, modifier);
-  },
-});
-
-export const block = new ValidatedMethod({
-  name: 'user.block',
-  validate: new SimpleSchema({
-    blockedUserId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
-
-  run({ blockedUserId }) {
-    if (blockedUserId === this.userId) {
-      throw new Meteor.Error('err_notAllowed', 'Not allowed to perform this activity',
-        `Method: users.block, userId: ${this.userId}`);
+    const newUsername = modifier.$set.username;
+    if (newUsername && newUsername !== doc.username) {
+      checkNotExists(Meteor.users, { _id: { $ne: doc._id }, username: newUsername });
     }
-    toggleElementInArray(Meteor.users, this.userId, 'blocked', blockedUserId);
+    Meteor.users.update({ _id }, modifier);
   },
 });
 
@@ -80,6 +68,8 @@ export const remove = new ValidatedMethod({
       Meteor.users.rawCollection().replaceOne({ _id }, {
         emails: [{ address: `deleteduser@${_id}.hu`, verified: true }],
         settings: { delegatee: false },
+        username: 'deletedAccount_' + _id,
+        avatar: '/images/avatars/avatarnull.png',
       }); // TODO .catch(); ?
     }
   },
@@ -100,25 +90,16 @@ if (Meteor.isClient) {
 
 Meteor.users.helpers({
   hasNowSeen(topic, seenType) {
-    debugAssert(seenType === Meteor.users.SEEN_BY_EYES || seenType === Meteor.users.SEEN_BY_NOTI);
     // The user has just seen this topic, so the lastseen info needs to be updated  
+    debugAssert(seenType === Meteor.users.SEEN_BY.EYES || seenType === Meteor.users.SEEN_BY.NOTI);
     const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
-    let newLastSeenInfo;
-    const comments = topic.comments().fetch(); // returns newest-first order
-    if (!comments || comments.length === 0) {
-      newLastSeenInfo = { timestamp: null, commentCounter: 0 };
-    } else {
-      const lastseenTimestamp = comments[0].createdAt;
-      newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: topic.commentCounter };
-    }
-
+    const newLastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
     if (oldLastSeenInfo && oldLastSeenInfo.commentCounter === newLastSeenInfo.commentCounter) return; // this avoids infinite loop
-
     const modifier = {};
     modifier['$set'] = {};
-    for (let i = seenType; i <= Meteor.users.SEEN_BY_NOTI; i++) {
-      // When user seen it by eyes than it implies also no NOTI needed - so it propagates upwards (SEEN_BY_EYES=0, SEEN_BY_NOTI=1)
-      modifier['$set']['lastSeens.' + seenType + '.' + topic._id] = newLastSeenInfo;
+    // When user seen it by EYES, it implies no NOTI needed - so lastSeen info propagates upwards (SEEN_BY.EYES=0, SEEN_BY.NOTI=1)
+    for (let i = seenType; i <= Meteor.users.SEEN_BY.NOTI; i++) {
+      modifier['$set']['lastSeens.' + i + '.' + topic._id] = newLastSeenInfo;
     }
 
     updateCall({ userId: this._id }, { _id: this._id, modifier });

@@ -3,8 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import { _ } from 'meteor/underscore';
-import faker from 'faker';
-import { check } from 'meteor/check';
+
+import { debugAssert } from '/imports/utils/assert.js';
 
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -30,7 +30,8 @@ class TopicsCollection extends Mongo.Collection {
 
 export const Topics = new TopicsCollection('topics');
 
-Topics.categoryValues = ['forum', 'vote', 'news', 'ticket', 'room', 'feedback'];
+// Topic categories in order of increasing importance
+Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
 
 Topics.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -68,34 +69,46 @@ Topics.helpers({
   },
   unseenCommentsBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
-/*    const lastseenTimestamp = user.lastSeens[seenType][this._id];
-    const messages = lastseenTimestamp ?
-       Comments.find({ topicId: this._id, createdAt: { $gt: lastseenTimestamp } }) :
-       Comments.find({ topicId: this._id });
-    return messages.count();
-    */
     const lastSeenInfo = user.lastSeens[seenType][this._id];
     const lastSeenCommentCounter = lastSeenInfo ? lastSeenInfo.commentCounter : 0;
     const newCommentCounter = this.commentCounter - lastSeenCommentCounter;
     return newCommentCounter;
   },
+  unseenCommentListBy(userId, seenType) {
+    const user = Meteor.users.findOne(userId);
+    const lastSeenInfo = user.lastSeens[seenType][this._id];
+    const messages = lastSeenInfo ?
+       Comments.find({ topicId: this._id, createdAt: { $gt: lastSeenInfo.timestamp } }) :
+       Comments.find({ topicId: this._id });
+    return messages.fetch();
+  },
   unseenEventsBy(userId, seenType) {
     return 0; // TODO
   },
-  needsAttention(userId, seenType = Meteor.users.SEEN_BY_EYES) {
+  needsAttention(userId, seenType) {
     if (this.closed) return 0;
+    if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
     switch (this.category) {
+      case 'news':
+        if (this.isUnseenBy(userId, seenType)) return 1;
+        break;
       case 'room':
-        if (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0) return 1;
+        if (this.unseenCommentsBy(userId, seenType) > 0) return 1;
         break;
       case 'forum':
         if (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0) return 1;
         break;
       case 'vote':
-        if (!this.hasVotedIndirect(userId)) return 1;
+        if (seenType === Meteor.users.SEEN_BY.EYES
+          && !this.hasVotedIndirect(userId)) return 1;
+        if (seenType === Meteor.users.SEEN_BY.NOTI
+          && (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0)) return 1;
         break;
       case 'ticket':
-        if (this.ticket.status !== 'closed') return 1;
+        if (seenType === Meteor.users.SEEN_BY.EYES
+          && this.ticket.status !== 'closed') return 1;
+        if (seenType === Meteor.users.SEEN_BY.NOTI
+          && (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0)) return 1;
         break;
       case 'feedback':
         if (this.isUnseenBy(userId, seenType)) return 1;
@@ -105,32 +118,16 @@ Topics.helpers({
     }
     return 0;
   },
-  notifications(userId, seenType = Meteor.users.SEEN_BY_NOTI) {
-    if (this.participantIds && !_.contains(this.participantIds, userId)) return '';
-    if (this.category === 'room') {
-      if (this.unseenCommentsBy(userId, seenType) > 0) {
-        return `You have ${this.unseenCommentsBy(userId, seenType)} new messages from ${this.participantIds.map(id => Meteor.users.findOne(id).profile.firstName)}`; // TODO: print messages
-      }
-    } else /* this.category !== 'room' */ {
-      if (this.isUnseenBy(userId, seenType)) {
-        return `There is a new topic: "${this.title}"`;
-      }
-      // else
-      let result = '';
-      if (this.unseenCommentsBy(userId, seenType) > 0) {
-        result += `There are ${this.unseenCommentsBy(userId, seenType)} new comments on topic "${this.title}" \n`; // TODO: print comments
-      }
-      if (this.unseenEventsBy(userId, seenType) > 0) {
-        result += `There are ${this.unseenEventsBy(userId, seenType)} new events on topic "${this.title}" \n`; // TODO: print events
-      }
-      return result;
-    }
-  },
   remove() {
     Comments.remove({ topicId: this._id });
     Topics.remove({ _id: this._id });
   },
 });
+
+Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
+  return Topics.find({ communityId, closed: false }).fetch()
+    .filter(t => t.needsAttention(userId, seenType));
+};
 
 Topics.helpers(likesHelpers);
 Topics.helpers(flagsHelpers);

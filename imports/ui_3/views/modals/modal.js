@@ -5,6 +5,9 @@ import './modal.html';
 
 Template.Modal.events({
   'click #btn-ok'(event, instance) {
-    instance.data.onOK.call();
+    if (instance.data.onOK) instance.data.onOK.call();
+  },
+  'click #btn-close'(event, instance) {
+    if (instance.data.onClose) instance.data.onClose.call();
   },
 });

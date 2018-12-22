@@ -59,8 +59,8 @@
       "notiFrequency": {
         "label": "Email notification frequency about the events in the community",
         "never": "Never",
-        "weekly": "Once a week max",
-        "daily": "Once a day max",
+        "weekly": "Once a week maximum",
+        "daily": "Once a day maximum",
         "frequent": "Several times a day"
       },
       "notiLevel": {

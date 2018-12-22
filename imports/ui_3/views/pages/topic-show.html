@@ -15,6 +15,10 @@
         {{> Ticket_topic_show}}
         {{/if}}
 
+        {{#if (equals topic.category 'news')}}
+        {{> app_rootRedirector}}
+        {{/if}}
+
     {{/with}}
 </template>
 

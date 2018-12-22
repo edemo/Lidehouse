@@ -184,8 +184,15 @@ function onJoinParcelInsertSuccess(parcelId) {
     },
   }, (err, res) => {
     if (err) displayError(err);
-    else displayMessage('success', 'Joined community', communityName);
-    FlowRouter.go('App.home');
+    else displayMessage('success', 'Join request submitted', communityName);
+    Meteor.setTimeout(() => Modal.show('Modal', {
+      title: __('Join request submitted', communityName),
+      text: __('Join request notification'),
+      btnOK: 'ok',
+//      btnClose: 'cancel',
+      onOK() { FlowRouter.go('App.home'); },
+//      onClose() { removeMembership.call({ _id: res }); }, -- has no permission to do it, right now
+    }), 3000);
   });
 }
 
@@ -282,7 +289,7 @@ Template.Community_page.events({
   },
   'click .js-join'(event) {
     AccountsTemplates.forceLogin(() => {
-/*      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_edit', {
         title: 'pleaseSupplyParcelData',
         id: 'af.parcel.insert.unapproved',
         collection: Parcels,
@@ -291,13 +298,15 @@ Template.Community_page.events({
         meteormethod: 'parcels.insert.unapproved',
         template: 'bootstrap3-inline',
       });
-*/
+      
+/*    This can be used for immediate (no questions asked) joining - with a fixed ownership share
       const communityId = FlowRouter.current().params._cid;
       const maxSerial = Math.max.apply(Math, _.pluck(Parcels.find().fetch(), 'serial')) || 0;
       Meteor.call('parcels.insert.unapproved',
         { communityId, approved: false, serial: maxSerial + 1, units: 300, type: 'flat' },
         (error, result) => { onJoinParcelInsertSuccess(result); },
       );
+*/
     });
   },
 });
@@ -321,7 +330,6 @@ AutoForm.addHooks('af.parcel.insert', {
 });
 AutoForm.addHooks('af.parcel.update', {
   formToModifier(modifier) {
-//    console.log(`modifier: ${JSON.stringify(modifier)}`);
     modifier.$set.approved = true;
     return modifier;
   },
@@ -339,29 +347,3 @@ AutoForm.addHooks('af.parcel.insert.unapproved', {
     onJoinParcelInsertSuccess(result);
   },
 });
-
-/*   sortables() {
-     $( "ul.droptrue" ).sortable({
-      connectWith: ".js-sort-list"
-     });
-	
-    // $( "#sortable1" ).disableSelection();
-	
-*/
-
-/*/ https://stackoverflow.com/questions/17030845/how-does-one-actually-use-markdown-with-meteor
-
-Template.Housing.rendered = function() {
-  setPageTitle("*your* ~~markdown~~ _data_");
-};
-
-Template.Housing.markdown_data = function() {return Session.get("markdown_data")});
-
-function setPageTitle(titleName) {
-  var prefix = "## Welcome";
-
-  if ($('section').hasClass('single')) {
-	Session.set("markdown_data",prefix + titleName);
-  }
-}
-*/

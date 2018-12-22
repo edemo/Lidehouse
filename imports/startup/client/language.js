@@ -9,6 +9,8 @@ import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import 'meteor/numeral:languages';
 import { availableLanguages } from '/imports/startup/both/language.js';
+import { update as updateUser } from '/imports/api/users/methods.js';
+import { handleError } from '/imports/ui_3/lib/errors.js';
 
 export function getBrowserLanguage() {
   // https://stackoverflow.com/questions/31471411/how-to-set-user-language-settings-in-meteor#31471877
@@ -17,8 +19,12 @@ export function getBrowserLanguage() {
   return language.split('-')[0];
 }
 
+function supportedLanguage(lang) {
+  return _.contains(availableLanguages, lang) ? lang : 'en';
+}
+
 function setLanguage(lang) {
-  const supportedLang = _.contains(availableLanguages, lang) ? lang : 'en';
+  const supportedLang = supportedLanguage(lang);
   // TODO:  Use the session var to show loading while language loads - this prevents from displaying the default language while loading
   Session.set('showLoadingIndicator', true);
   TAPi18n.setLanguage(supportedLang)
@@ -40,6 +46,11 @@ export function currentUserLanguage() {
   } else {
     return getBrowserLanguage();
   }
+}
+
+export function setCurrentUserLanguage(lang = getBrowserLanguage()) {
+  const supportedLang = supportedLanguage(lang);
+  updateUser.call({ _id: Meteor.userId(), modifier: { $set: { 'settings.language': supportedLang } } }, handleError);
 }
 
 Meteor.startup(function setupLanguage() {

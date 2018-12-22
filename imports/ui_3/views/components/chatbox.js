@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { moment } from 'meteor/momentjs:moment';
-import { TimeSync } from 'meteor/mizzao:timesync';
+import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 import { handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -24,10 +23,11 @@ Template.Chatbox.helpers({
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },
   hiddenBy() {
-    if (Meteor.user().hasBlocked(this.createdBy()._id)) {
-      return 'you';
-    }
-    return this.flaggedBy();
+    const communityId = Session.get('activeCommunityId');
+    return this.flaggedStatus(communityId) || this.createdBy().flaggedStatus(communityId);
+  },
+  join(memberships) {
+    return memberships.map(m => m.toString()).join(', ');
   },
 });
 
@@ -90,8 +90,9 @@ Template.Chatbox.events({
     });
   },
   'click .js-block'(event, instance) {
-    block.call({
-      blockedUserId: instance.data.userId,
+    flag.call({
+      coll: 'users',
+      id: instance.data.userId,
     }, handleError);
   },
   'click .js-report'(event, instance) {

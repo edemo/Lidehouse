@@ -294,37 +294,43 @@ export function insertDemoHouse(lang, demoOrTest) {
   
   const com = { en: 'com', hu: 'hu' }[lang];
 
-  const demoManagerId = Accounts.createUser({ 
-    email: `manager@${demoOrTest}.${com}`, password: 'password',
-    profile: { lastName: __('demo.manager.lastName'), 
-      firstName: __('demo.manager.firstName'), 
-      publicEmail: `manager@${demoOrTest}.${com}`,
-      phone: '06 60 555 4321',
-      bio: __('demo.manager.bio'), 
-     } 
+  const demoManagerId = Accounts.createUser({
+    email: `manager@${demoOrTest}.${com}`,
+    password: 'password',
+    language: lang,
   });
-  Meteor.users.update({ _id: demoManagerId }, 
-    { $set: { 'emails.0.verified': true, 
+  Meteor.users.update({ _id: demoManagerId }, {
+    $set: {
+      'emails.0.verified': true,
       avatar: '/images/avatars/avatar20.jpg',
-      'settings.language': lang } 
-    }
-  );  
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoManagerId }, role: 'manager' });  
-
-  const demoAdminId = Accounts.createUser({ 
-    email: `admin@${demoOrTest}.${com}`, password: 'password',
-    profile: { lastName: __('demo.admin.lastName'), 
-      firstName: __('demo.admin.firstName'),
-      publicEmail: `admin@${demoOrTest}.${com}`,
-      phone: '06 60 762 7288' } 
+      profile: { lastName: __('demo.manager.lastName'),
+        firstName: __('demo.manager.firstName'),
+        publicEmail: `manager@${demoOrTest}.${com}`,
+        phone: '06 60 555 4321',
+        bio: __('demo.manager.bio'),
+      },
+    },
   });
-  Meteor.users.update({ _id: demoAdminId }, 
-    { $set: { 'emails.0.verified': true, 
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoManagerId }, role: 'manager' });
+
+  const demoAdminId = Accounts.createUser({
+    email: `admin@${demoOrTest}.${com}`,
+    password: 'password',
+    language: lang,
+  });
+  Meteor.users.update({ _id: demoAdminId }, {
+    $set: {
+      'emails.0.verified': true,
       avatar: '/images/avatars/avatar21.jpg',
-      'settings.language': lang } 
-    }
-  );  
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoAdminId }, role: 'admin' });  
+      profile: {
+        lastName: __('demo.admin.lastName'),
+        firstName: __('demo.admin.firstName'),
+        publicEmail: `admin@${demoOrTest}.${com}`,
+        phone: '06 60 762 7288',
+      },
+    },
+  });
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoAdminId }, role: 'admin' });
 
   // ===== Filling demo Users =====
 
@@ -1373,14 +1379,15 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
     const userWithRoleId = Accounts.createUser({
       email: role.name + `@${demoOrTest}.${com}`,
       password: 'password',
-      profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) } });
+      language: lang,
+      });
     const user = Meteor.users.findOne(userWithRoleId);
     const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
     Meteor.users.update({ _id: userWithRoleId },
       { $set: {
         'emails.0.verified': true,
         avatar: '/images/avatars/avatarTestUser.png',
-        'settings.language': lang,
+        profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) },
       } });
     if (role.name === 'owner') {
       Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
@@ -1450,12 +1457,15 @@ Meteor.methods({
     const demoUserId = Accounts.createUser({
       email: counter + `.${lang}demouser@honline.net`,
       password: 'password',
-      profile: { lastName: capitalize(__('guest')), firstName: firstNames[nameCounter] },
+      language: lang,
     });
     Meteor.users.update({ _id: demoUserId },
       { $set: { 'emails.0.verified': true,
         avatar: '/images/avatars/avatarnull.png',
-        'settings.language': lang } });
+        profile: { lastName: capitalize(__('guest')), firstName: firstNames[nameCounter] },
+        } 
+      }
+    );
     const demoHouse = Communities.findOne({ name: __('demo.house') });
     const demoCommunityId = demoHouse._id;
     const totalunits = demoHouse.totalunits;

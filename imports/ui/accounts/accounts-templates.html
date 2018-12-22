@@ -2,7 +2,11 @@
   <div class="wrapper wrapper-content animated fadeInDown">
     <div class="row">
       <div class="middle-box text-center loginscreen">
-      {{> atForm}}
+        <div>
+          <!--h1 class="logo-name">MARINA</h1-->
+          <img src="/images/logo/logo.png" width="70%" alt="Logo">
+        </div>
+        {{> atForm}}
       </div>
     </div>
   </div>
@@ -27,8 +31,8 @@
 </template>
 
 <template name="override-atTitle">
-  <h3 class="title-auth">{{title}}</h3>
-  <p class="subtitle-auth">{{_ 'userAccountsSubtitle'}}</p>
+  <h3 class="at-title">{{title}}</h3>
+  <small>{{subtitle}}</small>
 </template>
 
 <template name="override-atError">
@@ -70,4 +74,15 @@
     <a class="btn btn-sm btn-white btn-block text-capitalize at-link at-signin {{disabled}}" href="{{signInLink}}" id="at-signIn">{{linkText}}</a>
     <p class="text-muted text-center"><small>{{suffText}}</small></p> 
   </div>
+</template>
+
+<!--This is a copy of the original, except we only show it if there is error, and we use the preText as the link text-->
+<template name="override-atResendVerificationEmailLink">
+  {{#if errorOrMessage}}
+  <div class="at-resend-verification-email-link at-wrap">
+    <p>
+      <a href="{{resendVerificationEmailLink}}" id="at-resend-verification-email" class="at-link at-resend-verification-email {{disabled}}">{{preText}}</a>
+    </p>
+  </div>
+  {{/if}}
 </template>

@@ -1,4 +1,4 @@
-
+@import "navigation.less";
 @import "vote.less";
 @import "reports.less";
 
@@ -69,6 +69,10 @@ button, button p,
 //.nav li > a > i  { transition: all .2s ease-in-out; }
 .nav li.active > a > i { transform: scale(1.35); }
 
+.darker-nav-bg {
+    background: darken(@nav-bg, 3%);
+  }
+
 @media screen and (min-width: 768px) {
     .rwd-break {
         display: none;
@@ -89,4 +93,8 @@ button, button p,
 .normalize {
     margin: 0;
     padding: 0;
+}
+
+.margin-bottom {
+    margin: 0 0 5px 0;
 }

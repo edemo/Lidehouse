@@ -67,13 +67,19 @@
                         <li>                
                             <a href="{{pathFor 'Profile.show' _id=currentUser._id}}">
                                 <i class="glyphicon glyphicon-cog" aria-hidden="true"></i> 
-                                {{_ 'profile'}}
+                                {{_ 'Profile settings'}}
+                            </a>
+                        </li>
+                        <li>                
+                            <a href="{{pathFor 'changePwd'}}">
+                                <i class="glyphicon glyphicon-lock" aria-hidden="true"></i> 
+                                {{t9n 'updateYourPassword'}}
                             </a>
                         </li>
                         <li>
                             <a href="" class="js-logout">
                                 <i class="glyphicon glyphicon-log-out" aria-hidden="true"></i>
-                                {{_ 'logout'}}
+                                {{t9n 'signOut'}}
                             </a>
                         </li>
                     </ul>

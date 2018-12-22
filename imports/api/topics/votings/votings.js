@@ -45,24 +45,27 @@ const voteParticipationSchema = new SimpleSchema({
   units: { type: Number, decimal: true /* so that partial owned units are OK to vote */ },
 });
 
+// How to create default value for votes only (but not for any other topics)
+function defaultsTo(val) {
+  const defaultValue = val;
+  return function defaultValueGiverFunction() {
+    if (this.isInsert && this.field('category').value === 'vote') {
+      return defaultValue;
+    }
+    return undefined;
+  };
+}
+
 const votingsExtensionSchema = new SimpleSchema({
   vote: { type: voteSchema, optional: true },
-  voteCasts: { type: Object, optional: true, defaultValue: {}, blackbox: true },
-  voteCastsIndirect: { type: Object, optional: true, defaultValue: {}, blackbox: true },
+  voteCasts: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
+  voteCastsIndirect: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
     // userId -> ranked array of choice indexes (or single entry in the array)
-  voteResults: { type: Object, optional: true, defaultValue: {}, blackbox: true },
+  voteResults: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
     // ownershipId -> {}
-  voteSummary: { type: Object, optional: true, defaultValue: {}, blackbox: true },
+  voteSummary: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
     // choiceIndex -> {}
-  voteParticipation: {
-    type: voteParticipationSchema,
-    optional: true,
-    autoValue() {
-      if (!this.isSet && this.isInsert && this.field('category').value === 'vote') {
-        return { count: 0, units: 0 };
-      }
-    },
-  },
+  voteParticipation: { type: voteParticipationSchema, optional: true, autoValue: defaultsTo({ count: 0, units: 0 }) },
 });
 
 Topics.helpers({
@@ -122,7 +125,7 @@ Topics.helpers({
     const participation = { count: 0, units: 0 };
     const directVotes = this.voteCasts || {};
     const self = this;
-    const voterships = Memberships.find({ communityId: this.communityId, active: true, role: 'owner' }).fetch().filter(o => o.isRepresentor());
+    const voterships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner' }).fetch().filter(o => o.isRepresentor());
     voterships.forEach((ownership) => {
       const ownerId = ownership.Person().id();
       const votePath = [ownerId];
@@ -153,9 +156,11 @@ Topics.helpers({
           ],
         });
         for (const delegation of delegations.fetch()) {
-          votePath.push(delegation.targetPersonId);
-          if (getVoteResult(delegation.targetPersonId)) return true;
-          votePath.pop();
+          if (!_.contains(votePath, delegation.targetPersonId)) {
+            votePath.push(delegation.targetPersonId);
+            if (getVoteResult(delegation.targetPersonId)) return true;
+            votePath.pop();
+          }
         }
         return false;
       }

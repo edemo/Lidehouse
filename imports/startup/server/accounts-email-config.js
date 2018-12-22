@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Accounts } from 'meteor/accounts-base';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Communities } from '/imports/api/communities/communities.js';
 
 if (Meteor.settings.mailSender) {
   process.env.MAIL_URL = Meteor.settings.mailSender;
@@ -11,10 +10,12 @@ if (Meteor.settings.mailSender) {
 // When translating to non-english languages, we include the english version at the end, as an extra safety against wrong lang setting
 function dualTranslate(symbol, context, lang, separator) {
   let result = TAPi18n.__(symbol, context, lang);
-  if (lang !== 'en') {
-    if (separator === '/') result += ' (' + TAPi18n.__(symbol, context, 'en') + ')';
-    if (separator === '-') result += '\n\n[English]\n' + TAPi18n.__(symbol, context, 'en');
-  }
+// Transalting to one language, then translating to a different one, does not work (something in TAPI keeps transalting to the first lang)
+// so we now make the hungarian translation itself include an english translation as well (for enrollment)
+//  if (lang !== 'en') {
+//    if (separator === '/') result += ' (' + TAPi18n.__(symbol, context, 'en') + ')';
+//    if (separator === '-') result += '\n\n[English]\n' + TAPi18n.__(symbol, context, 'en');
+//  }
   return result;
 }
 
@@ -24,34 +25,38 @@ Accounts.emailTemplates.siteName = 'Honline';
 Accounts.emailTemplates.from = 'Honline <noreply@honline.net>';
 
 Accounts.emailTemplates.enrollAccount = {
-  subject(user) { return dualTranslate('emailEnrollAccountSubject', {}, user.language(), '/'); },
+  subject(user) {
+    const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
+    const community = membership.community();
+    return dualTranslate('email.EnrollAccountSubject', {
+      name: community.name,
+    }, user.language(), '/');
+  },
   text(user, url) {
     const membership = Memberships.findOne({ 'person.userEmail': user.emails[0].address });
     const community = membership.community();
     const adminEmail = community.admin().getPrimaryEmail();
-    return dualTranslate('emailEnrollAccount',
-      { name: community.name,
-        role: TAPi18n.__(membership.role, {}, user.language()),
-        email: adminEmail,
-        url,
-      },
-      user.language(),
-      '-',
-    );
+    return dualTranslate('email.EnrollAccount', {
+      name: community.name,
+      role: TAPi18n.__(membership.role, {}, user.language()),
+      email: adminEmail,
+      url,
+    },
+    user.language(), '-');
   },
 };
 
 Accounts.emailTemplates.verifyEmail = {
-  subject(user) { return dualTranslate('emailVerifyEmailSubject', {}, user.language(), '/'); },
+  subject(user) { return dualTranslate('email.VerifyEmailSubject', {}, user.language(), '/'); },
   text(user, url) {
-    return dualTranslate('emailVerifyEmail', { url }, user.language(), '-');
+    return dualTranslate('email.VerifyEmail', { url }, user.language(), '-');
   },
 };
 
 Accounts.emailTemplates.resetPassword = {
-  subject(user) { return dualTranslate('emailResetPasswordSubject', {}, user.language(), '/'); },
+  subject(user) { return dualTranslate('email.ResetPasswordSubject', {}, user.language(), '/'); },
   text(user, url) {
-    return dualTranslate('emailResetPassword', { url }, user.language(), '-');
+    return dualTranslate('email.ResetPassword', { url }, user.language(), '-');
   },
 };
 

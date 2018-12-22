@@ -33,7 +33,7 @@
                 </td>
                 <td class="project-actions">
                     <a href="" class="btn btn-white btn-sm js-edit" data-id="{{_id}}" title={{_ 'edit'}}><i class="fa fa-pencil text-capitalize"></i></a>
-                    <a href="" class="btn btn-white btn-sm js-remove" data-id="{{_id}}" title={{_ 'delete'}}><i class="fa fa-times text-capitalize"></i></a>
+                    <a href="" class="btn btn-white btn-sm js-delete" data-id="{{_id}}" title={{_ 'delete'}}><i class="fa fa-times text-capitalize"></i></a>
                 </td>
             </tr>
             {{/each}}
@@ -52,7 +52,7 @@
         <div class="row">
             <div class="col-lg-8"> 
             {{#if userHasPermission 'delegations.forOthers' (fromSession 'activeCommunityId') }}
-                <div class="ibox">
+                <div class="ibox delegations-from">
                     <div class="ibox-title">
                         <h5>{{_ 'Delegations'}} </h5>
                         <div class="ibox-tools">
@@ -79,7 +79,7 @@
                     </div>
                 </div>    
             {{else}}
-                <div class="ibox">
+                <div class="ibox delegations-from">
                     <div class="ibox-title">
                         <h5>{{_ 'Delegations from me'}} </h5>
                         <div class="ibox-tools">
@@ -101,7 +101,7 @@
                         {{/if}}
                     </div>
                 </div>    
-                <div class="ibox">
+                <div class="ibox delegations-to">
                     <div class="ibox-title">
                         <h5>{{_ 'Delegations to me'}}</h5>
                         <div class="ibox-tools">

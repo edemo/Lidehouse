@@ -15,8 +15,9 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
-let getCurrentUserLang = () => 'en';  // on the server we dont have a current user, so we use this
+let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {
   import { currentUserLanguage } from '/imports/startup/client/language.js';
 
@@ -76,7 +77,7 @@ const UserSettingsSchema = new SimpleSchema({
   language: { type: String, allowedValues: availableLanguages, optional: true, autoform: { firstOption: false } },
   delegatee: { type: Boolean, defaultValue: true },
   notiFrequency: { type: String, allowedValues: frequencyValues, defaultValue: 'never', autoform: autoformOptions(frequencyValues, 'schemaUsers.settings.notiFrequency.') },
-  notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notiLevel.') },
+//  notiLevel: { type: String, allowedValues: levelValues, defaultValue: 'never', autoform: autoformOptions(levelValues, 'schemaUsers.settings.notiLevel.') },
   newsletter: { type: Boolean, defaultValue: false },
 });
 
@@ -84,8 +85,10 @@ const defaultAvatar = '/images/avatars/avatarnull.png';
 // const defaultAvatar = 'http://pannako.hu/wp-content/uploads/avatar-1.png';
 
 // index in the user.lastSeens array (so no need to use magic numbers)
-Meteor.users.SEEN_BY_EYES = 0;
-Meteor.users.SEEN_BY_NOTI = 1;
+Meteor.users.SEEN_BY = {
+  EYES: 0,
+  NOTI: 1,
+};
 
 Meteor.users.schema = new SimpleSchema({
   // For accounts-password, either emails or username is required, but not both.
@@ -117,9 +120,6 @@ Meteor.users.schema = new SimpleSchema({
   'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
     // topicId -> { timestamp: lastseen comment's createdAt (if seen any), commentCounter }
 
-  blocked: { type: Array, defaultValue: [], autoform: { omit: true } }, // blocked users
-  'blocked.$': { type: String, regEx: SimpleSchema.RegEx.Id }, // userIds
-
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },
 
@@ -127,18 +127,24 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
+export function initialUsername(user) { 
+  const email = user.emails[0].address;
+  const emailChunk = email.split('@')[0].substring(0, 5);
+  const userId = user._id;
+  const idChunk = userId.substring(0, 5);
+  const userName = emailChunk + '_' + idChunk;
+  return userName;
+};
+
 Meteor.users.helpers({
   language() {
     return this.settings.language || 'en';
   },
   safeUsername() {
-    // If we have a username in db return that, otherwise generate one from her email address
+    // If we have a username in db return that, otherwise let it be anonymous
+    if (this.username && this.username.substring(0, 15) === 'deletedAccount_') return `[${__('deletedUser')}]`;
     if (this.username) return this.username;
-    const email = this.emails[0].address;
-    const emailSplit = email.split('@');
-    if (emailSplit[1] === 'deleted.hu') return __('deletedUser');
-    const emailName = emailSplit[0];
-    return emailName;
+    return `[${__('anonymous')}]`;
   },
   fullName(lang = getCurrentUserLang()) {
     if (this.profile && this.profile.lastName && this.profile.firstName) {
@@ -151,7 +157,7 @@ Meteor.users.helpers({
     return undefined;
   },
   displayName(lang = getCurrentUserLang()) {
-    return this.fullName(lang) || `[${this.safeUsername()}]`;     // or fallback to the username
+    return this.fullName(lang) || this.safeUsername();     // or fallback to the username
   },
   toString(lang = getCurrentUserLang()) {
     return this.displayName(lang);
@@ -167,10 +173,10 @@ Meteor.users.helpers({
   },
   // Memberships
   memberships(communityId) {
-    return Memberships.find({ communityId, active: true, 'person.userId': this._id });
+    return Memberships.find({ communityId, active: true, approved: true, 'person.userId': this._id });
   },
   ownerships(communityId) {
-    return Memberships.find({ communityId, active: true, role: 'owner', 'person.userId': this._id });
+    return Memberships.find({ communityId, active: true, approved: true, role: 'owner', 'person.userId': this._id });
   },
   ownedParcels(communityId) {
     const parcelIds = _.pluck(this.ownerships(communityId).fetch(), 'parcelId');
@@ -182,19 +188,22 @@ Meteor.users.helpers({
     return Memberships.find({ communityId, active: true, approved: true, 'person.userId': this._id }).fetch().map(m => m.role);
   },
   communities() {
-    const memberships = Memberships.find({ active: true, 'person.userId': this._id }).fetch();
+    const memberships = Memberships.find({ active: true, approved: true, 'person.userId': this._id }).fetch();
     const communityIds = _.pluck(memberships, 'communityId');
     const communities = Communities.find({ _id: { $in: communityIds } });
     // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
   isInCommunity(communityId) {
-    return !!Memberships.findOne({ communityId, active: true, 'person.userId': this._id });
+    return !!Memberships.findOne({ communityId, active: true, approved: true, 'person.userId': this._id });
+  },
+  isUnapprovedInCommunity(communityId) {
+    return !!Memberships.findOne({ communityId, approved: false, 'person.userId': this._id });
   },
   // Voting
   votingUnits(communityId) {
     let sum = 0;
-    Memberships.find({ communityId, active: true, role: 'owner', 'person.userId': this._id }).forEach(m => (sum += m.votingUnits()));
+    Memberships.find({ communityId, active: true, approved: true, role: 'owner', 'person.userId': this._id }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
   hasPermission(permissionName, communityId, object) {
@@ -238,11 +247,15 @@ Meteor.users.helpers({
     return totalBalance;
   },
   hasBlocked(userId) {
-    return _.contains(this.blocked, userId);
+    const user = Meteor.users.findOne(userId);
+    return user.isFlaggedBy(this._id);
   },
 });
 
+Meteor.users.helpers(flagsHelpers);
+
 Meteor.users.attachSchema(Meteor.users.schema);
+Meteor.users.attachSchema(flagsSchema);
 Meteor.users.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
@@ -262,5 +275,5 @@ Meteor.users.publicFields = {
   avatar: 1,
   status: 1,
   settings: 1,
-  'emails.address': 1, // TODO: email is not public, but we now need for calculating derived username
+  flags: 1,
 };

@@ -1,0 +1,31 @@
+{
+  "email": {
+    "EnrollAccountSubject": "Enrollment to __name__'s honline system",
+    "EnrollAccount": ["Greetings! \n",
+      "You have been added as a member of community __name__ with role: __role__. ",
+      "Hereby you are invited to join the honline condominium management system, ",
+      "where you can follow the community issues, discuss them and even vote online. ",
+      "You can start enjoying all of the system's benefits as soon as you confirm your registration.",
+      "\nThe following link takes you to our simple one click registration confirmation:",
+      "(You will be asked to set up a password for your account and you are ready to go) \n __url__ \n",
+      "If you think you have been added by accident, or in fact not want to be part of the community,",
+      "you don't need to accept the invitation link, and your account will be automatically deleted in a few days.",
+      "You may also contact the community administrator at __email__, to get more information.",
+      "Welcome to the age of online condominium management!, \nFrom the Honline team"],
+    "VerifyEmailSubject": "Verify your email address on Honline",
+    "VerifyEmail": ["Hello,\n",
+      "You have been registered as a user in the Honline system with this email address. ",
+      "To confirm your registration please click the link below: \n\n __url__",
+      "If you think you have been added by accident, or in fact not want to register,",
+      "you don't need to do anything, and your account will be automatically deleted in a few days.",
+      "\nThanks,\nThe Honline team"],
+    "ResetPasswordSubject": "Reset your password on Honline",
+    "ResetPassword": ["Hello,\n\nClick the link below to reset your password on Honline:",
+      "\n__url__\n\nIf you didn't request this email, please ignore it.",
+      "\nThanks,\nThe Honline team"],
+    "NotificationTitle": "Updates from __name__ community",
+    "NotificationFooter": ["You are receiving these notifications, because you have asked us to send you email notifications about the activities in your community __frequency__.<br>",
+      "You can change your email notification settings or turn it off completely <a href=\"__link__\"> on this link</a>.<br>",
+      "Should you have any questions, feel free to contact the community's <a href=\"mailto:__adminEmail__\">administrator<br>."]
+  }
+}

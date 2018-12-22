@@ -139,3 +139,12 @@ Meteor.publishComposite('communities.byName', function communitiesById(params) {
   const _id = Communities.findOne({ name })._id;
   return communityPublication(this.userId, _id);
 });
+
+// Forces that make you have MORE publications
+// - you dont want too much data to be published unnecessarily (takes resource on server, and bandwith to send)
+// - you can get better granularity on what the client sees at any moment
+
+// Forces that make you have FEWER publications
+// - facilitates observer reuse (when different observers subscribe to same data set, one observer can be shared on the server)
+// - publications need to be permission checked, and these would get duplicated everywhere (-> more places to make errors)
+// - publications need to be tested, so less tests have to be written

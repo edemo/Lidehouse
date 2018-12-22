@@ -16,6 +16,16 @@ Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, rend
   return html;
 };
 
+Render.joinOccupants = function joinOccupants(occupants) {
+  let result = '';
+  occupants.forEach((m) => {
+    const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
+    const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
+    result += `${m.Person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
+  });
+  return result;
+};
+
 export function parcelColumns(permissions) {
   const buttonRenderers = [];
   if (permissions.view) buttonRenderers.push(Render.buttonView);
@@ -30,7 +40,7 @@ export function parcelColumns(permissions) {
     { data: 'lot', title: __('schemaParcels.lot.label') },
     { data: 'area', title: 'm2' },
     { data: 'share()', title: __('schemaParcels.units.label') },
-    { data: 'displayActiveOccupants()', title: __('occupants') },
+    { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
   ];
 }

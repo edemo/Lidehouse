@@ -1,40 +1,46 @@
 import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
-import { AccountsTemplates } from 'meteor/useraccounts:core';
 
-// Import to load these templates
-import '/imports/ui/pages/root-redirector.js';
-import '/imports/ui/pages/app-not-found.js';
+// Import UI pages only on the client!
+// But the route defs need to be available on the server as well, for calculating link paths in emails
+if (Meteor.isClient) {
+  import '/imports/ui/pages/root-redirector.js';
+  import '/imports/ui/pages/app-not-found.js';
 
-import '/imports/ui_3/views/pages/intro-page.js';
-import '/imports/ui_3/views/pages/demo-login.js';
-import '/imports/ui_3/views/pages/profile-form.js';
-import '/imports/ui_3/views/pages/user-show.js';
-import '/imports/ui_3/views/pages/communities-listing.js';
-import '/imports/ui_3/views/pages/parcel-owners.js';
-import '/imports/ui_3/views/pages/vote-topics.js';
-import '/imports/ui_3/views/pages/agendas.js';
-import '/imports/ui_3/views/pages/delegations.js';
-import '/imports/ui_3/views/pages/board.js';
-import '/imports/ui_3/views/pages/room-show.js';
-import '/imports/ui_3/views/pages/forum-topics.js';
-import '/imports/ui_3/views/pages/community-page.js';
-import '/imports/ui_3/views/pages/tickets-report.js';
-import '/imports/ui_3/views/pages/parcels-finances.js';
-import '/imports/ui_3/views/pages/community-finances.js';
-import '/imports/ui_3/views/pages/shareddoc-store.js';
-import '/imports/ui_3/views/pages/topic-show.js';
-import '/imports/ui_3/views/pages/privacy.js';
+  import '/imports/ui_3/views/pages/intro-page.js';
+  import '/imports/ui_3/views/pages/demo-login.js';
+  import '/imports/ui_3/views/pages/profile-form.js';
+  import '/imports/ui_3/views/pages/user-show.js';
+  import '/imports/ui_3/views/pages/communities-listing.js';
+  import '/imports/ui_3/views/pages/parcel-owners.js';
+  import '/imports/ui_3/views/pages/vote-topics.js';
+  import '/imports/ui_3/views/pages/agendas.js';
+  import '/imports/ui_3/views/pages/delegations.js';
+  import '/imports/ui_3/views/pages/board.js';
+  import '/imports/ui_3/views/pages/room-show.js';
+  import '/imports/ui_3/views/pages/forum-topics.js';
+  import '/imports/ui_3/views/pages/community-page.js';
+  import '/imports/ui_3/views/pages/tickets-report.js';
+  import '/imports/ui_3/views/pages/parcels-finances.js';
+  import '/imports/ui_3/views/pages/community-finances.js';
+  import '/imports/ui_3/views/pages/shareddoc-store.js';
+  import '/imports/ui_3/views/pages/topic-show.js';
+  import '/imports/ui_3/views/pages/privacy.js';
 
-import '/imports/ui_3/views/layouts/main.js';
-import '/imports/ui_3/views/layouts/blank.js';
+  import '/imports/ui_3/views/layouts/main.js';
+  import '/imports/ui_3/views/layouts/blank.js';
 
-// Import to override accounts templates
-import '/imports/ui/accounts/accounts-templates.js';
+  // Import to override accounts templates
+  import '/imports/ui/accounts/accounts-templates.js';
 
-//
-FlowRouter.triggers.enter([() => { window.scrollTo(0, 0); }]);
+  //
+  FlowRouter.triggers.enter([() => { window.scrollTo(0, 0); }]);
+}
+
+//-------------------
+// Route definitions
+//-------------------
 
 FlowRouter.route('/', {
   name: 'App.home',
@@ -43,6 +49,7 @@ FlowRouter.route('/', {
   },
 });
 
+// --------------------------------------------
 // Business info pages
 
 FlowRouter.route('/intro', {
@@ -96,9 +103,10 @@ FlowRouter.route('/feedbacks', {
   },
 });
 
+// --------------------------------------------
 // CommunityRelatedRoutes
 
-const CommunityRelatedRoutes = [];
+export const CommunityRelatedRoutes = [];
 
 FlowRouter.route('/board', {
   name: 'Board',
@@ -213,21 +221,10 @@ FlowRouter.route('/user/:_id', {
 CommunityRelatedRoutes.push('User.show');
 
 // --------------------------------------------------
-
 // the App_notFound template is used for unknown routes and missing topics
+
 FlowRouter.notFound = {
   action() {
     BlazeLayout.render('Blank_layout', { content: 'App_notFound' });
   },
 };
-
-// Automatic redirection
-// if no user is logged in, then let us not show the community related pages 
-// (should we do something when ... or no active community selected?)
-
-Meteor.autorun(() => {
-  const currentRoute = FlowRouter.getRouteName();
-  if (CommunityRelatedRoutes.includes(currentRoute) || currentRoute === 'Profile.show') {
-    AccountsTemplates.forceLogin();
-  }
-});
