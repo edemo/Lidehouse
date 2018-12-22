@@ -172,6 +172,7 @@
   "menuUp": "Összecsuk",
   "Upload file": "Fájl feltöltés",
   "Uploading": "Feltöltés",
+  "Data upload in progress": "Adatok feltöltése folyamatban",
 
   "editing data": "adatok szerkesztése",
   "viewing data": "adatok megtekintése",
@@ -179,7 +180,7 @@
 
   "Start new topic": "Új téma indítása",
 
-  // housing
+  // community page
   "representor": "képviselője",
   "Communities list": "Házak listája",
   "selected": "kiválasztva",
