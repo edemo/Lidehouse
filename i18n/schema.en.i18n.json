@@ -133,7 +133,7 @@
       }
     },
     "activeTime": {
-      "label": "Active (Can leave blank, if no time constraint)",
+      "label": "Active time (Can leave blank, if no time constraint)",
       "begin": {
         "label": "From",
         "placeholder": "yyyy-mm-dd"

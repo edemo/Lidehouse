@@ -151,6 +151,7 @@ Template.Parcel_owners_page.events({
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeMembership, { _id: id }, {
       action: 'delete ownership',
+      message: 'You should rather archive it',
     });
   },
   'click #benefactors .js-new'(event, instance) {
@@ -191,6 +192,7 @@ Template.Parcel_owners_page.events({
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeMembership, { _id: id }, {
       action: 'delete benefactorship',
+      message: 'You should rather archive it',
     });
   },
 });

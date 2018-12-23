@@ -133,7 +133,7 @@
       }
     },
     "activeTime": {
-      "label": "Aktív (Nem kötelező megadni, ha nincs időben korlátozva)",
+      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
       "begin": {
         "label": "Időponttól",
         "placeholder": "éééé-hh-nn"

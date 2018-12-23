@@ -10,9 +10,9 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 const idCardTypeValues = ['natural', 'legal'];
 const IdCardSchema = new SimpleSchema({
   type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues, 'schemaMemberships.person.') },
-  name: { type: String },
-  address: { type: String },
-  identifier: { type: String }, // cegjegyzek szam vagy szig szam - egyedi!!!
+  name: { type: String, optional: true },
+  address: { type: String, optional: true },
+  identifier: { type: String, optional: true }, // cegjegyzek szam vagy szig szam - egyedi!!!
   mothersName: { type: String, optional: true },
   dob: { type: Date, optional: true },  // date of birth
 });
@@ -28,9 +28,9 @@ export const PersonSchema = new SimpleSchema({
   idCard: { type: IdCardSchema, optional: true },
 });
 
-PersonSchema.fields = [
-  'person.userId',
-  'person.userEmail',
+PersonSchema.modifiableFields = [
+//  'person.userId',
+//  'person.userEmail',
   'person.idCard.type',
   'person.idCard.name',
   'person.idCard.address',

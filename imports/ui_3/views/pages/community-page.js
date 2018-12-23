@@ -247,6 +247,7 @@ Template.Community_page.events({
     const id = $(event.target).data('id');
     Modal.confirmAndCall(removeMembership, { _id: id }, {
       action: 'delete roleship',
+      message: 'You should rather archive it',
     });
   },
   // parcel events

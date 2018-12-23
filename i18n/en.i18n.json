@@ -99,6 +99,7 @@
   "Join request submitted": "Join request submitted to community %s",
   "Join request notification": "Your join request needs to be approved by the managers. Until your request becomes approved, you will not be able to see data and interact with the community.",
   "Vote casted": "Vote casted succesfully",
+  "You should rather archive it" : "You should rather edit the active period, and set an end date, so the data is still searchable. DElete it only if it was created by mistake!",
 
   "delete user": "delete your account permanently",
   "deletedUser": "Deleted user",

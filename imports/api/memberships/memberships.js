@@ -147,11 +147,10 @@ Meteor.startup(function attach() {
 });
 
 Memberships.modifiableFields = [
-  'role',
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',
-].concat(PersonSchema.fields)
+].concat(PersonSchema.modifiableFields)
 .concat(ActivePeriodSchema.fields);
 
 Factory.define('membership', Memberships, {
