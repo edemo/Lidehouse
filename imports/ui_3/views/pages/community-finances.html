@@ -70,6 +70,7 @@
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
+                {{#if userHasPermission 'journals.insert' (fromSession 'activeCommunityId')}}
                 <div class="dropdown">
                     <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-primary btn-sm">
                         <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'journal'}} <b class="caret"></b>
@@ -82,6 +83,7 @@
                         <li><a href="" class="js-new-def"> + {{_ 'new'}} {{_ 'tx'}} {{_ 'def'}}</a></li-->
                     </ul>
                 </div>
+                {{/if}}
                 <div class="m-b-lg"></div>
                 {{> ReactiveDatatable tableData=journalsTableDataFn options=journalsOptionsFn }}
             </div>
@@ -174,8 +176,10 @@
             <div class="ibox-content">
               <h2>{{_ 'Main breakdowns'}}</h2>
               {{> ReactiveDatatable tableData=mainBreakdownsTableDataFn options=breakdownsOptionsFn }}
-              <h2 clas="m-t-md">{{_ 'Other breakdowns'}}</h2>
+              <h2 class="m-t-md">{{_ 'Other breakdowns'}}</h2>
+              {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
               <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
+              {{/if}}
               {{> ReactiveDatatable tableData=otherBreakdownsTableDataFn options=breakdownsOptionsFn }}
             </div>
         </div>
