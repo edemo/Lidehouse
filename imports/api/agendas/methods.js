@@ -42,7 +42,11 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Agendas, _id);
     checkPermissions(this.userId, 'agendas.remove', doc.communityId);
-
+    const votings = Topics.find({ agendaId: _id });
+    if (votings.count() > 0) {
+      throw new Meteor.Error('err_unableToRemove', 'Agenda cannot be deleted while it contains topics',
+       `Found: {${votings.count()}}`);
+    }
     Agendas.remove(_id);
   },
 });

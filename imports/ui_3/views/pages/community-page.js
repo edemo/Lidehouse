@@ -286,6 +286,7 @@ Template.Community_page.events({
     const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(removeParcel, { _id: id }, {
       action: 'delete parcel',
+      message: 'You should rather archive it',
     });
   },
   'click .js-join'(event) {
