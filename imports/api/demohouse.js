@@ -706,7 +706,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       closesAt: moment().add(2, 'month').toDate(),
       type: 'preferential',
       procedure: 'online',
-      effect: 'legal',
+      effect: 'poll',
       choices: [
         __('demo.vote.4.choice.0'),
         __('demo.vote.4.choice.1'),
@@ -744,7 +744,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     vote: {
       closesAt: moment().add(2, 'month').toDate(),
       procedure: 'online',
-      effect: 'legal',
+      effect: 'poll',
       type: 'petition',
     },
   });

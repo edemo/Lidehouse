@@ -22,6 +22,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     if (doc._id) checkNotExists(Topics, doc._id);
     checkTopicPermissions(this.userId, 'insert', doc);
+    doc.userId = this.userId;   // One can only post in her own name
     const topicId = Topics.insert(doc);
     return topicId;
   },

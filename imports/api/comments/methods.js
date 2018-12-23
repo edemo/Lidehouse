@@ -15,7 +15,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     const topic = checkExists(Topics, doc.topicId);
     checkPermissions(this.userId, 'comments.insert', topic.communityId);
-    
+    doc.userId = this.userId;   // One can only post in her own name
     Comments.insert(doc);
   },
 });
