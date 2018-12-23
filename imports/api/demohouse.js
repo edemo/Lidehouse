@@ -97,7 +97,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   const demoParcels = [];
   demoParcels[0] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 1,
+    serial: '1',
     units: 489,
     floor: __('demo.ground'),
     number: '1',
@@ -111,7 +111,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[1] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 2,
+    serial: '2',
     units: 427,
     floor: __('demo.ground'),
     number: '2',
@@ -125,7 +125,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[2] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 3,
+    serial: '3',
     units: 587,
     floor: 'I',
     number: '3',
@@ -139,7 +139,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[3] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 4,
+    serial: '4',
     units: 622,
     floor: 'I',
     number: '4',
@@ -153,7 +153,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[4] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 5,
+    serial: '5',
     units: 587,
     floor: 'II',
     number: '5',
@@ -167,7 +167,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[5] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 6,
+    serial: '6',
     units: 622,
     floor: 'II',
     number: '6',
@@ -181,7 +181,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[6] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 7,
+    serial: '7',
     units: 587,
     floor: 'III',
     number: '7',
@@ -195,7 +195,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[7] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 8,
+    serial: '8',
     units: 622,
     floor: 'III',
     number: '8',
@@ -209,7 +209,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[8] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 9,
+    serial: '9',
     units: 587,
     floor: 'IV',
     number: '9',
@@ -223,7 +223,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[9] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 10,
+    serial: '10',
     units: 622,
     floor: 'IV',
     number: '10',
@@ -237,7 +237,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[10] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 11,
+    serial: '11',
     units: 996,
     floor: __('demo.attic'),
     number: '11',
@@ -250,7 +250,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[11] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 12,
+    serial: '12',
     units: 444,
     floor: __('demo.cellar'),
     number: '1',
@@ -263,7 +263,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[12] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 13,
+    serial: '13',
     units: 613,
     floor: __('demo.cellar'),
     number: '2',
@@ -276,7 +276,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[13] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 14,
+    serial: '14',
     units: 196,
     floor: __('demo.ground'),
     number: '1',
@@ -1382,7 +1382,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
       language: lang,
     });
     const user = Meteor.users.findOne(userWithRoleId);
-    const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
+    const parcelId = Parcels.findOne({ communityId, serial: '7' })._id;
     Meteor.users.update({ _id: userWithRoleId },
       { $set: {
         'emails.0.verified': true,
@@ -1463,7 +1463,7 @@ Meteor.methods({
       { $set: { 'emails.0.verified': true,
         avatar: '/images/avatars/avatarnull.png',
         profile: { lastName: capitalize(__('guest')), firstName: firstNames[nameCounter] },
-        } 
+        }
       }
     );
     const demoHouse = Communities.findOne({ name: __('demo.house') });
@@ -1472,7 +1472,7 @@ Meteor.methods({
     if (demoUsersList.length >= 10) {
       Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
     }
-    const demoParcelSerial = demoParcelCounterStart + counter;
+    const demoParcelSerial = (demoParcelCounterStart + counter).toString();
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
       serial: demoParcelSerial,
@@ -1531,7 +1531,7 @@ Meteor.methods({
       topicId: demoUserMessageRoom2,
       userId: dummyUserId,
       text: __('demo.messages.1'),
-    }); 
+    });
     Clock.clear();
     // TODO: Do this thing in the comments.insert method,
     // Everyone has seen his own comments! So set it to be seen by him, when he comments.
@@ -1590,7 +1590,7 @@ export function deleteDemoUsersAfterRestart() {
   demousers.forEach((user) => {
     if (user.emails[0].address.includes('hudemouser')) communityId = huCommunityId;
     if (user.emails[0].address.includes('endemouser')) communityId = enCommunityId;
-    const parcelSerial = Number(user.emails[0].address.split('.')[0]) + demoParcelCounterStart;
+    const parcelSerial = (Number(user.emails[0].address.split('.')[0]) + demoParcelCounterStart).toString();
     const parcelId = Parcels.findOne({ communityId, serial: parcelSerial })._id;
     const currentTime = moment().valueOf();
     let timeUntilDelete = moment(user.createdAt).add(demoUserLifetime).subtract(currentTime).valueOf();

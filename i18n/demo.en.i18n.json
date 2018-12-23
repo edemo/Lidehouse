@@ -18,7 +18,7 @@
         "lastName": "Woods",
         "benefactor": {
           "name": "Rosemary Bird",
-          "address": " 45 Awesome street, Georgia",
+          "address": "Awesome street 45., Georgia",
           "mothersName": "Cethleen Pierce"
         }
       },

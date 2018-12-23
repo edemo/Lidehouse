@@ -51,7 +51,7 @@ export function insertDemoFixture(lang) {
   const dummyParcels = [];
   dummyParcels[0] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 100,
+    serial: '100',
     units: 0,
     floor: '-2',
     number: 'P02',
@@ -61,7 +61,7 @@ export function insertDemoFixture(lang) {
   });
   dummyParcels[1] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 1,
+    serial: '1',
     units: 10,
     floor: 'I',
     number: '12',
@@ -71,7 +71,7 @@ export function insertDemoFixture(lang) {
   });
   dummyParcels[2] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 2,
+    serial: '2',
     units: 20,
     floor: 'II',
     number: '23',
@@ -81,7 +81,7 @@ export function insertDemoFixture(lang) {
   });
   dummyParcels[3] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 3,
+    serial: '3',
     units: 30,
     floor: 'III',
     number: '34',
@@ -91,7 +91,7 @@ export function insertDemoFixture(lang) {
   });
   dummyParcels[4] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: 4,
+    serial: '4',
     units: 40,
     floor: 'IV',
     number: '45',

@@ -22,7 +22,7 @@ Parcels.heatingTypeValues = ['centralHeating', 'ownHeating'];
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
-  serial: { type: Number, optional: true },
+  serial: { type: String, optional: true },
   units: { type: Number, optional: true },
   /*  name: { type: String,
       autoValue() {
@@ -52,7 +52,9 @@ Parcels.schema = new SimpleSchema({
 
 Parcels.helpers({
   location() {  // TODO: move this to the house package
-    return `${this.floor || '?'}/${this.number || '?'}`;
+    return (this.building ? this.building + '-' : '')
+      + (this.floor ? this.floor + '/' : '')
+      + this.number;
   },
   occupants() {
     const occupants = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: { $in: ['owner', 'benefactor'] }, parcelId: this._id });
@@ -62,7 +64,7 @@ Parcels.helpers({
     return `${this.serial || '?'}. ${__(this.type)} ${this.location()} (${this.lot})`;
   },
   toString() {
-    return this.location();
+    return this.serial || this.location();
   },
   community() {
     const community = Communities.findOne(this.communityId);

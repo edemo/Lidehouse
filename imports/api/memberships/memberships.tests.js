@@ -59,7 +59,7 @@ if (Meteor.isServer) {
       let parcelId;
       let ownership1Id, ownership2Id, ownership3Id, benefactorship1Id;
       beforeEach(function () {
-        parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, serial: 45, units: 0 });
+        parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, serial: '45', units: 0 });
         ownership1Id = Memberships.insert({
           communityId: Fixture.demoCommunityId,
           parcelId,
@@ -132,7 +132,7 @@ if (Meteor.isServer) {
         };
         if (newrole === 'owner' || newrole === 'benefactor') {
           _.extend(newMembership, {
-            parcelId: Parcels.insert({ communityId: Fixture.demoCommunityId, serial: 45, units: 0 }),
+            parcelId: Parcels.insert({ communityId: Fixture.demoCommunityId, serial: '45', units: 0 }),
           });
         }
         if (newrole === 'owner') {
@@ -245,7 +245,7 @@ if (Meteor.isServer) {
           };
           return newMembership;
         };
-        const testParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, serial: 45, units: 0 });
+        const testParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, serial: '45', units: 0 });
         chai.assert.throws(() => {
           insertMembership._execute({ userId: Fixture.demoAdminId },
             createMembershipWithShare(testParcelId, new Fraction(2, 1)));
