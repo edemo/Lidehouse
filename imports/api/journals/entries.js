@@ -11,8 +11,8 @@ if (Meteor.isClient) {
   JournalEntries.helpers({
     effectiveAmount() {
       let effectiveSign = 0;
-      if (this.move === 'from') effectiveSign = -1;
-      if (this.move === 'to') effectiveSign = +1;
+      if (this.move === 'credit') effectiveSign = -1;
+      if (this.move === 'debit') effectiveSign = +1;
       return this.amount * effectiveSign;
     },
     journal() {
@@ -20,8 +20,8 @@ if (Meteor.isClient) {
     },
     contra() {
       function otherSide(move) {
-        if (move === 'from') return 'to';
-        if (move === 'to') return 'from';
+        if (move === 'credit') return 'debit';
+        if (move === 'debit') return 'credit';
         debugAssert(false); return undefined;
       }
       const contraEntries = this.journal()[otherSide(this.move)];

@@ -58,13 +58,13 @@ export const apply = new ValidatedMethod({
           valueDate: new Date(parcelBilling.year, i - 1, BILLING_DAY_OF_THE_MONTH),
           amount,
   //        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
-          from: [{
+          credit: [{
             account: {
               'Liabilities': parcelBilling.account['Owner payins'],
               'Localizer': parcel.serial.toString(),
             },
           }],
-          to: [{
+          debit: [{
             account: {
               'Assets': parcelBilling.account['Owner payins'],
               'Localizer': parcel.serial.toString(),

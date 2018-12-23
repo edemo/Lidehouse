@@ -15,13 +15,13 @@ export const IncomeTx = {
     }, _.clone(Journals.noteSchema),
   ]),
   transformToJournal(doc) {
-    doc.from = [{
+    doc.credit = [{
       account: {
         'Incomes': doc.incomeAccount.split(':').pop(),
         'Localizer': doc.localizer.split(':').pop(),
       },
     }];
-    doc.to = [{
+    doc.debit = [{
       account: {
         'Assets': doc.moneyAccount.split(':').pop(),
       },

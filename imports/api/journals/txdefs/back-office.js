@@ -7,11 +7,11 @@ export const BackOfficeTx = {
   name: 'Back office tx',
   schema: Journals.inputSchema,
   transformToJournal(doc) {
-    doc.from.forEach(entry => {
+    doc.credit.forEach(entry => {
       const as = AccountSpecification.fromNames(entry.account.account, entry.account.localizer);
       entry.account = as.toTags();
     });
-    doc.to.forEach(entry => {
+    doc.debit.forEach(entry => {
       const as = AccountSpecification.fromNames(entry.account.account, entry.account.localizer);
       entry.account = as.toTags();
     });

@@ -1010,10 +1010,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 100000,
-    from: [{
+    credit: [{
       account: { 'Liabilities': 'Opening' },
     }],
-    to: [{
+    debit: [{
       account: { 'Assets': 'Pénztár 1' },
     }],
   });
@@ -1024,10 +1024,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 110000,
-    from: [{
+    credit: [{
       account: { 'Liabilities': 'Opening' },
     }],
-    to: [{
+    debit: [{
       account: { 'Assets': 'Bank főszámla' },
     }],
   });
@@ -1038,10 +1038,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 120000,
-    from: [{
+    credit: [{
       account: { 'Liabilities': 'Opening' },
     }],
-    to: [{
+    debit: [{
       account: { 'Assets': 'Bank felújítási alap' },
     }],
   });
@@ -1054,13 +1054,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-06-01'),
     amount: 3500,
-    from: [{
+    credit: [{
       account: {
         'Incomes': 'Egyéb bevétel',
         'Localizer': 'Central',
       },
     }],
-    to: [{
+    debit: [{
       account: {
         'Assets': 'Bank főszámla',
       },
@@ -1074,13 +1074,13 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
-      from: [{
+      credit: [{
         account: {
           'Incomes': 'Kamat pénzintézetektől',
           'Localizer': 'Central',
         },
       }],
-      to: [{
+      debit: [{
         account: {
           'Assets': 'Bank főszámla',
         },
@@ -1094,13 +1094,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-09-15'),
     amount: 500000,
-    from: [{
+    credit: [{
       account: {
         'Incomes': 'Támogatás',
         'Localizer': 'Central',
       },
-    }], 
-    to: [{
+    }],
+    debit: [{
       account: {
         'Assets': 'Bank főszámla',
       },
@@ -1114,13 +1114,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-05-10'),
     amount: 55000,
-    from: [{
+    credit: [{
       account: {
         'Incomes': 'Bérleti díj',
         'Localizer': 'Central',
       },
     }],
-    to: [{
+    debit: [{
       account: {
         'Assets': 'Bank főszámla',
       },
@@ -1134,13 +1134,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-10-15'),
     amount: 500000,
-    from: [{
+    credit: [{
       account: {
         'Incomes': 'Egyéb bevétel',
         'Localizer': 'Central',
       },
     }],
-    to: [{
+    debit: [{
       account: {
         'Assets': 'Bank főszámla',
       },
@@ -1154,12 +1154,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     phase: 'done',
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
-    from: [{
+    credit: [{
       account: {
         'Liabilities': 'Bank hitel',
       },
     }],
-    to: [{
+    debit: [{
       account: {
         'Assets': 'Fundamenta felújítási hitel',
       },
@@ -1177,13 +1177,13 @@ export function insertDemoHouse(lang, demoOrTest) {
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
-        from: [{
+        credit: [{
           account: {
             'Incomes': 'Közös költség befizetés',
             'Localizer': i.toString(),
           },
         }],
-        to: [{
+        debit: [{
           account: {
             'Assets': 'Bank főszámla',
           },
@@ -1202,13 +1202,13 @@ export function insertDemoHouse(lang, demoOrTest) {
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        from: [{
+        credit: [{
           account: {
             'Incomes': 'Víz díj',
             'Localizer': place[i],
           },
         }],
-        to: [{
+        debit: [{
           account: {
             'Assets': 'Bank főszámla',
           },
@@ -1225,13 +1225,13 @@ export function insertDemoHouse(lang, demoOrTest) {
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
-        from: [{
+        credit: [{
           account: {
             'Incomes': 'Fűtési díj',
             'Localizer': i.toString(),
           },
         }],
-        to: [{
+        debit: [{
           account: {
             'Assets': 'Bank főszámla',
           },
@@ -1247,13 +1247,13 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
-      from: [{
+      credit: [{
         account: {
           'Incomes': 'Felújítási célbefizetés',
           'Localizer': i.toString(),
         },
       }],
-      to: [{
+      debit: [{
         account: {
           'Assets': 'Bank főszámla',
         },
@@ -1269,12 +1269,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
-      from: [{
+      credit: [{
         account: {
           'Assets': 'Bank főszámla',
         },
       }],
-      to: [{
+      debit: [{
         account: {
           'Expenses': 'Víz',
           'Localizer': 'Central',
@@ -1291,12 +1291,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
-      from: [{
+      credit: [{
         account: {
           'Assets': 'Bank főszámla',
         },
       }],
-      to: [{
+      debit: [{
         account: {
           'Expenses': 'Csatorna',
           'Localizer': 'Central',
@@ -1312,12 +1312,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 10250,
-      from: [{
+      credit: [{
         account: {
           'Assets': 'Bank főszámla',
         },
       }],
-      to: [{
+      debit: [{
         account: {
           'Expenses': 'Áram',
           'Localizer': 'Central',
@@ -1380,7 +1380,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
       email: role.name + `@${demoOrTest}.${com}`,
       password: 'password',
       language: lang,
-      });
+    });
     const user = Meteor.users.findOne(userWithRoleId);
     const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
     Meteor.users.update({ _id: userWithRoleId },
@@ -1559,13 +1559,13 @@ Meteor.methods({
         phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
         amount: 6875,
-        from: [{
+        credit: [{
           account: {
             'Incomes': 'Közös költség befizetés',
             'Localizer': demoParcelSerial.toString(),
           },
         }],
-        to: [{
+        debit: [{
           account: {
             'Assets': 'Bank főszámla',
           },

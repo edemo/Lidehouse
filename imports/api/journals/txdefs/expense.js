@@ -15,12 +15,12 @@ export const ExpenseTx = {
     }, _.clone(Journals.noteSchema),
   ]),
   transformToJournal(doc) {
-    doc.from = [{
+    doc.credit = [{
       account: {
         'Assets': doc.moneyAccount.split(':').pop(),
       },
     }];
-    doc.to = [{
+    doc.debit = [{
       account: {
         'Expenses': doc.incomeAccount.split(':').pop(),
         'Localizer': doc.localizer.split(':').pop(),

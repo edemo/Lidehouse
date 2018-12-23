@@ -41,15 +41,15 @@ Journals.noteSchema = {
 
 Journals.schema = new SimpleSchema([
   _.clone(Journals.rawSchema),
-  { from: { type: [Journals.entryDbSchema] } },
-  { to: { type: [Journals.entryDbSchema] } },
+  { credit: { type: [Journals.entryDbSchema] } },
+  { debit: { type: [Journals.entryDbSchema] } },
   _.clone(Journals.noteSchema),
 ]);
 
 Journals.inputSchema = new SimpleSchema([
   _.clone(Journals.rawSchema),
-  { from: { type: [Journals.entryAfSchema] } },
-  { to: { type: [Journals.entryAfSchema] } },
+  { credit: { type: [Journals.entryAfSchema] } },
+  { debit: { type: [Journals.entryAfSchema] } },
   _.clone(Journals.noteSchema),
 ]);
 
@@ -70,19 +70,19 @@ Journals.helpers({
   },
   journalEntries() {
     const entries = [];
-    this.to.forEach(l => {
+    this.debit.forEach(l => {
       const txBase = _.clone(this);
       delete txBase._id;
-      delete txBase.from;
-      delete txBase.to;
-      entries.push(_.extend(txBase, l, { move: 'to' }));
+      delete txBase.credit;
+      delete txBase.debit;
+      entries.push(_.extend(txBase, l, { move: 'debit' }));
     });
-    this.from.forEach(l => {
+    this.credit.forEach(l => {
       const txBase = _.clone(this);
       delete txBase._id;
-      delete txBase.from;
-      delete txBase.to;
-      entries.push(_.extend(txBase, l, { move: 'from' }));
+      delete txBase.credit;
+      delete txBase.debit;
+      entries.push(_.extend(txBase, l, { move: 'credit' }));
     });
     return entries;
   },
@@ -90,15 +90,15 @@ Journals.helpers({
     const tx = _.clone(this);
     delete tx._id;
     tx.amount *= -1;
-    tx.from.forEach(l => l.amount *= -1);
-    tx.to.forEach(l => l.amount *= -1);
+    tx.credit.forEach(l => l.amount *= -1);
+    tx.debit.forEach(l => l.amount *= -1);
     return tx;
   },
   oppositor() {
     const tx = _.clone(this);
     delete tx._id;
-    tx.from = this.to;
-    tx.to = this.from;
+    tx.credit = this.debit;
+    tx.debit = this.credit;
     return tx;
   },
 });

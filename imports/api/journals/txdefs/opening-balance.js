@@ -14,14 +14,14 @@ export const OpeningBalanceTx = {
     },
   ]),
   transformToJournal(doc) {
-    doc.from = [{
+    doc.credit = [{
       account: {
         'Equity': 'Opening',
         'Localizer': doc.localizer.split(':').pop(),
       },
     }];
     const toAccount = AccountSpecification.fromNames(doc.account, doc.localizer);
-    doc.to = [{
+    doc.debit = [{
       account: toAccount.toTags(),
     }];
     return doc;

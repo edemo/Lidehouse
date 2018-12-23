@@ -335,8 +335,8 @@
     "batchId": {
       "label": "Batch id"
     },
-    "from": {
-      "label": "From (Cr)",
+    "credit": {
+      "label": "Credit",
       "$": {
         "amount": {
           "label": "Amount",
@@ -353,8 +353,8 @@
         }
       }
     },
-    "to": {
-      "label": "To (Dr)",
+    "debit": {
+      "label": "Debit",
       "$": {
         "amount": {
           "label": "Amount",

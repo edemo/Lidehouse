@@ -335,8 +335,8 @@
     "batchId": {
       "label": "Batch azonosító"
     },
-    "from": {
-      "label": "Honnan (T)",
+    "credit": {
+      "label": "Tartozik",
       "$": {
         "amount": {
           "label": "Összeg",
@@ -353,8 +353,8 @@
         }          
       }
     },
-    "to": {
-      "label": "Hová (K)",
+    "debit": {
+      "label": "Követel",
       "$": {
         "amount": {
           "label": "Összeg",

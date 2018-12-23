@@ -11,19 +11,19 @@ import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 
 function runPositingRules(context, doc) {
   const isSubAccountOf = Breakdowns.isSubAccountOf.bind({ communityId: doc.communityId });
-  if (doc.from[0].account['Incomes'] && isSubAccountOf(doc.from[0].account['Incomes'], 'Owner payins', 'Incomes')
-    && doc.to[0].account['Assets'] && isSubAccountOf(doc.to[0].account['Assets'], 'Money accounts', 'Assets')) {
+  if (doc.credit[0].account['Incomes'] && isSubAccountOf(doc.credit[0].account['Incomes'], 'Owner payins', 'Incomes')
+    && doc.debit[0].account['Assets'] && isSubAccountOf(doc.debit[0].account['Assets'], 'Money accounts', 'Assets')) {
     const newDoc = _.clone(doc);
-    newDoc.from = [{
+    newDoc.credit = [{
       account: {
-        'Assets': doc.from[0].account['Incomes'],  // Obligation decreases
-        'Localizer': doc.from[0].account['Localizer'],
+        'Assets': doc.credit[0].account['Incomes'],  // Obligation decreases
+        'Localizer': doc.credit[0].account['Localizer'],
       },
     }];
-    newDoc.to = [{
+    newDoc.debit = [{
       account: {
-        'Liabilities': doc.from[0].account['Incomes'],
-        'Localizer': doc.from[0].account['Localizer'],
+        'Liabilities': doc.credit[0].account['Incomes'],
+        'Localizer': doc.credit[0].account['Localizer'],
       },
     }];
     newDoc.sourceId = doc._id;
