@@ -2,18 +2,16 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { Parcels } from '/imports/api/parcels/parcels.js';
-import { remove as removeMembership } from '/imports/api/memberships/methods.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
+import { $ } from 'meteor/jquery';
+
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { onSuccess } from '/imports/ui_3/lib/errors.js';
-import { TAPi18n } from 'meteor/tap:i18n';
-import { $ } from 'meteor/jquery';
 import { __ } from '/imports/localization/i18n.js';
-import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { ownershipColumns, benefactorshipColumns } from '/imports/api/memberships/tables.js';
-import { Fraction } from 'fractional';
+
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { remove as removeMembership } from '/imports/api/memberships/methods.js';
+import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -113,6 +111,9 @@ Template.Parcel_owners_page.helpers({
 });
 
 Template.Parcel_owners_page.events({
+  'click .js-import'(event, instance) {
+    importCollectionFromFile(Memberships);
+  },
   'click #owners .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.ownership.insert',

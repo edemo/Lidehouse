@@ -164,3 +164,7 @@ export const remove = new ValidatedMethod({
     Memberships.remove(_id);
   },
 });
+
+Memberships.methods = {
+  insert, insertUnapproved, connectMe, update, remove,
+};

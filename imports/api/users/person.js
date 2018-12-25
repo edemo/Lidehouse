@@ -12,6 +12,7 @@ const IdCardSchema = new SimpleSchema({
   type: { type: String, allowedValues: idCardTypeValues, autoform: autoformOptions(idCardTypeValues, 'schemaMemberships.person.') },
   name: { type: String, optional: true },
   address: { type: String, optional: true },
+  phone: { type: String, optional: true },
   identifier: { type: String, optional: true }, // cegjegyzek szam vagy szig szam - egyedi!!!
   mothersName: { type: String, optional: true },
   dob: { type: Date, optional: true },  // date of birth
