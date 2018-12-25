@@ -54,7 +54,7 @@ Parcels.helpers({
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
       + (this.floor ? this.floor + '/' : '')
-      + this.number;
+      + (this.number ? this.number : '');
   },
   occupants() {
     const occupants = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: { $in: ['owner', 'benefactor'] }, parcelId: this._id });

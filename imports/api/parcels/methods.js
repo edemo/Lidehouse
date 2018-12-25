@@ -80,3 +80,7 @@ export const remove = new ValidatedMethod({
     Memberships.remove({ parcelId: _id });
   },
 });
+
+Parcels.methods = {
+  insert, insertUnapproved, update, remove,
+};

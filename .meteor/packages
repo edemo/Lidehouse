@@ -48,6 +48,7 @@ mdg:validation-error
 msavin:mongol
 jalik:ufs
 jalik:ufs-gridfs
+huaming:js-xlsx
 
 # routing
 kadira:flow-router

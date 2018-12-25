@@ -21,6 +21,7 @@ import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { update as updateMembership, remove as removeMembership, insertUnapproved as insertMembershipUnapproved } from '/imports/api/memberships/methods.js';
 import '/imports/api/users/users.js';
+import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -251,6 +252,9 @@ Template.Community_page.events({
     });
   },
   // parcel events
+  'click .parcels-section .js-import'(event, instance) {
+    importCollectionFromFile(Parcels);
+  },
   'click .parcels-section .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.parcel.insert',
