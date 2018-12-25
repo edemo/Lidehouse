@@ -66,6 +66,10 @@ export const HouseTranslation = {
         "label": "Serial No",
         "placeholder": "(eg. 101)"
       },
+      "leadSerial": {
+        "label": "Lead parcel No",
+        "placeholder": "(eg. 101)"
+      },
       "units": {
         "label": "Voting share units",
         "placeholder": "(eg. 135)"
@@ -193,6 +197,10 @@ export const HouseTranslation = {
       "label": "Albetét",
       "serial": {
         "label": "Sorszám",
+        "placeholder": "(pl. 101)"
+      },
+      "leadSerial": {
+        "label": "Vezető albetét",
         "placeholder": "(pl. 101)"
       },
       "units": {

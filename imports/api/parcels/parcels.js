@@ -23,6 +23,7 @@ Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   serial: { type: String, optional: true },
+  leadSerial: { type: String, optional: true },
   units: { type: Number, optional: true },
   /*  name: { type: String,
       autoValue() {
@@ -51,6 +52,10 @@ Parcels.schema = new SimpleSchema({
 });
 
 Parcels.helpers({
+  leadParcel() {
+    if (!this.leadSerial || this.leadSerial === this.serial) return this;
+    return Parcels.findOne({ serial: this.leadSerial });
+  },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
       + (this.floor ? this.floor + '/' : '')
