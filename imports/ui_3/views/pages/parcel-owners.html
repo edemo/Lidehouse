@@ -19,6 +19,9 @@
                         <div class="btn-group">
                             <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                             <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                            {{#unless Person.isInvited}}
+                            <button class="btn-danger btn btn-xs js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
+                            {{/unless}}
                         </div>
                     </td>
                     {{/if}}
@@ -45,6 +48,9 @@
                         <div class="btn-group">
                             <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                             <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                            {{#unless Person.isInvited}}
+                            <button class="btn-danger btn btn-xs js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
+                            {{/unless}}
                         </div>
                     </td>
                     {{/if}}

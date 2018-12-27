@@ -101,6 +101,7 @@
   "Vote casted": "Vote casted succesfully",
   "You should rather archive it" : "You should rather edit the active period, and set an end date, so the data is still searchable. DElete it only if it was created by mistake!",
 
+  "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "delete user": "delete your account permanently",
   "deletedUser": "Deleted user",
   "deleteUserWarning": ["BEWARE: Your user account will be permanently deleted! <br /><br />",

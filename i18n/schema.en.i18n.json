@@ -124,6 +124,10 @@
         "phone": {
           "label": "Phone number",
           "placeholder": "(pl. +36 30 123 4567)"
+        },
+        "email": {
+          "label": "Email address",
+          "placeholder": "(eg. jsmith45@dmail.com)"
         }
       }
     },

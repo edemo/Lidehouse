@@ -10,6 +10,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 const ContactSchema = new SimpleSchema({
   address: { type: String, optional: true },
   phone: { type: String, optional: true },
+  email: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
 });
 
 const idCardTypeValues = ['natural', 'legal'];
@@ -25,9 +26,9 @@ const IdCardSchema = new SimpleSchema({
 export const PersonSchema = new SimpleSchema({
   // The membership is connecting to a person via 3 possible ways:
   // *userId* (connecting to a registered user in the system),
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   // *userEmail* (not yet registered, but invitation is sent)
-  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
+  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true, autoform: { omit: true } },
   // *idCard* (identity papers confirmed by manager, so person can officially vote now)
   // this person might or might not wish to register in the system ever, but still can do voting (if manager votes in his name)
   idCard: { type: IdCardSchema, optional: true },
@@ -45,6 +46,7 @@ PersonSchema.modifiableFields = [
   'person.idCard.dob',
   'person.contact.address',
   'person.contact.phone',
+  'person.contact.email',
 ];
 
 export class Person {
@@ -80,7 +82,7 @@ export class Person {
     if (this.userId && this.userEmail) return false;
     return true;
   }
-  isConnected() {
+  isInvited() {
     if (this.userId || this.userEmail) return true;
     return false;
   }

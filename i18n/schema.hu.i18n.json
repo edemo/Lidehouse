@@ -124,6 +124,10 @@
         "phone": {
           "label": "Telefonszám",
           "placeholder": "(pl. +36 30 123 4567)"
+        },
+        "email": {
+          "label": "Email cím",
+          "placeholder": "(pl. tibi45@dmail.com)"
         }
       }
     },

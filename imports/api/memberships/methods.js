@@ -11,17 +11,6 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from './memberships.js';
 import { Person } from '../users/person.js';
 
-// We need a check of userEmail and userId matches.
-// Easy solution is to not allow setting both fields in inserts and updates. Eg. userId will be the stronger.
-// Alternatively we could throw an Error if they dont match.
-function checkUserDataConsistency(doc) {
-  const personData = doc.person || flatten.unflatten(doc).person; // update needs this, because $set has dotted keys
-  const person = new Person(personData);
-  if (!person.isConsistent()) {
-    throw new Meteor.Error('Membership data contains both userId and userEmail', personData);
-  }
-}
-
 // Connecting the membership with a registered user (call if only email is provided and no user connected)
 // from this point the user can change her email address, w/o breaking the association
 export function connectUser(membershipId, userId) {
@@ -71,8 +60,8 @@ export const connectMe = new ValidatedMethod({
   validate: null,
 
   run() {
-    const email = Meteor.users.findOne(this.userId).emails[0].address;
     const userId = this.userId;
+    const email = Meteor.users.findOne(userId).emails[0].address;
     Memberships.find({ 'person.userEmail': email }).forEach((membership) => {
       connectUser(membership._id, userId);
     });
@@ -105,7 +94,10 @@ export const insert = new ValidatedMethod({
       const newTotal = total.add(doc.ownership.share);
       checkSanityOfTotalShare(doc.parcelId, newTotal);
     }
-    checkUserDataConsistency(doc);
+    const person = new Person(doc.person);
+    if (!person.isConsistent()) {
+      throw new Meteor.Error('Membership data contains both userId and userEmail', doc.person);
+    }
     const id = Memberships.insert(doc);
     connectUserIfPossible(id);
     return id;
@@ -122,12 +114,8 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    let modifiableFields = Memberships.modifiableFields.concat('approved');
-    if (!doc.Person().isConnected()) modifiableFields = modifiableFields.concat('person.userEmail');
-    checkModifier(doc, modifier, modifiableFields);
+    checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));
     const newrole = modifier.$set.role;
-    const unflattenedModifier = flatten.unflatten(modifier.$set);
-    const newPerson = unflattenedModifier.person;
     if (newrole && newrole !== doc.role) {
       checkAddMemberPermissions(this.userId, doc.communityId, newrole);
     }
@@ -138,11 +126,24 @@ export const update = new ValidatedMethod({
     }
     // This check is not good, if we have activePeriods (same guy can have same role at a different time)
     // checkNotExists(Memberships, { _id: { $ne: doc._id }, communityId: doc.communityId, role: newrole, parcelId: doc.parcelId, person: newPerson });
-    checkUserDataConsistency(unflattenedModifier);
-    /* if (doc.person.userId && doc.person.userId !== unflattenedModifier.person.userId) {
-      throw new Meteor.Error('Not allowed to modify user connected to the membership. Archive this membership and create a new one for the new user.');
-    } */
     Memberships.update({ _id }, modifier);
+  },
+});
+
+export const invite = new ValidatedMethod({
+  name: 'memberships.invite',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    email: { type: String, regEx: SimpleSchema.RegEx.Email },
+  }).validator(),
+
+  run({ _id, email }) {
+    const doc = checkExists(Memberships, _id);
+    checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
+    if (doc.Person().isInvited()) {
+      throw new Meteor.Error('Not allowed to modify user connected to the membership. Archive this membership and create a new one for the new user.', doc.person);
+    }
+    Memberships.update({ _id }, { $set: { 'person.userEmail': email } });
     connectUserIfPossible(_id);
   },
 });

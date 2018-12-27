@@ -8,9 +8,10 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { __ } from '/imports/localization/i18n.js';
 
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { remove as removeMembership } from '/imports/api/memberships/methods.js';
+import { remove as removeMembership, invite as inviteMembership } from '/imports/api/memberships/methods.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -113,6 +114,19 @@ Template.Parcel_owners_page.helpers({
 Template.Parcel_owners_page.events({
   'click .js-import'(event, instance) {
     importCollectionFromFile(Memberships);
+  },
+  'click .js-invite'(event, instance) {
+    const id = $(event.target).data('id');
+    const membership = Memberships.findOne(id);
+    if (!membership.person || !membership.person.contact || !membership.person.contact.email) {
+      displayMessage('warning', 'No contact email set for this membership');
+      return;
+    }
+    const email = membership.person.contact.email;
+    Modal.confirmAndCall(inviteMembership, { _id: id, email }, {
+      action: 'invite user',
+      message: __('Connecting user', email),
+    });
   },
   'click #owners .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
