@@ -91,7 +91,7 @@
         "placeholder": "(pl. tibi45@dmail.com)"
       },
       "idCard": {
-        "label" : "Személy ellenőrzött adatai",
+        "label" : "Személy hivatalos adatai",
         "type": {
           "label": "Személy típusa"
         },
@@ -107,12 +107,23 @@
           "label": "Szig. szám ill. cégjegyzékszám",
           "placeholder": "(pl. 0985418NA vagy Cg.123456-89)"
         },
+        "dob": {
+          "label": "Születési ill. alapítási idő"
+        },
         "mothersName": {
           "label": "Anyja leánykori neve",
           "placeholder": "(csak magánszemély esetén)"
+        }
+      },
+      "contact": {
+        "label" : "Kapcsolattartási adatok",
+        "address": {
+          "label": "Levelezési cím",
+          "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
         },
-        "dob": {
-          "label": "Születési idő"
+        "phone": {
+          "label": "Telefonszám",
+          "placeholder": "(pl. +36 30 123 4567)"
         }
       }
     },

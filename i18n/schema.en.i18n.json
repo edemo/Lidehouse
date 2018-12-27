@@ -91,7 +91,7 @@
         "placeholder": "(eg. jsmith45@dmail.com)"
       },
       "idCard": {
-        "label" : "Person's verified data",
+        "label" : "Person's official data",
         "type": {
           "label": "Person type"
         },
@@ -107,12 +107,23 @@
           "label": "Official identifier",
           "placeholder": "(id card number or company registration number)"
         },
+        "dob": {
+          "label": "Date of birth or formation"
+        },
         "mothersName": {
           "label": "Mother's maiden name",
           "placeholder": "(only for natural person)"
+        }
+      },
+      "contact": {
+        "label" : "Person's contact",
+        "address": {
+          "label": "Mailing address",
+          "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
         },
-        "dob": {
-          "label": "Date of birth"
+        "phone": {
+          "label": "Phone number",
+          "placeholder": "(pl. +36 30 123 4567)"
         }
       }
     },
