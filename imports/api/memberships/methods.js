@@ -122,7 +122,9 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));
+    let modifiableFields = Memberships.modifiableFields.concat('approved');
+    if (!doc.Person().isConnected()) modifiableFields = modifiableFields.concat('person.userEmail');
+    checkModifier(doc, modifier, modifiableFields);
     const newrole = modifier.$set.role;
     const unflattenedModifier = flatten.unflatten(modifier.$set);
     const newPerson = unflattenedModifier.person;

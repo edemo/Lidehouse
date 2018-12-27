@@ -35,14 +35,16 @@ export const PersonSchema = new SimpleSchema({
 });
 
 PersonSchema.modifiableFields = [
-//  'person.userId',
-//  'person.userEmail',
+//  'person.userId',    should not change these once established!
+//  'person.userEmail',  should not change these once established!
   'person.idCard.type',
   'person.idCard.name',
   'person.idCard.address',
   'person.idCard.identifier',
   'person.idCard.mothersName',
   'person.idCard.dob',
+  'person.contact.address',
+  'person.contact.phone',
 ];
 
 export class Person {
@@ -77,6 +79,10 @@ export class Person {
   isConsistent() {
     if (this.userId && this.userEmail) return false;
     return true;
+  }
+  isConnected() {
+    if (this.userId || this.userEmail) return true;
+    return false;
   }
   isVerified() {
     return !!this.idCard;
