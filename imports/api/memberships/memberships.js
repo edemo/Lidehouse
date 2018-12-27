@@ -20,8 +20,8 @@ import { ActivePeriodSchema } from '/imports/api/active-period.js';
 export const Memberships = new Mongo.Collection('memberships');
 
 // Parcels can be jointly owned, with each owner having a fractional *share* of it
-// in this case only a single *representor* can cast votes for this parcel.
-// The repsesentor can be defined by setting the flag, or implicitly by being the first owner added.
+// each frectional owner can vote with his own fraction,
+// or if there is a single *representor*, he can cast votes for the whole parcel.
 
 const OwnershipSchema = new SimpleSchema({
   share: { type: Fraction },
@@ -109,22 +109,18 @@ Memberships.helpers({
     return false;
   },
   isRepresentor() {
-    const parcel = this.parcel();
-    debugAssert(parcel);
-    return (parcel.representor()._id === this._id);
+    return (this.ownership && this.ownership.representor);
   },
   votingUnits() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
-    // const votingUnits = this.parcel().units * this.ownership.share.toNumber();
-    const votingUnits = this.isRepresentor() ? this.parcel().units : 0;
+    const votingUnits = this.isRepresentor() ? this.parcel().units : this.parcel().units * this.ownership.share.toNumber();
     return votingUnits;
   },
   votingShare() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
-    // const votingShare = this.parcel().share().multiply(this.ownership.share);
-    const votingShare = this.isRepresentor() ? this.parcel().share() : 0;
+    const votingShare = this.isRepresentor() ? this.parcel().share() : this.parcel().share().multiply(this.ownership.share);
     return votingShare;
   },
   toString() {

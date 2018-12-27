@@ -18,7 +18,7 @@ App in the test mode, is listening on port 3000, and mongo db is istening on 300
 
 ```bash
 meteor npm install
-meteor test --driver-package practicalmeteor:mocha --port 3100
+meteor test --once --driver-package meteortesting:mocha --port 3100
 ```
 
 ### Scripts

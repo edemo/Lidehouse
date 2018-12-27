@@ -62,8 +62,10 @@ Parcels.helpers({
       + (this.number ? this.number : '');
   },
   occupants() {
-    const occupants = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: { $in: ['owner', 'benefactor'] }, parcelId: this._id });
-    return occupants;
+    return Memberships.find({ communityId: this.communityId, active: true, approved: true, role: { $in: ['owner', 'benefactor'] }, parcelId: this._id });
+  },
+  representors() {
+    return Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner', parcelId: this._id, 'ownership.representor': true });
   },
   display() {
     return `${this.serial || '?'}. ${__(this.type)} ${this.location()} (${this.lot})`;
@@ -89,15 +91,6 @@ Parcels.helpers({
     let total = new Fraction(0);
     Memberships.find({ parcelId: this._id, active: true, approved: true, role: 'owner' }).forEach(p => total = total.add(p.ownership.share));
     return total;
-  },
-  representor() {
-    const firstDefinedRep = Memberships.findOne({ communityId: this.communityId, active: true, approved: true, role: 'owner', parcelId: this._id, 'ownership.representor': true });
-    if (firstDefinedRep) return firstDefinedRep;
-    const ownersSorted = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner', parcelId: this._id }, { sort: { createdAt: 1 } }).fetch();
-    if (ownersSorted.length > 0) return ownersSorted[0];
-    const benefactorsSorted = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'benefactor', parcelId: this._id }, { sort: { createdAt: 1 } }).fetch();
-    if (benefactorsSorted.length > 0) return benefactorsSorted[0];
-    return undefined;
   },
   // Finances
   balance() {
