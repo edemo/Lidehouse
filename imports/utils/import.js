@@ -41,12 +41,15 @@ function transformMarinaMemberships(jsons) {
     doc.parcelId = parcel._id;
     doc.person = doc.person || {};
     doc.person.idCard = doc.person.idCard || {};
+    doc.person.contact = doc.person.contact || {};
     doc.person.idCard.type = 'natural';
     doc.role = 'owner';
     const names = doc.owners.split(/,|;|\n/);
+    const emails = doc.emails.split(/,|;|\n/);
     names.forEach((name) => {
       const tdoc = {}; $.extend(true, tdoc, doc);
       tdoc.person.idCard.name = name;
+      tdoc.contact.email = emails[0] || undefined;
       tdoc.ownership = { share: new Fraction(1, names.length) };
       tjsons.push(tdoc);
     });
