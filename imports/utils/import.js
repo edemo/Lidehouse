@@ -45,7 +45,7 @@ function transformMarinaMemberships(jsons) {
     doc.person.idCard.type = 'natural';
     doc.role = 'owner';
     const names = doc.owners.split(/,|;|\n/);
-    const emails = doc.emails.split(/,|;|\n/);
+    const emails = doc.emails ? doc.emails.split(/,|;|\n/) : [];
     names.forEach((name) => {
       const tdoc = {}; $.extend(true, tdoc, doc);
       tdoc.person.idCard.name = name;
