@@ -1,4 +1,4 @@
-https://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
+// https://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
 Object.byString = function (o, s) {
     s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
     s = s.replace(/^\./, '');           // strip a leading dot

@@ -1,6 +1,5 @@
-/* global alert toastr */
+/* global alert toastr DEBUG */
 /* eslint-disable no-alert, no-console, prefer-template */
-import { DEBUG } from '/utils/debug.js';
 import { Meteor } from 'meteor/meteor';
 import { __ } from '/imports/localization/i18n.js';
 

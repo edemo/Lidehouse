@@ -1,6 +1,6 @@
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-export const DEBUG = true;
+DEBUG = true;   // global variable
 
 if (DEBUG) {
   SimpleSchema.debug = true;
