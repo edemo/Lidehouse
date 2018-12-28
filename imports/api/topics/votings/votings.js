@@ -138,7 +138,7 @@ Topics.helpers({
             castedVote,
             votePath,
           };
-          results[ownership.parcelId] = result;
+          results[ownership._id] = result;
           indirectVotes[ownerId] = castedVote;
           castedVote.forEach((choice, i) => {
             summary[choice] = summary[choice] || 0;
