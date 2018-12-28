@@ -49,7 +49,7 @@ function transformMarinaMemberships(jsons) {
     names.forEach((name) => {
       const tdoc = {}; $.extend(true, tdoc, doc);
       tdoc.person.idCard.name = name;
-      tdoc.contact.email = emails[0] || undefined;
+      tdoc.person.contact.email = emails[0] || undefined;
       tdoc.ownership = { share: new Fraction(1, names.length) };
       tjsons.push(tdoc);
     });
