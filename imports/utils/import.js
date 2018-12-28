@@ -39,7 +39,8 @@ function transformMarinaMemberships(jsons) {
   jsons.forEach((doc) => {
     const parcel = Parcels.findOne({ communityId, serial: doc.serial });
     doc.parcelId = parcel._id;
-    if (!doc.person) doc.person = { idCard: {} };
+    doc.person = doc.person || {};
+    doc.person.idCard = doc.person.idCard || {};
     doc.person.idCard.type = 'natural';
     doc.role = 'owner';
     const names = doc.owners.split(/,|;|\n/);
