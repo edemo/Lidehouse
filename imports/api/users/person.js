@@ -110,9 +110,9 @@ export class Person {
     if (this.userId && this.user()) return this.user().avatar;
     return '/images/avatars/avatarnull.png';
   }
-  displayName() {
+  displayName(lang = 'hu') {
     if (this.idCard) return this.idCard.name;
-    if (this.userId && this.user()) return this.user().displayName();
+    if (this.userId && this.user()) return this.user().displayName(lang);
     if (this.userEmail) {
       const emailSplit = this.userEmail.split('@');
       const emailName = emailSplit[0]; 
