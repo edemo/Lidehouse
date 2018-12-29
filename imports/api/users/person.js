@@ -111,7 +111,7 @@ export class Person {
     if (this.userId && this.user()) return this.user().avatar;
     return '/images/avatars/avatarnull.png';
   }
-  displayName(lang = 'en') {
+  displayName(lang) {
     if (this.idCard) return this.idCard.name;
     if (this.userId && this.user()) return this.user().displayName(lang);
     if (this.userEmail) {

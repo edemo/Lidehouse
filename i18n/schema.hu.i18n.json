@@ -61,7 +61,7 @@
         "never": "Soha",
         "weekly": "Hetente legfeljebb egyszer",
         "daily": "Naponta legfeljebb egyszer",
-        "frequent": "Naponta töbször is jöhet"
+        "frequent": "Naponta akár töbször is"
       },
       "notiLevel": {
         "label": "Email értesítéseket mely eseményekről kérek a házban",
