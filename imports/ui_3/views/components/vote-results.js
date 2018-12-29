@@ -26,6 +26,7 @@ Template.Vote_results.onRendered(function voteboxOnRendered() {
 
 Template.Vote_results.helpers({
   dataFn() {
+    // TODO Not reactive right now
     return () => {
       return this.voteResultsDisplay();
     };

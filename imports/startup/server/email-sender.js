@@ -37,7 +37,6 @@ export const EmailSender = {
 
 Mailer.config({
   from: 'Honline <noreply@honline.net>',
-  bcc: 'Honline <noreply@honline.net>',
 //  replyTo: 'Honline <noreply@honline.net>',
   addRoutes: true,  // only allow this in debug mode
   testEmail: null,  // set your email here to be able to send by url 
