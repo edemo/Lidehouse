@@ -41,7 +41,7 @@
 
   // roles
   "admin": "admin",
-  "manager": "közös képviselő",
+  "manager": "intéző",
   "owner": "tulajdonos",
   "benefactor": "használó",
   "moderator": "moderátor",
