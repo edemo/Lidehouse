@@ -95,14 +95,14 @@ FlowRouter.route('/profile', {
     BlazeLayout.render('Main_layout', { content: 'Profile_form' });
   },
 });
-
+/*
 FlowRouter.route('/feedbacks', {
   name: 'Feedbacks',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Feedbacks' });
   },
 });
-
+*/
 // --------------------------------------------
 // CommunityRelatedRoutes
 
@@ -146,7 +146,7 @@ FlowRouter.route('/topic/:_tid', {
     BlazeLayout.render('Main_layout', { content: 'Topic_show' });
   },
 });
-CommunityRelatedRoutes.push('Topics.show');
+CommunityRelatedRoutes.push('Topic.show');
 
 FlowRouter.route('/agendas', {
   name: 'Agendas',

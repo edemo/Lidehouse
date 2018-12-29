@@ -44,7 +44,7 @@ if (Meteor.isClient) {
 
       it('renders the correct topic when routed to', () => {
         const topic = Topics.findOne();
-        FlowRouter.go('Topics.show', { _id: topic._id });
+        FlowRouter.go('Topic.show', { _id: topic._id });
 
         return afterFlushPromise()
           .then(waitForSubscriptions)
