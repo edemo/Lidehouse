@@ -26,9 +26,9 @@ const IdCardSchema = new SimpleSchema({
 export const PersonSchema = new SimpleSchema({
   // The membership is connecting to a person via 3 possible ways:
   // *userId* (connecting to a registered user in the system),
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
   // *userEmail* (not yet registered, but invitation is sent)
-  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true, autoform: { omit: true } },
+  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
   // *idCard* (identity papers confirmed by manager, so person can officially vote now)
   // this person might or might not wish to register in the system ever, but still can do voting (if manager votes in his name)
   idCard: { type: IdCardSchema, optional: true },
