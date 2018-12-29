@@ -6,6 +6,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions, chooseUser } from '/imports/utils/autoform.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { votingRoles } from '/imports/api/permissions/roles.js';
 
 const ContactSchema = new SimpleSchema({
   address: { type: String, optional: true },
@@ -110,22 +111,21 @@ export class Person {
     if (this.userId && this.user()) return this.user().avatar;
     return '/images/avatars/avatarnull.png';
   }
-  displayName(lang = 'hu') {
+  displayName(lang = 'en') {
     if (this.idCard) return this.idCard.name;
     if (this.userId && this.user()) return this.user().displayName(lang);
     if (this.userEmail) {
       const emailSplit = this.userEmail.split('@');
       const emailName = emailSplit[0]; 
       return `[${emailName}]`;
-    } 
+    }
     return undefined;
   }
   id() {
     if (this.userId) return this.userId;
     if (this.idCard) return this.idCard.identifier;
-    if (this.userEmail) return this.userEmail;
-    debugAssert(false);
-    return 'should never get here';
+//    if (this.userEmail) return this.userEmail;
+    return undefined;
   }
   toString() {
     return this.displayName();
@@ -140,7 +140,7 @@ if (Meteor.isClient) {
   choosePerson = {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const memberships = Memberships.find({ communityId });
+      const memberships = Memberships.find({ communityId, role: { $in: votingRoles } }).fetch().filter(m => m.Person().id());
       const options = memberships.map(function option(m) {
         return { label: (m.Person().displayName() + ', ' + m.toString()), value: m.Person().id() };
       });
