@@ -140,7 +140,7 @@ if (Meteor.isClient) {
   choosePerson = {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const memberships = Memberships.find({ communityId, role: { $in: votingRoles } }).fetch().filter(m => m.Person().id());
+      const memberships = Memberships.find({ communityId }).fetch().filter(m => m.Person().id());
       const options = memberships.map(function option(m) {
         return { label: (m.Person().displayName() + ', ' + m.toString()), value: m.Person().id() };
       });
