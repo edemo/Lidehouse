@@ -4,6 +4,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
 
+import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
@@ -179,7 +180,7 @@ Topics.helpers({
     Object.keys(results).forEach(key => {
       data.push(_.extend(results[key], {
         voter() {
-          return Meteor.users.findOne(this.votePath[0]);
+          return Person.constructFromId(this.votePath[0]);
         },
         voteResultDisplay() {
           let display = topic.vote.choices[this.castedVote[0]];
@@ -191,7 +192,7 @@ Topics.helpers({
         votePathDisplay() {
           if (this.votePath.length === 1) return 'direct';
           let path = '';
-          this.votePath.forEach((did, ind) => { if (ind > 0) path += (' -> ' + Meteor.users.findOne(did).toString()); });
+          this.votePath.forEach((pid, ind) => { if (ind > 0) path += (' -> ' + Person.constructFromId(pid).toString()); });
           return path;
         },
       }));
