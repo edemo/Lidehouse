@@ -158,7 +158,9 @@ Template.Delegations.events({
     Modal.show('Autoform_edit', {
       id: 'af.delegate.insert',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'role', 'ownership', 'benefactorship', 'person.userId', 'person.userEmail'],
+      fields: ['person', 'activeTime'],
+      omitFields: ['person.userId', 'person.userEmail'],
+//    omitFields: ['communityId', 'parcelId', 'role', 'ownership', 'benefactorship', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',

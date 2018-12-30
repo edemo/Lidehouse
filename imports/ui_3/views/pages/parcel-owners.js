@@ -132,7 +132,9 @@ Template.Parcel_owners_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.ownership.insert',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'role', 'benefactorship', 'person.userId', 'person.userEmail'],
+      fields: ['person', 'ownership', 'activeTime'],
+      omitFields: ['person.userId', 'person.userEmail'],
+      // omitFields: ['communityId', 'parcelId', 'role', 'benefactorship', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',
@@ -143,7 +145,9 @@ Template.Parcel_owners_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.ownership.update',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'role', 'benefactorship', 'person.userId', 'person.userEmail'],
+      fields: ['person', 'ownership', 'activeTime'],
+      omitFields: ['person.userId', 'person.userEmail'],
+      // omitFields: ['communityId', 'parcelId', 'role', 'benefactorship', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
@@ -156,7 +160,7 @@ Template.Parcel_owners_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.ownership.view',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'role', 'benefactorship'],
+      fields: ['person', 'ownership', 'activeTime'],
       doc: Memberships.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',
@@ -173,7 +177,9 @@ Template.Parcel_owners_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.benefactorship.insert',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'role', 'ownership', 'person.userId', 'person.userEmail'],
+      fields: ['person', 'benefactorship', 'activeTime'],
+      omitFields: ['person.userId', 'person.userEmail'],
+      // omitFields: ['communityId', 'parcelId', 'role', 'ownership', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',
@@ -184,7 +190,9 @@ Template.Parcel_owners_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.benefactorship.update',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'role', 'ownership', 'person.userId', 'person.userEmail'],
+      fields: ['person', 'benefactorship', 'activeTime'],
+      omitFields: ['person.userId', 'person.userEmail'],
+      // omitFields: ['communityId', 'parcelId', 'role', 'ownership', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
@@ -197,7 +205,7 @@ Template.Parcel_owners_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.benefactorship.view',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'role', 'ownership'],
+      fields: ['person', 'benefactorship', 'activeTime'],
       doc: Memberships.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',
