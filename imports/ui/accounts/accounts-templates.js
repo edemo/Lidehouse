@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { __ } from '/imports/localization/i18n.js';
-
+import { signinRedirectRoute } from '/imports/startup/both/useraccounts-configuration.js';
 import './accounts-templates.html';
 
 
@@ -18,7 +18,9 @@ Template['override-atResendVerificationEmailLink'].replaces('atResendVerificatio
 
 Template.atTitle.helpers({
   subtitle() {
-    return __('userAccountsSubtitle.' + AccountsTemplates.getState());
+    const state = AccountsTemplates.getState();
+    const forced = ((state === 'signIn') && signinRedirectRoute) ? '_Forced' : ''; // If Signin is forced, the subtitle is a different one
+    return __('userAccountsSubtitle.' + state + forced);
   },
 });
 

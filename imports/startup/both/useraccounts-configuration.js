@@ -102,7 +102,7 @@ if (Meteor.isClient) {
   import { connectMe } from '/imports/api/memberships/methods.js';
   import { showWelcomeModal } from '/imports/ui_3/views/modals/welcome-modal.js';
 
-  let signinRedirectRoute;
+  export let signinRedirectRoute;
   let signinRedirectAction;
 
   // Automatic redirection after sign in

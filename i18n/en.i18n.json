@@ -1,5 +1,6 @@
 {
   "topic" : {
+    "general": "topic",
     "forum": "forum topic",
     "vote": "voting",
     "news": "news post",
@@ -52,6 +53,7 @@
   "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
   "userAccountsSubtitle": {
     "signIn": "Please log in to use the app",
+    "signIn_Forced": "The content is only available to logged in users",
     "signUp": "",
     "resendVerificationEmail": "",
     "forgotPwd": "",

@@ -424,6 +424,7 @@
   "User data page": "Felhasználói adatlap",
   "userAccountsSubtitle": {
     "signIn": "A rendszer használatához lépjen be",
+    "signIn_Forced": "A kért tartalom eléréséhez belépés szükséges",
     "signUp": "",
     "resendVerificationEmail": "",
     "forgotPwd": "",
