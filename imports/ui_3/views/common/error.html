@@ -1,0 +1,11 @@
+<template name="Error">
+    <div class="middle-box text-center animated fadeInDown">
+        <h1>{{code}}</h1>
+        <h3 class="font-bold">{{_ type}}</h3>
+
+        <div class="error-desc">
+            {{_ message (_ item)}}<br/>
+            <a href="{{pathFor 'Board'}}" class="btn btn-primary m-t">{{_ 'Back to the board'}}</a>
+        </div>
+    </div>
+</template>

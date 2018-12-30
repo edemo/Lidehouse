@@ -60,7 +60,7 @@
   "right": "Haszonélvezeti jog",
 
   // menu
-  "Main": "Főoldal",
+  "Board": "Főoldal",
   "Messages": "Üzenetek",
   "Forum": "Fórum",
   "Decision making": "Döntéshozatal",
@@ -127,6 +127,7 @@
   "closes": "lezárul",
 
   "topic" : {
+    "general": "téma",
     "forum": "fórum téma",
     "vote": "szavazás",
     "news": "hírdetmény",
@@ -416,6 +417,9 @@
   "messengerMessagePlaceholder": "Üzenet… (pl. Epertortát sütöttem. Van kedved átugrani megkóstolni?)",
   "messengerHistoryPlaceholder": "Még nincsenek üzenetek. <br /> Üzenetváltás indítása!",
   "commentEditInstruction": "Mentéshez nyomja meg az enter, elvetéshez az escape billentyűt.",
+  "Page not found": "A keresett tartalom nem található",
+  "pageNotFoundMessage": "A %s nem található a rendszerben.\nEnnek lehet oka, hogy időközben már törölték.\nDe az is lehet hogy önnek nincs megfelelő jogosultsága hogy megtekintse.",
+  "Back to the board": "Vissza a főoldalra",
 
   "User data page": "Felhasználói adatlap",
   "userAccountsSubtitle": {

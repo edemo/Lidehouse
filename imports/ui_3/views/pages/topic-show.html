@@ -1,4 +1,5 @@
 <template name="Topic_show">
+    {{#if topic}}
     {{#with topic}}
         <!-- Page heading -->
         {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
@@ -20,6 +21,9 @@
         {{/if}}
 
     {{/with}}
+    {{else}}
+      {{>Error code='404' type='Page not found' message='pageNotFoundMessage' item='topic.general'}}
+    {{/if}}
 </template>
 
 <template name="Vote_topic_show">

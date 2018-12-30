@@ -8,6 +8,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { Topics } from '/imports/api/topics/topics.js';
 
+import '../common/error.js';
 import '../common/page-heading.js';
 import '../components/chatbox.js';
 import '../components/votebox.js';
