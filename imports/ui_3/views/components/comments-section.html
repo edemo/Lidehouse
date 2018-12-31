@@ -1,5 +1,5 @@
 <template name="Comments_section">
-    <div class="social-footer">
+    <div class="social-footer comment-section" data-id="{{_id}}">
     {{#each comment in comments}}
         {{> Comment comment}}
     {{/each}}

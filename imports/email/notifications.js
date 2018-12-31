@@ -19,7 +19,7 @@ function sendNotifications(user) {
           communityId: community._id,
         },
       });
-      topics.forEach(topic => user.hasNowSeen(topic, Meteor.users.SEEN_BY.NOTI));
+      topics.forEach(topic => user.hasNowSeen(topic._id, Meteor.users.SEEN_BY.NOTI));
     }
   });
 }

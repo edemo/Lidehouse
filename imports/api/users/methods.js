@@ -6,6 +6,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { toggleElementInArray } from '/imports/api/utils.js';
+import { Topics } from '/imports/api/topics/topics.js';
 
 import './users.js';
 
@@ -77,9 +78,10 @@ export const remove = new ValidatedMethod({
 
 let updateCall;
 if (Meteor.isClient) {
-  import { handleError } from '/imports/ui_3/lib/errors.js';
+  import { displayMessage, handleError } from '/imports/ui_3/lib/errors.js';
 
   updateCall = function (context, params) {
+    // displayMessage('warning', `You just seen ${params.modifier.$set.lastSeens}`); // debug
     update.call(params, handleError);
   };
 } else if (Meteor.isServer) {
@@ -89,9 +91,10 @@ if (Meteor.isClient) {
 }
 
 Meteor.users.helpers({
-  hasNowSeen(topic, seenType) {
+  hasNowSeen(topicId, seenType) {
     // The user has just seen this topic, so the lastseen info needs to be updated  
     debugAssert(seenType === Meteor.users.SEEN_BY.EYES || seenType === Meteor.users.SEEN_BY.NOTI);
+    const topic = Topics.findOne(topicId);
     const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
     const newLastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
     if (oldLastSeenInfo && oldLastSeenInfo.commentCounter === newLastSeenInfo.commentCounter) return; // this avoids infinite loop

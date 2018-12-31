@@ -2,12 +2,10 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
-
-import { moment } from 'meteor/momentjs:moment';
-import { TimeSync } from 'meteor/mizzao:timesync';
+/* globals Waypoint */
 
 import { __ } from '/imports/localization/i18n.js';
-import { onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
+import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
@@ -18,6 +16,28 @@ Template.Comments_section.onCreated(function commentsSectionOnCreated() {
     // not needed any more, we subscribe to all comments in main now
     // this.subscribe('comments.onTopic', { topicId: this.data._id });
   });
+});
+
+Template.Comments_section.onRendered(function chatboxOnRendered() {
+  this.waypoint = new Waypoint({
+    element: this.find('.comment-section'),
+    handler() {
+      const topicId = this.element.dataset.id;
+      // displayMessage('info', `You just seen ${topicId}`); // debug
+      Meteor.user().hasNowSeen(topicId, Meteor.users.SEEN_BY.EYES);
+    },
+    offset: '80%',
+  });
+  // Above is nicer syntax , but requires bigu:jquery-waypoints https://stackoverflow.com/questions/28975693/using-jquery-waypoints-in-meteor
+  /* this.waypoint = this.$('.comment-section').waypoint(function (direction) {
+    displayMessage('info', `You just seen ${this.dataset.id}`); // debug
+  }, {
+    offset: '80%',
+  });*/
+});
+
+Template.Comments_section.onDestroyed(function chatboxOnDestroyed() {
+  this.waypoint.destroy();
 });
 
 Template.Comments_section.helpers({

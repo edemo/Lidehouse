@@ -73,9 +73,8 @@ Template.Message_history.onRendered(function tmplMsgBoxOnRendered() {
   this.autorun(() => {
     $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
     const roomId = FlowRouter.getParam('_rid');
-    const room = Topics.findOne(roomId);
     if (this.subscriptionsReady()) {
-      Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY.EYES);
+      Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
     }
   });
 
@@ -102,14 +101,13 @@ Template.Message_send.events({
     const textarea = instance.find('textarea');
     const text = textarea.value;
     const roomId = FlowRouter.getParam('_rid');
-    const room = Topics.findOne(roomId);
     Meteor.call('comments.insert', {
       topicId: roomId,
       userId: Meteor.userId(),
       text,
     },
     onSuccess((res) => {
-      Meteor.user().hasNowSeen(room, Meteor.users.SEEN_BY.EYES);
+      Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
       textarea.value = '';
       if ($(window).width() > 768) $('.js-focused').focus();
     }));

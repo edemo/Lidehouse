@@ -36,6 +36,7 @@ q42:autoform-markdown
 fortawesome:fontawesome
 meteorhacks:ssr
 manuel:viewmodel
+bigu:waypoints
 
 # data
 mongo@1.4.2
