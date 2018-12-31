@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import { _ } from 'meteor/underscore';
@@ -11,24 +10,11 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
-import { revision } from '/imports/api/revision.js';
+import { RevisionedCollection } from '/imports/api/revision.js';
 import { likesSchema, likesHelpers } from './likes.js';
 import { flagsSchema, flagsHelpers } from './flags.js';
 
-class TopicsCollection extends Mongo.Collection {
-  insert(topic, callback) {
-    return super.insert(topic, callback);
-  }
-  update(selector, modifier, options, callback) {
-    revision(selector, modifier, ['text', 'title', 'closed']);
-    return super.update(selector, modifier, options, callback);
-  }
-  remove(selector, callback) {
-    return super.remove(selector, callback);
-  }
-}
-
-export const Topics = new TopicsCollection('topics');
+export const Topics = new RevisionedCollection('topics', ['text', 'title', 'closed']);
 
 // Topic categories in order of increasing importance
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
