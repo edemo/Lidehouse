@@ -20,11 +20,11 @@
                     <img alt="image" class="img-circle" src="{{createdBy.avatar}}">
                 </a>
                 <div class="media-body ">
-                    <small class="pull-right">{{displayTimeFrom version.replaceDate}}</small>
+                    <small class="pull-right">{{displayTimeFrom version.replaceTime}}</small>
                     {{_ 'The'}} <strong>{{_ version.replacedField}} </strong>{{_ 'was modified, previous'}} {{_ version.replacedField}}:<br>
-                    <small class="text-muted">{{displayTime version.replaceDate}}</small>
+                    <small class="text-muted">{{displayTime version.replaceTime}}</small>
                     <div class="well">
-                        {{version.oldData}}                
+                        {{version.oldValue}}                
                     </div>
                 </div>
             </div>

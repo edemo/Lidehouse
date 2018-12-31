@@ -18,7 +18,7 @@ Template.Vote_history.helpers({
     return this.revision;
   },
   sortedRevisions() {
-    return _.sortBy(this.revision, 'replaceDate').reverse();
+    return _.sortBy(this.revision, 'replaceTime').reverse();
   },
 
 });
