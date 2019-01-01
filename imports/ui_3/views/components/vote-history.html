@@ -2,15 +2,15 @@
 
      {{#each version in sortedRevisions}}
         
-        {{#if (equals version.replacedField 'closed')}}
+        {{#if (equals version.field 'closed')}}
         <div class="feed-element">
             <a href="" class="pull-left">
                 <img alt="image" class="img-circle" src="{{createdBy.avatar}}">
             </a>
             <div class="media-body ">
-                <small class="pull-right">{{displayTimeFrom vote.closesAt}}</small>
+                <small class="pull-right">{{displayTimeFrom version.time}}</small>
                 {{createdBy}} {{_ 'by'}} <strong>{{_ 'closed'}} </strong><br>
-                <small class="text-muted">{{displayTime vote.closesAt}}</small>
+                <small class="text-muted">{{displayTime version.time}}</small>
             </div>
         </div>
         {{else}}
@@ -20,9 +20,9 @@
                     <img alt="image" class="img-circle" src="{{createdBy.avatar}}">
                 </a>
                 <div class="media-body ">
-                    <small class="pull-right">{{displayTimeFrom version.replaceTime}}</small>
-                    {{_ 'The'}} <strong>{{_ version.replacedField}} </strong>{{_ 'was modified, previous'}} {{_ version.replacedField}}:<br>
-                    <small class="text-muted">{{displayTime version.replaceTime}}</small>
+                    <small class="pull-right">{{displayTimeFrom version.time}}</small>
+                    {{_ 'The'}} <strong>{{_ version.field}} </strong>{{_ 'was modified, previous'}} {{_ version.field}}:<br>
+                    <small class="text-muted">{{displayTime version.time}}</small>
                     <div class="well">
                         {{version.oldValue}}                
                     </div>

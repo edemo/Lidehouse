@@ -1,13 +1,14 @@
 import { _ } from 'meteor/underscore';
 import { Mongo } from 'meteor/mongo';
+import { Clock } from '/imports/utils/clock.js';
 
 export class RevisionedCollection extends Mongo.Collection {
   constructor(name, revisionedFields) {
     super(name);
     this._revisonedFields = revisionedFields;
   }
-  insert(topic, callback) {
-    return super.insert(topic, callback);
+  insert(doc, callback) {
+    return super.insert(doc, callback);
   }
   update(selector, modifier, options, callback) {
     const changes = [];
@@ -16,7 +17,7 @@ export class RevisionedCollection extends Mongo.Collection {
       if (modifier.$set && modifier.$set[field]) {
         const doc = super.findOne(selector);
         if (!_.isEqual(Object.byString(doc, field), modifier.$set[field])) {
-          changes.push({ replaceTime: new Date(), replacedField: field, oldValue: doc[field] });
+          changes.push({ time: Clock.currentTime(), field, oldValue: doc[field] });
         }
       }
     }
