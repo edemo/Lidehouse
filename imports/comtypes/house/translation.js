@@ -63,12 +63,12 @@ export const HouseTranslation = {
     "schemaParcels": {
       "label": "Parcel",
       "serial": {
-        "label": "Serial No",
-        "placeholder": "(eg. 101)"
+        "label": "Parcel id",
+        "placeholder": "(eg. K114)"
       },
       "leadSerial": {
-        "label": "Lead parcel No",
-        "placeholder": "(eg. 101)"
+        "label": "Lead parcel",
+        "placeholder": "(eg. K114)"
       },
       "units": {
         "label": "Voting share units",
@@ -196,12 +196,12 @@ export const HouseTranslation = {
     "schemaParcels": {
       "label": "Albetét",
       "serial": {
-        "label": "Sorszám",
-        "placeholder": "(pl. 101)"
+        "label": "Albetét azonosító",
+        "placeholder": "(pl. K114)"
       },
       "leadSerial": {
         "label": "Vezető albetét",
-        "placeholder": "(pl. 101)"
+        "placeholder": "(pl. K114)"
       },
       "units": {
         "label": "Tulajdoni hányad",

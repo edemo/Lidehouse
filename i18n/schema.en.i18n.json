@@ -322,8 +322,8 @@
               "label": "Sub account",
               "$": {
                 "name": {
-                  "label": "Name (or serial no. of parcel)",
-                  "placeholder": "(eg. Garden or 114)"
+                  "label": "Name (or id of parcel)",
+                  "placeholder": "(eg. Garden or K114)"
                 }
               }
             }

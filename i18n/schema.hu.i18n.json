@@ -322,8 +322,8 @@
               "label": "Al fiókok",
               "$": {
                 "name": {
-                  "label": "Elnevezés (vagy albetét száma)",
-                  "placeholder": "(pl. Kert vagy 114)"
+                  "label": "Elnevezés (vagy albetét azonosító)",
+                  "placeholder": "(pl. Kert vagy K114)"
                 }
               }
             }
