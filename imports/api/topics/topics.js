@@ -31,8 +31,6 @@ Topics.schema = new SimpleSchema({
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
-  revision: { type: Array, optional: true, autoform: { omit: true } },
-  'revision.$': { type: Object, blackbox: true, optional: true },
 });
 
 Topics.helpers({
