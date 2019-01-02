@@ -5,6 +5,7 @@
 **/.meteor/dev_bundle
 **/logs/*
 **/.passenger/*
+**/brand/*
 /private/certs/*
 *.bak
 *.iml
