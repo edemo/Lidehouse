@@ -405,8 +405,8 @@
 
   "tryingToConnect": "Kapcsolódás folyamatban…",
   "connectionIssue": "Valami hiba van a hálózattal",
-  "connectionIssueLine1": "Még nem sikerült elérni a szervert.",
-  "connectionIssueLine2": "Az oldalon látható adatok nem frissek.",
+  "connectionIssueLine1": "Nincs kapcsolat a szerverrel.",
+  "connectionIssueLine2": "Jelenleg nem tud üzeneteket küldeni.",
   "pageNotFound": "Az odal nem található",
   "inviteSend": "Meghívó kiküldése",
   "newForumTitlePlaceholder": "Új téma címe…",
@@ -435,7 +435,7 @@
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
   "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közös képviselő segítségét.",
-
+  "No contact email set for this membership": "Ehhez a tagsághoz nincs megadva kapcsolati email cím",
   "Not implemented yet": "Ez a funkció még nem elérhető",
 
   // Notifications

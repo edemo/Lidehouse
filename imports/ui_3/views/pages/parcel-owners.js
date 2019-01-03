@@ -119,7 +119,7 @@ Template.Parcel_owners_page.events({
     const id = $(event.target).data('id');
     const membership = Memberships.findOne(id);
     if (!membership.person || !membership.person.contact || !membership.person.contact.email) {
-      displayMessage('warning', 'No contact email set for this membership');
+      displayMessage('warning', __('No contact email set for this membership'));
       return;
     }
     const email = membership.person.contact.email;
