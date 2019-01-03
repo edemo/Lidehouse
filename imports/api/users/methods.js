@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Accounts } from 'meteor/accounts-base';
+import { Random } from 'meteor/random';
 
 import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -19,7 +20,7 @@ export const invite = new ValidatedMethod({
 
   run({ email, communityId }) {
     const inviter = Meteor.user();
-    const userId = Accounts.createUser({ email, password: 'initialPassword', language: inviter.language() });
+    const userId = Accounts.createUser({ email, password: Random.id(8), language: inviter.language() });
     if (Meteor.isServer) {
       Accounts.sendEnrollmentEmail(userId);
       // userId supposed to be good at this point on the client, but it is NOT,
