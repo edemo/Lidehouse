@@ -78,9 +78,6 @@ Topics.helpers({
     const votingShare = new Fraction(units, this.community().totalunits);
     return votingShare;
   },
-  shareToPercent(share) {
-    return Math.round(100 * (share.toNumber()));
-  },
   voteSuccessLimit() {
     return this.vote.type === 'petition' ? 10 : 50;
   },
@@ -93,7 +90,7 @@ Topics.helpers({
   },
   votedPercent() {
     const voteParticipationShare = this.unitsToShare(this.voteParticipation.units);
-    const voteParticipationPercent = this.shareToPercent(voteParticipationShare);
+    const voteParticipationPercent = 100 * voteParticipationShare.toNumber();
     return voteParticipationPercent;
   },
   isVoteSuccessful() {
@@ -104,7 +101,7 @@ Topics.helpers({
   },
   notVotedPercent() {
     const nonParticipationShare = this.unitsToShare(this.notVotedUnits());
-    const nonParticipationPercent = this.shareToPercent(nonParticipationShare);
+    const nonParticipationPercent = 100 * nonParticipationShare.toNumber();
     return nonParticipationPercent;
   },
   hasVotedDirect(userId) {

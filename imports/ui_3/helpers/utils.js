@@ -15,8 +15,12 @@ Template.registerHelper('equals', function equals(a, b) {
     return a == b;
 });
 
-Template.registerHelper('percentage', function percentage(number) {
-    return (Math.floor(number * 100)).toString() + '%';
+Template.registerHelper('displayPercent', function displayPercent(number) {
+    return numeral(number).format('0.00') + '%';
+});
+
+Template.registerHelper('displayRoundPercent', function percentage(number) {
+    return numeral(number).format('0') + '%';
 });
 
 Template.registerHelper('displayMoney', function displayMoney(number) {

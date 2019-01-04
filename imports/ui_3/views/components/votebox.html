@@ -9,7 +9,7 @@
         {{#if this.closed}}
           {{_ "closed"}}<!--a href="" class="js-view-results">: {{_ "Vote results"}}</a-->
         {{else}}
-          <span title="{{_ 'createdAt'}}: {{displayDate createdAt}} {{_ "closes"}}: {{displayDate vote.closesAt}}">
+          <span title="{{_ 'createdAt'}}: {{displayDate createdAt}} {{_ 'closes'}}: {{displayDate vote.closesAt}}">
            {{_ "closes"}}: {{displayTimeFrom vote.closesAt}}
           </span>
         {{/if}}
@@ -40,7 +40,7 @@
             <div style="{{concat 'width: ' votedPercent '%;'}}" class="progress-bar {{#unless isVoteSuccessful}}progress-bar-warning{{/unless}}"></div>
           </div>
           <div class="col-sm-6 text-left">
-            <p>{{_ 'Participation'}}: <strong>{{votedPercent}}%</strong>. </p>
+            <p>{{_ 'Participation'}}: <strong>{{displayPercent votedPercent}}</strong></p>
           </div>
           <div class="col-sm-6 text-right">
             {{#if closed}}
@@ -50,7 +50,7 @@
               <strong>{{_ 'Unsuccessful voting'}}</strong>
               {{/if}}
             {{else}}
-            <p>{{_ 'Participation necessary'}}: <strong>{{voteSuccessLimit}}%</strong>.</p>
+            <p>{{_ 'Participation necessary'}}: <strong>{{displayRoundPercent voteSuccessLimit}}</strong></p>
             {{/if}}
           </div>
       </div>
@@ -87,10 +87,10 @@
             <div class="row">
               <div class="col-lg-12 text-center">
                 {{#each sum in this.voteSummaryDisplay}}
-                <div>{{_ sum.choice}}: {{sum.votingShare}} ({{percentage sum.votingShare.toNumber}})</div>
+                <div>{{_ sum.choice}}: {{sum.votingShare}} ({{displayPercent sum.votingShare.toNumber}})</div>
                 {{/each}}
                 <div>
-                  <canvas id={{concat "chart-" this._id}} height="200"></canvas>
+                  <canvas id="{{concat 'chart-' this._id}}" height="200"></canvas>
                 </div>
               </div>
             </div>
