@@ -15,6 +15,10 @@ Template.registerHelper('equals', function equals(a, b) {
     return a == b;
 });
 
+Template.registerHelper('round', function round(number, digits) {
+    return number.toFixed(digits);
+});
+
 Template.registerHelper('displayPercent', function displayPercent(number) {
     return numeral(number).format('0.00') + '%';
 });

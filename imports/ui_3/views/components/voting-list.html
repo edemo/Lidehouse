@@ -34,7 +34,7 @@
                 <td class="project-completion">
                     <small>{{_ 'Participation'}}: {{displayRoundPercent votedPercent}}</small>
                     <div class="progress progress-mini">
-                        <div style="{{concat 'width: ' votedPercent '%;'}}" class="progress-bar"></div>
+                        <div style="{{concat 'width: ' (round votedPercent 2) '%;'}}" class="progress-bar"></div>
                     </div>
                 </td>
                 <td class="project-actions">
