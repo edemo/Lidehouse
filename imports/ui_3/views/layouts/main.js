@@ -67,10 +67,12 @@ Template.Main_layout.onRendered(function() {
       $('.navbar-static-side').removeClass('navigation-open');
       $('#page-wrapper').addClass('body-resize');
       $('.navbar-fixed-top').addClass('body-resize');
-      $('#side-menu li a:not(a[href="#"])').addClass('toggleMiniNavbar');
-      $(".toggleMiniNavbar").on('click touch', function () {
-        $('.navbar-static-side').toggleClass('navigation-open');
-      });
+      setTimeout(function() {
+        $('#side-menu li a:not(a[href="#"])').addClass('toggleMiniNavbar');
+        $(".toggleMiniNavbar").on('click touch', function () {
+          $('.navbar-static-side').toggleClass('navigation-open');
+        });
+      }, 1000)
     } else {
       $('.navbar-static-side').addClass('navigation-open');
       $('.toggleMiniNavbar').off();
