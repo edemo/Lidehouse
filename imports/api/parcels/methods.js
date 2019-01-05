@@ -8,33 +8,25 @@ import { Parcels } from './parcels.js';
 import { Memberships } from '../memberships/memberships.js';
 import { checkNotExists } from '../method-checks';
 
-export const insertUnapproved = new ValidatedMethod({
-  name: 'parcels.insert.unapproved',
-  validate: Parcels.simpleSchema().validator({ clean: true }),
-
-  run(doc) {
-    // This can be done without any permission check. Because its unapproved.
-    if (doc.approved !== false) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to insert approved parcel', `doc: ${doc}`);
-    }
-    return Parcels.insert(doc);
-  },
-});
-
 export const insert = new ValidatedMethod({
   name: 'parcels.insert',
   validate: Parcels.simpleSchema().validator({ clean: true }),
 
   run(doc) {
     if (doc.serial) checkNotExists(Parcels, { communityId: doc.communityId, serial: doc.serial });
-    checkPermissions(this.userId, 'parcels.insert', doc.communityId);
-    const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
-    const newTotal = total + doc.units;
-    const totalunits = Communities.findOne({ _id: doc.communityId }).totalunits;
-    if (newTotal > totalunits) {
-      throw new Meteor.Error('err_sanityCheckFailed', 'Registered units cannot exceed totalunits of community',
-      `Registered units: ${total}/${totalunits}, With new unit: ${newTotal}/${totalunits}`);
+    if (!doc.approved) {
+      // Nothing to check. Things will be checked when it gets approved by community admin/manager.
+    } else {
+      checkPermissions(this.userId, 'parcels.insert', doc.communityId);
+      const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
+      const newTotal = total + doc.units;
+      const totalunits = Communities.findOne({ _id: doc.communityId }).totalunits;
+      if (newTotal > totalunits) {
+        throw new Meteor.Error('err_sanityCheckFailed', 'Registered units cannot exceed totalunits of community',
+        `Registered units: ${total}/${totalunits}, With new unit: ${newTotal}/${totalunits}`);
+      }
     }
+    
     return Parcels.insert(doc);
   },
 });
@@ -82,5 +74,5 @@ export const remove = new ValidatedMethod({
 });
 
 Parcels.methods = {
-  insert, insertUnapproved, update, remove,
+  insert, update, remove,
 };

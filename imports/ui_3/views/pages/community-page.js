@@ -19,7 +19,6 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { update as updateMembership, remove as removeMembership, insertUnapproved as insertMembershipUnapproved } from '/imports/api/memberships/methods.js';
 import '/imports/api/users/users.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -171,13 +170,12 @@ Template.Community_page.helpers({
 });
 
 function onJoinParcelInsertSuccess(parcelId) {
-  // const parcelId = Parcels.find({ communityId }, { sort: { createdAt: -1 } }).fetch()[0]._id;
   const communityId = FlowRouter.current().params._cid;
   const communityName = Communities.findOne(communityId).name;
-  insertMembershipUnapproved.call({
+  Memberships.methods.insert.call({
     person: { userId: Meteor.userId() },
     communityId,
-    approved: false,
+    approved: false,  // any user can submit not-yet-approved memberships
     role: 'owner',
     parcelId,
     ownership: {
@@ -250,7 +248,7 @@ Template.Community_page.events({
   },
   'click .roles-section .js-delete'(event) {
     const id = $(event.target).data('id');
-    Modal.confirmAndCall(removeMembership, { _id: id }, {
+    Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
       action: 'delete roleship',
       message: 'You should rather archive it',
     });
@@ -305,14 +303,14 @@ Template.Community_page.events({
         collection: Parcels,
 //        omitFields: ['serial'],
         type: 'method',
-        meteormethod: 'parcels.insert.unapproved',
+        meteormethod: 'parcels.insert',
         template: 'bootstrap3-inline',
       });
       
 /*    This can be used for immediate (no questions asked) joining - with a fixed ownership share
       const communityId = FlowRouter.current().params._cid;
       const maxSerial = Math.max.apply(Math, _.pluck(Parcels.find().fetch(), 'serial')) || 0;
-      Meteor.call('parcels.insert.unapproved',
+      Meteor.call('parcels.insert',
         { communityId, approved: false, serial: maxSerial + 1, units: 300, type: 'flat' },
         (error, result) => { onJoinParcelInsertSuccess(result); },
       );

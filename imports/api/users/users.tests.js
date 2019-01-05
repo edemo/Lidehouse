@@ -31,31 +31,6 @@ if (Meteor.isServer) {
       // TODO: Cannot change identity data after connected to a community
     });
 
-    describe('certification', function () {
-//      const community = Communities.findOne(Fixture.demoCommunityId);
-      const admin = 0;
-      const manager = 0;
-
-// scenario A1: 1. user creates (and verifies) account, 2. user asks to join community, 3. manager approves (no certification yet) 4. later certification happens
-// scenario A2: 1. user creates (and verifies) account, 2. user meets with manager and there he adds him to community (certified)
-// scenario B1: 1. manager creates an identity to be used in the system
-//                 (no intention to create user account later - can be used to list parcel owner or register in person votes)
-// scenario B2: 1. manager creates an identity and an account for user 2. adds him to community 3. invites him to this account 4. user later accepts
-// scenario BONUS: user changes his email address after all this, or during the process
-
-      it('scenario A1', function (done) {
-        // 1. user creates account
-        const userId = Accounts.createUser({ email: 'user@test.com', password: 'password' });
-        // 2. user asks to join community
-
-        // 3. manager approves (no certification yet)
-
-        // 4. later certification happens
-
-        done();
-      });
-    });
-
     describe('unverified emails', function () {
       const oneWeekAgo = moment().subtract(1, 'week').toDate();
       const twoWeeksAgo = moment().subtract(2, 'week').toDate();

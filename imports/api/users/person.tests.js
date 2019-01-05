@@ -2,8 +2,9 @@
 /* eslint-disable func-names, prefer-arrow-callback, padded-blocks */
 
 import { Meteor } from 'meteor/meteor';
-import { PublicationCollector } from 'meteor/johanbrook:publication-collector';
+import { Accounts } from 'meteor/accounts-base';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
+import sinon from 'sinon';
 import { Fraction } from 'fractional';
 import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but not included in tests
 
@@ -15,11 +16,7 @@ import { cleanExpiredEmails } from '/imports/startup/server/accounts-verificatio
 import { moment } from 'meteor/momentjs:moment';
 import '/imports/api/users/users.js';
 
-import { Email } from 'meteor/email';
-// Mocking the Email sending
-Email.send = function (options) {
-  console.log(options.subject);
-};
+import { Email } from 'meteor/email';   // We will be mocking it over
 
 if (Meteor.isServer) {
 
@@ -31,6 +28,7 @@ if (Meteor.isServer) {
   describe('person', function () {
     this.timeout(5000);
     before(function () {
+      Email.send = sinon.spy();   // Mocking the Email sending
       Fixture = freshFixture();
       parcelId = insertParcel._execute({ userId: Fixture.demoManagerId }, {
         communityId: Fixture.demoCommunityId,
@@ -42,48 +40,196 @@ if (Meteor.isServer) {
       });
     });
 
-    describe('certification', function () {
-//      const community = Communities.findOne(Fixture.demoCommunityId);
-      const admin = 0;
-      const manager = 0;
+    describe('onboarding', function () {
 
-// scenario A1: 1. user creates (and verifies) account, 2. user asks to join community, 3. manager approves (no certification yet) 4. later certification happens
-// scenario A2: 1. user creates (and verifies) account, 2. user meets with manager and there he adds him to community (certified)
-// scenario B1: 1. manager creates an identity to be used in the system
-//                 (no intention to create user account later - can be used to list parcel owner or register in person votes)
-// scenario B2: 1. manager creates an identity and an account for user 2. adds him to community 3. invites him to this account 4. user later accepts
-// scenario BONUS: user changes his email address after all this, or during the process
+      // scenario A1: 1. user creates (and verifies) account, 2. user asks to join community, 3. manager approves (no certification yet) 4. later certification happens
+      // scenario A2: 1. user creates (and verifies) account, 2. user meets with manager and there he adds him to community (certified)
+      // scenario B1: 1. manager creates an identity to be used in the system
+      //                 (no intention to create user account later - can be used to list parcel owner or register in person votes)
+      // scenario B2: 1. manager creates an identity and an account for user 2. adds him to community 3. invites him to this account 4. user later accepts
+      // scenario B3:
+      // scenario BONUS: user changes his email address after all this, or during the process
 
-      describe('Scenario A1: ', function () {
-        it('scenario A1', function (done) {
-          // 1. user creates account
-          const userId = Accounts.createUser({ email: 'user@honline.hu', password: 'password' });
-          // 2. user asks to join community
+      describe('Scenario A1: Person creates user account, submits join community request', function () {
+        let membershipId;
+        let userId;
+        after(function () {
+          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Meteor.users.remove(userId);
+        });
+        
+        it('[1] user creates an account for himself', function (done) {
+          userId = Accounts.createUser({ email: 'newuser@honline.hu', password: 'password' });
+          done();
+        });
 
-          // 3. manager approves (no certification yet)
+        it('[x] user has no permission to create approved membership', function (done) {
+          chai.assert.throws(() => {
+            Memberships.methods.insert._execute({ userId }, {   // he is not admin/manager
+              communityId: Fixture.demoCommunityId,
+              approved: true, // tries to create approved membership
+              person: {
+                userId,
+                idCard: { type: 'natural', name: 'Mr New' },
+                contact: { email: 'newuser@honline.hu' },
+              },
+              role: 'owner',
+              parcelId,
+              ownership: { share: new Fraction(1, 1) },
+            });
+          });
+          done();
+        });
 
-          // 4. later certification happens
+        it('[2] user asks to join community', function (done) {
+          membershipId = Memberships.methods.insert._execute({ userId }, {
+            communityId: Fixture.demoCommunityId,
+            approved: false, // tries to create non-approved membership
+            person: {
+              userId,
+              idCard: { type: 'natural', name: 'Mr New' },
+              contact: { email: 'newuser@honline.hu' },
+            },
+            role: 'owner',
+            parcelId,
+            ownership: { share: new Fraction(1, 1) },
+          });
 
+          const membership = Memberships.findOne(membershipId);
+          chai.assert.equal(membership.Person().id(), userId);
+          const user = Meteor.users.findOne(userId);
+          // This user has no privileges in the community, until not approved
+          chai.assert.isFalse(user.hasRole('owner', Fixture.demoCommunityId));
+          chai.assert.isFalse(user.hasPermission('vote.cast', Fixture.demoCommunityId));
+
+          done();
+        });
+
+        it('[x] user has no permission to approve himself', function (done) {
+          chai.assert.throws(() => {
+            Memberships.methods.update._execute({ userId }, {
+              _id: membershipId,
+              modifier: { $set: { approved: true } },
+            });
+          });
+          done();
+        });
+
+        it('[3] manager approves the membership (no certification yet)', function (done) {
+          Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, {
+            _id: membershipId,
+            modifier: { $set: { approved: true } },
+          });
+
+          const membership = Memberships.findOne(membershipId);
+          chai.assert.equal(membership.Person().id(), userId);
+          const user = Meteor.users.findOne(userId);
+          // Now he has privileges
+          chai.assert.isTrue(user.hasRole('owner', Fixture.demoCommunityId));
+          chai.assert.isTrue(user.hasPermission('vote.cast', Fixture.demoCommunityId));
+
+          done();
+        });
+
+        it('[4] later manager certifies the person', function (done) {
+          Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, {
+            _id: membershipId,
+            modifier: { $set: { 'person.idCard.identifier': 'JIMS_ID_NUMBER' } },
+          });
+
+          const membership = Memberships.findOne(membershipId);
+          chai.assert.equal(membership.Person().id(), userId);    // userId binds stronger than idCard.identifier
+
+          done();
+        });
+
+      });
+
+      describe('Scenario A2: Person creates user account, manager adds him to the community', function () {
+        let membershipId;
+        let userId;
+        after(function () {
+          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Meteor.users.remove(userId);
+        });
+        
+        it('[1] user creates an account for himself', function (done) {
+          userId = Accounts.createUser({ email: 'newuser@honline.hu', password: 'password' });
+          done();
+        });
+
+        it('[2] manager adds him with a role', function (done) {
+          membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            approved: true,
+            person: {
+              userId,
+              // no contact email
+            },
+            role: 'accountant',
+          });
+
+          const membership = Memberships.findOne(membershipId);
+          const user = Meteor.users.findOne(userId);
+          chai.assert.equal(membership.Person().id(), userId);
+          chai.assert.equal(membership.Person().primaryEmail(), user.getPrimaryEmail());
+          chai.assert.isTrue(user.hasRole('accountant', Fixture.demoCommunityId));
+
+          done();
+        });
+
+      });
+
+      describe('Scenario B1: manager links person, who will never be a user', function () {
+        let membershipId;
+        after(function () {
+          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+        });
+
+        it('[1] manager creates identifed person, and links it to the parcel with an ownership', function (done) {
+          membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            approved: true,
+            person: {
+              idCard: { type: 'natural', name: 'Jim', identifier: 'JIMS_ID_NUMBER' },
+              contact: { phone: '+3630 3334445' },
+            },
+            role: 'owner',
+            parcelId,
+            ownership: { share: new Fraction(1, 1) },
+          });
+
+          const membership = Memberships.findOne(membershipId);
+          chai.assert.equal(membership.Person().id(), 'JIMS_ID_NUMBER');
+
+          done();
+        });
+
+        it('[x] cannot link user, when no email address supplied', function (done) {
+          chai.assert.throws(() => {
+            Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          });
           done();
         });
       });
 
-      describe('Scenario B2: manager invites person, who is not yet a user', function () {
+      describe('Scenario B2: manager links person, who is not yet a user, but will be', function () {
         let membershipId;
-
+        let userId, user;
         after(function () {
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Meteor.users.remove(userId);
         });
 /*
-        it('manager unable to create person,  and invite him in same step', function (done) {
+        it('[x] manager unable to create person, with mismatched email', function (done) {
           chai.assert.throws(() => {
             Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
               communityId: Fixture.demoCommunityId,
               approved: true,
               person: {
-                userEmail: 'jim@honline.hu', // immediately invite him
+                userId: Fixture.demoUserId, // immediately link him
                 idCard: { type: 'natural', name: 'Jim' },
-                contact: { name: 'Jimmy' }, // no contact email supplied
+                contact: { name: 'Jimmy', email: 'jim@honline.hu' }, // mismatched contact email supplied
               },
               role: 'owner',
               parcelId,
@@ -93,23 +239,6 @@ if (Meteor.isServer) {
           done();
         });
 */
-        it('non-manager unable to create approved person', function (done) {
-          chai.assert.throws(() => {
-            Memberships.methods.insert._execute({ userId: Fixture.demoUserId }, {   // not the manager
-              communityId: Fixture.demoCommunityId,
-              approved: true,
-              person: {
-                idCard: { type: 'natural', name: 'Jim' },
-                contact: { email: 'jim@honline.hu' },
-              },
-              role: 'owner',
-              parcelId,
-              ownership: { share: new Fraction(1, 1) },
-            });
-          });
-          done();
-        });
-
         it('[1] manager creates approved person, and links it to the parcel with an ownership', function (done) {
           membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
@@ -122,18 +251,133 @@ if (Meteor.isServer) {
             parcelId,
             ownership: { share: new Fraction(1, 1) },
           });
+
+          let membership = Memberships.findOne(membershipId);
+          chai.assert.isUndefined(membership.person.userId);
+          chai.assert.isUndefined(membership.Person().id());
+
+          Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, { 
+            _id: membershipId,
+            modifier: { $set: { 'person.idCard.identifier': 'JIMS_ID_NUMBER' } },
+          });
+
+          membership = Memberships.findOne(membershipId);
+          chai.assert.isUndefined(membership.person.userId);
+          chai.assert.equal(membership.Person().id(), 'JIMS_ID_NUMBER');
+
           done();
         });
 
         it('[2] manager connects an email adress to the ownership - this triggers an enrollment/invitation email', function (done) {          
-          Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, {
-            _id: membershipId,
-            email: 'jim@honline.hu',
+          Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+
+          const membership = Memberships.findOne(membershipId);
+          chai.assert.isDefined(membership.person.userId);
+          userId = membership.person.userId;
+          user = Meteor.users.findOne(userId);
+          chai.assert.equal(membership.Person().id(), userId);
+          chai.assert.isFalse(membership.accepted);
+
+          chai.assert(Email.send.calledOnce);
+          const emailOptions = Email.send.getCall(0).args[0];
+          chai.assert.equal(emailOptions.to, user.getPrimaryEmail());
+          chai.assert.match(emailOptions.text, /enroll/);
+
+          done();
+        });
+
+        it('[x] cannot change the linked userId under an existing person', function (done) {          
+          chai.assert.throws(() => {
+            Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, { 
+              _id: membershipId,
+              modifier: { $set: { 'person.userId': Fixture.demoUserId } },
+            });
           });
           done();
         });
 
-        it('[3] user accepts enrollment', function (done) {          
+        it('[o] manager re-links to re-trigger enrollment/invitation email', function (done) {          
+          Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+
+          const membership = Memberships.findOne(membershipId);
+          chai.assert.equal(membership.Person().id(), userId);
+          chai.assert.isFalse(membership.accepted);
+
+          chai.assert(Email.send.calledTwice);
+          const emailOptions = Email.send.getCall(1).args[0];
+          const emailOptionsPrevious = Email.send.getCall(0).args[0];
+          chai.assert.equal(emailOptions.to, user.getPrimaryEmail());
+          chai.assert.match(emailOptions.text, /enroll/);
+          chai.assert.notEqual(emailOptions.text, emailOptionsPrevious.text);  // new link
+
+          done();
+        });
+
+        it('[3] user accepts enrollment (and verifies account)', function (done) {
+          Memberships.methods.accept._execute({ userId });
+
+          const membership = Memberships.findOne(membershipId);
+          chai.assert.isDefined(membership.person.userId);
+          chai.assert.equal(membership.Person().id(), userId);
+          chai.assert.isTrue(membership.accepted);    // now he is accepted state
+
+          done();
+        });
+      });
+
+      describe('Scenario B3: manager links person, who is already a user', function () {
+        let alreadyUserId;
+        before(function () {
+          alreadyUserId = Accounts.createUser({ email: 'alreadyuser@honline.hu', password: 'password' });
+        });
+        after(function () {
+          Meteor.users.remove(alreadyUserId);
+        });
+
+        it('B3a: creating membership and linking in same step', function (done) {
+          const membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            approved: true,
+            person: {
+              userId: alreadyUserId, // immediately link him
+              idCard: { type: 'natural', name: 'Mr Already' },
+              // no contact email
+            },
+            role: 'owner',
+            parcelId,
+            ownership: { share: new Fraction(1, 1) },
+          });
+
+          const membership = Memberships.findOne(membershipId);
+          const alreadyUser = Meteor.users.findOne(alreadyUserId);
+          chai.assert.equal(membership.Person().id(), alreadyUserId);
+          chai.assert.equal(membership.Person().primaryEmail(), alreadyUser.getPrimaryEmail());
+
+          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          done();
+        });
+
+        it('B3b: creating membership and linking in two steps', function (done) {
+          const membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            approved: true,
+            person: {
+              // no userId yet
+              idCard: { type: 'natural', name: 'Mr Already' },
+              contact: { name: 'Already User', email: 'alreadyuser@honline.hu' },
+            },
+            role: 'owner',
+            parcelId,
+            ownership: { share: new Fraction(1, 1) },
+          });
+          Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+
+          const membership = Memberships.findOne(membershipId);
+          const alreadyUser = Meteor.users.findOne(alreadyUserId);
+          chai.assert.equal(membership.Person().id(), alreadyUserId);
+          chai.assert.equal(membership.Person().primaryEmail(), alreadyUser.getPrimaryEmail());
+
+          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
           done();
         });
       });

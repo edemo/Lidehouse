@@ -9,7 +9,6 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { communityColumns } from '/imports/api/communities/tables.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { insertUnapproved as insertMembershipUnapproved } from '/imports/api/memberships/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AutoForm } from 'meteor/aldeed:autoform';

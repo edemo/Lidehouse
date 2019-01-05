@@ -11,7 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { remove as removeMembership, invite as inviteMembership } from '/imports/api/memberships/methods.js';
+import '/imports/api/memberships/methods.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -116,16 +116,15 @@ Template.Parcel_owners_page.events({
     importCollectionFromFile(Memberships);
   },
   'click .js-invite'(event, instance) {
-    const id = $(event.target).data('id');
-    const membership = Memberships.findOne(id);
+    const _id = $(event.target).data('id');
+    const membership = Memberships.findOne(_id);
     if (!membership.person || !membership.person.contact || !membership.person.contact.email) {
       displayMessage('warning', __('No contact email set for this membership'));
       return;
     }
-    const email = membership.person.contact.email;
-    Modal.confirmAndCall(inviteMembership, { _id: id, email }, {
+    Modal.confirmAndCall(Memberships.methods.linkUser, { _id }, {
       action: 'invite user',
-      message: __('Connecting user', email),
+      message: __('Connecting user', membership.person.contact.email),
     });
   },
   'click #owners .js-new'(event, instance) {
@@ -133,8 +132,7 @@ Template.Parcel_owners_page.events({
       id: 'af.ownership.insert',
       collection: Memberships,
       fields: ['person', 'ownership', 'activeTime'],
-      omitFields: ['person.userId', 'person.userEmail'],
-      // omitFields: ['communityId', 'parcelId', 'role', 'benefactorship', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
+      omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',
@@ -146,8 +144,7 @@ Template.Parcel_owners_page.events({
       id: 'af.ownership.update',
       collection: Memberships,
       fields: ['person', 'ownership', 'activeTime'],
-      omitFields: ['person.userId', 'person.userEmail'],
-      // omitFields: ['communityId', 'parcelId', 'role', 'benefactorship', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
+      omitFields: ['person.userId'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
@@ -168,7 +165,7 @@ Template.Parcel_owners_page.events({
   },
   'click #owners .js-delete'(event) {
     const id = $(event.target).data('id');
-    Modal.confirmAndCall(removeMembership, { _id: id }, {
+    Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
       action: 'delete ownership',
       message: 'You should rather archive it',
     });
@@ -178,8 +175,7 @@ Template.Parcel_owners_page.events({
       id: 'af.benefactorship.insert',
       collection: Memberships,
       fields: ['person', 'benefactorship', 'activeTime'],
-      omitFields: ['person.userId', 'person.userEmail'],
-      // omitFields: ['communityId', 'parcelId', 'role', 'ownership', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
+      omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',
@@ -191,8 +187,7 @@ Template.Parcel_owners_page.events({
       id: 'af.benefactorship.update',
       collection: Memberships,
       fields: ['person', 'benefactorship', 'activeTime'],
-      omitFields: ['person.userId', 'person.userEmail'],
-      // omitFields: ['communityId', 'parcelId', 'role', 'ownership', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
+      omitFields: ['person.userId'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
@@ -213,7 +208,7 @@ Template.Parcel_owners_page.events({
   },
   'click #benefactors .js-delete'(event) {
     const id = $(event.target).data('id');
-    Modal.confirmAndCall(removeMembership, { _id: id }, {
+    Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
       action: 'delete benefactorship',
       message: 'You should rather archive it',
     });

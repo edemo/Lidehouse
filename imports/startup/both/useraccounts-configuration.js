@@ -99,7 +99,7 @@ let enrollRedirect = () => { debugAssert(false); };
 if (Meteor.isClient) {
   import { FlowRouter } from 'meteor/kadira:flow-router';
   import { setCurrentUserLanguage } from '/imports/startup/client/language.js';
-  import { connectMe } from '/imports/api/memberships/methods.js';
+  import { Memberships } from '/imports/api/memberships/memberships.js';
   import { showWelcomeModal } from '/imports/ui_3/views/modals/welcome-modal.js';
 
   export let signinRedirectRoute;
@@ -116,13 +116,13 @@ if (Meteor.isClient) {
   };
 
   verifyRedirect = function () {
-    connectMe.call();
+    Memberships.methods.accept.call();
     FlowRouter.go('App.home');
     showWelcomeModal();
   };
 
   enrollRedirect = function () {
-    connectMe.call();
+    Memberships.methods.accept.call();
     setCurrentUserLanguage();
     FlowRouter.go('App.home');
     showWelcomeModal();
