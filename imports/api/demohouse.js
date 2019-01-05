@@ -1444,7 +1444,7 @@ Meteor.methods({
     if (Meteor.isClient) return;  // This should run only on the server side
 
     const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
-    const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.net` } },
+    const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.hu` } },
       { sort: { createdAt: -1 } }).fetch();
     let counter = 1;
     if (demoUsersList[0]) {
@@ -1455,7 +1455,7 @@ Meteor.methods({
     const firstNames = __('demo.user.firstNames').split('\n');
     
     const demoUserId = Accounts.createUser({
-      email: counter + `.${lang}demouser@honline.net`,
+      email: counter + `.${lang}demouser@honline.hu`,
       password: 'password',
       language: lang,
     });
@@ -1583,7 +1583,7 @@ Meteor.methods({
 });
 
 export function deleteDemoUsersAfterRestart() {
-  const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } });
+  const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.hu' } });
   const huCommunityId = Communities.findOne({ name: 'Demo ház' })._id;
   const enCommunityId = Communities.findOne({ name: 'Demo house' })._id;
   let communityId;

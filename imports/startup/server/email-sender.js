@@ -27,7 +27,7 @@ export const EmailSender = {
   send(templateName, options, context) {
     Email.send({
       to: options.to,
-      from: 'Honline <noreply@honline.net>',
+      from: 'Honline <noreply@honline.hu>',
       subject: options.subject,
       html: templateToHTML(templateName, context),
     });
@@ -36,8 +36,8 @@ export const EmailSender = {
 */
 
 Mailer.config({
-  from: 'Honline <noreply@honline.net>',
-//  replyTo: 'Honline <noreply@honline.net>',
+  from: 'Honline <noreply@honline.hu>',
+//  replyTo: 'Honline <noreply@honline.hu>',
   addRoutes: true,  // only allow this in debug mode
   testEmail: null,  // set your email here to be able to send by url 
   plainTextOpts: {

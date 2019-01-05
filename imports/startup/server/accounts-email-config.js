@@ -22,7 +22,7 @@ function dualTranslate(symbol, context, lang, separator) {
 // Accounts.emailTemplates
 
 Accounts.emailTemplates.siteName = 'Honline';
-Accounts.emailTemplates.from = 'Honline <noreply@honline.net>';
+Accounts.emailTemplates.from = 'Honline <noreply@honline.hu>';
 
 Accounts.emailTemplates.enrollAccount = {
   subject(user) {
