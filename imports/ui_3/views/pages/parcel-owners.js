@@ -29,7 +29,8 @@ Template.Parcel_owners_page.onRendered(function () {
 Template.Parcel_owners_page.helpers({
   pageCrumbs() {
     const parcelId = FlowRouter.getParam('_pid');
-    const communityId = Parcels.findOne(parcelId).communityId;
+    const parcel = Parcels.findOne(parcelId);
+    const communityId = parcel && parcel.communityId;
     return [{
       title: __('Community page'),
       url: FlowRouter.path('Community.page', { _cid: communityId }),
