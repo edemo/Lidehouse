@@ -9,6 +9,8 @@ import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors
 import { Comments } from '/imports/api/comments/comments.js';
 import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '/imports/ui_3/views/modals/confirmation.js';
 import './comments-section.html';
 
 Template.Comments_section.onCreated(function commentsSectionOnCreated() {
@@ -98,7 +100,7 @@ Template.Comment.events({
       updateComment.call({
         commentId: instance.data._id,
         modifier: { $set: { text: editedText } },
-      });
+      }, handleError);
       $('#editableSpan').remove();
       $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
     }
