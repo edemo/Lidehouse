@@ -1,28 +1,30 @@
 <template name="Topic_show">
-    {{#if topic}}
-    {{#with topic}}
-        <!-- Page heading -->
-        {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
+    {{#if Template.subscriptionsReady}}
+        {{#if topic}}
+            {{#with topic}}
+            <!-- Page heading -->
+            {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
 
-        {{#if (equals topic.category 'vote')}}
-        {{> Vote_topic_show}}
+            {{#if (equals topic.category 'vote')}}
+            {{> Vote_topic_show}}
+            {{/if}}
+
+            {{#if (equals topic.category 'forum')}}
+            {{> Forum_topic_show}}
+            {{/if}}
+
+            {{#if (equals topic.category 'ticket')}}
+            {{> Ticket_topic_show}}
+            {{/if}}
+
+            {{#if (equals topic.category 'news')}}
+            {{> app_rootRedirector}}
+            {{/if}}
+
+            {{/with}}
+        {{else}}
+            {{>Error code='404' type='Page not found' message='pageNotFoundMessage' item='topic.general'}}
         {{/if}}
-
-        {{#if (equals topic.category 'forum')}}
-        {{> Forum_topic_show}}
-        {{/if}}
-
-        {{#if (equals topic.category 'ticket')}}
-        {{> Ticket_topic_show}}
-        {{/if}}
-
-        {{#if (equals topic.category 'news')}}
-        {{> app_rootRedirector}}
-        {{/if}}
-
-    {{/with}}
-    {{else}}
-      {{>Error code='404' type='Page not found' message='pageNotFoundMessage' item='topic.general'}}
     {{/if}}
 </template>
 
