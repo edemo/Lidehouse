@@ -47,7 +47,7 @@ export const Permissions = [
   { name: 'news.remove',            roles: ['manager'] },
   { name: 'ticket.insert',          roles: exceptGuest },
   { name: 'ticket.update',          roles: ['manager', 'maintainer'], allowAuthor: true },
-  { name: 'ticket.remove',          roles: ['manager', 'maintainer'], allowAuthor: true },
+  { name: 'ticket.remove',          roles: ['manager'], allowAuthor: true },
   { name: 'room.insert',            roles: everyRole },
   { name: 'room.update',            roles: nobody },
   { name: 'feedback.insert',        roles: everyRole },

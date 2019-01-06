@@ -12,7 +12,7 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
-import './tickets/tickets.js';
+import { TicketFields } from './tickets/tickets.js';
 import './rooms/rooms.js';
 import './feedbacks/feedbacks.js';
 
@@ -37,7 +37,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'update', topic);
-    checkModifier(topic, modifier, ['title', 'text', 'sticky', 'agendaId']);
+    checkModifier(topic, modifier, ['title', 'text', 'sticky', 'agendaId'].concat(TicketFields));
     Topics.update({ _id }, modifier);
   },
 });

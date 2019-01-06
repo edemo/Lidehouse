@@ -28,6 +28,10 @@ const ticketsExtensionSchema = new SimpleSchema({
   status: { type: String, allowedValues: Topics.statusValues, autoform: autoformOptions(Topics.statusValues, 'schemaTickets.ticket.status.') },
 });
 
+export const TicketFields = ['ticket.category', 'ticket.urgency', 'ticket.status'];
+
+Topics.addRevisionedField('ticket.status');
+
 Topics.helpers({
 });
 

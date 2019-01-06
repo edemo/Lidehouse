@@ -104,7 +104,10 @@ Template.Tickets_report.events({
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
-    Modal.confirmAndCall(removeTopic, { _id: id }, 'remove topic');
+    Modal.confirmAndCall(removeTopic, { _id: id }, {
+      action: 'delete ticket',
+      message: 'It will disappear forever',
+    });
   },
 });
 

@@ -14,6 +14,10 @@ export class RevisionedCollection extends Mongo.Collection {
     this._revisonedFields = revisionedFields;
     this.attachSchema(revisionSchema);
   }
+  addRevisionedField(field) {
+    this._revisonedFields.push(field);
+  }
+  // overriding Mongo.Collection methods
   insert(doc, callback) {
     return super.insert(doc, callback);
   }
@@ -24,6 +28,7 @@ export class RevisionedCollection extends Mongo.Collection {
   remove(selector, callback) {
     return super.remove(selector, callback);
   }
+  // implementation
   _revision(selector, modifier) {
     const changes = [];
     for (let i = 0; i < this._revisonedFields.length; i++) {
