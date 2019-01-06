@@ -36,8 +36,8 @@ Comments.schema = new SimpleSchema({
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id,
     autoValue() {
-      if (this.isInsert) {
-        const topicId = this.field('topicId').value;
+      const topicId = this.field('topicId').value;
+      if (!this.isSet && topicId) {
         const topic = Topics.findOne(topicId);
         return topic.communityId;
       }
