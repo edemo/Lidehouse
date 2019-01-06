@@ -14,17 +14,19 @@
                         <span class="label label-plain"><i class="fa fa-star"></i> {{_ 'representor'}}</span>
                         {{/if}}
                     </td>
-                    {{#if userHasPermission 'ownerships.update' communityId}}
                     <td class="text-right">
                         <div class="btn-group">
-                            <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                            <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                            {{#unless accepted}}
-                            <button class="btn btn-xs {{#if Person.userId}}btn-warning{{else}}btn-danger{{/if}} js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
-                            {{/unless}}
+                            {{#if userHasPermission 'ownerships.update' communityId}}
+                              <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                              {{#unless accepted}}
+                              <button class="btn btn-xs {{#if Person.userId}}btn-warning{{else}}btn-danger{{/if}} js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
+                              {{/unless}}
+                            {{/if}}
+                            {{#if userHasPermission 'ownerships.remove' communityId}}
+                              <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                            {{/if}}
                         </div>
                     </td>
-                    {{/if}}
                 </tr>
                 {{/each}}
                 </tbody>
@@ -43,17 +45,19 @@
                     <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
                     <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
                     <td><span class="label label-plain">{{_ benefactorship.type}}</span></td>
-                    {{#if userHasPermission 'benefactorships.update' communityId}}
                     <td class="text-right">
                         <div class="btn-group">
-                            <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                            <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                            {{#unless accepted}}
-                            <button class="btn btn-xs {{#if Person.userId}}btn-warning{{else}}btn-danger{{/if}} js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
-                            {{/unless}}
+                            {{#if userHasPermission 'benefactorships.update' communityId}}
+                                <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                {{#unless accepted}}
+                                <button class="btn btn-xs {{#if Person.userId}}btn-warning{{else}}btn-danger{{/if}} js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
+                                {{/unless}}
+                            {{/if}}
+                            {{#if userHasPermission 'benefactorships.remove' communityId}}
+                                <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                            {{/if}}
                         </div>
                     </td>
-                    {{/if}}
                 </tr>
                 {{/each}}
                 </tbody>
