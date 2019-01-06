@@ -41,8 +41,7 @@
                 </td>
                 <td class='avatar-container'>      
                     <a href="{{urlFor 'User.show' _id=comment.user._id}}" class="pull-left">
-                        <img alt="avatar" class="message-avatar" src='{{comment.user.avatar}}'>
-                        <!--img alt="avatar" class="message-avatar" src="{{comment.user.avatar}}"-->
+                        <img alt="avatar" class="message-avatar" src='{{urlFor comment.user.avatar}}'>
                     </a>
                 </td>
                 <td class="media-body">

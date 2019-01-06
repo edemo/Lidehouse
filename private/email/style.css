@@ -53,9 +53,10 @@ table td {
 }
 
 .message-avatar {
-    height: 48px;
-    width: 48px;
-    border-radius: 4px;
+    height: 44px;
+    width: 44px;
+    border: 1px solid #e7eaec;
+    border-radius: 5px;
 }
 
 .avatar-container,
@@ -63,16 +64,8 @@ table td {
     width: 60px;
 }
 
-.avatar-container img {
-    border-radius: 50%;
-}
-
 .puffer {
     width: 40px;
-}
-
-.avatar-container img {
-    padding: 5px;
 }
 
 .project-title {
