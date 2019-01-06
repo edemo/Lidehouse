@@ -213,8 +213,7 @@ Template.Community_page.events({
       id: 'af.roleship.insert',
       collection: Memberships,
       fields: ['role', 'person', 'activeTime'],
-      omitFields: ['person.idCard', 'person.contact'],
-      // omitFields: ['communityId', 'parcelId', 'ownership', 'benefactorship', 'person.idCard', 'person.contact'], above 2 lines have the same efect, but look simpler
+      omitFields: ['person.idCard'],
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',
@@ -251,6 +250,18 @@ Template.Community_page.events({
     Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
       action: 'delete roleship',
       message: 'You should rather archive it',
+    });
+  },
+  'click .roles-section .js-invite'(event, instance) {
+    const _id = $(event.target).data('id');
+    const membership = Memberships.findOne(_id);
+    if (!membership.person || !membership.person.contact || !membership.person.contact.email) {
+      displayMessage('warning', __('No contact email set for this membership'));
+      return;
+    }
+    Modal.confirmAndCall(Memberships.methods.linkUser, { _id }, {
+      action: 'invite user',
+      message: __('Connecting user', membership.person.contact.email),
     });
   },
   // parcel events

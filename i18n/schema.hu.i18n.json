@@ -84,7 +84,7 @@
       "legal": "jogi személyiség",
       "label": "Személy",
       "userId": {
-        "label": "Kapcsolt felhasználó"
+        "label": "Kapcsolt felhasználó (ha már regisztrált)"
       },
       "idCard": {
         "label" : "Személy hivatalos adatai",

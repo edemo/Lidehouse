@@ -84,7 +84,7 @@
       "legal": "legal entity",
       "label": "Person",
       "userId": {
-        "label": "Linked user account"
+        "label": "Linked user account (if already registered)"
       },
       "idCard": {
         "label" : "Person's official data",
