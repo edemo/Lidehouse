@@ -12,21 +12,26 @@
                             {{#if Person.user.profile.publicEmail}}
                             <i class="contact-type fa fa-at"></i>{{Person.user.profile.publicEmail}}
                             {{/if}}
-                            {{#if and Person.user.profile.publicEmail Person.user.profile.phone}}
+                            {{#if (and Person.user.profile.publicEmail Person.user.profile.phone)}}
                             <br>
                             {{/if}}
                             {{#if Person.user.profile.phone}}
                             <i class="contact-type fa fa-phone"></i>{{Person.user.profile.phone}}
                             {{/if}}
                         </td>
-                        {{#if userHasPermission 'roleships.update' communityId}}
                         <td class="text-right">
                             <div class="btn-group">
-                                <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                                <button class="btn-white btn btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                {{#if userHasPermission 'roleships.update' communityId}}
+                                <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                {{#unless accepted}}
+                                <button class="btn btn-xs {{#if Person.userId}}btn-warning{{else}}btn-danger{{/if}} js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
+                                {{/unless}}
+                                {{/if}}
+                                {{#if userHasPermission 'roleships.remove' communityId}}
+                                <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                {{/if}}
                             </div>
                         </td>
-                        {{/if}}
                     </tr>
                     {{/each}}
                 </tbody>

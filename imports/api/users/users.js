@@ -206,6 +206,10 @@ Meteor.users.helpers({
     Memberships.find({ communityId, active: true, approved: true, role: 'owner', 'person.userId': this._id }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
+  hasRole(roleName, communityId) {
+    const userHasTheseRoles = this.activeRoles(communityId);
+    return _.contains(userHasTheseRoles, roleName);
+  },
   hasPermission(permissionName, communityId, object) {
     const permission = Permissions.find(p => p.name === permissionName);
     debugAssert(permission, `No such permission "${permissionName}"`);

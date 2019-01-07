@@ -159,8 +159,7 @@ Template.Delegations.events({
       id: 'af.delegate.insert',
       collection: Memberships,
       fields: ['person', 'activeTime'],
-      omitFields: ['person.userId', 'person.userEmail'],
-//    omitFields: ['communityId', 'parcelId', 'role', 'ownership', 'benefactorship', 'person.userId', 'person.userEmail'], above 2 lines have the same efect, but look simpler
+      omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',

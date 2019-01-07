@@ -37,7 +37,8 @@ const BenefactorshipSchema = new SimpleSchema({
 Memberships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
+  approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },  // manager approved this membership
+  accepted: { type: Boolean, autoform: { omit: true }, defaultValue: false },  // person accepted this membership
   role: { type: String, allowedValues() { return everyRole; },
     autoform: {
       options() {
@@ -57,7 +58,6 @@ if (Meteor.isServer) {
   Memberships._ensureIndex({ communityId: 1, active: 1, role: 1 });
   Memberships._ensureIndex({ parcelId: 1 }, { sparse: true });
   Memberships._ensureIndex({ 'person.userId': 1 }, { sparse: true });
-  Memberships._ensureIndex({ 'person.userEmail': 1 }, { sparse: true });
   Memberships._ensureIndex({ 'person.idCard.identifier': 1 }, { sparse: true });
 }
 

@@ -11,7 +11,7 @@ function sendNotifications(user) {
     if (topics.length > 0) {
       Mailer.send({
         to: user.getPrimaryEmail(),
-        bcc: 'Honline <noreply@honline.net>',
+        bcc: 'Honline <noreply@honline.hu>',
         subject: TAPi18n.__('email.NotificationTitle', { name: community.name }, user.settings.language),
         template: 'Notification_Email',
         data: {

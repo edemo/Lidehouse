@@ -1,35 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Accounts } from 'meteor/accounts-base';
-import { Random } from 'meteor/random';
 
 import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { toggleElementInArray } from '/imports/api/utils.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 import './users.js';
-
-export const invite = new ValidatedMethod({
-  name: 'user.invite',
-  validate: new SimpleSchema({
-    email: { type: String, regEx: SimpleSchema.RegEx.Email },
-    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
-
-  run({ email, communityId }) {
-    const inviter = Meteor.user();
-    const userId = Accounts.createUser({ email, password: Random.id(8), language: inviter.language() });
-    if (Meteor.isServer) {
-      Accounts.sendEnrollmentEmail(userId);
-      // userId supposed to be good at this point on the client, but it is NOT,
-      // so I can only add the user to the community on the server side (not nice)
-      // insertMember.call({ userId, communityId, role: 'guest' });
-    }
-    return userId;
-  },
-});
 
 export const update = new ValidatedMethod({
   name: 'user.update',

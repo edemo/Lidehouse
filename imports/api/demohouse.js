@@ -311,7 +311,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       },
     },
   });
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoManagerId }, role: 'manager' });
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoManagerId }, accepted: true, role: 'manager' });
 
   const demoAdminId = Accounts.createUser({
     email: `admin@${demoOrTest}.${com}`,
@@ -330,7 +330,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       },
     },
   });
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoAdminId }, role: 'admin' });
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoAdminId }, accepted: true, role: 'admin' });
 
   // ===== Filling demo Users =====
 
@@ -352,7 +352,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     avatar: '/images/avatars/avatarnull.png',
     settings: { language: lang },
   }));
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoMaintainerId }, role: 'maintainer' }); 
+  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoMaintainerId }, accepted: true, role: 'maintainer' }); 
 
   const dummyUserId = dummyUsers[5];
 
@@ -362,6 +362,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: demoAccountantId },
+    accepted: true,
     role: 'accountant',
   });
   const dummy3Email = Meteor.users.findOne({_id : dummyUsers[3]}).emails[0].address;
@@ -372,6 +373,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     Memberships.insert({
       communityId: demoCommunityId,
       person: { userId: dummyUsers[userNo] },
+      accepted: true,
       role: 'overseer',
     });
   });
@@ -379,6 +381,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     Memberships.insert({
       communityId: demoCommunityId,
       person: { userId: dummyUsers[parcelNo] },
+      accepted: true,
       role: 'owner',
       parcelId: demoParcels[parcelNo],
       ownership: {
@@ -389,6 +392,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: dummyUsers[5] },
+    accepted: true,
     role: 'owner',
     parcelId: demoParcels[11],
     ownership: {
@@ -398,6 +402,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: dummyUsers[2] },
+    accepted: true,
     role: 'owner',
     parcelId: demoParcels[2],
     ownership: {
@@ -408,6 +413,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: dummyUsers[14] },
+    accepted: true,
     role: 'owner',
     parcelId: demoParcels[2],
     ownership: {
@@ -434,6 +440,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     Memberships.insert({
       communityId: demoCommunityId,
       person: { userId: dummyUsers[parcelNo] },
+      accepted: true,
       role: 'owner',
       parcelId: demoParcels[parcelNo],
       ownership: {
@@ -463,6 +470,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: dummyUsers[11] },
+    accepted: true,
     role: 'benefactor',
     parcelId: demoParcels[4],
     benefactorship: {
@@ -472,6 +480,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: dummyUsers[15] },
+    accepted: true,
     role: 'benefactor',
     parcelId: demoParcels[5],
     benefactorship: {
@@ -481,6 +490,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: dummyUsers[16] },
+    accepted: true,
     role: 'benefactor',
     parcelId: demoParcels[8],
     benefactorship: {
@@ -490,6 +500,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: dummyUsers[17] },
+    accepted: true,
     role: 'benefactor',
     parcelId: demoParcels[9],
     benefactorship: {
@@ -1391,13 +1402,13 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
       } });
     if (role.name === 'owner') {
       Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
-      Memberships.insert({ communityId, person: { userId: userWithRoleId }, role: role.name,
-        parcelId,  ownership: { share: new Fraction(1, 2), representor: true } });
+      Memberships.insert({ communityId, person: { userId: userWithRoleId }, accepted: true, role: role.name,
+        parcelId, ownership: { share: new Fraction(1, 2), representor: true } });
     } else if (role.name === 'benefactor') {
-      Memberships.insert({ communityId, person: { userId: userWithRoleId }, role: role.name,
+      Memberships.insert({ communityId, person: { userId: userWithRoleId }, accepted: true, role: role.name,
         parcelId, benefactorship: { type: 'rental' } });
     } else {
-      Memberships.insert({ communityId, person: { userId: userWithRoleId }, role: role.name });
+      Memberships.insert({ communityId, person: { userId: userWithRoleId }, accepted: true, role: role.name });
     }
   });
 }
@@ -1444,7 +1455,7 @@ Meteor.methods({
     if (Meteor.isClient) return;  // This should run only on the server side
 
     const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
-    const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.net` } },
+    const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.hu` } },
       { sort: { createdAt: -1 } }).fetch();
     let counter = 1;
     if (demoUsersList[0]) {
@@ -1455,7 +1466,7 @@ Meteor.methods({
     const firstNames = __('demo.user.firstNames').split('\n');
     
     const demoUserId = Accounts.createUser({
-      email: counter + `.${lang}demouser@honline.net`,
+      email: counter + `.${lang}demouser@honline.hu`,
       password: 'password',
       language: lang,
     });
@@ -1486,6 +1497,7 @@ Meteor.methods({
     Memberships.insert({
       communityId: demoCommunityId,
       person: { userId: demoUserId },
+      accepted: true,
       role: 'owner',
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) } });
@@ -1583,7 +1595,7 @@ Meteor.methods({
 });
 
 export function deleteDemoUsersAfterRestart() {
-  const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.net' } });
+  const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.hu' } });
   const huCommunityId = Communities.findOne({ name: 'Demo ház' })._id;
   const enCommunityId = Communities.findOne({ name: 'Demo house' })._id;
   let communityId;

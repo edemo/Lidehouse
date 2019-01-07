@@ -63,7 +63,9 @@
 <template name="override-atSignupLink">
   <div class="at-signup-link">
     <p class="text-muted text-center"><small>{{preText}}</small></p> 
-    <a class="btn btn-sm btn-white btn-block text-capitalize at-link at-signup {{disabled}}" href="{{signUpLink}}" id="at-signUp" >{{linkText}}</a>
+    <a class="btn btn-sm btn-white btn-block text-capitalize at-link at-signup {{disabled}}" href="{{signUpLink}}" id="at-signUp" >
+      <i class="fa fa-user "></i> {{linkText}}
+    </a>
     <p class="text-muted text-center"><small>{{suffText}}</small></p> 
   </div>
 </template>
@@ -71,7 +73,9 @@
 <template name="override-atSigninLink">
   <div class="at-signin-link">
     <p class="text-muted text-center"><small>{{preText}}</small></p> 
-    <a class="btn btn-sm btn-white btn-block text-capitalize at-link at-signin {{disabled}}" href="{{signInLink}}" id="at-signIn">{{linkText}}</a>
+    <a class="btn btn-sm btn-white btn-block text-capitalize at-link at-signin {{disabled}}" href="{{signInLink}}" id="at-signIn">
+      <i class="fa fa-sign-in"></i> {{linkText}}
+    </a>
     <p class="text-muted text-center"><small>{{suffText}}</small></p> 
   </div>
 </template>

@@ -36,6 +36,8 @@ AccountsTemplates.configure({
   enforceEmailVerification: true, /* Warning: experimental! Use it only if you have accounts-password as the only service!!! */
   showResendVerificationEmailLink: true,
   enablePasswordChange: true,
+  privacyUrl: '/privacy',
+  termsUrl: '/terms',
 
   defaultTemplate: 'Auth_page',
   defaultLayout: 'Blank_layout',
@@ -99,7 +101,7 @@ let enrollRedirect = () => { debugAssert(false); };
 if (Meteor.isClient) {
   import { FlowRouter } from 'meteor/kadira:flow-router';
   import { setCurrentUserLanguage } from '/imports/startup/client/language.js';
-  import { connectMe } from '/imports/api/memberships/methods.js';
+  import { Memberships } from '/imports/api/memberships/memberships.js';
   import { showWelcomeModal } from '/imports/ui_3/views/modals/welcome-modal.js';
 
   export let signinRedirectRoute;
@@ -116,13 +118,13 @@ if (Meteor.isClient) {
   };
 
   verifyRedirect = function () {
-    connectMe.call();
+    Memberships.methods.accept.call();
     FlowRouter.go('App.home');
     showWelcomeModal();
   };
 
   enrollRedirect = function () {
-    connectMe.call();
+    Memberships.methods.accept.call();
     setCurrentUserLanguage();
     FlowRouter.go('App.home');
     showWelcomeModal();
@@ -181,6 +183,7 @@ AccountsTemplates.configureRoute('enrollAccount', {
 // TODO: Find a good place for the t9n transaltions, or get this issue fixed in softwarerero:meteor-accounts-t9n
 // https://github.com/softwarerero/meteor-accounts-t9n/issues/105
 const hu = {
+  // These translations were missing 
   "Required Field" : "Mező kitöltése kötelező",
   "Invalid email": "Érvénytelen email cím",
   "Minimum required length: 6": "Legalább 6 karakter hosszúnak kell lennie",
@@ -198,5 +201,15 @@ const hu = {
       "Token expired": "Lejárt token",
     },
   },
+  // These transations are there, but not good enough
+  // https://github.com/softwarerero/meteor-accounts-t9n/blob/43fa5f4cba08838639929fa905d56b0ab101c795/t9n/hu.coffee
+  choosePassword: "Válasszon egy jelszót",
+  clickAgree: "A regisztráció gombra kattintva elfogadja az",
+  dontHaveAnAccount: "Még nincs felhasználói fiókja?",
+  forgotPassword: "Elfelejtette a jelszavát?",
+  ifYouAlreadyHaveAnAccount: "Ha már van felhasználói fiókja, ",
+  privacyPolicy: "Adatvédelmi tájékoztatót",
+  signin: "Bejelentkezés",
+  terms: "Használati feltételeket",
 };
 T9n.map('hu', hu);

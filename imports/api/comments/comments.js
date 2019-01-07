@@ -37,8 +37,11 @@ Comments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id,
     autoValue() {
       const topicId = this.field('topicId').value;
-      const topic = Topics.findOne(topicId);
-      return topic.communityId;
+      if (!this.isSet && topicId) {
+        const topic = Topics.findOne(topicId);
+        return topic.communityId;
+      }
+      return undefined; // means leave whats there alone for Updates, Upserts
     },
   },
 });

@@ -84,11 +84,7 @@
       "legal": "legal entity",
       "label": "Person",
       "userId": {
-        "label": "Select a person (from the registered users)"
-      },
-      "userEmail": {
-        "label": "Person's email address (if not yet registered)",
-        "placeholder": "(eg. jsmith45@dmail.com)"
+        "label": "Linked user account (if already registered)"
       },
       "idCard": {
         "label" : "Person's official data",

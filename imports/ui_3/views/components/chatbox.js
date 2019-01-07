@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
+import { $ } from 'meteor/jquery';
+import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -27,24 +29,27 @@ Template.Chatbox.helpers({
     return this.flaggedStatus(communityId) || this.createdBy().flaggedStatus(communityId);
   },
   join(memberships) {
-    return memberships.map(m => m.toString()).join(', ');
+    // return memberships.map(m => m.toString()).join(', ');
+    return _.uniq(memberships.map(m => __(m.role))).join(', ');
   },
 });
 
 function toggleFinishEditButtons(instance) {
   $('.js-save-edited[data-id="' + instance.data._id + '"]').toggleClass('hidden');
   $('.js-cancel[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-};
+}
+
 function toggleTopic(instance) {
   $('p[data-id="' + instance.data._id + '"]').toggleClass('hidden');
   $('strong[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-};
+}
+
 function finishEditing(instance) {
   $('.js-text[data-id="' + instance.data._id + '"]').remove();
   $('.js-title[data-id="' + instance.data._id + '"]').remove();
   toggleFinishEditButtons(instance);
   toggleTopic(instance);
-};
+}
 
 Template.Chatbox.events({
   'click .js-edit-topic'(event, instance) {
@@ -71,14 +76,14 @@ Template.Chatbox.events({
   },
   'keydown .js-text'(event, instance) {
     // pressing escape key
-    if (event.keyCode === 27) { 
+    if (event.keyCode === 27) {
       event.preventDefault();
       finishEditing(instance);
     }
   },
   'keydown .js-title'(event, instance) {
     // pressing escape key
-    if (event.keyCode === 27) { 
+    if (event.keyCode === 27) {
       event.preventDefault();
       finishEditing(instance);
     }

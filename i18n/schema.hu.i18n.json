@@ -84,11 +84,7 @@
       "legal": "jogi személyiség",
       "label": "Személy",
       "userId": {
-        "label": "Személy kiválasztása (a regisztráltak közül)"
-      },
-      "userEmail": {
-        "label": "Személy email címe (ha még nem regisztrált)",
-        "placeholder": "(pl. tibi45@dmail.com)"
+        "label": "Kapcsolt felhasználó (ha már regisztrált)"
       },
       "idCard": {
         "label" : "Személy hivatalos adatai",

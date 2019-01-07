@@ -25,20 +25,17 @@ const IdCardSchema = new SimpleSchema({
 });
 
 export const PersonSchema = new SimpleSchema({
-  // The membership is connecting to a person via 3 possible ways:
   // *userId* (connecting to a registered user in the system),
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
-  // *userEmail* (not yet registered, but invitation is sent)
-  userEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
   // *idCard* (identity papers confirmed by manager, so person can officially vote now)
   // this person might or might not wish to register in the system ever, but still can do voting (if manager votes in his name)
   idCard: { type: IdCardSchema, optional: true },
+  // Contact details provided by the person - the email address is used for sending invitation to user account creation
   contact: { type: ContactSchema, optional: true },
 });
 
 PersonSchema.modifiableFields = [
 //  'person.userId',    should not change these once established!
-//  'person.userEmail',  should not change these once established!
   'person.idCard.type',
   'person.idCard.name',
   'person.idCard.address',
@@ -52,48 +49,21 @@ PersonSchema.modifiableFields = [
 
 export class Person {
   constructor(data) {
-//    console.log("construct Person", data);
-    this.userId = data.userId;
-    this.userEmail = data.userEmail;
-    this.idCard = data.idCard;
-    this.contact = data.contact;
+    _.extend(this, data);
   }
   // A personId is either a userId (for registered users) or an idCard identifier (for non-registered users)
   static constructFromId(personId) {
-//    console.log("construct Person from id", personId);
-    const data = {};
     const user = Meteor.users.findOne(personId);
     if (user) {
-      data.userId = personId;
       const m1 = Memberships.findOne({ 'person.userId': personId });
-      if (m1) {
-        data.idCard = m1.person.idCard;
-        data.contact = m1.person.contact;
-      }
+      if (m1) return new Person(m1.person);
     } else {
       const m2 = Memberships.findOne({ 'person.idCard.identifier': personId });
-      if (m2) {
-        data.idCard = m2.person.idCard;
-        data.contact = m2.person.contact;
-      }
+      if (m2) return new Person(m2.person);
     }
-    return new Person(data);
+    throw new Meteor.Error('Cannot find person with this id', personId);
   }
-  isConsistent() {
-    if (this.userId && this.userEmail) return false;
-    return true;
-  }
-  isInvited() {
-    if (this.userId || this.userEmail) return true;
-    return false;
-  }
-  isVerified() {
-    return !!this.idCard;
-  }
-  isRegistered() {
-    return !!this.userId;
-  }
-  personId() {
+  id() {
     if (this.userId) return this.userId;
     if (this.idCard) return this.idCard.identifier;
     return undefined;
@@ -104,7 +74,7 @@ export class Person {
   }
   primaryEmail() {
     if (this.userId && this.user()) return this.user().emails[0].address;
-    if (this.userEmail) return this.userEmail;
+    if (this.contact) return this.contact.email;
     return undefined;
   }
   avatar() {
@@ -114,17 +84,11 @@ export class Person {
   displayName(lang) {
     if (this.idCard) return this.idCard.name;
     if (this.userId && this.user()) return this.user().displayName(lang);
-    if (this.userEmail) {
-      const emailSplit = this.userEmail.split('@');
-      const emailName = emailSplit[0]; 
+    if (this.contact && this.contact.email) {
+      const emailSplit = this.contact.email.split('@');
+      const emailName = emailSplit[0];
       return `[${emailName}]`;
     }
-    return undefined;
-  }
-  id() {
-    if (this.userId) return this.userId;
-    if (this.idCard) return this.idCard.identifier;
-//    if (this.userEmail) return this.userEmail;
     return undefined;
   }
   toString() {
@@ -135,7 +99,7 @@ export class Person {
 export let choosePerson = {};
 
 if (Meteor.isClient) {
-      import { Session } from 'meteor/session';
+  import { Session } from 'meteor/session';
 
   choosePerson = {
     options() {
