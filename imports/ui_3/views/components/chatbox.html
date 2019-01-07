@@ -41,7 +41,7 @@
             </div>
         </div>
         {{#if hiddenBy}}
-          {{_ 'Content hidden by' (_ hiddenBy)}} - <i><a href="#content-{{this._id}}" data-toggle="collapse">{{_ "Do show content"}}</a></i>
+          {{_ 'Content hidden by' (_ hiddenBy)}} - <i><a class="js-block">{{_ "Do show content"}}</a></i>
         {{/if}}
         <div class="{{#if hiddenBy}}collapse{{/if}}" id="content-{{this._id}}">
           <div class="social-body">
