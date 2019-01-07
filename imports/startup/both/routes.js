@@ -8,7 +8,9 @@ if (Meteor.isClient) {
   import '/imports/ui/pages/root-redirector.js';
   import '/imports/ui/pages/app-not-found.js';
 
-  import '/imports/ui_3/views/pages/intro-page.js';
+  import '/imports/ui_3/views/brand/intro-page.js';
+  import '/imports/ui_3/views/brand/privacy.js';
+  import '/imports/ui_3/views/brand/terms.js';
   import '/imports/ui_3/views/pages/demo-login.js';
   import '/imports/ui_3/views/pages/profile-form.js';
   import '/imports/ui_3/views/pages/user-show.js';
@@ -26,8 +28,6 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/community-finances.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
   import '/imports/ui_3/views/pages/topic-show.js';
-  import '/imports/ui_3/views/pages/privacy.js';
-  import '/imports/ui_3/views/pages/terms.js';
 
   import '/imports/ui_3/views/layouts/main.js';
   import '/imports/ui_3/views/layouts/blank.js';
