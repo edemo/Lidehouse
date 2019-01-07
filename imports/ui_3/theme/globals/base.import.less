@@ -244,6 +244,18 @@ ul.unstyled, ol.unstyled {
   right: 0;
 }
 
+@media (max-width: 768px) {
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .footer .pull-right,
+  .footer .pull-left {
+    width: 100% !important;
+  }
+}
+
 .footer.fixed_full {
   position: fixed;
   bottom: 0;
