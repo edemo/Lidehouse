@@ -45,12 +45,19 @@ export const insert = new ValidatedMethod({
         checkSanityOfTotalShare(doc.parcelId, newTotal, newRepresentorCount);
       }
     }
-/*    if (doc.person.userId && doc.person.contact && doc.person.contact.email) {
-      const user = Meteor.users.findOne(userId);
-      if (user && user.emails[0].adddress !== doc.person.contact.email) {
-        throw new Meteor.Error('User and conact.email doesnt match', doc.person);
+    if (doc.person.userId) {  // Tryng to create a linked membership
+      const linkedUser = Meteor.users.findOne(doc.person.userId);
+      const email = doc.person && doc.person.contact && doc.person.contact.email;
+      if (email && linkedUser.emails[0].address !== email) {
+        throw new Meteor.Error('User and conact.email doesnt match', `${linkedUser.emails[0].address} !== ${email}`);
       }
-    }*/
+      if (linkedUser.emails[0].verified === false) {
+        // maybe we should Accounts.sendEnrollmentEmail(doc.person.userId);
+      } else if (doc.accepted === false) {
+        // TODO: This is where we should resend acceptance request email - if there was such a thing
+        doc.accepted = true; // now we auto-accept it for him (if he is already verified user)
+      }
+    }
     return Memberships.insert(doc);
   },
 });
@@ -65,7 +72,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));
+    checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));  // userId not allowed to change!
     const newrole = modifier.$set.role;
     if (newrole && newrole !== doc.role) {
       checkAddMemberPermissions(this.userId, doc.communityId, newrole);
@@ -95,14 +102,21 @@ export const linkUser = new ValidatedMethod({
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     const email = doc.person && doc.person.contact && doc.person.contact.email;
     if (!email) throw new Meteor.Error('No contact email set for this membership', doc);
-    if (Meteor.isClient) return;  // Not possible to find and link users on the client side, no user data available
+    if (Meteor.isClient) return;  // Not possible to find and link users on the client side, as no user data available
 
     if (doc.person.userId) {
-      // If a user account is already linked, we just resend the accept request - thats all
-      Accounts.sendEnrollmentEmail(doc.person.userId);
-      return;
+      const linkedUser = Meteor.users.findOne(doc.person.userId);
+      if (linkedUser.emails[0].verified === false) {
+        // Lets resend the enrollment request
+        Accounts.sendEnrollmentEmail(doc.person.userId);
+      } else if (doc.accepted === false) {
+        // TODO: This is where we should resend acceptance request email - if there was such a thing
+        doc.accepted = true; // now we auto-accept it for him (if he is already verified user)
+      }
+      return;   // thats all, user is already linked
     }
 
+    // Else if doc.person.userId is not yet set, we link user here
     let user = Meteor.users.findOne({ 'emails.0.address': email });
     if (!user) {
       const inviter = Meteor.users.findOne(this.userId);
@@ -112,7 +126,8 @@ export const linkUser = new ValidatedMethod({
       user = Meteor.users.findOne(userId);
     }
 
-    const accepted = user.emails[0].verified; // if not verified, acceptance will happen when he verifies
+    // TODO: We should ask for acceptance, not auto-accept it like now
+    const accepted = user.emails[0].verified; // if not verified, auto-acceptance will happen when he verifies
     Memberships.update(doc._id, { $set: { 'person.userId': user._id, accepted } });
   },
 });

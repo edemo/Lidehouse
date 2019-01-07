@@ -220,7 +220,7 @@ if (Meteor.isServer) {
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
           Meteor.users.remove(userId);
         });
-/*
+
         it('[x] manager unable to create person, with mismatched email', function (done) {
           chai.assert.throws(() => {
             Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
@@ -238,7 +238,7 @@ if (Meteor.isServer) {
           });
           done();
         });
-*/
+
         it('[1] manager creates approved person, and links it to the parcel with an ownership', function (done) {
           membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
