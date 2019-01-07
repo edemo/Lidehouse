@@ -27,6 +27,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/shareddoc-store.js';
   import '/imports/ui_3/views/pages/topic-show.js';
   import '/imports/ui_3/views/pages/privacy.js';
+  import '/imports/ui_3/views/pages/terms.js';
 
   import '/imports/ui_3/views/layouts/main.js';
   import '/imports/ui_3/views/layouts/blank.js';
@@ -70,6 +71,13 @@ FlowRouter.route('/privacy', {
   name: 'Privacy',
   action() {
     BlazeLayout.render('Blank_layout', { content: 'Privacy_page' });
+  },
+});
+
+FlowRouter.route('/terms', {
+  name: 'Terms',
+  action() {
+    BlazeLayout.render('Blank_layout', { content: 'Terms_page' });
   },
 });
 
