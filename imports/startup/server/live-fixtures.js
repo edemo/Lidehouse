@@ -11,6 +11,7 @@ Meteor.startup(() => {
   // insertDemoFixture(lang);
     if (Meteor.settings.enableDemo) {
       insertDemoHouse(lang, 'demo');
+      deleteDemoUsersAfterRestart(lang, 'demo');
     }
     if (Meteor.settings.enableTest) {
       insertDemoHouse(lang, 'test');
@@ -18,5 +19,4 @@ Meteor.startup(() => {
       insertLoadsOfDummyData(lang, 'test');
     }
   });
-  deleteDemoUsersAfterRestart();
 });

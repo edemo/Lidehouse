@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
+import { DDP } from 'meteor/ddp';
 import { TAPi18n } from 'meteor/tap:i18n';
 import faker from 'faker';
 import { moment } from 'meteor/momentjs:moment';
@@ -51,22 +52,22 @@ if (Meteor.isServer) {
         console.log('error in Store.write', err, file);
       }
     }));
-  }  
+  }
 
   function runWithFakeUserId(userId, toRun) {
     const DDPCommon = Package['ddp-common'].DDPCommon;
     const invocation = new DDPCommon.MethodInvocation({
       isSimulation: false,
       userId,
-      setUserId: ()=>{},
-      unblock: ()=>{},
+      setUserId: () => {},
+      unblock: () => {},
       connection: {},
-      randomSeed: Math.random()
+      randomSeed: Math.random(),
     });
-  
+
     DDP._CurrentInvocation.withValue(invocation, () => {
       toRun();
-    });  
+    });
   }
 }
 
@@ -366,11 +367,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     accepted: true,
     role: 'accountant',
   });
-  const dummy3Email = Meteor.users.findOne({_id : dummyUsers[3]}).emails[0].address;
-  Meteor.users.update({ _id: dummyUsers[3] }, 
-    { $set: { 'profile.publicEmail': dummy3Email }}
+  const dummy3Email = Meteor.users.findOne({ _id: dummyUsers[3] }).emails[0].address;
+  Meteor.users.update({ _id: dummyUsers[3] },
+    { $set: { 'profile.publicEmail': dummy3Email } },
   );
-  [4, 10, 16].forEach((userNo) => { 
+  [4, 10, 16].forEach((userNo) => {
     Memberships.insert({
       communityId: demoCommunityId,
       person: { userId: dummyUsers[userNo] },
@@ -450,22 +451,21 @@ export function insertDemoHouse(lang, demoOrTest) {
       },
     });
   });
-  [1, 7].forEach((parcelNo) => { Memberships.insert({
-    communityId: demoCommunityId,
-    // no userId -- This person is benefactor of parcel[], but she is not a registered user of the app
-    person: { idCard: {
-      type: 'natural',
-      name: __(`demo.user.${parcelNo}.benefactor.name`),
-      address: __(`demo.user.${parcelNo}.benefactor.address`),
-      identifier: `${parcelNo}87201NA`,
-      dob: new Date(1965, `${parcelNo}`, 5),
-      mothersName: __(`demo.user.${parcelNo}.benefactor.mothersName`),
-    } },
-    role: 'benefactor',
-    parcelId: demoParcels[parcelNo],
-    benefactorship: {
-      type: 'rental',
-    },
+  [1, 7].forEach((parcelNo) => { 
+    Memberships.insert({
+      communityId: demoCommunityId,
+      // no userId -- This person is benefactor of parcel[], but she is not a registered user of the app
+      person: { idCard: {
+        type: 'natural',
+        name: __(`demo.user.${parcelNo}.benefactor.name`),
+        address: __(`demo.user.${parcelNo}.benefactor.address`),
+        identifier: `${parcelNo}87201NA`,
+        dob: new Date(1965, `${parcelNo}`, 5),
+        mothersName: __(`demo.user.${parcelNo}.benefactor.mothersName`),
+      } },
+      role: 'benefactor',
+      parcelId: demoParcels[parcelNo],
+      benefactorship: { type: 'rental' },
     });
   });
   Memberships.insert({
@@ -474,9 +474,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     accepted: true,
     role: 'benefactor',
     parcelId: demoParcels[4],
-    benefactorship: {
-      type: 'rental',
-    },
+    benefactorship: { type: 'rental' },
   });
   Memberships.insert({
     communityId: demoCommunityId,
@@ -484,9 +482,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     accepted: true,
     role: 'benefactor',
     parcelId: demoParcels[5],
-    benefactorship: {
-      type: 'favor',
-    },
+    benefactorship: { type: 'favor' },
   });
   Memberships.insert({
     communityId: demoCommunityId,
@@ -494,9 +490,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     accepted: true,
     role: 'benefactor',
     parcelId: demoParcels[8],
-    benefactorship: {
-      type: 'favor',
-    },
+    benefactorship: { type: 'favor' },
   });
   Memberships.insert({
     communityId: demoCommunityId,
@@ -504,9 +498,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     accepted: true,
     role: 'benefactor',
     parcelId: demoParcels[9],
-    benefactorship: {
-      type: 'rental',
-    },
+    benefactorship: { type: 'rental' },
   });
 
   // ===== Forum =====
@@ -734,14 +726,14 @@ export function insertDemoHouse(lang, demoOrTest) {
   castVote._execute({ userId: ownerships[6].person.userId }, { topicId: voteTopic4, castedVote: [1, 0, 2, 3] });
   castVote._execute({ userId: ownerships[7].person.userId }, { topicId: voteTopic4, castedVote: [1, 2, 3, 0] });
   castVote._execute({ userId: ownerships[8].person.userId }, { topicId: voteTopic4, castedVote: [1, 2, 0, 3] });
-  
+
   ['0', '1'].forEach((commentNo) => {
     Clock.setSimulatedTime(moment().subtract(3, 'days').add(commentNo + 2, 'minutes').toDate());
     Comments.insert({
       topicId: voteTopic4,
       userId: nextUser(),
       text: __(`demo.vote.4.comment.${commentNo}`),
-    })
+    });
   });
   Clock.clear();
 
@@ -1510,19 +1502,19 @@ Meteor.methods({
     let nameCounter = counter;
     while (nameCounter > 20) nameCounter -= 20;
     const firstNames = __('demo.user.firstNames').split('\n');
-    
+
     const demoUserId = Accounts.createUser({
       email: counter + `.${lang}demouser@honline.hu`,
       password: 'password',
       language: lang,
     });
-    Meteor.users.update({ _id: demoUserId },
-      { $set: { 'emails.0.verified': true,
+    Meteor.users.update({ _id: demoUserId }, {
+      $set: {
+        'emails.0.verified': true,
         avatar: '/images/avatars/avatarnull.png',
         profile: { lastName: capitalize(__('guest')), firstName: firstNames[nameCounter] },
-        }
-      }
-    );
+      },
+    });
     const demoHouse = Communities.findOne({ name: __('demo.house') });
     const demoCommunityId = demoHouse._id;
     const totalunits = demoHouse.totalunits;
@@ -1640,14 +1632,14 @@ Meteor.methods({
   },
 });
 
-export function deleteDemoUsersAfterRestart() {
-  const demousers = Meteor.users.find({ 'emails.0.address': { $regex: 'demouser@honline.hu' } });
-  const huCommunityId = Communities.findOne({ name: 'Demo ház' })._id;
-  const enCommunityId = Communities.findOne({ name: 'Demo house' })._id;
-  let communityId;
-  demousers.forEach((user) => {
-    if (user.emails[0].address.includes('hudemouser')) communityId = huCommunityId;
-    if (user.emails[0].address.includes('endemouser')) communityId = enCommunityId;
+export function deleteDemoUsersAfterRestart(lang, demoOrTest = 'demo') {
+  const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
+  const community = Communities.findOne({ name: __(`${demoOrTest}.house`) });
+  if (!community) return;
+
+  const communityId = community._id;
+  const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.hu` } });
+  demoUsersList.forEach((user) => {
     const parcelSerial = (Number(user.emails[0].address.split('.')[0]) + demoParcelCounterStart).toString();
     const parcelId = Parcels.findOne({ communityId, serial: parcelSerial })._id;
     const currentTime = moment().valueOf();
