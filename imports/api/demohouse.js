@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { TAPi18n } from 'meteor/tap:i18n';
+import faker from 'faker';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
@@ -1382,6 +1383,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
     return;
   }
   const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
+
   defaultRoles.forEach(function (role) {
     if (role.name === 'manager' || role.name === 'admin') {
       return;
@@ -1411,6 +1413,50 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
       Memberships.insert({ communityId, person: { userId: userWithRoleId }, accepted: true, role: role.name });
     }
   });
+}
+
+export function insertLoadsOfDummyData(lang, demoOrTest) {
+  const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
+  const com = { en: 'com', hu: 'hu' }[lang];
+  const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
+
+  if (Parcels.find({ communityId }).count() > 100) {
+    return;
+  }
+
+  const RECORDS_COUNT = 1000;
+  for (let i = 0; i < RECORDS_COUNT; i++) {
+    const parcelId = Parcels.insert({
+      communityId,
+      approved: true,
+      serial: i,
+      leadSerial: i,
+      units: 0,
+      floor: faker.random.number(10),
+      number: faker.random.number(10),
+      type: 'flat',
+      lot: i,
+      area: faker.random.number(150),
+    });
+
+    const membershipId = Memberships.insert({
+      communityId,
+      parcelId,
+      approved: !!(i % 2),
+      accepted: !!(i + 1),
+      role: 'owner',
+      person: {
+        userId: Accounts.createUser({
+          email: `${faker.name.lastName()}_${i}@${demoOrTest}.${com}`,
+          password: 'password',
+          language: lang,
+        }),
+        idCard: { type: 'natural', name: faker.name.findName(), },
+        contact: { phone: faker.phone.phoneNumber() },
+      },
+      ownership: { share: new Fraction(1, 1) },
+    });
+  }
 }
 
 function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
