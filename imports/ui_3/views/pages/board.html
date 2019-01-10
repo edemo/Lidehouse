@@ -65,7 +65,7 @@
                   <div class="news-elem" data-id="{{_id}}">
                       <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
                       <strong>{{title}}</strong>
-                      <div>{{text}}</div>
+                      <div>{{#markdown}}{{text}}{{/markdown}}</div>
                       {{#if currentUser.hasPermission 'news.update' activeCommunityId}}
                       <div class="btn-group pull-right m-t-sm">
                         <button class="btn btn-white btn-xs text-capitalize js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>

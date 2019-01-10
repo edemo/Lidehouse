@@ -80,7 +80,7 @@ Template.News.events({
   'click .js-remove'(event, instance) {
     const id = $(event.target).closest('div.news-elem').data('id');
     Modal.confirmAndCall(removeTopic, { _id: id }, {
-      action: 'remove topic',
+      action: 'delete news',
     });
   },
 });
