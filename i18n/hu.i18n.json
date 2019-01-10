@@ -125,12 +125,13 @@
   "comments": "hozzászólások",
   "created": "létrehozva",
   "closes": "lezárul",
+  "news": "hirdetmény",
 
   "topic" : {
     "general": "téma",
     "forum": "fórum téma",
     "vote": "szavazás",
-    "news": "hírdetmény",
+    "news": "hirdetmény",
     "ticket": "hibajegy",
     "room": "szoba",
     "feedback": "visszajelzés"
@@ -461,6 +462,9 @@
   "update roleship successful": "Tisztség módosítva",
   "delete roleship successful": "Tisztség visszavonva",
   "delete topic successful": "Bejegyzés törölve",
+  "insert news successful": "Hirdetmény rögzítésre került",
+  "update news successful": "Hirdetmény módosítva",
+  "delete news successful": "Hirdetmény törölve",
   "insert ticket successful": "Hibajegy rögzítésre került",
   "update ticket successful": "Hibajegy módosítva",
   "delete ticket successful": "Hibajegy törölve",
@@ -496,6 +500,7 @@
   "delete roleship": "visszavonja a kiadott tisztséget",
   "delete topic": "törli a bejegyzést",
   "delete comment": "törli a hozzászólást",
+  "delete news": "törli a hirdetményt",
   "delete ticket": "törli a hibajegyet",
   "delete journal": "törli a tranzakciót",
   "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
