@@ -9,6 +9,15 @@ import '/imports/api/users/users.js';
 
 import './navigation.html';
 
+Template.Navigation.onCreated(function() {
+  this.autorun(() => {
+    const activeCommunityId = Session.get('activeCommunityId');
+    if (activeCommunityId) {
+      this.subscribe('communities.byId', { _id: activeCommunityId });
+    }
+  });
+});
+
 Template.Navigation.onRendered(function() {
   // Initialize metisMenu
   /* new MetisMenu('#side-menu', {
