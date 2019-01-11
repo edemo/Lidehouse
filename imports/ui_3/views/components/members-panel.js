@@ -10,6 +10,8 @@ import { Rooms } from '/imports/api/topics/rooms/rooms.js';
 
 import './members-panel.html';
 
+const MEMBERS_TO_SHOW = 10;
+
 Template.Members_panel.onCreated(function onCreated() {
 //  const communityId = Session.get('activeCommunityId');
 //  const manager = Memberships.findOne({ communityId, active: true, role: 'manager' });
@@ -41,6 +43,9 @@ Template.Members_panel.helpers({
       const room = Rooms.getRoom(Session.get('roomMode'), m.person.userId);
       return room ? -1 * room.updatedAt : 0;
     });
+    if (!personSearch && nonManagers.length > MEMBERS_TO_SHOW * 2) {
+      nonManagers = nonManagers.slice(0, MEMBERS_TO_SHOW);
+    }
     return nonManagers;
   },
 });
