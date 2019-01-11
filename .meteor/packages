@@ -46,7 +46,6 @@ dburles:collection-helpers
 reywood:publish-composite
 mdg:validated-method
 mdg:validation-error
-msavin:mongol
 jalik:ufs
 jalik:ufs-gridfs
 huaming:js-xlsx
