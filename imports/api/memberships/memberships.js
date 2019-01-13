@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: "off" */
 /* eslint func-names: ["error", "as-needed"] */
 import { Meteor } from 'meteor/meteor';
+import { Tracker } from 'meteor/tracker';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
@@ -48,17 +49,22 @@ Memberships.schema = new SimpleSchema({
     },
   },
   person: { type: PersonSchema },
+  personId: { type: String, optional: true, autoform: { omit: true },
+    autoValue() {
+      return this.field('person.userId').value || this.field('person.idCard.identifier').value;
+    },
+  },
   // TODO should be conditional on role === 'owner'
   ownership: { type: OwnershipSchema, optional: true },
   // TODO should be conditional on role === 'benefactor'
   benefactorship: { type: BenefactorshipSchema, optional: true },
 });
 
+Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
+Memberships.ensureIndex({ personId: 1 }, { sparse: true });
+
 if (Meteor.isServer) {
-  Memberships._ensureIndex({ communityId: 1, active: 1, role: 1 });
-  Memberships._ensureIndex({ parcelId: 1 }, { sparse: true });
-  Memberships._ensureIndex({ 'person.userId': 1 }, { sparse: true });
-  Memberships._ensureIndex({ 'person.idCard.identifier': 1 }, { sparse: true });
+  Memberships._ensureIndex({ communityId: 1, approved: 1, active: 1, role: 1 });
 }
 
 // Statuses of members:
@@ -88,8 +94,10 @@ Memberships.helpers({
     return community;
   },
   parcel() {
-    const parcel = Parcels.findOne(this.parcelId);
-    return parcel;
+    return Tracker.nonreactive(() => {  // parcelId is not changeable on the membership
+      const parcel = Parcels.findOne(this.parcelId);
+      return parcel;
+    });
   },
   totalunits() {
     const community = this.community();

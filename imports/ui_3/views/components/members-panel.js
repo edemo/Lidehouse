@@ -25,7 +25,7 @@ Template.Members_panel.helpers({
   leaders() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
-    let managers = Memberships.find({ communityId, active: true, role: { $in: leaderRoles }, 'person.userId': { $ne: Meteor.userId() } }).fetch();
+    let managers = Memberships.find({ communityId, active: true, role: { $in: leaderRoles }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
     if (personSearch) {
       managers = managers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }

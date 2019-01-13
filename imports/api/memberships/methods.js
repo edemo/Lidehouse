@@ -137,7 +137,7 @@ export const accept = new ValidatedMethod({
   validate: null,
 
   run() {
-    Memberships.find({ 'person.userId': this.userId }).forEach((membership) => {
+    Memberships.find({ personId: this.userId }).forEach((membership) => {
       Memberships.update(membership._id, { $set: { accepted: true } });
     });
   },

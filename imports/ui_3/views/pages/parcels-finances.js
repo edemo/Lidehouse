@@ -34,7 +34,7 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
 
 /*  this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
-    const myParcelIds = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
+    const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
     // const allParcelIds = Communities.find(communityId).parcels().map(p => p.serial.toString());
     // $('select#localizer').val(myParcelIds[0] || 'Localizer');
     this.getActiveLocalizer = function () {

@@ -1,3 +1,4 @@
+import './collection-index.js';
 import './debug.js';
 import './fractional.js';
 import './language.js';

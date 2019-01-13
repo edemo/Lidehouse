@@ -17,7 +17,7 @@ Meteor.publishComposite('memberships.ofUser', function communitiesOfUser(params)
 
   return {
     find() {
-      return Memberships.find({ $or: [{ 'person.userId': userId }, { 'person.contact.email': userEmail }] });
+      return Memberships.find({ personId: userId });
     },
 
     children: [{

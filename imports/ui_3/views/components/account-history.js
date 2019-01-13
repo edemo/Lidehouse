@@ -48,7 +48,7 @@ Template.Parcel_history.viewmodel({
   localizerOptions: '',
   onCreated() {
     const communityId = Session.get('activeCommunityId');
-    const myParcelSerials = Memberships.find({ communityId, 'person.userId': Meteor.userId(), role: 'owner' }).map(m => m.parcel() ? m.parcel().serial : null);
+    const myParcelSerials = Memberships.find({ communityId, personId: Meteor.userId(), role: 'owner' }).map(m => m.parcel() ? m.parcel().serial : null);
     this.localizerOptions(myParcelSerials.map(ps => ps.toString()));
     if (myParcelSerials && myParcelSerials[0]) {
       this.localizerSelected(myParcelSerials[0].toString());

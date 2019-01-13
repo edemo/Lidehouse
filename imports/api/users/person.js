@@ -53,14 +53,8 @@ export class Person {
   }
   // A personId is either a userId (for registered users) or an idCard identifier (for non-registered users)
   static constructFromId(personId) {
-    const user = Meteor.users.findOne(personId);
-    if (user) {
-      const m1 = Memberships.findOne({ 'person.userId': personId });
-      if (m1) return new Person(m1.person);
-    } else {
-      const m2 = Memberships.findOne({ 'person.idCard.identifier': personId });
-      if (m2) return new Person(m2.person);
-    }
+    const m = Memberships.findOne({ personId });
+    if (m) return new Person(m.person);
     throw new Meteor.Error('Cannot find person with this id', personId);
   }
   id() {
@@ -104,9 +98,9 @@ if (Meteor.isClient) {
   choosePerson = {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const memberships = Memberships.find({ communityId }).fetch().filter(m => m.Person().id());
+      const memberships = Memberships.find({ communityId }).fetch().filter(m => m.personId);
       const options = memberships.map(function option(m) {
-        return { label: (m.Person().displayName() + ', ' + m.toString()), value: m.Person().id() };
+        return { label: (m.Person().displayName() + ', ' + m.toString()), value: m.personId };
       });
       const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
       return sortedOptions;

@@ -173,10 +173,10 @@ Meteor.users.helpers({
   },
   // Memberships
   memberships(communityId) {
-    return Memberships.find({ communityId, active: true, approved: true, 'person.userId': this._id });
+    return Memberships.find({ communityId, approved: true, active: true, personId: this._id });
   },
   ownerships(communityId) {
-    return Memberships.find({ communityId, active: true, approved: true, role: 'owner', 'person.userId': this._id });
+    return Memberships.find({ communityId, approved: true, active: true, role: 'owner', personId: this._id });
   },
   ownedParcels(communityId) {
     const parcelIds = _.pluck(this.ownerships(communityId).fetch(), 'parcelId');
@@ -185,25 +185,25 @@ Meteor.users.helpers({
     return ownedParcels;
   },
   activeRoles(communityId) {
-    return Memberships.find({ communityId, active: true, approved: true, 'person.userId': this._id }).fetch().map(m => m.role);
+    return Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role);
   },
   communities() {
-    const memberships = Memberships.find({ active: true, approved: true, 'person.userId': this._id }).fetch();
+    const memberships = Memberships.find({ approved: true, active: true, personId: this._id }).fetch();
     const communityIds = _.pluck(memberships, 'communityId');
     const communities = Communities.find({ _id: { $in: communityIds } });
     // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
   isInCommunity(communityId) {
-    return !!Memberships.findOne({ communityId, active: true, approved: true, 'person.userId': this._id });
+    return !!Memberships.findOne({ communityId, active: true, approved: true, personId: this._id });
   },
   isUnapprovedInCommunity(communityId) {
-    return !!Memberships.findOne({ communityId, approved: false, 'person.userId': this._id });
+    return !!Memberships.findOne({ communityId, approved: false, personId: this._id });
   },
   // Voting
   votingUnits(communityId) {
     let sum = 0;
-    Memberships.find({ communityId, active: true, approved: true, role: 'owner', 'person.userId': this._id }).forEach(m => (sum += m.votingUnits()));
+    Memberships.find({ communityId, active: true, approved: true, role: 'owner', personId: this._id }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
   hasRole(roleName, communityId) {

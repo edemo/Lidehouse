@@ -62,10 +62,10 @@ Parcels.helpers({
       + (this.number ? this.number : '');
   },
   occupants() {
-    return Memberships.find({ communityId: this.communityId, active: true, approved: true, role: { $in: ['owner', 'benefactor'] }, parcelId: this._id });
+    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id });
   },
   representors() {
-    return Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner', parcelId: this._id, 'ownership.representor': true });
+    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id, role: 'owner', 'ownership.representor': true });
   },
   display() {
     return `${this.serial || '?'}. ${__(this.type)} ${this.location()} (${this.lot})`;

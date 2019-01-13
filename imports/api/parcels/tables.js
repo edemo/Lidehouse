@@ -48,7 +48,7 @@ export function parcelColumns(permissions) {
 
 export function highlightMyRow(row, data, index) {
   const parcelId = data._id;
-  const isMine = Memberships.findOne({ parcelId, 'person.userId': Meteor.userId() });
+  const isMine = Memberships.findOne({ parcelId, personId: Meteor.userId() });
   if (isMine) {
     $(row).addClass('tr-bold');
   }
