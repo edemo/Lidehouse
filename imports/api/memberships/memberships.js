@@ -95,10 +95,10 @@ Memberships.helpers({
     return community;
   },
   parcel() {
-    return Tracker.nonreactive(() => {  // parcelId is not changeable on the membership
-      const parcel = Parcels.findOne(this.parcelId);
-      return parcel;
-    });
+    const parcelId = this.parcelId;
+    if (!parcelId) return undefined;
+    // parcelId is not changeable on the membership, so no need to be reactive here
+    return Tracker.nonreactive(() => Parcels.findOne(parcelId));
   },
   totalunits() {
     const community = this.community();
