@@ -198,7 +198,7 @@ video {
 }
 
 #page-wrapper {
-  padding: 0 15px;
+  padding: 0 15px 30px 15px;
   min-height: 568px;
   position: relative !important;
 }
@@ -242,6 +242,18 @@ ul.unstyled, ol.unstyled {
   padding: 10px 20px;
   position: absolute;
   right: 0;
+}
+
+@media (max-width: 768px) {
+
+  .footer .pull-right,
+  .footer .pull-left,
+  .footer .text-center .nowrap {
+    float: none !important;
+    display: block;
+    width: 100% !important;
+    text-align: left !important;
+  }
 }
 
 .footer.fixed_full {
