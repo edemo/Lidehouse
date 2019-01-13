@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
+import { ReactiveVar } from 'meteor/reactive-var';
 
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
@@ -33,7 +34,7 @@ import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 
 Template.Community_page.onCreated(function() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
-
+  this.data.showAllParcels = new ReactiveVar(Meteor.user().hasPermission('parcels.insert', this.getCommunityId()));
   this.autorun(() => {
     const communityId = this.getCommunityId();
     this.subscribe('communities.byId', { _id: communityId });
@@ -111,7 +112,12 @@ Template.Community_page.helpers({
     const templateInstance = Template.instance();
     return () => {
       const communityId = templateInstance.getCommunityId();
-      return Parcels.find({ communityId, approved: true }).fetch();
+      let parcels = Parcels.find({ communityId, approved: true }).fetch();
+      if (!templateInstance.data.showAllParcels.get()) {
+        const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
+        parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
+      }
+      return parcels;
     };
   },
   parcelsOptionsFn() {
@@ -196,6 +202,10 @@ function onJoinParcelInsertSuccess(parcelId) {
 }
 
 Template.Community_page.events({
+  'click .js-show-all'(event, instance) {
+    const oldVal = instance.data.showAllParcels.get();
+    instance.data.showAllParcels.set(!oldVal);
+  },
   // community events
   'click .community-section .js-edit'() {
     afCommunityUpdateModal();
