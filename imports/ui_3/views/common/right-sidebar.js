@@ -18,7 +18,8 @@ Template.Right_sidebar.onRendered(function() {
     $('.sidebar-container').slimScroll({
         height: '100%',
         railOpacity: 0.4,
-        wheelStep: 10
+        wheelStep: 10,
+        touchScrollStep : 75
     });
 
     // Move right sidebar top after scroll
