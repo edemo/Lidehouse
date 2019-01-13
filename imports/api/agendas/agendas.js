@@ -27,6 +27,12 @@ Agendas.schema = new SimpleSchema({
 //  'topicIds.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseTopic },
 });
 
+Meteor.startup(function indexAgendas() {
+  if (Meteor.isServer) {
+    Agendas._ensureIndex({ communityId: 1, createdAt: -1 });
+  }
+});
+
 Agendas.helpers({
   community() {
     return Communities.findOne(this.communityId);

@@ -70,6 +70,14 @@ Delegations.schema = new SimpleSchema({
   scopeObjectId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: chooseScopeObject },
 });
 
+Meteor.startup(function indexDelegations() {
+  Delegations.ensureIndex({ sourcePersonId: 1 });
+  Delegations.ensureIndex({ targetPersonId: 1 });
+  if (Meteor.isServer) {
+    Delegations._ensureIndex({ communityId: 1, sourcePersonId: 1 });
+  }
+});
+
 Delegations.renderScopeObject = function (o) {
   return o ? (o.name || o.title) : '---';
 };

@@ -46,6 +46,14 @@ Comments.schema = new SimpleSchema({
   },
 });
 
+Meteor.startup(function indexComments() {
+  if (Meteor.isClient) {
+    Comments._collection._ensureIndex('topicId');
+  } else if (Meteor.isServer) {
+    Comments._ensureIndex({ communityId: 1, topicId: 1, createdAt: -1 });
+  }
+});
+
 Comments.attachSchema(Comments.schema);
 Comments.attachSchema(likesSchema);
 Comments.attachSchema(Timestamps);

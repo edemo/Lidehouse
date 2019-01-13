@@ -33,6 +33,17 @@ Topics.schema = new SimpleSchema({
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
 });
 
+Meteor.startup(function indexTopics() {
+  Topics.ensureIndex({ agendaId: 1 }, { sparse: true });
+  if (Meteor.isClient) {
+    Topics._collection._ensureIndex('category');
+    Topics._collection._ensureIndex('closed');
+    Topics._collection._ensureIndex(['title', 'participantIds']);
+  } else if (Meteor.isServer) {
+    Topics._ensureIndex({ communityId: 1, category: 1, createdAt: -1 });
+  }
+});
+
 Topics.helpers({
   community() {
     return Communities.findOne(this.communityId);

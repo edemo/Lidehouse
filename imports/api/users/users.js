@@ -127,7 +127,13 @@ Meteor.users.schema = new SimpleSchema({
   heartbeat: { type: Date, optional: true, autoform: { omit: true } },
 });
 
-export function initialUsername(user) { 
+Meteor.startup(function indexMeteorUsers() {
+  if (Meteor.isServer) {
+    Meteor.users._ensureIndex({ 'emails.0.address': 1 });
+  }
+});
+
+export function initialUsername(user) {
   const email = user.emails[0].address;
   const emailChunk = email.split('@')[0].substring(0, 5);
   const userId = user._id;

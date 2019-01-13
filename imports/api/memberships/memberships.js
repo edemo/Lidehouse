@@ -60,12 +60,13 @@ Memberships.schema = new SimpleSchema({
   benefactorship: { type: BenefactorshipSchema, optional: true },
 });
 
-Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
-Memberships.ensureIndex({ personId: 1 }, { sparse: true });
-
-if (Meteor.isServer) {
-  Memberships._ensureIndex({ communityId: 1, approved: 1, active: 1, role: 1 });
-}
+Meteor.startup(function indexMemberships() {
+  Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
+  Memberships.ensureIndex({ personId: 1 }, { sparse: true });
+  if (Meteor.isServer) {
+    Memberships._ensureIndex({ communityId: 1, approved: 1, active: 1, role: 1 });
+  }
+});
 
 // Statuses of members:
 // 0. Email not given

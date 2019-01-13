@@ -51,6 +51,14 @@ Parcels.schema = new SimpleSchema({
   heatingType: { type: String, optional: true, allowedValues: Parcels.heatingTypeValues, autoform: autoformOptions(Parcels.heatingTypeValues) },
 });
 
+Meteor.startup(function indexParcels() {
+  Parcels.ensureIndex({ serial: 1 }, { sparse: true });
+  Parcels.ensureIndex({ leadSerial: 1 }, { sparse: true });
+  if (Meteor.isServer) {
+    Parcels._ensureIndex({ communityId: 1, lot: 1 });
+  }
+});
+
 Parcels.helpers({
   leadParcel() {
     if (!this.leadSerial || this.leadSerial === this.serial) return this;

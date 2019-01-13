@@ -28,6 +28,13 @@ Communities.schema = new SimpleSchema([
   { totalunits: { type: Number } },
 ]);
 
+Meteor.startup(function indexCommunities() {
+  if (Meteor.isServer) {
+    Communities._ensureIndex({ name: 1 });
+    Communities._ensureIndex({ lot: 1 });
+  }
+});
+
 Communities.publicFields = {
   totalunits: 0,
 };
