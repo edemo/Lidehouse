@@ -68,10 +68,33 @@ Template.Comments_section.events({
 
 //------------------------------------
 
+const MAX_LENGTH = 400;
+
 Template.Comment.helpers({
+  textTooLong() {
+    return this.text.length > MAX_LENGTH;
+  },
+  choppedText() {
+    if (this.text.length <= MAX_LENGTH) return this.text;
+    const dots = '... ';
+    const textPart = this.text.substr(0, MAX_LENGTH);
+    return textPart + dots;
+  }
 });
 
 Template.Comment.events({
+  'click .js-more'(event, instance) {
+    event.preventDefault();
+    const textSpan = $(event.target).closest('span');
+    textSpan.text(instance.data.text);
+    textSpan.append(` <a href="" class="js-less">${__('Show less')}</a>`);
+  },
+  'click .js-less'(event, instance) {
+    event.preventDefault();
+    const textSpan = $(event.target).closest('span');
+    textSpan.text(this.text.substr(0, MAX_LENGTH) + '...');
+    textSpan.append(` <a href="" class="js-more">${__('Show more')}</a>`);
+  },
   'click .js-like'(event) {
     like.call({
       coll: 'comments',
