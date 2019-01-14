@@ -34,7 +34,9 @@ import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 
 Template.Community_page.onCreated(function() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
-  this.data.showAllParcels = new ReactiveVar(Meteor.user().hasPermission('parcels.insert', this.getCommunityId()));
+  const user = Meteor.user();
+  const showAllParcelsDefault = Parcels.find().count() <= 25 || (user && user.hasPermission('parcels.insert', this.getCommunityId()));
+  this.data.showAllParcels = new ReactiveVar(!!showAllParcelsDefault);
   this.autorun(() => {
     const communityId = this.getCommunityId();
     this.subscribe('communities.byId', { _id: communityId });
