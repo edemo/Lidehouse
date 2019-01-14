@@ -1542,7 +1542,7 @@ Meteor.methods({
       ref: demoParcelSerial.toString(),
       units: 100,
       floor: 'V',
-      door: demoParcelSerial - 2,
+      door: (demoParcelSerial - 2).toString(),
       type: 'flat',
       lot: '4532/8/A/' + demoParcelSerial,
       area: 25,
