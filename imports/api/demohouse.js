@@ -76,10 +76,9 @@ const demoParcelCounterStart = 14;
 export function insertDemoHouse(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
 
-  // if Demo house data already populated, no need to do anything
-  if (Communities.findOne({ name: __(`${demoOrTest}.house`) })) {
-    return;
-  }
+  const demoHouseName = __(`${demoOrTest}.house`);
+  if (Communities.findOne({ name: demoHouseName })) return; // if Demo house data already populated, no need to do anything
+  console.log('Creating house:', demoHouseName);
 
   // ===== Communities =====
 
@@ -99,10 +98,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   const demoParcels = [];
   demoParcels[0] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '1',
+    serial: 1,
+    ref: '1',
     units: 489,
     floor: __('demo.ground'),
-    number: '1',
+    door: '1',
     type: 'flat',
     lot: '4532/8/A/1',
     area: 55,
@@ -113,10 +113,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[1] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '2',
+    serial: 2,
+    ref: '2',
     units: 427,
     floor: __('demo.ground'),
-    number: '2',
+    door: '2',
     type: 'flat',
     lot: '4532/8/A/2',
     area: 48,
@@ -127,10 +128,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[2] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '3',
+    serial: 3,
+    ref: '3',
     units: 587,
     floor: 'I',
-    number: '3',
+    door: '3',
     type: 'flat',
     lot: '4532/8/A/3',
     area: 66,
@@ -141,10 +143,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[3] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '4',
+    serial: 4,
+    ref: '4',
     units: 622,
     floor: 'I',
-    number: '4',
+    door: '4',
     type: 'flat',
     lot: '4532/8/A/4',
     area: 70,
@@ -155,10 +158,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[4] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '5',
+    serial: 5,
+    ref: '5',
     units: 587,
     floor: 'II',
-    number: '5',
+    door: '5',
     type: 'flat',
     lot: '4532/8/A/5',
     area: 66,
@@ -169,10 +173,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[5] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '6',
+    serial: 6,
+    ref: '6',
     units: 622,
     floor: 'II',
-    number: '6',
+    door: '6',
     type: 'flat',
     lot: '4532/8/A/6',
     area: 70,
@@ -183,10 +188,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[6] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '7',
+    serial: 7,
+    ref: '7',
     units: 587,
     floor: 'III',
-    number: '7',
+    door: '7',
     type: 'flat',
     lot: '4532/8/A/7',
     area: 66,
@@ -197,10 +203,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[7] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '8',
+    serial: 8,
+    ref: '8',
     units: 622,
     floor: 'III',
-    number: '8',
+    door: '8',
     type: 'flat',
     lot: '4532/8/A/8',
     area: 70,
@@ -211,10 +218,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[8] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '9',
+    serial: 9,
+    ref: '9',
     units: 587,
     floor: 'IV',
-    number: '9',
+    door: '9',
     type: 'flat',
     lot: '4532/8/A/9',
     area: 66,
@@ -225,10 +233,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[9] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '10',
+    serial: 10,
+    ref: '10',
     units: 622,
     floor: 'IV',
-    number: '10',
+    door: '10',
     type: 'flat',
     lot: '4532/8/A/10',
     area: 70,
@@ -239,10 +248,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[10] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '11',
+    serial: 11,
+    ref: '11',
     units: 996,
     floor: __('demo.attic'),
-    number: '11',
+    door: '11',
     type: 'flat',
     lot: '4532/8/A/11',
     area: 112,
@@ -252,10 +262,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[11] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '12',
+    serial: 12,
+    ref: '12',
     units: 444,
     floor: __('demo.cellar'),
-    number: '1',
+    door: '1',
     type: 'cellar',
     lot: '4532/8/A/12',
     area: 50,
@@ -265,10 +276,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[12] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '13',
+    serial: 13,
+    ref: '13',
     units: 613,
     floor: __('demo.cellar'),
-    number: '2',
+    door: '2',
     type: 'cellar',
     lot: '4532/8/A/13',
     area: 69,
@@ -278,10 +290,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[13] = Parcels.insert({
     communityId: demoCommunityId,
-    serial: '14',
+    serial: 14,
+    ref: '14',
     units: 196,
     floor: __('demo.ground'),
-    number: '1',
+    door: '1',
     type: 'shop',
     lot: '4532/8/A/14',
     area: 22,
@@ -935,7 +948,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Parcels.find({ communityId: demoCommunityId }).forEach(parcel => {
     Breakdowns.update(localizer._id, {
-      $push: { 'children.0.children': { name: parcel.serial } },
+      $push: { 'children.0.children': { name: parcel.ref } },
     });
   });
 
@@ -1387,7 +1400,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
       language: lang,
     });
     const user = Meteor.users.findOne(userWithRoleId);
-    const parcelId = Parcels.findOne({ communityId, serial: '7' })._id;
+    const parcelId = Parcels.findOne({ communityId, ref: '7' })._id;
     Meteor.users.update({ _id: userWithRoleId },
       { $set: {
         'emails.0.verified': true,
@@ -1422,12 +1435,13 @@ export function insertLoadsOfDummyData(lang, demoOrTest) {
       communityId,
       approved: true,
       serial: i,
-      leadSerial: i,
+      ref: i.toString(),
+      leadRef: i.toString(),
       units: 0,
-      floor: faker.random.number(10),
-      number: faker.random.number(10),
+      floor: faker.random.number(10).toString(),
+      door: faker.random.number(10).toString(),
       type: 'flat',
-      lot: i,
+      lot: '123456/A/' + i,
       area: faker.random.number(150),
     });
 
@@ -1521,13 +1535,14 @@ Meteor.methods({
     if (demoUsersList.length >= 10) {
       Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
     }
-    const demoParcelSerial = (demoParcelCounterStart + counter).toString();
+    const demoParcelSerial = (demoParcelCounterStart + counter);
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
       serial: demoParcelSerial,
+      ref: demoParcelSerial.toString(),
       units: 100,
       floor: 'V',
-      number: demoParcelSerial - 2,
+      door: demoParcelSerial - 2,
       type: 'flat',
       lot: '4532/8/A/' + demoParcelSerial,
       area: 25,
@@ -1544,7 +1559,7 @@ Meteor.methods({
       communityId: demoCommunityId,
       name: 'Localizer',
     }, {
-      $push: { 'children.0.children': { name: demoParcelSerial } },
+      $push: { 'children.0.children': { name: demoParcelSerial.toString() } },
     });
 
     const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;
@@ -1640,8 +1655,8 @@ export function deleteDemoUsersAfterRestart(lang, demoOrTest = 'demo') {
   const communityId = community._id;
   const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.hu` } });
   demoUsersList.forEach((user) => {
-    const parcelSerial = (Number(user.emails[0].address.split('.')[0]) + demoParcelCounterStart).toString();
-    const parcelId = Parcels.findOne({ communityId, serial: parcelSerial })._id;
+    const parcelSerial = (Number(user.emails[0].address.split('.')[0]) + demoParcelCounterStart);
+    const parcelId = Parcels.findOne({ communityId, ref: parcelSerial.toString() })._id;
     const currentTime = moment().valueOf();
     let timeUntilDelete = moment(user.createdAt).add(demoUserLifetime).subtract(currentTime).valueOf();
     if (timeUntilDelete < 0) timeUntilDelete = 0;

@@ -63,12 +63,16 @@ export const HouseTranslation = {
     "schemaParcels": {
       "label": "Parcel",
       "serial": {
-        "label": "Parcel id",
-        "placeholder": "(eg. K114)"
+        "label": "Serial no.",
+        "placeholder": "(eg. 34)"
       },
-      "leadSerial": {
+      "ref": {
+        "label": "Parcel",
+        "placeholder": "(eg. P114)"
+      },
+      "leadRef": {
         "label": "Lead parcel",
-        "placeholder": "(eg. K114)"
+        "placeholder": "(eg. K108)"
       },
       "units": {
         "label": "Voting share units",
@@ -82,8 +86,8 @@ export const HouseTranslation = {
         "label": "Floor",
         "placeholder": "(eg. 4 or IV)"
       },
-      "number": {
-        "label": "Number",
+      "door": {
+        "label": "Door number",
         "placeholder": "24"
       },
       "type": {
@@ -196,12 +200,16 @@ export const HouseTranslation = {
     "schemaParcels": {
       "label": "Albetét",
       "serial": {
-        "label": "Albetét azonosító",
-        "placeholder": "(pl. K114)"
+        "label": "Sorszám",
+        "placeholder": "(pl. 34)"
       },
-      "leadSerial": {
+      "ref": {
+        "label": "Albetét",
+        "placeholder": "(pl. P114)"
+      },
+      "leadRef": {
         "label": "Vezető albetét",
-        "placeholder": "(pl. K114)"
+        "placeholder": "(pl. K108)"
       },
       "units": {
         "label": "Tulajdoni hányad",
@@ -215,8 +223,8 @@ export const HouseTranslation = {
         "label": "Emelet",
         "placeholder": "(pl. 4 vagy IV)"
       },
-      "number": {
-        "label": "Szám",
+      "door": {
+        "label": "Ajtó",
         "placeholder": "(pl. 24)"
       },
       "type": {

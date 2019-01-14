@@ -13,7 +13,7 @@ export const insert = new ValidatedMethod({
   validate: Parcels.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    if (doc.serial) checkNotExists(Parcels, { communityId: doc.communityId, serial: doc.serial });
+    if (doc.ref) checkNotExists(Parcels, { communityId: doc.communityId, ref: doc.ref });
     if (!doc.approved) {
       // Nothing to check. Things will be checked when it gets approved by community admin/manager.
     } else {
@@ -41,7 +41,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Parcels, _id);
     checkModifier(doc, modifier, ['communityId'], true);
-    checkNotExists(Parcels, { _id: { $ne: doc._id }, communityId: doc.communityId, serial: modifier.$set.serial });
+    checkNotExists(Parcels, { _id: { $ne: doc._id }, communityId: doc.communityId, ref: modifier.$set.ref });
     checkPermissions(this.userId, 'parcels.update', doc.communityId);
     const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
     const newTotal = (total - doc.units) + modifier.$set.units;

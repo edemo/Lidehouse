@@ -32,10 +32,11 @@ if (Meteor.isServer) {
       Fixture = freshFixture();
       parcelId = insertParcel._execute({ userId: Fixture.demoManagerId }, {
         communityId: Fixture.demoCommunityId,
-        serial: '1001',
+        serial: 1001,
+        ref: '1001',
         units: 0,
         floor: 'I',
-        number: '11',
+        door: '11',
         type: 'flat',
       });
     });

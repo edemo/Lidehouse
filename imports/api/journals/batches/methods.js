@@ -61,13 +61,13 @@ export const apply = new ValidatedMethod({
           credit: [{
             account: {
               'Liabilities': parcelBilling.account['Owner payins'],
-              'Localizer': parcel.serial,
+              'Localizer': parcel.ref,
             },
           }],
           debit: [{
             account: {
               'Assets': parcelBilling.account['Owner payins'],
-              'Localizer': parcel.serial,
+              'Localizer': parcel.ref,
             },
           }],
           note: parcelBilling.note,

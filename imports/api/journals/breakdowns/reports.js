@@ -94,7 +94,7 @@ export const Reports = {
       children: [],
     };
     Memberships.find({ communityId, approved: true, active: true, role: 'owner', personId: Meteor.userId() })
-      .map(m => myParcels.children.push({ name: m.parcel().serial /* + '. ' + __('parcel')*/ }));
+      .map(m => myParcels.children.push({ name: m.parcel().ref /* + '. ' + __('parcel')*/ }));
 
     report.addFilter({ phase: 'done', communityId });
 

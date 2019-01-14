@@ -40,7 +40,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Communities, _id);
-    // checkModifier(doc, modifier, ['lot'], true);     // all fields are modifiable except lot number
+    // checkModifier(doc, modifier, ['lot'], true);     // all fields are modifiable except lot
     checkPermissions(this.userId, 'communities.update', _id);
     Communities.update({ _id }, modifier);
   },

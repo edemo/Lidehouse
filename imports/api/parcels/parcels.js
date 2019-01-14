@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
+import { Tracker } from 'meteor/tracker';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -22,27 +23,33 @@ Parcels.heatingTypeValues = ['centralHeating', 'ownHeating'];
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
-  serial: { type: String, optional: true },
-  leadSerial: { type: String, optional: true },
-  units: { type: Number, optional: true },
-  /*  name: { type: String,
-      autoValue() {
+  serial: { type: Number, optional: true },
+  ref: { type: String },  // unique within a community
+  /* autoValue() {
         if (this.isInsert) {
           const letter = this.field('type').value.substring(0,1);
           const floor = this.field('floor').value;
-          const number = this.field('number').value;
-          return letter + '-' + floor + '/' + number;
+          const door = this.field('door').value;
+          return letter + '-' + floor + '/' + door;
         }
         return undefined; // means leave whats there alone for Updates, Upserts
       },
-    },
   */
+  leadRef: { type: String, optional: true },
+  units: { type: Number, optional: true },
   // TODO: move these into the House package
+  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
   building: { type: String, max: 10, optional: true },
   floor: { type: String, max: 10, optional: true },
-  number: { type: String, max: 10, optional: true },
-  type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
+  door: { type: String, max: 10, optional: true },
   lot: { type: String, max: 100, optional: true },
+  /* autoValue() {
+        if (this.isInsert) {
+          return community().lot + '/A/' + serial;
+        }
+        return undefined; // means leave whats there alone for Updates, Upserts
+      },
+  */
   // cost calculation purposes
   area: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
@@ -52,22 +59,23 @@ Parcels.schema = new SimpleSchema({
 });
 
 Meteor.startup(function indexParcels() {
-  Parcels.ensureIndex({ serial: 1 }, { sparse: true });
-  Parcels.ensureIndex({ leadSerial: 1 }, { sparse: true });
+  Parcels.ensureIndex({ communityId: 1, ref: 1 }, { sparse: true });
+  Parcels.ensureIndex({ communityId: 1, leadRef: 1 }, { sparse: true });
   if (Meteor.isServer) {
-    Parcels._ensureIndex({ communityId: 1, lot: 1 });
+    Parcels._ensureIndex({ lot: 1 });
   }
 });
 
 Parcels.helpers({
   leadParcel() {
-    if (!this.leadSerial || this.leadSerial === this.serial) return this;
-    return Parcels.findOne({ serial: this.leadSerial });
+    if (!this.leadRef || this.leadRef === this.ref) return this;
+    if (!this.communityId) return undefined;
+    return Tracker.nonreactive(() => Parcels.findOne({ communityId: this.communityId, ref: this.leadRef }));
   },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
       + (this.floor ? this.floor + '/' : '')
-      + (this.number ? this.number : '');
+      + (this.door ? this.door : '');
   },
   occupants() {
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id });
@@ -76,10 +84,10 @@ Parcels.helpers({
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id, role: 'owner', 'ownership.representor': true });
   },
   display() {
-    return `${this.serial || '?'}. ${__(this.type)} ${this.location()} (${this.lot})`;
+    return `${this.serial || '?'}. ${__(this.type)} ${this.location() || this.ref} (${this.lot})`;
   },
   toString() {
-    return this.serial || this.location();
+    return this.ref || this.location();
   },
   community() {
     const community = Communities.findOne(this.communityId);
@@ -103,8 +111,8 @@ Parcels.helpers({
   // Finances
   balance() {
     const communityId = this.communityId;
-    const journalsIn = Journals.find({ communityId, 'accountTo.Owners': { $exists: true }, 'accountTo.Localizer': this.serial.toString() });
-    const journalsOut = Journals.find({ communityId, 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': this.serial.toString() });
+    const journalsIn = Journals.find({ communityId, 'accountTo.Owners': { $exists: true }, 'accountTo.Localizer': this.ref });
+    const journalsOut = Journals.find({ communityId, 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': this.ref });
     let parcelBalance = 0;
     journalsIn.forEach(p => parcelBalance += p.amount);
     journalsOut.forEach(p => parcelBalance -= p.amount);

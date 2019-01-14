@@ -37,7 +37,7 @@ ParcelBillings.helpers({
 //    console.log('leafs', leafs);
     const parcelLeafs = leafs.filter(l => leafIsParcel(l.name));
 //    console.log('parcelLeafs', parcelLeafs);
-    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, serial: l.name }));
+    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: l.name }));
 //    console.log('parcels', parcels);
     return parcels;
   },

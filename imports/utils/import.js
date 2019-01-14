@@ -18,15 +18,15 @@ const delayCalls = 1000;
 function transformMarinaParcels(jsons) {
   const tjsons = jsons.map((doc) => {
     const tdoc = $.extend(true, {}, doc);
-    if (tdoc.serial.indexOf('P') >= 0) {
+    if (tdoc.ref.indexOf('P') >= 0) {
       tdoc.type = 'parking';
-    } else if (tdoc.serial.indexOf('T') >= 0) {
+    } else if (tdoc.ref.indexOf('T') >= 0) {
       tdoc.type = 'storage';
     } else {
       tdoc.type = 'flat';
-      tdoc.building = doc.serial[0];
-      tdoc.floor = doc.serial[1];
-      tdoc.number = doc.serial[3];
+      tdoc.building = doc.ref[0];
+      tdoc.floor = doc.ref[1];
+      tdoc.door = doc.ref[3];
     }
     return tdoc;
   });
@@ -37,7 +37,7 @@ function transformMarinaMemberships(jsons) {
   const tjsons = [];
   const communityId = Session.get('activeCommunityId');
   jsons.forEach((doc) => {
-    const parcel = Parcels.findOne({ communityId, serial: doc.serial });
+    const parcel = Parcels.findOne({ communityId, ref: doc.ref });
     doc.parcelId = parcel._id;
     doc.person = doc.person || {};
     doc.person.idCard = doc.person.idCard || {};
@@ -89,17 +89,17 @@ export function importCollectionFromFile(collection) {
         
         // Skipping already existing docs
         if (collection._name === 'parcels') {
-          const parcel = Parcels.findOne({ communityId, serial: doc.serial });
-          if (parcel) { scheduleNext('warning', 'Document %s already exists', doc.serial); return; }
+          const parcel = Parcels.findOne({ communityId, ref: doc.ref });
+          if (parcel) { scheduleNext('warning', 'Document %s already exists', doc.ref); return; }
         }
         if (collection._name === 'memberships') {
-          const parcel = Parcels.findOne({ communityId, serial: doc.serial });
+          const parcel = Parcels.findOne({ communityId, ref: doc.ref });
           const membership = Memberships.findOne({ communityId, parcelId: parcel._id, 'person.idCard.name': doc.person.idCard.name });
-          if (membership) { scheduleNext('warning', 'Document %s already exists', doc.serial + ':' + doc.person.idCard.name); return; }
+          if (membership) { scheduleNext('warning', 'Document %s already exists', doc.ref + ':' + doc.person.idCard.name); return; }
         }
 
         // Inserting the doc into the db
-        if (doc.serial) {
+        if (doc.ref) {
           console.log(doc);
           collection.methods.insert.call(doc, onSuccess((res) => {
             scheduleNext('success', 'Document %s inserted', res); return;
