@@ -1,2 +1,2 @@
 import { Template } from 'meteor/templating';
-import './terms.html';
+import './terms-local.html';
