@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 
+import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -35,7 +36,7 @@ Topics.schema = new SimpleSchema({
 
 Meteor.startup(function indexTopics() {
   Topics.ensureIndex({ agendaId: 1 }, { sparse: true });
-  if (Meteor.isClient) {
+  if (Meteor.isClient && MinimongoIndexing) {
     Topics._collection._ensureIndex('category');
     Topics._collection._ensureIndex('closed');
     Topics._collection._ensureIndex(['title', 'participantIds']);

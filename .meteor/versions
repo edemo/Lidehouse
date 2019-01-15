@@ -66,7 +66,6 @@ geojson-utils@1.0.10
 google-oauth@1.2.5
 gwendall:autoform-i18n@0.1.9_1
 gwendall:simple-schema-i18n@0.2.3
-helfer:minimongo-index@0.0.1
 hot-code-push@1.0.4
 html-tools@1.0.11
 htmljs@1.0.11

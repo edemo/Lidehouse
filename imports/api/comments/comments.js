@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import { Timestamps } from '/imports/api/timestamps.js';
 import faker from 'faker';
 
+import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Topics } from '/imports/api/topics/topics.js';
 import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
 
@@ -47,7 +48,7 @@ Comments.schema = new SimpleSchema({
 });
 
 Meteor.startup(function indexComments() {
-  if (Meteor.isClient) {
+  if (Meteor.isClient && MinimongoIndexing) {
     Comments._collection._ensureIndex('topicId');
   } else if (Meteor.isServer) {
     Comments._ensureIndex({ communityId: 1, topicId: 1, createdAt: -1 });

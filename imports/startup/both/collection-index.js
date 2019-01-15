@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import 'meteor/helfer:minimongo-index';
+// import 'meteor/helfer:minimongo-index';
+
+export const MinimongoIndexing = false;
 
 // With this function you can create the same logical index on the client and server sides
 // https://github.com/helfer/minimongo-index/issues/1
@@ -10,7 +12,7 @@ Mongo.Collection.prototype.ensureIndex = function ensureIndex(map, options) {
   if (Meteor.isServer) {
     this._ensureIndex(map, options);
   }
-  if (Meteor.isClient) {
+  if (Meteor.isClient && MinimongoIndexing) {
     const fields = Object.keys(map);
     const index = fields.length === 1 ? fields[0] : fields;
     this._collection._ensureIndex(index);

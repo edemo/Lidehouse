@@ -40,7 +40,6 @@ bigu:waypoints
 
 # data
 mongo@1.4.2
-helfer:minimongo-index
 aldeed:simple-schema
 aldeed:collection2
 dburles:collection-helpers
