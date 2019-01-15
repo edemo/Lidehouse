@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-// import 'meteor/helfer:minimongo-index';
+import 'meteor/helfer:minimongo-index';
 
-export const MinimongoIndexing = false;
+export const MinimongoIndexing = true;
 
 // With this function you can create the same logical index on the client and server sides
 // https://github.com/helfer/minimongo-index/issues/1
