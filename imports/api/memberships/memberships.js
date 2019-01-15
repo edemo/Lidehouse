@@ -51,7 +51,7 @@ Memberships.schema = new SimpleSchema({
   person: { type: PersonSchema },
   personId: { type: String, optional: true, autoform: { omit: true },
     autoValue() {
-      return this.field('person.userId').value || this.field('person.idCard.identifier').value;
+      return this.field('person.userId').value || this.field('person.idCard.identifier').value || undefined;
     },
   },
   // TODO should be conditional on role === 'owner'
