@@ -13,7 +13,7 @@ import { Parcels } from '/imports/api/parcels/parcels';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
 const rABS = true;
-const delayCalls = 1000;
+const delayCalls = 250;
 
 function transformMarinaParcels(jsons) {
   const tjsons = jsons.map((doc) => {
