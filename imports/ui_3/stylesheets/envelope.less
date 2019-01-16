@@ -1,0 +1,272 @@
+.envelope-group {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.envelope {
+	width: 180px;
+	height: 65px;
+	background: #108265;
+    position: relative;
+    margin: 10px auto;
+    transition: opacity 1s;
+}
+
+.envelope-check {
+	height: 80%;
+	width: 80%;
+	z-index: 10;
+	opacity: 0;
+	position: absolute;
+	left: 10%;
+	top: 5%;
+	margin: 0;
+	cursor: pointer;
+}
+
+.envelope-flap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+    height: 100%;
+    width: 100%;
+	transition: transform 0.25s 0.5s, z-index 0s 0.5s;
+	transform-origin: top center;
+	background: #1AB394;
+	z-index: 4;
+    clip-path: polygon(50% 50%, 0 0, 100% 0);
+    transform: rotateX(0);
+    opacity: 0.6;
+}
+
+.envelope-back {
+	height: 100%;
+	width: 100%;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
+	background: #18997D;
+    clip-path: polygon(50% 50%, 100% 0, 100% 100%, 0 100%, 0 0);
+    opacity: 0.6;
+}
+
+.envelope-letter {
+	height: 100%;
+	width: 100%;
+    z-index: 10;
+	position: absolute;
+	left: 0;
+	top: 0;
+	transition: transform 0.25s 0.25s, z-index 0s 0.25s;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.letter-animation {
+    animation-name: letter;
+    animation-duration: 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;  
+}
+
+@keyframes letter {
+
+    0% {
+        transform: translateY(0);
+        z-index: 10;
+        width: 100%;
+    }
+
+    25% {
+        transform: translateY(0);
+        z-index: 10;
+        width: 90%;
+        left: 5%;
+    }
+
+    50% {
+        transform: translateY(-110%);
+        z-index: 3;
+        width: 90%;
+        left: 5%;
+    }
+
+    75% {
+        transform: translateY(0%);
+        z-index: 3;
+        width: 90%;
+        left: 5%;
+    }
+
+    100% {
+        transform: translateY(0);
+        z-index: 3;
+        width: 90%;
+        left: 5%;
+    }
+ }
+
+ .letter-animation-reverse {
+    animation-name: letterReverse;
+    animation-duration: 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;  
+}
+
+@keyframes letterReverse {
+
+    0% {
+        transform: translateY(0);
+        z-index: 3;
+        width: 90%;
+        left: 5%;
+    }
+
+    25% {
+        transform: translateY(0);
+        z-index: 3;
+        width: 90%;
+        left: 5%;
+    }
+
+    50% {
+        transform: translateY(-110%);
+        z-index: 3;
+        width: 90%;
+        left: 5%;
+    }
+
+    75% {
+        transform: translateY(0%);
+        z-index: 10;
+        width: 100%;
+        left: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        z-index: 10;
+        width: 100%;
+        left: 0;
+    }
+ }
+
+ .flap-animation {
+    animation-name: flap;
+    animation-duration: 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;  
+}
+
+@keyframes flap {
+
+    0% {
+        transform: rotateX(0);
+        z-index: 4;
+    }
+ 
+    25% {
+        transform: rotateX(-180deg);
+        z-index: 0;
+    }
+
+    75% {
+        transform: rotateX(-180deg);
+        z-index: 0;
+    }
+
+    80% {
+        z-index: 4;
+    }
+
+    100% {
+        transform: rotateX(0);
+        z-index: 4;
+    }
+ }
+
+ .flap-animation-reverse {
+    animation-name: flapReverse;
+    animation-duration: 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;  
+}
+
+@keyframes flapReverse {
+
+    0% {
+        transform: rotateX(0);
+        z-index: 4;
+    }
+ 
+    25% {
+        transform: rotateX(-180deg);
+        z-index: 4;
+    }
+
+    60% {
+        transform: rotateX(-180deg);
+        z-index: 0;
+    }
+
+    80% {
+        z-index: 0;
+    }
+
+    100% {
+        transform: rotateX(0);
+        z-index: 0;
+    }
+ }
+
+.letter-content {
+	height: 100%;
+	width: 100%;
+	background-color: #fff;
+	top: 0;
+	left: 0;
+	position: absolute;
+	padding-top: 15px;
+    text-align: center;
+    opacity: 1;
+}
+
+.btn-vote {
+    margin: auto;
+} 
+
+.send-button {
+    width: 45px;
+    height: 40px;
+    padding-top: 3px;
+    border-radius: 10px 10px 0 0;
+    background-color: white;
+    position: relative;
+    top: 80%;
+    text-align: center;
+    line-height: 40px;
+    margin: auto;
+    color: red;
+    transition: opacity 1s;
+	z-index: 11;
+	display: none;
+    cursor: pointer;
+}
+
+.send-button-pressed {
+	display: none !important;
+	pointer-events: none !important;
+}
+
+.voted-letter {
+	z-index: 3;
+}
+
+.not-voted-envelope {
+	opacity: 0.4;
+	pointer-events: none;
+}

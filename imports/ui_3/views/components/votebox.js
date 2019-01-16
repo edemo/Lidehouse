@@ -133,6 +133,28 @@ Template.Votebox.helpers({
     const voteOfUser = this.voteOf(userId);
     return _.isEqual(voteOfUser, [choice]) && 'btn-pressed';
   },
+  voteStateEnvelope(choice) {
+    const userId = Meteor.userId();
+    const voteOfUser = this.voteOf(userId);
+    if (voteOfUser) {
+      if (_.isEqual(voteOfUser, [choice])) return 'voted-envelope';
+      return 'not-voted-envelope';
+    } return undefined;
+  },
+  voteStateLetter(choice) {
+    const userId = Meteor.userId();
+    const voteOfUser = this.voteOf(userId);
+    if (voteOfUser) {
+      if (_.isEqual(voteOfUser, [choice])) return 'voted-letter';
+      return 'not-voted-letter';
+    } return undefined;
+  },
+  pressedSendButton() {
+    const userId = Meteor.userId();
+    const voteOfUser = this.voteOf(userId);
+    if (voteOfUser) return 'send-button-pressed';
+    return undefined;
+  },
   // Preferential voting
   currentPreference() {
     const preference = Template.instance().state.get('preference');
@@ -210,8 +232,29 @@ Template.Votebox.events({
   },
   // event handler for the single choice vote type
   'click .btn-vote'(event) {
+    $(event.target).closest('.envelope-letter').removeClass('letter-animation-reverse');
+    $(event.target).closest('.envelope-letter').prev('.envelope-flap').removeClass('flap-animation-reverse');
+    $('.btn-vote').attr('disabled', 'true');
+    const thisEnvelope = $(event.target).closest('.envelope');
+    $(thisEnvelope).css('opacity', '1');
+    $('.send-button').css('display', 'none');
+    $(thisEnvelope).find('.send-button').css('display', 'block');
+    $('.envelope').not(thisEnvelope).css('opacity', '0.4');
+    $(event.target).closest('.envelope-letter').addClass('letter-animation');
+    $(event.target).closest('.envelope-letter').prev('.envelope-flap').addClass('flap-animation');
+  },
+  'click .envelope-check'(event) {
+    $('.btn-vote').removeAttr('disabled');
+    $(event.target).nextAll().eq(1).removeClass('letter-animation');
+    $(event.target).next('.envelope-flap').removeClass('flap-animation');
+    $('.envelope').css('opacity', '1');
+    $(event.target).nextAll().eq(1).addClass('letter-animation-reverse');
+    $(event.target).next('.envelope-flap').addClass('flap-animation-reverse');
+    $('.send-button').css('display', 'none');
+  },
+  'click .send-button'(event) {
     const topicId = this._id;
-    const choice = $(event.target).closest('.btn').data('value');
+    const choice = $(event.target).parent().prev().find('.btn').data('value');
     castVoteBasedOnPermission(topicId, [choice],
       onSuccess(res => displayMessage('success', 'Vote casted'))
     );
