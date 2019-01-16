@@ -151,6 +151,11 @@ Meteor.startup(function attach() {
   Memberships.simpleSchema().i18n('schemaMemberships');
 });
 
+Memberships.publicFields = {
+  'person.idCard' : 0,
+  'person.contact' : 0,
+};
+
 Memberships.modifiableFields = [
   'ownership.share',
   'ownership.representor',
