@@ -152,8 +152,11 @@ Meteor.startup(function attach() {
 });
 
 Memberships.publicFields = {
-  'person.idCard' : 0,
-  'person.contact' : 0,
+  'person.idCard.address': 0,
+  'person.idCard.identifier': 0,
+  'person.idCard.mothersName': 0,
+  'person.idCard.dob': 0,
+  'person.contact': 0,
 };
 
 Memberships.modifiableFields = [
