@@ -87,7 +87,7 @@ export const HouseTranslation = {
         "placeholder": "(eg. 4 or IV)"
       },
       "door": {
-        "label": "Door number",
+        "label": "Door",
         "placeholder": "24"
       },
       "type": {
@@ -95,7 +95,7 @@ export const HouseTranslation = {
         "placeholder": "(eg. Apartment)"
       },
       "lot": {
-        "label": "Lot No",
+        "label": "Lot No.",
         "placeholder": "(eg. 293457/A/21)"
       },
       "location": {
@@ -189,7 +189,7 @@ export const HouseTranslation = {
         "placeholder": "(pl. 101 vagy 25/B)"
       },
       "lot": {
-        "label": "Helyrajzi szám (Hrsz)",
+        "label": "Helyrajzi szám",
         "placeholder": "(pl. 29732/9)"
       },
       "totalunits": {

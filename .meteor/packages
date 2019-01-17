@@ -40,7 +40,6 @@ bigu:waypoints
 
 # data
 mongo@1.4.2
-helfer:minimongo-index
 aldeed:simple-schema
 aldeed:collection2
 dburles:collection-helpers
@@ -107,3 +106,4 @@ browser-policy@1.1.0
 dynamic-import@0.3.0
 mrt:later
 lookback:emails
+helfer:minimongo-index
