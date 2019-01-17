@@ -388,6 +388,8 @@
   "Make your comment": "Hozzászólás",
 
   // errors
+  "err_notImplemented": "Nem elérhető funkció",
+  "Demo house not available on this server": "Ezen a szerveren nincsen demo ház funkció. Látogasson el a központi szerverre! (honline.hu)",
   "err_notExists": "Nincs ilyen objektum",
   "No such object": "Ilyen objektum nem létezik a rendszerben",
   "err_alreadyExists": "Már van ilyen objektum",

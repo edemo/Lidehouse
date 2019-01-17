@@ -35,9 +35,10 @@ function communityPublication(userId, _id) {
       // Publish the Memberships of the Community
       find(community) {
         if (hasPermission('memberships.inCommunity')) {
-          return Memberships.find({ communityId: community._id });
+          const fields = hasPermission('memberships.details') ? {} : Memberships.publicFields;
+          return Memberships.find({ communityId: community._id }, { fields });
         } // Otherwise, only the active leaders of the community can be seen
-        return Memberships.find({ communityId: community._id, active: true, role: { $in: leaderRoles } });
+        return Memberships.find({ communityId: community._id, active: true, role: { $in: leaderRoles } }, { fields: Memberships.publicFields });
       },
 
       // ...Related to Memberships
