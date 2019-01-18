@@ -6,7 +6,12 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 
 Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, renderType, currentRow) {
   const parcelId = cellData;
-  const notification = Memberships.findOne({ parcelId, approved: false }) ? 'text-danger' : '';
+  let notification;
+  if (Memberships.findOne({ parcelId, approved: false })) notification = 'text-danger';
+  else if (Memberships.findOne({ parcelId, accepted: false })) {
+    if (Memberships.findOne({ parcelId, personId: { $exists: false } })) notification = 'text-warning';
+    else notification = 'text-info';
+  } else notification = '';
 
   let html = '';
   html += `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
