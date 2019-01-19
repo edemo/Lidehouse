@@ -12,8 +12,6 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
 import { insert as insertParcel } from '/imports/api/parcels/methods.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
-import { cleanExpiredEmails } from '/imports/startup/server/accounts-verification.js';
-import { moment } from 'meteor/momentjs:moment';
 import '/imports/api/users/users.js';
 
 import { Email } from 'meteor/email';   // We will be mocking it over
