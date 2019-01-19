@@ -87,7 +87,7 @@ Parcels.helpers({
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id, role: 'owner', 'ownership.representor': true });
   },
   display() {
-    return `${this.serial || '?'}. ${__(this.type)} ${this.location() || this.ref} (${this.lot})`;
+    return `${this.ref || '?'} ${__(this.type)} (${this.location()})`;
   },
   toString() {
     return this.ref || this.location();
