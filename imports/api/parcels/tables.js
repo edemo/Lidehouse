@@ -2,21 +2,24 @@ import { Meteor } from 'meteor/meteor';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
 Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, renderType, currentRow) {
   const parcelId = cellData;
-  let notification;
-  if (Memberships.findOne({ parcelId, approved: false })) notification = 'text-danger';
+  const parcel = Parcels.findOne(parcelId);
+  const userIcon = parcel.isLed() ? 'fa-user-o' : 'fa-user';
+  let colorClass = '';
+  if (Memberships.findOne({ parcelId, approved: false })) colorClass = 'text-danger';
   else if (Memberships.findOne({ parcelId, accepted: false })) {
-    if (Memberships.findOne({ parcelId, personId: { $exists: false } })) notification = 'text-warning';
-    else notification = 'text-info';
-  } else notification = '';
+    if (Memberships.findOne({ parcelId, personId: { $exists: false } })) colorClass = 'text-warning';
+    else colorClass = 'text-info';
+  }
 
   let html = '';
   html += `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
   html += `<button data-id=${cellData} title=${__('assign')} class="btn btn-white btn-xs js-assign">`;
-  html += `<i class="fa fa-user ${notification}"></i>`;
+  html += `<i class="fa ${userIcon} ${colorClass}"></i>`;
   html += `</button></a>`;
   return html;
 };

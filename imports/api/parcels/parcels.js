@@ -67,6 +67,9 @@ Meteor.startup(function indexParcels() {
 });
 
 Parcels.helpers({
+  isLed() {
+    return this.leadRef && (this.leadRef !== this.ref);
+  },
   leadParcel() {
     if (!this.leadRef || this.leadRef === this.ref) return this;
     if (!this.communityId) return undefined;
