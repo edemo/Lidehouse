@@ -100,9 +100,9 @@ export const linkUser = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    const email = doc.person && doc.person.contact && doc.person.contact.email;
+    const email = doc.Person().primaryEmail();
     if (!email) throw new Meteor.Error('No contact email set for this membership', doc);
-    if (Meteor.isClient) return;  // Not possible to find and link users on the client side, as no user data available
+    if (this.isSimulation) return;  // Not possible to find and link users on the client side, as no user data available
 
     if (doc.person.userId) {
       const linkedUser = Meteor.users.findOne(doc.person.userId);
