@@ -108,14 +108,28 @@ Parcels.helpers({
     return community.totalunits;
   },
   // Voting
+  ledUnits() {
+    if (this.isLed()) return 0;
+    let cumulatedUnits = this.units;
+    const ledParcels = Parcels.find({ communityId: this.communityId, leadRef: this.ref });
+    ledParcels.forEach((parcel) => {
+      if (parcel.isLed()) { // This avoids counting twice the self-led parcel 
+        cumulatedUnits += parcel.units;
+      }
+    });
+    return cumulatedUnits;
+  },
   share() {
     return new Fraction(this.units, this.totalunits());
   },
   ledShare() {
+    if (this.isLed()) return new Fraction(0);
     let cumulatedShare = this.share();
     const ledParcels = Parcels.find({ communityId: this.communityId, leadRef: this.ref });
     ledParcels.forEach((parcel) => {
-      cumulatedShare = cumulatedShare.add(parcel.share());
+      if (parcel.isLed()) { // This avoids counting twice the self-led parcel 
+        cumulatedShare = cumulatedShare.add(parcel.share());
+      }
     });
     return cumulatedShare;
   },

@@ -123,7 +123,7 @@ Memberships.helpers({
   votingUnits() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
-    const votingUnits = this.isRepresentor() ? this.parcel().units : this.parcel().units * this.ownership.share.toNumber();
+    const votingUnits = this.isRepresentor() ? this.parcel().ledUnits() : this.parcel().ledUnits() * this.ownership.share.toNumber();
     return votingUnits;
   },
   votingShare() {
