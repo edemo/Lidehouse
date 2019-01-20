@@ -121,7 +121,7 @@ Template.Comment.events({
       event.preventDefault();
       const editedText = $('#editableSpan > textarea').val();
       updateComment.call({
-        commentId: instance.data._id,
+        _id: instance.data._id,
         modifier: { $set: { text: editedText } },
       }, handleError);
       $('#editableSpan').remove();
@@ -129,7 +129,7 @@ Template.Comment.events({
     }
   },
   'click .js-delete'(event, instance) {
-    Modal.confirmAndCall(removeComment, { commentId: this._id }, {
+    Modal.confirmAndCall(removeComment, { _id: this._id }, {
       action: 'delete comment',
       message: 'It will disappear forever',
     });

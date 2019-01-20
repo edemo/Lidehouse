@@ -44,12 +44,12 @@ Template.Tech_chat.helpers({
   hasUnreadMessages() {
     const room = getMyTechSupportRoom();
     if (!room) return false;
-    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES) > 0;
+    return room.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES) > 0;
   },
   unreadMessagesCount() {
     const room = getMyTechSupportRoom();
     if (!room) return 0;
-    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
+    return room.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
   },
   sideOfMessage(userId) {
     if (userId === Meteor.userId()) return 'right';

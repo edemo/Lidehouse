@@ -56,6 +56,10 @@ export const remove = new ValidatedMethod({
   },
 });
 
+Topics.methods = {
+  insert, update, remove,
+};
+
 // ----- RATE LIMITING --------
 
 // Get list of all method names on Topics

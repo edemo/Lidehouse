@@ -23,34 +23,38 @@ export const insert = new ValidatedMethod({
 export const update = new ValidatedMethod({
   name: 'comments.update',
   validate: new SimpleSchema({
-    commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
   }).validator(),
 
-  run({ commentId, modifier }) {
-    const comment = checkExists(Comments, commentId);
-    const topic = checkExists(Topics, comment.topicId);
-    checkModifier(comment, modifier, ['text']);     // only the text can be modified
-    checkPermissions(this.userId, 'comments.update', topic.communityId, comment);
+  run({ _id, modifier }) {
+    const doc = checkExists(Comments, _id);
+    const topic = checkExists(Topics, doc.topicId);
+    checkModifier(doc, modifier, ['text']);     // only the text can be modified
+    checkPermissions(this.userId, 'comments.update', topic.communityId, doc);
 
-    Comments.update(commentId, modifier);
+    Comments.update(_id, modifier);
   },
 });
 
 export const remove = new ValidatedMethod({
   name: 'comments.remove',
   validate: new SimpleSchema({
-    commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
 
-  run({ commentId }) {
-    const comment = checkExists(Comments, commentId);
-    const topic = checkExists(Topics, comment.topicId);
-    checkPermissions(this.userId, 'comments.remove', topic.communityId, comment);
+  run({ _id }) {
+    const doc = checkExists(Comments, _id);
+    const topic = checkExists(Topics, doc.topicId);
+    checkPermissions(this.userId, 'comments.remove', topic.communityId, doc);
 
-    Comments.remove(commentId);
+    Comments.remove(_id);
   },
 });
+
+Comments.methods = {
+  insert, update, remove,
+};
 
 //--------------------------------------------------------
 
