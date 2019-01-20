@@ -28,7 +28,7 @@ if (Meteor.isServer) {
 
     describe('publications', function () {
 
-      it('sends all memberships.inCommunity', function (done) {
+      xit('sends all memberships.inCommunity', function (done) {
         const collector = new PublicationCollector({ userId: Fixture.demoUserId });
         collector.collect(
           'memberships.inCommunity',
@@ -90,15 +90,32 @@ if (Meteor.isServer) {
         });
       });
 
-      it('selects parcel\'s representor correctly', function (done) {
-        // it('selects flagged representor when specified', function (done) {
-        let parcel = Parcels.findOne(parcelId);
+      it('selects flagged representor when specified', function (done) {
+        const parcel = Parcels.findOne(parcelId);
         chai.assert.equal(parcel.representor()._id, ownership2Id);
+        done();
+      });
 
-        // it('selects first owner as representor when not specified', function (done) {
+      // it('selects first owner as representor when not specified', function (done) {
+      it('selects no representor when not specified', function (done) {
         Memberships.update(ownership2Id, { $set: { 'ownership.representor': false } });
-        parcel = Parcels.findOne(parcelId);
-        chai.assert.equal(parcel.representor()._id, ownership1Id);
+
+        const parcel = Parcels.findOne(parcelId);
+        // chai.assert.equal(parcel.representor()._id, ownership1Id);
+        chai.assert.isUndefined(parcel.representor());
+        done();
+      });
+
+      it('a parcel should have maximum one representor', function (done) {
+        chai.assert.throws(() =>
+          Memberships.update(ownership1Id, { $set: { 'ownership.representor': true } })
+        );
+        done();
+      });
+
+      /*
+      it('selects first benefactor as representor when no owner', function (done) {
+        let parcel;
 
         Memberships.remove(ownership1Id);
         parcel = Parcels.findOne(parcelId);
@@ -107,18 +124,21 @@ if (Meteor.isServer) {
         Memberships.remove(ownership2Id);
         parcel = Parcels.findOne(parcelId);
         chai.assert.equal(parcel.representor()._id, ownership3Id);
+        done();
 
-        // it('selects first benefactor as representor when no owner', function (done) {
         Memberships.remove(ownership3Id);
         parcel = Parcels.findOne(parcelId);
         chai.assert.equal(parcel.representor()._id, benefactorship1Id);
+      });
+      
 
-        // it('if no owner & benefactor, representor is undefined', function (done) {
+      it('if no owner & benefactor, representor is undefined', function (done) {
         Memberships.remove(benefactorship1Id);
         parcel = Parcels.findOne(parcelId);
         chai.assert.isUndefined(parcel.representor());
         done();
       });
+      */
     });
 
     describe('permissions', function () {
@@ -155,22 +175,26 @@ if (Meteor.isServer) {
         let testMembership = Memberships.findOne(testMembershipId);
         chai.assert.isDefined(testMembership);
         chai.assert.equal(testMembership.role, randomRole);
+
         updateMembership._execute({ userId: Fixture.demoAdminId },
-          { _id: testMembershipId, modifier: { $set: { role: 'treasurer' } } });
+          { _id: testMembershipId, modifier: { $set: { 'activeTime.end': new Date() } } });
         testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership.role, 'treasurer');
+        chai.assert.equal(testMembership.active, false);
+
         removeMembership._execute({ userId: Fixture.demoAdminId },
           { _id: testMembershipId });
         testMembership = Memberships.findOne(testMembershipId);
         chai.assert.isUndefined(testMembership);
+
         done();
       });
 
-      it('owner can only add/update/remove benefactor', function (done) {
+      xit('owner can only add/update/remove benefactor', function (done) {
         testMembershipId = insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('benefactor'));
         chai.assert.isDefined(testMembershipId);
         let testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.role, 'benefactor');
+
         chai.assert.throws(() => {
           insertMembership._execute({ userId: Fixture.demoUserId }, createMembership('manager'));
         });
@@ -201,7 +225,7 @@ if (Meteor.isServer) {
         done();
       });
 
-      it('manager can only add/update/remove owner & benefactor', function (done) {
+      xit('manager can only add/update/remove owner & benefactor', function (done) {
         testMembershipId = insertMembership._execute({ userId: Fixture.demoManagerId },
           createMembership('owner'));
         chai.assert.isDefined(testMembershipId);
@@ -232,20 +256,21 @@ if (Meteor.isServer) {
     });
 
     describe('sanity', function () {
+      const createMembershipWithShare = function (parcelId, share) {
+        const newMembership = {
+          communityId: Fixture.demoCommunityId,
+          person: { userId: Fixture.demoUserId },
+          role: 'owner',
+          parcelId,
+          ownership: { share },
+        };
+        return newMembership;
+      };
       let testMembershipId;
 
       it('total ownership shares cannot exceed 1', function (done) {
-        const createMembershipWithShare = function (parcelId, share) {
-          const newMembership = {
-            communityId: Fixture.demoCommunityId,
-            person: { userId: Fixture.demoUserId },
-            role: 'owner',
-            parcelId,
-            ownership: { share },
-          };
-          return newMembership;
-        };
         const testParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 });
+  
         chai.assert.throws(() => {
           insertMembership._execute({ userId: Fixture.demoAdminId },
             createMembershipWithShare(testParcelId, new Fraction(2, 1)));
@@ -281,6 +306,21 @@ if (Meteor.isServer) {
           updateMembership._execute({ userId: Fixture.demoAdminId },
             { _id: testMembershipId, modifier: { $set: { 'ownership.share': new Fraction(3, 8) } } });
         });
+        done();
+      });
+
+      it('parcel should have either lead or owners, but not both', function (done) {
+        const leadParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 });
+        const parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '56', leadRef: '45', units: 0 });
+        
+        insertMembership._execute({ userId: Fixture.demoAdminId },
+            createMembershipWithShare(leadParcelId, new Fraction(1, 2)));
+
+        chai.assert.throws(() => {
+          insertMembership._execute({ userId: Fixture.demoAdminId },
+            createMembershipWithShare(parcelId, new Fraction(1, 2)));
+        });
+
         done();
       });
     });

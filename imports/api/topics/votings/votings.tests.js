@@ -90,11 +90,11 @@ if (Meteor.isServer) {
         done();
       });
 
-      it('only manager can vote in the name of others', function (done) {
+      it('only admin can vote in the name of others', function (done) {
         chai.assert.throws(() => {
           castVote._execute({ userId: Fixture.demoUserId }, { topicId: votingId, castedVote: [0], voters: [Fixture.dummyUsers[1]] });
         });
-        castVote._execute({ userId: Fixture.demoManagerId }, { topicId: votingId, castedVote: [0], voters: [Fixture.dummyUsers[1], Fixture.dummyUsers[2], Fixture.dummyUsers[3]] });
+        castVote._execute({ userId: Fixture.demoAdminId }, { topicId: votingId, castedVote: [0], voters: [Fixture.dummyUsers[1], Fixture.dummyUsers[2], Fixture.dummyUsers[3]] });
 
         const voting = Topics.findOne(votingId);
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[1]], [0]);
@@ -114,10 +114,10 @@ if (Meteor.isServer) {
       it('no evaluation on fresh voting', function (done) {
         const voting = Topics.findOne(votingId);
         chai.assert.deepEqual(voting.voteParticipation, { count: 0, units: 0 });
-        chai.assert.isUndefined(voting.voteCasts);
-        chai.assert.isUndefined(voting.voteCastsIndirect);
-        chai.assert.isUndefined(voting.voteResults);
-        chai.assert.isUndefined(voting.voteSummary);
+        chai.assert.deepEqual(voting.voteCasts, {});
+        chai.assert.deepEqual(voting.voteCastsIndirect, {});
+        chai.assert.deepEqual(voting.voteResults, {});
+        chai.assert.deepEqual(voting.voteSummary, {});
         done();
       });
 
