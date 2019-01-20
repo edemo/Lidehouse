@@ -81,10 +81,15 @@ Parcels.helpers({
       + (this.door ? this.door : '');
   },
   occupants() {
+    if (this.isLed()) return this.leadParcel().occupants();
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id });
   },
   representors() {
+    if (this.isLed()) return this.leadParcel().representors();
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id, role: 'owner', 'ownership.representor': true });
+  },
+  representor() {
+    return this.representors().fetch()[0];
   },
   display() {
     return `${this.ref || '?'} ${__(this.type)} (${this.location()})`;
@@ -107,6 +112,7 @@ Parcels.helpers({
     return new Fraction(this.units, this.totalunits());
   },
   ownedShare() {
+    if (this.isLed()) return this.leadParcel().ownedShare();
     let total = new Fraction(0);
     Memberships.find({ parcelId: this._id, active: true, approved: true, role: 'owner' }).forEach(p => total = total.add(p.ownership.share));
     return total;
