@@ -129,7 +129,7 @@ Memberships.helpers({
   votingShare() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
-    const votingShare = this.isRepresentor() ? this.parcel().share() : this.parcel().share().multiply(this.ownership.share);
+    const votingShare = this.isRepresentor() ? this.parcel().ledShare() : this.parcel().ledShare().multiply(this.ownership.share);
     return votingShare;
   },
   toString() {

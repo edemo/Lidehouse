@@ -111,6 +111,14 @@ Parcels.helpers({
   share() {
     return new Fraction(this.units, this.totalunits());
   },
+  ledShare() {
+    let cumulatedShare = this.share();
+    const ledParcels = Parcels.find({ communityId: this.communityId, leadRef: this.ref });
+    ledParcels.forEach((parcel) => {
+      cumulatedShare = cumulatedShare.add(parcel.share());
+    });
+    return cumulatedShare;
+  },
   ownedShare() {
     if (this.isLed()) return this.leadParcel().ownedShare();
     let total = new Fraction(0);
