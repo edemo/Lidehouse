@@ -72,7 +72,7 @@ Template.Tech_chat.events({
     $(event.target).closest('a').children().toggleClass('fa-question').toggleClass('fa-times');
     $('.small-chat-box').toggleClass('active');
     const room = getMyTechSupportRoom();
-    if (room) Meteor.user().hasNowSeen(room._id, Meteor.users.SEEN_BY.EYES);
+    if (room) Meteor.user().hasNowSeen(room._id);
     $('.small-chat-box .content').slimScroll({ scrollTo: ($('.small-chat-box .content')[0].scrollHeight) });
     $('.small-chat-box .slimScrollBar').css('top', '234px');
   },
@@ -96,7 +96,7 @@ Template.Tech_chat.events({
         $('.small-chat-box .slimScrollBar').css('top', '234px'); 
         // if ($(window).width() > 768) $('.js-focused').focus();
       }));
-      Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
+      Meteor.user().hasNowSeen(roomId);
     };
 
     if (room) {

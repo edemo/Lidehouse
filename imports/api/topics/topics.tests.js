@@ -16,12 +16,18 @@ import '../../../i18n/en.i18n.json';
 
 if (Meteor.isServer) {
   // eslint-disable-next-line import/no-unresolved
-  import '/imports/api/users/methods.js';
+  import { updateMyLastSeen } from '/imports/api/users/methods.js';
   import '/imports/api/comments/methods.js';
   import './methods.js';
   import './publications.js';
 
   let Fixture;
+  // Mock version of the real client's helper function
+  const userHasNowSeen = function (userId, topicId) {
+    const topic = Topics.findOne(topicId);
+    const lastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
+    updateMyLastSeen._execute({ userId }, { topicId, lastSeenInfo });
+  };
 
   describe('topics', function () {
     this.timeout(5000);
@@ -72,7 +78,7 @@ if (Meteor.isServer) {
 
         it('doesn\'t notify on seen topic', function (done) {
           const user = Meteor.users.findOne(userId);
-          user.hasNowSeen(topicId, Meteor.users.SEEN_BY.NOTI);
+          userHasNowSeen(userId, topicId);
           
           const topic = Topics.findOne(topicId);
           chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
@@ -92,7 +98,7 @@ if (Meteor.isServer) {
 
         it('doesn\'t notify on seen comment', function (done) {
           const user = Meteor.users.findOne(userId);
-          user.hasNowSeen(topicId, Meteor.users.SEEN_BY.NOTI);
+          userHasNowSeen(userId, topicId);
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 0);
@@ -113,7 +119,7 @@ if (Meteor.isServer) {
 
         it('doesn\'t notify after several seen comment', function (done) {
           const user = Meteor.users.findOne(userId);
-          user.hasNowSeen(topicId, Meteor.users.SEEN_BY.NOTI);
+          userHasNowSeen(userId, topicId);
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 0);
