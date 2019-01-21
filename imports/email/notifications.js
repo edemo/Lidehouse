@@ -21,7 +21,7 @@ function sendNotifications(user) {
       });
       topics.forEach((topic) => {
         const lastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
-        updateMyLastSeen._execute({ userId: null }, { topicId: topic._id, lastSeenInfo });
+        updateMyLastSeen._execute({ userId: user._id }, { topicId: topic._id, lastSeenInfo, seenType: Meteor.users.SEEN_BY.NOTI });
       });
     }
   });
