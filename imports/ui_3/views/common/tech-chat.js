@@ -11,9 +11,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import './tech-chat.html';
 
 function getMyTechSupportRoom() {
-  const myUserId = Meteor.userId();
   const communityId = Session.get('activeCommunityId');
-  return Topics.findOne({ communityId, category: 'room', title: 'tech support', participantIds: myUserId });
+  return Topics.findOne({ communityId, category: 'room', title: 'tech support', userId: Meteor.userId() });
 }
 
 Template.Tech_chat.onCreated(function tehcChatOnCreated() {
@@ -107,7 +106,7 @@ Template.Tech_chat.events({
       Meteor.call('topics.insert', {
         communityId,
         userId: Meteor.userId(),
-        participantIds: [Meteor.userId(), community.techsupport()._id],
+        participantIds: [Meteor.userId()],
         category: 'room',
         title: 'tech support',
       }, onSuccess((res) => {
