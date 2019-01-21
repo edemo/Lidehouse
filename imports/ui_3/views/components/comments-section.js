@@ -26,7 +26,7 @@ Template.Comments_section.onRendered(function chatboxOnRendered() {
     handler() {
       const topicId = this.element.dataset.id;
       // displayMessage('info', `You just seen ${topicId}`); // debug
-      Meteor.user().hasNowSeen(topicId, Meteor.users.SEEN_BY.EYES);
+      Meteor.user().hasNowSeen(topicId);
     },
     offset: '80%',
   });
@@ -54,13 +54,14 @@ Template.Comments_section.helpers({
 
 Template.Comments_section.events({
   'keydown .js-send-enter'(event) {
+    const topicId = this._id;
+    const userId = Meteor.userId();
     if (event.keyCode === 13 && !event.shiftKey) {
       const textarea = event.target;
-      insertComment.call({
-        topicId: this._id,
-        userId: Meteor.userId(),
-        text: textarea.value,
-      }, onSuccess(res => textarea.value = '')
+      insertComment.call({ topicId, userId, text: textarea.value },
+        onSuccess((res) => {
+          textarea.value = '';
+        })
       );
     }
   },
