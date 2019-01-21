@@ -10,10 +10,20 @@ Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, rend
   const parcel = Parcels.findOne(parcelId);
   const userIcon = parcel.isLed() ? 'fa-user-o' : 'fa-user';
   let colorClass = '';
-  if (Memberships.findOne({ parcelId, approved: false })) colorClass = 'text-danger';
-  else if (Memberships.findOne({ parcelId, accepted: false })) {
-    if (Memberships.findOne({ parcelId, personId: { $exists: false } })) colorClass = 'text-warning';
-    else colorClass = 'text-info';
+  if (Memberships.findOne({ parcelId, approved: false, active: true })) colorClass = 'text-danger';
+  else {
+    const representor = Memberships.findOne({ parcelId, active: true, 'ownership.representor': true });
+    if (representor) {
+      if (!representor.accepted) {
+        if (representor.personId) colorClass = 'text-warning';
+        else colorClass = 'text-info';
+      }
+    } else {  // no representor
+      if (Memberships.findOne({ parcelId, active: true, accepted: false })) {
+        if (Memberships.findOne({ parcelId, active: true, personId: { $exists: false } })) colorClass = 'text-warning';
+        else colorClass = 'text-info';
+      }
+    }
   }
 
   let html = '';
