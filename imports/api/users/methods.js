@@ -59,13 +59,14 @@ export const updateMyLastSeen = new ValidatedMethod({
   validate: new SimpleSchema({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
     lastSeenInfo: { type: Object, blackbox: true },
+    seenType: { type: Number, decimal: true, optional: true },
   }).validator(),
 
-  run({ topicId, lastSeenInfo }) {
+  run({ topicId, lastSeenInfo, seenType }) {
     const modifier = {};
     modifier['$set'] = {};
-    // When we call this method from the client it implicates SEEN_BY.EYES, if we call it from the server it means SEEN_BY.NOTI
-    const seenType = this.userId ? Meteor.users.SEEN_BY.EYES : Meteor.users.SEEN_BY.NOTI;
+    // When we call this method from the client it implicates SEEN_BY.EYES, if we call it from the server it is always SEEN_BY.NOTI
+    if (!seenType) seenType = Meteor.users.SEEN_BY.EYES;
     // When user seen it by EYES, it implies no NOTI needed - so lastSeen info propagates upwards (SEEN_BY.EYES=0, SEEN_BY.NOTI=1)
     for (let i = seenType; i <= Meteor.users.SEEN_BY.NOTI; i++) {
       modifier['$set']['lastSeens.' + i + '.' + topicId] = lastSeenInfo;
