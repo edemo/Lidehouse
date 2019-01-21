@@ -15,7 +15,7 @@ Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, rend
     const representor = Memberships.findOne({ parcelId, active: true, 'ownership.representor': true });
     if (representor) {
       if (!representor.accepted) {
-        if (representor.personId) colorClass = 'text-warning';
+        if (!representor.personId) colorClass = 'text-warning';
         else colorClass = 'text-info';
       }
     } else {  // no representor
