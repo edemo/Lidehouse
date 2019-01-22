@@ -27,10 +27,11 @@ Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, rend
   }
 
   let html = '';
-  html += `<a href=${FlowRouter.path('Parcel.owners', { _pid: cellData })}>`;
+//  html += `<a href="#occupants">`;
   html += `<button data-id=${cellData} title=${__('assign')} class="btn btn-white btn-xs js-assign">`;
   html += `<i class="fa ${userIcon} ${colorClass}"></i>`;
-  html += `</button></a>`;
+  html += `</button>`;
+//  html += `</a>`;
   return html;
 };
 

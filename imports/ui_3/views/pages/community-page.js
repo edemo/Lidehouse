@@ -13,6 +13,7 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Fraction } from 'fractional';
 
 import { __ } from '/imports/localization/i18n.js';
+import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { remove as removeCommunity } from '/imports/api/communities/methods.js';
@@ -20,6 +21,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import '/imports/api/memberships/methods.js';
 import '/imports/api/users/users.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -30,11 +32,11 @@ import '../common/page-heading.js';
 import '../components/action-buttons.html';
 import './community-page.html';
 
-import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
-
-Template.Community_page.onCreated(function() {
+Template.Community_page.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   const user = Meteor.user();
+  this.data.selectedParcelId = new ReactiveVar(null);
+  this.data.selectedMemberId = new ReactiveVar(null);
   const showAllParcelsDefault = Parcels.find().count() <= 25 || (user && user.hasPermission('parcels.insert', this.getCommunityId()));
   this.data.showAllParcels = new ReactiveVar(!!showAllParcelsDefault);
   this.autorun(() => {
@@ -43,12 +45,18 @@ Template.Community_page.onCreated(function() {
   });
 });
 
-Template.Community_page.onRendered(function() {
-    // Add slimscroll to element
-    $('.full-height-scroll').slimscroll({
-        height: '100%'
-    });
+Template.Community_page.onRendered(function onRendered() {
+  // Add slimscroll to element
+  $('.full-height-scroll').slimscroll({
+      height: '100%'
+  });
+  Session.set('template', this);
 });
+
+Template.Community_page.onDestroyed(function onDestroyed() {
+  Session.set('template', undefined);
+});
+
 
 Template.Community_page.helpers({
   title() {
@@ -69,19 +77,6 @@ Template.Community_page.helpers({
   },
   autoformType(communityId) {
     return Meteor.userOrNull().hasPermission('communities.update', communityId) ? 'method-update' : 'readonly';
-  },
-  parcelTypesWithCount() {
-    const communityId = Template.instance().getCommunityId();
-    const parcels = Parcels.find({ communityId }).fetch();
-    const sumsResult = _(parcels).reduce(function (sums, parcel) {
-      sums[parcel.type] = (sums[parcel.type] || 0) + 1;
-      return sums;
-    }, {});
-    const result = [];
-    Object.keys(sumsResult).forEach(k => {
-      result.push({ type: k, count: sumsResult[k] });
-    });
-    return result;
   },
 /*  thingsToDisplayWithCounter() {
     const result = [];
@@ -109,6 +104,52 @@ Template.Community_page.helpers({
   officers() {
     const communityId = Template.instance().getCommunityId();
     return Memberships.find({ communityId, active: true, role: { $in: officerRoles } });
+  },
+  ownerships() {
+    const communityId = Template.instance().getCommunityId();
+    const parcelId = this.selectedParcelId.get();
+    return Memberships.find({ communityId, active: true, role: 'owner', parcelId, approved: true });
+  },
+  unapprovedOwnerships() {
+    const communityId = Template.instance().getCommunityId();
+    const parcelId = this.selectedParcelId.get();
+    return Memberships.find({ communityId, role: 'owner', parcelId, approved: false });
+  },
+  archivedOwnerships() {
+    const communityId = Template.instance().getCommunityId();
+    const parcelId = this.selectedParcelId.get();
+    return Memberships.find({ communityId, role: 'owner', parcelId, active: false });
+  },
+  benefactorships() {
+    const communityId = Template.instance().getCommunityId();
+    const parcelId = this.selectedParcelId.get();
+    return Memberships.find({ communityId, active: true, role: 'benefactor', parcelId, approved: true });
+  },
+  unapprovedBenefactorships() {
+    const communityId = Template.instance().getCommunityId();
+    const parcelId = this.selectedParcelId.get();
+    return Memberships.find({ communityId, role: 'benefactor', parcelId, approved: false });
+  },
+  archivedBenefactorships() {
+    const communityId = Template.instance().getCommunityId();
+    const parcelId = this.selectedParcelId.get();
+    return Memberships.find({ communityId, role: 'benefactor', parcelId, active: false });
+  },
+  activeTabClass(index) {
+    return index === 0 ? 'active' : '';
+  },
+  parcelTypesWithCount() {
+    const communityId = Template.instance().getCommunityId();
+    const parcels = Parcels.find({ communityId }).fetch();
+    const sumsResult = _(parcels).reduce(function (sums, parcel) {
+      sums[parcel.type] = (sums[parcel.type] || 0) + 1;
+      return sums;
+    }, {});
+    const result = [];
+    Object.keys(sumsResult).forEach(k => {
+      result.push({ type: k, count: sumsResult[k] });
+    });
+    return result;
   },
   parcelsTableDataFn() {
     const templateInstance = Template.instance();
@@ -175,6 +216,9 @@ Template.Community_page.helpers({
       return Parcels.find({ communityId, approved: false }).fetch();
     };
   },
+  member() {
+    return Memberships.findOne(this.selectedMemberId.get());
+  },
 });
 
 function onJoinParcelInsertSuccess(parcelId) {
@@ -204,9 +248,17 @@ function onJoinParcelInsertSuccess(parcelId) {
 }
 
 Template.Community_page.events({
-  'click .js-show-all'(event, instance) {
-    const oldVal = instance.data.showAllParcels.get();
-    instance.data.showAllParcels.set(!oldVal);
+  'click .js-assign'(event, instance) {
+    const id = $(event.target).closest('button').data('id');
+    instance.data.selectedParcelId.set(id);
+  },
+  'click .js-invite'(event, instance) {
+    const _id = $(event.target).data('id');
+    const membership = Memberships.findOne(_id);
+    Modal.confirmAndCall(Memberships.methods.linkUser, { _id }, {
+      action: 'invite user',
+      message: __('Connecting user', membership.Person().primaryEmail() || __('undefined')),
+    });
   },
   // community events
   'click .community-section .js-edit'() {
@@ -219,15 +271,29 @@ Template.Community_page.events({
       action: 'delete community',
     });
   },
-  // roleship events
-  'click .js-invite'(event, instance) {
-    const _id = $(event.target).data('id');
-    const membership = Memberships.findOne(_id);
-    Modal.confirmAndCall(Memberships.methods.linkUser, { _id }, {
-      action: 'invite user',
-      message: __('Connecting user', membership.Person().primaryEmail() || __('undefined')),
+  'click .community-section .js-join'(event) {
+    AccountsTemplates.forceLogin(() => {
+      Modal.show('Autoform_edit', {
+        title: 'pleaseSupplyParcelData',
+        id: 'af.parcel.insert.unapproved',
+        collection: Parcels,
+//        omitFields: ['serial'],
+        type: 'method',
+        meteormethod: 'parcels.insert',
+        template: 'bootstrap3-inline',
+      });
+      
+/*    This can be used for immediate (no questions asked) joining - with a fixed ownership share
+      const communityId = FlowRouter.current().params._cid;
+      const maxSerial = Math.max.apply(Math, _.pluck(Parcels.find().fetch(), 'serial')) || 0;
+      Meteor.call('parcels.insert',
+        { communityId, approved: false, serial: maxSerial + 1, units: 300, type: 'flat' },
+        (error, result) => { onJoinParcelInsertSuccess(result); },
+      );
+*/
     });
   },
+  // roleship events
   'click .roles-section .js-new'() {
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',
@@ -272,9 +338,103 @@ Template.Community_page.events({
       message: 'You should rather archive it',
     });
   },
+  // Owner/benefactor events
+  'click #owners .js-import, #benefactors .js-import'(event, instance) {
+    importCollectionFromFile(Memberships);
+  },
+  'click #owners .js-new'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.ownership.insert',
+      collection: Memberships,
+      fields: ['person', 'ownership', 'activeTime'],
+      omitFields: ['person.userId'],
+      type: 'method',
+      meteormethod: 'memberships.insert',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #owners .js-edit'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.ownership.update',
+      collection: Memberships,
+      fields: ['person', 'ownership', 'activeTime'],
+      omitFields: ['person.userId'],
+      doc: Memberships.findOne(id),
+      type: 'method-update',
+      meteormethod: 'memberships.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #owners .js-view'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.ownership.view',
+      collection: Memberships,
+      fields: ['person', 'ownership', 'activeTime'],
+      doc: Memberships.findOne(id),
+      type: 'readonly',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #owners .js-delete'(event) {
+    const id = $(event.target).data('id');
+    Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
+      action: 'delete ownership',
+      message: 'You should rather archive it',
+    });
+  },
+  'click #benefactors .js-new'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.benefactorship.insert',
+      collection: Memberships,
+      fields: ['person', 'benefactorship', 'activeTime'],
+      omitFields: ['person.userId'],
+      type: 'method',
+      meteormethod: 'memberships.insert',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #benefactors .js-edit'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.benefactorship.update',
+      collection: Memberships,
+      fields: ['person', 'benefactorship', 'activeTime'],
+      omitFields: ['person.userId'],
+      doc: Memberships.findOne(id),
+      type: 'method-update',
+      meteormethod: 'memberships.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #benefactors .js-view'(event) {
+    const id = $(event.target).data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.benefactorship.view',
+      collection: Memberships,
+      fields: ['person', 'benefactorship', 'activeTime'],
+      doc: Memberships.findOne(id),
+      type: 'readonly',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #benefactors .js-delete'(event) {
+    const id = $(event.target).data('id');
+    Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
+      action: 'delete benefactorship',
+      message: 'You should rather archive it',
+    });
+  },
   // parcel events
   'click .parcels-section .js-import'(event, instance) {
     importCollectionFromFile(Parcels);
+  },
+  'click .parcels-section .js-show-all'(event, instance) {
+    const oldVal = instance.data.showAllParcels.get();
+    instance.data.showAllParcels.set(!oldVal);
   },
   'click .parcels-section .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
@@ -314,36 +474,49 @@ Template.Community_page.events({
       message: 'You should rather archive it',
     });
   },
-  'click .js-join'(event) {
-    AccountsTemplates.forceLogin(() => {
-      Modal.show('Autoform_edit', {
-        title: 'pleaseSupplyParcelData',
-        id: 'af.parcel.insert.unapproved',
-        collection: Parcels,
-//        omitFields: ['serial'],
-        type: 'method',
-        meteormethod: 'parcels.insert',
-        template: 'bootstrap3-inline',
-      });
-      
-/*    This can be used for immediate (no questions asked) joining - with a fixed ownership share
-      const communityId = FlowRouter.current().params._cid;
-      const maxSerial = Math.max.apply(Math, _.pluck(Parcels.find().fetch(), 'serial')) || 0;
-      Meteor.call('parcels.insert',
-        { communityId, approved: false, serial: maxSerial + 1, units: 300, type: 'flat' },
-        (error, result) => { onJoinParcelInsertSuccess(result); },
-      );
-*/
-    });
-  },
 });
 
 AutoForm.addModalHooks('af.roleship.insert');
 AutoForm.addModalHooks('af.roleship.update');
 AutoForm.addHooks('af.roleship.insert', {
   formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
+    doc.communityId = Session.get('template').getCommunityId();
     return doc;
+  },
+});
+
+AutoForm.addModalHooks('af.ownership.insert');
+AutoForm.addModalHooks('af.ownership.update');
+AutoForm.addHooks('af.ownership.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('template').getCommunityId();
+    doc.parcelId = Session.get('template').data.selectedParcelId.get();
+    doc.approved = true;
+    doc.role = 'owner';
+    return doc;
+  },
+});
+AutoForm.addHooks('af.ownership.update', {
+  formToModifier(modifier) {
+    modifier.$set.approved = true;
+    return modifier;
+  },
+});
+AutoForm.addModalHooks('af.benefactorship.insert');
+AutoForm.addModalHooks('af.benefactorship.update');
+AutoForm.addHooks('af.benefactorship.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('template').getCommunityId();
+    doc.parcelId = Session.get('template').data.selectedParcelId.get();
+    doc.approved = true;
+    doc.role = 'benefactor';
+    return doc;
+  },
+});
+AutoForm.addHooks('af.benefactorship.update', {
+  formToModifier(modifier) {
+    modifier.$set.approved = true;
+    return modifier;
   },
 });
 
@@ -351,7 +524,7 @@ AutoForm.addModalHooks('af.parcel.insert');
 AutoForm.addModalHooks('af.parcel.update');
 AutoForm.addHooks('af.parcel.insert', {
   formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
+    doc.communityId = Session.get('template').getCommunityId();
     return doc;
   },
 });
@@ -365,8 +538,7 @@ AutoForm.addHooks('af.parcel.update', {
 AutoForm.addModalHooks('af.parcel.insert.unapproved');
 AutoForm.addHooks('af.parcel.insert.unapproved', {
   formToDoc(doc) {
-    const communityId = FlowRouter.current().params._cid;
-    doc.communityId = communityId;
+    doc.communityId = Session.get('template').getCommunityId();
     doc.approved = false;
     return doc;
   },
