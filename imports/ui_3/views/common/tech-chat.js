@@ -11,9 +11,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import './tech-chat.html';
 
 function getMyTechSupportRoom() {
-  const myUserId = Meteor.userId();
   const communityId = Session.get('activeCommunityId');
-  return Topics.findOne({ communityId, category: 'room', title: 'tech support', participantIds: myUserId });
+  return Topics.findOne({ communityId, category: 'room', title: 'tech support', userId: Meteor.userId() });
 }
 
 Template.Tech_chat.onCreated(function tehcChatOnCreated() {
@@ -44,12 +43,12 @@ Template.Tech_chat.helpers({
   hasUnreadMessages() {
     const room = getMyTechSupportRoom();
     if (!room) return false;
-    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES) > 0;
+    return room.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES) > 0;
   },
   unreadMessagesCount() {
     const room = getMyTechSupportRoom();
     if (!room) return 0;
-    return room.unseenCommentsBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
+    return room.unseenCommentCountBy(Meteor.userId(), Meteor.users.SEEN_BY.EYES);
   },
   sideOfMessage(userId) {
     if (userId === Meteor.userId()) return 'right';
@@ -72,7 +71,7 @@ Template.Tech_chat.events({
     $(event.target).closest('a').children().toggleClass('fa-question').toggleClass('fa-times');
     $('.small-chat-box').toggleClass('active');
     const room = getMyTechSupportRoom();
-    if (room) Meteor.user().hasNowSeen(room._id, Meteor.users.SEEN_BY.EYES);
+    if (room) Meteor.user().hasNowSeen(room._id);
     $('.small-chat-box .content').slimScroll({ scrollTo: ($('.small-chat-box .content')[0].scrollHeight) });
     $('.small-chat-box .slimScrollBar').css('top', '234px');
   },
@@ -96,7 +95,7 @@ Template.Tech_chat.events({
         $('.small-chat-box .slimScrollBar').css('top', '234px'); 
         // if ($(window).width() > 768) $('.js-focused').focus();
       }));
-      Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
+      Meteor.user().hasNowSeen(roomId);
     };
 
     if (room) {
@@ -107,7 +106,7 @@ Template.Tech_chat.events({
       Meteor.call('topics.insert', {
         communityId,
         userId: Meteor.userId(),
-        participantIds: [Meteor.userId(), community.techsupport()._id],
+        participantIds: [Meteor.userId()],
         category: 'room',
         title: 'tech support',
       }, onSuccess((res) => {

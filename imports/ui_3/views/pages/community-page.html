@@ -24,7 +24,7 @@
                                 {{#if userHasPermission 'roleships.update' communityId}}
                                 <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                                 {{#unless accepted}}
-                                <button class="btn btn-xs {{#if Person.userId}}btn-warning{{else}}btn-danger{{/if}} js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
+                                <button class="btn btn-xs {{#if personId}}btn-info{{else}}btn-warning{{/if}} js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
                                 {{/unless}}
                                 {{/if}}
                                 {{#if userHasPermission 'roleships.remove' communityId}}
@@ -123,6 +123,7 @@
                 </div>
             </div>
         </div>
+        {{#if Template.subscriptionsReady}}
         {{#if userHasPermission 'memberships.inCommunity' communityId}}
         <div class="row">
             <div class="col-lg-12">
@@ -173,6 +174,7 @@
                 </div>
             </div>
         </div>
+        {{/if}}
         {{/if}}
     </div>
 </template>

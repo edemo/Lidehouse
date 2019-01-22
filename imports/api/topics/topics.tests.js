@@ -1,23 +1,40 @@
 /* eslint-env mocha */
 /* eslint-disable func-names, prefer-arrow-callback */
 
+import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
+import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { Factory } from 'meteor/dburles:factory';
 import { PublicationCollector } from 'meteor/johanbrook:publication-collector';
-import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { Random } from 'meteor/random';
-import { Meteor } from 'meteor/meteor';
-import { _ } from 'meteor/underscore';
 import { DDP } from 'meteor/ddp-client';
+import { _ } from 'meteor/underscore';
 import { Topics } from './topics.js';
-import { insert, makePublic, makePrivate, updateName, remove } from './methods.js';
 import { Comments } from '../comments/comments.js';
+import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import '../../../i18n/en.i18n.json';
 
 if (Meteor.isServer) {
   // eslint-disable-next-line import/no-unresolved
+  import { updateMyLastSeen } from '/imports/api/users/methods.js';
+  import '/imports/api/comments/methods.js';
+  import './methods.js';
   import './publications.js';
 
+  let Fixture;
+  // Mock version of the real client's helper function
+  const userHasNowSeen = function (userId, topicId) {
+    const topic = Topics.findOne(topicId);
+    const lastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
+    updateMyLastSeen._execute({ userId }, { topicId, lastSeenInfo });
+  };
+
   describe('topics', function () {
+    this.timeout(5000);
+    before(function () {
+      Fixture = freshFixture();
+    });
+
     describe('publications', function () {
       before(function () {
       });
@@ -28,169 +45,113 @@ if (Meteor.isServer) {
         });
       });
     });
-/*
+
     describe('methods', function () {
       let topicId;
       let commentId;
       let otherTopicId;
       let userId;
 
-      beforeEach(function () {
-        // Clear
-        Topics.remove({});
-        Comments.remove({});
+      describe('notifications', function () {
+        before(function () {
+          // Clear
+          Topics.remove({});
+          Comments.remove({});
 
-        // Create a topic and a comment in that topic
-        topicId = Factory.create('topic')._id;
-        commentId = Factory.create('comment', { topicId })._id;
+          userId = Fixture.demoUserId;
 
-        // Create throwaway topic, since the last public topic can't be made private
-        otherTopicId = Factory.create('topic')._id;
-
-        // Generate a 'user'
-        userId = Random.id();
-      });
-
-      describe('makePrivate / makePublic', function () {
-        function assertTopicAndCommentArePrivate() {
-          assert.equal(Topics.findOne(topicId).userId, userId);
-          assert.isTrue(Topics.findOne(topicId).isPrivate());
-          assert.isTrue(Comments.findOne(commentId).editableBy(userId));
-          assert.isFalse(Comments.findOne(commentId).editableBy(Random.id()));
-        }
-
-        it('makes a topic private and updates the comments', function () {
-          // Check initial state is public
-          assert.isFalse(Topics.findOne(topicId).isPrivate());
-
-          // Set up method arguments and context
-          const methodInvocation = { userId };
-          const args = { topicId };
-
-          // Making the topic private adds userId to the comment
-          makePrivate._execute(methodInvocation, args);
-          assertTopicAndCommentArePrivate();
-
-          // Making the topic public removes it
-          makePublic._execute(methodInvocation, args);
-          assert.isUndefined(Comments.findOne(commentId).userId);
-          assert.isTrue(Comments.findOne(commentId).editableBy(userId));
-        });
-
-        it('only works if you are logged in', function () {
-          // Set up method arguments and context
-          const methodInvocation = { };
-          const args = { topicId };
-
-          assert.throws(() => {
-            makePrivate._execute(methodInvocation, args);
-          }, Meteor.Error, /topics.makePrivate.notLoggedIn/);
-
-          assert.throws(() => {
-            makePublic._execute(methodInvocation, args);
-          }, Meteor.Error, /topics.makePublic.notLoggedIn/);
-        });
-
-        it('only works if it\'s not the last public topic', function () {
-          // Remove other topic, now we're the last public topic
-          Topics.remove(otherTopicId);
-
-          // Set up method arguments and context
-          const methodInvocation = { userId };
-          const args = { topicId };
-
-          assert.throws(() => {
-            makePrivate._execute(methodInvocation, args);
-          }, Meteor.Error, /topics.makePrivate.lastPublicTopic/);
-        });
-
-        it('only makes the topic public if you made it private', function () {
-          // Set up method arguments and context
-          const methodInvocation = { userId };
-          const args = { topicId };
-
-          makePrivate._execute(methodInvocation, args);
-
-          const otherUserMethodInvocation = { userId: Random.id() };
-
-          // Shouldn't do anything
-          assert.throws(() => {
-            makePublic._execute(otherUserMethodInvocation, args);
-          }, Meteor.Error, /topics.makePublic.accessDenied/);
-
-          // Make sure things are still private
-          assertTopicAndCommentArePrivate();
-        });
-      });
-
-      describe('updateName', () => {
-        it('changes the name, but not if you don\'t have permission', function () {
-          updateName._execute({}, {
-            topicId,
-            newName: 'new name',
+          // Create a topic and a comment in that topic
+          topicId = Topics.methods.insert._execute({ userId }, {
+            communityId: Fixture.demoCommunityId,
+            userId,
+            category: 'forum',
+            title: 'Just a topic',
+            text: 'Not much to say',
           });
+        });
 
-          assert.equal(Topics.findOne(topicId).name, 'new name');
+        it('notifies on new topic', function (done) {
+          const topic = Topics.findOne(topicId);
+          chai.assert.isTrue(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
+          done();
+        });
 
-          // Make the topic private
-          makePrivate._execute({ userId }, { topicId });
+        it('doesn\'t notify on seen topic', function (done) {
+          const user = Meteor.users.findOne(userId);
+          userHasNowSeen(userId, topicId);
+          
+          const topic = Topics.findOne(topicId);
+          chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
+          done();
+        });
 
-          // Works if the owner changes the name
-          updateName._execute({ userId }, {
-            topicId,
-            newName: 'new name 2',
-          });
+        it('notifies on new comment', function (done) {
+          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 1' });
 
-          assert.equal(Topics.findOne(topicId).name, 'new name 2');
+          const topic = Topics.findOne(topicId);
+          chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
+          chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 1);
+          const unseenComments = topic.unseenCommentListBy(userId, Meteor.users.SEEN_BY.NOTI);
+          chai.assert.equal(unseenComments[0].text, 'comment 1');
+          done();
+        });
 
-          // Throws if another user, or logged out user, tries to change the name
-          assert.throws(() => {
-            updateName._execute({ userId: Random.id() }, {
-              topicId,
-              newName: 'new name 3',
-            });
-          }, Meteor.Error, /topics.updateName.accessDenied/);
+        it('doesn\'t notify on seen comment', function (done) {
+          const user = Meteor.users.findOne(userId);
+          userHasNowSeen(userId, topicId);
 
-          assert.throws(() => {
-            updateName._execute({}, {
-              topicId,
-              newName: 'new name 3',
-            });
-          }, Meteor.Error, /topics.updateName.accessDenied/);
+          const topic = Topics.findOne(topicId);
+          chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 0);
+          done();
+        });
 
-          // Confirm name didn't change
-          assert.equal(Topics.findOne(topicId).name, 'new name 2');
+        it('notifies on several new comments', function (done) {
+          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 2' });
+          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 3' });
+
+          const topic = Topics.findOne(topicId);
+          chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 2);
+          const unseenComments = topic.unseenCommentListBy(userId, Meteor.users.SEEN_BY.NOTI);
+          chai.assert.equal(unseenComments[0].text, 'comment 2');
+          chai.assert.equal(unseenComments[1].text, 'comment 3');
+          done();
+        });
+
+        it('doesn\'t notify after several seen comment', function (done) {
+          const user = Meteor.users.findOne(userId);
+          userHasNowSeen(userId, topicId);
+
+          const topic = Topics.findOne(topicId);
+          chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 0);
+          done();
+        });
+
+        it('notifies on new comment even if meanwhile there is a deleted comment', function (done) {
+          const deleteComment = Comments.findOne({ text: 'comment 3' });
+          Comments.methods.remove._execute({ userId }, { _id: deleteComment._id });
+          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 4' });
+
+          const topic = Topics.findOne(topicId);
+          chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 1);
+          const unseenComments = topic.unseenCommentListBy(userId, Meteor.users.SEEN_BY.NOTI);
+          chai.assert.equal(unseenComments[0].text, 'comment 4');
+          done();
+        });
+
+        it('notifies new users', function (done) {
+          const newUserId = Accounts.createUser({ email: 'newuser@honline.hu', password: 'password' });
+
+          const topic = Topics.findOne(topicId);
+          chai.assert.isTrue(topic.isUnseenBy(newUserId, Meteor.users.SEEN_BY.NOTI));
+          chai.assert.equal(topic.unseenCommentCountBy(newUserId, Meteor.users.SEEN_BY.NOTI), 3);
+          const unseenComments = topic.unseenCommentListBy(newUserId, Meteor.users.SEEN_BY.NOTI);
+          chai.assert.equal(unseenComments[0].text, 'comment 1');
+          chai.assert.equal(unseenComments[1].text, 'comment 2');
+          chai.assert.equal(unseenComments[2].text, 'comment 4');   // 3 was deleted
+          done();
         });
       });
-
-      describe('remove', function () {
-        it('does not delete the last public topic', function () {
-          const methodInvocation = { userId };
-
-          // Works fine
-          remove._execute(methodInvocation, { topicId: otherTopicId });
-
-          // Should throw because it is the last public topic
-          assert.throws(() => {
-            remove._execute(methodInvocation, { topicId });
-          }, Meteor.Error, /topics.remove.lastPublicTopic/);
-        });
-
-        it('does not delete a private topic you don\'t own', function () {
-          // Make the topic private
-          makePrivate._execute({ userId }, { topicId });
-
-          // Throws if another user, or logged out user, tries to delete the topic
-          assert.throws(() => {
-            remove._execute({ userId: Random.id() }, { topicId });
-          }, Meteor.Error, /topics.remove.accessDenied/);
-
-          assert.throws(() => {
-            remove._execute({}, { topicId });
-          }, Meteor.Error, /topics.remove.accessDenied/);
-        });
-      });
-
+      /*
       describe('rate limiting', function () {
         it('does not allow more than 5 operations rapidly', function () {
           const connection = DDP.connect(Meteor.absoluteUrl());
@@ -206,6 +167,7 @@ if (Meteor.isServer) {
           connection.disconnect();
         });
       });
-    });*/
+      */
+    });
   });
 }

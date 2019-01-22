@@ -45,7 +45,9 @@ function communityPublication(userId, _id) {
       children: [{
         // Publish the User of the Membership
         find(membership) {
-          return Meteor.users.find({ _id: membership.person.userId }, { fields: Meteor.users.publicFields });
+          const showFields = Meteor.users.publicFields;
+          if (hasPermission('memberships.details')) showFields.emails = 1;  // to be able to resend invites
+          return Meteor.users.find({ _id: membership.person.userId }, { fields: showFields });
         },
       }],
     }, {

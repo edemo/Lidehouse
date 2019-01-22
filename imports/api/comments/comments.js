@@ -14,8 +14,6 @@ class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
     const result = super.insert(doc, callback);
     Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
-    // NOTE: the commentCounter does NOT decrease when a comment is removed
-    // this is so that we are notified on new comments, even if some old comments were removed meanwhile
     return result;
   }
   update(selector, modifier, options, callback) {
@@ -23,6 +21,8 @@ class CommentsCollection extends Mongo.Collection {
     return result;
   }
   remove(selector, callback) {
+    const selection = this.find(selector);
+    selection.forEach(comment => Topics.update(comment.topicId, { $inc: { commentCounter: -1 } }));
     const result = super.remove(selector, callback);
     return result;
   }

@@ -119,13 +119,9 @@ Template.Parcel_owners_page.events({
   'click .js-invite'(event, instance) {
     const _id = $(event.target).data('id');
     const membership = Memberships.findOne(_id);
-    if (!membership.person || !membership.person.contact || !membership.person.contact.email) {
-      displayMessage('warning', __('No contact email set for this membership'));
-      return;
-    }
     Modal.confirmAndCall(Memberships.methods.linkUser, { _id }, {
       action: 'invite user',
-      message: __('Connecting user', membership.person.contact.email),
+      message: __('Connecting user', membership.Person().primaryEmail() || __('undefined')),
     });
   },
   'click #owners .js-new'(event, instance) {

@@ -26,7 +26,7 @@ Template.Comments_section.onRendered(function chatboxOnRendered() {
     handler() {
       const topicId = this.element.dataset.id;
       // displayMessage('info', `You just seen ${topicId}`); // debug
-      Meteor.user().hasNowSeen(topicId, Meteor.users.SEEN_BY.EYES);
+      Meteor.user().hasNowSeen(topicId);
     },
     offset: '80%',
   });
@@ -54,13 +54,14 @@ Template.Comments_section.helpers({
 
 Template.Comments_section.events({
   'keydown .js-send-enter'(event) {
+    const topicId = this._id;
+    const userId = Meteor.userId();
     if (event.keyCode === 13 && !event.shiftKey) {
       const textarea = event.target;
-      insertComment.call({
-        topicId: this._id,
-        userId: Meteor.userId(),
-        text: textarea.value,
-      }, onSuccess(res => textarea.value = '')
+      insertComment.call({ topicId, userId, text: textarea.value },
+        onSuccess((res) => {
+          textarea.value = '';
+        })
       );
     }
   },
@@ -121,7 +122,7 @@ Template.Comment.events({
       event.preventDefault();
       const editedText = $('#editableSpan > textarea').val();
       updateComment.call({
-        commentId: instance.data._id,
+        _id: instance.data._id,
         modifier: { $set: { text: editedText } },
       }, handleError);
       $('#editableSpan').remove();
@@ -129,7 +130,7 @@ Template.Comment.events({
     }
   },
   'click .js-delete'(event, instance) {
-    Modal.confirmAndCall(removeComment, { commentId: this._id }, {
+    Modal.confirmAndCall(removeComment, { _id: this._id }, {
       action: 'delete comment',
       message: 'It will disappear forever',
     });

@@ -9,14 +9,18 @@ import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions }
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from './memberships.js';
 
-function checkSanityOfTotalShare(parcelId, totalShare, representorCount) {
+function checkSanityOfTotalShare(parcel, totalShare, representorCount) {
   if (totalShare.numerator > totalShare.denominator) {
     throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1',
-      `New total shares would become: ${totalShare}, for parcel ${parcelId}`);
+      `New total shares would become: ${totalShare}, for parcel ${parcel._id}`);
   }
   if (representorCount > 1) {
     throw new Meteor.Error('err_sanityCheckFailed', 'Parcel can have only one representor',
-      `Trying to set ${representorCount} for parcel ${parcelId}`);
+      `Trying to set ${representorCount} for parcel ${parcel._id}`);
+  }
+  if (parcel.isLed()) {
+    throw new Meteor.Error('err_sanityCheckFailed', 'Parcel cannot have lead and owners at the same time',
+      `for parcel ${parcel._id}`);
   }
 }
 
@@ -42,7 +46,7 @@ export const insert = new ValidatedMethod({
         const newTotal = total.add(doc.ownership.share);
         const representorCount = parcel.representors().count();
         const newRepresentorCount = representorCount + doc.ownership.representor ? 1 : 0;
-        checkSanityOfTotalShare(doc.parcelId, newTotal, newRepresentorCount);
+        checkSanityOfTotalShare(parcel, newTotal, newRepresentorCount);
       }
     }
     if (doc.person.userId) {  // Tryng to create a linked membership
@@ -77,13 +81,13 @@ export const update = new ValidatedMethod({
     if (newrole && newrole !== doc.role) {
       checkAddMemberPermissions(this.userId, doc.communityId, newrole);
     }
-    if (doc.role === 'owner' && modifier.$set.active) {
+    if (doc.role === 'owner' && (modifier.$set.active || doc.active)) {
       const parcel = Parcels.findOne({ _id: doc.parcelId });
       const total = parcel.ownedShare();
       const newTotal = total.subtract(doc.active ? doc.ownership.share : 0).add(modifier.$set['ownership.share']);
       const representorCount = parcel.representors().count();
       const newRepresentorCount = representorCount - (doc.active && doc.ownership.representor ? 1 : 0) + (modifier.$set['ownership.representor'] ? 1 : 0);
-      checkSanityOfTotalShare(doc.parcelId, newTotal, newRepresentorCount);
+      checkSanityOfTotalShare(parcel, newTotal, newRepresentorCount);
     }
     // This check is not good, if we have activePeriods (same guy can have same role at a different time)
     // checkNotExists(Memberships, { _id: { $ne: doc._id }, communityId: doc.communityId, role: newrole, parcelId: doc.parcelId, person: newPerson });
@@ -100,9 +104,9 @@ export const linkUser = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-    const email = doc.person && doc.person.contact && doc.person.contact.email;
+    const email = doc.Person().primaryEmail();
     if (!email) throw new Meteor.Error('No contact email set for this membership', doc);
-    if (Meteor.isClient) return;  // Not possible to find and link users on the client side, as no user data available
+    if (this.isSimulation) return;  // Not possible to find and link users on the client side, as no user data available
 
     if (doc.person.userId) {
       const linkedUser = Meteor.users.findOne(doc.person.userId);

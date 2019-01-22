@@ -195,7 +195,7 @@ Meteor.users.helpers({
   },
   communities() {
     const memberships = Memberships.find({ approved: true, active: true, personId: this._id }).fetch();
-    const communityIds = _.pluck(memberships, 'communityId');
+    const communityIds = _.uniq(_.pluck(memberships, 'communityId'));
     const communities = Communities.find({ _id: { $in: communityIds } });
     // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;

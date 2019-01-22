@@ -74,7 +74,7 @@ Template.Message_history.onRendered(function tmplMsgBoxOnRendered() {
     $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
     const roomId = FlowRouter.getParam('_rid');
     if (this.subscriptionsReady()) {
-      Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
+      Meteor.user().hasNowSeen(roomId);
     }
   });
 
@@ -107,7 +107,6 @@ Template.Message_send.events({
       text,
     },
     onSuccess((res) => {
-      Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
       textarea.value = '';
       if ($(window).width() > 768) $('.js-focused').focus();
     }));
