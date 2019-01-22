@@ -79,6 +79,11 @@ Template.Community_page.viewmodel({
     const community = this.community();
     return `${__('Community page')} - ${community ? community.name : ''}`;
   },
+  parcelDisplay() {
+    const parcelId = this.selectedParcelId();
+    const parcel = Parcels.findOne(parcelId);
+    return parcel ? parcel.display() : __('unknown');
+  },
 /*  thingsToDisplayWithCounter() {
     const result = [];
     const communityId = Template.instance().getCommunityId();

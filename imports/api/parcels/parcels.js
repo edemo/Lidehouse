@@ -92,7 +92,7 @@ Parcels.helpers({
     return this.representors().fetch()[0];
   },
   display() {
-    return `${this.ref || '?'} ${__(this.type)} (${this.location()})`;
+    return `${this.ref || '?'} (${this.location()}) ${__(this.type)}`;
   },
   toString() {
     return this.ref || this.location();

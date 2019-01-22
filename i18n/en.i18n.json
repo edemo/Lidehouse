@@ -71,6 +71,8 @@
     // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",
+  "Parcel owners list": "Owners of parcel %s",
+  "Parcel benefactors list": "Benefactors of parcel %s",
 
   // topics
   "Hide comments from": "Hide comments from %s",
