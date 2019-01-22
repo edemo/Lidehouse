@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
+import { Tracker } from 'meteor/tracker';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { ReactiveVar } from 'meteor/reactive-var';
@@ -52,6 +53,7 @@ Template.Community_page.onDestroyed(function onDestroyed() {
 
 Template.Community_page.viewmodel({
   showAllParcels: false,
+  reactive: false,
   communityId: null,
   selectedParcelId: null,
   selectedMemberId: null,
@@ -159,7 +161,13 @@ Template.Community_page.viewmodel({
   },
   parcelsTableDataFn() {
     const self = this;
-    return () => {
+    const callReactivelyOrNot = function(func) {
+      return function(params) {
+        if (self.reactive()) return func(params);
+        else return Tracker.nonreactive(func.bind(params));
+      };
+    };
+    return callReactivelyOrNot(() => {
       const communityId = self.communityId();
       let parcels = Parcels.find({ communityId, approved: true }).fetch();
       if (!self.showAllParcels()) {
@@ -167,7 +175,7 @@ Template.Community_page.viewmodel({
         parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
       }
       return parcels;
-    };
+    });
   },
   parcelsOptionsFn() {
     const self = this;
