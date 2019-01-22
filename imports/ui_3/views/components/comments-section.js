@@ -21,12 +21,12 @@ Template.Comments_section.onCreated(function commentsSectionOnCreated() {
 });
 
 Template.Comments_section.onRendered(function chatboxOnRendered() {
-  const comments = $('.social-comment');
-  const topicId = this.data._id;
+  const comments = this.findAll('.social-comment');
   for (let i = 0; i < comments.length; i += 1) {
     this.waypoint = new Waypoint({
       element: comments[i],
       handler: () => {
+        const topicId = this.data._id;
         Meteor.user().hasNowSeen(topicId);
       },
       continuous: false,
