@@ -35,12 +35,11 @@ import './community-page.html';
 Template.Community_page.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   const user = Meteor.user();
-  this.data.selectedParcelId = new ReactiveVar(null);
-  this.data.selectedMemberId = new ReactiveVar(null);
   const showAllParcelsDefault = Parcels.find().count() <= 25 || (user && user.hasPermission('parcels.insert', this.getCommunityId()));
   this.data.showAllParcels = new ReactiveVar(!!showAllParcelsDefault);
   this.autorun(() => {
     const communityId = this.getCommunityId();
+    Session.set('selectedCommunityId', communityId);
     this.subscribe('communities.byId', { _id: communityId });
   });
 });
@@ -50,11 +49,9 @@ Template.Community_page.onRendered(function onRendered() {
   $('.full-height-scroll').slimscroll({
       height: '100%'
   });
-  Session.set('template', this);
 });
 
 Template.Community_page.onDestroyed(function onDestroyed() {
-  Session.set('template', undefined);
 });
 
 
@@ -94,52 +91,52 @@ Template.Community_page.helpers({
     return result;
   },*/
   leaders() {
-    const communityId = Template.instance().getCommunityId();
+    const communityId = Session.get('selectedCommunityId');
     return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } });
   },
   nonLeaders() {
-    const communityId = Template.instance().getCommunityId();
+    const communityId = Session.get('selectedCommunityId');
     return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } });
   },
   officers() {
-    const communityId = Template.instance().getCommunityId();
+    const communityId = Session.get('selectedCommunityId');
     return Memberships.find({ communityId, active: true, role: { $in: officerRoles } });
   },
   ownerships() {
-    const communityId = Template.instance().getCommunityId();
-    const parcelId = this.selectedParcelId.get();
+    const communityId = Session.get('selectedCommunityId');
+    const parcelId = Session.get('selectedParcelId');
     return Memberships.find({ communityId, active: true, role: 'owner', parcelId, approved: true });
   },
   unapprovedOwnerships() {
-    const communityId = Template.instance().getCommunityId();
-    const parcelId = this.selectedParcelId.get();
+    const communityId = Session.get('selectedCommunityId');
+    const parcelId = Session.get('selectedParcelId');
     return Memberships.find({ communityId, role: 'owner', parcelId, approved: false });
   },
   archivedOwnerships() {
-    const communityId = Template.instance().getCommunityId();
-    const parcelId = this.selectedParcelId.get();
+    const communityId = Session.get('selectedCommunityId');
+    const parcelId = Session.get('selectedParcelId');
     return Memberships.find({ communityId, role: 'owner', parcelId, active: false });
   },
   benefactorships() {
-    const communityId = Template.instance().getCommunityId();
-    const parcelId = this.selectedParcelId.get();
+    const communityId = Session.get('selectedCommunityId');
+    const parcelId = Session.get('selectedParcelId');
     return Memberships.find({ communityId, active: true, role: 'benefactor', parcelId, approved: true });
   },
   unapprovedBenefactorships() {
-    const communityId = Template.instance().getCommunityId();
-    const parcelId = this.selectedParcelId.get();
+    const communityId = Session.get('selectedCommunityId');
+    const parcelId = Session.get('selectedParcelId');
     return Memberships.find({ communityId, role: 'benefactor', parcelId, approved: false });
   },
   archivedBenefactorships() {
-    const communityId = Template.instance().getCommunityId();
-    const parcelId = this.selectedParcelId.get();
+    const communityId = Session.get('selectedCommunityId');
+    const parcelId = Session.get('selectedParcelId');
     return Memberships.find({ communityId, role: 'benefactor', parcelId, active: false });
   },
   activeTabClass(index) {
     return index === 0 ? 'active' : '';
   },
   parcelTypesWithCount() {
-    const communityId = Template.instance().getCommunityId();
+    const communityId = Session.get('selectedCommunityId');
     const parcels = Parcels.find({ communityId }).fetch();
     const sumsResult = _(parcels).reduce(function (sums, parcel) {
       sums[parcel.type] = (sums[parcel.type] || 0) + 1;
@@ -154,7 +151,7 @@ Template.Community_page.helpers({
   parcelsTableDataFn() {
     const templateInstance = Template.instance();
     return () => {
-      const communityId = templateInstance.getCommunityId();
+      const communityId = Session.get('selectedCommunityId');
       let parcels = Parcels.find({ communityId, approved: true }).fetch();
       if (!templateInstance.data.showAllParcels.get()) {
         const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
@@ -164,9 +161,8 @@ Template.Community_page.helpers({
     };
   },
   parcelsOptionsFn() {
-    const templateInstance = Template.instance();
     return () => {
-      const communityId = templateInstance.getCommunityId();
+      const communityId = Session.get('selectedCommunityId');
       const permissions = {
         view: Meteor.userOrNull().hasPermission('parcels.inCommunity', communityId),
         edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
@@ -202,22 +198,22 @@ Template.Community_page.helpers({
     };
   },
   parcels() {
-    const communityId = Template.instance().getCommunityId();
+    const communityId = Session.get('selectedCommunityId');
     return Parcels.find({ communityId, approved: true });
   },
   unapprovedParcels() {
-    const communityId = Template.instance().getCommunityId();
+    const communityId = Session.get('selectedCommunityId');
     return Parcels.find({ communityId, approved: false });
   },
   unapprovedParcelsTableDataFn() {
-    const templateInstance = Template.instance();
     return () => {
-      const communityId = templateInstance.getCommunityId();
+      const communityId = Session.get('selectedCommunityId');
       return Parcels.find({ communityId, approved: false }).fetch();
     };
   },
   member() {
-    return Memberships.findOne(this.selectedMemberId.get());
+    const memberId = Session.get('selectedMemberId');
+    return Memberships.findOne(memberId);
   },
 });
 
@@ -249,8 +245,9 @@ function onJoinParcelInsertSuccess(parcelId) {
 
 Template.Community_page.events({
   'click .js-assign'(event, instance) {
+//    event.preventDefault();
     const id = $(event.target).closest('button').data('id');
-    instance.data.selectedParcelId.set(id);
+    Session.set('selectedParcelId', id);
   },
   'click .js-invite'(event, instance) {
     const _id = $(event.target).data('id');
@@ -480,7 +477,7 @@ AutoForm.addModalHooks('af.roleship.insert');
 AutoForm.addModalHooks('af.roleship.update');
 AutoForm.addHooks('af.roleship.insert', {
   formToDoc(doc) {
-    doc.communityId = Session.get('template').getCommunityId();
+    doc.communityId = Session.get('selectedCommunityId');
     return doc;
   },
 });
@@ -489,8 +486,8 @@ AutoForm.addModalHooks('af.ownership.insert');
 AutoForm.addModalHooks('af.ownership.update');
 AutoForm.addHooks('af.ownership.insert', {
   formToDoc(doc) {
-    doc.communityId = Session.get('template').getCommunityId();
-    doc.parcelId = Session.get('template').data.selectedParcelId.get();
+    doc.communityId = Session.get('selectedCommunityId');
+    doc.parcelId = Session.get('selectedParcelId');
     doc.approved = true;
     doc.role = 'owner';
     return doc;
@@ -506,8 +503,8 @@ AutoForm.addModalHooks('af.benefactorship.insert');
 AutoForm.addModalHooks('af.benefactorship.update');
 AutoForm.addHooks('af.benefactorship.insert', {
   formToDoc(doc) {
-    doc.communityId = Session.get('template').getCommunityId();
-    doc.parcelId = Session.get('template').data.selectedParcelId.get();
+    doc.communityId = Session.get('selectedCommunityId');
+    doc.parcelId = Session.get('selectedParcelId');
     doc.approved = true;
     doc.role = 'benefactor';
     return doc;
@@ -524,7 +521,7 @@ AutoForm.addModalHooks('af.parcel.insert');
 AutoForm.addModalHooks('af.parcel.update');
 AutoForm.addHooks('af.parcel.insert', {
   formToDoc(doc) {
-    doc.communityId = Session.get('template').getCommunityId();
+    doc.communityId = Session.get('selectedCommunityId');
     return doc;
   },
 });
@@ -538,7 +535,7 @@ AutoForm.addHooks('af.parcel.update', {
 AutoForm.addModalHooks('af.parcel.insert.unapproved');
 AutoForm.addHooks('af.parcel.insert.unapproved', {
   formToDoc(doc) {
-    doc.communityId = Session.get('template').getCommunityId();
+    doc.communityId = Session.get('selectedCommunityId');
     doc.approved = false;
     return doc;
   },

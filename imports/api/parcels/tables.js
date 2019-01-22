@@ -27,11 +27,11 @@ Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, rend
   }
 
   let html = '';
-//  html += `<a href="#occupants">`;
+  html += `<a href="#occupants">`;
   html += `<button data-id=${cellData} title=${__('assign')} class="btn btn-white btn-xs js-assign">`;
   html += `<i class="fa ${userIcon} ${colorClass}"></i>`;
   html += `</button>`;
-//  html += `</a>`;
+  html += `</a>`;
   return html;
 };
 
