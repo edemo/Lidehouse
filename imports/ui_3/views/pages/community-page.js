@@ -35,14 +35,9 @@ import './community-page.html';
 
 Template.Community_page.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
-  const user = Meteor.user();
-  const showAllParcelsDefault = Parcels.find().count() <= 25 || (user && user.hasPermission('parcels.insert', this.getCommunityId()));
-  this.data.showAllParcels = new ReactiveVar(!!showAllParcelsDefault);
-  this.autorun(() => {
-    const communityId = this.getCommunityId();
-    Session.set('selectedCommunityId', communityId);
-    this.subscribe('communities.byId', { _id: communityId });
-  });
+  this.autorun(() =>
+    this.subscribe('communities.byId', { _id: this.getCommunityId() })
+  );
 });
 
 Template.Community_page.onRendered(function onRendered() {
@@ -55,26 +50,34 @@ Template.Community_page.onRendered(function onRendered() {
 Template.Community_page.onDestroyed(function onDestroyed() {
 });
 
-
-Template.Community_page.helpers({
-  title() {
-    const communityId = Template.instance().getCommunityId();
-    const community = Communities.findOne({ _id: communityId });
-    return `${__('Community page')} - ${community ? community.name : ''}`;
+Template.Community_page.viewmodel({
+  showAllParcels: false,
+  communityId: null,
+  selectedParcelId: null,
+  selectedMemberId: null,
+  onCreated() {
+    this.communityId(this.templateInstance.getCommunityId());
   },
-  communityId() {
-    return Template.instance().getCommunityId();
+  onRendered() {
+    const user = Meteor.user();
+    const showAllParcelsDefault = Parcels.find().count() <= 25
+      || (user && user.hasPermission('parcels.insert', this.templateInstance.getCommunityId()));
+    this.showAllParcels(!!showAllParcelsDefault);
+  },
+  autorun() {
+    // Autoform modals cannot see the viewmodel, so this must be copied to the Session
+    Session.set('selectedCommunityId', this.communityId());
+    Session.set('selectedParcelId', this.selectedParcelId());
   },
   community() {
-    const communityId = Template.instance().getCommunityId();
-    const community = Communities.findOne(communityId);
-    return community;
+    return Communities.findOne(this.communityId());
   },
   communities() {
     return Communities;
   },
-  autoformType(communityId) {
-    return Meteor.userOrNull().hasPermission('communities.update', communityId) ? 'method-update' : 'readonly';
+  title() {
+    const community = this.community();
+    return `${__('Community page')} - ${community ? community.name : ''}`;
   },
 /*  thingsToDisplayWithCounter() {
     const result = [];
@@ -92,52 +95,52 @@ Template.Community_page.helpers({
     return result;
   },*/
   leaders() {
-    const communityId = Session.get('selectedCommunityId');
+    const communityId = this.communityId();
     return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } });
   },
   nonLeaders() {
-    const communityId = Session.get('selectedCommunityId');
+    const communityId = this.communityId();
     return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } });
   },
   officers() {
-    const communityId = Session.get('selectedCommunityId');
+    const communityId = this.communityId();
     return Memberships.find({ communityId, active: true, role: { $in: officerRoles } });
   },
   ownerships() {
-    const communityId = Session.get('selectedCommunityId');
-    const parcelId = Session.get('selectedParcelId');
+    const communityId = this.communityId();
+    const parcelId = this.selectedParcelId();
     return Memberships.find({ communityId, active: true, role: 'owner', parcelId, approved: true });
   },
   unapprovedOwnerships() {
-    const communityId = Session.get('selectedCommunityId');
-    const parcelId = Session.get('selectedParcelId');
+    const communityId = this.communityId();
+    const parcelId = this.selectedParcelId();
     return Memberships.find({ communityId, role: 'owner', parcelId, approved: false });
   },
   archivedOwnerships() {
-    const communityId = Session.get('selectedCommunityId');
-    const parcelId = Session.get('selectedParcelId');
+    const communityId = this.communityId();
+    const parcelId = this.selectedParcelId();
     return Memberships.find({ communityId, role: 'owner', parcelId, active: false });
   },
   benefactorships() {
-    const communityId = Session.get('selectedCommunityId');
-    const parcelId = Session.get('selectedParcelId');
+    const communityId = this.communityId();
+    const parcelId = this.selectedParcelId();
     return Memberships.find({ communityId, active: true, role: 'benefactor', parcelId, approved: true });
   },
   unapprovedBenefactorships() {
-    const communityId = Session.get('selectedCommunityId');
-    const parcelId = Session.get('selectedParcelId');
+    const communityId = this.communityId();
+    const parcelId = this.selectedParcelId();
     return Memberships.find({ communityId, role: 'benefactor', parcelId, approved: false });
   },
   archivedBenefactorships() {
-    const communityId = Session.get('selectedCommunityId');
-    const parcelId = Session.get('selectedParcelId');
+    const communityId = this.communityId();
+    const parcelId = this.selectedParcelId();
     return Memberships.find({ communityId, role: 'benefactor', parcelId, active: false });
   },
   activeTabClass(index) {
     return index === 0 ? 'active' : '';
   },
   parcelTypesWithCount() {
-    const communityId = Session.get('selectedCommunityId');
+    const communityId = this.communityId();
     const parcels = Parcels.find({ communityId }).fetch();
     const sumsResult = _(parcels).reduce(function (sums, parcel) {
       sums[parcel.type] = (sums[parcel.type] || 0) + 1;
@@ -150,11 +153,11 @@ Template.Community_page.helpers({
     return result;
   },
   parcelsTableDataFn() {
-    const templateInstance = Template.instance();
+    const self = this;
     return () => {
-      const communityId = Session.get('selectedCommunityId');
+      const communityId = self.communityId();
       let parcels = Parcels.find({ communityId, approved: true }).fetch();
-      if (!templateInstance.data.showAllParcels.get()) {
+      if (!self.showAllParcels()) {
         const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
         parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
       }
@@ -162,8 +165,9 @@ Template.Community_page.helpers({
     };
   },
   parcelsOptionsFn() {
+    const self = this;
     return () => {
-      const communityId = Session.get('selectedCommunityId');
+      const communityId = self.communityId();
       const permissions = {
         view: Meteor.userOrNull().hasPermission('parcels.inCommunity', communityId),
         edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
@@ -199,21 +203,22 @@ Template.Community_page.helpers({
     };
   },
   parcels() {
-    const communityId = Session.get('selectedCommunityId');
+    const communityId = this.communityId();
     return Parcels.find({ communityId, approved: true });
   },
   unapprovedParcels() {
-    const communityId = Session.get('selectedCommunityId');
+    const communityId = this.communityId();
     return Parcels.find({ communityId, approved: false });
   },
   unapprovedParcelsTableDataFn() {
+    const self = this;
     return () => {
-      const communityId = Session.get('selectedCommunityId');
+      const communityId = self.communityId();
       return Parcels.find({ communityId, approved: false }).fetch();
     };
   },
   selectedMember() {
-    const memberId = Session.get('selectedMemberId');
+    const memberId = this.selectedMemberId();
     return Memberships.findOne(memberId);
   },
 });
@@ -246,13 +251,14 @@ function onJoinParcelInsertSuccess(parcelId) {
 
 Template.Community_page.events({
   'click .js-member'(event, instance) {
+//    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
     const id = $(event.target).closest('tr').data('id');
-    Session.set('selectedMemberId', id);
+    instance.viewmodel.selectedMemberId(id);
   },
   'click .js-assign'(event, instance) {
-//    event.preventDefault();
+//    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
     const id = $(event.target).closest('button').data('id');
-    Session.set('selectedParcelId', id);
+    instance.viewmodel.selectedParcelId(id);
   },
   'click .js-invite'(event, instance) {
     const _id = $(event.target).data('id');
@@ -435,8 +441,8 @@ Template.Community_page.events({
     importCollectionFromFile(Parcels);
   },
   'click .parcels-section .js-show-all'(event, instance) {
-    const oldVal = instance.data.showAllParcels.get();
-    instance.data.showAllParcels.set(!oldVal);
+    const oldVal = instance.viewmodel.showAllParcels();
+    instance.viewmodel.showAllParcels(!oldVal);
   },
   'click .parcels-section .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
