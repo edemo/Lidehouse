@@ -30,6 +30,7 @@ import '/imports/ui_3/views/modals/autoform-edit.js';
 import { afCommunityUpdateModal } from '/imports/ui_3/views/components/communities-edit.js';
 import '../common/page-heading.js';
 import '../components/action-buttons.html';
+import '../components/contact-long.js';
 import './community-page.html';
 
 Template.Community_page.onCreated(function onCreated() {
@@ -211,7 +212,7 @@ Template.Community_page.helpers({
       return Parcels.find({ communityId, approved: false }).fetch();
     };
   },
-  member() {
+  selectedMember() {
     const memberId = Session.get('selectedMemberId');
     return Memberships.findOne(memberId);
   },
@@ -244,6 +245,10 @@ function onJoinParcelInsertSuccess(parcelId) {
 }
 
 Template.Community_page.events({
+  'click .js-member'(event, instance) {
+    const id = $(event.target).closest('tr').data('id');
+    Session.set('selectedMemberId', id);
+  },
   'click .js-assign'(event, instance) {
 //    event.preventDefault();
     const id = $(event.target).closest('button').data('id');
