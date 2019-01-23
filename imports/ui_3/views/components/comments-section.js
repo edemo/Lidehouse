@@ -21,24 +21,29 @@ Template.Comments_section.onCreated(function commentsSectionOnCreated() {
 });
 
 Template.Comments_section.onRendered(function chatboxOnRendered() {
-  const comments = this.findAll('.social-comment');
-  for (let i = 0; i < comments.length; i += 1) {
-    this.waypoint = new Waypoint({
-      element: comments[i],
-      handler: () => {
-        const topicId = this.data._id;
-        Meteor.user().hasNowSeen(topicId);
-      },
-      continuous: false,
-      offset: '85%',
-    });
-  }
+  this.waypoint = new Waypoint({
+    element: this.find('.comment-section'),
+    handler() {
+      const topicId = this.element.dataset.id;
+      // displayMessage('info', `You just seen ${topicId}`); // debug
+      Meteor.user().hasNowSeen(topicId);
+    },
+    offset: 'bottom-in-view',
+  });
   // Above is nicer syntax , but requires bigu:jquery-waypoints https://stackoverflow.com/questions/28975693/using-jquery-waypoints-in-meteor
   /* this.waypoint = this.$('.comment-section').waypoint(function (direction) {
     displayMessage('info', `You just seen ${this.dataset.id}`); // debug
   }, {
     offset: '80%',
   });*/
+});
+
+Template.Comment.onRendered(function () {
+  Waypoint.refreshAll();
+});
+
+Template.Comment.onDestroyed(function () {
+  Waypoint.refreshAll();
 });
 
 Template.Comments_section.onDestroyed(function chatboxOnDestroyed() {
