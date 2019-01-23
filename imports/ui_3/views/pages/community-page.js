@@ -161,21 +161,17 @@ Template.Community_page.viewmodel({
   },
   parcelsTableDataFn() {
     const self = this;
-    const callReactivelyOrNot = function(func) {
-      return function(params) {
-        if (self.reactive()) return func(params);
-        else return Tracker.nonreactive(func.bind(params));
-      };
+    return () => {
+      return Tracker.nonreactive(() => {
+        const communityId = self.communityId();
+        let parcels = Parcels.find({ communityId, approved: true }).fetch();
+        if (!self.showAllParcels()) {
+          const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
+          parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
+        }
+        return parcels;
+      });
     };
-    return callReactivelyOrNot(() => {
-      const communityId = self.communityId();
-      let parcels = Parcels.find({ communityId, approved: true }).fetch();
-      if (!self.showAllParcels()) {
-        const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
-        parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
-      }
-      return parcels;
-    });
   },
   parcelsOptionsFn() {
     const self = this;
