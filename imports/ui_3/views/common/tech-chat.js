@@ -106,7 +106,7 @@ Template.Tech_chat.events({
       Meteor.call('topics.insert', {
         communityId,
         userId: Meteor.userId(),
-        participantIds: [Meteor.userId()],
+        participantIds: [Meteor.userId(), community.techsupport()._id],
         category: 'room',
         title: 'tech support',
       }, onSuccess((res) => {
