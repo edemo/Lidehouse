@@ -1,0 +1,7 @@
+<template name="Terms_page">
+  {{#if (fromSettings 'deployment')}}
+  {{> Terms_local}}
+  {{else}}
+  {{> Terms_generic}}
+  {{/if}}
+</template>

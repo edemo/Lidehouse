@@ -1,0 +1,7 @@
+<template name="Privacy_page">
+  {{#if (fromSettings 'deployment')}}
+  {{> Privacy_local}}
+  {{else}}
+  {{> Privacy_generic}}
+  {{/if}}
+</template>

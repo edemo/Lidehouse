@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -13,4 +14,11 @@ Template.registerHelper('activeCommunityId', function activeCommunityId() {
 Template.registerHelper('activeCommunity', function activeCommunity() {
   const id = Session.get('activeCommunityId');
   return Communities.findOne(id);
+});
+
+Template.registerHelper('fromSettings', function fromSettings(paramName) {
+  console.log("paramName", paramName);
+  console.log("s", Meteor.settings);
+  console.log("setting", Meteor.settings[paramName]);
+  return Meteor.settings.public[paramName];
 });
