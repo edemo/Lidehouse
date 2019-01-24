@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 export const defaultRoles = [
   { name: 'admin' },        // Creator of the community. Can give out all other roles and take them back.
   { name: 'manager' },      // The manager (kk) of the community. Registers owners.
+  { name: 'board' },        // same priviledges as manager (for now).
   { name: 'owner' },        // Title holder of a parcel. Has voting rights.
   { name: 'benefactor' },   // Uses the parcel. Owner handed over beneficiary rights to him/her.
   { name: 'moderator' },    // Moderates the conversations on topics. Can remove comments.
@@ -18,7 +19,7 @@ export const defaultRoles = [
 
 // Groupings just to ease configuration
 export const occupantRoles = ['owner', 'benefactor'];
-export const leaderRoles = ['admin', 'manager'];
+export const leaderRoles = ['admin', 'manager', 'board'];
 export const nonLeaderRoles = ['moderator', 'accountant', 'treasurer', 'overseer', 'maintainer'];
 export const officerRoles = _.union(leaderRoles, nonLeaderRoles);
 export const autoAssignedRoles = ['delegate', 'guest'];

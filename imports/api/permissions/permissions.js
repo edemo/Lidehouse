@@ -1,4 +1,5 @@
 /* eslint-disable no-multi-spaces */
+import { _ } from 'meteor/underscore';
 import { exceptGuest, everyRole, everyBody, nobody } from './roles.js';
 
 export const Permissions = [
@@ -74,6 +75,11 @@ export const Permissions = [
   { name: 'shareddocs.download',    roles: exceptGuest },
   { name: 'do.techsupport',         roles: ['admin'] },
 ];
+
+// The board member has now exactly the same permissions as the manager
+Permissions.forEach((perm) => {
+  if (_.contains(perm.roles, 'manager')) perm.roles.push('board');
+});
 
 /* what if more compacted...
 const permissions = [
