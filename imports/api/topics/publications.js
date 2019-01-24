@@ -8,7 +8,7 @@ import { Topics } from './topics.js';
 import './votings/votings.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
-/*
+
 Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
@@ -36,9 +36,9 @@ Meteor.publish('topics.byId', function topicsById(params) {
   }).validate(params);
 
   const { _id } = params;
-
+  
   const publicFields = Topics.publicFields;//.extendForUser(this.userId, communityId);
 
-  return Topics.findOne(_id, { fields: publicFields });
+  return Topics.find({ _id }, { fields: publicFields });
 });
-*/
+

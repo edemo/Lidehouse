@@ -16,25 +16,9 @@ import '../components/comments-section.js';
 import '../components/vote-history.js';
 import './topic-show.html';
 
-Template.Topic_show.onCreated(function topicShowOnCreated() {
-  
-  // TODO: Why these subs to topic not work to avoid 404 page? 
-//  this.subscribe('topics.byId', { _id: this.data._id });
-//  const communityId = Session.get('activeCommunityId');
-//  this.subscribe('topics.inCommunity', { communityId });
-
-  // Only this full subscriptions (copied from main.js) avoids the 404 page, but why...
-  // We run this in autorun, so when User switches his community, the subscription changes
-  this.autorun(() => {
-    this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
-  });
-  // We run this in autorun, so when a new User logs in, the subscription changes
-  this.autorun(() => {
-    const activeCommunityId = Session.get('activeCommunityId');
-    if (activeCommunityId) {
-      this.subscribe('communities.byId', { _id: activeCommunityId });
-    }
-  });
+Template.Topic_show.onCreated(function topicShowOnCreated() {  
+  const topicId = FlowRouter.getParam('_tid');
+  this.subscribe('topics.byId', { _id: topicId });
 });
 
 Template.Topic_show.helpers({

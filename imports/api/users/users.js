@@ -258,6 +258,7 @@ Meteor.users.helpers({
   },
   hasBlocked(userId) {
     const user = Meteor.users.findOne(userId);
+    if (!user) return true;
     return user.isFlaggedBy(this._id);
   },
 });
