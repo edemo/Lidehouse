@@ -8,28 +8,28 @@ import { yearTags, phaseTags } from './breakdowns-utils';
 
 if (Meteor.isServer) {
   let Fixture;
-  let testBreakdown;
+  let breakdown;
 
   describe('breakdowns', function () {
     this.timeout(5000);
     before(function () {
       Fixture = freshFixture();
-      testBreakdown = {
+      const rawBreakdown = {
         name: 'Root',
         communityId: Fixture.demoCommunityId,
         children: [
-          { name: 'Level1',
+          { code: '1', name: 'Level1',
             children: [
-              { name: 'Level2',
+              { code: '2', name: 'Level2',
                 children: [
-                { name: 'LeafA' },
-                { name: 'LeafB' },
-                { name: 'LeafC' },
+                { code: 'A', name: 'LeafA' },
+                { code: 'B', name: 'LeafB' },
+                { code: 'C', name: 'LeafC' },
                 ],
               },
               { name: '',
                 children: [
-                { name: 'LeafD' },
+                { code: 'D', name: 'LeafD' },
                 ],
               },
             ],
@@ -38,27 +38,28 @@ if (Meteor.isServer) {
             children: [
               { name: '',
                 children: [
-                { name: 'LeafE' },
+                { code: 'E', name: 'LeafE' },
                 ],
               },
-              { name: 'Level3',
+              { code: '3', name: 'Level3',
                 children: [
-                { name: 'LeafF' },
+                { code: 'F', name: 'LeafF' },
                 ],
               },
             ],
           },
         ],
       };
+      breakdown = Breakdowns._transform(rawBreakdown);
     });
 
-    it('init', function () {
-      const breakdown = Breakdowns._transform(testBreakdown);
-
+    it('access to leaf names', function () {
       const leafNames = breakdown.leafNames();
       const expectedLeafNames = ['LeafA', 'LeafB', 'LeafC', 'LeafD', 'LeafE', 'LeafF'];
       chai.assert.deepEqual(leafNames, expectedLeafNames);
-      
+    });
+
+    it('access to node names', function () {
       const nodeNames = breakdown.nodeNames();
       const expectedNodeNames = [
         'Root',
@@ -73,7 +74,15 @@ if (Meteor.isServer) {
         'LeafF',
       ];
       chai.assert.deepEqual(nodeNames, expectedNodeNames);
+    });
 
+    it('access to leaf codes', function () {
+      const leafCodes = breakdown.leafCodes();
+      const expectedLeafCodes = ['12A', '12B', '12C', '1D', 'E', '3F'];
+      chai.assert.deepEqual(leafCodes, expectedLeafCodes);
+    });
+
+    xit('access to leaf options', function () {
       const leafOptions = breakdown.leafOptions();
       const expectedLeafOptions = [
         { label: 'Level1/Level2/LeafA', value: 'LeafA' },
@@ -85,7 +94,7 @@ if (Meteor.isServer) {
       ];
       chai.assert.deepEqual(leafOptions, expectedLeafOptions);
     });
-    
+
     it('reports', function () {
       const report = new TableReport();
 
@@ -101,7 +110,7 @@ if (Meteor.isServer) {
 
       report.addTree('rows', {
         field: 'account.Root',
-        values: Breakdowns._transform(testBreakdown),
+        values: breakdown,
       }, false, false);
 
 

@@ -43,6 +43,7 @@ export const chooseBreakdown = {
 };
 */
 Breakdowns.LeafSchema = new SimpleSchema({
+  code: { type: String, max: 1, optional: true },
   name: { type: String, max: 100 }, // or a parcel number can be placed here
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -52,6 +53,7 @@ Breakdowns.LeafSchema = new SimpleSchema({
 });
 
 Breakdowns.Level2Schema = new SimpleSchema({
+  code: { type: String, max: 1, optional: true },
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -61,6 +63,7 @@ Breakdowns.Level2Schema = new SimpleSchema({
 });
 
 Breakdowns.Level1Schema = new SimpleSchema({
+  code: { type: String, max: 1, optional: true },
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -70,6 +73,7 @@ Breakdowns.Level1Schema = new SimpleSchema({
 });
 
 Breakdowns.schema = new SimpleSchema({
+  code: { type: String, max: 1, optional: true },
   name: { type: String, max: 100 },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -101,7 +105,7 @@ Breakdowns.helpers({
       this._nodes = [];
       let currentLevel = 1;   // should start at 0, but bumping it up to 1 as we use 1 less depth in the breakdowns now
       const root = this; root.parent = null; root.isLeaf = false; root.level = currentLevel; root.pushLeaf = l => this._leafs.push(l);
-      if (root.name) { root.path = root.name; this._nodes.push(root); }
+      if (root.name) { root.path = root.name; root.codePath = root.code || ''; this._nodes.push(root); }
       function handleNode(node, parent, pac) {
         if (node.include) {
 //          console.log('Before include', pac);
@@ -115,6 +119,7 @@ Breakdowns.helpers({
         node._leafs = []; node.leafs = () => node._leafs; node.pushLeaf = l => { node._leafs.push(l); parent.pushLeaf(l); };
         node.isLeaf = false;
         node.level = currentLevel;
+        node.codePath = parent.codePath + (node.code || '');
         if (node.name) { node.path = parent.path + ':' + node.name; pac._nodes.push(node); }
         if (!node.children) { parent.pushLeaf(node); node._leafs.push(node); node.isLeaf = true; }
         else { node.children.forEach(child => handleNode(child, node, pac)); }
@@ -140,6 +145,9 @@ Breakdowns.helpers({
 //    const result = this.leafs().find(l => l.name === leafName);
 //    return result;
 //  },
+  leafCodes() {
+    return this.leafs().map(l => l.codePath);
+  },
   leafsOf(nodeName) {
     if (nodeName) return this.nodes().find(n => n.name === nodeName).leafs();
     return this.leafs();
