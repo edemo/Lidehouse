@@ -17,8 +17,5 @@ Template.registerHelper('activeCommunity', function activeCommunity() {
 });
 
 Template.registerHelper('fromSettings', function fromSettings(paramName) {
-  console.log("paramName", paramName);
-  console.log("s", Meteor.settings);
-  console.log("setting", Meteor.settings[paramName]);
   return Meteor.settings.public[paramName];
 });
