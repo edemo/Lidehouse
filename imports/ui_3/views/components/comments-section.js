@@ -38,14 +38,6 @@ Template.Comments_section.onRendered(function chatboxOnRendered() {
   });*/
 });
 
-Template.Comment.onRendered(function () {
-  Waypoint.refreshAll();
-});
-
-Template.Comment.onDestroyed(function () {
-  Waypoint.refreshAll();
-});
-
 Template.Comments_section.onDestroyed(function chatboxOnDestroyed() {
   this.waypoint.destroy();
 });
@@ -78,6 +70,14 @@ Template.Comments_section.events({
 //------------------------------------
 
 const MAX_LENGTH = 400;
+
+Template.Comment.onRendered(function () {
+  Waypoint.refreshAll();
+});
+
+Template.Comment.onDestroyed(function () {
+  Waypoint.refreshAll();
+});
 
 Template.Comment.helpers({
   textTooLong() {
