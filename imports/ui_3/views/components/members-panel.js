@@ -14,7 +14,6 @@ import './members-panel.html';
 const MEMBERS_TO_SHOW = 10;
 
 Template.Members_panel.onCreated(function onCreated() {
-  this.data.tooManyMembers = new ReactiveVar(false);
 //  const communityId = Session.get('activeCommunityId');
 //  const manager = Memberships.findOne({ communityId, active: true, role: 'manager' });
 //  if (manager) Session.set('messengerPersonId', manager.person.userId);
@@ -23,33 +22,36 @@ Template.Members_panel.onCreated(function onCreated() {
 Template.Members_panel.onRendered(function onRendered() {
 });
 
-Template.Members_panel.helpers({
+Template.Members_panel.viewmodel({
+  tooManyMembers: false,
   leaders() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
     let managers = Memberships.find({ communityId, active: true, role: { $in: leaderRoles }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
+    managers = _.uniq(managers, false, m => m.person.userId);
     if (personSearch) {
       managers = managers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }
-    managers = _.uniq(managers, false, m => m.person.userId);
     return managers;
   },
   members() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
     let nonManagers = Memberships.find({ communityId, active: true, role: { $not: { $in: leaderRoles } }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
+    nonManagers = _.uniq(nonManagers, false, m => m.person.userId);
+    if (nonManagers.length > MEMBERS_TO_SHOW * 2) this.tooManyMembers(true);
     if (personSearch) {
       nonManagers = nonManagers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
+    } else {
+      if (this.tooManyMembers()) {
+        nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.person.userId));
+      } else {
+        nonManagers = _.sortBy(nonManagers, m => {
+          const room = Rooms.getRoom(Session.get('roomMode'), m.person.userId);
+          return room ? -1 * room.updatedAt : 0;
+        });
+      }
     }
-    nonManagers = _.uniq(nonManagers, false, m => m.person.userId);
-    if (!personSearch && nonManagers.length > MEMBERS_TO_SHOW * 2) {
-      Template.instance().data.tooManyMembers.set(true);
-      nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.person.userId));
-    }
-    nonManagers = _.sortBy(nonManagers, m => {
-      const room = Rooms.getRoom(Session.get('roomMode'), m.person.userId);
-      return room ? -1 * room.updatedAt : 0;
-    });
     return nonManagers;
   },
 });
