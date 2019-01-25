@@ -82,11 +82,11 @@ Parcels.helpers({
   },
   occupants() {
     if (this.isLed()) return this.leadParcel().occupants();
-    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id });
+    return Memberships.find({ communityId: this.communityId, approved: true, active: true, parcelId: this._id });
   },
   representors() {
     if (this.isLed()) return this.leadParcel().representors();
-    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id, role: 'owner', 'ownership.representor': true });
+    return Memberships.find({ communityId: this.communityId, approved: true, active: true, parcelId: this._id, role: 'owner', 'ownership.representor': true });
   },
   representor() {
     return this.representors().fetch()[0];
