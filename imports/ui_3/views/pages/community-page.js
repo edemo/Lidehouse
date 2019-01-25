@@ -162,15 +162,13 @@ Template.Community_page.viewmodel({
   parcelsTableDataFn() {
     const self = this;
     return () => {
-      return Tracker.nonreactive(() => {
-        const communityId = self.communityId();
-        let parcels = Parcels.find({ communityId, approved: true }).fetch();
-        if (!self.showAllParcels()) {
-          const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
-          parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
-        }
-        return parcels;
-      });
+      const communityId = self.communityId();
+      let parcels = Tracker.nonreactive(() => Parcels.find({ communityId, approved: true }).fetch());
+      if (!self.showAllParcels()) {
+        const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
+        parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
+      }
+      return parcels;
     };
   },
   parcelsOptionsFn() {
