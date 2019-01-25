@@ -280,6 +280,9 @@
   "No delegations": "Nincsenek meghatalmazások",
 
   // rooms
+  "Send messages": "Küldjön üzenetet",
+  "Send messages subtitle": "közös képviselőjének vagy lakótársának",
+  "Send messages instructions": "Ha ezidáig még nem beszélt az illetővel, a kereső segítségével megtalálhatja",
   "noSelectedPerson": "Válasszon címzettet a jobb oldali panelen!",
 
   // tickets

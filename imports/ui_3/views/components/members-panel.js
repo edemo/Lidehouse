@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { ReactiveVar } from 'meteor/reactive-var';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
@@ -13,6 +14,7 @@ import './members-panel.html';
 const MEMBERS_TO_SHOW = 10;
 
 Template.Members_panel.onCreated(function onCreated() {
+  this.data.tooManyMembers = new ReactiveVar(false);
 //  const communityId = Session.get('activeCommunityId');
 //  const manager = Memberships.findOne({ communityId, active: true, role: 'manager' });
 //  if (manager) Session.set('messengerPersonId', manager.person.userId);
@@ -29,6 +31,7 @@ Template.Members_panel.helpers({
     if (personSearch) {
       managers = managers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }
+    managers = _.uniq(managers, false, m => m.person.userId);
     return managers;
   },
   members() {
@@ -39,13 +42,14 @@ Template.Members_panel.helpers({
       nonManagers = nonManagers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }
     nonManagers = _.uniq(nonManagers, false, m => m.person.userId);
+    if (!personSearch && nonManagers.length > MEMBERS_TO_SHOW * 2) {
+      Template.instance().data.tooManyMembers.set(true);
+      nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.person.userId));
+    }
     nonManagers = _.sortBy(nonManagers, m => {
       const room = Rooms.getRoom(Session.get('roomMode'), m.person.userId);
       return room ? -1 * room.updatedAt : 0;
     });
-    if (!personSearch && nonManagers.length > MEMBERS_TO_SHOW * 2) {
-      nonManagers = nonManagers.slice(0, MEMBERS_TO_SHOW);
-    }
     return nonManagers;
   },
 });

@@ -90,6 +90,8 @@
   "setupYourDelegation": "set up a delegation",
 
   // rooms
+  "Send messages subtitle": "to your manager or your condo mates",
+  "Send messages instructions": "If you haven't talked with the person yet, use the search bar to find them",
   "noSelectedPerson": "Please select a person on right panel.",
 
   // tickets
