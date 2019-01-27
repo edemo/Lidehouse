@@ -3,7 +3,10 @@ import { _ } from 'meteor/underscore';
 import { Breakdowns } from './breakdowns.js';
 import { TxDefs } from '../tx-defs.js';
 
-Meteor.startup(function() {
+export function defineBreakdownTemplates(communityId) {
+
+  //if (Breakdowns.findOne({})) return;
+
   Breakdowns.define({
     name: 'Owner payin types', locked: true,
     children: [
@@ -135,11 +138,11 @@ Meteor.startup(function() {
   Breakdowns.define({
     digit: '7', name: 'Localizer', label: 'Locations',
     children: [
-      { digit: 'X', name: 'Main building',
+      { digit: '1', name: 'Main building',
         children: [
         ],
       },
-      { digit: '0', name: 'Central',
+      { digit: '2', name: 'Central',
         children: [
         { digit: '1', name: 'Garden' },
         { digit: '2', name: 'Heating system' },
@@ -157,8 +160,11 @@ Meteor.startup(function() {
       { include: 'Liabilities' },
     ],
   });
-});
+}
 
+if (Meteor.isServer) {
+  Meteor.startup(function () { defineBreakdownTemplates(); });
+}
 
 /*
 const TxDefsTemplate = [
@@ -217,7 +223,6 @@ const TxDefsTemplate = [
 ];
 */
 
-export function insertBreakdownTemplate(communityId) {
 /*  Breakdowns.find({ communityId: { $exists: false } }).forEach((breakdown) => {
     Breakdowns.insert(_.extend({}, breakdown, { communityId }));
   });
@@ -226,4 +231,3 @@ export function insertBreakdownTemplate(communityId) {
     TxDefs.insert(_.extend({}, txDef, { communityId }));
   });
 */
-}

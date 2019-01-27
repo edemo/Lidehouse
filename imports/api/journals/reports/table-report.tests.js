@@ -15,8 +15,8 @@ if (Meteor.isServer) {
       JournalEntries.helpers({
         effectiveAmount() {
           let effectiveSign = 0;
-          if (this.side === 'Cr') effectiveSign = -1;
-          if (this.side === 'Dr') effectiveSign = +1;
+          if (this.side === 'credit') effectiveSign = -1;
+          if (this.side === 'debit') effectiveSign = +1;
           return this.amount * effectiveSign;
         },
       });
@@ -26,8 +26,8 @@ if (Meteor.isServer) {
 
     describe('reports', function () {
       before(function () {
-        JournalEntries.insert({ side: 'Dr', month: '-01', amount: 110 });
-        JournalEntries.insert({ side: 'Dr', month: '-01', amount: 120 });
+        JournalEntries.insert({ side: 'debit', month: '-01', amount: 110 });
+        JournalEntries.insert({ side: 'debit', month: '-01', amount: 120 });
       });
 
       it('reports', function () {

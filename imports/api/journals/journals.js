@@ -23,7 +23,7 @@ Journals.rawSchema = {
   phase: { type: String, defaultValue: 'done', allowedValues: Journals.phaseValues, autoform: autoformOptions(Journals.phaseValues) },
   valueDate: { type: Date },
   year: { type: Number, autoValue() { return this.field('valueDate').value.getFullYear(); }, optional: true, autoform: { omit: true } },
-  month: { type: Number, autoValue() { return this.field('valueDate').value.getMonth() + 1; }, optional: true, autoform: { omit: true } },
+  month: { type: Number, autoValue() { return '-' + (this.field('valueDate').value.getMonth() + 1); }, optional: true, autoform: { omit: true } },
   amount: { type: Number },
 };
 

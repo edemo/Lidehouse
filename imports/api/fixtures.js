@@ -18,7 +18,6 @@ import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
-import { insertBreakdownTemplate } from '/imports/api/journals/breakdowns/template.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -112,6 +111,7 @@ export function insertDemoFixture(lang) {
   let demoUserId;
   let demoManagerId;
   let demoAdminId;
+  let demoAccountantId;
   defaultRoles.forEach(function (role) {
     const boyNames = __('demo.user.boyNames').split('\n');
     const girlNames = __('demo.user.girlNames').split('\n');
@@ -146,6 +146,7 @@ export function insertDemoFixture(lang) {
     }
     if (role.name === 'manager') demoManagerId = userWithRoleId;
     if (role.name === 'admin') demoAdminId = userWithRoleId;
+    if (role.name === 'accountant') demoAccountantId = userWithRoleId;
   });
 
   // ===== Dummy Users =====
@@ -504,32 +505,29 @@ export function insertDemoFixture(lang) {
 
   // ===== Breakdowns =====
 
-  insertBreakdownTemplate(demoCommunityId);
+  const localizerId = Breakdowns.clone('Localizer', demoCommunityId);
 
-  const locator = Breakdowns.update({
-    communityId: demoCommunityId,
-    name: 'Localizer',
-  }, {
+  Breakdowns.update(localizerId, {
     $set: {
       children: [
         { name: '',
           children: [
-            { name: 'A. lépcsőház',
+            { digit: 'A', name: 'A. lépcsőház',
               children: [
-              { name: '1' },
-              { name: '2' },
+              { digit: '1', name: '1. alb' },
+              { digit: '2', name: '2. alb' },
               ],
             },
-            { name: 'B. lépcsőház',
+            { digit: 'B', name: 'B. lépcsőház',
               children: [
-              { name: '3' },
-              { name: '4' },
+              { digit: '3', name: '3. alb' },
+              { digit: '4', name: '4. alb' },
               ],
             },
-            { name: 'Közös terület',
+            { digit: 'X', name: 'Közös terület',
               children: [
-              { name: '100' },
-              { name: 'Kert' },
+              { digit: '1', name: 'Aula' },
+              { digit: '2', name: 'Kert' },
               ],
             },
           ],
@@ -549,6 +547,7 @@ export function insertDemoFixture(lang) {
     demoUserId,
     demoAdminId,
     demoManagerId,
+    demoAccountantId,
     dummyUsers,
     dummyParcels,
   };

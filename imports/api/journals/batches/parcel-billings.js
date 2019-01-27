@@ -5,7 +5,7 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Breakdowns, chooseBreakdown, leafIsParcel } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns, chooseBreakdown, leafIsParcel, digit2parcelRef } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
@@ -17,6 +17,7 @@ ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
   amount: { type: Number },
+  payinType: { type: String }, // account code
   localizer: { type: String }, // account code
   year: { type: Number },
   month: { type: String, optional: true, allowedValues: ParcelBillings.monthValues, autoform: autoformOptions(ParcelBillings.monthValues) },
@@ -25,13 +26,13 @@ ParcelBillings.schema = new SimpleSchema({
 
 ParcelBillings.helpers({
   parcels() {
-    const localizerTree = Breakdowns.findOne({ communityId: this.communityId, name: 'Localizer' });
+    const localizerTree = Breakdowns.findOneByName('Localizer', this.communityId);
 //    console.log('nodeName', nodeName);
-    const leafs = localizerTree.leafsOf(localizer);
+    const leafs = localizerTree.leafsOf(this.localizer);
 //    console.log('leafs', leafs);
     const parcelLeafs = leafs.filter(l => leafIsParcel(l));
 //    console.log('parcelLeafs', parcelLeafs);
-    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, serial: l.name }));
+    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: digit2parcelRef(l.digit) }));
 //    console.log('parcels', parcels);
     return parcels;
   },

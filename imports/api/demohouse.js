@@ -18,12 +18,11 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns, parcelRef2digit } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
 // import { TxDefs } from '/imports/api/journals/tx-defs.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
-import { insertBreakdownTemplate } from '/imports/api/journals/breakdowns/template.js';
 import { insert as insertTx } from '/imports/api/journals/methods.js';
 
 import '/imports/api/topics/votings/votings.js';
@@ -940,17 +939,17 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Breakdowns =====
 
-  insertBreakdownTemplate(demoCommunityId);
+  const localizerId = Breakdowns.clone('Localizer', demoCommunityId);
 
-  const localizer = Breakdowns.define({
-    communityId: demoCommunityId,
-    name: 'Localizer',
-  });
   Parcels.find({ communityId: demoCommunityId }).forEach(parcel => {
-    Breakdowns.update(localizer._id, {
-      $push: { 'children.0.children': { name: parcel.ref } },
+    Breakdowns.update(localizerId, {
+      $push: { 'children.0.children': { digit: parcelRef2digit(parcel.ref), name: parcel.ref } },
     });
   });
+
+  const name2code = function name2code(breakdownName, nodeName) {
+    return Breakdowns.name2code(breakdownName, nodeName, demoCommunityId);
+  };
 
     // === Eloirasok ===
 
@@ -960,10 +959,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 275,
     year: 2017,
     month: 'allMonths',
-    account: {
-      'Owner payins': 'Közös költség befizetés',
-      'Localizer': 'Main building',
-    },
+    payinType: 'Közös költség befizetés',
+    localizer: name2code('Localizer', 'Main building'),
   });
 
   for (let i = 0; i < 4; i++) {
@@ -974,10 +971,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 2500,
       year: 2017,
       month: 'allMonths',
-      account: {
-        'Owner payins': 'Víz díj',
-        'Localizer': place[i],
-      },
+      payinType: 'Víz díj',
+      localizer: name2code('Localizer', parcelRef2digit(place[i])),
     });
   }
 
@@ -988,10 +983,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 85,
       year: 2017,
       month: 'allMonths',
-      account: {
-        'Owner payins': 'Fűtési díj',
-        'Localizer': i.toString(),
-      },
+      payinType: 'Fűtési díj',
+      localizer: name2code('Localizer', parcelRef2digit(i.toString())),
     });
   }
 
@@ -1001,10 +994,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 60000,
     year: 2017,
     month: '9',
-    account: {
-      'Owner payins': 'Felújítási célbefizetés',
-      'Localizer': 'Main building',
-    },
+    payinType: 'Felújítási célbefizetés',
+    localizer: name2code('Localizer', 'Main building'),
     note: __('demo.journals.note.0'),
   });
 
@@ -1028,10 +1019,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     amount: 100000,
     credit: [{
-      account: { 'Liabilities': 'Opening' },
+      account: name2code('Liabilities', 'Opening'),
     }],
     debit: [{
-      account: { 'Assets': 'Pénztár 1' },
+      account: name2code('Assets', 'Pénztár 1'),
     }],
   });
 
@@ -1042,10 +1033,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     amount: 110000,
     credit: [{
-      account: { 'Liabilities': 'Opening' },
+      account: name2code('Liabilities', 'Opening'),
     }],
     debit: [{
-      account: { 'Assets': 'Bank főszámla' },
+      account: name2code('Assets', 'Bank főszámla'),
     }],
   });
 
@@ -1056,10 +1047,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-01-01'),
     amount: 120000,
     credit: [{
-      account: { 'Liabilities': 'Opening' },
+      account: name2code('Liabilities', 'Opening'),
     }],
     debit: [{
-      account: { 'Assets': 'Bank felújítási alap' },
+      account: name2code('Assets', 'Bank felújítási alap'),
     }],
   });
 
@@ -1072,15 +1063,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-06-01'),
     amount: 3500,
     credit: [{
-      account: {
-        'Incomes': 'Egyéb bevétel',
-        'Localizer': 'Central',
-      },
+      account: name2code('Incomes', 'Egyéb bevétel'),
+      localizer: name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: {
-        'Assets': 'Bank főszámla',
-      },
+      account: name2code('Assets', 'Bank főszámla'),
     }],
   });
 
@@ -1092,15 +1079,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
       credit: [{
-        account: {
-          'Incomes': 'Kamat pénzintézetektől',
-          'Localizer': 'Central',
-        },
+        account: name2code('Incomes', 'Kamat pénzintézetektől'),
+        localizer: name2code('Localizer', 'Central'),
       }],
       debit: [{
-        account: {
-          'Assets': 'Bank főszámla',
-        },
+        account: name2code('Assets', 'Bank főszámla'),
       }],
     });
   });
@@ -1112,15 +1095,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-09-15'),
     amount: 500000,
     credit: [{
-      account: {
-        'Incomes': 'Támogatás',
-        'Localizer': 'Central',
-      },
+      account: name2code('Incomes', 'Támogatás'),
+      localizer: name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: {
-        'Assets': 'Bank főszámla',
-      },
+      account: name2code('Assets', 'Bank főszámla'),
     }],
     note: __('demo.journals.note.1'),
   });
@@ -1132,15 +1111,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-05-10'),
     amount: 55000,
     credit: [{
-      account: {
-        'Incomes': 'Bérleti díj',
-        'Localizer': 'Central',
-      },
+      account: name2code('Incomes', 'Bérleti díj'),
+      localizer: name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: {
-        'Assets': 'Bank főszámla',
-      },
+      account: name2code('Assets', 'Bank főszámla'),
     }],
     note: __('demo.journals.note.2'),
   });
@@ -1152,15 +1127,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-10-15'),
     amount: 500000,
     credit: [{
-      account: {
-        'Incomes': 'Egyéb bevétel',
-        'Localizer': 'Central',
-      },
+      account: name2code('Incomes', 'Egyéb bevétel'),
+      localizer: name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: {
-        'Assets': 'Bank főszámla',
-      },
+      account: name2code('Assets', 'Bank főszámla'),
     }],
     note: __('demo.journals.note.3'),
   });
@@ -1172,14 +1143,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
     credit: [{
-      account: {
-        'Liabilities': 'Bank hitel',
-      },
+      account: name2code('Liabilities', 'Bank hitel'),
     }],
     debit: [{
-      account: {
-        'Assets': 'Fundamenta felújítási hitel',
-      },
+      account: name2code('Assets', 'Fundamenta felújítási hitel'),
     }],
     note: __('demo.journals.note.4'),
   });
@@ -1195,15 +1162,11 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
         credit: [{
-          account: {
-            'Incomes': 'Közös költség befizetés',
-            'Localizer': i.toString(),
-          },
+          account: name2code('Incomes', 'Közös költség befizetés'),
+          localizer: name2code('Localizer', parcelRef2Digit(i.toString())),
         }],
         debit: [{
-          account: {
-            'Assets': 'Bank főszámla',
-          },
+          account: name2code('Assets', 'Bank főszámla'),
         }],
       });
     }
@@ -1220,15 +1183,11 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
-          account: {
-            'Incomes': 'Víz díj',
-            'Localizer': place[i],
-          },
+          account: name2code('Incomes', 'Víz díj'),
+          localizer: name2code('Localizer', parcelRef2Digit(place[i])),
         }],
         debit: [{
-          account: {
-            'Assets': 'Bank főszámla',
-          },
+          account: name2code('Assets', 'Bank főszámla'),
         }],
       });
     }
@@ -1243,15 +1202,11 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
-          account: {
-            'Incomes': 'Fűtési díj',
-            'Localizer': i.toString(),
-          },
+          account: name2code('Incomes', 'Fűtési díj'),
+          localizer: name2code('Localizer', parcelRef2Digit(i.toString())),
         }],
         debit: [{
-          account: {
-            'Assets': 'Bank főszámla',
-          },
+          account: name2code('Assets', 'Bank főszámla'),
         }],
       });
     }
@@ -1265,15 +1220,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
       credit: [{
-        account: {
-          'Incomes': 'Felújítási célbefizetés',
-          'Localizer': i.toString(),
-        },
+        account: name2code('Incomes', 'Felújítási célbefizetés'),
+        localizer: name2code('Localizer', parcelRef2Digit(i.toString())),
       }],
       debit: [{
-        account: {
-          'Assets': 'Bank főszámla',
-        },
+        account: name2code('Assets', 'Bank főszámla'),
       }],
     });
   }
@@ -1287,15 +1238,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
       credit: [{
-        account: {
-          'Assets': 'Bank főszámla',
-        },
+        account: name2code('Assets', 'Bank főszámla'),
       }],
       debit: [{
-        account: {
-          'Expenses': 'Víz',
-          'Localizer': 'Central',
-        },
+        account: name2code('Expenses', 'Víz'),
+        localizer: name2code('Localizer', 'Central'),
       }],
     });
   }
@@ -1309,15 +1256,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
       credit: [{
-        account: {
-          'Assets': 'Bank főszámla',
-        },
+        account: name2code('Assets', 'Bank főszámla'),
       }],
       debit: [{
-        account: {
-          'Expenses': 'Csatorna',
-          'Localizer': 'Central',
-        },
+        account: name2code('Expenses', 'Csatorna'),
+        localizer: name2code('Localizer', 'Central'),
       }],
     });
   }
@@ -1330,15 +1273,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 10250,
       credit: [{
-        account: {
-          'Assets': 'Bank főszámla',
-        },
+        account: name2code('Assets', 'Bank főszámla'),
       }],
       debit: [{
-        account: {
-          'Expenses': 'Áram',
-          'Localizer': 'Central',
-        },
+        account: name2code('Expenses', 'Áram'),
+        localizer: name2code('Localizer', 'Central'),
       }],
     });
   }
@@ -1372,6 +1311,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     dummyUserId,
     demoAdminId,
     demoManagerId,
+    demoAccountantId,
     dummyUsers,
     demoParcels,
   };
@@ -1490,10 +1430,7 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   }
   ParcelBillings.remove({ 'account.Localizer': demoUserNumber.toString() });
   Journals.remove({ 'entries.0.account.Localizer': demoUserNumber.toString() });
-  Breakdowns.update({
-    communityId,
-    name: 'Localizer',
-  }, {
+  Breakdowns.update({ communityId, name: 'Localizer' }, {
     $pull: { 'children.0.children': { name: demoUserNumber.toString() } },
   });
   Meteor.users.remove({ _id: userId });
@@ -1558,10 +1495,7 @@ Meteor.methods({
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) } });
 
-    Breakdowns.update({
-      communityId: demoCommunityId,
-      name: 'Localizer',
-    }, {
+    Breakdowns.update({ communityId: demoCommunityId, name: 'Localizer' }, {
       $push: { 'children.0.children': { name: demoParcelSerial.toString() } },
     });
 
@@ -1610,16 +1544,18 @@ Meteor.methods({
       ],
     } });
 
+    const name2code = function name2code(breakdownName, leafName) {
+      return Breakdowns.name2code(breakdownName, leafName, demoCommunityId);
+    };
+
     insertParcelBilling._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
       projection: 'perArea',
       amount: 275,
       year: 2017,
       month: 'allMonths',
-      account: {
-        'Owner payins': 'Közös költség befizetés',
-        'Localizer': demoParcelSerial.toString(),
-      },
+      payinType: 'Közös költség befizetés',
+      localizer: name2code('Localizer', parcelRef2digit(demoParcelSerial.toString())),
     });
     for (let m = 1; m < 13; m++) {
       insertTx._execute({ userId: demoAccountantId }, {
@@ -1628,15 +1564,11 @@ Meteor.methods({
         valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
         amount: 6875,
         credit: [{
-          account: {
-            'Incomes': 'Közös költség befizetés',
-            'Localizer': demoParcelSerial.toString(),
-          },
+          account: name2code('Incomes', 'Közös költség befizetés'),
+          localizer: name2code('Localizer', parcelRef2digit(demoParcelSerial.toString())),
         }],
         debit: [{
-          account: {
-            'Assets': 'Bank főszámla',
-          },
+          account: name2code('Assets', 'Bank főszámla'),
         }],
       });
     }

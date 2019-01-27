@@ -26,12 +26,30 @@ Breakdowns.findOneByName = function findOneByName(name, communityId) {
 Breakdowns.define = function define(breakdown) {
   const existingId = Breakdowns.findOne({ name: breakdown.name, communityId: breakdown.communityId });
   if (existingId) {
-    Breakdowns.update(existingId, { breakdown });
+    Breakdowns.update(existingId, { $set: breakdown });
     return existingId;
   } else {
     return Breakdowns.insert(breakdown);
   }
 };
+
+Breakdowns.clone = function clone(name, communityId) {
+  const breakdown = Breakdowns.findOne({ name, communityId: { $exists: false } });
+  if (!breakdown) return undefined;
+  delete breakdown._id;
+  breakdown.communityId = communityId;
+  return Breakdowns.insert(breakdown);
+};
+
+Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) {
+  const breakdown = Breakdowns.findOneByName(breakdownName, communityId);
+  console.log("looking for", nodeName);
+  console.log("in breakdown:", breakdown);
+  const node = breakdown.findNodeByName(nodeName);
+  console.log("result:", node.code, node.name);
+  return node.code;
+};
+
 
 export const chooseBreakdown = {
   options() {
@@ -42,8 +60,16 @@ export const chooseBreakdown = {
   firstOption: () => __('(Select one)'),
 };
 
+export const parcelRef2digit = function parcelRef2digit(parcelRef) {
+  return `[${parcelRef}]`;
+};
+
+export const digit2parcelRef = function digit2parcelRef(digit) {
+  return digit.substring(1, digit.length - 2);
+};
+
 export function leafIsParcel(l) {
-  return parseInt(l.name, 10);
+  return parseInt(digit2parcelRef(l.digit), 10);
 }
 
 /*
@@ -70,7 +96,7 @@ export const chooseBreakdown = {
 };
 */
 Breakdowns.LeafSchema = new SimpleSchema({
-  digit: { type: String, max: 1, optional: true },
+  digit: { type: String, optional: true },
   name: { type: String, max: 100 }, // or a parcel number can be placed here
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -80,7 +106,7 @@ Breakdowns.LeafSchema = new SimpleSchema({
 });
 
 Breakdowns.Level2Schema = new SimpleSchema({
-  digit: { type: String, max: 1, optional: true },
+  digit: { type: String, optional: true },
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -90,7 +116,7 @@ Breakdowns.Level2Schema = new SimpleSchema({
 });
 
 Breakdowns.Level1Schema = new SimpleSchema({
-  digit: { type: String, max: 1, optional: true },
+  digit: { type: String, optional: true },
   name: { type: String, max: 100, optional: true },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -101,7 +127,7 @@ Breakdowns.Level1Schema = new SimpleSchema({
 
 Breakdowns.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  digit: { type: String, max: 1, optional: true },
+  digit: { type: String, optional: true },
   name: { type: String, max: 100 },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
@@ -210,10 +236,14 @@ Breakdowns.helpers({
   nodeNames() {
     return this.nodes().map(this.display);
   },
-//  leafFromName(leafName) {
-//    const result = this.leafs().find(l => l.name === leafName);
-//    return result;
-//  },
+  findLeafByName(name) {  // warning!! Name is not a unique id
+    const result = this.leafs().find(l => l.name === name);
+    return result;
+  },
+  findNodeByName(name) {  // warning!! Name is not a unique id
+    const result = this.nodes().find(l => l.name === name);
+    return result;
+  },
   leafCodes() {
     return this.leafs().map(l => l.code);
   },
@@ -255,22 +285,4 @@ Breakdowns.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
   Breakdowns.simpleSchema().i18n('schemaBreakdowns');
-});
-
-// Setting up collection permissions
-const hasPermission = function hasPermission(userId, doc) {
-  const user = Meteor.users.findOne(userId);
-  return true; //user.hasPermission('breakdowns.update', doc.communityId);
-};
-
-Breakdowns.allow({
-  insert(userId, doc) {
-    return hasPermission(userId, doc);
-  },
-  update(userId, doc) {
-    return hasPermission(userId, doc);
-  },
-  remove(userId, doc) {
-    return hasPermission(userId, doc);
-  },
 });

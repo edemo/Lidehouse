@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { Communities } from '/imports/api/communities/communities.js';
+import { Breakdowns, parcelRef2digit } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { Journals } from '/imports/api/journals/journals.js';
@@ -59,16 +59,12 @@ export const apply = new ValidatedMethod({
           amount,
   //        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
           credit: [{
-            account: {
-              'Liabilities': parcelBilling.account['Owner payins'],
-              'Localizer': parcel.ref,
-            },
+            account: Breakdowns.name2code('Liabilities', parcelBilling.payinType, parcelBilling.communityId),
+            localizer: parcelRef2digit(parcel.ref),
           }],
           debit: [{
-            account: {
-              'Assets': parcelBilling.account['Owner payins'],
-              'Localizer': parcel.ref,
-            },
+            account: Breakdowns.name2code('Assets', parcelBilling.payinType, parcelBilling.communityId),
+            localizer: parcelRef2digit(parcel.ref),
           }],
           note: parcelBilling.note,
         };

@@ -2,7 +2,8 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
-import { Breakdowns } from './breakdowns';
+import { Breakdowns } from './breakdowns.js';
+import './methods.js';
 import { sideTags, yearTags, monthTags, yearMonthTags } from './breakdowns-utils';
 
 if (Meteor.isServer) {
@@ -186,6 +187,31 @@ if (Meteor.isServer) {
         console.log(breakdown.leafOptions());
         const root = Breakdowns.findOneByName('Root'); root.name = 'Assembly';
         chai.assert.deepEqual(breakdown.leafOptions(), root.leafOptions());
+      });
+
+      it('clones for a community', function () {
+        const root = Breakdowns.findOneByName('Root', Fixture.demoCommunityId);
+        chai.assert.isUndefined(root.communityId);  // it is generic template
+        const cloneId = Breakdowns.methods.clone._execute({ userId: Fixture.demoAccountantId }, {
+          name: 'Root', communityId: Fixture.demoCommunityId,
+        });
+        const clone = Breakdowns.findOne(cloneId);
+        chai.assert.equal(clone.communityId, Fixture.demoCommunityId);
+        chai.assert.equal(clone.name, 'Root');
+        const myRoot = Breakdowns.findOneByName('Root', Fixture.demoCommunityId);
+        chai.assert.equal(myRoot.communityId, Fixture.demoCommunityId);
+        delete root._id; delete root.createdAt; delete root.updatedAt;
+        delete myRoot._id; delete myRoot.createdAt; delete myRoot.updatedAt; delete myRoot.communityId;
+        chai.assert.deepEqual(root, myRoot);    // YET the same, other than those
+
+        // but if we modify it, only our copy changes
+        Breakdowns.methods.update._execute({ userId: Fixture.demoAccountantId }, {
+          _id: cloneId, modifier: { $set: { name: 'MyRoot' } },
+        });
+        const rootNew = Breakdowns.findOneByName('Root', undefined);
+        const cloneNew = Breakdowns.findOne(cloneId);
+        chai.assert.equal(rootNew.name, 'Root');
+        chai.assert.equal(cloneNew.name, 'MyRoot');
       });
     });
   });

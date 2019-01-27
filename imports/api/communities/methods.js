@@ -2,7 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { insertBreakdownTemplate } from '/imports/api/journals/breakdowns/template.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
@@ -24,7 +23,6 @@ export const create = new ValidatedMethod({
     checkNotExists(Communities, { name: doc.name });
     const communityId = Communities.insert(doc);
     
-    insertBreakdownTemplate(communityId);
     // The user creating the community, becomes the first 'admin' of it.
     Memberships.insert({ communityId, person: { userId: this.userId }, role: 'admin' });
     return communityId;
