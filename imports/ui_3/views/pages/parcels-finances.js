@@ -15,7 +15,7 @@ import { remove as removeJournal, billParcels } from '/imports/api/journals/meth
 import { Session } from 'meteor/session';
 import { journalColumns } from '/imports/api/journals/tables.js';
 import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
-import { Reports } from '/imports/api/journals/breakdowns/reports.js';
+import { Reports } from '/imports/api/journals/reports/reports.js';
 
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/components/custom-table.js';

@@ -22,9 +22,9 @@ Template.Account_history.viewmodel({
 //    this.endDate(today);
   },
   journalEntries() {
-    const accountSpec = AccountSpecification.fromNames(this.accountSelected());
+    const accountSpec = new AccountSpecification(this.accountSelected());
     const entries = JournalEntries.find({
-      ['account.' + accountSpec.mainFamily]: accountSpec.mainLeaf,
+      account: this.accountSelected(),
       valueDate: { $gte: new Date(this.startDate()), $lte: new Date(this.endDate()) },
     }, { sort: { valueDate: 1 } }).fetch();
     let total = 0;
@@ -39,7 +39,7 @@ Template.Account_history.viewmodel({
   },
 });
 
-
+//------------------------------------------
 
 Template.Parcel_history.viewmodel({
   startDate: '',
@@ -59,8 +59,8 @@ Template.Parcel_history.viewmodel({
   journalEntries() {
     let total = 0;
     const entries = JournalEntries.find({
-      'account.Liabilities': { $exists: true },
-      'account.Localizer': this.localizerSelected(),
+//      account: { $startsWith: '3' }, // Liabilities
+      localizer: this.localizerSelected(),
       valueDate: { $gte: new Date(this.startDate()), $lte: new Date(this.endDate()) },
     }, { sort: { valueDate: 1 } }).fetch();
     const entriesWithRunningTotal = entries.map(e => {

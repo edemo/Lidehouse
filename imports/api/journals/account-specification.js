@@ -1,17 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { __ } from '/imports/localization/i18n.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns, leafIsParcel } from '/imports/api/journals/breakdowns/breakdowns.js';
 
-export let chooseAccountFamily = {};
 export let chooseAccountNode = {};
-export let chooseAccountGroup = {};
-export let chooseAccountLocalizer = {};
+export let chooseLocalizerNode = {};
 export let chooseLeafAccountFromGroup = () => {};
 
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
-  import { AutoForm } from 'meteor/aldeed:autoform';
+/*  import { AutoForm } from 'meteor/aldeed:autoform';
 
   chooseAccountFamily = {
     options() {
@@ -33,8 +31,8 @@ if (Meteor.isClient) {
     },
     firstOption: () => __('(Select one)'),
   };
-
-  chooseAccountGroup = {
+*/
+  chooseAccountNode = {
     options() {
       const communityId = Session.get('activeCommunityId');
       const chartOfAccounts = Breakdowns.chartOfAccounts(communityId);
@@ -43,7 +41,7 @@ if (Meteor.isClient) {
     firstOption: () => __('(Select one)'),
   };
 
-  chooseAccountLocalizer = {
+  chooseLocalizerNode = {
     options() {
       const communityId = Session.get('activeCommunityId');
       const localizer = Breakdowns.findOne({ communityId, name: 'Localizer' });
@@ -53,7 +51,7 @@ if (Meteor.isClient) {
   };
 
   chooseLeafAccountFromGroup = function (brk, group) {
-    if (!brk) return chooseAccountGroup;
+    if (!brk) return chooseAccountNode;
     return {
       options() {
         const communityId = Session.get('activeCommunityId');
@@ -63,64 +61,36 @@ if (Meteor.isClient) {
       firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
     };
   };
-/*
-  function chooseAccountsSchema(move) {
-    const communityId = Session.get('activeCommunityId');
-    const mainAccounts = Breakdowns.find({ communityId, sign: { $exists: true } });
-    const localizerPac = Breakdowns.findOne({ communityId, name: 'Localizer' });
-   
-    return new SimpleSchema({
-      account: { type: String, autoform: { options() { return mainAccounts.map(a => { return { value: a.name, label: a.name }; }); } } },
-      leaf: { type: String, autoform: chooseLeafObject(move) },
-      localizer: { type: String, autoform: { options() { return localizerPac.leafOptions(); } } },
-    });
-  }*/
 }
 
-export const AccountInputSchema = new SimpleSchema({
-  account: { type: String, autoform: chooseAccountGroup },
-  localizer: { type: String, autoform: chooseAccountLocalizer, optional: true },
+export const AccountSchema = new SimpleSchema({
+  account: { type: String /* account code */, autoform: chooseAccountNode },
+  localizer: { type: String /* account code */, autoform: chooseLocalizerNode, optional: true },
 });
 
 export class AccountSpecification {
-  constructor(mainFamily, mainLeaf, localizerLeaf)  {
-    this.mainFamily = mainFamily;
-    this.mainLeaf = mainLeaf;
-    this.localizerLeaf = localizerLeaf;
+  constructor(accountCode, localizerCode) {
+    this.account = accountCode;
+    this.localizer = localizerCode;
   }
-  static fromNames(mainAccountFullName, localizerLeafName) {
-    const mainSplit = mainAccountFullName.split(':');
-    const mainFamily = mainSplit[0] || mainSplit[1];
-    const mainLeaf = mainSplit[mainSplit.length - 1];
-    const localizerLeaf = localizerLeafName;
-    return new AccountSpecification(mainFamily, mainLeaf, localizerLeaf);
+  static fromDoc(doc) {
+    return new AccountSpecification(doc.account, doc.localizer);
   }
-  static fromTags(accountTags) {
-    let mainFamily, mainLeaf, localizerLeaf;
-    Object.keys(accountTags).forEach(key => {
-      if (key === 'Localizer') localizerLeaf = accountTags[key];
-      else {
-        mainFamily = key;
-        mainLeaf = accountTags[key];
-      }
-    });
-    return new AccountSpecification(mainFamily, mainLeaf, localizerLeaf);
-  }
-
-  toTags() {
+  toDoc() {
     return {
-      [this.mainFamily]: this.mainLeaf,
-      'Localizer': this.localizerLeaf,
+      account: this.account,
+      localizer: this.localizer,
     };
   }
   display() {
     let parcelSuffix = '';
-    if (parseInt(this.localizerLeaf, 10)) parcelSuffix = '. ' + __('parcel');
+    if (leafIsParcel(this.localizer)) parcelSuffix = '. ' + __('parcel');
     let html = '';
-    html += `<span class="label label-default label-xs">${__(this.mainFamily)}::${__(this.mainLeaf)}</span> `;
-    if (this.localizerLeaf) {
-      html += `<span class="label label-success label-xs">${__(this.localizerLeaf)}${parcelSuffix}</span> `;
+    html += `<span class="label label-default label-xs">${this.account}:${__('accountNameHere')}</span> `;
+    if (this.localizer) {
+      html += `<span class="label label-success label-xs">${__(this.localizer)}${parcelSuffix}</span> `;
     }
     return html;
   }
 }
+

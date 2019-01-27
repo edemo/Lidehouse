@@ -18,7 +18,7 @@ import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
-import { insertBreakdownTemplate } from '/imports/api/journals//template.js';
+import { insertBreakdownTemplate } from '/imports/api/journals/breakdowns/template.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';

@@ -9,6 +9,7 @@ import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 // import { Txs } from '/imports/api/journals/txs.js';
 // import { TxDefs } from '/imports/api/journals/tx-defs.js';
 
+/*
 function runPositingRules(context, doc) {
   const isSubAccountOf = Breakdowns.isSubAccountOf.bind({ communityId: doc.communityId });
   if (doc.credit[0].account['Incomes'] && isSubAccountOf(doc.credit[0].account['Incomes'], 'Owner payins', 'Incomes')
@@ -30,6 +31,7 @@ function runPositingRules(context, doc) {
     Journals.insert(newDoc);
   }
 }
+*/
 
 export const insert = new ValidatedMethod({
   name: 'journals.insert',
@@ -38,7 +40,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     checkPermissions(this.userId, 'journals.insert', doc.communityId);
     const id = Journals.insert(doc);
-    runPositingRules(this, doc);
+//    runPositingRules(this, doc);
     return id;
   },
 });

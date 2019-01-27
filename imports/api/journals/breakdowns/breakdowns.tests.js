@@ -3,8 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Breakdowns } from './breakdowns';
-import { TableReport } from './table-report';
-import { yearTags, phaseTags } from './breakdowns-utils';
+import { sideTags, yearTags, monthTags, yearMonthTags } from './breakdowns-utils';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -14,106 +13,180 @@ if (Meteor.isServer) {
     this.timeout(5000);
     before(function () {
       Fixture = freshFixture();
-      const rawBreakdown = {
-        name: 'Root',
-        communityId: Fixture.demoCommunityId,
-        children: [
-          { code: '1', name: 'Level1',
+    });
+    after(function () {
+      Breakdowns.remove({});
+    });
+
+    describe('api', function () {
+      before(function () {
+        const rootId = Breakdowns.define({
+          name: 'Root',
+          children: [
+            { digit: '1', name: 'Level1',
+              children: [
+                { digit: '2', name: 'Level2',
+                  children: [
+                  { digit: 'A', name: 'LeafA' },
+                  { digit: 'B', name: 'LeafB' },
+                  { digit: 'C', name: 'LeafC' },
+                  ],
+                },
+                { name: '',
+                  children: [
+                  { digit: 'D', name: 'LeafD' },
+                  ],
+                },
+              ],
+            },
+            { name: '',
+              children: [
+                { name: '',
+                  children: [
+                  { digit: 'E', name: 'LeafE' },
+                  ],
+                },
+                { digit: '3', name: 'Level3',
+                  children: [
+                  { digit: 'F', name: 'LeafF' },
+                  ],
+                },
+              ],
+            },
+          ],
+        });
+        breakdown = Breakdowns.findOne(rootId);
+      });
+
+      it('access to leaf names', function () {
+        const leafNames = breakdown.leafNames();
+        const expectedLeafNames = ['LeafA', 'LeafB', 'LeafC', 'LeafD', 'LeafE', 'LeafF'];
+        chai.assert.deepEqual(leafNames, expectedLeafNames);
+      });
+
+      it('access to leaf paths', function () {
+        const leafPaths = breakdown.leafs().map(l => l.path);
+        const expectedLeaPaths = [
+          ['Root', 'Level1', 'Level2', 'LeafA'],
+          ['Root', 'Level1', 'Level2', 'LeafB'],
+          ['Root', 'Level1', 'Level2', 'LeafC'],
+          ['Root', 'Level1', 'LeafD'],
+          ['Root', 'LeafE'],
+          ['Root', 'Level3', 'LeafF'],
+        ];
+        chai.assert.deepEqual(leafPaths, expectedLeaPaths);
+      });
+
+      it('access to node names', function () {
+        const nodeNames = breakdown.nodeNames();
+        const expectedNodeNames = [
+          'Root',
+          'Level1',
+          'Level2',
+          'LeafA',
+          'LeafB',
+          'LeafC',
+          'LeafD',  // under Level1
+          'LeafE',  // under Root
+          'Level3',
+          'LeafF',
+        ];
+        chai.assert.deepEqual(nodeNames, expectedNodeNames);
+      });
+
+      it('access to leaf codes', function () {
+        const leafCodes = breakdown.leafCodes();
+        const expectedLeafCodes = ['12A', '12B', '12C', '1D', 'E', '3F'];
+        chai.assert.deepEqual(leafCodes, expectedLeafCodes);
+      });
+
+      it('access to leaf options', function () {
+        const leafOptions = breakdown.leafOptions();
+        const expectedLeafOptions = [
+          { label: 'Root:Level1:Level2:LeafA', value: '12A' },
+          { label: 'Root:Level1:Level2:LeafB', value: '12B' },
+          { label: 'Root:Level1:Level2:LeafC', value: '12C' },
+          { label: 'Root:Level1:LeafD',        value: '1D' },
+          { label: 'Root:LeafE',               value: 'E' },
+          { label: 'Root:Level3:LeafF',        value: '3F' },
+        ];
+        chai.assert.deepEqual(leafOptions, expectedLeafOptions);
+      });
+    });
+
+    describe('construction', function () {
+      before(function () {
+        Breakdowns.define({
+          digit: '2', name: 'includeLevel2',
             children: [
-              { code: '2', name: 'Level2',
-                children: [
-                { code: 'A', name: 'LeafA' },
-                { code: 'B', name: 'LeafB' },
-                { code: 'C', name: 'LeafC' },
-                ],
-              },
-              { name: '',
-                children: [
-                { code: 'D', name: 'LeafD' },
-                ],
-              },
+            { digit: 'A', name: 'LeafA' },
+            { digit: 'B', name: 'LeafB' },
+            { digit: 'C', name: 'LeafC' },
             ],
-          },
-          { name: '',
-            children: [
-              { name: '',
-                children: [
-                { code: 'E', name: 'LeafE' },
-                ],
-              },
-              { code: '3', name: 'Level3',
-                children: [
-                { code: 'F', name: 'LeafF' },
-                ],
-              },
-            ],
-          },
-        ],
-      };
-      breakdown = Breakdowns._transform(rawBreakdown);
-    });
+        });
 
-    it('access to leaf names', function () {
-      const leafNames = breakdown.leafNames();
-      const expectedLeafNames = ['LeafA', 'LeafB', 'LeafC', 'LeafD', 'LeafE', 'LeafF'];
-      chai.assert.deepEqual(leafNames, expectedLeafNames);
-    });
+        Breakdowns.define({
+          digit: '3', name: 'includeSub',
+          children: [
+            { digit: '1', name: 'Leaf1' },
+            { digit: '2', name: 'Types', include: 'includeTypes' },
+          ],
+        });
 
-    it('access to node names', function () {
-      const nodeNames = breakdown.nodeNames();
-      const expectedNodeNames = [
-        'Root',
-        'Level1',
-        'Level2',
-        'LeafA',
-        'LeafB',
-        'LeafC',
-        'LeafD',  // under Level1
-        'LeafE',  // under Root
-        'Level3',
-        'LeafF',
-      ];
-      chai.assert.deepEqual(nodeNames, expectedNodeNames);
-    });
+        Breakdowns.define({
+          digit: 'D', name: 'includeLeafD',
+        });
 
-    it('access to leaf codes', function () {
-      const leafCodes = breakdown.leafCodes();
-      const expectedLeafCodes = ['12A', '12B', '12C', '1D', 'E', '3F'];
-      chai.assert.deepEqual(leafCodes, expectedLeafCodes);
-    });
+        Breakdowns.define({
+          digit: '1', name: 'includeLevel1',
+          children: [
+            { digit: '2', name: 'Level2',
+              include: 'includeLevel2',
+            },
+            { name: '',
+              children: [
+              { digit: 'D', name: 'LeafD', include: 'includeLeafD' },
+              ],
+            },
+          ],
+        });
 
-    xit('access to leaf options', function () {
-      const leafOptions = breakdown.leafOptions();
-      const expectedLeafOptions = [
-        { label: 'Level1/Level2/LeafA', value: 'LeafA' },
-        { label: 'Level1/Level2/LeafB', value: 'LeafB' },
-        { label: 'Level1/Level2/LeafC', value: 'LeafC' },
-        { label: 'Level1/LeafD',        value: 'LeafD' },
-        { label: 'LeafE',               value: 'LeafE' },
-        { label: 'Level3/LeafF',        value: 'LeafF' },
-      ];
-      chai.assert.deepEqual(leafOptions, expectedLeafOptions);
-    });
+        const assemblyId = Breakdowns.define({
+          name: 'Assembly',
+          children: [
+            { name: 'Level1',
+              include: 'includeLevel1',
+            },
+            { name: '',
+              children: [
+                { name: '',
+                  children: [
+                  { digit: 'E', name: 'LeafE' },
+                  ],
+                },
+                { digit: '3', name: 'Level3',
+                  children: [
+                  { digit: 'F', name: 'LeafF' },
+                  ],
+                },
+              ],
+            },
+          ],
+        });
 
-    it('reports', function () {
-      const report = new TableReport();
+        breakdown = Breakdowns.findOne(assemblyId);
+      });
 
-      report.addTree('cols', {
-        field: 'phase',
-        values: Breakdowns._transform(phaseTags),
-      }, false, false);
+      it('assembles included parts', function () {
+        const yearMonthBreakdown = Breakdowns._transform(yearMonthTags);
+        console.log(yearMonthBreakdown.leafOptions());
+      });
 
-      report.addTree('cols', {
-        field: 'month',
-        values: Breakdowns._transform(yearTags),
-      }, true, false);
-
-      report.addTree('rows', {
-        field: 'account.Root',
-        values: breakdown,
-      }, false, false);
-
-
+      it('assembles imported parts', function () {
+        console.log(breakdown.leafOptions());
+        const root = Breakdowns.findOneByName('Root'); root.name = 'Assembly';
+        chai.assert.deepEqual(breakdown.leafOptions(), root.leafOptions());
+      });
     });
   });
 }

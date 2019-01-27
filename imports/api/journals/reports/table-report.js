@@ -1,12 +1,10 @@
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
-
 import { debugAssert } from '/imports/utils/assert.js';
-import { JournalEntries } from '/imports/api/journals/entries.js';
-import { Breakdowns } from './breakdowns';
 
 export class TableReport {
-  constructor() {
+  constructor(dataSource) {
+    this.dataSource = dataSource;
     this.filters = {};
     this.rows = [];
     this.cols = [];
@@ -49,7 +47,7 @@ export class TableReport {
     return {
       field,
       value: node.label || node.name,
-      values: _.pluck(node.leafs(), 'name'),
+      values: _.pluck(node.leafs(), 'code'),
       class: 'header-level' + node.level,
       filter() {
         const obj = {};
@@ -96,18 +94,17 @@ export class TableReport {
   cell(x, y) {
     const colDefs = this.cols[x];
     const rowDefs = this.rows[y];
-    const filter = _.extend({}, this.filters);
+    const lineDefs = colDefs.concat(rowDefs);
 
+    const filter = _.extend({}, this.filters);
     let classes = 'cell';
-    function addFilter(lineDef) {
+    lineDefs.forEach((lineDef) => {
       _.extend(filter, lineDef.filter());
       classes += ' ' + lineDef.class;
-    }
-    const lineDefs = colDefs.concat(rowDefs);
-    lineDefs.forEach(addFilter);
+    });
 
-    let displaySign = 0;  // the displaySign is the main Account's sign
-    const filterKeys = Object.keys(filter);
+    let displaySign = 1;  // the displaySign is the main Account's sign
+/*    const filterKeys = Object.keys(filter);
     filterKeys.forEach((fKey) => {
       const splitted = fKey.split('.');
       if (splitted[0] === 'account') {
@@ -117,9 +114,9 @@ export class TableReport {
         if (accountName === 'Owners') displaySign *= -1; // The owner's perspective is the opposite of the community's
       }
     });
-
+*/
     let amount = 0;
-    JournalEntries.find(filter).forEach(e => amount += e.effectiveAmount());
+    this.dataSource.find(filter).forEach(e => amount += e.effectiveAmount());
 
     const totalAmount = displaySign * amount;
     if (totalAmount < 0) classes += ' negative';

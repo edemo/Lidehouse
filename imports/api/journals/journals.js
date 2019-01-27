@@ -6,22 +6,15 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Timestamps } from '/imports/api/timestamps.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { AccountInputSchema } from './account-specification.js';
+import { AccountSchema } from './account-specification.js';
 
 export const Journals = new Mongo.Collection('journals');
 
 Journals.phaseValues = ['done', 'plan'];
 
-Journals.entryDbSchema = new SimpleSchema({
+Journals.entrySchema = new SimpleSchema([{
   amount: { type: Number, optional: true },
-  account: { type: Object, blackbox: true },
-    // rootAccountName -> leafAccountName or parcelNo
-});
-
-Journals.entryAfSchema = new SimpleSchema({
-  amount: { type: Number, optional: true },
-  account: { type: AccountInputSchema },
-});
+}, AccountSchema]);
 
 Journals.rawSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -41,15 +34,8 @@ Journals.noteSchema = {
 
 Journals.schema = new SimpleSchema([
   _.clone(Journals.rawSchema),
-  { credit: { type: [Journals.entryDbSchema] } },
-  { debit: { type: [Journals.entryDbSchema] } },
-  _.clone(Journals.noteSchema),
-]);
-
-Journals.inputSchema = new SimpleSchema([
-  _.clone(Journals.rawSchema),
-  { credit: { type: [Journals.entryAfSchema] } },
-  { debit: { type: [Journals.entryAfSchema] } },
+  { credit: { type: [Journals.entrySchema] } },
+  { debit: { type: [Journals.entrySchema] } },
   _.clone(Journals.noteSchema),
 ]);
 
@@ -65,7 +51,7 @@ Journals.inputSchema = new SimpleSchema([
 Journals.helpers({
   isOld() {
     const now = moment(new Date());
-    const elapsed = moment.duration(now.diff(moment(this.CreatedAt)), 'hours');
+    const elapsed = moment.duration(now.diff(moment(this.createdAt)), 'hours');
     return (elapsed > 24);
   },
   journalEntries() {
@@ -75,14 +61,14 @@ Journals.helpers({
       delete txBase._id;
       delete txBase.credit;
       delete txBase.debit;
-      entries.push(_.extend(txBase, l, { move: 'debit' }));
+      entries.push(_.extend(txBase, l, { side: 'debit' }));
     });
     this.credit.forEach(l => {
       const txBase = _.clone(this);
       delete txBase._id;
       delete txBase.credit;
       delete txBase.debit;
-      entries.push(_.extend(txBase, l, { move: 'credit' }));
+      entries.push(_.extend(txBase, l, { side: 'credit' }));
     });
     return entries;
   },
@@ -108,7 +94,6 @@ Journals.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
   Journals.simpleSchema().i18n('schemaJournals');
-  Journals.inputSchema.i18n('schemaJournals');
 });
 
 // Deny all journal updates - we manipulate transactions only

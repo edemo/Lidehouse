@@ -23,7 +23,7 @@ import { Journals } from '/imports/api/journals/journals.js';
 // import { TxDefs } from '/imports/api/journals/tx-defs.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
-import { insertBreakdownTemplate } from '/imports/api/journals//template.js';
+import { insertBreakdownTemplate } from '/imports/api/journals/breakdowns/template.js';
 import { insert as insertTx } from '/imports/api/journals/methods.js';
 
 import '/imports/api/topics/votings/votings.js';
@@ -942,7 +942,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   insertBreakdownTemplate(demoCommunityId);
 
-  const localizer = Breakdowns.findOne({
+  const localizer = Breakdowns.define({
     communityId: demoCommunityId,
     name: 'Localizer',
   });

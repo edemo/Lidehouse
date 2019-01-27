@@ -1,48 +1,49 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
-import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { TableReport } from '/imports/api/journals/breakdowns/table-report.js';
-import { monthTags, moveTags } from './breakdowns-utils';
+import { TableReport } from '/imports/api/journals/reports/table-report.js';
+import { JournalEntries } from '/imports/api/journals/entries.js';
+import { monthTags, sideTags } from '/imports/api/journals/breakdowns/breakdowns-utils';
+import '/imports/api/journals/breakdowns/template.js';
 
 export const Reports = {
   Blank() {
-    const report = new TableReport('Blank');
+    const report = new TableReport(JournalEntries);
     return report;
   },
 
   Assets() {
-    const report = new TableReport('Assets');
+    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
     
     report.addFilter({ phase: 'done', communityId });
     report.addLine('cols', [], false);
     report.addTree('rows', {
-      field: 'account.Assets',
-      values: Breakdowns.findOne({ communityId, name: 'Assets' }),
+      field: 'account',
+      values: Breakdowns.findOneByName('Assets', communityId),
     }, false);
 
     return report;
   },
 
   Liabilities() {
-    const report = new TableReport('Liabilities');
+    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
     
     report.addFilter({ phase: 'done', communityId });
     report.addLine('cols', [], false);
     report.addTree('rows', {
-      field: 'account.Liabilities',
-      values: Breakdowns.findOne({ communityId, name: 'Liabilities' }),
+      field: 'account',
+      values: Breakdowns.findOneByName('Liabilities', communityId),
     }, false);
 
     return report;
   },
 
   Performance(year) {
-    const report = new TableReport('Penzugyek Reszletei');
+    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
 
     report.addFilter({
@@ -57,12 +58,12 @@ export const Reports = {
     }, false);
 
     report.addTree('rows', {
-      field: 'account.Incomes',
-      values: Breakdowns.findOne({ communityId, name: 'Incomes' }),
+      field: 'account',
+      values: Breakdowns.findOneByName('Incomes', communityId),
     }, false);
     report.addTree('rows', {
-      field: 'account.Expenses',
-      values: Breakdowns.findOne({ communityId, name: 'Expenses' }),
+      field: 'account',
+      values: Breakdowns.findOneByName('Expenses', communityId),
     }, false);
 
     const planColDef = {
@@ -87,7 +88,7 @@ export const Reports = {
   },
 
   MyParcelBalances(year) {
-    const report = new TableReport('My parcel balances');
+    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
     const myParcels = {
       name: 'Albetéteim', label: 'Összes albetét',
@@ -99,42 +100,42 @@ export const Reports = {
     report.addFilter({ phase: 'done', communityId });
 
     report.addTree('rows', {
-      field: 'account.Localizer',
+      field: 'localizer',
       values: Breakdowns._transform(myParcels),
     }, false);
 
     report.addTree('rows', {
-      field: 'account.Liabilities',
-      values: Breakdowns.findOne({ communityId, name: 'Owner payins' }),
+      field: 'account',
+      values: Breakdowns.findOneByName('Owner payin types', communityId),
     }, true, true);
 
     report.addTree('cols', {
-      field: 'move',
-      values: Breakdowns._transform(moveTags),
+      field: 'side',
+      values: Breakdowns._transform(sideTags),
     }, false, false);
 
     return report;
   },
 
   ParcelBalances(year) {
-    const report = new TableReport('Parcel balances');
+    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
 
     report.addFilter({ phase: 'done', communityId });
 
     report.addTree('rows', {
-      field: 'account.Localizer',
-      values: Breakdowns.findOne({ communityId, name: 'Localizer' }),
+      field: 'localizer',
+      values: Breakdowns.findOneByName('Localizer', communityId),
     }, false);
 
     report.addTree('cols', {
-      field: 'account.Liabilities',
-      values: Breakdowns.findOne({ communityId, name: 'Owner payins' }),
+      field: 'account',
+      values: Breakdowns.findOneByName('Owner payin types', communityId),
     }, false, true);
 
     report.addTree('cols', {
-      field: 'move',
-      values: Breakdowns._transform(moveTags),
+      field: 'side',
+      values: Breakdowns._transform(sideTags),
     }, true, false);
 
     return report;

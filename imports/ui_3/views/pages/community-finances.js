@@ -14,7 +14,7 @@ import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { monthTags } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
 import { journalColumns } from '/imports/api/journals/tables.js';
 import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
-import { Reports } from '/imports/api/journals/breakdowns/reports.js';
+import { Reports } from '/imports/api/journals/reports/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
@@ -168,11 +168,11 @@ Template.Community_finances.helpers({
     }
     return getOptions;
   },
-  optionsOf(accountName) {
+  optionsOf(accountCode) {
     const communityId = Session.get('activeCommunityId');
-    const account = AccountSpecification.fromNames(accountName);
-    const brk = Breakdowns.findOne({ communityId, name: account.mainFamily });
-    if (brk) return brk.leafOptions(account.mainLeaf);
+//    const accountSpec = new AccountSpecification(accountCode);
+    const brk = Breakdowns.chartOfAccounts(communityId);
+    if (brk) return brk.leafOptions(accountCode);
     return [];
   },
   journalsTableDataFn() {

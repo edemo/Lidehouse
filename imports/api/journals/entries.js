@@ -11,23 +11,23 @@ if (Meteor.isClient) {
   JournalEntries.helpers({
     effectiveAmount() {
       let effectiveSign = 0;
-      if (this.move === 'credit') effectiveSign = -1;
-      if (this.move === 'debit') effectiveSign = +1;
+      if (this.side === 'credit') effectiveSign = -1;
+      if (this.side === 'debit') effectiveSign = +1;
       return this.amount * effectiveSign;
     },
     journal() {
       return Journals.findOne(this.txId);
     },
     contra() {
-      function otherSide(move) {
-        if (move === 'credit') return 'debit';
-        if (move === 'debit') return 'credit';
+      function otherSide(side) {
+        if (side === 'credit') return 'debit';
+        if (side === 'debit') return 'credit';
         debugAssert(false); return undefined;
       }
-      const contraEntries = this.journal()[otherSide(this.move)];
+      const contraEntries = this.journal()[otherSide(this.side)];
 //      debugger;
       if (!contraEntries) return '';
-      const contraAccount = AccountSpecification.fromTags(contraEntries[0].account);
+      const contraAccount = AccountSpecification.fromDoc(contraEntries[0]);
       return contraAccount;
     },
   });

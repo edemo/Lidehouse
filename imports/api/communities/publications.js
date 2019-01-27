@@ -103,7 +103,7 @@ function communityPublication(userId, _id) {
       // Publish the Breakdowns of the Community
       find(community) {
         if (hasPermission('breakdowns.inCommunity')) {
-          return Breakdowns.find({ communityId: community._id });
+          return Breakdowns.find({ $or: [{ communityId: community._id }, { communityId: { $exists: false } }] });
         }
         return undefined;
       },
