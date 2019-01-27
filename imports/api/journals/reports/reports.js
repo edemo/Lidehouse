@@ -5,7 +5,7 @@ import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { TableReport } from '/imports/api/journals/reports/table-report.js';
 import { JournalEntries } from '/imports/api/journals/entries.js';
-import { monthTags, sideTags } from '/imports/api/journals/breakdowns/breakdowns-utils';
+import { yearMonthTags, sideTags } from '/imports/api/journals/breakdowns/breakdowns-utils';
 import '/imports/api/journals/breakdowns/template.js';
 
 export const Reports = {
@@ -53,8 +53,8 @@ export const Reports = {
     });
 
     report.addTree('cols', {
-      field: 'month',
-      values: Breakdowns._transform(monthTags),
+      field: 'period',
+      values: Breakdowns._transform(yearMonthTags),
     }, false);
 
     report.addTree('rows', {

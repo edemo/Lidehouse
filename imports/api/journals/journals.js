@@ -22,9 +22,13 @@ Journals.rawSchema = {
   batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   phase: { type: String, defaultValue: 'done', allowedValues: Journals.phaseValues, autoform: autoformOptions(Journals.phaseValues) },
   valueDate: { type: Date },
-  year: { type: Number, autoValue() { return this.field('valueDate').value.getFullYear(); }, optional: true, autoform: { omit: true } },
-  month: { type: Number, autoValue() { return '-' + (this.field('valueDate').value.getMonth() + 1); }, optional: true, autoform: { omit: true } },
   amount: { type: Number },
+  year: { type: Number, optional: true, autoform: { omit: true },
+    autoValue() { return this.field('valueDate').value.getFullYear(); },
+  },
+  period: { type: String, optional: true, autoform: { omit: true },
+    autoValue() { return this.field('valueDate').value.getFullYear().toString() + '-' + (this.field('valueDate').value.getMonth() + 1); },
+  },
 };
 
 Journals.noteSchema = {

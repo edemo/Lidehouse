@@ -43,10 +43,10 @@ Breakdowns.clone = function clone(name, communityId) {
 
 Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) {
   const breakdown = Breakdowns.findOneByName(breakdownName, communityId);
-  console.log("looking for", nodeName);
-  console.log("in breakdown:", breakdown);
+  //console.log("looking for", nodeName);
+  //console.log("in breakdown:", JSON.stringify(breakdown));
   const node = breakdown.findNodeByName(nodeName);
-  console.log("result:", node.code, node.name);
+  //console.log("result:", node.code, node.name);
   return node.code;
 };
 

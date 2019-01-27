@@ -26,8 +26,8 @@ if (Meteor.isServer) {
 
     describe('reports', function () {
       before(function () {
-        JournalEntries.insert({ side: 'debit', month: '-01', amount: 110 });
-        JournalEntries.insert({ side: 'debit', month: '-01', amount: 120 });
+        JournalEntries.insert({ side: 'debit', period: '2017-12', amount: 110 });
+        JournalEntries.insert({ side: 'credit', period: '2017-12', amount: 120 });
       });
 
       it('reports', function () {
@@ -37,21 +37,16 @@ if (Meteor.isServer) {
           field: 'side',
           values: Breakdowns._transform(sideTags),
         }, false);
-/*
+
         report.addTree('rows', {
-          field: 'year',
-          values: Breakdowns._transform(yearTags),
-        });
-*/
-        report.addTree('rows', {
-          field: 'month',
-          values: Breakdowns._transform(monthTags),
+          field: 'period',
+          values: Breakdowns._transform(yearMonthTags),
         }, false);
 
         const cells = [];
-        for (let x = 0; x < 3; x++) {
+        for (let x = 0; x <= 2; x++) {
           cells[x] = [];
-          for (let y = 0; y < 13; y++) {
+          for (let y = 0; y <= 2 * 12; y++) {
             cells[x][y] = report.cell(x, y);
           }
         }

@@ -972,7 +972,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       year: 2017,
       month: 'allMonths',
       payinType: 'Víz díj',
-      localizer: name2code('Localizer', parcelRef2digit(place[i])),
+      localizer: name2code('Localizer', place[i]),
     });
   }
 
@@ -984,7 +984,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       year: 2017,
       month: 'allMonths',
       payinType: 'Fűtési díj',
-      localizer: name2code('Localizer', parcelRef2digit(i.toString())),
+      localizer: name2code('Localizer', i.toString()),
     });
   }
 
@@ -1163,7 +1163,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         amount: payable[i],
         credit: [{
           account: name2code('Incomes', 'Közös költség befizetés'),
-          localizer: name2code('Localizer', parcelRef2Digit(i.toString())),
+          localizer: name2code('Localizer', i.toString()),
         }],
         debit: [{
           account: name2code('Assets', 'Bank főszámla'),
@@ -1184,7 +1184,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         amount: payable[i],
         credit: [{
           account: name2code('Incomes', 'Víz díj'),
-          localizer: name2code('Localizer', parcelRef2Digit(place[i])),
+          localizer: name2code('Localizer', place[i]),
         }],
         debit: [{
           account: name2code('Assets', 'Bank főszámla'),
@@ -1203,7 +1203,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         amount: payable[i],
         credit: [{
           account: name2code('Incomes', 'Fűtési díj'),
-          localizer: name2code('Localizer', parcelRef2Digit(i.toString())),
+          localizer: name2code('Localizer', i.toString()),
         }],
         debit: [{
           account: name2code('Assets', 'Bank főszámla'),
@@ -1221,7 +1221,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 60000,
       credit: [{
         account: name2code('Incomes', 'Felújítási célbefizetés'),
-        localizer: name2code('Localizer', parcelRef2Digit(i.toString())),
+        localizer: name2code('Localizer', i.toString()),
       }],
       debit: [{
         account: name2code('Assets', 'Bank főszámla'),
@@ -1555,7 +1555,7 @@ Meteor.methods({
       year: 2017,
       month: 'allMonths',
       payinType: 'Közös költség befizetés',
-      localizer: name2code('Localizer', parcelRef2digit(demoParcelSerial.toString())),
+      localizer: name2code('Localizer', demoParcelSerial.toString()),
     });
     for (let m = 1; m < 13; m++) {
       insertTx._execute({ userId: demoAccountantId }, {
@@ -1565,7 +1565,7 @@ Meteor.methods({
         amount: 6875,
         credit: [{
           account: name2code('Incomes', 'Közös költség befizetés'),
-          localizer: name2code('Localizer', parcelRef2digit(demoParcelSerial.toString())),
+          localizer: name2code('Localizer', demoParcelSerial.toString()),
         }],
         debit: [{
           account: name2code('Assets', 'Bank főszámla'),
