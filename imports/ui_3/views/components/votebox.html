@@ -124,16 +124,19 @@
               </div>
 
               {{else}}
-              <div class="row">
-                <div class="col-xs-12">
-                  <div class="btns-group">
-                    {{#each choice in vote.choices}}
-                    <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
-                      <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
-                    </button>
-                    {{/each}}
+              <div class="letter-content">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="btns-group">
+                      {{#each choice in vote.choices}}
+                      <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
+                        <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
+                      </button>
+                      {{/each}}
+                      <div class="send-button {{voteState}}"><i class="fa fa-share-square fa-3x"></i></div>
+                    </div>
+                    <!--button class="btn-primary btn-golive">{{_ 'vote'}}</button-->
                   </div>
-                  <!--button class="btn-primary btn-golive">{{_ 'vote'}}</button-->
                 </div>
               </div>
               {{/if}}

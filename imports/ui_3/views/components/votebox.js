@@ -24,12 +24,14 @@ import '/imports/ui_3/views/modals/voting-edit.js';
 import '/imports/ui_3/views/components/vote-results.js';
 import '../components/select-voters.js';
 import './votebox.html';
+import { envelope } from './envelope.js';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
 const notVotedColor = '#dedede';
 
 Template.Votebox.onCreated(function voteboxOnCreated() {
   this.state = new ReactiveDict();
+  this.state.set('choice', undefined);
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     const topicId = this.data._id;
@@ -131,6 +133,9 @@ Template.Votebox.helpers({
   pressedClassForVoteBtn(choice) {
     const userId = Meteor.userId();
     const voteOfUser = this.voteOf(userId);
+    const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
+    const temporaryChoice = Template.instance().state.get('choice');
+    if (choice === temporaryChoice && !voteIsFinalized) return 'btn-pressed';
     return _.isEqual(voteOfUser, [choice]) && 'btn-pressed';
   },
   // Preferential voting
@@ -149,6 +154,12 @@ Template.Votebox.helpers({
   },
   attachments() {
     return Shareddocs.find({ topicId: this._id });
+  },
+  voteState() {
+    const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
+    const temporaryChoice = Template.instance().state.get('choice');
+    if (temporaryChoice !== undefined && !voteIsFinalized) return 'visible-button';
+    return 'invisible-button';
   },
 });
 
@@ -210,9 +221,17 @@ Template.Votebox.events({
   },
   // event handler for the single choice vote type
   'click .btn-vote'(event) {
+    const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
+    if (!voteIsFinalized) {
+      Template.instance().state.set('choice', $(event.target).closest('.btn').data('value'));
+    } else {
+      return;
+    }
+  },
+  'click .send-button'(event) {
     const topicId = this._id;
-    const choice = $(event.target).closest('.btn').data('value');
-    castVoteBasedOnPermission(topicId, [choice],
+    const temporaryChoice = Template.instance().state.get('choice');
+    castVoteBasedOnPermission(topicId, [temporaryChoice],
       onSuccess(res => displayMessage('success', 'Vote casted'))
     );
   },
@@ -238,6 +257,7 @@ Template.Votebox.events({
     castVote.call({ topicId, castedVote: vote },
       onSuccess(res => displayMessage('success', 'Vote revoked'))
     );
+    Template.instance().state.set('choice', undefined);
   },
   'click .js-close'(event, instance) {
     const serverTimeNow = new Date(TimeSync.serverTime());
@@ -257,3 +277,6 @@ Template.Votebox.events({
     Modal.show('Modal', modalContext);
   },
 });
+
+
+envelope('Votebox', 'state', 'voteIsFinalized');

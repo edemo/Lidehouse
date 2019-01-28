@@ -196,3 +196,40 @@
 .loginscreen .logo img {
   width: 210px;
 }
+
+.btns-group {
+  margin: auto;
+  position: relative;
+}
+
+.btn-vote {
+    margin: auto;
+} 
+
+.send-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px 10px 0 0;
+    background-color: white;
+    position: absolute;
+    top: -5px;
+    right: 0;
+    text-align: center;
+    line-height: 40px;
+    margin: auto;
+    color: red;
+    transition: opacity 1s;
+	z-index: 11;
+	display: none;
+    cursor: pointer;
+}
+
+.invisible-button {
+	display: none !important;
+	pointer-events: none !important;
+}
+
+.visible-button {
+    display: block;
+    cursor: pointer;
+}
