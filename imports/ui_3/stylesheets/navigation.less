@@ -39,6 +39,10 @@
     left: 0 !important;
 }
 
+.dropdown-menu {
+    min-width: 180px;
+}
+
 @media (max-width: 768px) {
     #arrow-icon {
         display: inline-block;
@@ -47,5 +51,15 @@
         position: absolute;
         right: 10px;
         top: 10px;
+    }
+}
+
+@media (max-width: 350px) {
+    .navbar-top-links .dropdown-menu li a {
+        padding: 5px 3.5px;
+        min-height: 0;
+    }
+    .dropdown-menu {
+        min-width: 150px;
     }
 }
