@@ -24,9 +24,18 @@ if (Meteor.isServer) {
   let Fixture;
   // Mock version of the real client's helper function
   const userHasNowSeen = function (userId, topicId) {
+    const seenType = Meteor.users.SEEN_BY.EYES;
     const topic = Topics.findOne(topicId);
-    const lastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
-    updateMyLastSeen._execute({ userId }, { topicId, lastSeenInfo });
+    const user = Meteor.users.findOne(userId);
+    const oldLastSeenInfo = user.lastSeens[seenType][topic._id];
+    const comments = topic.comments().fetch(); // returns newest-first order
+    if (comments[0] && (comments[0].userId === userId)) { return; }  // 
+    const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
+    const newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: topic.commentCounter };
+    if (oldLastSeenInfo && oldLastSeenInfo.commentCounter === newLastSeenInfo.commentCounter) {
+      return; // this avoids infinite loop and unnecessary server bothering
+    }
+    updateMyLastSeen._execute({ userId }, { topicId, lastSeenInfo: newLastSeenInfo });
   };
 
   describe('topics', function () {
@@ -51,6 +60,7 @@ if (Meteor.isServer) {
       let commentId;
       let otherTopicId;
       let userId;
+      let otherUserId;
 
       describe('notifications', function () {
         before(function () {
@@ -59,11 +69,12 @@ if (Meteor.isServer) {
           Comments.remove({});
 
           userId = Fixture.demoUserId;
+          otherUserId = Fixture.demoManagerId;
 
-          // Create a topic and a comment in that topic
-          topicId = Topics.methods.insert._execute({ userId }, {
+          // Create a topic
+          topicId = Topics.methods.insert._execute({ userId: otherUserId }, {
             communityId: Fixture.demoCommunityId,
-            userId,
+            userId: otherUserId,
             category: 'forum',
             title: 'Just a topic',
             text: 'Not much to say',
@@ -77,7 +88,6 @@ if (Meteor.isServer) {
         });
 
         it('doesn\'t notify on seen topic', function (done) {
-          const user = Meteor.users.findOne(userId);
           userHasNowSeen(userId, topicId);
           
           const topic = Topics.findOne(topicId);
@@ -86,7 +96,7 @@ if (Meteor.isServer) {
         });
 
         it('notifies on new comment', function (done) {
-          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 1' });
+          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, userId: otherUserId, text: 'comment 1' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
@@ -97,7 +107,6 @@ if (Meteor.isServer) {
         });
 
         it('doesn\'t notify on seen comment', function (done) {
-          const user = Meteor.users.findOne(userId);
           userHasNowSeen(userId, topicId);
 
           const topic = Topics.findOne(topicId);
@@ -106,8 +115,8 @@ if (Meteor.isServer) {
         });
 
         it('notifies on several new comments', function (done) {
-          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 2' });
-          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 3' });
+          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, userId: otherUserId, text: 'comment 2' });
+          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, userId: otherUserId, text: 'comment 3' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 2);
@@ -118,7 +127,6 @@ if (Meteor.isServer) {
         });
 
         it('doesn\'t notify after several seen comment', function (done) {
-          const user = Meteor.users.findOne(userId);
           userHasNowSeen(userId, topicId);
 
           const topic = Topics.findOne(topicId);
@@ -128,8 +136,8 @@ if (Meteor.isServer) {
 
         it('notifies on new comment even if meanwhile there is a deleted comment', function (done) {
           const deleteComment = Comments.findOne({ text: 'comment 3' });
-          Comments.methods.remove._execute({ userId }, { _id: deleteComment._id });
-          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 4' });
+          Comments.methods.remove._execute({ userId: otherUserId }, { _id: deleteComment._id });
+          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, userId: otherUserId, text: 'comment 4' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 1);
@@ -138,16 +146,25 @@ if (Meteor.isServer) {
           done();
         });
 
+        it('doesn\'t notify on own comment', function (done) {
+          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 5' });
+
+          const topic = Topics.findOne(topicId);
+          chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 0);
+          done();
+        });
+
         it('notifies new users', function (done) {
           const newUserId = Accounts.createUser({ email: 'newuser@honline.hu', password: 'password' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.isTrue(topic.isUnseenBy(newUserId, Meteor.users.SEEN_BY.NOTI));
-          chai.assert.equal(topic.unseenCommentCountBy(newUserId, Meteor.users.SEEN_BY.NOTI), 3);
+          chai.assert.equal(topic.unseenCommentCountBy(newUserId, Meteor.users.SEEN_BY.NOTI), 4);
           const unseenComments = topic.unseenCommentListBy(newUserId, Meteor.users.SEEN_BY.NOTI);
           chai.assert.equal(unseenComments[0].text, 'comment 1');
           chai.assert.equal(unseenComments[1].text, 'comment 2');
           chai.assert.equal(unseenComments[2].text, 'comment 4');   // 3 was deleted
+          chai.assert.equal(unseenComments[3].text, 'comment 5'); 
           done();
         });
       });
