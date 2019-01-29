@@ -24,17 +24,10 @@ if (Meteor.isServer) {
   let Fixture;
   // Mock version of the real client's helper function
   const userHasNowSeen = function (userId, topicId) {
-    const seenType = Meteor.users.SEEN_BY.EYES;
     const topic = Topics.findOne(topicId);
-    const user = Meteor.users.findOne(userId);
-    const oldLastSeenInfo = user.lastSeens[seenType][topic._id];
     const comments = topic.comments().fetch(); // returns newest-first order
-    if (comments[0] && (comments[0].userId === userId)) { return; }  // 
     const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
     const newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: topic.commentCounter };
-    if (oldLastSeenInfo && oldLastSeenInfo.commentCounter === newLastSeenInfo.commentCounter) {
-      return; // this avoids infinite loop and unnecessary server bothering
-    }
     updateMyLastSeen._execute({ userId }, { topicId, lastSeenInfo: newLastSeenInfo });
   };
 
@@ -91,6 +84,19 @@ if (Meteor.isServer) {
           userHasNowSeen(userId, topicId);
           
           const topic = Topics.findOne(topicId);
+          chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
+          done();
+        });
+
+        it('doesn\'t notify on own topic', function (done) {
+          const myTopicId = Topics.methods.insert._execute({ userId }, {
+            communityId: Fixture.demoCommunityId,
+            userId,
+            category: 'forum',
+            title: 'This is my topic',
+            text: 'My thoughts are here',
+          });
+          const topic = Topics.findOne(myTopicId);
           chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
           done();
         });
