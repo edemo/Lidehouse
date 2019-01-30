@@ -2,9 +2,15 @@ import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
 import { debugAssert } from '/imports/utils/assert.js';
 
+const accountSigns = {
+  1: +1, 2: +1, 3: +1, 9: +1,
+  5: -1, 8: -1,
+};
+
 export class TableReport {
-  constructor(dataSource) {
+  constructor(dataSource, chartOfAccounts) {
     this.dataSource = dataSource;
+    this.chartOfAccounts = chartOfAccounts;
     this.filters = {};
     this.rows = [];
     this.cols = [];
@@ -104,17 +110,10 @@ export class TableReport {
     });
 
     let displaySign = 1;  // the displaySign is the main Account's sign
-/*    const filterKeys = Object.keys(filter);
-    filterKeys.forEach((fKey) => {
-      const splitted = fKey.split('.');
-      if (splitted[0] === 'account') {
-        const accountName = splitted[1];
-        const pac = Breakdowns.findOne({ name: accountName });  // TODO
-        if (pac.sign) displaySign = pac.sign;
-        if (accountName === 'Owners') displaySign *= -1; // The owner's perspective is the opposite of the community's
-      }
-    });
-*/
+    if (filter.account) {
+      displaySign = this.chartOfAccounts.nodeByCode(filter.account.$in[0]).sign;
+    }
+    // if (accountName === 'Owners') displaySign *= -1; // The owner's perspective is the opposite of the community's
     let amount = 0;
     this.dataSource.find(filter).forEach(e => amount += e.effectiveAmount());
 

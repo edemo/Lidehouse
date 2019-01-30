@@ -31,7 +31,8 @@ if (Meteor.isServer) {
       });
 
       it('reports', function () {
-        const report = new TableReport(JournalEntries);
+        const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts');
+        const report = new TableReport(JournalEntries, chartOfAccounts);
 
         report.addTree('cols', {
           field: 'side',

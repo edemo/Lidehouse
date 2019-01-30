@@ -10,13 +10,14 @@ import '/imports/api/journals/breakdowns/template.js';
 
 export const Reports = {
   Blank() {
-    const report = new TableReport(JournalEntries);
+    const report = new TableReport();
     return report;
   },
 
   Assets() {
-    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
+    const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts', communityId);
+    const report = new TableReport(JournalEntries, chartOfAccounts);
     
     report.addFilter({ phase: 'done', communityId });
     report.addLine('cols', [], false);
@@ -29,8 +30,9 @@ export const Reports = {
   },
 
   Liabilities() {
-    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
+    const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts', communityId);
+    const report = new TableReport(JournalEntries, chartOfAccounts);
     
     report.addFilter({ phase: 'done', communityId });
     report.addLine('cols', [], false);
@@ -43,8 +45,9 @@ export const Reports = {
   },
 
   Performance(year) {
-    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
+    const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts', communityId);
+    const report = new TableReport(JournalEntries, chartOfAccounts);
 
     report.addFilter({
 //      'account.Incomes': { $exists: true },
@@ -88,8 +91,9 @@ export const Reports = {
   },
 
   MyParcelBalances(year) {
-    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
+    const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts', communityId);
+    const report = new TableReport(JournalEntries, chartOfAccounts);
     const myParcels = {
       name: 'Albetéteim', label: 'Összes albetét',
       children: [],
@@ -118,8 +122,9 @@ export const Reports = {
   },
 
   ParcelBalances(year) {
-    const report = new TableReport(JournalEntries);
     const communityId = Session.get('activeCommunityId');
+    const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts', communityId);
+    const report = new TableReport(JournalEntries, chartOfAccounts);
 
     report.addFilter({ phase: 'done', communityId });
 

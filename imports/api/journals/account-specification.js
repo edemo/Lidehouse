@@ -69,25 +69,30 @@ export const AccountSchema = new SimpleSchema({
 });
 
 export class AccountSpecification {
-  constructor(accountCode, localizerCode) {
+  constructor(communityId, accountCode, localizerCode) {
+    this.communityId = communityId;
     this.account = accountCode;
     this.localizer = localizerCode;
   }
   static fromDoc(doc) {
-    return new AccountSpecification(doc.account, doc.localizer);
+    return new AccountSpecification(doc.communityId, doc.account, doc.localizer);
   }
   toDoc() {
     return {
+      communityId: this.communityId,
       account: this.account,
       localizer: this.localizer,
     };
   }
   display() {
-    let parcelSuffix = '';
-    if (leafIsParcel(this.localizer)) parcelSuffix = '. ' + __('parcel');
+    if (!this.accountName) {
+      const coa = Breakdowns.findOneByName('ChartOfAccounts', this.communityId);
+      this.accountName = coa.nodeByCode(this.account).name;
+    }
     let html = '';
-    html += `<span class="label label-default label-xs">${this.account}:${__('accountNameHere')}</span> `;
+    html += `<span class="label label-default label-xs">${this.account}:${__(this.accountName)}</span> `;
     if (this.localizer) {
+      const parcelSuffix = leafIsParcel(this.localizer) ? ('. ' + __('parcel')) : '';
       html += `<span class="label label-success label-xs">${__(this.localizer)}${parcelSuffix}</span> `;
     }
     return html;

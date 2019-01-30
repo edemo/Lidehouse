@@ -69,7 +69,8 @@ export const digit2parcelRef = function digit2parcelRef(digit) {
 };
 
 export function leafIsParcel(l) {
-  return parseInt(digit2parcelRef(l.digit), 10);
+//  return parseInt(digit2parcelRef(l.digit), 10);
+  return parseInt(l.name, 10);
 }
 
 /*
@@ -163,7 +164,7 @@ Breakdowns.schema = new SimpleSchema([{
   sign: { type: Number, allowedValues: [+1, -1], optional: true },
 }], Breakdowns.SubSchema);
 */
-
+/*
 Breakdowns.chartOfAccounts = function chartOfAccounts(communityId) {
   const accountFamilies = Breakdowns.find({ communityId, sign: { $exists: true } });
   let accountTree = { name: ' ', children: [] };
@@ -171,7 +172,7 @@ Breakdowns.chartOfAccounts = function chartOfAccounts(communityId) {
   accountTree = Breakdowns._transform(accountTree);
   return accountTree;
 };
-
+*/
 /*
 Breakdowns.isSubAccountOf = function isSubAccountOf(code, group, brk) {
   const communityId = this.communityId;
@@ -236,13 +237,17 @@ Breakdowns.helpers({
   nodeNames() {
     return this.nodes().map(this.display);
   },
+  leafByCode(code) {
+    return this.leafs().find(l => l.code === code); // TODO: index
+  },
+  nodeByCode(code) {
+    return this.nodes().find(l => l.code === code); // TODO: index
+  },
   findLeafByName(name) {  // warning!! Name is not a unique id
-    const result = this.leafs().find(l => l.name === name);
-    return result;
+    return this.leafs().find(l => l.name === name);
   },
   findNodeByName(name) {  // warning!! Name is not a unique id
-    const result = this.nodes().find(l => l.name === name);
-    return result;
+    return this.nodes().find(l => l.name === name);
   },
   leafCodes() {
     return this.leafs().map(l => l.code);

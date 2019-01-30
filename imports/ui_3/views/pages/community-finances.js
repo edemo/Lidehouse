@@ -34,9 +34,9 @@ const notVotedColor = '#dedede';
 
 Template.Community_finances.onCreated(function communityFinancesOnCreated() {
   this.autorun(() => {
-//    const communityId = Session.get('activeCommunityId');
-//    this.subscribe('breakdowns.inCommunity', { communityId });
-//    this.subscribe('journals.inCommunity', { communityId });
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('breakdowns.inCommunity', { communityId });
+    this.subscribe('journals.inCommunity', { communityId });
 //    this.subscribe('txs.inCommunity', { communityId });
 //    this.subscribe('txDefs.inCommunity', { communityId });
   });
@@ -143,7 +143,7 @@ Template.Community_finances.helpers({
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId, sign: { $exists: true } }).fetch();
+      return Breakdowns.find({ communityId: { $exists: false }, sign: { $exists: true } }).fetch();
     }
     return getTableData;
   },
@@ -170,8 +170,8 @@ Template.Community_finances.helpers({
   },
   optionsOf(accountCode) {
     const communityId = Session.get('activeCommunityId');
-//    const accountSpec = new AccountSpecification(accountCode);
-    const brk = Breakdowns.chartOfAccounts(communityId);
+//    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
+    const brk = Breakdowns.findOneByName('ChartOfAccounts', communityId);
     if (brk) return brk.leafOptions(accountCode);
     return [];
   },

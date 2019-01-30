@@ -13,14 +13,14 @@ export function defineBreakdownTemplates(communityId) {
     { digit: '1', name: 'Közös költség befizetés' },
     { digit: '2', name: 'Felújítási alap befizetés' },
     { digit: '3', name: 'Felújítási célbefizetés' },
-    { digit: '4', name: 'Víz díj' },
-    { digit: '5', name: 'Fűtési díj' },
+    { digit: '4', name: 'Víz díj befizetés' },
+    { digit: '5', name: 'Fűtési díj befizetés' },
     { digit: '6', name: 'Egyéb közvetített szolgáltatás' },
     ],
   });
 
   Breakdowns.define({
-    digit: '3', name: 'Incomes', locked: true, sign: -1,
+    digit: '9', name: 'Incomes', locked: true, sign: -1,
     children: [
       { digit: '1', name: 'Owner payins', locked: true,
         include: 'Owner payin types',
@@ -49,7 +49,7 @@ export function defineBreakdownTemplates(communityId) {
   });
 
   Breakdowns.define({
-    digit: '3', name: 'Expenses', locked: true, sign: +1,
+    digit: '8', name: 'Expenses', locked: true, sign: +1,
     children: [
       { digit: '1', name: 'Költségek',
         children: [
@@ -114,7 +114,7 @@ export function defineBreakdownTemplates(communityId) {
   });
 
   Breakdowns.define({
-    digit: '6', name: 'Liabilities', locked: true, sign: -1,
+    digit: '5', name: 'Liabilities', locked: true, sign: -1,
     children: [
       { digit: '1', name: 'Equity', locked: true,
         children: [
