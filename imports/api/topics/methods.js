@@ -13,6 +13,7 @@ import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
 import { TicketFields } from './tickets/tickets.js';
+import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import './rooms/rooms.js';
 import './feedbacks/feedbacks.js';
 
@@ -24,6 +25,9 @@ export const insert = new ValidatedMethod({
     checkTopicPermissions(this.userId, 'insert', doc);
     doc.userId = this.userId;   // One can only post in her own name
     const topicId = Topics.insert(doc);
+    const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
+    updateMyLastSeen._execute({ userId: this.userId }, 
+      { topicId, lastSeenInfo: { timestamp: newTopic.createdAt, commentCounter: newTopic.commentCounter } });
     return topicId;
   },
 });

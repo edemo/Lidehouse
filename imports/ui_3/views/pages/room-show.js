@@ -111,8 +111,6 @@ Template.Message_send.events({
     onSuccess((res) => {
       textarea.value = '';
       if ($(window).width() > 768) $('.js-focused').focus();
-      const newComment = Comments.findOne(res);
-      updateMyLastSeen.call({ topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt, commentCounter: (topic.commentCounter + 1) } }, handleError);
-    }));
+      }));
   },
 });
