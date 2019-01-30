@@ -207,12 +207,12 @@
 } 
 
 .send-button {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: 10px 10px 0 0;
     background-color: white;
     position: absolute;
-    top: -5px;
+    bottom: -35px;
     right: 0;
     text-align: center;
     line-height: 40px;
@@ -220,16 +220,17 @@
     color: red;
     transition: opacity 1s;
 	z-index: 11;
-	display: none;
+    display: block;
+    opacity: 0.4;
     cursor: pointer;
 }
 
 .invisible-button {
-	display: none !important;
+	opacity: 0.4;
 	pointer-events: none !important;
 }
 
 .visible-button {
-    display: block;
+    opacity: 1;
     cursor: pointer;
 }

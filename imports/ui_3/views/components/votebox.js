@@ -231,9 +231,14 @@ Template.Votebox.events({
   'click .send-button'(event) {
     const topicId = this._id;
     const temporaryChoice = Template.instance().state.get('choice');
-    castVoteBasedOnPermission(topicId, [temporaryChoice],
-      onSuccess(res => displayMessage('success', 'Vote casted'))
-    );
+    const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
+    if (temporaryChoice !== undefined && !voteIsFinalized) {
+      castVoteBasedOnPermission(topicId, [temporaryChoice],
+        onSuccess(res => displayMessage('success', 'Vote casted'))
+      );
+    } else {
+      return;
+    }
   },
   // event handler for the preferential vote type
   'click .btn-vote-finalize'(event, instance) {
