@@ -132,11 +132,11 @@ Template.Votebox.helpers({
   // Single choice voting
   pressedClassForVoteBtn(choice) {
     const userId = Meteor.userId();
-    const voteOfUser = this.voteOf(userId);
+    const votedChoice = this.voteOf(userId);
     const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
     const temporaryChoice = Template.instance().state.get('choice');
-    if (choice === temporaryChoice && !voteIsFinalized) return 'btn-pressed';
-    return _.isEqual(voteOfUser, [choice]) && 'btn-pressed';
+    if (voteIsFinalized) return _.isEqual(votedChoice, [choice]) && 'btn-pressed';
+    return choice === temporaryChoice && 'btn-pressed';
   },
   // Preferential voting
   currentPreference() {
@@ -155,10 +155,10 @@ Template.Votebox.helpers({
   attachments() {
     return Shareddocs.find({ topicId: this._id });
   },
-  voteState() {
+  stateClassForSendButton() {
     const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
     const temporaryChoice = Template.instance().state.get('choice');
-    if (temporaryChoice !== undefined && !voteIsFinalized) return 'visible-button';
+    if (_.isDefined(temporaryChoice) && !voteIsFinalized) return 'visible-button';
     return 'invisible-button';
   },
 });
@@ -231,14 +231,9 @@ Template.Votebox.events({
   'click .send-button'(event) {
     const topicId = this._id;
     const temporaryChoice = Template.instance().state.get('choice');
-    const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
-    if (temporaryChoice !== undefined && !voteIsFinalized) {
-      castVoteBasedOnPermission(topicId, [temporaryChoice],
-        onSuccess(res => displayMessage('success', 'Vote casted'))
-      );
-    } else {
-      return;
-    }
+    castVoteBasedOnPermission(topicId, [temporaryChoice],
+      onSuccess(res => displayMessage('success', 'Vote casted'))
+    );
   },
   // event handler for the preferential vote type
   'click .btn-vote-finalize'(event, instance) {
