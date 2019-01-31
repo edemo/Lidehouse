@@ -24,7 +24,7 @@ import '/imports/ui_3/views/modals/voting-edit.js';
 import '/imports/ui_3/views/components/vote-results.js';
 import '../components/select-voters.js';
 import './votebox.html';
-import { envelope } from './envelope.js';
+import { createEnvelope } from './envelope.js';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
 const notVotedColor = '#dedede';
@@ -46,6 +46,11 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   const vote = this.data.vote;
   const voteCasts = this.data.voteCasts;
 
+  const voteEnvelope = createEnvelope(this.$('.letter-content'));
+  this.autorun(() => {
+    if (state.get('voteIsFinalized')) voteEnvelope.close();
+    else voteEnvelope.open();
+  });
   // creating the JQuery sortable widget
   // both JQuery and Blaze wants control over the order of elements, so needs a hacky solution
   // https://github.com/meteor/meteor/blob/master/examples/unfinished/reorderable-list/client/shark.js
@@ -277,6 +282,3 @@ Template.Votebox.events({
     Modal.show('Modal', modalContext);
   },
 });
-
-
-envelope('Votebox', 'state', 'voteIsFinalized');
