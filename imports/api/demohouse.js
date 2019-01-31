@@ -971,7 +971,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 2500,
       year: 2017,
       month: 'allMonths',
-      payinType: 'Víz díj',
+      payinType: 'Víz díj befizetés',
       localizer: name2code('Localizer', place[i]),
     });
   }
@@ -983,7 +983,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 85,
       year: 2017,
       month: 'allMonths',
-      payinType: 'Fűtési díj',
+      payinType: 'Fűtési díj befizetés',
       localizer: name2code('Localizer', i.toString()),
     });
   }
@@ -1183,7 +1183,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
-          account: name2code('Incomes', 'Víz díj'),
+          account: name2code('Incomes', 'Víz díj befizetés'),
           localizer: name2code('Localizer', place[i]),
         }],
         debit: [{
@@ -1202,7 +1202,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
-          account: name2code('Incomes', 'Fűtési díj'),
+          account: name2code('Incomes', 'Fűtési díj befizetés'),
           localizer: name2code('Localizer', i.toString()),
         }],
         debit: [{

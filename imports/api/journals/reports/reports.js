@@ -53,6 +53,7 @@ export const Reports = {
 //      'account.Incomes': { $exists: true },
       phase: 'done',
       communityId,
+      year,
     });
 
     report.addTree('cols', {

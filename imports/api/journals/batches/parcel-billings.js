@@ -27,7 +27,7 @@ ParcelBillings.schema = new SimpleSchema({
 ParcelBillings.helpers({
   parcels() {
     const localizerTree = Breakdowns.findOneByName('Localizer', this.communityId);
-//    console.log('nodeName', nodeName);
+//    console.log('nodeName', localizerTree.name);
     const leafs = localizerTree.leafsOf(this.localizer);
 //    console.log('leafs', leafs);
     const parcelLeafs = leafs.filter(l => leafIsParcel(l));

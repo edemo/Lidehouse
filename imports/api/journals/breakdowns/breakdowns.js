@@ -65,12 +65,11 @@ export const parcelRef2digit = function parcelRef2digit(parcelRef) {
 };
 
 export const digit2parcelRef = function digit2parcelRef(digit) {
-  return digit.substring(1, digit.length - 2);
+  return digit.substring(1, digit.length - 1);
 };
 
 export function leafIsParcel(l) {
-//  return parseInt(digit2parcelRef(l.digit), 10);
-  return parseInt(l.name, 10);
+  return l.digit && l.digit.charAt(0) === '[';
 }
 
 /*
@@ -181,15 +180,24 @@ Breakdowns.isSubAccountOf = function isSubAccountOf(code, group, brk) {
 };
 */
 
+Breakdowns.display = function display(node) {
+  return `${node.code}: ${__(node.label || node.name)}`;;
+};
+
+Breakdowns.displayFullPath = function displayFullPath(node) {
+  return node.path.map(__).join(':');
+};
+
 Breakdowns.helpers({
   init() {
     if (!this._leafs) {
+      this._nodeMap = {};
       this._leafs = [];
       this._nodes = [];
       let currentLevel = 1;   // should start at 0, but bumping it up to 1 as we use 1 less depth in the breakdowns now
       const root = this;
       root.parent = null; root.isLeaf = false; root.level = currentLevel; root.pushLeaf = l => this._leafs.push(l);
-      root.path = [root.name || '']; root.code = root.digit || ''; this._nodes.push(root);
+      root.path = [root.name || '']; root.code = root.digit || ''; this._nodes.push(root); root._nodeMap[root.code || ':'] = root;
       function handleNode(node, parent, pac) {
         if (node.include) {
           if (typeof node.include === 'string') {
@@ -199,6 +207,7 @@ Breakdowns.helpers({
 //          console.log('Before include', pac);
           node.name = node.name || node.include.name;
           node.digit = node.digit || node.include.digit;
+          node.sign = node.sign || node.include.sign;
           if (node.include.children) {
             node.children = node.children || [];
             node.children = node.children.concat(deepCopy(node.include.children));
@@ -213,7 +222,7 @@ Breakdowns.helpers({
         node.level = currentLevel;
         node.code = parent.code + (node.digit || '');
         if (!node.name) { node.path = parent.path; }
-        else { node.path = parent.path.concat(node.name); pac._nodes.push(node); }
+        else { node.path = parent.path.concat(node.name); pac._nodes.push(node); pac._nodeMap[node.code] = node; }
         if (!node.children) { parent.pushLeaf(node); node._leafs.push(node); node.isLeaf = true; }
         else { node.children.forEach(child => handleNode(child, node, pac)); }
         --currentLevel;
@@ -232,56 +241,51 @@ Breakdowns.helpers({
     return this.init()._nodes;
   },
   leafNames() {
-    return this.leafs().map(this.display);
+    return this.leafs().map(l => l.name);
   },
   nodeNames() {
-    return this.nodes().map(this.display);
-  },
-  leafByCode(code) {
-    return this.leafs().find(l => l.code === code); // TODO: index
+    return this.nodes().map(n => n.name);
   },
   nodeByCode(code) {
-    return this.nodes().find(l => l.code === code); // TODO: index
+    return this.init()._nodeMap[code];
   },
-  findLeafByName(name) {  // warning!! Name is not a unique id
+  findLeafByName(name) {  // warning!! Name is not a unique id, and searching is inefficient
     return this.leafs().find(l => l.name === name);
   },
-  findNodeByName(name) {  // warning!! Name is not a unique id
+  findNodeByName(name) {  // warning!! Name is not a unique id,  and searching is inefficient
     return this.nodes().find(l => l.name === name);
   },
   leafCodes() {
     return this.leafs().map(l => l.code);
   },
   leafsOf(code) {
-//    let node = this.root();
-//    code.forEachChar(char => node = node.)
-    if (code) return this.nodes().find(n => n.code === code).leafs();
+    if (code) return this.nodeByCode(code).leafs();
     return this.leafs();
   },
-  display(node) {
-    return __(node.label || node.name);
+  display(code) {
+    Breakdowns.display(this.nodeByCode(code));
   },
-  displayFullPath(node) {
-    return node.path/*.map(__)*/.join(':');
+  displayFullPath(code) {
+    Breakdowns.displayFullPath(this.nodeByCode(code));
   },
   leafOptions(code) {
     const self = this;
     return this.leafsOf(code)
       .map(function option(leaf) {
-        return { label: self.displayFullPath(leaf), value: leaf.code };
+        return { label: Breakdowns.displayFullPath(leaf), value: leaf.code };
       });
   },
   nodeOptions() {
     const self = this;
     return this.nodes()
       .map(function option(node) {
-        return { label: self.displayFullPath(node), value: node.code };
+        return { label: Breakdowns.displayFullPath(node), value: node.code };
       });
   },
   removeSubTree(name) {
-    const node = this.nodes().find(n => n.name === name);
+    const node = this.findNodeByName(name);
     node.parent.children = _.without(node.parent.children, node);
-    this._leafs = undefined; // to rerun init
+    this._leafMap = undefined; // to rerun init
   },
 });
 

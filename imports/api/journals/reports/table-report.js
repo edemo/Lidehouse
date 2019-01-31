@@ -52,7 +52,7 @@ export class TableReport {
   static nodeToLineDef(field, node) {
     return {
       field,
-      value: node.label || node.name,
+      value: `${node.code}: ${node.label || node.name}`,
       values: _.pluck(node.leafs(), 'code'),
       class: 'header-level' + node.level,
       filter() {
@@ -111,11 +111,14 @@ export class TableReport {
 
     let displaySign = 1;  // the displaySign is the main Account's sign
     if (filter.account) {
-      displaySign = this.chartOfAccounts.nodeByCode(filter.account.$in[0]).sign;
+      const accountGroupCode = filter.account.$in[0].charAt(0);
+      displaySign = this.chartOfAccounts.nodeByCode(accountGroupCode).sign;
     }
     // if (accountName === 'Owners') displaySign *= -1; // The owner's perspective is the opposite of the community's
     let amount = 0;
-    this.dataSource.find(filter).forEach(e => amount += e.effectiveAmount());
+    this.dataSource.find(filter).forEach(e => {
+      amount += e.effectiveAmount();
+    });
 
     const totalAmount = displaySign * amount;
     if (totalAmount < 0) classes += ' negative';

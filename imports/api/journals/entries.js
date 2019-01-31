@@ -4,9 +4,18 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Journals } from './journals.js';
 import { AccountSpecification } from './account-specification.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 
 if (Meteor.isClient) {
   export const JournalEntries = new Mongo.Collection(null);
+
+  Meteor.startup(function indexComments() {
+    if (MinimongoIndexing) {
+//      JournalEntries._collection._ensureIndex('account');
+//      JournalEntries._collection._ensureIndex(['account', 'localizer']);
+//      JournalEntries._collection._ensureIndex('period');
+    }
+  });
 
   JournalEntries.helpers({
     effectiveAmount() {
