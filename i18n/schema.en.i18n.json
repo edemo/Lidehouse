@@ -276,6 +276,15 @@
       }
     }
   },
+  "schemaTicketStatusChange": {
+    "text": {
+      "label": "Comment",
+      "placeholder": "(eg. We replaced the broken part)"
+    },
+    "status": {
+      "label": "New status"
+    }
+  },
   "schemaFeedback": {
     "title": {
       "label": "Feedback (beginning)..."

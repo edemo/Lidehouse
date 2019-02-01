@@ -14,6 +14,8 @@ import '/imports/api/topics/methods.js';
 import '/imports/api/topics/publications.js';
 import '/imports/api/topics/votings/methods.js';
 // import '/imports/api/topics/votings/publications.js';
+import '/imports/api/topics/tickets/methods.js';
+// import '/imports/api/topics/tickets/publications.js';
 import '/imports/api/topics/rooms/methods.js';
 import '/imports/api/topics/rooms/publications.js';
 // import '/imports/api/topics/feedbacks/methods.js';

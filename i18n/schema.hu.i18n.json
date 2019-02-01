@@ -276,6 +276,15 @@
       }
     }
   },
+  "schemaTicketStatusChange": {
+    "text": {
+      "label": "Hozzáfűzött szöveg",
+      "placeholder": "(pl. A törött alkatrész cseréje megtörtént)"
+    },
+    "status": {
+      "label": "Új státusz"
+    }
+  },
   "schemaFeedback": {
     "title": {
       "label": "Visszajelzés (kezdete)..."

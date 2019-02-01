@@ -33,7 +33,7 @@ export const Comments = new CommentsCollection('comments');
 Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  text: { type: String, optional: true },
+  text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id,
     autoValue() {
