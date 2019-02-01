@@ -5,7 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
-
+import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
@@ -40,7 +40,9 @@ Template.Tickets_report.helpers({
   },
   recentTickets() {
     const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category: 'ticket', 'ticket.status': { $ne: 'closed' } }, { sort: { createdAt: -1 } });
+    return Topics.find({ communityId, category: 'ticket',
+      $or: [{ 'ticket.status': { $ne: 'closed' } }, { createdAt: { $gt: moment().subtract(1, 'week').toDate() } }],
+    }, { sort: { createdAt: -1 } });
   },
   activeTicketsDataFn() {
     return () => {
