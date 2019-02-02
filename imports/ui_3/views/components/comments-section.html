@@ -21,7 +21,7 @@
         </a>
         <div class="media-body" >
             <a href="{{pathFor 'User.show' _id=user._id}}">
-                {{user.displayName}}
+                {{user.displayOfficialName (fromSession 'activeCommunityId') undefined}}
             </a>
             <span class="newlines" data-id="{{_id}}">{{choppedText}}{{#if textTooLong}}<a href="" class="js-more">{{_ 'Show more'}}</a>{{/if}}</span>
             <br/>
