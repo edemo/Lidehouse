@@ -4,6 +4,7 @@ import { Mongo } from 'meteor/mongo';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { Breakdowns } from '../breakdowns/breakdowns';
 import { TableReport } from './table-report';
+import { BalanceReport } from './balance-report';
 import { sideTags, yearTags, monthTags, yearMonthTags } from '../breakdowns/breakdowns-utils';
 
 if (Meteor.isServer) {
@@ -30,9 +31,33 @@ if (Meteor.isServer) {
         JournalEntries.insert({ side: 'credit', period: '2017-12', amount: 120 });
       });
 
-      it('reports', function () {
+      it('table reports', function () {
         const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts');
         const report = new TableReport(JournalEntries, chartOfAccounts);
+
+        report.addTree('cols', {
+          field: 'side',
+          values: Breakdowns._transform(sideTags),
+        }, false);
+
+        report.addTree('rows', {
+          field: 'period',
+          values: Breakdowns._transform(yearMonthTags),
+        }, false);
+
+        const cells = [];
+        for (let x = 0; x <= 2; x++) {
+          cells[x] = [];
+          for (let y = 0; y <= 2 * 12; y++) {
+            cells[x][y] = report.cell(x, y);
+          }
+        }
+        console.log(cells);
+      });
+
+      it('balance reports', function () {
+        const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts');
+        const report = new BalanceReport(chartOfAccounts);
 
         report.addTree('cols', {
           field: 'side',

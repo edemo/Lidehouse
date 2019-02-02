@@ -7,8 +7,38 @@ import { moment } from 'meteor/momentjs:moment';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { AccountSchema } from './account-specification.js';
+import { JournalEntries } from './entries.js';
+import { Balances } from './balances.js';
 
-export const Journals = new Mongo.Collection('journals');
+export let Journals;
+export class JournalsCollection extends Mongo.Collection {
+  insert(doc, callback) {
+    const result = super.insert(doc, callback);
+    doc = Journals._transform(doc);
+    doc.journalEntries().forEach(entry => {
+      let bal = Balances.findOne({ communityId: doc.communityId, account: entry.account });
+      if (!bal) bal = Balances.insert({ communityId: doc.communityId, account: entry.account });
+      Balances.update(bal._id, { $inc: { total: entry.effectiveAmount() } });
+    });
+    return result;
+  }
+  update(selector, modifier, options, callback) {
+    console.log('ERROR: Changed journal noticed:', selector);
+    return super.update(selector, modifier, options, callback);
+  }
+  remove(selector, callback) {
+    const docs = this.find(selector);
+    docs.forEach(doc => {
+      doc.journalEntries().forEach(entry => {
+        const bal = Balances.findOne({ communityId: doc.communityId, account: entry.account });
+        Balances.update(bal._id, { $inc: { total: (-1 * entry.effectiveAmount()) } });
+      });
+    });
+    return super.remove(selector, callback);
+  }
+}
+
+Journals = new JournalsCollection('journals');
 
 Journals.phaseValues = ['done', 'plan'];
 
@@ -74,7 +104,7 @@ Journals.helpers({
       delete txBase.debit;
       entries.push(_.extend(txBase, l, { side: 'credit' }));
     });
-    return entries;
+    return entries.map(JournalEntries._transform);
   },
   negator() {
     const tx = _.clone(this);
