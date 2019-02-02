@@ -1,7 +1,6 @@
+import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-DEBUG = true;   // global variable
-
-if (DEBUG) {
-  SimpleSchema.debug = true;
-}
+//if (Meteor.isDevelopment) {
+SimpleSchema.debug = true;
+//}
