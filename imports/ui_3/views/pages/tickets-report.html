@@ -129,7 +129,7 @@
                           <small>{{text}}</small>
                       </td>
                       <td>
-                          {{createdBy}}
+                          {{createdBy.displayOfficialName (fromSession 'activeCommunityId') undefined}}
                       </td>
                       <td>
                           {{displayTime createdAt}}
