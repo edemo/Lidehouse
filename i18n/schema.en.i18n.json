@@ -18,7 +18,7 @@
     },
     "avatar": {
       "label": "Avatar",
-      "placeholder": "(eg. heart.jpg)"
+      "placeholder": "(eg. http://marketplaza.hu/38-small_default/micimacko-disney-labda-.jpg)"
     },
     "profile": {
       "label": "Profile  (This data is public to the members of your community)",
@@ -274,6 +274,15 @@
         "checked": "Checked",
         "closed": "Closed"
       }
+    }
+  },
+  "schemaTicketStatusChange": {
+    "text": {
+      "label": "Comment",
+      "placeholder": "(eg. We replaced the broken part)"
+    },
+    "status": {
+      "label": "New status"
     }
   },
   "schemaFeedback": {

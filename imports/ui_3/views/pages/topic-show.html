@@ -95,7 +95,7 @@
                     </dl>
 
                     <dl class="">
-                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy.toString}}</dd>
+                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy.displayOfficialName (fromSession 'activeCommunityId') undefined}}</dd>
                         <dt>{{_ 'createdAt'}}:</dt> <dd>{{displayDate createdAt}}</dd>
                         <dt>{{_ 'Last activity'}}:</dt> <dd>{{displayDate updatedAt}}</dd>
                     </dl>
@@ -169,7 +169,7 @@
                         </dd>
                     </dl>
                     <dl class="">
-                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy.toString}}</dd>
+                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy.displayOfficialName (fromSession 'activeCommunityId') undefined}}</dd>
                         <dt>{{_ 'createdAt'}}:</dt> <dd>{{displayDate createdAt}}</dd>
                     </dl>
                 </div>

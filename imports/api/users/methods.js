@@ -86,7 +86,11 @@ if (Meteor.isClient) {
       const seenType = Meteor.users.SEEN_BY.EYES;
       const topic = Topics.findOne(topicId);
       const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
-      const newLastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
+      const comments = topic.comments().fetch(); // returns newest-first order
+      if (!comments[0] && topic.userId === this._id) { return; }
+      if (comments[0] && comments[0].userId === this._id) { return; }  
+      const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
+      const newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: topic.commentCounter };
       if (oldLastSeenInfo && oldLastSeenInfo.commentCounter === newLastSeenInfo.commentCounter) {
         return; // this avoids infinite loop and unnecessary server bothering
       }

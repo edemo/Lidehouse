@@ -1,7 +1,8 @@
 <template name="Members_panel">
     <div class="sidebar-title">
-        <h3> <i class="fa fa-comments-o"></i> Küldjön üzenetet</h3>
-        <small><i class="fa fa-tim"></i> közös képviselőjének vagy lakótársának.</small>
+        <h3> <i class="fa fa-comments-o"></i> {{_'Send messages'}}</h3>
+        <small><i class="fa fa-tim"></i> {{_ 'Send messages subtitle'}}.</small>
+        {{#if tooManyMembers}}<small> {{_ 'Send messages instructions'}}.</small>{{/if}}
     </div>
     <div class="form-group">
         <div class="input-group">

@@ -47,7 +47,7 @@
   "benefactor": "használó",
   "moderator": "moderátor",
   "accountant": "könyvelő",
-  "treasurer": "kincstárnok",
+  "treasurer": "pénztáros",
   "overseer": "számvizsgáló",
   "delegate": "meghatalmazott",
   "maintainer": "gondnok",
@@ -280,6 +280,9 @@
   "No delegations": "Nincsenek meghatalmazások",
 
   // rooms
+  "Send messages": "Küldjön üzenetet",
+  "Send messages subtitle": "közös képviselőjének vagy lakótársának",
+  "Send messages instructions": "Ha ezidáig még nem beszélt az illetővel, a kereső segítségével megtalálhatja",
   "noSelectedPerson": "Válasszon címzettet a jobb oldali panelen!",
 
   // tickets
@@ -291,6 +294,8 @@
   "Please dont report twice": "Karbantartó kollegáink munkáját segítendő, kérjük csak akkor adja fel hibabejelentését, ha az még nem szerepel a közelmúltban felvett hibajegyek között.",
   "Thank you": "Köszönjük",
   "Create ticket": "Bejelentés elküldése",
+  "status": "Státusz",
+  "Change status": "Státusz váltása",
 
   // finances
   "Account": "Számla", 
@@ -474,6 +479,7 @@
   "insert ticket successful": "Hibajegy rögzítésre került",
   "update ticket successful": "Hibajegy módosítva",
   "delete ticket successful": "Hibajegy törölve",
+  "statusChange ticket successful": "Hibajegy státusza megváltoztatva",
   "enable delegations successful": "Bejövő meghatalmazások engedélyezve",
   "disable delegations successful": "Bejövő meghatalmazások visszautasítva",
   "insert delegation successful": "Meghatalmazás aktiválva",

@@ -21,8 +21,8 @@ export const Topics = new RevisionedCollection('topics', ['text', 'title', 'clos
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
 
 Topics.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
