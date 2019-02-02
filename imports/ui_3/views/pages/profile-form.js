@@ -27,7 +27,7 @@ Template.Profile_form.helpers({
   },
   schema() {
     return new SimpleSchema([
-      { email: { type: String, regEx: SimpleSchema.RegEx.Email } },
+      { email: { type: String, regEx: SimpleSchema.RegEx.Email, autoform: { readonly: true } } },
       Meteor.users.simpleSchema(),
     ]);
   },
