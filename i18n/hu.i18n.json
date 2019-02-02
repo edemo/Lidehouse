@@ -458,6 +458,7 @@
 
   "invite user successful": "Felhasználó meghívása megtörtént",
   "delete user successful": "Felhasználói fiók törölve",
+  "update user successful": "Felhasználói adatok elmentve",
   "insert community successful": "Közösség sikeresen létrehozva.",
   "delete community successful": "Közösség törölve",
   "insert parcel successful": "Albetét rögzítésre került",
