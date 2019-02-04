@@ -16,9 +16,9 @@
                 <li>
                   <a class="js-block" href="">
                   {{#if currentUser.hasBlocked createdBy._id}}
-                    {{_ 'Unhide comments from' createdBy.displayOfficialName (fromSession 'activeCommunityId') undefined}}
+                    {{_ 'Unhide comments from' createdBy}}
                   {{else}}
-                    {{_ 'Hide comments from' createdBy.displayOfficialName (fromSession 'activeCommunityId') undefined}}
+                    {{_ 'Hide comments from' createdBy}}
                   {{/if}}
                   </a>
                 </li>
@@ -33,7 +33,7 @@
             </a>
             <div class="media-body">
                 <a href="{{pathFor 'User.show' _id=createdBy._id}}">
-                    {{createdBy.displayOfficialName (fromSession 'activeCommunityId') undefined}}
+                    {{createdBy}}
                 </a>                  
                 <small class="text-muted" title="{{_ 'memberships'}}">
                     {{join (createdBy.memberships activeCommunityId)}}
