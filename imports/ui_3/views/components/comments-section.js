@@ -28,7 +28,7 @@ Template.Comments_section.onRendered(function chatboxOnRendered() {
       // displayMessage('info', `You just seen ${topicId}`); // debug
       Meteor.user().hasNowSeen(topicId);
     },
-    offset: '80%',
+    offset: 'bottom-in-view',
   });
   // Above is nicer syntax , but requires bigu:jquery-waypoints https://stackoverflow.com/questions/28975693/using-jquery-waypoints-in-meteor
   /* this.waypoint = this.$('.comment-section').waypoint(function (direction) {
@@ -70,6 +70,14 @@ Template.Comments_section.events({
 //------------------------------------
 
 const MAX_LENGTH = 400;
+
+Template.Comment.onRendered(function () {
+  Waypoint.refreshAll();
+});
+
+Template.Comment.onDestroyed(function () {
+  Waypoint.refreshAll();
+});
 
 Template.Comment.helpers({
   textTooLong() {
