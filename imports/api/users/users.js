@@ -177,8 +177,8 @@ Meteor.users.helpers({
     if (membership) { return membership.Person().displayName(lang)};
     return this.displayName(lang);
   },
-  toString(communityId = getActiveCommunityId(), lang = getCurrentUserLang()) {
-    return this.displayOfficialName(communityId, lang);
+  toString() {
+    return this.displayOfficialName();
   },
   getPrimaryEmail() {
     return this.emails[0].address;
