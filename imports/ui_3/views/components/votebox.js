@@ -128,6 +128,12 @@ Template.Votebox.helpers({
   avatar() {
     return Meteor.users.findOne(this.userId).avatar;
   },
+  indirectUser() {
+    return Object.keys(this.voteCasts)[Object.keys(this.voteCasts).length - 1];
+  },
+  avatarEnvelope(userId) {
+    return Meteor.users.findOne({ _id: userId }).avatar;
+  },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },

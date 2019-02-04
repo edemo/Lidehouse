@@ -133,7 +133,15 @@
                         <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
                       </button>
                       {{/each}}
-                      <div class="send-button {{stateClassForSendButton}}"><i class="fa fa-share-square fa-3x"></i></div>
+                      {{#if this.hasVotedDirect currentUser._id}}
+                      <img src="{{avatarEnvelope currentUser._id}}" class="avatar-envelope">
+                      {{else}}
+                        {{#if this.hasVotedIndirect currentUser._id}}
+                        <img src="{{avatarEnvelope indirectUser}}" class="avatar-envelope">
+                        {{else}}
+                        <div class="send-button {{stateClassForSendButton}}"><i class="fa fa-share-square fa-3x"></i></div>
+                        {{/if}}
+                      {{/if}}
                     </div>
                     <!--button class="btn-primary btn-golive">{{_ 'vote'}}</button-->
                   </div>
@@ -167,7 +175,7 @@
       <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
   {{else}}
     {{#if this.hasVotedIndirect currentUser._id}}
-      {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}})
+    <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}}) - <a class="js-revoke">{{_ "revoke"}}</a>
     {{else}}
       <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
       {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedCastYourVoteOr"}} <a href="{{pathFor 'Delegations'}}">{{_ "setupYourDelegation"}}</a>)</i>
