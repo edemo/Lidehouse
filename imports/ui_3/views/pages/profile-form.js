@@ -27,7 +27,7 @@ Template.Profile_form.helpers({
   },
   schema() {
     return new SimpleSchema([
-      { email: { type: String, regEx: SimpleSchema.RegEx.Email } },
+      { email: { type: String, regEx: SimpleSchema.RegEx.Email, autoform: { readonly: true } } },
       Meteor.users.simpleSchema(),
     ]);
   },
@@ -61,7 +61,10 @@ AutoForm.addHooks('af.user.update', {
     // console.log(`modifier: ${JSON.stringify(modifier)}`);
     return modifier;
   },
-  onError(formType, error) {    // Called when any submit operation fails/
-    displayError(error); // eslint-disable-line no-alert
+  onError(formType, error) {
+    displayError(error);
+  },
+  onSuccess(formType, result) {
+    displayMessage('success', 'update user successful');
   },
 });

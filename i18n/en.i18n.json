@@ -36,7 +36,13 @@
   // errors and messages
   "err_notLoggedIn": "Must be logged in",
   "err_permissionDenied": "You don't have permission",
+  "err_notImplemented": "This feature is not available",
+  "err_notExists": "Object doesn't exist",
+  "err_alreadyExists": "Object already exists",
   "err_unableToRemove": "Object cannot be deleted",
+  "err_otherPartyNotAllowed": "No permission by other party",
+  "err_sanityCheckFailed": "Data input is invalid",
+  "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
 
   "pageNotFound": "Page not found",
   "tryingToConnect": "Trying to connect…",
@@ -50,7 +56,6 @@
   "messengerMessagePlaceholder": "Your message here... (eg. I just baked a strawberry cake. Want to come over and taste it?)",
   "messengerHistoryPlaceholder": "No messages yet between you. <br> Start chatting today!",
   "commentEditInstruction": "Press enter to save, escape to cancel.",
-  "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
   "userAccountsSubtitle": {
     "signIn": "Please log in to use the app",
     "signIn_Forced": "The content is only available to logged in users",

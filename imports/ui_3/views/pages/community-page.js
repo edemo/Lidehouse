@@ -325,7 +325,7 @@ Template.Community_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.roleship.update',
       collection: Memberships,
-      fields: ['activeTime'],
+      fields: ['person', 'activeTime'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
