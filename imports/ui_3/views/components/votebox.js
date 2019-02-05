@@ -129,9 +129,10 @@ Template.Votebox.helpers({
     return Meteor.users.findOne(this.userId).avatar;
   },
   indirectUser() {
+    // TODO: Return the user, who voted in my name
     return Object.keys(this.voteCasts)[Object.keys(this.voteCasts).length - 1];
   },
-  avatarEnvelope(userId) {
+  avatarForEnvelope(userId) {
     return Meteor.users.findOne({ _id: userId }).avatar;
   },
   comments() {
@@ -246,8 +247,11 @@ Template.Votebox.events({
       onSuccess(res => displayMessage('success', 'Vote casted'))
     );
   },
+  'mousedown .btn-vote-choice'() {
+    Template.instance().state.set('choice', 1);
+  },
   // event handler for the preferential vote type
-  'click .btn-vote-finalize'(event, instance) {
+  'click .send-button-finalize'(event, instance) {
     const topicId = this._id;
     const voteIsFinalized = instance.state.get('voteIsFinalized');
     if (!voteIsFinalized) {

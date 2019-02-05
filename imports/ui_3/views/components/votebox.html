@@ -101,25 +101,38 @@
             <div class="col-xs-12 vote-answer text-center">
 
               {{#if voteTypeIs "preferential"}}
-              <div class="row vote-answer-sort">
-                {{#if voteIsFinalized}}
-                {{else}}
-                <div class="col-xs-12 text-center">
-                  {{_ 'rankedVotingInstructions'}}
-                </div>
-                {{/if}}
-                <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
-                  <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
-                    {{#each currentPreference}}
-                    <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
-                    <li class="btn btn-vote-choice ui-state-default" data-value="{{value}}"><i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{text}}</li>
-                    {{/each}}
-                  </ul>
+              <div class="letter-content">
+                <div class="row vote-answer-sort">
                   {{#if voteIsFinalized}}
-                  <button class="btn btn-vote-finalize btn-pressed"><i class="fa fa-lg fa-circle"></i><i class="fa fa-lock text-navy"></i> {{_ 'change'}}</button>
                   {{else}}
-                  <button class="btn btn-vote-finalize"><i class="fa fa-lg fa-circle"></i> {{_ 'Send ordering'}}</button>
+                  <div class="col-xs-12 text-center">
+                    {{_ 'rankedVotingInstructions'}}
+                  </div>
                   {{/if}}
+                  <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
+                    <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
+                      {{#each currentPreference}}
+                      <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
+                      <li class="btn btn-vote-choice ui-state-default js-btn-vote-choice" data-value="{{value}}"><i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{text}}</li>
+                      {{/each}}
+                    </ul>
+                    {{#if this.hasVotedDirect currentUser._id}}
+                    <img src="{{avatarForEnvelope currentUser._id}}" class="avatar-envelope-choice">
+                    {{else}}
+                      {{#if this.hasVotedIndirect currentUser._id}}
+                      <img src="{{avatarForEnvelope indirectUser}}" class="avatar-envelope-choice">
+                      {{else}}
+                      <div class="send-button-finalize {{stateClassForSendButton}}"><i class="fa fa-share-square fa-3x"></i></div>
+                      {{/if}}
+                    {{/if}}
+                    <!--
+                    {{#if voteIsFinalized}}
+                    <button class="btn btn-vote-finalize btn-pressed"><i class="fa fa-lg fa-circle"></i><i class="fa fa-lock text-navy"></i> {{_ 'change'}}</button>
+                    {{else}}
+                    <button class="btn btn-vote-finalize"><i class="fa fa-lg fa-circle"></i> {{_ 'Send ordering'}}</button>
+                    {{/if}}
+                    -->
+                  </div>
                 </div>
               </div>
 
@@ -134,10 +147,10 @@
                       </button>
                       {{/each}}
                       {{#if this.hasVotedDirect currentUser._id}}
-                      <img src="{{avatarEnvelope currentUser._id}}" class="avatar-envelope">
+                      <img src="{{avatarForEnvelope currentUser._id}}" class="avatar-envelope">
                       {{else}}
                         {{#if this.hasVotedIndirect currentUser._id}}
-                        <img src="{{avatarEnvelope indirectUser}}" class="avatar-envelope">
+                        <img src="{{avatarForEnvelope indirectUser}}" class="avatar-envelope">
                         {{else}}
                         <div class="send-button {{stateClassForSendButton}}"><i class="fa fa-share-square fa-3x"></i></div>
                         {{/if}}
