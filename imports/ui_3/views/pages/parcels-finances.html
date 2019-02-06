@@ -3,7 +3,6 @@
     {{> Page_heading title=(_ 'Parcel finances')}}
 
     <div class="wrapper wrapper-content  animated fadeInRight">
-    {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
     <div class="row">
 
     <!--div class="col-md-6">
@@ -75,16 +74,5 @@
     </div>
 
     </div>
-    {{else}}
-    <div class="row">
-        <div class="col-md-12">
-        <div class="ibox ibox-dark">
-            <div class="ibox-content">
-                {{_ 'Data upload in progress'}}...
-            </div>
-        </div>
-        </div>
-    </div>
-    {{/if}}
     </div>
 </template>
