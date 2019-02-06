@@ -1,0 +1,60 @@
+<template name="Vote_cast_panel">
+    <div class="row">
+      <div class="col-xs-12 vote-answer text-center">
+  
+        <div class="letter-content">
+          <div class="row">
+            {{#unless voteIsFinalized}}
+            <div class="col-xs-12 text-center">
+              {{_ (concat 'votingInstructions.' vote.type)}}
+            </div>
+            {{/unless}}
+            <div class="col-xs-12">
+              <div class="btns-group">
+                {{#if voteTypeIs "preferential"}}
+                  <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
+                    {{#each currentPreference}}
+                    <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
+                    <li class="btn btn-vote-choice ui-state-default js-btn-vote-choice" data-value="{{value}}"><i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{text}}</li>
+                    {{/each}}
+                  </ul>
+                {{else}}
+                  {{#each choice in vote.choices}}
+                  <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
+                    <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
+                  </button>
+                  {{/each}}
+                {{/if}}
+                {{#if this.hasVotedDirect currentUser._id}}
+                  <img src="{{avatarForEnvelope currentUser._id}}" class="avatar-envelope">
+                {{else}}
+                  {{#if this.hasVotedIndirect currentUser._id}}
+                  <img src="{{avatarForEnvelope indirectUser}}" class="avatar-envelope">
+                  {{else}}
+                  <div class="send-button {{stateClassForSendButton}}"><i class="fa fa-share-square fa-3x"></i></div>
+                  {{/if}}
+                {{/if}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </template>
+  
+  <template name="User_vote_status">
+    <!-- showing if you voted directly or via delegation -->
+    <div class="text-left">
+    {{#if this.hasVotedDirect currentUser._id}}
+        <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
+    {{else}}
+      {{#if this.hasVotedIndirect currentUser._id}}
+      <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}}) - <a class="js-revoke">{{_ "revoke"}}</a>
+      {{else}}
+        <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
+        {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedCastYourVoteOr"}} <a href="{{pathFor 'Delegations'}}">{{_ "setupYourDelegation"}}</a>)</i>
+      {{/if}}
+    {{/if}}
+    </div>
+  </template>

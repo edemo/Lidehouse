@@ -137,7 +137,7 @@
     "room": "szoba",
     "feedback": "visszajelzés"
   },
-
+  
   // commands
   "important": "Fontos",
   "view": "Megtekintés",
@@ -236,7 +236,6 @@
   "Participation necessary": "Eredményesség feltétele",  
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
-  "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrendbe…",
   "Show results": "Eredmények megtekintése",
   "Show attachment": "Előterjesztés megtekintése",
   "Vote results": "Szavazási eredmények",
@@ -253,7 +252,13 @@
   "Attachments" : "Csatolmányok",
   "Activity": "Változások",
   "All votings": "Aktív és lezárt szavazások teljes listája",
-  
+  "votingInstructions": {
+    "yesno": "",
+    "choose": "",
+    "preferential": "Ez egy preferenciális szavazás. Kérjük rakja sorrendbe…",
+    "petition": ""
+  },
+
   // delegations
   "Delegations from me": "Meghatalmazásaim",
   "Delegations to me": "Meghatalmazottságaim",
