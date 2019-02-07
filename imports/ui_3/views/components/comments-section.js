@@ -2,6 +2,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 /* globals Waypoint */
 
 import { __ } from '/imports/localization/i18n.js';
@@ -49,6 +50,21 @@ Template.Comments_section.helpers({
   },
   comments() {
     return Comments.find({ topicId: this._id });
+  },
+  recentComments() {
+    const latestComments = Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } }).fetch();
+    return latestComments.slice(0, 5).reverse(); 
+  },
+  fromBoard() {
+    const route = FlowRouter.current().route.name; 
+    if (route == 'Board') return true;
+    return false;
+  },
+  showPrevious() {
+    const comments = Comments.find({ topicId: this._id }).fetch();
+    const button = `<div class="social-comment"><a class="text-muted" href="/topic/${this._id}">${__('View previous comments')}</a></div>`;
+    if (comments.length > 5) return button;
+    return;
   },
 });
 
