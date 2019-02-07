@@ -8,7 +8,7 @@
                 <img alt="avatar" class="message-avatar" src={{currentUser.avatar}}>
             </a>
             <div class="media-body">
-                <textarea class="form-control js-send-enter" placeholder={{_ 'newCommentPlaceholder'}}></textarea>
+                <textarea class="form-control js-send-enter" placeholder="{{_ 'newCommentPlaceholder'}}"></textarea>
             </div>
         </div>
     </div>
@@ -23,7 +23,7 @@
             <a href="{{pathFor 'User.show' _id=user._id}}">
                 {{user}}
             </a>
-            <span class="newlines" data-id="{{_id}}">{{choppedText}}{{#if textTooLong}}<a href="" class="js-more">{{_ 'Show more'}}</a>{{/if}}</span>
+            <span class="newlines" data-id="{{_id}}">{{chop text}} {{{showmoreButton}}}</span>
             <br/>
             <a href="" class="small cap-first js-like">
                 <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
