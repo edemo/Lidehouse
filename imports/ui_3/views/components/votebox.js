@@ -71,9 +71,6 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
 });
 
 Template.Votebox.helpers({
-  avatar() {
-    return Meteor.users.findOne(this.userId).avatar;
-  },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },

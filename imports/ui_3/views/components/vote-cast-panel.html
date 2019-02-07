@@ -26,10 +26,10 @@
                   {{/each}}
                 {{/if}}
                 {{#if this.hasVotedDirect currentUser._id}}
-                  <img src="{{avatarForEnvelope currentUser._id}}" class="avatar-envelope">
+                  <img src="{{currentUser.avatar}}" class="avatar-envelope">
                 {{else}}
                   {{#if this.hasVotedIndirect currentUser._id}}
-                  <img src="{{avatarForEnvelope indirectUser}}" class="avatar-envelope">
+                  <img src="{{indirectUser.avatar}}" class="avatar-envelope">
                   {{else}}
                   <div class="send-button {{stateClassForSendButton}}"><i class="fa fa-share-square fa-3x"></i></div>
                   {{/if}}

@@ -78,11 +78,10 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
 
 Template.Vote_cast_panel.helpers({
   indirectUser() {
-    // TODO: Return the user, who voted in my name
-    return Object.keys(this.voteCasts)[Object.keys(this.voteCasts).length - 1];
-  },
-  avatarForEnvelope(userId) {
-    return Meteor.users.findOne({ _id: userId }).avatar;
+    const myVotePath = this.votePaths[Meteor.userId()];
+    const myFirstDelegateId = myVotePath[1];
+    const myFirstDelegate = Meteor.users.findOne(myFirstDelegateId);
+    return myFirstDelegate;
   },
   isButtonLayoutVertical() {
     return this.vote.type === 'preferential';
