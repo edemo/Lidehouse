@@ -30,7 +30,7 @@
             <a href="{{pathFor 'User.show' _id=user._id}}">
                 {{user}}
             </a>
-            <span class="newlines" data-id="{{_id}}">{{chop text}} {{{showmoreButton}}}</span>
+            <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
             <br/>
             <a href="" class="small cap-first js-like">
                 <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>

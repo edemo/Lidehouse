@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 
@@ -141,20 +140,6 @@ Template.Main_layout.onRendered(function() {
   });*/
 });
 
-const CHOPAT_CHARS = 600;
-
-Template.registerHelper('chop', function chop(text, chars = CHOPAT_CHARS) {
-  if (isNaN(chars)) chars = CHOPAT_CHARS; // Bypassing Blaze auto last params in helper if chars is not set
-  if (text.length <= chars) return text;
-  const textPart = text.substr(0, chars);
-  return textPart + '... ';
-});
-
-Template.registerHelper('showmoreButton', function showmoreButton(chars = CHOPAT_CHARS) {
-  if (!this.text || (this.text && this.text.length <= chars)) return;
-  return `<a href="" class="js-showmore">${__('Show more')}</a>`;
-});
-
 Template.Main_layout.helpers({
 });
 
@@ -166,10 +151,5 @@ Template.Main_layout.events({
       !envelope.is(event.target) && envelope.has(event.target).length === 0) {
       rightSidebar.removeClass('sidebar-open');
     }
-  },
-  'click .js-showmore'(event, instance) {
-    event.preventDefault();
-    const textHolder = $(event.target).parent();
-    textHolder.text(this.text);
   },
 });
