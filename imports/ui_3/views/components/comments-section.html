@@ -1,15 +1,13 @@
 <template name="Comments_section">
     <div class="social-footer comment-section" data-id="{{_id}}">
-    {{#if fromBoard}}   
-        {{{showPrevious}}} 
-        {{#each comment in recentComments}}
-            {{> Comment comment}}
-        {{/each}}
-    {{else}}
+        {{#if hasMoreComments}}   
+        <div class="social-comment">
+            <a class="text-muted" href="/topic/{{_id}}">{{_ 'View previous comments'}}</a>
+        </div>
+        {{/if}}
         {{#each comment in comments}}
             {{> Comment comment}}
         {{/each}}
-    {{/if}}
         <div class="social-comment">
             <a href="" class="pull-left">
                 <img alt="avatar" class="message-avatar" src={{currentUser.avatar}}>
@@ -30,7 +28,7 @@
             <a href="{{pathFor 'User.show' _id=user._id}}">
                 {{user}}
             </a>
-            <span class="newlines" data-id="{{_id}}">{{chop text}} {{{showmoreButton}}}</span>
+            <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
             <br/>
             <a href="" class="small cap-first js-like">
                 <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
