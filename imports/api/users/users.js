@@ -24,6 +24,13 @@ if (Meteor.isClient) {
   getCurrentUserLang = currentUserLanguage;
 }
 
+let getActiveCommunityId = () => { debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"'); };
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+
+  getActiveCommunityId = function () { return Session.get('activeCommunityId'); };
+}
+
 export const nullUser = {
   hasPermission(permissionName, communityId, object) {
     const permission = Permissions.find(perm => perm.name === permissionName);
@@ -165,8 +172,13 @@ Meteor.users.helpers({
   displayName(lang = getCurrentUserLang()) {
     return this.fullName(lang) || this.safeUsername();     // or fallback to the username
   },
-  toString(lang = getCurrentUserLang()) {
+  displayOfficialName(communityId = getActiveCommunityId(), lang = getCurrentUserLang()) {
+    const membership = Memberships.findOne({ communityId, approved: true, active: true, personId: this._id, 'person.idCard.name': { $exists: true } });
+    if (membership) { return membership.Person().displayName(lang)};
     return this.displayName(lang);
+  },
+  toString() {
+    return this.displayOfficialName();
   },
   getPrimaryEmail() {
     return this.emails[0].address;

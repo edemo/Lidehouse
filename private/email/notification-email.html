@@ -45,7 +45,7 @@
                     </a>
                 </td>
                 <td class="media-body">
-                    <a href="{{urlFor 'User.show' _id=comment.user._id}}">{{comment.user.displayName user.settings.language}}</a>
+                    <a href="{{urlFor 'User.show' _id=comment.user._id}}">{{comment.user.displayOfficialName this.communityId user.settings.language}}</a>
                     <span>{{curb comment.text 500 }}</span>
                     <br/>
                     <small class="text-muted" >{{displayTime comment.createdAt}}</small>

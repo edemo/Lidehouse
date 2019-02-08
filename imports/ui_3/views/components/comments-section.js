@@ -2,6 +2,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 /* globals Waypoint */
 
 import { __ } from '/imports/localization/i18n.js';
@@ -11,6 +12,7 @@ import { insert as insertComment, update as updateComment, remove as removeComme
 import { like } from '/imports/api/topics/likes.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/blocks/chopped.js';
 import './comments-section.html';
 
 Template.Comments_section.onCreated(function commentsSectionOnCreated() {
@@ -42,13 +44,26 @@ Template.Comments_section.onDestroyed(function chatboxOnDestroyed() {
   this.waypoint.destroy();
 });
 
+const RECENT_COMMENT_COUNT = 5;
+
 Template.Comments_section.helpers({
   isVote() {
     const topic = this;
     return topic.category === 'vote';
   },
   comments() {
-    return Comments.find({ topicId: this._id });
+    const route = FlowRouter.current().route.name;
+    const comments = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
+    if (route === 'Board') {
+      // on the board showing only the most recent ones
+      return comments.fetch().slice(-1 * RECENT_COMMENT_COUNT);
+    }
+    return comments;
+  },
+  hasMoreComments() {
+    const route = FlowRouter.current().route.name;
+    const comments = Comments.find({ topicId: this._id });
+    return (route === 'Board' && comments.count() > RECENT_COMMENT_COUNT);
   },
 });
 
@@ -69,33 +84,10 @@ Template.Comments_section.events({
 
 //------------------------------------
 
-const MAX_LENGTH = 400;
-
 Template.Comment.helpers({
-  textTooLong() {
-    return this.text.length > MAX_LENGTH;
-  },
-  choppedText() {
-    if (this.text.length <= MAX_LENGTH) return this.text;
-    const dots = '... ';
-    const textPart = this.text.substr(0, MAX_LENGTH);
-    return textPart + dots;
-  }
 });
 
 Template.Comment.events({
-  'click .js-more'(event, instance) {
-    event.preventDefault();
-    const textSpan = $(event.target).closest('span');
-    textSpan.text(instance.data.text);
-    textSpan.append(` <a href="" class="js-less">${__('Show less')}</a>`);
-  },
-  'click .js-less'(event, instance) {
-    event.preventDefault();
-    const textSpan = $(event.target).closest('span');
-    textSpan.text(this.text.substr(0, MAX_LENGTH) + '...');
-    textSpan.append(` <a href="" class="js-more">${__('Show more')}</a>`);
-  },
   'click .js-like'(event) {
     like.call({
       coll: 'comments',

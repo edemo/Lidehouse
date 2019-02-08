@@ -5,18 +5,20 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
-
+import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
 import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
-import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
+import { ticketsSchema, TicketStatusChangeSchema } from '/imports/api/topics/tickets/tickets.js';
+import { ticketStatusChange } from '/imports/api/topics/tickets/methods.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/blocks/chopped.js';
 import './tickets-report.html';
 
 Template.Tickets_report.onCreated(function () {
@@ -38,7 +40,9 @@ Template.Tickets_report.helpers({
   },
   recentTickets() {
     const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category: 'ticket', 'ticket.status': { $ne: 'closed' } }, { sort: { createdAt: -1 } });
+    return Topics.find({ communityId, category: 'ticket',
+      $or: [{ 'ticket.status': { $ne: 'closed' } }, { createdAt: { $gt: moment().subtract(1, 'week').toDate() } }],
+    }, { sort: { createdAt: -1 } });
   },
   activeTicketsDataFn() {
     return () => {
@@ -81,7 +85,7 @@ Template.Tickets_report.events({
       id: 'af.ticket.insert',
       collection: Topics,
       schema: ticketsSchema,
-      omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky', 'ticket.status'],
+      omitFields: ['agendaId', 'sticky', 'ticket.status'],
       type: 'method',
       meteormethod: 'topics.insert',
       template: 'bootstrap3-inline',
@@ -94,12 +98,25 @@ Template.Tickets_report.events({
       id: 'af.ticket.update',
       collection: Topics,
       schema: ticketsSchema,
-      omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky'],
+      omitFields: ['agendaId', 'sticky', 'ticket.status'],
       doc: Topics.findOne(id),
       type: 'method-update',
       meteormethod: 'topics.update',
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
+    });
+  },
+  'click .js-status'(event) {
+    const id = $(event.target).data('id');
+    Session.set('modalTopicId', id);
+    Modal.show('Autoform_edit', {
+      id: 'af.ticket.statusChange',
+      schema: TicketStatusChangeSchema,
+      omitFields: ['topicId'],
+      type: 'method',
+      meteormethod: 'ticket.statusChange',
+      template: 'bootstrap3-inline',
+      btnOK: 'Change status',
     });
   },
   'click .js-delete'(event) {
@@ -113,6 +130,7 @@ Template.Tickets_report.events({
 
 AutoForm.addModalHooks('af.ticket.insert');
 AutoForm.addModalHooks('af.ticket.update');
+AutoForm.addModalHooks('af.ticket.statusChange');
 AutoForm.addHooks('af.ticket.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
@@ -120,6 +138,13 @@ AutoForm.addHooks('af.ticket.insert', {
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
     doc.ticket.status = 'reported';
+    return doc;
+  },
+});
+AutoForm.addHooks('af.ticket.statusChange', {
+  formToDoc(doc) {
+    doc.topicId = Session.get('modalTopicId');
+    Session.set('modalTopicId');  // clear it
     return doc;
   },
 });

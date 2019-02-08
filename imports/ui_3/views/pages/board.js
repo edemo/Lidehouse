@@ -34,10 +34,7 @@ Template.Board.helpers({
   },
   topics(category) {
     const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
-  },
-  displayTime() {
-    return moment(this.createdAt).format('LL');
+    return Topics.find({ communityId, category, closed: false }, { sort: { updatedAt: -1 } });
   },
 });
 
@@ -45,9 +42,6 @@ Template.News.helpers({
   topics(category, stickyVal) {
     const communityId = Session.get('activeCommunityId');
     return Topics.find({ communityId, category, closed: false, sticky: stickyVal }, { sort: { createdAt: -1 } });
-  },
-  displayTime() {
-    return moment(this.createdAt).format('LL');
   },
 });
 

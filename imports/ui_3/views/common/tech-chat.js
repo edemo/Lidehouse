@@ -95,7 +95,6 @@ Template.Tech_chat.events({
         $('.small-chat-box .slimScrollBar').css('top', '234px'); 
         // if ($(window).width() > 768) $('.js-focused').focus();
       }));
-      Meteor.user().hasNowSeen(roomId);
     };
 
     if (room) {

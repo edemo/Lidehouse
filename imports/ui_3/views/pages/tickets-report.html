@@ -29,7 +29,7 @@
                               <!--span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span-->
                             </p>
                             <p class="m-b-xs">
-                              {{text}}
+                              {{>Chopped text=text chars=150}}
                             </p>
                             <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-xs">
                                 <i class="fa fa-comments"></i>
@@ -126,7 +126,7 @@
                       </td>
                       <td class="issue-info">
                           <a href="{{pathFor 'Topic.show' _tid=_id}}">{{title}}</a>
-                          <small>{{text}}</small>
+                          <small>{{>Chopped text=text chars=400}}</small>
                       </td>
                       <td>
                           {{createdBy}}
@@ -143,6 +143,7 @@
                           <div class="btn-group">
                               {{#if userHasPermission 'ticket.update' (fromSession 'activeCommunityId')  }}
                               <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                              <button class="btn btn-xs btn-white js-status" data-id={{_id}}><i class="fa fa-cog"></i> {{_ 'status'}}</button>
                               {{/if}}
                               {{#if userHasPermission 'ticket.remove' (fromSession 'activeCommunityId')  }}
                               <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>

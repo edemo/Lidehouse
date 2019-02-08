@@ -16,9 +16,9 @@
                 <li>
                   <a class="js-block" href="">
                   {{#if currentUser.hasBlocked createdBy._id}}
-                    {{_ 'Unhide comments from' createdBy.displayName}}
+                    {{_ 'Unhide comments from' createdBy}}
                   {{else}}
-                    {{_ 'Hide comments from' createdBy.displayName}}
+                    {{_ 'Hide comments from' createdBy}}
                   {{/if}}
                   </a>
                 </li>
@@ -33,7 +33,7 @@
             </a>
             <div class="media-body">
                 <a href="{{pathFor 'User.show' _id=createdBy._id}}">
-                    {{createdBy.displayName}}
+                    {{createdBy}}
                 </a>                  
                 <small class="text-muted" title="{{_ 'memberships'}}">
                     {{join (createdBy.memberships activeCommunityId)}}
@@ -46,7 +46,7 @@
         <div class="{{#if hiddenBy}}collapse{{/if}}" id="content-{{this._id}}">
           <div class="social-body">
               <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
-              <p data-id="{{_id}}">{{#markdown}}{{text}}{{/markdown}}</p>
+              <p data-id="{{_id}}">{{#markdown}}{{>Chopped text=text}}{{/markdown}} </p>
               <div class="btn-group">
                   <button class="btn btn-white btn-xs js-like">
                       <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>

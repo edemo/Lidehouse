@@ -33,11 +33,11 @@
             {{#each message in messages}}
             <div class="{{sideOfMessage message.userId}}">
                 <div class="author-name">
-                    {{#unless questioner message.userId}} {{message.user.displayName}} {{/unless}}
+                    {{#unless questioner message.userId}} {{message.user}} {{/unless}}
                     <small class="chat-date">
                         {{displayTimeFrom message.createdAt}}
                     </small>
-                    {{#if questioner message.userId}} {{message.user.displayName}} {{/if}}
+                    {{#if questioner message.userId}} {{message.user}} {{/if}}
                 </div>
                 <div class="chat-message {{authorStyle message.userId}}">
                     {{message.text}}
