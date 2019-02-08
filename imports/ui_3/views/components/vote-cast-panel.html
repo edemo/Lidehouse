@@ -1,18 +1,19 @@
 <template name="Vote_cast_panel">
     <div class="row">
       <div class="col-xs-12 vote-answer text-center">
-  
+
         <div class="letter-content">
           <div class="row">
-            {{#unless voteIsFinalized}}
+            {{#unless (and voteIsFinalized isNotInModifyState)}}
             <div class="col-xs-12 text-center">
               {{_ (concat 'votingInstructions.' vote.type)}}
             </div>
             {{/unless}}
             <div class="col-xs-12">
               <div class="btns-group">
+
                 {{#if voteTypeIs "preferential"}}
-                  <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
+                  <ul class="sortable droptrue">
                     {{#each currentPreference}}
                     <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
                     <li class="btn btn-vote-choice ui-state-default js-btn-vote-choice" data-value="{{value}}"><i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{text}}</li>
@@ -25,32 +26,54 @@
                   </button>
                   {{/each}}
                 {{/if}}
-                {{#if this.hasVotedDirect currentUser._id}}
+
+                {{#if (and (this.hasVotedDirect currentUser._id) isNotInModifyState)}}
                   <img src="{{currentUser.avatar}}" class="avatar-envelope">
                 {{else}}
-                  {{#if this.hasVotedIndirect currentUser._id}}
+                  {{#if (and (this.hasVotedIndirect currentUser._id) isNotInModifyState)}}
                   <img src="{{indirectUser.avatar}}" class="avatar-envelope">
                   {{else}}
                   <div class="send-button {{stateClassForSendButton}}"><i class="fa fa-share-square fa-3x"></i></div>
                   {{/if}}
                 {{/if}}
+
               </div>
             </div>
           </div>
         </div>
 
+        {{#unless closed}}
+        {{#if userHasPermission 'vote.cast' this.communityId this}}
+        <div class="text-left">
+          {{#if this.hasVotedDirect currentUser._id}}
+              <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-modify">{{_ textForVote}}</a>
+          {{else}}
+            {{#if this.hasVotedIndirect currentUser._id}}
+            <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - <a class="js-modify">{{_ textForVote}}</a>
+            {{else}}
+              <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
+              {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedCastYourVoteOr"}} <a href="{{pathFor 'Delegations'}}">{{_ "setupYourDelegation"}}</a>)</i>
+            {{/if}}
+          {{/if}}
+        </div>
+        {{/if}}
+        {{/unless}}
+
       </div>
     </div>
   </template>
   
-  <template name="User_vote_status">
+  <!--
+  <template name="User_vote_status">-->
     <!-- showing if you voted directly or via delegation -->
-    <div class="text-left">
-    {{#if this.hasVotedDirect currentUser._id}}
-        <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
+    <!--<div class="text-left">
+    {{#if this.hasVotedDirect currentUser._id}}-->
+        <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>-->
+        <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-modify">{{_ "modify"}}</a>
     {{else}}
-      {{#if this.hasVotedIndirect currentUser._id}}
-      <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}}) - <a class="js-revoke">{{_ "revoke"}}</a>
+      {{#if this.hasVotedIndirect currentUser._id}}-->
+      <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}}) - <a class="js-revoke">{{_ "revoke"}}</a>-->
+      <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}}) - <a class="js-modify">{{_ "modify"}}</a>
       {{else}}
         <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
         {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedCastYourVoteOr"}} <a href="{{pathFor 'Delegations'}}">{{_ "setupYourDelegation"}}</a>)</i>
@@ -58,3 +81,4 @@
     {{/if}}
     </div>
   </template>
+  -->

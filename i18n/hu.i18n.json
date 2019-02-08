@@ -283,6 +283,8 @@
   "notYetVotedCastYourVoteOr": "adja le szavazatát, vagy",
   "setupYourDelegation": "állítson be meghatalmazást",
   "No delegations": "Nincsenek meghatalmazások",
+  "Modify vote": "Szavazat módosítása",
+  "Cancel": "Mégsem",
 
   // rooms
   "Send messages": "Küldjön üzenetet",

@@ -19,6 +19,7 @@ import { createEnvelope } from './envelope.js';
 Template.Vote_cast_panel.onCreated(function voteCastPanelOnCreated() {
   this.state = new ReactiveDict();
   this.state.set('choice', undefined);
+  this.state.set('isNotInModifyState', true);
 });
 
 Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
@@ -30,7 +31,7 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
 
   const voteEnvelope = createEnvelope(this.$('.letter-content'));
   this.autorun(() => {
-    if (state.get('voteIsFinalized')) voteEnvelope.close();
+    if (state.get('voteIsFinalized') && state.get('isNotInModifyState')) voteEnvelope.close();
     else voteEnvelope.open();
   });
   // creating the JQuery sortable widget
@@ -68,7 +69,8 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
   // This is where we enable/disable the sorting, dependant on the finalized state
   this.autorun(function update() {
     const voteIsFinalized = state.get('voteIsFinalized');
-    $(self.find('.sortable')).sortable(voteIsFinalized ? 'disable' : 'enable');
+    const isNotInModifyState = state.get('isNotInModifyState');
+    $(self.find('.sortable')).sortable((voteIsFinalized && isNotInModifyState) ? 'disable' : 'enable');
    /* const voting = Topics.findOne(topicId);
     const hasVoted = voting.hasVoted(Meteor.userId());
     $(Template.instance().find('.sortable')).sortable(hasVoted ? 'disable' : 'enable');
@@ -92,7 +94,8 @@ Template.Vote_cast_panel.helpers({
     const votedChoice = this.voteOf(userId);
     const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
     const temporaryChoice = Template.instance().state.get('choice');
-    if (voteIsFinalized) return _.isEqual(votedChoice, [choice]) && 'btn-pressed';
+    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
+    if (voteIsFinalized && isNotInModifyState) return _.isEqual(votedChoice, [choice]) && 'btn-pressed';
     return choice === temporaryChoice && 'btn-pressed';
   },
   // Preferential voting
@@ -109,11 +112,20 @@ Template.Vote_cast_panel.helpers({
     //const hasVoted = this.hasVoted(Meteor.userId());
    // return hasVoted;
   },
+  isNotInModifyState() {
+    return Template.instance().state.get('isNotInModifyState');
+  },
   stateClassForSendButton() {
     const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
     const temporaryChoice = Template.instance().state.get('choice');
-    if (_.isDefined(temporaryChoice) && !voteIsFinalized) return 'visible-button';
+    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
+    if (_.isDefined(temporaryChoice) && (!voteIsFinalized || !isNotInModifyState)) return 'visible-button';
     return 'invisible-button';
+  },
+  textForVote() {
+    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
+    if (isNotInModifyState) return 'Modify vote';
+    return 'Cancel';
   },
 });
 
@@ -143,7 +155,8 @@ Template.Vote_cast_panel.events({
   // event handler for the single choice vote type
   'click .btn-vote'(event) {
     const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
-    if (!voteIsFinalized) {
+    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
+    if (!voteIsFinalized || !isNotInModifyState) {
       Template.instance().state.set('choice', $(event.target).closest('.btn').data('value'));
     } else {
       return;
@@ -153,7 +166,8 @@ Template.Vote_cast_panel.events({
     const topicId = this._id;
     if (this.vote.type === 'preferential') {
       const voteIsFinalized = instance.state.get('voteIsFinalized');
-      if (!voteIsFinalized) {
+      const isNotInModifyState = instance.state.get('isNotInModifyState');
+      if (!voteIsFinalized || !isNotInModifyState) {
         const preference = instance.state.get('preference');
         const castedVote = preference.map(p => p.value);
         castVoteBasedOnPermission(topicId, castedVote,
@@ -161,21 +175,36 @@ Template.Vote_cast_panel.events({
             displayMessage('success', 'Vote casted');
           })
         );
+        Template.instance().state.set('isNotInModifyState', true);
       } else { // voteIsFinalized === true
-        instance.state.set('voteIsFinalized', false);
+        // instance.state.set('voteIsFinalized', false);
       }
     } else {
       const temporaryChoice = Template.instance().state.get('choice');
       castVoteBasedOnPermission(topicId, [temporaryChoice],
         onSuccess(res => displayMessage('success', 'Vote casted'))
       );
+      Template.instance().state.set('isNotInModifyState', true);
     }
   },
   'mousedown .btn-vote-choice'() {
     Template.instance().state.set('choice', 1);
   },
+  'click .js-modify'() {
+    const userId = Meteor.userId();
+    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
+    if (!isNotInModifyState) {
+      Template.instance().state.set('isNotInModifyState', true);
+      Template.instance().state.set('choice', undefined);
+    }
+    if (isNotInModifyState) {
+      Template.instance().state.set('isNotInModifyState', false);
+      Template.instance().state.set('choice', this.voteOf(userId)[0]);
+    }
+  },
 });
 
+/*
 Template.User_vote_status.events({
   'click .js-revoke'(event) {
     const topicId = this._id;
@@ -186,3 +215,4 @@ Template.User_vote_status.events({
     Template.instance().state.set('choice', undefined);
   },
 });
+*/
