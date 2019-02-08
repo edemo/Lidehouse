@@ -1,15 +1,13 @@
 <template name="Comments_section">
     <div class="social-footer comment-section" data-id="{{_id}}">
-    {{#if fromBoard}}   
-        {{{showPrevious}}} 
-        {{#each comment in recentComments}}
-            {{> Comment comment}}
-        {{/each}}
-    {{else}}
+        {{#if hasMoreComments}}   
+        <div class="social-comment">
+            <a class="text-muted" href="/topic/{{_id}}">{{_ 'View previous comments'}}</a>
+        </div>
+        {{/if}}
         {{#each comment in comments}}
             {{> Comment comment}}
         {{/each}}
-    {{/if}}
         <div class="social-comment">
             <a href="" class="pull-left">
                 <img alt="avatar" class="message-avatar" src={{currentUser.avatar}}>
