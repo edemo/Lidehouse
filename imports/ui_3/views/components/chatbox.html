@@ -46,7 +46,7 @@
         <div class="{{#if hiddenBy}}collapse{{/if}}" id="content-{{this._id}}">
           <div class="social-body">
               <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
-              <p data-id="{{_id}}">{{#markdown}}{{text}}{{/markdown}}</p>
+              <p data-id="{{_id}}">{{#markdown}}{{chop text}} {{{showmoreButton}}}{{/markdown}} </p>
               <div class="btn-group">
                   <button class="btn btn-white btn-xs js-like">
                       <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
