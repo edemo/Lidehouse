@@ -97,55 +97,14 @@
           {{else}}
           <!-- voting buttons -->
           {{#if userHasPermission 'vote.cast' this.communityId this}}
-          <div class="row">
-            <div class="col-xs-12 vote-answer text-center">
-
-              {{#if voteTypeIs "preferential"}}
-              <div class="row vote-answer-sort">
-                {{#if voteIsFinalized}}
-                {{else}}
-                <div class="col-xs-12 text-center">
-                  {{_ 'rankedVotingInstructions'}}
-                </div>
-                {{/if}}
-                <div class="col-xs-12 col-md-8 col-md-offset-2 text-center">
-                  <ul class="sortable droptrue {{pressedClassForFinalizeBtn}}">
-                    {{#each currentPreference}}
-                    <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
-                    <li class="btn btn-vote-choice ui-state-default" data-value="{{value}}"><i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{text}}</li>
-                    {{/each}}
-                  </ul>
-                  {{#if voteIsFinalized}}
-                  <button class="btn btn-vote-finalize btn-pressed"><i class="fa fa-lg fa-circle"></i><i class="fa fa-lock text-navy"></i> {{_ 'change'}}</button>
-                  {{else}}
-                  <button class="btn btn-vote-finalize"><i class="fa fa-lg fa-circle"></i> {{_ 'Send ordering'}}</button>
-                  {{/if}}
-                </div>
-              </div>
-
-              {{else}}
-              <div class="row">
-                <div class="col-xs-12">
-                  <div class="btns-group">
-                    {{#each choice in vote.choices}}
-                    <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
-                      <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
-                    </button>
-                    {{/each}}
-                  </div>
-                  <!--button class="btn-primary btn-golive">{{_ 'vote'}}</button-->
-                </div>
-              </div>
-              {{/if}}
-            </div>
-          </div>
+          {{> Vote_cast_panel this}}
           {{/if}}
 
           {{/if}}
         </div>
       </div>
 
-      {{#unless closed}}
+      <!--{{#unless closed}}
       {{#if userHasPermission 'vote.cast' this.communityId this}}
         <div class="row m-t-md">
         <div class="col-xs-12">
@@ -153,22 +112,6 @@
         </div>
         </div>
       {{/if}}
-      {{/unless}}
+      {{/unless}}-->
 
-</template>
-
-<template name="User_vote_status">
-  <!-- showing if you voted directly or via delegation -->
-  <div class="text-left">
-  {{#if this.hasVotedDirect currentUser._id}}
-      <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>
-  {{else}}
-    {{#if this.hasVotedIndirect currentUser._id}}
-      {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}})
-    {{else}}
-      <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
-      {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedCastYourVoteOr"}} <a href="{{pathFor 'Delegations'}}">{{_ "setupYourDelegation"}}</a>)</i>
-    {{/if}}
-  {{/if}}
-  </div>
 </template>

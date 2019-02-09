@@ -14,8 +14,9 @@ import { remove as removeTopic, update as updateTopic } from '/imports/api/topic
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import '../components/chatbox.html';
-import '../components/comments-section.js';
+import '/imports/ui_3/views/blocks/chopped.js';
+import '/imports/ui_3/views/components/comments-section.js';
+import './chatbox.html';
 
 Template.Chatbox.onRendered(function chatboxOnRendered() {
 });

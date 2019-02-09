@@ -1,14 +1,19 @@
 <template name="Comments_section">
     <div class="social-footer comment-section" data-id="{{_id}}">
-    {{#each comment in comments}}
-        {{> Comment comment}}
-    {{/each}}
+        {{#if hasMoreComments}}   
+        <div class="social-comment">
+            <a class="text-muted" href="/topic/{{_id}}">{{_ 'View previous comments'}}</a>
+        </div>
+        {{/if}}
+        {{#each comment in comments}}
+            {{> Comment comment}}
+        {{/each}}
         <div class="social-comment">
             <a href="" class="pull-left">
                 <img alt="avatar" class="message-avatar" src={{currentUser.avatar}}>
             </a>
             <div class="media-body">
-                <textarea class="form-control js-send-enter" placeholder={{_ 'newCommentPlaceholder'}}></textarea>
+                <textarea class="form-control js-send-enter" placeholder="{{_ 'newCommentPlaceholder'}}"></textarea>
             </div>
         </div>
     </div>
@@ -21,9 +26,9 @@
         </a>
         <div class="media-body" >
             <a href="{{pathFor 'User.show' _id=user._id}}">
-                {{user.displayOfficialName (fromSession 'activeCommunityId') undefined}}
+                {{user}}
             </a>
-            <span class="newlines" data-id="{{_id}}">{{choppedText}}{{#if textTooLong}}<a href="" class="js-more">{{_ 'Show more'}}</a>{{/if}}</span>
+            <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
             <br/>
             <a href="" class="small cap-first js-like">
                 <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>

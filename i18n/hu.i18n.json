@@ -137,7 +137,7 @@
     "room": "szoba",
     "feedback": "visszajelzés"
   },
-
+  
   // commands
   "important": "Fontos",
   "view": "Megtekintés",
@@ -214,6 +214,7 @@
   "private chat": "privát üzenet",
   "tech support": "technikai segítség",
   "see full text with View button": "teljes szöveg a Megtekintés gombbal",
+  "View previous comments": "Korábbi hozzászólások megtekintése",
 
   // voting
   "choice": "választási lehetőség",
@@ -236,7 +237,6 @@
   "Participation necessary": "Eredményesség feltétele",  
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
-  "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrendbe…",
   "Show results": "Eredmények megtekintése",
   "Show attachment": "Előterjesztés megtekintése",
   "Vote results": "Szavazási eredmények",
@@ -253,7 +253,13 @@
   "Attachments" : "Csatolmányok",
   "Activity": "Változások",
   "All votings": "Aktív és lezárt szavazások teljes listája",
-  
+  "votingInstructions": {
+    "yesno": "",
+    "choose": "",
+    "preferential": "Ez egy preferenciális szavazás. Kérjük rakja sorrendbe…",
+    "petition": ""
+  },
+
   // delegations
   "Delegations from me": "Meghatalmazásaim",
   "Delegations to me": "Meghatalmazottságaim",
@@ -278,6 +284,8 @@
   "notYetVotedCastYourVoteOr": "adja le szavazatát, vagy",
   "setupYourDelegation": "állítson be meghatalmazást",
   "No delegations": "Nincsenek meghatalmazások",
+  "Modify vote": "Szavazat módosítása",
+  "Cancel": "Mégsem",
 
   // rooms
   "Send messages": "Küldjön üzenetet",

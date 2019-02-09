@@ -4,7 +4,7 @@
             <div class="chat-message right">
                 <img class="message-avatar" src="{{user.avatar}}" alt="avatar" >
                 <div class="message">
-                    <a class="message-author" href=""> {{user.displayOfficialName (fromSession 'activeCommunityId') undefined}} </a>
+                    <a class="message-author" href=""> {{user}} </a>
                     <span class="message-date"> {{displayTimeFrom createdAt}} </span>
                     <span class="message-content newlines">{{text}}</span>
                 </div>
@@ -13,7 +13,7 @@
             <div class="chat-message left">
                 <img class="message-avatar" src="{{user.avatar}}" alt="avatar" >
                 <div class="message">
-                    <a class="message-author" href=""> {{user.displayOfficialName (fromSession 'activeCommunityId') undefined}} </a>
+                    <a class="message-author" href=""> {{user}} </a>
                     <span class="message-date"> {{displayTimeFrom createdAt}} </span>
                     <span class="message-content newlines">{{text}}</span>
                 </div>
@@ -50,7 +50,7 @@
                         <small class="pull-right text-muted">{{_ 'Last message'}}: 
                             <br class="rwd-break">{{selectedRoom.updatedAt.toLocaleString}}</small>
                         {{/if}}
-                        <strong>{{selectedPerson.displayOfficialName (fromSession 'activeCommunityId') undefined}} [{{_ selectedRoom.title}}]</strong>
+                        <strong>{{selectedPerson}} [{{_ selectedRoom.title}}]</strong>
                     </div>
 
                     <div class="ibox-content">

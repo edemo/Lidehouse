@@ -12,14 +12,14 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
-import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
+import { ticketsSchema, TicketStatusChangeSchema } from '/imports/api/topics/tickets/tickets.js';
 import { ticketStatusChange } from '/imports/api/topics/tickets/methods.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/blocks/chopped.js';
 import './tickets-report.html';
-import { TicketStatusChangeSchema } from '../../../api/topics/tickets/tickets';
 
 Template.Tickets_report.onCreated(function () {
 });

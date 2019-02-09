@@ -26,8 +26,10 @@ Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
   };
 
   const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
-
-  return Topics.find(selector, { fields: publicFields });
+  return [
+    Topics.find(selector, { fields: publicFields }),
+    Topics.find(_.extend({}, selector, { category: 'vote', closed: true })),
+  ];
 });
 
 Meteor.publish('topics.byId', function topicsById(params) {
@@ -38,7 +40,6 @@ Meteor.publish('topics.byId', function topicsById(params) {
   const { _id } = params;
   
   const publicFields = Topics.publicFields;//.extendForUser(this.userId, communityId);
-
   return Topics.find({ _id }, { fields: publicFields });
 });
 
