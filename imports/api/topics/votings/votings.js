@@ -132,7 +132,7 @@ Topics.helpers({
         const castedVote = directVotes[voterId];
         if (castedVote) {
           const result = {
-            votingShare: ownership.votingShare(),
+            votingShare: ownership.votingUnits(),
             castedVote,
             votePath,
           };
