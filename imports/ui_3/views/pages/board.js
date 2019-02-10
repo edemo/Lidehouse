@@ -34,7 +34,7 @@ Template.Board.helpers({
   },
   topics(category) {
     const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category, closed: false }, { sort: { updatedAt: -1 } });
+    return Topics.find({ communityId, category, closed: false }, { sort: { createdAt: -1 } });
   },
 });
 
