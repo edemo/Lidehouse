@@ -56,7 +56,8 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
     const voteIsFinalized = voting.hasVoted(Meteor.userId());
     state.set('voteIsFinalized', voteIsFinalized);
     let preference;
-    if (voteIsFinalized) {
+    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
+    if (voteIsFinalized && (isNotInModifyState || !isNotInModifyState)) {
       const castedPreference = voting.voteOf(Meteor.userId());
       preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
     } else { // no vote yet, preference is then the original vote choices in that order
