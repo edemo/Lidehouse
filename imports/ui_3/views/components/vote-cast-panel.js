@@ -30,9 +30,13 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
   const voteCasts = this.data.voteCasts;
 
   const voteEnvelope = createEnvelope(this.$('.letter-content'));
+
+  Meteor.setTimeout(function closed() { if (state.get('voteIsFinalized')) voteEnvelope.closed(); }, 1);
+  Meteor.setTimeout(function opened() { if (state.get('voteIsFinalized') === false) voteEnvelope.opened(); }, 1);
+
   this.autorun(() => {
-    if (state.get('voteIsFinalized') && state.get('isNotInModifyState')) voteEnvelope.close();
-    else voteEnvelope.open();
+    if (state.get('voteIsFinalized') && state.get('isNotInModifyState') && state.get('choice') !== undefined) voteEnvelope.close();
+    if (state.get('voteIsFinalized') && state.get('isNotInModifyState') === false && state.get('choice') !== undefined) voteEnvelope.open();
   });
   // creating the JQuery sortable widget
   // both JQuery and Blaze wants control over the order of elements, so needs a hacky solution
@@ -196,7 +200,7 @@ Template.Vote_cast_panel.events({
     const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
     if (!isNotInModifyState) {
       Template.instance().state.set('isNotInModifyState', true);
-      Template.instance().state.set('choice', undefined);
+      Template.instance().state.set('choice', false);
     }
     if (isNotInModifyState) {
       Template.instance().state.set('isNotInModifyState', false);
