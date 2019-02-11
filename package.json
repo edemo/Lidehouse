@@ -34,7 +34,7 @@
     "eslint-plugin-react": "^6.2.2",
     "shell-source": "^1.1.0",
     "shelljs": "^0.7.4",
-    "sinon": "^7.2.2"
+    "sinon": "^7.2.3"
   },
   "eslintConfig": {
     "parser": "babel-eslint",
