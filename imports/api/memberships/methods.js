@@ -53,7 +53,7 @@ export const insert = new ValidatedMethod({
       const linkedUser = Meteor.users.findOne(doc.person.userId);
       const email = doc.person && doc.person.contact && doc.person.contact.email;
       if (email && linkedUser.emails[0].address !== email) {
-        throw new Meteor.Error('User and conact.email doesnt match', `${linkedUser.emails[0].address} !== ${email}`);
+        throw new Meteor.Error('err_sanityCheckFailed', 'User and conact email doesnt match', `${linkedUser.emails[0].address} !== ${email}`);
       }
       if (linkedUser.emails[0].verified === false) {
         // maybe we should Accounts.sendEnrollmentEmail(doc.person.userId);
@@ -105,7 +105,7 @@ export const linkUser = new ValidatedMethod({
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     const email = doc.Person().primaryEmail();
-    if (!email) throw new Meteor.Error('No contact email set for this membership', doc);
+    if (!email) throw new Meteor.Error('err_sanityCheckFailed', 'No contact email set for this membership', doc);
     if (this.isSimulation) return;  // Not possible to find and link users on the client side, as no user data available
 
     if (doc.person.userId) {
@@ -159,7 +159,7 @@ export const remove = new ValidatedMethod({
     if (doc.role === 'admin') {
       const admins = Memberships.find({ communityId: doc.communityId, active: true, role: 'admin' });
       if (admins.count() < 2) {
-        throw new Meteor.Error('err_unableToRemove', 'Admin cannot be deleted if no other admin is appointed.',
+        throw new Meteor.Error('err_unableToRemove', 'Admin cannot be deleted if no other admin is appointed',
         `Found: {${admins.count()}}`);
       }
     }

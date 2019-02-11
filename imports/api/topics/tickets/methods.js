@@ -14,11 +14,13 @@ export const ticketStatusChange = new ValidatedMethod({
   validate: TicketStatusChangeSchema.validator({ clean: true }),
 
   run({ topicId, status, text }) {
-    Topics.methods.update._execute({ userId: this.userId },
+    const result = Topics.methods.update._execute({ userId: this.userId },
       { _id: topicId, modifier: { $set: { 'ticket.status': status } } }
     );
+    if (!text) return result; // Or maybe set a text: `Status changed to ${status}` ?
     Comments.methods.insert._execute({ userId: this.userId },
       { topicId, userId: this.userId, text }
     );
+    return result;
   },
 });
