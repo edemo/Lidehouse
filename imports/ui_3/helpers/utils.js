@@ -28,7 +28,7 @@ Template.registerHelper('displayRoundPercent', function percentage(number) {
 });
 
 Template.registerHelper('displayMoney', function displayMoney(number) {
-    return numeral(number).format();
+    return numeral(number).format('0 $');
 });
 
 Template.registerHelper('currentTime', function currentTime() {

@@ -65,15 +65,17 @@ export const chooseBreakdown = {
 };
 
 export const parcelRef2digit = function parcelRef2digit(parcelRef) {
-  return `[${parcelRef}]`;
+//  return `[${parcelRef}]`;
+  return parcelRef;
 };
 
 export const digit2parcelRef = function digit2parcelRef(digit) {
-  return digit.substring(1, digit.length - 1);
+//  return digit.substring(1, digit.length - 1);
+  return digit;
 };
 
 export function leafIsParcel(l) {
-  return l.digit && l.digit.charAt(0) === '[';
+  return l.code && l.code.substr(0, 2) === '71';
 }
 
 /*

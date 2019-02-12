@@ -31,7 +31,7 @@ Balances.get = function get(def) {
   const balance = Balances.findOne({ communityId: def.communityId, tag: def.tag });
   if (!balance) return 0;
   const account = AccountSpecification.fromDoc(def);
-  console.log('looking for code', account.toCode());
+//  console.log('looking for code', account.toCode());
   if (def.account && def.localizer) throw Error('We dont store balaces for 2D accounts');
   let leafCodes;
   if (def.account) {
@@ -45,8 +45,8 @@ Balances.get = function get(def) {
     leafCodes = leafs.map(leaf => '#' + leaf.code);
   }
   let result = 0;
-  console.log(leafCodes);
+//  console.log(leafCodes);
   leafCodes.forEach(leafCode => result += balance.balances[leafCode] || 0);
-  console.log('=', result);
+//  console.log('=', result);
   return result;
 };

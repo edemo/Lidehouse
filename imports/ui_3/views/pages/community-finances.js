@@ -144,7 +144,6 @@ Template.Community_finances.helpers({
     }];
 
     const results = [];
-    debugger;
     const coa = Breakdowns.chartOfAccounts(); if (!coa) return [];
     const moneyAccounts = coa.findNodeByName('Money accounts');
     moneyAccounts.leafs().forEach(leaf => {
