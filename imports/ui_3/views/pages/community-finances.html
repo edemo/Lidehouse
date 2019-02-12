@@ -6,49 +6,44 @@
     <div class="row">
 
     <div class="col-md-12">
-        <div class="ibox ibox-dark" id='balances-report'>
-            <div class="ibox-title">
-                <h5>{{_ 'community'}} {{_ "'s status report"}} ({{_ 'Balance sheet'}})</h5>
-                {{>iboxTools}}
-            </div>
+        <div class="ibox float-e-margins">
             <div class="ibox-content">
-                {{#if Template.subscriptionsReady}}
-                <div class="row">
-                    <div class="col-md-6 p-md">
-                    {{> Custom_table report=(report 'Assets')}}
-                    </div>
-                    <div class="col-md-6 p-md">
-                    {{> Custom_table report=(report 'Liabilities')}}
-                    </div>
+                <span class="pull-right text-right">
+                    <small>A behajtás alatt álló tartozásokat az alábbi összeg nem tartalmazza</small><br/>
+                    {{#each moneyAccount in moneyAccounts}}
+                    {{moneyAccount.accountName}}: <strong>{{moneyAccount.accountBalance}}</strong><br/>
+                    {{/each}}
+                    {{_ 'Money outstanding'}}: <strong>162 862 Ft</strong>
+                </span>
+
+                <h1 class="m-b-xs">{{moneyBalance}}</h1>
+                <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
+                <!--hr class="hr-line-solid m-b-sm">
+                <table class="table table-striped"><small>
+                  {{#each moneyAccount in moneyAccounts}}
+                  <tr><td>{{moneyAccount.accountName}}</td><td class="text-right text-bold"> {{moneyAccount.accountBalance}}</td></tr>
+                  {{/each}}
+                </small></table-->
+
+                <div>
+                    <canvas id="balancesChart" height="70"></canvas>
                 </div>
-                {{else}}
-                {{_ 'Loading'}}...
-                {{/if}}
+
+                <div class="m-t-md">
+                    <small class="pull-right">
+                        <i class="fa fa-clock-o"> </i>
+                        {{_ 'Refreshed'}}: {{displayDate}}
+                    </small>
+                    <small>
+                        <strong>Az adatok tájékoztató jellegűek:</strong>
+                        A bankkivonatok feltöltése és feldolgozása néhány nap késéssel történhet
+                    </small>
+                </div>
+
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="ibox ibox-dark" id='assets-chart'>
-            <div class="ibox-title">
-                <h5>{{_ 'Assets'}} {{_ "'s chart"}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                <canvas id="balanceSheetChart" height="250"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="ibox ibox-dark" id='liabilities-chart'>
-            <div class="ibox-title">
-                <h5>{{_ 'Liabilities'}} {{_ "'s chart"}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                <canvas id="balanceSheetChart" height="250"></canvas>
-            </div>
-        </div>
-    </div>
+
 
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='account-history'>
@@ -62,6 +57,29 @@
         </div>
     </div>
    
+    <div class="col-md-12">
+        <div class="ibox ibox-dark" id='balances-report'>
+            <div class="ibox-title">
+                <h5>{{_ 'community'}} {{_ "'s status report"}} ({{_ 'Balance sheet'}})</h5>
+                {{>iboxTools}}
+            </div>
+            <div class="ibox-content">
+                {{#if Template.subscriptionsReady}}
+                <div class="row">
+                    <!--div class="col-md-6 p-md">
+                    {{> Custom_table report=(report 'Assets')}}
+                    </div>
+                    <div class="col-md-6 p-md">
+                    {{> Custom_table report=(report 'Liabilities')}}
+                    </div-->
+                </div>
+                {{else}}
+                {{_ 'Loading'}}...
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='incomes-expenses-history'>
             <div class="ibox-title">
@@ -80,37 +98,13 @@
                 <h5 class="text=capitalize">{{_ 'community'}} {{_ "'s performance"}}</h5>
                 {{>iboxTools}}
             </div>  
-            <div class="ibox-content">
+            <!--div class="ibox-content">
               {{#if Template.subscriptionsReady}}
               {{> Custom_table report=(report 'Performance' 2017)}}
               {{else}}
               {{_ 'Loading'}}...
               {{/if}}
-          </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="ibox ibox-dark" id='incomes-chart'>
-            <div class="ibox-title">
-                <h5>{{_ 'Incomes'}} {{_ "'s chart"}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                <canvas id="incomesChart" height="250"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="ibox ibox-dark" id='expenses-chart'>
-            <div class="ibox-title">
-                <h5>{{_ 'Expenses'}} {{_ "'s chart"}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                <canvas id="expensesChart" height="250"></canvas>
-            </div>
+          </div-->
         </div>
     </div>
 

@@ -11,7 +11,7 @@ import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { monthTags } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
+import { PeriodBreakdown } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
 import { journalColumns } from '/imports/api/journals/tables.js';
 import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
 import { Reports } from '/imports/api/journals/reports/reports.js';
@@ -22,14 +22,14 @@ import { insert as insertTx, remove as removeTx } from '/imports/api/journals/me
 import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
+import { AccountSpecification } from '/imports/api/journals/account-specification';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
 import './accounting.html';
-import { AccountSpecification } from '../../../api/journals/account-specification';
 
-Template.Community_finances.onCreated(function communityFinancesOnCreated() {
+Template.Accounting.onCreated(function accountingOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
 //    this.subscribe('breakdowns.inCommunity', { communityId });
@@ -37,6 +37,9 @@ Template.Community_finances.onCreated(function communityFinancesOnCreated() {
 //    this.subscribe('txs.inCommunity', { communityId });
 //    this.subscribe('txDefs.inCommunity', { communityId });
   });
+});
+
+Template.Accounting.onRendered(function accountingOnRendered() {
 });
 
 Template.Accounting.helpers({

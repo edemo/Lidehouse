@@ -23,6 +23,10 @@ Breakdowns.findOneByName = function findOneByName(name, communityId) {
       || Breakdowns.findOne({ name, communityId: { $exists: false } });
 };
 
+Breakdowns.chartOfAccounts = function chartOfAccounts(communityId) {
+  return Breakdowns.findOneByName('COA');
+}
+
 Breakdowns.define = function define(breakdown) {
   const existingId = Breakdowns.findOne({ name: breakdown.name, communityId: breakdown.communityId });
   if (existingId) {
@@ -181,11 +185,11 @@ Breakdowns.isSubAccountOf = function isSubAccountOf(code, group, brk) {
 */
 
 Breakdowns.display = function display(node) {
-  return `${node.code}: ${__(node.label || node.name)}`;;
+  return `${node.code}: ${__(node.label || node.name)}`;
 };
 
 Breakdowns.displayFullPath = function displayFullPath(node) {
-  return node.path.map(__).join(':');
+  return node.path./*map(__).*/join(':');
 };
 
 Breakdowns.helpers({
@@ -194,17 +198,15 @@ Breakdowns.helpers({
       this._nodeMap = {};
       this._leafs = [];
       this._nodes = [];
-      let currentLevel = 1;   // should start at 0, but bumping it up to 1 as we use 1 less depth in the breakdowns now
+      let currentLevel = 0;
       const root = this;
-      root.parent = null; root.isLeaf = false; root.level = currentLevel; root.pushLeaf = l => this._leafs.push(l);
-      root.path = [root.name || '']; root.code = root.digit || ''; this._nodes.push(root); root._nodeMap[root.code || ':'] = root;
-      function handleNode(node, parent, pac) {
+      function handleNode(node, parent, root) {
         if (node.include) {
           if (typeof node.include === 'string') {
             node.include = // TODO (node.import is regex Id) ? Breakdowns.findOne(node.import) :
               Breakdowns.findOneByName(node.include);
           } else debugAssert(typeof node.include === 'object');
-//          console.log('Before include', pac);
+//          console.log('Before include', root);
           node.name = node.name || node.include.name;
           node.digit = node.digit || node.include.digit;
           node.sign = node.sign || node.include.sign;
@@ -212,22 +214,24 @@ Breakdowns.helpers({
             node.children = node.children || [];
             node.children = node.children.concat(deepCopy(node.include.children));
           }
-//          console.log('After include', pac);
+//          console.log('After include', root);
           delete node.include;
         }
         ++currentLevel;
         node.parent = parent;
-        node._leafs = []; node.leafs = () => node._leafs; node.pushLeaf = l => { node._leafs.push(l); node.parent.pushLeaf(l); };
+        node._leafs = []; node.leafs = () => node._leafs; node.pushLeaf = l => { node._leafs.push(l); if (node.parent) node.parent.pushLeaf(l); };
         node.isLeaf = false;
         node.level = currentLevel;
-        node.code = parent.code + (node.digit || '');
-        if (!node.name) { node.path = parent.path; }
-        else { node.path = parent.path.concat(node.name); pac._nodes.push(node); pac._nodeMap[node.code] = node; }
-        if (!node.children) { parent.pushLeaf(node); node._leafs.push(node); node.isLeaf = true; }
-        else { node.children.forEach(child => handleNode(child, node, pac)); }
+        const parentCode = parent ? parent.code : '';
+        node.code = parentCode + (node.digit || '');
+        const parentPath = parent ? parent.path : [];
+        if (!node.name) { node.path = parentPath; }
+        else { node.path = parentPath.concat(node.name); root._nodes.push(node); root._nodeMap[node.code] = node; }
+        if (!node.children) { node._leafs.push(node); node.isLeaf = true; if (parent) parent.pushLeaf(node); }
+        else { node.children.forEach(child => handleNode(child, node, root)); }
         --currentLevel;
       }
-      this.children.forEach(node => handleNode(node, root, this));
+      handleNode(root, null, root);
     }
     return this;
   },
@@ -261,6 +265,16 @@ Breakdowns.helpers({
   leafsOf(code) {
     if (code) return this.nodeByCode(code).leafs();
     return this.leafs();
+  },
+  parentsOf(code) {
+    if (!code) return [];
+    const parents = [];
+    let node = this.nodeByCode(code);
+    while (node) {
+      parents.push(node.code);
+      node = node.parent;
+    }
+    return parents;
   },
   display(code) {
     Breakdowns.display(this.nodeByCode(code));

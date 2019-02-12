@@ -24,6 +24,7 @@ import '/imports/api/comments/methods.js';
 import '/imports/api/comments/publications.js';
 // import '/imports/api/journals/breakdowns/methods.js';
 import '/imports/api/journals/breakdowns/publications.js';
+import '/imports/api/journals/balances/publications.js';
 import '/imports/api/journals/methods.js';
 import '/imports/api/journals/publications.js';
 import '/imports/api/permissions/publications.js';

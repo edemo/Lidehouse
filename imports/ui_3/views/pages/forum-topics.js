@@ -1,10 +1,9 @@
 import { Template } from 'meteor/templating';
-
-import { Topics } from '/imports/api/topics/topics.js';
-
 import { Session } from 'meteor/session';
-import { like } from '/imports/api/topics/likes.js';
 
+import { handleError } from '/imports/ui_3/lib/errors';
+import { Topics } from '/imports/api/topics/topics.js';
+import { like } from '/imports/api/topics/likes.js';
 //import '/imports/ui_3/stylesheets/animatecss/animate.css';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -14,9 +13,7 @@ import '../common/page-heading.js';
 import '../components/votebox.js';
 import '../components/voting-list.html';
 import './vote-topics.html';
-
 import './forum-topics.html';
-import { handleError } from '../../../ui_3/lib/errors';
 
 
 Template.Forum_topics.helpers({

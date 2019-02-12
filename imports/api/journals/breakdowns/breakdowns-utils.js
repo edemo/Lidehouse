@@ -1,5 +1,6 @@
+import { Breakdowns } from './breakdowns.js';
 
-export const sideTags = {
+const sideTags = {
   name: 'sides', label: 'Balance',
   children: [
   { digit: 'debit', name: 'debit', label: 'done' },
@@ -7,13 +8,8 @@ export const sideTags = {
   ],
 };
 
-export const yearTags = {
-  name: 'years',
-  children: [
-  { digit: '2017', name: '2017' },
-  { digit: '2018', name: '2018' },
-  ],
-};
+export const SideBreakdown = Breakdowns._transform(sideTags);
+
 
 export const monthTags = {
   name: 'months',
@@ -33,10 +29,18 @@ export const monthTags = {
   ],
 };
 
-export const yearMonthTags = {
-  name: 'yearMonths',
+const yearTags = {
+  name: 'years',
   children: [
-  { digit: '2017', name: '2017', include: monthTags },
-  { digit: '2018', name: '2018', include: monthTags },
+  { digit: '-2017', name: '2017', include: monthTags },
+  { digit: '-2018', name: '2018', include: monthTags },
+  { digit: '-2019', name: '2019', include: monthTags },
+  { digit: '-2020', name: '2020', include: monthTags },
   ],
 };
+
+const periodTags = {
+  digit: 'T', name: 'Total', include: yearTags,
+};
+
+export const PeriodBreakdown = Breakdowns._transform(periodTags);

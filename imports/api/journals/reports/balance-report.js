@@ -1,6 +1,7 @@
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Balances } from '../balances';
 
 const accountSigns = {
   1: +1, 2: +1, 3: +1, 9: +1,
@@ -101,28 +102,23 @@ export class BalanceReport {
     const rowDefs = this.rows[y];
     const lineDefs = colDefs.concat(rowDefs);
 
-    const filter = _.extend({}, this.filters);
-    let classes = 'cell';
-    lineDefs.forEach((lineDef) => {
-      _.extend(filter, lineDef.filter());
-      classes += ' ' + lineDef.class;
-    });
-
-    let displaySign = 1;  // the displaySign is the main Account's sign
-    if (filter.account) {
-      const accountGroupCode = filter.account.$in[0].charAt(0);
-      displaySign = this.chartOfAccounts.nodeByCode(accountGroupCode).sign;
+    function buildBalanceDefFrom(lineDefs) {
+      const def = {
+        communityId: this.filter.communityId,
+        account: lineDefs.account,
+        period: {
+          type:
+          code:
+        }
+      };
+      return def;
     }
-    // if (accountName === 'Owners') displaySign *= -1; // The owner's perspective is the opposite of the community's
-    let amount = 0;
-    this.dataSource.find(filter).forEach(e => {
-      amount += e.effectiveAmount();
-    });
+    const balanceDef = buildBalanceDefFrom(lineDefs);
+    const balance = Balances.get(balanceDef);
+    let classes = 'cell'  + lineDef.class;
+    if (balance < 0) classes += ' negative';
 
-    const totalAmount = displaySign * amount;
-    if (totalAmount < 0) classes += ' negative';
-//    console.log(`${x}, ${y}: filter:`); console.log(filter);
-    return { class: classes, value: numeral(totalAmount).format() };
+    return { class: classes, value: numeral(balance).format() };
   }
 
   addDescartesProductLines(dim, newLineDefs) {

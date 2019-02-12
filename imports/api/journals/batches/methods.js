@@ -81,7 +81,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     const id = ParcelBillings.insert(doc);
-    apply._execute({ userId: this.userId }, { id });
+//    apply._execute({ userId: this.userId }, { id });
     return id;
   },
 });

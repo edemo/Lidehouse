@@ -4,7 +4,7 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Breakdowns } from './breakdowns.js';
 import './methods.js';
-import { sideTags, yearTags, monthTags, yearMonthTags } from './breakdowns-utils';
+import { PeriodBreakdown, SideBreakdown } from './breakdowns-utils';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -179,8 +179,7 @@ if (Meteor.isServer) {
       });
 
       it('assembles included parts', function () {
-        const yearMonthBreakdown = Breakdowns._transform(yearMonthTags);
-        console.log(yearMonthBreakdown.leafOptions());
+        console.log(PeriodBreakdown.leafOptions());
       });
 
       it('assembles imported parts', function () {

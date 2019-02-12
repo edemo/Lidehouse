@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { __ } from '/imports/localization/i18n.js';
 import { Breakdowns, leafIsParcel } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { getActiveCommunityId } from '/imports/api/users/users.js';
 
 export let chooseAccountNode = {};
 export let chooseLocalizerNode = {};
@@ -64,7 +65,7 @@ if (Meteor.isClient) {
 }
 
 export const AccountSchema = new SimpleSchema({
-  account: { type: String /* account code */, autoform: chooseAccountNode },
+  account: { type: String /* account code */, autoform: chooseAccountNode, optional: true },
   localizer: { type: String /* account code */, autoform: chooseLocalizerNode, optional: true },
 });
 
@@ -77,12 +78,21 @@ export class AccountSpecification {
   static fromDoc(doc) {
     return new AccountSpecification(doc.communityId, doc.account, doc.localizer);
   }
+  static fromCode(code, communityId = getActiveCommunityId()) {
+    const split = code.split('#');
+    const account = split[0];
+    const localizer = split[1];
+    return new AccountSpecification(communityId, account, localizer);
+  }
   toDoc() {
     return {
       communityId: this.communityId,
       account: this.account,
       localizer: this.localizer,
     };
+  }
+  toCode() {
+    return `${this.account || ''}${this.localizer ? '#' + this.localizer : ''}`;
   }
   display() {
     if (!this.accountName) {

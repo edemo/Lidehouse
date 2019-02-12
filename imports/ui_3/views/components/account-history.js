@@ -7,9 +7,8 @@ import { JournalEntries } from '/imports/api/journals/entries.js';
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-
+import { AccountSpecification } from '/imports/api/journals/account-specification';
 import './account-history.html';
-import { AccountSpecification } from '../../../api/journals/account-specification';
 
 Template.Account_history.viewmodel({
   startDate: '',

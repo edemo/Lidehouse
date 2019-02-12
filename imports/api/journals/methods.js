@@ -63,6 +63,10 @@ export const remove = new ValidatedMethod({
   },
 });
 
+Journals.methods = {
+  insert, remove,
+};
+
 //---------------------------------------------
 /*
 export const insert = new ValidatedMethod({

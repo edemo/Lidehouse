@@ -300,6 +300,9 @@
   "Change status": "Státusz váltása",
 
   // finances
+  "Money accounts total": "Pénzeszközök összesen",
+  "Money outstanding": "Kinnlevőségek állománya",
+  "Refreshed": "Frissítve",
   "Account": "Számla", 
   "Chart of accounts": "Számla tükör",
   "Account history": "Számla történet",

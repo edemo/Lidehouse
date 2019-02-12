@@ -17,14 +17,14 @@ import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
-let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
+export let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {
   import { currentUserLanguage } from '/imports/startup/client/language.js';
 
   getCurrentUserLang = currentUserLanguage;
 }
 
-let getActiveCommunityId = () => { debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"'); };
+export let getActiveCommunityId = () => { debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"'); };
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 

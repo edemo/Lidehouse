@@ -22,12 +22,15 @@ import { insert as insertTx, remove as removeTx } from '/imports/api/journals/me
 import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
+import { AccountSpecification } from '/imports/api/journals/account-specification';
+import { Balances } from '/imports/api/journals/balances/balances';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
 import './community-finances.html';
-import { AccountSpecification } from '../../../api/journals/account-specification';
+
+const DEMO = false;
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
 const notVotedColor = '#dedede';
@@ -35,6 +38,7 @@ const notVotedColor = '#dedede';
 Template.Community_finances.onCreated(function communityFinancesOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
+    this.subscribe('balances.inCommunity', { communityId });
 //    this.subscribe('breakdowns.inCommunity', { communityId });
 //    this.subscribe('journals.inCommunity', { communityId });
 //    this.subscribe('txs.inCommunity', { communityId });
@@ -43,6 +47,36 @@ Template.Community_finances.onCreated(function communityFinancesOnCreated() {
 });
 
 Template.Community_finances.onRendered(function communityFinancesOnRendered() {
+  // Filling the Balances chart with DEMO data
+  this.autorun(() => {
+    const lineData = {
+      labels: ["Feb", "Marc", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
+      datasets: [
+        {
+          label: "Folyószámla",
+          backgroundColor: "rgba(26,179,148,0.5)",
+          borderColor: "rgba(26,179,148,0.7)",
+          pointBackgroundColor: "rgba(26,179,148,1)",
+          pointBorderColor: "#fff",
+          data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
+        },
+        {
+          label: "Megtakarítási számla",
+          backgroundColor: "rgba(220,220,220,0.5)",
+          borderColor: "rgba(220,220,220,1)",
+          pointBackgroundColor: "rgba(220,220,220,1)",
+          pointBorderColor: "#fff",
+          data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
+        },
+      ],
+    };
+
+    const lineOptions = { responsive: true };
+
+    const ctx = document.getElementById('balancesChart').getContext('2d');
+    new Chart(ctx, { type: 'line', data: lineData, options: lineOptions });
+  });
+/*
   // Filling the Balance Sheet chart with DEMO data
   this.autorun(() => {
     const doughnutData = {
@@ -59,7 +93,7 @@ Template.Community_finances.onRendered(function communityFinancesOnRendered() {
     const elem = document.getElementById('balanceSheetChart').getContext('2d');
     new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
   });
-
+*/
   // Filling the History chart with DEMO data
   this.autorun(() => {
     const monthsArray = monthTags.children.map(c => c.label);
@@ -85,42 +119,47 @@ Template.Community_finances.onRendered(function communityFinancesOnRendered() {
     new Chart(elem, { type: 'bar', data: barData, options: barOptions });
   });
 
-  // Filling the Incomes chart with DEMO data
-  this.autorun(() => {
-    const doughnutData = {
-      labels: [__('Lakói befizetések'), __('Kamat pénzintézetektől'), __('Hitelfelvétel'), __('Adóköteles bevételek'), __('Támogatás')],
-      datasets: [{
-        data: [6440000, 2150, 2300000, 558500, 500000],
-        backgroundColor: choiceColors,
-      }],
-    };
-    const doughnutOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-    const elem = document.getElementById('incomesChart').getContext('2d');
-    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
-  });
-
-  // Filling the Expenses chart with DEMO data
-  this.autorun(() => {
-    const doughnutData = {
-      labels: [__('Költségek'), __('Beruházások'), __('Hiteltörlesztés')],
-      datasets: [{
-        data: [5000000, 2000000, 1000000],
-        backgroundColor: choiceColors,
-      }],
-    };
-    const doughnutOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-    const elem = document.getElementById('expensesChart').getContext('2d');
-    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
-  });
 });
 
 Template.Community_finances.helpers({
+  moneyBalance() {
+    if (DEMO) return '2 992 650 Ft';
+
+    const coa = Breakdowns.chartOfAccounts(); if (!coa) return 0;
+    const moneyAccounts = coa.findNodeByName('Money accounts');
+    const balanceDef = {
+      communityId: Session.get('activeCommunityId'),
+      account: moneyAccounts.code,
+      tag: 'T',
+    };
+    return Balances.get(balanceDef);
+  },
+  moneyAccounts() {
+    if (DEMO) return [{
+      accountName: 'Folyószámla',
+      balance: '740 275 Ft',
+    }, {
+      accountName: 'Megtakarítási számla',
+      balance: '2 240 510 Ft',
+    }];
+
+    const results = [];
+    debugger;
+    const coa = Breakdowns.chartOfAccounts(); if (!coa) return [];
+    const moneyAccounts = coa.findNodeByName('Money accounts');
+    moneyAccounts.leafs().forEach(leaf => {
+      const balanceDef = {
+        communityId: Session.get('activeCommunityId'),
+        account: leaf.code,
+        tag: 'T',
+      };
+      results.push({
+        accountName: leaf.name,
+        accountBalance: Balances.get(balanceDef),
+      });
+    });
+    return results;
+  },
   report(name, year) {
     if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
@@ -131,20 +170,6 @@ Template.Community_finances.helpers({
     const brk = Breakdowns.findOneByName('ChartOfAccounts', communityId);
     if (brk) return brk.leafOptions(accountCode);
     return [];
-  },
-  afCommunityFinancesData() {
-    const communityId = Session.get('activeCommunityId');
-    const financesOnlySchema = Communities.simpleSchema().pick(['finances', 'finances.ccArea', 'finances.ccVolume', 'finances.ccHabitants']);
-    return {
-      id: 'af.communities.finances',
-      collection: Communities,
-      schema: financesOnlySchema,
-      doc: Communities.findOne(communityId),
-      type: 'method-update',
-      meteormethod: 'communities.update',
-      singleMethodArgument: true,
-      template: 'bootstrap3-inline',
-    };
   },
 });
 

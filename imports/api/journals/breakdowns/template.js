@@ -152,7 +152,7 @@ export function defineBreakdownTemplates(communityId) {
   });
 
   Breakdowns.define({
-    name: 'ChartOfAccounts', label: 'Accounts',
+    name: 'COA', label: 'Chart Of Accounts',
     children: [
       { include: 'Incomes' },
       { include: 'Expenses' },

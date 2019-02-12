@@ -8,17 +8,26 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { AccountSchema } from './account-specification.js';
 import { JournalEntries } from './entries.js';
-import { Balances } from './balances.js';
+import { Balances } from './balances/balances.js';
+import { PeriodBreakdown } from './breakdowns/breakdowns-utils';
 
 export let Journals;
 export class JournalsCollection extends Mongo.Collection {
   insert(doc, callback) {
     const result = super.insert(doc, callback);
-    doc = Journals._transform(doc);
+    doc = this._transform(doc);
+    const communityId = doc.communityId;
     doc.journalEntries().forEach(entry => {
-      let bal = Balances.findOne({ communityId: doc.communityId, account: entry.account });
-      if (!bal) bal = Balances.insert({ communityId: doc.communityId, account: entry.account });
-      Balances.update(bal._id, { $inc: { total: entry.effectiveAmount() } });
+      const code = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
+      PeriodBreakdown.parentsOf(code).forEach(tag => {
+        const bal = Balances.findOne({ communityId, tag });
+        const balId = bal ? bal._id : Balances.insert({ communityId, tag });
+        const amount = entry.effectiveAmount();
+        const increases = {}; increases['balances.@' + entry.account] = amount;
+        if (entry.localizer) increases['balances.#' + entry.localizer] = amount;
+        console.log("$inc:", increases);
+        Balances.update(balId, { $inc: increases });
+      });
     });
     return result;
   }
@@ -29,9 +38,9 @@ export class JournalsCollection extends Mongo.Collection {
   remove(selector, callback) {
     const docs = this.find(selector);
     docs.forEach(doc => {
+      const communityId = doc.communityId;
       doc.journalEntries().forEach(entry => {
-        const bal = Balances.findOne({ communityId: doc.communityId, account: entry.account });
-        Balances.update(bal._id, { $inc: { total: (-1 * entry.effectiveAmount()) } });
+        // TODO
       });
     });
     return super.remove(selector, callback);
@@ -42,9 +51,10 @@ Journals = new JournalsCollection('journals');
 
 Journals.phaseValues = ['done', 'plan'];
 
-Journals.entrySchema = new SimpleSchema([{
-  amount: { type: Number, optional: true },
-}, AccountSchema]);
+Journals.entrySchema = new SimpleSchema([
+  AccountSchema,
+  { amount: { type: Number, optional: true } },
+]);
 
 Journals.rawSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
@@ -53,12 +63,12 @@ Journals.rawSchema = {
   phase: { type: String, defaultValue: 'done', allowedValues: Journals.phaseValues, autoform: autoformOptions(Journals.phaseValues) },
   valueDate: { type: Date },
   amount: { type: Number },
-  year: { type: Number, optional: true, autoform: { omit: true },
-    autoValue() { return this.field('valueDate').value.getFullYear(); },
-  },
-  period: { type: String, optional: true, autoform: { omit: true },
-    autoValue() { return this.field('valueDate').value.getFullYear().toString() + '-' + (this.field('valueDate').value.getMonth() + 1); },
-  },
+//  year: { type: Number, optional: true, autoform: { omit: true },
+//    autoValue() { return this.field('valueDate').value.getFullYear(); },
+//  },
+//  month: { type: String, optional: true, autoform: { omit: true },
+//    autoValue() { return this.field('valueDate').value.getMonth() + 1; },
+//  },
 };
 
 Journals.noteSchema = {
