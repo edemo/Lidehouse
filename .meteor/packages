@@ -26,11 +26,11 @@ aldeed:autoform
 twbs:bootstrap
 peppelg:bootstrap-3-modal
 momentjs:moment
+numeral:numeral
 mizzao:timesync
 djk:jquery-ui
 ephemer:reactive-datatables
 flawless:meteor-toastr
-numeral:numeral
 perak:markdown
 q42:autoform-markdown
 fortawesome:fontawesome

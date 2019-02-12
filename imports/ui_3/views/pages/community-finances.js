@@ -166,7 +166,7 @@ Template.Community_finances.helpers({
   optionsOf(accountCode) {
     const communityId = Session.get('activeCommunityId');
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
-    const brk = Breakdowns.findOneByName('ChartOfAccounts', communityId);
+    const brk = Breakdowns.chartOfAccounts(communityId);
     if (brk) return brk.leafOptions(accountCode);
     return [];
   },

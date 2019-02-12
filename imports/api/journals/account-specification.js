@@ -96,8 +96,8 @@ export class AccountSpecification {
   }
   display() {
     if (!this.accountName) {
-      const coa = Breakdowns.findOneByName('ChartOfAccounts', this.communityId);
-      this.accountName = coa.nodeByCode(this.account).name;
+      const coa = Breakdowns.chartOfAccounts(this.communityId);
+      if (coa) this.accountName = coa.nodeByCode(this.account).name;
     }
     let html = '';
     html += `<span class="label label-default label-xs">${this.account}:${__(this.accountName)}</span> `;

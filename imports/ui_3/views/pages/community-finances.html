@@ -13,7 +13,7 @@
                     {{#each moneyAccount in moneyAccounts}}
                     {{moneyAccount.accountName}}: <strong>{{displayMoney moneyAccount.accountBalance}}</strong><br/>
                     {{/each}}
-                    {{_ 'Money outstanding'}}: <strong>{{displayMoney 162862}}</strong>
+                    {{_ 'Money outstanding'}}: <strong class="text-warning">{{displayMoney 162862}}</strong>
                 </span>
 
                 <h1 class="m-b-xs">{{displayMoney moneyBalance}}</h1>
