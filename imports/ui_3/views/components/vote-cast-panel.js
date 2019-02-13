@@ -29,15 +29,6 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
   const vote = this.data.vote;
   const voteCasts = this.data.voteCasts;
 
-  const voteEnvelope = createEnvelope(this.$('.letter-content'));
-
-  Meteor.setTimeout(function closed() { if (state.get('voteIsFinalized')) voteEnvelope.closed(); }, 1);
-  Meteor.setTimeout(function opened() { if (state.get('voteIsFinalized') === false) voteEnvelope.opened(); }, 1);
-
-  this.autorun(() => {
-    if (state.get('voteIsFinalized') && state.get('isNotInModifyState') && state.get('choice') !== undefined) voteEnvelope.close();
-    if (state.get('voteIsFinalized') && state.get('isNotInModifyState') === false && state.get('choice') !== undefined) voteEnvelope.open();
-  });
   // creating the JQuery sortable widget
   // both JQuery and Blaze wants control over the order of elements, so needs a hacky solution
   // https://github.com/meteor/meteor/blob/master/examples/unfinished/reorderable-list/client/shark.js
@@ -54,6 +45,7 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
 
   // this is in an autorun, so if logged in user changes, it will rerun
   // or if the vote is changed on another machine, it also gets updated here
+
   this.autorun(function update() {
 
     const voting = Topics.findOne(topicId);
@@ -61,7 +53,7 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
     state.set('voteIsFinalized', voteIsFinalized);
     let preference;
     const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
-    if (voteIsFinalized && (isNotInModifyState || !isNotInModifyState)) {
+    if (voteIsFinalized || !isNotInModifyState) {
       const castedPreference = voting.voteOf(Meteor.userId());
       preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
     } else { // no vote yet, preference is then the original vote choices in that order
@@ -81,6 +73,17 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
     $(Template.instance().find('.sortable')).sortable(hasVoted ? 'disable' : 'enable');
   */
   });
+
+  const voteEnvelope = createEnvelope(this.$('.letter-content'));
+
+  if (state.get('voteIsFinalized')) voteEnvelope.closed();
+  if (state.get('voteIsFinalized') === false) voteEnvelope.opened();
+
+  this.autorun(() => {
+    if (state.get('voteIsFinalized') && state.get('isNotInModifyState') && state.get('choice') !== undefined) voteEnvelope.close();
+    if (state.get('voteIsFinalized') && state.get('isNotInModifyState') === false && state.get('choice') !== undefined) voteEnvelope.open();
+  });
+
 });
 
 Template.Vote_cast_panel.helpers({
