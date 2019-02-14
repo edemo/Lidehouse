@@ -28,6 +28,7 @@ import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
+import '/imports/ui_3/views/components/balance-report.js';
 import './community-finances.html';
 
 const DEMO = false;
@@ -80,9 +81,9 @@ Template.Community_finances.onRendered(function communityFinancesOnRendered() {
   // Filling the Balance Sheet chart with DEMO data
   this.autorun(() => {
     const doughnutData = {
-      labels: [__('Bank főszámla'), __('Bank felújítási alap'), __('Fundamenta felújítási hitel'), __('Pénztár')],
+      labels: [__('Folyószámla'), __('Megtakarítási számla'), __('Pénztár')],
       datasets: [{
-        data: [6943500, 120000, 2300000, 100000],
+        data: [6943500, 120000, 100000],
         backgroundColor: choiceColors,
       }],
     };
@@ -158,6 +159,16 @@ Template.Community_finances.helpers({
       });
     });
     return results;
+  },
+  breakdown(name) {
+    return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));
+  },
+  totalTag() {
+    return ['T'];
+  },
+  last12MonthsTag() {
+    return ['T-2017-1', 'T-2017-2', 'T-2017-3', 'T-2017-4', 'T-2017-5', 'T-2017-6',
+          'T-2017-7', 'T-2017-8', 'T-2017-9', 'T-2017-10', 'T-2017-11', 'T-2017-12'];
   },
   report(name, year) {
     if (!Template.instance().subscriptionsReady()) return Reports['Blank']();

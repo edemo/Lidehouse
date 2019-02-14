@@ -101,10 +101,9 @@ export function defineBreakdownTemplates(communityId) {
       },
       { digit: '2', name: 'Money accounts',
         children: [
-        { digit: '1', name: 'Bank főszámla' },
-        { digit: '2', name: 'Bank felújítási alap' },
-        { digit: '3', name: 'Fundamenta felújítási hitel' },
-        { digit: '4', name: 'Pénztár 1' },
+        { digit: '1', name: 'Folyószámla' },
+        { digit: '2', name: 'Megtakarítási számla' },
+        { digit: '3', name: 'Pénztár' },
         ],
       },
       { digit: '3', name: 'Owner obligations',

@@ -25,7 +25,6 @@ export class JournalsCollection extends Mongo.Collection {
         const amount = entry.effectiveAmount();
         const increases = {}; increases['balances.@' + entry.account] = amount;
         if (entry.localizer) increases['balances.#' + entry.localizer] = amount;
-        console.log("$inc:", increases);
         Balances.update(balId, { $inc: increases });
       });
     });

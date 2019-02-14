@@ -1,0 +1,24 @@
+<template name="Balance_report">
+    <div class="table-responsive">
+    <table class="table table-bordered table-condensed">
+        <thead>
+          <tr class="table-row">
+              <td></td>
+              {{#each tag in tags}}
+              <td><strong>{{displayPeriod tag}}</strong></td>
+              {{/each}}
+          </tr>
+        </thead>
+        <tbody>
+            {{#each account in breakdown.nodes}}
+            <tr class="table-row">
+                <td><strong>{{displayAccount account}}</strong></td>
+                {{#each tag in tags}}
+                    <td>{{displayCell (balance account tag)}}</td>
+                {{/each}} 
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    </div>
+</template>

@@ -8,22 +8,32 @@
     <div class="col-md-12">
         <div class="ibox float-e-margins">
             <div class="ibox-content">
-                <span class="pull-right text-right">
-                    <small>A behajtás alatt álló tartozásokat az alábbi adatok nem tartalmazzák</small><br/>
-                    {{#each moneyAccount in moneyAccounts}}
-                    {{moneyAccount.accountName}}: <strong>{{displayMoney moneyAccount.accountBalance}}</strong><br/>
-                    {{/each}}
-                    {{_ 'Money outstanding'}}: <strong class="text-warning">{{displayMoney 162862}}</strong>
-                </span>
+                <div class= "row">
 
-                <h1 class="m-b-xs">{{displayMoney moneyBalance}}</h1>
-                <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
-                <!--hr class="hr-line-solid m-b-sm">
-                <table class="table table-striped"><small>
-                  {{#each moneyAccount in moneyAccounts}}
-                  <tr><td>{{moneyAccount.accountName}}</td><td class="text-right text-bold"> {{moneyAccount.accountBalance}}</td></tr>
-                  {{/each}}
-                </small></table-->
+                    <div class="col-md-3">
+                        <h1 class="m-b-xs">{{displayMoney moneyBalance}}</h1>
+                        <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
+                    </div>
+
+                    <div class="col-md-3 table-responsive">
+                      <table class="table table-condensed">
+                        {{#each moneyAccount in moneyAccounts}}
+                        <tr>
+                            <td>{{moneyAccount.accountName}}: </td>
+                            <td class="text-right text-bold"> {{displayMoney moneyAccount.accountBalance}}</td>
+                        </tr>
+                        {{/each}}
+                      </table>
+                    </div>
+
+                    <div class="col-md-6 text-right">
+                    <!--span class="pull-right text-right"-->
+                        <small>A behajtás alatt álló ügyeket az alábbi adat nem tartalmazza</small><br/>
+                            {{_ 'Money outstanding'}}: <strong>{{displayMoney 162862}}</strong>
+                    <!--/span-->
+                    </div>
+
+                </div>
 
                 <div>
                     <canvas id="balancesChart" height="70"></canvas>
@@ -66,12 +76,14 @@
             <div class="ibox-content">
                 {{#if Template.subscriptionsReady}}
                 <div class="row">
-                    <!--div class="col-md-6 p-md">
-                    {{> Custom_table report=(report 'Assets')}}
+                    <div class="col-md-6 p-md">
+                        <h3>{{_ 'Assets'}}</h3>
+                        {{> Balance_report breakdown=(breakdown 'Assets') tags=totalTag }}
                     </div>
                     <div class="col-md-6 p-md">
-                    {{> Custom_table report=(report 'Liabilities')}}
-                    </div-->
+                        <h3>{{_ 'Liabilities'}}</h3>
+                        {{> Balance_report breakdown=(breakdown 'Liabilities') tags=totalTag }}
+                    </div>
                 </div>
                 {{else}}
                 {{_ 'Loading'}}...
@@ -88,23 +100,21 @@
             </div>
             <div class="ibox-content">
                 <canvas id="historyChart" height="250"></canvas>
+                {{#if Template.subscriptionsReady}}
+                <div class="row">
+                    <div class="col-md-12 p-md">
+                        <h3>{{_ 'Incomes'}}</h3>
+                        {{> Balance_report breakdown=(breakdown 'Incomes') tags=last12MonthsTag }}
+                    </div>
+                    <div class="col-md-12 p-md">
+                        <h3>{{_ 'Expenses'}}</h3>
+                        {{> Balance_report breakdown=(breakdown 'Expenses') tags=last12MonthsTag }}
+                    </div>
+                </div>
+                {{else}}
+                {{_ 'Loading'}}...
+                {{/if}}
             </div>
-        </div>
-    </div>
-
-    <div class="col-md-12">
-        <div class="ibox ibox-dark" id='community-status-report'>
-            <div class="ibox-title">
-                <h5 class="text=capitalize">{{_ 'community'}} {{_ "'s performance"}}</h5>
-                {{>iboxTools}}
-            </div>  
-            <!--div class="ibox-content">
-              {{#if Template.subscriptionsReady}}
-              {{> Custom_table report=(report 'Performance' 2017)}}
-              {{else}}
-              {{_ 'Loading'}}...
-              {{/if}}
-          </div-->
         </div>
     </div>
 

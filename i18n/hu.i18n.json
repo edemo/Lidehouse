@@ -301,7 +301,7 @@
 
   // finances
   "Money accounts total": "Pénzeszközök összesen",
-  "Money outstanding": "Kinnlevőségek állománya",
+  "Money outstanding": "Befizetetlen előírások",
   "Refreshed": "Frissítve",
   "Account": "Számla", 
   "Chart of accounts": "Számla tükör",
