@@ -176,6 +176,7 @@ Topics.helpers({
   voteResultsDisplay() {
     const topic = this;
     const results = this.voteResults;
+    if (!results) return [];
     const data = [];
     Object.keys(results).forEach(key => {
       data.push(_.extend(results[key], {
