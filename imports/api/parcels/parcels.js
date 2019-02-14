@@ -107,36 +107,31 @@ Parcels.helpers({
     if (!community) return undefined;
     return community.totalunits;
   },
+  forEachLed(callback) {
+    if (this.isLed()) return;
+    const ledParcels = Parcels.find({
+      communityId: this.communityId,
+      $or: [{ ref: this.ref }, { leadRef: this.ref }],
+    });
+    ledParcels.forEach(parcel => callback(parcel));
+  },
   // Voting
   ledUnits() {
-    if (this.isLed()) return 0;
-    let cumulatedUnits = this.units;
-    const ledParcels = Parcels.find({ communityId: this.communityId, leadRef: this.ref });
-    ledParcels.forEach((parcel) => {
-      if (parcel.isLed()) { // This avoids counting twice the self-led parcel 
-        cumulatedUnits += parcel.units;
-      }
-    });
+    let cumulatedUnits = 0;
+    this.forEachLed(parcel => cumulatedUnits += parcel.units);
     return cumulatedUnits;
   },
   share() {
     return new Fraction(this.units, this.totalunits());
   },
   ledShare() {
-    if (this.isLed()) return new Fraction(0);
-    let cumulatedShare = this.share();
-    const ledParcels = Parcels.find({ communityId: this.communityId, leadRef: this.ref });
-    ledParcels.forEach((parcel) => {
-      if (parcel.isLed()) { // This avoids counting twice the self-led parcel 
-        cumulatedShare = cumulatedShare.add(parcel.share());
-      }
-    });
-    return cumulatedShare;
+    return new Fraction(this.ledUnits(), this.totalunits());
   },
   ownedShare() {
     if (this.isLed()) return this.leadParcel().ownedShare();
     let total = new Fraction(0);
-    Memberships.find({ parcelId: this._id, active: true, approved: true, role: 'owner' }).forEach(p => total = total.add(p.ownership.share));
+    Memberships.find({ parcelId: this._id, active: true, approved: true, role: 'owner' })
+      .forEach(p => total = total.add(p.ownership.share));
     return total;
   },
   // Finances
