@@ -11,7 +11,12 @@ Render.journalEntries = function (cellData, renderType, currentRow) {
   return AccountSpecification.fromDoc(entry).display();
 };
 
-export function journalColumns() {
+export function journalColumns(permissions) {
+  const buttonRenderers = [];
+  if (permissions.view) buttonRenderers.push(Render.buttonView);
+  if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
+  if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
+
   const columns = [
     { data: 'valueDate', title: __('schemaJournals.valueDate.label'), render: Render.formatDate },
 //    { data: 'phase', title: __('schemaJournals.phase.label'), render: Render.translate },
@@ -21,9 +26,7 @@ export function journalColumns() {
 //    { data: 'placeAccounts()', title: __('Konyveles hely'), render: Render.breakdowns },
     { data: 'ref', title: __('schemaJournals.ref.label') },
     { data: 'note', title: __('schemaJournals.note.label') },
-    { data: '_id', render: Render.buttonView },
-    { data: '_id', render: Render.buttonEdit },
-    { data: '_id', render: Render.buttonDelete },
+    { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
   ];
 
   return columns;

@@ -104,12 +104,12 @@ if (Meteor.isServer) {
       it('access to leaf options', function () {
         const leafOptions = breakdown.leafOptions();
         const expectedLeafOptions = [
-          { label: 'Root:Level1:Level2:LeafA', value: '12A' },
-          { label: 'Root:Level1:Level2:LeafB', value: '12B' },
-          { label: 'Root:Level1:Level2:LeafC', value: '12C' },
-          { label: 'Root:Level1:LeafD',        value: '1D' },
-          { label: 'Root:LeafE',               value: 'E' },
-          { label: 'Root:Level3:LeafF',        value: '3F' },
+          { label: '12A: LeafA', value: '12A' },
+          { label: '12B: LeafB', value: '12B' },
+          { label: '12C: LeafC', value: '12C' },
+          { label: '1D: LeafD',  value: '1D' },
+          { label:  'E: LeafE',  value: 'E' },
+          { label: '3F: LeafF',  value: '3F' },
         ];
         chai.assert.deepEqual(leafOptions, expectedLeafOptions);
       });
@@ -119,11 +119,11 @@ if (Meteor.isServer) {
       before(function () {
         Breakdowns.define({
           digit: '2', name: 'includeLevel2',
-            children: [
+          children: [
             { digit: 'A', name: 'LeafA' },
             { digit: 'B', name: 'LeafB' },
             { digit: 'C', name: 'LeafC' },
-            ],
+          ],
         });
 
         Breakdowns.define({

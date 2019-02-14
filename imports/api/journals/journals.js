@@ -15,34 +15,43 @@ export let Journals;
 export class JournalsCollection extends Mongo.Collection {
   insert(doc, callback) {
     const result = super.insert(doc, callback);
-    doc = this._transform(doc);
+    if (doc.complete) {
+      this._updateBalances(this._transform(doc));
+    }
+    return result;
+  }
+  update(selector, modifier, options, callback) {
+    const originalDocs = this.find(selector);
+    originalDocs.forEach((doc) => {
+      if (doc.complete) this._updateBalances(doc, -1);
+    });
+    const result = super.update(selector, modifier, options, callback);
+    const updatedDocs = this.find(selector);
+    updatedDocs.forEach((doc) => {
+      if (doc.complete) this._updateBalances(doc, 1);
+    });
+    return result;
+  }
+  remove(selector, callback) {
+    const docs = this.find(selector);
+    docs.forEach((doc) => {
+      if (doc.complete) this._updateBalances(doc, -1);
+    });
+    return super.remove(selector, callback);
+  }
+  _updateBalances(doc, revertSign = 1) {
     const communityId = doc.communityId;
     doc.journalEntries().forEach(entry => {
       const code = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
       PeriodBreakdown.parentsOf(code).forEach(tag => {
         const bal = Balances.findOne({ communityId, tag });
         const balId = bal ? bal._id : Balances.insert({ communityId, tag });
-        const amount = entry.effectiveAmount();
+        const amount = entry.effectiveAmount() * revertSign;
         const increases = {}; increases['balances.@' + entry.account] = amount;
         if (entry.localizer) increases['balances.#' + entry.localizer] = amount;
         Balances.update(balId, { $inc: increases });
       });
     });
-    return result;
-  }
-  update(selector, modifier, options, callback) {
-    console.log('ERROR: Changed journal noticed:', selector);
-    return super.update(selector, modifier, options, callback);
-  }
-  remove(selector, callback) {
-    const docs = this.find(selector);
-    docs.forEach(doc => {
-      const communityId = doc.communityId;
-      doc.journalEntries().forEach(entry => {
-        // TODO
-      });
-    });
-    return super.remove(selector, callback);
   }
 }
 
@@ -68,6 +77,13 @@ Journals.rawSchema = {
 //  month: { type: String, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getMonth() + 1; },
 //  },
+  complete: { type: Boolean, autoform: { omit: true }, autoValue() {
+    let total = 0;
+    const amount = this.field('amount').value;
+    this.field('debit').value.forEach(entry => total += entry.amount || amount);
+    this.field('credit').value.forEach(entry => total -= entry.amount || amount);
+    return total === 0;
+  } },
 };
 
 Journals.noteSchema = {

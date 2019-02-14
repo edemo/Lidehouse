@@ -76,7 +76,7 @@ if (Meteor.isServer) {
           ],
         });
         insertTx = function (params) {
-          Journals.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
+          return Journals.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
             communityId: Fixture.demoCommunityId,
             phase: 'done',
             valueDate: params.valueDate,
@@ -119,8 +119,8 @@ if (Meteor.isServer) {
         done();
       });
 
-      it('updates balances after another tx', function (done) {
-        insertTx({
+      it('updates balances for removed tx', function (done) {
+        const txId = insertTx({
           valueDate: new Date('2017-02-02'),
           amount: 2000,
           credit: ['12A'],
@@ -136,6 +136,17 @@ if (Meteor.isServer) {
         assertBalance('1', undefined, 'T-2017-2', 0);
         assertBalance('1', undefined, 'T-2017', 0);
         assertBalance('19', undefined, 'T', 3000);
+
+        Journals.remove(txId);
+        // copy of the previous test's end state
+        assertBalance('12A', undefined, 'T', -1000);
+        assertBalance('12A', undefined, 'T-2017', -1000);
+        assertBalance('12A', undefined, 'T-2017-1', -1000);
+        assertBalance('12A', undefined, 'T-2017-2', 0);
+        assertBalance('12', undefined, 'T-2017-1', -1000);
+        assertBalance('1', undefined, 'T-2017-1', 0);
+        assertBalance('19', undefined, 'T', 1000);
+
         done();
       });
 

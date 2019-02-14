@@ -102,14 +102,14 @@ Template.Accounting.helpers({
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Journals.find({ communityId, phase: 'done' }).fetch();
+      return Journals.find({ communityId, phase: 'done', complete: false }).fetch();
     }
     return getTableData;
   },
   journalsOptionsFn() {
     function getOptions() {
       return {
-        columns: journalColumns(),
+        columns: journalColumns({ view: true, edit: true, delete: true }),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
@@ -251,7 +251,7 @@ Template.Accounting.events({
       meteormethod: 'txDefs.insert',
       template: 'bootstrap3-inline',
     });
-  },
+  },*/
   'click #journals .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
@@ -265,7 +265,7 @@ Template.Accounting.events({
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
     });
-  },*/
+  },
   'click #journals .js-view, #account-history .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {

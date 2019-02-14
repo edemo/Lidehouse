@@ -7,7 +7,7 @@ export const BackOfficeTx = {
   name: 'Back office tx',
   schema: Journals.inputSchema,
   transformToJournal(doc) {
-    doc.credit.forEach(entry => {
+/*    doc.credit.forEach(entry => {
       const as = AccountSpecification.fromNames(entry.account.account, entry.account.localizer);
       entry.account = as.toTags();
     });
@@ -15,6 +15,7 @@ export const BackOfficeTx = {
       const as = AccountSpecification.fromNames(entry.account.account, entry.account.localizer);
       entry.account = as.toTags();
     });
+*/
     return doc;
   },
 };
