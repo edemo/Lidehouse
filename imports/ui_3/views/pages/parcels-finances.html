@@ -30,10 +30,11 @@
         </div>
     </div-->
 
-    <div class="col-md-12">
+    <div class="col-md-6 pull-right">
         {{> Balance_widget}}
     </div>
 
+    <div class="col-md-6">
     <div class="ibox ibox-dark" id='parcel-balances'>
         <div class="ibox-title">
             <h5>{{_ 'My parcel balances'}}</h5>
@@ -41,13 +42,16 @@
         </div>
         <div class="ibox-content">
             {{#if Template.subscriptionsReady}}
-            {{> Custom_table report=(report 'MyParcelBalances' 2017)}}
+                <h3>{{_ 'MyParcelBalances'}}</h3>
+                {{> Balance_report breakdown=myLeadParcels tags=totalTag }}
             {{else}}
-            {{_ 'Loading'}}...
+                {{_ 'Loading'}}...
             {{/if}}
         </div>
     </div>
+    </div>
 
+    <div class="col-md-12">
     <div class="ibox ibox-dark" id='parcel-history'>
         <div class="ibox-title">
             <h5>{{_ 'My parcel history'}}</h5>
@@ -57,8 +61,9 @@
             {{>Parcel_history startDate='2017-01-01' endDate='2017-12-31'}}
         </div>
     </div>
+    </div>
 
-
+    <div class="col-md-12">
     <div class="ibox ibox-dark" id='accounting'>
         <div class="ibox-title">
             <h5>{{_ 'Parcel balances'}}</h5>
@@ -66,11 +71,11 @@
         </div>  
         <div class="ibox-content">
             {{#if Template.subscriptionsReady}}
-            {{> Custom_table report=(report 'ParcelBalances' 2017)}}      
             {{else}}
             {{_ 'Loading'}}...
             {{/if}}
         </div>
+    </div>
     </div>
 
     </div>

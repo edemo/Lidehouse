@@ -40,7 +40,7 @@ Template.Community_finances.onCreated(function communityFinancesOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('balances.inCommunity', { communityId });
-//    this.subscribe('breakdowns.inCommunity', { communityId });
+    this.subscribe('breakdowns.inCommunity', { communityId });
 //    this.subscribe('journals.inCommunity', { communityId });
 //    this.subscribe('txs.inCommunity', { communityId });
 //    this.subscribe('txDefs.inCommunity', { communityId });

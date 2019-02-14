@@ -288,14 +288,14 @@ Breakdowns.helpers({
     const self = this;
     return this.leafsOf(code)
       .map(function option(leaf) {
-        return { label: Breakdowns.displayFullPath(leaf), value: leaf.code };
+        return { label: Breakdowns.display(leaf), value: leaf.code };
       });
   },
   nodeOptions() {
     const self = this;
     return this.nodes()
       .map(function option(node) {
-        return { label: Breakdowns.displayFullPath(node), value: node.code };
+        return { label: Breakdowns.display(node), value: node.code };
       });
   },
   removeSubTree(name) {

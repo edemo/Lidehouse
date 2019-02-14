@@ -5,15 +5,15 @@ import { Session } from 'meteor/session';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 
-import { Journals } from '/imports/api/journals/journals.js';
+import { Balances } from '/imports/api/journals/balances/balances.js';
 import '/imports/api/users/users.js';
 import './balance-widget.html';
 
 Template.Balance_widget.onCreated(function() {
   // Subscriptions
   this.autorun(() => {
-//    const communityId = Session.get('activeCommunityId');
-//    this.subscribe('journals.inCommunity', { communityId });
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('balances.inCommunity', { communityId });
   });
 });
 
@@ -22,7 +22,11 @@ Template.Balance_widget.helpers({
     const communityId = Session.get('activeCommunityId');
     const user = Meteor.user();
     if (!user || !communityId) return 0;
-    const result = user.balance(communityId);
+    const parcels = user.ownedParcels(communityId);
+    let result = 0;
+    parcels.forEach((parcel) => {
+      result += Balances.get({ communityId, localizer: parcel.ref, tag: 'T' });
+    });
     return result;
   },
   display(balance) {

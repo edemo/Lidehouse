@@ -23,11 +23,13 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '../common/ibox-tools.js';
 import '../components/balance-widget.js';
+import '../components/balance-report.js';
 import './parcels-finances.html';
 
 Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
+    this.subscribe('balances.inCommunity', { communityId });
 //    this.subscribe('breakdowns.inCommunity', { communityId });
 //    this.subscribe('journals.inCommunity', { communityId });
   });
@@ -106,5 +108,8 @@ Template.Parcels_finances.helpers({
       };
     }
     return getOptions;
+  },
+  myLeadParcels() {
+    
   },
 });

@@ -99,22 +99,6 @@ function communityPublication(userId, _id) {
         }
         return undefined;
       },
-    }, {
-      // Publish the Breakdowns of the Community
-      find(community) {
-        if (hasPermission('breakdowns.inCommunity')) {
-          return Breakdowns.find({ $or: [{ communityId: community._id }, { communityId: { $exists: false } }] });
-        }
-        return undefined;
-      },
-    }, {
-      // Publish the Journals of the Community
-      find(community) {
-        if (hasPermission('journals.inCommunity')) {
-          return Journals.find({ communityId: community._id });
-        }
-        return undefined;
-      },
     }],
   };
 }

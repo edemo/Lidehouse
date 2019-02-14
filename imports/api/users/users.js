@@ -259,15 +259,6 @@ Meteor.users.helpers({
     const totalVotingUnits = this.totalOwnedUnits(communityId) + this.totalDelegatedToMeUnits(communityId);
     return new Fraction(totalVotingUnits, community.totalunits);
   },
-  // Finances
-  balance(communityId) {
-    const parcels = this.ownedParcels(communityId);
-    let totalBalance = 0;
-    parcels.forEach((parcel) => {
-      totalBalance += parcel.balance();
-    });
-    return totalBalance;
-  },
   hasBlocked(userId) {
     const user = Meteor.users.findOne(userId);
     if (!user) return true;

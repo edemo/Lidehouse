@@ -17,6 +17,11 @@ Template.Account_history.viewmodel({
   accountOptions: [],
   status: 'Reconciled',
   onCreated() {
+    const instance = Template.instance();
+    instance.autorun(() => {
+      const communityId = Session.get('activeCommunityId');
+      instance.subscribe('journals.byAccount', { communityId, account: this.accountSelected() });
+    });
 //    const today = moment().format('L');
 //    this.endDate(today);
   },

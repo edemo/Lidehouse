@@ -134,16 +134,6 @@ Parcels.helpers({
       .forEach(p => total = total.add(p.ownership.share));
     return total;
   },
-  // Finances
-  balance() {
-    const communityId = this.communityId;
-    const journalsIn = Journals.find({ communityId, 'accountTo.Owners': { $exists: true }, 'accountTo.Localizer': this.ref });
-    const journalsOut = Journals.find({ communityId, 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': this.ref });
-    let parcelBalance = 0;
-    journalsIn.forEach(p => parcelBalance += p.amount);
-    journalsOut.forEach(p => parcelBalance -= p.amount);
-    return parcelBalance;
-  },
 });
 
 Parcels.attachSchema(Parcels.schema);
