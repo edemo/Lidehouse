@@ -78,7 +78,6 @@ Template.Shareddoc_store.events({
     Modal.show('Autoform_edit', {
       id: 'af.sharedfolder.insert',
       collection: Sharedfolders,
-      omitFields: ['communityId'],
       type: 'method',
       meteormethod: 'sharedfolders.insert',
       template: 'bootstrap3-inline',
@@ -91,7 +90,6 @@ Template.Shareddoc_store.events({
       id: 'af.sharedfolder.update',
       collection: Sharedfolders,
       doc: Sharedfolders.findOne(_id),
-      omitFields: ['communityId'],
       type: 'method-update',
       meteormethod: 'sharedfolders.update',
       singleMethodArgument: true,

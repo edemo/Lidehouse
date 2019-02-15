@@ -9,7 +9,7 @@ import { Breakdowns } from '../breakdowns/breakdowns';
 export const Balances = new Mongo.Collection('balances');
 
 Balances.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   tag: { type: String },  // can be a period, end of a period, or a period closing tag 
   balances: { type: Object, blackbox: true, defaultValue: {}, optional: true },
   // account code -> Number, localizer code -> number, or full code -> number
@@ -22,7 +22,7 @@ Meteor.startup(function indexBalances() {
 Balances.attachSchema(Balances.schema);
 
 const BalanceDefSchema = new SimpleSchema([{
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   tag: { type: String },
 }, AccountSchema]);
 

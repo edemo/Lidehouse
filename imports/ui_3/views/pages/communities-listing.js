@@ -48,7 +48,7 @@ Template.Communities_listing.events({
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',
       collection: Memberships,
-      omitFields: ['communityId', 'parcelId', 'ownership', 'benefactorship', 'person.idCard'],
+      omitFields: ['parcelId', 'ownership', 'benefactorship', 'person.idCard'],
       type: 'method',
       meteormethod: 'memberships.insert',
       template: 'bootstrap3-inline',

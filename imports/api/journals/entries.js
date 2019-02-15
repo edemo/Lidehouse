@@ -33,7 +33,6 @@ JournalEntries.helpers({
       debugAssert(false); return undefined;
     }
     const contraEntries = this.journal()[otherSide(this.side)];
-//      debugger;
     if (!contraEntries) return '';
     const contraAccount = AccountSpecification.fromDoc(contraEntries[0]);
     return contraAccount;

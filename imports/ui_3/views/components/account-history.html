@@ -12,13 +12,23 @@
                 <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
             </div>
         </div>
+        {{#if (or accountOptions accountSelected)}}
         <div class="col-sm-4">
             <div class="form-group">
                 <label class="control-label" for="account_group">{{_ 'Account'}}</label>
-                <select id="account_group" name="account_group" {{b "options: accountOptions, optionsValue: value, optionsText: label, value: accountSelected"}} class="form-control"></select>
+                <select id="account_group" name="account_group" {{b "options: accountOptions, value: accountSelected, optionsValue: value, optionsText: label"}} class="form-control"></select>
                 <!--input type="text" id="account_group" name="account_group" {{b "value: account"}} class="form-control"-->
             </div>
         </div>
+        {{/if}}
+        {{#if (or localizerOptions localizerSelected)}}
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label class="control-label" for="localizer">{{_ 'Lead parcel'}}</label>
+                <select id="localizer" name="localizer" {{b "options: localizerOptions, value: localizerSelected, optionsValue: value, optionsText: label"}} class="form-control"></select>
+            </div>
+        </div>
+        {{/if}}
         <div class="col-sm-2">
             <div class="form-group">
                 <label class="control-label" for="status">{{_ 'Status'}}</label>
@@ -28,64 +38,6 @@
                 </select>
             </div>
         </div>
-    </div>
-
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <tbody>
-              <tr style="font-weight: bold">
-                  <td>{{_ 'schemaJournals.valueDate.label'}}</td>
-                  <td>{{_ 'ContraAccount'}}</td>
-                  <td>{{_ 'schemaJournals.note.label'}}</td>
-                  <td>{{_ 'schemaJournals.amount.label'}}</td>
-                  <!--td></td>
-                  <td></td-->
-                  <td>{{_ 'Balance'}}</td>
-                  <td></td>
-                  <td></td>
-              </tr>
-              {{#each entry in journalEntries}}
-              <tr>
-                  <td>{{displayDate entry.valueDate}}</td>
-                  <td>{{{entry.contra.display}}}</td>
-                  <td>{{entry.note}}</td>
-                  <td class="{{negativeClass entry}}">{{displayMoney entry.effectiveAmount}}</td>
-                  <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
-                  <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
-                  <td><strong>{{displayMoney entry.total}}</strong></td>
-                  <td><button class="btn btn-white btn-xs js-view" data-id="{{entry.txId}}"><i class="fa fa-eye"></i></button></td>
-                  <td><a href="" title="{{entry.ref}}"><i class="fa fa-check text-navy"></i></a></td>
-              </tr>
-              {{/each}}
-            </tbody>
-        </table>
-    </div>
-    <p class="text-center">{{_ 'Total change in this period'}}: <strong>{{displayMoney journalEntries.pop.total}}</strong></p>
-</template>
-
-
-
-<template name="Parcel_history">
-    <div class="row">
-        <div class="col-sm-3">
-            <div class="form-group">
-                <label class="control-label" for="start_date">{{_ 'Start date'}}</label>
-                <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="form-group">
-                <label class="control-label" for="end_date">{{_ 'End date'}}</label>
-                <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label class="control-label" for="localizer">{{_ 'parcel'}}</label>
-                <select id="localizer" name="localizer" {{b "options: localizerOptions, value: localizerSelected"}} class="form-control"></select>
-            </div>
-        </div>
-
     </div>
 
     <div class="table-responsive">

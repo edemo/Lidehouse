@@ -35,6 +35,22 @@
     </div>
 
     <div class="col-md-6">
+    <div class="ibox ibox-dark" id='accounting'>
+        <div class="ibox-title">
+            <h5>{{_ 'Parcel balances'}}</h5>
+            {{>iboxTools}}
+        </div>  
+        <div class="ibox-content">
+            {{#if Template.subscriptionsReady}}
+            {{> ReactiveDatatable tableData=parcelFinancesTableDataFn options=parcelFinancesOptionsFn }}
+            {{else}}
+            {{_ 'Loading'}}...
+            {{/if}}
+        </div>
+    </div>
+    </div>
+
+    <!--div class="col-md-6">
     <div class="ibox ibox-dark" id='parcel-balances'>
         <div class="ibox-title">
             <h5>{{_ 'My parcel balances'}}</h5>
@@ -49,7 +65,7 @@
             {{/if}}
         </div>
     </div>
-    </div>
+    </div-->
 
     <div class="col-md-12">
     <div class="ibox ibox-dark" id='parcel-history'>
@@ -58,22 +74,7 @@
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">
-            {{>Parcel_history startDate='2017-01-01' endDate='2017-12-31'}}
-        </div>
-    </div>
-    </div>
-
-    <div class="col-md-12">
-    <div class="ibox ibox-dark" id='accounting'>
-        <div class="ibox-title">
-            <h5>{{_ 'Parcel balances'}}</h5>
-            {{>iboxTools}}
-        </div>  
-        <div class="ibox-content">
-            {{#if Template.subscriptionsReady}}
-            {{else}}
-            {{_ 'Loading'}}...
-            {{/if}}
+            {{>Account_history startDate='2017-01-01' endDate='2017-12-31' localizerOptions=parcelChoices localizerSelected=parcelToView}}
         </div>
     </div>
     </div>

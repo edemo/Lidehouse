@@ -14,7 +14,7 @@ ParcelBillings.projectionValues = ['absolute', 'perArea', 'perVolume', 'perHabit
 ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
 ParcelBillings.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
   amount: { type: Number },
   payinType: { type: String }, // account code

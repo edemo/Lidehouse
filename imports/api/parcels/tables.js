@@ -35,16 +35,6 @@ Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, rend
   return html;
 };
 
-Render.joinOccupants = function joinOccupants(occupants) {
-  let result = '';
-  occupants.forEach((m) => {
-    const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
-    const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
-    result += `${m.Person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
-  });
-  return result;
-};
-
 export function parcelColumns(permissions) {
   const buttonRenderers = [];
   if (permissions.view) buttonRenderers.push(Render.buttonView);

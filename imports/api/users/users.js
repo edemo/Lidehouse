@@ -10,7 +10,7 @@ import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { Communities } from '/imports/api/communities/communities.js';
+import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
@@ -22,13 +22,6 @@ if (Meteor.isClient) {
   import { currentUserLanguage } from '/imports/startup/client/language.js';
 
   getCurrentUserLang = currentUserLanguage;
-}
-
-export let getActiveCommunityId = () => { debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"'); };
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  getActiveCommunityId = function () { return Session.get('activeCommunityId'); };
 }
 
 export const nullUser = {

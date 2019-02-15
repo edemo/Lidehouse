@@ -340,7 +340,6 @@ Template.Community_page.events({
       collection: Memberships,
       fields: ['role', 'person', 'activeTime'],
       omitFields: ['person.idCard', 'person.contact'],
-      // omitFields: ['communityId', 'parcelId', 'ownership', 'benefactorship', 'person.idCard', 'person.contact'], above 2 lines have the same efect, but look simpler
       doc: Memberships.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',

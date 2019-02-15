@@ -65,7 +65,7 @@ Journals.entrySchema = new SimpleSchema([
 ]);
 
 Journals.rawSchema = {
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating journal (by posting rule)
   batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   phase: { type: String, defaultValue: 'done', allowedValues: Journals.phaseValues, autoform: autoformOptions(Journals.phaseValues) },
@@ -80,8 +80,11 @@ Journals.rawSchema = {
   complete: { type: Boolean, autoform: { omit: true }, autoValue() {
     let total = 0;
     const amount = this.field('amount').value;
-    this.field('debit').value.forEach(entry => total += entry.amount || amount);
-    this.field('credit').value.forEach(entry => total -= entry.amount || amount);
+    const debits = this.field('debit').value;
+    const credits = this.field('credit').value;
+    if (!debits || !credits) return false;
+    debits.forEach(entry => total += entry.amount || amount);
+    credits.forEach(entry => total -= entry.amount || amount);
     return total === 0;
   } },
 };
@@ -93,8 +96,8 @@ Journals.noteSchema = {
 
 Journals.schema = new SimpleSchema([
   _.clone(Journals.rawSchema),
-  { credit: { type: [Journals.entrySchema] } },
-  { debit: { type: [Journals.entrySchema] } },
+  { credit: { type: [Journals.entrySchema], optional: true } },
+  { debit: { type: [Journals.entrySchema], optional: true } },
   _.clone(Journals.noteSchema),
 ]);
 

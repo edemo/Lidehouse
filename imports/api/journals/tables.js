@@ -6,8 +6,9 @@ import { AccountSpecification } from './account-specification';
 
 Render.journalEntries = function (cellData, renderType, currentRow) {
   const entries = cellData;
+  if (!entries || !entries.length) return `<span class="label label-danger label-xs">${__('Missing')}</span> `;
+  if (entries.length > 1) return `<span class="label label-warning label-xs">${__('Split')}</span> `;
   const entry = entries[0];
-  if (entry.amount) return `<span class="label label-warning label-xs">${__('Split')}</span> `;
   return AccountSpecification.fromDoc(entry).display();
 };
 

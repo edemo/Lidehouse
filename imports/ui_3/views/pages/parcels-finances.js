@@ -6,6 +6,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
+import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
@@ -16,6 +17,8 @@ import { Session } from 'meteor/session';
 import { journalColumns } from '/imports/api/journals/tables.js';
 import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
 import { Reports } from '/imports/api/journals/reports/reports.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Balances } from '/imports/api/journals/balances/balances.js';
 
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/components/custom-table.js';
@@ -29,8 +32,9 @@ import './parcels-finances.html';
 Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
+    this.subscribe('breakdowns.inCommunity', { communityId });
+    this.subscribe('parcels.inCommunity', { communityId });
     this.subscribe('balances.inCommunity', { communityId });
-//    this.subscribe('breakdowns.inCommunity', { communityId });
 //    this.subscribe('journals.inCommunity', { communityId });
   });
 
@@ -51,7 +55,31 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
   }); */
 });
 
-Template.Parcels_finances.helpers({
+/*
+export function Columns(permissions) {
+  const buttonRenderers = [];
+  if (permissions.view) buttonRenderers.push(Render.buttonView);
+  if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
+  if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
+
+  const columns = [
+    { data: 'valueDate', title: __('schemaJournals.valueDate.label'), render: Render.formatDate },
+//    { data: 'phase', title: __('schemaJournals.phase.label'), render: Render.translate },
+    { data: 'amount', title: __('schemaJournals.amount.label'), render: Render.formatNumber },
+    { data: 'credit', title: __('schemaJournals.credit.label'), render: Render.journalEntries },
+    { data: 'debit', title: __('schemaJournals.debit.label'), render: Render.journalEntries },
+//    { data: 'placeAccounts()', title: __('Konyveles hely'), render: Render.breakdowns },
+    { data: 'ref', title: __('schemaJournals.ref.label') },
+    { data: 'note', title: __('schemaJournals.note.label') },
+    { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
+  ];
+
+  return columns;
+}
+*/
+
+Template.Parcels_finances.viewmodel({
+  parcelToView: '',
 /*  getActiveLocalizer() {
     return Template.instance().getActiveLocalizer();
   },
@@ -61,55 +89,119 @@ Template.Parcels_finances.helpers({
     const localizerPac = Breakdowns.findOne({ communityId, name: 'Localizer' });
     return localizerPac.nodeOptions();
   },*/
-  report(name, year) {
-    if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
-    return Reports[name](year);
-  },
-  parcelHistory() {
-    if (!Template.instance().subscriptionsReady()) return [];
+  myLeadParcels() {
     const communityId = Session.get('activeCommunityId');
-    const parcelFilter = Template.instance().getActiveParcelFilter();
-
-    return JournalEntries.find({ communityId,
-      'account.Owners': { $exists: true }, 'account.Localizer': parcelFilter },
-    ).sort({ valueDate: 1 });
+    const myOwnerships = Memberships.find({ communityId, active: true, approved: true, personId: Meteor.userId(), role: 'owner' });
+    const myLeadParcelRefs = _.uniq(myOwnerships.map(m => { 
+      const parcel = m.parcel();
+      return (parcel && !parcel.isLed()) ? parcel.ref : null;
+    }));
   },
-  displayPhase(journal) {
-    if (journal.accountFrom.Owners) return __('bill');
-    if (journal.accountTo.Owners) return __('done');
-    return undefined;
+  myLeadParcelOptions() {
+    const communityId = Session.get('activeCommunityId');
+    const myOwnerships = Memberships.find({ communityId, active: true, approved: true, personId: Meteor.userId(), role: 'owner' });
+    const myLeadParcelRefs = _.uniq(myOwnerships.map(m => { 
+      const parcel = m.parcel();
+      return (parcel && !parcel.isLed()) ? parcel.ref : null;
+    }));
+    return myLeadParcelRefs.map((ref) => { return { label: ref, value: ref }; });
   },
-  journalsTableDataFn() {
-    const templateInstance = Template.instance();
-    function getTableData() {
-      if (!templateInstance.subscriptionsReady()) return [];
-      const communityId = Session.get('activeCommunityId');
-/*      const filter = _.extend({ communityId },
-        { $or: [{ 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': { $in: myParcelIds } },
-                { 'accountTo.Owners': { $exists: true }, 'accountTo.Localizer': { $in: myParcelIds } },
-        ] },
-      );*/
-      const filter = _.extend({ communityId },
-        { $or: [{ 'accountFrom.Owners': { $exists: true } },
-                { 'accountTo.Owners': { $exists: true } },
-        ] },
-      );
-      const data = Journals.find(filter).fetch();
-      return data;
-    }
-    return getTableData;
+  parcelChoices() {
+    const localizer = Breakdowns.localizer();
+    if (!localizer) return [];
+    return Parcels.find().fetch().map((p) => {
+      const node = localizer.findNodeByName(p.ref);
+      return { label: p.display(), value: node.code };
+    });
   },
-  journalsOptionsFn() {
-    function getOptions() {
+  parcelFinancesTableDataFn() {
+    const communityId = Session.get('activeCommunityId');
+    return () => {
+      const dataset = [];
+      const totals = Balances.findOne({ communityId, tag: 'T' });
+      Object.keys(totals.balances).forEach(key => {
+        if (key[0] === '#') {
+          const parcelCode = key.substr(1);
+          const parcelRef = Breakdowns.localizer().nodeByCode(parcelCode).digit;
+          const parcel = Parcels.findOne({ communityId, ref: parcelRef });
+          dataset.push({
+            parcelCode,
+            parcelRef,
+            owners: parcel.owners().fetch(),
+            balance: totals.balances[key],
+          });
+        }
+      });
+      return dataset;
+    };
+  },
+  parcelFinancesOptionsFn() {
+    return () => {
       return {
-        columns: journalColumns(),
+        columns: [
+          { data: 'parcelRef', title: __('schemaParcels.ref.label') },
+          { data: 'owners', title: __('owner'), render: Render.joinOccupants },
+          { data: 'balance', title: __('Balance'), render: Render.formatNumber },
+          { data: 'parcelCode', title: __('Action buttons'), render: Render.buttonView },
+        ],
+      };
+    };
+  },
+/*  parcelsTableDataFn() {
+    const self = this;
+    return () => {
+      const communityId = self.communityId();
+      let parcels = Tracker.nonreactive(() => Parcels.find({ communityId, approved: true }).fetch());
+      if (!self.showAllParcels()) {
+        const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
+        parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
+      }
+      return parcels;
+    };
+  },
+  parcelsOptionsFn() {
+    const self = this;
+    return () => {
+      const communityId = self.communityId();
+      const permissions = {
+        view: Meteor.userOrNull().hasPermission('parcels.inCommunity', communityId),
+        edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('parcels.remove', communityId),
+        assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
+      };
+      return {
+        columns: parcelColumns(permissions),
+        createdRow: highlightMyRow,
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
+        lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+        pageLength: 25,
+        // coming from the theme:
+        dom: '<"html5buttons"B>lTfgitp',
+        buttons: [
+            { extend: 'copy' },
+            { extend: 'csv' },
+            { extend: 'excel', title: 'ExampleFile' },
+            { extend: 'pdf', title: 'ExampleFile' },
+            { extend: 'print',
+                customize: function (win) {
+                    $(win.document.body).addClass('white-bg');
+                    $(win.document.body).css('font-size', '10px');
+
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', 'inherit');
+                },
+            },
+        ],
       };
-    }
-    return getOptions;
-  },
-  myLeadParcels() {
-    
+    };
+  },*/
+});
+
+Template.Parcels_finances.events({
+  'click .js-view'(event, instance) {
+    const parcelCode = $(event.target).data('id');
+    instance.viewmodel.parcelToView(parcelCode);
   },
 });

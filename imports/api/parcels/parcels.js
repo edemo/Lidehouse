@@ -84,6 +84,10 @@ Parcels.helpers({
     if (this.isLed()) return this.leadParcel().occupants();
     return Memberships.find({ communityId: this.communityId, approved: true, active: true, parcelId: this._id });
   },
+  owners() {
+    if (this.isLed()) return this.leadParcel().owners();
+    return Memberships.find({ communityId: this.communityId, approved: true, active: true, parcelId: this._id, role: 'owner' });
+  },
   representors() {
     if (this.isLed()) return this.leadParcel().representors();
     return Memberships.find({ communityId: this.communityId, approved: true, active: true, parcelId: this._id, role: 'owner', 'ownership.representor': true });

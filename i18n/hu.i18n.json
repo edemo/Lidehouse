@@ -188,6 +188,7 @@
 
   // community page
   "representor": "képviselője",
+  "Lead parcel": "Vezető albetét",
   "Communities list": "Házak listája",
   "selected": "kiválasztva",
   "Approved": "Jóváhagyott",
@@ -318,6 +319,7 @@
   "Journals": "Tranzakciók",
   "Journals to complete": "Kontírozásra váró tranzakciók",
   "Split": "Felosztott",
+  "Missing": "Hiányzik",
   "Bills": "Előírások",
   "Reports": "Kimutatások",
   "Common cost plan": "Előírás minden albetétre",
@@ -425,7 +427,7 @@
   "User and conact email doesnt match": "A meghívott felhasználó és az email cím különbözik",
   "Ownership share cannot exceed 1": "Tulajdonrészek összesen nem haladhatják meg az 1-et",
   "Parcel can have only one representor": "Egy albetétnek csak egyetlen képviselője lehet",
-  "Parcel cannot have lead and owners at the same time": "Ha az albetétnek vezér albetétje van, akkor nem lehet tulajdonosa megadva",
+  "Parcel cannot have lead and owners at the same time": "Ha az albetétnek vezető albetétje van, akkor nem lehet tulajdonosa megadva",
   "Registered units cannot exceed totalunits of community": "A ház albetétjeinek tulajdonrésze nem haladja meg a megadott össz tulajdont",
   "No contact email set for this membership": "Ehhez a tagsághoz nincs megadva kapcsolati email cím",
   "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közös képviselő segítségét.",

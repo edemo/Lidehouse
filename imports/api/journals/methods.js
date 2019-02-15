@@ -45,6 +45,24 @@ export const insert = new ValidatedMethod({
   },
 });
 
+export const update = new ValidatedMethod({
+  name: 'journals.update',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    modifier: { type: Object, blackbox: true },
+  }).validator(),
+
+  run({ _id, modifier }) {
+    const doc = checkExists(Journals, _id);
+    checkModifier(doc, modifier, ['communityId'], true);
+    checkPermissions(this.userId, 'journals.update', doc.communityId);
+    if (doc.isOld() && doc.complete) {
+      throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after 24 hours');
+    }
+    Journals.update({ _id }, modifier);
+  },
+});
+
 export const remove = new ValidatedMethod({
   name: 'journals.remove',
   validate: new SimpleSchema({
@@ -54,9 +72,9 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Journals, _id);
     checkPermissions(this.userId, 'journals.remove', doc.communityId);
-    if (doc.isOld()) {      // Not possible to delete tx after 24 hours
+    if (doc.isOld() && doc.complete) {
+      // Not possible to delete tx after 24 hours, but possible to negate it with another tx
       Journals.insert(doc.negator());
-      // throw new Meteor.Error('err_permissionDenied', 'No permission to remove transaction after 24 hours');
     } else {
       Journals.remove(_id);
     }

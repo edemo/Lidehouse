@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { __ } from '/imports/localization/i18n.js';
 import { Breakdowns, leafIsParcel } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { getActiveCommunityId } from '/imports/api/users/users.js';
+import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
 export let chooseAccountNode = {};
 export let chooseLocalizerNode = {};

@@ -174,7 +174,7 @@ Template.Community_finances.helpers({
     if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
   },
-  optionsOf(accountCode) {
+  subAccountOptionsOf(accountCode) {
     const communityId = Session.get('activeCommunityId');
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
     const brk = Breakdowns.chartOfAccounts(communityId);
@@ -190,7 +190,7 @@ Template.Community_finances.events({
       id: 'af.journal.view',
       collection: Journals,
       schema: Journals.inputSchema,
-      omitFields: ['communityId', 'phase'],
+      omitFields: ['phase'],
       doc: Journals.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',

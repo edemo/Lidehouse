@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
+import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
 String.prototype.forEachChar = function forEachChar(func) {
   for (let i = 0; i < this.length; i++) {
@@ -18,14 +19,18 @@ function deepCopy(obj) {
 
 export const Breakdowns = new Mongo.Collection('breakdowns');
 
-Breakdowns.findOneByName = function findOneByName(name, communityId) {
+Breakdowns.findOneByName = function findOneByName(name, communityId = getActiveCommunityId()) {
   return Breakdowns.findOne({ name, communityId })
       || Breakdowns.findOne({ name, communityId: { $exists: false } });
 };
 
-Breakdowns.chartOfAccounts = function chartOfAccounts(communityId) {
-  return Breakdowns.findOneByName('COA');
-}
+Breakdowns.chartOfAccounts = function chartOfAccounts(communityId = getActiveCommunityId()) {
+  return Breakdowns.findOneByName('COA', communityId);
+};
+
+Breakdowns.localizer = function localizer(communityId = getActiveCommunityId()) {
+  return Breakdowns.findOneByName('Localizer', communityId);
+};
 
 Breakdowns.define = function define(breakdown) {
   const existingId = Breakdowns.findOne({ name: breakdown.name, communityId: breakdown.communityId });
@@ -81,7 +86,7 @@ export function leafIsParcel(l) {
 /*
 Breakdowns.schema = new SimpleSchema({
   name: { type: String },
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 
   // An account is either a root (then it has a type)...
   type: { type: String, allowedValues: Breakdowns.typeValues, optional: true },
@@ -165,7 +170,7 @@ Breakdowns.SubSchema = new SimpleSchema([
 ]);
 
 Breakdowns.schema = new SimpleSchema([{
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   sign: { type: Number, allowedValues: [+1, -1], optional: true },
 }], Breakdowns.SubSchema);
 */

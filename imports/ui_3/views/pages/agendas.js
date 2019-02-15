@@ -19,7 +19,6 @@ Template.Agendas.events({
         Modal.show('Autoform_edit', {
             id: 'af.agenda.insert',
             collection: Agendas,
-            omitFields: ['communityId'],
             type: 'method',
             meteormethod: 'agendas.insert',
             template: 'bootstrap3-inline',
@@ -30,7 +29,6 @@ Template.Agendas.events({
         Modal.show('Autoform_edit', {
             id: 'af.agenda.update',
             collection: Agendas,
-            omitFields: ['communityId'],
             doc: Agendas.findOne(id),
             type: 'method-update',
             meteormethod: 'agendas.update',

@@ -5,6 +5,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { Timestamps } from '/imports/api/timestamps.js';
@@ -15,6 +16,15 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
+
+export let getActiveCommunityId = () => {
+  debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"');
+};
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+
+  getActiveCommunityId = function () { return Session.get('activeCommunityId'); };
+}
 
 export const Communities = new Mongo.Collection('communities');
 

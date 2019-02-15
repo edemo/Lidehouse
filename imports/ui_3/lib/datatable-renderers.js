@@ -52,3 +52,13 @@ export const Render = {
     };
   },
 };
+
+Render.joinOccupants = function joinOccupants(occupants) {
+  let result = '';
+  occupants.forEach((m) => {
+    const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
+    const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
+    result += `${m.Person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
+  });
+  return result;
+};
