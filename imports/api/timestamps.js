@@ -31,7 +31,7 @@ export const Timestamps = new SimpleSchema({
       return undefined;   // means leave it alone
     },
     denyUpdate: true,
-    autoform: _.extend({}, { omit: true }, noUpdate),
+    autoform: { omit: true, disabled: true },
   },
   updatedAt: {
     type: Date,
