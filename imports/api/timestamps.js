@@ -1,5 +1,7 @@
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Clock } from '/imports/utils/clock.js';
+import { _ } from 'meteor/underscore';
+import { noUpdate } from '/imports/utils/autoform.js';
 
 // The way to add Timestamps to a Schema:
 //
@@ -29,7 +31,7 @@ export const Timestamps = new SimpleSchema({
       return undefined;   // means leave it alone
     },
     denyUpdate: true,
-    autoform: { omit: true },
+    autoform: _.extend({}, { omit: true }, noUpdate),
   },
   updatedAt: {
     type: Date,
