@@ -6,16 +6,18 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import './root-redirector.html';
 
 Template.app_rootRedirector.onCreated(() => {
-  // We need to set a timeout here so that we don't redirect from inside a redirection which is a no-no in FlowRouter.
-  Meteor.setTimeout(() => {
+  Template.instance().autorun(() => {
     if (Meteor.userId()) {
-      if (Session.get('activeCommunityId')) {
-        FlowRouter.go('Board');
-      } else {
-        FlowRouter.go('Communities.listing');
+      Template.instance().subscribe('memberships.ofUser', { userId: Meteor.userId() });
+      if (Template.instance().subscriptionsReady()) {
+        if (Session.get('activeCommunityId')) {
+          FlowRouter.go('Board');
+        } else {
+          FlowRouter.go('Communities.listing');
+        }
       }
     } else {
       FlowRouter.go('App.intro');
     }
-  }, 1000);
+  });
 });

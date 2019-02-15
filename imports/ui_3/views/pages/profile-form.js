@@ -27,7 +27,7 @@ Template.Profile_form.helpers({
   },
   schema() {
     return new SimpleSchema([
-      { email: { type: String, regEx: SimpleSchema.RegEx.Email, autoform: { readonly: true } } },
+      { email: { type: String, regEx: SimpleSchema.RegEx.Email, autoform: { disabled: true } } },
       Meteor.users.simpleSchema(),
     ]);
   },
@@ -44,12 +44,12 @@ Template.Profile_form.events({
 
 AutoForm.addHooks('af.user.update', {
   docToForm(doc) {
-    doc.email = doc.emails[0].address;
+    doc.email = doc.emails ? doc.emails[0].address : doc.email; // Autoform tries to retain doc values after a "hot code push"
     Session.set('userEmailAddress', doc.email);
     return doc;
   },
   formToModifier(modifier) {
-    if (modifier.$set.email !== Session.get('userEmailAddress')) {        // The user has changed her email address
+    if (modifier.$set.email && modifier.$set.email !== Session.get('userEmailAddress')) {        // The user has changed her email address
       // TODO: Should check if email already exist in the system
       modifier.$set.emails = [];
       modifier.$set.emails.push({});
