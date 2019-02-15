@@ -4,7 +4,7 @@
 
         <div class="letter-content">
           <div class="row">
-            {{#if (or (or modifyState temporaryVote) (not hasVotedState))}}
+            {{#if (or (or originalState votingState) modifyState)}}
             <div class="col-xs-12 text-center">
               {{_ (concat 'votingInstructions.' vote.type)}}
             </div>
@@ -27,10 +27,10 @@
                   {{/each}}
                 {{/if}}
 
-                {{#if (or modifyState temporaryVote)}}
+                {{#if (or (or originalState votingState) modifyState)}}
                   <div class="send-button {{stateClassForSendButton}}"><i class="fa fa-share-square fa-3x"></i></div>
                 {{else}}
-                  {{#if hasVotedState}}
+                  {{#if castedVoteState}}
                     <img src="{{voterAvatar}}" class="avatar-envelope">
                   {{/if}}
                 {{/if}}
@@ -43,7 +43,7 @@
         {{#unless closed}}
         {{#if userHasPermission 'vote.cast' this.communityId this}}
         <div class="text-left">
-          {{#if (or modifyState temporaryVote)}}
+          {{#if (or modifyState votingState)}}
           <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i> {{_ "Please vote"}} - <a class="js-modify">{{_ textForVote}}</a>
           {{else}}
             {{#if this.hasVotedDirect currentUser._id}}

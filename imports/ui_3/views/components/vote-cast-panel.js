@@ -19,7 +19,6 @@ import { createEnvelope } from './envelope.js';
 Template.Vote_cast_panel.onCreated(function voteCastPanelOnCreated() {
   this.state = new ReactiveDict();
   this.state.set('temporaryVote', undefined);
-  this.state.set('modifyState', false);
 });
 
 Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
@@ -39,7 +38,6 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
       const preference = $(self.find('.sortable')).sortable('toArray', { attribute: 'data-value' })
         .map(function obj(value, index) { return { text: vote.choices[value], value }; });
 //      console.log('onstop:', preference);
-      state.set('preference', preference);
       state.set('temporaryVote', preference);
     },
   });
@@ -53,9 +51,8 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
     const hasVotedState = voting.hasVoted(Meteor.userId());
     state.set('hasVotedState', hasVotedState);
     let preference;
-    const modifyState = Template.instance().state.get('modifyState');
 
-    if (hasVotedState || modifyState) {
+    if (hasVotedState) {
       const castedPreference = voting.voteOf(Meteor.userId());
       preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
     } else { // no vote yet, preference is then the original vote choices in that order
@@ -69,8 +66,8 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
   // This is where we enable/disable the sorting, dependant on the finalized state
   this.autorun(function update() {
     const hasVotedState = state.get('hasVotedState');
-    const modifyState = state.get('modifyState');
-    $(self.find('.sortable')).sortable((hasVotedState && !modifyState) ? 'disable' : 'enable');
+    const temporaryVote = state.get('temporaryVote');
+    $(self.find('.sortable')).sortable((hasVotedState && temporaryVote === undefined) ? 'disable' : 'enable');
    /* const voting = Topics.findOne(topicId);
     const hasVoted = voting.hasVoted(Meteor.userId());
     $(Template.instance().find('.sortable')).sortable(hasVoted ? 'disable' : 'enable');
@@ -79,18 +76,28 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
 
   const voteEnvelope = createEnvelope(this.$('.letter-content'));
   let firstRun = true;
+  let directionWatcher;
 
-  if (state.get('hasVotedState') && firstRun) voteEnvelope.closed();
-  if (!state.get('hasVotedState') && firstRun) voteEnvelope.opened();
+  if (state.get('hasVotedState') && firstRun) {
+    voteEnvelope.closed();
+    directionWatcher = true;
+  }
+  if (!state.get('hasVotedState') && firstRun) {
+    voteEnvelope.opened();
+    directionWatcher = false;
+  }
 
   this.autorun(() => {
     const hasVotedState = state.get('hasVotedState');
-    const modifyState = state.get('modifyState');
     const temporaryVote = state.get('temporaryVote');
-    /*if (state.get('hasVotedState') && !state.get('modifyState') && !firstRun) voteEnvelope.close();
-    if (state.get('hasVotedState') && state.get('modifyState') && !firstRun) voteEnvelope.open();*/
-    if (hasVotedState && !modifyState && !firstRun && temporaryVote === undefined) voteEnvelope.close();
-    if (hasVotedState && modifyState && !firstRun) voteEnvelope.open();
+    if (hasVotedState && !firstRun && temporaryVote === undefined && directionWatcher === false) {
+      voteEnvelope.close();
+      directionWatcher = true;
+    }
+    if (hasVotedState && !firstRun && _.isDefined(temporaryVote) && directionWatcher === true) {
+      voteEnvelope.open();
+      directionWatcher = false;
+    }
     firstRun = false;
   });
 
@@ -103,6 +110,18 @@ Template.Vote_cast_panel.helpers({
     const myFirstDelegate = Meteor.users.findOne(myFirstDelegateId);
     return myFirstDelegate;
   },*/
+  originalState() {
+    return this.originalState();
+  },
+  votingState() {
+    return this.votingState();
+  },
+  castedVoteState() {
+    return this.castedVoteState();
+  },
+  modifyState() {
+    return this.modifyState();
+  },
   voterAvatar() {
     const userId = Meteor.userId();
     const user = Meteor.users.findOne(userId);
@@ -117,11 +136,6 @@ Template.Vote_cast_panel.helpers({
     }
     return undefined;
   },
-  temporaryVote() {
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    if (_.isDefined(temporaryVote)) return true;
-    return false;
-  },
   isButtonLayoutVertical() {
     return this.vote.type === 'preferential';
   },
@@ -129,53 +143,35 @@ Template.Vote_cast_panel.helpers({
   pressedClassForVoteBtn(choice) {
     const userId = Meteor.userId();
     const votedChoice = this.voteOf(userId);
-    const hasVotedState = Template.instance().state.get('hasVotedState');
     const temporaryVote = Template.instance().state.get('temporaryVote');
-    const modifyState = Template.instance().state.get('modifyState');
-    if (modifyState || _.isDefined(temporaryVote)) return choice === temporaryVote && 'btn-pressed';
-    if (hasVotedState) return _.isEqual(votedChoice, [choice]) && 'btn-pressed';
+    if (this.votingState() || this.modifyState()) return choice === temporaryVote && 'btn-pressed';
+    if (this.castedVoteState()) return _.isEqual(votedChoice, [choice]) && 'btn-pressed';
     return undefined;
   },
   // Preferential voting
   currentPreference() {
-    const hasVotedState = Template.instance().state.get('hasVotedState');
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    const modifyState = Template.instance().state.get('modifyState');
     let preference;
-    if (_.isDefined(temporaryVote)) {
+    if (this.votingState() || this.modifyState()) {
       preference = Template.instance().state.get('temporaryVote');
       return preference;
     }
-    if (hasVotedState || modifyState) {
+    if (this.castedVoteState() || this.originalState()) {
       preference = Template.instance().state.get('preference');
       return preference;
     }
-    return Template.instance().state.get('preference');
+    return undefined;
 //  console.log('ondisplay:', preference);
   },
   voteOfUser() {
     return this.voteOf(Meteor.userId());
   },
-  hasVotedState() {
-    return Template.instance().state.get('hasVotedState');
-    //const hasVoted = this.hasVoted(Meteor.userId());
-   // return hasVoted;
-  },
-  modifyState() {
-    return Template.instance().state.get('modifyState');
-  },
   stateClassForSendButton() {
-    const hasVotedState = Template.instance().state.get('hasVotedState');
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    const modifyState = Template.instance().state.get('modifyState');
-    if (modifyState || _.isDefined(temporaryVote)) return 'visible-button';
-    if (hasVotedState) return 'invisible-button';
+    if (this.votingState() || this.modifyState()) return 'visible-button';
+    if (this.originalState() || this.castedVoteState()) return 'invisible-button';
     return undefined;
   },
   textForVote() {
-    const modifyState = Template.instance().state.get('modifyState');
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    if (!modifyState && temporaryVote === undefined) return 'Modify vote';
+    if (this.castedVoteState()) return 'Modify vote';
     return 'Cancel';
   },
 });
@@ -205,13 +201,7 @@ function castVoteBasedOnPermission(topicId, castedVote, callback) {
 Template.Vote_cast_panel.events({
   // event handler for the single choice vote type
   'click .btn-vote'(event) {
-    const hasVotedState = Template.instance().state.get('hasVotedState');
-    const modifyState = Template.instance().state.get('modifyState');
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    if (_.isDefined(temporaryVote)) {
-      Template.instance().state.set('temporaryVote', $(event.target).closest('.btn').data('value'));
-    }
-    if (!hasVotedState || modifyState) {
+    if (this.votingState() || this.modifyState() || this.originalState()) {
       Template.instance().state.set('temporaryVote', $(event.target).closest('.btn').data('value'));
     } else {
       return;
@@ -220,10 +210,7 @@ Template.Vote_cast_panel.events({
   'click .send-button'(event, instance) {
     const topicId = this._id;
     if (this.vote.type === 'preferential') {
-      const hasVotedState = instance.state.get('hasVotedState');
-      const modifyState = instance.state.get('modifyState');
-      const temporaryVote = instance.state.get('temporaryVote');
-      if (_.isDefined(temporaryVote)) {
+      if (this.votingState() || this.modifyState()) {
         const preference = instance.state.get('temporaryVote');
         const castedVote = preference.map(p => p.value);
         castVoteBasedOnPermission(topicId, castedVote,
@@ -231,46 +218,23 @@ Template.Vote_cast_panel.events({
             displayMessage('success', 'Vote casted');
           })
         );
-        Template.instance().state.set('modifyState', false);
         Template.instance().state.set('temporaryVote', undefined);
-      }
-      if (!hasVotedState || modifyState) {
-        const preference = instance.state.get('preference');
-        const castedVote = preference.map(p => p.value);
-        castVoteBasedOnPermission(topicId, castedVote,
-          onSuccess((res) => {
-            displayMessage('success', 'Vote casted');
-          })
-        );
-        Template.instance().state.set('modifyState', false);
-        Template.instance().state.set('temporaryVote', undefined);
-      } else { // hasVotedState === true
-        // instance.state.set('hasVotedState', false);
       }
     } else {
       const temporaryVote = Template.instance().state.get('temporaryVote');
       castVoteBasedOnPermission(topicId, [temporaryVote],
         onSuccess(res => displayMessage('success', 'Vote casted'))
       );
-      Template.instance().state.set('modifyState', false);
       Template.instance().state.set('temporaryVote', undefined);
     }
   },
   'click .js-modify'() {
     const userId = Meteor.userId();
-    const modifyState = Template.instance().state.get('modifyState');
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    if (!modifyState && _.isDefined(temporaryVote)) {
+    if (this.modifyState() || this.votingState()) {
       Template.instance().state.set('temporaryVote', undefined);
       return;
     }
-    if (modifyState) {
-      Template.instance().state.set('modifyState', false);
-      Template.instance().state.set('temporaryVote', undefined);
-      return;
-    }
-    if (!modifyState) {
-      Template.instance().state.set('modifyState', true);
+    if (!this.modifyState()) {
       if (this.vote.type === 'preferential') {
         const preference = Template.instance().state.get('preference');
         Template.instance().state.set('temporaryVote', preference);
