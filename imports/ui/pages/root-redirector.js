@@ -7,8 +7,8 @@ import './root-redirector.html';
 
 Template.app_rootRedirector.onCreated(() => {
   Template.instance().autorun(() => {
-    Template.instance().subscribe('memberships.ofUser', { userId: Meteor.userId() });
     if (Meteor.userId()) {
+      Template.instance().subscribe('memberships.ofUser', { userId: Meteor.userId() });
       if (Template.instance().subscriptionsReady()) {
         if (Session.get('activeCommunityId')) {
           FlowRouter.go('Board');
