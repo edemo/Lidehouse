@@ -57,7 +57,7 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12 {{#if isButtonLayoutVertical}}col-md-6{{/if}}">
+        <div class="col-xs-12">
           <!-- voting text -->
           {{#markdown}}{{text}}{{/markdown}}
           {{#if attachments.count}}
@@ -73,12 +73,12 @@
           </ul>
           {{/if}}
         </div>
-        <div class="col-xs-12 {{#if isButtonLayoutVertical}}col-md-6{{/if}}">
+        <div class="col-xs-12">
           <br>
           {{#if this.closed}}
           <!-- voting results -->
             <h4 class="text-center">
-            {{#if voteTypeIs "preferential"}}
+            {{#if equals this.vote.type "preferential"}}
               Opciók támogatottsága:            
             {{else}}
               Szavazatok összesítése:
