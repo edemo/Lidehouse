@@ -1,6 +1,7 @@
 /* eslint-disable prefer-arrow-callback */
 
 import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { leaderRoles } from '/imports/api/permissions/roles.js';
@@ -46,7 +47,7 @@ function communityPublication(userId, _id) {
       children: [{
         // Publish the User of the Membership
         find(membership) {
-          const showFields = Meteor.users.publicFields;
+          const showFields = _.extend({}, Meteor.users.publicFields);
           if (hasPermission('memberships.details')) showFields.emails = 1;  // to be able to resend invites
           return Meteor.users.find({ _id: membership.person.userId }, { fields: showFields });
         },

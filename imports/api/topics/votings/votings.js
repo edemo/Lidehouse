@@ -8,7 +8,7 @@ import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
@@ -33,10 +33,10 @@ if (Meteor.isClient) {
 }
 
 const voteSchema = new SimpleSchema({
-  closesAt: { type: Date },
-  procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.') },
-  effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.') },
-  type: { type: String, allowedValues: Topics.voteTypeValues, autoform: autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.') },
+  closesAt: { type: Date, autoform: noUpdate },
+  procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: _.extend({}, autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.'), noUpdate) },
+  effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: _.extend({}, autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), noUpdate) },
+  type: { type: String, allowedValues: Topics.voteTypeValues, autoform: _.extend({}, autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.'), noUpdate) },
   choices: { type: Array, autoValue() { return Topics.voteTypeChoices[this.field('vote.type').value]; } },
   'choices.$': { type: String },
 });
@@ -134,7 +134,7 @@ Topics.helpers({
         const castedVote = directVotes[voterId];
         if (castedVote) {
           const result = {
-            votingShare: ownership.votingShare(),
+            votingShare: ownership.votingUnits(),
             castedVote,
             votePath,
           };
