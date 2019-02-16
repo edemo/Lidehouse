@@ -80,18 +80,19 @@ Template.Vote_cast_panel.viewmodel({
       );
     },
     function openCloseEnvelope() {
-      if (this.templateInstance.firstRun) {
-        if (this.registeredVote()) this.templateInstance.voteEnvelope.closed();
-        else this.templateInstance.voteEnvelope.opened();
-        this.templateInstance.firstRun = false;
-      } else { // not firstRun
-        if (this.registeredVote() && !this.temporaryVote()) {
-          this.templateInstance.voteEnvelope.close();
-        }
-        if (this.registeredVote() && this.temporaryVote()) {
-          this.templateInstance.voteEnvelope.open();
-        }
+      if (this.templateInstance.firstRun && this.registeredVote()) {
+        this.templateInstance.voteEnvelope.closed();
       }
+      if (this.templateInstance.firstRun && !this.registeredVote()) {
+        this.templateInstance.voteEnvelope.opened();
+      }
+      if (!this.templateInstance.firstRun && this.registeredVote() && !this.temporaryVote()) {
+        this.templateInstance.voteEnvelope.close();
+      }
+      if (!this.templateInstance.firstRun && this.registeredVote() && this.temporaryVote()) {
+        this.templateInstance.voteEnvelope.open();
+      }
+      this.templateInstance.firstRun = false;
     },
   ],
   /*indirectUser() {
