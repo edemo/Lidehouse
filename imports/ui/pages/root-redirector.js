@@ -18,6 +18,10 @@ Template.app_rootRedirector.onCreated(() => {
       }
     });
   } else {
-    FlowRouter.go('App.intro');
+      if (Meteor.settings.public.communityId) {
+        FlowRouter.go('Community.page', { _cid: Meteor.settings.public.communityId });
+      } else {
+        FlowRouter.go('App.intro');
+      }
   }
 });
