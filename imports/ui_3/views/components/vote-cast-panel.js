@@ -16,14 +16,37 @@ import '../components/select-voters.js';
 import './vote-cast-panel.html';
 import { createEnvelope } from './envelope.js';
 
+
+function castVoteBasedOnPermission(topicId, castedVote, callback) {
+  const communityId = Session.get('activeCommunityId');
+  if (Meteor.user().hasPermission('vote.castForOthers', communityId)) {
+    const modalContext = {
+      title: 'Proxy voting',
+      body: 'Select_voters',
+      bodyContext: _.extend(this, { topicId, castedVote }),
+      btnClose: 'cancel',
+      btnOK: 'Send vote',
+      onOK() {
+        castVote.call(
+          { topicId, castedVote, voters: AutoForm.getFieldValue('voters', 'af.select.voters') },
+          callback
+        );
+      },
+    };
+    Modal.show('Modal', modalContext);
+  } else {
+    castVote.call({ topicId, castedVote }, callback);
+  }
+}
+
 Template.Vote_cast_panel.viewmodel({
   temporaryVote: undefined,
   preference: undefined,
   hasVotedState: false,
-  onCreated() {
+  onCreated(instance) {
   },
-  onRendered() {
-    const self = this;
+  onRendered(instance) {
+    const self = Template.instance();
     const state = this.state;
     const topicId = this.data._id;
     const vote = this.data.vote;
@@ -42,11 +65,11 @@ Template.Vote_cast_panel.viewmodel({
         this.temporaryVote(preference);
       },
     });
-
-    // this is in an autorun, so if logged in user changes, it will rerun
-    // or if the vote is changed on another machine, it also gets updated here
-
-    Template.instance().autorun(function update() {
+  },
+  autorun: [
+    function() {
+      // this is in an autorun, so if logged in user changes, it will rerun
+      // or if the vote is changed on another machine, it also gets updated here
 
       const voting = Topics.findOne(topicId);
       const hasVotedState = voting.hasVoted(Meteor.userId());
@@ -62,10 +85,9 @@ Template.Vote_cast_panel.viewmodel({
 
       this.preference(preference);
   //  console.log('onrender:', preference);
-    });
-
-    // This is where we enable/disable the sorting, dependant on the finalized state
-    Template.instance().autorun(function update() {
+    }, 
+    function() {
+      // This is where we enable/disable the sorting, dependant on the finalized state
       const hasVotedState = this.hasVotedState();
       const temporaryVote = this.temporaryVote();
       $(self.find('.sortable')).sortable((hasVotedState && temporaryVote === undefined) ? 'disable' : 'enable');
@@ -73,22 +95,22 @@ Template.Vote_cast_panel.viewmodel({
       const hasVoted = voting.hasVoted(Meteor.userId());
       $(Template.instance().find('.sortable')).sortable(hasVoted ? 'disable' : 'enable');
     */
-    });
+    },
+    function() {
+      const voteEnvelope = createEnvelope(this.$('.letter-content'));
+      let firstRun = true;
+      let directionWatcher;
 
-    const voteEnvelope = createEnvelope(this.$('.letter-content'));
-    let firstRun = true;
-    let directionWatcher;
-
-    if (this.hasVotedState() && firstRun) {
-      voteEnvelope.closed();
-      directionWatcher = true;
-    }
-    if (!this.hasVotedState() && firstRun) {
-      voteEnvelope.opened();
-      directionWatcher = false;
-    }
-
-    Template.instance().autorun(() => {
+      if (this.hasVotedState() && firstRun) {
+        voteEnvelope.closed();
+        directionWatcher = true;
+      }
+      if (!this.hasVotedState() && firstRun) {
+        voteEnvelope.opened();
+        directionWatcher = false;
+      }
+    },
+    function() {
       const hasVotedState = this.hasVotedState();
       const temporaryVote = this.temporaryVote();
       if (hasVotedState && !firstRun && temporaryVote === undefined && directionWatcher === false) {
@@ -100,9 +122,9 @@ Template.Vote_cast_panel.viewmodel({
         directionWatcher = false;
       }
       firstRun = false;
-    });
+    },
+  ],
 
-  },
   /*indirectUser() {
     const myVotePath = this.votePaths[Meteor.userId()];
     const myFirstDelegateId = myVotePath[1];
@@ -174,72 +196,49 @@ Template.Vote_cast_panel.viewmodel({
     if (this.castedVoteState()) return 'Modify vote';
     return 'Cancel';
   },
-});
-
-function castVoteBasedOnPermission(topicId, castedVote, callback) {
-  const communityId = Session.get('activeCommunityId');
-  if (Meteor.user().hasPermission('vote.castForOthers', communityId)) {
-    const modalContext = {
-      title: 'Proxy voting',
-      body: 'Select_voters',
-      bodyContext: _.extend(this, { topicId, castedVote }),
-      btnClose: 'cancel',
-      btnOK: 'Send vote',
-      onOK() {
-        castVote.call(
-          { topicId, castedVote, voters: AutoForm.getFieldValue('voters', 'af.select.voters') },
-          callback
-        );
-      },
-    };
-    Modal.show('Modal', modalContext);
-  } else {
-    castVote.call({ topicId, castedVote }, callback);
-  }
-}
-
-Template.Vote_cast_panel.events({
-  // event handler for the single choice vote type
-  'click .btn-vote'(event, instance) {
-    if (instance.viewmodel.votingState() || instance.viewmodel.modifyState() || instance.viewmodel.originalState()) {
-      instance.viewmodel.temporaryVote($(event.target).closest('.btn').data('value'));
-    } else {
-      return;
-    }
-  },
-  'click .send-button'(event, instance) {
-    const topicId = this._id;
-    if (this.vote.type === 'preferential') {
-      if (instance.viewmodel.votingState() || instance.viewmodel.modifyState()) {
-        const preference = instance.viewmodel.temporaryVote();
-        const castedVote = preference.map(p => p.value);
-        castVoteBasedOnPermission(topicId, castedVote,
-          onSuccess((res) => {
-            displayMessage('success', 'Vote casted');
-          })
-        );
-        instance.viewmodel.temporaryVote(undefined);
-      }
-    } else {
-      castVoteBasedOnPermission(topicId, [instance.viewmodel.temporaryVote()],
-        onSuccess(res => displayMessage('success', 'Vote casted'))
-      );
-      instance.viewmodel.temporaryVote(undefined);
-    }
-  },
-  'click .js-modify'(event, instance) {
-    const userId = Meteor.userId();
-    if (instance.viewmodel.modifyState() || instance.viewmodel.votingState()) {
-      instance.viewmodel.temporaryVote(undefined);
-      return;
-    }
-    if (!instance.viewmodel.modifyState()) {
-      if (this.vote.type === 'preferential') {
-        instance.viewmodel.temporaryVote(instance.preference());
+  events: {
+    // event handler for the single choice vote type
+    'click .btn-vote'(event, instance) {
+      if (this.votingState() || this.modifyState() || this.originalState()) {
+        this.temporaryVote($(event.target).closest('.btn').data('value'));
       } else {
-        instance.viewmodel.temporaryVote(this.voteOf(userId)[0]);
+        return;
       }
-    }
+    },
+    'click .send-button'(event, instance) {
+      const topicId = this._id;
+      if (this.vote.type === 'preferential') {
+        if (this.votingState() || this.modifyState()) {
+          const preference = this.temporaryVote();
+          const castedVote = preference.map(p => p.value);
+          castVoteBasedOnPermission(topicId, castedVote,
+            onSuccess((res) => {
+              displayMessage('success', 'Vote casted');
+            })
+          );
+          this.temporaryVote(undefined);
+        }
+      } else {
+        castVoteBasedOnPermission(topicId, [this.temporaryVote()],
+          onSuccess(res => displayMessage('success', 'Vote casted'))
+        );
+        this.temporaryVote(undefined);
+      }
+    },
+    'click .js-modify'(event, instance) {
+      const userId = Meteor.userId();
+      if (this.modifyState() || this.votingState()) {
+        this.temporaryVote(undefined);
+        return;
+      }
+      if (!this.modifyState()) {
+        if (this.vote.type === 'preferential') {
+          this.temporaryVote(instance.preference());
+        } else {
+          this.temporaryVote(this.voteOf(userId)[0]);
+        }
+      }
+    },
   },
 });
 
