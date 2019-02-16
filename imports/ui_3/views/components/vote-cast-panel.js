@@ -40,88 +40,73 @@ function castVoteBasedOnPermission(topicId, castedVote, callback) {
 }
 
 Template.Vote_cast_panel.viewmodel({
+  topic: undefined,
   temporaryVote: undefined,
   preference: undefined,
   hasVotedState: false,
   onCreated(instance) {
+    instance.firstRun = true;
+    this.topic(instance.data);
   },
   onRendered(instance) {
-    const self = Template.instance();
-    const state = this.state;
-    const topicId = this.data._id;
-    const vote = this.data.vote;
-    const voteCasts = this.data.voteCasts;
+    const self = this;
+    const vote = instance.data.vote;
 
     // creating the JQuery sortable widget
     // both JQuery and Blaze wants control over the order of elements, so needs a hacky solution
     // https://github.com/meteor/meteor/blob/master/examples/unfinished/reorderable-list/client/shark.js
     // https://differential.com/insights/sortable-lists-in-meteor-using-jquery-ui/
-    $(self.find('.sortable')).sortable({
-      stop(event, ui) { // fired when an item is dropped
-        event.preventDefault();
-        const preference = $(self.find('.sortable')).sortable('toArray', { attribute: 'data-value' })
-          .map(function obj(value, index) { return { text: vote.choices[value], value }; });
-  //      console.log('onstop:', preference);
-        this.temporaryVote(preference);
-      },
-    });
+    if (vote.type === 'preferential') {
+      instance.$('.sortable').sortable({
+        stop(event, ui) { // fired when an item is dropped
+          event.preventDefault();
+          const preference = instance.$('.sortable').sortable('toArray', { attribute: 'data-value' })
+            .map(function obj(value, index) { return { text: vote.choices[value], value }; });
+    //      console.log('onstop:', preference);
+          self.temporaryVote(preference);
+        },
+      });
+    }
+
+    instance.voteEnvelope = createEnvelope(instance.$('.letter-content'));
   },
   autorun: [
-    function() {
-      // this is in an autorun, so if logged in user changes, it will rerun
-      // or if the vote is changed on another machine, it also gets updated here
-
-      const voting = Topics.findOne(topicId);
-      const hasVotedState = voting.hasVoted(Meteor.userId());
+    function maintainLiveData() {
+      this.topic(Topics.findOne(this.templateInstance.data._id)); 
+    },
+    function syncHasVotedState() {
+      const hasVotedState = this.topic().hasVoted(Meteor.userId());
       this.hasVotedState(hasVotedState);
+    },
+    function syncPreference() {
       let preference;
-
-      if (hasVotedState) {
+      const voting = this.topic();
+      if (this.hasVotedState()) {
         const castedPreference = voting.voteOf(Meteor.userId());
-        preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
+        preference = castedPreference.map(function obj(value) { return { text: voting.vote.choices[value], value }; });
       } else { // no vote yet, preference is then the original vote choices in that order
-        preference = vote.choices.map(function obj(text, index) { return { text, value: index }; });
+        preference = voting.vote.choices.map(function obj(text, index) { return { text, value: index }; });
       }
-
       this.preference(preference);
-  //  console.log('onrender:', preference);
-    }, 
-    function() {
-      // This is where we enable/disable the sorting, dependant on the finalized state
-      const hasVotedState = this.hasVotedState();
-      const temporaryVote = this.temporaryVote();
-      $(self.find('.sortable')).sortable((hasVotedState && temporaryVote === undefined) ? 'disable' : 'enable');
-    /* const voting = Topics.findOne(topicId);
-      const hasVoted = voting.hasVoted(Meteor.userId());
-      $(Template.instance().find('.sortable')).sortable(hasVoted ? 'disable' : 'enable');
-    */
     },
-    function() {
-      const voteEnvelope = createEnvelope(this.$('.letter-content'));
-      let firstRun = true;
-      let directionWatcher;
-
-      if (this.hasVotedState() && firstRun) {
-        voteEnvelope.closed();
-        directionWatcher = true;
-      }
-      if (!this.hasVotedState() && firstRun) {
-        voteEnvelope.opened();
-        directionWatcher = false;
-      }
+    function enableDisableSortableState() {
+      this.templateInstance.$('.sortable')
+        .sortable((this.hasVotedState() && this.temporaryVote() === undefined) ? 'disable' : 'enable');
     },
-    function() {
-      const hasVotedState = this.hasVotedState();
-      const temporaryVote = this.temporaryVote();
-      if (hasVotedState && !firstRun && temporaryVote === undefined && directionWatcher === false) {
-        voteEnvelope.close();
-        directionWatcher = true;
+    function openCloseEnvelope() {
+      if (this.hasVotedState() && this.templateInstance.firstRun) {
+        this.templateInstance.voteEnvelope.closed();
       }
-      if (hasVotedState && !firstRun && _.isDefined(temporaryVote) && directionWatcher === true) {
-        voteEnvelope.open();
-        directionWatcher = false;
+      if (!this.hasVotedState() && this.templateInstance.firstRun) {
+        this.templateInstance.voteEnvelope.opened();
       }
-      firstRun = false;
+      if (this.hasVotedState() && !this.templateInstance.firstRun && _.isUndefined(this.temporaryVote())) {
+        this.templateInstance.voteEnvelope.close();
+      }
+      if (this.hasVotedState() && !this.templateInstance.firstRun && _.isDefined(this.temporaryVote())) {
+        this.templateInstance.voteEnvelope.open();
+      }
+      this.templateInstance.firstRun = false;
     },
   ],
 
@@ -150,11 +135,11 @@ Template.Vote_cast_panel.viewmodel({
   voterAvatar() {
     const userId = Meteor.userId();
     const user = Meteor.users.findOne(userId);
-    if (this.hasVotedDirect(userId)) {
+    if (this.topic().hasVotedDirect(userId)) {
       return user.avatar;
     }
-    if (this.hasVotedIndirect(userId)) {
-      const myVotePath = this.votePaths[Meteor.userId()];
+    if (this.topic().hasVotedIndirect(userId)) {
+      const myVotePath = this.topic().votePaths[Meteor.userId()];
       const myFirstDelegateId = myVotePath[1];
       const myFirstDelegate = Meteor.users.findOne(myFirstDelegateId);
       return myFirstDelegate.avatar;
@@ -162,14 +147,13 @@ Template.Vote_cast_panel.viewmodel({
     return undefined;
   },
   isButtonLayoutVertical() {
-    return this.vote.type === 'preferential';
+    return this.topic().vote.type === 'preferential';
   },
   // Single choice voting
   pressedClassForVoteBtn(choice) {
     const userId = Meteor.userId();
-    const votedChoice = this.voteOf(userId);
-    const temporaryVote = this.temporaryVote();
-    if (this.votingState() || this.modifyState()) return choice === temporaryVote && 'btn-pressed';
+    const votedChoice = this.topic().voteOf(userId);
+    if (this.votingState() || this.modifyState()) return choice === this.temporaryVote() && 'btn-pressed';
     if (this.castedVoteState()) return _.isEqual(votedChoice, [choice]) && 'btn-pressed';
     return undefined;
   },
@@ -185,7 +169,7 @@ Template.Vote_cast_panel.viewmodel({
 //  console.log('ondisplay:', preference);
   },
   voteOfUser() {
-    return this.voteOf(Meteor.userId());
+    return this.topic().voteOf(Meteor.userId());
   },
   stateClassForSendButton() {
     if (this.votingState() || this.modifyState()) return 'visible-button';
@@ -206,8 +190,8 @@ Template.Vote_cast_panel.viewmodel({
       }
     },
     'click .send-button'(event, instance) {
-      const topicId = this._id;
-      if (this.vote.type === 'preferential') {
+      const topicId = this.topic()._id;
+      if (this.topic().vote.type === 'preferential') {
         if (this.votingState() || this.modifyState()) {
           const preference = this.temporaryVote();
           const castedVote = preference.map(p => p.value);
@@ -216,26 +200,23 @@ Template.Vote_cast_panel.viewmodel({
               displayMessage('success', 'Vote casted');
             })
           );
-          this.temporaryVote(undefined);
         }
       } else {
         castVoteBasedOnPermission(topicId, [this.temporaryVote()],
           onSuccess(res => displayMessage('success', 'Vote casted'))
         );
-        this.temporaryVote(undefined);
       }
+      this.temporaryVote(undefined);
     },
     'click .js-modify'(event, instance) {
       const userId = Meteor.userId();
-      if (this.modifyState() || this.votingState()) {
+      if (this.temporaryVote()) {
         this.temporaryVote(undefined);
-        return;
-      }
-      if (!this.modifyState()) {
-        if (this.vote.type === 'preferential') {
-          this.temporaryVote(instance.preference());
+      } else if (this.hasVotedState()) {
+        if (this.topic().vote.type === 'preferential') {
+          this.temporaryVote(this.preference());
         } else {
-          this.temporaryVote(this.voteOf(userId)[0]);
+          this.temporaryVote(this.topic().voteOf(userId)[0]);
         }
       }
     },

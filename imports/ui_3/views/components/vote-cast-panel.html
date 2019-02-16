@@ -1,26 +1,25 @@
 <template name="Vote_cast_panel">
     <div class="row">
       <div class="col-xs-12 vote-answer text-center">
-
         <div class="letter-content">
           <div class="row">
             {{#if (or (or originalState votingState) modifyState)}}
             <div class="col-xs-12 text-center">
-              {{_ (concat 'votingInstructions.' vote.type)}}
+              {{_ (concat 'votingInstructions.' topic.vote.type)}}
             </div>
             {{/if}}
             <div class="col-xs-12">
               <div class="btns-group">
 
-                {{#if voteTypeIs "preferential"}}
+                {{#if (equals topic.vote.type 'preferential')}}
                   <ul class="sortable droptrue">
-                    {{#each currentPreference}}
+                    {{#each choice in topic.vote.choices}}
                     <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
-                    <li class="btn btn-vote-choice ui-state-default js-btn-vote-choice" data-value="{{value}}"><i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{text}}</li>
+                    <li class="btn btn-vote-choice ui-state-default js-btn-vote-choice" data-value="{{value}}"><i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{choice}}</li>
                     {{/each}}
                   </ul>
                 {{else}}
-                  {{#each choice in vote.choices}}
+                  {{#each choice in topic.vote.choices}}
                   <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
                     <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
                   </button>

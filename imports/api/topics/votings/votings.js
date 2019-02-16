@@ -71,10 +71,6 @@ const votingsExtensionSchema = new SimpleSchema({
 });
 
 Topics.helpers({
-  voteTypeIs(type) {
-    if (!this.vote) return undefined;
-    return (this.vote.type === type);
-  },
   unitsToShare(units) {
     const votingShare = new Fraction(units, this.community().totalunits);
     return votingShare;
