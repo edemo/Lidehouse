@@ -18,8 +18,7 @@ import { createEnvelope } from './envelope.js';
 
 Template.Vote_cast_panel.onCreated(function voteCastPanelOnCreated() {
   this.state = new ReactiveDict();
-  this.state.set('choice', undefined);
-  this.state.set('isNotInModifyState', true);
+  this.state.set('temporaryVote', undefined);
 });
 
 Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
@@ -29,11 +28,6 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
   const vote = this.data.vote;
   const voteCasts = this.data.voteCasts;
 
-  const voteEnvelope = createEnvelope(this.$('.letter-content'));
-  this.autorun(() => {
-    if (state.get('voteIsFinalized') && state.get('isNotInModifyState')) voteEnvelope.close();
-    else voteEnvelope.open();
-  });
   // creating the JQuery sortable widget
   // both JQuery and Blaze wants control over the order of elements, so needs a hacky solution
   // https://github.com/meteor/meteor/blob/master/examples/unfinished/reorderable-list/client/shark.js
@@ -44,46 +38,103 @@ Template.Vote_cast_panel.onRendered(function voteboxOnRendered() {
       const preference = $(self.find('.sortable')).sortable('toArray', { attribute: 'data-value' })
         .map(function obj(value, index) { return { text: vote.choices[value], value }; });
 //      console.log('onstop:', preference);
-      state.set('preference', preference);
+      state.set('temporaryVote', preference);
     },
   });
 
   // this is in an autorun, so if logged in user changes, it will rerun
   // or if the vote is changed on another machine, it also gets updated here
+
   this.autorun(function update() {
 
     const voting = Topics.findOne(topicId);
-    const voteIsFinalized = voting.hasVoted(Meteor.userId());
-    state.set('voteIsFinalized', voteIsFinalized);
+    const hasVotedState = voting.hasVoted(Meteor.userId());
+    state.set('hasVotedState', hasVotedState);
     let preference;
-    if (voteIsFinalized) {
+
+    if (hasVotedState) {
       const castedPreference = voting.voteOf(Meteor.userId());
       preference = castedPreference.map(function obj(value) { return { text: vote.choices[value], value }; });
     } else { // no vote yet, preference is then the original vote choices in that order
       preference = vote.choices.map(function obj(text, index) { return { text, value: index }; });
     }
+
     state.set('preference', preference);
 //  console.log('onrender:', preference);
   });
 
   // This is where we enable/disable the sorting, dependant on the finalized state
   this.autorun(function update() {
-    const voteIsFinalized = state.get('voteIsFinalized');
-    const isNotInModifyState = state.get('isNotInModifyState');
-    $(self.find('.sortable')).sortable((voteIsFinalized && isNotInModifyState) ? 'disable' : 'enable');
+    const hasVotedState = state.get('hasVotedState');
+    const temporaryVote = state.get('temporaryVote');
+    $(self.find('.sortable')).sortable((hasVotedState && temporaryVote === undefined) ? 'disable' : 'enable');
    /* const voting = Topics.findOne(topicId);
     const hasVoted = voting.hasVoted(Meteor.userId());
     $(Template.instance().find('.sortable')).sortable(hasVoted ? 'disable' : 'enable');
   */
   });
+
+  const voteEnvelope = createEnvelope(this.$('.letter-content'));
+  let firstRun = true;
+  let directionWatcher;
+
+  if (state.get('hasVotedState') && firstRun) {
+    voteEnvelope.closed();
+    directionWatcher = true;
+  }
+  if (!state.get('hasVotedState') && firstRun) {
+    voteEnvelope.opened();
+    directionWatcher = false;
+  }
+
+  this.autorun(() => {
+    const hasVotedState = state.get('hasVotedState');
+    const temporaryVote = state.get('temporaryVote');
+    if (hasVotedState && !firstRun && temporaryVote === undefined && directionWatcher === false) {
+      voteEnvelope.close();
+      directionWatcher = true;
+    }
+    if (hasVotedState && !firstRun && _.isDefined(temporaryVote) && directionWatcher === true) {
+      voteEnvelope.open();
+      directionWatcher = false;
+    }
+    firstRun = false;
+  });
+
 });
 
 Template.Vote_cast_panel.helpers({
-  indirectUser() {
+  /*indirectUser() {
     const myVotePath = this.votePaths[Meteor.userId()];
     const myFirstDelegateId = myVotePath[1];
     const myFirstDelegate = Meteor.users.findOne(myFirstDelegateId);
     return myFirstDelegate;
+  },*/
+  originalState() {
+    return this.originalState();
+  },
+  votingState() {
+    return this.votingState();
+  },
+  castedVoteState() {
+    return this.castedVoteState();
+  },
+  modifyState() {
+    return this.modifyState();
+  },
+  voterAvatar() {
+    const userId = Meteor.userId();
+    const user = Meteor.users.findOne(userId);
+    if (this.hasVotedDirect(userId)) {
+      return user.avatar;
+    }
+    if (this.hasVotedIndirect(userId)) {
+      const myVotePath = this.votePaths[Meteor.userId()];
+      const myFirstDelegateId = myVotePath[1];
+      const myFirstDelegate = Meteor.users.findOne(myFirstDelegateId);
+      return myFirstDelegate.avatar;
+    }
+    return undefined;
   },
   isButtonLayoutVertical() {
     return this.vote.type === 'preferential';
@@ -92,39 +143,35 @@ Template.Vote_cast_panel.helpers({
   pressedClassForVoteBtn(choice) {
     const userId = Meteor.userId();
     const votedChoice = this.voteOf(userId);
-    const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
-    const temporaryChoice = Template.instance().state.get('choice');
-    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
-    if (voteIsFinalized && isNotInModifyState) return _.isEqual(votedChoice, [choice]) && 'btn-pressed';
-    return choice === temporaryChoice && 'btn-pressed';
+    const temporaryVote = Template.instance().state.get('temporaryVote');
+    if (this.votingState() || this.modifyState()) return choice === temporaryVote && 'btn-pressed';
+    if (this.castedVoteState()) return _.isEqual(votedChoice, [choice]) && 'btn-pressed';
+    return undefined;
   },
   // Preferential voting
   currentPreference() {
-    const preference = Template.instance().state.get('preference');
+    let preference;
+    if (this.votingState() || this.modifyState()) {
+      preference = Template.instance().state.get('temporaryVote');
+      return preference;
+    }
+    if (this.castedVoteState() || this.originalState()) {
+      preference = Template.instance().state.get('preference');
+      return preference;
+    }
+    return undefined;
 //  console.log('ondisplay:', preference);
-    return preference;
   },
   voteOfUser() {
     return this.voteOf(Meteor.userId());
   },
-  voteIsFinalized() {
-    return Template.instance().state.get('voteIsFinalized');
-    //const hasVoted = this.hasVoted(Meteor.userId());
-   // return hasVoted;
-  },
-  isNotInModifyState() {
-    return Template.instance().state.get('isNotInModifyState');
-  },
   stateClassForSendButton() {
-    const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
-    const temporaryChoice = Template.instance().state.get('choice');
-    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
-    if (_.isDefined(temporaryChoice) && (!voteIsFinalized || !isNotInModifyState)) return 'visible-button';
-    return 'invisible-button';
+    if (this.votingState() || this.modifyState()) return 'visible-button';
+    if (this.originalState() || this.castedVoteState()) return 'invisible-button';
+    return undefined;
   },
   textForVote() {
-    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
-    if (isNotInModifyState) return 'Modify vote';
+    if (this.castedVoteState()) return 'Modify vote';
     return 'Cancel';
   },
 });
@@ -154,10 +201,8 @@ function castVoteBasedOnPermission(topicId, castedVote, callback) {
 Template.Vote_cast_panel.events({
   // event handler for the single choice vote type
   'click .btn-vote'(event) {
-    const voteIsFinalized = Template.instance().state.get('voteIsFinalized');
-    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
-    if (!voteIsFinalized || !isNotInModifyState) {
-      Template.instance().state.set('choice', $(event.target).closest('.btn').data('value'));
+    if (this.votingState() || this.modifyState() || this.originalState()) {
+      Template.instance().state.set('temporaryVote', $(event.target).closest('.btn').data('value'));
     } else {
       return;
     }
@@ -165,41 +210,37 @@ Template.Vote_cast_panel.events({
   'click .send-button'(event, instance) {
     const topicId = this._id;
     if (this.vote.type === 'preferential') {
-      const voteIsFinalized = instance.state.get('voteIsFinalized');
-      const isNotInModifyState = instance.state.get('isNotInModifyState');
-      if (!voteIsFinalized || !isNotInModifyState) {
-        const preference = instance.state.get('preference');
+      if (this.votingState() || this.modifyState()) {
+        const preference = instance.state.get('temporaryVote');
         const castedVote = preference.map(p => p.value);
         castVoteBasedOnPermission(topicId, castedVote,
           onSuccess((res) => {
             displayMessage('success', 'Vote casted');
           })
         );
-        Template.instance().state.set('isNotInModifyState', true);
-      } else { // voteIsFinalized === true
-        // instance.state.set('voteIsFinalized', false);
+        Template.instance().state.set('temporaryVote', undefined);
       }
     } else {
-      const temporaryChoice = Template.instance().state.get('choice');
-      castVoteBasedOnPermission(topicId, [temporaryChoice],
+      const temporaryVote = Template.instance().state.get('temporaryVote');
+      castVoteBasedOnPermission(topicId, [temporaryVote],
         onSuccess(res => displayMessage('success', 'Vote casted'))
       );
-      Template.instance().state.set('isNotInModifyState', true);
+      Template.instance().state.set('temporaryVote', undefined);
     }
-  },
-  'mousedown .btn-vote-choice'() {
-    Template.instance().state.set('choice', 1);
   },
   'click .js-modify'() {
     const userId = Meteor.userId();
-    const isNotInModifyState = Template.instance().state.get('isNotInModifyState');
-    if (!isNotInModifyState) {
-      Template.instance().state.set('isNotInModifyState', true);
-      Template.instance().state.set('choice', undefined);
+    if (this.modifyState() || this.votingState()) {
+      Template.instance().state.set('temporaryVote', undefined);
+      return;
     }
-    if (isNotInModifyState) {
-      Template.instance().state.set('isNotInModifyState', false);
-      Template.instance().state.set('choice', this.voteOf(userId)[0]);
+    if (!this.modifyState()) {
+      if (this.vote.type === 'preferential') {
+        const preference = Template.instance().state.get('preference');
+        Template.instance().state.set('temporaryVote', preference);
+      } else {
+        Template.instance().state.set('temporaryVote', this.voteOf(userId)[0]);
+      }
     }
   },
 });

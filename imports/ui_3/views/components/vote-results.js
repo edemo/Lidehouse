@@ -5,6 +5,7 @@ import { ReactiveDict } from 'meteor/reactive-dict';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { update } from '/imports/api/topics/methods.js';
@@ -26,9 +27,9 @@ Template.Vote_results.onRendered(function voteboxOnRendered() {
 
 Template.Vote_results.helpers({
   dataFn() {
-    // TODO Not reactive right now
     return () => {
-      return this.voteResultsDisplay();
+      const voting = Topics.findOne(this._id);
+      return voting.voteResultsDisplay();
     };
   },
   optionsFn() {

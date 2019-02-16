@@ -65,6 +65,11 @@
     animation-fill-mode: forwards;  
 }
 
+.letter-animation-end {
+    transform: translateY(0);
+    z-index: 3;
+}
+
 @keyframes letter {
 
     0% {
@@ -107,6 +112,11 @@
     animation-duration: 1s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;  
+}
+
+.letter-animation-reverse-end {
+    transform: translateY(0);
+    z-index: 10;
 }
 
 @keyframes letterReverse {
@@ -154,6 +164,11 @@
     animation-fill-mode: forwards;  
 }
 
+.flap-animation-end {
+    transform: rotateX(0);
+    z-index: 4;
+}
+
 @keyframes flap {
 
     0% {
@@ -188,6 +203,11 @@
     animation-fill-mode: forwards;  
 }
 
+.flap-animation-reverse-end {
+    transform: rotateX(0);
+    z-index: 0;
+}
+
 @keyframes flapReverse {
 
     0% {
@@ -213,8 +233,4 @@
         transform: rotateX(0);
         z-index: 0;
     }
-}
-
-.voted-letter {
-	z-index: 3;
 }
