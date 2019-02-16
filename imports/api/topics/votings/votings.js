@@ -3,7 +3,6 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
-import { Template } from 'meteor/templating';
 
 import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -210,30 +209,6 @@ Topics.helpers({
         votingShare,
       };
     });
-  },
-  originalState() {
-    const hasVotedState = Template.instance().state.get('hasVotedState');
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    if (!hasVotedState && temporaryVote === undefined) return true;
-    return false;
-  },
-  votingState() {
-    const hasVotedState = Template.instance().state.get('hasVotedState');
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    if (!hasVotedState && _.isDefined(temporaryVote)) return true;
-    return false;
-  },
-  castedVoteState() {
-    const hasVotedState = Template.instance().state.get('hasVotedState');
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    if (hasVotedState && temporaryVote === undefined) return true;
-    return false;
-  },
-  modifyState() {
-    const hasVotedState = Template.instance().state.get('hasVotedState');
-    const temporaryVote = Template.instance().state.get('temporaryVote');
-    if (hasVotedState && _.isDefined(temporaryVote)) return true;
-    return false;
   },
 });
 
