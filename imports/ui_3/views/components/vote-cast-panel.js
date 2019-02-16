@@ -80,7 +80,7 @@ Template.Vote_cast_panel.viewmodel({
       );
     },
     function openCloseEnvelope() {
-      if (this.templateInstance.firstRun && this.registeredVote()) {
+      if (this.templateInstance.firstRun && this.registeredVote() && !this.temporaryVote()) {
         this.templateInstance.voteEnvelope.closed();
       }
       if (this.templateInstance.firstRun && !this.registeredVote()) {
