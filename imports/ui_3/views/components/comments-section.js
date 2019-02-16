@@ -63,7 +63,9 @@ Template.Comments_section.helpers({
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
     const comments = Comments.find({ topicId: this._id });
-    return (route === 'Board' && comments.count() > RECENT_COMMENT_COUNT);
+    return (route === 'Board' && comments.count() > RECENT_COMMENT_COUNT)
+      ? comments.count() - RECENT_COMMENT_COUNT
+      : 0;
   },
 });
 

@@ -6,9 +6,9 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import './root-redirector.html';
 
 Template.app_rootRedirector.onCreated(() => {
-  Template.instance().autorun(() => {
-    if (Meteor.userId()) {
-      Template.instance().subscribe('memberships.ofUser', { userId: Meteor.userId() });
+  if (Meteor.userId()) {
+    Template.instance().subscribe('memberships.ofUser', { userId: Meteor.userId() });
+    Template.instance().autorun(() => {
       if (Template.instance().subscriptionsReady()) {
         if (Session.get('activeCommunityId')) {
           FlowRouter.go('Board');
@@ -16,12 +16,12 @@ Template.app_rootRedirector.onCreated(() => {
           FlowRouter.go('Communities.listing');
         }
       }
-    } else {
+    });
+  } else {
       if (Meteor.settings.public.communityId) {
         FlowRouter.go('Community.page', { _cid: Meteor.settings.public.communityId });
       } else {
         FlowRouter.go('App.intro');
       }
-    }
-  });
+  }
 });
