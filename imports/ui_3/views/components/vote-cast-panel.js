@@ -81,7 +81,7 @@ Template.Vote_cast_panel.viewmodel({
     },
     function openCloseEnvelope() {
       if (this.templateInstance.firstRun) {
-        if (this.registeredVote()) this.templateInstance.voteEnvelope.closed();
+        if (this.registeredVote() && !this.temporaryVote()) this.templateInstance.voteEnvelope.closed();
         else this.templateInstance.voteEnvelope.opened();
         this.templateInstance.firstRun = false;
       } else { // not firstRun
