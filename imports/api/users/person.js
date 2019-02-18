@@ -83,6 +83,7 @@ export class Person {
       const emailName = emailSplit[0];
       return `[${emailName}]`;
     }
+    if (this.userId && !this.user()) return __('deletedUser');
     return undefined;
   }
   toString() {
