@@ -17,5 +17,5 @@ Meteor.publish('sharedfolders.ofCommunity', function (params) {
     return this.ready();
   }
 
-  return Sharedfolders.find({ $or: [{ communityId }, { communityId: { $exists: false } }] });
+  return Sharedfolders.find({ communityId: { $in: [communityId, null] } });
 });

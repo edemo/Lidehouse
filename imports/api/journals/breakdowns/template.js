@@ -7,7 +7,7 @@ export function defineBreakdownTemplates(communityId) {
 
   //if (Breakdowns.findOne({})) return;
 
-  Breakdowns.define({
+  Breakdowns.define({ communityId: null,
     name: 'Owner payin types', locked: true,
     children: [
     { digit: '1', name: 'Közös költség befizetés' },
@@ -19,7 +19,7 @@ export function defineBreakdownTemplates(communityId) {
     ],
   });
 
-  Breakdowns.define({
+  Breakdowns.define({ communityId: null,
     digit: '9', name: 'Incomes', locked: true, sign: -1,
     children: [
       { digit: '1', name: 'Owner payins', locked: true,
@@ -48,7 +48,7 @@ export function defineBreakdownTemplates(communityId) {
     ],
   });
 
-  Breakdowns.define({
+  Breakdowns.define({ communityId: null,
     digit: '8', name: 'Expenses', locked: true, sign: +1,
     children: [
       { digit: '1', name: 'Költségek',
@@ -90,7 +90,7 @@ export function defineBreakdownTemplates(communityId) {
     ],
   });
 
-  Breakdowns.define({
+  Breakdowns.define({ communityId: null,
     digit: '1', name: 'Assets', locked: true, sign: +1,
     children: [
       { digit: '1', name: 'Tárgyi és immateriális',
@@ -112,7 +112,7 @@ export function defineBreakdownTemplates(communityId) {
     ],
   });
 
-  Breakdowns.define({
+  Breakdowns.define({ communityId: null,
     digit: '5', name: 'Liabilities', locked: true, sign: -1,
     children: [
       { digit: '1', name: 'Equity', locked: true,
@@ -134,12 +134,16 @@ export function defineBreakdownTemplates(communityId) {
     ],
   });
 
-  Breakdowns.define({
+  Breakdowns.define({ communityId: null,
+    digit: '1', name: 'Parcels', children: [
+      { digit: '1', name: 'Main building' },
+    ],
+  });
+
+  Breakdowns.define({ communityId: null,
     digit: '7', name: 'Localizer', label: 'Locations',
     children: [
-      { digit: '1', name: 'Main building',
-        children: [
-        ],
+      { digit: '1', name: 'Parcels', include: 'Parcels',
       },
       { digit: '2', name: 'Central',
         children: [
@@ -150,7 +154,7 @@ export function defineBreakdownTemplates(communityId) {
     ],
   });
 
-  Breakdowns.define({
+  Breakdowns.define({ communityId: null,
     name: 'COA', label: 'Chart Of Accounts',
     children: [
       { include: 'Incomes' },
@@ -222,7 +226,7 @@ const TxDefsTemplate = [
 ];
 */
 
-/*  Breakdowns.find({ communityId: { $exists: false } }).forEach((breakdown) => {
+/*  Breakdowns.find({ communityId: null }).forEach((breakdown) => {
     Breakdowns.insert(_.extend({}, breakdown, { communityId }));
   });
 */

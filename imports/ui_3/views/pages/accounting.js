@@ -65,7 +65,7 @@ Template.Accounting.helpers({
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId: { $exists: false }, sign: { $exists: true } }).fetch();
+      return Breakdowns.find({ communityId: null, sign: { $exists: true } }).fetch();
     }
     return getTableData;
   },

@@ -367,8 +367,9 @@
   "Performance": "Idei eredmény",
   // Localizer
   "All locations": "Összes hely",
-  "Main building": "Főépület",
+  "Parcels": "Albetétek",
   "Central": "Központi",
+  "Main building": "Főépület",
   "Garden": "Kert",
   "Heating system": "Kazán",
   // Tx types

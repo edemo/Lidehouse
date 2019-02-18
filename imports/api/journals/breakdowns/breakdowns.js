@@ -17,11 +17,16 @@ function deepCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
-export const Breakdowns = new Mongo.Collection('breakdowns');
+class BreakdownsCollection extends Mongo.Collection {
+  define(breakdown) {
+    super.define({ communityId: breakdown.communityId, name: breakdown.name }, breakdown);
+  }
+}
+export const Breakdowns = new BreakdownsCollection('breakdowns');
 
 Breakdowns.findOneByName = function findOneByName(name, communityId = getActiveCommunityId()) {
   return Breakdowns.findOne({ name, communityId })
-      || Breakdowns.findOne({ name, communityId: { $exists: false } });
+      || Breakdowns.findOne({ name, communityId: null });
 };
 
 Breakdowns.chartOfAccounts = function chartOfAccounts(communityId = getActiveCommunityId()) {
@@ -32,18 +37,8 @@ Breakdowns.localizer = function localizer(communityId = getActiveCommunityId()) 
   return Breakdowns.findOneByName('Localizer', communityId);
 };
 
-Breakdowns.define = function define(breakdown) {
-  const existingId = Breakdowns.findOne({ name: breakdown.name, communityId: breakdown.communityId });
-  if (existingId) {
-    Breakdowns.update(existingId, { $set: breakdown });
-    return existingId;
-  } else {
-    return Breakdowns.insert(breakdown);
-  }
-};
-
 Breakdowns.clone = function clone(name, communityId) {
-  const breakdown = Breakdowns.findOne({ name, communityId: { $exists: false } });
+  const breakdown = Breakdowns.findOne({ name, communityId: null });
   if (!breakdown) return undefined;
   delete breakdown._id;
   breakdown.communityId = communityId;
@@ -137,7 +132,7 @@ Breakdowns.Level1Schema = new SimpleSchema({
 });
 
 Breakdowns.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   digit: { type: String, optional: true },
   name: { type: String, max: 100 },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
@@ -210,10 +205,8 @@ Breakdowns.helpers({
       function handleNode(node, parent, root) {
         if (node.include) {
           if (typeof node.include === 'string') {
-            node.include = // TODO (node.import is regex Id) ? Breakdowns.findOne(node.import) :
-              Breakdowns.findOneByName(node.include);
+            node.include = Breakdowns.findOneByName(node.include, root.communityId);
           } else debugAssert(typeof node.include === 'object');
-//          console.log('Before include', root);
           node.name = node.name || node.include.name;
           node.digit = node.digit || node.include.digit;
           node.sign = node.sign || node.include.sign;
@@ -221,7 +214,6 @@ Breakdowns.helpers({
             node.children = node.children || [];
             node.children = node.children.concat(deepCopy(node.include.children));
           }
-//          console.log('After include', root);
           delete node.include;
         }
         ++currentLevel;
@@ -273,6 +265,10 @@ Breakdowns.helpers({
     if (code) return this.nodeByCode(code).leafs();
     return this.leafs();
   },
+  nodesOf(code) {
+    if (code) return this.nodeByCode(code).nodes();
+    return this.leafs();
+  },
   parentsOf(code) {
     if (!code) return [];
     const parents = [];
@@ -290,18 +286,16 @@ Breakdowns.helpers({
     Breakdowns.displayFullPath(this.nodeByCode(code));
   },
   leafOptions(code) {
-    const self = this;
-    return this.leafsOf(code)
-      .map(function option(leaf) {
-        return { label: Breakdowns.display(leaf), value: leaf.code };
-      });
+    const leafs = code ? this.leafsOf(code) : this.leafs();
+    return leafs.map(function option(leaf) {
+      return { label: Breakdowns.display(leaf), value: leaf.code };
+    });
   },
-  nodeOptions() {
-    const self = this;
-    return this.nodes()
-      .map(function option(node) {
-        return { label: Breakdowns.display(node), value: node.code };
-      });
+  nodeOptions(code) {
+    const nodes = code ? this.nodesOf(code) : this.nodes();
+    return nodes.map(function option(node) {
+      return { label: Breakdowns.display(node), value: node.code };
+    });
   },
   removeSubTree(name) {
     const node = this.findNodeByName(name);

@@ -32,7 +32,7 @@ Template.Shareddoc_store.helpers({
     return Shareddocs.find({ communityId: activeCommunityId }).count() > 0;
   },
   builtinFolders() {
-    return Sharedfolders.find({ communityId: { $exists: false } });
+    return Sharedfolders.find({ communityId: null });
   },
   communityFolders() {
     const communityId = Session.get('activeCommunityId');

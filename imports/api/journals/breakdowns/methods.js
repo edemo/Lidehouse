@@ -41,7 +41,7 @@ export const clone = new ValidatedMethod({
   }).validator(),
 
   run({ name, communityId }) {
-    const doc = checkExists(Breakdowns, { communityId: { $exists: false }, name });
+    const doc = checkExists(Breakdowns, { communityId: null, name });
     checkNotExists(Breakdowns, { communityId, name });
     checkPermissions(this.userId, 'breakdowns.update', communityId);
 

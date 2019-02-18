@@ -21,7 +21,7 @@ if (Meteor.isServer) {
 
     describe('api', function () {
       before(function () {
-        const rootId = Breakdowns.define({
+        const rootId = Breakdowns.define({ communityId: null,
           name: 'Root',
           children: [
             { digit: '1', name: 'Level1',
@@ -113,11 +113,28 @@ if (Meteor.isServer) {
         ];
         chai.assert.deepEqual(leafOptions, expectedLeafOptions);
       });
+
+      it('access to node options', function () {
+        const nodeOptions = breakdown.nodeOptions();
+        const expectedNodeOptions = [
+          { label: ': Root',     value: '' },
+          { label: '1: Level1',  value: '1' },
+          { label: '12: Level2', value: '12' },
+          { label: '12A: LeafA', value: '12A' },
+          { label: '12B: LeafB', value: '12B' },
+          { label: '12C: LeafC', value: '12C' },
+          { label: '1D: LeafD',  value: '1D' },
+          { label:  'E: LeafE',  value: 'E' },
+          { label: '3: Level3',  value: '3' },
+          { label: '3F: LeafF',  value: '3F' },
+        ];
+        chai.assert.deepEqual(nodeOptions, expectedNodeOptions);
+      });
     });
 
     describe('construction', function () {
       before(function () {
-        Breakdowns.define({
+        Breakdowns.define({ communityId: null,
           digit: '2', name: 'includeLevel2',
           children: [
             { digit: 'A', name: 'LeafA' },
@@ -126,7 +143,7 @@ if (Meteor.isServer) {
           ],
         });
 
-        Breakdowns.define({
+        Breakdowns.define({ communityId: null,
           digit: '3', name: 'includeSub',
           children: [
             { digit: '1', name: 'Leaf1' },
@@ -134,11 +151,11 @@ if (Meteor.isServer) {
           ],
         });
 
-        Breakdowns.define({
+        Breakdowns.define({ communityId: null,
           digit: 'D', name: 'includeLeafD',
         });
 
-        Breakdowns.define({
+        Breakdowns.define({ communityId: null,
           digit: '1', name: 'includeLevel1',
           children: [
             { digit: '2', name: 'Level2',
@@ -152,7 +169,7 @@ if (Meteor.isServer) {
           ],
         });
 
-        const assemblyId = Breakdowns.define({
+        const assemblyId = Breakdowns.define({ communityId: null,
           name: 'Assembly',
           children: [
             { name: 'Level1',
@@ -178,19 +195,19 @@ if (Meteor.isServer) {
         breakdown = Breakdowns.findOne(assemblyId);
       });
 
-      it('assembles included parts', function () {
-        console.log(PeriodBreakdown.leafOptions());
-      });
-
-      it('assembles imported parts', function () {
-        console.log(breakdown.leafOptions());
-        const root = Breakdowns.findOneByName('Root'); root.name = 'Assembly';
-        chai.assert.deepEqual(breakdown.leafOptions(), root.leafOptions());
+      it('clones for a community simply renaming it', function () {
+        Breakdowns.define({ communityId: null, name: 'Simple', children: [{ digit: '1', name: 'One' }] });
+        Breakdowns.define({ communityId: Fixture.demoCommunityId, name: 'DemoSimple', include: 'Simple' });
+        const demoSimple = Breakdowns.findOneByName('DemoSimple', Fixture.demoCommunityId);
+        chai.assert.deepEqual(demoSimple.nodeOptions(), [
+          { label: ': DemoSimple', value: '' },
+          { label: '1: One', value: '1' },
+        ]);
       });
 
       it('clones for a community', function () {
         const root = Breakdowns.findOneByName('Root', Fixture.demoCommunityId);
-        chai.assert.isUndefined(root.communityId);  // it is generic template
+        chai.assert.equal(root.communityId, null);  // it is generic template
         const cloneId = Breakdowns.methods.clone._execute({ userId: Fixture.demoAccountantId }, {
           name: 'Root', communityId: Fixture.demoCommunityId,
         });
@@ -199,7 +216,7 @@ if (Meteor.isServer) {
         chai.assert.equal(clone.name, 'Root');
         const myRoot = Breakdowns.findOneByName('Root', Fixture.demoCommunityId);
         chai.assert.equal(myRoot.communityId, Fixture.demoCommunityId);
-        delete root._id; delete root.createdAt; delete root.updatedAt;
+        delete root._id; delete root.createdAt; delete root.updatedAt; delete root.communityId;
         delete myRoot._id; delete myRoot.createdAt; delete myRoot.updatedAt; delete myRoot.communityId;
         chai.assert.deepEqual(root, myRoot);    // YET the same, other than those
 
@@ -207,10 +224,73 @@ if (Meteor.isServer) {
         Breakdowns.methods.update._execute({ userId: Fixture.demoAccountantId }, {
           _id: cloneId, modifier: { $set: { name: 'MyRoot' } },
         });
-        const rootNew = Breakdowns.findOneByName('Root', undefined);
+        const rootNew = Breakdowns.findOneByName('Root', null);
         const cloneNew = Breakdowns.findOne(cloneId);
         chai.assert.equal(rootNew.name, 'Root');
         chai.assert.equal(cloneNew.name, 'MyRoot');
+      });
+
+      it('assembles included parts', function () {
+        // console.log(PeriodBreakdown.leafOptions());
+        chai.assert.deepEqual(PeriodBreakdown.leafOptions(), [
+          { label: 'T-2017-1: JAN', value: 'T-2017-1' },
+          { label: 'T-2017-2: FEB', value: 'T-2017-2' },
+          { label: 'T-2017-3: MAR', value: 'T-2017-3' },
+          { label: 'T-2017-4: APR', value: 'T-2017-4' },
+          { label: 'T-2017-5: MAY', value: 'T-2017-5' },
+          { label: 'T-2017-6: JUN', value: 'T-2017-6' },
+          { label: 'T-2017-7: JUL', value: 'T-2017-7' },
+          { label: 'T-2017-8: AUG', value: 'T-2017-8' },
+          { label: 'T-2017-9: SEP', value: 'T-2017-9' },
+          { label: 'T-2017-10: OCT', value: 'T-2017-10' },
+          { label: 'T-2017-11: NOV', value: 'T-2017-11' },
+          { label: 'T-2017-12: DEC', value: 'T-2017-12' },
+          { label: 'T-2018-1: JAN', value: 'T-2018-1' },
+          { label: 'T-2018-2: FEB', value: 'T-2018-2' },
+          { label: 'T-2018-3: MAR', value: 'T-2018-3' },
+          { label: 'T-2018-4: APR', value: 'T-2018-4' },
+          { label: 'T-2018-5: MAY', value: 'T-2018-5' },
+          { label: 'T-2018-6: JUN', value: 'T-2018-6' },
+          { label: 'T-2018-7: JUL', value: 'T-2018-7' },
+          { label: 'T-2018-8: AUG', value: 'T-2018-8' },
+          { label: 'T-2018-9: SEP', value: 'T-2018-9' },
+          { label: 'T-2018-10: OCT', value: 'T-2018-10' },
+          { label: 'T-2018-11: NOV', value: 'T-2018-11' },
+          { label: 'T-2018-12: DEC', value: 'T-2018-12' },
+          { label: 'T-2019-1: JAN', value: 'T-2019-1' },
+          { label: 'T-2019-2: FEB', value: 'T-2019-2' },
+          { label: 'T-2019-3: MAR', value: 'T-2019-3' },
+          { label: 'T-2019-4: APR', value: 'T-2019-4' },
+          { label: 'T-2019-5: MAY', value: 'T-2019-5' },
+          { label: 'T-2019-6: JUN', value: 'T-2019-6' },
+          { label: 'T-2019-7: JUL', value: 'T-2019-7' },
+          { label: 'T-2019-8: AUG', value: 'T-2019-8' },
+          { label: 'T-2019-9: SEP', value: 'T-2019-9' },
+          { label: 'T-2019-10: OCT', value: 'T-2019-10' },
+          { label: 'T-2019-11: NOV', value: 'T-2019-11' },
+          { label: 'T-2019-12: DEC', value: 'T-2019-12' },
+          { label: 'T-2020-1: JAN', value: 'T-2020-1' },
+          { label: 'T-2020-2: FEB', value: 'T-2020-2' },
+          { label: 'T-2020-3: MAR', value: 'T-2020-3' },
+          { label: 'T-2020-4: APR', value: 'T-2020-4' },
+          { label: 'T-2020-5: MAY', value: 'T-2020-5' },
+          { label: 'T-2020-6: JUN', value: 'T-2020-6' },
+          { label: 'T-2020-7: JUL', value: 'T-2020-7' },
+          { label: 'T-2020-8: AUG', value: 'T-2020-8' },
+          { label: 'T-2020-9: SEP', value: 'T-2020-9' },
+          { label: 'T-2020-10: OCT', value: 'T-2020-10' },
+          { label: 'T-2020-11: NOV', value: 'T-2020-11' },
+          { label: 'T-2020-12: DEC', value: 'T-2020-12' },
+        ]);
+      });
+
+      it('assembles imported parts', function () {
+        Breakdowns.define({ communityId: Fixture.demoCommunityId, name: 'DemoAssembly', include: 'Assembly' });
+        const commonRoot = Breakdowns.findOneByName('Root', null);
+        const demoHouseRoot = Breakdowns.findOneByName('DemoAssembly', Fixture.demoCommunityId);
+
+        demoHouseRoot.name = 'Root';
+        chai.assert.deepEqual(demoHouseRoot.leafOptions(), commonRoot.leafOptions());
       });
     });
   });

@@ -15,5 +15,5 @@ Meteor.publish('breakdowns.inCommunity', function breakdownsInCommunity(params) 
     return this.ready();
   }
 
-  return Breakdowns.find({ $or: [{ communityId }, { communityId: { $exists: false } }] });
+  return Breakdowns.find({ communityId: { $in: [communityId, null] } });
 });

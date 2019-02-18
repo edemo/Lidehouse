@@ -21,6 +21,7 @@ import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns, parcelRef2digit } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
 // import { TxDefs } from '/imports/api/journals/tx-defs.js';
+import '/imports/api/journals/breakdowns/methods.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
 import { insert as insertTx } from '/imports/api/journals/methods.js';
@@ -939,12 +940,17 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Breakdowns =====
 
-  const localizerId = Breakdowns.clone('Localizer', demoCommunityId);
-
+  const parcelBreakdown = { communityId: demoCommunityId, name: 'Parcels', digit: '1', children: [] };
   Parcels.find({ communityId: demoCommunityId }).forEach(parcel => {
-    Breakdowns.update(localizerId, {
-      $push: { 'children.0.children': { digit: parcelRef2digit(parcel.ref), name: parcel.ref } },
-    });
+    parcelBreakdown.children.push({ digit: parcel.ref, name: parcel.ref });
+  });
+  Breakdowns.define(parcelBreakdown);
+
+  Breakdowns.methods.clone._execute({ userId: demoAccountantId }, {
+    name: 'Localizer', communityId: demoCommunityId,
+  });
+  Breakdowns.methods.clone._execute({ userId: demoAccountantId }, {
+    name: 'COA', communityId: demoCommunityId,
   });
 
   const name2code = function name2code(breakdownName, nodeName) {
@@ -960,7 +966,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     year: 2017,
     month: 'allMonths',
     payinType: 'Közös költség befizetés',
-    localizer: name2code('Localizer', 'Main building'),
+    localizer: name2code('Localizer', 'Parcels'),
   });
 
   for (let i = 0; i < 4; i++) {
@@ -995,7 +1001,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     year: 2017,
     month: '9',
     payinType: 'Felújítási célbefizetés',
-    localizer: name2code('Localizer', 'Main building'),
+    localizer: name2code('Localizer', 'Parcels'),
     note: __('demo.journals.note.0'),
   });
 
@@ -1430,8 +1436,8 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   }
   ParcelBillings.remove({ 'account.Localizer': demoUserNumber.toString() });
   Journals.remove({ 'entries.0.account.Localizer': demoUserNumber.toString() });
-  Breakdowns.update({ communityId, name: 'Localizer' }, {
-    $pull: { 'children.0.children': { name: demoUserNumber.toString() } },
+  Breakdowns.update({ communityId, name: 'Parcels' }, {
+    $pull: { children: { name: demoUserNumber.toString() } },
   });
   Meteor.users.remove({ _id: userId });
 }
@@ -1476,10 +1482,11 @@ Meteor.methods({
       Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
     }
     const demoParcelSerial = (demoParcelCounterStart + counter);
+    const demoParcelRef = demoParcelSerial.toString();
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
       serial: demoParcelSerial,
-      ref: demoParcelSerial.toString(),
+      ref: demoParcelRef,
       units: 100,
       floor: 'V',
       door: (demoParcelSerial - 2).toString(),
@@ -1495,8 +1502,8 @@ Meteor.methods({
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) } });
 
-    Breakdowns.update({ communityId: demoCommunityId, name: 'Localizer' }, {
-      $push: { 'children.0.children': { name: demoParcelSerial.toString() } },
+    Breakdowns.update({ communityId: demoCommunityId, name: 'Parcels' }, {
+      $push: { children: { digit: demoParcelRef, name: demoParcelRef } },
     });
 
     const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;

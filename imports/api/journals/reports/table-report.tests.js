@@ -32,7 +32,7 @@ if (Meteor.isServer) {
       });
 
       it('table reports', function () {
-        const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts');
+        const chartOfAccounts = Breakdowns.findOneByName('COA', null);
         const report = new TableReport(JournalEntries, chartOfAccounts);
 
         report.addTree('cols', {
@@ -56,7 +56,7 @@ if (Meteor.isServer) {
       });
 
       xit('balance reports', function () {
-        const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts');
+        const chartOfAccounts = Breakdowns.findOneByName('COA', null);
         const report = new BalanceReport(chartOfAccounts);
 
         report.addTree('cols', {
