@@ -139,17 +139,17 @@ export function defineBreakdownTemplates(communityId) {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '1', name: 'Parcels', children: [
-      { digit: '1', name: 'Main building' },
+    digit: '', name: 'Parcels', children: [
+      { digit: 'A', name: 'Main building' },
     ],
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '7', name: 'Localizer', label: 'Locations',
+    digit: '', name: 'Localizer', label: 'Locations',
     children: [
-      { digit: '1', name: 'Parcels', include: 'Parcels',
+      { digit: 'A', name: 'Parcels', include: 'Parcels',
       },
-      { digit: '2', name: 'Central',
+      { digit: '@', name: 'Central',
         children: [
         { digit: '1', name: 'Garden' },
         { digit: '2', name: 'Heating system' },

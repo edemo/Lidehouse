@@ -122,7 +122,7 @@ Template.Parcels_finances.viewmodel({
       Object.keys(totals.balances).forEach(key => {
         if (key[0] === '#') {
           const parcelCode = key.substr(1);
-          const parcelRef = Breakdowns.localizer().nodeByCode(parcelCode).digit;
+          const parcelRef = parcelCode; // Breakdowns.localizer().nodeByCode(parcelCode).digit;
           const parcel = Parcels.findOne({ communityId, ref: parcelRef });
           dataset.push({
             parcelCode,

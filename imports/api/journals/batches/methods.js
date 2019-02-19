@@ -65,8 +65,6 @@ export const apply = new ValidatedMethod({
       note: parcelBilling.note,
     };
     const result = insertTx._execute({ userId: this.userId }, tx);
-    console.log('tx', tx);
-    console.log('result', result);
     return result;
   },
 });

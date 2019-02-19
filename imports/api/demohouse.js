@@ -99,7 +99,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[0] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 1,
-    ref: '1',
+    ref: 'A1',
     units: 489,
     floor: __('demo.ground'),
     door: '1',
@@ -114,7 +114,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[1] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 2,
-    ref: '2',
+    ref: 'A2',
     units: 427,
     floor: __('demo.ground'),
     door: '2',
@@ -129,7 +129,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[2] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 3,
-    ref: '3',
+    ref: 'A3',
     units: 587,
     floor: 'I',
     door: '3',
@@ -144,7 +144,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[3] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 4,
-    ref: '4',
+    ref: 'A4',
     units: 622,
     floor: 'I',
     door: '4',
@@ -159,7 +159,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[4] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 5,
-    ref: '5',
+    ref: 'A5',
     units: 587,
     floor: 'II',
     door: '5',
@@ -174,7 +174,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[5] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 6,
-    ref: '6',
+    ref: 'A6',
     units: 622,
     floor: 'II',
     door: '6',
@@ -189,7 +189,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[6] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 7,
-    ref: '7',
+    ref: 'A7',
     units: 587,
     floor: 'III',
     door: '7',
@@ -204,7 +204,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[7] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 8,
-    ref: '8',
+    ref: 'A8',
     units: 622,
     floor: 'III',
     door: '8',
@@ -219,7 +219,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[8] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 9,
-    ref: '9',
+    ref: 'A9',
     units: 587,
     floor: 'IV',
     door: '9',
@@ -234,7 +234,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[9] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 10,
-    ref: '10',
+    ref: 'A10',
     units: 622,
     floor: 'IV',
     door: '10',
@@ -249,7 +249,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[10] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 11,
-    ref: '11',
+    ref: 'A11',
     units: 996,
     floor: __('demo.attic'),
     door: '11',
@@ -263,7 +263,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[11] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 12,
-    ref: '12',
+    ref: 'A12',
     units: 444,
     floor: __('demo.cellar'),
     door: '1',
@@ -277,7 +277,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[12] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 13,
-    ref: '13',
+    ref: 'A13',
     units: 613,
     floor: __('demo.cellar'),
     door: '2',
@@ -291,7 +291,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoParcels[13] = Parcels.insert({
     communityId: demoCommunityId,
     serial: 14,
-    ref: '14',
+    ref: 'A14',
     units: 196,
     floor: __('demo.ground'),
     door: '1',
@@ -942,7 +942,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const parcelBreakdown = { communityId: demoCommunityId, name: 'Parcels', digit: '1', children: [] };
   Parcels.find({ communityId: demoCommunityId }).forEach(parcel => {
-    parcelBreakdown.children.push({ digit: parcel.ref, name: parcel.ref });
+    parcelBreakdown.children.push({ digit: parcel.serial.toString(), name: parcel.ref });
   });
   Breakdowns.define(parcelBreakdown);
 
@@ -966,18 +966,18 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate,
       projection: 'perArea',
       amount: 275,
-      payinType: 'Közös költség befizetés',
+      payinType: 'Közös költség előírás',
       localizer: name2code('Localizer', 'Parcels'),
     });
 
     for (let i = 0; i < 4; i++) {
-      const place = ['2', '5', '8', '14'];
+      const place = ['A2', 'A5', 'A8', 'A14'];
       insertParcelBilling._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
         valueDate,
         projection: 'perHabitant',
         amount: 2500,
-        payinType: 'Víz díj befizetés',
+        payinType: 'Víz díj előírás',
         localizer: name2code('Localizer', place[i]),
       });
     }
@@ -988,8 +988,8 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate,
         projection: 'perVolume',
         amount: 85,
-        payinType: 'Fűtési díj befizetés',
-        localizer: name2code('Localizer', i.toString()),
+        payinType: 'Fűtési díj előírás',
+        localizer: name2code('Localizer', 'A' + i.toString()),
       });
     }
   });
@@ -999,7 +999,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     projection: 'absolute',
     amount: 60000,
     valueDate: new Date('2017-09-15'),
-    payinType: 'Felújítási célbefizetés',
+    payinType: 'Célbefizetés előírás',
     localizer: name2code('Localizer', 'Parcels'),
     note: __('demo.journals.note.0'),
   });
@@ -1016,46 +1016,27 @@ export function insertDemoHouse(lang, demoOrTest) {
 */
   // === Opening ===
 
-  insertTx._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
-  //  defId: defOpening,
-    valueDate: new Date('2017-01-01'),
-    amount: 100000,
-    credit: [{
-      account: name2code('Liabilities', 'Opening'),
-    }],
-    debit: [{
-      account: name2code('Assets', 'Pénztár'),
-    }],
+  const openings = [
+    ['Assets', 'Pénztár', 100000],
+    ['Assets', 'Folyószámla', 110000],
+    ['Assets', 'Megtakarítási számla', 120000],
+  ];
+  openings.forEach(opening => {
+    insertTx._execute({ userId: demoAccountantId }, {
+      communityId: demoCommunityId,
+    //  defId: defOpening,
+      valueDate: new Date('2017-01-01'),
+      amount: opening[2],
+      credit: [{
+        account: name2code('Liabilities', 'Opening'),
+      }],
+      debit: [{
+        account: name2code(opening[0], opening[1]),
+      }],
+    });
   });
 
-  insertTx._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
-//    defId: defOpening,
-    valueDate: new Date('2017-01-01'),
-    amount: 110000,
-    credit: [{
-      account: name2code('Liabilities', 'Opening'),
-    }],
-    debit: [{
-      account: name2code('Assets', 'Folyószámla'),
-    }],
-  });
-
-  insertTx._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
-//    defId: defOpening,
-    valueDate: new Date('2017-01-01'),
-    amount: 120000,
-    credit: [{
-      account: name2code('Liabilities', 'Opening'),
-    }],
-    debit: [{
-      account: name2code('Assets', 'Megtakarítási számla'),
-    }],
-  });
-
-    // === Befizetesek ===
+  // === Incomes ===
 
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
@@ -1146,6 +1127,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.journals.note.4'),
   });
 
+  // === Payins ===
+
   for (let m = 1; m < 13; m++) {
     for (let i = 1; i < 15; i++) {
       const payable = [0, 15125, 13200, 18150, 19250, 18150, 19250, 18150,
@@ -1156,8 +1139,8 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
         credit: [{
-          account: name2code('Incomes', 'Közös költség befizetés'),
-          localizer: name2code('Localizer', i.toString()),
+          account: name2code('Assets', 'Közös költség előírás'),
+          localizer: name2code('Localizer', 'A' + i.toString()),
         }],
         debit: [{
           account: name2code('Assets', 'Folyószámla'),
@@ -1169,14 +1152,14 @@ export function insertDemoHouse(lang, demoOrTest) {
   for (let m = 1; m < 13; m++) {
     for (let i = 0; i < 4; i++) {
       const payable = [5000, 7500, 5000, 2500];
-      const place = ['2', '5', '8', '14'];
+      const place = ['A2', 'A5', 'A8', 'A14'];
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
 //        defId: defPayin,
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
-          account: name2code('Incomes', 'Víz díj befizetés'),
+          account: name2code('Assets', 'Víz díj előírás'),
           localizer: name2code('Localizer', place[i]),
         }],
         debit: [{
@@ -1194,8 +1177,8 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
-          account: name2code('Incomes', 'Fűtési díj befizetés'),
-          localizer: name2code('Localizer', i.toString()),
+          account: name2code('Assets', 'Fűtési díj előírás'),
+          localizer: name2code('Localizer', 'A' + i.toString()),
         }],
         debit: [{
           account: name2code('Assets', 'Folyószámla'),
@@ -1211,8 +1194,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
       credit: [{
-        account: name2code('Incomes', 'Felújítási célbefizetés'),
-        localizer: name2code('Localizer', i.toString()),
+        account: name2code('Assets', 'Célbefizetés előírás'),
+        localizer: name2code('Localizer', 'A' + i.toString()),
       }],
       debit: [{
         account: name2code('Assets', 'Folyószámla'),
@@ -1220,6 +1203,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 
+  // == Expenses
+  
   for (let m = 1; m < 13; m += 2) {
     const payable = [0, 8432, 0, 7250, 0, 9251, 0, 11624, 0, 10635, 0, 8540];
     insertTx._execute({ userId: demoAccountantId }, {
@@ -1328,7 +1313,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
       language: lang,
     });
     const user = Meteor.users.findOne(userWithRoleId);
-    const parcelId = Parcels.findOne({ communityId, ref: '7' })._id;
+    const parcelId = Parcels.findOne({ communityId, ref: 'A7' })._id;
     Meteor.users.update({ _id: userWithRoleId },
       { $set: {
         'emails.0.verified': true,
@@ -1358,13 +1343,13 @@ export function insertLoadsOfDummyData(lang, demoOrTest) {
   }
 
   const RECORDS_COUNT = 1000;
-  for (let i = 0; i < RECORDS_COUNT; i++) {
+  for (let i = 101; i < 101 + RECORDS_COUNT; i++) {
     const parcelId = Parcels.insert({
       communityId,
       approved: true,
       serial: i,
-      ref: i.toString(),
-      leadRef: i.toString(),
+      ref: 'A' + i.toString(),
+      leadRef: 'A' + i.toString(),
       units: 0,
       floor: faker.random.number(10).toString(),
       door: faker.random.number(10).toString(),
@@ -1464,7 +1449,7 @@ Meteor.methods({
       Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
     }
     const demoParcelSerial = (demoParcelCounterStart + counter);
-    const demoParcelRef = demoParcelSerial.toString();
+    const demoParcelRef = 'A' + demoParcelSerial.toString();
     const demoParcelId = Parcels.insert({
       communityId: demoCommunityId,
       serial: demoParcelSerial,
@@ -1544,16 +1529,16 @@ Meteor.methods({
         valueDate,
         projection: 'perArea',
         amount: 275,
-        payinType: 'Közös költség befizetés',
-        localizer: name2code('Localizer', demoParcelSerial.toString()),
+        payinType: 'Közös költség előírás',
+        localizer: name2code('Localizer', 'A' + demoParcelSerial.toString()),
       });
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
         valueDate,
         amount: 6875,
         credit: [{
-          account: name2code('Incomes', 'Közös költség befizetés'),
-          localizer: name2code('Localizer', demoParcelSerial.toString()),
+          account: name2code('Incomes', 'Közös költség előírás'),
+          localizer: name2code('Localizer', 'A' + demoParcelSerial.toString()),
         }],
         debit: [{
           account: name2code('Assets', 'Folyószámla'),
