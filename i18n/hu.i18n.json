@@ -137,6 +137,7 @@
     "room": "szoba",
     "feedback": "visszajelzés"
   },
+  "forumtopic": "fórum téma",
 
   // commands
   "important": "Fontos",
@@ -485,6 +486,7 @@
   "update roleship successful": "Tisztség módosítva",
   "delete roleship successful": "Tisztség visszavonva",
   "delete topic successful": "Bejegyzés törölve",
+  "insert forumtopic successful": "Új fórum téma létrehozva.",
   "insert news successful": "Hirdetmény rögzítésre került",
   "update news successful": "Hirdetmény módosítva",
   "delete news successful": "Hirdetmény törölve",
