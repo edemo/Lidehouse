@@ -23,6 +23,8 @@ export const apply = new ValidatedMethod({
   run({ id }) {
     const parcelBilling = ParcelBillings.findOne(id);
     const parcels = parcelBilling.parcels();
+    let totalAmount = 0;
+    const debitLegs = [];
     parcels.forEach((parcel) => {
       let amount;
       switch (parcelBilling.projection) {
@@ -43,35 +45,29 @@ export const apply = new ValidatedMethod({
       // Not dealing with fractions of a dollar or forint
       amount = Math.round(amount);
 
-      let months;
-      if (parcelBilling.month === 'allMonths') {
-        months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-      } else if (parcelBilling.month) {
-        months = [parseInt(parcelBilling.month, 10)];
-      } else {
-        months = [BILLING_MONTH_OF_THE_YEAR];
-      }
-
-      months.forEach((i) => {
-        const txForMonth = {
-          communityId: parcelBilling.communityId,
-          valueDate: new Date(parcelBilling.year, i - 1, BILLING_DAY_OF_THE_MONTH),
-          amount,
-  //        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
-          credit: [{
-            account: Breakdowns.name2code('Liabilities', parcelBilling.payinType, parcelBilling.communityId),
-            localizer: parcelRef2digit(parcel.ref),
-          }],
-          debit: [{
-            account: Breakdowns.name2code('Assets', parcelBilling.payinType, parcelBilling.communityId),
-            localizer: parcelRef2digit(parcel.ref),
-          }],
-          note: parcelBilling.note,
-        };
-        txForMonth.batchId = id;
-        insertTx._execute({ userId: this.userId }, txForMonth);
+      totalAmount += amount;
+      debitLegs.push({
+        amount,
+        account: Breakdowns.name2code('Assets', parcelBilling.payinType, parcelBilling.communityId),
+        localizer: Breakdowns.name2code('Localizer', parcel.ref, parcelBilling.communityId),
       });
     });
+
+    const tx = {
+      communityId: parcelBilling.communityId,
+      valueDate: parcelBilling.valueDate,
+      amount: totalAmount,
+//        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
+      credit: [{
+        account: Breakdowns.name2code('Incomes', parcelBilling.payinType, parcelBilling.communityId),
+      }],
+      debit: debitLegs,
+      note: parcelBilling.note,
+    };
+    const result = insertTx._execute({ userId: this.userId }, tx);
+    console.log('tx', tx);
+    console.log('result', result);
+    return result;
   },
 });
 
@@ -81,7 +77,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     const id = ParcelBillings.insert(doc);
-//    apply._execute({ userId: this.userId }, { id });
+    apply._execute({ userId: this.userId }, { id });
     return id;
   },
 });

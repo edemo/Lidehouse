@@ -175,9 +175,8 @@ Template.Community_finances.helpers({
     return Reports[name](year);
   },
   subAccountOptionsOf(accountCode) {
-    const communityId = Session.get('activeCommunityId');
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
-    const brk = Breakdowns.chartOfAccounts(communityId);
+    const brk = Breakdowns.chartOfAccounts();
     if (brk) return brk.leafOptions(accountCode);
     return [];
   },

@@ -958,53 +958,51 @@ export function insertDemoHouse(lang, demoOrTest) {
   };
 
     // === Eloirasok ===
+  ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
+    const valueDate = new Date(`2017-${mm}-12`);
 
-  insertParcelBilling._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
-    projection: 'perArea',
-    amount: 275,
-    year: 2017,
-    month: 'allMonths',
-    payinType: 'Közös költség befizetés',
-    localizer: name2code('Localizer', 'Parcels'),
+    insertParcelBilling._execute({ userId: demoAccountantId }, {
+      communityId: demoCommunityId,
+      valueDate,
+      projection: 'perArea',
+      amount: 275,
+      payinType: 'Közös költség befizetés',
+      localizer: name2code('Localizer', 'Parcels'),
+    });
+
+    for (let i = 0; i < 4; i++) {
+      const place = ['2', '5', '8', '14'];
+      insertParcelBilling._execute({ userId: demoAccountantId }, {
+        communityId: demoCommunityId,
+        valueDate,
+        projection: 'perHabitant',
+        amount: 2500,
+        payinType: 'Víz díj befizetés',
+        localizer: name2code('Localizer', place[i]),
+      });
+    }
+
+    for (let i = 1; i < 11; i++) {
+      insertParcelBilling._execute({ userId: demoAccountantId }, {
+        communityId: demoCommunityId,
+        valueDate,
+        projection: 'perVolume',
+        amount: 85,
+        payinType: 'Fűtési díj befizetés',
+        localizer: name2code('Localizer', i.toString()),
+      });
+    }
   });
-
-  for (let i = 0; i < 4; i++) {
-    const place = ['2', '5', '8', '14'];
-    insertParcelBilling._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-      projection: 'perHabitant',
-      amount: 2500,
-      year: 2017,
-      month: 'allMonths',
-      payinType: 'Víz díj befizetés',
-      localizer: name2code('Localizer', place[i]),
-    });
-  }
-
-  for (let i = 1; i < 11; i++) {
-    insertParcelBilling._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-      projection: 'perVolume',
-      amount: 85,
-      year: 2017,
-      month: 'allMonths',
-      payinType: 'Fűtési díj befizetés',
-      localizer: name2code('Localizer', i.toString()),
-    });
-  }
 
   insertParcelBilling._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
     projection: 'absolute',
     amount: 60000,
-    year: 2017,
-    month: '9',
+    valueDate: new Date('2017-09-15'),
     payinType: 'Felújítási célbefizetés',
     localizer: name2code('Localizer', 'Parcels'),
     note: __('demo.journals.note.0'),
   });
-
 
 // ===== Journals =====
 /*
@@ -1021,7 +1019,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
   //  defId: defOpening,
-    phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 100000,
     credit: [{
@@ -1035,7 +1032,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
 //    defId: defOpening,
-    phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 110000,
     credit: [{
@@ -1049,7 +1045,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
 //    defId: defOpening,
-    phase: 'done',
     valueDate: new Date('2017-01-01'),
     amount: 120000,
     credit: [{
@@ -1065,7 +1060,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
 //    defId: defIncome,
-    phase: 'done',
     valueDate: new Date('2017-06-01'),
     amount: 3500,
     credit: [{
@@ -1081,7 +1075,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defIncome,
-      phase: 'done',
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
       credit: [{
@@ -1097,7 +1090,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
 //    defId: defIncome,
-    phase: 'done',
     valueDate: new Date('2017-09-15'),
     amount: 500000,
     credit: [{
@@ -1113,7 +1105,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
 //    defId: defIncome,
-    phase: 'done',
     valueDate: new Date('2017-05-10'),
     amount: 55000,
     credit: [{
@@ -1129,7 +1120,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
 //    defId: defIncome,
-    phase: 'done',
     valueDate: new Date('2017-10-15'),
     amount: 500000,
     credit: [{
@@ -1145,7 +1135,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   insertTx._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
 //    defId: defLoan,
-    phase: 'done',
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
     credit: [{
@@ -1164,7 +1153,6 @@ export function insertDemoHouse(lang, demoOrTest) {
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
 //        defId: defPayin,
-        phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
         credit: [{
@@ -1185,7 +1173,6 @@ export function insertDemoHouse(lang, demoOrTest) {
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
 //        defId: defPayin,
-        phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
@@ -1204,7 +1191,6 @@ export function insertDemoHouse(lang, demoOrTest) {
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
 //        defId: defPayin,
-        phase: 'done',
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
@@ -1222,7 +1208,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defPayin,
-      phase: 'done',
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
       credit: [{
@@ -1240,7 +1225,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defExpense,
-      phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
       credit: [{
@@ -1258,7 +1242,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defExpense,
-      phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
       credit: [{
@@ -1275,7 +1258,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defExpense,
-      phase: 'done',
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 10250,
       credit: [{
@@ -1555,20 +1537,19 @@ Meteor.methods({
       return Breakdowns.name2code(breakdownName, leafName, demoCommunityId);
     };
 
-    insertParcelBilling._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-      projection: 'perArea',
-      amount: 275,
-      year: 2017,
-      month: 'allMonths',
-      payinType: 'Közös költség befizetés',
-      localizer: name2code('Localizer', demoParcelSerial.toString()),
-    });
     for (let m = 1; m < 13; m++) {
+      const valueDate = new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
+      insertParcelBilling._execute({ userId: demoAccountantId }, {
+        communityId: demoCommunityId,
+        valueDate,
+        projection: 'perArea',
+        amount: 275,
+        payinType: 'Közös költség befizetés',
+        localizer: name2code('Localizer', demoParcelSerial.toString()),
+      });
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
-        phase: 'done',
-        valueDate: new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11'])),
+        valueDate,
         amount: 6875,
         credit: [{
           account: name2code('Incomes', 'Közös költség befizetés'),

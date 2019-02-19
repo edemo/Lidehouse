@@ -10,11 +10,11 @@ export function defineBreakdownTemplates(communityId) {
   Breakdowns.define({ communityId: null,
     name: 'Owner payin types', locked: true,
     children: [
-    { digit: '1', name: 'Közös költség befizetés' },
-    { digit: '2', name: 'Felújítási alap befizetés' },
-    { digit: '3', name: 'Felújítási célbefizetés' },
-    { digit: '4', name: 'Víz díj befizetés' },
-    { digit: '5', name: 'Fűtési díj befizetés' },
+    { digit: '1', name: 'Közös költség előírás' },
+    { digit: '2', name: 'Felújítási alap előírás' },
+    { digit: '3', name: 'Célbefizetés előírás' },
+    { digit: '4', name: 'Víz díj előírás' },
+    { digit: '5', name: 'Fűtési díj előírás' },
     { digit: '6', name: 'Egyéb közvetített szolgáltatás' },
     ],
   });
@@ -22,7 +22,7 @@ export function defineBreakdownTemplates(communityId) {
   Breakdowns.define({ communityId: null,
     digit: '9', name: 'Incomes', locked: true, sign: -1,
     children: [
-      { digit: '1', name: 'Owner payins', locked: true,
+      { digit: '5', name: 'Owner payins', locked: true,
         include: 'Owner payin types',
         children: [
           { digit: '7', name: 'Unidentified payins' },
@@ -91,7 +91,7 @@ export function defineBreakdownTemplates(communityId) {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '1', name: 'Assets', locked: true, sign: +1,
+    digit: '3', name: 'Assets', locked: true, sign: +1,
     children: [
       { digit: '1', name: 'Tárgyi és immateriális',
         children: [
@@ -109,11 +109,18 @@ export function defineBreakdownTemplates(communityId) {
       { digit: '3', name: 'Owner obligations',
         include: 'Owner payin types',
       },
+      { digit: '4', name: 'Hátralékok',
+        children: [
+        { digit: '1', name: 'Tulajdnosok jelzáloggal nem terhelt hátraléka' },
+        { digit: '2', name: 'Tulajdnosok jelzáloggal terhelt hátraléka' },
+        ],
+      },
+      { digit: '5', name: 'Egyéb követelések' },
     ],
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '5', name: 'Liabilities', locked: true, sign: -1,
+    digit: '4', name: 'Liabilities', locked: true, sign: -1,
     children: [
       { digit: '1', name: 'Equity', locked: true,
         children: [
@@ -122,15 +129,12 @@ export function defineBreakdownTemplates(communityId) {
             { digit: '3', name: 'Performance' },
         ],
       },
-      { digit: '2', name: 'Hitelek',
+      { digit: '4', name: 'Hitelek',
         children: [
         { digit: '1', name: 'Bank hitel' },
         ],
       },
-      { digit: '3', name: 'Owners', locked: true,
-        include: 'Owner payin types',
-        children: [],
-      },
+      { digit: '5', name: 'Szállítók' },
     ],
   });
 

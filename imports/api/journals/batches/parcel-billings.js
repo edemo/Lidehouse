@@ -16,24 +16,18 @@ ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
+  valueDate: { type: Date },
   amount: { type: Number },
   payinType: { type: String }, // account code
   localizer: { type: String }, // account code
-  year: { type: Number },
-  month: { type: String, optional: true, allowedValues: ParcelBillings.monthValues, autoform: autoformOptions(ParcelBillings.monthValues) },
   note: { type: String, max: 100, optional: true },
 });
 
 ParcelBillings.helpers({
   parcels() {
-    const localizerTree = Breakdowns.findOneByName('Localizer', this.communityId);
-//    console.log('nodeName', localizerTree.name);
-    const leafs = localizerTree.leafsOf(this.localizer);
-//    console.log('leafs', leafs);
+    const leafs = Breakdowns.localizer(this.communityId).leafsOf(this.localizer);
     const parcelLeafs = leafs.filter(l => leafIsParcel(l));
-//    console.log('parcelLeafs', parcelLeafs);
     const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: digit2parcelRef(l.digit) }));
-//    console.log('parcels', parcels);
     return parcels;
   },
 });

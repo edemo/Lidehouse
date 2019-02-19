@@ -39,7 +39,7 @@ Meteor.publish('journals.byAccount', function journalsInCommunity(params) {
   const selector = { communityId };
   if (account) selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];
   if (localizer) selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
-  console.log('in sub', selector);
+
   return Journals.find(selector);
 });
 
