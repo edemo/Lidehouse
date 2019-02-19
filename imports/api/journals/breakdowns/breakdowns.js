@@ -19,7 +19,7 @@ function deepCopy(obj) {
 
 class BreakdownsCollection extends Mongo.Collection {
   define(breakdown) {
-    super.define({ communityId: breakdown.communityId, name: breakdown.name }, breakdown);
+    return super.define({ communityId: breakdown.communityId, name: breakdown.name }, breakdown);
   }
 }
 export const Breakdowns = new BreakdownsCollection('breakdowns');
