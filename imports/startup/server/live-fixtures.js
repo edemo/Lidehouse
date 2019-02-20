@@ -16,7 +16,7 @@ Meteor.startup(() => {
     if (Meteor.settings.enableTest) {
       insertDemoHouse(lang, 'test');
       insertLoginableUsersWithRoles(lang, 'test');
-//      insertLoadsOfDummyData(lang, 'test');
+      insertLoadsOfDummyData(lang, 'test');
     }
   });
 });

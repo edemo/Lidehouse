@@ -50,6 +50,7 @@ Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) 
   //console.log("looking for", nodeName);
   //console.log("in breakdown:", JSON.stringify(breakdown));
   const node = breakdown.findNodeByName(nodeName);
+  if (!node) throw new Meteor.Error(`Looking for ${nodeName} in ${breakdownName}`, 'Cannot find breakdown node');
   //console.log("result:", node.code, node.name);
   return node.code;
 };

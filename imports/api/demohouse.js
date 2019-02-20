@@ -1294,6 +1294,36 @@ function capitalize(text) {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
+function generateDemoPayments(parcelCode, communityId) {
+  const name2code = function name2code(breakdownName, leafName) {
+    return Breakdowns.name2code(breakdownName, leafName, communityId);
+  };
+  const accountantId = Memberships.findOne({ communityId, role: 'accountant' }).person.userId;
+
+  for (let mm = 1; mm < 13; mm++) {
+    const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
+    insertParcelBilling._execute({ userId: accountantId }, {
+      communityId,
+      valueDate,
+      projection: 'perArea',
+      amount: 275,
+      payinType: 'Közös költség előírás',
+      localizer: name2code('Localizer', parcelCode),
+    });
+    insertTx._execute({ userId: accountantId }, {
+      communityId,
+      valueDate,
+      amount: 6875,
+      credit: [{
+        account: name2code('Incomes', 'Közös költség előírás'),
+        localizer: name2code('Localizer', parcelCode),
+      }],
+      debit: [{
+        account: name2code('Assets', 'Folyószámla'),
+      }],
+    });
+  }
+}
 export function insertLoginableUsersWithRoles(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const com = { en: 'com', hu: 'hu' }[lang];
@@ -1338,18 +1368,18 @@ export function insertLoadsOfDummyData(lang, demoOrTest) {
   const com = { en: 'com', hu: 'hu' }[lang];
   const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
 
-  if (Parcels.find({ communityId }).count() > 100) {
-    return;
-  }
+  if (Parcels.find({ communityId }).count() > 100) return;
 
+  const childrenParcelsToAddToBreakdown = [];
   const RECORDS_COUNT = 1000;
   for (let i = 101; i < 101 + RECORDS_COUNT; i++) {
+    const parcelCode = 'A' + i.toString();
     const parcelId = Parcels.insert({
       communityId,
       approved: true,
       serial: i,
-      ref: 'A' + i.toString(),
-      leadRef: 'A' + i.toString(),
+      ref: parcelCode,
+      leadRef: parcelCode,
       units: 0,
       floor: faker.random.number(10).toString(),
       door: faker.random.number(10).toString(),
@@ -1357,6 +1387,7 @@ export function insertLoadsOfDummyData(lang, demoOrTest) {
       lot: '123456/A/' + i,
       area: faker.random.number(150),
     });
+    childrenParcelsToAddToBreakdown.push({ digit: i.toString(), name: parcelCode });
 
     const membershipId = Memberships.insert({
       communityId,
@@ -1375,6 +1406,12 @@ export function insertLoadsOfDummyData(lang, demoOrTest) {
       },
       ownership: { share: new Fraction(1, 1) },
     });
+
+    Breakdowns.update({ communityId, name: 'Parcels' }, {
+      $push: { children: { $each: childrenParcelsToAddToBreakdown } },
+    });
+
+    generateDemoPayments(parcelCode, communityId);
   }
 }
 
@@ -1467,14 +1504,14 @@ Meteor.methods({
       accepted: true,
       role: 'owner',
       parcelId: demoParcelId,
-      ownership: { share: new Fraction(1, 1) } });
+      ownership: { share: new Fraction(1, 1) },
+    });
 
     Breakdowns.update({ communityId: demoCommunityId, name: 'Parcels' }, {
-      $push: { children: { digit: demoParcelRef, name: demoParcelRef } },
+      $push: { children: { digit: demoParcelSerial.toString(), name: demoParcelRef } },
     });
 
     const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;
-    const demoAccountantId = Memberships.findOne({ communityId: demoCommunityId, role: 'accountant' }).person.userId;
     const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex: '.1@demo.hu' } })._id;
 
     const demoUserMessageRoom = Topics.insert({
@@ -1518,33 +1555,7 @@ Meteor.methods({
       ],
     } });
 
-    const name2code = function name2code(breakdownName, leafName) {
-      return Breakdowns.name2code(breakdownName, leafName, demoCommunityId);
-    };
-
-    for (let m = 1; m < 13; m++) {
-      const valueDate = new Date('2017-' + m + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
-      insertParcelBilling._execute({ userId: demoAccountantId }, {
-        communityId: demoCommunityId,
-        valueDate,
-        projection: 'perArea',
-        amount: 275,
-        payinType: 'Közös költség előírás',
-        localizer: name2code('Localizer', 'A' + demoParcelSerial.toString()),
-      });
-      insertTx._execute({ userId: demoAccountantId }, {
-        communityId: demoCommunityId,
-        valueDate,
-        amount: 6875,
-        credit: [{
-          account: name2code('Incomes', 'Közös költség előírás'),
-          localizer: name2code('Localizer', 'A' + demoParcelSerial.toString()),
-        }],
-        debit: [{
-          account: name2code('Assets', 'Folyószámla'),
-        }],
-      });
-    }
+    generateDemoPayments(demoParcelRef, demoCommunityId);
 
     Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
