@@ -9,6 +9,7 @@ export const Balances = new Mongo.Collection('balances');
 
 Balances.schema = new SimpleSchema([{
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  //phase: { type: String, defaultValue: 'done', allowedValues: ['real', 'plan'] },
   account: { type: String },
   localizer: { type: String, optional: true },
   tag: { type: String },  // can be a period, end of a period, or a period closing tag

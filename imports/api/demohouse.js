@@ -1259,7 +1259,6 @@ export function insertDemoHouse(lang, demoOrTest) {
 
  /* Journals.insert({
     communityId: demoCommunityId,
-    phase: 'plan',
     valueDate: new Date('2017-01-01'),
     amount: -24000,
     account: {
@@ -1269,7 +1268,6 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   Journals.insert({
     communityId: demoCommunityId,
-    phase: 'plan',
     valueDate: new Date('2017-01-01'),
     amount: -415000,
     account: {
@@ -1363,16 +1361,14 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
   });
 }
 
-export function insertLoadsOfDummyData(lang, demoOrTest) {
+export function insertLoadsOfDummyData(lang, demoOrTest, parcelCount) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const com = { en: 'com', hu: 'hu' }[lang];
   const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
 
-  if (Parcels.find({ communityId }).count() > 100) return;
+  if (Parcels.find({ communityId }).count() >= parcelCount) return;
 
-  const childrenParcelsToAddToBreakdown = [];
-  const RECORDS_COUNT = 1000;
-  for (let i = 101; i < 101 + RECORDS_COUNT; i++) {
+  for (let i = 101; i < 101 + parcelCount; i++) {
     const parcelCode = 'A' + i.toString();
     const parcelId = Parcels.insert({
       communityId,
@@ -1387,8 +1383,6 @@ export function insertLoadsOfDummyData(lang, demoOrTest) {
       lot: '123456/A/' + i,
       area: faker.random.number(150),
     });
-    childrenParcelsToAddToBreakdown.push({ digit: i.toString(), name: parcelCode });
-
     const membershipId = Memberships.insert({
       communityId,
       parcelId,
@@ -1408,7 +1402,7 @@ export function insertLoadsOfDummyData(lang, demoOrTest) {
     });
 
     Breakdowns.update({ communityId, name: 'Parcels' }, {
-      $push: { children: { $each: childrenParcelsToAddToBreakdown } },
+      $push: { children: { digit: i.toString(), name: parcelCode } },
     });
 
     generateDemoPayments(parcelCode, communityId);

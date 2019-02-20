@@ -338,9 +338,6 @@
     }
   },
   "schemaJournals": {
-    "phase": {
-      "label": "Phase"
-    },
     "valueDate": {
       "label": "Accounting date",
       "placeholder": "(eg. 2017-05-06)"

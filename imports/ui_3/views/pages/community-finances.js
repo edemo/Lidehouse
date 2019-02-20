@@ -39,8 +39,8 @@ const notVotedColor = '#dedede';
 Template.Community_finances.onCreated(function communityFinancesOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
-    this.subscribe('balances.inCommunity', { communityId });
     this.subscribe('breakdowns.inCommunity', { communityId });
+    this.subscribe('balances.inCommunity', { communityId });
 //    this.subscribe('journals.inCommunity', { communityId });
 //    this.subscribe('txs.inCommunity', { communityId });
 //    this.subscribe('txDefs.inCommunity', { communityId });
@@ -189,7 +189,6 @@ Template.Community_finances.events({
       id: 'af.journal.view',
       collection: Journals,
       schema: Journals.inputSchema,
-      omitFields: ['phase'],
       doc: Journals.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',

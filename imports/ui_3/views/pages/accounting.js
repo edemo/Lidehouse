@@ -102,7 +102,7 @@ Template.Accounting.helpers({
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Journals.find({ communityId, phase: 'done', complete: false }).fetch();
+      return Journals.find({ communityId, complete: false }).fetch();
     }
     return getTableData;
   },
@@ -233,7 +233,6 @@ Template.Accounting.events({
       id: 'af.journal.insert',
       collection: Journals,
       schema: def.schema,
-      omitFields: ['phase'],
 //      type: 'method',
 //      meteormethod: 'journals.insert',
       template: 'bootstrap3-inline',
@@ -254,7 +253,6 @@ Template.Accounting.events({
       id: 'af.journal.update',
       collection: Journals,
 //      schema: newJournalSchema(),
-      omitFields: ['phase'],
       doc: Journals.findOne(id),
       type: 'method-update',
       meteormethod: 'journals.update',
@@ -268,7 +266,6 @@ Template.Accounting.events({
       id: 'af.journal.view',
       collection: Journals,
       schema: Journals.inputSchema,
-      omitFields: ['phase'],
       doc: Journals.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',
@@ -287,7 +284,6 @@ Template.Accounting.events({
       id: 'af.bill.insert',
       collection: Journals,
       schema: newJournalSchema(),
-      omitFields: ['phase'],
       type: 'method',
       meteormethod: 'bills.insert',
       template: 'bootstrap3-inline',
@@ -299,7 +295,6 @@ Template.Accounting.events({
       id: 'af.bill.update',
       collection: Journals,
       schema: newJournalSchema(),
-      omitFields: ['phase'],
       doc: Journals.findOne(id),
       type: 'method-update',
       meteormethod: 'bills.update',
@@ -313,7 +308,6 @@ Template.Accounting.events({
       id: 'af.bill.view',
       collection: Journals,
       schema: newJournalSchema(),
-      omitFields: ['phase'],
       doc: Journals.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',
@@ -358,7 +352,6 @@ AutoForm.addModalHooks('af.journal.update');
 AutoForm.addHooks('af.journal.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.phase = 'done';
     return doc;
   },
   onSubmit(doc) {
@@ -384,7 +377,6 @@ AutoForm.addModalHooks('af.bill.update');
 AutoForm.addHooks('af.bill.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.phase = 'plan';
     doc.amount *= -1;
     return doc;
   },

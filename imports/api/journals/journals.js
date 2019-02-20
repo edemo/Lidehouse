@@ -60,14 +60,11 @@ export class JournalsCollection extends Mongo.Collection {
           updateBalance({ communityId, account, tag, localizer }, amount);
         }
       });
-//      });
     });
   }
 }
 
 Journals = new JournalsCollection('journals');
-
-Journals.phaseValues = ['done', 'plan'];
 
 Journals.entrySchema = new SimpleSchema([
   AccountSchema,
@@ -78,7 +75,6 @@ Journals.rawSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating journal (by posting rule)
   batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
-  phase: { type: String, defaultValue: 'done', allowedValues: Journals.phaseValues, autoform: autoformOptions(Journals.phaseValues) },
   valueDate: { type: Date },
   amount: { type: Number },
 //  year: { type: Number, optional: true, autoform: { omit: true },
@@ -111,10 +107,13 @@ Journals.schema = new SimpleSchema([
   _.clone(Journals.noteSchema),
 ]);
 
+Meteor.startup(function indexJournals() {
+  Journals.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
+});
+
 // A *journal* is effecting a certain field (in pivot tables) with the *amount* of the journal,
 // but the Sign of the effect is depending on 3 components:
 // - Sign of the amount field
-// - Sign of the phase (done => +1, bill, plan => -1)
 // - Sign of the direction (in case of accounts only) if field appears in accountFrom => -1, if in accountTo => +1
 // The final sign of the impact of this tx, is the multiplication of these 3 signs.
 // Note: in addition the Sign of the breakdown itself (in the schema) will control how we display it, 

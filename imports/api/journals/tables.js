@@ -20,11 +20,9 @@ export function journalColumns(permissions) {
 
   const columns = [
     { data: 'valueDate', title: __('schemaJournals.valueDate.label'), render: Render.formatDate },
-//    { data: 'phase', title: __('schemaJournals.phase.label'), render: Render.translate },
     { data: 'amount', title: __('schemaJournals.amount.label'), render: Render.formatNumber },
     { data: 'credit', title: __('schemaJournals.credit.label'), render: Render.journalEntries },
     { data: 'debit', title: __('schemaJournals.debit.label'), render: Render.journalEntries },
-//    { data: 'placeAccounts()', title: __('Konyveles hely'), render: Render.breakdowns },
     { data: 'ref', title: __('schemaJournals.ref.label') },
     { data: 'note', title: __('schemaJournals.note.label') },
     { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },

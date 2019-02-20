@@ -78,7 +78,6 @@ if (Meteor.isServer) {
         insertTx = function (params) {
           return Journals.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
             communityId: Fixture.demoCommunityId,
-            phase: 'done',
             valueDate: params.valueDate,
             amount: params.amount,
             credit: [{

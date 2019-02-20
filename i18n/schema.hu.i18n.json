@@ -338,9 +338,6 @@
     }
   },
   "schemaJournals": {
-    "phase": {
-      "label": "Fázis"
-    },
     "valueDate": {
       "label": "Értéknap",
       "placeholder": "(pl. 2017-05-06)"

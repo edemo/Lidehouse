@@ -11,8 +11,8 @@ export const JournalEntries = new Mongo.Collection(null);
 Meteor.startup(function indexComments() {
   if (MinimongoIndexing) {
 //      JournalEntries._collection._ensureIndex('account');
-//      JournalEntries._collection._ensureIndex(['account', 'localizer']);
-//      JournalEntries._collection._ensureIndex('period');
+    JournalEntries._collection._ensureIndex(['account', 'localizer']);
+    JournalEntries._collection._ensureIndex('txId');
   }
 });
 

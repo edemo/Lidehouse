@@ -19,7 +19,6 @@ export const Reports = {
     const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts', communityId);
     const report = new TableReport(JournalEntries, chartOfAccounts);
     
-    report.addFilter({ phase: 'done', communityId });
     report.addLine('cols', [], false);
     report.addTree('rows', {
       field: 'account',
@@ -69,7 +68,7 @@ export const Reports = {
       field: 'account',
       values: Breakdowns.findOneByName('Expenses', communityId),
     }, false);
-
+/*
     const planColDef = {
       value: 'Terv',
       filter() {
@@ -77,7 +76,7 @@ export const Reports = {
       },
     };
     report.addLine('cols', [planColDef], true);
-
+*/
     const prevYearColDef = {
       field: 'year',
       value: year - 1,
@@ -102,7 +101,7 @@ export const Reports = {
     Memberships.find({ communityId, approved: true, active: true, role: 'owner', personId: Meteor.userId() })
       .map(m => myParcels.children.push({ name: m.parcel().ref /* + '. ' + __('parcel')*/ }));
 
-    report.addFilter({ phase: 'done', communityId });
+    report.addFilter({ communityId });
 
     report.addTree('rows', {
       field: 'localizer',
@@ -127,7 +126,7 @@ export const Reports = {
     const chartOfAccounts = Breakdowns.findOneByName('ChartOfAccounts', communityId);
     const report = new TableReport(JournalEntries, chartOfAccounts);
 
-    report.addFilter({ phase: 'done', communityId });
+    report.addFilter({ communityId });
 
     report.addTree('rows', {
       field: 'localizer',
