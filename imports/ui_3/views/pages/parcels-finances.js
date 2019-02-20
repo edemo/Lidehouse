@@ -79,6 +79,7 @@ export function Columns(permissions) {
 */
 
 Template.Parcels_finances.viewmodel({
+  showAllParcels: false,
   parcelToView: '',
 /*  getActiveLocalizer() {
     return Template.instance().getActiveLocalizer();
@@ -118,7 +119,7 @@ Template.Parcels_finances.viewmodel({
     const communityId = Session.get('activeCommunityId');
     return () => {
       const dataset = [];
-      const parcels = Parcels.find({ communityId });
+      const parcels = Parcels.find({ communityId, approved: true });
       parcels.forEach(parcel => {
         const parcelRef = parcel.ref;
         const owners = parcel.owners().fetch();
@@ -135,7 +136,7 @@ Template.Parcels_finances.viewmodel({
           { data: 'parcelRef', title: __('schemaParcels.ref.label') },
           { data: 'owners', title: __('owner'), render: Render.joinOccupants },
           { data: 'balance', title: __('Balance'), render: Render.formatNumber },
-          { data: 'parcelRef', title: __('Action buttons'), render: Render.buttonView },
+          { data: 'parcelRef', title: __('Action buttons'), render: Render.buttonViewLink },
         ],
       };
     };
@@ -193,8 +194,13 @@ Template.Parcels_finances.viewmodel({
 });
 
 Template.Parcels_finances.events({
-  'click .js-view'(event, instance) {
-    const parcelCode = $(event.target).data('id');
+  'click #balances .js-view'(event, instance) {
+//    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
+    const parcelCode = $(event.target).closest('button').data('id');
     instance.viewmodel.parcelToView(parcelCode);
+  },
+  'click #balances .js-show-all'(event, instance) {
+    const oldVal = instance.viewmodel.showAllParcels();
+    instance.viewmodel.showAllParcels(!oldVal);
   },
 });

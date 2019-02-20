@@ -25,6 +25,13 @@ export const Render = {
     const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-view" title=${__('view')}><i class="fa fa-eye"></i></button>`;
     return html;
   },
+  buttonViewLink(cellData, renderType, currentRow) {
+    let html = '';
+    html += `<a href="#view-target">`;
+    html += `<button data-id=${cellData} class="btn btn-white btn-xs js-view" title=${__('view')}><i class="fa fa-eye"></i></button>`;
+    html += `</a>`;
+    return html;
+  },
   buttonEdit(cellData, renderType, currentRow) {
     const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-edit" title=${__('edit')}><i class="fa fa-pencil"></i></button>`;
     return html;
