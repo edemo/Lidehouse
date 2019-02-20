@@ -118,19 +118,12 @@ Template.Parcels_finances.viewmodel({
     const communityId = Session.get('activeCommunityId');
     return () => {
       const dataset = [];
-      const totals = Balances.findOne({ communityId, tag: 'T' });
-      Object.keys(totals.balances).forEach(key => {
-        if (key[0] === '#') {
-          const parcelCode = key.substr(1);
-          const parcelRef = parcelCode; // Breakdowns.localizer().nodeByCode(parcelCode).digit;
-          const parcel = Parcels.findOne({ communityId, ref: parcelRef });
-          dataset.push({
-            parcelCode,
-            parcelRef,
-            owners: parcel.owners().fetch(),
-            balance: totals.balances[key],
-          });
-        }
+      const parcels = Parcels.find({ communityId });
+      parcels.forEach(parcel => {
+        const parcelRef = parcel.ref;
+        const owners = parcel.owners().fetch();
+        const balance = Balances.get({ communityId, account: '33', localizer: parcelRef, tag: 'T' });
+        dataset.push({ parcelRef, owners, balance });
       });
       return dataset;
     };
@@ -142,7 +135,7 @@ Template.Parcels_finances.viewmodel({
           { data: 'parcelRef', title: __('schemaParcels.ref.label') },
           { data: 'owners', title: __('owner'), render: Render.joinOccupants },
           { data: 'balance', title: __('Balance'), render: Render.formatNumber },
-          { data: 'parcelCode', title: __('Action buttons'), render: Render.buttonView },
+          { data: 'parcelRef', title: __('Action buttons'), render: Render.buttonView },
         ],
       };
     };

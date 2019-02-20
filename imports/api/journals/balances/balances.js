@@ -2,51 +2,45 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-
-import { AccountSchema, AccountSpecification } from '/imports/api/journals/account-specification.js';
-import { Breakdowns } from '../breakdowns/breakdowns';
+import { debugAssert } from '/imports/utils/assert.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 
 export const Balances = new Mongo.Collection('balances');
 
-Balances.schema = new SimpleSchema({
+Balances.schema = new SimpleSchema([{
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  tag: { type: String },  // can be a period, end of a period, or a period closing tag 
-  balances: { type: Object, blackbox: true, defaultValue: {}, optional: true },
-  // account code -> Number, localizer code -> number, or full code -> number
-});
+  account: { type: String },
+  localizer: { type: String, optional: true },
+  tag: { type: String },  // can be a period, end of a period, or a period closing tag
+  amount: { type: Number, optional: true },
+}]);
 
 Meteor.startup(function indexBalances() {
-  Balances.ensureIndex({ communityId: 1, tag: 1 });
+  Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, tag: 1 });
 });
 
 Balances.attachSchema(Balances.schema);
 
-const BalanceDefSchema = new SimpleSchema([{
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  tag: { type: String },
-}, AccountSchema]);
-
 Balances.get = function get(def) {
-  BalanceDefSchema.validate(def);
-  const balance = Balances.findOne({ communityId: def.communityId, tag: def.tag });
-  if (!balance) return 0;
-  const account = AccountSpecification.fromDoc(def);
-//  console.log('looking for code', account.toCode());
-  if (def.account && def.localizer) throw Error('We dont store balaces for 2D accounts');
-  let leafCodes;
-  if (def.account) {
-    const coa = Breakdowns.chartOfAccounts(def.communityId);
-    const leafs = coa.leafsOf(def.account);
-    leafCodes = leafs.map(leaf => '@' + leaf.code);
-  }
+  Balances.schema.validate(def);
+
+  const coa = Breakdowns.chartOfAccounts(def.communityId);
+  const leafs = coa.leafsOf(def.account);
   if (def.localizer) {
-    const loc = Breakdowns.findOneByName('Localizer', def.communityId);
-    const leafs = loc.leafsOf(def.localizer);
-    leafCodes = leafs.map(leaf => '#' + leaf.code);
+    const loc = Breakdowns.localizer(def.communityId);
+    const locNode = loc.nodeByCode(def.localizer);
+    debugAssert(locNode.isLeaf); // Currently not prepared for upward cascading localizer
+    // If you want to know the balance of a whole floor or building, the journal update has to trace the localizer's parents too
   }
   let result = 0;
-//  console.log(leafCodes);
-  leafCodes.forEach(leafCode => result += balance.balances[leafCode] || 0);
-//  console.log('=', result);
+  leafs.forEach(leaf => {
+    const balance = Balances.findOne({
+      communityId: def.communityId,
+      account: leaf.code,
+      localizer: def.localizer,
+      tag: def.tag,
+    });
+    result += balance ? balance.amount : 0;
+  });
   return result;
 };

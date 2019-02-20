@@ -26,7 +26,7 @@ Template.Balance_widget.helpers({
     const parcels = user.ownedParcels(communityId);
     let result = 0;
     parcels.forEach((parcel) => {
-      result += Balances.get({ communityId, localizer: parcel.ref, tag: 'T' });
+      result += Balances.get({ communityId, account: '33', localizer: parcel.ref, tag: 'T' });
     });
     return result;
   },

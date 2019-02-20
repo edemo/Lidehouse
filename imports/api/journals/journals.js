@@ -6,10 +6,11 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Timestamps } from '/imports/api/timestamps.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { AccountSchema } from './account-specification.js';
-import { JournalEntries } from './entries.js';
-import { Balances } from './balances/balances.js';
-import { PeriodBreakdown } from './breakdowns/breakdowns-utils';
+import { AccountSchema } from '/imports/api/journals/account-specification.js';
+import { JournalEntries } from '/imports/api/journals/entries.js';
+import { Balances } from '/imports/api/journals/balances/balances.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { PeriodBreakdown } from './breakdowns/breakdowns-utils.js';
 
 export let Journals;
 export class JournalsCollection extends Mongo.Collection {
@@ -43,14 +44,23 @@ export class JournalsCollection extends Mongo.Collection {
     const communityId = doc.communityId;
     doc.journalEntries().forEach(entry => {
       const code = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
+//      const coa = Breakdowns.chartOfAccounts(communityId);
+//      coa.parentsOf(entry.account).forEach(account => {
+      const account = entry.account;
+      const localizer = entry.localizer;
       PeriodBreakdown.parentsOf(code).forEach(tag => {
-        const bal = Balances.findOne({ communityId, tag });
-        const balId = bal ? bal._id : Balances.insert({ communityId, tag });
         const amount = entry.effectiveAmount() * revertSign;
-        const increases = {}; increases['balances.@' + entry.account] = amount;
-        if (entry.localizer) increases['balances.#' + entry.localizer] = amount;
-        Balances.update(balId, { $inc: increases });
+        function updateBalance(selector, amount) {
+          const bal = Balances.findOne(selector);
+          const balId = bal ? bal._id : Balances.insert(selector);
+          Balances.update(balId, { $inc: { amount } });
+        }
+        updateBalance({ communityId, account, tag }, amount);
+        if (localizer) {
+          updateBalance({ communityId, account, tag, localizer }, amount);
+        }
       });
+//      });
     });
   }
 }

@@ -274,7 +274,7 @@ Breakdowns.helpers({
     const parents = [];
     let node = this.nodeByCode(code);
     while (node) {
-      parents.push(node.code);
+      if (node.name) parents.push(node.code);
       node = node.parent;
     }
     return parents;

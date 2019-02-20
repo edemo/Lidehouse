@@ -23,8 +23,8 @@ if (Meteor.isServer) {
       let insertTx;
       let assertBalance;
       before(function () {
-        Breakdowns.define({
-          name: 'COA', communityId: Fixture.demoCommunityId,
+        Breakdowns.define({ communityId: Fixture.demoCommunityId,
+          digit: ':', name: 'COA',
           children: [
             { digit: '1', name: 'Level1',
               children: [
@@ -106,16 +106,16 @@ if (Meteor.isServer) {
         insertTx({
           valueDate: new Date('2017-01-01'),
           amount: 1000,
-          credit: ['12A'],
-          debit: ['19'],
+          credit: [':12A'],
+          debit: [':19'],
         });
-        assertBalance('12A', undefined, 'T', -1000);
-        assertBalance('12A', undefined, 'T-2017', -1000);
-        assertBalance('12A', undefined, 'T-2017-1', -1000);
-        assertBalance('12A', undefined, 'T-2017-2', 0);
-        assertBalance('12', undefined, 'T-2017-1', -1000);
-        assertBalance('1', undefined, 'T-2017-1', 0);
-        assertBalance('19', undefined, 'T', 1000);
+        assertBalance(':12A', undefined, 'T', -1000);
+        assertBalance(':12A', undefined, 'T-2017', -1000);
+        assertBalance(':12A', undefined, 'T-2017-1', -1000);
+        assertBalance(':12A', undefined, 'T-2017-2', 0);
+        assertBalance(':12', undefined, 'T-2017-1', -1000);
+        assertBalance(':1', undefined, 'T-2017-1', 0);
+        assertBalance(':19', undefined, 'T', 1000);
         done();
       });
 
@@ -123,69 +123,78 @@ if (Meteor.isServer) {
         const txId = insertTx({
           valueDate: new Date('2017-02-02'),
           amount: 2000,
-          credit: ['12A'],
-          debit: ['19'],
+          credit: [':12A'],
+          debit: [':19'],
         });
-        assertBalance('12A', undefined, 'T', -3000);
-        assertBalance('12A', undefined, 'T-2017', -3000);
-        assertBalance('12A', undefined, 'T-2017-1', -1000);
-        assertBalance('12A', undefined, 'T-2017-2', -2000);
-        assertBalance('12', undefined, 'T-2017-1', -1000);
-        assertBalance('12', undefined, 'T-2017-2', -2000);
-        assertBalance('1', undefined, 'T-2017-1', 0);
-        assertBalance('1', undefined, 'T-2017-2', 0);
-        assertBalance('1', undefined, 'T-2017', 0);
-        assertBalance('19', undefined, 'T', 3000);
+        assertBalance(':12A', undefined, 'T', -3000);
+        assertBalance(':12A', undefined, 'T-2017', -3000);
+        assertBalance(':12A', undefined, 'T-2017-1', -1000);
+        assertBalance(':12A', undefined, 'T-2017-2', -2000);
+        assertBalance(':12', undefined, 'T-2017-1', -1000);
+        assertBalance(':12', undefined, 'T-2017-2', -2000);
+        assertBalance(':1', undefined, 'T-2017-1', 0);
+        assertBalance(':1', undefined, 'T-2017-2', 0);
+        assertBalance(':1', undefined, 'T-2017', 0);
+        assertBalance(':19', undefined, 'T', 3000);
 
         Journals.remove(txId);
         // copy of the previous test's end state
-        assertBalance('12A', undefined, 'T', -1000);
-        assertBalance('12A', undefined, 'T-2017', -1000);
-        assertBalance('12A', undefined, 'T-2017-1', -1000);
-        assertBalance('12A', undefined, 'T-2017-2', 0);
-        assertBalance('12', undefined, 'T-2017-1', -1000);
-        assertBalance('1', undefined, 'T-2017-1', 0);
-        assertBalance('19', undefined, 'T', 1000);
+        assertBalance(':12A', undefined, 'T', -1000);
+        assertBalance(':12A', undefined, 'T-2017', -1000);
+        assertBalance(':12A', undefined, 'T-2017-1', -1000);
+        assertBalance(':12A', undefined, 'T-2017-2', 0);
+        assertBalance(':12', undefined, 'T-2017-1', -1000);
+        assertBalance(':1', undefined, 'T-2017-1', 0);
+        assertBalance(':19', undefined, 'T', 1000);
 
         done();
       });
 
       it('updates balances of localizer', function (done) {
+        Balances.remove({});
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 500,
-          credit: ['12B', 'L-A101'],
-          debit: ['12C'],
+          credit: [':12B', 'L-A101'],
+          debit: [':12C'],
         });
-        assertBalance(undefined, 'L-A101', 'T', -500);
-        assertBalance(undefined, 'L-A101', 'T-2017-3', -500);
-        assertBalance(undefined, 'L-A', 'T', -500);
+        assertBalance(':12B', 'L-A101', 'T', -500);
+        assertBalance(':12B', 'L-A101', 'T-2017-3', -500);
+        chai.assert.throws(() =>
+          assertBalance(':12B', 'L-A', 'T', -500) // todo? upward cascading localizer 
+        );
+        assertBalance(':12B', undefined, 'T', -500); // non-localized main account is also updated
+        assertBalance(':12C', 'L-A101', 'T', 0);      // non-existing localized account answers with 0
+        assertBalance(':12C', undefined, 'T', 500);
+        assertBalance(':12', undefined, 'T', 0);
+        assertBalance(':12', 'L-A101', 'T', -500);  // localized parent account not allowed (for now)
+        assertBalance(':1', undefined, 'T', 0);
+        assertBalance(':1', 'L-A101', 'T', -500);
+
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 500,
-          credit: ['12B'],
-          debit: ['12C', 'L-A101'],
+          credit: [':12C', 'L-A101'],
+          debit: [':12B'],
         });
-        assertBalance(undefined, 'L-A101', 'T', 0);
-        assertBalance(undefined, 'L-A101', 'T-2017-3', 0);
-        assertBalance(undefined, 'L-A', 'T', 0);
+        assertBalance(':12C', undefined, 'T', 0);
+        assertBalance(':12C', 'L-A101', 'T', -500);
         done();
       });
 
       it('updates balances of both account and localizer', function (done) {
+        Balances.remove({});
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 600,
-          credit: ['12A', 'L-A101'],
-          debit: ['12B', 'L-B101'],
+          credit: [':12A', 'L-A101'],
+          debit: [':12B', 'L-B101'],
         });
-        chai.assert.throws(() => assertBalance('12A', 'L-A101', 'T', -600));  // No 2D balances stored
-        chai.assert.throws(() => assertBalance('12B', 'L-B101', 'T', 600));  // No 2D balances stored
-        assertBalance(undefined, 'L-A101', 'T', -600);
-        assertBalance(undefined, 'L-B101', 'T', 600);
-        assertBalance(undefined, 'L-A', 'T', -600);
-        assertBalance(undefined, 'L-B', 'T', 600);
-        assertBalance(undefined, 'L-', 'T', 0);
+        assertBalance(':12A', 'L-A101', 'T', -600);
+        assertBalance(':12B', 'L-B101', 'T', 600);
+//        assertBalance(undefined, 'L-A', 'T', -600);
+//        assertBalance(undefined, 'L-B', 'T', 600);
+//        assertBalance(undefined, 'L-', 'T', 0);
         done();
       });
     });
