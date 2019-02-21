@@ -11,6 +11,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import '../common/error.js';
 import '../common/page-heading.js';
 import '../components/chatbox.js';
+import '../components/ticketbox.js';
 import '../components/votebox.js';
 import '../components/comments-section.js';
 import '../components/vote-history.js';
