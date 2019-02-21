@@ -298,6 +298,11 @@
   "Create ticket": "Bejelentés elküldése",
   "status": "Státusz",
   "Change status": "Státusz váltása",
+  "reported": "megerősítés alatt",
+  "confirmed": "megerősítve",
+  "progressing": "folyamatban",
+  "finished": "megoldva",
+  "checked": "ellenőrizve",
 
   // finances
   "Account": "Számla", 
