@@ -51,14 +51,6 @@ function communityPublication(userId, _id) {
         },
       }],
     }, {
-      // Publish the Parcels of the Community
-      find(community) {
-        if (hasPermission('parcels.inCommunity')) {
-          return Parcels.find({ communityId: community._id });
-        }
-        return undefined;
-      },
-    }, {
       // Publish the Topics of the Community
       find(community) {
         if (hasPermission('topics.inCommunity')) {

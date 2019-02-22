@@ -4,7 +4,6 @@ import { Template } from 'meteor/templating';
 import { Tracker } from 'meteor/tracker';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
-import { ReactiveVar } from 'meteor/reactive-var';
 
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
@@ -34,42 +33,43 @@ import '../components/action-buttons.html';
 import '../components/contact-long.js';
 import './community-page.html';
 
-Template.Community_page.onCreated(function onCreated() {
-  this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
-  this.autorun(() =>
-    this.subscribe('communities.byId', { _id: this.getCommunityId() })
-  );
-});
-
-Template.Community_page.onRendered(function onRendered() {
-  // Add slimscroll to element
-  $('.full-height-scroll').slimscroll({
-      height: '100%'
-  });
-});
-
-Template.Community_page.onDestroyed(function onDestroyed() {
-});
-
 Template.Community_page.viewmodel({
   showAllParcels: false,
   reactive: false,
-  communityId: null,
   selectedParcelId: null,
   selectedMemberId: null,
   onCreated() {
-    this.communityId(this.templateInstance.getCommunityId());
-  },
-  onRendered() {
     const user = Meteor.user();
-    const showAllParcelsDefault = Parcels.find().count() <= 25
-      || (user && user.hasPermission('parcels.insert', this.templateInstance.getCommunityId()));
+    const showAllParcelsDefault = (
+      (user && user.hasPermission('parcels.insert', this.communityId()))
+      || (this.community() && this.community().parcels.flat <= 25)
+    );
     this.showAllParcels(!!showAllParcelsDefault);
   },
-  autorun() {
-    // Autoform modals cannot see the viewmodel, so this must be copied to the Session
-    Session.set('selectedCommunityId', this.communityId());
-    Session.set('selectedParcelId', this.selectedParcelId());
+  onRendered() {
+    // Add slimscroll to element
+    $('.full-height-scroll').slimscroll({
+      height: '100%',
+    });
+  },
+  autorun: [
+    function parcelSubscription() {
+      const communityId = this.communityId();
+      this.templateInstance.subscribe('communities.byId', { _id: communityId });
+      if (this.showAllParcels()) {
+        this.templateInstance.subscribe('parcels.inCommunity', { communityId });
+      } else {
+        this.templateInstance.subscribe('parcels.ofSelf', { communityId });
+      }
+    },
+    function syncWithSession() {
+      // Autoform modals cannot see the viewmodel, so this must be copied to the Session
+      Session.set('selectedCommunityId', this.communityId());
+      Session.set('selectedParcelId', this.selectedParcelId());
+    },
+  ],
+  communityId() {
+    return FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   },
   community() {
     return Communities.findOne(this.communityId());
@@ -147,15 +147,11 @@ Template.Community_page.viewmodel({
     return index === 0 ? 'active' : '';
   },
   parcelTypesWithCount() {
-    const communityId = this.communityId();
-    const parcels = Parcels.find({ communityId }).fetch();
-    const sumsResult = _(parcels).reduce(function (sums, parcel) {
-      sums[parcel.type] = (sums[parcel.type] || 0) + 1;
-      return sums;
-    }, {});
+    const community = this.community();
     const result = [];
-    Object.keys(sumsResult).forEach(k => {
-      result.push({ type: k, count: sumsResult[k] });
+    if (!community) return [];
+    Object.keys(community.parcels).forEach(k => {
+      result.push({ type: k, count: community.parcels[k] });
     });
     return result;
   },
@@ -163,11 +159,11 @@ Template.Community_page.viewmodel({
     const self = this;
     return () => {
       const communityId = self.communityId();
-      let parcels = Tracker.nonreactive(() => Parcels.find({ communityId, approved: true }).fetch());
-      if (!self.showAllParcels()) {
-        const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
-        parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
-      }
+      const parcels = Tracker.nonreactive(() => Parcels.find({ communityId }).fetch());
+//      if (!self.showAllParcels()) {
+//        const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
+//        parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
+//      }
       return parcels;
     };
   },

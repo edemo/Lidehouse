@@ -15,7 +15,40 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 
-export const Parcels = new Mongo.Collection('parcels');
+class ParcelsCollection extends Mongo.Collection {
+  insert(doc, callback) {
+    const result = super.insert(doc, callback);
+    this._updateCommunity(doc);
+    return result;
+  }
+  update(selector, modifier, options, callback) {
+    const originalDocs = this.find(selector);
+    originalDocs.forEach((doc) => {
+      this._updateCommunity(doc, -1);
+    });
+    const result = super.update(selector, modifier, options, callback);
+    const updatedDocs = this.find(selector);
+    updatedDocs.forEach((doc) => {
+      this._updateCommunity(doc, 1);
+    });
+    return result;
+  }
+  remove(selector, callback) {
+    const docs = this.find(selector);
+    docs.forEach((doc) => {
+      this._updateCommunity(doc, -1);
+    });
+    return super.remove(selector, callback);
+  }
+  _updateCommunity(doc, revertSign = 1) {
+    if (!doc.type) return;
+    const modifier = {}; modifier.$inc = {};
+    modifier.$inc[`parcels.${doc.type}`] = revertSign;
+    Communities.update(doc.communityId, modifier);
+  }
+}
+
+export const Parcels = new ParcelsCollection('parcels');
 
 Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'other'];
 Parcels.heatingTypeValues = ['centralHeating', 'ownHeating'];

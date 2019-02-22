@@ -195,6 +195,9 @@ Meteor.users.helpers({
     const ownedParcels = parcels.filter(elem => elem);
     return ownedParcels;
   },
+  ownedLeadParcels(communityId) {
+    return this.ownedParcels(communityId).filter(p => !p.isLed());
+  },
   activeRoles(communityId) {
     return Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role);
   },
@@ -221,7 +224,7 @@ Meteor.users.helpers({
     const userHasTheseRoles = this.activeRoles(communityId);
     return _.contains(userHasTheseRoles, roleName);
   },
-  hasPermission(permissionName, communityId, object) {
+  hasPermission(permissionName, communityId = getActiveCommunityId(), object) {
     const permission = Permissions.find(p => p.name === permissionName);
     debugAssert(permission, `No such permission "${permissionName}"`);
     const rolesWithThePermission = permission.roles;

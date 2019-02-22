@@ -10,7 +10,7 @@ import './balance-report.html';
 Template.Balance_report.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
-    this.subscribe('balances.inCommunity', { communityId });
+    this.subscribe('balances.ofAccounts', { communityId });
   });
 });
 

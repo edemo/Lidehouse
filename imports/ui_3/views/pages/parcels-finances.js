@@ -29,15 +29,6 @@ import '../components/balance-widget.js';
 import '../components/balance-report.js';
 import './parcels-finances.html';
 
-Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
-  this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
-    this.subscribe('breakdowns.inCommunity', { communityId });
-    this.subscribe('parcels.inCommunity', { communityId });
-    this.subscribe('balances.inCommunity', { communityId });
-//    this.subscribe('journals.inCommunity', { communityId });
-  });
-
 /*  this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
@@ -53,7 +44,6 @@ Template.Parcels_finances.onCreated(function parcelsFinancesOnCreated() {
       return filter;
     };
   }); */
-});
 
 /*
 export function Columns(permissions) {
@@ -80,22 +70,24 @@ export function Columns(permissions) {
 Template.Parcels_finances.viewmodel({
   showAllParcels: false,
   parcelToView: '',
-/*  getActiveLocalizer() {
-    return Template.instance().getActiveLocalizer();
+  autorun() {
+    const communityId = Session.get('activeCommunityId');
+    this.templateInstance.subscribe('breakdowns.inCommunity', { communityId });
+    if (Meteor.userOrNull().hasPermission('balances.ofLocalizers')) {
+      if (this.showAllParcels()) {
+        this.templateInstance.subscribe('balances.ofLocalizers', { communityId });
+      } else {
+        this.templateInstance.subscribe('balances.ofLocalizers', { communityId, limit: 10 });
+      }
+    } else {
+      this.templateInstance.subscribe('balances.ofSelf', { communityId });
+    } 
   },
-  localizerOptions() {
-    if (!Template.instance().subscriptionsReady()) return [];
-    const communityId = Session.get('activeCommunityId');
-    const localizerPac = Breakdowns.findOne({ communityId, name: 'Localizer' });
-    return localizerPac.nodeOptions();
-  },*/
   myLeadParcels() {
-    const communityId = Session.get('activeCommunityId');
-    const myOwnerships = Memberships.find({ communityId, active: true, approved: true, personId: Meteor.userId(), role: 'owner' });
-    const myLeadParcelRefs = _.uniq(myOwnerships.map(m => { 
-      const parcel = m.parcel();
-      return (parcel && !parcel.isLed()) ? parcel.ref : null;
-    }));
+    const communityId = this.communityId();
+    const user = Meteor.user();
+    if (!user || !communityId) return [];
+    return user.ownedLeadParcels().map(p => p.ref);
   },
   myLeadParcelOptions() {
     const communityId = Session.get('activeCommunityId');

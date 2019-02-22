@@ -36,6 +36,8 @@ Communities.schema = new SimpleSchema([
   { avatar: { type: String, /* regEx: SimpleSchema.RegEx.Url,*/ defaultValue: defaultAvatar } },
   comtype.profileSchema,
   { totalunits: { type: Number } },
+  // redundant fields:
+  { parcels: { type: Object, blackbox: true, defaultValue: {} } },
 ]);
 
 Meteor.startup(function indexCommunities() {

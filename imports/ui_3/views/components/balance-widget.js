@@ -14,7 +14,7 @@ Template.Balance_widget.onCreated(function() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('breakdowns.inCommunity', { communityId });
-    this.subscribe('balances.inCommunity', { communityId });
+    this.subscribe('balances.ofSelf', { communityId });
   });
 });
 
