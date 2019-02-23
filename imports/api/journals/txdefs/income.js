@@ -11,20 +11,16 @@ export const IncomeTx = {
     _.clone(Journals.rawSchema), {
       incomeAccount: { type: String, autoform: chooseLeafAccountFromGroup('Incomes') },
       localizer: { type: String, autoform: chooseLeafAccountFromGroup('Localizer') },
-      moneyAccount: { type: String, autoform: chooseLeafAccountFromGroup('Assets', 'Money accounts') },
+      moneyAccount: { type: String, autoform: chooseLeafAccountFromGroup('COA', '32') },
     }, _.clone(Journals.noteSchema),
   ]),
   transformToJournal(doc) {
     doc.credit = [{
-      account: {
-        'Incomes': doc.incomeAccount.split(':').pop(),
-        'Localizer': doc.localizer.split(':').pop(),
-      },
+      account: doc.incomeAccount,
+      localizer: doc.localizer,
     }];
     doc.debit = [{
-      account: {
-        'Assets': doc.moneyAccount.split(':').pop(),
-      },
+      account: doc.moneyAccount,
     }];
     return doc;
   },

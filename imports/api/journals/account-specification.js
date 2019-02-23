@@ -56,7 +56,7 @@ if (Meteor.isClient) {
     return {
       options() {
         const communityId = Session.get('activeCommunityId');
-        const breakdown = Breakdowns.findOne({ communityId, name: brk });
+        const breakdown = Breakdowns.findOneByName(brk, communityId);
         return breakdown.leafOptions(group);
       },
       firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field

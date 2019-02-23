@@ -31,22 +31,23 @@ import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/balance-report.js';
 import './community-finances.html';
 
-const DEMO = false;
-
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
 const notVotedColor = '#dedede';
 
-Template.Community_finances.onCreated(function communityFinancesOnCreated() {
-  this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
-    this.subscribe('breakdowns.inCommunity', { communityId });
-    this.subscribe('balances.ofAccounts', { communityId });
-  });
-});
-
-Template.Community_finances.onRendered(function communityFinancesOnRendered() {
-  // Filling the Balances chart with DEMO data
-  this.autorun(() => {
+Template.Community_finances.viewmodel({
+  accountToView: '323',
+  onCreated(instance) {
+    instance.autorun(() => {
+      const communityId = Session.get('activeCommunityId');
+      instance.subscribe('breakdowns.inCommunity', { communityId });
+      instance.subscribe('balances.ofAccounts', { communityId });
+    });
+  },
+  onRendered(instance) {
+    instance.autorun(this.syncBalanceChartData);
+    instance.autorun(this.syncHistoryChartData);
+  },
+  syncBalanceChartData() {
     const lineData = {
       labels: ["Feb", "Marc", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
       datasets: [
@@ -73,27 +74,8 @@ Template.Community_finances.onRendered(function communityFinancesOnRendered() {
 
     const ctx = document.getElementById('balancesChart').getContext('2d');
     new Chart(ctx, { type: 'line', data: lineData, options: lineOptions });
-  });
-/*
-  // Filling the Balance Sheet chart with DEMO data
-  this.autorun(() => {
-    const doughnutData = {
-      labels: [__('Folyószámla'), __('Megtakarítási számla'), __('Pénztár')],
-      datasets: [{
-        data: [6943500, 120000, 100000],
-        backgroundColor: choiceColors,
-      }],
-    };
-    const doughnutOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-    const elem = document.getElementById('balanceSheetChart').getContext('2d');
-    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
-  });
-*/
-  // Filling the History chart with DEMO data
-  this.autorun(() => {
+  },
+  syncHistoryChartData() {
     const monthsArray = monthTags.children.map(c => c.label);
     const barData = {
       labels: monthsArray,
@@ -115,14 +97,8 @@ Template.Community_finances.onRendered(function communityFinancesOnRendered() {
     };
     const elem = document.getElementById('historyChart').getContext('2d');
     new Chart(elem, { type: 'bar', data: barData, options: barOptions });
-  });
-
-});
-
-Template.Community_finances.helpers({
+  },
   moneyBalance() {
-    if (DEMO) return '2 992 650 Ft';
-
     const coa = Breakdowns.chartOfAccounts(); if (!coa) return 0;
     const moneyAccounts = coa.findNodeByName('Money accounts');
     const balanceDef = {
@@ -132,15 +108,15 @@ Template.Community_finances.helpers({
     };
     return Balances.get(balanceDef);
   },
+  outstandingBalance() {
+    const balanceDef = {
+      communityId: Session.get('activeCommunityId'),
+      account: '33',
+      tag: 'T',
+    };
+    return Balances.get(balanceDef);
+  },
   moneyAccounts() {
-    if (DEMO) return [{
-      accountName: 'Folyószámla',
-      balance: '740 275 Ft',
-    }, {
-      accountName: 'Megtakarítási számla',
-      balance: '2 240 510 Ft',
-    }];
-
     const results = [];
     const coa = Breakdowns.chartOfAccounts(); if (!coa) return [];
     const moneyAccounts = coa.findNodeByName('Money accounts');
@@ -152,6 +128,7 @@ Template.Community_finances.helpers({
       };
       results.push({
         accountName: leaf.name,
+        accountCode: leaf.code,
         accountBalance: Balances.get(balanceDef),
       });
     });
@@ -180,7 +157,12 @@ Template.Community_finances.helpers({
 });
 
 Template.Community_finances.events({
-  'click #journals .js-view, #account-history .js-view'(event) {
+  'click #balances .js-view'(event, instance) {
+//    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
+    const accountCode = $(event.target).closest('a').data('id');
+    instance.viewmodel.accountToView(accountCode);
+  },
+  'click #account-history .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.journal.view',

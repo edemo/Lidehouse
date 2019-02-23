@@ -70,18 +70,21 @@ export function Columns(permissions) {
 Template.Parcels_finances.viewmodel({
   showAllParcels: false,
   parcelToView: '',
-  autorun() {
-    const communityId = Session.get('activeCommunityId');
-    this.templateInstance.subscribe('breakdowns.inCommunity', { communityId });
-    if (Meteor.userOrNull().hasPermission('balances.ofLocalizers')) {
-      if (this.showAllParcels()) {
-        this.templateInstance.subscribe('balances.ofLocalizers', { communityId });
+  onCreated(instance) {
+    const self = this;
+    instance.autorun(() => {
+      const communityId = Session.get('activeCommunityId');
+      instance.subscribe('breakdowns.inCommunity', { communityId });
+      if (Meteor.userOrNull().hasPermission('balances.ofLocalizers')) {
+        if (self.showAllParcels()) {
+          instance.subscribe('balances.ofLocalizers', { communityId });
+        } else {
+          instance.subscribe('balances.ofLocalizers', { communityId, limit: 10 });
+        }
       } else {
-        this.templateInstance.subscribe('balances.ofLocalizers', { communityId, limit: 10 });
-      }
-    } else {
-      this.templateInstance.subscribe('balances.ofSelf', { communityId });
-    } 
+        instance.subscribe('balances.ofSelf', { communityId });
+      } 
+    });
   },
   myLeadParcels() {
     const communityId = this.communityId();

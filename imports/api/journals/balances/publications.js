@@ -19,7 +19,7 @@ Meteor.publish('balances.ofAccounts', function balancesOfAccounts(params) {
   }
 
   const periodCodes = PeriodBreakdown.leafCodes(); // TODO filter for last year
-  return Balances.find({ communityId, localizer: { $exists: false }, tag: { $in: periodCodes } });
+  return Balances.find({ communityId, localizer: { $exists: false } });
 });
 
 // Publishing the balances of all individual Parcels -- Current only

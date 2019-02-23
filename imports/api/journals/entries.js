@@ -24,7 +24,8 @@ JournalEntries.helpers({
     return this.amount * effectiveSign;
   },
   journal() {
-    return Journals.findOne(this.txId);
+    const tx = Journals.findOne(this.txId);
+    return tx;
   },
   contra() {
     function otherSide(side) {

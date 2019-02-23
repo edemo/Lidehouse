@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-sm-3">
             <div class="form-group">
-                <label class="control-label" for="start_date">{{_ 'Start date'}}</label>
-                <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
+                <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
+                <input type="date" id="begin_date" name="begin_date" {{b "value: beginDate"}} class="form-control">
             </div>
         </div>
         <div class="col-sm-3">
@@ -15,9 +15,9 @@
         {{#if (or accountOptions accountSelected)}}
         <div class="col-sm-4">
             <div class="form-group">
-                <label class="control-label" for="account_group">{{_ 'Account'}}</label>
-                <select id="account_group" name="account_group" {{b "options: accountOptions, value: accountSelected, optionsValue: value, optionsText: label"}} class="form-control"></select>
-                <!--input type="text" id="account_group" name="account_group" {{b "value: account"}} class="form-control"-->
+                <label class="control-label" for="account">{{_ 'Account'}}</label>
+                <select id="account" name="account" {{b "options: accountOptions, value: accountSelected, optionsValue: value, optionsText: label"}} class="form-control"></select>
+                <!--input type="text" id="account" name="account" {{b "value: account"}} class="form-control"-->
             </div>
         </div>
         {{/if}}

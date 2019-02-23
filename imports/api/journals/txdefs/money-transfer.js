@@ -9,18 +9,16 @@ export const MoneyTransferTx = {
   name: 'Money trasfer tx',
   schema: new SimpleSchema([
     _.clone(Journals.rawSchema), {
-      credit: { type: String, autoform: chooseLeafAccountFromGroup('Assets', 'Money accounts') },
-      debit: { type: String, autoform: chooseLeafAccountFromGroup('Assets', 'Money accounts') },
+      credit: { type: String, autoform: chooseLeafAccountFromGroup('COA', '32') },
+      debit: { type: String, autoform: chooseLeafAccountFromGroup('COA', '32') },
     }, _.clone(Journals.noteSchema),
   ]),
   transformToJournal(doc) {
-    const fromAccount = AccountSpecification.fromNames(doc.credit);
     doc.credit = [{
-      account: fromAccount.toTags(),
+      account: doc.credit,
     }];
-    const toAccount = AccountSpecification.fromNames(doc.debit);
     doc.debit = [{
-      account: toAccount.toTags(),
+      account: doc.debit,
     }];
     return doc;
   },

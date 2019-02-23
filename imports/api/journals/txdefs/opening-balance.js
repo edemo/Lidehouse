@@ -1,8 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { Session } from 'meteor/session';
 
 import { Journals } from '/imports/api/journals/journals.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { AccountSpecification, chooseLeafAccountFromGroup } from '../account-specification.js';
 
 export const OpeningBalanceTx = {
@@ -14,15 +16,14 @@ export const OpeningBalanceTx = {
     },
   ]),
   transformToJournal(doc) {
+    const communityId = Session.get('activeCommunityId');
     doc.credit = [{
-      account: {
-        'Equity': 'Opening',
-        'Localizer': doc.localizer.split(':').pop(),
-      },
+      account: Breakdowns.name2code('Liabilities', 'Opening', communityId),
+      localizer: doc.localizer,
     }];
-    const toAccount = AccountSpecification.fromNames(doc.account, doc.localizer);
     doc.debit = [{
-      account: toAccount.toTags(),
+      account: doc.account,
+      localizer: doc.localizer,
     }];
     return doc;
   },

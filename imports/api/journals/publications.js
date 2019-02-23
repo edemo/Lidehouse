@@ -25,8 +25,10 @@ Meteor.publish('journals.byAccount', function journalsInCommunity(params) {
     communityId: { type: String },
     account: { type: String, optional: true },
     localizer: { type: String, optional: true },
+    begin: { type: Date, optional: true },
+    end: { type: Date, optional: true },
   }).validate(params);
-  const { communityId, account, localizer } = params;
+  const { communityId, account, localizer, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('journals.inCommunity', communityId)) {
@@ -36,10 +38,11 @@ Meteor.publish('journals.byAccount', function journalsInCommunity(params) {
     throw new Meteor.Error('invalid subscription');
   }
 
-  const selector = { communityId };
+  const selector = { communityId, valueDate: { $gte: begin, $lt: end } };
   if (account) selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];
   if (localizer) selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
-
+  console.log('selector', selector);
+  console.log(Journals.find(selector).count());
   return Journals.find(selector);
 });
 
