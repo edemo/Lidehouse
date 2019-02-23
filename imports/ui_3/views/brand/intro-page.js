@@ -1,7 +1,7 @@
 /* globals window WOW */
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
-import '/imports/api/demohouse.js';
+import '/imports/fixture/demohouse.js';
 import './intro-page.html';
 
 
