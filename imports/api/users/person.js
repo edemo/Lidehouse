@@ -84,7 +84,7 @@ export class Person {
       return `[${emailName}]`;
     }
     if (this.userId && !this.user()) return __('deletedUser');
-    return undefined;
+    return __('unknownUser');
   }
   toString() {
     return this.displayName();

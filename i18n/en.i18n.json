@@ -120,6 +120,7 @@
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "delete user": "delete your account permanently",
   "deletedUser": "Deleted user",
+  "unknownUser": "Unknown user",
   "deleteUserWarning": ["BEWARE: Your user account will be permanently deleted! <br /><br />",
     "Note that this will NOT delete your activity in your communities. ",
     "Those belong to the community, and you need to ask the community's admin to delete them. <br /><br />",
