@@ -1,9 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { Breakdowns } from './breakdowns.js';
-import { TxDefs } from '../tx-defs.js';
 
-export function defineBreakdownTemplates(communityId) {
+export function defineBreakdownTemplates() {
 
   //if (Breakdowns.findOne({})) return;
 
@@ -170,7 +169,7 @@ export function defineBreakdownTemplates(communityId) {
 }
 
 if (Meteor.isServer) {
-  Meteor.startup(function () { defineBreakdownTemplates(); });
+  Meteor.startup(defineBreakdownTemplates);
 }
 
 /*
