@@ -98,7 +98,7 @@
                         <span class="nav-label">{{_ 'Finances'}}</span>
                         <!--span class="fa arrow"> </span-->
                     </a>
-                    <ul class="nav nav-second-level {{isActivePath regex='finances' className='submenu-open'}}">
+                    <ul class="nav nav-second-level {{isActivePath regex='finances|accounting' className='submenu-open'}}">
                         <li class="{{isActivePath regex='parcel-finances'}}">
                             <a href="{{pathFor 'Parcels.finances'}}">
                                 <i class="fa fa-pie-chart" aria-hidden="true"></i>
@@ -111,7 +111,7 @@
                                 <span class="nav-label">{{_ 'Community finances'}}</span>
                             </a>
                         </li>
-                        <li class="{{isActivePath regex='accouting'}}">
+                        <li class="{{isActivePath regex='accounting'}}">
                             <a href="{{pathFor 'Accounting'}}">
                                 <i class="fa fa-calculator" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Accounting'}}</span>
