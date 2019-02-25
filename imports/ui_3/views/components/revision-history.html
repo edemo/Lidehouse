@@ -4,25 +4,24 @@
         
         {{#if (equals version.field 'closed')}}
         <div class="feed-element">
-            <a href="" class="pull-left">
+            <!--a href="" class="pull-left">
                 <img alt="image" class="img-circle" src="{{doc.createdBy.avatar}}">
-            </a>
+            </a-->
             <div class="media-body ">
-                <small class="pull-right">{{displayTimeFrom version.time}}</small>
-                {{doc.createdBy}} {{_ 'by'}} <strong>{{_ 'closed'}} </strong><br>
+                <small class="pull-right" title="{{displayTime version.time}}">{{displayTimeFrom version.time}}</small>
+                <strong class="text-capitalize"> {{_ 'closed'}}.</strong><br>
                 <small class="text-muted">{{displayTime version.time}}</small>
             </div>
         </div>
         {{else}}
         <div class="feed-activity-list">
             <div class="feed-element">
-                <a href="" class="pull-left">
+                <!--a href="" class="pull-left">
                     <img alt="image" class="img-circle" src="{{doc.createdBy.avatar}}">
-                </a>
+                </a-->
                 <div class="media-body ">
-                    <small class="pull-right">{{displayTimeFrom version.time}}</small>
+                    <small class="pull-right" title="{{displayTime version.time}}">{{displayTimeFrom version.time}}</small>
                     {{_ 'The'}}<strong> {{translateFieldName schemaName version.field}} </strong>{{_ 'was modified, previous content'}}:<br>
-                    <small class="text-muted">{{displayTime version.time}}</small>
                     <div class="well">
                         {{translateFieldValue schemaName version.field version.oldValue}}                
                     </div>
