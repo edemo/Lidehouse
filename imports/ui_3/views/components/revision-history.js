@@ -18,9 +18,9 @@ Template.Revision_history.helpers({
     return `"${__(fieldName)}"`;
   },
   translateFieldValue(schemaName, field, value) {
-    const schemaFieldValue = schemaName + '.' + field + '.' + value;
+    const schemaFieldValue = schemaName + '.' + field + '.' + value.split(':')[0];  // tap-i18n stops at colon
     if (__(schemaFieldValue) !== schemaFieldValue) return __(schemaFieldValue);
-    return __(value);
+    return value;
   },
 
 });
