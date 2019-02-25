@@ -58,7 +58,7 @@
                                                 {{> Comments_section}}
                                             </div>
                                             <div class="tab-pane" id="tab-2">
-                                                {{> Vote_history}}
+                                                {{> Vote_history doc=this schemaName='schemaTopics'}}
                                             </div>
                                             {{#if or closed (currentUser.hasPermission 'vote.peek' communityId)}}
                                             <div class="tab-pane" id="tab-3">
@@ -168,7 +168,7 @@
                                                 {{> Comments_section}}
                                             </div>
                                             <div class="tab-pane" id="tab-2">
-                                                {{> Vote_history}}
+                                                {{> Vote_history doc=this schemaName='schemaTickets'}}
                                             </div>
                                         </div>
                                     </div>

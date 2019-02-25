@@ -276,7 +276,6 @@
       }
     }
   },
-  "ticket" : { "status" : "státusz" },
   "schemaTicketStatusChange": {
     "text": {
       "label": "Hozzáfűzött szöveg",

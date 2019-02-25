@@ -3,9 +3,6 @@
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
 
-  "title": "cím",
-  "text": "szöveg",
-
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
@@ -205,7 +202,7 @@
 
   // topics
   "The": "A",
-  "was modified, previous": "módosításra került, korábbi",
+  "was modified, previous content": "módosításra került, korábbi tartalom",
   "Report this": "Hozzászólás jelentése",
   "Hide comments from": "%s hozzászólásainak elrejtése",
   "Unhide comments from": "%s hozzászólásainak mutatása",
@@ -298,11 +295,6 @@
   "Create ticket": "Bejelentés elküldése",
   "status": "Státusz",
   "Change status": "Státusz váltása",
-  "reported": "megerősítés alatt",
-  "confirmed": "megerősítve",
-  "progressing": "folyamatban",
-  "finished": "megoldva",
-  "checked": "ellenőrizve",
 
   // finances
   "Account": "Számla", 

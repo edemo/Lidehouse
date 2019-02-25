@@ -1,15 +1,15 @@
 <template name="Vote_history">
 
-     {{#each version in sortedRevisions}}
+     {{#each version in (sortedRevisions doc)}}
         
         {{#if (equals version.field 'closed')}}
         <div class="feed-element">
             <a href="" class="pull-left">
-                <img alt="image" class="img-circle" src="{{createdBy.avatar}}">
+                <img alt="image" class="img-circle" src="{{doc.createdBy.avatar}}">
             </a>
             <div class="media-body ">
                 <small class="pull-right">{{displayTimeFrom version.time}}</small>
-                {{createdBy}} {{_ 'by'}} <strong>{{_ 'closed'}} </strong><br>
+                {{doc.createdBy}} {{_ 'by'}} <strong>{{_ 'closed'}} </strong><br>
                 <small class="text-muted">{{displayTime version.time}}</small>
             </div>
         </div>
@@ -17,24 +17,19 @@
         <div class="feed-activity-list">
             <div class="feed-element">
                 <a href="" class="pull-left">
-                    <img alt="image" class="img-circle" src="{{createdBy.avatar}}">
+                    <img alt="image" class="img-circle" src="{{doc.createdBy.avatar}}">
                 </a>
                 <div class="media-body ">
                     <small class="pull-right">{{displayTimeFrom version.time}}</small>
-                    {{_ 'The'}} <strong>{{_ version.field}} </strong>{{_ 'was modified, previous'}} {{_ version.field}}:<br>
+                    {{_ 'The'}}<strong> {{translateFieldName schemaName version.field}} </strong>{{_ 'was modified, previous content'}}:<br>
                     <small class="text-muted">{{displayTime version.time}}</small>
                     <div class="well">
-                        {{_ version.oldValue}}                
+                        {{translateFieldValue schemaName version.field version.oldValue}}                
                     </div>
                 </div>
             </div>
         </div> 
         {{/if}}
      {{/each}}
-
-            
-            
-       
-
     
 </template>
