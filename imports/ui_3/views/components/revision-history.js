@@ -4,9 +4,9 @@ import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 
-import './vote-history.html';
+import './revision-history.html';
 
-Template.Vote_history.helpers({
+Template.Revision_history.helpers({
   revision(doc) {
     return doc.revision;
   },
@@ -25,6 +25,6 @@ Template.Vote_history.helpers({
 
 });
 
-Template.Vote_history.events({
+Template.Revision_history.events({
 
 });

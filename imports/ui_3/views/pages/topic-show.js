@@ -14,7 +14,7 @@ import '../components/chatbox.js';
 import '../components/ticketbox.js';
 import '../components/votebox.js';
 import '../components/comments-section.js';
-import '../components/vote-history.js';
+import '../components/revision-history.js';
 import './topic-show.html';
 
 Template.Topic_show.onCreated(function topicShowOnCreated() {  
