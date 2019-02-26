@@ -31,6 +31,8 @@ import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
 
+import { FixtureBuilder } from './fixture-builder.js';
+
 if (Meteor.isServer) {
   import fs from 'fs';
   import { ShareddocsStore as store } from '/imports/api/shareddocs/shareddocs.js';
@@ -71,8 +73,6 @@ if (Meteor.isServer) {
   }
 }
 
-const demoParcelCounterStart = 14;
-
 export function insertDemoHouse(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
 
@@ -94,209 +94,154 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
 // ===== Parcels =====
+  const fixtureBuilder = new FixtureBuilder(demoCommunityId, lang);
 
   const demoParcels = [];
-  demoParcels[0] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 1,
-    ref: 'A1',
+  demoParcels[0] = fixtureBuilder.createParcel({
     units: 489,
     floor: __('demo.ground'),
     door: '1',
     type: 'flat',
-    lot: '4532/8/A/1',
     area: 55,
     volume: 176,
     habitants: 2,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[1] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 2,
-    ref: 'A2',
+  demoParcels[1] = fixtureBuilder.createParcel({
     units: 427,
     floor: __('demo.ground'),
     door: '2',
     type: 'flat',
-    lot: '4532/8/A/2',
     area: 48,
     volume: 153.6,
     habitants: 2,
     waterMetered: false,
     heatingType: 'centralHeating',
   });
-  demoParcels[2] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 3,
-    ref: 'A3',
+  demoParcels[2] = fixtureBuilder.createParcel({
     units: 587,
     floor: 'I',
     door: '3',
     type: 'flat',
-    lot: '4532/8/A/3',
     area: 66,
     volume: 184.8,
     habitants: 3,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[3] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 4,
-    ref: 'A4',
+  demoParcels[3] = fixtureBuilder.createParcel({
     units: 622,
     floor: 'I',
     door: '4',
     type: 'flat',
-    lot: '4532/8/A/4',
     area: 70,
     volume: 196,
     habitants: 1,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[4] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 5,
-    ref: 'A5',
+  demoParcels[4] = fixtureBuilder.createParcel({
     units: 587,
     floor: 'II',
     door: '5',
     type: 'flat',
-    lot: '4532/8/A/5',
     area: 66,
     volume: 184.8,
     habitants: 3,
     waterMetered: false,
     heatingType: 'centralHeating',
   });
-  demoParcels[5] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 6,
-    ref: 'A6',
+  demoParcels[5] = fixtureBuilder.createParcel({
     units: 622,
     floor: 'II',
     door: '6',
     type: 'flat',
-    lot: '4532/8/A/6',
     area: 70,
     volume: 196,
     habitants: 4,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[6] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 7,
-    ref: 'A7',
+  demoParcels[6] = fixtureBuilder.createParcel({
     units: 587,
     floor: 'III',
     door: '7',
     type: 'flat',
-    lot: '4532/8/A/7',
     area: 66,
     volume: 184.8,
     habitants: 2,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[7] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 8,
-    ref: 'A8',
+  demoParcels[7] = fixtureBuilder.createParcel({
     units: 622,
     floor: 'III',
     door: '8',
     type: 'flat',
-    lot: '4532/8/A/8',
     area: 70,
     volume: 196,
     habitants: 2,
     waterMetered: false,
     heatingType: 'centralHeating',
   });
-  demoParcels[8] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 9,
-    ref: 'A9',
+  demoParcels[8] = fixtureBuilder.createParcel({
     units: 587,
     floor: 'IV',
     door: '9',
     type: 'flat',
-    lot: '4532/8/A/9',
     area: 66,
     volume: 184.8,
     habitants: 2,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[9] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 10,
-    ref: 'A10',
+  demoParcels[9] = fixtureBuilder.createParcel({
     units: 622,
     floor: 'IV',
     door: '10',
     type: 'flat',
-    lot: '4532/8/A/10',
     area: 70,
     volume: 196,
     habitants: 3,
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[10] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 11,
-    ref: 'A11',
+  demoParcels[10] = fixtureBuilder.createParcel({
     units: 996,
     floor: __('demo.attic'),
     door: '11',
     type: 'flat',
-    lot: '4532/8/A/11',
     area: 112,
     habitants: 5,
     waterMetered: true,
     heatingType: 'ownHeating',
   });
-  demoParcels[11] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 12,
-    ref: 'A12',
+  demoParcels[11] = fixtureBuilder.createParcel({
     units: 444,
     floor: __('demo.cellar'),
     door: '1',
     type: 'cellar',
-    lot: '4532/8/A/12',
     area: 50,
     habitants: 1,
     waterMetered: true,
     heatingType: 'ownHeating',
   });
-  demoParcels[12] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 13,
-    ref: 'A13',
+  demoParcels[12] = fixtureBuilder.createParcel({
     units: 613,
     floor: __('demo.cellar'),
     door: '2',
     type: 'cellar',
-    lot: '4532/8/A/13',
     area: 69,
     habitants: 1,
     waterMetered: true,
     heatingType: 'ownHeating',
   });
-  demoParcels[13] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 14,
-    ref: 'A14',
+  demoParcels[13] = fixtureBuilder.createParcel({
     units: 196,
     floor: __('demo.ground'),
     door: '1',
     type: 'shop',
-    lot: '4532/8/A/14',
     area: 22,
     habitants: 1,
     waterMetered: false,
@@ -1412,7 +1357,7 @@ export function insertLoadsOfDummyData(lang, demoOrTest, parcelCount) {
 function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `deleteDemoUserWithRelevancies parameter not defined ${userId} ${parcelId} ${communityId}`);
   const counter = Number(Meteor.users.findOne({ _id: userId }).emails[0].address.split('.')[0]);
-  const demoUserNumber = demoParcelCounterStart + counter;
+  const demoUserNumber = fixtureBuilder.demoParcelCounterStart() + counter;
   Topics.remove({ userId });
   Topics.remove({ 'participantIds.$': userId });
   const demoUserVote = 'voteCasts.' + userId;
@@ -1452,14 +1397,9 @@ Meteor.methods({
     const demoHouse = Communities.findOne({ name: __('demo.house') });
     if (!demoHouse) throw new Meteor.Error('err_notImplemented', 'Demo house not available on this server');
     const demoCommunityId = demoHouse._id;
-    const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.hu` } },
-      { sort: { createdAt: -1 } }).fetch();
-    let counter = 1;
-    if (demoUsersList[0]) {
-      counter = Number(demoUsersList[0].emails[0].address.split('.')[0]) + 1;
-    }
-    let nameCounter = counter;
-    while (nameCounter > 20) nameCounter -= 20;
+    const fixtureBuilder = new FixtureBuilder(demoCommunityId, lang);
+    const counter = fixtureBuilder.nextSerial;
+    const nameCounter = counter % 20;
     const firstNames = __('demo.user.firstNames').split('\n');
 
     const demoUserId = Accounts.createUser({
@@ -1475,23 +1415,14 @@ Meteor.methods({
       },
     });
 
-    const totalunits = demoHouse.totalunits;
-    if (demoUsersList.length >= 10) {
-      Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });
-    }
-    const demoParcelSerial = (demoParcelCounterStart + counter);
-    const demoParcelRef = 'A' + demoParcelSerial.toString();
-    const demoParcelId = Parcels.insert({
-      communityId: demoCommunityId,
-      serial: demoParcelSerial,
-      ref: demoParcelRef,
+    const demoParcelId = fixtureBuilder.createParcel({
       units: 100,
       floor: 'V',
-      door: (demoParcelSerial - 2).toString(),
+      door: counter.toString(),
       type: 'flat',
-      lot: '4532/8/A/' + demoParcelSerial,
       area: 25,
     });
+    const demoParcel = Parcels.findOne(demoParcelId);
     Memberships.insert({
       communityId: demoCommunityId,
       person: { userId: demoUserId },
@@ -1502,7 +1433,7 @@ Meteor.methods({
     });
 
     Breakdowns.update({ communityId: demoCommunityId, name: 'Parcels' }, {
-      $push: { children: { digit: demoParcelSerial.toString(), name: demoParcelRef } },
+      $push: { children: { digit: demoParcel.serial.toString(), name: demoParcel.ref } },
     });
 
     const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;
@@ -1549,7 +1480,7 @@ Meteor.methods({
       ],
     } });
 
-    generateDemoPayments(demoParcelRef, demoCommunityId);
+    generateDemoPayments(demoParcel.ref, demoCommunityId);
 
     Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
@@ -1566,9 +1497,9 @@ export function deleteDemoUsersAfterRestart(lang, demoOrTest = 'demo') {
   if (!community) return;
 
   const communityId = community._id;
-  const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.hu` } });
-  demoUsersList.forEach((user) => {
-    const parcelSerial = (Number(user.emails[0].address.split('.')[0]) + demoParcelCounterStart);
+  const fixtureBuilder = new FixtureBuilder(communityId, lang);
+  fixtureBuilder.demoUsersList.forEach((user) => {
+    const parcelSerial = (Number(user.emails[0].address.split('.')[0]) + fixtureBuilder.demoParcelCounterStart());
     const parcelRef = 'A' + parcelSerial.toString();
     const parcelId = Parcels.findOne({ communityId, ref: parcelRef })._id;
     const currentTime = moment().valueOf();
