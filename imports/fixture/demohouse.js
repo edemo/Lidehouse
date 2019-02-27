@@ -31,7 +31,7 @@ import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
 
-import { FixtureBuilder } from './fixture-builder.js';
+import { FixtureBuilder, DemoFixtureBuilder } from './fixture-builder.js';
 
 if (Meteor.isServer) {
   import fs from 'fs';
@@ -1233,10 +1233,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   };
 }
 
-function capitalize(text) {
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
-
 function generateDemoPayments(parcelCode, communityId) {
   const name2code = function name2code(breakdownName, leafName) {
     return Breakdowns.name2code(breakdownName, leafName, communityId);
@@ -1291,7 +1287,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
       { $set: {
         'emails.0.verified': true,
         avatar: '/images/avatars/avatarTestUser.png',
-        profile: { lastName: capitalize(__(role.name)), firstName: _.sample(firstNames) },
+        profile: { lastName: __(role.name).capitalize(), firstName: _.sample(firstNames) },
       } });
     if (role.name === 'owner') {
       Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
@@ -1356,8 +1352,7 @@ export function insertLoadsOfDummyData(lang, demoOrTest, parcelCount) {
 
 function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `deleteDemoUserWithRelevancies parameter not defined ${userId} ${parcelId} ${communityId}`);
-  const counter = Number(Meteor.users.findOne({ _id: userId }).emails[0].address.split('.')[0]);
-  const demoUserNumber = fixtureBuilder.demoParcelCounterStart() + counter;
+  const parcel = Parcels.findOne(parcelId);
   Topics.remove({ userId });
   Topics.remove({ 'participantIds.$': userId });
   const demoUserVote = 'voteCasts.' + userId;
@@ -1377,10 +1372,10 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   if (currentTotalunits > 10000) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
-  ParcelBillings.remove({ 'account.Localizer': demoUserNumber.toString() });
-  Journals.remove({ 'entries.0.account.Localizer': demoUserNumber.toString() });
+  ParcelBillings.remove({ 'account.Localizer': parcel.ref });
+  Journals.remove({ 'entries.0.account.Localizer': parcel.ref });
   Breakdowns.update({ communityId, name: 'Parcels' }, {
-    $pull: { children: { name: demoUserNumber.toString() } },
+    $pull: { children: { name: parcel.ref } },
   });
   Meteor.users.remove({ _id: userId });
 }
@@ -1397,24 +1392,10 @@ Meteor.methods({
     const demoHouse = Communities.findOne({ name: __('demo.house') });
     if (!demoHouse) throw new Meteor.Error('err_notImplemented', 'Demo house not available on this server');
     const demoCommunityId = demoHouse._id;
-    const fixtureBuilder = new FixtureBuilder(demoCommunityId, lang);
+    const fixtureBuilder = new DemoFixtureBuilder(demoCommunityId, lang);
     const counter = fixtureBuilder.nextSerial;
-    const nameCounter = counter % 20;
-    const firstNames = __('demo.user.firstNames').split('\n');
 
-    const demoUserId = Accounts.createUser({
-      email: counter + `.${lang}demouser@honline.hu`,
-      password: 'password',
-      language: lang,
-    });
-    Meteor.users.update({ _id: demoUserId }, {
-      $set: {
-        'emails.0.verified': true,
-        avatar: '/images/avatars/avatarnull.png',
-        profile: { lastName: capitalize(__('guest')), firstName: firstNames[nameCounter] },
-      },
-    });
-
+    const demoUserId = fixtureBuilder.createDemoUser();
     const demoParcelId = fixtureBuilder.createParcel({
       units: 100,
       floor: 'V',
@@ -1497,8 +1478,8 @@ export function deleteDemoUsersAfterRestart(lang, demoOrTest = 'demo') {
   if (!community) return;
 
   const communityId = community._id;
-  const fixtureBuilder = new FixtureBuilder(communityId, lang);
-  fixtureBuilder.demoUsersList.forEach((user) => {
+  const fixtureBuilder = new DemoFixtureBuilder(communityId, lang);
+  fixtureBuilder.demoUsersList().forEach((user) => {
     const parcelSerial = (Number(user.emails[0].address.split('.')[0]) + fixtureBuilder.demoParcelCounterStart());
     const parcelRef = 'A' + parcelSerial.toString();
     const parcelId = Parcels.findOne({ communityId, ref: parcelRef })._id;

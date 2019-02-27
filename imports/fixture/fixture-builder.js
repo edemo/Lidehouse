@@ -34,11 +34,13 @@ import { Clock } from '/imports/utils/clock';
 export class FixtureBuilder {
   constructor(communityId, lang) {
     this.communityId = communityId;
+    this.lang = lang;
     const parcels = Parcels.find({ communityId }, { sort: { createdAt: -1 } });
     const lastCreatedParcel = parcels.fetch()[0];
     this.nextSerial = (lastCreatedParcel ? lastCreatedParcel.serial : 0) + 1;
-    this.demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.hu` } },
-      { sort: { createdAt: -1 } });
+  }
+  __(text) {
+    return TAPi18n.__(text, {}, this.lang);
   }
   community() {
     return Communities.findOne(this.communityId);
@@ -61,5 +63,34 @@ export class FixtureBuilder {
     const id = Parcels.insert(doc);
     this.nextSerial += 1;
     return id;
+  }
+}
+
+export class DemoFixtureBuilder extends FixtureBuilder {
+  constructor(communityId, lang) {
+    super(communityId, lang);
+  }
+  demoUsersList() {
+    return Meteor.users.find({ 'emails.0.address': { $regex: `${this.lang}demouser@honline.hu` } },
+      { sort: { createdAt: -1 } });
+  }
+  createDemoUser() {
+    const lastDemoUser = this.demoUsersList().fetch()[0];
+    const lastDemoUserCounter = lastDemoUser ? Number(lastDemoUser.emails[0].address.split('.')[0]) : 0;
+    const demoUserId = Accounts.createUser({
+      email: `${lastDemoUserCounter + 1}.${this.lang}demouser@honline.hu`,
+      password: 'password',
+      language: this.lang,
+    });
+    const firstNames = this.__('demo.user.firstNames').split('\n');
+    const nameCounter = lastDemoUserCounter % 20;
+    Meteor.users.update({ _id: demoUserId }, {
+      $set: {
+        'emails.0.verified': true,
+        avatar: '/images/avatars/avatarnull.png',
+        profile: { lastName: this.__('guest').capitalize(), firstName: firstNames[nameCounter] },
+      },
+    });
+    return demoUserId;
   }
 }

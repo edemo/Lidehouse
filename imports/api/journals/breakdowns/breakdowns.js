@@ -8,12 +8,6 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
-String.prototype.forEachChar = function forEachChar(func) {
-  for (let i = 0; i < this.length; i++) {
-    func(this.charAt(i));
-  }
-};
-
 function deepCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
