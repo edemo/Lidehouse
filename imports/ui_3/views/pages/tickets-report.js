@@ -6,6 +6,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
+import { ReactiveDict } from 'meteor/reactive-dict';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
@@ -22,6 +23,8 @@ import '/imports/ui_3/views/blocks/chopped.js';
 import './tickets-report.html';
 
 Template.Tickets_report.onCreated(function () {
+  this.ticketStatus = new ReactiveDict();
+  this.ticketStatus.set('status', false);
 });
 
 Template.Tickets_report.helpers({
@@ -36,6 +39,8 @@ Template.Tickets_report.helpers({
   },
   tickets() {
     const communityId = Session.get('activeCommunityId');
+    const status = Template.instance().ticketStatus.get('status');
+    if (status) return Topics.find({ communityId, 'ticket.status': status, category: 'ticket' }, { sort: { createdAt: -1 } });
     return Topics.find({ communityId, category: 'ticket' }, { sort: { createdAt: -1 } });
   },
   recentTickets() {
@@ -125,6 +130,17 @@ Template.Tickets_report.events({
       action: 'delete ticket',
       message: 'It will disappear forever',
     });
+  },
+  'click .js-status-filter'(event, instance) {
+    const status = $(event.target).data('value');
+    if (status === 'cancel') {
+      instance.ticketStatus.set('status', false);
+      $('.js-status-filter').removeClass('js-status-border');
+    } else {
+      instance.ticketStatus.set('status', status);
+      $('.js-status-filter').removeClass('js-status-border');
+      $(event.target).addClass('js-status-border');
+    }
   },
 });
 
