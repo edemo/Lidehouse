@@ -50,11 +50,8 @@
     }
 }
 
-.btn-vote, .btn-vote-finalize {
+.btn-vote, .btn-vote-finalize, .btn-vote-choice {
     background-color: @btn-vote-color;
-}
-.btn-vote-choice {
-    background-color: lighten(@btn-vote-color, 15%);
 }
 
 .btn.btn-pressed,
@@ -75,7 +72,6 @@
 }
 
 .btn-vote-choice{
-    background: #996300;
     font-weight: normal;
     color: white;
     width: 100%;
@@ -86,9 +82,64 @@
     transition: box-shadow 0.30s ease;    
 }
 
+.avatar-envelope {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  bottom: -33px;
+  right: 2px;
+  border-radius: 4px;
+}
+
+.btns-group {
+  margin: auto;
+  position: relative;
+}
+
+.btn-vote {
+    margin: auto;
+}
+
+.btn-send-vote {
+    width: 44px;
+    height: 40px;
+    background-color: white;
+    position: absolute;
+    bottom: -35px;
+    right: 0;
+    text-align: center;
+    line-height: 40px;
+    margin: auto;
+    color: red;
+    transition: opacity 1s;
+	  z-index: 11;
+    display: block;
+    opacity: 1;
+    border: none;
+    cursor: pointer;
+}
+
+.material-icons {
+  font-size: 40px !important;
+}
+
+.btn-disabled {
+	opacity: 0.4;
+	pointer-events: none !important;
+}
+
+.sortable {
+  max-width: 250px !important;
+  margin: auto;
+}
+
 .ui-sortable-handle {
   -ms-touch-action: none;
   touch-action: none;
+}
+
+.ui-sortable-placeholder {
+  background: #e7eaec !important;
 }
 
 /* START Touch Punch Desktop Cursor */
