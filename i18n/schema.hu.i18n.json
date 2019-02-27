@@ -253,7 +253,7 @@
     },
     "ticket": {
       "label": "Hibajegy",
-      "category": {
+        "category": {
         "label": "Kategória",
         "building": "épület",
         "garden": "kert",

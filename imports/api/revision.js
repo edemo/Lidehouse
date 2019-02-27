@@ -36,7 +36,7 @@ export class RevisionedCollection extends Mongo.Collection {
       if (modifier.$set && modifier.$set[field]) {
         const doc = super.findOne(selector);
         if (!_.isEqual(Object.byString(doc, field), modifier.$set[field])) {
-          changes.push({ time: Clock.currentTime(), field, oldValue: doc[field] });
+          changes.push({ time: Clock.currentTime(), field, oldValue: Object.byString(doc, field) });
         }
       }
     }

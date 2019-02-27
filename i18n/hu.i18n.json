@@ -3,9 +3,6 @@
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
 
-  "title": "cím",
-  "text": "szöveg",
-
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
@@ -205,7 +202,7 @@
 
   // topics
   "The": "A",
-  "was modified, previous": "módosításra került, korábbi",
+  "was modified, previous content": "módosításra került, korábbi tartalom",
   "Report this": "Hozzászólás jelentése",
   "Hide comments from": "%s hozzászólásainak elrejtése",
   "Unhide comments from": "%s hozzászólásainak mutatása",
@@ -487,6 +484,7 @@
   "delete roleship successful": "Tisztség visszavonva",
   "delete topic successful": "Bejegyzés törölve",
   "insert forumtopic successful": "Új fórum téma létrehozva.",
+  "update forumtopic successful": "Fórum téma módosítva", 
   "insert news successful": "Hirdetmény rögzítésre került",
   "update news successful": "Hirdetmény módosítva",
   "delete news successful": "Hirdetmény törölve",
