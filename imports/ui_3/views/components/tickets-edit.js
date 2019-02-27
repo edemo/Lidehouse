@@ -72,7 +72,9 @@ AutoForm.addHooks('af.ticket.insert', {
 AutoForm.addHooks('af.ticket.statusChange', {
   formToDoc(doc) {
     doc.topicId = Session.get('modalTopicId');
-    Session.set('modalTopicId');  // clear it
     return doc;
+  },
+  onSuccess(formType, result) {
+    Session.set('modalTopicId');  // clear it
   },
 });
