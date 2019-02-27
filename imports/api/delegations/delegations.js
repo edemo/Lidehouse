@@ -44,14 +44,13 @@ if (Meteor.isClient) {
 }
 
 function communityIdAutoValue() {
-  if (this.isSet || this.operator) return;
+  if (this.isSet || this.operator) return undefined;
   const scope = this.field('scope').value;
   const scopeObjectId = this.field('scopeObjectId').value;
   if (scope === 'community') return scopeObjectId;
   if (scope === 'agenda') return Agendas.findOne(scopeObjectId).communityId;
   if (scope === 'topic') return Topics.findOne(scopeObjectId).communityId;
-  debugAssert(false, `No such scope as ${scope}`);
-  return;
+  return undefined;
 }
 
 /*
@@ -87,7 +86,6 @@ Delegations.helpers({
     if (this.scope === 'community') return Communities.findOne(this.scopeObjectId);
     if (this.scope === 'agenda') return Agendas.findOne(this.scopeObjectId);
     if (this.scope === 'topic') return Topics.findOne(this.scopeObjectId);
-    debugAssert(false, `No such scope as ${this.scope}`);
     return undefined;
   },
   sourcePerson() {
@@ -100,7 +98,6 @@ Delegations.helpers({
     if (this.scope === 'community') return Topics.find({ communityId: this.scopeObjectId, category: 'vote', closed: false });
     if (this.scope === 'agenda') return Topics.find({ agendaId: this.scopeObjectId, category: 'vote', closed: false });
     if (this.scope === 'topic') return Topics.find({ _id: this.scopeObjectId, category: 'vote', closed: false });
-    debugAssert(false, `No such scope as ${this.scope}`);
     return undefined;
   },
 });

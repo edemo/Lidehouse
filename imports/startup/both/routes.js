@@ -15,7 +15,6 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/profile-form.js';
   import '/imports/ui_3/views/pages/user-show.js';
   import '/imports/ui_3/views/pages/communities-listing.js';
-  import '/imports/ui_3/views/pages/parcel-owners.js';
   import '/imports/ui_3/views/pages/vote-topics.js';
   import '/imports/ui_3/views/pages/agendas.js';
   import '/imports/ui_3/views/pages/delegations.js';
@@ -163,14 +162,6 @@ FlowRouter.route('/agendas', {
   },
 });
 CommunityRelatedRoutes.push('Agendas');
-
-FlowRouter.route('/owners/:_pid', {
-  name: 'Parcel.owners',
-  action() {
-    BlazeLayout.render('Main_layout', { content: 'Parcel_owners_page' });
-  },
-});
-CommunityRelatedRoutes.push('Parcel.owners');
 
 FlowRouter.route('/delegations', {
   name: 'Delegations',

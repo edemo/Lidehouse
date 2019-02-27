@@ -54,35 +54,47 @@ export const remove = new ValidatedMethod({
   },
 });
 
-let updateCall;
+export const updateMyLastSeen = new ValidatedMethod({
+  name: 'user.updateMyLastSeen',
+  validate: new SimpleSchema({
+    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    lastSeenInfo: { type: Object, blackbox: true },
+    seenType: { type: Number, decimal: true, optional: true },
+  }).validator(),
+
+  run({ topicId, lastSeenInfo, seenType }) {
+    const modifier = {};
+    modifier['$set'] = {};
+    // When we call this method from the client it implicates SEEN_BY.EYES, if we call it from the server it is always SEEN_BY.NOTI
+    if (!seenType) seenType = Meteor.users.SEEN_BY.EYES;
+    // When user seen it by EYES, it implies no NOTI needed - so lastSeen info propagates upwards (SEEN_BY.EYES=0, SEEN_BY.NOTI=1)
+    for (let i = seenType; i <= Meteor.users.SEEN_BY.NOTI; i++) {
+      modifier['$set']['lastSeens.' + i + '.' + topicId] = lastSeenInfo;
+    }
+    Meteor.users.update(this.userId, modifier);
+  },
+});
+
 if (Meteor.isClient) {
   import { displayMessage, handleError } from '/imports/ui_3/lib/errors.js';
 
-  updateCall = function (context, params) {
-    // displayMessage('warning', `You just seen ${params.modifier.$set.lastSeens}`); // debug
-    update.call(params, handleError);
-  };
-} else if (Meteor.isServer) {
-  updateCall = function (context, params) {
-    update._execute(context, params);
-  };
+  Meteor.users.helpers({
+    hasNowSeen(topicId) {
+      // This helper can be called from the client any amount of times the user has just seen this topic.
+      // The lastseen info needs to be updated on the server, only if some notifications are due to this client
+      // Otherwise we should not bother the server constantly with requests, that we saw this thing.
+      const seenType = Meteor.users.SEEN_BY.EYES;
+      const topic = Topics.findOne(topicId);
+      const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
+      const comments = topic.comments().fetch(); // returns newest-first order
+      if (!comments[0] && topic.userId === this._id) { return; }
+      if (comments[0] && comments[0].userId === this._id) { return; }  
+      const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
+      const newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: topic.commentCounter };
+      if (oldLastSeenInfo && oldLastSeenInfo.commentCounter === newLastSeenInfo.commentCounter) {
+        return; // this avoids infinite loop and unnecessary server bothering
+      }
+      updateMyLastSeen.call({ topicId, lastSeenInfo: newLastSeenInfo }, handleError);
+    },
+  });
 }
-
-Meteor.users.helpers({
-  hasNowSeen(topicId, seenType) {
-    // The user has just seen this topic, so the lastseen info needs to be updated  
-    debugAssert(seenType === Meteor.users.SEEN_BY.EYES || seenType === Meteor.users.SEEN_BY.NOTI);
-    const topic = Topics.findOne(topicId);
-    const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
-    const newLastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
-    if (oldLastSeenInfo && oldLastSeenInfo.commentCounter === newLastSeenInfo.commentCounter) return; // this avoids infinite loop
-    const modifier = {};
-    modifier['$set'] = {};
-    // When user seen it by EYES, it implies no NOTI needed - so lastSeen info propagates upwards (SEEN_BY.EYES=0, SEEN_BY.NOTI=1)
-    for (let i = seenType; i <= Meteor.users.SEEN_BY.NOTI; i++) {
-      modifier['$set']['lastSeens.' + i + '.' + topic._id] = newLastSeenInfo;
-    }
-
-    updateCall({ userId: this._id }, { _id: this._id, modifier });
-  },
-});

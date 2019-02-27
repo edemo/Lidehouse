@@ -13,7 +13,7 @@ import { Parcels } from '/imports/api/parcels/parcels';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
 const rABS = true;
-const delayCalls = 1000;
+const delayCalls = 250;
 
 function transformMarinaParcels(jsons) {
   const tjsons = jsons.map((doc) => {
@@ -37,7 +37,7 @@ function transformMarinaMemberships(jsons) {
   const tjsons = [];
   const communityId = Session.get('activeCommunityId');
   jsons.forEach((doc) => {
-    const parcel = Parcels.findOne({ communityId, ref: doc.ref });
+    const parcel = Parcels.findOne({ communityId, ref: doc.ref.trim() });
     doc.parcelId = parcel._id;
     doc.person = doc.person || {};
     doc.person.idCard = doc.person.idCard || {};

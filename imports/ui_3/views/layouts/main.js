@@ -1,8 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
+
+import { __ } from '/imports/localization/i18n.js';
 
 import '../common/ibox-tools.js';
 import '../common/navigation.js';

@@ -7,6 +7,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { Comments } from './comments.js';
 import { Topics } from '../topics/topics.js';
 import { checkExists, checkPermissions, checkModifier } from '../method-checks';
+import { updateMyLastSeen } from '/imports/api/users/methods.js';
 
 export const insert = new ValidatedMethod({
   name: 'comments.insert',
@@ -16,41 +17,49 @@ export const insert = new ValidatedMethod({
     const topic = checkExists(Topics, doc.topicId);
     checkPermissions(this.userId, 'comments.insert', topic.communityId);
     doc.userId = this.userId;   // One can only post in her own name
-    Comments.insert(doc);
+    const commentId = Comments.insert(doc);
+    const newComment = Comments.findOne(commentId); // we need the createdAt timestamp from the server
+    updateMyLastSeen._execute({ userId: this.userId }, 
+    { topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt, commentCounter: (topic.commentCounter + 1) } });
+    return commentId;
   },
 });
 
 export const update = new ValidatedMethod({
   name: 'comments.update',
   validate: new SimpleSchema({
-    commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
   }).validator(),
 
-  run({ commentId, modifier }) {
-    const comment = checkExists(Comments, commentId);
-    const topic = checkExists(Topics, comment.topicId);
-    checkModifier(comment, modifier, ['text']);     // only the text can be modified
-    checkPermissions(this.userId, 'comments.update', topic.communityId, comment);
+  run({ _id, modifier }) {
+    const doc = checkExists(Comments, _id);
+    const topic = checkExists(Topics, doc.topicId);
+    checkModifier(doc, modifier, ['text']);     // only the text can be modified
+    checkPermissions(this.userId, 'comments.update', topic.communityId, doc);
 
-    Comments.update(commentId, modifier);
+    Comments.update(_id, modifier);
   },
 });
 
 export const remove = new ValidatedMethod({
   name: 'comments.remove',
   validate: new SimpleSchema({
-    commentId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
 
-  run({ commentId }) {
-    const comment = checkExists(Comments, commentId);
-    const topic = checkExists(Topics, comment.topicId);
-    checkPermissions(this.userId, 'comments.remove', topic.communityId, comment);
+  run({ _id }) {
+    const doc = checkExists(Comments, _id);
+    const topic = checkExists(Topics, doc.topicId);
+    checkPermissions(this.userId, 'comments.remove', topic.communityId, doc);
 
-    Comments.remove(commentId);
+    Comments.remove(_id);
   },
 });
+
+Comments.methods = {
+  insert, update, remove,
+};
 
 //--------------------------------------------------------
 

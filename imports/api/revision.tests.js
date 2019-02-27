@@ -84,7 +84,7 @@ if (Meteor.isServer) {
       });
     });
 
-    describe('edge cases', function () {
+    xdescribe('edge cases', function () {
       beforeEach(function () {
         docId = collection.insert({
           textField: 'text',

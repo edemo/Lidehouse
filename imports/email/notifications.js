@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mailer } from 'meteor/lookback:emails';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Topics } from '/imports/api/topics/topics.js';
-import '/imports/api/users/users.js';
+import { updateMyLastSeen } from '/imports/api/users/methods.js';
 
 function sendNotifications(user) {
   user.communities().forEach((community) => {
@@ -19,7 +19,10 @@ function sendNotifications(user) {
           communityId: community._id,
         },
       });
-      topics.forEach(topic => user.hasNowSeen(topic._id, Meteor.users.SEEN_BY.NOTI));
+      topics.forEach((topic) => {
+        const lastSeenInfo = { timestamp: new Date(), commentCounter: topic.commentCounter };
+        updateMyLastSeen._execute({ userId: user._id }, { topicId: topic._id, lastSeenInfo, seenType: Meteor.users.SEEN_BY.NOTI });
+      });
     }
   });
 }

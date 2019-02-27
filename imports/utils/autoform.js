@@ -24,3 +24,13 @@ export const chooseUser = {
   firstOption: () => __('(Select one)'),
 };
 
+export const noUpdate = {
+  disabled() {
+    if (Meteor.isClient) {
+      import { Session } from 'meteor/session';
+      const afType = Session.get('autoformType');
+      return afType === 'update' || afType === 'method-update';
+    }
+    return false;
+  },
+};

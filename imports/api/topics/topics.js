@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 
+import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -20,22 +21,22 @@ export const Topics = new RevisionedCollection('topics', ['text', 'title', 'clos
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
 
 Topics.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
   title: { type: String, max: 100, optional: true },
-  text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
+  text: { type: String, max: 5000, autoform: { rows: 8 } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   sticky: { type: Boolean, optional: true, defaultValue: false },
-  commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } }, // removals DON'T decrease it (!)
+  commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
 Meteor.startup(function indexTopics() {
   Topics.ensureIndex({ agendaId: 1 }, { sparse: true });
-  if (Meteor.isClient) {
+  if (Meteor.isClient && MinimongoIndexing) {
     Topics._collection._ensureIndex('category');
     Topics._collection._ensureIndex('closed');
     Topics._collection._ensureIndex(['title', 'participantIds']);
@@ -65,17 +66,16 @@ Topics.helpers({
   unseenCommentsBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
     const lastSeenInfo = user.lastSeens[seenType][this._id];
-    const lastSeenCommentCounter = lastSeenInfo ? lastSeenInfo.commentCounter : 0;
-    const newCommentCounter = this.commentCounter - lastSeenCommentCounter;
-    return newCommentCounter;
-  },
-  unseenCommentListBy(userId, seenType) {
-    const user = Meteor.users.findOne(userId);
-    const lastSeenInfo = user.lastSeens[seenType][this._id];
     const messages = lastSeenInfo ?
        Comments.find({ topicId: this._id, createdAt: { $gt: lastSeenInfo.timestamp } }) :
        Comments.find({ topicId: this._id });
-    return messages.fetch();
+    return messages;
+  },
+  unseenCommentCountBy(userId, seenType) {
+    return this.unseenCommentsBy(userId, seenType).count();
+  },
+  unseenCommentListBy(userId, seenType) {
+    return this.unseenCommentsBy(userId, seenType).fetch();
   },
   unseenEventsBy(userId, seenType) {
     return 0; // TODO
@@ -88,22 +88,22 @@ Topics.helpers({
         if (this.isUnseenBy(userId, seenType)) return 1;
         break;
       case 'room':
-        if (this.unseenCommentsBy(userId, seenType) > 0) return 1;
+        if (this.unseenCommentCountBy(userId, seenType) > 0) return 1;
         break;
       case 'forum':
-        if (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0) return 1;
+        if (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0) return 1;
         break;
       case 'vote':
         if (seenType === Meteor.users.SEEN_BY.EYES
           && !this.hasVotedIndirect(userId)) return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
-          && (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0)) return 1;
+          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
         break;
       case 'ticket':
         if (seenType === Meteor.users.SEEN_BY.EYES
           && this.ticket.status !== 'closed') return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
-          && (this.isUnseenBy(userId, seenType) || this.unseenCommentsBy(userId, seenType) > 0)) return 1;
+          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
         break;
       case 'feedback':
         if (this.isUnseenBy(userId, seenType)) return 1;

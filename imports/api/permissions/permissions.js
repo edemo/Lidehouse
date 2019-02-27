@@ -1,4 +1,5 @@
 /* eslint-disable no-multi-spaces */
+import { _ } from 'meteor/underscore';
 import { exceptGuest, everyRole, everyBody, nobody } from './roles.js';
 
 export const Permissions = [
@@ -7,30 +8,31 @@ export const Permissions = [
   { name: 'communities.update',     roles: ['admin'] },
   { name: 'communities.remove',     roles: ['admin'] },
   { name: 'memberships.inCommunity',roles: everyRole },
-  { name: 'roleships.insert',       roles: ['admin', 'manager'] },
-  { name: 'roleships.update',       roles: ['admin', 'manager'] },
-  { name: 'roleships.remove',       roles: ['admin', 'manager'] },
+  { name: 'memberships.details',    roles: ['admin', 'manager'] },
+  { name: 'roleships.insert',       roles: ['admin'] },
+  { name: 'roleships.update',       roles: ['admin'] },
+  { name: 'roleships.remove',       roles: ['admin'] },
   { name: 'ownerships.insert',      roles: ['admin', 'manager'] },
   { name: 'ownerships.update',      roles: ['admin', 'manager'] },
   { name: 'ownerships.remove',      roles: ['admin', 'manager'] },
   { name: 'benefactorships.insert', roles: ['admin', 'manager'] },
   { name: 'benefactorships.update', roles: ['admin', 'manager'] },
   { name: 'benefactorships.remove', roles: ['admin', 'manager'] },
-  { name: 'parcels.inCommunity',    roles: everyBody },
+  { name: 'parcels.inCommunity',    roles: everyRole },
   { name: 'parcels.insert',         roles: ['admin', 'manager'] },
   { name: 'parcels.update',         roles: ['admin', 'manager'] },
   { name: 'parcels.remove',         roles: ['admin', 'manager'] },
   { name: 'forum.insert',           roles: exceptGuest },
   { name: 'forum.update',           roles: nobody, allowAuthor: true },
   { name: 'forum.remove',           roles: ['moderator'], allowAuthor: true },
-  { name: 'poll.insert',            roles: ['manager', 'owner'] },
-  { name: 'poll.update',            roles: nobody, allowAuthor: true },
-  { name: 'poll.remove',            roles: nobody, allowAuthor: true },
+  { name: 'poll.insert',            roles: ['admin', 'manager', 'owner'] },
+  { name: 'poll.update',            roles: ['admin'], allowAuthor: true },
+  { name: 'poll.remove',            roles: ['admin'], allowAuthor: true },
   { name: 'vote.insert',            roles: ['manager'] },
   { name: 'vote.update',            roles: ['manager'], allowAuthor: true },
   { name: 'vote.remove',            roles: ['manager'], allowAuthor: true },
   { name: 'vote.cast',              roles: exceptGuest }, // ['owner', 'delegate', 'manager'] },
-  { name: 'vote.castForOthers',     roles: ['manager'] },
+  { name: 'vote.castForOthers',     roles: ['admin'] },
   { name: 'vote.close',             roles: ['manager'] },
   { name: 'vote.peek',              roles: ['manager'] },
   { name: 'agendas.inCommunity',    roles: everyRole },
@@ -73,6 +75,11 @@ export const Permissions = [
   { name: 'shareddocs.download',    roles: exceptGuest },
   { name: 'do.techsupport',         roles: ['admin'] },
 ];
+
+// The board member has now exactly the same permissions as the manager
+Permissions.forEach((perm) => {
+  if (_.contains(perm.roles, 'manager')) perm.roles.push('board');
+});
 
 /* what if more compacted...
 const permissions = [

@@ -6,11 +6,8 @@
     <div class="wrapper wrapper-content animated fadeInUp">
         <div>
             <div class="text-right">
-                <span class="js-show btn btn-sm btn-white m-b">{{_ 'Start new topic'}} <i class="caret"></i></span>
+                <button class="btn btn-primary btn-sm m-b js-new"><i class="fa fa-plus"></i> {{_ 'Start new topic'}}</button>
             </div>        
-            <div class="new-topic hidden"> 
-                {{> New_forum_topic}}
-            </div> 
         </div>
         <div class="m-b-md">
             {{#each forumTopics}}
@@ -30,7 +27,7 @@
                         <div class="vote-info">
                             <i class="fa fa-comments-o"></i> <a class="text-capitalize" href="{{pathFor 'Topic.show' _tid=_id}}">{{_ 'Comment'}} ({{commentCounter}})</a>
                             <i class="fa fa-clock-o"></i> <a href="">{{displayTimeFrom createdAt}}</a>
-                            <i class="fa fa-user"></i> <a href="">{{createdBy.toString}}</a>
+                            <i class="fa fa-user"></i> <a href="">{{createdBy}}</a>
                         </div>
                     </div>
                     <div class="col-sm-2 ">

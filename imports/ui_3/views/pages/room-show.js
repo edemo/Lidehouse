@@ -7,6 +7,7 @@ import { $ } from 'meteor/jquery';
 import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { update as updateUser } from '/imports/api/users/methods.js';
 import '/imports/api/topics/rooms/rooms.js';
 
@@ -63,9 +64,9 @@ Template.Room_show.helpers({
 
 Template.Message_history.onCreated(function tmplMsgBoxOnCreated() {
   this.autorun(() => {
-    // not needed anymore, we are subscribing to this implicitly in main -- 
-    // const roomId = FlowRouter.getParam('_rid');
-    // this.subscribe('comments.onTopic', { topicId: roomId });
+    // this is needed for comments
+    const roomId = FlowRouter.getParam('_rid');
+    this.subscribe('comments.onTopic', { topicId: roomId });
   });
 });
 
@@ -74,14 +75,14 @@ Template.Message_history.onRendered(function tmplMsgBoxOnRendered() {
     $('.chat-discussion').scrollTop($('.chat-discussion')[0].scrollHeight);
     const roomId = FlowRouter.getParam('_rid');
     if (this.subscriptionsReady()) {
-      Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
+      Meteor.user().hasNowSeen(roomId);
     }
   });
 
-  $('.full-height-scroll').slimscroll({
+ /* $('.full-height-scroll').slimscroll({
     height: '100%',
     start: 'bottom',
-  });
+  });*/
 });
 
 Template.Message_history.helpers({
@@ -101,15 +102,15 @@ Template.Message_send.events({
     const textarea = instance.find('textarea');
     const text = textarea.value;
     const roomId = FlowRouter.getParam('_rid');
+    const topic = Topics.findOne(roomId);
     Meteor.call('comments.insert', {
       topicId: roomId,
       userId: Meteor.userId(),
       text,
     },
     onSuccess((res) => {
-      Meteor.user().hasNowSeen(roomId, Meteor.users.SEEN_BY.EYES);
       textarea.value = '';
       if ($(window).width() > 768) $('.js-focused').focus();
-    }));
+      }));
   },
 });

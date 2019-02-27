@@ -34,7 +34,7 @@ export const Notification_Email = {
       return topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY.NOTI);
     },
     hasUnseenComments(topic) {
-      return topic.unseenCommentsBy(this.userId, Meteor.users.SEEN_BY.NOTI) > 0;
+      return topic.unseenCommentCountBy(this.userId, Meteor.users.SEEN_BY.NOTI) > 0;
     },
     unseenCommentList(topic) {
       const comments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY.NOTI);

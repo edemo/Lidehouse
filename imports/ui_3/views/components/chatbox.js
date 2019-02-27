@@ -3,19 +3,21 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
+import { AutoForm } from 'meteor/aldeed:autoform';
+
 import { __ } from '/imports/localization/i18n.js';
 import { handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { like } from '/imports/api/topics/likes.js';
 import { flag } from '/imports/api/topics/flags.js';
-import { block } from '/imports/api/users/methods.js';
-import { remove as removeTopic, update as updateTopic } from '/imports/api/topics/methods.js';
+import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import '../components/chatbox.html';
-import '../components/comments-section.js';
+import '/imports/ui_3/views/blocks/chopped.js';
+import '/imports/ui_3/views/components/comments-section.js';
+import './chatbox.html';
 
 Template.Chatbox.onRendered(function chatboxOnRendered() {
 });
@@ -34,59 +36,20 @@ Template.Chatbox.helpers({
   },
 });
 
-function toggleFinishEditButtons(instance) {
-  $('.js-save-edited[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-  $('.js-cancel[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-}
-
-function toggleTopic(instance) {
-  $('p[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-  $('strong[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-}
-
-function finishEditing(instance) {
-  $('.js-text[data-id="' + instance.data._id + '"]').remove();
-  $('.js-title[data-id="' + instance.data._id + '"]').remove();
-  toggleFinishEditButtons(instance);
-  toggleTopic(instance);
-}
-
 Template.Chatbox.events({
   'click .js-edit-topic'(event, instance) {
-    const originalText = Topics.findOne({ _id: instance.data._id }).text;
-    const originalTitle = Topics.findOne({ _id: instance.data._id }).title;
-    const textareaText = '<textarea data-id="' + instance.data._id + '" rows="3" cols="" class="js-text full-width">' + originalText + '</textarea>';
-    const textareaTitle = '<textarea data-id="' + instance.data._id + '" class="js-title" rows="1" cols="">' + originalTitle + '</textarea>';
-    $(textareaTitle).insertAfter('strong[data-id="' + instance.data._id + '"]');
-    $(textareaText).insertAfter('p[data-id="' + instance.data._id + '"]');
-    toggleTopic(instance);
-    toggleFinishEditButtons(instance);
-  },
-  'click .js-save-edited'(event, instance) {
-    const editedText = $('.js-text[data-id="' + instance.data._id + '"]').val();
-    const editedTitle = $('.js-title[data-id="' + instance.data._id + '"]').val() || editedText.substring(0, 25) + '...';
-    updateTopic.call({
-      _id: instance.data._id,
-      modifier: { $set: { text: editedText, title: editedTitle } },
+    const id = this._id;
+    Modal.show('Autoform_edit', {
+      id: 'af.forumtopic.update',
+      collection: Topics,
+      schema: Topics.schema,
+      omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky'],
+      doc: Topics.findOne(id),
+      type: 'method-update',
+      meteormethod: 'topics.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
     });
-    finishEditing(instance);
-  },
-  'click .js-cancel'(event, instance) {
-    finishEditing(instance);
-  },
-  'keydown .js-text'(event, instance) {
-    // pressing escape key
-    if (event.keyCode === 27) {
-      event.preventDefault();
-      finishEditing(instance);
-    }
-  },
-  'keydown .js-title'(event, instance) {
-    // pressing escape key
-    if (event.keyCode === 27) {
-      event.preventDefault();
-      finishEditing(instance);
-    }
   },
   'click .js-delete'(event, instance) {
     Modal.confirmAndCall(removeTopic, { _id: this._id }, {
@@ -113,3 +76,5 @@ Template.Chatbox.events({
     }, handleError);
   },
 });
+
+AutoForm.addModalHooks('af.forumtopic.update');

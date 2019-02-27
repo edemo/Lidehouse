@@ -1,6 +1,7 @@
 /* eslint-disable prefer-arrow-callback */
 
 import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { leaderRoles } from '/imports/api/permissions/roles.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
@@ -35,16 +36,19 @@ function communityPublication(userId, _id) {
       // Publish the Memberships of the Community
       find(community) {
         if (hasPermission('memberships.inCommunity')) {
-          return Memberships.find({ communityId: community._id });
+          const fields = hasPermission('memberships.details') ? {} : Memberships.publicFields;
+          return Memberships.find({ communityId: community._id }, { fields });
         } // Otherwise, only the active leaders of the community can be seen
-        return Memberships.find({ communityId: community._id, active: true, role: { $in: leaderRoles } });
+        return Memberships.find({ communityId: community._id, active: true, role: { $in: leaderRoles } }, { fields: Memberships.publicFields });
       },
 
       // ...Related to Memberships
       children: [{
         // Publish the User of the Membership
         find(membership) {
-          return Meteor.users.find({ _id: membership.person.userId }, { fields: Meteor.users.publicFields });
+          const showFields = _.extend({}, Meteor.users.publicFields);
+          if (hasPermission('memberships.details')) showFields.emails = 1;  // to be able to resend invites
+          return Meteor.users.find({ _id: membership.person.userId }, { fields: showFields });
         },
       }],
     }, {

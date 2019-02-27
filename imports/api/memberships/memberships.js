@@ -51,7 +51,7 @@ Memberships.schema = new SimpleSchema({
   person: { type: PersonSchema },
   personId: { type: String, optional: true, autoform: { omit: true },
     autoValue() {
-      return this.field('person.userId').value || this.field('person.idCard.identifier').value;
+      return this.field('person.userId').value || this.field('person.idCard.identifier').value || undefined;
     },
   },
   // TODO should be conditional on role === 'owner'
@@ -123,13 +123,13 @@ Memberships.helpers({
   votingUnits() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
-    const votingUnits = this.isRepresentor() ? this.parcel().units : this.parcel().units * this.ownership.share.toNumber();
+    const votingUnits = this.isRepresentor() ? this.parcel().ledUnits() : this.parcel().ledUnits() * this.ownership.share.toNumber();
     return votingUnits;
   },
   votingShare() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;
-    const votingShare = this.isRepresentor() ? this.parcel().share() : this.parcel().share().multiply(this.ownership.share);
+    const votingShare = this.isRepresentor() ? this.parcel().ledShare() : this.parcel().ledShare().multiply(this.ownership.share);
     return votingShare;
   },
   toString() {
@@ -150,6 +150,14 @@ Memberships.attachSchema(Timestamps);
 Meteor.startup(function attach() {
   Memberships.simpleSchema().i18n('schemaMemberships');
 });
+
+Memberships.publicFields = {
+  'person.idCard.address': 0,
+  'person.idCard.identifier': 0,
+  'person.idCard.mothersName': 0,
+  'person.idCard.dob': 0,
+  'person.contact': 0,
+};
 
 Memberships.modifiableFields = [
   'ownership.share',

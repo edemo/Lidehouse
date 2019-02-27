@@ -1507,6 +1507,10 @@ Meteor.methods({
     if (Meteor.isClient) return;  // This should run only on the server side
 
     const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
+
+    const demoHouse = Communities.findOne({ name: __('demo.house') });
+    if (!demoHouse) throw new Meteor.Error('err_notImplemented', 'Demo house not available on this server');
+    const demoCommunityId = demoHouse._id;
     const demoUsersList = Meteor.users.find({ 'emails.0.address': { $regex: `${lang}demouser@honline.hu` } },
       { sort: { createdAt: -1 } }).fetch();
     let counter = 1;
@@ -1529,8 +1533,7 @@ Meteor.methods({
         profile: { lastName: capitalize(__('guest')), firstName: firstNames[nameCounter] },
       },
     });
-    const demoHouse = Communities.findOne({ name: __('demo.house') });
-    const demoCommunityId = demoHouse._id;
+
     const totalunits = demoHouse.totalunits;
     if (demoUsersList.length >= 10) {
       Communities.update({ _id: demoCommunityId }, { $set: { totalunits: (totalunits + 100) } });

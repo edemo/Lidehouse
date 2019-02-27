@@ -3,9 +3,6 @@
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
 
-  "title": "cím",
-  "text": "szöveg",
-
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
@@ -41,12 +38,13 @@
 
   // roles
   "admin": "admin",
-  "manager": "intéző",
+  "manager": "közös képviselő",
+  "board": "intéző",
   "owner": "tulajdonos",
   "benefactor": "használó",
   "moderator": "moderátor",
   "accountant": "könyvelő",
-  "treasurer": "kincstárnok",
+  "treasurer": "pénztáros",
   "overseer": "számvizsgáló",
   "delegate": "meghatalmazott",
   "maintainer": "gondnok",
@@ -136,6 +134,7 @@
     "room": "szoba",
     "feedback": "visszajelzés"
   },
+  "forumtopic": "fórum téma",
 
   // commands
   "important": "Fontos",
@@ -190,8 +189,8 @@
   "selected": "kiválasztva",
   "Approved": "Jóváhagyott",
   "Waiting for approval": "Jóváhagyásra váró",
-  "Parcel's owners list": "Az albetéthez rendelt tulajdonosok listája",
-  "Parcel's benefactors list": "Az albetéthez rendelt használók listája",
+  "Parcel owners list": "A(z) %s tulajdonosai",
+  "Parcel benefactors list": "A(z) %s használói",
   "Click person's name to see contact info": "Kattintson az illető nevére az elérhetőségei megtekintéséhez.",
   "Click the little person buttons to see the occupants": "Kattintson a kis emberke gombra, az albetét birtokosainak megtekintéséhez",
   "Acknowledge save effects": "Tudomásul veszem, hogy az elmentett módosítás azonnal láthatóvá válik a közösség nyilvános oldalán.",
@@ -203,7 +202,7 @@
 
   // topics
   "The": "A",
-  "was modified, previous": "módosításra került, korábbi",
+  "was modified, previous content": "módosításra került, korábbi tartalom",
   "Report this": "Hozzászólás jelentése",
   "Hide comments from": "%s hozzászólásainak elrejtése",
   "Unhide comments from": "%s hozzászólásainak mutatása",
@@ -213,6 +212,7 @@
   "private chat": "privát üzenet",
   "tech support": "technikai segítség",
   "see full text with View button": "teljes szöveg a Megtekintés gombbal",
+  "View previous comments": "Korábbi %s hozzászólás megtekintése",
 
   // voting
   "choice": "választási lehetőség",
@@ -279,6 +279,9 @@
   "No delegations": "Nincsenek meghatalmazások",
 
   // rooms
+  "Send messages": "Küldjön üzenetet",
+  "Send messages subtitle": "közös képviselőjének vagy lakótársának",
+  "Send messages instructions": "Ha ezidáig még nem beszélt az illetővel, a kereső segítségével megtalálhatja",
   "noSelectedPerson": "Válasszon címzettet a jobb oldali panelen!",
 
   // tickets
@@ -290,6 +293,8 @@
   "Please dont report twice": "Karbantartó kollegáink munkáját segítendő, kérjük csak akkor adja fel hibabejelentését, ha az még nem szerepel a közelmúltban felvett hibajegyek között.",
   "Thank you": "Köszönjük",
   "Create ticket": "Bejelentés elküldése",
+  "status": "Státusz",
+  "Change status": "Státusz váltása",
 
   // finances
   "Account": "Számla", 
@@ -388,6 +393,9 @@
   "Make your comment": "Hozzászólás",
 
   // errors
+  "err_notImplemented": "Nem elérhető funkció",
+  "Not implemented yet": "Ez a funkció még nem elérhető",
+  "Demo house not available on this server": "Ezen a szerveren nincsen demo ház funkció. Látogasson el a központi szerverre! (honline.hu)",
   "err_notExists": "Nincs ilyen objektum",
   "No such object": "Ilyen objektum nem létezik a rendszerben",
   "err_alreadyExists": "Már van ilyen objektum",
@@ -399,9 +407,21 @@
   "err_otherPartyNotAllowed": "Nincs engedélyezve a másik fél részéről",
   "Other party not allowed this activity": "A másik fél nem engedélyezte ezt a műveletet.",
   "err_unableToRemove": "Az objektum nem törölhető",
+  "Community cannot be deleted while it has active officers" : "A közösség nem törölhető amíg még vannak aktív tisztségviselői. Először törölnie kell ezeket",
+  "Parcel cannot be deleted while it has active owners": "Az albetét nem törölhető, amíg aktív tulajdonosai vannak. Előszőr a tulajdonosokat kell törölnie",
+  "Admin cannot be deleted if no other admin is appointed": "Az adminisztrátor nem törölhető, amíg nincs másik kijelölve",
+  "Agenda cannot be deleted while it contains topics": "A közgyűlés nem törölhető, ha vannak benne szavazások. Először törölnie kell ezeket a szavazásokat vagy ki kell vennie őket a közgyűlésből",
   "No active": "Nincs aktív",
-  "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon.",
-  "Remove not possible after 24 hours": "MEGJEGYZÉS: Mivel a tranzakció 24 óránál régebbi, a törlése nem lehetséges. Így egy ellentétes előjelű tranzakció bevitelére kerül sor.",
+  "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon",
+  "Remove not possible after 24 hours": "MEGJEGYZÉS: Mivel a tranzakció 24 óránál régebbi, a törlése nem lehetséges. Így egy ellentétes előjelű tranzakció bevitelére kerül sor",
+  "err_sanityCheckFailed": "Adat beviteli hiba",
+  "User and conact email doesnt match": "A meghívott felhasználó és az email cím különbözik",
+  "Ownership share cannot exceed 1": "Tulajdonrészek összesen nem haladhatják meg az 1-et",
+  "Parcel can have only one representor": "Egy albetétnek csak egyetlen képviselője lehet",
+  "Parcel cannot have lead and owners at the same time": "Ha az albetétnek vezér albetétje van, akkor nem lehet tulajdonosa megadva",
+  "Registered units cannot exceed totalunits of community": "A ház albetétjeinek tulajdonrésze nem haladja meg a megadott össz tulajdont",
+  "No contact email set for this membership": "Ehhez a tagsághoz nincs megadva kapcsolati email cím",
+  "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közös képviselő segítségét.",
 
   "logout": "kilépés",
   "login": "belépés",
@@ -438,9 +458,6 @@
   },
   "documentStoreSubtitle": "Mindenki számára elérhető dokumentumok helye.",
   "documentStorePlaceholder": "Ide tölthetők fel a házhoz tartozó fontosabb, mindenki számára elérhető dokumentumok, mint például az SZMSZ vagy a Házirend.",
-  "No permission to upload": "Önnek nincs jogosultsága dokumentumok feltöltésére, kérje a közös képviselő segítségét.",
-  "No contact email set for this membership": "Ehhez a tagsághoz nincs megadva kapcsolati email cím",
-  "Not implemented yet": "Ez a funkció még nem elérhető",
 
   // Notifications
   "Join request submitted": "Csatlakozási kérelem beadva a(z) %s közösséghez",
@@ -450,6 +467,7 @@
 
   "invite user successful": "Felhasználó meghívása megtörtént",
   "delete user successful": "Felhasználói fiók törölve",
+  "update user successful": "Felhasználói adatok elmentve",
   "insert community successful": "Közösség sikeresen létrehozva.",
   "delete community successful": "Közösség törölve",
   "insert parcel successful": "Albetét rögzítésre került",
@@ -465,12 +483,15 @@
   "update roleship successful": "Tisztség módosítva",
   "delete roleship successful": "Tisztség visszavonva",
   "delete topic successful": "Bejegyzés törölve",
+  "insert forumtopic successful": "Új fórum téma létrehozva.",
+  "update forumtopic successful": "Fórum téma módosítva", 
   "insert news successful": "Hirdetmény rögzítésre került",
   "update news successful": "Hirdetmény módosítva",
   "delete news successful": "Hirdetmény törölve",
   "insert ticket successful": "Hibajegy rögzítésre került",
   "update ticket successful": "Hibajegy módosítva",
   "delete ticket successful": "Hibajegy törölve",
+  "statusChange ticket successful": "Hibajegy státusza megváltoztatva",
   "enable delegations successful": "Bejövő meghatalmazások engedélyezve",
   "disable delegations successful": "Bejövő meghatalmazások visszautasítva",
   "insert delegation successful": "Meghatalmazás aktiválva",
@@ -528,14 +549,11 @@
 
   "anonymous": "névtelen",
   "deletedUser": "Törölt felhasználó",
+  "unknownUser": "Ismeretlen felhasználó",
   "deleteUserWarning": ["FIGYELEM: Ön ezzel végérvényesen elveszíti a felhasználói fiókját! <br /><br />",
     "Tájékoztatjuk, hogy a közösségében történt megnyilvánulásai ezzel nem törlődnek. ",
     "Azok a közösség tulajdonát képezik, és törlésüket a közösség rendszergazdájától tudja kérni. <br /><br />",
     "Olvassa át <a href='privacy' target='blank'>Adatvédelmi Tájékoztatónkat</a>"],
-  "Community cannot be deleted while it has active officers" : "A közösség nem törölhető amíg még vannak aktív tisztségviselői. Először törölnie kell ezeket.",
-  "Parcel cannot be deleted while it has active owners": "Az albetét nem törölhető, amíg aktív tulajdonosai vannak. Előszőr a tulajdonosokat kell törölnie.",
-  "Admin cannot be deleted if no other admin is appointed.": "Az adminisztrátor nem törölhető, amíg nincs másik kijelölve.",
-  "Agenda cannot be deleted while it contains topics": "A közgyűlés nem törölhető, ha vannak benne szavazások. Először törölnie kell ezeket a szavazásokat vagy ki kell vennie őket a közgyűlésből.",
 
   "welcome": "Üdvözöljük a Honline rendszerben!",
   "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",

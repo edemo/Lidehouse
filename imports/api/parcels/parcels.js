@@ -67,6 +67,9 @@ Meteor.startup(function indexParcels() {
 });
 
 Parcels.helpers({
+  isLed() {
+    return this.leadRef && (this.leadRef !== this.ref);
+  },
   leadParcel() {
     if (!this.leadRef || this.leadRef === this.ref) return this;
     if (!this.communityId) return undefined;
@@ -78,13 +81,18 @@ Parcels.helpers({
       + (this.door ? this.door : '');
   },
   occupants() {
+    if (this.isLed()) return this.leadParcel().occupants();
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id });
   },
   representors() {
+    if (this.isLed()) return this.leadParcel().representors();
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this._id, role: 'owner', 'ownership.representor': true });
   },
+  representor() {
+    return this.representors().fetch()[0];
+  },
   display() {
-    return `${this.serial || '?'}. ${__(this.type)} ${this.location() || this.ref} (${this.lot})`;
+    return `${this.ref || '?'} (${this.location()}) ${__(this.type)}`;
   },
   toString() {
     return this.ref || this.location();
@@ -100,10 +108,33 @@ Parcels.helpers({
     return community.totalunits;
   },
   // Voting
+  ledUnits() {
+    if (this.isLed()) return 0;
+    let cumulatedUnits = this.units;
+    const ledParcels = Parcels.find({ communityId: this.communityId, leadRef: this.ref });
+    ledParcels.forEach((parcel) => {
+      if (parcel.isLed()) { // This avoids counting twice the self-led parcel 
+        cumulatedUnits += parcel.units;
+      }
+    });
+    return cumulatedUnits;
+  },
   share() {
     return new Fraction(this.units, this.totalunits());
   },
+  ledShare() {
+    if (this.isLed()) return new Fraction(0);
+    let cumulatedShare = this.share();
+    const ledParcels = Parcels.find({ communityId: this.communityId, leadRef: this.ref });
+    ledParcels.forEach((parcel) => {
+      if (parcel.isLed()) { // This avoids counting twice the self-led parcel 
+        cumulatedShare = cumulatedShare.add(parcel.share());
+      }
+    });
+    return cumulatedShare;
+  },
   ownedShare() {
+    if (this.isLed()) return this.leadParcel().ownedShare();
     let total = new Fraction(0);
     Memberships.find({ parcelId: this._id, active: true, approved: true, role: 'owner' }).forEach(p => total = total.add(p.ownership.share));
     return total;

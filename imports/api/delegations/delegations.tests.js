@@ -35,7 +35,7 @@ if (Meteor.isServer) {
 
     describe('publications', function () {
 
-      it('sends all delegations.fromUser', function (done) {
+      xit('sends all delegations.fromUser', function (done) {
         const collector = new PublicationCollector({ userId: Fixture.demoUserId });
         collector.collect(
           'delegations.fromUser',
@@ -48,7 +48,7 @@ if (Meteor.isServer) {
         );
       });
 
-      it('sends all delegations.toUser', function (done) {
+      xit('sends all delegations.toUser', function (done) {
         const collector = new PublicationCollector({ userId: Fixture.demoUserId });
         collector.collect(
           'delegations.toUser',
