@@ -102,7 +102,7 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
       const doughnutData = {
         labels: voteSummaryDisplay.map(s => `${__(s.choice)}`), // .concat(__('Not voted')),
         datasets: [{
-          data: voteSummaryDisplay.map((s, i) => s.percentOfVotes), // .concat(voting.notVotedUnits()),
+          data: voteSummaryDisplay.map((s, i) => s.votingUnits), // .concat(voting.notVotedUnits()),
           backgroundColor: voteSummaryDisplay.map((s, i) => choiceColors[i]), // .concat(notVotedColor),
         }],
       };
