@@ -95,12 +95,6 @@ Template.Vote_cast_panel.viewmodel({
       this.templateInstance.firstRun = false;
     },
   ],
-  /*indirectUser() {
-    const myVotePath = this.votePaths[Meteor.userId()];
-    const myFirstDelegateId = myVotePath[1];
-    const myFirstDelegate = Meteor.users.findOne(myFirstDelegateId);
-    return myFirstDelegate;
-  },*/
   voterAvatar() {
     const userId = Meteor.userId();
     const user = Meteor.users.findOne(userId);
@@ -131,16 +125,6 @@ Template.Vote_cast_panel.viewmodel({
     }
     // no vote yet, preference is then the original vote choices in that order
     return choices.map(function obj(text, index) { return { text, value: index }; });
-  },
-  textForVote() {
-    // originalState
-    if (!this.registeredVote() && !this.temporaryVote()) return 'originalState';
-    // votingState
-    if (!this.registeredVote() && this.temporaryVote()) return 'votingState';
-    // castedVoteState
-    if (this.registeredVote() && !this.temporaryVote()) return 'Modify vote';
-    // modifyState
-    if (this.registeredVote() && this.temporaryVote()) return 'Cancel';
   },
   events: {
     'click .btn-vote'(event, instance) {  // event handler for the single choice vote type
