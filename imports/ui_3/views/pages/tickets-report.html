@@ -102,12 +102,9 @@
                       </span>
               </div>
               <div class="m-t-md">
-                  <span class="js-status-filter label label-warning" data-value="reported">{{_ 'schemaTickets.ticket.status.reported'}}</span>
-                  <span class="js-status-filter label label-info" data-value="confirmed">{{_ 'schemaTickets.ticket.status.confirmed'}}</span>
-                  <span class="js-status-filter label label-info" data-value="progressing">{{_ 'schemaTickets.ticket.status.progressing'}}</span>
-                  <span class="js-status-filter label label-primary" data-value="finished">{{_ 'schemaTickets.ticket.status.finished'}}</span>
-                  <span class="js-status-filter label label-primary" data-value="checked">{{_ 'schemaTickets.ticket.status.checked'}}</span>
-                  <span class="js-status-filter label label-default" data-value="closed">{{_ 'schemaTickets.ticket.status.closed'}}</span>
+                {{#each statusValue in statusValues}}
+                  <span class="js-status-filter label label-{{statusColor statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</span>
+                {{/each}}
                   <span class="js-status-filter label label-default" data-value="cancel">{{_ 'cancel'}}</span>
                   <!--div class="pull-right">
                       <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-comments"></i> </button>

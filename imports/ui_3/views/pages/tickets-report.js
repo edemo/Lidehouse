@@ -77,6 +77,9 @@ Template.Tickets_report.helpers({
       };
     };
   },
+  statusValues() {
+    return Topics.statusValues;
+  },
 });
 
 Template.Tickets_report.events({
