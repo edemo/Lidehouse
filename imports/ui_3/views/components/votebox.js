@@ -98,11 +98,12 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
           borderWidth: 2,
         }],
       };
+      const voteSummaryDisplay = self.data.voteSummaryDisplay();
       const doughnutData = {
-        labels: vote.choices.map(c => `${__(c)}`).concat(__('Not voted')),
+        labels: voteSummaryDisplay.map(s => `${__(s.choice)}`), // .concat(__('Not voted')),
         datasets: [{
-          data: vote.choices.map((c, i) => voting.voteSummary[i]).concat(voting.notVotedUnits()),
-          backgroundColor: vote.choices.map((c, i) => choiceColors[i]).concat(notVotedColor),
+          data: voteSummaryDisplay.map((s, i) => s.percentOfVotes), // .concat(voting.notVotedUnits()),
+          backgroundColor: voteSummaryDisplay.map((s, i) => choiceColors[i]), // .concat(notVotedColor),
         }],
       };
       const chartData = (vote.type === 'preferential') ? barData : doughnutData;

@@ -197,13 +197,13 @@ Topics.helpers({
     return data;
   },
   voteSummaryDisplay() {
-    const summary = this.voteSummary;
-    return Object.keys(summary).map(key => {
-      const votingShare = this.unitsToShare(summary[key]);
-      return {
-        choice: this.vote.choices[key],
-        votingShare,
-      };
+    return Object.keys(this.voteSummary).map(key => {
+      const choice = this.vote.choices[key];
+      const votingUnits = this.voteSummary[key];
+      const votingShare = this.unitsToShare(this.voteSummary[key]);
+      const percentOfTotal = votingShare.toNumber() * 100;
+      const percentOfVotes = (votingUnits / this.voteParticipation.units) * 100;
+      return { choice, votingUnits, votingShare, percentOfTotal, percentOfVotes };
     });
   },
 });
