@@ -90,7 +90,7 @@ if (Meteor.isClient) {
       if (!comments[0] && topic.userId === this._id) { return; }
       if (comments[0] && comments[0].userId === this._id) { return; }  
       const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
-      const newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: topic.commentCounter };
+      const newLastSeenInfo = { timestamp: lastseenTimestamp };
       if (oldLastSeenInfo && oldLastSeenInfo.timestamp.getTime() === newLastSeenInfo.timestamp.getTime()) {
         return; // this avoids infinite loop and unnecessary server bothering
       }

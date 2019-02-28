@@ -1607,7 +1607,7 @@ Meteor.methods({
     // Everyone has seen his own comments! So set it to be seen by him, when he comments.
     Meteor.users.update({ _id: demoUserId }, { $set: {
       lastSeens: [
-        { [demoUserMessageRoom2]: { timestamp: moment().subtract(4, 'hours').toDate(), commentCounter: 1 } },
+        { [demoUserMessageRoom2]: { timestamp: moment().subtract(4, 'hours').toDate() } },
       ],
     } });
 
