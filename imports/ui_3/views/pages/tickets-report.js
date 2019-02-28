@@ -18,11 +18,12 @@ import '/imports/ui_3/views/blocks/chopped.js';
 import './tickets-report.html';
 
 Template.Tickets_report.onCreated(function () {
-  this.ticketStatus = new ReactiveDict();
-  this.ticketStatus.set('status', false);
+  //this.ticketStatus = new ReactiveDict();
+  //this.ticketStatus.set('ticketStatus', false);
 });
 
-Template.Tickets_report.helpers({
+Template.Tickets_report.viewmodel({
+  ticketStatus: '',
   statusColor(value) {
     return Topics.statusColors[value];
   },
@@ -34,8 +35,8 @@ Template.Tickets_report.helpers({
   },
   tickets() {
     const communityId = Session.get('activeCommunityId');
-    const status = Template.instance().ticketStatus.get('status');
-    if (status) return Topics.find({ communityId, 'ticket.status': status, category: 'ticket' }, { sort: { createdAt: -1 } });
+    const ticketStatus = this.ticketStatus();
+    if (ticketStatus) return Topics.find({ communityId, 'ticket.status': ticketStatus, category: 'ticket' }, { sort: { createdAt: -1 } });
     return Topics.find({ communityId, category: 'ticket' }, { sort: { createdAt: -1 } });
   },
   recentTickets() {
@@ -99,12 +100,12 @@ Template.Tickets_report.events({
     deleteTicketConfirmAndCallModal(id);
   },
   'click .js-status-filter'(event, instance) {
-    const status = $(event.target).data('value');
-    if (status === 'cancel') {
-      instance.ticketStatus.set('status', false);
+    const ticketStatus = $(event.target).data('value');
+    if (ticketStatus === 'cancel') {
+      instance.viewmodel.ticketStatus('');
       $('.js-status-filter').removeClass('js-status-border');
     } else {
-      instance.ticketStatus.set('status', status);
+      instance.viewmodel.ticketStatus(ticketStatus);
       $('.js-status-filter').removeClass('js-status-border');
       $(event.target).addClass('js-status-border');
     }
