@@ -43,6 +43,7 @@
             <p>{{_ 'Participation'}}: <strong>{{displayPercent votedPercent}}</strong></p>
           </div>
           <div class="col-sm-6 text-right">
+          {{#if (equals vote.effect 'legal')}}
             {{#if closed}}
               {{#if isVoteSuccessful}}
               <strong>{{_ 'Successful voting'}}</strong>
@@ -52,6 +53,7 @@
             {{else}}
             <p>{{_ 'Participation necessary'}}: <strong>{{displayRoundPercent voteSuccessLimit}}</strong></p>
             {{/if}}
+          {{/if}}
           </div>
       </div>
       </div>
