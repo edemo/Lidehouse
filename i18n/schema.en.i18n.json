@@ -272,7 +272,8 @@
         "progressing": "Progressing",
         "finished": "Finished",
         "checked": "Checked",
-        "closed": "Closed"
+        "closed": "Closed",
+        "deleted": "Deleted"
       }
     }
   },

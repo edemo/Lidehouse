@@ -94,25 +94,52 @@
             {{> iboxTools}}
         </div>
         <div class="ibox-content">
-          <div class="m-b-lg">
-              <div class="input-group">
-                  <input type="text" placeholder="{{_ 'search'}}..." class=" form-control">
-                      <span class="input-group-btn">
-                          <button type="button" class="btn btn-white"> {{_ 'search'}}</button>
-                      </span>
+
+          <div class="row">
+              <div class="col-sm-6">
+                <div class="input-group">
+                  <label class="control-label">{{_ 'Ticket status'}}</label><br>
+                  {{#each statusValue in statusValues}}
+                  <button type="button" class="js-status-filter btn btn-primary btn-xs btn-{{statusColor statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
+                  {{/each}}
+                </div>
+                      <!--div class="pull-right">
+                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-comments"></i> </button>
+                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-user"></i> </button>
+                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-list"></i> </button>
+                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-pencil"></i> </button>
+                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-print"></i> </button>
+                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-cogs"></i> </button>
+                      </div-->
+                      <!--strong>Found {{tickets.count}} tickets.</strong-->
               </div>
-              <div class="m-t-md">
-                  <!--div class="pull-right">
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-comments"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-user"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-list"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-pencil"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-print"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-cogs"></i> </button>
-                  </div-->
-                  <!--strong>Found {{tickets.count}} tickets.</strong-->
+              <div class="col-sm-6">
+                <div class="input-group">
+                    <label class="control-label">{{_ 'Title'}}</label>
+                    <input type="text" placeholder="{{_ 'search'}}..." {{b "value: ticketText"}} class="form-control js-search">
+                    <span class="input-group-addon">
+                      <i class="fa fa-search"></i>
+                    </span>
+                </div>
               </div>
           </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label" for="start_date">{{_ 'Start date'}}</label>
+                    <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+                    <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
+                </div>
+            </div>
+          </div>
+
+          <button type="button" class="js-status-filter btn btn-primary btn-xs btn-block {{#if noFilters}}disabled{{/if}}" data-value="cancel">{{_ 'clear filters'}}</button>
 
           <div class="table-responsive">
               <table class="table table-hover issue-tracker">

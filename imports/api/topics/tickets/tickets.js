@@ -12,7 +12,7 @@ Topics.urgencyColors = {
   normal: 'warning',
   low: 'primary',
 };
-Topics.statusValues = ['reported', 'confirmed', 'progressing', 'finished', 'checked', 'closed'];
+Topics.statusValues = ['reported', 'confirmed', 'progressing', 'finished', 'checked', 'closed', 'deleted'];
 Topics.statusColors = {
   reported: 'warning',
   confirmed: 'info',
@@ -20,6 +20,7 @@ Topics.statusColors = {
   finished: 'primary',
   checked: 'primary',
   closed: 'default',
+  deleted: 'danger',
 };
 
 const TicketsExtensionSchema = new SimpleSchema({

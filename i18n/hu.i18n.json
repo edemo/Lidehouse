@@ -295,6 +295,9 @@
   "Create ticket": "Bejelentés elküldése",
   "status": "Státusz",
   "Change status": "Státusz váltása",
+  "clear filters": "Szűrők törlése",
+  "Ticket status": "Hibajegy státusz",
+  "Title": "Cím",
 
   // finances
   "Account": "Számla", 

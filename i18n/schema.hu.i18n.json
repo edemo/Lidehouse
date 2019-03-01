@@ -272,7 +272,8 @@
         "progressing": "folyamatban",
         "finished": "megoldva",
         "checked": "ellenőrizve",
-        "closed": "lezárva"
+        "closed": "lezárva",
+        "deleted": "törölt"
       }
     }
   },
