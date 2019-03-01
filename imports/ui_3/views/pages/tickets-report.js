@@ -23,7 +23,10 @@ Template.Tickets_report.onCreated(function () {
 });
 
 Template.Tickets_report.viewmodel({
+  ticketText: '',
   ticketStatus: '',
+  startDate: '',
+  endDate: '',
   statusColor(value) {
     return Topics.statusColors[value];
   },
@@ -35,9 +38,28 @@ Template.Tickets_report.viewmodel({
   },
   tickets() {
     const communityId = Session.get('activeCommunityId');
+    const ticketText = this.ticketText();
     const ticketStatus = this.ticketStatus();
-    if (ticketStatus) return Topics.find({ communityId, 'ticket.status': ticketStatus, category: 'ticket' }, { sort: { createdAt: -1 } });
-    return Topics.find({ communityId, category: 'ticket' }, { sort: { createdAt: -1 } });
+    const startDate = this.startDate();
+    const endDate = this.endDate();
+    const selector = { communityId, category: 'ticket' };
+    selector.createdAt = {};
+    if (ticketStatus) selector['ticket.status'] = ticketStatus;
+    if (startDate) selector.createdAt.$gte = new Date(this.startDate());
+    if (endDate) selector.createdAt.$lte = new Date(this.endDate());
+    if (ticketText) {
+      return Topics.find(selector, { sort: { createdAt: -1 } }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
+      || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
+    }
+    return Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
+  },
+  noFilters() {
+    const ticketText = this.ticketText();
+    const ticketStatus = this.ticketStatus();
+    const startDate = this.startDate();
+    const endDate = this.endDate();
+    if (!ticketText && !ticketStatus && !startDate && !endDate) return true;
+    return false;
   },
   recentTickets() {
     const communityId = Session.get('activeCommunityId');
@@ -102,12 +124,18 @@ Template.Tickets_report.events({
   'click .js-status-filter'(event, instance) {
     const ticketStatus = $(event.target).data('value');
     if (ticketStatus === 'cancel') {
+      instance.viewmodel.ticketText('');
       instance.viewmodel.ticketStatus('');
+      instance.viewmodel.startDate('');
+      instance.viewmodel.endDate('');
       $('.js-status-filter').removeClass('js-status-border');
     } else {
       instance.viewmodel.ticketStatus(ticketStatus);
       $('.js-status-filter').removeClass('js-status-border');
       $(event.target).addClass('js-status-border');
     }
+  },
+  'keyup .js-search'(event, instance) {
+    instance.viewmodel.ticketText(event.target.value);
   },
 });
