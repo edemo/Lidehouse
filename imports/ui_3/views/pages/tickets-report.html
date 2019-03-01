@@ -100,7 +100,7 @@
                 <div class="input-group">
                   <label class="control-label">{{_ 'Ticket status'}}</label><br>
                   {{#each statusValue in statusValues}}
-                  <button type="button" class="js-status-filter btn btn-primary btn-xs btn-{{statusColor statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
+                  <button type="button" class="js-status-filter btn btn-primary btn-xs btn-{{statusColor statusValue}} {{activeButton statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
                   {{/each}}
                 </div>
                       <!--div class="pull-right">
@@ -114,8 +114,8 @@
                       <!--strong>Found {{tickets.count}} tickets.</strong-->
               </div>
               <div class="col-sm-6">
-                <div class="input-group">
-                    <label class="control-label">{{_ 'Title'}}</label>
+                <label class="control-label">{{_ 'Title'}}</label>
+                <div class="input-group">    
                     <input type="text" placeholder="{{_ 'search'}}..." {{b "value: ticketText"}} class="form-control js-search">
                     <span class="input-group-addon">
                       <i class="fa fa-search"></i>
