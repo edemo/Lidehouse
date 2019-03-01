@@ -32,7 +32,7 @@
                 {{#if envelopeIsClosed}}
                   <img src="{{voterAvatar}}" class="avatar-envelope">
                 {{else}}
-                  <button class="btn-send-vote {{#unless temporaryVote}}btn-disabled{{/unless}}"><i class="material-icons">how_to_vote</i></button>
+                  <button class="btn-send-vote btn btn-primary btn-xs {{#unless temporaryVote}}btn-disabled{{/unless}}"><i class="material-icons">how_to_vote</i> <span class="send-message">{{_ "send"}}</span></button>
                 {{/if}}
 
               </div>
