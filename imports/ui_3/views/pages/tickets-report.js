@@ -24,7 +24,7 @@ Template.Tickets_report.onCreated(function () {
 
 Template.Tickets_report.viewmodel({
   ticketText: '',
-  ticketStatus: '',
+  ticketStatusArray: [],
   startDate: '',
   endDate: '',
   statusColor(value) {
@@ -39,12 +39,12 @@ Template.Tickets_report.viewmodel({
   tickets() {
     const communityId = Session.get('activeCommunityId');
     const ticketText = this.ticketText();
-    const ticketStatus = this.ticketStatus();
+    const ticketStatusArray = this.ticketStatusArray();
     const startDate = this.startDate();
     const endDate = this.endDate();
     const selector = { communityId, category: 'ticket' };
     selector.createdAt = {};
-    if (ticketStatus) selector['ticket.status'] = ticketStatus;
+    if (ticketStatusArray.length > 0) selector['ticket.status'] = { $in: ticketStatusArray };
     if (startDate) selector.createdAt.$gte = new Date(this.startDate());
     if (endDate) selector.createdAt.$lte = new Date(this.endDate());
     if (ticketText) {
@@ -55,11 +55,16 @@ Template.Tickets_report.viewmodel({
   },
   noFilters() {
     const ticketText = this.ticketText();
-    const ticketStatus = this.ticketStatus();
+    const ticketStatusArray = this.ticketStatusArray();
     const startDate = this.startDate();
     const endDate = this.endDate();
-    if (!ticketText && !ticketStatus && !startDate && !endDate) return true;
+    if (!ticketText && ticketStatusArray.length === 0 && !startDate && !endDate) return true;
     return false;
+  },
+  activeButton(ticketStatus) {
+    const ticketStatusArray = this.ticketStatusArray();
+    if (ticketStatusArray.includes(ticketStatus)) return 'active';
+    return '';
   },
   recentTickets() {
     const communityId = Session.get('activeCommunityId');
@@ -123,16 +128,25 @@ Template.Tickets_report.events({
   },
   'click .js-status-filter'(event, instance) {
     const ticketStatus = $(event.target).data('value');
+    const ticketStatusArray = instance.viewmodel.ticketStatusArray();
     if (ticketStatus === 'cancel') {
       instance.viewmodel.ticketText('');
-      instance.viewmodel.ticketStatus('');
+      instance.viewmodel.ticketStatusArray([]);
       instance.viewmodel.startDate('');
       instance.viewmodel.endDate('');
-      $('.js-status-filter').removeClass('js-status-border');
     } else {
-      instance.viewmodel.ticketStatus(ticketStatus);
-      $('.js-status-filter').removeClass('js-status-border');
-      $(event.target).addClass('js-status-border');
+      const n = ticketStatusArray.includes(ticketStatus);
+      if (n) {
+        for (let i = 0; i <= ticketStatusArray.length; i += 1) {
+          if (ticketStatusArray[i] === ticketStatus) {
+            ticketStatusArray.splice(i, 1);
+          }
+        }
+        instance.viewmodel.ticketStatusArray(ticketStatusArray);
+      } else {
+        ticketStatusArray.push(ticketStatus);
+        instance.viewmodel.ticketStatusArray(ticketStatusArray);
+      }
     }
   },
   'keyup .js-search'(event, instance) {

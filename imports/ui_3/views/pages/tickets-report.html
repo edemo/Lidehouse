@@ -100,7 +100,7 @@
                 <div class="input-group">
                   <label class="control-label">{{_ 'Ticket status'}}</label><br>
                   {{#each statusValue in statusValues}}
-                  <button type="button" class="js-status-filter btn btn-primary btn-xs btn-{{statusColor statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
+                  <button type="button" class="js-status-filter btn btn-primary btn-xs btn-{{statusColor statusValue}} {{activeButton statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
                   {{/each}}
                 </div>
                       <!--div class="pull-right">
