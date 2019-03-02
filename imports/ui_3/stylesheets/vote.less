@@ -1,14 +1,17 @@
 @import '../theme/globals/variables.import.less';
 
 // TODO: find good colors for this
-@btn-vote-color: darken(orange, 20%);
+@btn-vote-bg: darken(orange, 20%);
+@btn-vote-text: white;
+@btn-vote-text-hover:  #FEC51B;
 @btn-vote-mark: mix( #69b125, green, 75%);
 @btn-vote-border: black;
 @btn-vote-shadow: darkgrey;
 
 .btn-vote, .btn-vote-choice {
+    color: @btn-vote-text;
+    background-color: @btn-vote-bg;
     border: 1px solid @btn-vote-border;
-    color: white;
     padding-left: 25px;
     position: relative;
     cursor: pointer;
@@ -50,8 +53,19 @@
     }
 }
 
-.btn-vote, .btn-vote-choice {
-    background-color: @btn-vote-color;
+.btn-vote:hover,
+.btn-vote-choice:hover {
+  color: @btn-vote-text-hover;
+}
+
+.btn-vote-choice{
+    font-weight: normal;
+    width: 100%;
+    margin: 5px auto !important;
+    &:hover {
+      box-shadow: 3px 4px 7px 2px rgba(35, 35, 35, 0.18);
+    }
+    transition: box-shadow 0.30s ease;    
 }
 
 .btn.btn-pressed,
@@ -69,17 +83,6 @@
 .sortable {
   padding: 5px;
   max-width: 100%;
-}
-
-.btn-vote-choice{
-    font-weight: normal;
-    color: white;
-    width: 100%;
-    margin: 5px auto !important;
-    &:hover {
-      box-shadow: 3px 4px 7px 2px rgba(35, 35, 35, 0.18);
-    }
-    transition: box-shadow 0.30s ease;    
 }
 
 .avatar-envelope {
@@ -171,11 +174,6 @@
 
 .ui-sortable-placeholder {
   background: #e7eaec !important;
-}
-
-.btn-vote:hover,
-.btn-vote-choice:hover {
-  color: #FEC51B;
 }
 
 /* START Touch Punch Desktop Cursor */
