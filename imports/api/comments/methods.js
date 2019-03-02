@@ -20,7 +20,7 @@ export const insert = new ValidatedMethod({
     const commentId = Comments.insert(doc);
     const newComment = Comments.findOne(commentId); // we need the createdAt timestamp from the server
     updateMyLastSeen._execute({ userId: this.userId }, 
-    { topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt, commentCounter: (topic.commentCounter + 1) } });
+    { topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt } });
     return commentId;
   },
 });

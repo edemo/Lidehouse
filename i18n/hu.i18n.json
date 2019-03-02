@@ -3,9 +3,6 @@
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
 
-  "title": "cím",
-  "text": "szöveg",
-
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
@@ -137,7 +134,8 @@
     "room": "szoba",
     "feedback": "visszajelzés"
   },
-  
+  "forumtopic": "fórum téma",
+
   // commands
   "important": "Fontos",
   "view": "Megtekintés",
@@ -204,7 +202,7 @@
 
   // topics
   "The": "A",
-  "was modified, previous": "módosításra került, korábbi",
+  "was modified, previous content": "módosításra került, korábbi tartalom",
   "Report this": "Hozzászólás jelentése",
   "Hide comments from": "%s hozzászólásainak elrejtése",
   "Unhide comments from": "%s hozzászólásainak mutatása",
@@ -494,6 +492,8 @@
   "update roleship successful": "Tisztség módosítva",
   "delete roleship successful": "Tisztség visszavonva",
   "delete topic successful": "Bejegyzés törölve",
+  "insert forumtopic successful": "Új fórum téma létrehozva.",
+  "update forumtopic successful": "Fórum téma módosítva", 
   "insert news successful": "Hirdetmény rögzítésre került",
   "update news successful": "Hirdetmény módosítva",
   "delete news successful": "Hirdetmény törölve",
@@ -558,6 +558,7 @@
 
   "anonymous": "névtelen",
   "deletedUser": "Törölt felhasználó",
+  "unknownUser": "Ismeretlen felhasználó",
   "deleteUserWarning": ["FIGYELEM: Ön ezzel végérvényesen elveszíti a felhasználói fiókját! <br /><br />",
     "Tájékoztatjuk, hogy a közösségében történt megnyilvánulásai ezzel nem törlődnek. ",
     "Azok a közösség tulajdonát képezik, és törlésüket a közösség rendszergazdájától tudja kérni. <br /><br />",

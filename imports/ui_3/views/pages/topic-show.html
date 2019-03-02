@@ -58,7 +58,7 @@
                                                 {{> Comments_section}}
                                             </div>
                                             <div class="tab-pane" id="tab-2">
-                                                {{> Vote_history}}
+                                                {{> Revision_history doc=this schemaName='schemaTopics'}}
                                             </div>
                                             {{#if or closed (currentUser.hasPermission 'vote.peek' communityId)}}
                                             <div class="tab-pane" id="tab-3">
@@ -148,7 +148,35 @@
     <div class="wrapper wrapper-content animated fadeInUp">
         <div class="row">
             <div class="col-md-9">
-                {{> Chatbox}}
+                <div class="ibox">
+                    <div class="ibox-content">
+                        {{> Ticketbox}}
+                        <div class="row m-t-sm">
+                            <div class="col-lg-12">
+                                <div class="panel blank-panel">
+                                    <div class="panel-heading">
+                                        <div class="panel-options">
+                                            <ul class="nav nav-tabs">
+                                                <li class="active"><a href="#tab-1" data-toggle="tab" class="cap-first">{{_ 'comments'}}</a></li>
+                                                <li class=""><a href="#tab-2" data-toggle="tab">{{_ 'Activity'}}</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="tab-content">
+                                            <div class="tab-pane active" id="tab-1">
+                                                {{> Comments_section}}
+                                            </div>
+                                            <div class="tab-pane" id="tab-2">
+                                                {{> Revision_history doc=this schemaName='schemaTickets'}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-md-3">
                 <div class="wrapper wrapper-content project-manager"> 

@@ -43,6 +43,7 @@
             <p>{{_ 'Participation'}}: <strong>{{displayPercent votedPercent}}</strong></p>
           </div>
           <div class="col-sm-6 text-right">
+          {{#if (equals vote.effect 'legal')}}
             {{#if closed}}
               {{#if isVoteSuccessful}}
               <strong>{{_ 'Successful voting'}}</strong>
@@ -52,6 +53,7 @@
             {{else}}
             <p>{{_ 'Participation necessary'}}: <strong>{{displayRoundPercent voteSuccessLimit}}</strong></p>
             {{/if}}
+          {{/if}}
           </div>
       </div>
       </div>
@@ -87,7 +89,7 @@
             <div class="row">
               <div class="col-lg-12 text-center">
                 {{#each sum in this.voteSummaryDisplay}}
-                <div>{{_ sum.choice}}: {{sum.votingShare}} ({{displayPercent sum.votingShare.toNumber}})</div>
+                <div>{{_ sum.choice}}: {{sum.votingUnits}} ({{displayPercent sum.percentOfVotes}})</div>
                 {{/each}}
                 <div>
                   <canvas id="{{concat 'chart-' this._id}}" height="200"></canvas>
