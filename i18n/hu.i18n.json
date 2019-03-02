@@ -251,11 +251,12 @@
   "Attachments" : "Csatolmányok",
   "Activity": "Változások",
   "All votings": "Aktív és lezárt szavazások teljes listája",
+  "This is a voting type": "Ez egy <i>%s</i> szavazás",
   "votingInstructions": {
-    "yesno": "",
-    "choose": "",
-    "preferential": "Ez egy preferenciális szavazás. Kérjük rakja sorrendbe…",
-    "petition": ""
+    "yesno": "Kérjük jelölje meg szavazatát, majd küldje el a zöld gombbal.",
+    "choose": "Kérjük jelölje meg szavazatát, majd küldje el a zöld gombbal.",
+    "preferential": "Kérjük rendezze sorrendbe, hogy legfelül az Ön számárá leginkább kívánatos, legalul pedig a legkevésbé szimpatikus opció legyen, majd küldje el szavazatát a zöld gombbal.",
+    "petition": "Ha támogatja a kezdeményezést, kattintson a Támogatom gombra, majd küldje el szavazatát a zöld gombbal."
   },
 
   // delegations
