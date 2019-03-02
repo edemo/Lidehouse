@@ -285,7 +285,8 @@
   "No delegations": "Nincsenek meghatalmazások",
   "Modify vote": "Szavazat módosítása",
   "Cancel": "Mégsem",
-  "Please send your vote": "Ha döntött, küldje el szavazatát",
+  "If you made your choice": "Ha döntött",
+  "send your vote": "küldje el szavazatát",
 
   // rooms
   "Send messages": "Küldjön üzenetet",

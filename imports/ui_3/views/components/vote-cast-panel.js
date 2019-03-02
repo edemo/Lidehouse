@@ -132,7 +132,7 @@ Template.Vote_cast_panel.viewmodel({
       const selecetedChoice = $(event.target).closest('.btn').data('value');
       this.temporaryVote([selecetedChoice]);
     },
-    'click .btn-send-vote'(event, instance) {
+    'click .js-send'(event, instance) {
       const topicId = this.topic()._id;
       debugAssert(this.temporaryVote());
       castVoteBasedOnPermission(topicId, this.temporaryVote(),

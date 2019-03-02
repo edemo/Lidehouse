@@ -32,7 +32,7 @@
                 {{#if envelopeIsClosed}}
                   <img src="{{voterAvatar}}" class="avatar-envelope">
                 {{else}}
-                  <button class="btn-send-vote btn btn-primary btn-sm {{#unless temporaryVote}}btn-disabled{{/unless}}"><i class="material-icons">how_to_vote</i> <span class="send-message">{{_ "send"}}</span></button>
+                  <button class="btn-send-vote btn btn-primary btn-sm {{#unless temporaryVote}}btn-disabled{{/unless}} js-send"><i class="material-icons">how_to_vote</i> <span class="send-message">{{_ "send"}}</span></button>
                 {{/if}}
 
               </div>
@@ -44,7 +44,7 @@
         {{#if userHasPermission 'vote.cast' this.communityId this}}
         <div class="text-left">
           {{#if temporaryVote}}
-          <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i> {{_ "Please send your vote"}} - <a class="js-modify">{{_ 'Cancel'}}</a>
+          <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i> {{_ "If you made your choice"}}, <button class="btn btn-primary btn-xs js-send"> {{_ "send your vote"}}</button> - <a class="js-modify">{{_ 'Cancel'}}</a>
           {{else}}
             {{#if this.hasVotedDirect currentUser._id}}
               <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-modify">{{_ 'Modify vote'}}</a>
