@@ -232,7 +232,7 @@
       },
       "type": {
         "label": "Szavazás típusa",
-        "yesno": "Igen-nem-tartózkodom",
+        "yesno": "Igen-nem",
         "choose": "Egyszerű választásos",
         "preferential": "Preferencia szerint sorba rendező",
         "petition": "Támogatásgyűjtő"
