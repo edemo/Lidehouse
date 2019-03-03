@@ -1,5 +1,4 @@
-import { Meteor } from 'meteor/meteor';
-import { Template } from 'meteor/templating';
+
 import { $ } from 'meteor/jquery';
 
 export function createEnvelope(element) {
@@ -10,7 +9,7 @@ export function createEnvelope(element) {
   envelope.prepend($('<div>', { class: 'envelope-flap' }));
   const envelopeFlap = envelope.find('.envelope-flap');
   envelope.append($('<div>', { class: 'envelope-back' }));
-  const animationDuration = 1000;
+//  const animationDuration = 1000;
 
   return {
     open() {
@@ -19,7 +18,7 @@ export function createEnvelope(element) {
       envelopeLetter.removeClass('letter-animation');
       envelopeFlap.removeClass('flap-animation');
       envelopeLetter.addClass('letter-animation-reverse');
-      envelopeLetter.addClass('letter-border');
+//      envelopeLetter.addClass('letter-border');
       envelopeFlap.addClass('flap-animation-reverse');
     },
     opened() {
@@ -27,21 +26,21 @@ export function createEnvelope(element) {
       envelopeFlap.removeClass('flap-animation-end');
       envelopeLetter.addClass('letter-animation-reverse-end');
       envelopeFlap.addClass('flap-animation-reverse-end');
-      envelopeLetter.addClass('letter-border');
+//      envelopeLetter.addClass('letter-border');
     },
     close() {
       envelopeLetter.removeClass('letter-animation-reverse-end');
       envelopeFlap.removeClass('flap-animation-reverse-end');
       envelopeLetter.removeClass('letter-animation-reverse');
       envelopeFlap.removeClass('flap-animation-reverse');
-      Meteor.setTimeout(function removeBorder() { envelopeLetter.removeClass('letter-border'); }, animationDuration);
+//      Meteor.setTimeout(function removeBorder() { envelopeLetter.removeClass('letter-border'); }, animationDuration);
       envelopeLetter.addClass('letter-animation');
       envelopeFlap.addClass('flap-animation');
     },
     closed() {
       envelopeLetter.removeClass('letter-animation-reverse-end');
       envelopeFlap.removeClass('flap-animation-reverse-end');
-      envelopeLetter.removeClass('letter-border');
+//      envelopeLetter.removeClass('letter-border');
       envelopeLetter.addClass('letter-animation-end');
       envelopeFlap.addClass('flap-animation-end');
     },
