@@ -1,4 +1,5 @@
 /* eslint-disable no-extend-native */
+import { _ } from 'meteor/underscore';
 
 // https://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
 Object.byString = function (o, s) {
@@ -24,4 +25,8 @@ String.prototype.forEachChar = function forEachChar(func) {
 
 String.prototype.capitalize = function capitalize() {
   return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+_.isDefined = function (obj) { // underscore did not have this
+  return obj !== undefined;
 };

@@ -8,7 +8,7 @@ import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
@@ -33,10 +33,10 @@ if (Meteor.isClient) {
 }
 
 const voteSchema = new SimpleSchema({
-  closesAt: { type: Date },
-  procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.') },
-  effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.') },
-  type: { type: String, allowedValues: Topics.voteTypeValues, autoform: autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.') },
+  closesAt: { type: Date, autoform: noUpdate },
+  procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: _.extend({}, autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.'), noUpdate) },
+  effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: _.extend({}, autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), noUpdate) },
+  type: { type: String, allowedValues: Topics.voteTypeValues, autoform: _.extend({}, autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.'), noUpdate) },
   choices: { type: Array, autoValue() { return Topics.voteTypeChoices[this.field('vote.type').value]; } },
   'choices.$': { type: String },
 });
@@ -61,6 +61,7 @@ const votingsExtensionSchema = new SimpleSchema({
   vote: { type: voteSchema, optional: true },
   voteCasts: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
   voteCastsIndirect: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
+  votePaths: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
     // userId -> ranked array of choice indexes (or single entry in the array)
   voteResults: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
     // ownershipId -> {}
@@ -70,10 +71,6 @@ const votingsExtensionSchema = new SimpleSchema({
 });
 
 Topics.helpers({
-  voteTypeIs(type) {
-    if (!this.vote) return undefined;
-    return (this.vote.type === type);
-  },
   unitsToShare(units) {
     const votingShare = new Fraction(units, this.community().totalunits);
     return votingShare;
@@ -117,10 +114,11 @@ Topics.helpers({
     return (this.voteCasts && this.voteCasts[userId]) || (this.voteCastsIndirect && this.voteCastsIndirect[userId]);
   },
   voteEvaluate(revealResults) {
-    const results = {};         // results by ownerships
-    const indirectVotes = {};   // results by users
-    const summary = {};         // results by choices
-    const participation = { count: 0, units: 0 };
+    const voteResults = {};         // results by ownerships
+    const voteCastsIndirect = {};   // results by users
+    const votePaths = {};
+    const voteSummary = {};         // results by choices
+    const voteParticipation = { count: 0, units: 0 };
     const directVotes = this.voteCasts || {};
     const self = this;
     const voterships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner' });
@@ -136,14 +134,15 @@ Topics.helpers({
             castedVote,
             votePath,
           };
-          results[ownership._id] = result;
-          indirectVotes[ownerId] = castedVote;
+          voteResults[ownership._id] = result;
+          voteCastsIndirect[ownerId] = castedVote;
+          votePaths[ownerId] = votePath;
           castedVote.forEach((choice, i) => {
-            summary[choice] = summary[choice] || 0;
-            summary[choice] += ownership.votingUnits() * (1 - (i / castedVote.length));
+            voteSummary[choice] = voteSummary[choice] || 0;
+            voteSummary[choice] += ownership.votingUnits() * (1 - (i / castedVote.length));
           });
-          participation.count += 1;
-          participation.units += ownership.votingUnits();
+          voteParticipation.count += 1;
+          voteParticipation.units += ownership.votingUnits();
           return true;
         }
         const delegations = Delegations.find({ sourcePersonId: voterId,
@@ -166,13 +165,14 @@ Topics.helpers({
       getVoteResult(ownerId);
     });
 
-    Topics.update(this._id, { $set: { voteParticipation: participation } });
+    Topics.update(this._id, { $set: { voteParticipation } });
 //    if (!revealResults) return;
-    Topics.update(this._id, { $set: { voteCastsIndirect: indirectVotes, voteResults: results, voteSummary: summary } });
+    Topics.update(this._id, { $set: { voteCastsIndirect, votePaths, voteResults, voteSummary } });
   },
   voteResultsDisplay() {
     const topic = this;
     const results = this.voteResults;
+    if (!results) return [];
     const data = [];
     Object.keys(results).forEach(key => {
       data.push(_.extend(results[key], {
@@ -197,13 +197,13 @@ Topics.helpers({
     return data;
   },
   voteSummaryDisplay() {
-    const summary = this.voteSummary;
-    return Object.keys(summary).map(key => {
-      const votingShare = this.unitsToShare(summary[key]);
-      return {
-        choice: this.vote.choices[key],
-        votingShare,
-      };
+    return Object.keys(this.voteSummary).map(key => {
+      const choice = this.vote.choices[key];
+      const votingUnits = this.voteSummary[key];
+      const votingShare = this.unitsToShare(this.voteSummary[key]);
+      const percentOfTotal = votingShare.toNumber() * 100;
+      const percentOfVotes = (votingUnits / this.voteParticipation.units) * 100;
+      return { choice, votingUnits, votingShare, percentOfTotal, percentOfVotes };
     });
   },
 });
@@ -212,20 +212,25 @@ Topics.attachSchema(votingsExtensionSchema);   // TODO: should be conditional on
 
 _.extend(Topics.publicFields, {
   vote: 1,
-  // voteCasts should NOT be sent to the client during active voting
-  voteResults: 1,
-  voteSummary: 1,
   voteParticipation: 1,
 });
 
 Topics.publicFields.extendForUser = function extendForUser(userId, communityId) {
-  // TODO: User cannot see other user's votes, but need to see his own votes (during active voting)
-  // Soution: 2 subsrciptions, one on the live votings, one on the archived, and the public fields are different for the two
-
-//  const publicFiledsForOwnVotes = {};
-//  publicFiledsForOwnVotes['voteCasts.' + userId] = 1;
-//  also for voteResults
-//  const publicFields = _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
-  const publicFields = _.extend({}, Topics.publicFields, { voteCasts: 1, voteCastsIndirect: 1 });
-  return publicFields;
+  // User cannot see other user's votes, but need to see his own votes (during active voting)
+  // Soution: Use 2 subsrciptions, one on the live votings, one on the closed, and the public fields are different for the two
+//  const user = Meteor.users.findOne(userId);
+//  if (user.hasPermission('vote.peek', communityId)) {
+  return _.extend({}, Topics.publicFields, {
+    voteCasts: 1,
+    voteCastsIndirect: 1,
+    votePaths: 1,
+    voteResults: 1,
+    voteSummary: 1,
+  });
+//  } else {
+//    const publicFiledsForOwnVotes = {};
+//    publicFiledsForOwnVotes['voteCasts.' + userId] = 1;
+//    publicFiledsForOwnVotes['voteCastsIndirect.' + userId] = 1;
+//    return _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
+//  }
 };

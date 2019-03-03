@@ -105,8 +105,11 @@ Parcels.helpers({
   },
   leadParcel() {
     if (!this.leadRef || this.leadRef === this.ref) return this;
-    if (!this.communityId) return undefined;
     return Tracker.nonreactive(() => Parcels.findOne({ communityId: this.communityId, ref: this.leadRef }));
+  },
+  leadParcelId() {
+    const leadParcel = this.leadParcel();
+    return leadParcel ? leadParcel._id : this._id; // if can't find your lead parcel, lead yourself
   },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
@@ -114,16 +117,10 @@ Parcels.helpers({
       + (this.door ? this.door : '');
   },
   occupants() {
-    if (this.isLed()) return this.leadParcel().occupants();
-    return Memberships.find({ communityId: this.communityId, approved: true, active: true, parcelId: this._id });
-  },
-  owners() {
-    if (this.isLed()) return this.leadParcel().owners();
-    return Memberships.find({ communityId: this.communityId, approved: true, active: true, parcelId: this._id, role: 'owner' });
+    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId() });
   },
   representors() {
-    if (this.isLed()) return this.leadParcel().representors();
-    return Memberships.find({ communityId: this.communityId, approved: true, active: true, parcelId: this._id, role: 'owner', 'ownership.representor': true });
+    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId(), role: 'owner', 'ownership.representor': true });
   },
   representor() {
     return this.representors().fetch()[0];

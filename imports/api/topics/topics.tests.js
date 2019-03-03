@@ -27,7 +27,7 @@ if (Meteor.isServer) {
     const topic = Topics.findOne(topicId);
     const comments = topic.comments().fetch(); // returns newest-first order
     const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
-    const newLastSeenInfo = { timestamp: lastseenTimestamp, commentCounter: topic.commentCounter };
+    const newLastSeenInfo = { timestamp: lastseenTimestamp };
     updateMyLastSeen._execute({ userId }, { topicId, lastSeenInfo: newLastSeenInfo });
   };
 

@@ -118,7 +118,7 @@ Meteor.users.schema = new SimpleSchema({
   // lastSeens.0 is what was seen on screen, lastSeens.1 is to which the email notification was sent out
   lastSeens: { type: Array, autoValue() { if (this.isInsert) return [{}, {}]; }, autoform: { omit: true } },
   'lastSeens.$': { type: Object, blackbox: true, autoform: { omit: true } },
-    // topicId -> { timestamp: lastseen comment's createdAt (if seen any), commentCounter }
+    // topicId -> { timestamp: lastseen comment's createdAt (if seen any) }
 
   // Make sure this services field is in your schema if you're using any of the accounts packages
   services: { type: Object, optional: true, blackbox: true, autoform: { omit: true } },

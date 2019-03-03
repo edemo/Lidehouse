@@ -37,6 +37,7 @@ Template.Voting_edit.actionFromId = function () {
 };
 
 Template.Voting_edit.onCreated(function () {
+  Session.set('autoformType', this.data.type);
   const instance = Template.instance();
   instance.choices = new ReactiveVar([]);
   votingEditInstance = instance;
@@ -94,6 +95,10 @@ Template.Voting_edit.helpers({
     const topicId = getTopicId(this);
     return Shareddocs.find({ topicId });
   },
+  updateForm() {
+    const afType = Session.get('autoformType');
+    return afType === 'update' || afType === 'method-update';
+  },
 });
 
 Template.Voting_edit.events({
@@ -115,6 +120,7 @@ Template.Voting_edit.events({
     }
   },
   'click .js-add-choice'(event) {
+    if ($(event.target).hasClass('disabled')) return;
     $('.editing')[0].classList.toggle('hidden');
     $('.js-add-choice')[0].classList.toggle('hidden');
     $('.js-enter-choice').focus();

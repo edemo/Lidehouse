@@ -48,11 +48,13 @@
                         <label>{{_ "Choices"}}</label>
                         <ul class="file-list list-unstyled">
                             {{#each choice in choices}}
-                            <li>
+                            <li class="{{#if updateForm}}grey-background{{/if}}" >
                                 <div class="row">
                                 <div class="col-xs-10">{{_ choice}}</div>
                                 <div class="col-xs-2 text-right">
+                                    {{#unless updateForm}}
                                     <i class="text-right glyphicon glyphicon-remove js-remove-choice" data-index="{{@index}}" data-choice={{choice}} aria-hidden="true"></i>
+                                    {{/unless}}
                                 </div>
                                 </div>
                             </li>
@@ -66,7 +68,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-info js-add-choice" name="upload"> + {{_ "new"}} {{_ "choice"}}</button>
+                        <button type="button" class="btn btn-info js-add-choice {{#if updateForm}}disabled{{/if}}" name="upload"> + {{_ "new"}} {{_ "choice"}}</button>
                         </div>
                     </div>
                 </div>

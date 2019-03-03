@@ -22,6 +22,13 @@
   // voting
   "Proxy voting" : "Voting in the name of others",
   "Please select voters": "Please select the people you would like to vote in the name of",
+  "This is a voting type": "This is a <i>%s</i> voting",
+  "votingInstructions": {
+    "yesno": "Please mark your choice, and then send your vote with the green button.",
+    "choose": "Please mark your choice, and then send your vote with the green button.",
+    "preferential": "Please rank the choices below according to your preference (the most desirable on top, the least desirable at the bottom), and then send your vote with the green button.",
+    "petition": "If you agree with the proposal, please press the Support button, and then send your vore with the green button. If you don't agree, you don't need to do anything."
+  },
 
   // finances
     "Breakdowns": "Accounting breakdowns",
@@ -68,7 +75,6 @@
   },
   "documentStoreSubtitle": "Here you find the shared documents of this community.",
   "documentStorePlaceholder": "You can upload here the important shared documents, like the founding papers, house rules.",
-  "rankedVotingInstructions": "Please rank the choices below according to your preference...",
   "pleaseSupplyParcelData": "Please supply as much data as possible about your parcel, so your join request can be approved quickly!",
   "No permission to upload": "You have no permission to upload documents, please ask the community manager's help",
   "Remove not possible after 24 hours": "NOTICE: Transaction cannot be removed directly, because its older than 24 hours. So a negating transaction will be inserted.",
@@ -84,6 +90,10 @@
   "Unhide comments from": "Reveal comments from %s",
   "Content hidden by": "Content hidden by %s",
   "View previous comments": "View %s previous comments",
+  
+  "insert forumtopic successful": "insert forum topic successful",
+  "update forumtopic successful": "update forum topic successful",
+  "forumtopic": "forum topic",
 
   // delegations
   "delegationsFromMeInstructions": "Here you can set up delegations. So someone else can use your vote in your name.",
@@ -92,8 +102,6 @@
   "delegationsToMeInstructions2": "These delegations you may refuse to accept. You can also disallow others delegating to you, completely.",
   "allowDelegationsToMe": "Allow others to delegate to me",
   "votedViaDelegationHint" : "casting a vote can override this",
-  "notYetVotedCastYourVoteOr": "cast your vote below, or",
-  "setupYourDelegation": "set up a delegation",
 
   // rooms
   "Send messages subtitle": "to your manager or your condo mates",
@@ -117,6 +125,7 @@
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "delete user": "delete your account permanently",
   "deletedUser": "Deleted user",
+  "unknownUser": "Unknown user",
   "deleteUserWarning": ["BEWARE: Your user account will be permanently deleted! <br /><br />",
     "Note that this will NOT delete your activity in your communities. ",
     "Those belong to the community, and you need to ask the community's admin to delete them. <br /><br />",

@@ -1,0 +1,252 @@
+@letter-animation-duration: 1s;
+
+.envelope {
+    height: 100%;
+    max-width: 560px;
+	background: #bdbdbd;
+    position: relative;
+    margin: 10px auto;
+    transition: opacity 1s;
+}
+
+.envelope-letter {
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+	position: relative;
+	left: 0;
+	top: 0;
+	transition: transform 0.25s 0.25s, z-index 0s 0.25s;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/*
+.letter-border::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    bottom: -1px;
+    left: -1px;
+    z-index: -1;
+    border: 1px dashed #e5e6e7;
+}
+*/
+
+.letter-content {
+    height: 100%;
+	width: 100%;
+	background-color: #fff;
+    text-align: center;
+    opacity: 1;
+    padding-bottom: 45px;
+    padding-top: 10px;
+}
+
+.envelope-flap {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+    height: 100%;
+    width: 100%;
+	transition: transform 0.25s 0.5s, z-index 0s 0.5s;
+	transform-origin: top center;
+	background: #bdbdbd;
+	z-index: 4;
+    clip-path: polygon(50% 50%, 0 0, 100% 0);
+    transform: rotateX(0);
+    opacity: 0.6;
+}
+
+.envelope-back {
+	height: 100%;
+	width: 100%;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
+	background: #c9c9c9;
+    clip-path: polygon(50% 50%, 100% 0, 100% 100%, 0 100%, 0 0);
+    opacity: 0.6;
+}
+
+.letter-animation {
+    animation-name: letter;
+    animation-duration: @letter-animation-duration;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;  
+}
+
+.letter-animation-end {
+    transform: translateY(0);
+    z-index: 3;
+}
+
+@keyframes letter {
+
+    0% {
+        transform: translateY(0);
+        z-index: 10;
+        //width: 100%;
+    }
+
+    25% {
+        transform: translateY(0);
+        z-index: 10;
+        //width: 90%;
+        //left: 5%;
+    }
+
+    50% {
+        transform: translateY(-110%);
+        z-index: 3;
+        //width: 90%;
+        //left: 5%;
+    }
+
+    75% {
+        transform: translateY(0%);
+        z-index: 3;
+        //width: 90%;
+        //left: 5%;
+    }
+
+    100% {
+        transform: translateY(0);
+        z-index: 3;
+        //width: 90%;
+        //left: 5%;
+    }
+ }
+
+.letter-animation-reverse {
+    animation-name: letterReverse;
+    animation-duration: @letter-animation-duration;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;  
+}
+
+.letter-animation-reverse-end {
+    transform: translateY(0);
+    z-index: 10;
+}
+
+@keyframes letterReverse {
+
+    0% {
+        transform: translateY(0);
+        z-index: 3;
+        //width: 90%;
+        //left: 5%;
+    }
+
+    25% {
+        transform: translateY(0);
+        z-index: 3;
+        //width: 90%;
+        //left: 5%;
+    }
+
+    50% {
+        transform: translateY(-110%);
+        z-index: 3;
+        //width: 90%;
+        //left: 5%;
+    }
+
+    75% {
+        transform: translateY(0%);
+        z-index: 10;
+        //width: 100%;
+        //left: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        z-index: 10;
+        //width: 100%;
+        //left: 0;
+    }
+}
+
+.flap-animation {
+    animation-name: flap;
+    animation-duration: @letter-animation-duration;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;  
+}
+
+.flap-animation-end {
+    transform: rotateX(0);
+    z-index: 4;
+}
+
+@keyframes flap {
+
+    0% {
+        transform: rotateX(0);
+        z-index: 4;
+    }
+
+    25% {
+        transform: rotateX(-180deg);
+        z-index: 0;
+    }
+
+    75% {
+        transform: rotateX(-180deg);
+        z-index: 0;
+    }
+
+    80% {
+        z-index: 4;
+    }
+
+    100% {
+        transform: rotateX(0);
+        z-index: 4;
+    }
+}
+
+.flap-animation-reverse {
+    animation-name: flapReverse;
+    animation-duration: @letter-animation-duration;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;  
+}
+
+.flap-animation-reverse-end {
+    transform: rotateX(0);
+    z-index: 0;
+}
+
+@keyframes flapReverse {
+
+    0% {
+        transform: rotateX(0);
+        z-index: 4;
+    }
+
+    25% {
+        transform: rotateX(-180deg);
+        z-index: 4;
+    }
+
+    60% {
+        transform: rotateX(-180deg);
+        z-index: 0;
+    }
+
+    80% {
+        z-index: 0;
+    }
+
+    100% {
+        transform: rotateX(0);
+        z-index: 0;
+    }
+}

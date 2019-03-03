@@ -1,0 +1,88 @@
+<template name="Vote_cast_panel">
+    {{#let envelopeIsClosed=(and registeredVote (not temporaryVote)) }}
+    <div class="row">
+      <div class="col-xs-12 vote-cast-panel text-center">
+        <div class="letter-content">
+          <div class="row">
+            <div class="voting-instructions col-xs-12 text-center {{#if envelopeIsClosed}}text-muted{{else}}{{/if}}">
+              {{{_ 'This is a voting type' (_ (concat 'schemaVotings.vote.type.' topic.vote.type)) }}}
+              - <i class='fa fa-question-circle'></i>
+              {{{_ (concat 'votingInstructions.' topic.vote.type)}}}
+            </div>
+            <div class="col-xs-12">
+              <div class="btns-group">
+
+                {{#if (equals topic.vote.type 'preferential')}}
+                  <ul class="sortable droptrue">
+                    {{#each p in preference}}
+                    <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
+                    <li class="btn btn-vote-choice ui-state-default js-btn-vote-choice" data-value="{{p.value}}">
+                      <i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{p.text}}
+                    </li>
+                    {{/each}}
+                  </ul>
+                {{else}}
+                  {{#each choice in topic.vote.choices}}
+                  <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
+                    <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
+                  </button>
+                  {{/each}}
+                {{/if}}
+
+                {{#if envelopeIsClosed}}
+                  <img src="{{voterAvatar}}" class="avatar-envelope">
+                {{else}}
+                  <button class="btn-send-vote btn btn-primary {{#unless temporaryVote}}btn-disabled{{/unless}} js-send"><i class="material-icons">how_to_vote</i> <span class="btn-send-text">{{_ "send"}}</span></button>
+                {{/if}}
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{#unless closed}}
+        {{#if userHasPermission 'vote.cast' this.communityId this}}
+        <div class="text-left">
+          {{#if temporaryVote}}
+          <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i> {{_ "If you made your choice"}}, <button class="btn btn-primary btn-xs js-send"> {{_ "send your vote"}}</button> - <a class="js-modify">{{_ 'Cancel'}}</a>
+          {{else}}
+            {{#if this.hasVotedDirect currentUser._id}}
+              <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-modify">{{_ 'Modify vote'}}</a>
+            {{else}}
+              {{#if this.hasVotedIndirect currentUser._id}}
+              <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - <a class="js-modify">{{_ 'Modify vote'}}</a>
+              {{else}}
+                <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
+                {{_ "You have not yet voted"}} - ({{_ 'Cast your vote'}}, {{_ 'or'}} <a href="{{pathFor 'Delegations'}}">{{_ "setup a delegation"}}!</a>)
+              {{/if}}
+            {{/if}}
+          {{/if}}
+          
+        </div>
+        {{/if}}
+        {{/unless}}
+
+      </div>
+    </div>
+    {{/let}}
+  </template>
+  
+  <!--
+  <template name="User_vote_status">-->
+    <!-- showing if you voted directly or via delegation -->
+    <!--<div class="text-left">
+    {{#if this.hasVotedDirect currentUser._id}}-->
+        <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-revoke">{{_ "revoke"}}</a>-->
+        <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-modify">{{_ "modify"}}</a>
+    {{else}}
+      {{#if this.hasVotedIndirect currentUser._id}}-->
+      <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}}) - <a class="js-revoke">{{_ "revoke"}}</a>-->
+      <!--<i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - ({{_ "votedViaDelegationHint"}}) - <a class="js-modify">{{_ "modify"}}</a>
+      {{else}}
+        <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
+        {{_ "You have not yet voted"}} - <i>({{_ "notYetVotedCastYourVoteOr"}} <a href="{{pathFor 'Delegations'}}">{{_ "setupYourDelegation"}}</a>)</i>
+      {{/if}}
+    {{/if}}
+    </div>
+  </template>
+  -->
