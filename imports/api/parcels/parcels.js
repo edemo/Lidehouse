@@ -119,6 +119,9 @@ Parcels.helpers({
   occupants() {
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId() });
   },
+  owners() {
+    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId(), role: 'owner' });
+  },
   representors() {
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId(), role: 'owner', 'ownership.representor': true });
   },
