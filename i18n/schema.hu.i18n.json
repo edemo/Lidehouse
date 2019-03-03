@@ -234,7 +234,7 @@
         "label": "Szavazás típusa",
         "yesno": "Igen-nem-tartózkodom",
         "choose": "Egyszerű választásos",
-        "preferential": "Preferencia szerint sorrendező",
+        "preferential": "Preferencia szerint sorba rendező",
         "petition": "Támogatásgyűjtő"
       },
       "voters": {

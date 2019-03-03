@@ -84,17 +84,21 @@
   color: lighten(grey, 25%);
 }
 
+.voting-instructions {
+  padding: 15px 40px;
+}
+
 .sortable {
   padding: 5px;
   max-width: 100%;
 }
 
-.avatar-envelope {
+.btn-send-vote, .avatar-envelope {
   width: 40px;
   height: 40px;
   position: absolute;
-  bottom: -33px;
-  right: 2px;
+  bottom: -38px;
+  right: 7px;
   border-radius: 4px;
 }
 
@@ -104,12 +108,7 @@
 }
 
 .btn-send-vote {
-    width: 40px;
-    height: 40px;
     background-color: #1AB394;
-    position: absolute;
-    bottom: -33px;
-    right: 2px;
     text-align: center;
     line-height: 40px;
     margin: 0;
@@ -119,7 +118,6 @@
 	  z-index: 11;
     display: block;
     opacity: 1;
-    border-radius: 4px;
     border: none;
     cursor: pointer;
     transition: width .2s;
