@@ -140,6 +140,7 @@ Template.Tickets_report.events({
       instance.viewmodel.ticketStatusArray([]);
       instance.viewmodel.startDate('');
       instance.viewmodel.endDate('');
+      instance.viewmodel.reportedByCurrentUser(false);
     } else {
       const n = ticketStatusArray.includes(ticketStatus);
       if (n) {
@@ -149,6 +150,7 @@ Template.Tickets_report.events({
           }
         }
         instance.viewmodel.ticketStatusArray(ticketStatusArray);
+        $(event.target).blur();
       } else {
         ticketStatusArray.push(ticketStatus);
         instance.viewmodel.ticketStatusArray(ticketStatusArray);
@@ -156,12 +158,9 @@ Template.Tickets_report.events({
     }
   },
   'click .js-reported-by-current-user'(event, instance) {
-    const reportedByCurrentUser = instance.viewmodel.reportedByCurrentUser();
-    if (reportedByCurrentUser) {
-      instance.viewmodel.reportedByCurrentUser(false);
-    } else {
-      instance.viewmodel.reportedByCurrentUser(true);
-    }
+    const oldValue = instance.viewmodel.reportedByCurrentUser();
+    instance.viewmodel.reportedByCurrentUser(!oldValue);
+    if (oldValue) $(event.target).blur();
   },
   'keyup .js-search'(event, instance) {
     instance.viewmodel.ticketText(event.target.value);
