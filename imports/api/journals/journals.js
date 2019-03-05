@@ -83,16 +83,6 @@ Journals.rawSchema = {
 //  month: { type: String, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getMonth() + 1; },
 //  },
-  complete: { type: Boolean, autoform: { omit: true }, autoValue() {
-    let total = 0;
-    const amount = this.field('amount').value;
-    const debits = this.field('debit').value;
-    const credits = this.field('credit').value;
-    if (!debits || !credits) return false;
-    debits.forEach(entry => total += entry.amount || amount);
-    credits.forEach(entry => total -= entry.amount || amount);
-    return total === 0;
-  } },
 };
 
 Journals.noteSchema = {
@@ -104,6 +94,16 @@ Journals.schema = new SimpleSchema([
   _.clone(Journals.rawSchema),
   { credit: { type: [Journals.entrySchema], optional: true } },
   { debit: { type: [Journals.entrySchema], optional: true } },
+  { complete: { type: Boolean, autoform: { omit: true }, autoValue() {
+    let total = 0;
+    const amount = this.field('amount').value;
+    const debits = this.field('debit').value;
+    const credits = this.field('credit').value;
+    if (!debits || !credits) return false;
+    debits.forEach(entry => total += entry.amount || amount);
+    credits.forEach(entry => total -= entry.amount || amount);
+    return total === 0;
+  } } },
   _.clone(Journals.noteSchema),
 ]);
 

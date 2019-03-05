@@ -224,7 +224,7 @@ Template.Accounting.events({
     Modal.show('Autoform_edit', {
       id: 'af.journal.insert',
       collection: Journals,
-      schema: def.schema,
+      schema: def.schema(),
 //      type: 'method',
 //      meteormethod: 'journals.insert',
       template: 'bootstrap3-inline',

@@ -33,6 +33,10 @@ TxDefs.helpers({
       }, _.clone(Journals.noteSchema),
     ]);
   },
+  transformToJournal(doc) {
+    doc.credit = [{ account: doc.credit }];
+    doc.debit = [{ account: doc.debit }];
+  },
   select() {
     const selector = {
       communityId: this.communityId,
