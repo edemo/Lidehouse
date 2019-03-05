@@ -90,12 +90,21 @@ Template.Accounting.helpers({
     if (brk) return brk.leafOptions(accountCode);
     return [];
   },
-  journalsTableDataFn() {
+  journalsIncompleteTableDataFn() {
     const templateInstance = Template.instance();
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
       return Journals.find({ communityId, complete: false }).fetch();
+    }
+    return getTableData;
+  },
+  journalsTableDataFn() {
+    const templateInstance = Template.instance();
+    function getTableData() {
+      if (!templateInstance.subscriptionsReady()) return [];
+      const communityId = Session.get('activeCommunityId');
+      return Journals.find({ communityId }).fetch();
     }
     return getTableData;
   },
