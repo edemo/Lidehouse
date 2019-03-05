@@ -19,7 +19,7 @@ Topics.statusColors = {
   progressing: 'info',
   finished: 'primary',
   checked: 'primary',
-  closed: 'success',
+  closed: 'default',
   deleted: 'danger',
 };
 
