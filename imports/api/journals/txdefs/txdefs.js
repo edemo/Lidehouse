@@ -1,12 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Mongo } from 'meteor/mongo';
+import { _ } from 'meteor/underscore';
 
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
+import { AccountSpecification, chooseLeafAccountFromGroup } from '../account-specification.js';
 
 class TxDefsCollection extends Mongo.Collection {
   define(doc) {
@@ -23,6 +25,14 @@ TxDefs.schema = new SimpleSchema({
 });
 
 TxDefs.helpers({
+  schema() {
+    return new SimpleSchema([
+      _.clone(Journals.rawSchema), {
+        credit: { type: String, autoform: chooseLeafAccountFromGroup('COA', this.credit) },
+        debit: { type: String, autoform: chooseLeafAccountFromGroup('COA', this.debit) },
+      }, _.clone(Journals.noteSchema),
+    ]);
+  },
   select() {
     const selector = {
       communityId: this.communityId,
@@ -40,6 +50,6 @@ TxDefs.helpers({
 TxDefs.attachSchema(TxDefs.schema);
 TxDefs.attachSchema(Timestamps);
 
-TxDefs.startup(function attach() {
+Meteor.startup(function attach() {
   TxDefs.simpleSchema().i18n('schemaTxDefs');
 });

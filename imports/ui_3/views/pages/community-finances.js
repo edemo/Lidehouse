@@ -19,7 +19,6 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
-import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
 import { AccountSpecification } from '/imports/api/journals/account-specification';

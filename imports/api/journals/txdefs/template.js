@@ -4,6 +4,27 @@ import { _ } from 'meteor/underscore';
 import { TxDefs } from './txdefs.js';
 
 export function defineTxDefTemplates() {
+  // Common
+  TxDefs.define({ communityId: null,
+    name: 'money transfer', // 'Pénz ki/befizetés',
+    credit: '32',
+    debit: '32',
+  });
+
+  // Single entry accouting
+  TxDefs.define({ communityId: null,
+    name: 'Income', // 'Bevétel',
+    credit: '32',
+    debit: '8',
+  });
+
+  TxDefs.define({ communityId: null,
+    name: 'Expense', // 'Kiadás',
+    credit: '31',
+    debit: '32',
+  });
+
+  // Double entry accounting
   TxDefs.define({ communityId: null,
     name: 'Bill', // 'Bejövő számla',
     credit: '45',

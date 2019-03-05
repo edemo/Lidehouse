@@ -68,6 +68,7 @@ export const Permissions = [
   { name: 'breakdowns.remove',      roles: ['accountant'] },
   { name: 'balances.ofAccounts',    roles: ['manager', 'owner', 'accountant', 'treasurer', 'overseer'] },
   { name: 'balances.ofLocalizers',  roles: ['manager', 'accountant'] },
+  { name: 'txdefs.inCommunity',     roles: exceptGuest },
   { name: 'journals.inCommunity',   roles: ['manager', 'owner', 'accountant', 'treasurer', 'overseer'] },
   { name: 'journals.insert',        roles: ['accountant', 'treasurer'] },
   { name: 'journals.update',        roles: ['accountant', 'treasurer'] },

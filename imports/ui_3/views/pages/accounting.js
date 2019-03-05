@@ -19,7 +19,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
-import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
+import { TxDefs } from '/imports/api/journals/txdefs/txdefs.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
 import { AccountSpecification } from '/imports/api/journals/account-specification';
@@ -33,6 +33,7 @@ Template.Accounting.onCreated(function accountingOnCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('breakdowns.inCommunity', { communityId });
+    this.subscribe('txdefs.inCommunity', { communityId });
     this.subscribe('journals.incomplete', { communityId });
 //    this.subscribe('txs.inCommunity', { communityId });
 //    this.subscribe('txDefs.inCommunity', { communityId });
@@ -48,17 +49,9 @@ Template.Accounting.helpers({
     return Reports[name](year);
   },
   txDefs() {
-/*    const txDefs = [
-      { _id: '1', name: 'Payin' },
-      { _id: '2', name: 'Obligation' }, 
-      { _id: '3', name: 'Income' },
-      { _id: '4', name: 'Expense'},
-      { _id: '5', name: 'Backoffice op'},
-    ];
-    */
-//    const communityId = Session.get('activeCommunityId');
-//    const txDefs = TxDefs.find({ communityId });
-    return TxDefRegistry;
+    const communityId = Session.get('activeCommunityId');
+    const txdefs = TxDefs.find({ communityId: { $in: [null, communityId] } });
+    return txdefs;
   },
   mainBreakdownsTableDataFn() {
     const templateInstance = Template.instance();
@@ -227,8 +220,7 @@ Template.Accounting.events({
   'click #journals .js-new'(event, instance) {
     const defId = $(event.target).data("id");
     Session.set('activeTxDef', defId);
-//    const def = TxDefs.findOne(defId);
-    const def = TxDefRegistry.find(d => d.name === defId);
+    const def = TxDefs.findOne({ name: defId });
     Modal.show('Autoform_edit', {
       id: 'af.journal.insert',
       collection: Journals,
@@ -357,7 +349,7 @@ AutoForm.addHooks('af.journal.insert', {
   onSubmit(doc) {
     AutoForm.validateForm('af.journal.insert');
     const defId = Session.get('activeTxDef');
-    const def = TxDefRegistry.find(d => d.name === defId);
+    const def = TxDefs.findOne({ name: defId });
     def.transformToJournal(doc);
     const afContext = this;
     insertTx.call(doc, function handler(err, res) {
