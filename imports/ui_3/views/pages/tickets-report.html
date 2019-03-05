@@ -5,7 +5,7 @@
   <div class="wrapper wrapper-content animated fadeInRight">
 
     <div class="row">
-      <div class="col-xs-12 col-md-6">
+      <!--<div class="col-xs-12 col-md-6">
         <div class="ibox float-e-margins">
           <div class="ibox-title">
               <h5>{{_ 'Recent tickets'}}</h5>
@@ -24,10 +24,10 @@
                       </div>
                       <div class="col-xs-7 content no-top-border">
                             <p class="m-b-xs">
-                                <a class="text-primary" href="{{pathFor 'Topic.show' _tid=_id}}"><strong>{{title}}</strong></a>
+                                <a class="text-primary" href="{{pathFor 'Topic.show' _tid=_id}}"><strong>{{title}}</strong></a>-->
                               <!--span class="label label-white text-white label-xs">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span-->
                               <!--span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span-->
-                            </p>
+                            <!--</p>
                             <p class="m-b-xs">
                               {{>Chopped text=text chars=150}}
                             </p>
@@ -43,7 +43,7 @@
               {{/each}}
           </div>
         </div>
-      </div>
+      </div>-->
       <!-- active errors start -->
       <!--div class="col-xs-12 col-lg-6">
         <div class="ibox">
@@ -62,7 +62,7 @@
       </div-->
 
       <!-- new error start -->
-      <div class="col-xs-12 col-md-6">
+      <div class="col-xs-12">
         <div class="widget yellow-bg p-sm text-center">
           <div class="row">
           <div class="col-lg-12">
@@ -84,6 +84,61 @@
 
       </div>
     </div>
+
+    <div class="ibox">
+      <div class="ibox-title">
+        <h5>{{_ 'Ticket filter'}}</h5>
+            {{> iboxTools}}
+      </div>
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="input-group">
+              <label class="control-label">{{_ 'Ticket status'}}</label><br>
+              {{#each statusValue in statusValues}}
+              <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{statusColor statusValue}} {{activeButton statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <label class="control-label">{{_ 'Title'}}</label>
+            <div class="form-group">
+              <div class="input-group">    
+                <input type="text" placeholder="{{_ 'search'}}..." {{b "value: ticketText"}} class="form-control js-search">
+                <span class="input-group-addon">
+                  <i class="fa fa-search"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="start_date">{{_ 'Start date'}}</label>
+              <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+              <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-9">
+            <button type="button" class="js-reported-by-current-user btn btn-primary btn-xs btn-outline btn-warning {{activeButton}}">{{_ 'Reported by me'}}</button>
+          </div>
+          <div class="col-sm-3 align">
+            <button type="button" class="js-status-filter btn btn-primary btn-xs {{#if noFilters}}disabled{{/if}}" data-value="cancel">{{_ 'clear filters'}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+          
    
     <!-- closed errors start -->
     <div class="row">
@@ -94,62 +149,6 @@
             {{> iboxTools}}
         </div>
         <div class="ibox-content">
-
-          <div class="row">
-              <div class="col-sm-12">
-                <div class="input-group">
-                  <label class="control-label">{{_ 'Ticket status'}}</label><br>
-                  {{#each statusValue in statusValues}}
-                  <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{statusColor statusValue}} {{activeButton statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
-                  {{/each}}
-                </div>
-                      <!--div class="pull-right">
-                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-comments"></i> </button>
-                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-user"></i> </button>
-                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-list"></i> </button>
-                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-pencil"></i> </button>
-                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-print"></i> </button>
-                          <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-cogs"></i> </button>
-                      </div-->
-                      <!--strong>Found {{tickets.count}} tickets.</strong-->
-              </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-4">
-                <label class="control-label">{{_ 'Title'}}</label>
-                <div class="form-group">
-                  <div class="input-group">    
-                      <input type="text" placeholder="{{_ 'search'}}..." {{b "value: ticketText"}} class="form-control js-search">
-                      <span class="input-group-addon">
-                          <i class="fa fa-search"></i>
-                      </span>
-                  </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label class="control-label" for="start_date">{{_ 'Start date'}}</label>
-                    <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label class="control-label" for="end_date">{{_ 'End date'}}</label>
-                    <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
-                </div>
-            </div>
-          </div>
-
-          <div class="row">
-              <div class="col-sm-9">
-                  <button type="button" class="js-reported-by-current-user btn btn-primary btn-xs btn-outline btn-warning {{activeButton}}">{{_ 'Reported by me'}}</button>
-              </div>
-              <div class="col-sm-3 align">
-                  <button type="button" class="js-status-filter btn btn-primary btn-xs {{#if noFilters}}disabled{{/if}}" data-value="cancel">{{_ 'clear filters'}}</button>
-              </div>
-          </div>
-
           <div class="table-responsive">
               <table class="table table-hover issue-tracker">
                   <tbody>
