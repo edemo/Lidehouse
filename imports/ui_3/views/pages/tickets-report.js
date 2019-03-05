@@ -27,6 +27,7 @@ Template.Tickets_report.viewmodel({
   ticketStatusArray: [],
   startDate: '',
   endDate: '',
+  reportedByCurrentUser: false,
   statusColor(value) {
     return Topics.statusColors[value];
   },
@@ -42,11 +43,13 @@ Template.Tickets_report.viewmodel({
     const ticketStatusArray = this.ticketStatusArray();
     const startDate = this.startDate();
     const endDate = this.endDate();
+    const reportedByCurrentUser = this.reportedByCurrentUser();
     const selector = { communityId, category: 'ticket' };
     selector.createdAt = {};
     if (ticketStatusArray.length > 0) selector['ticket.status'] = { $in: ticketStatusArray };
     if (startDate) selector.createdAt.$gte = new Date(this.startDate());
     if (endDate) selector.createdAt.$lte = new Date(this.endDate());
+    if (reportedByCurrentUser) selector.userId = Meteor.userId();
     if (ticketText) {
       return Topics.find(selector, { sort: { createdAt: -1 } }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
       || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
@@ -58,12 +61,15 @@ Template.Tickets_report.viewmodel({
     const ticketStatusArray = this.ticketStatusArray();
     const startDate = this.startDate();
     const endDate = this.endDate();
-    if (!ticketText && ticketStatusArray.length === 0 && !startDate && !endDate) return true;
+    const reportedByCurrentUser = this.reportedByCurrentUser();
+    if (!ticketText && ticketStatusArray.length === 0 && !startDate && !endDate && !reportedByCurrentUser) return true;
     return false;
   },
-  activeButton(ticketStatus) {
+  activeButton(data) {
+    // TODO: Refactor
     const ticketStatusArray = this.ticketStatusArray();
-    if (ticketStatusArray.includes(ticketStatus)) return 'active';
+    const reportedByCurrentUser = this.reportedByCurrentUser();
+    if ((typeof data === 'string' && ticketStatusArray.includes(data)) || (typeof data !== 'string' && reportedByCurrentUser)) return 'active';
     return '';
   },
   recentTickets() {
@@ -134,6 +140,7 @@ Template.Tickets_report.events({
       instance.viewmodel.ticketStatusArray([]);
       instance.viewmodel.startDate('');
       instance.viewmodel.endDate('');
+      instance.viewmodel.reportedByCurrentUser(false);
     } else {
       const n = ticketStatusArray.includes(ticketStatus);
       if (n) {
@@ -143,11 +150,17 @@ Template.Tickets_report.events({
           }
         }
         instance.viewmodel.ticketStatusArray(ticketStatusArray);
+        $(event.target).blur();
       } else {
         ticketStatusArray.push(ticketStatus);
         instance.viewmodel.ticketStatusArray(ticketStatusArray);
       }
     }
+  },
+  'click .js-reported-by-current-user'(event, instance) {
+    const oldValue = instance.viewmodel.reportedByCurrentUser();
+    instance.viewmodel.reportedByCurrentUser(!oldValue);
+    if (oldValue) $(event.target).blur();
   },
   'keyup .js-search'(event, instance) {
     instance.viewmodel.ticketText(event.target.value);

@@ -96,11 +96,11 @@
         <div class="ibox-content">
 
           <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <div class="input-group">
                   <label class="control-label">{{_ 'Ticket status'}}</label><br>
                   {{#each statusValue in statusValues}}
-                  <button type="button" class="js-status-filter btn btn-primary btn-xs btn-{{statusColor statusValue}} {{activeButton statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
+                  <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{statusColor statusValue}} {{activeButton statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
                   {{/each}}
                 </div>
                       <!--div class="pull-right">
@@ -113,25 +113,27 @@
                       </div-->
                       <!--strong>Found {{tickets.count}} tickets.</strong-->
               </div>
-              <div class="col-sm-6">
-                <label class="control-label">{{_ 'Title'}}</label>
-                <div class="input-group">    
-                    <input type="text" placeholder="{{_ 'search'}}..." {{b "value: ticketText"}} class="form-control js-search">
-                    <span class="input-group-addon">
-                      <i class="fa fa-search"></i>
-                    </span>
-                </div>
-              </div>
           </div>
 
           <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
+                <label class="control-label">{{_ 'Title'}}</label>
+                <div class="form-group">
+                  <div class="input-group">    
+                      <input type="text" placeholder="{{_ 'search'}}..." {{b "value: ticketText"}} class="form-control js-search">
+                      <span class="input-group-addon">
+                          <i class="fa fa-search"></i>
+                      </span>
+                  </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label class="control-label" for="start_date">{{_ 'Start date'}}</label>
                     <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label class="control-label" for="end_date">{{_ 'End date'}}</label>
                     <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
@@ -139,7 +141,14 @@
             </div>
           </div>
 
-          <button type="button" class="js-status-filter btn btn-primary btn-xs btn-block {{#if noFilters}}disabled{{/if}}" data-value="cancel">{{_ 'clear filters'}}</button>
+          <div class="row">
+              <div class="col-sm-9">
+                  <button type="button" class="js-reported-by-current-user btn btn-primary btn-xs btn-outline btn-warning {{activeButton}}">{{_ 'Reported by me'}}</button>
+              </div>
+              <div class="col-sm-3 align">
+                  <button type="button" class="js-status-filter btn btn-primary btn-xs {{#if noFilters}}disabled{{/if}}" data-value="cancel">{{_ 'clear filters'}}</button>
+              </div>
+          </div>
 
           <div class="table-responsive">
               <table class="table table-hover issue-tracker">
