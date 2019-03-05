@@ -1,8 +1,8 @@
-@animation-duration: 1s;
+@letter-animation-duration: 1s;
 
 .envelope {
     height: 100%;
-    max-width: 500px;
+    max-width: 560px;
 	background: #bdbdbd;
     position: relative;
     margin: 10px auto;
@@ -21,6 +21,7 @@
     opacity: 1;
 }
 
+/*
 .letter-border::after {
     content: '';
     position: absolute;
@@ -31,6 +32,7 @@
     z-index: -1;
     border: 1px dashed #e5e6e7;
 }
+*/
 
 .letter-content {
     height: 100%;
@@ -38,7 +40,8 @@
 	background-color: #fff;
     text-align: center;
     opacity: 1;
-    padding: 35px 0;
+    padding-bottom: 45px;
+    padding-top: 10px;
 }
 
 .envelope-flap {
@@ -73,7 +76,7 @@
 
 .letter-animation {
     animation-name: letter;
-    animation-duration: @animation-duration;
+    animation-duration: @letter-animation-duration;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;  
 }
@@ -122,7 +125,7 @@
 
 .letter-animation-reverse {
     animation-name: letterReverse;
-    animation-duration: @animation-duration;
+    animation-duration: @letter-animation-duration;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;  
 }
@@ -172,7 +175,7 @@
 
 .flap-animation {
     animation-name: flap;
-    animation-duration: @animation-duration;
+    animation-duration: @letter-animation-duration;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;  
 }
@@ -211,7 +214,7 @@
 
 .flap-animation-reverse {
     animation-name: flapReverse;
-    animation-duration: @animation-duration;
+    animation-duration: @letter-animation-duration;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;  
 }

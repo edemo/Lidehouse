@@ -36,6 +36,7 @@ if (Meteor.isClient) {
         participantIds: [Meteor.userId(), otherUserId],
         category: 'room',
         title: roomType,
+        text: roomType,
       }, onSuccess((res) => {
         FlowRouter.go('Room.show', { _rid: res });
       }),

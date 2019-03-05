@@ -22,11 +22,12 @@
   // voting
   "Proxy voting" : "Voting in the name of others",
   "Please select voters": "Please select the people you would like to vote in the name of",
+  "This is a voting type": "This is a <i>%s</i> voting",
   "votingInstructions": {
-    "yesno": "",
-    "choose": "",
-    "preferential": "Please rank the choices below according to your preference…",
-    "petition": ""
+    "yesno": "Please mark your choice, and then send your vote with the green button.",
+    "choose": "Please mark your choice, and then send your vote with the green button.",
+    "preferential": "Please rank the choices below according to your preference (the most desirable on top, the least desirable at the bottom), and then send your vote with the green button.",
+    "petition": "If you agree with the proposal, please press the Support button, and then send your vore with the green button. If you don't agree, you don't need to do anything."
   },
 
   // finances
@@ -89,6 +90,10 @@
   "Unhide comments from": "Reveal comments from %s",
   "Content hidden by": "Content hidden by %s",
   "View previous comments": "View %s previous comments",
+  
+  "insert forumtopic successful": "insert forum topic successful",
+  "update forumtopic successful": "update forum topic successful",
+  "forumtopic": "forum topic",
 
   // delegations
   "delegationsFromMeInstructions": "Here you can set up delegations. So someone else can use your vote in your name.",
@@ -120,6 +125,7 @@
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "delete user": "delete your account permanently",
   "deletedUser": "Deleted user",
+  "unknownUser": "Unknown user",
   "deleteUserWarning": ["BEWARE: Your user account will be permanently deleted! <br /><br />",
     "Note that this will NOT delete your activity in your communities. ",
     "Those belong to the community, and you need to ask the community's admin to delete them. <br /><br />",

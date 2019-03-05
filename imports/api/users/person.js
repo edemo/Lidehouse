@@ -76,14 +76,15 @@ export class Person {
     return '/images/avatars/avatarnull.png';
   }
   displayName(lang) {
-    if (this.idCard) return this.idCard.name;
+    if (this.idCard && this.idCard.name) return this.idCard.name;
     if (this.userId && this.user()) return this.user().displayName(lang);
     if (this.contact && this.contact.email) {
       const emailSplit = this.contact.email.split('@');
       const emailName = emailSplit[0];
       return `[${emailName}]`;
     }
-    return undefined;
+    if (this.userId && !this.user()) return __('deletedUser');
+    return __('unknownUser');
   }
   toString() {
     return this.displayName();

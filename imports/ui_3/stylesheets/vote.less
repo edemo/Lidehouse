@@ -1,14 +1,17 @@
 @import '../theme/globals/variables.import.less';
 
 // TODO: find good colors for this
-@btn-vote-color: darken(orange, 20%);
+@btn-vote-bg: darken(orange, 20%);
+@btn-vote-text: white;
+@btn-vote-text-hover:  #FEC51B;
 @btn-vote-mark: mix( #69b125, green, 75%);
 @btn-vote-border: black;
 @btn-vote-shadow: darkgrey;
 
-.btn-vote, .btn-vote-choice, .btn-vote-finalize {
+.btn-vote, .btn-vote-choice {
+    color: @btn-vote-text;
+    background-color: @btn-vote-bg;
     border: 1px solid @btn-vote-border;
-    color: white;
     padding-left: 25px;
     position: relative;
     cursor: pointer;
@@ -50,8 +53,19 @@
     }
 }
 
-.btn-vote, .btn-vote-finalize, .btn-vote-choice {
-    background-color: @btn-vote-color;
+.btn-vote:hover,
+.btn-vote-choice:hover {
+  color: @btn-vote-text-hover;
+}
+
+.btn-vote-choice{
+    font-weight: normal;
+    width: 100%;
+    margin: 5px auto !important;
+    &:hover {
+      box-shadow: 3px 4px 7px 2px rgba(35, 35, 35, 0.18);
+    }
+    transition: box-shadow 0.30s ease;    
 }
 
 .btn.btn-pressed,
@@ -66,28 +80,25 @@
     }
 }
 
+.vote-cast-panel .text-muted {
+  color: lighten(grey, 25%);
+}
+
+.voting-instructions {
+  padding: 20px 40px;
+}
+
 .sortable {
   padding: 5px;
   max-width: 100%;
 }
 
-.btn-vote-choice{
-    font-weight: normal;
-    color: white;
-    width: 100%;
-    margin: 5px auto !important;
-    &:hover {
-      box-shadow: 3px 4px 7px 2px rgba(35, 35, 35, 0.18);
-    }
-    transition: box-shadow 0.30s ease;    
-}
-
-.avatar-envelope {
+.btn-send-vote, .avatar-envelope {
   width: 40px;
   height: 40px;
   position: absolute;
-  bottom: -33px;
-  right: 2px;
+  bottom: -38px;
+  right: 7px;
   border-radius: 4px;
 }
 
@@ -96,13 +107,8 @@
   position: relative;
 }
 
-/*.btn-send-vote {
-    width: 40px;
-    height: 40px;
+.btn-send-vote {
     background-color: #1AB394;
-    position: absolute;
-    bottom: -33px;
-    right: 2px;
     text-align: center;
     line-height: 40px;
     margin: 0;
@@ -112,7 +118,6 @@
 	  z-index: 11;
     display: block;
     opacity: 1;
-    border-radius: 4px;
     border: none;
     cursor: pointer;
     transition: width .2s;
@@ -122,7 +127,7 @@
   width: 120px;
 }
 
-.send-message {
+.btn-send-text {
   opacity: 0;
   transition: opacity .5s;
   display: block;
@@ -133,17 +138,18 @@
   top: 0;
 }
 
-.btn-send-vote:hover > .send-message {
+.btn-send-vote:hover > .btn-send-text {
   opacity: 1;
 }
 
 .material-icons {
-  font-size: 35px !important;
+  font-size: 30px !important;
   position: absolute;
-  right: 2.5px;
-  top: 2px;
-}*/
+  right: 4.5px;
+  top: 4.5px;
+}
 
+/*
 .btn-send-vote {
   position: absolute;
   bottom: -33px;
@@ -151,8 +157,9 @@
 }
 
 .material-icons {
-  font-size: 12px !important;
+  font-size: 14px !important;
 }
+*/
 
 .btn-disabled {
 	opacity: 0.4;
@@ -171,11 +178,6 @@
 
 .ui-sortable-placeholder {
   background: #e7eaec !important;
-}
-
-.btn-vote:hover,
-.btn-vote-choice:hover {
-  color: #FEC51B;
 }
 
 /* START Touch Punch Desktop Cursor */

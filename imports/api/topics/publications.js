@@ -4,7 +4,8 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { Topics } from './topics.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { Comments } from '/imports/api/comments/comments.js';
 import './votings/votings.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
@@ -32,14 +33,25 @@ Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
   ];
 });
 
-Meteor.publish('topics.byId', function topicsById(params) {
+Meteor.publishComposite('topics.byId', function topicsById(params) {
   new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validate(params);
 
   const { _id } = params;
-  
+
   const publicFields = Topics.publicFields;//.extendForUser(this.userId, communityId);
-  return Topics.find({ _id }, { fields: publicFields });
+
+  return {
+    find() {
+      return Topics.find({ _id }, { fields: publicFields });
+    },
+    children: [{
+      // Publish all Comments of the Topic
+      find(topic) {
+        return Comments.find({ topicId: topic._id }, { fields: Comments.publicFields });
+      },
+    }],
+  };
 });
 

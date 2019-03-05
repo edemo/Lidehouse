@@ -1,0 +1,34 @@
+<template name="Revision_history">
+
+     {{#each version in (sortedRevisions doc)}}
+        
+        {{#if (equals version.field 'closed')}}
+        <div class="feed-element">
+            <!--a href="" class="pull-left">
+                <img alt="image" class="img-circle" src="{{doc.createdBy.avatar}}">
+            </a-->
+            <div class="media-body ">
+                <small class="pull-right" title="{{displayTime version.time}}">{{displayTimeFrom version.time}}</small>
+                <strong class="text-capitalize"> {{_ 'closed'}}.</strong><br>
+                <small class="text-muted">{{displayTime version.time}}</small>
+            </div>
+        </div>
+        {{else}}
+        <div class="feed-activity-list">
+            <div class="feed-element">
+                <!--a href="" class="pull-left">
+                    <img alt="image" class="img-circle" src="{{doc.createdBy.avatar}}">
+                </a-->
+                <div class="media-body ">
+                    <small class="pull-right" title="{{displayTime version.time}}">{{displayTimeFrom version.time}}</small>
+                    {{_ 'The'}}<strong> {{translateFieldName schemaName version.field}} </strong>{{_ 'was modified, previous content'}}:<br>
+                    <div class="well">
+                        {{translateFieldValue schemaName version.field version.oldValue}}                
+                    </div>
+                </div>
+            </div>
+        </div> 
+        {{/if}}
+     {{/each}}
+    
+</template>

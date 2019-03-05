@@ -232,9 +232,9 @@
       },
       "type": {
         "label": "Voting type",
-        "yesno": "Yes-no-abstain",
-        "choose": "Choose from choices",
-        "preferential": "Choose based on preference ordering",
+        "yesno": "Yes-no",
+        "choose": "Simple selection",
+        "preferential": "Rank choices by preference",
         "petition": "Petition"
       },
       "voters": {

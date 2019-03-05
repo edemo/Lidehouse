@@ -3,9 +3,6 @@
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
 
-  "title": "cím",
-  "text": "szöveg",
-
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
@@ -137,7 +134,8 @@
     "room": "szoba",
     "feedback": "visszajelzés"
   },
-  
+  "forumtopic": "fórum téma",
+
   // commands
   "important": "Fontos",
   "view": "Megtekintés",
@@ -204,7 +202,7 @@
 
   // topics
   "The": "A",
-  "was modified, previous": "módosításra került, korábbi",
+  "was modified, previous content": "módosításra került, korábbi tartalom",
   "Report this": "Hozzászólás jelentése",
   "Hide comments from": "%s hozzászólásainak elrejtése",
   "Unhide comments from": "%s hozzászólásainak mutatása",
@@ -253,11 +251,12 @@
   "Attachments" : "Csatolmányok",
   "Activity": "Változások",
   "All votings": "Aktív és lezárt szavazások teljes listája",
+  "This is a voting type": "Ez egy <i>%s</i> szavazás",
   "votingInstructions": {
-    "yesno": "",
-    "choose": "",
-    "preferential": "Ez egy preferenciális szavazás. Kérjük rakja sorrendbe…",
-    "petition": ""
+    "yesno": "Kérjük jelölje meg szavazatát, majd küldje el a zöld gombbal.",
+    "choose": "Kérjük jelölje meg szavazatát, majd küldje el a zöld gombbal.",
+    "preferential": "Kérjük rendezze sorrendbe, hogy legfelül az Ön számárá leginkább kívánatos, legalul pedig a legkevésbé szimpatikus opció legyen, majd küldje el szavazatát a zöld gombbal.",
+    "petition": "Ha támogatja a kezdeményezést, kattintson a Támogatom gombra, majd küldje el szavazatát a zöld gombbal. Ha nem támogatja, akkor nincsen semmi teendője."
   },
 
   // delegations
@@ -287,7 +286,8 @@
   "No delegations": "Nincsenek meghatalmazások",
   "Modify vote": "Szavazat módosítása",
   "Cancel": "Mégsem",
-  "Please send your vote": "Ha döntött, küldje el szavazatát",
+  "If you made your choice": "Ha döntött",
+  "send your vote": "küldje el szavazatát",
 
   // rooms
   "Send messages": "Küldjön üzenetet",
@@ -494,6 +494,8 @@
   "update roleship successful": "Tisztség módosítva",
   "delete roleship successful": "Tisztség visszavonva",
   "delete topic successful": "Bejegyzés törölve",
+  "insert forumtopic successful": "Új fórum téma létrehozva.",
+  "update forumtopic successful": "Fórum téma módosítva", 
   "insert news successful": "Hirdetmény rögzítésre került",
   "update news successful": "Hirdetmény módosítva",
   "delete news successful": "Hirdetmény törölve",
@@ -558,6 +560,7 @@
 
   "anonymous": "névtelen",
   "deletedUser": "Törölt felhasználó",
+  "unknownUser": "Ismeretlen felhasználó",
   "deleteUserWarning": ["FIGYELEM: Ön ezzel végérvényesen elveszíti a felhasználói fiókját! <br /><br />",
     "Tájékoztatjuk, hogy a közösségében történt megnyilvánulásai ezzel nem törlődnek. ",
     "Azok a közösség tulajdonát képezik, és törlésüket a közösség rendszergazdájától tudja kérni. <br /><br />",
