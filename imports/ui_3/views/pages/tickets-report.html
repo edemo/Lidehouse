@@ -151,6 +151,15 @@
         <div class="ibox-content">
           <div class="table-responsive">
               <table class="table table-hover issue-tracker">
+                  <thead>
+                    <tr>
+                      {{#each headerTitle in headerTitles}}
+                      <th>
+                      {{_ headerTitle}}
+                      </th>
+                      {{/each}}
+                    </tr>
+                  </thead>
                   <tbody>
                   {{#each tickets}}
                   <tr>

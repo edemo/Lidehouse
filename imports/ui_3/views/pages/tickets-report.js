@@ -114,6 +114,9 @@ Template.Tickets_report.viewmodel({
   statusValues() {
     return Topics.statusValues;
   },
+  headerTitles() {
+    return Topics.headerTitles;
+  },
 });
 
 Template.Tickets_report.events({

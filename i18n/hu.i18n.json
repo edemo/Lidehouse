@@ -300,6 +300,9 @@
   "Ticket status": "Hibajegy státusz",
   "Title": "Cím",
   "Reported by me": "Saját bejelentéseim",
+  "Reported by": "Bejelentő",
+  "Reported at": "Bejelentve",
+  "Type": "Típus",
 
   // finances
   "Account": "Számla", 
