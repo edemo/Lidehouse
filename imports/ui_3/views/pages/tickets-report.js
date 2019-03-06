@@ -74,9 +74,14 @@ Template.Tickets_report.viewmodel({
   },
   recentTickets() {
     const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category: 'ticket',
+    const recentTickets = [];
+    const allTickets = Topics.find({ communityId, category: 'ticket',
       $or: [{ 'ticket.status': { $ne: 'closed' } }, { createdAt: { $gt: moment().subtract(1, 'week').toDate() } }],
-    }, { sort: { createdAt: -1 } });
+    }, { sort: { createdAt: -1 } }).fetch();
+    for (let i = 0; i <= 1; i += 1) {
+      recentTickets.push(allTickets[i]);
+    }
+    return recentTickets;
   },
   ticketsDataFn() {
     return () => {
