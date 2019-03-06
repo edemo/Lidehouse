@@ -173,6 +173,7 @@
   "menuDown": "Lenyit",
   "menuUp": "Összecsuk",
   "Upload file": "Fájl feltöltés",
+  "Upload statement": "Kivonat feltöltés",
   "Uploading": "Feltöltés",
   "Data upload in progress": "Adatok feltöltése folyamatban",
 
@@ -317,7 +318,7 @@
   "Chart of accounts": "Számla tükör",
   "Account history": "Számla történet",
   "Account group": "Számla csoport",
-  "Reconciled": "Egyeztetve",
+  "Reconciled": "Kontírozva",
   "Pending": "Függőben",
   "Begin date": "Kezdő dátum",
   "End date": "Záró dátum",
@@ -374,6 +375,18 @@
   "Opening": "Nyitó egyenleg",
   "Carry": "Áthozatal előző évekről",
   "Performance": "Idei eredmény",
+  // Tx types
+  "Money transfer": "Pénz ki/befizetés",
+  "Income": "Bevétel",
+  "Expense": "Kiadás",
+  "Bill incoming": "Bejövő számla",
+  "Bill payment": "Bejövő számla teljesítés",
+  "Invoice outgoing": "Kimenő számla",
+  "Invoice payment": "Kimenő számla teljesítés",
+  "Parcel invoice": "Albetét előírás",
+  "Parcel payment": "Albetét befizetés",
+  "Accounting operation": "Könyvelési művelet",
+
   // Localizer
   "All locations": "Összes hely",
   "Parcels": "Albetétek",

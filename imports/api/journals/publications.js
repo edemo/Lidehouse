@@ -3,6 +3,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Journals } from './journals.js';
+import { Breakdowns } from './breakdowns/breakdowns.js';
 // import { Txs } from './txs.js';
 // import { TxDefs } from './tx-defs.js';
 
@@ -42,6 +43,36 @@ Meteor.publish('journals.byAccount', function journalsInCommunity(params) {
   if (account) selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];
   if (localizer) selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
 
+  return Journals.find(selector);
+});
+
+Meteor.publish('journals.betweenAccounts', function journalsInCommunity(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+    creditAccount: { type: String, optional: true },
+    debitAccount: { type: String, optional: true },
+    begin: { type: Date, optional: true },
+    end: { type: Date, optional: true },
+  }).validate(params);
+  const { communityId, creditAccount, debitAccount, begin, end } = params;
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('journals.inCommunity', communityId)) {
+    return this.ready();
+  }
+
+  const selector = { communityId, valueDate: { $gte: begin, $lt: end } };
+  const coa = Breakdowns.chartOfAccounts(communityId);
+  if (creditAccount) {
+    const creditNode = coa.nodeByCode(creditAccount);
+    const creditLeafs = creditNode.leafs().map(l => l.code);
+    selector['credit.account'] = { $in: creditLeafs };
+  }
+  if (debitAccount) {
+    const debitNode = coa.nodeByCode(debitAccount);
+    const debitLeafs = debitNode.leafs().map(l => l.code);
+    selector['debit.account'] = { $in: debitLeafs };
+  }
   return Journals.find(selector);
 });
 

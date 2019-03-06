@@ -414,28 +414,17 @@
     }
   },
   "schemaTxDefs": {
-    "journals": {
-      "label": "Journals",
-      "$": {
-        "accountFrom": {
-          "label": "Account from",
-          "accountGroup": {
-            "label": "Account group"
-          },
-          "localizerNeeded": {
-            "label": "Localizer needed"
-          }
-        },
-        "accountTo": {
-          "label": "Account to",
-          "accountGroup": {
-            "label": "Account group"
-          },
-          "localizerNeeded": {
-            "label": "Localizer needed"
-          }
-        }
-      }
+    "name": {
+      "label": "Transaction type",
+      "placeholder": ""
+    },
+    "credit": {
+      "label": "Credited account",
+      "placeholder": ""
+    },
+    "debit": {
+      "label": "Debited account",
+      "placeholder": ""
     }
   },
   "schemaParcelBillings": {

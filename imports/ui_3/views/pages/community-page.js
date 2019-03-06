@@ -12,6 +12,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Fraction } from 'fractional';
 
+import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/roles.js';
@@ -177,32 +178,14 @@ Template.Community_page.viewmodel({
         delete: Meteor.userOrNull().hasPermission('parcels.remove', communityId),
         assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
       };
-      return {
+      return _.extend({
         columns: parcelColumns(permissions),
         createdRow: highlightMyRow,
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
         lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
         pageLength: 25,
-        // coming from the theme:
-        dom: '<"html5buttons"B>lTfgitp',
-        buttons: [
-            { extend: 'copy' },
-            { extend: 'csv' },
-            { extend: 'excel', title: 'ExampleFile' },
-            { extend: 'pdf', title: 'ExampleFile' },
-            { extend: 'print',
-                customize: function (win) {
-                    $(win.document.body).addClass('white-bg');
-                    $(win.document.body).css('font-size', '10px');
-
-                    $(win.document.body).find('table')
-                        .addClass('compact')
-                        .css('font-size', 'inherit');
-                },
-            },
-        ],
-      };
+      }, DatatablesExportButtons);
     };
   },
   parcels() {

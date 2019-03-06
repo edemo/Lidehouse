@@ -413,6 +413,20 @@
       "label": "Könyvelési hely (ha van megadandó)"
     }
   },
+  "schemaTxDefs": {
+    "name": {
+      "label": "Tranzakció típus",
+      "placeholder": ""
+    },
+    "credit": {
+      "label": "Terhelt számla",
+      "placeholder": ""
+    },
+    "debit": {
+      "label": "Jóváírt számla",
+      "placeholder": ""
+    }
+  },
   "schemaParcelBillings": {
     "year": {
       "label": "Melyik év",

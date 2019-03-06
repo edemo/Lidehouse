@@ -8,12 +8,23 @@
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='journals-incomplete'>
             <div class="ibox-title">
-                <h5>{{_ 'Journals to complete'}}</h5>
-                <div class="ibox-tools">
-                    <a href="" class="btn btn-white btn-sm js-import"><i class="fa fa-upload"></i> {{_ 'Upload file'}}</a>
-                </div>
+                <h5>{{_ 'Adatok felvitele'}}</h5>
+                {{>iboxTools}}
             </div>  
             <div class="ibox-content">
+                {{#if userHasPermission 'journals.insert' (fromSession 'activeCommunityId')}}
+                <div class="row">
+                <div class="col-md-10">
+                    <h3>{{_ 'Journals to complete'}}</h3>
+                    {{_ 'Itt azokat a tranzakciókat látja, amiknek még nem lett megállapítva mindkét számla oldala.'}}<br>
+                    {{_ 'Szerkesztés segítségével vigye be hozzájuk a hiányzó oldalt!'}}<br>
+                </div>
+                <div class="col-md-2">
+                </div>
+                    <a href="" class="btn btn-white btn-sm js-import"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>
+                </div>
+                <br>
+                {{/if}}
                 {{> ReactiveDatatable tableData=journalsIncompleteTableDataFn options=journalsOptionsFn }}
             </div>
         </div>
@@ -28,7 +39,11 @@
             <div class="ibox-content">
                 {{#if userHasPermission 'journals.insert' (fromSession 'activeCommunityId')}}
                 <div class="row">
-                <div class="pull-right">
+                <div class="col-md-10">
+                    {{_ 'A tranzakciós listát szűrheti típus és dátum alapján.'}}<br>
+                    {{_ 'Figyelem! Ha a szűrés túl tág, a szűrt adathalmaz túl nagy lesz és a letöltés hosszabb időt is igénybe vehet!'}}
+                </div>
+                <div class="col-md-2">
                     <div class="dropdown">
                         <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
                             <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'journal'}} <b class="caret"></b>
@@ -45,10 +60,68 @@
                 </div>
                 </div>
                 {{/if}}
-                <!--p>
-                    {{_ 'List of parcels'}} - <i class="fa fa-building"></i> {{parcels.count}}<br>
-                    {{_ "Click the little person buttons to see the occupants"}}
-                </p-->
+                <div class="row m-t-sm">
+                  <div class="form-group">
+                    <div class="col-sm-4">
+                      <div class="form-group">
+                          <label class="control-label" for="account">{{_ 'schemaTxDefs.name.label'}}</label>
+                          <select id="account" name="account" {{b "options: txTypeOptions, value: txTypeSelected, optionsValue: value, optionsText: label"}} class="form-control"></select>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label" for="amount">{{_ 'schemaTxDefs.credit.label'}}</label>
+                            <input type="text" disabled id="amount" name="amount" {{b "value: creditAccountSelected"}} class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label" for="amount">{{_ 'schemaTxDefs.debit.label'}}</label>
+                            <input type="text" disabled id="amount" name="amount" {{b "value: debitAccountSelected"}} class="form-control">
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <!--div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label" for="customer">{{_ 'Partner'}}</label>
+                            <input type="text" id="customer" name="customer" {{b "value: partnerSelected"}} placeholder="Partner" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label" for="order_id">{{_ 'Reference ID'}}</label>
+                            <input type="text" id="order_id" name="order_id" {{b "value: referenceIdSelected"}} placeholder="Reference ID" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label" for="status">{{_ 'Note'}}</label>
+                            <input type="text" id="status" name="status" value="" placeholder="Search..." class="form-control">
+                        </div>
+                    </div>
+                </div-->
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
+                            <input type="date" id="begin_date" name="begin_date" {{b "value: beginDate"}} class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+                            <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
+                        </div>
+                    </div>
+                    <!--div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label" for="amount">{{_ 'Amount'}}</label>
+                            <input type="text" id="amount" name="amount" {{b "value: amount"}} placeholder="Amount" class="form-control">
+                        </div>
+                    </div-->
+                </div>
                 {{> ReactiveDatatable tableData=journalsTableDataFn options=journalsOptionsFn }}
             </div>
         </div>

@@ -7,9 +7,11 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
+import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { PeriodBreakdown } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
 import { journalColumns } from '/imports/api/journals/tables.js';
@@ -29,21 +31,49 @@ import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
 import './accounting.html';
 
-Template.Accounting.onCreated(function accountingOnCreated() {
-  this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
-    this.subscribe('breakdowns.inCommunity', { communityId });
-    this.subscribe('txdefs.inCommunity', { communityId });
-    this.subscribe('journals.incomplete', { communityId });
-//    this.subscribe('txs.inCommunity', { communityId });
-//    this.subscribe('txDefs.inCommunity', { communityId });
-  });
-});
-
-Template.Accounting.onRendered(function accountingOnRendered() {
-});
-
-Template.Accounting.helpers({
+Template.Accounting.viewmodel({
+  txTypeSelected: '',
+  txTypeOptions: [],
+  creditAccountSelected: '',
+  debitAccountSelected: '',
+//  partnerSelected: '',
+//  referenceIdSelected: '',
+  beginDate: '',
+  endDate: '',
+//  amount: undefined,
+  onCreated(instance) {
+    instance.autorun(() => {
+      const communityId = Session.get('activeCommunityId');
+      instance.subscribe('breakdowns.inCommunity', { communityId });
+      instance.subscribe('txdefs.inCommunity', { communityId });
+      instance.subscribe('journals.incomplete', { communityId });
+    });
+  },
+  autorun: [
+    function setTxTypeOptions() {
+      this.txTypeOptions(TxDefs.find().map(function (t) {
+        return { value: t.name, label: __(t.name) };
+      }));
+      if (!this.txTypeSelected() && this.txTypeOptions() && this.txTypeOptions().length > 0) {
+        this.txTypeSelected(this.txTypeOptions()[0].value);
+      }
+    },
+    function autoSelectFilterAccounts() {
+      const txDef = TxDefs.findOne({ name: this.txTypeSelected() });
+      if (!txDef) return;
+      this.creditAccountSelected(txDef.credit);
+      this.debitAccountSelected(txDef.debit);
+    },
+    function txSubscription() {
+      const communityId = Session.get('activeCommunityId');
+      this.templateInstance.subscribe('journals.betweenAccounts', { communityId,
+        creditAccount: this.creditAccountSelected(),
+        debitAccount: this.debitAccountSelected(),
+        begin: new Date(this.beginDate()),
+        end: new Date(this.endDate()),
+      });
+    },
+  ],
   report(name, year) {
     if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
@@ -104,17 +134,18 @@ Template.Accounting.helpers({
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Journals.find({ communityId }).fetch();
+      return Journals.find({ communityId, complete: true }).fetch();
+      // Filtered selector would be needed - but client side selector is slow, and we need everything anyways
     }
     return getTableData;
   },
   journalsOptionsFn() {
     function getOptions() {
-      return {
+      return _.extend({
         columns: journalColumns({ view: true, edit: true, delete: true }),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
-      };
+      }, DatatablesExportButtons);
     }
     return getOptions;
   },
