@@ -138,9 +138,24 @@
         </div>
       </div>
     </div>
+
+    <div class="ibox">
+      <div class="ibox-title"> 
+        <h5>{{_ 'Ticket archive'}}</h5>
+        {{> iboxTools}}          
+      </div>
+      <div class="ibox-content">
+
+          <div class="no-padding table-responsive">
+            {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
+          </div>
+
+      </div>
+    </div>
           
-   
+    
     <!-- closed errors start -->
+    <!--
     <div class="row">
       <div class="col-lg-12">
       <div class="ibox">
@@ -153,9 +168,9 @@
               <table class="table table-hover issue-tracker">
                   <thead>
                     <tr>
-                      {{#each headerTitle in headerTitles}}
+                      {{#each column in columns}}
                       <th>
-                      {{_ headerTitle}}
+                      {{_ column}}
                       </th>
                       {{/each}}
                     </tr>
@@ -199,7 +214,7 @@
                   </tbody>
               </table>
           </div>
-        </div>
+        </div>-->
         <!--div class="ibox">
           <div class="ibox-title">
             <h5>{{_ 'Closed tickets'}}</h5>
@@ -211,10 +226,10 @@
             </div>
           </div>
         </div-->
-      </div>
-      </div>
+      <!--</div>
+      </div>-->
     <!-- closed errrors end -->
-    </div>
+    <!--</div>-->
 
   </div>
 </template>

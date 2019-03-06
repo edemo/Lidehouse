@@ -1,6 +1,7 @@
 import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
+import { Topics } from '/imports/api/topics/topics.js';
 
 export const Render = {
   translate(cellData, renderType, currentRow) {
@@ -50,5 +51,20 @@ export const Render = {
       html += '</div>';
       return html;
     };
+  },
+  ticketButtonGroup(id) {
+    return function groupRenderer() {
+      const html = `
+      <div class="btn-group">
+        <button class="btn btn-xs btn-white js-edit" data-id=${id}><i class="fa fa-pencil"></i>${__('edit')}</button>
+        <button class="btn btn-xs btn-white js-status" data-id=${id}><i class="fa fa-cog"></i>${__('status')}</button>
+        <button class="btn btn-xs btn-white js-delete" data-id=${id}><i class="fa fa-trash"></i>${__('delete')}</button>
+      </div>`;
+      return html;
+    };
+  },
+  ticketStatus(cellData) {
+    const html = `<span class='label label-${Topics.statusColors[cellData]}'>${__('schemaTickets.ticket.status.' + cellData)}</span>`;
+    return html;
   },
 };

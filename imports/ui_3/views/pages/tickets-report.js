@@ -36,7 +36,7 @@ Template.Tickets_report.viewmodel({
   },
   ticketsSchema() {
     return ticketsSchema;
-  },
+  }, /*
   tickets() {
     const communityId = Session.get('activeCommunityId');
     const ticketText = this.ticketText();
@@ -55,7 +55,7 @@ Template.Tickets_report.viewmodel({
       || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
     }
     return Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
-  },
+  },*/
   noFilters() {
     const ticketText = this.ticketText();
     const ticketStatusArray = this.ticketStatusArray();
@@ -78,19 +78,37 @@ Template.Tickets_report.viewmodel({
       $or: [{ 'ticket.status': { $ne: 'closed' } }, { createdAt: { $gt: moment().subtract(1, 'week').toDate() } }],
     }, { sort: { createdAt: -1 } });
   },
-  activeTicketsDataFn() {
+  ticketsDataFn() {
     return () => {
-      const communityId = Session.get('activeCommunityId');
+      /* const communityId = Session.get('activeCommunityId');
       return Topics.find({ communityId, category: 'ticket', 'ticket.status': { $ne: 'closed' } }).fetch();
+    };*/
+      const communityId = Session.get('activeCommunityId');
+      const ticketText = this.ticketText();
+      const ticketStatusArray = this.ticketStatusArray();
+      const startDate = this.startDate();
+      const endDate = this.endDate();
+      const reportedByCurrentUser = this.reportedByCurrentUser();
+      const selector = { communityId, category: 'ticket' };
+      selector.createdAt = {};
+      if (ticketStatusArray.length > 0) selector['ticket.status'] = { $in: ticketStatusArray };
+      if (startDate) selector.createdAt.$gte = new Date(this.startDate());
+      if (endDate) selector.createdAt.$lte = new Date(this.endDate());
+      if (reportedByCurrentUser) selector.userId = Meteor.userId();
+      if (ticketText) {
+        return Topics.find(selector, { sort: { createdAt: -1 } }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
+      || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
+      }
+      return Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
     };
-  },
+  }, /*
   closedTicketsDataFn() {
     return () => {
       const communityId = Session.get('activeCommunityId');
       return Topics.find({ communityId, category: 'ticket', 'ticket.status': 'closed' }).fetch();
     };
-  },
-  activeTicketsOptionsFn() {
+  },*/
+  ticketsOptionsFn() {
     return () => {
       return {
         columns: ticketColumns(),
@@ -101,7 +119,7 @@ Template.Tickets_report.viewmodel({
         info: false,
       };
     };
-  },
+  }, /*
   closedTicketsOptionsFn() {
     return () => {
       return {
@@ -110,12 +128,12 @@ Template.Tickets_report.viewmodel({
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
     };
-  },
+  },*/
   statusValues() {
     return Topics.statusValues;
   },
-  headerTitles() {
-    return Topics.headerTitles;
+  columns() {
+    return Topics.columns;
   },
 });
 
