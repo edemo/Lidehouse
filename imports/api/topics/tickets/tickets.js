@@ -23,7 +23,7 @@ Topics.statusColors = {
   deleted: 'danger',
 };
 
-Topics.headerTitles = ['Status', 'Title', 'Reported by', 'Reported at', 'Type'];
+Topics.columns = ['Status', 'Title', 'Reported by', 'Reported at', 'Type'];
 
 const TicketsExtensionSchema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.ticketCategoryValues, autoform: autoformOptions(Topics.ticketCategoryValues, 'schemaTickets.ticket.category.'), optional: true },
