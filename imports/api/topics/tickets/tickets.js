@@ -19,9 +19,11 @@ Topics.statusColors = {
   progressing: 'info',
   finished: 'primary',
   checked: 'primary',
-  closed: 'success',
+  closed: 'default',
   deleted: 'danger',
 };
+
+Topics.headerTitles = ['Status', 'Title', 'Reported by', 'Reported at', 'Type'];
 
 const TicketsExtensionSchema = new SimpleSchema({
   category: { type: String, allowedValues: Topics.ticketCategoryValues, autoform: autoformOptions(Topics.ticketCategoryValues, 'schemaTickets.ticket.category.'), optional: true },
