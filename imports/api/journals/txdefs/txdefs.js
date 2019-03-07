@@ -17,6 +17,14 @@ class TxDefsCollection extends Mongo.Collection {
 }
 export const TxDefs = new TxDefsCollection('txdefs');
 
+TxDefs.clone = function clone(name, communityId) {
+  const doc = TxDefs.findOne({ name, communityId: null });
+  if (!doc) return undefined;
+  delete doc._id;
+  doc.communityId = communityId;
+  return TxDefs.insert(doc);
+};
+
 TxDefs.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String, max: 100 },

@@ -18,7 +18,8 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Breakdowns, parcelRef2digit } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { TxDefs } from '/imports/api/journals/txdefs/txdefs.js';
 import { Journals } from '/imports/api/journals/journals.js';
 // import { TxDefs } from '/imports/api/journals/tx-defs.js';
 import '/imports/api/journals/breakdowns/methods.js';
@@ -891,11 +892,19 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Breakdowns.define(parcelBreakdown);
 
-  Breakdowns.methods.clone._execute({ userId: demoAccountantId }, {
-    name: 'Localizer', communityId: demoCommunityId,
+  const breakdownsToClone = ['Owner payin types', 'Incomes', 'Expenses', 'Assets', 'Liabilities', 'COA', 'Localizer'];
+  breakdownsToClone.forEach((breakdownName) => {
+    Breakdowns.methods.clone._execute(
+      { userId: demoAccountantId },
+      { name: breakdownName, communityId: demoCommunityId },
+    );
   });
-  Breakdowns.methods.clone._execute({ userId: demoAccountantId }, {
-    name: 'COA', communityId: demoCommunityId,
+  const txDefsToClone = TxDefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
+  txDefsToClone.forEach((txDefName) => {
+    TxDefs.methods.clone._execute(
+      { userId: demoAccountantId },
+      { name: txDefName, communityId: demoCommunityId },
+    );
   });
 
   const name2code = function name2code(breakdownName, nodeName) {

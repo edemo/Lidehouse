@@ -80,7 +80,7 @@ Template.Accounting.viewmodel({
   },
   txDefs() {
     const communityId = Session.get('activeCommunityId');
-    const txdefs = TxDefs.find({ communityId: { $in: [null, communityId] } });
+    const txdefs = TxDefs.find({ communityId });
     return txdefs;
   },
   mainBreakdownsTableDataFn() {
@@ -88,7 +88,7 @@ Template.Accounting.viewmodel({
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId: { $in: [communityId, null] }, sign: { $exists: true } }).fetch();
+      return Breakdowns.find({ communityId, sign: { $exists: true } }).fetch();
     }
     return getTableData;
   },
@@ -97,7 +97,7 @@ Template.Accounting.viewmodel({
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId: { $in: [communityId, null] }, sign: { $exists: false }, name: { $ne: 'COA' } }).fetch();
+      return Breakdowns.find({ communityId, sign: { $exists: false }, name: { $ne: 'COA' } }).fetch();
     }
     return getTableData;
   },
