@@ -32,8 +32,8 @@ import '/imports/ui_3/views/components/account-history.js';
 import './accounting.html';
 
 Template.Accounting.viewmodel({
-  txTypeSelected: '',
-  txTypeOptions: [],
+  txDefSelected: '',
+  txDefOptions: [],
   creditAccountSelected: '',
   debitAccountSelected: '',
 //  partnerSelected: '',
@@ -50,16 +50,16 @@ Template.Accounting.viewmodel({
     });
   },
   autorun: [
-    function setTxTypeOptions() {
-      this.txTypeOptions(TxDefs.find().map(function (t) {
+    function setTxDefOptions() {
+      this.txDefOptions(TxDefs.find().map(function (t) {
         return { value: t.name, label: __(t.name) };
       }));
-      if (!this.txTypeSelected() && this.txTypeOptions() && this.txTypeOptions().length > 0) {
-        this.txTypeSelected(this.txTypeOptions()[0].value);
+      if (!this.txDefSelected() && this.txDefOptions() && this.txDefOptions().length > 0) {
+        this.txDefSelected(this.txDefOptions()[0].value);
       }
     },
     function autoSelectFilterAccounts() {
-      const txDef = TxDefs.findOne({ name: this.txTypeSelected() });
+      const txDef = TxDefs.findOne({ name: this.txDefSelected() });
       if (!txDef) return;
       this.creditAccountSelected(txDef.credit);
       this.debitAccountSelected(txDef.debit);
@@ -88,7 +88,7 @@ Template.Accounting.viewmodel({
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId: null, sign: { $exists: true } }).fetch();
+      return Breakdowns.find({ communityId: { $in: [communityId, null] }, sign: { $exists: true } }).fetch();
     }
     return getTableData;
   },
@@ -97,7 +97,7 @@ Template.Accounting.viewmodel({
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId, sign: { $exists: false } }).fetch();
+      return Breakdowns.find({ communityId: { $in: [communityId, null] }, sign: { $exists: false }, name: { $ne: 'COA' } }).fetch();
     }
     return getTableData;
   },
@@ -186,7 +186,7 @@ function newParcelBillingSchema() {
 }
 
 Template.Accounting.events({
-  'click #breakdowns .js-new'(event, instance) {
+  'click .breakdowns .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.breakdown.insert',
       collection: Breakdowns,
@@ -196,7 +196,7 @@ Template.Accounting.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #breakdowns .js-edit'(event) {
+  'click .breakdowns .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
     const breakdown = Breakdowns.findOne(id);
     const modalContext = {
@@ -218,7 +218,7 @@ Template.Accounting.events({
     };
     Modal.show('Modal', modalContext);
   },
-  'click #breakdowns .js-edit-af'(event) {
+  'click .breakdowns .js-edit-af'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.breakdown.update',
@@ -231,7 +231,7 @@ Template.Accounting.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #breakdowns .js-view'(event, instance) {
+  'click .breakdowns .js-view'(event, instance) {
     const id = $(event.target).closest('button').data('id');
     const breakdown = Breakdowns.findOne(id);
     const modalContext = {
@@ -241,7 +241,7 @@ Template.Accounting.events({
     };
     Modal.show('Modal', modalContext);
   },
-  'click #breakdowns .js-view-af'(event, instance) {
+  'click .breakdowns .js-view-af'(event, instance) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.breakdown.view',
@@ -251,10 +251,37 @@ Template.Accounting.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #breakdowns .js-delete'(event) {
+  'click .breakdowns .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(Breakdowns.remove, { _id: id }, {
       action: 'delete breakdown',
+    });
+  },
+  'click .txdefs .js-new'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.txDef.insert',
+      collection: TxDefs,
+      type: 'method',
+      meteormethod: 'txDefs.insert',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click .txdefs .js-edit'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.txDef.update',
+      collection: TxDefs,
+      doc: TxDefs.findOne(id),
+      type: 'method-update',
+      meteormethod: 'txDefs.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click .txdefs .js-delete'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.confirmAndCall(TxDefs.remove, { _id: id }, {
+      action: 'delete txDef',
     });
   },
   'click #journals .js-new'(event, instance) {
@@ -270,15 +297,6 @@ Template.Accounting.events({
       template: 'bootstrap3-inline',
     });
   },
-/*  'click #journals .js-new-def'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.txdef.insert',
-      collection: TxDefs,
-      type: 'method',
-      meteormethod: 'txDefs.insert',
-      template: 'bootstrap3-inline',
-    });
-  },*/
   'click #journals .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
@@ -311,40 +329,6 @@ Template.Accounting.events({
       message: tx.isOld() ? 'Remove not possible after 24 hours' : '',
     });
   },
-  'click #bills .js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.insert',
-      collection: Journals,
-      schema: newJournalSchema(),
-      type: 'method',
-      meteormethod: 'bills.insert',
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #bills .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.update',
-      collection: Journals,
-      schema: newJournalSchema(),
-      doc: Journals.findOne(id),
-      type: 'method-update',
-      meteormethod: 'bills.update',
-      singleMethodArgument: true,
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #bills .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.view',
-      collection: Journals,
-      schema: newJournalSchema(),
-      doc: Journals.findOne(id),
-      type: 'readonly',
-      template: 'bootstrap3-inline',
-    });
-  },
   'click #bills .js-many'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.parcelBilling.insert',
@@ -355,24 +339,20 @@ Template.Accounting.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click #bills .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(removeJournal, { _id: id }, {
-      action: 'delete bill',
-    });
-  },
-  'click #bills .js-bill'(event) {
-    const communityId = Session.get('activeCommunityId');
-    Modal.confirmAndCall(billParcels, { communityId }, {
-      action: 'bill parcels',
-      message: 'This will bill all parcels',
-    });
-  },
 });
 
 AutoForm.addModalHooks('af.breakdown.insert');
 AutoForm.addModalHooks('af.breakdown.update');
 AutoForm.addHooks('af.breakdown.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    return doc;
+  },
+});
+
+AutoForm.addModalHooks('af.txDef.insert');
+AutoForm.addModalHooks('af.txDef.update');
+AutoForm.addHooks('af.txDef.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;
@@ -401,16 +381,6 @@ AutoForm.addHooks('af.journal.insert', {
       afContext.done(null, res);
     });
     return false;
-  },
-});
-
-AutoForm.addModalHooks('af.bill.insert');
-AutoForm.addModalHooks('af.bill.update');
-AutoForm.addHooks('af.bill.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.amount *= -1;
-    return doc;
   },
 });
 

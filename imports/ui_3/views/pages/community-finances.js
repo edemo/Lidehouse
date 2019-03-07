@@ -66,6 +66,14 @@ Template.Community_finances.viewmodel({
           pointBorderColor: "#fff",
           data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
         },
+        {
+          label: "Pénztár",
+          backgroundColor: "rgba(179,148,26,0.5)",
+          borderColor: "rgba(179,148,26,0.7)",
+          pointBackgroundColor: "rgba(179,148,26,1)",
+          pointBorderColor: "#fff",
+          data: [10, 40, 40, 90, 60, 70, 90, 50, 80, 50, 75, 40],
+        },
       ],
     };
 

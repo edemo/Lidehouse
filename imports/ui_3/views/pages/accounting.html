@@ -8,28 +8,28 @@
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='journals-incomplete'>
             <div class="ibox-title">
-                <h5>{{_ 'Adatok felvitele'}}</h5>
+                <h5>{{_ 'Kontírozás'}}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
                 {{#if userHasPermission 'journals.insert' (fromSession 'activeCommunityId')}}
-                <div class="row">
-                <div class="col-md-10">
-                    <h3>{{_ 'Journals to complete'}}</h3>
-                    {{_ 'Itt azokat a tranzakciókat látja, amiknek még nem lett megállapítva mindkét számla oldala.'}}<br>
-                    {{_ 'Szerkesztés segítségével vigye be hozzájuk a hiányzó oldalt!'}}<br>
-                </div>
-                <div class="col-md-2">
-                </div>
+                <div class="pull-right">
                     <a href="" class="btn btn-white btn-sm js-import"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>
                 </div>
+                <!---h3>{{_ 'Journals to complete'}}</h3-->
+                <p>
+                    {{_ 'Itt azokat a tranzakciókat látja, amiknek még nem lett megállapítva mindkét számla oldala.'}}<br>
+                    {{_ 'Szerkesztés segítségével vigye be hozzájuk a hiányzó oldalt!'}}<br>
+                </p>
                 <br>
                 {{/if}}
-                {{> ReactiveDatatable tableData=journalsIncompleteTableDataFn options=journalsOptionsFn }}
+                <div>
+                    {{> ReactiveDatatable tableData=journalsIncompleteTableDataFn options=journalsOptionsFn }}
+                </div>
             </div>
         </div>
     </div>
-   
+
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='journals'>
             <div class="ibox-title">
@@ -38,12 +38,7 @@
             </div>  
             <div class="ibox-content">
                 {{#if userHasPermission 'journals.insert' (fromSession 'activeCommunityId')}}
-                <div class="row">
-                <div class="col-md-10">
-                    {{_ 'A tranzakciós listát szűrheti típus és dátum alapján.'}}<br>
-                    {{_ 'Figyelem! Ha a szűrés túl tág, a szűrt adathalmaz túl nagy lesz és a letöltés hosszabb időt is igénybe vehet!'}}
-                </div>
-                <div class="col-md-2">
+                <div class="pull-right">
                     <div class="dropdown">
                         <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
                             <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'journal'}} <b class="caret"></b>
@@ -58,14 +53,17 @@
                     </div>
                     <!--button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcel'}}</strong></button-->
                 </div>
-                </div>
+                <p>
+                    {{_ 'A tranzakciós listát szűrheti típus és dátum alapján.'}}<br>
+                    {{_ 'Figyelem! Ha a szűrés túl tág, a szűrt adathalmaz túl nagy lesz és a letöltés hosszabb időt is igénybe vehet!'}}
+                </p>
                 {{/if}}
                 <div class="row m-t-sm">
                   <div class="form-group">
                     <div class="col-sm-4">
                       <div class="form-group">
                           <label class="control-label" for="account">{{_ 'schemaTxDefs.name.label'}}</label>
-                          <select id="account" name="account" {{b "options: txTypeOptions, value: txTypeSelected, optionsValue: value, optionsText: label"}} class="form-control"></select>
+                          <select id="account" name="account" {{b "options: txDefOptions, value: txDefSelected, optionsValue: value, optionsText: label"}} class="form-control"></select>
                       </div>
                     </div>
                     <div class="col-sm-4">
@@ -128,19 +126,6 @@
     </div>
 
     <!--div class="col-md-12">
-        <div class="ibox ibox-dark" id='bills'>
-            <div class="ibox-title">
-                <h5>{{_ 'Bills'}}</h5>
-                {{>iboxTools}}
-            </div>  
-            <div class="ibox-content">
-            {{> ReactiveDatatable tableData=billsTableDataFn options=journalsOptionsFn }}
-            <button class="js-many btn-primary">{{_ 'createMany'}}</button>
-          </div>
-        </div>
-    </div-->
-    
-    <!--div class="col-md-12">
         <div class="ibox ibox-dark" id='breakdowns-nestable'>
             <div class="ibox-title">
                 <h5>{{_ 'Breakdowns'}}</h5>
@@ -153,19 +138,80 @@
     </div-->
 
     <div class="col-md-12">
-        <div class="ibox ibox-dark" id='breakdowns'>
+        <div class="ibox ibox-dark" id='coa'>
             <div class="ibox-title">
                 <h5>{{_ 'Chart of accounts' }}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
-              <h2>{{_ 'Main breakdowns'}}</h2>
-              {{> ReactiveDatatable tableData=mainBreakdownsTableDataFn options=breakdownsOptionsFn }}
-              <h2 class="m-t-md">{{_ 'Other breakdowns'}}</h2>
-              {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
-              <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
-              {{/if}}
-              {{> ReactiveDatatable tableData=otherBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
+                <p>
+                    {{_ 'A teljes számlatükör könyvelési bontásokból épül fel.'}}<br>
+                    {{_ 'Használhatja a beépített sablonjainkat, vagy létrehozhat teljesen újat is.'}}<br>
+                </p>
+                <br>
+                {{/if}}
+                <ul class="nav nav-tabs m-b-md">
+                    <li class="active"><a data-toggle="tab" href="#tab-p1">{{_ 'Main breakdowns'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-p2">{{_ 'Other breakdowns'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-p3" class="text-capitalize">{{_ 'txDefs'}}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-p1" class="tab-pane breakdowns active">
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=mainBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                        </div>
+                    </div>
+                    <div id="tab-p2" class="tab-pane breakdowns">
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=otherBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                        </div>
+                        <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <a href="" class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
+                        </div>
+                        </div>
+                    </div>
+                    <div id="tab-p3" class="tab-pane txdefs">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                  <tr style="font-weight: bold">
+                                      <td>{{_ 'schemaTxDefs.name.label'}}</td>
+                                      <td>{{_ 'schemaTxDefs.credit.label'}}</td>
+                                      <td>{{_ 'schemaTxDefs.debit.label'}}</td>
+                                      <td></td>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {{#each txDef in txDefs}}
+                                  <tr>
+                                      <td>{{_ txDef.name}}</td>
+                                      <td>{{txDef.credit}}</td>
+                                      <td>{{txDef.debit}}</td>
+                                      <td class="text-right">
+                                          <div class="btn-group">
+                                              <!--td><button class="btn btn-white btn-xs js-view" data-id="{{entry.txId}}"><i class="fa fa-eye"></i></button></td-->
+                                              {{#if userHasPermission 'breakdowns.update' (fromSession 'activeCommunityId')  }}
+                                              <button class="btn btn-xs btn-white js-edit" data-id={{txDef._id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                              {{/if}}
+                                              {{#if userHasPermission 'breakdowns.remove' (fromSession 'activeCommunityId')  }}
+                                              <button class="btn btn-xs btn-white js-delete" data-id={{txDef._id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                              {{/if}}
+                                          </div>
+                                      </td>
+                                  </tr>
+                                  {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txDef'}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

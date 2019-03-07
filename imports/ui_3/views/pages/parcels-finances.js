@@ -1,22 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { TAPi18n } from 'meteor/tap:i18n';
-import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
-import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { JournalEntries } from '/imports/api/journals/entries.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { remove as removeJournal, billParcels } from '/imports/api/journals/methods.js';
 import { Session } from 'meteor/session';
-import { journalColumns } from '/imports/api/journals/tables.js';
-import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
-import { Reports } from '/imports/api/journals/reports/reports.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Balances } from '/imports/api/journals/balances/balances.js';
 
