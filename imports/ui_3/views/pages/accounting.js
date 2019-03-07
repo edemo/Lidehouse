@@ -22,6 +22,7 @@ import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
 import { TxDefs } from '/imports/api/journals/txdefs/txdefs.js';
+import '/imports/api/journals/txdefs/methods.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
 import { AccountSpecification } from '/imports/api/journals/account-specification';
@@ -280,7 +281,7 @@ Template.Accounting.events({
   },
   'click .txdefs .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(TxDefs.remove, { _id: id }, {
+    Modal.confirmAndCall(TxDefs.methods.remove, { _id: id }, {
       action: 'delete txDef',
     });
   },
