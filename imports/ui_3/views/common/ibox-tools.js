@@ -8,7 +8,7 @@ Template.iboxTools.onRendered(function () {
     const button = element.closest('div.collapse-link').find('i');
     ibox.find('div.ibox-content').css('display', 'none');
     button.removeClass('fa-chevron-up').addClass('fa-chevron-down');
-    ibox.removeClass('').addClass('border-bottom');
+    ibox.addClass('border-bottom');
   }
 });
 
