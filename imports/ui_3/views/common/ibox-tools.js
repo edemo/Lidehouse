@@ -1,6 +1,17 @@
 import { Template } from 'meteor/templating';
 import './ibox-tools.html';
 
+Template.iboxTools.onRendered(function () {
+  const element = this.$('.collapse-link');
+  const ibox = element.closest('div.ibox');
+  if (ibox.hasClass('closed-ibox')) {
+    const button = element.closest('div.collapse-link').find('i');
+    ibox.find('div.ibox-content').css('display', 'none');
+    button.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+    ibox.removeClass('').addClass('border-bottom');
+  }
+});
+
 Template.iboxTools.events({
     'click .collapse-link'(event) {
         var element = $(event.target);
