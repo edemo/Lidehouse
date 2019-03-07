@@ -59,6 +59,10 @@ export const Render = {
         <button class="btn btn-xs btn-white js-edit" data-id=${id}><i class="fa fa-pencil"></i>${__('edit')}</button>
         <button class="btn btn-xs btn-white js-status" data-id=${id}><i class="fa fa-cog"></i>${__('status')}</button>
         <button class="btn btn-xs btn-white js-delete" data-id=${id}><i class="fa fa-trash"></i>${__('delete')}</button>
+        <a href="/topic/${id}" class="btn btn-white btn-xs">
+          <i class="fa fa-comments"></i>
+          ${__('Comment')}
+        </a>
       </div>`;
       return html;
     };
