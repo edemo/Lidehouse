@@ -16,16 +16,16 @@ import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, de
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
-import './tickets-report.html';
+import './tickets-complex.html';
 
-Template.Tickets_report.onCreated(function onCreated() {
+Template.Tickets_complex.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   this.autorun(() =>
     this.subscribe('communities.byId', { _id: this.getCommunityId() })
   );
 });
 
-Template.Tickets_report.viewmodel({
+Template.Tickets_complex.viewmodel({
   ticketText: '',
   ticketStatusArray: [],
   startDate: '',
@@ -155,7 +155,7 @@ Template.Tickets_report.viewmodel({
   },
 });
 
-Template.Tickets_report.events({
+Template.Tickets_complex.events({
   'click .js-new'() {
     afTicketInsertModal();
   },

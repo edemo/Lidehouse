@@ -22,7 +22,10 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/room-show.js';
   import '/imports/ui_3/views/pages/forum-topics.js';
   import '/imports/ui_3/views/pages/community-page.js';
-  import '/imports/ui_3/views/pages/tickets-report.js';
+  import '/imports/ui_3/views/pages/tickets-complex.js';
+  import '/imports/ui_3/views/pages/tickets-control.js';
+  import '/imports/ui_3/views/pages/tickets-own.js';
+  import '/imports/ui_3/views/pages/tickets-recent.js';
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
@@ -172,12 +175,36 @@ FlowRouter.route('/delegations', {
 CommunityRelatedRoutes.push('Delegations');
 
 FlowRouter.route('/tickets', {
-  name: 'Tickets.report',
+  name: 'Tickets.control',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Tickets_report' });
+    BlazeLayout.render('Main_layout', { content: 'Tickets_control' });
   },
 });
-CommunityRelatedRoutes.push('Tickets.report');
+CommunityRelatedRoutes.push('Tickets.control');
+
+FlowRouter.route('/tickets/complex', {
+  name: 'Tickets.complex',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Tickets_complex' });
+  },
+});
+CommunityRelatedRoutes.push('Tickets.complex');
+
+FlowRouter.route('/tickets/own', {
+  name: 'Tickets.own',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Tickets_own' });
+  },
+});
+CommunityRelatedRoutes.push('Tickets.own');
+
+FlowRouter.route('/tickets/recent', {
+  name: 'Tickets.recent',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Tickets_recent' });
+  },
+});
+CommunityRelatedRoutes.push('Tickets.own');
 
 FlowRouter.route('/parcels-finances', {
   name: 'Parcels.finances',

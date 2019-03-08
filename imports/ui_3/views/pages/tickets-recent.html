@@ -1,0 +1,48 @@
+<template name="Tickets_recent">
+    
+        {{> Page_heading title=(_ 'Recent tickets') }}
+        
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>{{_ 'Recent tickets'}}</h5>
+                            {{>iboxTools}}
+                        </div>
+                
+                        <div class="ibox-content inspinia-timeline">
+                            {{#each recentTickets}}
+                            <div class="timeline-item">
+                                <div class="row">
+                                    <div class="col-xs-3 date">
+                                        <i class="fa fa-wrench"></i>
+                                        {{displayTime createdAt}}
+                                        <br/>
+                                        <small class="text-navy">{{displayTimeFrom createdAt}}</small>
+                                    </div>
+                                    <div class="col-xs-7 content no-top-border">
+                                        <p class="m-b-xs">
+                                            <a class="text-primary" href="{{pathFor 'Topic.show' _tid=_id}}"><strong>{{title}}</strong></a>
+                                            <!--span class="label label-white text-white label-xs">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span-->
+                                            <!--span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span-->
+                                        </p>
+                                        <p class="m-b-xs">
+                                            {{>Chopped text=text chars=200}}
+                                        </p>
+                                        <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-xs">
+                                            <i class="fa fa-comments"></i>
+                                            {{_ 'Comment'}}
+                                            ({{commentCounter}})
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </template>
