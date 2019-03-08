@@ -51,15 +51,44 @@ export const Render = {
       html += '</div>';
       return html;
     };
-  },
-  ticketButtonGroup(id) {
-    return function groupRenderer() {
+  }, /*
+  ticketButtonGroup(buttonRenderers) {
+    return function groupRenderer(id) {
       const html = `
       <div class="btn-group">
         <button class="btn btn-xs btn-white js-edit" data-id=${id}><i class="fa fa-pencil"></i>${__('edit')}</button>
         <button class="btn btn-xs btn-white js-status" data-id=${id}><i class="fa fa-cog"></i>${__('status')}</button>
         <button class="btn btn-xs btn-white js-delete" data-id=${id}><i class="fa fa-trash"></i>${__('delete')}</button>
+        <a href="/topic/${id}" class="btn btn-white btn-xs">
+          <i class="fa fa-comments"></i>
+          ${__('Comment')}
+        </a>
       </div>`;
+      return html;
+    };*/
+  ticketEditButton(cellData) {
+    const html = `<button class="btn btn-xs btn-white js-edit" data-id=${cellData}><i class="fa fa-pencil"></i>${__('edit')}</button>`;
+    return html;
+  },
+  ticketDeleteButton(cellData) {
+    const html = `<button class="btn btn-xs btn-white js-delete" data-id=${cellData}><i class="fa fa-trash"></i>${__('delete')}</button>`;
+    return html;
+  },
+  ticketStatusButton(cellData) {
+    const html = `<button class="btn btn-xs btn-white js-status" data-id=${cellData}><i class="fa fa-cog"></i>${__('status')}</button>`;
+    return html;
+  },
+  ticketCommentButton(cellData) {
+    const html = `<a href="/topic/${cellData}" class="btn btn-white btn-xs"><i class="fa fa-comments"></i>${__('Comment')}</a>`;
+    return html;
+  },
+  ticketButtonGroup(ticketButtonRenderers) {
+    return function groupRenderer(cellData, renderType, currentRow) {
+      let html = '<div class="btn-group">';
+      ticketButtonRenderers.forEach((renderer) => {
+        html += renderer(cellData, renderType, currentRow);
+      });
+      html += '</div>';
       return html;
     };
   },
