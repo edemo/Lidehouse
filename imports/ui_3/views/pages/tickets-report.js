@@ -5,6 +5,7 @@ import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
 import { Topics } from '/imports/api/topics/topics.js';
@@ -17,9 +18,11 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import './tickets-report.html';
 
-Template.Tickets_report.onCreated(function () {
-  //this.ticketStatus = new ReactiveDict();
-  //this.ticketStatus.set('ticketStatus', false);
+Template.Tickets_report.onCreated(function onCreated() {
+  this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
+  this.autorun(() =>
+    this.subscribe('communities.byId', { _id: this.getCommunityId() })
+  );
 });
 
 Template.Tickets_report.viewmodel({
@@ -28,6 +31,10 @@ Template.Tickets_report.viewmodel({
   startDate: '',
   endDate: '',
   reportedByCurrentUser: false,
+  communityId: null,
+  onCreated() {
+    this.communityId(this.templateInstance.getCommunityId());
+  },
   statusColor(value) {
     return Topics.statusColors[value];
   },
@@ -114,9 +121,15 @@ Template.Tickets_report.viewmodel({
     };
   },*/
   ticketsOptionsFn() {
+    const self = this;
     return () => {
+      const communityId = self.communityId();
+      const permissions = {
+        edit: Meteor.userOrNull().hasPermission('ticket.update', communityId),
+        delete: Meteor.userOrNull().hasPermission('ticket.remove', communityId),
+      };
       return {
-        columns: ticketColumns(),
+        columns: ticketColumns(permissions),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
         searching: false,

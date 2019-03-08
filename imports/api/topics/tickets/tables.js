@@ -15,13 +15,19 @@ import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
   ];
 }*/
 
-export function ticketColumns() {
+export function ticketColumns(permissions) {
+  const ticketButtonRenderers = [];
+  if (permissions.edit) ticketButtonRenderers.push(Render.ticketEditButton);
+  if (permissions.delete) ticketButtonRenderers.push(Render.ticketDeleteButton);
+  ticketButtonRenderers.push(Render.ticketStatusButton);
+  ticketButtonRenderers.push(Render.ticketCommentButton);
+
   return [
     { data: 'ticket.status', title: __('schemaTickets.ticket.status.label'), render: Render.ticketStatus },
     { data: 'title', title: __('schemaTickets.title.label') },
     { data: 'createdBy()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
     { data: 'ticket.category', title: __('schemaTickets.ticket.category.label'), render: Render.translateWithScope('schemaTickets.ticket.category') },
-    { data: '_id', title: __('Action buttons'), render: Render.ticketButtonGroup },
+    { data: '_id', title: __('Action buttons'), render: Render.ticketButtonGroup(ticketButtonRenderers) },
   ];
 }
