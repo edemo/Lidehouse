@@ -49,8 +49,9 @@ Template.Community_finances.viewmodel({
     instance.autorun(this.syncHistoryChartData);
   },
   syncBalanceChartData() {
-    const lineData = {
-      labels: ["Feb", "Marc", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"],
+    const labels = ["Feb", "Marc", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"];
+    const moneyData = {
+      labels,
       datasets: [
         {
           label: "Folyószámla",
@@ -78,11 +79,34 @@ Template.Community_finances.viewmodel({
         },
       ],
     };
+    const loanData = {
+      labels,
+      datasets: [
+        {
+          label: "Bank hitel",
+          backgroundColor: "rgba(220,220,220,0.5)",
+          borderColor: "rgba(220,220,220,1)",
+          pointBackgroundColor: "rgba(220,220,220,1)",
+          pointBorderColor: "#fff",
+          data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
+        },
+        {
+          label: "Szállítók",
+          backgroundColor: "rgba(26,179,148,0.5)",
+          borderColor: "rgba(26,179,148,0.7)",
+          pointBackgroundColor: "rgba(26,179,148,1)",
+          pointBorderColor: "#fff",
+          data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
+        },
+      ],
+    };
 
-    const lineOptions = { responsive: true };
+    const chartOptions = { responsive: true };
 
-    const ctx = document.getElementById('balancesChart').getContext('2d');
-    new Chart(ctx, { type: 'line', data: lineData, options: lineOptions });
+    const moneyContext = document.getElementById('moneyChart').getContext('2d');
+    new Chart(moneyContext, { type: 'line', data: moneyData, options: chartOptions });
+    const loanContext = document.getElementById('loanChart').getContext('2d');
+    new Chart(loanContext, { type: 'line', data: loanData, options: chartOptions });
   },
   syncHistoryChartData() {
     const monthsArray = monthTags.children.map(c => c.label);
@@ -107,41 +131,22 @@ Template.Community_finances.viewmodel({
     const elem = document.getElementById('historyChart').getContext('2d');
     new Chart(elem, { type: 'bar', data: barData, options: barOptions });
   },
-  moneyBalance() {
+  getBalance(account, period) {
     const coa = ChartOfAccounts.get(); if (!coa) return 0;
-    const moneyAccounts = coa.findNodeByName('Money accounts');
-    const balanceDef = {
+    const accountCode = parseInt(account, 10) ? account : coa.findNodeByName(account).code;
+    return Balances.get({
       communityId: Session.get('activeCommunityId'),
-      account: moneyAccounts.code,
+      account: accountCode,
       tag: 'T',
-    };
-    return Balances.get(balanceDef);
-  },
-  outstandingBalance() {
-    const balanceDef = {
-      communityId: Session.get('activeCommunityId'),
-      account: '33',
-      tag: 'T',
-    };
-    return Balances.get(balanceDef);
-  },
-  moneyAccounts() {
-    const results = [];
-    const coa = ChartOfAccounts.get(); if (!coa) return [];
-    const moneyAccounts = coa.findNodeByName('Money accounts');
-    moneyAccounts.leafs().forEach(leaf => {
-      const balanceDef = {
-        communityId: Session.get('activeCommunityId'),
-        account: leaf.code,
-        tag: 'T',
-      };
-      results.push({
-        accountName: leaf.name,
-        accountCode: leaf.code,
-        accountBalance: Balances.get(balanceDef),
-      });
     });
-    return results;
+  },
+  leafsOf(account) {
+    const coa = ChartOfAccounts.get(); if (!coa) return [];
+    const moneyAccounts = coa.findNodeByName(account);
+    return moneyAccounts.leafs();
+  },
+  loanAccounts() {
+    return ['Bank hitel', 'Szállítók'];
   },
   breakdown(name) {
     return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));
@@ -166,7 +171,7 @@ Template.Community_finances.viewmodel({
 });
 
 Template.Community_finances.events({
-  'click #balances .js-view'(event, instance) {
+  'click #moneyBalances .js-view'(event, instance) {
 //    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
     const accountCode = $(event.target).closest('a').data('id');
     instance.viewmodel.accountToView(accountCode);

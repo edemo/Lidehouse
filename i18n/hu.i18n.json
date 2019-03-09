@@ -315,6 +315,7 @@
   // finances
   "Money accounts total": "Pénzeszközök összesen",
   "Money outstanding": "Befizetetlen előírások",
+  "Loan accounts total": "Tartozások összesen",
   "Refreshed": "Frissítve",
   "Account": "Számla", 
   "Accounting configuration": "Számla tükör",

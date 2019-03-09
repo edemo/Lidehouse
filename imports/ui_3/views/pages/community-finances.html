@@ -1,3 +1,16 @@
+<template name="Disclaimer">
+    <div class="m-t-md">
+        <small class="pull-right">
+            <i class="fa fa-clock-o"> </i>
+            {{_ 'Refreshed'}}: {{displayDate}}
+        </small>
+        <small>
+            <strong>Az adatok tájékoztató jellegűek:</strong>
+            A bankkivonatok feltöltése és feldolgozása némi késéssel történhet
+        </small>
+    </div>
+</template>
+
 <template name="Community_finances">
     <!-- Page heading -->
     {{> Page_heading title=(_ 'Community finances') }}
@@ -6,55 +19,79 @@
     <div class="row">
 
     <div class="col-md-12">
-        <div class="ibox float-e-margins" id="balances">
+        <div class="ibox float-e-margins" id="moneyBalances">
             <div class="ibox-content">
                 <div class= "row">
 
+                    <div class="col-md-6 text-right pull-right">
+                    <!--span class="pull-right text-right"-->
+                        <small>A behajtás alatt álló ügyeket az alábbi adat nem tartalmazza</small><br/>
+                            {{_ 'Money outstanding'}}: <strong>{{displayMoney (getBalance '33')}}</strong>
+                    <!--/span-->
+                    </div>
+
                     <div class="col-md-3">
-                        <h1 class="m-b-xs">{{displayMoney moneyBalance}}</h1>
+                        <h1 class="m-b-xs">{{displayMoney (getBalance 'Money accounts')}}</h1>
                         <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
                     </div>
 
                     <div class="col-md-3">
                       <table class="table table-condensed nowrap">
-                        {{#each moneyAccount in moneyAccounts}}
+                        {{#each account in (leafsOf 'Money accounts')}}
                         <tr>
-                            <td>{{moneyAccount.accountName}}: </td>
-                            <td class="text-right text-bold"> {{displayMoney moneyAccount.accountBalance}}</td>
-                            <!--td class="m-l-md"> <a href="#account-history" class="js-view" data-id={{moneyAccount.accountCode}}><i class="fa fa-eye"></i></a></td-->
+                            <td>{{_ account.name}}</td>
+                            <td class="text-right text-bold"> 
+                                <a href="#account-history" class="js-view" data-id={{account.code}}>
+                                {{displayMoney (getBalance account.code)}}
+                                </a>
+                            </td>
                         </tr>
                         {{/each}}
                       </table>
                     </div>
 
-                    <div class="col-md-6 text-right">
-                    <!--span class="pull-right text-right"-->
-                        <small>A behajtás alatt álló ügyeket az alábbi adat nem tartalmazza</small><br/>
-                            {{_ 'Money outstanding'}}: <strong>{{displayMoney outstandingBalance}}</strong>
-                    <!--/span-->
+                </div>
+
+                <div>
+                    <canvas id="moneyChart" height="70"></canvas>
+                </div>
+
+                {{> Disclaimer}}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="ibox float-e-margins" id="loanBalances">
+            <div class="ibox-content">
+                <div class= "row">
+
+                    <div class="col-md-3">
+                        <h1 class="m-b-xs">{{displayMoney (getBalance '44')}}</h1>
+                        <h3 class="font-bold no-margins"> {{_ 'Loan accounts total'}}</h3>
+                    </div>
+
+                    <div class="col-md-3">
+                      <table class="table table-condensed nowrap">
+                        {{#each account in loanAccounts}}
+                        <tr>
+                            <td>{{_ account}}</td>
+                            <td class="text-right text-bold"> {{displayMoney (getBalance account)}}</td>
+                        </tr>
+                        {{/each}}
+                      </table>
                     </div>
 
                 </div>
 
                 <div>
-                    <canvas id="balancesChart" height="70"></canvas>
+                    <canvas id="loanChart" height="70"></canvas>
                 </div>
 
-                <div class="m-t-md">
-                    <small class="pull-right">
-                        <i class="fa fa-clock-o"> </i>
-                        {{_ 'Refreshed'}}: {{displayDate}}
-                    </small>
-                    <small>
-                        <strong>Az adatok tájékoztató jellegűek:</strong>
-                        A bankkivonatok feltöltése és feldolgozása néhány nap késéssel történhet
-                    </small>
-                </div>
-
+                {{> Disclaimer}}
             </div>
         </div>
     </div>
-
 
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='account-history'>
@@ -63,7 +100,7 @@
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
-               {{>Account_history beginDate='2017-01-01' endDate='2017-01-31' accountOptions=(subAccountOptionsOf '32') accountSelected=accountToView}}
+                {{>Account_history beginDate='2017-01-01' endDate='2017-01-31' accountOptions=(subAccountOptionsOf '32') accountSelected=accountToView}}
             </div>
         </div>
     </div>
@@ -71,7 +108,7 @@
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='balances-report'>
             <div class="ibox-title">
-                <h5>{{_ 'community'}} {{_ "'s status report"}} ({{_ 'Balance sheet'}})</h5>
+                <h5>{{_ 'Balance sheet'}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
@@ -89,6 +126,7 @@
                 {{else}}
                 {{_ 'Loading'}}...
                 {{/if}}
+                {{> Disclaimer}}
             </div>
         </div>
     </div>
@@ -102,7 +140,7 @@
             <div class="ibox-content">
                 <canvas id="historyChart" height="250"></canvas>
                 {{#if Template.subscriptionsReady}}
-                <div class="row">
+                <div class="row nowrap">
                     <div class="col-md-12 p-md">
                         <h3>{{_ 'Incomes'}}</h3>
                         {{> Balance_report breakdown=(breakdown 'Incomes') tags=last12MonthsTag }}
@@ -115,6 +153,7 @@
                 {{else}}
                 {{_ 'Loading'}}...
                 {{/if}}
+                {{> Disclaimer}}
             </div>
         </div>
     </div>
