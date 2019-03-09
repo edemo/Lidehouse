@@ -197,12 +197,12 @@ FlowRouter.route('/community-finances', {
 CommunityRelatedRoutes.push('Community.finances');
 
 FlowRouter.route('/accounting', {
-  name: 'Accounting',
+  name: 'Accounting.page',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Accounting' });
+    BlazeLayout.render('Main_layout', { content: 'Accounting_page' });
   },
 });
-CommunityRelatedRoutes.push('Community.finances');
+CommunityRelatedRoutes.push('Accounting.page');
 
 FlowRouter.route('/community', {
   name: 'Community.page.default',

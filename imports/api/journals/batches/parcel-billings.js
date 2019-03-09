@@ -5,7 +5,8 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Breakdowns, chooseBreakdown, leafIsParcel, digit2parcelRef } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
@@ -25,8 +26,13 @@ ParcelBillings.schema = new SimpleSchema({
 
 ParcelBillings.helpers({
   parcels() {
-    const parcelLeafs = Breakdowns.localizer(this.communityId).leafsOf(this.localizer);
-    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: l.code }));
+    const parcelLeafs = Localizer.get(this.communityId).leafsOf(this.localizer);
+    const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
+    if (!parcels[0]) {
+      console.log(this.localizer);
+      console.log(parcelLeafs.map(l => l.code));
+      console.log(parcelLeafs);
+    }
     return parcels;
   },
 });

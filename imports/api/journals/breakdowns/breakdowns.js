@@ -7,11 +7,11 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 
 function deepCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-
 class BreakdownsCollection extends Mongo.Collection {
   define(breakdown) {
     return super.define({ communityId: breakdown.communityId, name: breakdown.name }, breakdown);
@@ -24,14 +24,6 @@ Breakdowns.findOneByName = function findOneByName(name, communityId = getActiveC
       || Breakdowns.findOne({ name, communityId: null });
 };
 
-Breakdowns.chartOfAccounts = function chartOfAccounts(communityId = getActiveCommunityId()) {
-  return Breakdowns.findOneByName('COA', communityId);
-};
-
-Breakdowns.localizer = function localizer(communityId = getActiveCommunityId()) {
-  return Breakdowns.findOneByName('Localizer', communityId);
-};
-
 Breakdowns.clone = function clone(name, communityId) {
   const breakdown = Breakdowns.findOne({ name, communityId: null });
   if (!breakdown) return undefined;
@@ -42,14 +34,10 @@ Breakdowns.clone = function clone(name, communityId) {
 
 Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) {
   const breakdown = Breakdowns.findOneByName(breakdownName, communityId);
-  //console.log("looking for", nodeName);
-  //console.log("in breakdown:", JSON.stringify(breakdown));
   const node = breakdown.findNodeByName(nodeName);
   if (!node) throw new Meteor.Error(`Looking for ${nodeName} in ${breakdownName}`, 'Cannot find breakdown node');
-  //console.log("result:", node.code, node.name);
   return node.code;
 };
-
 
 export const chooseBreakdown = {
   options() {
@@ -59,20 +47,6 @@ export const chooseBreakdown = {
   },
   firstOption: () => __('(Select one)'),
 };
-
-export const parcelRef2digit = function parcelRef2digit(parcelRef) {
-//  return `[${parcelRef}]`;
-  return parcelRef;
-};
-
-export const digit2parcelRef = function digit2parcelRef(digit) {
-//  return digit.substring(1, digit.length - 1);
-  return digit;
-};
-
-export function leafIsParcel(l) {
-  return l.code && l.code.substr(0, 2) === '71';
-}
 
 /*
 Breakdowns.schema = new SimpleSchema({
@@ -164,15 +138,6 @@ Breakdowns.schema = new SimpleSchema([{
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   sign: { type: Number, allowedValues: [+1, -1], optional: true },
 }], Breakdowns.SubSchema);
-*/
-/*
-Breakdowns.chartOfAccounts = function chartOfAccounts(communityId) {
-  const accountFamilies = Breakdowns.find({ communityId, sign: { $exists: true } });
-  let accountTree = { name: ' ', children: [] };
-  accountFamilies.forEach(family => accountTree.children.push(family));
-  accountTree = Breakdowns._transform(accountTree);
-  return accountTree;
-};
 */
 /*
 Breakdowns.isSubAccountOf = function isSubAccountOf(code, group, brk) {

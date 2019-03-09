@@ -4,6 +4,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { ChartOfAccounts } from '/imports/api/journals/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 
 export const Balances = new Mongo.Collection('balances');
 
@@ -25,10 +27,10 @@ Balances.attachSchema(Balances.schema);
 Balances.get = function get(def) {
   Balances.schema.validate(def);
 
-  const coa = Breakdowns.chartOfAccounts(def.communityId);
+  const coa = ChartOfAccounts.get(def.communityId);
   const leafs = coa.leafsOf(def.account);
   if (def.localizer) {
-    const loc = Breakdowns.localizer(def.communityId);
+    const loc = Localizer.get(def.communityId);
     const locNode = loc.nodeByCode(def.localizer);
     debugAssert(locNode.isLeaf); // Currently not prepared for upward cascading localizer
     // If you want to know the balance of a whole floor or building, the journal update has to trace the localizer's parents too

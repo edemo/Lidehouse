@@ -17,6 +17,8 @@ import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
 import { Reports } from '/imports/api/journals/reports/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { ChartOfAccounts } from '/imports/api/journals/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
@@ -106,7 +108,7 @@ Template.Community_finances.viewmodel({
     new Chart(elem, { type: 'bar', data: barData, options: barOptions });
   },
   moneyBalance() {
-    const coa = Breakdowns.chartOfAccounts(); if (!coa) return 0;
+    const coa = ChartOfAccounts.get(); if (!coa) return 0;
     const moneyAccounts = coa.findNodeByName('Money accounts');
     const balanceDef = {
       communityId: Session.get('activeCommunityId'),
@@ -125,7 +127,7 @@ Template.Community_finances.viewmodel({
   },
   moneyAccounts() {
     const results = [];
-    const coa = Breakdowns.chartOfAccounts(); if (!coa) return [];
+    const coa = ChartOfAccounts.get(); if (!coa) return [];
     const moneyAccounts = coa.findNodeByName('Money accounts');
     moneyAccounts.leafs().forEach(leaf => {
       const balanceDef = {
@@ -157,7 +159,7 @@ Template.Community_finances.viewmodel({
   },
   subAccountOptionsOf(accountCode) {
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
-    const brk = Breakdowns.chartOfAccounts();
+    const brk = ChartOfAccounts.get();
     if (brk) return brk.leafOptions(accountCode);
     return [];
   },

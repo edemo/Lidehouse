@@ -1,4 +1,4 @@
-<template name="Accounting">
+<template name="Accounting_page">
     <!-- Page heading -->
     {{> Page_heading title=(_ 'Accounting') }}
 
@@ -140,9 +140,9 @@
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='coa'>
             <div class="ibox-title">
-                <h5>{{_ 'Chart of accounts' }}</h5>
+                <h5>{{_ 'Accounting configuration' }}</h5>
                 {{>iboxTools}}
-            </div>  
+            </div>
             <div class="ibox-content">
                 {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
                 <p>
@@ -152,19 +152,25 @@
                 <br>
                 {{/if}}
                 <ul class="nav nav-tabs m-b-md">
-                    <li class="active"><a data-toggle="tab" href="#tab-p1">{{_ 'Main breakdowns'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-p2">{{_ 'Other breakdowns'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-p3" class="text-capitalize">{{_ 'txDefs'}}</a></li>
+                    <li class="active"><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of accounts'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-loc">{{_ 'Localizers'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-others">{{_ 'Other breakdowns'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-defs" class="text-capitalize">{{_ 'txDefs'}}</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div id="tab-p1" class="tab-pane breakdowns active">
+                    <div id="tab-coa" class="tab-pane breakdowns active">
                         <div class="table-responsive">
-                            {{> ReactiveDatatable tableData=mainBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                            {{> ReactiveDatatable tableData=coaBreakdownsTableDataFn options=breakdownsOptionsFn }}
                         </div>
                     </div>
-                    <div id="tab-p2" class="tab-pane breakdowns">
+                    <div id="tab-loc" class="tab-pane breakdowns">
                         <div class="table-responsive">
-                            {{> ReactiveDatatable tableData=otherBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                            {{> ReactiveDatatable tableData=locBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                        </div>
+                    </div>
+                    <div id="tab-others" class="tab-pane breakdowns">
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=othersBreakdownsTableDataFn options=breakdownsOptionsFn }}
                         </div>
                         <div class="row">
                         <div class="col-xs-12 text-center">
@@ -172,7 +178,7 @@
                         </div>
                         </div>
                     </div>
-                    <div id="tab-p3" class="tab-pane txdefs">
+                    <div id="tab-defs" class="tab-pane txdefs">
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>

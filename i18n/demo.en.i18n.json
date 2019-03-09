@@ -5,9 +5,12 @@
     "house": "Demo house",
     "city": "Boston",
     "street": "Primrose street",
-    "ground": "GF",
-    "attic": "attic",
-    "cellar": "BF",
+    "ground": "GroudFloor",
+    "groundCode": "G",
+    "attic": "Attic",
+    "atticCode": "A",
+    "cellar": "Basement",
+    "cellarCode": "B",
     "user": {
       "0": {
         "firstName": "Stephen",

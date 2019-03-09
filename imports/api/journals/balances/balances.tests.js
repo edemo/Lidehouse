@@ -59,7 +59,7 @@ if (Meteor.isServer) {
           ],
         });
         Breakdowns.define({
-          digit: 'L-', name: 'Localizer', communityId: Fixture.demoCommunityId,
+          digit: '@', name: 'Localizer', communityId: Fixture.demoCommunityId,
           children: [
             { digit: 'A', name: 'Building A',
               children: [
@@ -154,30 +154,30 @@ if (Meteor.isServer) {
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 500,
-          credit: [':12B', 'L-A101'],
+          credit: [':12B', '@A101'],
           debit: [':12C'],
         });
-        assertBalance(':12B', 'L-A101', 'T', -500);
-        assertBalance(':12B', 'L-A101', 'T-2017-3', -500);
+        assertBalance(':12B', '@A101', 'T', -500);
+        assertBalance(':12B', '@A101', 'T-2017-3', -500);
         chai.assert.throws(() =>
-          assertBalance(':12B', 'L-A', 'T', -500) // todo? upward cascading localizer 
+          assertBalance(':12B', '@A', 'T', -500) // todo? upward cascading localizer 
         );
         assertBalance(':12B', undefined, 'T', -500); // non-localized main account is also updated
-        assertBalance(':12C', 'L-A101', 'T', 0);      // non-existing localized account answers with 0
+        assertBalance(':12C', '@A101', 'T', 0);      // non-existing localized account answers with 0
         assertBalance(':12C', undefined, 'T', 500);
         assertBalance(':12', undefined, 'T', 0);
-        assertBalance(':12', 'L-A101', 'T', -500);  // localized parent account not allowed (for now)
+        assertBalance(':12', '@A101', 'T', -500);  // localized parent account not allowed (for now)
         assertBalance(':1', undefined, 'T', 0);
-        assertBalance(':1', 'L-A101', 'T', -500);
+        assertBalance(':1', '@A101', 'T', -500);
 
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 500,
-          credit: [':12C', 'L-A101'],
+          credit: [':12C', '@A101'],
           debit: [':12B'],
         });
         assertBalance(':12C', undefined, 'T', 0);
-        assertBalance(':12C', 'L-A101', 'T', -500);
+        assertBalance(':12C', '@A101', 'T', -500);
         done();
       });
 
@@ -186,14 +186,14 @@ if (Meteor.isServer) {
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 600,
-          credit: [':12A', 'L-A101'],
-          debit: [':12B', 'L-B101'],
+          credit: [':12A', '@A101'],
+          debit: [':12B', '@B101'],
         });
-        assertBalance(':12A', 'L-A101', 'T', -600);
-        assertBalance(':12B', 'L-B101', 'T', 600);
-//        assertBalance(undefined, 'L-A', 'T', -600);
-//        assertBalance(undefined, 'L-B', 'T', 600);
-//        assertBalance(undefined, 'L-', 'T', 0);
+        assertBalance(':12A', '@A101', 'T', -600);
+        assertBalance(':12B', '@B101', 'T', 600);
+//        assertBalance(undefined, '@A', 'T', -600);
+//        assertBalance(undefined, '@B', 'T', 600);
+//        assertBalance(undefined, '@', 'T', 0);
         done();
       });
     });

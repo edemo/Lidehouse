@@ -5,9 +5,12 @@
     "house": "Demo ház",
     "city": "Budapest",
     "street": "Kankalin utca",
-    "ground": "Fszt.",
+    "ground": "Fszt",
+    "groundCode": "F",
     "attic": "Tetőtér",
+    "atticCode": "T",
     "cellar": "Pince",
+    "cellarCode": "P",
     "user": {
       "0": {
         "firstName": "Imre",

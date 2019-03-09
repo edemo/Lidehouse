@@ -15,9 +15,11 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
+import { FixtureBuilder } from './fixture-builder.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -46,61 +48,42 @@ export function insertDemoFixture(lang) {
   });
 
 // ===== Parcels =====
+  const fixtureBuilder = new FixtureBuilder(demoCommunityId, lang);
 
   const dummyParcels = [];
-  dummyParcels[0] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 100,
-    ref: '100',
+  dummyParcels[0] = fixtureBuilder.createParcel({
     units: 0,
-    floor: '-2',
-    door: 'P02',
+    floor: 'P',
+    door: '02',
     type: 'parking',
-    lot: '29345/P/002',
     area: 6,
   });
-  dummyParcels[1] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 1,
-    ref: '1',
+  dummyParcels[1] = fixtureBuilder.createParcel({
     units: 10,
-    floor: 'I',
+    floor: '1',
     door: '12',
     type: 'flat',
-    lot: '23456/A/114',
     area: 65,
   });
-  dummyParcels[2] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 2,
-    ref: '2',
+  dummyParcels[2] = fixtureBuilder.createParcel({
     units: 20,
-    floor: 'II',
+    floor: '2',
     door: '23',
     type: 'flat',
-    lot: '23456/A/225',
     area: 142,
   });
-  dummyParcels[3] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 3,
-    ref: '3',
+  dummyParcels[3] = fixtureBuilder.createParcel({
     units: 30,
-    floor: 'III',
+    floor: '3',
     door: '34',
     type: 'flat',
-    lot: '23456/A/336',
-    area: '98.4',
+    area: 98.4,
   });
-  dummyParcels[4] = Parcels.insert({
-    communityId: demoCommunityId,
-    serial: 4,
-    ref: '4',
+  dummyParcels[4] = fixtureBuilder.createParcel({
     units: 40,
-    floor: 'IV',
+    floor: '4',
     door: '45',
     type: 'flat',
-    lot: '23456/A/447',
     area: 70,
   });
 
@@ -488,6 +471,7 @@ export function insertDemoFixture(lang) {
     userId: demoUserId,
     category: 'room',
     title: 'private chat',
+    text: 'private chat',
     participantIds: [demoUserId, dummyUsers[2]],
   });
 
@@ -505,38 +489,9 @@ export function insertDemoFixture(lang) {
 
   // ===== Breakdowns =====
 
-  const localizerId = Breakdowns.clone('Localizer', demoCommunityId);
+  // ===== Breakdowns =====
 
-  Breakdowns.update(localizerId, {
-    $set: {
-      children: [
-        { name: '',
-          children: [
-            { digit: 'A', name: 'A. lépcsőház',
-              children: [
-              { digit: '1', name: '1. alb' },
-              { digit: '2', name: '2. alb' },
-              ],
-            },
-            { digit: 'B', name: 'B. lépcsőház',
-              children: [
-              { digit: '3', name: '3. alb' },
-              { digit: '4', name: '4. alb' },
-              ],
-            },
-            { digit: 'X', name: 'Közös terület',
-              children: [
-              { digit: '1', name: 'Aula' },
-              { digit: '2', name: 'Kert' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  },
-    { upsert: false }
-  );
+  Localizer.generateParcels(demoCommunityId, lang);
 
   // ===== Journals =====
 
@@ -552,20 +507,3 @@ export function insertDemoFixture(lang) {
     dummyParcels,
   };
 }
-
-export function reCreateDemoHouse() {
-  const languages = TAPi18n.getLanguages();
-  Object.keys(languages).forEach((lang) => {
-    const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
-    const com = { en: 'com', hu: 'hu' }[lang];
-    const demoCommunity = Communities.findOne({ name: __('demo.house') });
-    if (demoCommunity === undefined) {
-      return;
-    }; 
-    demoCommunity.remove();
-    //removeDemoUsers();
-    Meteor.users.remove({ 'emails.0.address': { $regex: `@demo.${com}` } });
-    insertDemoFixture(lang);     
-  });
-
-};

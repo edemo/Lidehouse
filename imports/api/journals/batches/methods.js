@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { Breakdowns, parcelRef2digit } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { Journals } from '/imports/api/journals/journals.js';
@@ -49,7 +49,7 @@ export const apply = new ValidatedMethod({
       debitLegs.push({
         amount,
         account: Breakdowns.name2code('Assets', parcelBilling.payinType, parcelBilling.communityId),
-        localizer: Breakdowns.name2code('Localizer', parcel.ref, parcelBilling.communityId),
+        localizer: parcel.ref,
       });
     });
 

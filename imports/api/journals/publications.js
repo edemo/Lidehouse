@@ -4,6 +4,8 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Journals } from './journals.js';
 import { Breakdowns } from './breakdowns/breakdowns.js';
+import { ChartOfAccounts } from '/imports/api/journals/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 // import { Txs } from './txs.js';
 // import { TxDefs } from './tx-defs.js';
 
@@ -62,7 +64,7 @@ Meteor.publish('journals.betweenAccounts', function journalsInCommunity(params) 
   }
 
   const selector = { communityId, valueDate: { $gte: begin, $lt: end } };
-  const coa = Breakdowns.chartOfAccounts(communityId);
+  const coa = ChartOfAccounts.get(communityId);
   if (creditAccount) {
     const creditNode = coa.nodeByCode(creditAccount);
     const creditLeafs = creditNode.leafs().map(l => l.code);

@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Breakdowns } from './breakdowns.js';
+import { Localizer } from './localizer.js';
 import './methods.js';
 import { PeriodBreakdown, SideBreakdown } from './breakdowns-utils';
 
@@ -291,6 +292,16 @@ if (Meteor.isServer) {
 
         demoHouseRoot.name = 'Root';
         chai.assert.deepEqual(demoHouseRoot.leafOptions(), commonRoot.leafOptions());
+      });
+    });
+
+    describe('generating parcel breakdown', function () {
+      before(function () {
+      });
+
+      it('works', function () {
+        const parcelBreakdown = Localizer.getParcels(Fixture.demoCommunityId);
+        console.log(JSON.stringify(parcelBreakdown));
       });
     });
   });

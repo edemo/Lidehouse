@@ -19,6 +19,7 @@ import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { TxDefs } from '/imports/api/journals/txdefs/txdefs.js';
 import { Journals } from '/imports/api/journals/journals.js';
 // import { TxDefs } from '/imports/api/journals/tx-defs.js';
@@ -100,8 +101,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   const demoParcels = [];
   demoParcels[0] = fixtureBuilder.createParcel({
     units: 489,
-    floor: __('demo.ground'),
-    door: '1',
+    floor: __('demo.groundCode'),
+    door: '01',
     type: 'flat',
     area: 55,
     volume: 176,
@@ -111,8 +112,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[1] = fixtureBuilder.createParcel({
     units: 427,
-    floor: __('demo.ground'),
-    door: '2',
+    floor: __('demo.groundCode'),
+    door: '02',
     type: 'flat',
     area: 48,
     volume: 153.6,
@@ -122,8 +123,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[2] = fixtureBuilder.createParcel({
     units: 587,
-    floor: 'I',
-    door: '3',
+    floor: '1',
+    door: '03',
     type: 'flat',
     area: 66,
     volume: 184.8,
@@ -133,8 +134,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[3] = fixtureBuilder.createParcel({
     units: 622,
-    floor: 'I',
-    door: '4',
+    floor: '1',
+    door: '04',
     type: 'flat',
     area: 70,
     volume: 196,
@@ -144,8 +145,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[4] = fixtureBuilder.createParcel({
     units: 587,
-    floor: 'II',
-    door: '5',
+    floor: '2',
+    door: '05',
     type: 'flat',
     area: 66,
     volume: 184.8,
@@ -155,8 +156,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[5] = fixtureBuilder.createParcel({
     units: 622,
-    floor: 'II',
-    door: '6',
+    floor: '2',
+    door: '06',
     type: 'flat',
     area: 70,
     volume: 196,
@@ -166,8 +167,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[6] = fixtureBuilder.createParcel({
     units: 587,
-    floor: 'III',
-    door: '7',
+    floor: '3',
+    door: '07',
     type: 'flat',
     area: 66,
     volume: 184.8,
@@ -177,8 +178,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[7] = fixtureBuilder.createParcel({
     units: 622,
-    floor: 'III',
-    door: '8',
+    floor: '3',
+    door: '08',
     type: 'flat',
     area: 70,
     volume: 196,
@@ -188,8 +189,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[8] = fixtureBuilder.createParcel({
     units: 587,
-    floor: 'IV',
-    door: '9',
+    floor: '4',
+    door: '09',
     type: 'flat',
     area: 66,
     volume: 184.8,
@@ -199,7 +200,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[9] = fixtureBuilder.createParcel({
     units: 622,
-    floor: 'IV',
+    floor: '4',
     door: '10',
     type: 'flat',
     area: 70,
@@ -210,7 +211,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[10] = fixtureBuilder.createParcel({
     units: 996,
-    floor: __('demo.attic'),
+    floor: __('demo.atticCode'),
     door: '11',
     type: 'flat',
     area: 112,
@@ -220,8 +221,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[11] = fixtureBuilder.createParcel({
     units: 444,
-    floor: __('demo.cellar'),
-    door: '1',
+    floor: __('demo.cellarCode'),
+    door: '01',
     type: 'cellar',
     area: 50,
     habitants: 1,
@@ -230,8 +231,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[12] = fixtureBuilder.createParcel({
     units: 613,
-    floor: __('demo.cellar'),
-    door: '2',
+    floor: __('demo.cellarCode'),
+    door: '02',
     type: 'cellar',
     area: 69,
     habitants: 1,
@@ -240,8 +241,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   demoParcels[13] = fixtureBuilder.createParcel({
     units: 196,
-    floor: __('demo.ground'),
-    door: '1',
+    floor: __('demo.groundCode'),
+    door: '00',
     type: 'shop',
     area: 22,
     habitants: 1,
@@ -886,13 +887,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Breakdowns =====
 
-  const parcelBreakdown = { communityId: demoCommunityId, name: 'Parcels', digit: '1', children: [] };
-  Parcels.find({ communityId: demoCommunityId }).forEach(parcel => {
-    parcelBreakdown.children.push({ digit: parcel.serial.toString(), name: parcel.ref });
-  });
-  Breakdowns.define(parcelBreakdown);
-
-  const breakdownsToClone = ['Owner payin types', 'Incomes', 'Expenses', 'Assets', 'Liabilities', 'COA', 'Localizer'];
+  const breakdownsToClone = ['Owner payin types', 'Incomes', 'Expenses', 'Assets', 'Liabilities', 'COA', 'Places', 'Localizer'];
   breakdownsToClone.forEach((breakdownName) => {
     Breakdowns.methods.clone._execute(
       { userId: demoAccountantId },
@@ -906,10 +901,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       { name: txDefName, communityId: demoCommunityId },
     );
   });
-
-  const name2code = function name2code(breakdownName, nodeName) {
-    return Breakdowns.name2code(breakdownName, nodeName, demoCommunityId);
-  };
+  Localizer.generateParcels(demoCommunityId, lang);
 
     // === Eloirasok ===
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
@@ -921,18 +913,18 @@ export function insertDemoHouse(lang, demoOrTest) {
       projection: 'perArea',
       amount: 275,
       payinType: 'Közös költség előírás',
-      localizer: name2code('Localizer', 'Parcels'),
+      localizer: '@',
     });
 
     for (let i = 0; i < 4; i++) {
-      const place = ['A2', 'A5', 'A8', 'A14'];
+      const parcels = [2, 5, 8, 14];
       insertParcelBilling._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
         valueDate,
         projection: 'perHabitant',
         amount: 2500,
         payinType: 'Víz díj előírás',
-        localizer: name2code('Localizer', place[i]),
+        localizer: fixtureBuilder.serial2code(parcels[i]),
       });
     }
 
@@ -943,7 +935,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         projection: 'perVolume',
         amount: 85,
         payinType: 'Fűtési díj előírás',
-        localizer: name2code('Localizer', 'A' + i.toString()),
+        localizer: fixtureBuilder.serial2code(i),
       });
     }
   });
@@ -954,7 +946,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 60000,
     valueDate: new Date('2017-09-15'),
     payinType: 'Célbefizetés előírás',
-    localizer: name2code('Localizer', 'Parcels'),
+    localizer: '@',
     note: __('demo.journals.note.0'),
   });
 
@@ -982,10 +974,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-01-01'),
       amount: opening[2],
       credit: [{
-        account: name2code('Liabilities', 'Opening'),
+        account: fixtureBuilder.name2code('Liabilities', 'Opening'),
       }],
       debit: [{
-        account: name2code(opening[0], opening[1]),
+        account: fixtureBuilder.name2code(opening[0], opening[1]),
       }],
     });
   });
@@ -998,11 +990,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-06-01'),
     amount: 3500,
     credit: [{
-      account: name2code('Incomes', 'Egyéb bevétel'),
-      localizer: name2code('Localizer', 'Central'),
+      account: fixtureBuilder.name2code('Incomes', 'Egyéb bevétel'),
+      localizer: fixtureBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: name2code('Assets', 'Folyószámla'),
+      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
     }],
   });
 
@@ -1013,11 +1005,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
       credit: [{
-        account: name2code('Incomes', 'Kamat pénzintézetektől'),
-        localizer: name2code('Localizer', 'Central'),
+        account: fixtureBuilder.name2code('Incomes', 'Kamat pénzintézetektől'),
+        localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
       debit: [{
-        account: name2code('Assets', 'Folyószámla'),
+        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
     });
   });
@@ -1028,11 +1020,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-09-15'),
     amount: 500000,
     credit: [{
-      account: name2code('Incomes', 'Támogatás'),
-      localizer: name2code('Localizer', 'Central'),
+      account: fixtureBuilder.name2code('Incomes', 'Támogatás'),
+      localizer: fixtureBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: name2code('Assets', 'Folyószámla'),
+      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
     }],
     note: __('demo.journals.note.1'),
   });
@@ -1043,11 +1035,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-05-10'),
     amount: 55000,
     credit: [{
-      account: name2code('Incomes', 'Bérleti díj'),
-      localizer: name2code('Localizer', 'Central'),
+      account: fixtureBuilder.name2code('Incomes', 'Bérleti díj'),
+      localizer: fixtureBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: name2code('Assets', 'Folyószámla'),
+      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
     }],
     note: __('demo.journals.note.2'),
   });
@@ -1058,11 +1050,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-10-15'),
     amount: 500000,
     credit: [{
-      account: name2code('Incomes', 'Egyéb bevétel'),
-      localizer: name2code('Localizer', 'Central'),
+      account: fixtureBuilder.name2code('Incomes', 'Egyéb bevétel'),
+      localizer: fixtureBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: name2code('Assets', 'Folyószámla'),
+      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
     }],
     note: __('demo.journals.note.3'),
   });
@@ -1073,10 +1065,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
     credit: [{
-      account: name2code('Liabilities', 'Bank hitel'),
+      account: fixtureBuilder.name2code('Liabilities', 'Bank hitel'),
     }],
     debit: [{
-      account: name2code('Assets', 'Megtakarítási számla'),
+      account: fixtureBuilder.name2code('Assets', 'Megtakarítási számla'),
     }],
     note: __('demo.journals.note.4'),
   });
@@ -1093,11 +1085,11 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
         amount: payable[i],
         credit: [{
-          account: name2code('Assets', 'Közös költség előírás'),
-          localizer: name2code('Localizer', 'A' + i.toString()),
+          account: fixtureBuilder.name2code('Assets', 'Közös költség előírás'),
+          localizer: fixtureBuilder.serial2code(i),
         }],
         debit: [{
-          account: name2code('Assets', 'Folyószámla'),
+          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
         }],
       });
     }
@@ -1106,18 +1098,18 @@ export function insertDemoHouse(lang, demoOrTest) {
   for (let m = 1; m < 13; m++) {
     for (let i = 0; i < 4; i++) {
       const payable = [5000, 7500, 5000, 2500];
-      const place = ['A2', 'A5', 'A8', 'A14'];
+      const place = [2, 5, 8, 14];
       insertTx._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
 //        defId: defPayin,
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
-          account: name2code('Assets', 'Víz díj előírás'),
-          localizer: name2code('Localizer', place[i]),
+          account: fixtureBuilder.name2code('Assets', 'Víz díj előírás'),
+          localizer: fixtureBuilder.serial2code(place[i]),
         }],
         debit: [{
-          account: name2code('Assets', 'Folyószámla'),
+          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
         }],
       });
     }
@@ -1131,11 +1123,11 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
         amount: payable[i],
         credit: [{
-          account: name2code('Assets', 'Fűtési díj előírás'),
-          localizer: name2code('Localizer', 'A' + i.toString()),
+          account: fixtureBuilder.name2code('Assets', 'Fűtési díj előírás'),
+          localizer: fixtureBuilder.serial2code(i),
         }],
         debit: [{
-          account: name2code('Assets', 'Folyószámla'),
+          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
         }],
       });
     }
@@ -1148,11 +1140,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
       amount: 60000,
       credit: [{
-        account: name2code('Assets', 'Célbefizetés előírás'),
-        localizer: name2code('Localizer', 'A' + i.toString()),
+        account: fixtureBuilder.name2code('Assets', 'Célbefizetés előírás'),
+        localizer: fixtureBuilder.serial2code(i),
       }],
       debit: [{
-        account: name2code('Assets', 'Folyószámla'),
+        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
     });
   }
@@ -1167,11 +1159,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
       credit: [{
-        account: name2code('Assets', 'Folyószámla'),
+        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
       debit: [{
-        account: name2code('Expenses', 'Víz'),
-        localizer: name2code('Localizer', 'Central'),
+        account: fixtureBuilder.name2code('Expenses', 'Víz'),
+        localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
     });
   }
@@ -1184,11 +1176,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: payable[m],
       credit: [{
-        account: name2code('Assets', 'Folyószámla'),
+        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
       debit: [{
-        account: name2code('Expenses', 'Csatorna'),
-        localizer: name2code('Localizer', 'Central'),
+        account: fixtureBuilder.name2code('Expenses', 'Csatorna'),
+        localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
     });
   }
@@ -1200,11 +1192,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 10250,
       credit: [{
-        account: name2code('Assets', 'Folyószámla'),
+        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
       debit: [{
-        account: name2code('Expenses', 'Áram'),
-        localizer: name2code('Localizer', 'Central'),
+        account: fixtureBuilder.name2code('Expenses', 'Áram'),
+        localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
     });
   }
@@ -1242,7 +1234,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   };
 }
 
-function generateDemoPayments(parcelCode, communityId) {
+function generateDemoPayments(communityId, parcel) {
   const name2code = function name2code(breakdownName, leafName) {
     return Breakdowns.name2code(breakdownName, leafName, communityId);
   };
@@ -1256,7 +1248,7 @@ function generateDemoPayments(parcelCode, communityId) {
       projection: 'perArea',
       amount: 275,
       payinType: 'Közös költség előírás',
-      localizer: name2code('Localizer', parcelCode),
+      localizer: Localizer.parcelRef2code(parcel.ref),
     });
     insertTx._execute({ userId: accountantId }, {
       communityId,
@@ -1264,7 +1256,7 @@ function generateDemoPayments(parcelCode, communityId) {
       amount: 6875,
       credit: [{
         account: name2code('Incomes', 'Közös költség előírás'),
-        localizer: name2code('Localizer', parcelCode),
+        localizer: Localizer.parcelRef2code(parcel.ref),
       }],
       debit: [{
         account: name2code('Assets', 'Folyószámla'),
@@ -1291,7 +1283,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
       language: lang,
     });
     const user = Meteor.users.findOne(userWithRoleId);
-    const parcelId = Parcels.findOne({ communityId, ref: 'A7' })._id;
+    const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
     Meteor.users.update({ _id: userWithRoleId },
       { $set: {
         'emails.0.verified': true,
@@ -1318,21 +1310,17 @@ export function insertLoadsOfDummyData(lang, demoOrTest, parcelCount) {
 
   if (Parcels.find({ communityId }).count() >= parcelCount) return;
 
-  for (let i = 101; i < 101 + parcelCount; i++) {
-    const parcelCode = 'A' + i.toString();
-    const parcelId = Parcels.insert({
-      communityId,
-      approved: true,
-      serial: i,
-      ref: parcelCode,
-      leadRef: parcelCode,
+  const fixtureBuilder = new DemoFixtureBuilder(communityId, lang);
+
+  for (let i = 0; i < parcelCount; i++) {
+    const parcelId = fixtureBuilder.createParcel({
       units: 0,
       floor: faker.random.number(10).toString(),
       door: faker.random.number(10).toString(),
       type: 'flat',
-      lot: '123456/A/' + i,
       area: faker.random.number(150),
     });
+    const parcel = Parcels.findOne(parcelId);
     const membershipId = Memberships.insert({
       communityId,
       parcelId,
@@ -1351,11 +1339,9 @@ export function insertLoadsOfDummyData(lang, demoOrTest, parcelCount) {
       ownership: { share: new Fraction(1, 1) },
     });
 
-    Breakdowns.update({ communityId, name: 'Parcels' }, {
-      $push: { children: { digit: i.toString(), name: parcelCode } },
-    });
+    Localizer.addParcel(communityId, parcel, lang);
 
-    generateDemoPayments(parcelCode, communityId);
+    generateDemoPayments(communityId, parcel);
   }
 }
 
@@ -1404,7 +1390,6 @@ Meteor.methods({
     const fixtureBuilder = new DemoFixtureBuilder(demoCommunityId, lang);
     const counter = fixtureBuilder.nextSerial;
 
-    const demoUserId = fixtureBuilder.createDemoUser();
     const demoParcelId = fixtureBuilder.createParcel({
       units: 100,
       floor: 'V',
@@ -1412,6 +1397,7 @@ Meteor.methods({
       type: 'flat',
       area: 25,
     });
+    const demoUserId = fixtureBuilder.createDemoUser(demoParcelId);
     const demoParcel = Parcels.findOne(demoParcelId);
     Memberships.insert({
       communityId: demoCommunityId,
@@ -1422,9 +1408,7 @@ Meteor.methods({
       ownership: { share: new Fraction(1, 1) },
     });
 
-    Breakdowns.update({ communityId: demoCommunityId, name: 'Parcels' }, {
-      $push: { children: { digit: demoParcel.serial.toString(), name: demoParcel.ref } },
-    });
+    Localizer.addParcel(demoCommunityId, demoParcel, lang);
 
     const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;
     const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex: '.1@demo.hu' } })._id;
@@ -1471,7 +1455,7 @@ Meteor.methods({
       ],
     } });
 
-    generateDemoPayments(demoParcel.ref, demoCommunityId);
+    generateDemoPayments(demoCommunityId, demoParcel);
 
     Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
@@ -1490,9 +1474,7 @@ export function deleteDemoUsersAfterRestart(lang, demoOrTest = 'demo') {
   const communityId = community._id;
   const fixtureBuilder = new DemoFixtureBuilder(communityId, lang);
   fixtureBuilder.demoUsersList().forEach((user) => {
-    const parcelSerial = (Number(user.emails[0].address.split('.')[0]) + fixtureBuilder.demoParcelCounterStart());
-    const parcelRef = 'A' + parcelSerial.toString();
-    const parcelId = Parcels.findOne({ communityId, ref: parcelRef })._id;
+    const parcelId = fixtureBuilder.parcelIdOfDemoUser(user);
     const currentTime = moment().valueOf();
     let timeUntilDelete = moment(user.createdAt).add(demoUserLifetime).subtract(currentTime).valueOf();
     if (timeUntilDelete < 0) timeUntilDelete = 0;

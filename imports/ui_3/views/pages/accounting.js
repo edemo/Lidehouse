@@ -32,7 +32,7 @@ import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
 import './accounting.html';
 
-Template.Accounting.viewmodel({
+Template.Accounting_page.viewmodel({
   txDefSelected: '',
   txDefOptions: [],
   creditAccountSelected: '',
@@ -52,7 +52,8 @@ Template.Accounting.viewmodel({
   },
   autorun: [
     function setTxDefOptions() {
-      this.txDefOptions(TxDefs.find().map(function (t) {
+      const communityId = Session.get('activeCommunityId');
+      this.txDefOptions(TxDefs.find({ communityId }).map(function (t) {
         return { value: t.name, label: __(t.name) };
       }));
       if (!this.txDefSelected() && this.txDefOptions() && this.txDefOptions().length > 0) {
@@ -84,24 +85,24 @@ Template.Accounting.viewmodel({
     const txdefs = TxDefs.find({ communityId });
     return txdefs;
   },
-  mainBreakdownsTableDataFn() {
+  breakdownsTableDataFn(tab) {
     const templateInstance = Template.instance();
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId, sign: { $exists: true } }).fetch();
+      if (tab === 'coa') return Breakdowns.find({ communityId, sign: { $exists: true } }).fetch();
+      if (tab === 'loc') return Breakdowns.find({ communityId, name: { $in: ['Parcels', 'Places'] } }).fetch();
+      if (tab === 'others') return Breakdowns.find({ communityId, sign: { $exists: false }, name: { $not: { $in: ['COA', 'Parcels', 'Places', 'Localizer'] } } }).fetch();
+      return [];
     }
     return getTableData;
   },
-  otherBreakdownsTableDataFn() {
-    const templateInstance = Template.instance();
-    function getTableData() {
-      if (!templateInstance.subscriptionsReady()) return [];
-      const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId, sign: { $exists: false }, name: { $ne: 'COA' } }).fetch();
-    }
-    return getTableData;
-  },
+  // Unfortunately since Blaze calls a function if possible, its difficult to hand back a function itself *without being called)
+  // That is why we need different helpers - and not good to have one helper with a parameter
+  coaBreakdownsTableDataFn() { return this.breakdownsTableDataFn('coa'); },
+  locBreakdownsTableDataFn() { return this.breakdownsTableDataFn('loc'); },
+  othersBreakdownsTableDataFn() { return this.breakdownsTableDataFn('others'); },
+  //
   breakdownsOptionsFn() {
     function getOptions() {
       return {
@@ -186,7 +187,7 @@ function newParcelBillingSchema() {
   ]);
 }
 
-Template.Accounting.events({
+Template.Accounting_page.events({
   'click .breakdowns .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.breakdown.insert',

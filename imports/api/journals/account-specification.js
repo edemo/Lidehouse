@@ -1,7 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { __ } from '/imports/localization/i18n.js';
-import { Breakdowns, leafIsParcel } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { ChartOfAccounts } from '/imports/api/journals/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
 export let chooseAccountNode = {};
@@ -35,18 +37,14 @@ if (Meteor.isClient) {
 */
   chooseAccountNode = {
     options() {
-      const communityId = Session.get('activeCommunityId');
-      const chartOfAccounts = Breakdowns.chartOfAccounts(communityId);
-      return chartOfAccounts.nodeOptions();
+      return ChartOfAccounts.get().nodeOptions();
     },
     firstOption: () => __('(Select one)'),
   };
 
   chooseLocalizerNode = {
     options() {
-      const communityId = Session.get('activeCommunityId');
-      const localizer = Breakdowns.findOne({ communityId, name: 'Localizer' });
-      return localizer.nodeOptions();
+      return Localizer.get().nodeOptions();
     },
     firstOption: () => __('(Select one)'),
   };
@@ -79,7 +77,7 @@ export class AccountSpecification {
     return new AccountSpecification(doc.communityId, doc.account, doc.localizer);
   }
   static fromCode(code, communityId = getActiveCommunityId()) {
-    const split = code.split('#');
+    const split = code.split(/#|@/);
     const account = split[0];
     const localizer = split[1];
     return new AccountSpecification(communityId, account, localizer);
@@ -96,13 +94,13 @@ export class AccountSpecification {
   }
   display() {
     if (!this.accountName) {
-      const coa = Breakdowns.chartOfAccounts(this.communityId);
+      const coa = ChartOfAccounts.get(this.communityId);
       if (coa) this.accountName = coa.nodeByCode(this.account).name;
     }
     let html = '';
     html += `<span class="label label-default label-xs">${this.account}:${__(this.accountName)}</span> `;
     if (this.localizer) {
-      const parcelSuffix = leafIsParcel(this.localizer) ? ('. ' + __('parcel')) : '';
+      const parcelSuffix = Localizer.leafIsParcel(this.localizer) ? ('. ' + __('parcel')) : '';
       html += `<span class="label label-success label-xs">${__(this.localizer)}${parcelSuffix}</span> `;
     }
     return html;

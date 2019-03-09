@@ -5,6 +5,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -92,11 +93,8 @@ Template.Parcels_finances.viewmodel({
     return myLeadParcelRefs.map((ref) => { return { label: ref, value: ref }; });
   },
   parcelChoices() {
-    const localizer = Breakdowns.localizer();
-    if (!localizer) return [];
-    return Parcels.find().fetch().map((p) => {
-      const node = localizer.findNodeByName(p.ref);
-      return { label: p.display(), value: node.code };
+    return Parcels.find().map((parcel) => {
+      return { label: parcel.display(), value: Localizer.parcelRef2code(parcel.ref) };
     });
   },
   parcelFinancesTableDataFn() {
@@ -107,7 +105,7 @@ Template.Parcels_finances.viewmodel({
       parcels.forEach(parcel => {
         const parcelRef = parcel.ref;
         const owners = parcel.owners().fetch();
-        const balance = Balances.get({ communityId, account: '33', localizer: parcelRef, tag: 'T' });
+        const balance = Balances.get({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcelRef), tag: 'T' });
         dataset.push({ parcelRef, owners, balance });
       });
       return dataset;
@@ -180,8 +178,9 @@ Template.Parcels_finances.viewmodel({
 Template.Parcels_finances.events({
   'click #balances .js-view'(event, instance) {
 //    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
-    const parcelCode = $(event.target).closest('button').data('id');
-    instance.viewmodel.parcelToView(parcelCode);
+    const parcelRef = $(event.target).closest('button').data('id');
+    const localizerCode = Localizer.parcelRef2code(parcelRef);
+    instance.viewmodel.parcelToView(localizerCode);
   },
   'click #balances .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();

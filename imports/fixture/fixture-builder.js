@@ -18,7 +18,8 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Breakdowns, parcelRef2digit } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { Journals } from '/imports/api/journals/journals.js';
 // import { TxDefs } from '/imports/api/journals/tx-defs.js';
 import '/imports/api/journals/breakdowns/methods.js';
@@ -46,11 +47,13 @@ export class FixtureBuilder {
     return Communities.findOne(this.communityId);
   }
   createParcel(doc) {
+    const ref = 'A' + doc.floor + doc.door;
     _.extend(doc, {
       communityId: this.communityId,
       serial: this.nextSerial,
-      ref: 'A' + this.nextSerial.toString(),
+      ref,
       lot: '4532/8/A/' + this.nextSerial.toString(),
+      building: 'A',
     });
 
     const registeredUnits = this.community().registeredUnits();
@@ -64,6 +67,13 @@ export class FixtureBuilder {
     this.nextSerial += 1;
     return id;
   }
+  name2code(breakdownName, nodeName) {
+    return Breakdowns.name2code(breakdownName, nodeName, this.communityId);
+  }
+  serial2code(serial) {
+    const parcel = Parcels.findOne({ communityId: this.communityId, serial });
+    return Localizer.parcelRef2code(parcel.ref);
+  }
 }
 
 export class DemoFixtureBuilder extends FixtureBuilder {
@@ -74,11 +84,11 @@ export class DemoFixtureBuilder extends FixtureBuilder {
     return Meteor.users.find({ 'emails.0.address': { $regex: `${this.lang}demouser@honline.hu` } },
       { sort: { createdAt: -1 } });
   }
-  createDemoUser() {
+  createDemoUser(parcelId) {
     const lastDemoUser = this.demoUsersList().fetch()[0];
     const lastDemoUserCounter = lastDemoUser ? Number(lastDemoUser.emails[0].address.split('.')[0]) : 0;
     const demoUserId = Accounts.createUser({
-      email: `${lastDemoUserCounter + 1}.${this.lang}demouser@honline.hu`,
+      email: `${lastDemoUserCounter + 1}.${parcelId}.${this.lang}demouser@honline.hu`,
       password: 'password',
       language: this.lang,
     });
@@ -92,5 +102,8 @@ export class DemoFixtureBuilder extends FixtureBuilder {
       },
     });
     return demoUserId;
+  }
+  parcelIdOfDemoUser(user) {
+    return user.emails[0].address.split('.')[1];
   }
 }

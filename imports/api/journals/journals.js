@@ -44,7 +44,7 @@ export class JournalsCollection extends Mongo.Collection {
     const communityId = doc.communityId;
     doc.journalEntries().forEach(entry => {
       const code = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
-//      const coa = Breakdowns.chartOfAccounts(communityId);
+//      const coa = ChartOfAccounts.get(communityId);
 //      coa.parentsOf(entry.account).forEach(account => {
       const account = entry.account;
       const localizer = entry.localizer;
