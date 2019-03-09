@@ -30,7 +30,7 @@ import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
-import './accounting.html';
+import './accounting-page.html';
 
 Template.Accounting_page.viewmodel({
   txDefSelected: '',

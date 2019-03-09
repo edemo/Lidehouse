@@ -25,7 +25,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/tickets-report.js';
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
-  import '/imports/ui_3/views/pages/accounting.js';
+  import '/imports/ui_3/views/pages/accounting-page.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
   import '/imports/ui_3/views/pages/topic-show.js';
 
