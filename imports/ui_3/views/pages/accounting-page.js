@@ -119,7 +119,7 @@ Template.Accounting_page.viewmodel({
     const communityId = Session.get('activeCommunityId');
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
     const brk = Breakdowns.findOneByName('ChartOfAccounts', communityId);
-    if (brk) return brk.leafOptions(accountCode);
+    if (brk) return brk.nodeOptionsOf(accountCode, true);
     return [];
   },
   journalsIncompleteTableDataFn() {
@@ -166,26 +166,6 @@ Template.Accounting_page.viewmodel({
     };
   },
 });
-
-function newParcelBillingSchema() {
-  function chooseAccountsSchema() {
-    const obj = {};
-    const communityId = Session.get('activeCommunityId');
-    const breakdown1 = Breakdowns.findOne({ communityId, name: 'Incomes' });
-    const breakdown2 = Breakdowns.findOne({ communityId, name: 'Localizer' });
-    obj[breakdown1.name] = { type: String, optional: true, label: breakdown1.name, 
-      autoform: { options() { return breakdown1.leafOptions(); }, firstOption: () => __('(Select one)') },
-    };
-    obj[breakdown2.name] = { type: String, optional: true, label: breakdown2.name, 
-      autoform: { options() { return breakdown2.nodeOptions(); }, firstOption: () => __('(Select one)') },
-    };
-    return new SimpleSchema(obj);
-  }
-  return new SimpleSchema([
-    ParcelBillings.simpleSchema(),
-    { accountFrom: { type: chooseAccountsSchema(), optional: true } },
-  ]);
-}
 
 Template.Accounting_page.events({
   'click .breakdowns .js-new'(event, instance) {
@@ -331,11 +311,10 @@ Template.Accounting_page.events({
       message: tx.isOld() ? 'Remove not possible after 24 hours' : '',
     });
   },
-  'click #bills .js-many'(event, instance) {
+  'click #journals .js-many'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.parcelBilling.insert',
       collection: ParcelBillings,
-      schema: newParcelBillingSchema(),
       type: 'method',
       meteormethod: 'parcelBillings.insert',
       template: 'bootstrap3-inline',

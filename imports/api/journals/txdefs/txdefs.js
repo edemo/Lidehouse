@@ -8,7 +8,7 @@ import { Journals } from '/imports/api/journals/journals.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { AccountSpecification, chooseLeafAccountFromGroup } from '../account-specification.js';
+import { chooseSubAccount } from '/imports/api/journals/account-specification.js';
 
 class TxDefsCollection extends Mongo.Collection {
   define(doc) {
@@ -36,8 +36,8 @@ TxDefs.helpers({
   schema() {
     return new SimpleSchema([
       _.clone(Journals.rawSchema), {
-        credit: { type: String, autoform: chooseLeafAccountFromGroup('COA', this.credit) },
-        debit: { type: String, autoform: chooseLeafAccountFromGroup('COA', this.debit) },
+        credit: { type: String, autoform: chooseSubAccount('COA', this.credit) },
+        debit: { type: String, autoform: chooseSubAccount('COA', this.debit) },
       }, _.clone(Journals.noteSchema),
     ]);
   },

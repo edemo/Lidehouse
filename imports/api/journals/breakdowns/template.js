@@ -24,7 +24,7 @@ export function defineBreakdownTemplates() {
       { digit: '5', name: 'Owner payins', locked: true,
         include: 'Owner payin types',
         children: [
-          { digit: '7', name: 'Unidentified payins' },
+          { digit: '0', name: 'Unidentified payins' },
         ],
       },
       { digit: '2', name: 'NEM adóköteles bevételek',
@@ -138,6 +138,16 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
+    name: 'COA', label: 'Chart Of Accounts',
+    children: [
+      { include: 'Incomes' },
+      { include: 'Expenses' },
+      { include: 'Assets' },
+      { include: 'Liabilities' },
+    ],
+  });
+
+  Breakdowns.define({ communityId: null,
     digit: '', name: 'Parcels', children: [
       { digit: 'A', name: 'Main building' },
     ],
@@ -158,16 +168,6 @@ export function defineBreakdownTemplates() {
       },
       { digit: '#', name: 'Places', include: 'Places',
       },
-    ],
-  });
-
-  Breakdowns.define({ communityId: null,
-    name: 'COA', label: 'Chart Of Accounts',
-    children: [
-      { include: 'Incomes' },
-      { include: 'Expenses' },
-      { include: 'Assets' },
-      { include: 'Liabilities' },
     ],
   });
 }

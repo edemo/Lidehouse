@@ -8,7 +8,7 @@ import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
 export let chooseAccountNode = {};
 export let chooseLocalizerNode = {};
-export let chooseLeafAccountFromGroup = () => {};
+export let chooseSubAccount = function () { return {}; };
 
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
@@ -49,13 +49,12 @@ if (Meteor.isClient) {
     firstOption: () => __('(Select one)'),
   };
 
-  chooseLeafAccountFromGroup = function (brk, group) {
-    if (!brk) return chooseAccountNode;
+  chooseSubAccount = function (brk, nodeCode, leafsOnly = true) {
     return {
       options() {
         const communityId = Session.get('activeCommunityId');
         const breakdown = Breakdowns.findOneByName(brk, communityId);
-        return breakdown.leafOptions(group);
+        return breakdown.nodeOptionsOf(nodeCode, leafsOnly);
       },
       firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
     };

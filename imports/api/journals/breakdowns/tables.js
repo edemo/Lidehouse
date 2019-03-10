@@ -17,7 +17,7 @@ export function breakdownColumns() {
   return [
     { data: 'name', title: __('schemaBreakdowns.name.label'), render: Render.translate },
 //    { data: 'type', title: __('schemaBreakdowns.type.label'), render: Render.translate },
-    { data: 'leafNames()', title: __('schemaBreakdowns.children.$.children.$.children.label'), render: displayNames },
+    { data: 'nodeNames()', title: __('schemaBreakdowns.children.$.children.$.children.label'), render: displayNames },
     { data: '_id', render: Render.buttonView },
     { data: '_id', render: Render.buttonEdit },
     { data: '_id', render: Render.buttonDelete },

@@ -3,8 +3,9 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { PeriodBreakdown } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { Balances } from './balances.js';
-import { PeriodBreakdown } from '../breakdowns/breakdowns-utils.js';
 
 Meteor.publish('balances.ofAccounts', function balancesOfAccounts(params) {
   // Publishing the balances of the Chart of Account -- Current + last 12 months
@@ -18,7 +19,7 @@ Meteor.publish('balances.ofAccounts', function balancesOfAccounts(params) {
     return this.ready();
   }
 
-  const periodCodes = PeriodBreakdown.leafCodes(); // TODO filter for last year
+  const periodCodes = PeriodBreakdown.nodeCodes(true); // TODO filter for last year
   return Balances.find({ communityId, localizer: { $exists: false } });
 });
 
@@ -42,7 +43,7 @@ Meteor.publishComposite('balances.ofLocalizers', function balancesOfLocalizers(p
     },
     children: [{
       find(balance) {
-        return Parcels.find({ communityId, ref: balance.localizer });
+        return Parcels.find({ communityId, ref: Localizer.code2parcelRef(balance.localizer) });
       },
     }],
   };
@@ -56,7 +57,7 @@ Meteor.publishComposite('balances.ofSelf', function balancesOfSelf(params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  const parcelCodes = user.ownedParcels(communityId).map(p => p.ref);
+  const parcelCodes = user.ownedParcels(communityId).map(p => Localizer.parcelRef2code(p.ref));
 
   return {
     find() {
@@ -64,7 +65,7 @@ Meteor.publishComposite('balances.ofSelf', function balancesOfSelf(params) {
     },
     children: [{
       find(balance) {
-        return Parcels.find({ communityId, ref: balance.localizer });
+        return Parcels.find({ communityId, ref: Localizer.code2parcelRef(balance.localizer) });
       },
     }],
   };

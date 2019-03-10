@@ -35,7 +35,7 @@ Breakdowns.clone = function clone(name, communityId) {
 Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) {
   const breakdown = Breakdowns.findOneByName(breakdownName, communityId);
   const node = breakdown.findNodeByName(nodeName);
-  if (!node) throw new Meteor.Error(`Looking for ${nodeName} in ${breakdownName}`, 'Cannot find breakdown node');
+//  if (!node) throw new Meteor.Error(`Looking for ${nodeName} in ${breakdownName}`, 'Cannot find breakdown node');
   return node.code;
 };
 
@@ -61,16 +61,7 @@ Breakdowns.schema = new SimpleSchema({
   // TODO: Can we enforce this or-or
 });
 */
-/*
-export const chooseBreakdown = {
-  options() {
-    return Breakdowns.findOne(this._id).leafs().map(function option(account) {
-      return { label: account.name, value: account._id };
-    });
-  },
-  firstOption: () => __('(Select one)'),
-};
-*/
+
 Breakdowns.LeafSchema = new SimpleSchema({
   digit: { type: String, optional: true },
   name: { type: String, max: 100 }, // or a parcel number can be placed here
@@ -155,14 +146,17 @@ Breakdowns.displayFullPath = function displayFullPath(node) {
   return node.path./*map(__).*/join(':');
 };
 
+class BreakdownNode {
+  constructor() {
+    this._nodes = [];
+  }
+}
+
 Breakdowns.helpers({
   init() {
-    if (!this._leafs) {
-      this._nodeMap = {};
-      this._leafs = [];
-      this._nodes = [];
+    if (!this._nodes) {
+      this._nodes = []; this._nodeMap = {}; const root = this;
       let currentLevel = 0;
-      const root = this;
       function handleNode(node, parent, root) {
         if (node.include) {
           if (typeof node.include === 'string') {
@@ -178,17 +172,33 @@ Breakdowns.helpers({
           delete node.include;
         }
         ++currentLevel;
-        node.parent = parent;
-        node._leafs = []; node.leafs = () => node._leafs; node.pushLeaf = l => { node._leafs.push(l); if (node.parent) node.parent.pushLeaf(l); };
+        if (parent) {
+          node.parent = parent; node._nodes = []; 
+          node.nodes = function (leafsOnly) {
+            if (leafsOnly) return this._nodes.filter(n => n.isLeaf);
+            return this._nodes;
+          };
+          node.leafs = function () { return this.nodes(true); };
+        }
+        node.pushNode = (n) => {
+          node._nodes.push(n);
+          if (node.parent) node.parent.pushNode(n);
+        };
         node.isLeaf = false;
         node.level = currentLevel;
         const parentCode = parent ? parent.code : '';
         node.code = parentCode + (node.digit || '');
         const parentPath = parent ? parent.path : [];
-        if (!node.name) { node.path = parentPath; }
-        else { node.path = parentPath.concat(node.name); root._nodes.push(node); root._nodeMap[node.code] = node; }
-        if (!node.children) { node._leafs.push(node); node.isLeaf = true; if (parent) parent.pushLeaf(node); }
-        else { node.children.forEach(child => handleNode(child, node, root)); }
+        if (!node.name) node.path = parentPath;
+        else {
+          node.path = parentPath.concat(node.name);
+          root._nodeMap[node.code] = node;
+          node.pushNode(node);
+        }
+        if (!node.children) node.isLeaf = true;
+        else {
+          node.children.forEach(child => handleNode(child, node, root));
+        }
         --currentLevel;
       }
       handleNode(root, null, root);
@@ -198,37 +208,36 @@ Breakdowns.helpers({
   root() {
     return this.init();
   },
+  nodes(leafsOnly) {
+    const nodes = this.init()._nodes;
+    if (leafsOnly) return nodes.filter(n => n.isLeaf);
+    return nodes;
+  },
   leafs() {
-    return this.init()._leafs;
+    return this.nodes(true);
   },
-  nodes() {
-    return this.init()._nodes;
+  nodeNames(leafsOnly) {
+    return this.nodes(leafsOnly).map(n => n.name);
   },
-  leafNames() {
-    return this.leafs().map(l => l.name);
-  },
-  nodeNames() {
-    return this.nodes().map(n => n.name);
+  nodeCodes(leafsOnly) {
+    return this.nodes(leafsOnly).map(l => l.code);
   },
   nodeByCode(code) {
-    return this.init()._nodeMap[code];
-  },
-  findLeafByName(name) {  // warning!! Name is not a unique id, and searching is inefficient
-    return this.leafs().find(l => l.name === name);
+    const node = this.root()._nodeMap[code];
+    if (!node) throw new Meteor.Error(`Looking for ${code} in ${this.name}`, 'Cannot find breakdown node by code', this.root()._nodeMap);
+    return node;
   },
   findNodeByName(name) {  // warning!! Name is not a unique id,  and searching is inefficient
-    return this.nodes().find(l => l.name === name);
+    const node = this.nodes().find(l => l.name === name);
+    if (!node) throw new Meteor.Error(`Looking for ${name} in ${this.name}`, 'Cannot find breakdown node by name', this.nodes());
+    return node;
   },
-  leafCodes() {
-    return this.leafs().map(l => l.code);
+  nodesOf(code, leafsOnly) {
+    if (code) return this.nodeByCode(code).nodes(leafsOnly);
+    return this.nodes(leafsOnly);
   },
   leafsOf(code) {
-    if (code) return this.nodeByCode(code).leafs();
-    return this.leafs();
-  },
-  nodesOf(code) {
-    if (code) return this.nodeByCode(code).nodes();
-    return this.leafs();
+    return this.nodesOf(code, true);
   },
   parentsOf(code) {
     if (!code) return [];
@@ -240,28 +249,23 @@ Breakdowns.helpers({
     }
     return parents;
   },
+  nodeOptions(leafsOnly) {
+    const nodes = this.nodes(leafsOnly);
+    return nodes.map(function option(node) {
+      return { label: Breakdowns.display(node), value: node.code };
+    });
+  },
+  nodeOptionsOf(code, leafsOnly) {
+    const nodes = this.nodesOf(code, leafsOnly);
+    return nodes.map(function option(node) {
+      return { label: Breakdowns.display(node), value: node.code };
+    });
+  },
   display(code) {
     Breakdowns.display(this.nodeByCode(code));
   },
   displayFullPath(code) {
     Breakdowns.displayFullPath(this.nodeByCode(code));
-  },
-  leafOptions(code) {
-    const leafs = code ? this.leafsOf(code) : this.leafs();
-    return leafs.map(function option(leaf) {
-      return { label: Breakdowns.display(leaf), value: leaf.code };
-    });
-  },
-  nodeOptions(code) {
-    const nodes = code ? this.nodesOf(code) : this.nodes();
-    return nodes.map(function option(node) {
-      return { label: Breakdowns.display(node), value: node.code };
-    });
-  },
-  removeSubTree(name) {
-    const node = this.findNodeByName(name);
-    node.parent.children = _.without(node.parent.children, node);
-    this._leafMap = undefined; // to rerun init
   },
 });
 

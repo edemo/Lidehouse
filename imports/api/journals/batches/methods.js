@@ -4,7 +4,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
 import { Journals } from '/imports/api/journals/journals.js';
@@ -48,8 +50,8 @@ export const apply = new ValidatedMethod({
       totalAmount += amount;
       debitLegs.push({
         amount,
-        account: Breakdowns.name2code('Assets', parcelBilling.payinType, parcelBilling.communityId),
-        localizer: parcel.ref,
+        account: Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType,
+        localizer: Localizer.parcelRef2code(parcel.ref),
       });
     });
 
@@ -59,7 +61,7 @@ export const apply = new ValidatedMethod({
       amount: totalAmount,
 //        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
       credit: [{
-        account: Breakdowns.name2code('Incomes', parcelBilling.payinType, parcelBilling.communityId),
+        account: Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.payinType,
       }],
       debit: debitLegs,
       note: parcelBilling.note,
@@ -74,8 +76,12 @@ export const insert = new ValidatedMethod({
   validate: ParcelBillings.simpleSchema().validator({ clean: true }),
 
   run(doc) {
+    checkPermissions(this.userId, 'journals.insert', doc.communityId);
     const id = ParcelBillings.insert(doc);
-    apply._execute({ userId: this.userId }, { id });
+    if (Meteor.isServer) {
+      // new parcel billings are automatically applied
+      apply._execute({ userId: this.userId }, { id });
+    }
     return id;
   },
 });

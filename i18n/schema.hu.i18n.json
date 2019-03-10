@@ -439,16 +439,23 @@
     "projection": {
       "label": "Vetítési alap"
     },
+    "valueDate": {
+      "label": "Értéknap",
+      "placeholder": "(pl. 2017-05-06)"
+    },
     "amount": {
       "label": "Összeg",
       "placeholder": "(pl. 14560)"
     },
+    "payinType": {
+      "label": "Előírás típusa"
+    },
+    "localizer": {
+      "label": "Előírás helye"
+    },
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. emlékeztető)"
-    },
-    "account": {
-      "label": "Számla"
     }
   },
   "schemaSharedfolders": {

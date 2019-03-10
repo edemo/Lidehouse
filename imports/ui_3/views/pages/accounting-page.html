@@ -43,7 +43,8 @@
                         <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
                             <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'journal'}} <b class="caret"></b>
                         </a>
-                        <ul class="dropdown-menu animated fadeInDown m-t-xs">
+                        <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
+                            <li><a href="" class="js-many"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'parcelBilling'}}</a></li>
                             {{#each def in txDefs}}
                             <li><a href="" class="js-new" data-id="{{def.name}}"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ def.name}}</a></li>
                             {{/each}}

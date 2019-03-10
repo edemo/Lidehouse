@@ -8,6 +8,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
+import { chooseSubAccount } from '/imports/api/journals/account-specification.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
@@ -16,11 +17,11 @@ ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8
 
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
   valueDate: { type: Date },
+  projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
   amount: { type: Number },
-  payinType: { type: String }, // account code
-  localizer: { type: String }, // account code
+  payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
+  localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
   note: { type: String, max: 100, optional: true },
 });
 
@@ -28,11 +29,6 @@ ParcelBillings.helpers({
   parcels() {
     const parcelLeafs = Localizer.get(this.communityId).leafsOf(this.localizer);
     const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
-    if (!parcels[0]) {
-      console.log(this.localizer);
-      console.log(parcelLeafs.map(l => l.code));
-      console.log(parcelLeafs);
-    }
     return parcels;
   },
 });
@@ -42,11 +38,4 @@ ParcelBillings.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
   ParcelBillings.simpleSchema().i18n('schemaParcelBillings');
-});
-
-// Deny all client-side updates since we will be using methods to manage this collection
-ParcelBillings.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
 });

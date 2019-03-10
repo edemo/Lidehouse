@@ -122,8 +122,9 @@ Meteor.startup(function indexJournals() {
 Journals.helpers({
   isOld() {
     const now = moment(new Date());
-    const elapsed = moment.duration(now.diff(moment(this.createdAt)), 'hours');
-    return (elapsed > 24);
+    const creationTime = moment(this.createdAt);
+    const elapsedHours = now.diff(creationTime, 'hours');
+    return (elapsedHours > 24);
   },
   journalEntries() {
     const entries = [];

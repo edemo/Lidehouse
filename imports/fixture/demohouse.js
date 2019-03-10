@@ -912,7 +912,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate,
       projection: 'perArea',
       amount: 275,
-      payinType: 'Közös költség előírás',
+      payinType: fixtureBuilder.name2code('Owner payin types', 'Közös költség előírás'),
       localizer: '@',
     });
 
@@ -923,7 +923,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate,
         projection: 'perHabitant',
         amount: 2500,
-        payinType: 'Víz díj előírás',
+        payinType: fixtureBuilder.name2code('Owner payin types', 'Víz díj előírás'),
         localizer: fixtureBuilder.serial2code(parcels[i]),
       });
     }
@@ -934,7 +934,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate,
         projection: 'perVolume',
         amount: 85,
-        payinType: 'Fűtési díj előírás',
+        payinType: fixtureBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
         localizer: fixtureBuilder.serial2code(i),
       });
     }
@@ -945,7 +945,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     projection: 'absolute',
     amount: 60000,
     valueDate: new Date('2017-09-15'),
-    payinType: 'Célbefizetés előírás',
+    payinType: fixtureBuilder.name2code('Owner payin types', 'Célbefizetés előírás'),
     localizer: '@',
     note: __('demo.journals.note.0'),
   });
@@ -967,7 +967,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     ['Assets', 'Folyószámla', 110000],
     ['Assets', 'Megtakarítási számla', 120000],
   ];
-  openings.forEach(opening => {
+  openings.forEach((opening) => {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
     //  defId: defOpening,

@@ -60,27 +60,8 @@ if (Meteor.isServer) {
         breakdown = Breakdowns.findOne(rootId);
       });
 
-      it('access to leaf names', function () {
-        const leafNames = breakdown.leafNames();
-        const expectedLeafNames = ['LeafA', 'LeafB', 'LeafC', 'LeafD', 'LeafE', 'LeafF'];
-        chai.assert.deepEqual(leafNames, expectedLeafNames);
-      });
-
-      it('access to leaf paths', function () {
-        const leafPaths = breakdown.leafs().map(l => l.path);
-        const expectedLeaPaths = [
-          ['Root', 'Level1', 'Level2', 'LeafA'],
-          ['Root', 'Level1', 'Level2', 'LeafB'],
-          ['Root', 'Level1', 'Level2', 'LeafC'],
-          ['Root', 'Level1', 'LeafD'],
-          ['Root', 'LeafE'],
-          ['Root', 'Level3', 'LeafF'],
-        ];
-        chai.assert.deepEqual(leafPaths, expectedLeaPaths);
-      });
-
       it('access to node names', function () {
-        const nodeNames = breakdown.nodeNames();
+        const nodeNames = breakdown.nodeNames(false);
         const expectedNodeNames = [
           'Root',
           'Level1',
@@ -96,14 +77,43 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(nodeNames, expectedNodeNames);
       });
 
+      it('access to leaf names', function () {
+        const leafNames = breakdown.nodeNames(true);
+        const expectedLeafNames = ['LeafA', 'LeafB', 'LeafC', 'LeafD', 'LeafE', 'LeafF'];
+        chai.assert.deepEqual(leafNames, expectedLeafNames);
+      });
+
       it('access to leaf codes', function () {
-        const leafCodes = breakdown.leafCodes();
+        const leafCodes = breakdown.nodeCodes(true);
         const expectedLeafCodes = ['12A', '12B', '12C', '1D', 'E', '3F'];
         chai.assert.deepEqual(leafCodes, expectedLeafCodes);
       });
 
+      it('access to nodes of sub nodes', function () {
+        const leafNames1 = breakdown.nodesOf('1', true).map(n => n.code);
+        const expectedLeafNames1 = ['12A', '12B', '12C', '1D'];
+        chai.assert.deepEqual(leafNames1, expectedLeafNames1);
+
+        const leafNames12 = breakdown.nodesOf('12', true).map(n => n.code);
+        const expectedLeafNames12 = ['12A', '12B', '12C'];
+        chai.assert.deepEqual(leafNames12, expectedLeafNames12);
+      });
+
+      it('access to leaf paths', function () {
+        const leafPaths = breakdown.nodes(true).map(l => l.path);
+        const expectedLeaPaths = [
+          ['Root', 'Level1', 'Level2', 'LeafA'],
+          ['Root', 'Level1', 'Level2', 'LeafB'],
+          ['Root', 'Level1', 'Level2', 'LeafC'],
+          ['Root', 'Level1', 'LeafD'],
+          ['Root', 'LeafE'],
+          ['Root', 'Level3', 'LeafF'],
+        ];
+        chai.assert.deepEqual(leafPaths, expectedLeaPaths);
+      });
+
       it('access to leaf options', function () {
-        const leafOptions = breakdown.leafOptions();
+        const leafOptions = breakdown.nodeOptions(true);
         const expectedLeafOptions = [
           { label: '12A: LeafA', value: '12A' },
           { label: '12B: LeafB', value: '12B' },
@@ -116,7 +126,7 @@ if (Meteor.isServer) {
       });
 
       it('access to node options', function () {
-        const nodeOptions = breakdown.nodeOptions();
+        const nodeOptions = breakdown.nodeOptions(false);
         const expectedNodeOptions = [
           { label: ': Root',     value: '' },
           { label: '1: Level1',  value: '1' },
@@ -232,8 +242,7 @@ if (Meteor.isServer) {
       });
 
       it('assembles included parts', function () {
-        // console.log(PeriodBreakdown.leafOptions());
-        chai.assert.deepEqual(PeriodBreakdown.leafOptions(), [
+        chai.assert.deepEqual(PeriodBreakdown.nodeOptions(true), [
           { label: 'T-2017-1: JAN', value: 'T-2017-1' },
           { label: 'T-2017-2: FEB', value: 'T-2017-2' },
           { label: 'T-2017-3: MAR', value: 'T-2017-3' },
@@ -291,7 +300,7 @@ if (Meteor.isServer) {
         const demoHouseRoot = Breakdowns.findOneByName('DemoAssembly', Fixture.demoCommunityId);
 
         demoHouseRoot.name = 'Root';
-        chai.assert.deepEqual(demoHouseRoot.leafOptions(), commonRoot.leafOptions());
+        chai.assert.deepEqual(demoHouseRoot.nodeOptions(), commonRoot.nodeOptions());
       });
     });
 

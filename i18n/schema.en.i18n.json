@@ -436,19 +436,26 @@
       "label": "For which month",
       "placeholder": "(eg. 11)"
     },
+    "valueDate": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
     "projection": {
       "label": "Projection basis"
     },
     "amount": {
       "label": "Amount",
-      "placeholder": "(pl. 14560)"
+      "placeholder": "(eg. 14560)"
+    },
+    "payinType": {
+      "label": "Payin type"
+    },
+    "localizer": {
+      "label": "Payin location"
     },
     "note": {
       "label": "Note",
       "placeholder": "(eg. reminder)"
-    },
-    "account": {
-      "label": "Account"
     }
   },
   "schemaSharedfolders": {

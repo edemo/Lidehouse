@@ -165,7 +165,7 @@ Template.Community_finances.viewmodel({
   subAccountOptionsOf(accountCode) {
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
     const brk = ChartOfAccounts.get();
-    if (brk) return brk.leafOptions(accountCode);
+    if (brk) return brk.nodeOptionsOf(accountCode, true);
     return [];
   },
 });
