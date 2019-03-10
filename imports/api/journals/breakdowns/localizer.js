@@ -49,7 +49,11 @@ export const Localizer = {
   addParcel(communityId, parcel, lang) {
     const parcelBreakdown = Localizer.getParcels(communityId);
     Localizer._addParcel(parcelBreakdown, parcel, lang);
-    Breakdowns.update(parcelBreakdown._id, { $set: parcelBreakdown });
+    const id = parcelBreakdown._id;
+    delete parcelBreakdown._id;
+    delete parcelBreakdown.createdAt;
+    delete parcelBreakdown.updatedAt;
+    Breakdowns.define(parcelBreakdown);
   },
   generateParcels(communityId, lang) {
     const parcelBreakdown = { communityId, name: 'Parcels', digit: '@', children: [] };

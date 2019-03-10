@@ -1234,10 +1234,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   };
 }
 
-function generateDemoPayments(communityId, parcel) {
-  const name2code = function name2code(breakdownName, leafName) {
-    return Breakdowns.name2code(breakdownName, leafName, communityId);
-  };
+function generateDemoPayments(fixtureBuilder, communityId, parcel) {
   const accountantId = Memberships.findOne({ communityId, role: 'accountant' }).person.userId;
 
   for (let mm = 1; mm < 13; mm++) {
@@ -1247,7 +1244,7 @@ function generateDemoPayments(communityId, parcel) {
       valueDate,
       projection: 'perArea',
       amount: 275,
-      payinType: 'Közös költség előírás',
+      payinType: fixtureBuilder.name2code('Owner payin types', 'Közös költség előírás'),
       localizer: Localizer.parcelRef2code(parcel.ref),
     });
     insertTx._execute({ userId: accountantId }, {
@@ -1255,15 +1252,16 @@ function generateDemoPayments(communityId, parcel) {
       valueDate,
       amount: 6875,
       credit: [{
-        account: name2code('Incomes', 'Közös költség előírás'),
+        account: fixtureBuilder.name2code('Incomes', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
       }],
       debit: [{
-        account: name2code('Assets', 'Folyószámla'),
+        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
     });
   }
 }
+
 export function insertLoginableUsersWithRoles(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const com = { en: 'com', hu: 'hu' }[lang];
@@ -1341,7 +1339,7 @@ export function insertLoadsOfDummyData(lang, demoOrTest, parcelCount) {
 
     Localizer.addParcel(communityId, parcel, lang);
 
-    generateDemoPayments(communityId, parcel);
+    generateDemoPayments(fixtureBuilder, communityId, parcel);
   }
 }
 
@@ -1392,7 +1390,7 @@ Meteor.methods({
 
     const demoParcelId = fixtureBuilder.createParcel({
       units: 100,
-      floor: 'V',
+      floor: '5',
       door: counter.toString(),
       type: 'flat',
       area: 25,
@@ -1455,7 +1453,7 @@ Meteor.methods({
       ],
     } });
 
-    generateDemoPayments(demoCommunityId, demoParcel);
+    generateDemoPayments(fixtureBuilder, demoCommunityId, demoParcel);
 
     Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);

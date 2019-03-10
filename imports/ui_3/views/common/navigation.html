@@ -111,12 +111,14 @@
                                 <span class="nav-label">{{_ 'Community finances'}}</span>
                             </a>
                         </li>
+                        {{#if userHasPermission 'journals.inCommunity' (fromSession 'activeCommunityId')}}
                         <li class="{{isActivePath regex='accounting'}}">
                             <a href="{{pathFor 'Accounting.page'}}">
                                 <i class="fa fa-calculator" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Accounting'}}</span>
                             </a>
                         </li>
+                        {{/if}}
                     </ul>
                 </li>
                 <li class="{{isActivePath regex='community/'}} {{isActivePath path='/community'}}">
