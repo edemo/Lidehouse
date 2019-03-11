@@ -5,7 +5,7 @@ import { Session } from 'meteor/session';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 
-import { Balances } from '/imports/api/journals/balances/balances.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/users/users.js';
 import './balance-widget.html';
 

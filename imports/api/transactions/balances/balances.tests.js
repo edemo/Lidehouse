@@ -2,9 +2,9 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import '/imports/api/journals/methods.js';
-import { Journals } from '../journals';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import '/imports/api/transactions/methods.js';
+import { Transactions } from '../transactions';
 import { Balances } from './balances';
 
 if (Meteor.isServer) {
@@ -76,7 +76,7 @@ if (Meteor.isServer) {
           ],
         });
         insertTx = function (params) {
-          return Journals.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
+          return Transactions.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
             communityId: Fixture.demoCommunityId,
             valueDate: params.valueDate,
             amount: params.amount,
@@ -136,7 +136,7 @@ if (Meteor.isServer) {
         assertBalance(':1', undefined, 'T-2017', 0);
         assertBalance(':19', undefined, 'T', 3000);
 
-        Journals.remove(txId);
+        Transactions.remove(txId);
         // copy of the previous test's end state
         assertBalance(':12A', undefined, 'T', -1000);
         assertBalance(':12A', undefined, 'T-2017', -1000);

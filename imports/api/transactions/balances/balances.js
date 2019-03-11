@@ -3,9 +3,9 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { ChartOfAccounts } from '/imports/api/journals/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 
 export const Balances = new Mongo.Collection('balances');
 
@@ -33,7 +33,7 @@ Balances.get = function get(def) {
     const loc = Localizer.get(def.communityId);
     const locNode = loc.nodeByCode(def.localizer);
     debugAssert(locNode.isLeaf); // Currently not prepared for upward cascading localizer
-    // If you want to know the balance of a whole floor or building, the journal update has to trace the localizer's parents too
+    // If you want to know the balance of a whole floor or building, the transaction update has to trace the localizer's parents too
   }
   let result = 0;
   leafs.forEach(leaf => {

@@ -1,7 +1,7 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { TxDefs } from '/imports/api/journals/txdefs/txdefs.js';
+import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 
 export const insert = new ValidatedMethod({

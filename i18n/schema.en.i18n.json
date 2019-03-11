@@ -337,7 +337,7 @@
       }
     }
   },
-  "schemaJournals": {
+  "schemaTransactions": {
     "valueDate": {
       "label": "Accounting date",
       "placeholder": "(eg. 2017-05-06)"

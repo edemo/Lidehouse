@@ -2,8 +2,6 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
-import { Breakdowns } from './breakdowns.js';
-import { Localizer } from './localizer.js';
 import { ParcelBillings } from './parcel-billings.js';
 import './methods.js';
 

@@ -2,12 +2,12 @@ import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
-import { JournalEntries } from '/imports/api/journals/entries.js';
+import { JournalEntries } from '/imports/api/transactions/entries.js';
 //-----
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { AccountSpecification } from '/imports/api/journals/account-specification';
+import { AccountSpecification } from '/imports/api/transactions/account-specification';
 import './account-history.html';
 
 Template.Account_history.viewmodel({
@@ -23,7 +23,7 @@ Template.Account_history.viewmodel({
     instance.autorun(() => {
       const communityId = Session.get('activeCommunityId');
 //      console.log('subscribing:', communityId, this.accountSelected(), this.localizerSelected());
-      instance.subscribe('journals.byAccount', {
+      instance.subscribe('transactions.byAccount', {
         communityId,
         account: self.accountSelected(),
         localizer: self.localizerSelected(),

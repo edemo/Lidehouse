@@ -18,15 +18,15 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
-import { TxDefs } from '/imports/api/journals/txdefs/txdefs.js';
-import { Journals } from '/imports/api/journals/journals.js';
-// import { TxDefs } from '/imports/api/journals/tx-defs.js';
-import '/imports/api/journals/breakdowns/methods.js';
-import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
-import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
-import { insert as insertTx } from '/imports/api/journals/methods.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+// import { TxDefs } from '/imports/api/transactions/tx-defs.js';
+import '/imports/api/transactions/breakdowns/methods.js';
+import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
+import { insert as insertParcelBilling } from '/imports/api/transactions/batches/methods.js';
+import { insert as insertTx } from '/imports/api/transactions/methods.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -947,10 +947,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-09-15'),
     payinType: fixtureBuilder.name2code('Owner payin types', 'Célbefizetés előírás'),
     localizer: '@',
-    note: __('demo.journals.note.0'),
+    note: __('demo.transactions.note.0'),
   });
 
-// ===== Journals =====
+// ===== Transactions =====
 /*
   const defPayin = TxDefs.findOne({ communityId: demoCommunityId, name: 'Payin' });
   const defObligation = TxDefs.findOne({ communityId: demoCommunityId, name: 'Obligation' });
@@ -1026,7 +1026,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     debit: [{
       account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
     }],
-    note: __('demo.journals.note.1'),
+    note: __('demo.transactions.note.1'),
   });
 
   insertTx._execute({ userId: demoAccountantId }, {
@@ -1041,7 +1041,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     debit: [{
       account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
     }],
-    note: __('demo.journals.note.2'),
+    note: __('demo.transactions.note.2'),
   });
 
   insertTx._execute({ userId: demoAccountantId }, {
@@ -1056,7 +1056,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     debit: [{
       account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
     }],
-    note: __('demo.journals.note.3'),
+    note: __('demo.transactions.note.3'),
   });
 
   insertTx._execute({ userId: demoAccountantId }, {
@@ -1070,7 +1070,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     debit: [{
       account: fixtureBuilder.name2code('Assets', 'Megtakarítási számla'),
     }],
-    note: __('demo.journals.note.4'),
+    note: __('demo.transactions.note.4'),
   });
 
   // === Payins ===
@@ -1203,7 +1203,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     // === Tervezetek ===
 
- /* Journals.insert({
+ /* Transactions.insert({
     communityId: demoCommunityId,
     valueDate: new Date('2017-01-01'),
     amount: -24000,
@@ -1212,7 +1212,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Journals.insert({
+  Transactions.insert({
     communityId: demoCommunityId,
     valueDate: new Date('2017-01-01'),
     amount: -415000,
@@ -1366,7 +1366,7 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
   ParcelBillings.remove({ 'account.Localizer': parcel.ref });
-  Journals.remove({ 'entries.0.account.Localizer': parcel.ref });
+  Transactions.remove({ 'entries.0.account.Localizer': parcel.ref });
   Breakdowns.update({ communityId, name: 'Parcels' }, {
     $pull: { children: { name: parcel.ref } },
   });

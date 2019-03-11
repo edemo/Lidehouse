@@ -1,5 +1,5 @@
 import { TAPi18n } from 'meteor/tap:i18n';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 

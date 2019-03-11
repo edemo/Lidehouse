@@ -4,10 +4,10 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-// import { Txs } from '/imports/api/journals/txs.js';
-// import { TxDefs } from '/imports/api/journals/tx-defs.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+// import { Txs } from '/imports/api/transactions/txs.js';
+// import { TxDefs } from '/imports/api/transactions/tx-defs.js';
 
 /*
 function runPositingRules(context, doc) {
@@ -28,60 +28,60 @@ function runPositingRules(context, doc) {
       },
     }];
     newDoc.sourceId = doc._id;
-    Journals.insert(newDoc);
+    Transactions.insert(newDoc);
   }
 }
 */
 
 export const insert = new ValidatedMethod({
-  name: 'journals.insert',
-  validate: Journals.simpleSchema().validator({ clean: true }),
+  name: 'transactions.insert',
+  validate: Transactions.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkPermissions(this.userId, 'journals.insert', doc.communityId);
-    const id = Journals.insert(doc);
+    checkPermissions(this.userId, 'transactions.insert', doc.communityId);
+    const id = Transactions.insert(doc);
 //    runPositingRules(this, doc);
     return id;
   },
 });
 
 export const update = new ValidatedMethod({
-  name: 'journals.update',
+  name: 'transactions.update',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
   }).validator(),
 
   run({ _id, modifier }) {
-    const doc = checkExists(Journals, _id);
+    const doc = checkExists(Transactions, _id);
     checkModifier(doc, modifier, ['communityId'], true);
-    checkPermissions(this.userId, 'journals.update', doc.communityId);
+    checkPermissions(this.userId, 'transactions.update', doc.communityId);
     if (doc.isOld() && doc.complete) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after 24 hours');
     }
-    Journals.update({ _id }, modifier);
+    Transactions.update({ _id }, modifier);
   },
 });
 
 export const remove = new ValidatedMethod({
-  name: 'journals.remove',
+  name: 'transactions.remove',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
 
   run({ _id }) {
-    const doc = checkExists(Journals, _id);
-    checkPermissions(this.userId, 'journals.remove', doc.communityId);
+    const doc = checkExists(Transactions, _id);
+    checkPermissions(this.userId, 'transactions.remove', doc.communityId);
     if (doc.isOld() && doc.complete) {
       // Not possible to delete tx after 24 hours, but possible to negate it with another tx
-      Journals.insert(doc.negator());
+      Transactions.insert(doc.negator());
     } else {
-      Journals.remove(_id);
+      Transactions.remove(_id);
     }
   },
 });
 
-Journals.methods = {
+Transactions.methods = {
   insert, remove,
 };
 

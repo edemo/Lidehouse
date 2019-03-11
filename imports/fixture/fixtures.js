@@ -14,11 +14,11 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
-import { insert as insertParcelBilling } from '/imports/api/journals/batches/methods.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
+import { insert as insertParcelBilling } from '/imports/api/transactions/batches/methods.js';
 import { FixtureBuilder } from './fixture-builder.js';
 
 import '/imports/api/topics/votings/votings.js';
@@ -493,7 +493,7 @@ export function insertDemoFixture(lang) {
 
   Localizer.generateParcels(demoCommunityId, lang);
 
-  // ===== Journals =====
+  // ===== Transactions =====
 
   // ===== Returning a bunch of pointers, for easy direct access
 

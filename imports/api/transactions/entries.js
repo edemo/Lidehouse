@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Journals } from './journals.js';
+import { Transactions } from './transactions.js';
 import { AccountSpecification } from './account-specification.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 
@@ -23,8 +23,8 @@ JournalEntries.helpers({
     if (this.side === 'debit') effectiveSign = +1;
     return this.amount * effectiveSign;
   },
-  journal() {
-    const tx = Journals.findOne(this.txId);
+  transaction() {
+    const tx = Transactions.findOne(this.txId);
     return tx;
   },
   contra() {
@@ -33,7 +33,7 @@ JournalEntries.helpers({
       if (side === 'debit') return 'credit';
       debugAssert(false); return undefined;
     }
-    const contraEntries = this.journal()[otherSide(this.side)];
+    const contraEntries = this.transaction()[otherSide(this.side)];
     if (!contraEntries) return '';
     const contraAccount = AccountSpecification.fromDoc(contraEntries[0]);
     return contraAccount;
@@ -41,7 +41,7 @@ JournalEntries.helpers({
 });
 
 if (Meteor.isClient) {
-  Meteor.startup(function syncEntriesWithJournals() {
+  Meteor.startup(function syncEntriesWithTransactions() {
     const callbacks = {
       added(doc) {
         doc.journalEntries().forEach(entry => {
@@ -49,12 +49,12 @@ if (Meteor.isClient) {
         });
       },
       changed(newDoc, oldDoc) {
-        console.log("Changed journal noticed:", oldDoc);
+        console.log("Changed transaction noticed:", oldDoc);
       },
       removed(doc) {
         JournalEntries.remove({ txId: doc._id });
       },
     };
-    Journals.find().observe(callbacks);
+    Transactions.find().observe(callbacks);
   });
 }

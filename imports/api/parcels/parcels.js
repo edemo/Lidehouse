@@ -12,8 +12,8 @@ import { FreeFields } from '/imports/api/freefields.js';
 
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 
 class ParcelsCollection extends Mongo.Collection {
   insert(doc, callback) {

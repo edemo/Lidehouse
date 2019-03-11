@@ -1,12 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { TableReport } from '/imports/api/journals/reports/table-report.js';
-import { JournalEntries } from '/imports/api/journals/entries.js';
-import { PeriodBreakdown, SideBreakdown } from '/imports/api/journals/breakdowns/breakdowns-utils';
-import '/imports/api/journals/breakdowns/template.js';
+import { TableReport } from '/imports/api/transactions/reports/table-report.js';
+import { JournalEntries } from '/imports/api/transactions/entries.js';
+import { PeriodBreakdown, SideBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils';
+import '/imports/api/transactions/breakdowns/template.js';
 
 export const Reports = {
   Blank() {

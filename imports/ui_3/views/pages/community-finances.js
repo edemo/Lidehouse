@@ -11,20 +11,20 @@ import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { monthTags } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
-import { journalColumns } from '/imports/api/journals/tables.js';
-import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
-import { Reports } from '/imports/api/journals/reports/reports.js';
+import { monthTags } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
+import { transactionColumns } from '/imports/api/transactions/tables.js';
+import { breakdownColumns } from '/imports/api/transactions/breakdowns/tables.js';
+import { Reports } from '/imports/api/transactions/reports/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { ChartOfAccounts } from '/imports/api/journals/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
-import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { insert as insertTx, remove as removeTx } from '/imports/api/transactions/methods.js';
+import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
-import { AccountSpecification } from '/imports/api/journals/account-specification';
-import { Balances } from '/imports/api/journals/balances/balances';
+import { AccountSpecification } from '/imports/api/transactions/account-specification';
+import { Balances } from '/imports/api/transactions/balances/balances';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -179,10 +179,10 @@ Template.Community_finances.events({
   'click #account-history .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
-      id: 'af.journal.view',
-      collection: Journals,
-      schema: Journals.inputSchema,
-      doc: Journals.findOne(id),
+      id: 'af.transaction.view',
+      collection: Transactions,
+      schema: Transactions.inputSchema,
+      doc: Transactions.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',
     });

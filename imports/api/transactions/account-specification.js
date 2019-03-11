@@ -1,9 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { __ } from '/imports/localization/i18n.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { ChartOfAccounts } from '/imports/api/journals/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
 export let chooseAccountNode = {};
@@ -28,7 +28,7 @@ if (Meteor.isClient) {
       const communityId = Session.get('activeCommunityId');
       const accountFamily = AutoForm.getFieldValue('account.accountFamily', 'af.txtype.insert')
                         || AutoForm.getFieldValue('account.accountFamily', 'af.txtype.update');
-      if (!accountFamily) return [{ label: __('schemaJournals.account.placeholder'), value: 'none' }];
+      if (!accountFamily) return [{ label: __('schemaTransactions.account.placeholder'), value: 'none' }];
       const breakdown = Breakdowns.findOne({ communityId, name: accountFamily });
       return breakdown.leafOptions();
     },

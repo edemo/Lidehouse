@@ -2,9 +2,9 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { numeral } from 'meteor/numeral:numeral';
 
-import { Balances } from '/imports/api/journals/balances/balances.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { PeriodBreakdown } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
 import './balance-report.html';
 
 Template.Balance_report.onCreated(function onCreated() {

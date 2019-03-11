@@ -5,13 +5,13 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
-import { Journals } from '/imports/api/journals/journals.js';
-//  import { TxDefs } from '/imports/api/journals/tx-defs.js';
-import { insert as insertTx } from '/imports/api/journals/methods.js';
+import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+//  import { TxDefs } from '/imports/api/transactions/tx-defs.js';
+import { insert as insertTx } from '/imports/api/transactions/methods.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
@@ -76,7 +76,7 @@ export const insert = new ValidatedMethod({
   validate: ParcelBillings.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkPermissions(this.userId, 'journals.insert', doc.communityId);
+    checkPermissions(this.userId, 'transactions.insert', doc.communityId);
     const id = ParcelBillings.insert(doc);
     if (Meteor.isServer) {
       // new parcel billings are automatically applied

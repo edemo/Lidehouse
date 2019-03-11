@@ -1,4 +1,4 @@
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
 // Helpers form manipulating with the Localizer

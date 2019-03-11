@@ -80,7 +80,7 @@ if (Meteor.isServer) {
   };
 
   { name: 'Payin',
-    journals: [{
+    transactions: [{
       accountFrom: 'Accounts/Incomes/Owner payins',
       accountTo: 'Accounts/Assets/Money accounts',
     }, {
@@ -90,35 +90,35 @@ if (Meteor.isServer) {
   },
 
   { name: 'Income',
-    journals: [{
+    transactions: [{
       accountFrom: 'Accounts/Incomes',
       accountTo: 'Accounts/Assets/Money accounts',
     }],
   },
 
   { name: 'Expense',
-    journals: [{
+    transactions: [{
       accountFrom: 'Accounts/Assets/Money accounts',
       accountTo: 'Accounts/Expenses',
     }],
   },
 
   { name: 'Loan',
-    journals: [{
+    transactions: [{
       accountFrom: 'Accounts/Liabilities/Hitelek',
       accountTo: 'Accounts/Assets/Money accounts',
     }],
   },
 
   { name: 'Opening',
-    journals: [{
+    transactions: [{
       accountFrom: 'Accounts/Liabilities/Opening',
       accountTo: 'Accounts/Assets',
     }],
   },
 
   { name: 'Backoffice Op',
-    journals: [{
+    transactions: [{
       accountFrom: 'Accounts',
       accountTo: 'Accounts',
     }],

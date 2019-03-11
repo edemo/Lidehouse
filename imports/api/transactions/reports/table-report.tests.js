@@ -5,7 +5,7 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { Breakdowns } from '../breakdowns/breakdowns';
 import { TableReport } from './table-report';
 //import { BalanceReport } from './balance-report';
-import { PeriodBreakdown, SideBreakdown } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
+import { PeriodBreakdown, SideBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
 
 if (Meteor.isServer) {
   describe('table reports', function () {

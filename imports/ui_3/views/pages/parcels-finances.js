@@ -4,12 +4,12 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/journals/breakdowns/localizer.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Balances } from '/imports/api/journals/balances/balances.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/components/custom-table.js';
@@ -44,13 +44,13 @@ export function Columns(permissions) {
   if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
 
   const columns = [
-    { data: 'valueDate', title: __('schemaJournals.valueDate.label'), render: Render.formatDate },
-    { data: 'amount', title: __('schemaJournals.amount.label'), render: Render.formatNumber },
-    { data: 'credit', title: __('schemaJournals.credit.label'), render: Render.journalEntries },
-    { data: 'debit', title: __('schemaJournals.debit.label'), render: Render.journalEntries },
+    { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
+    { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
+    { data: 'credit', title: __('schemaTransactions.credit.label'), render: Render.journalEntries },
+    { data: 'debit', title: __('schemaTransactions.debit.label'), render: Render.journalEntries },
 //    { data: 'placeAccounts()', title: __('Konyveles hely'), render: Render.breakdowns },
-    { data: 'ref', title: __('schemaJournals.ref.label') },
-    { data: 'note', title: __('schemaJournals.note.label') },
+    { data: 'ref', title: __('schemaTransactions.ref.label') },
+    { data: 'note', title: __('schemaTransactions.note.label') },
     { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
   ];
 

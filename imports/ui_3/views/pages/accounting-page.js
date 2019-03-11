@@ -13,19 +13,19 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { PeriodBreakdown } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
-import { journalColumns } from '/imports/api/journals/tables.js';
-import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
-import { Reports } from '/imports/api/journals/reports/reports.js';
+import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
+import { transactionColumns } from '/imports/api/transactions/tables.js';
+import { breakdownColumns } from '/imports/api/transactions/breakdowns/tables.js';
+import { Reports } from '/imports/api/transactions/reports/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
-import { TxDefs } from '/imports/api/journals/txdefs/txdefs.js';
-import '/imports/api/journals/txdefs/methods.js';
-import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { insert as insertTx, remove as removeTx } from '/imports/api/transactions/methods.js';
+import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import '/imports/api/transactions/txdefs/methods.js';
+import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
-import { AccountSpecification } from '/imports/api/journals/account-specification';
+import { AccountSpecification } from '/imports/api/transactions/account-specification';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -47,7 +47,7 @@ Template.Accounting_page.viewmodel({
       const communityId = Session.get('activeCommunityId');
       instance.subscribe('breakdowns.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
-      instance.subscribe('journals.incomplete', { communityId });
+      instance.subscribe('transactions.incomplete', { communityId });
     });
   },
   autorun: [
@@ -68,7 +68,7 @@ Template.Accounting_page.viewmodel({
     },
     function txSubscription() {
       const communityId = Session.get('activeCommunityId');
-      this.templateInstance.subscribe('journals.betweenAccounts', { communityId,
+      this.templateInstance.subscribe('transactions.betweenAccounts', { communityId,
         creditAccount: this.creditAccountSelected(),
         debitAccount: this.debitAccountSelected(),
         begin: new Date(this.beginDate()),
@@ -122,29 +122,29 @@ Template.Accounting_page.viewmodel({
     if (brk) return brk.nodeOptionsOf(accountCode, true);
     return [];
   },
-  journalsIncompleteTableDataFn() {
+  transactionsIncompleteTableDataFn() {
     const templateInstance = Template.instance();
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Journals.find({ communityId, complete: false }).fetch();
+      return Transactions.find({ communityId, complete: false }).fetch();
     }
     return getTableData;
   },
-  journalsTableDataFn() {
+  transactionsTableDataFn() {
     const templateInstance = Template.instance();
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
       const communityId = Session.get('activeCommunityId');
-      return Journals.find({ communityId, complete: true }).fetch();
+      return Transactions.find({ communityId, complete: true }).fetch();
       // Filtered selector would be needed - but client side selector is slow, and we need everything anyways
     }
     return getTableData;
   },
-  journalsOptionsFn() {
+  transactionsOptionsFn() {
     function getOptions() {
       return _.extend({
-        columns: journalColumns({ view: true, edit: true, delete: true }),
+        columns: transactionColumns({ view: true, edit: true, delete: true }),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
       }, DatatablesExportButtons);
@@ -208,7 +208,7 @@ Template.Accounting_page.events({
       doc: Breakdowns.findOne(id),
       type: 'update',
 //      type: 'method-update',
-//      meteormethod: 'journals.update',
+//      meteormethod: 'transactions.update',
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
     });
@@ -266,52 +266,52 @@ Template.Accounting_page.events({
       action: 'delete txDef',
     });
   },
-  'click #journals .js-new'(event, instance) {
+  'click #transactions .js-new'(event, instance) {
     const defId = $(event.target).data("id");
     Session.set('activeTxDef', defId);
     const def = TxDefs.findOne({ name: defId });
     Modal.show('Autoform_edit', {
-      id: 'af.journal.insert',
-      collection: Journals,
+      id: 'af.transaction.insert',
+      collection: Transactions,
       schema: def.schema(),
 //      type: 'method',
-//      meteormethod: 'journals.insert',
+//      meteormethod: 'transactions.insert',
       template: 'bootstrap3-inline',
     });
   },
-  'click #journals .js-edit'(event) {
+  'click #transactions .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
-      id: 'af.journal.update',
-      collection: Journals,
-//      schema: newJournalSchema(),
-      doc: Journals.findOne(id),
+      id: 'af.transaction.update',
+      collection: Transactions,
+//      schema: newTransactionSchema(),
+      doc: Transactions.findOne(id),
       type: 'method-update',
-      meteormethod: 'journals.update',
+      meteormethod: 'transactions.update',
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
     });
   },
-  'click #journals .js-view, #account-history .js-view'(event) {
+  'click #transactions .js-view, #account-history .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
-      id: 'af.journal.view',
-      collection: Journals,
-      schema: Journals.inputSchema,
-      doc: Journals.findOne(id),
+      id: 'af.transaction.view',
+      collection: Transactions,
+      schema: Transactions.inputSchema,
+      doc: Transactions.findOne(id),
       type: 'readonly',
       template: 'bootstrap3-inline',
     });
   },
-  'click #journals .js-delete'(event) {
+  'click #transactions .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
-    const tx = Journals.findOne(id);
+    const tx = Transactions.findOne(id);
     Modal.confirmAndCall(removeTx, { _id: id }, {
-      action: 'delete journal',
+      action: 'delete transaction',
       message: tx.isOld() ? 'Remove not possible after 24 hours' : '',
     });
   },
-  'click #journals .js-many'(event, instance) {
+  'click #transactions .js-many'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.parcelBilling.insert',
       collection: ParcelBillings,
@@ -340,18 +340,18 @@ AutoForm.addHooks('af.txDef.insert', {
   },
 });
 
-AutoForm.addModalHooks('af.journal.insert');
-AutoForm.addModalHooks('af.journal.update');
-AutoForm.addHooks('af.journal.insert', {
+AutoForm.addModalHooks('af.transaction.insert');
+AutoForm.addModalHooks('af.transaction.update');
+AutoForm.addHooks('af.transaction.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;
   },
   onSubmit(doc) {
-    AutoForm.validateForm('af.journal.insert');
+    AutoForm.validateForm('af.transaction.insert');
     const defId = Session.get('activeTxDef');
     const def = TxDefs.findOne({ name: defId });
-    def.transformToJournal(doc);
+    def.transformToTransaction(doc);
     const afContext = this;
     insertTx.call(doc, function handler(err, res) {
       if (err) {

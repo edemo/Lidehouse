@@ -5,46 +5,46 @@
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
 
-    {{#if userHasPermission 'journals.inCommunity' (fromSession 'activeCommunityId')}}
+    {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
     <div class="col-md-12">
-        <div class="ibox ibox-dark" id='journals-incomplete'>
+        <div class="ibox ibox-dark" id='transactions-incomplete'>
             <div class="ibox-title">
                 <h5>{{_ 'Kontírozás'}}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
-                {{#if userHasPermission 'journals.insert' (fromSession 'activeCommunityId')}}
+                {{#if userHasPermission 'transactions.insert' (fromSession 'activeCommunityId')}}
                 <div class="pull-right">
                     <a href="" class="btn btn-white btn-sm js-import"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>
                 </div>
                 {{/if}}
-                <!---h3>{{_ 'Journals to complete'}}</h3-->
+                <!---h3>{{_ 'Transactions to complete'}}</h3-->
                 <p>
                     {{_ 'Itt azokat a tranzakciókat látja, amiknek még nem lett megállapítva mindkét számla oldala.'}}<br>
                     {{_ 'Szerkesztés segítségével vigye be hozzájuk a hiányzó oldalt!'}}<br>
                 </p>
                 <br>
                 <div>
-                    {{> ReactiveDatatable tableData=journalsIncompleteTableDataFn options=journalsOptionsFn }}
+                    {{> ReactiveDatatable tableData=transactionsIncompleteTableDataFn options=transactionsOptionsFn }}
                 </div>
             </div>
         </div>
     </div>
     {{/if}}
 
-    {{#if userHasPermission 'journals.inCommunity' (fromSession 'activeCommunityId')}}
+    {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
     <div class="col-md-12">
-        <div class="ibox ibox-dark" id='journals'>
+        <div class="ibox ibox-dark" id='transactions'>
             <div class="ibox-title">
-                <h5>{{_ 'Journals'}}</h5>
+                <h5>{{_ 'Transactions'}}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
-                {{#if userHasPermission 'journals.insert' (fromSession 'activeCommunityId')}}
+                {{#if userHasPermission 'transactions.insert' (fromSession 'activeCommunityId')}}
                 <div class="pull-right">
                     <div class="dropdown">
                         <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
-                            <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'journal'}} <b class="caret"></b>
+                            <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'transaction'}} <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
                             <li><a href="" class="js-many"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'parcelBilling'}}</a></li>
@@ -124,7 +124,7 @@
                         </div>
                     </div-->
                 </div>
-                {{> ReactiveDatatable tableData=journalsTableDataFn options=journalsOptionsFn }}
+                {{> ReactiveDatatable tableData=transactionsTableDataFn options=transactionsOptionsFn }}
             </div>
         </div>
     </div>

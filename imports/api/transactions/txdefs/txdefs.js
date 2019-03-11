@@ -4,11 +4,11 @@ import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { chooseSubAccount } from '/imports/api/journals/account-specification.js';
+import { chooseSubAccount } from '/imports/api/transactions/account-specification.js';
 
 class TxDefsCollection extends Mongo.Collection {
   define(doc) {
@@ -35,13 +35,13 @@ TxDefs.schema = new SimpleSchema({
 TxDefs.helpers({
   schema() {
     return new SimpleSchema([
-      _.clone(Journals.rawSchema), {
+      _.clone(Transactions.rawSchema), {
         credit: { type: String, autoform: chooseSubAccount('COA', this.credit) },
         debit: { type: String, autoform: chooseSubAccount('COA', this.debit) },
-      }, _.clone(Journals.noteSchema),
+      }, _.clone(Transactions.noteSchema),
     ]);
   },
-  transformToJournal(doc) {
+  transformToTransaction(doc) {
     doc.credit = [{ account: doc.credit }];
     doc.debit = [{ account: doc.debit }];
   },
@@ -51,7 +51,7 @@ TxDefs.helpers({
       'credit.account': this.credit,
       'debit.account': this.debit,
     };
-    const txs = Journals.find(selector);
+    const txs = Transactions.find(selector);
     return txs;
   },
   subscribe() {

@@ -13,9 +13,9 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 
 export let getActiveCommunityId = () => {
   debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"');
@@ -78,7 +78,7 @@ Communities.helpers({
     Agendas.remove({ communityId: this._id });
     Parcels.remove({ communityId: this._id });
     ParcelBillings.remove({ communityId: this._id });
-    Journals.remove({ communityId: this._id });
+    Transactions.remove({ communityId: this._id });
     Breakdowns.remove({ communityId: this._id });
     Memberships.remove({ communityId: this._id });
     Communities.remove({ _id: this._id });

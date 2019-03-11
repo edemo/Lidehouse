@@ -111,7 +111,7 @@
                                 <span class="nav-label">{{_ 'Community finances'}}</span>
                             </a>
                         </li>
-                        {{#if userHasPermission 'journals.inCommunity' (fromSession 'activeCommunityId')}}
+                        {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
                         <li class="{{isActivePath regex='accounting'}}">
                             <a href="{{pathFor 'Accounting.page'}}">
                                 <i class="fa fa-calculator" aria-hidden="true"></i>

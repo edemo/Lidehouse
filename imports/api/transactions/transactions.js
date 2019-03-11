@@ -6,14 +6,14 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { Timestamps } from '/imports/api/timestamps.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { AccountSchema } from '/imports/api/journals/account-specification.js';
-import { JournalEntries } from '/imports/api/journals/entries.js';
-import { Balances } from '/imports/api/journals/balances/balances.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { AccountSchema } from '/imports/api/transactions/account-specification.js';
+import { JournalEntries } from '/imports/api/transactions/entries.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { PeriodBreakdown } from './breakdowns/breakdowns-utils.js';
 
-export let Journals;
-export class JournalsCollection extends Mongo.Collection {
+export let Transactions;
+export class TransactionsCollection extends Mongo.Collection {
   insert(doc, callback) {
     const result = super.insert(doc, callback);
     if (doc.complete) {
@@ -64,16 +64,16 @@ export class JournalsCollection extends Mongo.Collection {
   }
 }
 
-Journals = new JournalsCollection('journals');
+Transactions = new TransactionsCollection('transactions');
 
-Journals.entrySchema = new SimpleSchema([
+Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
   { amount: { type: Number, optional: true } },
 ]);
 
-Journals.rawSchema = {
+Transactions.rawSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating journal (by posting rule)
+  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
   batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   valueDate: { type: Date },
   amount: { type: Number },
@@ -85,15 +85,15 @@ Journals.rawSchema = {
 //  },
 };
 
-Journals.noteSchema = {
+Transactions.noteSchema = {
   ref: { type: String, max: 100, optional: true },
   note: { type: String, max: 100, optional: true },
 };
 
-Journals.schema = new SimpleSchema([
-  _.clone(Journals.rawSchema),
-  { credit: { type: [Journals.entrySchema], optional: true } },
-  { debit: { type: [Journals.entrySchema], optional: true } },
+Transactions.schema = new SimpleSchema([
+  _.clone(Transactions.rawSchema),
+  { credit: { type: [Transactions.entrySchema], optional: true } },
+  { debit: { type: [Transactions.entrySchema], optional: true } },
   { complete: { type: Boolean, autoform: { omit: true }, autoValue() {
     let total = 0;
     const amount = this.field('amount').value;
@@ -104,14 +104,14 @@ Journals.schema = new SimpleSchema([
     credits.forEach(entry => total -= entry.amount || amount);
     return total === 0;
   } } },
-  _.clone(Journals.noteSchema),
+  _.clone(Transactions.noteSchema),
 ]);
 
-Meteor.startup(function indexJournals() {
-  Journals.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
+Meteor.startup(function indexTransactions() {
+  Transactions.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
 });
 
-// A *journal* is effecting a certain field (in pivot tables) with the *amount* of the journal,
+// A *transaction* is effecting a certain field (in pivot tables) with the *amount* of the transaction,
 // but the Sign of the effect is depending on 3 components:
 // - Sign of the amount field
 // - Sign of the direction (in case of accounts only) if field appears in accountFrom => -1, if in accountTo => +1
@@ -119,7 +119,7 @@ Meteor.startup(function indexJournals() {
 // Note: in addition the Sign of the breakdown itself (in the schema) will control how we display it, 
 // and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
 
-Journals.helpers({
+Transactions.helpers({
   isOld() {
     const now = moment(new Date());
     const creationTime = moment(this.createdAt);
@@ -161,15 +161,15 @@ Journals.helpers({
   },
 });
 
-Journals.attachSchema(Journals.schema);
-Journals.attachSchema(Timestamps);
+Transactions.attachSchema(Transactions.schema);
+Transactions.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
-  Journals.simpleSchema().i18n('schemaJournals');
+  Transactions.simpleSchema().i18n('schemaTransactions');
 });
 
-// Deny all journal updates - we manipulate transactions only
-Journals.deny({
+// Deny all transaction updates - we manipulate transactions only
+Transactions.deny({
   insert() { return true; },
   update() { return true; },
   remove() { return true; },

@@ -10,8 +10,8 @@ import { Topics } from '/imports/api/topics/topics';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Agendas } from '/imports/api/agendas/agendas.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Journals } from '/imports/api/journals/journals.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Communities } from './communities.js';
 
 // This publication sends only very basic data about what communities exist on this server

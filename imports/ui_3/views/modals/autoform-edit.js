@@ -17,7 +17,7 @@ Template.Autoform_edit.helpers({
     const split = this.id.split('.'); // AutoFormId convention is 'af.object.action'
     let objectName = split[1];
     const actionName = split[2];
-    if (objectName === 'journal' && actionName === 'insert') objectName = Session.get('activeTxDef');
+    if (objectName === 'transaction' && actionName === 'insert') objectName = Session.get('activeTxDef');
     if (actionName === 'insert') return __('new') + ' ' + __(objectName) + ' ' + __('insertion');
     else if (actionName === 'update') return __(objectName) + ' ' + __('editing data');
     else if (actionName === 'view') return __(objectName) + ' ' + __('viewing data');

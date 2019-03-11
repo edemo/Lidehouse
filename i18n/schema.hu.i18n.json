@@ -337,7 +337,7 @@
       }
     }
   },
-  "schemaJournals": {
+  "schemaTransactions": {
     "valueDate": {
       "label": "Értéknap",
       "placeholder": "(pl. 2017-05-06)"
