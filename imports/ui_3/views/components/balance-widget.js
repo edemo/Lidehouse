@@ -6,6 +6,7 @@ import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 
 import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import '/imports/api/users/users.js';
 import './balance-widget.html';
 
@@ -26,7 +27,7 @@ Template.Balance_widget.viewmodel({
     const parcels = this.ownedParcels();
     let result = 0;
     parcels.forEach((parcel) => {
-      result += Balances.get({ communityId, account: '33', localizer: parcel.ref, tag: 'T' });
+      result += Balances.get({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcel.ref), tag: 'T' });
     });
     return result;
   },
