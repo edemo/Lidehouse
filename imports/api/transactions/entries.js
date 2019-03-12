@@ -25,6 +25,7 @@ JournalEntries.helpers({
   },
   transaction() {
     const tx = Transactions.findOne(this.txId);
+    if (!tx) console.log(`Tx with id ${this.txId} NOT found`);
     return tx;
   },
   contra() {
@@ -33,8 +34,10 @@ JournalEntries.helpers({
       if (side === 'debit') return 'credit';
       debugAssert(false); return undefined;
     }
-    const contraEntries = this.transaction()[otherSide(this.side)];
-    if (!contraEntries) return '';
+    const tx = this.transaction();
+    if (!tx) return {};
+    const contraEntries = tx[otherSide(this.side)];
+    if (!contraEntries) return {};
     const contraAccount = AccountSpecification.fromDoc(contraEntries[0]);
     return contraAccount;
   },
