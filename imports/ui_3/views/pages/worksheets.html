@@ -1,91 +1,10 @@
-<template name="Tickets_complex">
+<template name="Worksheets">
   <!-- Page heading -->
-  {{> Page_heading title=(_ 'Complex view') }}
+  {{> Page_heading title=(_ 'Worksheets') }}
 
   <div class="wrapper wrapper-content animated fadeInRight">
 
-    <div class="row">
-      <div class="col-xs-12 col-md-6">
-        <div class="ibox float-e-margins">
-          <div class="ibox-title">
-              <h5>{{_ 'Recent tickets'}}</h5>
-              {{>iboxTools}}
-          </div>
-
-          <div class="ibox-content inspinia-timeline">
-              {{#each recentTickets}}
-              <div class="timeline-item">
-                  <div class="row">
-                      <div class="col-xs-3 date">
-                          <i class="fa fa-wrench"></i>
-                          {{displayTime createdAt}}
-                          <br/>
-                          <small class="text-navy">{{displayTimeFrom createdAt}}</small>
-                      </div>
-                      <div class="col-xs-7 content no-top-border">
-                            <p class="m-b-xs">
-                                <a class="text-primary" href="{{pathFor 'Topic.show' _tid=_id}}"><strong>{{title}}</strong></a>
-                              <!--span class="label label-white text-white label-xs">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span-->
-                              <!--span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span-->
-                            </p>
-                            <p class="m-b-xs">
-                              {{>Chopped text=text chars=100}}
-                            </p>
-                            <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-xs">
-                                <i class="fa fa-comments"></i>
-                                {{_ 'Comment'}}
-                                ({{commentCounter}})
-                            </a>
-
-                      </div>
-                  </div>
-              </div>
-              {{/each}}
-          </div>
-        </div>
-      </div>
-      <!-- active errors start -->
-      <!--div class="col-xs-12 col-lg-6">
-        <div class="ibox">
-          <div class="ibox-title"> 
-            <h5>{{_ 'Active tickets'}}</h5>
-            {{> iboxTools}}          
-          </div>
-          <div class="ibox-content">
-
-              <div class="no-padding table-responsive">
-                {{> ReactiveDatatable tableData=activeTicketsDataFn options=activeTicketsOptionsFn }}
-              </div>
-
-          </div>
-        </div>
-      </div-->
-
-      <!-- new error start -->
-      <div class="col-xs-12 col-md-6">
-        <div class="widget yellow-bg p-sm text-center">
-          <div class="row">
-          <div class="col-lg-12">
-            <i class="fa fa-warning fa-4x"></i>
-          </div>
-          <div class="col-lg-12">
-             <div class="m-t-sm">
-               <h3 class="font-bold no-margins">
-                <p>{{_ 'Please dont report twice'}}</p>
-                <p class="text-right">{{_ 'Thank you'}}!</p>
-              </h3>
-            </div>
-          </div>
-          <div class="col-xs-12 text-center">
-            <button type="submit" class="btn btn-primary m-md js-new"><i class="fa fa-plus"></i> {{_ 'New ticket'}}</button>
-          </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="ibox closed-ibox">
+    <div class="ibox">
       <div class="ibox-title">
         <h5>{{_ 'Ticket filter'}}</h5>
             {{> iboxTools}}

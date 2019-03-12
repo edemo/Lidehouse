@@ -62,10 +62,12 @@
   "Messages": "Üzenetek",
   "Forum": "Fórum",
   "Decision making": "Döntéshozatal",
+  "Maintenance": "Üzemeltetés",
   "Votings": "Szavazások",
   "Agendas": "Közgyűlések",
   "Delegations": "Meghatalmazások",
   "Tickets": "Hibabejelentés",
+  "Worksheets": "Munka követés",
   "Finances":"Pénzügyek",
   "Parcel finances": "Albetét elszámolás",
   "Community finances": "Ház pénzügyek",
@@ -305,6 +307,7 @@
   "Reported by": "Bejelentő",
   "Reported at": "Bejelentve",
   "Type": "Típus",
+  "No tickets yet": "Még nincs bejelentése",
 
   // finances
   "Account": "Számla", 
