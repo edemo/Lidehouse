@@ -71,7 +71,7 @@ Transactions.entrySchema = new SimpleSchema([
   { amount: { type: Number, optional: true } },
 ]);
 
-Transactions.rawSchema = {
+Transactions.baseSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
   batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
@@ -91,19 +91,20 @@ Transactions.noteSchema = {
 };
 
 Transactions.schema = new SimpleSchema([
-  _.clone(Transactions.rawSchema),
-  { credit: { type: [Transactions.entrySchema], optional: true } },
-  { debit: { type: [Transactions.entrySchema], optional: true } },
-  { complete: { type: Boolean, autoform: { omit: true }, autoValue() {
-    let total = 0;
-    const amount = this.field('amount').value;
-    const debits = this.field('debit').value;
-    const credits = this.field('credit').value;
-    if (!debits || !credits) return false;
-    debits.forEach(entry => total += entry.amount || amount);
-    credits.forEach(entry => total -= entry.amount || amount);
-    return total === 0;
-  } } },
+  _.clone(Transactions.baseSchema), {
+    credit: { type: [Transactions.entrySchema], optional: true },
+    debit: { type: [Transactions.entrySchema], optional: true },
+    complete: { type: Boolean, autoform: { omit: true }, autoValue() {
+      let total = 0;
+      const amount = this.field('amount').value;
+      const debits = this.field('debit').value;
+      const credits = this.field('credit').value;
+      if (!debits || !credits) return false;
+      debits.forEach(entry => total += entry.amount || amount);
+      credits.forEach(entry => total -= entry.amount || amount);
+      return total === 0;
+    } },
+  },
   _.clone(Transactions.noteSchema),
 ]);
 
@@ -120,7 +121,7 @@ Meteor.startup(function indexTransactions() {
 // and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
 
 Transactions.helpers({
-  isOld() {
+  isSolidified() {
     const now = moment(new Date());
     const creationTime = moment(this.createdAt);
     const elapsedHours = now.diff(creationTime, 'hours');

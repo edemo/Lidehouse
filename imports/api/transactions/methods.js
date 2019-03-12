@@ -56,7 +56,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Transactions, _id);
     checkModifier(doc, modifier, ['communityId'], true);
     checkPermissions(this.userId, 'transactions.update', doc.communityId);
-    if (doc.isOld() && doc.complete) {
+    if (doc.isSolidified() && doc.complete) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after 24 hours');
     }
     Transactions.update({ _id }, modifier);
@@ -72,7 +72,7 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.remove', doc.communityId);
-    if (doc.isOld() && doc.complete) {
+    if (doc.isSolidified() && doc.complete) {
       // Not possible to delete tx after 24 hours, but possible to negate it with another tx
       Transactions.insert(doc.negator());
     } else {

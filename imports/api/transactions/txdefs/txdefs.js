@@ -34,12 +34,14 @@ TxDefs.schema = new SimpleSchema({
 
 TxDefs.helpers({
   schema() {
-    return new SimpleSchema([
-      _.clone(Transactions.rawSchema), {
+    const schema = new SimpleSchema([
+      _.clone(Transactions.baseSchema), {
         credit: { type: String, autoform: chooseSubAccount('COA', this.credit) },
         debit: { type: String, autoform: chooseSubAccount('COA', this.debit) },
       }, _.clone(Transactions.noteSchema),
     ]);
+    schema.i18n('schemaTransactions');
+    return schema;
   },
   transformToTransaction(doc) {
     doc.credit = [{ account: doc.credit }];

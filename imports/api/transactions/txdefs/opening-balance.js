@@ -10,7 +10,7 @@ import { AccountSpecification, chooseLeafAccountFromGroup } from '../account-spe
 export const OpeningBalanceTx = {
   name: 'Opening balance tx',
   schema: new SimpleSchema([
-    _.clone(Transactions.rawSchema), {
+    _.clone(Transactions.baseSchema), {
       account: { type: String, autoform: chooseLeafAccountFromGroup() },
       localizer: { type: String, autoform: chooseLeafAccountFromGroup('Localizer') },
     },

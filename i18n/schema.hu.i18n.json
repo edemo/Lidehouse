@@ -419,11 +419,11 @@
       "placeholder": ""
     },
     "credit": {
-      "label": "Terhelt számla",
+      "label": "Tartozik",
       "placeholder": ""
     },
     "debit": {
-      "label": "Jóváírt számla",
+      "label": "Követel",
       "placeholder": ""
     }
   },

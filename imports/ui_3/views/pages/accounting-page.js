@@ -308,7 +308,7 @@ Template.Accounting_page.events({
     const tx = Transactions.findOne(id);
     Modal.confirmAndCall(removeTx, { _id: id }, {
       action: 'delete transaction',
-      message: tx.isOld() ? 'Remove not possible after 24 hours' : '',
+      message: tx.isSolidified() ? 'Remove not possible after 24 hours' : '',
     });
   },
   'click #transactions .js-many'(event, instance) {
