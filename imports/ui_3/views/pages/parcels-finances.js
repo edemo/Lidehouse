@@ -105,7 +105,7 @@ Template.Parcels_finances.viewmodel({
       parcels.forEach(parcel => {
         const parcelRef = parcel.ref;
         const owners = parcel.owners().fetch();
-        const balance = Balances.get({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcelRef), tag: 'T' });
+        const balance = (-1) * Balances.get({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcelRef), tag: 'T' });
         dataset.push({ parcelRef, owners, balance });
       });
       return dataset;

@@ -11,6 +11,7 @@ import { AccountSpecification } from '/imports/api/transactions/account-specific
 import './account-history.html';
 
 Template.Account_history.viewmodel({
+  sign: +1,
   beginDate: '',
   endDate: '',
   accountSelected: '',
@@ -56,12 +57,12 @@ Template.Account_history.viewmodel({
     const entries = JournalEntries.find(selector, { sort: { valueDate: 1 } });
     let total = 0;
     const entriesWithRunningTotal = entries.map(e => {
-      total += e.effectiveAmount();
+      total += e.effectiveAmount(this.sign());
       return _.extend(e, { total });
     });
     return entriesWithRunningTotal;
   },
   negativeClass(entry) {
-    return entry.effectiveAmount() < 0 ? 'negative' : '';
+    return entry.effectiveAmount(this.sign()) < 0 ? 'negative' : '';
   },
 });

@@ -59,7 +59,7 @@
                   <td>{{displayDate entry.valueDate}}</td>
                   <td>{{{entry.contra.display}}}</td>
                   <td>{{entry.note}}</td>
-                  <td class="{{negativeClass entry}}">{{displayMoney entry.effectiveAmount}}</td>
+                  <td class="{{negativeClass entry}}">{{displayMoney (entry.effectiveAmount sign)}}</td>
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
                   <td><strong>{{displayMoney entry.total}}</strong></td>

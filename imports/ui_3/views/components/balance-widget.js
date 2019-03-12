@@ -29,7 +29,7 @@ Template.Balance_widget.viewmodel({
     parcels.forEach((parcel) => {
       result += Balances.get({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcel.ref), tag: 'T' });
     });
-    return result;
+    return (-1) * result;
   },
   display(balance) {
     const signPrefix = balance > 0 ? '+' : '';

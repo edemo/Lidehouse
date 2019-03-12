@@ -17,11 +17,12 @@ Meteor.startup(function indexComments() {
 });
 
 JournalEntries.helpers({
-  effectiveAmount() {
-    let effectiveSign = 0;
-    if (this.side === 'credit') effectiveSign = -1;
-    if (this.side === 'debit') effectiveSign = +1;
-    return this.amount * effectiveSign;
+  effectiveAmount(extraSign = +1) {
+    let dcSign = 0;
+    if (this.side === 'debit') dcSign = +1;
+    else if (this.side === 'credit') dcSign = -1;
+    else debugAssert(false, `Unrecognized side: ${this.side}`);
+    return this.amount * dcSign * extraSign;
   },
   transaction() {
     const tx = Transactions.findOne(this.txId);
