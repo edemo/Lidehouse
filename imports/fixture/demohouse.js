@@ -1252,7 +1252,7 @@ function generateDemoPayments(fixtureBuilder, communityId, parcel) {
       valueDate,
       amount: 6875,
       credit: [{
-        account: fixtureBuilder.name2code('Incomes', 'Közös költség előírás'),
+        account: fixtureBuilder.name2code('Assets', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
       }],
       debit: [{
