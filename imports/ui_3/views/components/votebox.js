@@ -41,17 +41,20 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
   // Filling the chart with data
   this.autorun(() => {
     const voting = Topics.findOne(topicId);
+    const voteSummary = voting.voteSummary;
+    if (!voteSummary) return; // Results come down in a different sub, so it might not be there just yet
+
     if (voting.closed) {
       const barData = {
         labels: vote.choices.map(c => `${__(c)}`),
         datasets: [{
           label: __('Support'),
-          data: vote.choices.map((c, i) => voting.voteSummary[i]),
+          data: vote.choices.map((c, i) => voteSummary[i]),
           backgroundColor: choiceColors[2],
           borderWidth: 2,
         }],
       };
-      const voteSummaryDisplay = self.data.voteSummaryDisplay();
+      const voteSummaryDisplay = voting.voteSummaryDisplay();
       const doughnutData = {
         labels: voteSummaryDisplay.map(s => `${__(s.choice)}`), // .concat(__('Not voted')),
         datasets: [{

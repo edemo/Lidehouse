@@ -197,6 +197,7 @@ Topics.helpers({
     return data;
   },
   voteSummaryDisplay() {
+    if (!this.voteSummary) return [];   // Results come down in a different sub, so it might not be there just yet
     return Object.keys(this.voteSummary).map(key => {
       const choice = this.vote.choices[key];
       const votingUnits = this.voteSummary[key];
