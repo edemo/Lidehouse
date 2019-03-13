@@ -8,7 +8,7 @@ import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 
 export const JournalEntries = new Mongo.Collection(null);
 
-Meteor.startup(function indexComments() {
+Meteor.startup(function indexJournalEntries() {
   if (MinimongoIndexing) {
 //      JournalEntries._collection._ensureIndex('account');
     JournalEntries._collection._ensureIndex(['account', 'localizer']);

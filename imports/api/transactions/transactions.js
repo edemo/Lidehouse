@@ -15,10 +15,12 @@ import { PeriodBreakdown } from './breakdowns/breakdowns-utils.js';
 export let Transactions;
 export class TransactionsCollection extends Mongo.Collection {
   insert(doc, callback) {
+    const tdoc = this._transform(doc);
     const result = super.insert(doc, callback);
     if (doc.complete) {
-      this._updateBalances(this._transform(doc));
+      this._updateBalances(tdoc);
     }
+    this._checkBalances([tdoc]);
     return result;
   }
   update(selector, modifier, options, callback) {
@@ -31,6 +33,7 @@ export class TransactionsCollection extends Mongo.Collection {
     updatedDocs.forEach((doc) => {
       if (doc.complete) this._updateBalances(doc, 1);
     });
+    this._checkBalances(originalDocs);
     return result;
   }
   remove(selector, callback) {
@@ -38,28 +41,43 @@ export class TransactionsCollection extends Mongo.Collection {
     docs.forEach((doc) => {
       if (doc.complete) this._updateBalances(doc, -1);
     });
-    return super.remove(selector, callback);
+    const result = super.remove(selector, callback);
+    this._checkBalances(docs);
+    return result;
   }
   _updateBalances(doc, revertSign = 1) {
     const communityId = doc.communityId;
-    doc.journalEntries().forEach(entry => {
-      const code = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
+    doc.journalEntries().forEach((entry) => {
+      const leafTag = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
 //      const coa = ChartOfAccounts.get(communityId);
 //      coa.parentsOf(entry.account).forEach(account => {
       const account = entry.account;
       const localizer = entry.localizer;
-      PeriodBreakdown.parentsOf(code).forEach(tag => {
-        const amount = entry.effectiveAmount() * revertSign;
-        function updateBalance(selector, amount) {
+      PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+        const effectiveAmount = entry.effectiveAmount() * revertSign;
+        function increaseBalance(selector, amount) {
           const bal = Balances.findOne(selector);
           const balId = bal ? bal._id : Balances.insert(selector);
           Balances.update(balId, { $inc: { amount } });
         }
-        updateBalance({ communityId, account, tag }, amount);
+        increaseBalance({ communityId, account, tag }, effectiveAmount);
         if (localizer) {
-          updateBalance({ communityId, account, tag, localizer }, amount);
+          increaseBalance({ communityId, account, tag, localizer }, effectiveAmount);
         }
       });
+    });
+  }
+  _checkBalances(docs) {
+    const affectedAccounts = [];
+    let communityId;
+    docs.forEach((doc) => {
+      doc.journalEntries().forEach((entry) => {
+        affectedAccounts.push(entry.account);
+        communityId = entry.communityId;
+      });
+    });
+    _.uniq(affectedAccounts).forEach((account) => {
+      Balances.checkCorrect({ communityId, account, tag: 'T' });
     });
   }
 }
@@ -167,11 +185,4 @@ Transactions.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
   Transactions.simpleSchema().i18n('schemaTransactions');
-});
-
-// Deny all transaction updates - we manipulate transactions only
-Transactions.deny({
-  insert() { return true; },
-  update() { return true; },
-  remove() { return true; },
 });

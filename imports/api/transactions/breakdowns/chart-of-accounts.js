@@ -6,6 +6,12 @@ export const ChartOfAccounts = {
   get(communityId = getActiveCommunityId()) {
     return Breakdowns.findOneByName('COA', communityId);
   },
+  accountByName(name) {
+    
+  },
+  accountByCode(code) {
+
+  },
   addAccount(communityId, node) {
     // TODO: implement it
   },

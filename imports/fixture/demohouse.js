@@ -20,8 +20,10 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 // import { TxDefs } from '/imports/api/transactions/tx-defs.js';
 import '/imports/api/transactions/breakdowns/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
@@ -32,7 +34,6 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
-
 import { FixtureBuilder, DemoFixtureBuilder } from './fixture-builder.js';
 
 if (Meteor.isServer) {
@@ -79,11 +80,14 @@ export function insertDemoHouse(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
 
   const demoHouseName = __(`${demoOrTest}.house`);
-  if (Communities.findOne({ name: demoHouseName })) return; // if Demo house data already populated, no need to do anything
+  const demoHouse = Communities.findOne({ name: demoHouseName });
+
+  if (demoHouse) {
+    Balances.checkAllCorrect();
+    return; // if Demo house data already populated, no need to do anything
+  }
+
   console.log('Creating house:', demoHouseName);
-
-  // ===== Communities =====
-
   const demoCommunityId = Communities.insert({
     name: __(`${demoOrTest}.house`),
     zip: '1144',
@@ -903,7 +907,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Localizer.generateParcels(demoCommunityId, lang);
 
-    // === Eloirasok ===
+  // === Parcel Billings ===
+
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     const valueDate = new Date(`2017-${mm}-12`);
 
@@ -916,28 +921,26 @@ export function insertDemoHouse(lang, demoOrTest) {
       localizer: '@',
     });
 
-    for (let i = 0; i < 4; i++) {
-      const parcels = [2, 5, 8, 14];
+    const parcelsWithNoWaterMeter = Parcels.find({ communityId: demoCommunityId, waterMetered: false });
+    parcelsWithNoWaterMeter.forEach((parcel) => {
       insertParcelBilling._execute({ userId: demoAccountantId }, {
         communityId: demoCommunityId,
         valueDate,
         projection: 'perHabitant',
         amount: 2500,
         payinType: fixtureBuilder.name2code('Owner payin types', 'Víz díj előírás'),
-        localizer: fixtureBuilder.serial2code(parcels[i]),
+        localizer: Localizer.parcelRef2code(parcel.ref),
       });
-    }
+    });
 
-    for (let i = 1; i < 11; i++) {
-      insertParcelBilling._execute({ userId: demoAccountantId }, {
-        communityId: demoCommunityId,
-        valueDate,
-        projection: 'perVolume',
-        amount: 85,
-        payinType: fixtureBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
-        localizer: fixtureBuilder.serial2code(i),
-      });
-    }
+    insertParcelBilling._execute({ userId: demoAccountantId }, {
+      communityId: demoCommunityId,
+      valueDate,
+      projection: 'perArea',
+      amount: 85,
+      payinType: fixtureBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
+      localizer: '@A',
+    });
   });
 
   insertParcelBilling._execute({ userId: demoAccountantId }, {
@@ -950,17 +953,48 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.0'),
   });
 
+  // === Owner Payins ===
+  function everybodyPaysHisObligations() {
+    const obligationAccount = ChartOfAccounts.get(demoCommunityId).findNodeByName('Owner obligations');
+    const obligationLeafAccounts = obligationAccount.leafs();
+    obligationLeafAccounts.forEach((leafAccount) => {
+      const txs = Transactions.find({ communityId: demoCommunityId, 'debit.account': leafAccount.code });
+      txs.forEach((tx) => {
+        tx.journalEntries().forEach((entry) => {
+          if (entry.side === 'debit') {
+            insertTx._execute({ userId: demoAccountantId }, {
+              communityId: demoCommunityId,
+              valueDate: moment(entry.valueDate).add(_.sample([-2, -1, 0, 1, 2]), 'days').toDate(),
+              amount: entry.amount,
+              credit: [{
+                account: entry.account,
+                localizer: entry.localizer,
+              }],
+              debit: [{
+                account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+              }],
+            });
+          }
+        });
+      });
+    });
+  }
+
+  everybodyPaysHisObligations();
+
+  // And now some unpaid bills (so we can show the parcels that are in debt)
+  insertParcelBilling._execute({ userId: demoAccountantId }, {
+    communityId: demoCommunityId,
+    projection: 'perArea',
+    amount: 200,
+    valueDate: new Date('2017-12-15'),
+    payinType: fixtureBuilder.name2code('Owner payin types', 'Célbefizetés előírás'),
+    localizer: '@',
+  });
+
 // ===== Transactions =====
-/*
-  const defPayin = TxDefs.findOne({ communityId: demoCommunityId, name: 'Payin' });
-  const defObligation = TxDefs.findOne({ communityId: demoCommunityId, name: 'Obligation' });
-  const defIncome = TxDefs.findOne({ communityId: demoCommunityId, name: 'Income' });
-  const defExpense = TxDefs.findOne({ communityId: demoCommunityId, name: 'Expense' });
-  const defLoan = TxDefs.findOne({ communityId: demoCommunityId, name: 'Loan' });
-  const defOpening = TxDefs.findOne({ communityId: demoCommunityId, name: 'Opening' });
-  const defBackofficeOp = TxDefs.findOne({ communityId: demoCommunityId, name: 'BackofficeOp' });
-*/
-  // === Opening ===
+
+// === Opening ===
 
   const openings = [
     ['Assets', 'Pénztár', 100000],
@@ -1073,82 +1107,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.4'),
   });
 
-  // === Payins ===
-
-  for (let m = 1; m < 13; m++) {
-    for (let i = 1; i < 15; i++) {
-      const payable = [0, 15125, 13200, 18150, 19250, 18150, 19250, 18150,
-        19250, 18150, 19250, 30800, 13750, 19000, 6050];
-      insertTx._execute({ userId: demoAccountantId }, {
-        communityId: demoCommunityId,
-//        defId: defPayin,
-        valueDate: new Date('2017-' + m + '-' + _.sample(['01', '02', '03', '04', '05', '06', '07', '08', '11', '12', '17'])),
-        amount: payable[i],
-        credit: [{
-          account: fixtureBuilder.name2code('Assets', 'Közös költség előírás'),
-          localizer: fixtureBuilder.serial2code(i),
-        }],
-        debit: [{
-          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
-        }],
-      });
-    }
-  }
-
-  for (let m = 1; m < 13; m++) {
-    for (let i = 0; i < 4; i++) {
-      const payable = [5000, 7500, 5000, 2500];
-      const place = [2, 5, 8, 14];
-      insertTx._execute({ userId: demoAccountantId }, {
-        communityId: demoCommunityId,
-//        defId: defPayin,
-        valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
-        amount: payable[i],
-        credit: [{
-          account: fixtureBuilder.name2code('Assets', 'Víz díj előírás'),
-          localizer: fixtureBuilder.serial2code(place[i]),
-        }],
-        debit: [{
-          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
-        }],
-      });
-    }
-  }
-  for (let m = 1; m < 13; m++) {
-    for (let i = 1; i < 11; i++) {
-      const payable = [0, 14960, 13056, 15708, 16660, 15708, 16660, 15708, 16660, 15708, 16660];
-      insertTx._execute({ userId: demoAccountantId }, {
-        communityId: demoCommunityId,
-//        defId: defPayin,
-        valueDate: new Date('2017-' + m + '-' + _.sample(['02', '03', '04', '05', '06', '07', '08', '10'])),
-        amount: payable[i],
-        credit: [{
-          account: fixtureBuilder.name2code('Assets', 'Fűtési díj előírás'),
-          localizer: fixtureBuilder.serial2code(i),
-        }],
-        debit: [{
-          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
-        }],
-      });
-    }
-  }
-
-  for (let i = 1; i < 15; i++) {
-    insertTx._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-//      defId: defPayin,
-      valueDate: new Date('2017-09-' + _.sample(['10', '11', '12', '16', '17', '18', '21'])),
-      amount: 60000,
-      credit: [{
-        account: fixtureBuilder.name2code('Assets', 'Célbefizetés előírás'),
-        localizer: fixtureBuilder.serial2code(i),
-      }],
-      debit: [{
-        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
-      }],
-    });
-  }
-
   // == Expenses
   
   for (let m = 1; m < 13; m += 2) {
@@ -1250,7 +1208,7 @@ function generateDemoPayments(fixtureBuilder, communityId, parcel) {
     insertTx._execute({ userId: accountantId }, {
       communityId,
       valueDate,
-      amount: 6875,
+      amount: 275 * parcel.units,
       credit: [{
         account: fixtureBuilder.name2code('Assets', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),

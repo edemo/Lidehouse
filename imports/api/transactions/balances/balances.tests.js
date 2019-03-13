@@ -101,7 +101,11 @@ if (Meteor.isServer) {
         };
       });
 
-      it('updates balances after tx', function (done) {
+      beforeEach(function () {
+        Transactions.remove({});
+      });
+
+      it('updates balances with tx operations', function (done) {
         insertTx({
           valueDate: new Date('2017-01-01'),
           amount: 1000,
@@ -115,10 +119,7 @@ if (Meteor.isServer) {
         assertBalance(':12', undefined, 'T-2017-1', -1000);
         assertBalance(':1', undefined, 'T-2017-1', 0);
         assertBalance(':19', undefined, 'T', 1000);
-        done();
-      });
 
-      it('updates balances for removed tx', function (done) {
         const txId = insertTx({
           valueDate: new Date('2017-02-02'),
           amount: 2000,
@@ -150,7 +151,6 @@ if (Meteor.isServer) {
       });
 
       it('updates balances of localizer', function (done) {
-        Balances.remove({});
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 500,
@@ -182,7 +182,6 @@ if (Meteor.isServer) {
       });
 
       it('updates balances of both account and localizer', function (done) {
-        Balances.remove({});
         insertTx({
           valueDate: new Date('2017-03-03'),
           amount: 600,
