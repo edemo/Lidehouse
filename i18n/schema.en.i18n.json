@@ -268,6 +268,7 @@
       "status": {
         "label": "Status",
         "reported": "Reported",
+        "scheduled": "Ütemezve",
         "confirmed": "Confirmed",
         "progressing": "Progressing",
         "finished": "Finished",

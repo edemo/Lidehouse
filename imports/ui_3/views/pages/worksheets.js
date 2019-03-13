@@ -32,11 +32,20 @@ Template.Worksheets.viewmodel({
   endDate: '',
   reportedByCurrentUser: false,
   communityId: null,
+  ticketTypeSelector: '',
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
   },
+  option() {
+    if (this.ticketTypeSelector() === '') return false;
+    if (this.ticketTypeSelector() === 'worksheets') return true;
+    if (this.ticketTypeSelector() === 'tickets') return false;
+  },
   statusColor(value) {
     return Topics.statusColors[value];
+  },
+  worksheetStatusColor(value) {
+    return Topics.worksheetStatusColors[value];
   },
   urgencyColor(value) {
     return Topics.urgencyColors[value];
@@ -150,6 +159,9 @@ Template.Worksheets.viewmodel({
   statusValues() {
     return Topics.statusValues;
   },
+  worksheetStatusValues() {
+    return Topics.worksheetStatusValues;
+  },
   columns() {
     return Topics.columns;
   },
@@ -203,5 +215,8 @@ Template.Worksheets.events({
   },
   'keyup .js-search'(event, instance) {
     instance.viewmodel.ticketText(event.target.value);
+  },
+  'change #ticket-type-selector'(event, instance) {
+    instance.viewmodel.ticketTypeSelector($('#ticket-type-selector').val());
   },
 });

@@ -23,6 +23,16 @@ Topics.statusColors = {
   deleted: 'danger',
 };
 
+Topics.worksheetStatusValues = ['scheduled', 'progressing', 'finished', 'checked', 'closed', 'deleted'];
+Topics.worksheetStatusColors = {
+  scheduled: 'warning',
+  progressing: 'info',
+  finished: 'primary',
+  checked: 'primary',
+  closed: 'default',
+  deleted: 'danger',
+};
+
 Topics.columns = ['Status', 'Title', 'Reported by', 'Reported at', 'Type'];
 
 const TicketsExtensionSchema = new SimpleSchema({
