@@ -889,23 +889,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.messages.1'),
   });*/
 
-  // ===== Breakdowns =====
+  // ===== Accounting =====
 
-  const breakdownsToClone = ['Owner payin types', 'Incomes', 'Expenses', 'Assets', 'Liabilities', 'COA', 'Places', 'Localizer'];
-  breakdownsToClone.forEach((breakdownName) => {
-    Breakdowns.methods.clone._execute(
-      { userId: demoAccountantId },
-      { name: breakdownName, communityId: demoCommunityId },
-    );
-  });
-  const txDefsToClone = TxDefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
-  txDefsToClone.forEach((txDefName) => {
-    TxDefs.methods.clone._execute(
-      { userId: demoAccountantId },
-      { name: txDefName, communityId: demoCommunityId },
-    );
-  });
-  Localizer.generateParcels(demoCommunityId, lang);
+  Transactions.methods.cloneAccountingTemplates._execute({ userId: demoAccountantId },
+    { communityId: demoCommunityId });
 
   // === Parcel Billings ===
 

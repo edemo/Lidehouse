@@ -6,8 +6,11 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-// import { Txs } from '/imports/api/transactions/txs.js';
-// import { TxDefs } from '/imports/api/transactions/tx-defs.js';
+import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import '/imports/api/transactions/breakdowns/methods.js';
+import '/imports/api/transactions/txdefs/methods.js';
 
 /*
 function runPositingRules(context, doc) {
@@ -81,8 +84,36 @@ export const remove = new ValidatedMethod({
   },
 });
 
+export const cloneAccountingTemplates = new ValidatedMethod({
+  name: 'transactions.cloneAccountingTemplates',
+  validate: new SimpleSchema({
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+//    name: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ communityId /*, name*/ }) {
+    checkPermissions(this.userId, 'breakdowns.insert', communityId);
+    const user = Meteor.users.findOne(this.userId);
+    const breakdownsToClone = ['Owner payin types', 'Incomes', 'Expenses', 'Assets', 'Liabilities', 'COA', 'Places', 'Localizer'];
+    breakdownsToClone.forEach((breakdownName) => {
+      Breakdowns.methods.clone._execute(
+        { userId: this.userId },
+        { name: breakdownName, communityId },
+      );
+    });
+    const txDefsToClone = TxDefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
+    txDefsToClone.forEach((txDefName) => {
+      TxDefs.methods.clone._execute(
+        { userId: this.userId },
+        { name: txDefName, communityId },
+      );
+    });
+    Localizer.generateParcels(communityId, user.settings.language);
+  },
+});
+
 Transactions.methods = {
-  insert, remove,
+  insert, update, remove, cloneAccountingTemplates,
 };
 
 //---------------------------------------------

@@ -20,7 +20,7 @@ import { Reports } from '/imports/api/transactions/reports/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { insert as insertTx, remove as removeTx } from '/imports/api/transactions/methods.js';
+import '/imports/api/transactions/methods.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
@@ -79,6 +79,10 @@ Template.Accounting_page.viewmodel({
   report(name, year) {
     if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
+  },
+  noBreakdownsDefined() {
+    const communityId = Session.get('activeCommunityId');
+    return Breakdowns.find({ communityId }).count() === 0;
   },
   txDefs() {
     const communityId = Session.get('activeCommunityId');
@@ -306,7 +310,7 @@ Template.Accounting_page.events({
   'click #transactions .js-delete'(event) {
     const id = $(event.target).closest('button').data('id');
     const tx = Transactions.findOne(id);
-    Modal.confirmAndCall(removeTx, { _id: id }, {
+    Modal.confirmAndCall(Transactions.methods.remove, { _id: id }, {
       action: 'delete transaction',
       message: tx.isSolidified() ? 'Remove not possible after 24 hours' : '',
     });
@@ -319,6 +323,10 @@ Template.Accounting_page.events({
       meteormethod: 'parcelBillings.insert',
       template: 'bootstrap3-inline',
     });
+  },
+  'click #coa .js-clone'(event, instance) {
+    const communityId = Session.get('activeCommunityId');
+    Transactions.methods.cloneAccountingTemplates.call({ communityId });
   },
 });
 
@@ -353,7 +361,7 @@ AutoForm.addHooks('af.transaction.insert', {
     const def = TxDefs.findOne({ name: defId });
     def.transformToTransaction(doc);
     const afContext = this;
-    insertTx.call(doc, function handler(err, res) {
+    Transactions.methods.insert.call(doc, function handler(err, res) {
       if (err) {
 //        displayError(err);
         afContext.done(err);
