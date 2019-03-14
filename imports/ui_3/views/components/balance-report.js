@@ -23,11 +23,14 @@ Template.Balance_report.helpers({
     };
     return Balances.get(balanceDef);
   },
+  headerLevelClass(account) {
+    return 'header-level' + account.code.length.toString();
+  },
   displayAccount(account) {
     return Breakdowns.display(account);
   },
   displayCell(number) {
-    return numeral(number).format('0.0 a');
+    return numeral(number).format('0,0');
   },
   displayPeriod(tag) {
     const node = PeriodBreakdown.nodeByCode(tag);

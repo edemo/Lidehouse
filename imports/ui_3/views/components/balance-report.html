@@ -11,10 +11,10 @@
         </thead>
         <tbody>
             {{#each account in breakdown.nodes}}
-            <tr class="table-row">
-                <td><strong>{{displayAccount account}}</strong></td>
+            <tr class="table-row {{headerLevelClass account}}">
+                <td>{{displayAccount account}}</td>
                 {{#each tag in tags}}
-                    <td>{{displayCell (balance account tag)}}</td>
+                    <td class="cell">{{displayCell (balance account tag)}}</td>
                 {{/each}} 
             </tr>
             {{/each}}
