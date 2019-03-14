@@ -415,15 +415,15 @@
   },
   "schemaTxDefs": {
     "name": {
-      "label": "Transaction type",
+      "label": "Transaction type name",
       "placeholder": ""
     },
     "credit": {
-      "label": "Credited account",
+      "label": "Credited",
       "placeholder": ""
     },
     "debit": {
-      "label": "Debited account",
+      "label": "Debited",
       "placeholder": ""
     }
   },

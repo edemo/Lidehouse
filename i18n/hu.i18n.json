@@ -365,6 +365,7 @@
   "perVolume": "légköbméter (/m3)",
   "perHabitant": "lakók száma (/fő)",
   // accounts
+  "Chart Of Accounts": "Főkönyvi számlák",
   "Incomes" : "Bevételek",
   "Expenses" : "Kiadások",
   "Assets": "Eszközök",
@@ -400,12 +401,6 @@
   "Main building": "Főépület",
   "Garden": "Kert",
   "Heating system": "Kazán",
-  // Tx types
-  "Income tx": "Bevétel",
-  "Expense tx": "Kiadás",
-  "Money trasfer tx": "Pénz kivét/betét",
-  "Opening balance tx": "Nyitó egyenleg",
-  "Back office tx": "Back office művelet",
 
   // docstore
   "Show": "Listázva",

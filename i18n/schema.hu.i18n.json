@@ -415,7 +415,7 @@
   },
   "schemaTxDefs": {
     "name": {
-      "label": "Tranzakció típus",
+      "label": "Tranzakció típus neve",
       "placeholder": ""
     },
     "credit": {

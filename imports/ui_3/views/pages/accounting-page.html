@@ -232,11 +232,13 @@
                                 </tbody>
                             </table>
                         </div>
+                        {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
                         <div class="row">
                             <div class="col-xs-12 text-center">
                                 <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txDef'}}</button>
                             </div>
                         </div>
+                        {{/if}}
                     </div>
                 </div>
             </div>

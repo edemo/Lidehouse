@@ -8,7 +8,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { chooseSubAccount } from '/imports/api/transactions/account-specification.js';
+import { chooseAccountNode, chooseSubAccount } from '/imports/api/transactions/account-specification.js';
 
 class TxDefsCollection extends Mongo.Collection {
   define(doc) {
@@ -28,8 +28,8 @@ TxDefs.clone = function clone(name, communityId) {
 TxDefs.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String, max: 100 },
-  credit: { type: String, max: 100, optional: true }, // account node code
-  debit: { type: String, max: 100, optional: true }, // account node code
+  credit: { type: String, max: 100, autoform: chooseAccountNode, optional: true },
+  debit: { type: String, max: 100, autoform: chooseAccountNode, optional: true },
 });
 
 TxDefs.helpers({
