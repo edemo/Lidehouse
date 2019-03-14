@@ -15,6 +15,9 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { defineBreakdownTemplates } from '/imports/api/transactions/breakdowns/template.js';
+import { defineTxDefTemplates } from '/imports/api/transactions/txdefs/template.js';
+import { initializeBuiltinFolders } from '/imports/api/shareddocs/sharedfolders/builtin.js';
 
 chai.config.truncateThreshold = Infinity;
 
@@ -30,14 +33,21 @@ export function logDB() {
   console.log('Transactions:', '\n', Transactions.find().fetch());
 }
 
+function initializeDatabase() {
+  initializePermissions();
+  defineBreakdownTemplates();
+  defineTxDefTemplates();
+  initializeBuiltinFolders();
+}
+
 export function emptyFixture() {
   resetDatabase();
-  initializePermissions();
+  initializeDatebase();
 }
 
 export function freshFixture() {
   resetDatabase();
-  initializePermissions();
+  initializeDatabase();
   const result = insertDemoFixture('en');
   return result;
 }

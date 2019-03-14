@@ -48,12 +48,14 @@ export class FixtureBuilder {
   }
   createParcel(doc) {
     const ref = 'A' + doc.floor + doc.door;
+    const volume = 3 * doc.area || 0;
     _.extend(doc, {
       communityId: this.communityId,
       serial: this.nextSerial,
       ref,
       lot: '4532/8/A/' + this.nextSerial.toString(),
       building: 'A',
+      volume,
     });
 
     const registeredUnits = this.community().registeredUnits();

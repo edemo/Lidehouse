@@ -15,6 +15,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
@@ -24,6 +25,7 @@ import { FixtureBuilder } from './fixture-builder.js';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
+import '/imports/api/transactions/txdefs/methods.js';
 
 
 export function insertDemoFixture(lang) {
@@ -490,7 +492,20 @@ export function insertDemoFixture(lang) {
   // ===== Breakdowns =====
 
   // ===== Breakdowns =====
-
+  const breakdownsToClone = ['Owner payin types', 'Incomes', 'Expenses', 'Assets', 'Liabilities', 'COA', 'Places', 'Localizer'];
+  breakdownsToClone.forEach((breakdownName) => {
+    Breakdowns.methods.clone._execute(
+      { userId: demoAccountantId },
+      { name: breakdownName, communityId: demoCommunityId },
+    );
+  });
+  const txDefsToClone = TxDefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
+  txDefsToClone.forEach((txDefName) => {
+    TxDefs.methods.clone._execute(
+      { userId: demoAccountantId },
+      { name: txDefName, communityId: demoCommunityId },
+    );
+  });
   Localizer.generateParcels(demoCommunityId, lang);
 
   // ===== Transactions =====
