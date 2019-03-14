@@ -23,8 +23,8 @@ Topics.statusColors = {
   deleted: 'danger',
 };
 
-Topics.worksheetStatusValues = ['scheduled', 'progressing', 'finished', 'checked', 'closed', 'deleted'];
-Topics.worksheetStatusColors = {
+Topics.taskStatusValues = ['scheduled', 'progressing', 'finished', 'checked', 'closed', 'deleted'];
+Topics.taskStatusColors = {
   scheduled: 'warning',
   progressing: 'info',
   finished: 'primary',

@@ -23,7 +23,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/forum-topics.js';
   import '/imports/ui_3/views/pages/community-page.js';
   import '/imports/ui_3/views/pages/tickets-simple.js';
-  import '/imports/ui_3/views/pages/worksheets.js';
+  import '/imports/ui_3/views/pages/tasks.js';
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
@@ -180,13 +180,13 @@ CommunityRelatedRoutes.push('Delegations');
 });
 CommunityRelatedRoutes.push('Tickets.control');*/
 
-FlowRouter.route('/worksheets', {
-  name: 'Worksheets',
+FlowRouter.route('/tasks', {
+  name: 'Tasks',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Worksheets' });
+    BlazeLayout.render('Main_layout', { content: 'Tasks' });
   },
 });
-CommunityRelatedRoutes.push('Worksheets');
+CommunityRelatedRoutes.push('Tasks');
 
 /*FlowRouter.route('/tickets/own', {
   name: 'Tickets.own',

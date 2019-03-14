@@ -1,6 +1,6 @@
-<template name="Worksheets">
+<template name="Tasks">
   <!-- Page heading -->
-  {{> Page_heading title=(_ 'Worksheets') }}
+  {{> Page_heading title=(_ 'Tasks') }}
 
   <div class="wrapper wrapper-content animated fadeInRight">
 
@@ -10,7 +10,7 @@
           <div class="col-sm-5 m-b-sm">
             <select class="form-control-sm form-control input-s-sm inline" id="ticket-type-selector">
               <option value="tickets">{{_ 'tickets'}}</option>
-              <option value="worksheets">{{_ 'scheduled'}}</option>
+              <option value="tasks">{{_ 'tasks'}}</option>
             </select>
           </div>
           <div class="col-sm-7">
@@ -23,9 +23,9 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="input-group">
-                <label class="control-label">{{_ 'Worksheet status'}}</label><br>
-                {{#each worksheetStatusValue in worksheetStatusValues}}
-                <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{worksheetStatusColor worksheetStatusValue}} {{activeButton worksheetStatusValue}}" data-value="{{worksheetStatusValue}}">{{_ (concat 'schemaTickets.ticket.status.' worksheetStatusValue)}}</button>
+                <label class="control-label">{{_ 'Task status'}}</label><br>
+                {{#each taskStatusValue in taskStatusValues}}
+                <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{taskStatusColor taskStatusValue}} {{activeButton taskStatusValue}}" data-value="{{taskStatusValue}}">{{_ (concat 'schemaTickets.ticket.status.' taskStatusValue)}}</button>
                 {{/each}}
               </div>
             </div>
@@ -120,14 +120,14 @@
     {{#if option}}
     <div class="ibox">
       <div class="ibox-title"> 
-        <h5>{{_ 'Worksheets archive'}}</h5>
+        <h5>{{_ 'Tasks archive'}}</h5>
         {{> iboxTools}}      
       </div>
       <div class="ibox-content">
         <div class="row">
           {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')  }}
           <div class="col-sm-12 m-b-xs">  
-            <a href="" class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}}</a>
+            <a href="" class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'task'}}</a>
           </div>
           {{/if}}
         </div>

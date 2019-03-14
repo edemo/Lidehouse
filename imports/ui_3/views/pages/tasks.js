@@ -16,16 +16,16 @@ import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, de
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
-import './worksheets.html';
+import './tasks.html';
 
-Template.Worksheets.onCreated(function onCreated() {
+Template.Tasks.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   this.autorun(() =>
     this.subscribe('communities.byId', { _id: this.getCommunityId() })
   );
 });
 
-Template.Worksheets.viewmodel({
+Template.Tasks.viewmodel({
   ticketText: '',
   ticketStatusArray: [],
   startDate: '',
@@ -38,14 +38,14 @@ Template.Worksheets.viewmodel({
   },
   option() {
     if (this.ticketTypeSelector() === '') return false;
-    if (this.ticketTypeSelector() === 'worksheets') return true;
+    if (this.ticketTypeSelector() === 'tasks') return true;
     if (this.ticketTypeSelector() === 'tickets') return false;
   },
   statusColor(value) {
     return Topics.statusColors[value];
   },
-  worksheetStatusColor(value) {
-    return Topics.worksheetStatusColors[value];
+  taskStatusColor(value) {
+    return Topics.taskStatusColors[value];
   },
   urgencyColor(value) {
     return Topics.urgencyColors[value];
@@ -159,15 +159,15 @@ Template.Worksheets.viewmodel({
   statusValues() {
     return Topics.statusValues;
   },
-  worksheetStatusValues() {
-    return Topics.worksheetStatusValues;
+  taskStatusValues() {
+    return Topics.taskStatusValues;
   },
   columns() {
     return Topics.columns;
   },
 });
 
-Template.Worksheets.events({
+Template.Tasks.events({
   'click .js-new'() {
     afTicketInsertModal();
   },
