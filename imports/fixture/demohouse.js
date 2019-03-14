@@ -1208,7 +1208,7 @@ function generateDemoPayments(fixtureBuilder, communityId, parcel) {
     insertTx._execute({ userId: accountantId }, {
       communityId,
       valueDate,
-      amount: 275 * parcel.units,
+      amount: 275 * parcel.area,
       credit: [{
         account: fixtureBuilder.name2code('Assets', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
