@@ -9,12 +9,17 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { Timestamps } from '/imports/api/timestamps.js';
+
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Comments } from '/imports/api/comments/comments.js';
+import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 
 export let getActiveCommunityId = () => {
@@ -73,15 +78,21 @@ Communities.helpers({
     const users = Memberships.find({ communityId: this._id, active: true, 'person.userId': { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);
   },
+  // --- writers ---
   remove() {
-    Topics.find({ communityId: this._id }).forEach(topic => topic.remove());
-    Agendas.remove({ communityId: this._id });
-    Parcels.remove({ communityId: this._id });
-    ParcelBillings.remove({ communityId: this._id });
-    Transactions.remove({ communityId: this._id });
-    Breakdowns.remove({ communityId: this._id });
-    Memberships.remove({ communityId: this._id });
-    Communities.remove({ _id: this._id });
+    const communityId = this._id;
+    Communities.remove(communityId);
+    Parcels.remove({ communityId });
+    Memberships.remove({ communityId });
+    Agendas.remove({ communityId });
+    Topics.remove({ communityId });
+    Comments.remove({ communityId });
+    Delegations.remove({ communityId });
+    Breakdowns.remove({ communityId });
+    TxDefs.remove({ communityId });
+    Transactions.remove({ communityId });
+    Balances.remove({ communityId });
+    ParcelBillings.remove({ communityId });
   },
 });
 

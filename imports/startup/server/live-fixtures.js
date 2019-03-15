@@ -6,6 +6,10 @@ import { insertDemoHouse, insertLoginableUsersWithRoles, insertLoadsOfDummyData,
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
+  if (Meteor.settings.reset) {
+    console.log('Purging all demo users...');
+    Meteor.users.remove({ 'emails.0.address': { $regex: /demo|test/ } });
+  }
   const languages = TAPi18n.getLanguages();
   Object.keys(languages).forEach((lang) => {
   // insertDemoFixture(lang);

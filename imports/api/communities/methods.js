@@ -2,15 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
-import { Topics } from '/imports/api/topics/topics.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from './communities.js';
 import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
@@ -60,15 +52,6 @@ export const remove = new ValidatedMethod({
         `Found: {${officers.count()}}`);
     }
     // Once there are no active officers, the community can be purged
-    Communities.remove(_id);
-    Parcels.remove({ communityId: _id });
-    Memberships.remove({ communityId: _id });
-    Agendas.remove({ communityId: _id });
-    Topics.remove({ communityId: _id });
-    Comments.remove({ communityId: _id });
-    Delegations.remove({ communityId: _id });
-    Breakdowns.remove({ communityId: _id });
-    TxDefs.remove({ communityId: _id });
-    Transactions.remove({ communityId: _id });
+    community.remove();
   },
 });

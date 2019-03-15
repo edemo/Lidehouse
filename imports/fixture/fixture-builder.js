@@ -33,12 +33,16 @@ import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
 
 export class FixtureBuilder {
-  constructor(communityId, lang) {
+  constructor(communityId, demoOrTest, lang) {
     this.communityId = communityId;
+    this.demoOrTest = demoOrTest;
     this.lang = lang;
+    this.com = { en: 'com', hu: 'hu' }[lang];
+
     const parcels = Parcels.find({ communityId }, { sort: { createdAt: -1 } });
     const lastCreatedParcel = parcels.fetch()[0];
     this.nextSerial = (lastCreatedParcel ? lastCreatedParcel.serial : 0) + 1;
+    this.dummyUsers = [];
   }
   __(text) {
     return TAPi18n.__(text, {}, this.lang);
@@ -67,6 +71,48 @@ export class FixtureBuilder {
     this.nextSerial += 1;
     return id;
   }
+  createLoginableUser(role, userData, membershipData) {
+    const emailAddress = `${role}@${this.demoOrTest}.${this.com}`;
+    const userId = Accounts.createUser({ email: emailAddress, password: 'password', language: this.lang });
+    Meteor.users.update(userId, { $set: {
+      'emails.0.verified': true,
+      profile: {
+        lastName: this.__(`demo.${role}.lastName`),
+        firstName: this.__(`demo.${role}.firstName`),
+        publicEmail: `${role}@${this.demoOrTest}.${this.com}`,
+        bio: this.__(`demo.${role}.bio`),
+      },
+    } });
+    if (userData) Meteor.users.update(userId, { $set: userData });
+    const mId = Memberships.insert({ communityId: this.communityId, person: { userId }, accepted: true, role });
+    if (membershipData) Memberships.update(mId, { $set: membershipData });
+    return userId;
+  }
+  createDummyUser() {
+    const userNo = this.dummyUsers.length;
+    const lastName = this.__(`demo.user.${userNo}.lastName`);
+    const firstName = this.__(`demo.user.${userNo}.firstName`);
+    function emailFriendly(name) {
+      return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    }
+    const userId = Meteor.users.insert({
+      emails: [{
+        address: `${emailFriendly(firstName)}.${emailFriendly(lastName)}.${userNo}@${this.demoOrTest}.${this.com}`,
+        verified: true,
+      }],
+      profile: { lastName, firstName },
+      avatar: `/images/avatars/avatar${userNo}.jpg`,
+      settings: { language: this.lang },
+    });
+    this.dummyUsers.push(userId);
+    return userId;
+  }
+  addRoleToUser(userNoOrId, role, membershipData) {
+    const userId = (typeof userNoOrId === 'number') ? this.dummyUsers[userNoOrId] : userNoOrId;
+    const mId = Memberships.insert({ communityId: this.communityId, person: { userId }, accepted: true, role });
+    if (membershipData) Memberships.update(mId, { $set: membershipData });
+    return mId;
+  }
   name2code(breakdownName, nodeName) {
     return Breakdowns.name2code(breakdownName, nodeName, this.communityId);
   }
@@ -78,7 +124,7 @@ export class FixtureBuilder {
 
 export class DemoFixtureBuilder extends FixtureBuilder {
   constructor(communityId, lang) {
-    super(communityId, lang);
+    super(communityId, 'demo', lang);
   }
   demoUsersList() {
     return Meteor.users.find({ 'emails.0.address': { $regex: `${this.lang}demouser@honline.hu` } },

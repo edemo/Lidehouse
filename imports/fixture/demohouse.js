@@ -9,7 +9,6 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
-import { update as updateCommunity } from '/imports/api/communities/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { defaultRoles } from '/imports/api/permissions/roles.js';
@@ -83,8 +82,12 @@ export function insertDemoHouse(lang, demoOrTest) {
   const demoHouse = Communities.findOne({ name: demoHouseName });
 
   if (demoHouse) {
-    Balances.checkAllCorrect();
-    return; // if Demo house data already populated, no need to do anything
+    if (Meteor.settings.reset) {
+      demoHouse.remove();
+    } else {
+      Balances.checkAllCorrect();
+      return;
+    }
   }
 
   console.log('Creating house:', demoHouseName);
@@ -99,8 +102,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     totalunits: 10000,
   });
 
+  const fixtureBuilder = new FixtureBuilder(demoCommunityId, demoOrTest, lang);
+
 // ===== Parcels =====
-  const fixtureBuilder = new FixtureBuilder(demoCommunityId, lang);
 
   const demoParcels = [];
   demoParcels[0] = fixtureBuilder.createParcel({
@@ -254,133 +258,55 @@ export function insertDemoHouse(lang, demoOrTest) {
     heatingType: 'ownHeating',
   });
 
-  // ===== Demo Users with Roles =====
+  // ==== Loginable users with Roles =====
   
-  // You can log in as manager or admin 
-  
-  const com = { en: 'com', hu: 'hu' }[lang];
-
-  const demoManagerId = Accounts.createUser({
-    email: `manager@${demoOrTest}.${com}`,
-    password: 'password',
-    language: lang,
+  const demoManagerId = fixtureBuilder.createLoginableUser('manager', {
+    avatar: '/images/avatars/avatar20.jpg',
+    'profile.phone': '06 60 555 4321',
   });
-  Meteor.users.update({ _id: demoManagerId }, {
-    $set: {
-      'emails.0.verified': true,
-      avatar: '/images/avatars/avatar20.jpg',
-      profile: { lastName: __('demo.manager.lastName'),
-        firstName: __('demo.manager.firstName'),
-        publicEmail: `manager@${demoOrTest}.${com}`,
-        phone: '06 60 555 4321',
-        bio: __('demo.manager.bio'),
-      },
-    },
-  });
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoManagerId }, accepted: true, role: 'manager' });
 
-  const demoAdminId = Accounts.createUser({
-    email: `admin@${demoOrTest}.${com}`,
-    password: 'password',
-    language: lang,
+  const demoAdminId = fixtureBuilder.createLoginableUser('admin', {
+    avatar: '/images/avatars/avatar21.jpg',
+    'profile.phone': '06 60 762 7288',
   });
-  Meteor.users.update({ _id: demoAdminId }, {
-    $set: {
-      'emails.0.verified': true,
-      avatar: '/images/avatars/avatar21.jpg',
-      profile: {
-        lastName: __('demo.admin.lastName'),
-        firstName: __('demo.admin.firstName'),
-        publicEmail: `admin@${demoOrTest}.${com}`,
-        phone: '06 60 762 7288',
-      },
-    },
-  });
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoAdminId }, accepted: true, role: 'admin' });
 
-  // ===== Filling demo Users =====
+  // ===== Non-loginable Dummy Users =====
 
-  const dummyUsers = [];
   for (let userNo = 0; userNo < 18; userNo++) {
-    const lastName = __(`demo.user.${userNo}.lastName`);
-    const firstName = __(`demo.user.${userNo}.firstName`);
-    dummyUsers.push(Meteor.users.insert({
-      emails: [{ address: `${firstName.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()}.${lastName.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()}.${userNo}@${demoOrTest}.${com}`, verified: true }],
-      profile: { lastName, firstName },
-      avatar: `/images/avatars/avatar${userNo}.jpg`,
-      settings: { language: lang },
-    }));
+    const dummyUserId = fixtureBuilder.createDummyUser();
+    switch (userNo) {
+      case 2: fixtureBuilder.addRoleToUser(dummyUserId, 'maintainer'); break;
+      case 3: fixtureBuilder.addRoleToUser(dummyUserId, 'accountant'); break;
+      case 4:
+      case 10:
+      case 16: fixtureBuilder.addRoleToUser(dummyUserId, 'overseer'); break;
+      default: break;
+    }
   }
+  const demoMaintainerId = fixtureBuilder.dummyUsers[2];
+  const demoAccountantId = fixtureBuilder.dummyUsers[3];
+  const dummyUserId = fixtureBuilder.dummyUsers[5];
 
-  const demoMaintainerId = (Meteor.users.insert({
-    emails: [{ address: `demo.maintainer@${demoOrTest}.${com}`, verified: true }],
-    profile: { lastName: __('demo.maintainer.lastName'), firstName: __('demo.maintainer.firstName'), phone: '06 60 555 6321' },
-    avatar: '/images/avatars/avatarnull.png',
-    settings: { language: lang },
-  }));
-  Memberships.insert({ communityId: demoCommunityId, person: { userId: demoMaintainerId }, accepted: true, role: 'maintainer' }); 
+  // ===== Ownerships =====
 
-  const dummyUserId = dummyUsers[5];
-
-  // ===== Memberships =====
-
-  const demoAccountantId = dummyUsers[3];
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: demoAccountantId },
-    accepted: true,
-    role: 'accountant',
-  });
-  const dummy3Email = Meteor.users.findOne({ _id: dummyUsers[3] }).emails[0].address;
-  Meteor.users.update({ _id: dummyUsers[3] },
-    { $set: { 'profile.publicEmail': dummy3Email } },
-  );
-  [4, 10, 16].forEach((userNo) => {
-    Memberships.insert({
-      communityId: demoCommunityId,
-      person: { userId: dummyUsers[userNo] },
-      accepted: true,
-      role: 'overseer',
-    });
-  });
   [0, 1, 4, 5, 6, 7, 8, 9, 10, 12].forEach((parcelNo) => {
-    Memberships.insert({
-      communityId: demoCommunityId,
-      person: { userId: dummyUsers[parcelNo] },
-      accepted: true,
-      role: 'owner',
+    fixtureBuilder.addRoleToUser(parcelNo, 'owner', {
       parcelId: demoParcels[parcelNo],
-      ownership: {
-        share: new Fraction(1, 1),
-      },
+      ownership: { share: new Fraction(1, 1) },
     });
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[5] },
-    accepted: true,
-    role: 'owner',
+  fixtureBuilder.addRoleToUser(5, 'owner', {
     parcelId: demoParcels[11],
-    ownership: {
-      share: new Fraction(1, 1),
-    },
+    ownership: { share: new Fraction(1, 1) },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[2] },
-    accepted: true,
-    role: 'owner',
+  fixtureBuilder.addRoleToUser(2, 'owner', {
     parcelId: demoParcels[2],
     ownership: {
       share: new Fraction(1, 2),
       representor: true,
     },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[14] },
-    accepted: true,
-    role: 'owner',
+  fixtureBuilder.addRoleToUser(14, 'owner', {
     parcelId: demoParcels[2],
     ownership: {
       share: new Fraction(1, 2),
@@ -403,11 +329,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         share: new Fraction(1, 1),
       },
     });
-    Memberships.insert({
-      communityId: demoCommunityId,
-      person: { userId: dummyUsers[parcelNo] },
-      accepted: true,
-      role: 'owner',
+    fixtureBuilder.addRoleToUser(parcelNo, 'owner', {
       parcelId: demoParcels[parcelNo],
       ownership: {
         share: new Fraction(0),
@@ -432,35 +354,19 @@ export function insertDemoHouse(lang, demoOrTest) {
       benefactorship: { type: 'rental' },
     });
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[11] },
-    accepted: true,
-    role: 'benefactor',
+  fixtureBuilder.addRoleToUser(11, 'benefactor', {
     parcelId: demoParcels[4],
     benefactorship: { type: 'rental' },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[15] },
-    accepted: true,
-    role: 'benefactor',
+  fixtureBuilder.addRoleToUser(11, 'benefactor', {
     parcelId: demoParcels[5],
     benefactorship: { type: 'favor' },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[16] },
-    accepted: true,
-    role: 'benefactor',
+  fixtureBuilder.addRoleToUser(11, 'benefactor', {
     parcelId: demoParcels[8],
     benefactorship: { type: 'favor' },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[17] },
-    accepted: true,
-    role: 'benefactor',
+  fixtureBuilder.addRoleToUser(11, 'benefactor', {
     parcelId: demoParcels[9],
     benefactorship: { type: 'rental' },
   });
@@ -470,12 +376,12 @@ export function insertDemoHouse(lang, demoOrTest) {
   // The demo (filling) users comment one after the other, round robin style
   let nextUserIndex = 1;
   function sameUser() {
-    return dummyUsers[nextUserIndex];
+    return fixtureBuilder.dummyUsers[nextUserIndex];
   }
   function nextUser() {
     nextUserIndex += 7; // relative prime
-    nextUserIndex %= dummyUsers.length;
-    return dummyUsers[nextUserIndex];
+    nextUserIndex %= fixtureBuilder.dummyUsers.length;
+    return fixtureBuilder.dummyUsers[nextUserIndex];
   }
 
   const demoTopicDates = [
@@ -515,7 +421,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
     const newsId = Topics.insert({
       communityId: demoCommunityId,
-      userId: dummyUsers[0],
+      userId: fixtureBuilder.dummyUsers[0],
       category: 'news',
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
@@ -867,28 +773,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.clear();
 
-  // ===== Rooms =====
-
- /* const demoMessageRoom = Topics.insert({
-    communityId: demoCommunityId,
-    userId: dummyUserId,
-    category: 'room',
-    title: 'private chat',
-    participantIds: [dummyUserId, dummyUsers[2]],
-  });
-
-  Comments.insert({
-    topicId: demoMessageRoom,
-    userId: dummyUsers[2],
-    text: __('demo.messages.0'),
-  });
-
-  Comments.insert({
-    topicId: demoMessageRoom,
-    userId: dummyUserId,
-    text: __('demo.messages.1'),
-  });*/
-
   // ===== Accounting =====
 
   Transactions.methods.cloneAccountingTemplates._execute({ userId: demoAccountantId },
@@ -1223,8 +1107,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     dummyUserId,
     demoAdminId,
     demoManagerId,
+    demoMaintainerId,
     demoAccountantId,
-    dummyUsers,
+    dummyUsers: fixtureBuilder.dummyUsers,
     demoParcels,
   };
 }
@@ -1259,40 +1144,26 @@ function generateDemoPayments(fixtureBuilder, communityId, parcel) {
 
 export function insertLoginableUsersWithRoles(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
-  const com = { en: 'com', hu: 'hu' }[lang];
-  if (Meteor.users.findOne({ 'emails.0.address': `guest@${demoOrTest}.${com}` })) {
-    return;
-  }
   const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
+  const fixtureBuilder = new FixtureBuilder(communityId, demoOrTest, lang);
 
-  defaultRoles.forEach(function (role) {
-    if (role.name === 'manager' || role.name === 'admin') {
-      return;
-    }
-    const firstNames = __('demo.user.firstNames').split('\n');
-    const userWithRoleId = Accounts.createUser({
-      email: role.name + `@${demoOrTest}.${com}`,
-      password: 'password',
-      language: lang,
-    });
-    const user = Meteor.users.findOne(userWithRoleId);
+  defaultRoles.forEach((role) => {
+    if (role.name === 'manager' || role.name === 'admin') return;
+
     const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
-    Meteor.users.update({ _id: userWithRoleId },
-      { $set: {
-        'emails.0.verified': true,
-        avatar: '/images/avatars/avatarTestUser.png',
-        profile: { lastName: __(role.name).capitalize(), firstName: _.sample(firstNames) },
-      } });
+    let ownershipData;
     if (role.name === 'owner') {
       Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
-      Memberships.insert({ communityId, person: { userId: userWithRoleId }, accepted: true, role: role.name,
-        parcelId, ownership: { share: new Fraction(1, 2), representor: true } });
+      ownershipData = { parcelId, ownership: { share: new Fraction(1, 2), representor: true } };
     } else if (role.name === 'benefactor') {
-      Memberships.insert({ communityId, person: { userId: userWithRoleId }, accepted: true, role: role.name,
-        parcelId, benefactorship: { type: 'rental' } });
-    } else {
-      Memberships.insert({ communityId, person: { userId: userWithRoleId }, accepted: true, role: role.name });
+      ownershipData = { parcelId, benefactorship: { type: 'rental' } };
     }
+
+    const firstNames = __('demo.user.firstNames').split('\n');
+    fixtureBuilder.createLoginableUser(role.name, {
+      avatar: '/images/avatars/avatarTestUser.png',
+      profile: { lastName: __(role.name).capitalize(), firstName: _.sample(firstNames) },
+    }, ownershipData);
   });
 }
 
@@ -1303,7 +1174,7 @@ export function insertLoadsOfDummyData(lang, demoOrTest, parcelCount) {
 
   if (Parcels.find({ communityId }).count() >= parcelCount) return;
 
-  const fixtureBuilder = new DemoFixtureBuilder(communityId, lang);
+  const fixtureBuilder = new DemoFixtureBuilder(communityId, demoOrTest, lang);
 
   for (let i = 0; i < parcelCount; i++) {
     const parcelId = fixtureBuilder.createParcel({
@@ -1392,11 +1263,7 @@ Meteor.methods({
     });
     const demoUserId = fixtureBuilder.createDemoUser(demoParcelId);
     const demoParcel = Parcels.findOne(demoParcelId);
-    Memberships.insert({
-      communityId: demoCommunityId,
-      person: { userId: demoUserId },
-      accepted: true,
-      role: 'owner',
+    fixtureBuilder.addRoleToUser(demoUserId, 'owner', {
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) },
     });
