@@ -16,16 +16,16 @@ import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, de
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
-import './tasks.html';
+import './tickets-tasks.html';
 
-Template.Tasks.onCreated(function onCreated() {
+Template.Tickets_tasks.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   this.autorun(() =>
     this.subscribe('communities.byId', { _id: this.getCommunityId() })
   );
 });
 
-Template.Tasks.viewmodel({
+Template.Tickets_tasks.viewmodel({
   ticketText: '',
   ticketStatusArray: [],
   startDate: '',
@@ -167,7 +167,7 @@ Template.Tasks.viewmodel({
   },
 });
 
-Template.Tasks.events({
+Template.Tickets_tasks.events({
   'click .js-new'() {
     afTicketInsertModal();
   },
