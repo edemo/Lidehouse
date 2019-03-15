@@ -933,8 +933,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   insertParcelBilling._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
     projection: 'absolute',
-    amount: 60000,
-    valueDate: new Date('2017-09-15'),
+    amount: 75000,
+    valueDate: new Date('2017-08-15'),
     payinType: fixtureBuilder.name2code('Owner payin types', 'Célbefizetés előírás'),
     localizer: '@',
     note: __('demo.transactions.note.0'),
@@ -1097,7 +1097,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // == Expenses
   
   for (let m = 1; m < 13; m += 2) {
-    const payable = [0, 8432, 0, 7250, 0, 9251, 0, 11624, 0, 10635, 0, 8540];
+    const payable = [0, 84320, 0, 72500, 0, 92510, 0, 116240, 0, 106350, 0, 85400];
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defExpense,
@@ -1114,7 +1114,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   for (let m = 1; m < 13; m += 2) {
-    const payable = [0, 10562, 0, 9889, 0, 11210, 0, 11152, 0, 11435, 0, 9930];
+    const payable = [0, 105620, 0, 98890, 0, 112100, 0, 111520, 0, 114350, 0, 99300];
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defExpense,
@@ -1135,7 +1135,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       communityId: demoCommunityId,
 //      defId: defExpense,
       valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
-      amount: 10250,
+      amount: 102500,
       credit: [{
         account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
@@ -1146,7 +1146,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 
-    // === Tervezetek ===
+  // === Tervezetek ===
 
  /* Transactions.insert({
     communityId: demoCommunityId,
