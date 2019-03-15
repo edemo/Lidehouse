@@ -995,7 +995,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-01-01'),
       amount: opening[2],
       credit: [{
-        account: fixtureBuilder.name2code('Liabilities', 'Opening'),
+        account: fixtureBuilder.name2code('COA', 'Opening'),
       }],
       debit: [{
         account: fixtureBuilder.name2code(opening[0], opening[1]),

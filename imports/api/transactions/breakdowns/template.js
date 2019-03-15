@@ -123,14 +123,13 @@ export function defineBreakdownTemplates() {
     children: [
       { digit: '1', name: 'Equity', locked: true,
         children: [
-            { digit: '1', name: 'Opening' },
-            { digit: '2', name: 'Carry' },
-            { digit: '3', name: 'Performance' },
+            { digit: '9', name: 'Adózott eredmény' },
         ],
       },
       { digit: '4', name: 'Hitelek',
         children: [
         { digit: '1', name: 'Bank hitel' },
+        { digit: '2', name: 'Egyéb hitel' },
         ],
       },
       { digit: '5', name: 'Szállítók' },
@@ -140,6 +139,7 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     name: 'COA', label: 'Chart Of Accounts',
     children: [
+      { digit: '0', name: 'Opening' },
       { include: 'Incomes' },
       { include: 'Expenses' },
       { include: 'Assets' },
