@@ -15,6 +15,7 @@
             <div class="ibox-content">
                 {{#if userHasPermission 'transactions.insert' (fromSession 'activeCommunityId')}}
                 <div class="pull-right">
+                    <a href="" class="btn btn-primary btn-sm js-publish"><i class="fa fa-bullhorn"></i> {{_ 'Publish'}}</a>
                     <a href="" class="btn btn-white btn-sm js-import"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>
                 </div>
                 {{/if}}
@@ -22,6 +23,7 @@
                 <p>
                     {{_ 'Itt azokat a tranzakciókat látja, amiknek még nem lett megállapítva mindkét számla oldala.'}}<br>
                     {{_ 'Szerkesztés segítségével vigye be hozzájuk a hiányzó oldalt!'}}<br>
+                    {{_ 'Ha az adatok megmutatható állapotban vannak, publikálja az aktuális állapotot.'}}<br>
                 </p>
                 <br>
                 <div>
