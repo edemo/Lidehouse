@@ -18,7 +18,7 @@ export class TransactionsCollection extends Mongo.Collection {
     const tdoc = this._transform(doc);
     const result = super.insert(doc, callback);
     this._updateBalances(tdoc);
-    this._checkBalances([tdoc]);
+//    this._checkBalances([tdoc]);
     return result;
   }
   update(selector, modifier, options, callback) {
@@ -31,7 +31,7 @@ export class TransactionsCollection extends Mongo.Collection {
     updatedDocs.forEach((doc) => {
       this._updateBalances(doc, 1);
     });
-    this._checkBalances(originalDocs);
+//    this._checkBalances(originalDocs);
     return result;
   }
   remove(selector, callback) {
@@ -40,7 +40,7 @@ export class TransactionsCollection extends Mongo.Collection {
       this._updateBalances(doc, -1);
     });
     const result = super.remove(selector, callback);
-    this._checkBalances(docs);
+//    this._checkBalances(docs);
     return result;
   }
   _updateBalances(doc, revertSign = 1) {
