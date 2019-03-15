@@ -969,7 +969,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   everybodyPaysHisObligations();
 
-  // And now some unpaid bills (so we can show the parcels that are in debt)
+  // Some unpaid bills (so we can show the parcels that are in debt)
   insertParcelBilling._execute({ userId: demoAccountantId }, {
     communityId: demoCommunityId,
     projection: 'perArea',
@@ -978,6 +978,18 @@ export function insertDemoHouse(lang, demoOrTest) {
     payinType: fixtureBuilder.name2code('Owner payin types', 'Célbefizetés előírás'),
     localizer: '@',
   });
+
+  // Unidentified payin
+  insertTx._execute({ userId: demoAccountantId }, {
+    communityId: demoCommunityId,
+    valueDate: new Date('2017-12-30'),
+    amount: 24500,
+    note: 'Sogoromnak fizetem be mert elutazott Madridba',
+    debit: [{
+      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+    }],
+  });
+
 
 // ===== Transactions =====
 
@@ -1095,14 +1107,13 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   // == Expenses
-  
-  for (let m = 1; m < 13; m += 2) {
-    const payable = [0, 84320, 0, 72500, 0, 92510, 0, 116240, 0, 106350, 0, 85400];
+
+  for (let mm = 1; mm < 13; mm++) {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defExpense,
-      valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
-      amount: payable[m],
+      valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
+      amount: 80000 + Math.floor(Math.random() * 50000),
       credit: [{
         account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
@@ -1111,15 +1122,12 @@ export function insertDemoHouse(lang, demoOrTest) {
         localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
     });
-  }
 
-  for (let m = 1; m < 13; m += 2) {
-    const payable = [0, 105620, 0, 98890, 0, 112100, 0, 111520, 0, 114350, 0, 99300];
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defExpense,
-      valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
-      amount: payable[m],
+      valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
+      amount: 98500,
       credit: [{
         account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
@@ -1128,14 +1136,12 @@ export function insertDemoHouse(lang, demoOrTest) {
         localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
     });
-  }
 
-  for (let m = 1; m < 13; m++) {
     insertTx._execute({ userId: demoAccountantId }, {
       communityId: demoCommunityId,
 //      defId: defExpense,
-      valueDate: new Date('2017-' + m + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
-      amount: 102500,
+      valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
+      amount: 150000 + Math.floor(Math.random() * 50000),
       credit: [{
         account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
@@ -1145,6 +1151,50 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
   }
+
+  // == Bills
+
+  ['03', '06', '09', '12'].forEach(mm => {
+    insertTx._execute({ userId: demoAccountantId }, {
+      communityId: demoCommunityId,
+  //      defId: defExpense,
+      valueDate: new Date(`2017-${mm}-20`),
+      amount: 282600,
+      partner: 'Super-Clean Kft',
+      credit: [{
+        account: fixtureBuilder.name2code('Liabilities', 'Szállítók'),
+      }],
+      debit: [{
+        account: fixtureBuilder.name2code('Expenses', 'Takarítás'),
+      }],
+    });
+
+    if (mm !== '12') {  // Last bill is paid but not yet processed
+      insertTx._execute({ userId: demoAccountantId }, {
+        communityId: demoCommunityId,
+        valueDate: new Date(`2017-${mm}-25`),
+        amount: 282600,
+        partner: 'Super-Clean Kft',
+        ref: `SC/2017/${mm}`,
+        credit: [{
+          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+        }],
+        debit: [{
+          account: fixtureBuilder.name2code('Liabilities', 'Szállítók'),
+        }],
+      });
+    } else {
+      insertTx._execute({ userId: demoAccountantId }, {
+        communityId: demoCommunityId,
+        valueDate: new Date(`2017-${mm}-25`),
+        amount: 282600,
+        ref: `SC/2017/${mm}`,
+        credit: [{
+          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+        }],
+      });
+    }
+  });
 
   // === Tervezetek ===
 

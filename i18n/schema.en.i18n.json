@@ -360,13 +360,10 @@
           "placeholder": "Leave blank if its the whole amount"
         },
         "account": {
-          "label": "Account specification",
-          "account": {
-            "label": "Account"
-          },
-          "localizer": {
-            "label": "Accounting location"
-          }
+          "label": "Account"
+        },
+        "localizer": {
+          "label": "Accounting location"
         }
       }
     },
@@ -378,13 +375,10 @@
           "placeholder": "Leave blank if its the whole amount"
         },
         "account": {
-          "label": "Account specification",
-          "account": {
-            "label": "Account"
-          },
-          "localizer": {
-            "label": "Accounting location"
-          }
+          "label": "Account"
+        },
+        "localizer": {
+          "label": "Accounting location"
         }
       }
     },

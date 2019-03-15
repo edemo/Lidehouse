@@ -17,21 +17,19 @@ export class TransactionsCollection extends Mongo.Collection {
   insert(doc, callback) {
     const tdoc = this._transform(doc);
     const result = super.insert(doc, callback);
-    if (doc.complete) {
-      this._updateBalances(tdoc);
-    }
+    this._updateBalances(tdoc);
     this._checkBalances([tdoc]);
     return result;
   }
   update(selector, modifier, options, callback) {
     const originalDocs = this.find(selector);
     originalDocs.forEach((doc) => {
-      if (doc.complete) this._updateBalances(doc, -1);
+      this._updateBalances(doc, -1);
     });
     const result = super.update(selector, modifier, options, callback);
     const updatedDocs = this.find(selector);
     updatedDocs.forEach((doc) => {
-      if (doc.complete) this._updateBalances(doc, 1);
+      this._updateBalances(doc, 1);
     });
     this._checkBalances(originalDocs);
     return result;
@@ -39,13 +37,14 @@ export class TransactionsCollection extends Mongo.Collection {
   remove(selector, callback) {
     const docs = this.find(selector);
     docs.forEach((doc) => {
-      if (doc.complete) this._updateBalances(doc, -1);
+      this._updateBalances(doc, -1);
     });
     const result = super.remove(selector, callback);
     this._checkBalances(docs);
     return result;
   }
   _updateBalances(doc, revertSign = 1) {
+//    if (!doc.complete) return;
     const communityId = doc.communityId;
     doc.journalEntries().forEach((entry) => {
       const leafTag = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
@@ -104,6 +103,7 @@ Transactions.baseSchema = {
 };
 
 Transactions.noteSchema = {
+  partner: { type: String, max: 100, optional: true },
   ref: { type: String, max: 100, optional: true },
   note: { type: String, max: 100, optional: true },
 };
@@ -147,20 +147,24 @@ Transactions.helpers({
   },
   journalEntries() {
     const entries = [];
-    this.debit.forEach(l => {
-      const txBase = _.clone(this);
-      delete txBase._id;
-      delete txBase.credit;
-      delete txBase.debit;
-      entries.push(_.extend(txBase, l, { side: 'debit' }));
-    });
-    this.credit.forEach(l => {
-      const txBase = _.clone(this);
-      delete txBase._id;
-      delete txBase.credit;
-      delete txBase.debit;
-      entries.push(_.extend(txBase, l, { side: 'credit' }));
-    });
+    if (this.debit) {
+      this.debit.forEach(l => {
+        const txBase = _.clone(this);
+        delete txBase._id;
+        delete txBase.credit;
+        delete txBase.debit;
+        entries.push(_.extend(txBase, l, { side: 'debit' }));
+      });
+    }
+    if (this.credit) {
+      this.credit.forEach(l => {
+        const txBase = _.clone(this);
+        delete txBase._id;
+        delete txBase.credit;
+        delete txBase.debit;
+        entries.push(_.extend(txBase, l, { side: 'credit' }));
+      });
+    }
     return entries.map(JournalEntries._transform);
   },
   negator() {

@@ -140,6 +140,9 @@ Template.Community_finances.viewmodel({
       tag: 'T',
     });
   },
+  publishDate() {
+    return new Date();
+  },
   leafsOf(account) {
     const coa = ChartOfAccounts.get(); if (!coa) return [];
     const moneyAccounts = coa.findNodeByName(account);

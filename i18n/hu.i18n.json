@@ -554,6 +554,7 @@
   "update vote successful": "Szavazás módosítva",
   "close vote successful": "Szavazás lezárva",
   "update settings successful": "Beállítások módosítva",
+  "publish balances successful": "Aktuális egyenlegek publikálva",
 
   "Are you sure you want to": "Biztos benne, hogy",
   "invite user": "meghívja a felhasználót",
@@ -579,6 +580,7 @@
   "delete shareddoc": "törli a dokumentumot",
   "delete sharedfolder": "törli a mappát",
   "close vote": "lezárja a szavazást",
+  "publish balances": "publikálja az aktuális egyenlegeket",
 
   "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",
@@ -589,7 +591,8 @@
   "The planned date of closure was ": "A lezárás eredetileg tervezett időpontja ",
   "You should rather archive it" : "Törlés helyett inkább az aktív időszakot szerkessze és zárja le, mert akkor megmaradnak kereshetőek a múltbeli adatok. Csak akkor törölje le, ha tévedésből lett létrehozva.",
   "Connecting user": "A(z) <strong>'%s'</strong> email című felhasználót kapcsolni fogja a tagsághoz. Ha az illetőnek még nincs felhasználói fiókja a rendszerben, akkor most meghívót fog neki küldeni erre az email címre.",
-
+  "This will publish the current account balances": "Ezzel a jelen pillanatban élő számlaegyenlegek lesznek mostantól láthatóak a tulajdonosok felé mutatott kimutatásokban",
+  
   "anonymous": "névtelen",
   "deletedUser": "Törölt felhasználó",
   "unknownUser": "Ismeretlen felhasználó",

@@ -360,14 +360,11 @@
           "placeholder": "Hagyja üresen, ha megegyezik a teljes összeggel"
         },
         "account": {
-          "label": "Számla specifikáció",
-          "account": {
-            "label": "Számla"
-          },
-          "localizer": {
-            "label": "Könyvelési hely"
-          }
-        }          
+          "label": "Számla"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        }         
       }
     },
     "debit": {
@@ -378,14 +375,11 @@
           "placeholder": "Hagyja üresen, ha megegyezik a teljes összeggel"
         },
         "account": {
-          "label": "Számla specifikáció",
-          "account": {
-            "label": "Számla"
-          },
-          "localizer": {
-            "label": "Könyvelési hely"
-          }
-        }          
+          "label": "Számla"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        }
       }
     },
     "ref": {

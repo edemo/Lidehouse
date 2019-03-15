@@ -172,6 +172,67 @@ Template.Accounting_page.viewmodel({
 });
 
 Template.Accounting_page.events({
+  'click .transactions .js-new'(event, instance) {
+    const defId = $(event.target).data("id");
+    Session.set('activeTxDef', defId);
+    const def = TxDefs.findOne({ name: defId });
+    Modal.show('Autoform_edit', {
+      id: 'af.transaction.insert',
+      collection: Transactions,
+      schema: def.schema(),
+//      type: 'method',
+//      meteormethod: 'transactions.insert',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click .transactions .js-edit'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.transaction.update',
+      collection: Transactions,
+//      schema: newTransactionSchema(),
+      doc: Transactions.findOne(id),
+      type: 'method-update',
+      meteormethod: 'transactions.update',
+      singleMethodArgument: true,
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click .transactions .js-view'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.transaction.view',
+      collection: Transactions,
+      schema: Transactions.inputSchema,
+      doc: Transactions.findOne(id),
+      type: 'readonly',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click .transactions .js-delete'(event) {
+    const id = $(event.target).closest('button').data('id');
+    const tx = Transactions.findOne(id);
+    Modal.confirmAndCall(Transactions.methods.remove, { _id: id }, {
+      action: 'delete transaction',
+      message: tx.isSolidified() ? 'Remove not possible after 24 hours' : '',
+    });
+  },
+  'click .transactions .js-many'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.parcelBilling.insert',
+      collection: ParcelBillings,
+      type: 'method',
+      meteormethod: 'parcelBillings.insert',
+      template: 'bootstrap3-inline',
+    });
+  },
+  'click #incomplete .js-publish'(event, instance) {
+    const communityId = Session.get('activeCommunityId');
+    Modal.confirmAndCall(Transactions.methods.publish, { communityId }, {
+      action: 'publish balances',
+      message: 'This will publish the current account balances',
+    });
+  },
   'click .breakdowns .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.breakdown.insert',
@@ -268,60 +329,6 @@ Template.Accounting_page.events({
     const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(TxDefs.methods.remove, { _id: id }, {
       action: 'delete txDef',
-    });
-  },
-  'click #transactions .js-new'(event, instance) {
-    const defId = $(event.target).data("id");
-    Session.set('activeTxDef', defId);
-    const def = TxDefs.findOne({ name: defId });
-    Modal.show('Autoform_edit', {
-      id: 'af.transaction.insert',
-      collection: Transactions,
-      schema: def.schema(),
-//      type: 'method',
-//      meteormethod: 'transactions.insert',
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #transactions .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.transaction.update',
-      collection: Transactions,
-//      schema: newTransactionSchema(),
-      doc: Transactions.findOne(id),
-      type: 'method-update',
-      meteormethod: 'transactions.update',
-      singleMethodArgument: true,
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #transactions .js-view, #account-history .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.transaction.view',
-      collection: Transactions,
-      schema: Transactions.inputSchema,
-      doc: Transactions.findOne(id),
-      type: 'readonly',
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #transactions .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    const tx = Transactions.findOne(id);
-    Modal.confirmAndCall(Transactions.methods.remove, { _id: id }, {
-      action: 'delete transaction',
-      message: tx.isSolidified() ? 'Remove not possible after 24 hours' : '',
-    });
-  },
-  'click #transactions .js-many'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.parcelBilling.insert',
-      collection: ParcelBillings,
-      type: 'method',
-      meteormethod: 'parcelBillings.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click #coa .js-clone'(event, instance) {

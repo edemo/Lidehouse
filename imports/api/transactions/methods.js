@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
@@ -84,6 +85,22 @@ export const remove = new ValidatedMethod({
   },
 });
 
+export const publish = new ValidatedMethod({
+  name: 'transactions.publish',
+  validate: new SimpleSchema({
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ communityId }) {
+    checkPermissions(this.userId, 'transactions.publish', communityId);
+//    Balances.find({ communityId, tag: 'T' }).forEach((bal) => {
+//      delete bal._id;
+//      bal.tag = 'P';
+//      Balances.insert(bal);
+//    });
+  },
+});
+
 export const cloneAccountingTemplates = new ValidatedMethod({
   name: 'transactions.cloneAccountingTemplates',
   validate: new SimpleSchema({
@@ -113,41 +130,6 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 });
 
 Transactions.methods = {
-  insert, update, remove, cloneAccountingTemplates,
+  insert, update, remove, publish, cloneAccountingTemplates,
 };
-
-//---------------------------------------------
-/*
-export const insert = new ValidatedMethod({
-  name: 'txDefs.insert',
-  validate: TxDefs.simpleSchema().validator({ clean: true }),
-
-  run(doc) {
-    return TxDefs.insert(doc);
-  },
-});
-
-export const update = new ValidatedMethod({
-  name: 'txDefs.update',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    modifier: { type: Object, blackbox: true },
-  }).validator(),
-
-  run({ _id, modifier }) {
-    TxDefs.update({ _id }, modifier);
-  },
-});
-
-export const remove = new ValidatedMethod({
-  name: 'txDefs.remove',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
-
-  run({ _id }) {
-    TxDefs.remove(_id);
-  },
-});
-*/
 

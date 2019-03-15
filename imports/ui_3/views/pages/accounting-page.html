@@ -7,7 +7,7 @@
 
     {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
     <div class="col-md-12">
-        <div class="ibox ibox-dark" id='transactions-incomplete'>
+        <div class="ibox ibox-dark transactions" id='incomplete'>
             <div class="ibox-title">
                 <h5>{{_ 'Kontírozás'}}</h5>
                 {{>iboxTools}}
@@ -36,7 +36,7 @@
 
     {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
     <div class="col-md-12">
-        <div class="ibox ibox-dark" id='transactions'>
+        <div class="ibox ibox-dark transactions" id='transactions'>
             <div class="ibox-title">
                 <h5>{{_ 'Transactions'}}</h5>
                 {{>iboxTools}}

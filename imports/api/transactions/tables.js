@@ -23,6 +23,7 @@ export function transactionColumns(permissions) {
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
     { data: 'credit', title: __('schemaTransactions.credit.label'), render: Render.journalEntries },
     { data: 'debit', title: __('schemaTransactions.debit.label'), render: Render.journalEntries },
+    { data: 'partner', title: __('Partner') },
     { data: 'ref', title: __('schemaTransactions.ref.label') },
     { data: 'note', title: __('schemaTransactions.note.label') },
     { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },

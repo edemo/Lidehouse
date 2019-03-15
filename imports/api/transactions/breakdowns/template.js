@@ -165,7 +165,7 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '', name: 'Localizer', label: 'Locations',
+    digit: '', name: 'Localizer', label: 'Localizers',
     children: [
       { digit: '@', name: 'Parcels', include: 'Parcels',
       },
