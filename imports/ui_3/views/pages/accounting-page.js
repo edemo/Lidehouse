@@ -33,6 +33,12 @@ import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
 import './accounting-page.html';
 
+Template.registerHelper('displayAccount', function displayAccount(code) {
+  const coa = ChartOfAccounts.get();
+  if (!coa) return '';
+  return coa.display(code);
+});
+
 Template.Accounting_page.viewmodel({
   txDefSelected: '',
   txDefOptions: [],

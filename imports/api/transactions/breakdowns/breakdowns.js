@@ -223,6 +223,7 @@ Breakdowns.helpers({
     return this.nodes(leafsOnly).map(l => l.code);
   },
   nodeByCode(code) {
+    if (!code) return this.root();
     const node = this.root()._nodeMap[code];
     if (!node) throw new Meteor.Error(`Looking for ${code} in ${this.name}`, 'Cannot find breakdown node by code', this.root()._nodeMap);
     return node;
@@ -262,10 +263,12 @@ Breakdowns.helpers({
     });
   },
   display(code) {
-    Breakdowns.display(this.nodeByCode(code));
+    const node = this.nodeByCode(code);
+    return Breakdowns.display(node);
   },
   displayFullPath(code) {
-    Breakdowns.displayFullPath(this.nodeByCode(code));
+    const node = this.nodeByCode(code);
+    return Breakdowns.displayFullPath(node);
   },
 });
 

@@ -216,8 +216,8 @@
                                   {{#each txDef in txDefs}}
                                   <tr>
                                       <td>{{_ txDef.name}}</td>
-                                      <td>{{txDef.credit}}</td>
-                                      <td>{{txDef.debit}}</td>
+                                      <td>{{displayAccount txDef.credit}}</td>
+                                      <td>{{displayAccount txDef.debit}}</td>
                                       <td class="text-right">
                                           <div class="btn-group">
                                               <!--td><button class="btn btn-white btn-xs js-view" data-id="{{entry.txId}}"><i class="fa fa-eye"></i></button></td-->
