@@ -259,7 +259,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   // ==== Loginable users with Roles =====
-  
+
   const demoManagerId = fixtureBuilder.createLoginableUser('manager', {
     avatar: '/images/avatars/avatar20.jpg',
     'profile.phone': '06 60 555 4321',
@@ -269,6 +269,27 @@ export function insertDemoHouse(lang, demoOrTest) {
     avatar: '/images/avatars/avatar21.jpg',
     'profile.phone': '06 60 762 7288',
   });
+
+  if (demoOrTest === 'test') {
+    defaultRoles.forEach((role) => {
+      if (role.name === 'manager' || role.name === 'admin') return;
+
+      const parcelId = Parcels.findOne({ communityId: demoCommunityId, serial: 7 })._id;
+      let ownershipData;
+      if (role.name === 'owner') {
+        Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
+        ownershipData = { parcelId, ownership: { share: new Fraction(1, 2), representor: true } };
+      } else if (role.name === 'benefactor') {
+        ownershipData = { parcelId, benefactorship: { type: 'rental' } };
+      }
+
+      const firstNames = __('demo.user.firstNames').split('\n');
+      fixtureBuilder.createLoginableUser(role.name, {
+        avatar: '/images/avatars/avatarTestUser.png',
+        profile: { lastName: __(role.name).capitalize(), firstName: _.sample(firstNames) },
+      }, ownershipData);
+    });
+  }
 
   // ===== Non-loginable Dummy Users =====
 
@@ -1085,101 +1106,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   };
 }
 
-function generateDemoPayments(fixtureBuilder, communityId, parcel) {
-  const accountantId = Memberships.findOne({ communityId, role: 'accountant' }).person.userId;
-
-  for (let mm = 1; mm < 13; mm++) {
-    const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
-    insertParcelBilling._execute({ userId: accountantId }, {
-      communityId,
-      valueDate,
-      projection: 'perArea',
-      amount: 275,
-      payinType: fixtureBuilder.name2code('Owner payin types', 'Közös költség előírás'),
-      localizer: Localizer.parcelRef2code(parcel.ref),
-    });
-    insertTx._execute({ userId: accountantId }, {
-      communityId,
-      valueDate,
-      amount: 275 * parcel.area,
-      credit: [{
-        account: fixtureBuilder.name2code('Assets', 'Közös költség előírás'),
-        localizer: Localizer.parcelRef2code(parcel.ref),
-      }],
-      debit: [{
-        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
-      }],
-    });
-  }
-}
-
-export function insertLoginableUsersWithRoles(lang, demoOrTest) {
-  const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
-  const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
-  const fixtureBuilder = new FixtureBuilder(communityId, demoOrTest, lang);
-
-  defaultRoles.forEach((role) => {
-    if (role.name === 'manager' || role.name === 'admin') return;
-
-    const parcelId = Parcels.findOne({ communityId, serial: 7 })._id;
-    let ownershipData;
-    if (role.name === 'owner') {
-      Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
-      ownershipData = { parcelId, ownership: { share: new Fraction(1, 2), representor: true } };
-    } else if (role.name === 'benefactor') {
-      ownershipData = { parcelId, benefactorship: { type: 'rental' } };
-    }
-
-    const firstNames = __('demo.user.firstNames').split('\n');
-    fixtureBuilder.createLoginableUser(role.name, {
-      avatar: '/images/avatars/avatarTestUser.png',
-      profile: { lastName: __(role.name).capitalize(), firstName: _.sample(firstNames) },
-    }, ownershipData);
-  });
-}
-
-export function insertLoadsOfDummyData(lang, demoOrTest, parcelCount) {
-  const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
-  const com = { en: 'com', hu: 'hu' }[lang];
-  const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
-
-  if (Parcels.find({ communityId }).count() >= parcelCount) return;
-
-  const fixtureBuilder = new DemoFixtureBuilder(communityId, demoOrTest, lang);
-
-  for (let i = 0; i < parcelCount; i++) {
-    const parcelId = fixtureBuilder.createParcel({
-      units: 0,
-      floor: faker.random.number(10).toString(),
-      door: faker.random.number(10).toString(),
-      type: 'flat',
-      area: faker.random.number(150),
-    });
-    const parcel = Parcels.findOne(parcelId);
-    const membershipId = Memberships.insert({
-      communityId,
-      parcelId,
-      approved: !!(i % 2),
-      accepted: !!(i + 1),
-      role: 'owner',
-      person: {
-        userId: Accounts.createUser({
-          email: `${faker.name.lastName()}_${i}@${demoOrTest}.${com}`,
-          password: 'password',
-          language: lang,
-        }),
-        idCard: { type: 'natural', name: faker.name.findName(), },
-        contact: { phone: faker.phone.phoneNumber() },
-      },
-      ownership: { share: new Fraction(1, 1) },
-    });
-
-    Localizer.addParcel(communityId, parcel, lang);
-
-    generateDemoPayments(fixtureBuilder, communityId, parcel);
-  }
-}
-
 function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `deleteDemoUserWithRelevancies parameter not defined ${userId} ${parcelId} ${communityId}`);
   const parcel = Parcels.findOne(parcelId);
@@ -1286,7 +1212,7 @@ Meteor.methods({
       ],
     } });
 
-    generateDemoPayments(fixtureBuilder, demoCommunityId, demoParcel);
+    fixtureBuilder.generateDemoPayments(demoParcel);
 
     Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);

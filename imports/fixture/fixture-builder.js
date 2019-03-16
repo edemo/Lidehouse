@@ -122,6 +122,69 @@ export class FixtureBuilder {
     const parcel = Parcels.findOne({ communityId: this.communityId, serial });
     return Localizer.parcelRef2code(parcel.ref);
   }
+  generateDemoPayments(parcel) {
+    const accountantId = Memberships.findOne({ communityId: this.communityId, role: 'accountant' }).person.userId;
+
+    for (let mm = 1; mm < 13; mm++) {
+      const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
+      insertParcelBilling._execute({ userId: accountantId }, {
+        communityId: this.communityId,
+        valueDate,
+        projection: 'perArea',
+        amount: 275,
+        payinType: this.name2code('Owner payin types', 'Közös költség előírás'),
+        localizer: Localizer.parcelRef2code(parcel.ref),
+      });
+      insertTx._execute({ userId: accountantId }, {
+        communityId: this.communityId,
+        valueDate,
+        amount: 275 * parcel.area,
+        credit: [{
+          account: this.name2code('Assets', 'Közös költség előírás'),
+          localizer: Localizer.parcelRef2code(parcel.ref),
+        }],
+        debit: [{
+          account: this.name2code('Assets', 'Folyószámla'),
+        }],
+      });
+    }
+  }
+  insertLoadsOfDummyData(parcelCount) {
+    if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;
+
+    for (let i = 0; i < parcelCount; i++) {
+      const parcelId = this.createParcel({
+        units: 0,
+        floor: faker.random.number(10).toString(),
+        door: faker.random.number(10).toString(),
+        type: 'flat',
+        area: faker.random.number(150),
+      });
+      const parcel = Parcels.findOne(parcelId);
+      const membershipId = Memberships.insert({
+        communityId: this.communityId,
+        parcelId,
+        approved: !!(i % 2),
+        accepted: !!(i + 1),
+        role: 'owner',
+        person: {
+          userId: Accounts.createUser({
+            email: `${faker.name.lastName()}_${i}@${this.demoOrTest}.${this.com}`,
+            password: 'password',
+            language: this.lang,
+          }),
+          idCard: { type: 'natural', name: faker.name.findName(), },
+          contact: { phone: faker.phone.phoneNumber() },
+        },
+        ownership: { share: new Fraction(1, 1) },
+      });
+
+      Localizer.addParcel(this.communityId, parcel, this.lang);
+
+      this.generateDemoPayments(parcel);
+    }
+  }
+
 }
 
 export class DemoFixtureBuilder extends FixtureBuilder {
