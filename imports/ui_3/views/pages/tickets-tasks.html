@@ -1,22 +1,39 @@
-<template name="Worksheets">
+<template name="Tickets_tasks">
   <!-- Page heading -->
-  {{> Page_heading title=(_ 'Worksheets') }}
+  {{> Page_heading title=(_ 'Tasks') }}
 
   <div class="wrapper wrapper-content animated fadeInRight">
 
     <div class="ibox">
       <div class="ibox-title">
-        <h5>{{_ 'Ticket filter'}}</h5>
+        <div class="row">
+          <div class="col-sm-5 m-b-sm">
+            <select class="form-control-sm form-control input-s-sm inline" id="ticket-type-selector">
+              <option value="tickets">{{_ 'tickets'}}</option>
+              <option value="tasks">{{_ 'tasks'}}</option>
+            </select>
+          </div>
+          <div class="col-sm-7">
             {{> iboxTools}}
+          </div>
+        </div>
       </div>
+
       <div class="ibox-content">
         <div class="row">
           <div class="col-sm-12">
             <div class="input-group">
+              {{#if option}}
+              <label class="control-label">{{_ 'Task status'}}</label><br>
+              {{#each taskStatusValue in taskStatusValues}}
+              <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{taskStatusColor taskStatusValue}} {{activeButton taskStatusValue}}" data-value="{{taskStatusValue}}">{{_ (concat 'schemaTickets.ticket.status.' taskStatusValue)}}</button>
+              {{/each}}
+              {{else}}
               <label class="control-label">{{_ 'Ticket status'}}</label><br>
               {{#each statusValue in statusValues}}
               <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{statusColor statusValue}} {{activeButton statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
               {{/each}}
+              {{/if}}
             </div>
           </div>
         </div>
@@ -58,19 +75,49 @@
       </div>
     </div>
 
+    {{#if option}}
     <div class="ibox">
       <div class="ibox-title"> 
-        <h5>{{_ 'Ticket archive'}}</h5>
-        {{> iboxTools}}          
+        <div class="row">
+          <div class="col-sm-10">
+            <h5>{{_ 'Task archive'}}</h5>
+          </div>
+          {{#if userHasPermission 'task.insert' (fromSession 'activeCommunityId')  }}
+          <div class="col-sm-2 m-b-xs">  
+            <a href="" class="btn btn-primary btn-xs js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'task'}}</a>
+          </div>
+          {{/if}}
+        </div>
       </div>
       <div class="ibox-content">
-
-          <div class="no-padding table-responsive">
-            {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
+        <div class="no-padding table-responsive">
+          {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
+        </div>
+  
+      </div>
+    </div>
+    {{else}}
+    <div class="ibox">
+      <div class="ibox-title"> 
+        <div class="row">
+          <div class="col-sm-10">
+            <h5>{{_ 'Ticket archive'}}</h5>
           </div>
+          {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')  }}
+          <div class="col-sm-2 m-b-xs">  
+            <a href="" class="btn btn-primary btn-xs js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'ticket'}}</a>
+          </div>
+          {{/if}}
+        </div>    
+      </div>
+      <div class="ibox-content">
+        <div class="no-padding table-responsive">
+          {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
+        </div>
 
       </div>
     </div>
+    {{/if}}
           
     
     <!-- closed errors start -->

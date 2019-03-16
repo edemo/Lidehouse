@@ -23,6 +23,16 @@ Topics.statusColors = {
   deleted: 'danger',
 };
 
+Topics.taskStatusValues = ['scheduled', 'progressing', 'finished', 'checked', 'closed', 'deleted'];
+Topics.taskStatusColors = {
+  scheduled: 'warning',
+  progressing: 'info',
+  finished: 'primary',
+  checked: 'primary',
+  closed: 'default',
+  deleted: 'danger',
+};
+
 Topics.columns = ['Status', 'Title', 'Reported by', 'Reported at', 'Type'];
 
 const TicketsExtensionSchema = new SimpleSchema({

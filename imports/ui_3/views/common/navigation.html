@@ -93,7 +93,7 @@
                         {{/if}}
                     </a>
                 </li>-->
-                <li class="{{isActivePath regex='tickets|worksheets'}}">
+                <li class="{{isActivePath regex='tickets|complex'}}">
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
                         <span class="nav-label">{{_ 'Maintenance'}}</span>
                         <!--span class="fa arrow"> </span-->
@@ -103,7 +103,7 @@
                         {{/if}}
                         {{/if}}
                     </a>
-                    <ul class="nav nav-second-level {{isActivePath regex='tickets|worksheets' className='submenu-open'}}">
+                    <ul class="nav nav-second-level {{isActivePath regex='tickets|complex' className='submenu-open'}}">
                         <li class="{{isActivePath regex='tickets'}}">
                             <a href="{{pathFor 'Tickets'}}">
                                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -115,10 +115,10 @@
                                 {{/if}}
                             </a>
                         </li>
-                        <li class="{{isActivePath regex='worksheets'}}">
-                            <a href="{{pathFor 'Worksheets'}}">
+                        <li class="{{isActivePath regex='complex'}}">
+                            <a href="{{pathFor 'Tickets-tasks'}}">
                                 <i class="fa fa-archive" aria-hidden="true"></i>
-                                <span class="nav-label">{{_ 'Worksheets'}}</span>
+                                <span class="nav-label">{{_ 'Tasks'}}</span>
                             </a>
                         </li>
                     </ul>
