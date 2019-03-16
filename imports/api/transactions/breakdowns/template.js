@@ -151,13 +151,13 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '', name: 'Parcels', children: [
+    digit: '@', name: 'Parcels', children: [
       { digit: 'A', name: 'Main building' },
     ],
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '', name: 'Places', children: [
+    digit: '#', name: 'Places', children: [
       { digit: '0', name: 'Central' },
       { digit: '1', name: 'Garden' },
       { digit: '2', name: 'Heating system' },
