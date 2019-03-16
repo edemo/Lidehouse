@@ -52,7 +52,7 @@ export class FixtureBuilder {
   }
   createParcel(doc) {
     const ref = 'A' + doc.floor + doc.door;
-    const volume = 3 * doc.area || 0;
+    const volume = 3 * (doc.area || 0);
     _.extend(doc, {
       communityId: this.communityId,
       serial: this.nextSerial,

@@ -85,7 +85,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     if (Meteor.settings.reset) {
       demoHouse.remove();
     } else {
-      Balances.checkAllCorrect();
+//      Balances.checkAllCorrect();
       return;
     }
   }
