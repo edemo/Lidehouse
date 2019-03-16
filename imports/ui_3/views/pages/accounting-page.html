@@ -69,19 +69,19 @@
                     <div class="col-sm-4">
                       <div class="form-group">
                           <label class="control-label" for="account">{{_ 'schemaTxDefs.name.label'}}</label>
-                          <select id="account" name="account" {{b "options: txDefOptions, value: txDefSelected, optionsValue: value, optionsText: label"}} class="form-control"></select>
+                          <select id="account" name="account" {{b 'options: txDefOptions, value: txDefSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
                       </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="control-label" for="amount">{{_ 'schemaTxDefs.credit.label'}}</label>
-                            <input type="text" disabled id="amount" name="amount" {{b "value: creditAccountSelected"}} class="form-control">
+                            <select disabled id="amount" name="amount" {{b 'options: creditAccountOptions, value: creditAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label class="control-label" for="amount">{{_ 'schemaTxDefs.debit.label'}}</label>
-                            <input type="text" disabled id="amount" name="amount" {{b "value: debitAccountSelected"}} class="form-control">
+                            <select disabled id="amount" name="amount" {{b 'options: debitAccountOptions, value: debitAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
                         </div>
                     </div>
                   </div>
