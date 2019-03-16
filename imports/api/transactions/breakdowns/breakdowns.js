@@ -39,14 +39,19 @@ Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) 
   return node.code;
 };
 
-export const chooseBreakdown = {
-  options() {
-    return Breakdowns.find(/*{ communityId: Session.get('activeCommunityId') }*/).map(function option(account) {
-      return { label: account.name, value: account._id };
-    });
-  },
-  firstOption: () => __('(Select one)'),
-};
+export let chooseBreakdown = {};
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+  chooseBreakdown = {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      return Breakdowns.find({ communityId }).map(function option(breakdown) {
+        return { label: breakdown.name, value: breakdown.name };
+      });
+    },
+    firstOption: () => __('(Select one)'),
+  };
+}
 
 /*
 Breakdowns.schema = new SimpleSchema({
@@ -79,7 +84,7 @@ Breakdowns.Level2Schema = new SimpleSchema({
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array, optional: true },
   'children.$': { type: Breakdowns.LeafSchema },
-  include: { type: String, optional: true },
+  include: { type: String, optional: true, autoform: chooseBreakdown },
 });
 
 Breakdowns.Level1Schema = new SimpleSchema({
@@ -89,7 +94,7 @@ Breakdowns.Level1Schema = new SimpleSchema({
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
   children: { type: Array, optional: true },
   'children.$': { type: Breakdowns.Level2Schema },
-  include: { type: String, optional: true },
+  include: { type: String, optional: true, autoform: chooseBreakdown },
 });
 
 Breakdowns.schema = new SimpleSchema({
@@ -102,7 +107,7 @@ Breakdowns.schema = new SimpleSchema({
 //  type: { type: String, allowedValues: Breakdowns.typeValues },
   children: { type: Array, optional: true },
   'children.$': { type: Breakdowns.Level1Schema },
-  include: { type: String, optional: true },
+  include: { type: String, optional: true, autoform: chooseBreakdown },
 });
 
 /*

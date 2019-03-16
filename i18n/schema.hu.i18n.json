@@ -304,6 +304,9 @@
     }
   },
   "schemaBreakdowns": {
+    "digit": {
+      "label": "Kód"
+    },
     "name": {
       "label": "Elnevezés",
       "placeholder": "(pl. Kifizetési hely)"
@@ -311,25 +314,46 @@
     "sign": {
       "label": "Előjel (Tartozik +, Követel -)"
     },
+    "include": {
+      "label": "Behivatkozás"
+    },
     "children": {
       "label": "Kategória fiókok",
       "$": {
+          "digit": {
+            "label": "Kód"
+          },    
           "name": {
-            "label": "Elnevezés (vagy üres ha nem kell)"
+            "label": "Elnevezés"
+          },
+          "include": {
+            "label": "Behivatkozás"
           },
           "children": {
           "label": "Gyűjtő fiókok",
           "$": {
+            "digit": {
+              "label": "Kód"
+            },    
             "name": {
-              "label": "Elnevezés (vagy üres ha nem kell)"
+              "label": "Elnevezés"
+            },
+            "include": {
+              "label": "Behivatkozás"
             },
             "children": {
               "label": "Al fiókok",
               "$": {
+                "digit": {
+                  "label": "Kód"
+                },    
                 "name": {
-                  "label": "Elnevezés (vagy albetét azonosító)",
-                  "placeholder": "(pl. Kert vagy K114)"
-                }
+                  "label": "Elnevezés",
+                  "placeholder": "(Számla név vagy Albetét ref)"
+                },
+                "include": {
+                  "label": "Behivatkozás"
+                }  
               }
             }
           }

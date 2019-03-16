@@ -304,6 +304,9 @@
     }
   },
   "schemaBreakdowns": {
+    "digit": {
+      "label": "Code"
+    },
     "name": {
       "label": "Name",
       "placeholder": "(eg. Division breakdown)"
@@ -311,24 +314,45 @@
     "sign": {
       "label": "Sign (Debit +, Credit -)"
     },
+    "include": {
+      "label": "Include"
+    },
     "children": {
       "label": "Cathegory account",
       "$": {
+        "digit": {
+          "label": "Code"
+        },
         "name": {
-          "label": "Name (or empty if not needed)"
+          "label": "Name"
+        },
+        "include": {
+          "label": "Include"
         },
         "children": {
           "label": "Container account",
           "$": {
+            "digit": {
+              "label": "Code"
+            },
             "name": {
-              "label": "Name (or empty if not needed)"
+              "label": "Name"
+            },
+            "include": {
+              "label": "Include"
             },
             "children": {
               "label": "Sub account",
               "$": {
+                "digit": {
+                  "label": "Code"
+                },
                 "name": {
-                  "label": "Name (or id of parcel)",
-                  "placeholder": "(eg. Garden or K114)"
+                  "label": "Name",
+                  "placeholder": "(Account name or Parcel ref)"
+                },
+                "include": {
+                  "label": "Include"
                 }
               }
             }

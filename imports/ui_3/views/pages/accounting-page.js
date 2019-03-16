@@ -19,6 +19,7 @@ import { breakdownColumns } from '/imports/api/transactions/breakdowns/tables.js
 import { Reports } from '/imports/api/transactions/reports/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import '/imports/api/transactions/breakdowns/methods.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
@@ -259,7 +260,7 @@ Template.Accounting_page.events({
       template: 'bootstrap3-inline',
     });
   },
-  'click .breakdowns .js-edit'(event) {
+  'click .breakdowns .js-edit-na'(event) {
     const id = $(event.target).closest('button').data('id');
     const breakdown = Breakdowns.findOne(id);
     const modalContext = {
@@ -281,15 +282,14 @@ Template.Accounting_page.events({
     };
     Modal.show('Modal', modalContext);
   },
-  'click .breakdowns .js-edit-af'(event) {
+  'click .breakdowns .js-edit'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.breakdown.update',
       collection: Breakdowns,
       doc: Breakdowns.findOne(id),
-      type: 'update',
-//      type: 'method-update',
-//      meteormethod: 'transactions.update',
+      type: 'method-update',
+      meteormethod: 'breakdowns.update',
       singleMethodArgument: true,
       template: 'bootstrap3-inline',
     });
