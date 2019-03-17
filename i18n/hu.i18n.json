@@ -235,6 +235,7 @@
   "Participation necessary": "Eredményesség feltétele",  
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
+  "Actives only": "Aktívak mutatása",
   "Show results": "Eredmények megtekintése",
   "Show attachment": "Előterjesztés megtekintése",
   "Vote results": "Szavazási eredmények",
@@ -300,12 +301,14 @@
   "Closed tickets": "Lezárt bejelentett hibák",
   "Recent tickets": "Legutóbbi bejelentések",
   "Ticket archive": "Hibajegy archívum",
+  "Ticket search": "Hibajegy keresés",
   "New ticket": "Új hiba bejelentése",
   "Please dont report twice": "Karbantartó kollegáink munkáját segítendő, kérjük csak akkor adja fel hibabejelentését, ha az még nem szerepel a közelmúltban felvett hibajegyek között.",
   "Thank you": "Köszönjük",
   "Create ticket": "Bejelentés elküldése",
   "status": "Státusz",
   "Change status": "Státusz váltása",
+  "My own only": "Sajátjaim mutatása",
 
   // finances
   "Account": "Számla", 
