@@ -134,7 +134,7 @@ Template.Community_finances.viewmodel({
   getBalance(account, period) {
     const coa = ChartOfAccounts.get(); if (!coa) return 0;
     const accountCode = parseInt(account, 10) ? account : coa.findNodeByName(account).code;
-    return Balances.get({
+    return Balances.getDisplayTotal({
       communityId: Session.get('activeCommunityId'),
       account: accountCode,
       tag: 'T',

@@ -91,7 +91,7 @@ if (Meteor.isServer) {
           });
         };
         assertBalance = function (account, localizer, tag, expectedBalance) {
-          const balance = Balances.get({
+          const balance = Balances.getTotal({
             communityId: Fixture.demoCommunityId,
             account,
             localizer,

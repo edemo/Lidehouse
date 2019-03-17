@@ -53,15 +53,16 @@ export class TransactionsCollection extends Mongo.Collection {
       const account = entry.account;
       const localizer = entry.localizer;
       PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
-        const effectiveAmount = entry.effectiveAmount() * revertSign;
-        function increaseBalance(selector, amount) {
+        const changeAmount = entry.amount * revertSign;
+        function increaseBalance(selector, side, amount) {
           const bal = Balances.findOne(selector);
           const balId = bal ? bal._id : Balances.insert(selector);
-          Balances.update(balId, { $inc: { amount } });
+          const incObj = {}; incObj[side] = amount;
+          Balances.update(balId, { $inc: incObj });
         }
-        increaseBalance({ communityId, account, tag }, effectiveAmount);
+        increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
         if (localizer) {
-          increaseBalance({ communityId, account, tag, localizer }, effectiveAmount);
+          increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
         }
       });
     });

@@ -103,7 +103,7 @@ Breakdowns.schema = new SimpleSchema({
   name: { type: String, max: 100 },
   label: { type: String, max: 100, optional: true, autoform: { omit: true } },
   locked: { type: Boolean, optional: true, autoform: { omit: true } },
-  sign: { type: Number, allowedValues: [+1, -1], optional: true },
+  sign: { type: Number, allowedValues: [+1, -1], optional: true, autoform: { omit: true } },
 //  type: { type: String, allowedValues: Breakdowns.typeValues },
   children: { type: Array, optional: true },
   'children.$': { type: Breakdowns.Level1Schema },

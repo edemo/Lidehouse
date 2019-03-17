@@ -10,14 +10,27 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 
 export const Balances = new Mongo.Collection('balances');
 
-Balances.schema = new SimpleSchema([{
+
+// Definition of a balance
+Balances.defSchema = new SimpleSchema([{
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  //phase: { type: String, defaultValue: 'done', allowedValues: ['real', 'plan'] },
+  // phase: { type: String, defaultValue: 'done', allowedValues: ['real', 'plan'] },
   account: { type: String },
   localizer: { type: String, optional: true },
-  tag: { type: String },  // can be a period, end of a period, or a period closing tag
-  amount: { type: Number, optional: true },
+  tag: { type: String },  // can be a period, end of a period, or a publication
 }]);
+
+// Definition + values of a balance
+Balances.schema = new SimpleSchema([Balances.defSchema, {
+  credit: { type: Number, defaultValue: 0 }, // credit total
+  debit: { type: Number, defaultValue: 0 }, // debit total
+}]);
+
+Balances.helpers({
+  total() {
+    return this.debit - this.credit;
+  },
+});
 
 Meteor.startup(function indexBalances() {
   Balances.ensureIndex({ communityId: 1, account: 1, localizer: 1, tag: 1 });
@@ -25,8 +38,8 @@ Meteor.startup(function indexBalances() {
 
 Balances.attachSchema(Balances.schema);
 
-Balances.get = function get(def) {
-  Balances.schema.validate(def);
+Balances.getTotal = function getTotal(def) {
+  Balances.defSchema.validate(def);
 
   const coa = ChartOfAccounts.get(def.communityId);
   const leafs = coa.leafsOf(def.account);
@@ -44,9 +57,27 @@ Balances.get = function get(def) {
       localizer: def.localizer,
       tag: def.tag,
     });
-    result += balance ? balance.amount : 0;
+    result += balance ? balance.total() : 0;
   });
   return result;
+};
+
+Balances.getDisplayTotal = function getDisplayTotal(def) {
+  const total = Balances.getTotal(def);
+  let displaySign = 1;
+  if (def.account) {
+    switch (def.account.charAt(0)) {
+      case '1':
+      case '2':
+      case '3':
+      case '8': displaySign = +1; break;
+      case '4':
+      case '5':
+      case '9': displaySign = -1; break;
+      default: break;
+    }
+  }
+  return displaySign * total;
 };
 
 function timeTagMatches(valueDate, tag) {
@@ -67,7 +98,7 @@ Balances.checkCorrect = function checkCorrect(def) {
       }
     });
   });
-  const dbBalance = Balances.get(def);
+  const dbBalance = Balances.getTotal(def);
   if (dbBalance !== calculatedBalance) {
     console.log('Balance inconsistency ERROR',
       `Calculated balance of '${def} is ${calculatedBalance} (from ${entryCount} entries)\nDb balance of same account: ${dbBalance}`

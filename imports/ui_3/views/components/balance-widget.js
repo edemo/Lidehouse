@@ -27,7 +27,7 @@ Template.Balance_widget.viewmodel({
     const parcels = this.ownedParcels();
     let result = 0;
     parcels.forEach((parcel) => {
-      result += Balances.get({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcel.ref), tag: 'T' });
+      result += Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcel.ref), tag: 'T' });
     });
     return (-1) * result;
   },

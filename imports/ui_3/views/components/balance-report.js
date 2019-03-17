@@ -21,7 +21,7 @@ Template.Balance_report.helpers({
       account: account.code,
       tag,
     };
-    return Balances.get(balanceDef);
+    return Balances.getDisplayTotal(balanceDef);
   },
   headerLevelClass(account) {
     return 'header-level' + account.code.length.toString();
