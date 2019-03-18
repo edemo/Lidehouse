@@ -14,7 +14,7 @@ export function afTicketInsertModal() {
     id: 'af.ticket.insert',
     collection: Topics,
     schema: ticketsSchema,
-    omitFields: ['agendaId', 'sticky', 'ticket.status'],
+    omitFields: ['agendaId', 'sticky', 'ticket.status', 'ticket.category'],
     type: 'method',
     meteormethod: 'topics.insert',
     template: 'bootstrap3-inline',
