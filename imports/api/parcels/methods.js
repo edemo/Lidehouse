@@ -26,7 +26,7 @@ export const insert = new ValidatedMethod({
         `Registered units: ${total}/${totalunits}, With new unit: ${newTotal}/${totalunits}`);
       }
     }
-    
+
     return Parcels.insert(doc);
   },
 });

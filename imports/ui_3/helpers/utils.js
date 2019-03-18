@@ -7,8 +7,12 @@ Template.registerHelper('and', function and(a, b) {
     return a && b;
 });
 
-Template.registerHelper('or', function and(a, b) {
+Template.registerHelper('or', function or(a, b) {
     return a || b;
+});
+
+Template.registerHelper('not', function not(a) {
+    return !a;
 });
 
 Template.registerHelper('equals', function equals(a, b) {

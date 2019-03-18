@@ -238,7 +238,7 @@
   "Participation necessary": "Eredményesség feltétele",  
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
-  "rankedVotingInstructions": "Ez egy preferenciális szavazás. Kérjük rakja sorrendbe…",
+  "Actives only": "Aktívak mutatása",
   "Show results": "Eredmények megtekintése",
   "Show attachment": "Előterjesztés megtekintése",
   "Vote results": "Szavazási eredmények",
@@ -255,7 +255,14 @@
   "Attachments" : "Csatolmányok",
   "Activity": "Változások",
   "All votings": "Aktív és lezárt szavazások teljes listája",
-  
+  "This is a voting type": "Ez egy <i>%s</i> szavazás",
+  "votingInstructions": {
+    "yesno": "Kérjük jelölje meg szavazatát, majd küldje el a zöld gombbal.",
+    "choose": "Kérjük jelölje meg szavazatát, majd küldje el a zöld gombbal.",
+    "preferential": "Kérjük rendezze sorrendbe, hogy legfelül az Ön számárá leginkább kívánatos, legalul pedig a legkevésbé szimpatikus opció legyen, majd küldje el szavazatát a zöld gombbal.",
+    "petition": "Ha támogatja a kezdeményezést, kattintson a Támogatom gombra, majd küldje el szavazatát a zöld gombbal. Ha nem támogatja, akkor nincsen semmi teendője."
+  },
+
   // delegations
   "Delegations from me": "Meghatalmazásaim",
   "Delegations to me": "Meghatalmazottságaim",
@@ -277,9 +284,14 @@
   "You voted via delegation": "Ön meghatalmazott útján szavazott",
   "votedViaDelegationHint" : "szavazat leadásával felülbírálható",
   "You have not yet voted": "Ön még nem szavazott",
-  "notYetVotedCastYourVoteOr": "adja le szavazatát, vagy",
-  "setupYourDelegation": "állítson be meghatalmazást",
+  "Cast your vote": "Adja le szavazatát",
+  "or": "vagy",
+  "setup a delegation": "állítson be meghatalmazást",
   "No delegations": "Nincsenek meghatalmazások",
+  "Modify vote": "Szavazat módosítása",
+  "Cancel": "Mégsem",
+  "If you made your choice": "Ha döntött",
+  "send your vote": "küldje el szavazatát",
 
   // rooms
   "Send messages": "Küldjön üzenetet",
@@ -294,6 +306,7 @@
   "Ticket archive": "Hibajegy archívum",
   "Task archive": "Feladat archívum",
   "Ticket filter": "Hibajegy szűrő",
+  "Ticket search": "Hibajegy keresés",
   "New ticket": "Új hiba bejelentése",
   "Own tickets": "Saját bejelentések",
   "Complex view": "Komplex nézet",
@@ -313,6 +326,7 @@
   "No tickets yet": "Még nincs bejelentése",
   "task": "feladat",
   "tasks": "feladatok",
+  "My own only": "Sajátjaim mutatása",
 
   // finances
   "Account": "Számla", 

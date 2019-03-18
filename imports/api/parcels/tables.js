@@ -45,6 +45,15 @@ Render.joinOccupants = function joinOccupants(occupants) {
   return result;
 };
 
+function renderLeadRef(cellData, renderType, currentRow) {
+  const leadRef = cellData;
+  const parcel = Parcels.findOne(currentRow._id);
+  const leadParcel = parcel.leadParcel();
+  const mark = !leadParcel ? ' class="bg-danger p-xs"' : '';
+  const html = leadRef ? `<div${mark}>${leadRef}</div>` : '';
+  return html;
+}
+
 export function parcelColumns(permissions) {
   const buttonRenderers = [];
   if (permissions.view) buttonRenderers.push(Render.buttonView);
@@ -54,7 +63,7 @@ export function parcelColumns(permissions) {
 
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'leadRef', title: __('schemaParcels.leadRef.label') },
+    { data: 'leadRef', title: __('schemaParcels.leadRef.label'), render: renderLeadRef },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'lot', title: __('schemaParcels.lot.label') },

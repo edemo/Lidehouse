@@ -1,8 +1,8 @@
 /* eslint-disable prefer-arrow-callback */
 
 import { Meteor } from 'meteor/meteor';
-import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 import { leaderRoles } from '/imports/api/permissions/roles.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Memberships } from '/imports/api/memberships/memberships';
@@ -73,6 +73,8 @@ function communityPublication(userId, _id) {
           };
           const publicFields = Topics.publicFields.extendForUser(this.userId, community._id);
           return Topics.find(selector, { fields: publicFields });
+//            Topics.find(_.extend({}, selector, { category: 'vote', closed: true })),
+//          ];
         }
         return undefined;
       },
