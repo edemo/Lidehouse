@@ -379,15 +379,15 @@ export function insertDemoHouse(lang, demoOrTest) {
     parcelId: demoParcels[4],
     benefactorship: { type: 'rental' },
   });
-  fixtureBuilder.addRoleToUser(11, 'benefactor', {
+  fixtureBuilder.addRoleToUser(15, 'benefactor', {
     parcelId: demoParcels[5],
     benefactorship: { type: 'favor' },
   });
-  fixtureBuilder.addRoleToUser(11, 'benefactor', {
+  fixtureBuilder.addRoleToUser(16, 'benefactor', {
     parcelId: demoParcels[8],
     benefactorship: { type: 'favor' },
   });
-  fixtureBuilder.addRoleToUser(11, 'benefactor', {
+  fixtureBuilder.addRoleToUser(17, 'benefactor', {
     parcelId: demoParcels[9],
     benefactorship: { type: 'rental' },
   });
