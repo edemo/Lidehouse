@@ -84,7 +84,7 @@
           </div>
           {{#if userHasPermission 'task.insert' (fromSession 'activeCommunityId')  }}
           <div class="col-sm-2 m-b-xs">  
-            <a href="" class="btn btn-primary btn-xs js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'task'}}</a>
+            <a href="" class="btn btn-primary btn-xs js-new pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'task'}}</a>
           </div>
           {{/if}}
         </div>
@@ -105,7 +105,7 @@
           </div>
           {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')  }}
           <div class="col-sm-2 m-b-xs">  
-            <a href="" class="btn btn-primary btn-xs js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'ticket'}}</a>
+            <a href="" class="btn btn-primary btn-xs js-new pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'ticket'}}</a>
           </div>
           {{/if}}
         </div>    
