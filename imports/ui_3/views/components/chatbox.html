@@ -5,7 +5,7 @@
             <button data-toggle="dropdown" class="dropdown-toggle btn-white">
                 <i class="glyphicon glyphicon-option-horizontal"></i>
             </button>
-            <ul class="dropdown-menu m-t-xs">
+            <ul class="slim-menu dropdown-menu m-t-xs">
                 {{#if userHasPermission 'forum.update' (fromSession 'activeCommunityId') this}}
                 <li><a class="js-edit-topic" href="">{{_ 'edit'}}</a></li>
                 {{/if}}

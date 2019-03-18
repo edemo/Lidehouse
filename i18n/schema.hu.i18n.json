@@ -232,9 +232,9 @@
       },
       "type": {
         "label": "Szavazás típusa",
-        "yesno": "Igen-nem-tartózkodom",
-        "choose": "Eldöntendő (választás a lehetőségekből)",
-        "preferential": "Preferenciális (választás preferenciák alapján)",
+        "yesno": "Igen-nem",
+        "choose": "Egyszerű választásos",
+        "preferential": "Preferencia szerint sorba rendező",
         "petition": "Támogatásgyűjtő"
       },
       "voters": {
