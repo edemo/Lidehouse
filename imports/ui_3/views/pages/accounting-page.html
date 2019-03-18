@@ -68,20 +68,20 @@
                   <div class="form-group">
                     <div class="col-sm-4">
                       <div class="form-group">
-                          <label class="control-label" for="account">{{_ 'schemaTxDefs.name.label'}}</label>
-                          <select id="account" name="account" {{b 'options: txDefOptions, value: txDefSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                          <label class="control-label" for="tx-def">{{_ 'schemaTxDefs.name.label'}}</label>
+                          <select id="tx-def" name="tx-def" {{b 'options: txDefOptions, value: txDefSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
                       </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label class="control-label" for="amount">{{_ 'schemaTxDefs.credit.label'}}</label>
-                            <select disabled id="amount" name="amount" {{b 'options: creditAccountOptions, value: creditAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                            <label class="control-label" for="credit">{{_ 'schemaTxDefs.credit.label'}}</label>
+                            <select disabled id="credit" name="credit" {{b 'options: creditAccountOptions, value: creditAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label class="control-label" for="amount">{{_ 'schemaTxDefs.debit.label'}}</label>
-                            <select disabled id="amount" name="amount" {{b 'options: debitAccountOptions, value: debitAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                            <label class="control-label" for="debit">{{_ 'schemaTxDefs.debit.label'}}</label>
+                            <select disabled id="debit" name="debit" {{b 'options: debitAccountOptions, value: debitAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
                         </div>
                     </div>
                   </div>
@@ -117,6 +117,12 @@
                         <div class="form-group">
                             <label class="control-label" for="end_date">{{_ 'End date'}}</label>
                             <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="control-label" for="localizer">{{_ 'Localizer'}}</label>
+                            <select id="localizer" name="localizer" {{b 'options: localizerOptions, value: localizerSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
                         </div>
                     </div>
                     <!--div class="col-sm-4">

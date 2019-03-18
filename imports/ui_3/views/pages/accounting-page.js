@@ -21,6 +21,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import '/imports/api/transactions/breakdowns/methods.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -47,6 +48,8 @@ Template.Accounting_page.viewmodel({
   creditAccountOptions: [],
   debitAccountSelected: '',
   debitAccountOptions: [],
+  localizerSelected: '',
+  localizerOptions: [],
 //  partnerSelected: '',
 //  referenceIdSelected: '',
   beginDate: '',
@@ -72,9 +75,11 @@ Template.Accounting_page.viewmodel({
     },
     function setFilterAccountOptions() {
       const coa = ChartOfAccounts.get();
-      if (coa) {
+      const loc = Localizer.get();
+      if (coa && loc) {
         this.creditAccountOptions(coa.nodeOptions());
         this.debitAccountOptions(coa.nodeOptions());
+        this.localizerOptions(loc.nodeOptions());
       }
     },
     function autoSelectFilterAccounts() {
