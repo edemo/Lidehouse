@@ -65,7 +65,7 @@ AutoForm.addHooks('af.ticket.insert', {
     doc.userId = Meteor.userId();
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
-    doc.ticket.status = 'reported';
+    doc.ticket.status = doc.ticket.type;
     return doc;
   },
 });

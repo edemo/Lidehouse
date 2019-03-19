@@ -253,6 +253,9 @@
     },
     "ticket": {
       "label": "Ticket",
+      "type": {
+        "label": "Type"
+      },
       "category": {
         "label": "Category",
         "building": "Building",
@@ -267,6 +270,7 @@
       },
       "status": {
         "label": "Status",
+        "scheduled": "Scheduled",
         "reported": "Reported",
         "confirmed": "Confirmed",
         "progressing": "Progressing",

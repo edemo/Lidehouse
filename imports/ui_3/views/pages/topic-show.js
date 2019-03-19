@@ -6,6 +6,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { __ } from '/imports/localization/i18n.js';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
+import { TicketStatuses } from '/imports/api/topics/tickets/ticket-status.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 import '../common/error.js';
@@ -62,8 +63,8 @@ Template.Topic_show.helpers({
 });
 
 Template.Ticket_topic_show.helpers({
-  statusColor(value) {
-    return Topics.statusColors[value];
+  statusColor(statusName) {
+    return TicketStatuses[statusName].color;
   },
   urgencyColor(value) {
     return Topics.urgencyColors[value];

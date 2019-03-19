@@ -253,7 +253,10 @@
     },
     "ticket": {
       "label": "Hibajegy",
-        "category": {
+      "type": {
+        "label": "Típus"
+      },
+      "category": {
         "label": "Kategória",
         "building": "épület",
         "garden": "kert",
@@ -267,12 +270,13 @@
       },
       "status": {
         "label": "Státusz",
-        "reported": "megerősítés alatt",
-        "confirmed": "megerősítve",
-        "progressing": "folyamatban",
-        "finished": "megoldva",
-        "checked": "ellenőrizve",
-        "closed": "lezárva"
+        "scheduled": "Ütemezve",
+        "reported": "Bejelentve",
+        "confirmed": "Megerősítve",
+        "progressing": "Folyamatban",
+        "finished": "Megoldva",
+        "checked": "Ellenőrizve",
+        "closed": "Lezárva"
       }
     }
   },
