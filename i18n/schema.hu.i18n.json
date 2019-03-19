@@ -254,7 +254,9 @@
     "ticket": {
       "label": "Hibajegy",
       "type": {
-        "label": "Típus"
+        "label": "Típus",
+        "scheduled": "Ütemezett",
+        "reported": "Bejelentett"
       },
       "category": {
         "label": "Kategória",
@@ -274,19 +276,26 @@
         "reported": "Bejelentve",
         "confirmed": "Megerősítve",
         "progressing": "Folyamatban",
+        "suspended": "Felfüggesztve",
         "finished": "Megoldva",
         "checked": "Ellenőrizve",
-        "closed": "Lezárva"
+        "closed": "Lezárva",
+        "deleted": "Törölt"
       }
     }
   },
   "schemaTicketStatusChange": {
-    "text": {
-      "label": "Hozzáfűzött szöveg",
-      "placeholder": "(pl. A törött alkatrész cseréje megtörtént)"
-    },
     "status": {
       "label": "Új státusz"
+    },
+    "data": {
+      "label": "Hozzáfűzött",
+      "text": {
+        "label": "Megjegyzés"
+      },
+      "expected": {
+        "label": "Várható időpont"
+      }
     }
   },
   "schemaFeedback": {

@@ -9,7 +9,7 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Topics } from '/imports/api/topics/topics.js';
 import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
-import { TicketStatuses } from '/imports/api/topics/tickets/ticket-status.js';
+import { TicketStatuses, possibleNextStatuses } from '/imports/api/topics/tickets/ticket-status.js';
 import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -53,6 +53,9 @@ Template.Tickets_report.viewmodel({
       createdAt: { $gt: moment().subtract(2, 'week').toDate() },
     }, { sort: { createdAt: -1 } });
   },
+  possibleNextStatuses(topic) {
+    return possibleNextStatuses(topic);
+  },
 });
 
 Template.Tickets_report.events({
@@ -61,11 +64,13 @@ Template.Tickets_report.events({
   },
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
+    debugger;
     afTicketUpdateModal(id);
   },
   'click .js-status'(event) {
     const id = $(event.target).data('id');
-    afTicketStatusChangeModal(id);
+    const status = $(event.target).data('status');
+    afTicketStatusChangeModal(id, status);
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');

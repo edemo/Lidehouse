@@ -254,7 +254,9 @@
     "ticket": {
       "label": "Ticket",
       "type": {
-        "label": "Type"
+        "label": "Type",
+        "scheduled": "Scheduled",
+        "reported": "Reported"
       },
       "category": {
         "label": "Category",
@@ -274,19 +276,27 @@
         "reported": "Reported",
         "confirmed": "Confirmed",
         "progressing": "Progressing",
+        "suspended": "Suspended",
         "finished": "Finished",
         "checked": "Checked",
-        "closed": "Closed"
+        "closed": "Closed",
+        "deleted": "Deleted"
       }
     }
   },
   "schemaTicketStatusChange": {
-    "text": {
-      "label": "Comment",
-      "placeholder": "(eg. We replaced the broken part)"
-    },
     "status": {
       "label": "New status"
+    },
+    "data": {
+      "label": "Append",
+      "text": {
+        "label": "Note",
+        "placeholder": "(eg. We replaced the broken part)"
+      },
+      "expected": {
+        "label": "Expected date"
+      }
     }
   },
   "schemaFeedback": {

@@ -1,20 +1,28 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
-import { ticketsSchema, TicketStatusChangeSchema } from '/imports/api/topics/tickets/tickets.js';
+import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
+import { statusSpecificSchema } from '/imports/api/topics/tickets/ticket-status.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 
 export function afTicketInsertModal() {
+  const communityId = Session.get('activeCommunityId');
+  const omitFields = ['agendaId', 'sticky', 'ticket.status'];
+  if (!Meteor.user().hasPermission('ticket.update', communityId)) {
+    omitFields.push('ticket.type');
+    omitFields.push('ticket.category');
+  }
   Modal.show('Autoform_edit', {
     id: 'af.ticket.insert',
     collection: Topics,
     schema: ticketsSchema,
-    omitFields: ['agendaId', 'sticky', 'ticket.status', 'ticket.category'],
+    omitFields,
     type: 'method',
     meteormethod: 'topics.insert',
     template: 'bootstrap3-inline',
@@ -36,11 +44,11 @@ export function afTicketUpdateModal(id) {
   });
 }
 
-export function afTicketStatusChangeModal(id) {
-  Session.set('modalTopicId', id);
+export function afTicketStatusChangeModal(id, statusName) {
+  Session.set('activeTopicId', id);
   Modal.show('Autoform_edit', {
     id: 'af.ticket.statusChange',
-    schema: TicketStatusChangeSchema,
+    schema: statusSpecificSchema(statusName),
     omitFields: ['topicId'],
     type: 'method',
     meteormethod: 'ticket.statusChange',
@@ -65,16 +73,18 @@ AutoForm.addHooks('af.ticket.insert', {
     doc.userId = Meteor.userId();
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
+    doc.ticket.type = doc.ticket.type || 'reported';
     doc.ticket.status = doc.ticket.type;
     return doc;
   },
 });
+
 AutoForm.addHooks('af.ticket.statusChange', {
   formToDoc(doc) {
-    doc.topicId = Session.get('modalTopicId');
+    doc.topicId = Session.get('activeTopicId');
     return doc;
   },
   onSuccess(formType, result) {
-    Session.set('modalTopicId');  // clear it
+    Session.set('activeTopicId');  // clear it
   },
 });
