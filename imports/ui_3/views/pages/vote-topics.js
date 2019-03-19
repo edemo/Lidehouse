@@ -14,26 +14,22 @@ import '../components/votebox.js';
 import '../components/voting-list.html';
 import './vote-topics.html';
 
-Template.Vote_topics.onCreated(function voteTopicsOnCreated() {
-  this.topicsDict = new ReactiveDict();
-});
-
-Template.Vote_topics.helpers({
-  openVoteTopics() {
-    const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category: 'vote', closed: false });
+Template.Vote_topics.viewmodel({
+  activesOnly: false,
+  searchText: '',
+  activeClass() {
+    return this.activesOnly() && 'active';
   },
   voteTopics() {
     const communityId = Session.get('activeCommunityId');
-    const topicSearch = Template.instance().topicsDict.get('voteTopicSearch');
-    const activeVoteTopics = Template.instance().topicsDict.get('activesPressed');
-    let topicsList = Topics.find({ communityId, category: 'vote' }, { sort: { createdAt: -1 } }).fetch();
-    if (activeVoteTopics) {
-      topicsList = topicsList.filter(t => t.closed === false);
-    }
-    if (topicSearch) {
-      topicsList = topicsList.filter(t => t.title.toLowerCase().search(topicSearch.toLowerCase()) >= 0
-       || t.text.toLowerCase().search(topicSearch.toLowerCase()) >= 0);    
+    const selector = { communityId, category: 'vote' };
+    if (this.activesOnly()) selector.closed = false;
+    let topicsList = Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
+    if (this.searchText()) {
+      topicsList = topicsList.filter(t =>
+          t.title.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+       || t.text.toLowerCase().search(this.searchText().toLowerCase()) >= 0
+      );
     }
     return topicsList;
   },
@@ -54,16 +50,12 @@ Template.Vote_topics.events({
       template: 'bootstrap3-inline',
     });
   },
-  'keyup .js-search'(event, instance) {
-    instance.topicsDict.set('voteTopicSearch', event.target.value);
-  },
-  'click .js-active'(event, instance) {
-    event.target.classList.toggle('active');
+  'click .js-filter'(event, instance) {
     $(event.target).blur();
-    if (event.target.classList.contains('active')) {
-      instance.topicsDict.set('activesPressed', true)
-    } else {
-      instance.topicsDict.set('activesPressed', false)
-    }
+    const oldValue = instance.viewmodel.activesOnly();
+    instance.viewmodel.activesOnly(!oldValue);
+  },
+  'keyup .js-search'(event, instance) {
+    instance.viewmodel.searchText(event.target.value);
   },
 });

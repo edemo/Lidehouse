@@ -8,6 +8,8 @@
              <ul class="dropdown-menu m-t-xs">
                  {{#if userHasPermission 'ticket.update' (fromSession 'activeCommunityId') this}}
                  <li><a class="js-edit" href="">{{_ 'edit'}}</a></li>
+                 {{/if}}
+                 {{#if userHasPermission 'ticket.statusChange' (fromSession 'activeCommunityId') this}}
                  <li><a class="js-status" href="">{{_ 'Change status'}}</a></li>
                  {{/if}}
                  {{#if userHasPermission 'ticket.remove' (fromSession 'activeCommunityId') this}}

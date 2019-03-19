@@ -35,6 +35,7 @@ export const TicketStatusChangeSchema = new SimpleSchema({
 });
 
 export const TicketFields = ['ticket.category', 'ticket.urgency', 'ticket.status'];
+export const TicketModifiableFields = ['ticket.category', 'ticket.urgency'];
 
 Topics.addRevisionedField('ticket.status');
 

@@ -44,22 +44,6 @@
           </div>
         </div>
       </div>
-      <!-- active errors start -->
-      <!--div class="col-xs-12 col-lg-6">
-        <div class="ibox">
-          <div class="ibox-title"> 
-            <h5>{{_ 'Active tickets'}}</h5>
-            {{> iboxTools}}          
-          </div>
-          <div class="ibox-content">
-
-              <div class="no-padding table-responsive">
-                {{> ReactiveDatatable tableData=activeTicketsDataFn options=activeTicketsOptionsFn }}
-              </div>
-
-          </div>
-        </div>
-      </div-->
 
       <!-- new error start -->
       <div class="col-xs-12 col-md-6">
@@ -90,27 +74,24 @@
       <div class="col-lg-12">
       <div class="ibox">
         <div class="ibox-title">
-            <h5>{{_ 'Ticket archive'}}</h5>
+            <h5>{{_ 'Ticket search'}}</h5>
             {{> iboxTools}}
         </div>
         <div class="ibox-content">
-          <div class="m-b-lg">
-              <div class="input-group">
-                  <input type="text" placeholder="{{_ 'search'}}..." class=" form-control">
-                      <span class="input-group-btn">
-                          <button type="button" class="btn btn-white"> {{_ 'search'}}</button>
-                      </span>
+          <div class="row m-b-sm m-t-sm">
+              <div class="col-md-2">
+                  <button type="button" class="btn btn-outline btn-primary btn-sm {{activeClassForActives}} js-filter-actives"><i class="fa fa-refresh"></i> {{_ 'Actives only'}}</button>
               </div>
-              <div class="m-t-md">
-                  <!--div class="pull-right">
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-comments"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-user"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-list"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-pencil"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-print"></i> </button>
-                      <button type="button" class="btn btn-sm btn-white"> <i class="fa fa-cogs"></i> </button>
-                  </div-->
-                  <!--strong>Found {{tickets.count}} tickets.</strong-->
+              <div class="col-md-7">
+                  <div class="input-group">
+                      <input type="text" placeholder="{{_ 'search'}}" class="input-sm form-control js-search">
+                      <span class="input-group-addon">
+                          <i class="fa fa-search"></i>
+                      </span>
+                  </div>
+              </div>
+              <div class="col-md-2">
+                  <button type="button" class="btn btn-outline btn-info btn-sm {{activeClassForUser}} js-filter-user"><i class="fa fa-refresh"></i> {{_ 'My own only'}}</button>
               </div>
           </div>
 
@@ -129,15 +110,15 @@
                           <small>{{>Chopped text=text chars=400}}</small>
                       </td>
                       <td>
+                          {{#if ticket.category}}
+                          <span class="label label-default">{{_ (concat 'schemaTickets.ticket.category.' ticket.category)}}</span>
+                          {{/if}}
+                      </td>
+                      <td>
                           {{createdBy}}
                       </td>
                       <td>
                           {{displayTime createdAt}}
-                      </td>
-                      <td>
-                          {{#if ticket.category}}
-                          <span class="label label-default">{{_ (concat 'schemaTickets.ticket.category.' ticket.category)}}</span>
-                          {{/if}}
                       </td>
                       <td class="text-right">
                           <div class="btn-group">
@@ -156,17 +137,6 @@
               </table>
           </div>
         </div>
-        <!--div class="ibox">
-          <div class="ibox-title">
-            <h5>{{_ 'Closed tickets'}}</h5>
-            {{> iboxTools}}
-          </div>
-          <div class="ibox-content">
-            <div class="no-padding table-responsive archive-div">
-              {{> ReactiveDatatable tableData=closedTicketsDataFn options=closedTicketsOptionsFn }}
-            </div>
-          </div>
-        </div-->
       </div>
       </div>
     <!-- closed errrors end -->

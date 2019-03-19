@@ -64,6 +64,12 @@ Template.Intro_page.onDestroyed(function() {
     $('body').removeClass('landing-page');
 });
 
+Template.Intro_page.helpers({
+  currentYear() {
+    return (new Date()).getFullYear();
+  },
+});
+
 Template.Intro_page.events({
   'click .read-more'(event) {
     event.preventDefault();
