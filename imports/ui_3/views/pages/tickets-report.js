@@ -64,7 +64,6 @@ Template.Tickets_report.events({
   },
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
-    debugger;
     afTicketUpdateModal(id);
   },
   'click .js-status'(event) {

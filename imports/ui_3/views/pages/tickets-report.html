@@ -122,11 +122,8 @@
                       </td>
                       <td class="text-right">
                           <div class="btn-group">
-                              {{#if userHasPermission 'ticket.update' (fromSession 'activeCommunityId')  }}
-                              <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                              {{/if}}
                               {{#if userHasPermission 'ticket.statusChange' (fromSession 'activeCommunityId')  }}
-                              <div class="dropdown">
+                              <div class="dropdown pull-left">
                                   <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white">
                                       <i class="fa fa-cog"></i> {{_ 'status'}} <b class="caret"></b>
                                   </a>
@@ -136,6 +133,9 @@
                                       {{/each}}
                                   </ul>
                               </div>
+                              {{/if}}
+                              {{#if userHasPermission 'ticket.update' (fromSession 'activeCommunityId')  }}
+                              <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                               {{/if}}
                               {{#if userHasPermission 'ticket.remove' (fromSession 'activeCommunityId')  }}
                               <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
