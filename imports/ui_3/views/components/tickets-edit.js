@@ -30,13 +30,13 @@ export function afTicketInsertModal() {
   });
 }
 
-export function afTicketUpdateModal(id) {
+export function afTicketUpdateModal(topicId) {
   Modal.show('Autoform_edit', {
     id: 'af.ticket.update',
     collection: Topics,
     schema: ticketsSchema,
     omitFields: ['agendaId', 'sticky', 'ticket.status'],
-    doc: Topics.findOne(id),
+    doc: Topics.findOne(topicId),
     type: 'method-update',
     meteormethod: 'topics.update',
     singleMethodArgument: true,
@@ -44,11 +44,12 @@ export function afTicketUpdateModal(id) {
   });
 }
 
-export function afTicketStatusChangeModal(id, statusName) {
-  Session.set('activeTopicId', id);
+export function afTicketStatusChangeModal(topicId, newStatusName) {
+  Session.set('activeTopicId', topicId);
+  Session.set('newStatusName', newStatusName);
   Modal.show('Autoform_edit', {
     id: 'af.ticket.statusChange',
-    schema: statusSpecificSchema(statusName),
+    schema: statusSpecificSchema(newStatusName),
     omitFields: ['topicId'],
     type: 'method',
     meteormethod: 'ticket.statusChange',
@@ -57,8 +58,8 @@ export function afTicketStatusChangeModal(id, statusName) {
   });
 }
 
-export function deleteTicketConfirmAndCallModal(id) {
-  Modal.confirmAndCall(removeTopic, { _id: id }, {
+export function deleteTicketConfirmAndCallModal(topicId) {
+  Modal.confirmAndCall(removeTopic, { _id: topicId }, {
     action: 'delete ticket',
     message: 'It will disappear forever',
   });
@@ -82,6 +83,8 @@ AutoForm.addHooks('af.ticket.insert', {
 AutoForm.addHooks('af.ticket.statusChange', {
   formToDoc(doc) {
     doc.topicId = Session.get('activeTopicId');
+    doc.userId = Meteor.userId();
+    doc.category = `statusChangeTo.${Session.get('newStatusName')}`;
     return doc;
   },
   onSuccess(formType, result) {

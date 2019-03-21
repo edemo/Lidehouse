@@ -17,11 +17,11 @@ export const insert = new ValidatedMethod({
     const topic = checkExists(Topics, doc.topicId);
     checkPermissions(this.userId, 'comments.insert', topic.communityId);
     doc.userId = this.userId;   // One can only post in her own name
-    const commentId = Comments.insert(doc);
-    const newComment = Comments.findOne(commentId); // we need the createdAt timestamp from the server
-    updateMyLastSeen._execute({ userId: this.userId }, 
-    { topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt } });
-    return commentId;
+    const docId = Comments.insert(doc);
+    const newDoc = Comments.findOne(docId); // we need the createdAt timestamp from the server
+    updateMyLastSeen._execute({ userId: this.userId },
+    { topicId: topic._id, lastSeenInfo: { timestamp: newDoc.createdAt } });
+    return docId;
   },
 });
 

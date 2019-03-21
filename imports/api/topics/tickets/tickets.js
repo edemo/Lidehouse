@@ -4,7 +4,7 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 import { _ } from 'meteor/underscore';
 
 import { Topics } from '../topics.js';
-import { TicketStatusNames, TicketTypeNames, possibleNextStatusesOnUI } from './ticket-status.js';
+import { TicketStatusNames, TicketTypeNames } from './ticket-status.js';
 
 Topics.ticketCategoryValues = ['building', 'garden', 'service'];
 Topics.urgencyValues = ['high', 'normal', 'low'];
@@ -23,8 +23,6 @@ const TicketsExtensionSchema = new SimpleSchema({
 
 export const TicketFields = ['ticket.category', 'ticket.urgency', 'ticket.status'];
 export const TicketModifiableFields = ['ticket.category', 'ticket.urgency'];
-
-Topics.addRevisionedField('ticket.status');
 
 Topics.helpers({
 });

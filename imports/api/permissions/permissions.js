@@ -59,6 +59,9 @@ export const Permissions = [
   { name: 'comments.update',        roles: nobody, allowAuthor: true },
   { name: 'comments.remove',        roles: ['moderator'], allowAuthor: true },
   { name: 'comments.listing',       roles: exceptGuest },
+  { name: 'pointAt.insert',         roles: exceptGuest },
+  { name: 'pointAt.update',         roles: nobody, allowAuthor: true },
+  { name: 'pointAt.remove',         roles: nobody, allowAuthor: true },
   { name: 'like.toggle',            roles: exceptGuest },
   { name: 'flag.toggle',            roles: exceptGuest },
   { name: 'topic.hide.forOthers',   roles: ['moderator'] },
@@ -75,7 +78,34 @@ export const Permissions = [
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
   { name: 'do.techsupport',         roles: ['admin'] },
+
+  { name: 'statusChangeTo.reported.insert',     roles: exceptGuest },
+  { name: 'statusChangeTo.reported.update',     roles: nobody, allowAuthor: true },
+  { name: 'statusChangeTo.reported.remove',     roles: nobody },
+  { name: 'statusChangeTo.confirmed.insert',    roles: ['manager', 'maintainer'] },
+  { name: 'statusChangeTo.confirmed.update',    roles: nobody, allowAuthor: true },
+  { name: 'statusChangeTo.confirmed.remove',    roles: nobody },
+  { name: 'statusChangeTo.scheduled.insert',    roles: exceptGuest },
+  { name: 'statusChangeTo.scheduled.update',    roles: nobody, allowAuthor: true },
+  { name: 'statusChangeTo.scheduled.remove',    roles: nobody },
+  { name: 'statusChangeTo.progressing.insert',  roles: ['manager', 'maintainer'] },
+  { name: 'statusChangeTo.progressing.update',  roles: nobody, allowAuthor: true },
+  { name: 'statusChangeTo.progressing.remove',  roles: nobody },
+  { name: 'statusChangeTo.suspended.insert',    roles: ['manager', 'maintainer'] },
+  { name: 'statusChangeTo.suspended.update',    roles: nobody, allowAuthor: true },
+  { name: 'statusChangeTo.suspended.remove',    roles: nobody },
+  { name: 'statusChangeTo.finished.insert',     roles: ['manager', 'maintainer'] },
+  { name: 'statusChangeTo.finished.update',     roles: nobody, allowAuthor: true },
+  { name: 'statusChangeTo.finished.remove',     roles: nobody },
+  { name: 'statusChangeTo.closed.insert',       roles: ['manager', 'maintainer'] },
+  { name: 'statusChangeTo.closed.update',       roles: nobody, allowAuthor: true },
+  { name: 'statusChangeTo.closed.remove',       roles: nobody },
+  { name: 'statusChangeTo.deleted.insert',      roles: ['manager', 'maintainer'] },
+  { name: 'statusChangeTo.deleted.update',      roles: nobody, allowAuthor: true },
+  { name: 'statusChangeTo.deleted.remove',      roles: nobody },
+
 ];
+
 
 // The board member has now exactly the same permissions as the manager
 Permissions.forEach((perm) => {

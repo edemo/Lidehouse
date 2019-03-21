@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { autoformOptions } from '/imports/utils/autoform.js';
+//import { autoformOptions } from '/imports/utils/autoform.js';
+import { Events } from '/imports/api/events/events.js';
 
 // === Ticket statuses
 
@@ -9,7 +10,6 @@ const reported = {
   name: 'reported',
   color: 'warning',
   schema: new SimpleSchema({
-    text: { type: String, max: 5000, autoform: { rows: 8 } },
   }),
 //  actions: [],
 //  permissions: [],
@@ -19,7 +19,7 @@ const confirmed = {
   name: 'confirmed',
   color: 'info',
   schema: new SimpleSchema({
-    text: { type: String, max: 5000, autoform: { rows: 8 }, optional: true },
+    localizer: { type: String },
     expected: { type: Date, optional: true },
   }),
 };
@@ -37,7 +37,6 @@ const progressing = {
   name: 'progressing',
   color: 'info',
   schema: new SimpleSchema({
-    text: { type: String, max: 5000, autoform: { rows: 8 }, optional: true },
     expected: { type: Date, optional: true },
   }),
 };
@@ -46,7 +45,6 @@ const suspended = {
   name: 'suspended',
   color: 'warning',
   schema: new SimpleSchema({
-    text: { type: String, max: 5000, autoform: { rows: 8 } },
     expected: { type: Date, optional: true },
   }),
 };
@@ -55,7 +53,6 @@ const finished = {
   name: 'finished',
   color: 'primary',
   schema: new SimpleSchema({
-    text: { type: String, max: 5000, autoform: { rows: 8 }, optional: true },
   }),
 };
 
@@ -63,7 +60,6 @@ const closed = {
   name: 'finished',
   color: 'default',
   schema: new SimpleSchema({
-    text: { type: String, max: 5000, autoform: { rows: 8 } },
   }),
 };
 
@@ -71,7 +67,6 @@ const deleted = {
   name: 'deleted',
   color: 'danger',
   schema: new SimpleSchema({
-    text: { type: String, max: 5000, autoform: { rows: 8 } },
   }),
 };
 
@@ -79,8 +74,9 @@ export const TicketStatuses = {
   reported, confirmed, scheduled, progressing, suspended, finished, closed, deleted,
 };
 export const TicketStatusNames = Object.keys(TicketStatuses);
+TicketStatusNames.forEach(statusName => Events.categoryValues.push(`statusChangeTo.${statusName}`));
 
-//== Ticket types:
+// == Ticket types:
 
 export const TicketTypes = {
   reported: {
@@ -134,11 +130,9 @@ export function possibleNextStatuses(topic) {
 
 export function statusSpecificSchema(statusName) {
   const statusObject = TicketStatuses[statusName];
-  const schema = new SimpleSchema({
-    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    status: { type: String, defaultValue: statusName, autoform: _.extend({ readonly: true }, autoformOptions(TicketStatusNames, 'schemaTickets.ticket.status.')) },
+  const schema = new SimpleSchema([Events.baseSchema, {
     data: { type: statusObject.schema, optional: true },
-  });
+  }]);
   schema.i18n('schemaTicketStatusChange');
   return schema;
 }
