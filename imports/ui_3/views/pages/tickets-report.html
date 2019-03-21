@@ -125,7 +125,7 @@
                               {{#if userHasPermission 'ticket.statusChange' (fromSession 'activeCommunityId')  }}
                               <div class="dropdown pull-left">
                                   <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white">
-                                      <i class="fa fa-cog"></i> {{_ 'status'}} <b class="caret"></b>
+                                      <i class="fa fa-cog"></i> {{_ 'statusChange'}} <b class="caret"></b>
                                   </a>
                                   <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
                                       {{#each status in (possibleNextStatuses this)}}

@@ -19,7 +19,7 @@ Template.Autoform_edit.helpers({
     let actionName = split[2];
     if (objectName === 'journal' && actionName === 'insert') objectName = Session.get('activeTxDef');
     if (objectName === 'ticket' && actionName === 'statusChange') {
-      objectName = Session.get('statusChange');
+      objectName = 'statusChange';
       actionName = 'insert';
     }
     if (actionName === 'insert') return __('new') + ' ' + __(objectName) + ' ' + __('insertion');
