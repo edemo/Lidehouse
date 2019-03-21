@@ -376,7 +376,7 @@
     "batchId": {
       "label": "Batch azonosító"
     },
-    "credit": {
+    "debit": {
       "label": "Tartozik",
       "$": {
         "amount": {
@@ -391,7 +391,7 @@
         }         
       }
     },
-    "debit": {
+    "credit": {
       "label": "Követel",
       "$": {
         "amount": {
@@ -436,11 +436,11 @@
       "label": "Tranzakció típus neve",
       "placeholder": ""
     },
-    "credit": {
+    "debit": {
       "label": "Tartozik",
       "placeholder": ""
     },
-    "debit": {
+    "credit": {
       "label": "Követel",
       "placeholder": ""
     }

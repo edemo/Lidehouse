@@ -40,7 +40,7 @@
             <div class="ibox-title">
                 <h5>{{_ 'Transactions'}}</h5>
                 {{>iboxTools}}
-            </div>  
+            </div>
             <div class="ibox-content">
                 {{#if userHasPermission 'transactions.insert' (fromSession 'activeCommunityId')}}
                 <div class="pull-right">
@@ -74,14 +74,14 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label class="control-label" for="credit">{{_ 'schemaTxDefs.credit.label'}}</label>
-                            <select disabled id="credit" name="credit" {{b 'options: creditAccountOptions, value: creditAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                            <label class="control-label" for="debit">{{_ 'schemaTxDefs.debit.label'}}</label>
+                            <select disabled id="debit" name="debit" {{b 'options: debitAccountOptions, value: debitAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <label class="control-label" for="debit">{{_ 'schemaTxDefs.debit.label'}}</label>
-                            <select disabled id="debit" name="debit" {{b 'options: debitAccountOptions, value: debitAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                            <label class="control-label" for="credit">{{_ 'schemaTxDefs.credit.label'}}</label>
+                            <select disabled id="credit" name="credit" {{b 'options: creditAccountOptions, value: creditAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
                         </div>
                     </div>
                   </div>
@@ -213,8 +213,8 @@
                                 <thead>
                                   <tr style="font-weight: bold">
                                       <td>{{_ 'schemaTxDefs.name.label'}}</td>
-                                      <td>{{_ 'schemaTxDefs.credit.label'}}</td>
                                       <td>{{_ 'schemaTxDefs.debit.label'}}</td>
+                                      <td>{{_ 'schemaTxDefs.credit.label'}}</td>
                                       <td></td>
                                   </tr>
                                 </thead>
@@ -222,8 +222,8 @@
                                   {{#each txDef in txDefs}}
                                   <tr>
                                       <td>{{_ txDef.name}}</td>
-                                      <td>{{displayAccount txDef.credit}}</td>
                                       <td>{{displayAccount txDef.debit}}</td>
+                                      <td>{{displayAccount txDef.credit}}</td>
                                       <td class="text-right">
                                           <div class="btn-group">
                                               <!--td><button class="btn btn-white btn-xs js-view" data-id="{{entry.txId}}"><i class="fa fa-eye"></i></button></td-->
