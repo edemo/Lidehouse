@@ -27,7 +27,7 @@ const IdCardSchema = new SimpleSchema({
 export const PersonSchema = new SimpleSchema({
   // *userId* (connecting to a registered user in the system),
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
-  // *idCard* (identity papers confirmed by manager, so person can officially vote now)
+  // *idCard* (identity papers validated by manager, so person can officially vote now)
   // this person might or might not wish to register in the system ever, but still can do voting (if manager votes in his name)
   idCard: { type: IdCardSchema, optional: true },
   // Contact details provided by the person - the email address is used for sending invitation to user account creation

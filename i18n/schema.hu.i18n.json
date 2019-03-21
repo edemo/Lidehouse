@@ -261,11 +261,10 @@
         "label": "Státusz",
         "scheduled": "Ütemezve",
         "reported": "Bejelentve",
-        "confirmed": "Megerősítve",
+        "confirmed": "Betervezve",
         "progressing": "Folyamatban",
         "suspended": "Felfüggesztve",
-        "finished": "Megoldva",
-        "checked": "Ellenőrizve",
+        "finished": "Elvégezve",
         "closed": "Lezárva",
         "deleted": "Törölt"
       },
@@ -293,6 +292,9 @@
       "expectedFinish": { 
         "label": "Várható befejezés"
       },
+      "expectedContinue": { 
+        "label": "Várható folytatás"
+      },
       "actualCost": { 
         "label": "Valós költség"
       },
@@ -301,6 +303,9 @@
       },
       "actualFinish": { 
         "label": "Valós befejezés"
+      },
+      "actualContinue": { 
+        "label": "Valós folytatás"
       }
     }
   },

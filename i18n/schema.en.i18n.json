@@ -261,11 +261,10 @@
         "label": "Status",
         "scheduled": "Scheduled",
         "reported": "Reported",
-        "confirmed": "Confirmed",
+        "confirmed": "Planned",
         "progressing": "Progressing",
         "suspended": "Suspended",
-        "finished": "Finished",
-        "checked": "Checked",
+        "finished": "Done",
         "closed": "Closed",
         "deleted": "Deleted"
       },
