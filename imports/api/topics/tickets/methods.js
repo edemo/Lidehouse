@@ -14,16 +14,13 @@ export const ticketStatusChange = new ValidatedMethod({
   validate: statusChangeEventSchema().validator({ clean: true }),
 
   run(event) {
-    console.log('event', event);
     const topic = checkExists(Topics, event.topicId);
     checkPermissions(this.userId, `${event.type}.insert`, topic.communityId);
-//    console.log(Events.categoryValues);
     const topicModifier = {};
-    Object.keys(event.data).forEach(key => topicModifier[`ticket.${key}`] = event.data[key]);
+    Object.keys(event.ticket).forEach(key => topicModifier[`ticket.${key}`] = event.ticket[key]);
     const result = Topics.update(event.topicId, { $set: topicModifier });
-    console.log('topicModifier', topicModifier);
 
-    console.log('event+2', event);
+    event.data = event.ticket; delete event.ticket;
     Events.methods.insert._execute({ userId: this.userId }, event);
     return result;
   },

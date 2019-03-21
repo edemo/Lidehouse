@@ -147,10 +147,10 @@ export function statusChangeEventSchema(statusName) {
   const statusObject = TicketStatuses[statusName];
   const schema = statusName ?
     new SimpleSchema([Events.baseSchema, {
-      data: { type: statusObject.schema, optional: true },
+      ticket: { type: statusObject.schema, optional: true },
     }]) :
     new SimpleSchema([Events.baseSchema, {
-      data: { type: Object, blackbox: true },
+      ticket: { type: Object, blackbox: true },
     }]);
   schema.i18n('schemaTickets');
   return schema;
