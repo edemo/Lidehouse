@@ -85,6 +85,7 @@ const suspended = {
   color: 'warning',
   schema: new SimpleSchema({
     status: { type: String, autoform: fixedStatusValue('suspended') },
+    waitingFor: { type: String, optional: true },
     expectedContinue: { type: Date, optional: true },
   }),
 };

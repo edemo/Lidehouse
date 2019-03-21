@@ -19,6 +19,7 @@ Tickets.extensionSchema = new SimpleSchema({
   expectedStart: { type: Date, optional: true },
   expectedFinish: { type: Date, optional: true },
   expectedContinue: { type: Date, optional: true },
+  waitingFor: { type: String, optional: true },
   actualCost: { type: Number, decimal: true, optional: true },
   actualStart: { type: Date, optional: true },
   actualFinish: { type: Date, optional: true },

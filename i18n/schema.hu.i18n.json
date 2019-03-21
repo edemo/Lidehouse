@@ -297,6 +297,9 @@
       "expectedContinue": { 
         "label": "Várható folytatás"
       },
+      "waitingFor": {
+        "label": "Mire várakozik"
+      },
       "actualCost": { 
         "label": "Tényleges költség"
       },
