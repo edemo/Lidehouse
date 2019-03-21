@@ -6,15 +6,13 @@
 
     <div class="ibox">
       <div class="ibox-title">
+        {{> iboxTools}}
         <div class="row">
           <div class="col-sm-5 m-b-sm">
             <select class="form-control-sm form-control input-s-sm inline" id="ticket-type-selector">
               <option value="tickets">{{_ 'tickets'}}</option>
               <option value="tasks">{{_ 'tasks'}}</option>
             </select>
-          </div>
-          <div class="col-sm-7">
-            {{> iboxTools}}
           </div>
         </div>
       </div>
