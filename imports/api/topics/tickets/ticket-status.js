@@ -1,18 +1,25 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-//import { autoformOptions } from '/imports/utils/autoform.js';
 import { Events } from '/imports/api/events/events.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { Topics } from '/imports/api/topics/topics.js';
 
 // === Ticket statuses
+
+// Tickets.categoryValues = ['building', 'garden', 'service'];
+export const TicketUrgencyValues = ['high', 'normal', 'low'];
+export const TicketUrgencyColors = {
+  high: 'danger',
+  normal: 'warning',
+  low: 'primary',
+};
 
 const reported = {
   name: 'reported',
   color: 'warning',
   schema: new SimpleSchema({
     status: { type: String, autoform: { omit: true }, defaultValue: 'reported' },
+    urgency: { type: String, allowedValues: TicketUrgencyValues, autoform: autoformOptions(TicketUrgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
   }),
 };
 
@@ -22,7 +29,6 @@ const confirmed = {
   schema: new SimpleSchema({
     status: { type: String, autoform: { omit: true }, defaultValue: 'confirmed' },
 //    category: { type: String, allowedValues: Topics.ticketCategoryValues, autoform: autoformOptions(Topics.ticketCategoryValues, 'schemaTickets.ticket.category.'), optional: true },
-//    urgency: { type: String, allowedValues: Topics.urgencyValues, autoform: autoformOptions(Topics.urgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
     localizer: { type: String, optional: true },
     expectedCost: { type: Number, decimal: true, optional: true },
     expectedStart: { type: Date, optional: true },
@@ -37,6 +43,22 @@ const scheduled = {
     status: { type: String, autoform: { omit: true }, defaultValue: 'scheduled' },
     expectedStart: { type: Date, optional: true },
     expectedFinish: { type: Date, optional: true },
+  }),
+};
+
+const toApprove = {
+  name: 'toApprove',
+  color: 'warning',
+  schema: new SimpleSchema({
+    status: { type: String, autoform: { omit: true }, defaultValue: 'toApprove' },
+  }),
+};
+
+const toVote = {
+  name: 'toVote',
+  color: 'warning',
+  schema: new SimpleSchema({
+    status: { type: String, autoform: { omit: true }, defaultValue: 'toVote' },
   }),
 };
 
@@ -86,7 +108,7 @@ const deleted = {
 };
 
 export const TicketStatuses = {
-  reported, confirmed, scheduled, progressing, suspended, finished, closed, deleted,
+  reported, confirmed, scheduled, toApprove, toVote, progressing, suspended, finished, closed, deleted,
 };
 export const TicketStatusNames = Object.keys(TicketStatuses);
 TicketStatusNames.forEach(statusName => Events.typeValues.push(`statusChangeTo.${statusName}`));
@@ -96,45 +118,23 @@ TicketStatusNames.forEach(statusName => Events.typeValues.push(`statusChangeTo.$
 export const TicketTypes = {
   reported: {
     start: 'reported',
-    reported: {
-      next: ['confirmed'],
-    },
-    confirmed: {
-      next: ['progressing'],
-    },
-    progressing: {
-      next: ['finished', 'suspended'],
-    },
-    suspended: {
-      next: ['progressing'],
-    },
-    finished: {
-      next: ['closed', 'progressing'],
-    },
-    closed: {
-      next: [],
-    },
-    deleted: {
-      next: ['reported'],
-    },
+    reported: { next: ['confirmed'] },
+    confirmed: { next: ['progressing', 'toApprove', 'toVote'] },
+    toApprove: { next: ['progressing', 'confirmed', 'closed'] },
+    toVote: { next: ['progressing', 'confirmed', 'closed'] },
+    progressing: { next: ['finished', 'suspended'] },
+    suspended: { next: ['progressing'] },
+    finished: { next: ['closed', 'progressing'] },
+    closed: { next: [] },
+    deleted: { next: ['reported'] },
   },
   scheduled: {
     start: 'scheduled',
-    scheduled: {
-      next: ['progressing'],
-    },
-    progressing: {
-      next: ['finished'],
-    },
-    finished: {
-      next: ['closed', 'progressing'],
-    },
-    closed: {
-      next: [],
-    },
-    deleted: {
-      next: ['scheduled'],
-    },
+    scheduled: { next: ['progressing'] },
+    progressing: { next: ['finished'] },
+    finished: { next: ['closed', 'progressing'] },
+    closed: { next: [] },
+    deleted: { next: ['scheduled'] },
   },
 };
 export const TicketTypeNames = Object.keys(TicketTypes);

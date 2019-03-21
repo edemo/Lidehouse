@@ -7,9 +7,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
 import { Topics } from '/imports/api/topics/topics.js';
-import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
-import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
-import { TicketStatuses, possibleNextStatuses } from '/imports/api/topics/tickets/ticket-status.js';
+import { TicketUrgencyColors, TicketStatuses, possibleNextStatuses } from '/imports/api/topics/tickets/ticket-status.js';
 import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -25,7 +23,7 @@ Template.Tickets_report.viewmodel({
     return TicketStatuses[statusName].color;
   },
   urgencyColor(value) {
-    return Topics.urgencyColors[value];
+    return TicketUrgencyColors[value];
   },
   activeClassForActives() {
     return this.activesOnly() && 'active';

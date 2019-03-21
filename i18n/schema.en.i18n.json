@@ -262,6 +262,8 @@
         "scheduled": "Scheduled",
         "reported": "Reported",
         "confirmed": "Planned",
+        "toApprove": "To approve",
+        "toVote": "To vote on",
         "progressing": "Progressing",
         "suspended": "Suspended",
         "finished": "Done",

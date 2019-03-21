@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { Topics } from '/imports/api/topics/topics.js';
-import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
+import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { statusChangeEventSchema } from '/imports/api/topics/tickets/ticket-status.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -21,8 +21,8 @@ export function afTicketInsertModal() {
   Modal.show('Autoform_edit', {
     id: 'af.ticket.insert',
     collection: Topics,
-    schema: ticketsSchema,
-    fields: ['title', 'text'],
+    schema: Tickets.schema,
+    fields: ['title', 'text', 'ticket.urgency'],
     type: 'method',
     meteormethod: 'topics.insert',
     template: 'bootstrap3-inline',
@@ -34,7 +34,7 @@ export function afTicketUpdateModal(topicId) {
   Modal.show('Autoform_edit', {
     id: 'af.ticket.update',
     collection: Topics,
-    schema: ticketsSchema,
+    schema: Tickets.schema,
     omitFields: ['agendaId', 'sticky', 'ticket.status'],
     doc: Topics.findOne(topicId),
     type: 'method-update',

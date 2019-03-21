@@ -262,6 +262,8 @@
         "scheduled": "Ütemezve",
         "reported": "Bejelentve",
         "confirmed": "Betervezve",
+        "toApprove": "Jóváhagyásra",
+        "toVote": "Megszavazásra",
         "progressing": "Folyamatban",
         "suspended": "Felfüggesztve",
         "finished": "Elvégezve",
@@ -296,16 +298,16 @@
         "label": "Várható folytatás"
       },
       "actualCost": { 
-        "label": "Valós költség"
+        "label": "Tényleges költség"
       },
       "actualStart": { 
-        "label": "Valós kezdés"
+        "label": "Tényleges kezdés"
       },
       "actualFinish": { 
-        "label": "Valós befejezés"
+        "label": "Tényleges befejezés"
       },
       "actualContinue": { 
-        "label": "Valós folytatás"
+        "label": "Tényleges folytatás"
       }
     }
   },

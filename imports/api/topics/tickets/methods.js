@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { ticketsSchema, TicketModifiableFields } from '/imports/api/topics/tickets/tickets.js';
+import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Events } from '/imports/api/events/events';
 import { statusChangeEventSchema } from '/imports/api/topics/tickets/ticket-status.js';
