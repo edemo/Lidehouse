@@ -111,7 +111,7 @@ export const cloneAccountingTemplates = new ValidatedMethod({
   run({ communityId /*, name*/ }) {
     checkPermissions(this.userId, 'breakdowns.insert', communityId);
     const user = Meteor.users.findOne(this.userId);
-    const breakdownsToClone = ['Owner payin types', 'Incomes', 'Expenses', 'Assets', 'Liabilities', 'COA', 'Places', 'Localizer'];
+    const breakdownsToClone = Breakdowns.find({ communityId: null }).map(brd => brd.name);
     breakdownsToClone.forEach((breakdownName) => {
       Breakdowns.methods.clone._execute(
         { userId: this.userId },

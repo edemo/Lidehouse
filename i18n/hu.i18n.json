@@ -371,8 +371,8 @@
   // accounts
   "Chart Of Accounts": "Főkönyvi számlák",
   "Incomes" : "Bevételek",
-  "Expenses" : "Kiadások",
-  "Assets": "Eszközök",
+  "Expenses" : "Ráfordítások",
+  "Assets": "Követelések",
   "Liabilities": "Források",
   "Equity": "Saját tőke",
   "Owners": "Tulajdonosok",

@@ -19,70 +19,14 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '9', name: 'Incomes', locked: true, sign: -1,
+    digit: '1', name: 'Befektetett Eszközök', locked: true, sign: +1,
     children: [
-      { digit: '2', name: 'NEM adóköteles bevételek',
-        children: [
-        { digit: '1', name: 'Támogatás' },
-        { digit: '2', name: 'Kamat pénzintézetektől' },
-        ],
-      },
-      { digit: '3', name: 'Adóköteles bevételek',
-        children: [
-        { digit: '1', name: 'Bérleti díj' },
-        { digit: '2', name: 'Egyéb bevétel' },
-        ],
-      },
-      { digit: '5', name: 'Owner payins', locked: true,
-        include: 'Owner payin types',
-      },
-//      { name: 'Hitelfelvétel',
-//        children: [
-//          { name: 'Bank hitel' },
-//        ],
-//      },
     ],
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '8', name: 'Expenses', locked: true, sign: +1,
+    digit: '2', name: 'Készletek', locked: true, sign: +1,
     children: [
-      { digit: '1', name: 'Költségek',
-        children: [
-        { digit: '01', name: 'Víz' },
-        { digit: '02', name: 'Csatorna' },
-        { digit: '03', name: 'Áram' },
-        { digit: '04', name: 'Szemét' },
-        { digit: '05', name: 'Anyagok' },
-        { digit: '06', name: 'Takarítás' },
-        { digit: '07', name: 'Karbantartás' },
-        { digit: '08', name: 'Üzemeltetés' },
-        { digit: '09', name: 'Közösképviselet' },
-        { digit: '10', name: 'Megbízási díjak' },
-        { digit: '11', name: 'Bérek és közterhek' },
-        { digit: '12', name: 'Jogi költségek' },
-        { digit: '13', name: 'Hatósági díjak' },
-        { digit: '14', name: 'Adók és bírságok' },
-        { digit: '15', name: 'Kamat és bank költségek' },
-        { digit: '16', name: 'Egyéb költségek' },
-        ],
-      },
-      { digit: '2', name: 'Beruházások',
-        children: [
-        { digit: '1', name: 'Épület' },
-        { digit: '2', name: 'Gép, berendezés' },
-        ],
-      },
-      { digit: '3', name: 'Hitel törlesztés',
-        children: [
-        { digit: '1', name: 'Bank hitel törlesztés' },
-        ],
-      },
-      { digit: '4', name: 'Egyéb kiadások',
-        children: [
-        { digit: '1', name: 'Egyéb kiadás' },
-        ],
-      },
     ],
   });
 
@@ -140,13 +84,90 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
+    digit: '5', name: 'Költség nemek', locked: true, sign: +1,
+    children: [
+    ],
+  });
+
+  Breakdowns.define({ communityId: null,
+    digit: '8', name: 'Expenses', locked: true, sign: +1,
+    children: [
+      { digit: '1', name: 'Költségek',
+        children: [
+        { digit: '01', name: 'Víz' },
+        { digit: '02', name: 'Csatorna' },
+        { digit: '03', name: 'Áram' },
+        { digit: '04', name: 'Szemét' },
+        { digit: '05', name: 'Anyagok' },
+        { digit: '06', name: 'Takarítás' },
+        { digit: '07', name: 'Karbantartás' },
+        { digit: '08', name: 'Üzemeltetés' },
+        { digit: '09', name: 'Közösképviselet' },
+        { digit: '10', name: 'Megbízási díjak' },
+        { digit: '11', name: 'Bérek és közterhek' },
+        { digit: '12', name: 'Jogi költségek' },
+        { digit: '13', name: 'Hatósági díjak' },
+        { digit: '14', name: 'Adók és bírságok' },
+        { digit: '15', name: 'Kamat és bank költségek' },
+        { digit: '16', name: 'Egyéb költségek' },
+        ],
+      },
+      { digit: '2', name: 'Beruházások',
+        children: [
+        { digit: '1', name: 'Épület' },
+        { digit: '2', name: 'Gép, berendezés' },
+        ],
+      },
+      { digit: '3', name: 'Hitel törlesztés',
+        children: [
+        { digit: '1', name: 'Bank hitel törlesztés' },
+        ],
+      },
+      { digit: '4', name: 'Egyéb kiadások',
+        children: [
+        { digit: '1', name: 'Egyéb kiadás' },
+        ],
+      },
+    ],
+  });
+
+  Breakdowns.define({ communityId: null,
+    digit: '9', name: 'Incomes', locked: true, sign: -1,
+    children: [
+      { digit: '2', name: 'NEM adóköteles bevételek',
+        children: [
+        { digit: '1', name: 'Támogatás' },
+        { digit: '2', name: 'Kamat pénzintézetektől' },
+        ],
+      },
+      { digit: '3', name: 'Adóköteles bevételek',
+        children: [
+        { digit: '1', name: 'Bérleti díj' },
+        { digit: '2', name: 'Egyéb bevétel' },
+        ],
+      },
+      { digit: '5', name: 'Owner payins', locked: true,
+        include: 'Owner payin types',
+      },
+//      { name: 'Hitelfelvétel',
+//        children: [
+//          { name: 'Bank hitel' },
+//        ],
+//      },
+    ],
+  });
+
+  Breakdowns.define({ communityId: null,
     name: 'COA', label: 'Chart Of Accounts',
     children: [
       { digit: '0', name: 'Opening' },
-      { include: 'Incomes' },
-      { include: 'Expenses' },
-      { include: 'Assets' },
-      { include: 'Liabilities' },
+      { digit: '1', include: 'Befektetett Eszközök' },
+      { digit: '2', include: 'Készletek' },
+      { digit: '3', include: 'Assets' },
+      { digit: '4', include: 'Liabilities' },
+      { digit: '5', include: 'Költség nemek' },
+      { digit: '8', include: 'Expenses' },
+      { digit: '9', include: 'Incomes' },
     ],
   });
 
@@ -178,69 +199,3 @@ export function defineBreakdownTemplates() {
 if (Meteor.isServer) {
   Meteor.startup(defineBreakdownTemplates);
 }
-
-/*
-const TxDefsTemplate = [
-
-  { name: 'Obligation',
-    transactions: [{
-      accountFrom: 'Accounts/Liabilities/Owners/Owner payins',
-      accountTo: 'Accounts/Assets/Owner obligatons',
-    }],
-  },
-
-  { name: 'Payin',
-    transactions: [{
-      accountFrom: 'Accounts/Incomes/Owner payins',
-      accountTo: 'Accounts/Assets/Money accounts',
-    }, {
-      accountFrom: 'Accounts/Assets/Owner obligatons',
-      accountTo: 'Accounts/Liabilities/Owners/Owner payins',
-    }],
-  },
-
-  { name: 'Income',
-    transactions: [{
-      accountFrom: 'Accounts/Incomes',
-      accountTo: 'Accounts/Assets/Money accounts',
-    }],
-  },
-
-  { name: 'Expense',
-    transactions: [{
-      accountFrom: 'Accounts/Assets/Money accounts',
-      accountTo: 'Accounts/Expenses',
-    }],
-  },
-
-  { name: 'Loan',
-    transactions: [{
-      accountFrom: 'Accounts/Liabilities/Hitelek',
-      accountTo: 'Accounts/Assets/Money accounts',
-    }],
-  },
-
-  { name: 'Opening',
-    transactions: [{
-      accountFrom: 'Accounts/Liabilities/Opening',
-      accountTo: 'Accounts/Assets',
-    }],
-  },
-
-  { name: 'Backoffice Op',
-    transactions: [{
-      accountFrom: 'Accounts',
-      accountTo: 'Accounts',
-    }],
-  },
-];
-*/
-
-/*  Breakdowns.find({ communityId: null }).forEach((breakdown) => {
-    Breakdowns.insert(_.extend({}, breakdown, { communityId }));
-  });
-*/
-/*  TxDefsTemplate.forEach((txDef) => {
-    TxDefs.insert(_.extend({}, txDef, { communityId }));
-  });
-*/
