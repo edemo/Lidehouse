@@ -14,7 +14,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     const topic = checkExists(Topics, doc.topicId);
-    checkPermissions(this.userId, `${doc.category}.insert`, topic.communityId);
+    checkPermissions(this.userId, `${doc.type}.insert`, topic.communityId);
     doc.userId = this.userId;   // One can only post in her own name
     const docId = Events.insert(doc);
     const newDoc = Events.findOne(docId); // we need the createdAt timestamp from the server

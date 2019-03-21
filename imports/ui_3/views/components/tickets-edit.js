@@ -4,25 +4,25 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { Topics } from '/imports/api/topics/topics.js';
-import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
-import { statusSpecificSchema } from '/imports/api/topics/tickets/ticket-status.js';
+import { statusChangeEventSchema } from '/imports/api/topics/tickets/ticket-status.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
+import { checkTopicPermissions } from '../../../api/method-checks';
 
 export function afTicketInsertModal() {
-  const communityId = Session.get('activeCommunityId');
+/*  const communityId = Session.get('activeCommunityId');
   const omitFields = ['agendaId', 'sticky', 'ticket.status'];
   if (!Meteor.user().hasPermission('ticket.update', communityId)) {
     omitFields.push('ticket.type');
     omitFields.push('ticket.category');
-  }
+  } */
   Modal.show('Autoform_edit', {
     id: 'af.ticket.insert',
     collection: Topics,
     schema: ticketsSchema,
-    omitFields,
+    fields: ['title', 'text'],
     type: 'method',
     meteormethod: 'topics.insert',
     template: 'bootstrap3-inline',
@@ -49,7 +49,7 @@ export function afTicketStatusChangeModal(topicId, newStatusName) {
   Session.set('newStatusName', newStatusName);
   Modal.show('Autoform_edit', {
     id: 'af.ticket.statusChange',
-    schema: statusSpecificSchema(newStatusName),
+    schema: statusChangeEventSchema(newStatusName),
     omitFields: ['topicId'],
     type: 'method',
     meteormethod: 'ticket.statusChange',
@@ -59,7 +59,7 @@ export function afTicketStatusChangeModal(topicId, newStatusName) {
 }
 
 export function deleteTicketConfirmAndCallModal(topicId) {
-  Modal.confirmAndCall(removeTopic, { _id: topicId }, {
+  Modal.confirmAndCall(Topics.methods.remove, { _id: topicId }, {
     action: 'delete ticket',
     message: 'It will disappear forever',
   });
@@ -84,7 +84,7 @@ AutoForm.addHooks('af.ticket.statusChange', {
   formToDoc(doc) {
     doc.topicId = Session.get('activeTopicId');
     doc.userId = Meteor.userId();
-    doc.category = `statusChangeTo.${Session.get('newStatusName')}`;
+    doc.type = `statusChangeTo.${Session.get('newStatusName')}`;
     return doc;
   },
   onSuccess(formType, result) {

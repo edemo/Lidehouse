@@ -248,15 +248,26 @@
       "placeholder": "(eg. Elevator not working)"
     },
     "text": {
-      "label": "Description",
-      "placeholder": "(eg. Got stuck between third and fourth floor)"
+      "label": "Remarks"
     },
     "ticket": {
-      "label": "Ticket",
+      "label": "Ticket data",
       "type": {
         "label": "Type",
         "scheduled": "Scheduled",
         "reported": "Reported"
+      },
+      "status": {
+        "label": "Status",
+        "scheduled": "Scheduled",
+        "reported": "Reported",
+        "confirmed": "Confirmed",
+        "progressing": "Progressing",
+        "suspended": "Suspended",
+        "finished": "Finished",
+        "checked": "Checked",
+        "closed": "Closed",
+        "deleted": "Deleted"
       },
       "category": {
         "label": "Category",
@@ -270,32 +281,8 @@
         "normal": "Normal",
         "low": "Low"
       },
-      "status": {
-        "label": "Status",
-        "scheduled": "Scheduled",
-        "reported": "Reported",
-        "confirmed": "Confirmed",
-        "progressing": "Progressing",
-        "suspended": "Suspended",
-        "finished": "Finished",
-        "checked": "Checked",
-        "closed": "Closed",
-        "deleted": "Deleted"
-      }
-    }
-  },
-  "schemaTicketStatusChange": {
-    "status": {
-      "label": "New status"
-    },
-    "data": {
-      "label": "Append",
-      "text": {
-        "label": "Note",
-        "placeholder": "(eg. We replaced the broken part)"
-      },
-      "expected": {
-        "label": "Expected date"
+      "localizer": {
+        "label": "Location"
       }
     }
   },

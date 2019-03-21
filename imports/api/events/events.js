@@ -11,12 +11,12 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 export const Events = new Mongo.Collection('events');
 
-Events.categoryValues = [/* comment, */'statusChange', 'pointAt'];
+Events.typeValues = [/* comment, */'statusChange', 'pointAt'];
 
 Events.baseSchema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true }, denyUpdate: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  category: { type: String, allowedValues: Events.categoryValues, autoform: { omit: true } },
+  type: { type: String, allowedValues: Events.typeValues, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true },
     autoValue() {

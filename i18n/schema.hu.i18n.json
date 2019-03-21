@@ -248,15 +248,26 @@
       "placeholder": "(pl. Elromlott a lift)"
     },
     "text": {
-      "label": "Hiba leírása",
-      "placeholder": "(pl. Megakadt a harmadik és negyedik között...)"
+      "label": "Megjegyzések"
     },
     "ticket": {
-      "label": "Hibajegy",
+      "label": "Hibajegy adatok",
       "type": {
         "label": "Típus",
         "scheduled": "Ütemezett",
         "reported": "Bejelentett"
+      },
+      "status": {
+        "label": "Státusz",
+        "scheduled": "Ütemezve",
+        "reported": "Bejelentve",
+        "confirmed": "Megerősítve",
+        "progressing": "Folyamatban",
+        "suspended": "Felfüggesztve",
+        "finished": "Megoldva",
+        "checked": "Ellenőrizve",
+        "closed": "Lezárva",
+        "deleted": "Törölt"
       },
       "category": {
         "label": "Kategória",
@@ -270,31 +281,26 @@
         "normal": "közepes",
         "low": "alacsony"
       },
-      "status": {
-        "label": "Státusz",
-        "scheduled": "Ütemezve",
-        "reported": "Bejelentve",
-        "confirmed": "Megerősítve",
-        "progressing": "Folyamatban",
-        "suspended": "Felfüggesztve",
-        "finished": "Megoldva",
-        "checked": "Ellenőrizve",
-        "closed": "Lezárva",
-        "deleted": "Törölt"
-      }
-    }
-  },
-  "schemaTicketStatusChange": {
-    "status": {
-      "label": "Új státusz"
-    },
-    "data": {
-      "label": "Hozzáfűzött",
-      "text": {
-        "label": "Megjegyzés"
+      "localizer": {
+        "label": "Hiba helye"
       },
-      "expected": {
-        "label": "Várható időpont"
+      "expectedCost": { 
+        "label": "Várható költség"
+      },
+      "expectedStart": { 
+        "label": "Várható kezdés"
+      },
+      "expectedFinish": { 
+        "label": "Várható befejezés"
+      },
+      "actualCost": { 
+        "label": "Valós költség"
+      },
+      "actualStart": { 
+        "label": "Valós kezdés"
+      },
+      "actualFinish": { 
+        "label": "Valós befejezés"
       }
     }
   },
