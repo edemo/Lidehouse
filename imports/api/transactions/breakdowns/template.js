@@ -6,17 +6,7 @@ export function defineBreakdownTemplates() {
 
   //if (Breakdowns.findOne({})) return;
 
-  Breakdowns.define({ communityId: null,
-    name: 'Owner payin types', locked: true,
-    children: [
-    { digit: '1', name: 'Közös költség előírás' },
-    { digit: '2', name: 'Felújítási alap előírás' },
-    { digit: '3', name: 'Célbefizetés előírás' },
-    { digit: '4', name: 'Víz díj előírás' },
-    { digit: '5', name: 'Fűtési díj előírás' },
-    { digit: '6', name: 'Egyéb közvetített szolgáltatás' },
-    ],
-  });
+//Kettős könyvelés verzió
 
   Breakdowns.define({ communityId: null,
     digit: '1', name: 'Befektetett Eszközök', locked: true, sign: +1,
@@ -82,15 +72,53 @@ export function defineBreakdownTemplates() {
       { digit: '5', name: 'Szállítók' },
     ],
   });
-
   Breakdowns.define({ communityId: null,
     digit: '5', name: 'Költség nemek', locked: true, sign: +1,
     children: [
+        { digit: '1', name: 'ANYAGKÖLTSÉG',
+       children: [
+           { digit: '1', name: 'Közüzemi díjak' }, 
+         
+         //kibontani
+         
+           { digit: '2', name: 'Anyagok' },
+        ],
+        },
+        { digit: '2', name: 'SZOLGÁLTATÁSOK KÖLTSÉGEI',  
+        children: [
+           { digit: '01', name: 'Csatorna díjak' }, 
+           { digit: '02', name: 'Szemét díjak' },
+           { digit: '03', name: 'Takarítás' },
+           { digit: '04', name: 'Kommunikációs költségek' },   
+           { digit: '05', name: 'Könyvelési díj' },   
+           { digit: '06', name: 'Közösképviselet díja' },
+           { digit: '07', name: 'Jogi költségek' },        
+           { digit: '08', name: 'Karbantartás' },  
+           { digit: '09', name: 'Javítások' },  
+           { digit: '10', name: 'Biztonsági költségek' },            
+           { digit: '11', name: 'Tagdíjak' }, 
+           { digit: '12', name: 'Kertészet' },         
+           { digit: '13', name: 'Egyéb megbízási, vállalkozási díjak' },          
+        ],              
+        },
+        { digit: '3', name: 'EGYÉB SZOLGÁLTATÁSOK KÖLTSÉGEI',
+        children: [
+           { digit: '1', name: 'Hatósági díjak' }, 
+           { digit: '2', name: 'Pénzügyi  díjak' },
+           { digit: '3', name: 'Biztosítási díjak' },   
+        ],               
+        }, 
+        { digit: '4', name: 'BÉRKÖLTSÉG'},
+        { digit: '5', name: 'SZEMÉLYI JELLEGŰ EGYÉB KÖLTSÉG' },     
+        { digit: '6', name: 'BÉRJÁRULÉKOK' },   
+        { digit: '7', name: 'ÉRTÉKCSÖKKENÉSI LEÍRÁS' },     
+        { digit: '9', name: 'KÖLTSÉGNEMEK ÁTVEZETÉSE' },
+
     ],
   });
-
+          // itt tartok
   Breakdowns.define({ communityId: null,
-    digit: '8', name: 'Expenses', locked: true, sign: +1,
+    digit: '8', name: 'Expenses', locked: true, sign: +1, //Ráfordítások
     children: [
       { digit: '1', name: 'Költségek',
         children: [
@@ -177,7 +205,17 @@ export function defineBreakdownTemplates() {
 //      },
     ],
   });
-
+  Breakdowns.define({ communityId: null,
+    name: 'Owner payin types', locked: true,
+    children: [
+    { digit: '1', name: 'Közös költség előírás' },
+    { digit: '2', name: 'Fogyasztás előírás' },
+    { digit: '3', name: 'Fejlesztési alap előírás' },
+    { digit: '4', name: 'Egyéb előírás' },
+    { digit: '5', name: 'Rendkivüli befizetés előírás' },
+    ],
+  });
+  
   Breakdowns.define({ communityId: null,
     name: 'COA', label: 'Chart Of Accounts',
     children: [
