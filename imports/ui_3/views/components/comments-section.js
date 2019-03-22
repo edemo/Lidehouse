@@ -135,19 +135,3 @@ Template.Comment.events({
     });
   },
 });
-
-// ----------------------------
-
-Template.StatusChange.helpers({
-  user() {
-    return Meteor.users.findOne(this.userId);
-  },
-  ticketDatas(ticketDatas) {
-    const ticketDataArray = Object.entries(ticketDatas);
-    return ticketDataArray;
-  },
-  typeCheck(data) {
-    if (typeof data === 'object') return true;
-    return false;
-  },
-});

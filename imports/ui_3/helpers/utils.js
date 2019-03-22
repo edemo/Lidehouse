@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { numeral } from 'meteor/numeral:numeral';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
+import { __ } from '/imports/localization/i18n.js';
 
 Template.registerHelper('and', function and(a, b) {
     return a && b;
@@ -57,6 +58,13 @@ Template.registerHelper('displayTimeFrom', function displayTimeFrom(time) {
     return moment(time).from(serverTimeNow);
 });
 
+// TODO: This aims to be a generic display, but now works only for ticket data - needs generalization!
+Template.registerHelper('displayValue', function displayValue(val) {
+    if (_.isDate(val)) return moment().format('L');
+    if (_.isString(val)) return __(val);
+    return val;
+});
+
 // Takes any number of arguments and returns them concatenated.
 Template.registerHelper('concat', function concat() {
     return Array.prototype.slice.call(arguments, 0, -1).join('');
@@ -64,4 +72,8 @@ Template.registerHelper('concat', function concat() {
 
 Template.registerHelper('log', function log(stuff) {
     console.log(stuff);
+});
+
+Template.registerHelper('entriesOf', function entriesOf(obj) {
+  return Object.entries(obj);
 });

@@ -60,14 +60,10 @@
                 {{user}}
             </a><br>
             <strong>{{_ 'new status change'}}:</strong><br>
-            {{#each ticketData in ticketDatas this.data}}
+            {{#each dataEntry in entriesOf this.data}}
             <span>
-            {{_ (concat 'schemaTickets.ticket.' ticketData.[0] '.label')}}: 
-            {{#if typeCheck ticketData.[1]}} 
-                {{displayTime ticketData.[1]}} 
-            {{else}} 
-                {{_ ticketData.[1]}} 
-            {{/if}}
+                {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
+                {{displayValue dataEntry.[1]}} 
             </span><br>
             {{/each}}
             <small class="text-muted">{{displayTime createdAt}}</small>
