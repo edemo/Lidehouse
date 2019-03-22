@@ -62,8 +62,8 @@ Template.Comments_section.helpers({
     return comments;
   },
   statusChanges() {
-    const statusChanges = Events.find({ topicId: this._id }, { type: { $regex: '.statusChangeTo.*' } }, { sort: { createdAt: 1 } });
-    return statusChanges;
+    const statusChanges = Events.find({ topicId: this._id }, { type: { $regex: 'statusChangeTo.*' } }, { sort: { createdAt: 1 } });
+    return statusChanges.fetch();
   },
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
@@ -133,5 +133,21 @@ Template.Comment.events({
       action: 'delete comment',
       message: 'It will disappear forever',
     });
+  },
+});
+
+// ----------------------------
+
+Template.StatusChange.helpers({
+  user() {
+    return Meteor.users.findOne(this.userId);
+  },
+  ticketDatas(ticketDatas) {
+    const ticketDataArray = Object.entries(ticketDatas);
+    return ticketDataArray;
+  },
+  typeCheck(data) {
+    if (typeof data === 'object') return true;
+    return false;
   },
 });

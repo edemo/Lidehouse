@@ -51,7 +51,26 @@
 </template>
 
 <template name="StatusChange">
-    <div>
-        <span>{{data.status}}</span>
+    <div class="social-comment">  
+        <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
+            <img alt="avatar" class="message-avatar" src={{user.avatar}}>
+        </a>
+        <div class="media-body">
+            <a href="{{pathFor 'User.show' _id=user._id}}">
+                {{user}}
+            </a><br>
+            <strong>{{_ 'new status change'}}:</strong><br>
+            {{#each ticketData in ticketDatas this.data}}
+            <span>
+            {{_ (concat 'schemaTickets.ticket.' ticketData.[0] '.label')}}: 
+            {{#if typeCheck ticketData.[1]}} 
+                {{displayTime ticketData.[1]}} 
+            {{else}} 
+                {{_ ticketData.[1]}} 
+            {{/if}}
+            </span><br>
+            {{/each}}
+            <small class="text-muted">{{displayTime createdAt}}</small>
+        </div>
     </div>
 </template>
