@@ -134,16 +134,16 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     digit: '9', name: 'Incomes', locked: true, sign: -1,
     children: [
-      { digit: '2', name: 'NEM adóköteles bevételek',
+      { digit: '5', name: 'Tulajdonosi befizetések',
         children: [
-        { digit: '1', name: 'Támogatás' },
+        { digit: '1', name: 'Albetétek előírásai' }, // itt tartok
         { digit: '2', name: 'Kamat pénzintézetektől' },
         ],
       },
-      { digit: '3', name: 'Adóköteles bevételek',
+      { digit: '1', name: 'Adóköteles bevételek',
         children: [
         { digit: '1', name: 'Bérleti díj' },
-        { digit: '2', name: 'Egyéb bevétel' },
+        { digit: '5', name: 'Egyéb bevétel' },
         ],
       },
       { digit: '5', name: 'Owner payins', locked: true,
