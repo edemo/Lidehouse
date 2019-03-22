@@ -128,7 +128,7 @@ TicketStatusNames.forEach(statusName => Events.typeValues.push(`statusChangeTo.$
 export const TicketTypes = {
   reported: {
     start: 'reported',
-    reported: { next: ['confirmed'] },
+    reported: { next: ['confirmed', 'deleted'] },
     confirmed: { next: ['progressing', 'toApprove', 'toVote'] },
     toApprove: { next: ['progressing', 'confirmed', 'closed'] },
     toVote: { next: ['progressing', 'confirmed', 'closed'] },
@@ -150,7 +150,7 @@ export const TicketTypes = {
 export const TicketTypeNames = Object.keys(TicketTypes);
 
 export function possibleNextStatuses(topic) {
-  return TicketTypes[topic.ticket.type][topic.ticket.status].next.concat('deleted');
+  return TicketTypes[topic.ticket.type][topic.ticket.status].next;
 }
 
 export function statusChangeEventSchema(statusName) {

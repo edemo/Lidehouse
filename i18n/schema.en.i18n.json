@@ -284,6 +284,33 @@
       },
       "localizer": {
         "label": "Location"
+      },
+      "expectedCost": { 
+        "label": "Expected cost"
+      },
+      "expectedStart": { 
+        "label": "Expected start"
+      },
+      "expectedFinish": { 
+        "label": "Expected finish"
+      },
+      "expectedContinue": { 
+        "label": "Expected continuation"
+      },
+      "waitingFor": {
+        "label": "Waiting for"
+      },
+      "actualCost": { 
+        "label": "Actual cost"
+      },
+      "actualStart": { 
+        "label": "Actual start"
+      },
+      "actualFinish": {
+        "label": "Actual finish"
+      },
+      "actualContinue": { 
+        "label": "Actual continuation"
       }
     }
   },

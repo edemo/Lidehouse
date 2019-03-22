@@ -35,7 +35,7 @@ export function afTicketUpdateModal(topicId) {
     id: 'af.ticket.update',
     collection: Topics,
     schema: Tickets.schema,
-    omitFields: ['agendaId', 'sticky', 'ticket.status'],
+    omitFields: ['agendaId', 'sticky'],
     doc: Topics.findOne(topicId),
     type: 'method-update',
     meteormethod: 'topics.update',
