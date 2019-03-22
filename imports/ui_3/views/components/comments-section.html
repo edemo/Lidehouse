@@ -5,6 +5,9 @@
             <a href="{{pathFor 'Topic.show' _tid=_id}}">{{_ 'View previous comments' hasMoreComments}}</a>
         </div>
         {{/if}}
+        {{#each statusChange in statusChanges}}
+            {{> StatusChange statusChange}}
+        {{/each}}
         {{#each comment in comments}}
             {{> Comment comment}}
         {{/each}}
@@ -44,5 +47,11 @@
                 {{/if}}
             </div>
         </div>
+    </div>
+</template>
+
+<template name="StatusChange">
+    <div>
+        <span>{{data.status}}</span>
     </div>
 </template>
