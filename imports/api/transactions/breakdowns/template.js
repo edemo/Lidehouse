@@ -160,14 +160,14 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     name: 'COA', label: 'Chart Of Accounts',
     children: [
-      { digit: '0', name: 'Opening' },
+      { digit: '0', name: 'Opening' },// Technikai számlák
       { digit: '1', include: 'Befektetett Eszközök' },
       { digit: '2', include: 'Készletek' },
-      { digit: '3', include: 'Assets' },
-      { digit: '4', include: 'Liabilities' },
+      { digit: '3', include: 'Assets' }, // követelések
+      { digit: '4', include: 'Liabilities' }, // Források
       { digit: '5', include: 'Költség nemek' },
-      { digit: '8', include: 'Expenses' },
-      { digit: '9', include: 'Incomes' },
+      { digit: '8', include: 'Expenses' }, // Ráfordítások
+      { digit: '9', include: 'Incomes' }, //Bevételek
     ],
   });
 
