@@ -134,19 +134,49 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     digit: '9', name: 'Incomes', locked: true, sign: -1,
     children: [
-      { digit: '5', name: 'Tulajdonosi befizetések',
+     { digit: '1', name: 'ÉRTÉKESÍTÉS ÁRBEVÉTELE',
         children: [
-        { digit: '1', name: 'Albetétek előírásai' }, // itt tartok
-        { digit: '2', name: 'Kamat pénzintézetektől' },
+        { digit: '1', name: 'Bérleti díj bevételek' }, 
+        { digit: '5', name: 'Egyéb adóköteles bevételek' },
+        ],
+      }, 
+      
+      { digit: '5', name: 'TUAJDONOSI BEFIZETÉSEK',
+        children: [
+        { digit: '1', name: 'Közös költség' }, 
+        { digit: '2', name: 'Fogyasztás előírás' },
+        { digit: '3', name: 'Fejlesztési alap előírás' }, 
+        { digit: '5', name: 'Egyéb előírás' },         
+        { digit: '5', name: 'Rendkivüli befizetés előírás' },         
         ],
       },
-      { digit: '1', name: 'Adóköteles bevételek',
+      { digit: '6', name: 'EGYÉB BEVÉTELEK',
         children: [
-        { digit: '1', name: 'Bérleti díj' },
-        { digit: '5', name: 'Egyéb bevétel' },
+        { digit: '6', name: 'Támogatások' },
+        { digit: '7', name: 'Biztosítói kártérítés' },
+        { digit: '8', name: 'Kártérítések' },
+        { digit: '9', name: 'Különféle egyéb bevételek' },  
         ],
       },
-      { digit: '5', name: 'Owner payins', locked: true,
+     { digit: '7', name: 'PÉNZÜGYI MŰVELETEK BEVÉTELEI',
+        children: [
+        { digit: '3', name: 'Hitelintézettől kapott kamatok' }, 
+        ],
+      },      
+      
+     { digit: '8', name: 'RENDKIVÜLI BEVÉTELEK',
+        children: [
+        { digit: '3', name: 'xxxxx' }, // itt tartok
+        ],
+      },       
+      
+      
+      
+      
+      
+      
+      
+      { digit: '5', name: 'Owner payins', locked: true, // a 'Tulajdonosi befizetések' ld fentebb
         include: 'Owner payin types',
       },
 //      { name: 'Hitelfelvétel',
