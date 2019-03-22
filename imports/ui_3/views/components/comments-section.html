@@ -1,6 +1,6 @@
 <template name="Comments_section">
     <div class="social-footer comment-section" data-id="{{_id}}">
-        {{#if hasMoreComments}}   
+        {{#if hasMoreComments}}
         <div class="social-comment">
             <a href="{{pathFor 'Topic.show' _tid=_id}}">{{_ 'View previous comments' hasMoreComments}}</a>
         </div>
@@ -58,15 +58,15 @@
         <div class="media-body">
             <a href="{{pathFor 'User.show' _id=user._id}}">
                 {{user}}
-            </a><br>
-            <strong>{{_ 'new status change'}}:</strong><br>
+            </a>
+            {{_ 'changed the status'}}: <strong>{{_ this.data.status}}</strong><br>
             {{#each dataEntry in entriesOf this.data}}
             <span>
                 {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
                 {{displayValue dataEntry.[1]}} 
             </span><br>
             {{/each}}
-            <small class="text-muted">{{displayTime createdAt}}</small>
+            <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
         </div>
     </div>
 </template>

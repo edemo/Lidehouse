@@ -184,7 +184,7 @@
   "Show less": "Kevesebb",
 
   "statusChange": "Státusz váltás",
-  "new status change": "Új státusz váltás",
+  "changed the status": "megváltoztatta a státuszt",
   "scheduled": "Ütemezve",
   "reported": "Bejelentve",
   "confirmed": "Betervezve",
@@ -262,7 +262,7 @@
   "Proxy voting" : "Szavazás mások nevében",
   "Please select voters": "Válassza ki kiknek a nevében szeretné ezt a szavazatot leadni",
   "Attachments" : "Csatolmányok",
-  "Activity": "Változások",
+  "Amendments": "Módosítások",
   "All votings": "Aktív és lezárt szavazások teljes listája",
   "This is a voting type": "Ez egy <i>%s</i> szavazás",
   "votingInstructions": {
