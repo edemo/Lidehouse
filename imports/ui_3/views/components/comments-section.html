@@ -5,6 +5,9 @@
             <a href="{{pathFor 'Topic.show' _tid=_id}}">{{_ 'View previous comments' hasMoreComments}}</a>
         </div>
         {{/if}}
+        {{#each statusChange in statusChanges}}
+            {{> StatusChange statusChange}}
+        {{/each}}
         {{#each comment in comments}}
             {{> Comment comment}}
         {{/each}}
@@ -43,6 +46,31 @@
                 <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
                 {{/if}}
             </div>
+        </div>
+    </div>
+</template>
+
+<template name="StatusChange">
+    <div class="social-comment">  
+        <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
+            <img alt="avatar" class="message-avatar" src={{user.avatar}}>
+        </a>
+        <div class="media-body">
+            <a href="{{pathFor 'User.show' _id=user._id}}">
+                {{user}}
+            </a><br>
+            <strong>{{_ 'new status change'}}:</strong><br>
+            {{#each ticketData in ticketDatas this.data}}
+            <span>
+            {{_ (concat 'schemaTickets.ticket.' ticketData.[0] '.label')}}: 
+            {{#if typeCheck ticketData.[1]}} 
+                {{displayTime ticketData.[1]}} 
+            {{else}} 
+                {{_ ticketData.[1]}} 
+            {{/if}}
+            </span><br>
+            {{/each}}
+            <small class="text-muted">{{displayTime createdAt}}</small>
         </div>
     </div>
 </template>

@@ -8,6 +8,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { Events } from '/imports/api/events/events.js';
 import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -59,6 +60,10 @@ Template.Comments_section.helpers({
       return comments.fetch().slice(-1 * RECENT_COMMENT_COUNT);
     }
     return comments;
+  },
+  statusChanges() {
+    const statusChanges = Events.find({ topicId: this._id }, { type: { $regex: 'statusChangeTo.*' } }, { sort: { createdAt: 1 } });
+    return statusChanges.fetch();
   },
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
@@ -128,5 +133,21 @@ Template.Comment.events({
       action: 'delete comment',
       message: 'It will disappear forever',
     });
+  },
+});
+
+// ----------------------------
+
+Template.StatusChange.helpers({
+  user() {
+    return Meteor.users.findOne(this.userId);
+  },
+  ticketDatas(ticketDatas) {
+    const ticketDataArray = Object.entries(ticketDatas);
+    return ticketDataArray;
+  },
+  typeCheck(data) {
+    if (typeof data === 'object') return true;
+    return false;
   },
 });

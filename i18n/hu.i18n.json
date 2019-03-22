@@ -184,6 +184,16 @@
   "Show less": "Kevesebb",
 
   "statusChange": "Státusz váltás",
+  "new status change": "Új státusz váltás",
+  "scheduled": "Ütemezve",
+  "reported": "Bejelentve",
+  "confirmed": "Betervezve",
+  "toApprove": "Jóváhagyásra",
+  "toVote": "Megszavazásra",
+  "progressing": "Folyamatban",
+  "suspended": "Felfüggesztve",
+  "finished": "Elvégezve",
+  "deleted": "Törölt",
 
   // community page
   "representor": "képviselője",
