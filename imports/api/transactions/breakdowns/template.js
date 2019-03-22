@@ -132,7 +132,7 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '9', name: 'Incomes', locked: true, sign: -1,
+    digit: '9', name: 'Incomes', locked: true, sign: -1,   // 9-es számlaosztály kész
     children: [
      { digit: '1', name: 'ÉRTÉKESÍTÉS ÁRBEVÉTELE',
         children: [
@@ -161,20 +161,11 @@ export function defineBreakdownTemplates() {
      { digit: '7', name: 'PÉNZÜGYI MŰVELETEK BEVÉTELEI',
         children: [
         { digit: '3', name: 'Hitelintézettől kapott kamatok' }, 
+        { digit: '4', name: 'Egyéb pénzügyi bevételek' },         
         ],
       },      
-      
      { digit: '8', name: 'RENDKIVÜLI BEVÉTELEK',
-        children: [
-        { digit: '3', name: 'xxxxx' }, // itt tartok
-        ],
       },       
-      
-      
-      
-      
-      
-      
       
       { digit: '5', name: 'Owner payins', locked: true, // a 'Tulajdonosi befizetések' ld fentebb
         include: 'Owner payin types',
