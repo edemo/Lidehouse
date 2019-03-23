@@ -73,15 +73,17 @@ export function defineBreakdownTemplates() {
     ],
   });
   Breakdowns.define({ communityId: null,
-    digit: '5', name: 'Költség nemek', locked: true, sign: +1,
+    digit: '5', name: 'Költség nemek', locked: true, sign: +1,  // 5-ös számlaosztály kész
     children: [
         { digit: '1', name: 'ANYAGKÖLTSÉG',
        children: [
-           { digit: '1', name: 'Közüzemi díjak' }, 
-         
-         //kibontani
-         
-           { digit: '2', name: 'Anyagok' },
+           { digit: '01', name: 'Víz díj' },
+           { digit: '02', name: 'Áram díj' },
+           { digit: '03', name: 'Gáz díj' },   
+           { digit: '04', name: 'Irodai anyagok' },  
+           { digit: '05', name: 'Karbantartási segédanyagok' },   
+           { digit: '06', name: 'Égők,felszerelési anyagok' },   
+           { digit: '07', name: 'Egyéb anyagok' },           
         ],
         },
         { digit: '2', name: 'SZOLGÁLTATÁSOK KÖLTSÉGEI',  
@@ -120,42 +122,62 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     digit: '8', name: 'Expenses', locked: true, sign: +1, //Ráfordítások
     children: [
-      { digit: '1', name: 'Költségek',
+      { digit: '1', name: 'ANYAGJELLEGŰ RÁFORDÍTÁSOK',
         children: [
-        { digit: '01', name: 'Víz' },
-        { digit: '02', name: 'Csatorna' },
-        { digit: '03', name: 'Áram' },
-        { digit: '04', name: 'Szemét' },
-        { digit: '05', name: 'Anyagok' },
-        { digit: '06', name: 'Takarítás' },
-        { digit: '07', name: 'Karbantartás' },
-        { digit: '08', name: 'Üzemeltetés' },
-        { digit: '09', name: 'Közösképviselet' },
-        { digit: '10', name: 'Megbízási díjak' },
-        { digit: '11', name: 'Bérek és közterhek' },
-        { digit: '12', name: 'Jogi költségek' },
-        { digit: '13', name: 'Hatósági díjak' },
-        { digit: '14', name: 'Adók és bírságok' },
-        { digit: '15', name: 'Kamat és bank költségek' },
-        { digit: '16', name: 'Egyéb költségek' },
+         { digit: '01', name: 'Víz díj' },
+         { digit: '02', name: 'Áram díj' },
+         { digit: '03', name: 'Gáz díj' },   
+         { digit: '04', name: 'Csatorna díjak' }, 
+         { digit: '05', name: 'Szemét díjak' },       
+         { digit: '06', name: 'Irodai anyagok' },  
+         { digit: '07', name: 'Karbantartási segédanyagok' },   
+         { digit: '08', name: 'Égők,felszerelési anyagok' },   
+         { digit: '09', name: 'Egyéb anyagok' },  
+         { digit: '10', name: 'Takarítás' },
+         { digit: '11', name: 'Kommunikációs költségek' },   
+         { digit: '12', name: 'Könyvelési díj' },   
+         { digit: '13', name: 'Közösképviselet díja' },
+         { digit: '14', name: 'Jogi költségek' },        
+         { digit: '15', name: 'Karbantartás' },  
+         { digit: '16', name: 'Javítások' },  
+         { digit: '17', name: 'Biztonsági költségek' },            
+         { digit: '18', name: 'Tagdíjak' }, 
+         { digit: '19', name: 'Kertészet' },         
+         { digit: '20', name: 'Egyéb megbízási, vállalkozási díjak' },       
+         { digit: '21', name: 'Hatósági díjak' }, 
+         { digit: '22', name: 'Biztosítási díjak' },   
+         { digit: '23', name: 'Egyéb anyag jellegű ráfordítások' },
         ],
       },
-      { digit: '2', name: 'Beruházások',
+      { digit: '2', name: 'SZEMÉLYI JELLEGŰ RÁFORDÍTÁSOK',
         children: [
-        { digit: '1', name: 'Épület' },
-        { digit: '2', name: 'Gép, berendezés' },
+        { digit: '1', name: ' Bérköltség' },
+        { digit: '2', name: ' Személyi jellegű egyéb költség' },  
+        { digit: '3', name: ' Bérjárulékok' },
         ],
       },
-      { digit: '3', name: 'Hitel törlesztés',
+      { digit: '3', name: 'ÉRTÉKCSÖKKENÉSI LEÍRÁS',
         children: [
-        { digit: '1', name: 'Bank hitel törlesztés' },
+        { digit: '1', name: 'Értékcsökkenési leírás' },
         ],
       },
-      { digit: '4', name: 'Egyéb kiadások',
+      { digit: '6', name: 'EGYÉB RÁFORDÍTÁSOK',
         children: [
-        { digit: '1', name: 'Egyéb kiadás' },
+        { digit: '1', name: 'Adók és bírságok' },
+        { digit: '2', name: 'Egyéb ráfordítás' },
         ],
-      },
+      },    
+      { digit: '7', name: 'PÉNZÜGYI RÁFORDÍTÁSOK',
+        children: [
+        { digit: '1', name: 'Kamat és bank költségek' },
+        ],
+      },      
+       { digit: '9', name: 'EREDMÉNYT TERHELŐ ADÓK',
+        children: [
+        { digit: '1', name: 'Társasági adó' },
+        ],
+      },  
+      
     ],
   });
 
@@ -172,7 +194,16 @@ export function defineBreakdownTemplates() {
       { digit: '5', name: 'TUAJDONOSI BEFIZETÉSEK',
         children: [
         { digit: '1', name: 'Közös költség' }, 
-        { digit: '2', name: 'Fogyasztás előírás' },
+        { digit: '2', name: 'Fogyasztás előírás',
+          children: [
+            { digit: '1', name: 'Hidegvíz előírás' },
+            { digit: '2', name: 'Melegvíz előírás' },
+            { digit: '3', name: 'Csatornadíj előírás' },
+            { digit: '4', name: 'Fűtési díj előírás' },
+            { digit: '5', name: 'Légkondícionáló előírás' },
+            { digit: '6', name: 'Egyéb fogyasztás előírás' },  
+        ],               
+        },
         { digit: '3', name: 'Fejlesztési alap előírás' }, 
         { digit: '5', name: 'Egyéb előírás' },         
         { digit: '5', name: 'Rendkivüli befizetés előírás' },         
@@ -195,20 +226,15 @@ export function defineBreakdownTemplates() {
      { digit: '8', name: 'RENDKIVÜLI BEVÉTELEK',
       },       
       
-      { digit: '5', name: 'Owner payins', locked: true, // a 'Tulajdonosi befizetések' ld fentebb
+      { digit: '5', name: 'Owner payins', locked: true, // a 'Tulajdonosi befizetések' ld fentebb ugyan ez
         include: 'Owner payin types',
       },
-//      { name: 'Hitelfelvétel',
-//        children: [
-//          { name: 'Bank hitel' },
-//        ],
-//      },
     ],
   });
   Breakdowns.define({ communityId: null,
     name: 'Owner payin types', locked: true,
     children: [
-    { digit: '1', name: 'Közös költség előírás' },
+    { digit: '1', name: 'Közös költség ' },
     { digit: '2', name: 'Fogyasztás előírás' },
     { digit: '3', name: 'Fejlesztési alap előírás' },
     { digit: '4', name: 'Egyéb előírás' },
