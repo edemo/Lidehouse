@@ -21,7 +21,7 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '3', name: 'Assets', locked: true, sign: +1,
+    digit: '3', name: 'Assets', locked: true, sign: +1,  //KÖVETELÉSEK
     children: [
       { digit: '1', name: 'Tárgyi és immateriális',
         children: [
@@ -50,7 +50,7 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '4', name: 'Liabilities', locked: true, sign: -1,
+    digit: '4', name: 'Liabilities', locked: true, sign: -1,  // Források
     children: [
       { digit: '1', name: 'Equity', locked: true,
         children: [
@@ -119,8 +119,8 @@ export function defineBreakdownTemplates() {
     ],
   });
           // itt tartok
-  Breakdowns.define({ communityId: null,
-    digit: '8', name: 'Expenses', locked: true, sign: +1, //Ráfordítások
+  Breakdowns.define({ communityId: null,  //8-as számlaosztály  kész
+    digit: '8', name: 'Expenses', locked: true, sign: +1, //Ráfordítások  
     children: [
       { digit: '1', name: 'ANYAGJELLEGŰ RÁFORDÍTÁSOK',
         children: [
