@@ -4,7 +4,7 @@ import { Factory } from 'meteor/dburles:factory';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-
+import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -29,6 +29,7 @@ Topics.schema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { rows: 8 } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  photo: { type: String, optional: true, autoform: fileUpload },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
@@ -149,6 +150,7 @@ Topics.publicFields = {
   title: 1,
   text: 1,
   agendaId: 1,
+  photo: 1,
   createdAt: 1,
   updatedAt: 1,
   closed: 1,
