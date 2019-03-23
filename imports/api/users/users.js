@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
@@ -10,6 +11,8 @@ import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamps } from '/imports/api/timestamps.js';
+import { Images } from '/imports/api/images/images.js';
+import { ImagesStore } from '/imports/api/images/images-store.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -116,7 +119,14 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
-  avatar: { type: String, /* regEx: SimpleSchema.RegEx.Url,*/ defaultValue: defaultAvatar, optional: true },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true,
+    autoform: {
+      afFieldInput: {
+        type: 'fileUpload',
+//        collection: 'images',
+      },
+    },
+  },
   profile: { type: PersonProfileSchema, optional: true },
   settings: { type: UserSettingsSchema },
 

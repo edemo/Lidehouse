@@ -441,6 +441,7 @@
   "login": "belépés",
   "register": "új fiók",
 
+  "youNeedToSaveYourChanges": "Az új kép a lenti Mentés gomb megnyomásával válik aktívvá",
   "tryingToConnect": "Kapcsolódás folyamatban…",
   "connectionIssue": "Valami hiba van a hálózattal",
   "connectionIssueLine1": "Nincs kapcsolat a szerverrel.",

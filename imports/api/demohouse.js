@@ -33,7 +33,7 @@ import { Clock } from '/imports/utils/clock';
 
 if (Meteor.isServer) {
   import fs from 'fs';
-  import { ShareddocsStore as store } from '/imports/api/shareddocs/shareddocs.js';
+  import { ShareddocsStore as store } from '/imports/api/shareddocs/shareddocs-store.js';
 
   function uploadFileSimulation(storeParams, path) {
      // the object passed can potentially be empty, BUT if you do custom-checks in `transformWrite`

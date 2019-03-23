@@ -74,6 +74,9 @@ export const Permissions = [
   { name: 'journals.listing',       roles: ['accountant', 'treasurer', 'overseer'] },
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
+  { name: 'images.upload',          roles: exceptGuest },
+  { name: 'images.download',        roles: exceptGuest },
+  { name: 'images.remove',          roles: ['admin', 'moderator'], allowAuthor: true  },
   { name: 'do.techsupport',         roles: ['admin'] },
 ];
 

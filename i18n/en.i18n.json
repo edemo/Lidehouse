@@ -51,6 +51,7 @@
   "err_sanityCheckFailed": "Data input is invalid",
   "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
 
+  "youNeedToSaveYourChanges": "The new picture becomes active when you press Save at the bottom",
   "pageNotFound": "Page not found",
   "tryingToConnect": "Trying to connect…",
   "connectionIssue": "There seems to be a connection issue",
