@@ -15,6 +15,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
 import { Journals } from '/imports/api/journals/journals.js';
 import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
+import { fileUpload } from '/imports/utils/autoform.js';
 
 export const Communities = new Mongo.Collection('communities');
 
@@ -23,7 +24,7 @@ const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.schema = new SimpleSchema([
   { name: { type: String, max: 100 } },
   { description: { type: String, max: 1200, optional: true } },
-  { avatar: { type: String, /* regEx: SimpleSchema.RegEx.Url,*/ defaultValue: defaultAvatar } },
+  { avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload } },
   comtype.profileSchema,
   { totalunits: { type: Number } },
 ]);

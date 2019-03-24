@@ -17,7 +17,7 @@
       }
     },
     "avatar": {
-      "label": "Avatar",
+      "label": "Profile picture",
       "placeholder": "(eg. http://marketplaza.hu/38-small_default/micimacko-disney-labda-.jpg)"
     },
     "profile": {
