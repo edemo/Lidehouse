@@ -442,6 +442,7 @@
   "register": "új fiók",
 
   "youNeedToSaveYourChanges": "A változtatás a lenti Mentés gomb megnyomásával válik aktívvá",
+  "needToRemoveCurrentToAddNew" : "Új fájl megadásához először a régit el kell távolítania",
   "tryingToConnect": "Kapcsolódás folyamatban…",
   "connectionIssue": "Valami hiba van a hálózattal",
   "connectionIssueLine1": "Nincs kapcsolat a szerverrel.",

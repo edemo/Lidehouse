@@ -2,8 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
-import { Images } from '/imports/api/images/images.js';
-import { ImagesStore } from '/imports/api/images/images-store.js';
+import { Attachments } from '/imports/api/attachments/attachments.js';
+import { AttachmentsStore } from '/imports/api//attachments/attachments-store.js';
 
 export const autoformOptions = function autoformOptions(values, i18Path = '') {
   return {
@@ -41,7 +41,7 @@ export const noUpdate = {
 export const fileUpload = {
   afFieldInput: {
     type: 'fileUpload',
-//  collection: 'images',
+    collection: 'attachments',
   },
 };
 
