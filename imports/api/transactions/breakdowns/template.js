@@ -8,7 +8,7 @@ export function defineBreakdownTemplates() {
 
 //Kettős könyvelés verzió
 
-  Breakdowns.define({ communityId: null,
+  Breakdowns.define({ communityId: null,   //1-es kész
     digit: '1', name: 'BEFEKTETETT ESZKÖZÖK', locked: true, sign: +1,
     children: [
         { digit: '3', name: 'MŰSZAKI BERENDEZÉSEK' },      
@@ -18,7 +18,7 @@ export function defineBreakdownTemplates() {
     ],
   });
 
-  Breakdowns.define({ communityId: null,
+  Breakdowns.define({ communityId: null,  // 2-es kész
     digit: '2', name: 'KÉSZLETEK', locked: true, sign: +1,
     children: [
         { digit: '1', name: 'ANYAGOK' },
@@ -59,7 +59,7 @@ export function defineBreakdownTemplates() {
                     
 );
 
-  Breakdowns.define({ communityId: null,
+  Breakdowns.define({ communityId: null,   // 4 -es kész
     digit: '4', name: 'Liabilities', locked: true, sign: -1,  // FORRÁSOK
     children: [
       { digit: '1', name: 'Equity', locked: true,  //  SAJÁT TŐKE
@@ -68,19 +68,37 @@ export function defineBreakdownTemplates() {
           { digit: '9', name: 'Adózott eredmény' },
         ],
       },
-      { digit: '3', name: 'Unidentified items',
+      { digit: '3', name: 'Unidentified items',  // NEM AZONOSÍTOTT TÉTELEK
         children: [
-        { digit: '1', name: 'Unidentified incomes' },
-        { digit: '2', name: 'Unidentified expenses' },
+        { digit: '1', name: 'Unidentified incomes' }, // Nem azonosított bevételek
+        { digit: '2', name: 'Befizetések dijbeszedőn keresztül' },            
+        { digit: '3', name: 'Postai befizetések' },  
+        { digit: '4', name: 'Unidentified expenses' }, //Nem azonosított Kiadások
         ],
       },
-      { digit: '4', name: 'Hitelek',
+      { digit: '4', name: 'HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK',
         children: [
-        { digit: '1', name: 'Bank hitel' },
-        { digit: '2', name: 'Egyéb hitel' },
+         { digit: '1', name: 'Hosszú lejáratú bank hitel' },
+         { digit: '1', name: 'Beruházási és fejlesztési hitelek' },     
+         { digit: '3', name: 'Egyéb hitel' },
         ],
       },
-      { digit: '5', name: 'Szállítók' },
+      { digit: '5', name: 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK',
+       children: [
+         { digit: '1', name: 'Rövid lejáratú bank Hitel' },   
+         { digit: '2', name: 'Egyébrövid lejáratú kötelezettségek' },
+        ],
+      },  
+      { digit: '6', name: 'SZÁLLÍTÓK' },
+      { digit: '8', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK' }, 
+      { digit: '9', name: 'ÉVI MÉRLEGSZÁMLÁK',
+        children: [
+         { digit: '1', name: 'Nyitómérleg számla' },
+         { digit: '1', name: 'Zárómérleg számla' },     
+         { digit: '3', name: 'Adózott eredmény elszámolási számla' },
+        ],     
+      },    
+      
     ],
   });
   Breakdowns.define({ communityId: null,
@@ -129,9 +147,8 @@ export function defineBreakdownTemplates() {
 
     ],
   });
-          // itt tartok
   Breakdowns.define({ communityId: null,  //8-as számlaosztály  kész
-    digit: '8', name: 'Expenses', locked: true, sign: +1, //Ráfordítások  
+    digit: '8', name: 'Expenses', locked: true, sign: +1, // RÁFORDÍTÁSOK
     children: [
       { digit: '1', name: 'ANYAGJELLEGŰ RÁFORDÍTÁSOK',
         children: [
@@ -246,7 +263,16 @@ export function defineBreakdownTemplates() {
     name: 'Owner payin types', locked: true,
     children: [
     { digit: '1', name: 'Közös költség ' },
-    { digit: '2', name: 'Fogyasztás előírás' },
+    { digit: '2', name: 'Fogyasztás előírás',
+        children: [
+            { digit: '1', name: 'Hidegvíz előírás' },
+            { digit: '2', name: 'Melegvíz előírás' },
+            { digit: '3', name: 'Csatornadíj előírás' },
+            { digit: '4', name: 'Fűtési díj előírás' },
+            { digit: '5', name: 'Légkondícionáló előírás' },
+            { digit: '6', name: 'Egyéb fogyasztás előírás' },  
+        ],    
+    },
     { digit: '3', name: 'Fejlesztési alap előírás' },
     { digit: '4', name: 'Egyéb előírás' },
     { digit: '5', name: 'Rendkivüli befizetés előírás' },
@@ -256,28 +282,31 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     name: 'COA', label: 'Chart Of Accounts',
     children: [
-      { digit: '0', name: 'Opening' },// Technikai számlák
-      { digit: '1', include: 'Befektetett Eszközök' },
-      { digit: '2', include: 'Készletek' },
-      { digit: '3', include: 'Assets' }, // követelések
-      { digit: '4', include: 'Liabilities' }, // Források
-      { digit: '5', include: 'Költség nemek' },
-      { digit: '8', include: 'Expenses' }, // Ráfordítások
-      { digit: '9', include: 'Incomes' }, //Bevételek
+      { digit: '0', name: 'Opening' },// TECHNIKAI SZÁMLÁK
+      { digit: '1', include: 'BEFEKTETETT ESZKÖZÖK' },
+      { digit: '2', include: 'KÉSZLETEK' },
+      { digit: '3', include: 'Assets' }, //KÖVETELÉSEK
+      { digit: '4', include: 'Liabilities' }, // FORRÁSOK
+      { digit: '5', include: 'KÖLTSÉGNEMEK' },
+      { digit: '8', include: 'Expenses' }, // RÁFORDÍTÁSOK
+      { digit: '9', include: 'Incomes' }, //BEVÉTELEK
     ],
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '@', name: 'Parcels', children: [
-      { digit: 'A', name: 'Main building' },
+    digit: '@', name: 'Parcels', children: [   //Albetétek
+      { digit: 'A', name: 'Main building' },  //Épület
     ],
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '#', name: 'Places', children: [
-      { digit: '0', name: 'Central' },
-      { digit: '1', name: 'Garden' },
-      { digit: '2', name: 'Heating system' },
+    digit: '#', name: 'Places', children: [ // Elszámolási egységek
+      { digit: '0', name: 'Central' },   //Központ
+      { digit: '1', name: 'Garden' }, // Kert
+      { digit: '3', name: 'Heating system' }, //kazán
+      { digit: '4', name: 'Klima' },  
+      { digit: '5', name: 'Villamos hálózat' },  
+      { digit: '6', name: 'Felügyeleti rendszer' },  
     ],
   });
 
