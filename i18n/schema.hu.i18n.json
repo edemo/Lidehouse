@@ -18,7 +18,7 @@
     },
     "avatar": {
       "label": "Profilkép",
-      "placeholder": "(pl. http://marketplaza.hu/38-small_default/micimacko-disney-labda-.jpg)"
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "profile": {
       "label": "Profil  (Az itt megadott adatokat a ház lakói és tisztségviselői láthatják.)",

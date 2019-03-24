@@ -24,3 +24,9 @@ Images.allow({
     return Images.hasPermissionToRemoveUploaded(userId, doc);
   },
 });
+
+Images.helpers({
+  remove() {
+    Images.remove(this._id);
+  },
+});
