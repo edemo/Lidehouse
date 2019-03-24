@@ -15,8 +15,10 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '2', name: 'Készletek', locked: true, sign: +1,
+    digit: '2', name: 'KÉSZLETEK', locked: true, sign: +1,
     children: [
+        { digit: '1', name: 'ANYAGOK' },
+        { digit: '2', name: 'KÖZVETÍTETT SZOLGÁLTATÁSOK' },           
     ],
   });
 
@@ -69,7 +71,7 @@ export function defineBreakdownTemplates() {
         { digit: '2', name: 'Egyéb hitel' },
         ],
       },
-      { digit: '5', name: 'Szállítók' },
+      { digit: '5', KÖZVETÍTETT SZOLGÁLTATÁSOKname: 'Szállítók' },
     ],
   });
   Breakdowns.define({ communityId: null,
