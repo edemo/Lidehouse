@@ -9,8 +9,12 @@ export function defineBreakdownTemplates() {
 //Kettős könyvelés verzió
 
   Breakdowns.define({ communityId: null,
-    digit: '1', name: 'Befektetett Eszközök', locked: true, sign: +1,
+    digit: '1', name: 'BEFEKTETETT ESZKÖZÖK', locked: true, sign: +1,
     children: [
+        { digit: '3', name: 'MŰSZAKI BERENDEZÉSEK' },      
+        { digit: '4', name: 'EGYÉB BERENDEZÉSEK' },       
+        { digit: '6', name: 'BERUHÁZÁSOK' },     
+        { digit: '8', name: 'HITELVISZONYT MEGTESTESÍTŐ ÉRTÉKPAPÍROK' },   
     ],
   });
 
@@ -22,41 +26,46 @@ export function defineBreakdownTemplates() {
     ],
   });
 
-  Breakdowns.define({ communityId: null,
+  Breakdowns.define({ communityId: null,  // 3-AS SZÁMLAOSZTÁLY KÉSZ  TODO angol neveket átírni
     digit: '3', name: 'Assets', locked: true, sign: +1,  //KÖVETELÉSEK
     children: [
-      { digit: '1', name: 'Tárgyi és immateriális',
+      { digit: '1', name: 'VEVŐK',
         children: [
-        { digit: '1', name: 'Vagyoni értékű jogok' },
-        { digit: '2', name: 'Műszaki berendezések' },
         ],
       },
-      { digit: '2', name: 'Money accounts',
-        children: [
-        { digit: '1', name: 'Folyószámla' },
-        { digit: '2', name: 'Megtakarítási számla' },
-        { digit: '3', name: 'Pénztár' },
-        ],
-      },
-      { digit: '3', name: 'Owner obligations',
+     { digit: '3', name: 'Owner obligations', //KÖVETELÉSEK TULAJDONOSSAL SZEMBEN
         include: 'Owner payin types',
       },
-      { digit: '4', name: 'Hátralékok',
+     { digit: '4', name: 'HÁTRALÉKOK',  
         children: [
-        { digit: '1', name: 'Albetétek jelzáloggal nem terhelt hátraléka' },
-        { digit: '2', name: 'Albetétek jelzáloggal terhelt hátraléka' },
+        { digit: '1', name: 'Jelzáloggal nem terhelt hátralék' },         
+        { digit: '2', name: 'Jelzáloggal terhelt hátralék' },
+        { digit: '3', name: 'Közös tulajdon hasznosításának hátraléka ' },
         ],
-      },
-      { digit: '5', name: 'Egyéb követelések' },
+        },       
+    { digit: '6', name: 'EGYÉB KÖVETELÉSEK' },
     ],
-  });
+     },     
+    { digit: '8', name: 'Money accounts',  //PÉNZESZKÖZÖK
+        children: [
+        { digit: '1', name: 'Pénztár' },         
+        { digit: '2', name: 'Folyószámla' },
+        { digit: '3', name: 'Megtakarítási számla' },
+        ],
+        },
+ { digit: '9', name: 'AKTÍV IDŐBELI ELHATÁROLÁSOK' },
+    ],
+     },                   
+                    
+);
 
   Breakdowns.define({ communityId: null,
-    digit: '4', name: 'Liabilities', locked: true, sign: -1,  // Források
+    digit: '4', name: 'Liabilities', locked: true, sign: -1,  // FORRÁSOK
     children: [
-      { digit: '1', name: 'Equity', locked: true,
+      { digit: '1', name: 'Equity', locked: true,  //  SAJÁT TŐKE
         children: [
-            { digit: '9', name: 'Adózott eredmény' },
+          { digit: '3', name: 'Eredménytartalék' },
+          { digit: '9', name: 'Adózott eredmény' },
         ],
       },
       { digit: '3', name: 'Unidentified items',
@@ -71,7 +80,7 @@ export function defineBreakdownTemplates() {
         { digit: '2', name: 'Egyéb hitel' },
         ],
       },
-      { digit: '5', KÖZVETÍTETT SZOLGÁLTATÁSOKname: 'Szállítók' },
+      { digit: '5', name: 'Szállítók' },
     ],
   });
   Breakdowns.define({ communityId: null,
