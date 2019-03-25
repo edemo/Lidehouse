@@ -104,8 +104,8 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     digit: '5', name: 'Költség nemek', locked: true, sign: +1,  // 5-ös számlaosztály kész
     children: [
-        { digit: '1', name: 'ANYAGKÖLTSÉG',
-       children: [
+      { digit: '1', name: 'ANYAGKÖLTSÉG',
+        children: [
            { digit: '01', name: 'Víz díj' },
            { digit: '02', name: 'Áram díj' },
            { digit: '03', name: 'Gáz díj' },   
@@ -114,37 +114,36 @@ export function defineBreakdownTemplates() {
            { digit: '06', name: 'Égők,felszerelési anyagok' },   
            { digit: '07', name: 'Egyéb anyagok' },           
         ],
-        },
-        { digit: '2', name: 'SZOLGÁLTATÁSOK KÖLTSÉGEI',  
+      },
+      { digit: '2', name: 'SZOLGÁLTATÁSOK KÖLTSÉGEI',
         children: [
-           { digit: '01', name: 'Csatorna díjak' }, 
-           { digit: '02', name: 'Szemét díjak' },
-           { digit: '03', name: 'Takarítás' },
-           { digit: '04', name: 'Kommunikációs költségek' },   
-           { digit: '05', name: 'Könyvelési díj' },   
-           { digit: '06', name: 'Közösképviselet díja' },
-           { digit: '07', name: 'Jogi költségek' },        
-           { digit: '08', name: 'Karbantartás' },  
-           { digit: '09', name: 'Javítások' },  
-           { digit: '10', name: 'Biztonsági költségek' },            
-           { digit: '11', name: 'Tagdíjak' }, 
-           { digit: '12', name: 'Kertészet' },         
-           { digit: '13', name: 'Egyéb megbízási, vállalkozási díjak' },          
-        ],              
-        },
-        { digit: '3', name: 'EGYÉB SZOLGÁLTATÁSOK KÖLTSÉGEI',
+          { digit: '01', name: 'Csatorna díjak' },
+          { digit: '02', name: 'Szemét díjak' },
+          { digit: '03', name: 'Takarítás' },
+          { digit: '04', name: 'Kommunikációs költségek' },
+          { digit: '05', name: 'Könyvelési díj' },
+          { digit: '06', name: 'Közösképviselet díja' },
+          { digit: '07', name: 'Jogi költségek' },
+          { digit: '08', name: 'Karbantartás' },
+          { digit: '09', name: 'Javítások' },
+          { digit: '10', name: 'Biztonsági költségek' },
+          { digit: '11', name: 'Tagdíjak' },
+          { digit: '12', name: 'Kertészet' },
+          { digit: '13', name: 'Egyéb megbízási, vállalkozási díjak' },
+        ],
+      },
+      { digit: '3', name: 'EGYÉB SZOLGÁLTATÁSOK KÖLTSÉGEI',
         children: [
-           { digit: '1', name: 'Hatósági díjak' }, 
+           { digit: '1', name: 'Hatósági díjak' },
            { digit: '2', name: 'Pénzügyi  díjak' },
-           { digit: '3', name: 'Biztosítási díjak' },   
-        ],               
-        }, 
-        { digit: '4', name: 'BÉRKÖLTSÉG'},
-        { digit: '5', name: 'SZEMÉLYI JELLEGŰ EGYÉB KÖLTSÉG' },     
-        { digit: '6', name: 'BÉRJÁRULÉKOK' },   
-        { digit: '7', name: 'ÉRTÉKCSÖKKENÉSI LEÍRÁS' },     
-        { digit: '9', name: 'KÖLTSÉGNEMEK ÁTVEZETÉSE' },
-
+           { digit: '3', name: 'Biztosítási díjak' },
+        ],
+      },
+      { digit: '4', name: 'BÉRKÖLTSÉG'},
+      { digit: '5', name: 'SZEMÉLYI JELLEGŰ EGYÉB KÖLTSÉG' },
+      { digit: '6', name: 'BÉRJÁRULÉKOK' },
+      { digit: '7', name: 'ÉRTÉKCSÖKKENÉSI LEÍRÁS' }, 
+      { digit: '9', name: 'KÖLTSÉGNEMEK ÁTVEZETÉSE' },
     ],
   });
   Breakdowns.define({ communityId: null,  //8-as számlaosztály  kész
@@ -212,50 +211,30 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     digit: '9', name: 'Incomes', locked: true, sign: -1,   // 9-es számlaosztály kész
     children: [
-     { digit: '1', name: 'ÉRTÉKESÍTÉS ÁRBEVÉTELE',
+      { digit: '1', name: 'ÉRTÉKESÍTÉS ÁRBEVÉTELE',
         children: [
-        { digit: '1', name: 'Bérleti díj bevételek' }, 
+        { digit: '1', name: 'Bérleti díj bevételek' },
         { digit: '5', name: 'Egyéb adóköteles bevételek' },
         ],
-      }, 
-      
+      },
       { digit: '5', name: 'TUAJDONOSI BEFIZETÉSEK',
-        children: [
-        { digit: '1', name: 'Közös költség' }, 
-        { digit: '2', name: 'Fogyasztás előírás',
-          children: [
-            { digit: '1', name: 'Hidegvíz előírás' },
-            { digit: '2', name: 'Melegvíz előírás' },
-            { digit: '3', name: 'Csatornadíj előírás' },
-            { digit: '4', name: 'Fűtési díj előírás' },
-            { digit: '5', name: 'Légkondícionáló előírás' },
-            { digit: '6', name: 'Egyéb fogyasztás előírás' },  
-        ],               
-        },
-        { digit: '3', name: 'Fejlesztési alap előírás' }, 
-        { digit: '5', name: 'Egyéb előírás' },         
-        { digit: '5', name: 'Rendkivüli befizetés előírás' },         
-        ],
+        include: 'Owner payin types'
       },
       { digit: '6', name: 'EGYÉB BEVÉTELEK',
         children: [
         { digit: '6', name: 'Támogatások' },
         { digit: '7', name: 'Biztosítói kártérítés' },
         { digit: '8', name: 'Kártérítések' },
-        { digit: '9', name: 'Különféle egyéb bevételek' },  
+        { digit: '9', name: 'Különféle egyéb bevételek' },
         ],
       },
-     { digit: '7', name: 'PÉNZÜGYI MŰVELETEK BEVÉTELEI',
+      { digit: '7', name: 'PÉNZÜGYI MŰVELETEK BEVÉTELEI',
         children: [
-        { digit: '3', name: 'Hitelintézettől kapott kamatok' }, 
-        { digit: '4', name: 'Egyéb pénzügyi bevételek' },         
+        { digit: '3', name: 'Hitelintézettől kapott kamatok' },
+        { digit: '4', name: 'Egyéb pénzügyi bevételek' },
         ],
-      },      
-     { digit: '8', name: 'RENDKIVÜLI BEVÉTELEK',
-      },       
-      
-      { digit: '5', name: 'Owner payins', locked: true, // a 'Tulajdonosi befizetések' ld fentebb ugyan ez
-        include: 'Owner payin types',
+      },
+      { digit: '8', name: 'RENDKIVÜLI BEVÉTELEK',
       },
     ],
   });
@@ -278,7 +257,7 @@ export function defineBreakdownTemplates() {
     { digit: '5', name: 'Rendkivüli befizetés előírás' },
     ],
   });
-  
+
   Breakdowns.define({ communityId: null,
     name: 'COA', label: 'Chart Of Accounts',
     children: [

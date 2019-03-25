@@ -811,7 +811,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     projection: 'absolute',
     amount: 75000,
     valueDate: new Date('2017-08-15'),
-    payinType: fixtureBuilder.name2code('Owner payin types', 'Célbefizetés előírás'),
+    payinType: fixtureBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
     note: __('demo.transactions.note.0'),
   });
@@ -851,7 +851,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     projection: 'perArea',
     amount: 200,
     valueDate: new Date('2017-12-15'),
-    payinType: fixtureBuilder.name2code('Owner payin types', 'Célbefizetés előírás'),
+    payinType: fixtureBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
   });
 
@@ -899,7 +899,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-06-01'),
     amount: 3500,
     credit: [{
-      account: fixtureBuilder.name2code('Incomes', 'Egyéb bevétel'),
+      account: fixtureBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
       localizer: fixtureBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
@@ -914,7 +914,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
       credit: [{
-        account: fixtureBuilder.name2code('Incomes', 'Kamat pénzintézetektől'),
+        account: fixtureBuilder.name2code('Incomes', 'Hitelintézettől kapott kamatok'),
         localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
       debit: [{
@@ -929,7 +929,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-09-15'),
     amount: 500000,
     credit: [{
-      account: fixtureBuilder.name2code('Incomes', 'Támogatás'),
+      account: fixtureBuilder.name2code('Incomes', 'Támogatások'),
       localizer: fixtureBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
@@ -944,7 +944,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-05-10'),
     amount: 55000,
     credit: [{
-      account: fixtureBuilder.name2code('Incomes', 'Bérleti díj'),
+      account: fixtureBuilder.name2code('Incomes', 'Bérleti díj bevételek'),
       localizer: fixtureBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
@@ -959,7 +959,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-10-15'),
     amount: 500000,
     credit: [{
-      account: fixtureBuilder.name2code('Incomes', 'Egyéb bevétel'),
+      account: fixtureBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
       localizer: fixtureBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
