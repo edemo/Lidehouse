@@ -60,6 +60,9 @@
                 {{user}}
             </a>
             {{_ 'changed the status'}}: <strong>{{_ this.data.status}}</strong><br>
+            <span>
+            {{_ 'schemaTickets.text.label'}}: {{this.text}}
+            </span><br>
             {{#each dataEntry in entriesOf this.data}}
             <span>
                 {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
