@@ -197,6 +197,10 @@
     "agendaId": {
       "label": "Közgyűlés (aminek része)"
     },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+    },
     "sticky" : {
       "label": "Rögzített"
     }
@@ -250,6 +254,10 @@
     "text": {
       "label": "Hiba leírása",
       "placeholder": "(pl. Megakadt a harmadik és negyedik között...)"
+    },
+    "photo": {
+      "label": "Fénykép (ha akar csatolni hozzá)",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "ticket": {
       "label": "Hibajegy",

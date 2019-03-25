@@ -33,7 +33,7 @@ export const HouseTranslation = {
       },
       "avatar": {
         "label": "Image",
-        "placeholder": "(pl. kajol-lak.jpg)"
+        "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
       },
       "zip": {
         "label": "Zip code",
@@ -169,8 +169,8 @@ export const HouseTranslation = {
         "placeholder": "Az adminisztrátor üdvözli önt itt a ház adatlapján. Ha ön albetét tulajdonos a házban, csatlakozási kérelmet tud beadni a lenti gomb megnyomásával."
       },
       "avatar": {
-        "label": "Fotó",
-        "placeholder": "(pl. kajol-lak.jpg)"
+        "label": "Fénykép",
+        "placeholder": "Link megadása (pl. https://imgbb.com/kajol-lak.jpg)"
       },
       "zip": {
         "label": "Irányító szám",

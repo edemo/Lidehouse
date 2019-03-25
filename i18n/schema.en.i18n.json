@@ -18,7 +18,7 @@
     },
     "avatar": {
       "label": "Profile picture",
-      "placeholder": "(eg. http://marketplaza.hu/38-small_default/micimacko-disney-labda-.jpg)"
+      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
     },
     "profile": {
       "label": "Profile  (This data is public to the members of your community)",
@@ -197,6 +197,10 @@
     "agendaId": {
       "label": "Agenda (of which it is part of)"
     },
+    "photo": {
+      "label": "Photo (if applicable)",
+      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+    },
     "sticky" : {
       "label": "Sticky"
     }
@@ -250,6 +254,10 @@
     "text": {
       "label": "Description",
       "placeholder": "(eg. Got stuck between third and fourth floor)"
+    },
+    "photo": {
+      "label": "Photo (if applicable)",
+      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
     },
     "ticket": {
       "label": "Ticket",
