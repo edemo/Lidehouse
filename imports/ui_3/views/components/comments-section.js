@@ -80,7 +80,7 @@ Template.Comments_section.events({
     const userId = Meteor.userId();
     if (event.keyCode === 13 && !event.shiftKey) {
       const textarea = event.target;
-      insertComment.call({ topicId, userId, text: textarea.value },
+      insertComment.call({ topicId, userId, text: textarea.value, type: 'comments' },
         onSuccess((res) => {
           textarea.value = '';
         })

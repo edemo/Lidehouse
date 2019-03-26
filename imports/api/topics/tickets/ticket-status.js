@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
-import { Events } from '/imports/api/events/events.js';
+import { Comments } from '/imports/api/comments/comments.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
 // === Ticket statuses
@@ -121,7 +121,7 @@ export const TicketStatuses = {
   reported, confirmed, scheduled, toApprove, toVote, progressing, suspended, finished, closed, deleted,
 };
 export const TicketStatusNames = Object.keys(TicketStatuses);
-TicketStatusNames.forEach(statusName => Events.typeValues.push(`statusChangeTo.${statusName}`));
+TicketStatusNames.forEach(statusName => Comments.typeValues.push(`statusChangeTo.${statusName}`));
 
 // == Ticket types:
 
@@ -156,10 +156,10 @@ export function possibleNextStatuses(topic) {
 export function statusChangeEventSchema(statusName) {
   const statusObject = TicketStatuses[statusName];
   const schema = statusName ?
-    new SimpleSchema([Events.baseSchema, {
+    new SimpleSchema([Comments.schema, {
       ticket: { type: statusObject.schema, optional: true },
     }]) :
-    new SimpleSchema([Events.baseSchema, {
+    new SimpleSchema([Comments.schema, {
       ticket: { type: Object, blackbox: true },
     }]);
   schema.i18n('schemaTickets');
