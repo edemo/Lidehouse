@@ -20,8 +20,10 @@ class BreakdownsCollection extends Mongo.Collection {
 export const Breakdowns = new BreakdownsCollection('breakdowns');
 
 Breakdowns.findOneByName = function findOneByName(name, communityId = getActiveCommunityId()) {
-  return Breakdowns.findOne({ name, communityId })
-      || Breakdowns.findOne({ name, communityId: null });
+  const result = Breakdowns.findOne({ name, communityId })
+              || Breakdowns.findOne({ name, communityId: null });
+  if (!result) console.warn(`Unable to find breakdown '${name}' for community '${communityId}'`);
+  return result;
 };
 
 Breakdowns.clone = function clone(name, communityId) {

@@ -149,7 +149,7 @@ Template.Community_finances.viewmodel({
     return moneyAccounts.leafs();
   },
   loanAccounts() {
-    return ['Bank hitel', 'Szállítók'];
+    return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'Szállítók'];
   },
   breakdown(name) {
     return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));

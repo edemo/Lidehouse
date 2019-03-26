@@ -11,10 +11,10 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,   //1-es kész
     digit: '1', name: 'BEFEKTETETT ESZKÖZÖK', locked: true, sign: +1,
     children: [
-        { digit: '3', name: 'MŰSZAKI BERENDEZÉSEK' },      
-        { digit: '4', name: 'EGYÉB BERENDEZÉSEK' },       
-        { digit: '6', name: 'BERUHÁZÁSOK' },     
-        { digit: '8', name: 'HITELVISZONYT MEGTESTESÍTŐ ÉRTÉKPAPÍROK' },   
+        { digit: '3', name: 'MŰSZAKI BERENDEZÉSEK' },
+        { digit: '4', name: 'EGYÉB BERENDEZÉSEK' },
+        { digit: '6', name: 'BERUHÁZÁSOK' },
+        { digit: '8', name: 'HITELVISZONYT MEGTESTESÍTŐ ÉRTÉKPAPÍROK' },
     ],
   });
 
@@ -22,7 +22,7 @@ export function defineBreakdownTemplates() {
     digit: '2', name: 'KÉSZLETEK', locked: true, sign: +1,
     children: [
         { digit: '1', name: 'ANYAGOK' },
-        { digit: '2', name: 'KÖZVETÍTETT SZOLGÁLTATÁSOK' },           
+        { digit: '2', name: 'KÖZVETÍTETT SZOLGÁLTATÁSOK' },
     ],
   });
 
@@ -33,31 +33,27 @@ export function defineBreakdownTemplates() {
         children: [
         ],
       },
-     { digit: '3', name: 'Owner obligations', //KÖVETELÉSEK TULAJDONOSSAL SZEMBEN
+      { digit: '3', name: 'Owner obligations', // KÖVETELÉSEK TULAJDONOSSAL SZEMBEN
         include: 'Owner payin types',
       },
-     { digit: '4', name: 'HÁTRALÉKOK',  
+      { digit: '4', name: 'HÁTRALÉKOK',
         children: [
-        { digit: '1', name: 'Jelzáloggal nem terhelt hátralék' },         
+        { digit: '1', name: 'Jelzáloggal nem terhelt hátralék' },
         { digit: '2', name: 'Jelzáloggal terhelt hátralék' },
-        { digit: '3', name: 'Közös tulajdon hasznosításának hátraléka ' },
+        { digit: '3', name: 'Közös tulajdon hasznosításának hátraléka' },
         ],
-        },       
-    { digit: '6', name: 'EGYÉB KÖVETELÉSEK' },
-    ],
-     },     
-    { digit: '8', name: 'Money accounts',  //PÉNZESZKÖZÖK
+      },
+      { digit: '6', name: 'EGYÉB KÖVETELÉSEK' },
+      { digit: '2', name: 'Money accounts',  //PÉNZESZKÖZÖK
         children: [
-        { digit: '1', name: 'Pénztár' },         
+        { digit: '1', name: 'Pénztár' },
         { digit: '2', name: 'Folyószámla' },
         { digit: '3', name: 'Megtakarítási számla' },
         ],
-        },
- { digit: '9', name: 'AKTÍV IDŐBELI ELHATÁROLÁSOK' },
+      },
+      { digit: '9', name: 'AKTÍV IDŐBELI ELHATÁROLÁSOK' },
     ],
-     },                   
-                    
-);
+  });
 
   Breakdowns.define({ communityId: null,   // 4 -es kész
     digit: '4', name: 'Liabilities', locked: true, sign: -1,  // FORRÁSOK
@@ -71,48 +67,47 @@ export function defineBreakdownTemplates() {
       { digit: '3', name: 'Unidentified items',  // NEM AZONOSÍTOTT TÉTELEK
         children: [
         { digit: '1', name: 'Unidentified incomes' }, // Nem azonosított bevételek
-        { digit: '2', name: 'Befizetések dijbeszedőn keresztül' },            
-        { digit: '3', name: 'Postai befizetések' },  
+        { digit: '2', name: 'Befizetések dijbeszedőn keresztül' },
+        { digit: '3', name: 'Postai befizetések' },
         { digit: '4', name: 'Unidentified expenses' }, //Nem azonosított Kiadások
         ],
       },
       { digit: '4', name: 'HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK',
         children: [
          { digit: '1', name: 'Hosszú lejáratú bank hitel' },
-         { digit: '1', name: 'Beruházási és fejlesztési hitelek' },     
+         { digit: '2', name: 'Beruházási és fejlesztési hitelek' },
          { digit: '3', name: 'Egyéb hitel' },
         ],
       },
       { digit: '5', name: 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK',
-       children: [
+        children: [
          { digit: '1', name: 'Rövid lejáratú bank Hitel' },   
          { digit: '2', name: 'Egyébrövid lejáratú kötelezettségek' },
         ],
-      },  
-      { digit: '6', name: 'SZÁLLÍTÓK' },
+      },
+      { digit: '6', name: 'Szállítók' },
       { digit: '8', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK' }, 
       { digit: '9', name: 'ÉVI MÉRLEGSZÁMLÁK',
         children: [
          { digit: '1', name: 'Nyitómérleg számla' },
          { digit: '1', name: 'Zárómérleg számla' },     
          { digit: '3', name: 'Adózott eredmény elszámolási számla' },
-        ],     
-      },    
-      
+        ],
+      },
     ],
   });
   Breakdowns.define({ communityId: null,
-    digit: '5', name: 'Költség nemek', locked: true, sign: +1,  // 5-ös számlaosztály kész
+    digit: '5', name: 'KÖLTSÉGNEMEK', locked: true, sign: +1,  // 5-ös számlaosztály kész
     children: [
       { digit: '1', name: 'ANYAGKÖLTSÉG',
         children: [
            { digit: '01', name: 'Víz díj' },
            { digit: '02', name: 'Áram díj' },
-           { digit: '03', name: 'Gáz díj' },   
-           { digit: '04', name: 'Irodai anyagok' },  
-           { digit: '05', name: 'Karbantartási segédanyagok' },   
-           { digit: '06', name: 'Égők,felszerelési anyagok' },   
-           { digit: '07', name: 'Egyéb anyagok' },           
+           { digit: '03', name: 'Gáz díj' },
+           { digit: '04', name: 'Irodai anyagok' },
+           { digit: '05', name: 'Karbantartási segédanyagok' },
+           { digit: '06', name: 'Égők,felszerelési anyagok' },
+           { digit: '07', name: 'Egyéb anyagok' },
         ],
       },
       { digit: '2', name: 'SZOLGÁLTATÁSOK KÖLTSÉGEI',
@@ -178,9 +173,9 @@ export function defineBreakdownTemplates() {
       },
       { digit: '2', name: 'SZEMÉLYI JELLEGŰ RÁFORDÍTÁSOK',
         children: [
-        { digit: '1', name: ' Bérköltség' },
-        { digit: '2', name: ' Személyi jellegű egyéb költség' },  
-        { digit: '3', name: ' Bérjárulékok' },
+        { digit: '1', name: 'Bérköltség' },
+        { digit: '2', name: 'Személyi jellegű egyéb költség' },  
+        { digit: '3', name: 'Bérjárulékok' },
         ],
       },
       { digit: '3', name: 'ÉRTÉKCSÖKKENÉSI LEÍRÁS',
@@ -193,18 +188,17 @@ export function defineBreakdownTemplates() {
         { digit: '1', name: 'Adók és bírságok' },
         { digit: '2', name: 'Egyéb ráfordítás' },
         ],
-      },    
+      },
       { digit: '7', name: 'PÉNZÜGYI RÁFORDÍTÁSOK',
         children: [
         { digit: '1', name: 'Kamat és bank költségek' },
         ],
-      },      
-       { digit: '9', name: 'EREDMÉNYT TERHELŐ ADÓK',
+      },
+      { digit: '9', name: 'EREDMÉNYT TERHELŐ ADÓK',
         children: [
         { digit: '1', name: 'Társasági adó' },
         ],
-      },  
-      
+      },
     ],
   });
 
@@ -217,8 +211,8 @@ export function defineBreakdownTemplates() {
         { digit: '5', name: 'Egyéb adóköteles bevételek' },
         ],
       },
-      { digit: '5', name: 'TUAJDONOSI BEFIZETÉSEK',
-        include: 'Owner payin types'
+      { digit: '5', name: 'Owner payins',
+        include: 'Owner payin types',
       },
       { digit: '6', name: 'EGYÉB BEVÉTELEK',
         children: [
@@ -241,16 +235,16 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,
     name: 'Owner payin types', locked: true,
     children: [
-    { digit: '1', name: 'Közös költség ' },
+    { digit: '1', name: 'Közös költség előírás' },
     { digit: '2', name: 'Fogyasztás előírás',
-        children: [
-            { digit: '1', name: 'Hidegvíz előírás' },
-            { digit: '2', name: 'Melegvíz előírás' },
-            { digit: '3', name: 'Csatornadíj előírás' },
-            { digit: '4', name: 'Fűtési díj előírás' },
-            { digit: '5', name: 'Légkondícionáló előírás' },
-            { digit: '6', name: 'Egyéb fogyasztás előírás' },  
-        ],    
+      children: [
+        { digit: '1', name: 'Hidegvíz előírás' },
+        { digit: '2', name: 'Melegvíz előírás' },
+        { digit: '3', name: 'Csatornadíj előírás' },
+        { digit: '4', name: 'Fűtési díj előírás' },
+        { digit: '5', name: 'Légkondícionáló előírás' },
+        { digit: '6', name: 'Egyéb fogyasztás előírás' },
+      ],
     },
     { digit: '3', name: 'Fejlesztési alap előírás' },
     { digit: '4', name: 'Egyéb előírás' },

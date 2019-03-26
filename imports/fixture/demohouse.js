@@ -791,7 +791,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate,
         projection: 'perHabitant',
         amount: 2500,
-        payinType: fixtureBuilder.name2code('Owner payin types', 'Víz díj előírás'),
+        payinType: fixtureBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
       });
     });
@@ -974,7 +974,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
     credit: [{
-      account: fixtureBuilder.name2code('Liabilities', 'Bank hitel'),
+      account: fixtureBuilder.name2code('Liabilities', 'Hosszú lejáratú bank hitel'),
     }],
     debit: [{
       account: fixtureBuilder.name2code('Assets', 'Megtakarítási számla'),
@@ -994,7 +994,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
       debit: [{
-        account: fixtureBuilder.name2code('Expenses', 'Víz'),
+        account: fixtureBuilder.name2code('Expenses', 'Víz díj'),
         localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
     });
@@ -1008,7 +1008,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
       debit: [{
-        account: fixtureBuilder.name2code('Expenses', 'Csatorna'),
+        account: fixtureBuilder.name2code('Expenses', 'Csatorna díjak'),
         localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
     });
@@ -1022,7 +1022,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
       }],
       debit: [{
-        account: fixtureBuilder.name2code('Expenses', 'Áram'),
+        account: fixtureBuilder.name2code('Expenses', 'Áram díj'),
         localizer: fixtureBuilder.name2code('Localizer', 'Central'),
       }],
     });

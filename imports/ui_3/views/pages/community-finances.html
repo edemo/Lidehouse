@@ -70,7 +70,7 @@
                 <div class= "row">
 
                     <div class="col-md-3">
-                        <h1 class="m-b-xs">{{displayMoney (getBalance '44')}}</h1>
+                        <h1 class="m-b-xs">{{displayMoney (add (getBalance 'HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK') (getBalance 'Szállítók'))}}</h1>
                         <h3 class="font-bold no-margins"> {{_ 'Loan accounts total'}}</h3>
                     </div>
 

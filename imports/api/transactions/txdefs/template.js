@@ -7,14 +7,14 @@ export function defineTxDefTemplates() {
   // Double entry accounting
   TxDefs.define({ communityId: null,
     name: 'Bill incoming', // 'Bejövő számla',
-    credit: '45',
+    credit: '46',
     debit: '8',
   });
 
   TxDefs.define({ communityId: null,
     name: 'Bill payment', // 'Bejövő számla teljesítés',
     credit: '32',
-    debit: '45',
+    debit: '46',
   });
 
   TxDefs.define({ communityId: null,
@@ -71,57 +71,3 @@ export function defineTxDefTemplates() {
 if (Meteor.isServer) {
   Meteor.startup(defineTxDefTemplates);
 }
-
-/*
-  TxDefs.define({ communityId: null,
-    name: 'Obligation',
-    credit: 'Accounts/Liabilities/Owners/Owner payins',
-    debit: 'Accounts/Assets/Owner obligatons',
-  };
-
-  { name: 'Payin',
-    transactions: [{
-      accountFrom: 'Accounts/Incomes/Owner payins',
-      accountTo: 'Accounts/Assets/Money accounts',
-    }, {
-      accountFrom: 'Accounts/Assets/Owner obligatons',
-      accountTo: 'Accounts/Liabilities/Owners/Owner payins',
-    }],
-  },
-
-  { name: 'Income',
-    transactions: [{
-      accountFrom: 'Accounts/Incomes',
-      accountTo: 'Accounts/Assets/Money accounts',
-    }],
-  },
-
-  { name: 'Expense',
-    transactions: [{
-      accountFrom: 'Accounts/Assets/Money accounts',
-      accountTo: 'Accounts/Expenses',
-    }],
-  },
-
-  { name: 'Loan',
-    transactions: [{
-      accountFrom: 'Accounts/Liabilities/Hitelek',
-      accountTo: 'Accounts/Assets/Money accounts',
-    }],
-  },
-
-  { name: 'Opening',
-    transactions: [{
-      accountFrom: 'Accounts/Liabilities/Opening',
-      accountTo: 'Accounts/Assets',
-    }],
-  },
-
-  { name: 'Backoffice Op',
-    transactions: [{
-      accountFrom: 'Accounts',
-      accountTo: 'Accounts',
-    }],
-  },
-];
-*/

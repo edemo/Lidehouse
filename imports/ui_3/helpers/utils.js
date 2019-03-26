@@ -19,6 +19,10 @@ Template.registerHelper('equals', function equals(a, b) {
     return a == b;
 });
 
+Template.registerHelper('add', function add(a, b) {
+    return a + b;
+});
+
 Template.registerHelper('round', function round(number, digits) {
     return number.toFixed(digits);
 });
