@@ -59,7 +59,7 @@
             <a href="{{pathFor 'User.show' _id=user._id}}">
                 {{user}}
             </a>
-            {{_ 'changed the status'}}: <strong>{{_ this.data.status}}</strong><br>
+            {{_ 'changed the status'}}: <span class="label label-{{statusColor this.data.status}}">{{_ (concat 'schemaTickets.ticket.status.' this.data.status)}}</span><!--<strong>{{_ this.data.status}}</strong>--><br>
             <span>
             {{_ 'schemaTickets.text.label'}}: {{this.text}}
             </span><br>
