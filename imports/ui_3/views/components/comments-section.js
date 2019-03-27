@@ -8,7 +8,6 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { Events } from '/imports/api/events/events.js';
 import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -61,10 +60,6 @@ Template.Comments_section.helpers({
     }
     return comments;
   },
-  statusChanges() {
-    const statusChanges = Events.find({ topicId: this._id }, { type: { $regex: 'statusChangeTo.*' } }, { sort: { createdAt: 1 } });
-    return statusChanges.fetch();
-  },
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
     const comments = Comments.find({ topicId: this._id });
@@ -92,9 +87,17 @@ Template.Comments_section.events({
 //------------------------------------
 
 Template.Comment.helpers({
+  typeIsComment() {
+    if (this.type === 'comments') return true;
+    return false;
+  },
+  typeIsStatusChange() {
+    if (this.type.includes('statusChangeTo')) return true;
+    return false;
+  },
 });
 
-Template.Comment.events({
+Template.NewComment.events({
   'click .js-like'(event) {
     like.call({
       coll: 'comments',
