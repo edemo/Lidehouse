@@ -87,14 +87,6 @@ Template.Comments_section.events({
 //------------------------------------
 
 Template.Comment.helpers({
-  typeIsComment() {
-    if (this.type === 'comments') return true;
-    return false;
-  },
-  typeIsStatusChange() {
-    if (this.type.includes('statusChangeTo')) return true;
-    return false;
-  },
 });
 
 Template.NewComment.events({

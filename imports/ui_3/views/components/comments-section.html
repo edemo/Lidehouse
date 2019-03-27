@@ -28,10 +28,10 @@
             <a href="{{pathFor 'User.show' _id=user._id}}">
             {{user}}
             </a>
-            {{#if typeIsComment}}
+            {{#if (equals this.type "comments")}}
                 {{> NewComment}}
             {{/if}}
-            {{#if typeIsStatusChange}}
+            {{#if (includes this.type "statusChangeTo")}}
                 {{> StatusChange}}
             {{/if}}
         </div>
