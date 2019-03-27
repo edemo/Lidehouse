@@ -86,7 +86,26 @@ Template.Comments_section.events({
 
 //------------------------------------
 
-Template.Comment.helpers({
+Template.Comment.events({
+  'keydown .js-send-edited'(event, instance) {
+    // pressing escape key
+    if (event.keyCode === 27) {
+      event.preventDefault();
+      $('#editableSpan').remove();
+      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+    }
+    // pressing enter key
+    if (event.keyCode === 13 && !event.shiftKey) {
+      event.preventDefault();
+      const editedText = $('#editableSpan > textarea').val();
+      updateComment.call({
+        _id: instance.data._id,
+        modifier: { $set: { text: editedText } },
+      }, handleError);
+      $('#editableSpan').remove();
+      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+    }
+  },
 });
 
 Template.NewComment.events({
@@ -103,25 +122,6 @@ Template.NewComment.events({
       originalText + '</textarea>' + `<small class="text-muted">${__('commentEditInstruction')} </small></span>`;
     $(textareaEdit).insertAfter('span[data-id="' + instance.data._id + '"]');
     $('#editableSpan > textarea').focus();
-  },
-  'keydown .js-send-edited'(event, instance) {
-    // pressing escape key
-    if (event.keyCode === 27) { 
-      event.preventDefault();
-      $('#editableSpan').remove();
-      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-    }
-    // pressing enter key
-    if (event.keyCode === 13 && !event.shiftKey) {
-      event.preventDefault();
-      const editedText = $('#editableSpan > textarea').val();
-      updateComment.call({
-        _id: instance.data._id,
-        modifier: { $set: { text: editedText } },
-      }, handleError);
-      $('#editableSpan').remove();
-      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-    }
   },
   'click .js-delete'(event, instance) {
     Modal.confirmAndCall(removeComment, { _id: this._id }, {
