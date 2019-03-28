@@ -37,6 +37,7 @@ fortawesome:fontawesome
 meteorhacks:ssr
 manuel:viewmodel
 bigu:waypoints
+huaming:js-xlsx
 
 # data
 mongo@1.4.2
@@ -48,7 +49,8 @@ mdg:validated-method
 mdg:validation-error
 jalik:ufs
 jalik:ufs-gridfs
-huaming:js-xlsx
+dburles:mongo-collection-instances
+helfer:minimongo-index
 
 # routing
 kadira:flow-router
@@ -106,4 +108,5 @@ browser-policy@1.1.0
 dynamic-import@0.3.0
 mrt:later
 lookback:emails
-helfer:minimongo-index
+
+droka:autoform-ufs

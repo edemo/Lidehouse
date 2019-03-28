@@ -12,6 +12,7 @@ import { Parcels } from '/imports/api/parcels/parcels';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Attachments } from '/imports/api/attachments/attachments.js';
 import { Communities } from './communities.js';
 
 // This publication sends only very basic data about what communities exist on this server
@@ -91,6 +92,22 @@ function communityPublication(userId, _id) {
       find(community) {
         if (hasPermission('delegations.inCommunity')) {
           return Delegations.find({ communityId: community._id });
+        }
+        return undefined;
+      },
+    }, {
+      // Publish the Breakdowns of the Community
+      find(community) {
+        if (hasPermission('breakdowns.inCommunity')) {
+          return Breakdowns.find({ communityId: community._id });
+        }
+        return undefined;
+      },
+    }, {
+      // Publish the Attachments of the Community
+      find(community) {
+        if (hasPermission('attachments.download')) {
+          return Attachments.find({ communityId: community._id });
         }
         return undefined;
       },

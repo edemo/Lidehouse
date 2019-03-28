@@ -34,7 +34,8 @@
                     </div>
                     <div>
                         <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-info js-upload" name="docupload"> + {{_ 'Upload file'}}</button>
+                        <button type="button" name="upload" class="btn btn-info js-upload" >
+                          <i class="fa fa-upload"></i> {{_ 'Upload file'}}</button>
                         </div>
                     </div>
                 </div>
@@ -68,7 +69,8 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-info js-add-choice {{#if updateForm}}disabled{{/if}}" name="upload"> + {{_ "new"}} {{_ "choice"}}</button>
+                        <button type="button" class="btn btn-info js-add-choice {{#if updateForm}}disabled{{/if}}">
+                          <i class="fa fa-plus"></i> {{_ "new"}} {{_ "choice"}}</button>
                         </div>
                     </div>
                 </div>

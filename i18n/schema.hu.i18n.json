@@ -17,8 +17,8 @@
       }
     },
     "avatar": {
-      "label": "Avatár",
-      "placeholder": "(pl. http://marketplaza.hu/38-small_default/micimacko-disney-labda-.jpg)"
+      "label": "Profilkép",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "profile": {
       "label": "Profil  (Az itt megadott adatokat a ház lakói és tisztségviselői láthatják.)",
@@ -197,6 +197,10 @@
     "agendaId": {
       "label": "Közgyűlés (aminek része)"
     },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+    },
     "sticky" : {
       "label": "Rögzített"
     }
@@ -250,6 +254,10 @@
     "text": {
       "label": "Hiba leírása",
       "placeholder": "(pl. Megakadt a harmadik és negyedik között...)"
+    },
+    "photo": {
+      "label": "Fénykép (ha csatolni szeretne)",
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "ticket": {
       "label": "Hibajegy",

@@ -77,6 +77,9 @@ export const Permissions = [
   { name: 'transactions.publish',       roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
+  { name: 'attachments.upload',          roles: exceptGuest },
+  { name: 'attachments.download',        roles: exceptGuest },
+  { name: 'attachments.remove',          roles: ['admin', 'moderator'], allowAuthor: true  },
   { name: 'do.techsupport',         roles: ['admin'] },
 ];
 

@@ -21,6 +21,7 @@ import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
+import { fileUpload } from '/imports/utils/autoform.js';
 
 export let getActiveCommunityId = () => {
   debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"');
@@ -38,7 +39,7 @@ const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.schema = new SimpleSchema([
   { name: { type: String, max: 100 } },
   { description: { type: String, max: 1200, optional: true } },
-  { avatar: { type: String, /* regEx: SimpleSchema.RegEx.Url,*/ defaultValue: defaultAvatar } },
+  { avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload } },
   comtype.profileSchema,
   { totalunits: { type: Number } },
   // redundant fields:

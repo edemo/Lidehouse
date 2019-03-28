@@ -1,14 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { UploadFS } from 'meteor/jalik:ufs';
-import { GridFSStore } from 'meteor/jalik:ufs-gridfs';
 import { _ } from 'meteor/underscore';
-import './config.js';
 
-// Declare store collection
 export const Shareddocs = new Mongo.Collection('shareddocs');
 
-export function hasPermissionToUpload(userId, doc) {
+Shareddocs.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
   if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId, doc);
@@ -16,9 +13,9 @@ export function hasPermissionToUpload(userId, doc) {
   else if (doc.folderId === 'agenda') return user.hasPermission('agendas.insert', doc.communityId, doc);
   else if (doc.folderId === 'decision') return false;
   else return user.hasPermission('shareddocs.upload', doc.communityId, doc);
-}
+};
 
-export function hasPermissionToRemoveUploaded(userId, doc) {
+Shareddocs.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploaded(userId, doc) {
   if (Meteor.isServer) return true;
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
@@ -27,36 +24,16 @@ export function hasPermissionToRemoveUploaded(userId, doc) {
   else if (doc.folderId === 'agenda') return user.hasPermission('agendas.remove', doc.communityId, doc);
   else if (doc.folderId === 'decision') return false;
   else return user.hasPermission('shareddocs.upload', doc.communityId, doc);
-}
+};
 
 // Can be manipulated only through the ShareddocStore interface
 Shareddocs.allow({
   insert() { return false; },
   update() { return false; },
   remove(userId, doc) {
-    return hasPermissionToRemoveUploaded(userId, doc);
+    return Shareddocs.hasPermissionToRemoveUploaded(userId, doc);
   },
 });
-
-// Declare store
-export const ShareddocsStore = new GridFSStore({
-  collection: Shareddocs,
-  name: 'shareddocs',
-  chunkSize: 1024 * 255,
-});
-
-// Setting up store permissions
-ShareddocsStore.setPermissions(new UploadFS.StorePermissions({
-  insert(userId, doc) {
-    return hasPermissionToUpload(userId, doc);
-  },
-  update(userId, doc) {
-    return false;
-  },
-  remove(userId, doc) {
-    return hasPermissionToRemoveUploaded(userId, doc);
-  },
-}));
 
 Shareddocs.upload = function upload(extraFields) {
   UploadFS.selectFiles(function (file) {

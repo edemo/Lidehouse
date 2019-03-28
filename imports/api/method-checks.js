@@ -81,3 +81,17 @@ export function checkModifier(object, modifier, modifiableFields, exclude = fals
     }
   });
 }
+
+export function checkPermissionsToUpload(userId, collection, doc) {
+  if (!collection.hasPermissionToUpload(userId, doc)) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `Permission: ${"Upload"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
+  }
+}
+
+export function checkPermissionsToRemoveUploaded(userId, collection, doc) {
+  if (!collection.hasPermissionToRemoveUploaded(userId, doc)) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `Permission: ${"Remove"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
+  }
+}
