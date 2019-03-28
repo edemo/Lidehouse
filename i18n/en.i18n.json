@@ -133,5 +133,8 @@
     "Those belong to the community, and you need to ask the community's admin to delete them. <br /><br />",
     "You may read our <a href='privacy' target='blank'>Privacy Statement</a>"],
   "welcome": "Welcome on Honline!",
-  "welcomeMessage": "Please set your most important settings. You will be able to change these settings later on the profile page, where you can also enter your personal information."
+  "welcomeMessage": "Please set your most important settings. You will be able to change these settings later on the profile page, where you can also enter your personal information.",
+  "Name mismatch notification": ["Your profile name (<strong>__userName__</strong>) does not match your name registered by the management (<strong>__personName__</strong>).<br />",
+    "Please correct your data or if __personName__ is not right, contact your manager.<br /><br />",
+    "In __communityName__ your official name registered by the management will be shown."]
 }

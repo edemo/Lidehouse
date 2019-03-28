@@ -10,6 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
+import { compareNames } from '/imports/utils/compare-names.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -180,6 +181,14 @@ Meteor.users.helpers({
   },
   toString() {
     return this.displayOfficialName();
+  },
+  personNameMismatch(communityId = getActiveCommunityId()) {
+    const membership = Memberships.findOne({ communityId, approved: true, active: true, personId: this._id, 'person.idCard.name': { $exists: true } });
+    const personName = membership ? membership.person.idCard.name : undefined;
+    if (!personName) return;
+    const nameMatch = compareNames({firstName: this.profile.firstName, lastName: this.profile.lastName}, {name: personName});
+    if (nameMatch === 'equal') return;
+    else return nameMatch;
   },
   getPrimaryEmail() {
     return this.emails[0].address;

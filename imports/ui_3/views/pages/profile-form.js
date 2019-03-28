@@ -10,12 +10,30 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { remove as removeUser } from '/imports/api/users/methods.js';
+import { __ } from '/imports/localization/i18n.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/api/users/users.js';
 import './profile-form.html';
 
 Template.Profile_form.onCreated(function usersShowPageOnCreated() {
   this.getUserId = () => Meteor.userId();
+  this.autorun(() => {
+    if (Meteor.user() && Meteor.user().personNameMismatch()) {
+      const userName = Meteor.user().fullName();
+      const personName = Meteor.user().displayOfficialName();
+      const communityName = Communities.findOne(Session.get('activeCommunityId')).name;
+      const modalContext = {
+        title: __('Name mismatch'),
+        text: __('Name mismatch notification', { personName, userName, communityName } ),
+        btnOK: 'ok',
+        onOK() { 
+          Modal.hide(); 
+        },
+      };
+      Modal.show('Modal', modalContext);
+    }
+  });
 });
 
 Template.Profile_form.helpers({

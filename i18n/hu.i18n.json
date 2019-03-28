@@ -574,5 +574,10 @@
   "welcome": "Üdvözöljük a Honline rendszerben!",
   "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",
 
+  "Name mismatch": "Néveltérés",
+  "Name mismatch notification": ["A profiladatok között megadott neve (<strong>__userName__</strong>) nem egyezik a menedzsment által rögzített nevével (<strong>__personName__</strong>).<br />",
+    "Kérjük javítsa megfelelően adatait, illetve amennyiben a(z) __personName__ név nem helyes, keresse fel közös képviselőjét.<br /><br />",
+    "A __communityName__ közösségben a menedzsment által rögzített hivatalos neve kerül megjelenítésre."],
+
   "":""
 }
