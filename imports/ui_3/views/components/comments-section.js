@@ -51,7 +51,7 @@ Template.Comments_section.helpers({
     const topic = this;
     return topic.category === 'vote';
   },
-  comments() {
+  events() {
     const route = FlowRouter.current().route.name;
     const comments = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
     if (route === 'Board') {
@@ -75,7 +75,7 @@ Template.Comments_section.events({
     const userId = Meteor.userId();
     if (event.keyCode === 13 && !event.shiftKey) {
       const textarea = event.target;
-      insertComment.call({ topicId, userId, text: textarea.value, type: 'comments' },
+      insertComment.call({ topicId, userId, text: textarea.value, type: 'comment' },
         onSuccess((res) => {
           textarea.value = '';
         })
@@ -86,7 +86,7 @@ Template.Comments_section.events({
 
 //------------------------------------
 
-Template.Comment.events({
+Template.Event.events({
   'keydown .js-send-edited'(event, instance) {
     // pressing escape key
     if (event.keyCode === 27) {
@@ -108,7 +108,7 @@ Template.Comment.events({
   },
 });
 
-Template.NewComment.events({
+Template.Comment.events({
   'click .js-like'(event) {
     like.call({
       coll: 'comments',

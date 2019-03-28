@@ -10,7 +10,7 @@ import { checkExists, checkPermissions, checkModifier } from '../method-checks';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 
 export const insert = new ValidatedMethod({
-  name: 'comments.insert',
+  name: 'comment.insert',
   validate: Comments.simpleSchema().validator({ clean: true }),
 
   run(doc) {
@@ -26,7 +26,7 @@ export const insert = new ValidatedMethod({
 });
 
 export const update = new ValidatedMethod({
-  name: 'comments.update',
+  name: 'comment.update',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
@@ -43,7 +43,7 @@ export const update = new ValidatedMethod({
 });
 
 export const remove = new ValidatedMethod({
-  name: 'comments.remove',
+  name: 'comment.remove',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),

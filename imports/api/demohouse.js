@@ -552,7 +552,7 @@ export function insertDemoHouse(lang, demoOrTest) {
           topicId,
           userId: (topicNo == 2 && commentNo == 2) ? sameUser() : nextUser(),
           text: commentText,
-          type: 'comments',
+          type: 'comment',
         });
       }
     });
@@ -747,7 +747,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       topicId: voteTopic4,
       userId: nextUser(),
       text: __(`demo.vote.4.comment.${commentNo}`),
-      type: 'comments',
+      type: 'comment',
     });
   });
   Clock.clear();
@@ -904,7 +904,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     topicId: ticket2,
     userId: nextUser(),
     text: __('demo.ticket.2.comment.0'),
-    type: 'comments',
+    type: 'comment',
   });
 
   Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(123, 'minutes').toDate());
@@ -1588,7 +1588,7 @@ Meteor.methods({
       topicId: demoUserMessageRoom,
       userId: demoManagerId,
       text: __('demo.manager.message'),
-      type: 'comments',
+      type: 'comment',
     });
     const demoUserMessageRoom2 = Topics.insert({
       communityId: demoCommunityId,
@@ -1603,14 +1603,14 @@ Meteor.methods({
       topicId: demoUserMessageRoom2,
       userId: demoUserId,
       text: __('demo.messages.0'),
-      type: 'comments',
+      type: 'comment',
     });
     Clock.setSimulatedTime(moment().subtract(3, 'hours').toDate());
     Comments.insert({
       topicId: demoUserMessageRoom2,
       userId: dummyUserId,
       text: __('demo.messages.1'),
-      type: 'comments',
+      type: 'comment',
     });
     Clock.clear();
     // TODO: Do this thing in the comments.insert method,

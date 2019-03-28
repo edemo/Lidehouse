@@ -5,8 +5,8 @@
             <a href="{{pathFor 'Topic.show' _tid=_id}}">{{_ 'View previous comments' hasMoreComments}}</a>
         </div>
         {{/if}}
-        {{#each comment in comments}}
-            {{> Comment comment}}
+        {{#each event in events}}
+            {{> Event event}}
         {{/each}}
         <div class="social-comment">
             <a href="" class="pull-left">
@@ -19,7 +19,7 @@
     </div>
 </template>
 
-<template name="Comment">
+<template name="Event">
     <div class="social-comment">         
         <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
             <img alt="avatar" class="message-avatar" src={{user.avatar}}>
@@ -28,8 +28,8 @@
             <a href="{{pathFor 'User.show' _id=user._id}}">
             {{user}}
             </a>
-            {{#if (equals this.type "comments")}}
-                {{> NewComment}}
+            {{#if (equals this.type "comment")}}
+                {{> Comment}}
             {{/if}}
             {{#if (includes this.type "statusChangeTo")}}
                 {{> StatusChange}}
@@ -52,7 +52,7 @@
     <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
 </template>
 
-<template name="NewComment">
+<template name="Comment">
     <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
     <br/>
     <a href="" class="small cap-first js-like">
@@ -61,10 +61,10 @@
     </a> -
     <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
     <div class="btn-group">
-        {{#if userHasPermission 'comments.update' (fromSession 'activeCommunityId') this}}
+        {{#if userHasPermission 'comment.update' (fromSession 'activeCommunityId') this}}
         <button class="btn btn-white btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
         {{/if}}
-        {{#if userHasPermission 'comments.remove' (fromSession 'activeCommunityId') this}}
+        {{#if userHasPermission 'comment.remove' (fromSession 'activeCommunityId') this}}
         <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
         {{/if}}
     </div>

@@ -30,7 +30,7 @@ class CommentsCollection extends Mongo.Collection {
 
 export const Comments = new CommentsCollection('comments');
 
-Comments.typeValues = ['comments', 'statusChange', 'pointAt'];
+Comments.typeValues = ['comment', 'statusChange', 'pointAt'];
 
 Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
