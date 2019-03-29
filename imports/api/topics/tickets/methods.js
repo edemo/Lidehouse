@@ -12,15 +12,15 @@ export const ticketStatusChange = new ValidatedMethod({
   name: 'ticket.statusChange',
   validate: statusChangeEventSchema().validator({ clean: true }),
 
-  run(comment) {
-    const topic = checkExists(Topics, comment.topicId);
-    checkPermissions(this.userId, `${comment.type}.insert`, topic.communityId);
+  run(event) {
+    const topic = checkExists(Topics, event.topicId);
+    checkPermissions(this.userId, `${event.type}.insert`, topic.communityId);
     const topicModifier = {};
-    Object.keys(comment.ticket).forEach(key => topicModifier[`ticket.${key}`] = comment.ticket[key]);
-    const result = Topics.update(comment.topicId, { $set: topicModifier });
+    Object.keys(event.ticket).forEach(key => topicModifier[`ticket.${key}`] = event.ticket[key]);
+    const result = Topics.update(event.topicId, { $set: topicModifier });
 
-    comment.data = comment.ticket; delete comment.ticket;
-    Comments.methods.insert._execute({ userId: this.userId }, comment);
+    event.data = event.ticket; delete event.ticket;
+    Comments.methods.insert._execute({ userId: this.userId }, event);
     return result;
   },
 });

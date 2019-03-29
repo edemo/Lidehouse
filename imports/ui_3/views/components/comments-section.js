@@ -53,12 +53,12 @@ Template.Comments_section.helpers({
   },
   events() {
     const route = FlowRouter.current().route.name;
-    const comments = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
+    const events = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
     if (route === 'Board') {
       // on the board showing only the most recent ones
-      return comments.fetch().slice(-1 * RECENT_COMMENT_COUNT);
+      return events.fetch().slice(-1 * RECENT_COMMENT_COUNT);
     }
-    return comments;
+    return events;
   },
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
