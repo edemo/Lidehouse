@@ -1,12 +1,8 @@
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
-import './autoform.html';
-
-Template['afFormGroup_bootstrap3-help'].onRendered(function() {
-  //debugger;
-  //this.$("[data-toggle=tooltip]").tooltip();
-});
+import '/imports/ui_3/views/blocks/help-icon.js';
+import './autoform-config.html';
 
 Template['afFormGroup_bootstrap3-help'].helpers({
   afFieldInputAtts() {

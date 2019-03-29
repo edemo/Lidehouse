@@ -9,6 +9,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
+import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -45,7 +46,7 @@ Template.Voting_edit.onCreated(function () {
     const currentVoteType = AutoForm.getFieldValue('vote.type', `af.vote.${Template.Voting_edit.actionFromId()}`);
     const newChoices = Topics.voteTypeChoices[currentVoteType] || [];
     if (newChoices.length) {
-        instance.choices.set(newChoices);
+      instance.choices.set(newChoices);
     }
   });
   this.autorun(() => {
@@ -53,6 +54,10 @@ Template.Voting_edit.onCreated(function () {
     const topicId = getTopicId(Template.instance().data);
     this.subscribe('shareddocs.ofTopic', { communityId, topicId });
   });
+});
+
+Template.Voting_edit.onRendered(function () {
+  initializeHelpIcons(this, 'schemaVotings');
 });
 
 Template.Voting_edit.helpers({
