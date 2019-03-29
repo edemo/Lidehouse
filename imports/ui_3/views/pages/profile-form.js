@@ -27,9 +27,6 @@ Template.Profile_form.onCreated(function usersShowPageOnCreated() {
         title: __('Name mismatch'),
         text: __('Name mismatch notification', { personName, userName, communityName } ),
         btnOK: 'ok',
-        onOK() { 
-          Modal.hide(); 
-        },
       };
       Modal.show('Modal', modalContext);
     }

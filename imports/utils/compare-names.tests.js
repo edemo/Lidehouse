@@ -13,10 +13,16 @@ if (Meteor.isServer) {
     const lazyTwopiece = { firstName: 'janos', lastName: 'koRoSi'}; 
     const lazyName = { name: 'korosi janos'};
     const mistypeTwopiece = { firstName: 'Jáons', lastName: 'Kőrösi'};
-    const mistypeName =  { name: 'Kőrös János'};
+    const mistypeName = { name: 'Kőrös János'};
     const normalString = "Ez a Kőrösi János számlája";
     const lazyString = "ez a korosi janos Szamlaja";
     const mistypeString = "Ez a rökösi János számlája";
+
+    it('only works with right parameters', function(done) {
+      chai.assert.throws(() => { compareNames(normalString, lazyString) });
+      chai.assert.throws(() => { compareNames({other: 'thing'}, name) });
+      done();
+    });
 
     it('matches equals, analogs, finds differents', function(done) {
       chai.assert.equal(compareNames(nameTwopiece, name), 'equal');
@@ -30,6 +36,7 @@ if (Meteor.isServer) {
       chai.assert.equal(compareNames(nameTwopiece, mistypeTwopiece), 'different');
       done();
     });
+
     it('finds inclusions', function() {
       chai.assert.equal(compareNames(nameTwopiece, normalString), 'includes');
       chai.assert.equal(compareNames(name, normalString), 'includes');

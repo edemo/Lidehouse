@@ -186,7 +186,7 @@ Meteor.users.helpers({
     const membership = Memberships.findOne({ communityId, approved: true, active: true, personId: this._id, 'person.idCard.name': { $exists: true } });
     const personName = membership ? membership.person.idCard.name : undefined;
     if (!personName) return;
-    const nameMatch = compareNames({firstName: this.profile.firstName, lastName: this.profile.lastName}, {name: personName});
+    const nameMatch = compareNames(this.profile, membership.person.idCard);
     if (nameMatch === 'equal') return;
     else return nameMatch;
   },
