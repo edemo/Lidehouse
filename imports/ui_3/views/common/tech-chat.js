@@ -83,11 +83,10 @@ Template.Tech_chat.events({
     const room = getMyTechSupportRoom();
     let roomId;
     const insertMessage = () => {
-      Meteor.call('comment.insert', {
+      Meteor.call('comments.insert', {
         communityId,
         topicId: roomId,
         userId: Meteor.userId(),
-        type: 'comment',
         text,
       },
       onSuccess((res) => {
