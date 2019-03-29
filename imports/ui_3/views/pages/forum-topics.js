@@ -38,7 +38,6 @@ Template.Forum_topics.events({
       omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky'],
       type: 'method',
       meteormethod: 'topics.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-like'(event) {

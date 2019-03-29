@@ -54,7 +54,6 @@ Template.News.events({
       omitFields: ['userId', 'category', 'agendaId'],
       type: 'method',
       meteormethod: 'topics.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-edit'(event, instance) {
@@ -68,7 +67,6 @@ Template.News.events({
       type: 'method-update',
       meteormethod: 'topics.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-remove'(event, instance) {

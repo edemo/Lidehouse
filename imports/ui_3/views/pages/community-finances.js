@@ -187,7 +187,6 @@ Template.Community_finances.events({
       schema: Transactions.inputSchema,
       doc: Transactions.findOne(id),
       type: 'readonly',
-      template: 'bootstrap3-inline',
     });
   },
 });

@@ -80,7 +80,6 @@ Template.Shareddoc_store.events({
       collection: Sharedfolders,
       type: 'method',
       meteormethod: 'sharedfolders.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-edit'(event) {
@@ -93,7 +92,6 @@ Template.Shareddoc_store.events({
       type: 'method-update',
       meteormethod: 'sharedfolders.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .file-manager .js-delete'(event) {

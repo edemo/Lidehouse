@@ -274,7 +274,6 @@ Template.Community_page.events({
 //        omitFields: ['serial'],
         type: 'method',
         meteormethod: 'parcels.insert',
-        template: 'bootstrap3-inline',
       });
       
 /*    This can be used for immediate (no questions asked) joining - with a fixed ownership share
@@ -296,7 +295,6 @@ Template.Community_page.events({
       omitFields: ['person.idCard'],
       type: 'method',
       meteormethod: 'memberships.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .roles-section .js-edit'(event) {
@@ -309,7 +307,6 @@ Template.Community_page.events({
       type: 'method-update',
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .roles-section .js-view'(event) {
@@ -321,7 +318,6 @@ Template.Community_page.events({
       omitFields: ['person.idCard', 'person.contact'],
       doc: Memberships.findOne(id),
       type: 'readonly',
-      template: 'bootstrap3-inline',
     });
   },
   'click .roles-section .js-delete'(event) {
@@ -343,7 +339,6 @@ Template.Community_page.events({
       omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click #owners .js-edit'(event) {
@@ -357,7 +352,6 @@ Template.Community_page.events({
       type: 'method-update',
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click #owners .js-view'(event) {
@@ -368,7 +362,6 @@ Template.Community_page.events({
       fields: ['person', 'ownership', 'activeTime'],
       doc: Memberships.findOne(id),
       type: 'readonly',
-      template: 'bootstrap3-inline',
     });
   },
   'click #owners .js-delete'(event) {
@@ -386,7 +379,6 @@ Template.Community_page.events({
       omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click #benefactors .js-edit'(event) {
@@ -400,7 +392,6 @@ Template.Community_page.events({
       type: 'method-update',
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click #benefactors .js-view'(event) {
@@ -411,7 +402,6 @@ Template.Community_page.events({
       fields: ['person', 'benefactorship', 'activeTime'],
       doc: Memberships.findOne(id),
       type: 'readonly',
-      template: 'bootstrap3-inline',
     });
   },
   'click #benefactors .js-delete'(event) {
@@ -435,7 +425,6 @@ Template.Community_page.events({
       collection: Parcels,
       type: 'method',
       meteormethod: 'parcels.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .parcels-section .js-edit'(event) {
@@ -447,7 +436,6 @@ Template.Community_page.events({
       type: 'method-update',
       meteormethod: 'parcels.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .parcels-section .js-view'(event) {
@@ -457,7 +445,6 @@ Template.Community_page.events({
       collection: Parcels,
       doc: Parcels.findOne(id),
       type: 'readonly',
-      template: 'bootstrap3-inline',
     });
   },
   'click .parcels-section .js-delete'(event) {

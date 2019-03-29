@@ -188,7 +188,6 @@ Template.Accounting_page.viewmodel({
       type: 'method-update',
       meteormethod: 'communities.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     };
   },
 });
@@ -204,7 +203,6 @@ Template.Accounting_page.events({
       schema: def.schema(),
 //      type: 'method',
 //      meteormethod: 'transactions.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .transactions .js-edit'(event) {
@@ -217,7 +215,6 @@ Template.Accounting_page.events({
       type: 'method-update',
       meteormethod: 'transactions.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .transactions .js-view'(event) {
@@ -228,7 +225,6 @@ Template.Accounting_page.events({
       schema: Transactions.inputSchema,
       doc: Transactions.findOne(id),
       type: 'readonly',
-      template: 'bootstrap3-inline',
     });
   },
   'click .transactions .js-delete'(event) {
@@ -245,7 +241,6 @@ Template.Accounting_page.events({
       collection: ParcelBillings,
       type: 'method',
       meteormethod: 'parcelBillings.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click #incomplete .js-publish'(event, instance) {
@@ -262,7 +257,6 @@ Template.Accounting_page.events({
       type: 'insert',
       //      type: 'method',
 //      meteormethod: 'breakdowns.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .breakdowns .js-edit-na'(event) {
@@ -296,7 +290,6 @@ Template.Accounting_page.events({
       type: 'method-update',
       meteormethod: 'breakdowns.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .breakdowns .js-view'(event, instance) {
@@ -316,7 +309,6 @@ Template.Accounting_page.events({
       collection: Breakdowns,
       doc: Breakdowns.findOne(id),
       type: 'readonly',
-      template: 'bootstrap3-inline',
     });
   },
   'click .breakdowns .js-delete'(event) {
@@ -331,7 +323,6 @@ Template.Accounting_page.events({
       collection: TxDefs,
       type: 'method',
       meteormethod: 'txDefs.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .txdefs .js-edit'(event) {
@@ -343,7 +334,6 @@ Template.Accounting_page.events({
       type: 'method-update',
       meteormethod: 'txDefs.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .txdefs .js-delete'(event) {

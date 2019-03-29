@@ -51,7 +51,6 @@ Template.Communities_listing.events({
       omitFields: ['parcelId', 'ownership', 'benefactorship', 'person.idCard'],
       type: 'method',
       meteormethod: 'memberships.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-create'() {

@@ -17,7 +17,6 @@ export function afTicketInsertModal() {
     omitFields: ['agendaId', 'sticky', 'ticket.status', 'ticket.category'],
     type: 'method',
     meteormethod: 'topics.insert',
-    template: 'bootstrap3-inline',
     btnOK: 'Create ticket',
   });
 }
@@ -32,7 +31,6 @@ export function afTicketUpdateModal(id) {
     type: 'method-update',
     meteormethod: 'topics.update',
     singleMethodArgument: true,
-    template: 'bootstrap3-inline',
   });
 }
 
@@ -44,7 +42,6 @@ export function afTicketStatusChangeModal(id) {
     omitFields: ['topicId'],
     type: 'method',
     meteormethod: 'ticket.statusChange',
-    template: 'bootstrap3-inline',
     btnOK: 'Change status',
   });
 }

@@ -21,7 +21,6 @@ Template.Agendas.events({
             collection: Agendas,
             type: 'method',
             meteormethod: 'agendas.insert',
-            template: 'bootstrap3-inline',
         });
     },
     'click .js-edit'(event) {
@@ -33,7 +32,6 @@ Template.Agendas.events({
             type: 'method-update',
             meteormethod: 'agendas.update',
             singleMethodArgument: true,
-            template: 'bootstrap3-inline',
         });
     },
     'click .js-delete'(event) {
