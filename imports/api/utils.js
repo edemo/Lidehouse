@@ -7,3 +7,7 @@ export function toggleElementInArray(collection, id, arrayName, element) {
   const modifier = { [action]: { [arrayName]: element } };
   collection.update(id, modifier);
 }
+
+export function deaccentLowerCase (text) { 
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+}
