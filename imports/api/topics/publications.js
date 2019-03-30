@@ -6,7 +6,6 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { Events } from '/imports/api/events/events.js';
 import './votings/votings.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
@@ -51,10 +50,6 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
       // Publish all Comments of the Topic
       find(topic) {
         return Comments.find({ topicId: topic._id }, { fields: Comments.publicFields });
-      },
-    }, {
-      find(topic) {
-        return Events.find({ topicId: topic._id }, { fields: Events.publicFields });
       },
     }],
   };

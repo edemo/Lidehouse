@@ -8,7 +8,6 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { Events } from '/imports/api/events/events.js';
 import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -52,18 +51,14 @@ Template.Comments_section.helpers({
     const topic = this;
     return topic.category === 'vote';
   },
-  comments() {
+  events() {
     const route = FlowRouter.current().route.name;
-    const comments = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
+    const events = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
     if (route === 'Board') {
       // on the board showing only the most recent ones
-      return comments.fetch().slice(-1 * RECENT_COMMENT_COUNT);
+      return events.fetch().slice(-1 * RECENT_COMMENT_COUNT);
     }
-    return comments;
-  },
-  statusChanges() {
-    const statusChanges = Events.find({ topicId: this._id }, { type: { $regex: 'statusChangeTo.*' } }, { sort: { createdAt: 1 } });
-    return statusChanges.fetch();
+    return events;
   },
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
@@ -91,7 +86,26 @@ Template.Comments_section.events({
 
 //------------------------------------
 
-Template.Comment.helpers({
+Template.Event.events({
+  'keydown .js-send-edited'(event, instance) {
+    // pressing escape key
+    if (event.keyCode === 27) {
+      event.preventDefault();
+      $('#editableSpan').remove();
+      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+    }
+    // pressing enter key
+    if (event.keyCode === 13 && !event.shiftKey) {
+      event.preventDefault();
+      const editedText = $('#editableSpan > textarea').val();
+      updateComment.call({
+        _id: instance.data._id,
+        modifier: { $set: { text: editedText } },
+      }, handleError);
+      $('#editableSpan').remove();
+      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+    }
+  },
 });
 
 Template.Comment.events({
@@ -108,25 +122,6 @@ Template.Comment.events({
       originalText + '</textarea>' + `<small class="text-muted">${__('commentEditInstruction')} </small></span>`;
     $(textareaEdit).insertAfter('span[data-id="' + instance.data._id + '"]');
     $('#editableSpan > textarea').focus();
-  },
-  'keydown .js-send-edited'(event, instance) {
-    // pressing escape key
-    if (event.keyCode === 27) { 
-      event.preventDefault();
-      $('#editableSpan').remove();
-      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-    }
-    // pressing enter key
-    if (event.keyCode === 13 && !event.shiftKey) {
-      event.preventDefault();
-      const editedText = $('#editableSpan > textarea').val();
-      updateComment.call({
-        _id: instance.data._id,
-        modifier: { $set: { text: editedText } },
-      }, handleError);
-      $('#editableSpan').remove();
-      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-    }
   },
   'click .js-delete'(event, instance) {
     Modal.confirmAndCall(removeComment, { _id: this._id }, {

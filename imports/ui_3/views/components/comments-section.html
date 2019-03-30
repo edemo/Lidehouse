@@ -5,11 +5,8 @@
             <a href="{{pathFor 'Topic.show' _tid=_id}}">{{_ 'View previous comments' hasMoreComments}}</a>
         </div>
         {{/if}}
-        {{#each statusChange in statusChanges}}
-            {{> StatusChange statusChange}}
-        {{/each}}
-        {{#each comment in comments}}
-            {{> Comment comment}}
+        {{#each event in events}}
+            {{> Event event}}
         {{/each}}
         <div class="social-comment">
             <a href="" class="pull-left">
@@ -22,54 +19,53 @@
     </div>
 </template>
 
-<template name="Comment">
+<template name="Event">
     <div class="social-comment">         
-        <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
-            <img alt="avatar" class="message-avatar" src={{user.avatar}}>
-        </a>
-        <div class="media-body" >
-            <a href="{{pathFor 'User.show' _id=user._id}}">
-                {{user}}
-            </a>
-            <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
-            <br/>
-            <a href="" class="small cap-first js-like">
-                <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
-                {{_ 'important'}}! ({{likesCount}})
-            </a> -
-            <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
-            <div class="btn-group">
-                {{#if userHasPermission 'comments.update' (fromSession 'activeCommunityId') this}}
-                <button class="btn btn-white btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
-                {{/if}}
-                {{#if userHasPermission 'comments.remove' (fromSession 'activeCommunityId') this}}
-                <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
-                {{/if}}
-            </div>
-        </div>
-    </div>
-</template>
-
-<template name="StatusChange">
-    <div class="social-comment">  
         <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
             <img alt="avatar" class="message-avatar" src={{user.avatar}}>
         </a>
         <div class="media-body">
             <a href="{{pathFor 'User.show' _id=user._id}}">
-                {{user}}
+            {{user}}
             </a>
-            {{_ 'changed the status'}}: <span class="label label-{{statusColor this.data.status}}">{{_ (concat 'schemaTickets.ticket.status.' this.data.status)}}</span><!--<strong>{{_ this.data.status}}</strong>--><br>
-            <span>
-            {{_ 'schemaTickets.text.label'}}: {{this.text}}
-            </span><br>
-            {{#each dataEntry in entriesOf this.data}}
-            <span>
-                {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
-                {{displayValue dataEntry.[1]}} 
-            </span><br>
-            {{/each}}
-            <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+            {{#if (equals getType "comment")}}
+                {{> Comment}}
+            {{/if}}
+            {{#if (includes getType "statusChangeTo")}}
+                {{> StatusChange}}
+            {{/if}}
         </div>
+    </div>
+</template>
+
+<template name="StatusChange">
+    {{_ 'changed the status'}}: <span class="label label-{{statusColor this.data.status}}">{{_ (concat 'schemaTickets.ticket.status.' this.data.status)}}</span><!--<strong>{{_ this.data.status}}</strong>--><br>
+    <span>
+    {{_ 'schemaTickets.text.label'}}: {{this.text}}
+    </span><br>
+    {{#each dataEntry in entriesOf this.data}}
+    <span>
+    {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
+    {{displayValue dataEntry.[1]}} 
+    </span><br>
+    {{/each}}
+    <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+</template>
+
+<template name="Comment">
+    <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
+    <br/>
+    <a href="" class="small cap-first js-like">
+        <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+        {{_ 'important'}}! ({{likesCount}})
+    </a> -
+    <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+    <div class="btn-group">
+        {{#if userHasPermission 'comment.update' (fromSession 'activeCommunityId') this}}
+        <button class="btn btn-white btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
+        {{/if}}
+        {{#if userHasPermission 'comment.remove' (fromSession 'activeCommunityId') this}}
+        <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
+        {{/if}}
     </div>
 </template>

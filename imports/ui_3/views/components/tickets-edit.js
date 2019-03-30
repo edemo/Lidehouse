@@ -50,7 +50,7 @@ export function afTicketStatusChangeModal(topicId, newStatusName) {
   Modal.show('Autoform_edit', {
     id: 'af.ticket.statusChange',
     schema: statusChangeEventSchema(newStatusName),
-    omitFields: ['topicId'],
+    omitFields: ['topicId', 'userId', 'data', 'communityId'],
     type: 'method',
     meteormethod: 'ticket.statusChange',
     template: 'bootstrap3-inline',

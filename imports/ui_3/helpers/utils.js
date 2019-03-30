@@ -21,6 +21,10 @@ Template.registerHelper('equals', function equals(a, b) {
     return a == b;
 });
 
+Template.registerHelper('includes', function includes(a, b) {
+    return a.includes(b);
+});
+
 Template.registerHelper('round', function round(number, digits) {
     return number.toFixed(digits);
 });

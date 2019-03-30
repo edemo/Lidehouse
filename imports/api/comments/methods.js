@@ -14,8 +14,9 @@ export const insert = new ValidatedMethod({
   validate: Comments.simpleSchema().validator({ clean: true }),
 
   run(doc) {
+    doc = Comments._transform(doc);
     const topic = checkExists(Topics, doc.topicId);
-    checkPermissions(this.userId, 'comments.insert', topic.communityId);
+    checkPermissions(this.userId, `${doc.getType()}.insert`, topic.communityId);
     doc.userId = this.userId;   // One can only post in her own name
     const docId = Comments.insert(doc);
     const newDoc = Comments.findOne(docId); // we need the createdAt timestamp from the server
@@ -36,7 +37,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Comments, _id);
     const topic = checkExists(Topics, doc.topicId);
     checkModifier(doc, modifier, ['text']);     // only the text can be modified
-    checkPermissions(this.userId, 'comments.update', topic.communityId, doc);
+    checkPermissions(this.userId, `${doc.getType()}.update`, topic.communityId, doc);
 
     Comments.update(_id, modifier);
   },
@@ -51,7 +52,7 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Comments, _id);
     const topic = checkExists(Topics, doc.topicId);
-    checkPermissions(this.userId, 'comments.remove', topic.communityId, doc);
+    checkPermissions(this.userId, `${doc.getType()}.remove`, topic.communityId, doc);
 
     Comments.remove(_id);
   },
