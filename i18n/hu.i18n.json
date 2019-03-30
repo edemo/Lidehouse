@@ -575,9 +575,9 @@
   "welcomeMessage": "Kérjük állítsa be a legfontosabb beállításait. Ezeket később is módosíthatja majd a profil oldalon, ahol megadhatja személyes adatait is.",
 
   "Name mismatch": "Néveltérés",
-  "Name mismatch notification": ["A profiladatok között megadott neve (<strong>__userName__</strong>) nem egyezik a menedzsment által rögzített nevével (<strong>__personName__</strong>).<br />",
-    "Kérjük javítsa megfelelően adatait, illetve amennyiben a(z) __personName__ név nem helyes, keresse fel közös képviselőjét.<br /><br />",
-    "A __communityName__ közösségben a menedzsment által rögzített hivatalos neve kerül megjelenítésre."],
+  "Name mismatch notification": ["Figyelem! A profil adatai között megadott neve (<strong>__userName__</strong>) nem egyezik a közös képviselő által rögzített nevével (ami <strong>__personName__</strong>).<br />",
+    "Kérjük, ha itt a profil oldalon adta meg véletlenül rosszul az adatait, akkor javítsa itt azokat, amennyiben viszont a képviselet tudja rosszul az ön nevét, és önt nem úgy hívják hogy __personName__, akkor keresse fel közös képviselőjét, hogy ő ezt javíthassa.<br /><br />",
+    "Ezt azért is fontos mielőbb megtegye, mert a __communityName__ közösségben, amikor ön hozzászól illetve szavazatot ad le, akkor a képviselet által rögzített, hivatalos neve kerül megjelenítésre. A többi tualjdonos így most azt fogja látni a hozzászólásai mellett, hogy __personName__."],
 
   "":""
 }
