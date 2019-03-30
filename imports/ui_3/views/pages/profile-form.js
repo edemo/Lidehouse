@@ -20,7 +20,7 @@ Template.Profile_form.onCreated(function usersShowPageOnCreated() {
   this.getUserId = () => Meteor.userId();
   this.autorun(() => {
     if (Meteor.user() && Meteor.user().personNameMismatch()) {
-      const userName = Meteor.user().fullName();
+      const userName = Meteor.user().fullName() || Meteor.user().profile.firstName || Meteor.user().profile.lastName ;
       const personName = Meteor.user().displayOfficialName();
       const communityName = Communities.findOne(Session.get('activeCommunityId')).name;
       const modalContext = {

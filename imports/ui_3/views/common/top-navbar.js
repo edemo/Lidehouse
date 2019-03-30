@@ -38,7 +38,8 @@ Template.Top_navbar.helpers({
   nameMismatchBadge() {
     const nameMismatch = Meteor.user().personNameMismatch();
     if (nameMismatch === 'different') return 'badge-danger';
-    if (nameMismatch === 'analog') return 'badge-info';
+    // 'analog' is suspended at user.personNameMismatch()
+    // if (nameMismatch === 'analog') return 'badge-info';  
     return;
   },
 });
