@@ -45,7 +45,7 @@
         {{/if}}
         <div class="{{#if hiddenBy}}collapse{{/if}}" id="content-{{this._id}}">
           <div class="social-body">
-              <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
+              <a href="{{pathFor 'Topic.show' _tid=_id}}" class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</a>
               <p data-id="{{_id}}">{{>Chopped text=text}}</p>
               <div class="btn-group">
                   <button class="btn btn-white btn-xs js-like">
