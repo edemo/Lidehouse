@@ -7,14 +7,15 @@ export function defineTxDefTemplates() {
   // Double entry accounting
   TxDefs.define({ communityId: null,
     name: 'Bill incoming', // 'Bejövő számla',
+    debit: '5',              
     credit: '46',
-    debit: '8',
   });
 
   TxDefs.define({ communityId: null,
-    name: 'Bill payment', // 'Bejövő számla teljesítés',
-    credit: '32',
-    debit: '46',
+    name: 'Bill payment', // 'Bejövő számla kifizetése',
+     debit: '46',             
+    credit: '38',
+  
   });
 
   TxDefs.define({ communityId: null,
