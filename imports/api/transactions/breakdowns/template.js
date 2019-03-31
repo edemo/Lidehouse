@@ -44,7 +44,7 @@ export function defineBreakdownTemplates() {
         ],
       },
       { digit: '6', name: 'EGYÉB KÖVETELÉSEK' },
-      { digit: '2', name: 'Money accounts',  //PÉNZESZKÖZÖK
+      { digit: '8', name: 'Money accounts',  //PÉNZESZKÖZÖK
         children: [
         { digit: '1', name: 'Pénztár' },
         { digit: '2', name: 'Folyószámla' },
@@ -82,10 +82,10 @@ export function defineBreakdownTemplates() {
       { digit: '5', name: 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK',
         children: [
          { digit: '1', name: 'Rövid lejáratú bank Hitel' },   
-         { digit: '2', name: 'Egyébrövid lejáratú kötelezettségek' },
+         { digit: '2', name: 'Egyéb rövid lejáratú kötelezettségek' },
         ],
       },
-      { digit: '6', name: 'Szállítók' },
+      { digit: '6', name: 'SZÁLLÍTÓK' },
       { digit: '8', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK' }, 
       { digit: '9', name: 'ÉVI MÉRLEGSZÁMLÁK',
         children: [
@@ -101,6 +101,7 @@ export function defineBreakdownTemplates() {
     children: [
       { digit: '1', name: 'ANYAGKÖLTSÉG',
         children: [
+
            { digit: '01', name: 'Víz díj' },
            { digit: '02', name: 'Áram díj' },
            { digit: '03', name: 'Gáz díj' },
@@ -203,7 +204,7 @@ export function defineBreakdownTemplates() {
   });
 
   Breakdowns.define({ communityId: null,
-    digit: '9', name: 'Incomes', locked: true, sign: -1,   // 9-es számlaosztály kész
+    digit: '9', name: 'Incomes', locked: true, sign: -1,   // BEVÉTELEK
     children: [
       { digit: '1', name: 'ÉRTÉKESÍTÉS ÁRBEVÉTELE',
         children: [
@@ -268,18 +269,29 @@ export function defineBreakdownTemplates() {
 
   Breakdowns.define({ communityId: null,
     digit: '@', name: 'Parcels', children: [   //Albetétek
-      { digit: 'A', name: 'Main building' },  //Épület
+      { digit: '', name: 'Main building' },  //Épület, kivettem az "A"-t  a UI "buiding"-et ír ki
     ],
   });
-
-  Breakdowns.define({ communityId: null,
+Breakdowns.define({ communityId: null,
     digit: '#', name: 'Places', children: [ // Elszámolási egységek
       { digit: '0', name: 'Central' },   //Központ
-      { digit: '1', name: 'Garden' }, // Kert
-      { digit: '3', name: 'Heating system' }, //kazán
-      { digit: '4', name: 'Klima' },  
+    //  { digit: '1', name: 'Garden' }, // ezt vegyük ki innen
+      { digit: '3', name: 'Heating system' }, //Kazán
+      { digit: '4', name: 'Klima' },       
       { digit: '5', name: 'Villamos hálózat' },  
-      { digit: '6', name: 'Felügyeleti rendszer' },  
+      { digit: '6', name: 'Felügyeleti rendszer' }, 
+      { digit: '1', name: 'Lift' },   // a Garden helyébe
+    ],
+  });
+  
+  Breakdowns.define({ communityId: null,
+    digit: '#', name: 'Közös tulajdonú helyiségek', children: [ 
+      { digit: '0', name: 'Padlás' },  
+      { digit: '1', name: 'Pince' }, 
+      { digit: '3', name: 'Kert' }, 
+      { digit: '4', name: 'Tárolók' },  
+      { digit: '5', name: 'Garázs' },  
+      { digit: '6', name: 'Egyeb helyiségek' },  
     ],
   });
 
