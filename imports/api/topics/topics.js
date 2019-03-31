@@ -12,8 +12,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { RevisionedCollection } from '/imports/api/revision.js';
-import { likesSchema, likesHelpers } from './likes.js';
-import { flagsSchema, flagsHelpers } from './flags.js';
+import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
+import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
 export const Topics = new RevisionedCollection('topics', ['text', 'title', 'closed']);
 
@@ -58,6 +58,9 @@ Topics.helpers({
   },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
+  },
+  isHiddenBy(userId) {
+    return this.isFlaggedBy(userId) || this.createdBy().isFlaggedBy(userId);
   },
   isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);

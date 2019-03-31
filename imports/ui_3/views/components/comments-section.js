@@ -10,6 +10,7 @@ import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors
 import { Comments } from '/imports/api/comments/comments.js';
 import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
+import { flag } from '/imports/api/topics/flags.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
@@ -91,7 +92,15 @@ Template.Comment.helpers({
 
 Template.Comment.events({
   'click .js-like'(event) {
+    event.preventDefault();
     like.call({
+      coll: 'comments',
+      id: this._id,
+    }, handleError);
+  },
+  'click .js-flag'(event) {
+    event.preventDefault();
+    flag.call({
       coll: 'comments',
       id: this._id,
     }, handleError);

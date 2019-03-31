@@ -88,8 +88,8 @@
   "Parcel benefactors list": "Benefactors of parcel %s",
 
   // topics
-  "Hide comments from": "Hide comments from %s",
-  "Unhide comments from": "Reveal comments from %s",
+  "Block content from": "Hide comments from %s",
+  "Unblock content from": "Reveal comments from %s",
   "Content hidden by": "Content hidden by %s",
   "View previous comments": "View %s previous comments",
   

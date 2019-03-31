@@ -23,7 +23,7 @@ export const flagsHelpers = {
     return this.flags.length;
   },
   flaggedStatus(communityId) {
-    if (this.flagsCount() >= 2
+    if (this.flagsCount() >= 3
       /* && this.flagsCount() >= this.likesCount() */) {
       return 'community';
     }

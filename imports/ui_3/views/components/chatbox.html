@@ -11,20 +11,20 @@
                 {{/if}}
                 {{#if userHasPermission 'forum.remove' (fromSession 'activeCommunityId') this}}
                 <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
-                {{/if}}
                 <li role="separator" class="divider"></li>
+                {{/if}}
+                {{#unless this.isFlaggedBy currentUser._id}}
+                <li><a class="js-report" href="">{{_ 'Block content'}}</a></li>
+                {{/unless}}
                 <li>
                   <a class="js-block" href="">
                   {{#if currentUser.hasBlocked createdBy._id}}
-                    {{_ 'Unhide comments from' createdBy}}
+                    {{_ 'Unblock content from' createdBy}}
                   {{else}}
-                    {{_ 'Hide comments from' createdBy}}
+                    {{_ 'Block content from' createdBy}}
                   {{/if}}
                   </a>
                 </li>
-                {{#unless this.isFlaggedBy currentUser._id}}
-                <li><a class="js-report" href="">{{_ 'Report this'}}</a></li>
-                {{/unless}}
             </ul>
         </div>
         <div class="social-avatar">

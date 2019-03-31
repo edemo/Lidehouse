@@ -17,6 +17,13 @@
             <div class="m-t-xs btn-group">
                 <a href="" class="btn btn-xs btn-white js-message-addressee"><i class="fa fa-envelope"></i> {{_ 'Send message'}}</a>
                 <a href="{{pathFor 'Delegations'}}" class="btn btn-xs btn-white js-delegate text-capitalize"><i class="fa fa-share"></i> {{_ 'delegation'}}</a>
+                <a href="" class="btn btn-xs btn-white js-block"> 
+                  {{#if currentUser.hasBlocked this._id}}
+                    <i class="fa fa-check"></i> {{_ 'Unblock user'}}
+                  {{else}}
+                    <i class="fa fa-ban"></i> {{_ 'Block user'}}
+                  {{/if}}
+                </a>
             </div>
         </div>
     </div>

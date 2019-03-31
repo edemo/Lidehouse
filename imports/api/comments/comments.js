@@ -9,6 +9,7 @@ import faker from 'faker';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Topics } from '/imports/api/topics/topics.js';
 import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
+import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
 class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
@@ -57,10 +58,14 @@ Meteor.startup(function indexComments() {
 
 Comments.attachSchema(Comments.schema);
 Comments.attachSchema(likesSchema);
+Comments.attachSchema(flagsSchema);
 Comments.attachSchema(Timestamps);
 
 Comments.helpers({
   user() {
+    return Meteor.users.findOne(this.userId);
+  },
+  createdBy() {
     return Meteor.users.findOne(this.userId);
   },
   topic() {
@@ -72,9 +77,13 @@ Comments.helpers({
   editableBy(userId) {
     return this.userId === userId;
   },
+  isHiddenBy(userId) {
+    return this.isFlaggedBy(userId) || this.createdBy().isFlaggedBy(userId);
+  },
 });
 
 Comments.helpers(likesHelpers);
+Comments.helpers(flagsHelpers);
 
 
 // TODO This factory has a name - do we have a code style for this?
