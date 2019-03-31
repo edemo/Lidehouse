@@ -85,7 +85,7 @@ export function defineBreakdownTemplates() {
          { digit: '2', name: 'Egyébrövid lejáratú kötelezettségek' },
         ],
       },
-      { digit: '6', name: 'Szállítók' },
+      { digit: '6', name: 'SZÁLLÍTÓK' },
       { digit: '8', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK' }, 
       { digit: '9', name: 'ÉVI MÉRLEGSZÁMLÁK',
         children: [
@@ -266,7 +266,7 @@ export function defineBreakdownTemplates() {
     ],
   });
 
-  Breakdowns.define({ communityId: null,
+  Breakdowns.define({ communityId: null,krosza-patch-2
     digit: '@', name: 'Parcels', children: [   //Albetétek
       { digit: 'A', name: 'Main building' },  //Épület
     ],
