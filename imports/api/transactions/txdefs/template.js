@@ -3,19 +3,45 @@ import { _ } from 'meteor/underscore';
 // import { Breakdowns } from './breakdowns.js';
 import { TxDefs } from './txdefs.js';
 
-export function defineTxDefTemplates() {
   // Double entry accounting
+
+export function defineTxDefTemplates() {
+//Bill accounting -Számla kollaudálás
+  
+  //Basic method
   TxDefs.define({ communityId: null,
-    name: 'Bill incoming', // 'Bejövő számla',
+    name: 'Incoming  bill costing', // 'Bejövő számla költségelszámolása',
     debit: '5',              
     credit: '46',
   });
-
+  
+  //Simplified method
+  TxDefs.define({ communityId: null,
+    name: 'Bill incoming', // 'Bejövő számla',
+    debit: '8',              
+    credit: '46',
+  });
+ 
+  //  Inventory accounting
+    TxDefs.define({ communityId: null,
+    name: 'Recording inventory ', // 'Készletrevétel',
+    debit: '2',              
+    credit: '46',
+  });
+  
+  TxDefs.define({ communityId: null,
+    name: 'Costing of inventory ', // 'Készlet költség elszámolás',
+    debit: '5',              
+    credit: '2',
+  });
+ //end of inventory accounting
+  
+//Bill payment -  Bejövő számla kifizetése
+  
   TxDefs.define({ communityId: null,
     name: 'Bill payment', // 'Bejövő számla kifizetése',
      debit: '46',             
     credit: '38',
-  
   });
 
   TxDefs.define({ communityId: null,
