@@ -5,10 +5,19 @@ export function compareNames(param1, param2) {
   debugAssert((typeof param1 === 'object'), 'compareNames param1 must be an object (firstName && lastName or name).');
   debugAssert(((param1.firstName && param1.lastName) || param1.name), 'firstName and lastName or name is required at compareNames.');
 
+  function latinOneWayIncludes(string1, string2) {
+    const compare = deaccentLowerCase(string1).includes(deaccentLowerCase(string2)); 
+    const reverse = deaccentLowerCase(string2).includes(deaccentLowerCase(string1));
+    if (compare || reverse) return true;
+    else return false;
+  };
+
   if ((param1.firstName && param1.lastName) && (param2.firstName && param2.lastName)) {
     if ((param1.firstName === param2.firstName) && (param1.lastName === param2.lastName)) return 'equal';
     if (param1.firstName.localeCompare(param2.firstName, 'hu', { sensitivity: 'base' }) === 0 &&
-        param1.lastName.localeCompare(param2.lastName, 'hu', { sensitivity: 'base' }) === 0) return 'analog';
+      param1.lastName.localeCompare(param2.lastName, 'hu', { sensitivity: 'base' }) === 0) return 'analog';
+    if (latinOneWayIncludes(param1.firstName, param2.firstName) &&
+      latinOneWayIncludes(param1.lastName, param2.lastName)) return 'analog';
     return 'different';
   }
   if (((param1.firstName && param1.lastName) && param2.name) || (param1.name && (param2.firstName && param2.lastName))) {
@@ -20,11 +29,13 @@ export function compareNames(param1, param2) {
     if ((fullNameHu === name) || (fullNameEn === name)) return 'equal';
     if ((fullNameHu.localeCompare(name, 'hu', { sensitivity: 'base' }) === 0) ||
       (fullNameEn.localeCompare(name, 'hu', { sensitivity: 'base' }) === 0)) return 'analog';
+    if (latinOneWayIncludes(name, fullNameHu) || latinOneWayIncludes(name, fullNameEn)) return 'analog';
     return 'different';
   }
   if (param1.name && param2.name) {
     if (param1.name === param2.name) return 'equal';
     if (param1.name.localeCompare(param2.name, 'hu', { sensitivity: 'base' }) === 0) return 'analog';
+    if (latinOneWayIncludes(param1.name, param2.name)) return 'analog';
     return 'different';
   }
   if (typeof param2 === 'string') {
