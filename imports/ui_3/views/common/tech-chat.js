@@ -108,6 +108,7 @@ Template.Tech_chat.events({
         participantIds: [Meteor.userId(), community.techsupport()._id],
         category: 'room',
         title: 'tech support',
+        text,
       }, onSuccess((res) => {
         roomId = res;
         insertMessage();

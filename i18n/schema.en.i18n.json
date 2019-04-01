@@ -248,11 +248,28 @@
       "placeholder": "(eg. Elevator not working)"
     },
     "text": {
-      "label": "Description",
-      "placeholder": "(eg. Got stuck between third and fourth floor)"
+      "label": "Remarks"
     },
     "ticket": {
-      "label": "Ticket",
+      "label": "Ticket data",
+      "type": {
+        "label": "Type",
+        "scheduled": "Scheduled",
+        "reported": "Reported"
+      },
+      "status": {
+        "label": "Status",
+        "scheduled": "Scheduled",
+        "reported": "Reported",
+        "confirmed": "Planned",
+        "toApprove": "To approve",
+        "toVote": "To vote on",
+        "progressing": "Progressing",
+        "suspended": "Suspended",
+        "finished": "Done",
+        "closed": "Closed",
+        "deleted": "Deleted"
+      },
       "category": {
         "label": "Category",
         "building": "Building",
@@ -265,6 +282,7 @@
         "normal": "Normal",
         "low": "Low"
       },
+<<<<<<< HEAD
       "status": {
         "label": "Status",
         "reported": "Reported",
@@ -275,16 +293,38 @@
         "checked": "Checked",
         "closed": "Closed",
         "deleted": "Deleted"
+=======
+      "localizer": {
+        "label": "Location"
+      },
+      "expectedCost": { 
+        "label": "Expected cost"
+      },
+      "expectedStart": { 
+        "label": "Expected start"
+      },
+      "expectedFinish": { 
+        "label": "Expected finish"
+      },
+      "expectedContinue": { 
+        "label": "Expected continuation"
+      },
+      "waitingFor": {
+        "label": "Waiting for"
+      },
+      "actualCost": { 
+        "label": "Actual cost"
+      },
+      "actualStart": { 
+        "label": "Actual start"
+      },
+      "actualFinish": {
+        "label": "Actual finish"
+      },
+      "actualContinue": { 
+        "label": "Actual continuation"
+>>>>>>> upstream/ticket_statuses
       }
-    }
-  },
-  "schemaTicketStatusChange": {
-    "text": {
-      "label": "Comment",
-      "placeholder": "(eg. We replaced the broken part)"
-    },
-    "status": {
-      "label": "New status"
     }
   },
   "schemaFeedback": {
