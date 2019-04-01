@@ -282,17 +282,6 @@
         "normal": "közepes",
         "low": "alacsony"
       },
-<<<<<<< HEAD
-      "status": {
-        "label": "Státusz",
-        "reported": "megerősítés alatt",
-        "confirmed": "megerősítve",
-        "progressing": "folyamatban",
-        "finished": "megoldva",
-        "checked": "ellenőrizve",
-        "closed": "lezárva",
-        "deleted": "törölt"
-=======
       "localizer": {
         "label": "Hiba helye"
       },
@@ -322,7 +311,6 @@
       },
       "actualContinue": { 
         "label": "Tényleges folytatás"
->>>>>>> upstream/ticket_statuses
       }
     }
   },

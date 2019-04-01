@@ -282,18 +282,6 @@
         "normal": "Normal",
         "low": "Low"
       },
-<<<<<<< HEAD
-      "status": {
-        "label": "Status",
-        "reported": "Reported",
-        "scheduled": "Ütemezve",
-        "confirmed": "Confirmed",
-        "progressing": "Progressing",
-        "finished": "Finished",
-        "checked": "Checked",
-        "closed": "Closed",
-        "deleted": "Deleted"
-=======
       "localizer": {
         "label": "Location"
       },
@@ -323,7 +311,6 @@
       },
       "actualContinue": { 
         "label": "Actual continuation"
->>>>>>> upstream/ticket_statuses
       }
     }
   },
