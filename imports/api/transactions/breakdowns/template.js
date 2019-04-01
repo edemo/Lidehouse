@@ -81,16 +81,16 @@ export function defineBreakdownTemplates() {
       },
       { digit: '5', name: 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK',
         children: [
-         { digit: '1', name: 'Rövid lejáratú bank Hitel' },   
+         { digit: '1', name: 'Rövid lejáratú bank Hitel' },
          { digit: '2', name: 'Egyéb rövid lejáratú kötelezettségek' },
         ],
       },
-      { digit: '6', name: 'SZÁLLÍTÓK' },
-      { digit: '8', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK' }, 
+      { digit: '6', name: 'Suppliers' },
+      { digit: '8', name: 'PASSZÍV IDŐBELI ELHATÁROLÁSOK' },
       { digit: '9', name: 'ÉVI MÉRLEGSZÁMLÁK',
         children: [
          { digit: '1', name: 'Nyitómérleg számla' },
-         { digit: '1', name: 'Zárómérleg számla' },     
+         { digit: '2', name: 'Zárómérleg számla' },
          { digit: '3', name: 'Adózott eredmény elszámolási számla' },
         ],
       },
@@ -149,33 +149,33 @@ export function defineBreakdownTemplates() {
         children: [
          { digit: '01', name: 'Víz díj' },
          { digit: '02', name: 'Áram díj' },
-         { digit: '03', name: 'Gáz díj' },   
-         { digit: '04', name: 'Csatorna díjak' }, 
-         { digit: '05', name: 'Szemét díjak' },       
-         { digit: '06', name: 'Irodai anyagok' },  
-         { digit: '07', name: 'Karbantartási segédanyagok' },   
-         { digit: '08', name: 'Égők,felszerelési anyagok' },   
-         { digit: '09', name: 'Egyéb anyagok' },  
+         { digit: '03', name: 'Gáz díj' },
+         { digit: '04', name: 'Csatorna díjak' },
+         { digit: '05', name: 'Szemét díjak' },
+         { digit: '06', name: 'Irodai anyagok' },
+         { digit: '07', name: 'Karbantartási segédanyagok' },
+         { digit: '08', name: 'Égők,felszerelési anyagok' },
+         { digit: '09', name: 'Egyéb anyagok' },
          { digit: '10', name: 'Takarítás' },
-         { digit: '11', name: 'Kommunikációs költségek' },   
-         { digit: '12', name: 'Könyvelési díj' },   
+         { digit: '11', name: 'Kommunikációs költségek' },
+         { digit: '12', name: 'Könyvelési díj' },
          { digit: '13', name: 'Közösképviselet díja' },
-         { digit: '14', name: 'Jogi költségek' },        
-         { digit: '15', name: 'Karbantartás' },  
-         { digit: '16', name: 'Javítások' },  
-         { digit: '17', name: 'Biztonsági költségek' },            
-         { digit: '18', name: 'Tagdíjak' }, 
-         { digit: '19', name: 'Kertészet' },         
-         { digit: '20', name: 'Egyéb megbízási, vállalkozási díjak' },       
-         { digit: '21', name: 'Hatósági díjak' }, 
-         { digit: '22', name: 'Biztosítási díjak' },   
+         { digit: '14', name: 'Jogi költségek' },
+         { digit: '15', name: 'Karbantartás' },
+         { digit: '16', name: 'Javítások' },
+         { digit: '17', name: 'Biztonsági költségek' },
+         { digit: '18', name: 'Tagdíjak' },
+         { digit: '19', name: 'Kertészet' },
+         { digit: '20', name: 'Egyéb megbízási, vállalkozási díjak' },
+         { digit: '21', name: 'Hatósági díjak' },
+         { digit: '22', name: 'Biztosítási díjak' },
          { digit: '23', name: 'Egyéb anyag jellegű ráfordítások' },
         ],
       },
       { digit: '2', name: 'SZEMÉLYI JELLEGŰ RÁFORDÍTÁSOK',
         children: [
         { digit: '1', name: 'Bérköltség' },
-        { digit: '2', name: 'Személyi jellegű egyéb költség' },  
+        { digit: '2', name: 'Személyi jellegű egyéb költség' },
         { digit: '3', name: 'Bérjárulékok' },
         ],
       },
@@ -272,26 +272,27 @@ export function defineBreakdownTemplates() {
       { digit: '', name: 'Main building' },  //Épület, kivettem az "A"-t  a UI "buiding"-et ír ki
     ],
   });
-Breakdowns.define({ communityId: null,
+
+  Breakdowns.define({ communityId: null,
     digit: '#', name: 'Places', children: [ // Elszámolási egységek
       { digit: '0', name: 'Central' },   //Központ
-    //  { digit: '1', name: 'Garden' }, // ezt vegyük ki innen
+      { digit: '1', name: 'Common areas', include: 'Common areas' }, // Közös tulajdonú helyiségek
       { digit: '3', name: 'Heating system' }, //Kazán
-      { digit: '4', name: 'Klima' },       
-      { digit: '5', name: 'Villamos hálózat' },  
-      { digit: '6', name: 'Felügyeleti rendszer' }, 
+      { digit: '4', name: 'Klima' },
+      { digit: '5', name: 'Villamos hálózat' },
+      { digit: '6', name: 'Felügyeleti rendszer' },
       { digit: '1', name: 'Lift' },   // a Garden helyébe
     ],
   });
-  
+
   Breakdowns.define({ communityId: null,
-    digit: '#', name: 'Közös tulajdonú helyiségek', children: [ 
-      { digit: '0', name: 'Padlás' },  
-      { digit: '1', name: 'Pince' }, 
-      { digit: '3', name: 'Kert' }, 
-      { digit: '4', name: 'Tárolók' },  
-      { digit: '5', name: 'Garázs' },  
-      { digit: '6', name: 'Egyeb helyiségek' },  
+    digit: '1', name: 'Common areas', children: [
+      { digit: '1', name: 'Padlás' },
+      { digit: '2', name: 'Pince' },
+      { digit: '3', name: 'Kert' },
+      { digit: '4', name: 'Tárolók' },
+      { digit: '5', name: 'Garázs' },
+      { digit: '6', name: 'Egyeb helyiségek' },
     ],
   });
 

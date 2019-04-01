@@ -1038,7 +1038,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 282600,
       partner: 'Super-Clean Kft',
       credit: [{
-        account: fixtureBuilder.name2code('Liabilities', 'Szállítók'),
+        account: fixtureBuilder.name2code('Liabilities', 'Suppliers'),
       }],
       debit: [{
         account: fixtureBuilder.name2code('Expenses', 'Takarítás'),
@@ -1056,7 +1056,7 @@ export function insertDemoHouse(lang, demoOrTest) {
           account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
         }],
         debit: [{
-          account: fixtureBuilder.name2code('Liabilities', 'Szállítók'),
+          account: fixtureBuilder.name2code('Liabilities', 'Suppliers'),
         }],
       });
     } else {

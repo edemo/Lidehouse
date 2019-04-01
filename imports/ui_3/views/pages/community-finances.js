@@ -83,7 +83,7 @@ Template.Community_finances.viewmodel({
       labels,
       datasets: [
         {
-          label: "Bank hitel",
+          label: "Hosszú lejáratú bank hitel",
           backgroundColor: "rgba(220,220,220,0.5)",
           borderColor: "rgba(220,220,220,1)",
           pointBackgroundColor: "rgba(220,220,220,1)",
@@ -91,7 +91,7 @@ Template.Community_finances.viewmodel({
           data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
         },
         {
-          label: "Szállítók",
+          label: __("Suppliers"),
           backgroundColor: "rgba(26,179,148,0.5)",
           borderColor: "rgba(26,179,148,0.7)",
           pointBackgroundColor: "rgba(26,179,148,1)",
@@ -149,7 +149,7 @@ Template.Community_finances.viewmodel({
     return moneyAccounts.leafs();
   },
   loanAccounts() {
-    return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'Szállítók'];
+    return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'Suppliers'];
   },
   breakdown(name) {
     return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));
