@@ -122,6 +122,8 @@ export const TicketStatuses = {
 };
 export const TicketStatusNames = Object.keys(TicketStatuses);
 TicketStatusNames.forEach(statusName => Comments.typeValues.push(`statusChangeTo.${statusName}`));
+export const TicketStatusColors = {};
+TicketStatusNames.forEach(function StatusName(statusName) { TicketStatusColors[statusName] = eval(`${statusName}.color`); });
 
 // == Ticket types:
 

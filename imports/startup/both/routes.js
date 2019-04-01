@@ -22,7 +22,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/room-show.js';
   import '/imports/ui_3/views/pages/forum-topics.js';
   import '/imports/ui_3/views/pages/community-page.js';
-  import '/imports/ui_3/views/pages/tickets-simple.js';
+  import '/imports/ui_3/views/pages/tickets-report.js';
   import '/imports/ui_3/views/pages/tickets-tasks.js';
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
@@ -199,7 +199,7 @@ CommunityRelatedRoutes.push('Tickets.own');*/
 FlowRouter.route('/tickets', {
   name: 'Tickets',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Tickets_simple' });
+    BlazeLayout.render('Main_layout', { content: 'Tickets_report' });
   },
 });
 CommunityRelatedRoutes.push('Tickets');

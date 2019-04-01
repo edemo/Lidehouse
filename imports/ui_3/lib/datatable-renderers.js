@@ -2,6 +2,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { TicketStatusNames, TicketStatusColors } from '/imports/api/topics/tickets/ticket-status.js';
 
 export const Render = {
   translate(cellData, renderType, currentRow) {
@@ -93,7 +94,7 @@ export const Render = {
     };
   },
   ticketStatus(cellData) {
-    const html = `<span class='label label-${Topics.statusColors[cellData]}'>${__('schemaTickets.ticket.status.' + cellData)}</span>`;
+    const html = `<span class='label label-${TicketStatusColors[cellData]}'>${__('schemaTickets.ticket.status.' + cellData)}</span>`;
     return html;
   },
 };
