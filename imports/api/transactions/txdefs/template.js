@@ -3,62 +3,120 @@ import { _ } from 'meteor/underscore';
 // import { Breakdowns } from './breakdowns.js';
 import { TxDefs } from './txdefs.js';
 
-export function defineTxDefTemplates() {
   // Double entry accounting
+
+export function defineTxDefTemplates() {
+//Bill accounting -Számla kollaudálás
+  
+  //Basic method
+  TxDefs.define({ communityId: null,
+    name: 'Incoming  bill costing', // 'Bejövő számla költségelszámolása',
+    debit: '5',              
+    credit: '46',
+  });
+  
+  //Simplified method
   TxDefs.define({ communityId: null,
     name: 'Bill incoming', // 'Bejövő számla',
+    debit: '8',              
     credit: '46',
-    debit: '8',
   });
-
+ 
+  //  Inventory accounting
+    TxDefs.define({ communityId: null,
+    name: 'Recording inventory ', // 'Készletrevétel',
+    debit: '2',              
+    credit: '46',
+  });
+  
   TxDefs.define({ communityId: null,
-    name: 'Bill payment', // 'Bejövő számla teljesítés',
-    credit: '32',
-    debit: '46',
+    name: 'Costing of inventory ', // 'Készlet költség elszámolás',
+    debit: '5',              
+    credit: '2',
+  });
+ //end of inventory accounting
+  
+//Bill payment -  Bejövő számla kifizetése
+  
+  TxDefs.define({ communityId: null,
+    name: 'Bill payment', // 'Bejövő számla kifizetése',
+     debit: '46',             
+    credit: '38',
   });
 
+ //Számlázás vevőknek
+  
   TxDefs.define({ communityId: null,
     name: 'Invoice outgoing', // 'Kimenő számla',
-    credit: '9',
-    debit: '31',
+     debit: '31',
+     credit: '91',
   });
 
   TxDefs.define({ communityId: null,
-    name: 'Invoice payment', // 'Kimenő számla teljesítés',
-    credit: '31',
-    debit: '32',
+    name: 'Invoice payment', // 'Kimenő számla befolyás',
+     debit: '38',  
+     credit: '31',
   });
-
+  
+//Albetét előírás és befizetések
+  
   TxDefs.define({ communityId: null,
     name: 'Parcel invoice', // 'Albetét előírás',
-    credit: '95',
     debit: '33',
+    credit: '95',
   });
 
   TxDefs.define({ communityId: null,
     name: 'Parcel payment', // 'Albetét befizetés',
-    credit: '33',
     debit: '32',
+   credit: '33',
   });
-
+//Nem azonosított bevételek kezelése 
+  //Befolyás
   TxDefs.define({ communityId: null,
-    name: 'Money transfer', // 'Pénz ki/befizetés',
-    credit: '32',
-    debit: '32',
+    name: 'Non identified payment', // 'Nem azonosított befolyás',
+    debit: '38',
+   credit: '43',
   });
-
-  // Single entry accouting
+  //Azonosítás - Identification
+  TxDefs.define({ communityId: null,
+    name: 'Identification', // 'Azonosítás',
+    debit: '43',
+   credit: '3',
+  });
+  
+//Pénzműveletek
+  TxDefs.define({ communityId: null,
+    name: 'Money transfer', // 'Átvezetés pénz számlák között',             
+    debit: '38', 
+    credit: '38',
+  });
+  // Készpénz felvétel bankszámláról
+  TxDefs.define({ communityId: null,
+    name: 'Cash withdraw', // 'Készpénz felvétel',             
+    debit: '381', 
+    credit: '382',
+  });
+  // Készpénz befizetés bankszámlára pénztárból
+  TxDefs.define({ communityId: null,
+    name: 'Cash upload ', // 'Készpénz befizetés',             
+    debit: '382', 
+    credit: '381',
+  });
+//
+// Single entry accouting
+  
   TxDefs.define({ communityId: null,
     name: 'Income', // 'Bevétel',
+    debit: '38',                
     credit: '9',
-    debit: '32',
   });
 
   TxDefs.define({ communityId: null,
     name: 'Expense', // 'Kiadás',
-    credit: '32',
-    debit: '8',
-  });
+      debit: '8',
+      credit: '38',
+    });
 
   // Joker
   TxDefs.define({ communityId: null,
