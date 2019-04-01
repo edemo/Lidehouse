@@ -185,7 +185,7 @@ Meteor.users.helpers({
   personNameMismatch(communityId = getActiveCommunityId()) {
     const membership = Memberships.findOne({ communityId, approved: true, active: true, personId: this._id, 'person.idCard.name': { $exists: true } });
     const personName = membership ? membership.person.idCard.name : undefined;
-    if (!personName) return;
+    if (!personName || !this.profile) return;
     if (!this.profile.firstName && !this.profile.lastName) return;
     if (!this.profile.firstName || !this.profile.lastName) return 'different';
     const nameMatch = namesMatch(this.profile, membership.person.idCard);
