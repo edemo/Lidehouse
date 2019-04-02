@@ -9,10 +9,10 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
 import { Topics } from '/imports/api/topics/topics.js';
-import { TicketStatusNames, TicketStatusColors, TicketTypes } from '/imports/api/topics/tickets/ticket-status.js';
+import { TicketStatusNames, TicketStatusColors, TicketTypes, possibleNextStatuses } from '/imports/api/topics/tickets/ticket-status.js';
 import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
-import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
+import { afTicketInsertModal, afTaskInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -35,6 +35,7 @@ Template.Tickets_tasks.viewmodel({
   reportedByCurrentUser: false,
   communityId: null,
   ticketTypeSelector: '',
+  sortBy: { createdAt: -1 },
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
   },
@@ -54,26 +55,32 @@ Template.Tickets_tasks.viewmodel({
   },
   ticketsSchema() {
     return ticketsSchema;
-  }, /*
+  },
   tickets() {
     const communityId = Session.get('activeCommunityId');
     const ticketText = this.ticketText();
     const ticketStatusArray = this.ticketStatusArray();
+    const ticketTypeArray = this.ticketTypeArray();
     const startDate = this.startDate();
     const endDate = this.endDate();
     const reportedByCurrentUser = this.reportedByCurrentUser();
     const selector = { communityId, category: 'ticket' };
+    const sortBy = this.sortBy();
     selector.createdAt = {};
+    if (ticketTypeArray.length > 0) selector['ticket.type'] = { $in: ticketTypeArray };
     if (ticketStatusArray.length > 0) selector['ticket.status'] = { $in: ticketStatusArray };
     if (startDate) selector.createdAt.$gte = new Date(this.startDate());
     if (endDate) selector.createdAt.$lte = new Date(this.endDate());
     if (reportedByCurrentUser) selector.userId = Meteor.userId();
     if (ticketText) {
-      return Topics.find(selector, { sort: { createdAt: -1 } }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
+      return Topics.find(selector, { sort: sortBy }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
       || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
     }
-    return Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
-  },*/
+    return Topics.find(selector, { sort: sortBy }).fetch();
+  },
+  possibleNextStatuses(topic) {
+    return possibleNextStatuses(topic);
+  },
   noFilters() {
     const ticketText = this.ticketText();
     const ticketStatusArray = this.ticketStatusArray();
@@ -171,6 +178,16 @@ Template.Tickets_tasks.viewmodel({
   statusValues() {
     return TicketStatusNames;
   },
+  tableColumns() {
+    const tableColumns = [
+      { name: 'status', sortBy: 'ticket.status' },
+      { name: 'text', sortBy: 'title' },
+      { name: 'type', sortBy: 'ticket.type' },
+      { name: 'createdBy', sortBy: 'userId' },
+      { name: 'createdAt', sortBy: 'createdAt' },
+    ];
+    return tableColumns;
+  },
   ticketTypes() {
     return Object.keys(TicketTypes);
   },
@@ -185,6 +202,9 @@ Template.Tickets_tasks.viewmodel({
 Template.Tickets_tasks.events({
   'click .js-new'() {
     afTicketInsertModal();
+  },
+  'click .js-new-task'() {
+    afTaskInsertModal();
   },
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
@@ -245,6 +265,17 @@ Template.Tickets_tasks.events({
     const oldValue = instance.viewmodel.reportedByCurrentUser();
     instance.viewmodel.reportedByCurrentUser(!oldValue);
     if (oldValue) $(event.target).blur();
+  },
+  'click .js-sort'(event, instance) {
+    const sortBy = $(event.target).data();
+    const sortByObject = {};
+    const actualValue = instance.viewmodel.sortBy()[sortBy.value];
+    if (actualValue === 1) {
+      sortByObject[sortBy.value] = -1;
+    } else {
+      sortByObject[sortBy.value] = 1;
+    }
+    instance.viewmodel.sortBy(sortByObject);
   },
   'keyup .js-search'(event, instance) {
     instance.viewmodel.ticketText(event.target.value);

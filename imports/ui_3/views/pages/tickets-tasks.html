@@ -112,16 +112,79 @@
           {{/if}}
           {{#if userHasPermission 'task.insert' (fromSession 'activeCommunityId')  }}
           <div class="col-sm-2 m-b-xs">  
-            <a href="" class="btn btn-primary btn-xs js-new pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'task'}}</a>
+            <a href="" class="btn btn-primary btn-xs js-new-task pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'task'}}</a>
           </div>
           {{/if}}
         </div>    
-      </div>
+      </div><!--
       <div class="ibox-content">
         <div class="no-padding table-responsive">
           {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
         </div>
 
+      </div>-->
+      <div class="ibox-content">
+        <div class="no-padding table-responsive">
+          <table class="table table-hover issue-tracker">
+            <thead>
+              <tr>
+                {{#each tableColumn in tableColumns}}
+                <th class="js-sort" data-value="{{tableColumn.sortBy}}">{{_ tableColumn.name}}</th>
+                {{/each}}
+              </tr>
+            </thead>
+            <tbody>
+              {{#each tickets}}
+              <tr>
+                <td>
+                  {{#if ticket.status}}                        
+                  <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
+                  {{/if}}
+                </td>
+                <td class="issue-info">
+                  <a href="{{pathFor 'Topic.show' _tid=_id}}">{{title}}</a>
+                  <small>{{>Chopped text=text chars=400}}</small>
+                </td>
+                <td>
+                  {{#if (equals ticket.type 'reported')}}
+                  <span class="label label-default">{{_ (concat 'schemaTickets.ticket.type.' ticket.type)}}</span>
+                  {{else}}
+                  <span class="label label-primary">{{_ (concat 'schemaTickets.ticket.type.' ticket.type)}}</span>
+                  {{/if}}
+                </td>
+                <td>
+                  {{createdBy}}
+                </td>
+                <td>
+                  {{displayTime createdAt}}
+                </td>
+                <td class="text-right">
+                  <div class="btn-group">
+                    {{#if userHasPermission 'ticket.statusChange' (fromSession 'activeCommunityId')  }}
+                    <div class="dropdown pull-left">
+                      <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white">
+                        <i class="fa fa-cog"></i> {{_ 'statusChange'}} <b class="caret"></b>
+                      </a>
+                      <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
+                        {{#each status in (possibleNextStatuses this)}}
+                        <li><a href="" class="js-status" data-id="{{this._id}}" data-status="{{status}}">{{_ (concat 'schemaTickets.ticket.status.' status)}}</a></li>
+                        {{/each}}
+                      </ul>
+                    </div>
+                    {{/if}}
+                    {{#if userHasPermission 'ticket.update' (fromSession 'activeCommunityId')  }}
+                    <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                    {{/if}}
+                    {{#if userHasPermission 'ticket.remove' (fromSession 'activeCommunityId')  }}
+                    <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                    {{/if}}
+                  </div>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <!--{{/if}}-->

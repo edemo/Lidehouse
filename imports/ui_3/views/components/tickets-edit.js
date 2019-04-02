@@ -30,6 +30,19 @@ export function afTicketInsertModal() {
   });
 }
 
+export function afTaskInsertModal() {
+  Modal.show('Autoform_edit', {
+    id: 'af.task.insert',
+    collection: Topics,
+    schema: Tickets.schema,
+    fields: ['title', 'text'],
+    type: 'method',
+    meteormethod: 'topics.insert',
+    template: 'bootstrap3-inline',
+    btnOK: 'Create ticket',
+  });
+}
+
 export function afTicketUpdateModal(topicId) {
   Modal.show('Autoform_edit', {
     id: 'af.ticket.update',
@@ -66,6 +79,7 @@ export function deleteTicketConfirmAndCallModal(topicId) {
 }
 
 AutoForm.addModalHooks('af.ticket.insert');
+AutoForm.addModalHooks('af.task.insert');
 AutoForm.addModalHooks('af.ticket.update');
 AutoForm.addModalHooks('af.ticket.statusChange');
 AutoForm.addHooks('af.ticket.insert', {
@@ -75,6 +89,18 @@ AutoForm.addHooks('af.ticket.insert', {
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
     doc.ticket.type = doc.ticket.type || 'reported';
+    doc.ticket.status = doc.ticket.type;
+    return doc;
+  },
+});
+
+AutoForm.addHooks('af.task.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    doc.userId = Meteor.userId();
+    doc.category = 'ticket';
+    if (!doc.ticket) doc.ticket = {};
+    doc.ticket.type = doc.ticket.type || 'scheduled';
     doc.ticket.status = doc.ticket.type;
     return doc;
   },
