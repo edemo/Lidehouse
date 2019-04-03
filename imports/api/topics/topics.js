@@ -124,7 +124,7 @@ Topics.helpers({
 });
 
 Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
-  return Topics.find({ communityId, closed: false }).fetch()
+  return Topics.find({ communityId }).fetch()
     .filter(t => t.needsAttention(userId, seenType));
 };
 
