@@ -68,7 +68,7 @@ export function defineTxDefTemplates() {
 
   TxDefs.define({ communityId: null,
     name: 'Parcel payment', // 'Albetét befizetés',
-    debit: '32',
+    debit: '38',
     credit: '33',
   });
 
