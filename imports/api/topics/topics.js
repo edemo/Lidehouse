@@ -85,7 +85,6 @@ Topics.helpers({
     return 0; // TODO
   },
   needsAttention(userId, seenType) {
-    if (this.closed) return 0;
     if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
     switch (this.category) {
       case 'news':
