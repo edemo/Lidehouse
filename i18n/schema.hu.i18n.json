@@ -254,8 +254,8 @@
       "label": "Hibajegy adatok",
       "type": {
         "label": "Típus",
-        "scheduled": "Ütemezett",
-        "reported": "Bejelentett"
+        "maintenance": "Ütemezett",
+        "issue": "Bejelentett"
       },
       "status": {
         "label": "Státusz",

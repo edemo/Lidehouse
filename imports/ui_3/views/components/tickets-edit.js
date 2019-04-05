@@ -10,6 +10,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import { checkTopicPermissions } from '../../../api/method-checks';
+import { TicketTypes } from '../../../api/topics/tickets/ticket-status';
 
 export function afTicketInsertModal() {
 /*  const communityId = Session.get('activeCommunityId');
@@ -88,8 +89,8 @@ AutoForm.addHooks('af.ticket.insert', {
     doc.userId = Meteor.userId();
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
-    doc.ticket.type = doc.ticket.type || 'reported';
-    doc.ticket.status = doc.ticket.type;
+    doc.ticket.type = doc.ticket.type || 'issue';
+    doc.ticket.status = TicketTypes.issue.start;
     return doc;
   },
 });
@@ -100,8 +101,8 @@ AutoForm.addHooks('af.task.insert', {
     doc.userId = Meteor.userId();
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
-    doc.ticket.type = doc.ticket.type || 'scheduled';
-    doc.ticket.status = doc.ticket.type;
+    doc.ticket.type = doc.ticket.type || 'maintenance';
+    doc.ticket.status = TicketTypes.maintenance.start;
     return doc;
   },
 });

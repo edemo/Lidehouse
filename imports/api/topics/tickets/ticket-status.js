@@ -120,15 +120,13 @@ const deleted = {
 export const TicketStatuses = {
   reported, confirmed, scheduled, toApprove, toVote, progressing, suspended, finished, closed, deleted,
 };
-export const TicketStatusNames = Object.keys(TicketStatuses);
-TicketStatusNames.forEach(statusName => Comments.typeValues.push(`statusChangeTo.${statusName}`));
-export const TicketStatusColors = {};
-TicketStatusNames.forEach(function StatusName(statusName) { TicketStatusColors[statusName] = eval(`${statusName}.color`); });
+
+Object.keys(TicketStatuses).forEach(statusName => Comments.typeValues.push(`statusChangeTo.${statusName}`));
 
 // == Ticket types:
 
 export const TicketTypes = {
-  reported: {
+  issue: {
     start: 'reported',
     reported: { next: ['confirmed', 'deleted'] },
     confirmed: { next: ['progressing', 'toApprove', 'toVote'] },
@@ -140,7 +138,7 @@ export const TicketTypes = {
     closed: { next: [] },
     deleted: { next: ['reported'] },
   },
-  scheduled: {
+  maintenance: {
     start: 'scheduled',
     scheduled: { next: ['progressing'] },
     progressing: { next: ['finished'] },
@@ -149,7 +147,6 @@ export const TicketTypes = {
     deleted: { next: ['scheduled'] },
   },
 };
-export const TicketTypeNames = Object.keys(TicketTypes);
 
 export function possibleNextStatuses(topic) {
   return TicketTypes[topic.ticket.type][topic.ticket.status].next;

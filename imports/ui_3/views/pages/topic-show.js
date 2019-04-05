@@ -63,9 +63,9 @@ Template.Topic_show.helpers({
 });
 
 Template.Ticket_topic_show.helpers({
-  statusColor(statusName) {
+  /*statusColor(statusName) {
     return TicketStatuses[statusName].color;
-  },
+  },*/
   urgencyColor(value) {
     return TicketUrgencyColors[value];
   },

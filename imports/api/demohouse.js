@@ -862,7 +862,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.ticket.0.title'),
     text: __('demo.ticket.0.text'),
     ticket: {
-      type: 'reported',
+      type: 'issue',
       category: 'building',
       urgency: 'high',
       status: 'progressing',
@@ -877,7 +877,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.ticket.1.title'),
     text: __('demo.ticket.1.text'),
     ticket: {
-      type: 'reported',
+      type: 'issue',
       category: 'building',
       urgency: 'normal',
       status: 'closed',
@@ -891,7 +891,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.ticket.2.title'),
     text: __('demo.ticket.2.text'),
     ticket: {
-      type: 'reported',
+      type: 'issue',
       category: 'service',
       urgency: 'normal',
       status: 'reported',
@@ -912,7 +912,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.ticket.3.title'),
     text: __('demo.ticket.3.text'),
     ticket: {
-      type: 'reported',
+      type: 'issue',
       category: 'building',
       urgency: 'low',
       status: 'closed',
