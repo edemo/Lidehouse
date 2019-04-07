@@ -6,7 +6,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Memberships } from './memberships.js';
 import { Communities } from '../communities/communities.js';
 
-Meteor.publishComposite('memberships.ofUser', function communitiesOfUser(params) {
+Meteor.publishComposite('memberships.ofUser', function membershipsOfUser(params) {
   new SimpleSchema({
     userId: { type: String },
   }).validate(params);

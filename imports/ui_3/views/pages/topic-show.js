@@ -20,45 +20,46 @@ import './topic-show.html';
 Template.Topic_show.onCreated(function topicShowOnCreated() {
   const topicId = FlowRouter.getParam('_tid');
   this.subscribe('topics.byId', { _id: topicId });  // brings all comments with it
+  this.autorun(() => {
+    const topic = Topics.findOne(topicId);
+    if (topic) this.subscribe('communities.byId', { _id: topic.communityId });
+  });
 });
 
 Template.Topic_show.helpers({
-    topic() {
-        const topic = Topics.findOne(FlowRouter.getParam('_tid'));
-        return topic;
-    },
-    pageTitle() {
-        return __('topic.' + this.category) + ' ' + __('details');
-    },
-    smallTitle() {
-        return this.title;
-    },
-    pageCrumbs() {
-        switch(this.category) {
-            case 'vote': {
-                return [{
-                    title: __('Votings'),
-                    url: FlowRouter.path('Topics.vote'),
-                }];
-                break;
-            }
-            case 'forum': {
-                return [{
-                    title: __('Forum'),
-                    url: FlowRouter.path('Topics.forum'),
-                }];
-                break;
-            }
-            case 'ticket': {
-                return [{
-                    title: __('Tickets'),
-                    url: FlowRouter.path('Tickets.report'),
-                }];
-                break;
-            }
-            default: return [];
-        }
-    },
+  topic() {
+    const topic = Topics.findOne(FlowRouter.getParam('_tid'));
+    return topic;
+  },
+  pageTitle() {
+    return __('topic.' + this.category) + ' ' + __('details');
+  },
+  smallTitle() {
+    return this.title;
+  },
+  pageCrumbs() {
+    switch (this.category) {
+      case 'vote': {
+        return [{
+          title: __('Votings'),
+          url: FlowRouter.path('Topics.vote'),
+        }];
+      }
+      case 'forum': {
+        return [{
+          title: __('Forum'),
+          url: FlowRouter.path('Topics.forum'),
+        }];
+      }
+      case 'ticket': {
+        return [{
+          title: __('Tickets'),
+          url: FlowRouter.path('Tickets.report'),
+        }];
+      }
+      default: return [];
+    }
+  },
 });
 
 Template.Ticket_topic_show.helpers({
