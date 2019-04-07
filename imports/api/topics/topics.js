@@ -98,7 +98,7 @@ Topics.helpers({
         break;
       case 'vote':
         if (seenType === Meteor.users.SEEN_BY.EYES
-          && !this.hasVotedIndirect(userId)) return 1;
+          && !this.closed && !this.hasVotedIndirect(userId)) return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
           && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
         break;
