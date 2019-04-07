@@ -20,10 +20,6 @@ import './topic-show.html';
 Template.Topic_show.onCreated(function topicShowOnCreated() {
   const topicId = FlowRouter.getParam('_tid');
   this.subscribe('topics.byId', { _id: topicId });  // brings all comments with it
-  this.autorun(() => {
-    const topic = Topics.findOne(topicId);
-    if (topic) this.subscribe('memberships.inCommunity', { communityId: topic.communityId });
-  });
 });
 
 Template.Topic_show.helpers({

@@ -14,7 +14,7 @@ Template.Navigation.onCreated(function() {
     const activeCommunityId = Session.get('activeCommunityId');
     if (activeCommunityId) {
       this.subscribe('communities.byId', { _id: activeCommunityId });
-      this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
+      // redundant   this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
     }
   });
 });

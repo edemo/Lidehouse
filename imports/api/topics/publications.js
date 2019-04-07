@@ -47,10 +47,20 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
       return Topics.find({ _id }, { fields: publicFields });
     },
     children: [{
+      // Publish the author of the Topic (for flagging status)
+      find(topic) {
+        return Meteor.users.find({ _id: topic.userId }, { fields: Meteor.users.publicFields });
+      },
+    }, {
       // Publish all Comments of the Topic
       find(topic) {
         return Comments.find({ topicId: topic._id }, { fields: Comments.publicFields });
       },
+      children: [{
+        find(comment) {
+          return Meteor.users.find({ _id: comment.userId }, { fields: Meteor.users.publicFields });
+        },
+      }],
     }],
   };
 });
