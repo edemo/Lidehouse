@@ -22,7 +22,7 @@ Template.Topic_show.onCreated(function topicShowOnCreated() {
   this.subscribe('topics.byId', { _id: topicId });  // brings all comments with it
   this.autorun(() => {
     const topic = Topics.findOne(topicId);
-    if (topic) this.subscribe('communities.byId', { _id: topic.communityId });
+    if (topic) this.subscribe('memberships.inCommunity', { communityId: topic.communityId });
   });
 });
 

@@ -78,7 +78,8 @@ Comments.helpers({
     return this.userId === userId;
   },
   isHiddenBy(userId) {
-    return this.isFlaggedBy(userId) || this.createdBy().isFlaggedBy(userId);
+    const author = this.createdBy();
+    return this.isFlaggedBy(userId) || (author && author.isFlaggedBy(userId));
   },
 });
 
