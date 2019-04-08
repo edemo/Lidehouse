@@ -5,15 +5,19 @@
             <a href="{{pathFor 'Topic.show' _tid=_id}}">{{_ 'View previous comments' hasMoreComments}}</a>
         </div>
         {{/if}}
-        {{#each comment in comments}}
+        {{#each comment in commentsOfTopic}}
             {{> Comment comment}}
         {{/each}}
+      
         <div class="social-comment">
             <a href="" class="pull-left">
                 <img alt="avatar" class="message-avatar" src={{currentUser.avatar}}>
             </a>
             <div class="media-body">
-                <textarea class="form-control js-send-enter" placeholder="{{_ 'newCommentPlaceholder'}}"></textarea>
+                <textarea  class="form-control js-send-enter" {{b "value: commentText"}} placeholder="{{_ 'newCommentPlaceholder'}}"></textarea>
+                <div {{b "if: commentText"}} class="text-right">
+                    <span class="js-send btn btn-sm btn-primary m-t-xs">{{_ 'send'}}</span>
+                </div>
             </div>
         </div>
     </div>

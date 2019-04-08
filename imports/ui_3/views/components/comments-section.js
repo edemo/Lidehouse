@@ -47,14 +47,15 @@ Template.Comments_section.onDestroyed(function chatboxOnDestroyed() {
 
 const RECENT_COMMENT_COUNT = 5;
 
-Template.Comments_section.helpers({
+Template.Comments_section.viewmodel({
+  commentText: '',
   isVote() {
-    const topic = this;
+    const topic = this.templateInstance.data;
     return topic.category === 'vote';
   },
-  comments() {
+  commentsOfTopic() {
     const route = FlowRouter.current().route.name;
-    const comments = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
+    const comments = Comments.find({ topicId: this._id.value }, { sort: { createdAt: 1 } });
     if (route === 'Board') {
       // on the board showing only the most recent ones
       return comments.fetch().slice(-1 * RECENT_COMMENT_COUNT);
@@ -63,7 +64,7 @@ Template.Comments_section.helpers({
   },
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
-    const comments = Comments.find({ topicId: this._id });
+    const comments = Comments.find({ topicId: this._id.value });
     return (route === 'Board' && comments.count() > RECENT_COMMENT_COUNT)
       ? comments.count() - RECENT_COMMENT_COUNT
       : 0;
@@ -71,7 +72,7 @@ Template.Comments_section.helpers({
 });
 
 Template.Comments_section.events({
-  'keydown .js-send-enter'(event) {
+ /* 'keydown .js-send-enter'(event) {
     const topicId = this._id;
     const userId = Meteor.userId();
     if (event.keyCode === 13 && !event.shiftKey) {
@@ -82,6 +83,20 @@ Template.Comments_section.events({
         })
       );
     }
+  },*/
+  'click .social-comment .js-send'(event, instance) {
+    // if ($(event.target).hasClass('disabled')) return;
+    const textarea = $(event.target).closest('.media-body').find('textarea')[0];
+    insertComment.call({
+      topicId: this._id,
+      userId: Meteor.userId(),
+      text: textarea.value,
+    },
+    onSuccess((res) => {
+      textarea.value = '';
+      instance.viewmodel.commentText('');
+      // $(event.target).addClass('disabled');
+    }));
   },
 });
 
