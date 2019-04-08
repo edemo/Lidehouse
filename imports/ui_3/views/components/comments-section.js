@@ -102,7 +102,8 @@ Template.Comments_section.events({
 
 //------------------------------------
 
-Template.Comment.helpers({
+Template.Comment.viewmodel({
+  editing: false,
 });
 
 Template.Comment.events({
@@ -121,31 +122,22 @@ Template.Comment.events({
     }, handleError);
   },
   'click .js-edit'(event, instance) {
-    $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-    const originalText = Comments.findOne({ _id: instance.data._id }).text;
-    const textareaEdit = '<span id="editableSpan"><textarea class="form-control js-send-edited">' + 
-      originalText + '</textarea>' + `<small class="text-muted">${__('commentEditInstruction')} </small></span>`;
-    $(textareaEdit).insertAfter('span[data-id="' + instance.data._id + '"]');
-    $('#editableSpan > textarea').focus();
+    instance.viewmodel.editing(true);
+    setTimeout(function () {
+      const textarea = $(event.target).closest('.media-body').find('textarea')[0];
+      textarea.focus();
+    }, 100);
   },
-  'keydown .js-send-edited'(event, instance) {
-    // pressing escape key
-    if (event.keyCode === 27) { 
-      event.preventDefault();
-      $('#editableSpan').remove();
-      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-    }
-    // pressing enter key
-    if (event.keyCode === 13 && !event.shiftKey) {
-      event.preventDefault();
-      const editedText = $('#editableSpan > textarea').val();
-      updateComment.call({
-        _id: instance.data._id,
-        modifier: { $set: { text: editedText } },
-      }, handleError);
-      $('#editableSpan').remove();
-      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-    }
+  'click .js-save'(event, instance) {
+    const editedText = $(event.target).closest('.media-body').find('textarea')[0].value;
+    updateComment.call({
+      _id: instance.data._id,
+      modifier: { $set: { text: editedText } },
+    }, handleError);
+    instance.viewmodel.editing(false);
+  },
+  'click .js-cancel'(event, instance) {
+    instance.viewmodel.editing(false);
   },
   'click .js-delete'(event, instance) {
     Modal.confirmAndCall(removeComment, { _id: this._id }, {

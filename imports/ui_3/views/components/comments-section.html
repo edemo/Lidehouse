@@ -26,14 +26,21 @@
 <template name="Comment">
     {{#unless this.isHiddenBy currentUser._id }}
     <div class="social-comment">         
-        <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
-            <img alt="avatar" class="message-avatar" src={{user.avatar}}>
+        <a href="{{pathFor 'User.show' _id=this.user._id}}" class="pull-left">
+            <img alt="avatar" class="message-avatar" src={{this.user.avatar}}>
         </a>
         <div class="media-body" >
-            <a href="{{pathFor 'User.show' _id=user._id}}">
-                {{user}}
+            <a href="{{pathFor 'User.show' _id=this.user._id}}">
+                {{this.user}}
             </a>
-            <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
+            <span {{b "unless: editing"}} class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
+            {{#if editing}}
+                <textarea class="form-control" data-id="{{_id}}" value={{text}}></textarea>
+                <div class="text-right">
+                    <span class="js-cancel btn btn-sm btn-default m-t-xs">{{_ 'cancel'}}</span>
+                    <span class="js-save btn btn-sm btn-primary m-t-xs">{{_ 'save'}}</span>
+                </div>
+            {{/if}}
             <br/>
             <a href="" class="small cap-first js-like">
                 <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
