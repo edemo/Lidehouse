@@ -11,7 +11,7 @@ import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { monthTags } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
+import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
 import { transactionColumns } from '/imports/api/transactions/tables.js';
 import { breakdownColumns } from '/imports/api/transactions/breakdowns/tables.js';
 import { Reports } from '/imports/api/transactions/reports/reports.js';
@@ -52,12 +52,18 @@ Template.Community_finances.viewmodel({
     const communityId = Session.get('activeCommunityId');
     const community = Communities.findOne(communityId);
     const DEMO = community && (community.name.includes('Test') || community.name.includes('Demo'));
-    const labels = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"];
-    const T = function (monthTag) {
+    const startTag = 'T-2016-12';
+    const endTag = PeriodBreakdown.currentCode();
+    const startIndex = PeriodBreakdown.leafs().findIndex(l => l.code === startTag);
+    const endIndex = PeriodBreakdown.leafs().findIndex(l => l.code === endTag);
+    const periods = PeriodBreakdown.leafs().slice(startIndex, endIndex);
+    const labels = periods.map(l => l.label);
+    // ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
+    const T = function (tag) {
       const monthTotal = Balances.getTotal({
         communityId,
         account: '46',
-        tag: 'T-' + monthTag,
+        tag,
       });
       return (-1) * monthTotal;
     };
@@ -102,7 +108,7 @@ Template.Community_finances.viewmodel({
           borderColor: "rgba(26,179,148,0.7)",
           pointBackgroundColor: "rgba(26,179,148,1)",
           pointBorderColor: "#fff",
-          data: [T('2017-4'), T('2017-5'), T('2017-6'), T('2017-7'), T('2017-8'), T('2017-9'), T('2017-10'), T('2017-11'), T('2017-12'), T('2018-1'), T('2018-2'), T('2018-3'), T('2018-4'), T('2018-5'), T('2018-6'), T('2018-7'), T('2018-8'), T('2018-9'), T('2018-10'), T('2018-11'), T('2018-12'), T('2019-1'), T('2019-2'), T('2019-3')],
+          data: periods.map(l => (-1) * Balances.getTotal({ communityId, account: '46', tag: l.code })),
         },
       ],
     };
@@ -135,7 +141,7 @@ Template.Community_finances.viewmodel({
           borderColor: "rgba(26,179,148,0.7)",
           pointBackgroundColor: "rgba(26,179,148,1)",
           pointBorderColor: "#fff",
-          data: aggregate([T('2017-4'), T('2017-5'), T('2017-6'), T('2017-7'), T('2017-8'), T('2017-9'), T('2017-10'), T('2017-11'), T('2017-12'), T('2018-1'), T('2018-2'), T('2018-3'), T('2018-4'), T('2018-5'), T('2018-6'), T('2018-7'), T('2018-8'), T('2018-9'), T('2018-10'), T('2018-11'), T('2018-12'), T('2019-1'), T('2019-2'), T('2019-3')]),
+          data: aggregate(periods.map(l => (-1) * Balances.getTotal({ communityId, account: '46', tag: l.code }))),
         },
       ],
     };

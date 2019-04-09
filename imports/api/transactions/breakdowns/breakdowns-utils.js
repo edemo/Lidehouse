@@ -51,4 +51,7 @@ const periodTags = {
 };
 
 export const PeriodBreakdown = Breakdowns._transform(periodTags);
-
+PeriodBreakdown.currentCode = function () {
+  const now = new Date();
+  return `T-${now.getFullYear()}-${now.getMonth() + 1}`;
+};
