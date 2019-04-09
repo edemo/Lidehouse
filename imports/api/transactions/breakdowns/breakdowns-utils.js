@@ -32,6 +32,13 @@ export const monthTags = {
 const yearTags = {
   name: 'years',
   children: [
+  { digit: '-2010', name: '2010', include: monthTags },
+  { digit: '-2011', name: '2011', include: monthTags },
+  { digit: '-2012', name: '2012', include: monthTags },
+  { digit: '-2013', name: '2013', include: monthTags },
+  { digit: '-2014', name: '2014', include: monthTags },
+  { digit: '-2015', name: '2015', include: monthTags },
+  { digit: '-2016', name: '2016', include: monthTags },
   { digit: '-2017', name: '2017', include: monthTags },
   { digit: '-2018', name: '2018', include: monthTags },
   { digit: '-2019', name: '2019', include: monthTags },
@@ -44,3 +51,4 @@ const periodTags = {
 };
 
 export const PeriodBreakdown = Breakdowns._transform(periodTags);
+

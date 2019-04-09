@@ -49,8 +49,23 @@ Template.Community_finances.viewmodel({
     instance.autorun(this.syncHistoryChartData);
   },
   syncBalanceChartData() {
-    const labels = ["Feb", "Marc", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan"];
-    const moneyData = {
+    const communityId = Session.get('activeCommunityId');
+    const community = Communities.findOne(communityId);
+    const DEMO = community && (community.name.includes('Test') || community.name.includes('Demo'));
+    const labels = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"];
+    const T = function (monthTag) {
+      const monthTotal = Balances.getTotal({
+        communityId,
+        account: '46',
+        tag: 'T-' + monthTag,
+      });
+      return (-1) * monthTotal;
+    };
+    const aggregate = function (array) {
+      let sum = 0;
+      return array.map((elem) => { sum += elem; return sum; });
+    };
+    const moneyData = DEMO ? {
       labels,
       datasets: [
         {
@@ -78,8 +93,20 @@ Template.Community_finances.viewmodel({
           data: [10, 40, 40, 90, 60, 70, 90, 50, 80, 50, 75, 40],
         },
       ],
+    } : {
+      labels,
+      datasets: [
+        {
+          label: __("Suppliers"),
+          backgroundColor: "rgba(26,179,148,0.5)",
+          borderColor: "rgba(26,179,148,0.7)",
+          pointBackgroundColor: "rgba(26,179,148,1)",
+          pointBorderColor: "#fff",
+          data: [T('2017-4'), T('2017-5'), T('2017-6'), T('2017-7'), T('2017-8'), T('2017-9'), T('2017-10'), T('2017-11'), T('2017-12'), T('2018-1'), T('2018-2'), T('2018-3'), T('2018-4'), T('2018-5'), T('2018-6'), T('2018-7'), T('2018-8'), T('2018-9'), T('2018-10'), T('2018-11'), T('2018-12'), T('2019-1'), T('2019-2'), T('2019-3')],
+        },
+      ],
     };
-    const loanData = {
+    const loanData = DEMO ? {
       labels,
       datasets: [
         {
@@ -97,6 +124,18 @@ Template.Community_finances.viewmodel({
           pointBackgroundColor: "rgba(26,179,148,1)",
           pointBorderColor: "#fff",
           data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
+        },
+      ],
+    } : {
+      labels,
+      datasets: [
+        {
+          label: __("Suppliers"),
+          backgroundColor: "rgba(26,179,148,0.5)",
+          borderColor: "rgba(26,179,148,0.7)",
+          pointBackgroundColor: "rgba(26,179,148,1)",
+          pointBorderColor: "#fff",
+          data: aggregate([T('2017-4'), T('2017-5'), T('2017-6'), T('2017-7'), T('2017-8'), T('2017-9'), T('2017-10'), T('2017-11'), T('2017-12'), T('2018-1'), T('2018-2'), T('2018-3'), T('2018-4'), T('2018-5'), T('2018-6'), T('2018-7'), T('2018-8'), T('2018-9'), T('2018-10'), T('2018-11'), T('2018-12'), T('2019-1'), T('2019-2'), T('2019-3')]),
         },
       ],
     };

@@ -11,6 +11,8 @@ import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 const rABS = true;
 const delayCalls = 250;
@@ -57,7 +59,53 @@ function transformMarinaMemberships(jsons) {
   return tjsons;
 }
 
-export function importCollectionFromFile(collection) {
+// Before upload:
+// remove '.' from column name
+// convert two money columns to number
+//
+function transformMarinaTransactions(jsons, options) {
+  const tjsons = [];
+  jsons.forEach((doc) => {
+    const docRef = doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
+    const bill = {
+      ref: '>' + docRef,
+      partner: doc['Szállító neve adóigazgatási azonosító száma'],
+      valueDate: new Date(doc['Számla kelte']),
+      amount: parseInt(doc['Számla összege'], 10),
+      // debit is one of the '8' accounts
+      credit: [{
+        account: '46',
+      }],
+    };
+    tjsons.push(bill);
+
+    if (doc['A számla kiegyenlítésének időpontja']) {
+      const payment = {
+        ref: '<' + docRef,
+        partner: doc['Szállító neve adóigazgatási azonosító száma'],
+        valueDate: new Date(doc['A számla kiegyenlítésének időpontja']),
+        amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
+        debit: [{
+          account: '46',
+        }],
+        // credit is one of the '38' accounts
+      };
+      tjsons.push(payment);
+    }
+  });
+  return tjsons;
+}
+
+function transformMarinaBalances(jsons, options) {
+  const tjsons = jsons.map((doc) => {
+    const tdoc = $.extend(true, {}, doc);
+
+    return tdoc;
+  });
+  return tjsons;
+}
+
+export function importCollectionFromFile(collection, options) {
   UploadFS.selectFile(function (file) {
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -75,6 +123,8 @@ export function importCollectionFromFile(collection) {
       if (community.name.indexOf('Marina') >= 0) {
         if (collection._name === 'parcels') jsons = transformMarinaParcels(jsons);
         if (collection._name === 'memberships') jsons = transformMarinaMemberships(jsons);
+        if (collection._name === 'transactions') jsons = transformMarinaTransactions(jsons, options);
+        if (collection._name === 'balances') jsons = transformMarinaBalances(jsons, options);
       }
       // ------------------------------
 
@@ -86,25 +136,37 @@ export function importCollectionFromFile(collection) {
           index += 1;
           Meteor.setTimeout(handleNextJson, delayCalls);
         };
-        
+
         // Skipping already existing docs
         if (collection._name === 'parcels') {
+          if (!doc.ref) { scheduleNext('warning', 'Ref is missing from %s', doc); return; }
           const parcel = Parcels.findOne({ communityId, ref: doc.ref });
           if (parcel) { scheduleNext('warning', 'Document %s already exists', doc.ref); return; }
         }
         if (collection._name === 'memberships') {
+          if (!doc.ref) { scheduleNext('warning', 'Ref is missing from %s', doc); return; }
           const parcel = Parcels.findOne({ communityId, ref: doc.ref });
           const membership = Memberships.findOne({ communityId, parcelId: parcel._id, 'person.idCard.name': doc.person.idCard.name });
           if (membership) { scheduleNext('warning', 'Document %s already exists', doc.ref + ':' + doc.person.idCard.name); return; }
         }
+        if (collection._name === 'transactions') {
+          const tx = Transactions.findOne({ communityId, ref: doc.ref });
+          if (tx) { scheduleNext('warning', 'Document %s already exists', doc.ref); return; }
+        }
+        if (collection._name === 'balances') {
+          const bal = Balances.findOne({ communityId, account: doc.account, localizer: doc.localizer, tag: doc.tag });
+          if (bal) { scheduleNext('warning', 'Document %s already exists', doc.ref); return; }
+        }
 
         // Inserting the doc into the db
-        if (doc.ref) {
-          console.log(doc);
-          collection.methods.insert.call(doc, onSuccess((res) => {
-            scheduleNext('success', 'Document %s inserted', res); return;
-          }));
-        }
+        console.log('Importing: ', doc);
+        collection.methods.insert.call(doc, function handler(err, res) {
+          if (err) {
+            console.error(err);
+            scheduleNext('error', 'Document errored!!!', doc); return;
+          }
+          scheduleNext('success', 'Document %s inserted', res); return;
+        });
       };
 
       handleNextJson();

@@ -29,6 +29,7 @@ import '/imports/api/transactions/txdefs/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
 import { AccountSpecification } from '/imports/api/transactions/account-specification';
+import { importCollectionFromFile } from '/imports/utils/import.js';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -242,6 +243,9 @@ Template.Accounting_page.events({
       type: 'method',
       meteormethod: 'parcelBillings.insert',
     });
+  },
+  'click #incomplete .js-import'(event, instance) {
+    importCollectionFromFile(Transactions);
   },
   'click #incomplete .js-publish'(event, instance) {
     const communityId = Session.get('activeCommunityId');

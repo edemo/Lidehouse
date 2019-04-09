@@ -104,9 +104,9 @@ Transactions.baseSchema = {
 };
 
 Transactions.noteSchema = {
-  partner: { type: String, max: 100, optional: true },
-  ref: { type: String, max: 100, optional: true },
-  note: { type: String, max: 100, optional: true },
+  partner: { type: String, optional: true },
+  ref: { type: String, optional: true },
+  note: { type: String, optional: true },
 };
 
 Transactions.schema = new SimpleSchema([

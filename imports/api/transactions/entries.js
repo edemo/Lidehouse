@@ -53,7 +53,7 @@ if (Meteor.isClient) {
         });
       },
       changed(newDoc, oldDoc) {
-        console.log("Changed transaction noticed:", oldDoc);
+        console.warn('Changed transaction noticed! From: ', oldDoc, ' To: ', newDoc);
       },
       removed(doc) {
         JournalEntries.remove({ txId: doc._id });

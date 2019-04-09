@@ -232,12 +232,12 @@ Breakdowns.helpers({
   nodeByCode(code) {
     if (!code) return this.root();
     const node = this.root()._nodeMap[code];
-    if (!node) throw new Meteor.Error(`Looking for ${code} in ${this.name}`, 'Cannot find breakdown node by code', this.root()._nodeMap);
+    if (!node) throw new Meteor.Error(`Looking for ${code} in ${this.name}`, 'Cannot find breakdown node by code', JSON.stringify(this.root()._nodeMap));
     return node;
   },
   findNodeByName(name) {  // warning!! Name is not a unique id,  and searching is inefficient
     const node = this.nodes().find(l => l.name === name);
-    if (!node) throw new Meteor.Error(`Looking for ${name} in ${this.name}`, 'Cannot find breakdown node by name', this.nodes());
+    if (!node) throw new Meteor.Error(`Looking for ${name} in ${this.name}`, 'Cannot find breakdown node by name', JSON.stringify(this.nodes()));
     return node;
   },
   nodesOf(code, leafsOnly) {
