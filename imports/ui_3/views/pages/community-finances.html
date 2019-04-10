@@ -32,6 +32,42 @@
                     </div>
 
                     <div class="col-md-3">
+                        <h1 class="m-b-xs">{{displayMoney getStatusBalance}}</h1>
+                        <h3 class="font-bold no-margins"> {{_ 'community'}}{{_ "'s status report"}}</h3>
+                    </div>
+
+                    <div class="col-md-3">
+                      <table class="table table-condensed nowrap">
+                        {{#each account in statusAccounts}}
+                        <tr>
+                            <td>{{_ account.name}}</td>
+                            <td class="text-right text-bold"> 
+                                {{displayMoney (getBalance account.code)}}
+                            </td>
+                        </tr>
+                        {{/each}}
+                      </table>
+                    </div>
+
+                </div>
+
+                <div>
+                    <canvas id="statusChart" height="70"></canvas>
+                </div>
+
+                {{> Disclaimer}}
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
+    <div class="col-md-12">
+        <div class="ibox float-e-margins" id="moneyBalances">
+            <div class="ibox-content">
+                <div class= "row">
+
+                    <div class="col-md-3">
                         <h1 class="m-b-xs">{{displayMoney (getBalance 'Money accounts')}}</h1>
                         <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
                     </div>

@@ -29,29 +29,60 @@ import './community-finances.html';
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
 const notVotedColor = '#dedede';
 
-const colorCombos = [
-  {
+// generated with:
+// https://coolors.co/ed6a5e-dbbea1-a37b73-e3a857-1ab394
+// https://www.hexcolortool.com
+
+const plusColors = [
+  { // green
     backgroundColor: "rgba(26,179,148,0.5)",
     borderColor: "rgba(26,179,148,0.7)",
     pointBackgroundColor: "rgba(26,179,148,1)",
     pointBorderColor: "#fff",
   },
-  {
+  { // blue
+    backgroundColor: "rgba(87, 117, 144,0.5)",
+    borderColor: "rgba(87, 117, 144,1)",
+    pointBackgroundColor: "rgba(87, 117, 144,1)",
+    pointBorderColor: "#fff",
+  },
+  { // green
+    backgroundColor: "rgba(26,179,148,0.5)",
+    borderColor: "rgba(26,179,148,0.7)",
+    pointBackgroundColor: "rgba(26,179,148,1)",
+    pointBorderColor: "#fff",
+  },
+  { // grey
     backgroundColor: "rgba(220,220,220,0.5)",
     borderColor: "rgba(220,220,220,1)",
     pointBackgroundColor: "rgba(220,220,220,1)",
     pointBorderColor: "#fff",
   },
-  {
-    backgroundColor: "rgba(179,148,26,0.5)",
-    borderColor: "rgba(179,148,26,0.7)",
-    pointBackgroundColor: "rgba(179,148,26,1)",
+  { // indian yellow
+    backgroundColor: "rgba(227, 168, 87, 0.5)",
+    borderColor: "rgba(227, 168, 87, 0.7)",
+    pointBackgroundColor: "rgba(227, 168, 87, 1)",
     pointBorderColor: "#fff",
   },
-  { // duplicate, find a new one!
-    backgroundColor: "rgba(179,148,26,0.5)",
-    borderColor: "rgba(179,148,26,0.7)",
-    pointBackgroundColor: "rgba(179,148,26,1)",
+];
+
+const minusColors = [
+  { // red
+    backgroundColor: "rgba(237, 106, 94, 0.5)",
+    borderColor: "rgba(237, 106, 94, 0.7)",
+    pointBackgroundColor: "rgba(237, 106, 94, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // pastel light
+    backgroundColor: "rgba(219, 190, 161, 0.5)",
+    borderColor: "rgba(219, 190, 161, 0.7)",
+    pointBackgroundColor: "rgba(219, 190, 161, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // pastel dark
+    backgroundColor: "rgba(163, 123, 115,  0.5)",
+    borderColor: "rgba(163, 123, 115,  0.7)",
+    pointBackgroundColor: "rgba(163, 123, 115, 1)",
     pointBorderColor: "#fff",
   },
 ];
@@ -80,17 +111,34 @@ Template.Community_finances.viewmodel({
     const periods = PeriodBreakdown.leafs().slice(startIndex, endIndex);
     const labels = periods.map(l => l.label);
     const demoLabels = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
-    const T = function (tag) {
-      const monthTotal = Balances.getTotal({
-        communityId,
-        account: '46',
-        tag,
-      });
-      return (-1) * monthTotal;
-    };
     const aggregate = function (array) {
       let sum = 0;
       return array.map((elem) => { sum += elem; return sum; });
+    };
+    const statusData = DEMO ? {
+      labels: demoLabels,
+      datasets: [
+        _.extend({
+          label: __("Money accounts"),
+          data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
+        }, plusColors[0]),
+        _.extend({
+          label: __("Suppliers"),
+          data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
+        }, minusColors[0]),
+      ],
+    } : {
+      labels,
+      datasets: [
+        _.extend({
+          label: __("Money accounts"),
+          data: (periods.map(l => Balances.getDisplayTotal({ communityId, account: '38', tag: 'C' + l.code.substring(1) }))),
+        }, plusColors[0]),
+        _.extend({
+          label: __("Suppliers"),
+          data: aggregate(periods.map(l => Balances.getDisplayTotal({ communityId, account: '46', tag: l.code }))),
+        }, minusColors[0]),
+      ],
     };
     let moneyData;
     if (DEMO) {
@@ -100,15 +148,15 @@ Template.Community_finances.viewmodel({
           _.extend({
             label: "Folyószámla",
             data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
-          }, colorCombos[0]),
+          }, plusColors[0]),
           _.extend({
             label: "Megtakarítási számla",
             data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
-          }, colorCombos[1]),
+          }, plusColors[1]),
           _.extend({
             label: "Pénztár",
             data: [10, 40, 40, 90, 60, 70, 90, 50, 80, 50, 75, 40],
-          }, colorCombos[2]),
+          }, plusColors[2]),
         ],
       };
     } else {
@@ -119,7 +167,7 @@ Template.Community_finances.viewmodel({
         datasets.push(_.extend({
           label: account.name,
           data: periods.map(l => Balances.getDisplayTotal({ communityId, account: account.code, tag: 'C' + l.code.substring(1) })),
-        }, colorCombos[index]));
+        }, plusColors[index + 1]));
       });
       moneyData = { labels, datasets };
     }
@@ -129,11 +177,11 @@ Template.Community_finances.viewmodel({
         _.extend({
           label: "Hosszú lejáratú bank hitel",
           data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
-        }, colorCombos[0]),
+        }, minusColors[1]),
         _.extend({
           label: __("Suppliers"),
           data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
-        }, colorCombos[1]),
+        }, minusColors[2]),
       ],
     } : {
       labels,
@@ -141,12 +189,13 @@ Template.Community_finances.viewmodel({
         _.extend({
           label: __("Suppliers"),
           data: aggregate(periods.map(l => Balances.getDisplayTotal({ communityId, account: '46', tag: l.code }))),
-        }, colorCombos[0]),
+        }, minusColors[0]),
       ],
     };
-
     const chartOptions = { responsive: true };
 
+    const statusContext = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusContext, { type: 'line', data: statusData, options: chartOptions });
     const moneyContext = document.getElementById('moneyChart').getContext('2d');
     new Chart(moneyContext, { type: 'line', data: moneyData, options: chartOptions });
     const loanContext = document.getElementById('loanChart').getContext('2d');
@@ -181,6 +230,15 @@ Template.Community_finances.viewmodel({
     const accountCode = parseInt(account, 10) ? account : coa.findNodeByName(account).code;
     return Balances.getDisplayTotal({ communityId, account: accountCode, tag: 'P' })
       || Balances.getDisplayTotal({ communityId, account: accountCode, tag: 'C' });
+  },
+  getStatusBalance() {
+    return this.getBalance('Money accounts') - this.getBalance('Suppliers');
+  },
+  statusAccounts() {
+    return [
+      { name: 'Money accounts', code: '38' },
+      { name: 'Suppliers', code: '46' },
+    ];
   },
   publishDate() {
     return new Date();
