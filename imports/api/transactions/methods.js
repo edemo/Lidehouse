@@ -85,22 +85,6 @@ export const remove = new ValidatedMethod({
   },
 });
 
-export const publish = new ValidatedMethod({
-  name: 'transactions.publish',
-  validate: new SimpleSchema({
-    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
-
-  run({ communityId }) {
-    checkPermissions(this.userId, 'transactions.publish', communityId);
-//    Balances.find({ communityId, tag: 'T' }).forEach((bal) => {
-//      delete bal._id;
-//      bal.tag = 'P';
-//      Balances.insert(bal);
-//    });
-  },
-});
-
 export const cloneAccountingTemplates = new ValidatedMethod({
   name: 'transactions.cloneAccountingTemplates',
   validate: new SimpleSchema({
@@ -130,6 +114,6 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 });
 
 Transactions.methods = {
-  insert, update, remove, publish, cloneAccountingTemplates,
+  insert, update, remove, cloneAccountingTemplates,
 };
 

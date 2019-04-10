@@ -254,7 +254,7 @@ Template.Accounting_page.events({
   },
   'click #incomplete .js-publish'(event, instance) {
     const communityId = Session.get('activeCommunityId');
-    Modal.confirmAndCall(Transactions.methods.publish, { communityId }, {
+    Modal.confirmAndCall(Balances.methods.publish, { communityId }, {
       action: 'publish balances',
       message: 'This will publish the current account balances',
     });

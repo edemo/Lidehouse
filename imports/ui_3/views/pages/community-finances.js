@@ -175,13 +175,13 @@ Template.Community_finances.viewmodel({
     const elem = document.getElementById('historyChart').getContext('2d');
     new Chart(elem, { type: 'bar', data: barData, options: barOptions });
   },
-  getBalance(account, period) {
+  getBalance(account) {
     const coa = ChartOfAccounts.get(); if (!coa) return 0;
     const accountCode = parseInt(account, 10) ? account : coa.findNodeByName(account).code;
     return Balances.getDisplayTotal({
       communityId: Session.get('activeCommunityId'),
       account: accountCode,
-      tag: 'T',
+      tag: 'P',
     });
   },
   publishDate() {
