@@ -91,5 +91,5 @@ Meteor.publish('transactions.incomplete', function transactionsInCommunity(param
   if (!user.hasPermission('transactions.inCommunity', communityId)) {
     return this.ready();
   }
-  return Transactions.find({ communityId, complete: false });
+  return Transactions.find({ communityId, complete: false }, { limit: 100 });
 });

@@ -22,8 +22,8 @@ Balances.defSchema = new SimpleSchema([{
 
 // Definition + values of a balance
 Balances.schema = new SimpleSchema([Balances.defSchema, {
-  credit: { type: Number, defaultValue: 0 }, // credit total
   debit: { type: Number, defaultValue: 0 }, // debit total
+  credit: { type: Number, defaultValue: 0 }, // credit total
 }]);
 
 Balances.helpers({

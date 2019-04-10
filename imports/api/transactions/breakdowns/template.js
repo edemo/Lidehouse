@@ -49,6 +49,7 @@ export function defineBreakdownTemplates() {
         { digit: '1', name: 'Pénztár' },
         { digit: '2', name: 'Folyószámla' },
         { digit: '3', name: 'Megtakarítási számla' },
+        { digit: '4', name: 'Fundamenta' },
         ],
       },
       { digit: '9', name: 'AKTÍV IDŐBELI ELHATÁROLÁSOK' },

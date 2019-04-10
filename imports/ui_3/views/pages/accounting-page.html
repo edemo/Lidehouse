@@ -16,7 +16,8 @@
                 {{#if userHasPermission 'transactions.insert' (fromSession 'activeCommunityId')}}
                 <div class="pull-right">
                     <a href="" class="btn btn-primary btn-sm js-publish"><i class="fa fa-bullhorn"></i> {{_ 'Publish'}}</a>
-                    <a href="" class="btn btn-white btn-sm js-import"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>
+                    <a href="" class="btn btn-white btn-sm js-import-statement"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>
+                    <a href="" class="btn btn-white btn-sm js-import-balances"><i class="fa fa-upload"></i> {{_ 'Upload balances'}}</a>
                 </div>
                 {{/if}}
                 <!---h3>{{_ 'Transactions to complete'}}</h3-->

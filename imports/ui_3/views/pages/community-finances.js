@@ -3,26 +3,20 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Session } from 'meteor/session';
-import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-
+import { _ } from 'meteor/underscore';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
-import { transactionColumns } from '/imports/api/transactions/tables.js';
-import { breakdownColumns } from '/imports/api/transactions/breakdowns/tables.js';
 import { Reports } from '/imports/api/transactions/reports/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { insert as insertTx, remove as removeTx } from '/imports/api/transactions/methods.js';
-import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
-import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
 import { AccountSpecification } from '/imports/api/transactions/account-specification';
 import { Balances } from '/imports/api/transactions/balances/balances';
 import '/imports/ui_3/views/components/custom-table.js';
@@ -34,6 +28,33 @@ import './community-finances.html';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
 const notVotedColor = '#dedede';
+
+const colorCombos = [
+  {
+    backgroundColor: "rgba(26,179,148,0.5)",
+    borderColor: "rgba(26,179,148,0.7)",
+    pointBackgroundColor: "rgba(26,179,148,1)",
+    pointBorderColor: "#fff",
+  },
+  {
+    backgroundColor: "rgba(220,220,220,0.5)",
+    borderColor: "rgba(220,220,220,1)",
+    pointBackgroundColor: "rgba(220,220,220,1)",
+    pointBorderColor: "#fff",
+  },
+  {
+    backgroundColor: "rgba(179,148,26,0.5)",
+    borderColor: "rgba(179,148,26,0.7)",
+    pointBackgroundColor: "rgba(179,148,26,1)",
+    pointBorderColor: "#fff",
+  },
+  { // duplicate, find a new one!
+    backgroundColor: "rgba(179,148,26,0.5)",
+    borderColor: "rgba(179,148,26,0.7)",
+    pointBackgroundColor: "rgba(179,148,26,1)",
+    pointBorderColor: "#fff",
+  },
+];
 
 Template.Community_finances.viewmodel({
   accountToView: '323',
@@ -58,7 +79,7 @@ Template.Community_finances.viewmodel({
     const endIndex = PeriodBreakdown.leafs().findIndex(l => l.code === endTag);
     const periods = PeriodBreakdown.leafs().slice(startIndex, endIndex);
     const labels = periods.map(l => l.label);
-    // ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
+    const demoLabels = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
     const T = function (tag) {
       const monthTotal = Balances.getTotal({
         communityId,
@@ -71,78 +92,56 @@ Template.Community_finances.viewmodel({
       let sum = 0;
       return array.map((elem) => { sum += elem; return sum; });
     };
-    const moneyData = DEMO ? {
-      labels,
-      datasets: [
-        {
-          label: "Folyószámla",
-          backgroundColor: "rgba(26,179,148,0.5)",
-          borderColor: "rgba(26,179,148,0.7)",
-          pointBackgroundColor: "rgba(26,179,148,1)",
-          pointBorderColor: "#fff",
-          data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
-        },
-        {
-          label: "Megtakarítási számla",
-          backgroundColor: "rgba(220,220,220,0.5)",
-          borderColor: "rgba(220,220,220,1)",
-          pointBackgroundColor: "rgba(220,220,220,1)",
-          pointBorderColor: "#fff",
-          data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
-        },
-        {
-          label: "Pénztár",
-          backgroundColor: "rgba(179,148,26,0.5)",
-          borderColor: "rgba(179,148,26,0.7)",
-          pointBackgroundColor: "rgba(179,148,26,1)",
-          pointBorderColor: "#fff",
-          data: [10, 40, 40, 90, 60, 70, 90, 50, 80, 50, 75, 40],
-        },
-      ],
-    } : {
-      labels,
-      datasets: [
-        {
-          label: __("Suppliers"),
-          backgroundColor: "rgba(26,179,148,0.5)",
-          borderColor: "rgba(26,179,148,0.7)",
-          pointBackgroundColor: "rgba(26,179,148,1)",
-          pointBorderColor: "#fff",
-          data: periods.map(l => (-1) * Balances.getTotal({ communityId, account: '46', tag: l.code })),
-        },
-      ],
-    };
+    let moneyData;
+    if (DEMO) {
+      moneyData = {
+        labels: demoLabels,
+        datasets: [
+          _.extend({
+            label: "Folyószámla",
+            data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
+          }, colorCombos[0]),
+          _.extend({
+            label: "Megtakarítási számla",
+            data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
+          }, colorCombos[1]),
+          _.extend({
+            label: "Pénztár",
+            data: [10, 40, 40, 90, 60, 70, 90, 50, 80, 50, 75, 40],
+          }, colorCombos[2]),
+        ],
+      };
+    } else {
+      const datasets = [];
+      const coa = ChartOfAccounts.get();
+      const moneyAccounts = coa ? coa.findNodeByName('Money accounts') : [];
+      moneyAccounts.leafs().forEach((account, index) => {
+        datasets.push(_.extend({
+          label: account.name,
+          data: periods.map(l => Balances.getDisplayTotal({ communityId, account: account.code, tag: 'C' + l.code.substring(1) })),
+        }, colorCombos[index]));
+      });
+      moneyData = { labels, datasets };
+    }
     const loanData = DEMO ? {
-      labels,
+      labels: demoLabels,
       datasets: [
-        {
+        _.extend({
           label: "Hosszú lejáratú bank hitel",
-          backgroundColor: "rgba(220,220,220,0.5)",
-          borderColor: "rgba(220,220,220,1)",
-          pointBackgroundColor: "rgba(220,220,220,1)",
-          pointBorderColor: "#fff",
           data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
-        },
-        {
+        }, colorCombos[0]),
+        _.extend({
           label: __("Suppliers"),
-          backgroundColor: "rgba(26,179,148,0.5)",
-          borderColor: "rgba(26,179,148,0.7)",
-          pointBackgroundColor: "rgba(26,179,148,1)",
-          pointBorderColor: "#fff",
           data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
-        },
+        }, colorCombos[1]),
       ],
     } : {
       labels,
       datasets: [
-        {
+        _.extend({
           label: __("Suppliers"),
-          backgroundColor: "rgba(26,179,148,0.5)",
-          borderColor: "rgba(26,179,148,0.7)",
-          pointBackgroundColor: "rgba(26,179,148,1)",
-          pointBorderColor: "#fff",
-          data: aggregate(periods.map(l => (-1) * Balances.getTotal({ communityId, account: '46', tag: l.code }))),
-        },
+          data: aggregate(periods.map(l => Balances.getDisplayTotal({ communityId, account: '46', tag: l.code }))),
+        }, colorCombos[0]),
       ],
     };
 

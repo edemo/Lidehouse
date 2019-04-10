@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 import { $ } from 'meteor/jquery';
 import { Fraction } from 'fractional';
 import { flatten } from 'flat';
+import { moment } from 'meteor/momentjs:moment';
 import { UploadFS } from 'meteor/jalik:ufs';
 import { XLSX } from 'meteor/huaming:js-xlsx';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
@@ -96,11 +97,42 @@ function transformMarinaTransactions(jsons, options) {
   return tjsons;
 }
 
-function transformMarinaBalances(jsons, options) {
-  const tjsons = jsons.map((doc) => {
-    const tdoc = $.extend(true, {}, doc);
+// Before upload: remove newline from columns
+// convert all money columns to number (line 37, Dijbeszedo field is fishy)
 
-    return tdoc;
+function transformMarinaBalances(jsons, options) {
+  const tjsons = [];
+  jsons.forEach((doc) => {
+    const date = moment(doc["Dátum"]);
+    const tag = `C-${date.year()}-${date.month() + 1}`;
+    const number = key => (Number(doc[key]) || 0);
+//  '381' name: 'Pénztár' },
+//  '382', name: 'Folyószámla' },
+//  '383', name: 'Megtakarítási számla' },
+//  '384', name: 'Fundamenta' },
+    tjsons.push({
+      account: '381',
+      tag,
+      debit: number("Pénztár"),
+    });
+    tjsons.push({
+      account: '382',
+      tag,
+      debit: number("K&H üzemeltetési számla"),
+    });
+    tjsons.push({
+      account: '383',
+      tag,
+      debit: number("K&H felújítási számla") + number("K&H megtakarítási számla"),
+    });
+    const fundamentaAccountNames = Object.keys(doc).filter(key => key.startsWith('Fundamenta'));
+    let fundamentaBalance = 0;
+    fundamentaAccountNames.forEach(key => fundamentaBalance += number(key));
+    tjsons.push({
+      account: '384',
+      tag,
+      debit: fundamentaBalance,
+    });
   });
   return tjsons;
 }
