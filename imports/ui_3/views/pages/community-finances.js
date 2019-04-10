@@ -176,13 +176,11 @@ Template.Community_finances.viewmodel({
     new Chart(elem, { type: 'bar', data: barData, options: barOptions });
   },
   getBalance(account) {
+    const communityId = Session.get('activeCommunityId');
     const coa = ChartOfAccounts.get(); if (!coa) return 0;
     const accountCode = parseInt(account, 10) ? account : coa.findNodeByName(account).code;
-    return Balances.getDisplayTotal({
-      communityId: Session.get('activeCommunityId'),
-      account: accountCode,
-      tag: 'P',
-    });
+    return Balances.getDisplayTotal({ communityId, account: accountCode, tag: 'P' })
+      || Balances.getDisplayTotal({ communityId, account: accountCode, tag: 'C' });
   },
   publishDate() {
     return new Date();

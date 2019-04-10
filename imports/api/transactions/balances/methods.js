@@ -15,7 +15,15 @@ export const insert = new ValidatedMethod({
     checkPermissions(this.userId, 'balances.insert', doc.communityId);
     checkConstraint(doc.tag.startsWith('C-'), 'Only closing balances can be inserted directly');
     // T-balances get automatically updaed by transactions, and P balances are created by balances.publish
-    return Balances.insert(doc);
+    const result = Balances.insert(doc);
+    // TODO: Here I am assumnig that you are uploading the Closing balances in an ascending time order
+    Balances.update(
+      { communityId: doc.communityId, account: doc.account, localizer: doc.localizer, tag: 'C' },
+      { $set: { debit: doc.debit, credit: doc.credit,
+        communityId: doc.communityId, account: doc.account, localizer: doc.localizer, tag: 'C' } },
+      { upsert: true }
+    );
+    return result;
   },
 });
 
@@ -38,6 +46,9 @@ export const publish = new ValidatedMethod({
             tag: 'P' + tBalance.tag.substring(1),
           }, {
             $set: {
+              communityId,
+              account: leaf.code,
+              tag: 'P' + tBalance.tag.substring(1),
               debit: tBalance.debit,
               credit: tBalance.credit,
             },

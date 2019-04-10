@@ -187,7 +187,7 @@ export function importCollectionFromFile(collection, options) {
         }
         if (collection._name === 'balances') {
           const bal = Balances.findOne({ communityId, account: doc.account, localizer: doc.localizer, tag: doc.tag });
-          if (bal) { scheduleNext('warning', 'Document %s already exists', doc.ref); return; }
+          if (bal) { scheduleNext('warning', 'Document %s already exists', doc.tag); return; }
         }
 
         // Inserting the doc into the db
