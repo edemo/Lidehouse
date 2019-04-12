@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
@@ -19,11 +18,7 @@ import './main.html';
 Template.Main_layout.onCreated(function() {
   // Subscriptions
   // We run this in autorun, so when a new User logs in, the subscription changes
-  Session.set('lastRoute', false);
   this.autorun(() => {
-    FlowRouter.triggers.exit([({ path }) => {
-      Session.set('lastRoute', path);
-    }]);
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
   });
   // This autorun sets the active community automatically to the first community of the user
