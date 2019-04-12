@@ -123,7 +123,7 @@ Template.Community_finances.viewmodel({
           data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
         }, plusColors[0]),
         _.extend({
-          label: __("Suppliers"),
+          label: __("Commitments"),
           data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
         }, minusColors[0]),
       ],
@@ -135,7 +135,7 @@ Template.Community_finances.viewmodel({
           data: (periods.map(l => Balances.getDisplayTotal({ communityId, account: '38', tag: 'C' + l.code.substring(1) }))),
         }, plusColors[0]),
         _.extend({
-          label: __("Suppliers"),
+          label: __("Commitments"),
           data: aggregate(periods.map(l => Balances.getDisplayTotal({ communityId, account: '46', tag: l.code }))),
         }, minusColors[0]),
       ],
@@ -171,7 +171,7 @@ Template.Community_finances.viewmodel({
       });
       moneyData = { labels, datasets };
     }
-    const loanData = DEMO ? {
+    const commitmentData = DEMO ? {
       labels: demoLabels,
       datasets: [
         _.extend({
@@ -198,8 +198,8 @@ Template.Community_finances.viewmodel({
     new Chart(statusContext, { type: 'line', data: statusData, options: chartOptions });
     const moneyContext = document.getElementById('moneyChart').getContext('2d');
     new Chart(moneyContext, { type: 'line', data: moneyData, options: chartOptions });
-    const loanContext = document.getElementById('loanChart').getContext('2d');
-    new Chart(loanContext, { type: 'line', data: loanData, options: chartOptions });
+    const commitmentContext = document.getElementById('commitmentChart').getContext('2d');
+    new Chart(commitmentContext, { type: 'line', data: commitmentData, options: chartOptions });
   },
   syncHistoryChartData() {
     const monthsArray = monthTags.children.map(c => c.label);
@@ -237,7 +237,7 @@ Template.Community_finances.viewmodel({
   statusAccounts() {
     return [
       { name: 'Money accounts', code: '38' },
-      { name: 'Suppliers', code: '46' },
+      { name: 'Commitments', code: '46' },
     ];
   },
   publishDate() {
@@ -248,8 +248,8 @@ Template.Community_finances.viewmodel({
     const moneyAccounts = coa.findNodeByName(account);
     return moneyAccounts.leafs();
   },
-  loanAccounts() {
-    return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'Suppliers'];
+  commitmentAccounts() {
+    return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK', 'Suppliers'];
   },
   breakdown(name) {
     return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));

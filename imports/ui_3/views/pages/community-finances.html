@@ -101,18 +101,18 @@
 
     {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
     <div class="col-md-12">
-        <div class="ibox float-e-margins" id="loanBalances">
+        <div class="ibox float-e-margins" id="commitmentBalances">
             <div class="ibox-content">
                 <div class= "row">
 
                     <div class="col-md-3">
                         <h1 class="m-b-xs">{{displayMoney (add (getBalance 'HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK') (getBalance 'Suppliers'))}}</h1>
-                        <h3 class="font-bold no-margins"> {{_ 'Loan accounts total'}}</h3>
+                        <h3 class="font-bold no-margins"> {{_ 'Commitments total'}}</h3>
                     </div>
 
                     <div class="col-md-3">
                       <table class="table table-condensed nowrap">
-                        {{#each account in loanAccounts}}
+                        {{#each account in commitmentAccounts}}
                         <tr>
                             <td>{{_ account}}</td>
                             <td class="text-right text-bold"> {{displayMoney (getBalance account)}}</td>
@@ -124,7 +124,7 @@
                 </div>
 
                 <div>
-                    <canvas id="loanChart" height="70"></canvas>
+                    <canvas id="commitmentChart" height="70"></canvas>
                 </div>
 
                 {{> Disclaimer}}

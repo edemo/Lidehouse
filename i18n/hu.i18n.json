@@ -320,7 +320,7 @@
   // finances
   "Money accounts total": "Pénzeszközök összesen",
   "Money outstanding": "Befizetetlen előírások",
-  "Loan accounts total": "Tartozások összesen",
+  "Commitments total": "Kötelezettségek összesen",
   "Refreshed": "Frissítve",
   "Account": "Számla", 
   "Accounting configuration": "Számla tükör",
@@ -382,11 +382,12 @@
   "Unidentified items": "NEM AZONOSÍTOTT TÉTELEK",
   "Unidentified incomes": "Nem azonosított bevételek",
   "Unidentified expenses": "Nem azonosított kiadások",
-  "Money accounts": "PÉNZ SZÁMLÁK",
+  "Money accounts": "PÉNZ ESZKÖZÖK",
   "Initilize": "Nyitó/Áthozatal",
   "Opening": "Nyitó egyenleg",
   "Carry": "Áthozatal előző évekről",
   "Performance": "Idei eredmény",
+  "Commitments": "KÖTELEZETTSÉGEK",
   "Suppliers": "SZÁLLÍTÓK",
 
   // Tx types
