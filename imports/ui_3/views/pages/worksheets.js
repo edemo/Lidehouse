@@ -18,7 +18,7 @@ import { afTicketInsertModal, afTaskInsertModal, afTicketUpdateModal, afTicketSt
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
-import './tickets-tasks.html';
+import './worksheets.html';
 
 Template.Tickets_tasks.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');

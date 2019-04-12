@@ -53,7 +53,7 @@ Template.Topic_show.helpers({
             case 'ticket': {
                 return [{
                     title: __('Worksheets'),
-                    url: FlowRouter.path('Tickets-tasks'),
+                    url: FlowRouter.path('Worksheets'),
                 }];
                 break;
             }
