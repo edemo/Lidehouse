@@ -254,8 +254,8 @@
       "label": "Ticket data",
       "type": {
         "label": "Type",
-        "scheduled": "Scheduled",
-        "reported": "Reported"
+        "maintenance": "Maintenance",
+        "issue": "Issue"
       },
       "status": {
         "label": "Status",
