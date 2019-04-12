@@ -6,6 +6,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
+import { numeral } from 'meteor/numeral:numeral';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
@@ -115,13 +116,13 @@ Template.Community_finances.viewmodel({
   syncBalanceChartData() {
     const communityId = Session.get('activeCommunityId');
     const community = Communities.findOne(communityId);
-    const DEMO = community && (community.name.includes('Test') || community.name.includes('Demo'));
+    const DEMO = community && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], community.name);
     const startTag = 'T-2016-12';
     const endTag = PeriodBreakdown.currentCode();
     const startIndex = PeriodBreakdown.leafs().findIndex(l => l.code === startTag);
     const endIndex = PeriodBreakdown.leafs().findIndex(l => l.code === endTag);
     const periods = PeriodBreakdown.leafs().slice(startIndex, endIndex);
-    const labels = periods.map(l => l.label);
+    const labels = periods.map(l => `${l.label === 'JAN' ? l.parent.name : l.label}`);
     const demoLabels = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
     const aggregate = function (array) {
       let sum = 0;
@@ -204,7 +205,16 @@ Template.Community_finances.viewmodel({
         }, minusColors[0]),
       ],
     };
-    const chartOptions = { responsive: true };
+    const chartOptions = {
+      responsive: true,
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value, index, values) => numeral(value).format('0,0$'),
+          },
+        }],
+      },
+    };
 
     const statusContext = document.getElementById('statusChart').getContext('2d');
     new Chart(statusContext, { type: 'line', data: statusData, options: chartOptions });
