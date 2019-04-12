@@ -52,10 +52,10 @@ const plusColors = [
     pointBackgroundColor: "rgba(26,179,148,1)",
     pointBorderColor: "#fff",
   },
-  { // grey
-    backgroundColor: "rgba(220,220,220,0.5)",
-    borderColor: "rgba(220,220,220,1)",
-    pointBackgroundColor: "rgba(220,220,220,1)",
+  { // pastel brown
+    backgroundColor: "rgba(192, 165, 155, 0.5)",
+    borderColor: "rgba(192, 165, 155, 0.7)",
+    pointBackgroundColor: "rgba(192, 165, 155, 1)",
     pointBorderColor: "#fff",
   },
   { // indian yellow
@@ -73,16 +73,28 @@ const minusColors = [
     pointBackgroundColor: "rgba(237, 106, 94, 1)",
     pointBorderColor: "#fff",
   },
-  { // pastel light
-    backgroundColor: "rgba(219, 190, 161, 0.5)",
-    borderColor: "rgba(219, 190, 161, 0.7)",
-    pointBackgroundColor: "rgba(219, 190, 161, 1)",
+  { // pastel pink
+    backgroundColor: "rgba(208, 173, 167, 0.5)",
+    borderColor: "rgba(208, 173, 167, 0.7)",
+    pointBackgroundColor: "rgba(208, 173, 167, 1)",
     pointBorderColor: "#fff",
   },
-  { // pastel dark
+  { // pastel dark 1
     backgroundColor: "rgba(163, 123, 115,  0.5)",
     borderColor: "rgba(163, 123, 115,  0.7)",
     pointBackgroundColor: "rgba(163, 123, 115, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // pastel dark 2
+    backgroundColor: "rgba(173, 106, 108,  0.5)",
+    borderColor: "rgba(173, 106, 108,  0.7)",
+    pointBackgroundColor: "rgba(173, 106, 108, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // grey
+    backgroundColor: "rgba(220,220,220,0.5)",
+    borderColor: "rgba(220,220,220,1)",
+    pointBackgroundColor: "rgba(220,220,220,1)",
     pointBorderColor: "#fff",
   },
 ];
