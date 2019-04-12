@@ -31,7 +31,7 @@ Template.Tickets_tasks.viewmodel({
   ticketText: '',
   ticketStatusArray: [],
   ticketTypeArray: Object.keys(TicketTypes),
-  startDate: '',
+  startDate: moment().subtract(30, 'days').format('YYYY-MM-DD'),
   endDate: '',
   reportedByCurrentUser: false,
   communityId: null,
@@ -101,8 +101,9 @@ Template.Tickets_tasks.viewmodel({
       const startDate = this.startDate();
       const endDate = this.endDate();
       const reportedByCurrentUser = this.reportedByCurrentUser();
-      const selector = { communityId, category: 'ticket', 'ticket.type': { $in: ticketTypeArray } };
+      const selector = { communityId, category: 'ticket' };
       selector.createdAt = {};
+      if (ticketTypeArray.length > 0) selector['ticket.type'] = { $in: ticketTypeArray };
       if (ticketStatusArray.length > 0) selector['ticket.status'] = { $in: ticketStatusArray };
       if (startDate) selector.createdAt.$gte = new Date(this.startDate());
       if (endDate) selector.createdAt.$lte = new Date(this.endDate());
