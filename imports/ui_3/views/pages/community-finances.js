@@ -263,7 +263,7 @@ Template.Community_finances.viewmodel({
     ];
   },
   publishDate() {
-    return new Date();
+    return Balances.findOne({ tag: 'P' }).updatedAt;
   },
   leafsOf(account) {
     const coa = ChartOfAccounts.get(); if (!coa) return [];
