@@ -51,10 +51,17 @@ Template.Topic_show.helpers({
                 break;
             }
             case 'ticket': {
-                return [{
-                    title: __('Tickets'),
-                    url: FlowRouter.path('Tickets'),
-                }];
+                if (Session.get('lastRoute') === '/complex') {
+                    return [{
+                        title: __('Tasks'),
+                        url: FlowRouter.path('Tickets-tasks'),
+                    }];
+                } else {
+                    return [{
+                        title: __('Tickets'),
+                        url: FlowRouter.path('Tickets'),
+                    }];
+                }
                 break;
             }
             default: return [];
