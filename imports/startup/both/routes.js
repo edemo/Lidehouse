@@ -180,7 +180,7 @@ CommunityRelatedRoutes.push('Delegations');
 });
 CommunityRelatedRoutes.push('Tickets.control');*/
 
-FlowRouter.route('/complex', {
+FlowRouter.route('/worksheets', {
   name: 'Tickets-tasks',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Tickets_tasks' });
@@ -196,8 +196,8 @@ CommunityRelatedRoutes.push('Tickets-tasks');
 });
 CommunityRelatedRoutes.push('Tickets.own');*/
 
-FlowRouter.route('/tickets', {
-  name: 'Tickets',
+FlowRouter.route('/tickets-report', {
+  name: 'Tickets-report',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Tickets_report' });
   },
