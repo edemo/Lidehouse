@@ -85,7 +85,8 @@ function transformMarinaTransactions(jsons, options) {
         ref: '<' + docRef,
         partner: doc['Szállító neve adóigazgatási azonosító száma'],
         valueDate: new Date(doc['A számla kiegyenlítésének időpontja']),
-        amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
+        amount: parseInt(doc['Számla összege'], 10),
+//        amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
         debit: [{
           account: '46',
         }],
