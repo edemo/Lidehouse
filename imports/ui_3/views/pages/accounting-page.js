@@ -12,7 +12,7 @@ import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
-import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { onSuccess, handleError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
 import { transactionColumns } from '/imports/api/transactions/tables.js';
 import { breakdownColumns } from '/imports/api/transactions/breakdowns/tables.js';
@@ -353,7 +353,7 @@ Template.Accounting_page.events({
   },
   'click #coa .js-clone'(event, instance) {
     const communityId = Session.get('activeCommunityId');
-    Transactions.methods.cloneAccountingTemplates.call({ communityId });
+    Transactions.methods.cloneAccountingTemplates.call({ communityId }, handleError);
   },
 });
 

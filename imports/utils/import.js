@@ -200,7 +200,7 @@ export function importCollectionFromFile(collection, options) {
         }
 
         // Inserting the doc into the db
-//        console.log('Importing: ', doc);
+        console.log('Importing: ', doc);
         collection.methods.insert.call(doc, function handler(err, res) {
           if (err) {
             console.error(err);

@@ -148,7 +148,7 @@
     {{/if}}
 
     {{#if userHasPermission 'balances.ofLocalizers' (fromSession 'activeCommunityId')}}
-    <div class="col-md-12">
+    <!--div class="col-md-12">
         <div class="ibox ibox-dark" id='balances-report'>
             <div class="ibox-title">
                 <h5>{{_ 'Balance sheet'}}</h5>
@@ -172,11 +172,11 @@
                 {{> Disclaimer}}
             </div>
         </div>
-    </div>
+    </div-->
     {{/if}}
 
     {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
-    <div class="col-md-12">
+    <!--div class="col-md-12">
         <div class="ibox ibox-dark" id='incomes-expenses-history'>
             <div class="ibox-title">
                 <h5>{{_ 'Incomes'}}/{{_ 'Expenses'}} {{_ "'s history"}}</h5>
@@ -201,7 +201,7 @@
                 {{> Disclaimer}}
             </div>
         </div>
-    </div>
+    </div-->
     {{/if}}
 
     </div>
