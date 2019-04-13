@@ -117,16 +117,26 @@ Template.Community_finances.viewmodel({
     const communityId = Session.get('activeCommunityId');
     const community = Communities.findOne(communityId);
     const DEMO = community && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], community.name);
-    const startTag = 'T-2016-12';
+    const startTag = 'T-2016-10';
     const endTag = PeriodBreakdown.currentCode();
     const startIndex = PeriodBreakdown.leafs().findIndex(l => l.code === startTag);
     const endIndex = PeriodBreakdown.leafs().findIndex(l => l.code === endTag);
     const periods = PeriodBreakdown.leafs().slice(startIndex, endIndex);
+    const prePeriods = PeriodBreakdown.leafs().slice(0, startIndex);
     const labels = periods.map(l => `${l.label === 'JAN' ? l.parent.name : l.label}`);
     const demoLabels = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
-    const aggregate = function (array) {
-      let sum = 0;
+    const aggregate = function (array, startValue) {
+      let sum = startValue || 0;
       return array.map((elem) => { sum += elem; return sum; });
+    };
+    const monthlyDataFromTbalances = function (account) {
+      return aggregate(
+        periods.map(l => Balances.getDisplayTotal({ communityId, account, tag: l.code })),
+        aggregate(prePeriods.map(l => Balances.getDisplayTotal({ communityId, account, tag: l.code }))).pop()
+      );
+    };
+    const monthlyDataFromCbalances = function (account) {
+      return periods.map(l => Balances.getDisplayTotal({ communityId, account, tag: 'C' + l.code.substring(1) }));
     };
     const statusData = DEMO ? {
       labels: demoLabels,
@@ -145,11 +155,11 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Money accounts"),
-          data: (periods.map(l => Balances.getDisplayTotal({ communityId, account: '38', tag: 'C' + l.code.substring(1) }))),
+          data: monthlyDataFromCbalances('38'),
         }, plusColors[0]),
         _.extend({
           label: __("Commitments"),
-          data: aggregate(periods.map(l => Balances.getDisplayTotal({ communityId, account: '46', tag: l.code }))),
+          data: monthlyDataFromTbalances('46'),
         }, minusColors[0]),
       ],
     };
@@ -179,7 +189,7 @@ Template.Community_finances.viewmodel({
       moneyAccounts.leafs().forEach((account, index) => {
         datasets.push(_.extend({
           label: account.name,
-          data: periods.map(l => Balances.getDisplayTotal({ communityId, account: account.code, tag: 'C' + l.code.substring(1) })),
+          data: monthlyDataFromCbalances(account.code),
         }, plusColors[index + 1]));
       });
       moneyData = { labels, datasets };
@@ -201,7 +211,7 @@ Template.Community_finances.viewmodel({
       datasets: [
         _.extend({
           label: __("Suppliers"),
-          data: aggregate(periods.map(l => Balances.getDisplayTotal({ communityId, account: '46', tag: l.code }))),
+          data: monthlyDataFromTbalances('46'),
         }, minusColors[0]),
       ],
     };

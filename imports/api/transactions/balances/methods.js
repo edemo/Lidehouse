@@ -56,6 +56,7 @@ export const publish = new ValidatedMethod({
           { upsert: true },
           );
         });
+      // TODO: Publish should calculate the C-balances from the P-balances
     });
   },
 });
