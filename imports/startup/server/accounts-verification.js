@@ -26,16 +26,3 @@ export function cleanExpiredEmails() {
   });
   return true;
 }
-
-/*const tillMidnight = moment().endOf('day') - moment();
-Meteor.setTimeout(function () {
-  cleanExpiredEmails();
-  // reCreateDemoHouse();
-  Meteor.setInterval(function () {
-    cleanExpiredEmails();
-  // reCreateDemoHouse();
-  }, moment.duration(1, 'days').asMilliseconds()
-  );
-}, tillMidnight);*/
-
-

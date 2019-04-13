@@ -19,7 +19,7 @@
                 <div class="col-xs-12 col-md-6 col-lg-6">
                     {{> afQuickField name="title"}}
                     {{> afQuickField name="text"}}
-                    {{> afQuickField name="agendaId" options=agendaOptions}}
+                    {{> afQuickField name="agendaId" options=agendaOptions firstOption=(_ '(Select one)') }}
                     <div class="left-padded">
                         <label>{{_ "Attachments"}}</label>
                     </div>
@@ -46,7 +46,8 @@
                     {{> afQuickField name="vote.effect"}}
                     {{> afQuickField name="vote.type"}}
                     <div class="form-group">
-                        <label>{{_ "Choices"}}</label>
+                        <label>{{_ 'schemaVotings.vote.choices.label'}}</label>
+                        {{> Help_icon title=(_ 'schemaVotings.vote.choices.help')}}
                         <ul class="file-list list-unstyled">
                             {{#each choice in choices}}
                             <li class="{{#if updateForm}}grey-background{{/if}}" >

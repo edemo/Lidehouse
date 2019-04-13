@@ -1,4 +1,6 @@
 <template name="Balance_widget">
+    {{#if Template.subscriptionsReady}}
+    {{#if ownedParcels.length}}
     {{#let bal=balance}}
     <a href="{{pathFor 'Parcels.finances'}}">
         <div id="balance-widget-top" class="widget style1 {{colorClass bal}}">
@@ -14,4 +16,6 @@
         </div>
     </a>
     {{/let}}
+    {{/if}}
+    {{/if}}
 </template>

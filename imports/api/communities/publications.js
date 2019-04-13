@@ -10,8 +10,8 @@ import { Topics } from '/imports/api/topics/topics';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Agendas } from '/imports/api/agendas/agendas.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Journals } from '/imports/api/journals/journals.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Attachments } from '/imports/api/attachments/attachments.js';
 import { Communities } from './communities.js';
 
@@ -52,14 +52,6 @@ function communityPublication(userId, _id) {
           return Meteor.users.find({ _id: membership.person.userId }, { fields: showFields });
         },
       }],
-    }, {
-      // Publish the Parcels of the Community
-      find(community) {
-        if (hasPermission('parcels.inCommunity')) {
-          return Parcels.find({ communityId: community._id });
-        }
-        return undefined;
-      },
     }, {
       // Publish the Topics of the Community
       find(community) {
@@ -108,14 +100,6 @@ function communityPublication(userId, _id) {
       find(community) {
         if (hasPermission('breakdowns.inCommunity')) {
           return Breakdowns.find({ communityId: community._id });
-        }
-        return undefined;
-      },
-    }, {
-      // Publish the Journals of the Community
-      find(community) {
-        if (hasPermission('journals.inCommunity')) {
-          return Journals.find({ communityId: community._id });
         }
         return undefined;
       },

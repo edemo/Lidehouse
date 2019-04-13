@@ -219,7 +219,8 @@
     },
     "vote": {
       "choices": {
-        "label": "Válaszlehetőségek"
+        "label": "Választási lehetőségek",
+        "help": "A szavazás típusa (például igen-nem szavazás esetén) meghatározhatja a választási lehetőségeket. Ha nem, akkor ön adhatja hozzá a lehetséges válaszokat. Előszőr tehát mindenképpen válassza meg a típust."
       },
       "closesAt": {
         "label": "Szavazás lezárása"
@@ -227,19 +228,22 @@
       "procedure": {
         "label": "Szavazás menete",
         "online": "Írásos",
-        "meeting": "Közgyűlési"
+        "meeting": "Közgyűlési",
+        "help": "Az írásos szavazás esetén nincs közgyűlés a szavazás végén."
       },
       "effect": {
         "label": "Szavazás hatása",
         "poll": "Közvéleménykutatás",
-        "legal": "Jogerős szavazás"
+        "legal": "Jogerős szavazás",
+        "help": "A közvéleménykutató szavazásnak nincsen jogi következménye, nem eredményez jogerős határozatot, csak előkészít egy későbbi jogerős szavazást, vagy felméri az álláspontokat."
       },
       "type": {
         "label": "Szavazás típusa",
         "yesno": "Igen-nem",
         "choose": "Egyszerű választásos",
         "preferential": "Preferencia szerint sorba rendező",
-        "petition": "Támogatásgyűjtő"
+        "petition": "Támogatásgyűjtő",
+        "help": "A szavazás típusát célszerű jól megválasztani, hogy a közösség számára optimális döntés születhessen."
       },
       "voters": {
         "label": "Szavazatot leadók"
@@ -257,7 +261,8 @@
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
-      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
+      "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)",
+      "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
     },
     "ticket": {
       "label": "Hibajegy",
@@ -265,7 +270,7 @@
         "label": "Kategória",
         "building": "épület",
         "garden": "kert",
-        "service": "közmű"      
+        "service": "közmű"
       },
       "urgency": {
         "label": "Sürgősség",
@@ -312,6 +317,9 @@
     }
   },
   "schemaBreakdowns": {
+    "digit": {
+      "label": "Kód"
+    },
     "name": {
       "label": "Elnevezés",
       "placeholder": "(pl. Kifizetési hely)"
@@ -319,25 +327,46 @@
     "sign": {
       "label": "Előjel (Tartozik +, Követel -)"
     },
+    "include": {
+      "label": "Behivatkozás"
+    },
     "children": {
       "label": "Kategória fiókok",
       "$": {
+          "digit": {
+            "label": "Kód"
+          },    
           "name": {
-            "label": "Elnevezés (vagy üres ha nem kell)"
+            "label": "Elnevezés"
+          },
+          "include": {
+            "label": "Behivatkozás"
           },
           "children": {
           "label": "Gyűjtő fiókok",
           "$": {
+            "digit": {
+              "label": "Kód"
+            },    
             "name": {
-              "label": "Elnevezés (vagy üres ha nem kell)"
+              "label": "Elnevezés"
+            },
+            "include": {
+              "label": "Behivatkozás"
             },
             "children": {
               "label": "Al fiókok",
               "$": {
+                "digit": {
+                  "label": "Kód"
+                },    
                 "name": {
-                  "label": "Elnevezés (vagy albetét azonosító)",
-                  "placeholder": "(pl. Kert vagy K114)"
-                }
+                  "label": "Elnevezés",
+                  "placeholder": "(Számla név vagy Albetét ref)"
+                },
+                "include": {
+                  "label": "Behivatkozás"
+                }  
               }
             }
           }
@@ -345,10 +374,7 @@
       }
     }
   },
-  "schemaJournals": {
-    "phase": {
-      "label": "Fázis"
-    },
+  "schemaTransactions": {
     "valueDate": {
       "label": "Értéknap",
       "placeholder": "(pl. 2017-05-06)"
@@ -363,7 +389,7 @@
     "batchId": {
       "label": "Batch azonosító"
     },
-    "credit": {
+    "debit": {
       "label": "Tartozik",
       "$": {
         "amount": {
@@ -371,17 +397,14 @@
           "placeholder": "Hagyja üresen, ha megegyezik a teljes összeggel"
         },
         "account": {
-          "label": "Számla specifikáció",
-          "account": {
-            "label": "Számla"
-          },
-          "localizer": {
-            "label": "Könyvelési hely"
-          }
-        }          
+          "label": "Számla"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        }         
       }
     },
-    "debit": {
+    "credit": {
       "label": "Követel",
       "$": {
         "amount": {
@@ -389,14 +412,11 @@
           "placeholder": "Hagyja üresen, ha megegyezik a teljes összeggel"
         },
         "account": {
-          "label": "Számla specifikáció",
-          "account": {
-            "label": "Számla"
-          },
-          "localizer": {
-            "label": "Könyvelési hely"
-          }
-        }          
+          "label": "Számla"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        }
       }
     },
     "ref": {
@@ -424,6 +444,20 @@
       "label": "Könyvelési hely (ha van megadandó)"
     }
   },
+  "schemaTxDefs": {
+    "name": {
+      "label": "Tranzakció típus neve",
+      "placeholder": ""
+    },
+    "debit": {
+      "label": "Tartozik",
+      "placeholder": ""
+    },
+    "credit": {
+      "label": "Követel",
+      "placeholder": ""
+    }
+  },
   "schemaParcelBillings": {
     "year": {
       "label": "Melyik év",
@@ -436,16 +470,23 @@
     "projection": {
       "label": "Vetítési alap"
     },
+    "valueDate": {
+      "label": "Értéknap",
+      "placeholder": "(pl. 2017-05-06)"
+    },
     "amount": {
       "label": "Összeg",
       "placeholder": "(pl. 14560)"
     },
+    "payinType": {
+      "label": "Előírás típusa"
+    },
+    "localizer": {
+      "label": "Előírás helye"
+    },
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. emlékeztető)"
-    },
-    "account": {
-      "label": "Számla"
     }
   },
   "schemaSharedfolders": {

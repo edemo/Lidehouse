@@ -48,7 +48,6 @@ Template.Chatbox.events({
       type: 'method-update',
       meteormethod: 'topics.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-delete'(event, instance) {

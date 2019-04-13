@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
@@ -11,13 +12,18 @@ import './autoform-edit.html';
 // How to instantiate an Autoform_edit window: Modal.show('Autoform_edit', afOptions)
 // Make sure afOptions you omitFields if it is auto filled in an Autoform.hook
 
+Template.Autoform_edit.onRendered(function () {
+  const schemaName = `schema${this.data.id.split('.')[1].capitalize()}s`;
+  initializeHelpIcons(this, schemaName);
+});
+
 Template.Autoform_edit.helpers({
   title() {
     if (this.title) return this.title;
     const split = this.id.split('.'); // AutoFormId convention is 'af.object.action'
     let objectName = split[1];
     const actionName = split[2];
-    if (objectName === 'journal' && actionName === 'insert') objectName = Session.get('activeTxDef');
+    if (objectName === 'transaction' && actionName === 'insert') objectName = Session.get('activeTxDef');
     if (actionName === 'insert') return __('new') + ' ' + __(objectName) + ' ' + __('insertion');
     else if (actionName === 'update') return __(objectName) + ' ' + __('editing data');
     else if (actionName === 'view') return __(objectName) + ' ' + __('viewing data');

@@ -10,7 +10,7 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Accounts } from 'meteor/accounts-base';
 import { __ } from '/imports/localization/i18n.js';
 import { displayError } from '/imports/ui_3/lib/errors.js';
-import '/imports/api/demohouse.js';
+import '/imports/fixture/demohouse.js';
 import './intro-page.html';
 
 Template.Old_intro_page.events({

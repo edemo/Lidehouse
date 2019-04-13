@@ -51,10 +51,9 @@ Template.News.events({
       id: 'af.news.insert',
       collection: Topics,
       schema: Topics.schema,
-      omitFields: ['communityId', 'userId', 'category', 'agendaId'],
+      omitFields: ['userId', 'category', 'agendaId'],
       type: 'method',
       meteormethod: 'topics.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-edit'(event, instance) {
@@ -64,11 +63,10 @@ Template.News.events({
       collection: Topics,
       schema: Topics.schema,
       doc: Topics.findOne(id),
-      omitFields: ['communityId', 'userId', 'category', 'agendaId'],
+      omitFields: ['userId', 'category', 'agendaId'],
       type: 'method-update',
       meteormethod: 'topics.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-remove'(event, instance) {
