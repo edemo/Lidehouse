@@ -68,13 +68,14 @@ function transformMarinaTransactions(jsons, options) {
   const tjsons = [];
   jsons.forEach((doc) => {
     const docRef = doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
-    const cutoffDate = new Date('2019-04-01');
-    const incomingDate = new Date(doc['A számla fizetési határideje'] || doc['Számla kelte']);
+    const cutoffDate = moment(moment.utc('2019-04-01'));
+    const incomingDate = moment(moment.utc(doc['A számla fizetési határideje'] || doc['Számla kelte']));
+    if (!incomingDate.isValid()) console.err('ERROR: Invalid date in import', doc);
     if (incomingDate < cutoffDate) {
       const bill = {
         ref: '>' + docRef,
         partner: doc['Szállító neve adóigazgatási azonosító száma'],
-        valueDate: incomingDate,
+        valueDate: incomingDate.toDate(),
         amount: parseInt(doc['Számla összege'], 10),
         // debit is one of the '8' accounts
         credit: [{
@@ -83,20 +84,23 @@ function transformMarinaTransactions(jsons, options) {
       };
       tjsons.push(bill);
     }
-    const paymentDate = new Date(doc['A számla kiegyenlítésének időpontja']);
-    if (paymentDate < cutoffDate) {
-      const payment = {
-        ref: '<' + docRef,
-        partner: doc['Szállító neve adóigazgatási azonosító száma'],
-        valueDate: paymentDate,
-        amount: parseInt(doc['Számla összege'], 10),
-//        amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
-        debit: [{
-          account: '46',
-        }],
-        // credit is one of the '38' accounts
-      };
-      tjsons.push(payment);
+    if (doc['A számla kiegyenlítésének időpontja']) {
+      const paymentDate = moment(moment.utc(doc['A számla kiegyenlítésének időpontja']));
+      if (!paymentDate.isValid()) console.err('ERROR: Invalid date in import', doc);
+      if (paymentDate < cutoffDate) {
+        const payment = {
+          ref: '<' + docRef,
+          partner: doc['Szállító neve adóigazgatási azonosító száma'],
+          valueDate: paymentDate.toDate(),
+          amount: parseInt(doc['Számla összege'], 10),
+  //        amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
+          debit: [{
+            account: '46',
+          }],
+          // credit is one of the '38' accounts
+        };
+        tjsons.push(payment);
+      }
     }
   });
   return tjsons;
@@ -108,7 +112,7 @@ function transformMarinaTransactions(jsons, options) {
 function transformMarinaBalances(jsons, options) {
   const tjsons = [];
   jsons.forEach((doc) => {
-    const date = moment(doc["Dátum"]);
+    const date = moment.utc(doc["Dátum"]);
     const tag = `C-${date.year()}-${date.month() + 1}`;
     const number = key => (Number(doc[key]) || 0);
 //  '381' name: 'Pénztár' },
@@ -196,7 +200,7 @@ export function importCollectionFromFile(collection, options) {
         }
 
         // Inserting the doc into the db
-        console.log('Importing: ', doc);
+//        console.log('Importing: ', doc);
         collection.methods.insert.call(doc, function handler(err, res) {
           if (err) {
             console.error(err);
