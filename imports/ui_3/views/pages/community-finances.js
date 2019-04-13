@@ -117,7 +117,7 @@ Template.Community_finances.viewmodel({
     const communityId = Session.get('activeCommunityId');
     const community = Communities.findOne(communityId);
     const DEMO = community && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], community.name);
-    const startTag = 'T-2016-10';
+    const startTag = 'T-2016-12';
     const endTag = PeriodBreakdown.currentCode();
     const startIndex = PeriodBreakdown.leafs().findIndex(l => l.code === startTag);
     const endIndex = PeriodBreakdown.leafs().findIndex(l => l.code === endTag);

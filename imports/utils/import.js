@@ -16,7 +16,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 const rABS = true;
-const delayCalls = 250;
+const delayCalls = 0;
 
 function transformMarinaParcels(jsons) {
   const tjsons = jsons.map((doc) => {
@@ -68,23 +68,27 @@ function transformMarinaTransactions(jsons, options) {
   const tjsons = [];
   jsons.forEach((doc) => {
     const docRef = doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
-    const bill = {
-      ref: '>' + docRef,
-      partner: doc['Szállító neve adóigazgatási azonosító száma'],
-      valueDate: new Date(doc['Számla kelte']),
-      amount: parseInt(doc['Számla összege'], 10),
-      // debit is one of the '8' accounts
-      credit: [{
-        account: '46',
-      }],
-    };
-    tjsons.push(bill);
-
-    if (doc['A számla kiegyenlítésének időpontja']) {
+    const cutoffDate = new Date('2019-04-01');
+    const incomingDate = new Date(doc['A számla fizetési határideje'] || doc['Számla kelte']);
+    if (incomingDate < cutoffDate) {
+      const bill = {
+        ref: '>' + docRef,
+        partner: doc['Szállító neve adóigazgatási azonosító száma'],
+        valueDate: incomingDate,
+        amount: parseInt(doc['Számla összege'], 10),
+        // debit is one of the '8' accounts
+        credit: [{
+          account: '46',
+        }],
+      };
+      tjsons.push(bill);
+    }
+    const paymentDate = new Date(doc['A számla kiegyenlítésének időpontja']);
+    if (paymentDate < cutoffDate) {
       const payment = {
         ref: '<' + docRef,
         partner: doc['Szállító neve adóigazgatási azonosító száma'],
-        valueDate: new Date(doc['A számla kiegyenlítésének időpontja']),
+        valueDate: paymentDate,
         amount: parseInt(doc['Számla összege'], 10),
 //        amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
         debit: [{
