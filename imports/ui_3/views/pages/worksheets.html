@@ -1,0 +1,94 @@
+<template name="Tickets_tasks">
+  <!-- Page heading -->
+  {{> Page_heading title=(_ 'Worksheets') }}
+
+  <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox">
+      <div class="ibox-title">
+        <h5>{{_ 'Filters'}}</h5>
+        {{> iboxTools}}
+      </div>
+
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="input-group">
+              <label class="control-label">{{_ 'Ticket status'}}</label><br>
+              {{#each ticketStatus in (keys ticketStatuses)}}
+              <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{select 'color' (select ticketStatus ticketStatuses)}} {{activeStatusButton ticketStatus}}" data-value="{{ticketStatus}}">{{_ (concat 'schemaTickets.ticket.status.' ticketStatus)}}</button>
+              {{/each}}
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="input-group">
+              <label class="control-label">{{_ 'Ticket type'}}</label><br>
+              {{#each ticketType in (keys ticketTypes)}}
+              <button type="button" class="js-type-filter btn btn-primary btn-xs btn-outline btn-warning {{activeTypeButton ticketType}}" data-value="{{ticketType}}">{{_ (concat 'schemaTickets.ticket.type.' ticketType)}}</button>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <label class="control-label">{{_ 'Title'}}</label>
+            <div class="form-group">
+              <div class="input-group">    
+                <input type="text" placeholder="{{_ 'search'}}..." {{b "value: ticketText"}} class="form-control js-search">
+                <span class="input-group-addon">
+                  <i class="fa fa-search"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="start_date">{{_ 'Start date'}}</label>
+              <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+              <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-9">
+            <button type="button" class="js-reported-by-current-user btn btn-primary btn-xs btn-outline btn-warning {{activeReportedByCurrentUserButton}}">{{_ 'Reported by me'}}</button>
+          </div>
+          <div class="col-sm-3 align">
+            <button type="button" class="js-clear-filter btn btn-primary btn-xs {{#if noFilters}}disabled{{/if}}" data-value="cancel">{{_ 'clear filters'}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ibox">
+      <div class="ibox-title"> 
+        <div class="row">
+          <div class="col-sm-8">
+            <h5>{{_ 'Worksheet archive'}}</h5>
+          </div>
+          {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')  }}
+          <div class="col-sm-2 m-b-xs">  
+            <a href="" class="btn btn-primary btn-xs js-new pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'ticket'}}</a>
+          </div>
+          {{/if}}
+          {{#if userHasPermission 'task.insert' (fromSession 'activeCommunityId')  }}
+          <div class="col-sm-2 m-b-xs">  
+            <a href="" class="btn btn-primary btn-xs js-new-task pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'task'}}</a>
+          </div>
+          {{/if}}
+        </div>    
+      </div>
+      <div class="ibox-content">
+        <div class="no-padding table-responsive">
+          {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

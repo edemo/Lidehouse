@@ -61,16 +61,22 @@ Template.Tickets_simple.events({
   'click .js-edit'(event) {
     const id = $(event.target).data('id');
     afTicketUpdateModal(id);
+    event.stopPropagation();
   },
   'click .js-status'(event) {
     const id = $(event.target).data('id');
     afTicketStatusChangeModal(id);
+    event.stopPropagation();
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
     deleteTicketConfirmAndCallModal(id);
+    event.stopPropagation();
   },
   'keyup .js-search'(event, instance) {
     instance.viewmodel.ticketText(event.target.value);
   },
+  'click .ticket-row'() {
+    window.location.pathname = $('.ticket-row').data('href');
+  }
 });

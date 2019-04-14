@@ -2,6 +2,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { possibleNextStatuses, TicketStatuses } from '/imports/api/topics/tickets/ticket-status.js';
 import { $ } from 'meteor/jquery';
 
 export const Render = {
@@ -82,7 +83,43 @@ export const Render = {
     return html;
   },
   ticketStatusButton(cellData) {
-    const html = `<button class="btn btn-xs btn-white js-status" data-id=${cellData}><i class="fa fa-cog"></i>${__('status')}</button>`;
+    const thisTopic = Topics.findOne(cellData);
+    // const html = `<button class="btn btn-xs btn-white js-status" data-id=${cellData}><i class="fa fa-cog"></i>${__('status')}</button>`;
+    let html = `<div class="dropdown pull-left">
+                  <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white">
+                    <i class="fa fa-cog"></i> 
+                    ${__('statusChange')} 
+                    <b class="caret"></b>
+                  </a>
+                  <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">`;
+    possibleNextStatuses(thisTopic).forEach((status) => {
+      html += `<li>
+                <a href="" class="js-status" data-id="${cellData}" data-status="${status}">
+                  ${__('schemaTickets.ticket.status.' + status)}
+                </a>
+              </li>`;
+    });
+    html += '</ul></div>';
+    return html;
+  },
+  ticketCommentButton(cellData) {
+    const html = `<a href="/topic/${cellData}" class="btn btn-white btn-xs"><i class="fa fa-comments"></i>${__('Comment')}</a>`;
+    return html;
+  },
+  ticketButtonGroup(ticketButtonRenderers) {
+    return function groupRenderer(cellData, renderType, currentRow) {
+      let html = '<div class="btn-group">';
+      ticketButtonRenderers.forEach((renderer) => {
+        html += renderer(cellData, renderType, currentRow);
+      });
+      html += '</div>';
+      return html;
+    };
+  },
+  ticketStatus(cellData) {
+    const ticketStatusName = cellData;
+    const color = TicketStatuses[ticketStatusName].color;
+    const html = `<span class='label label-${color}'>${__('schemaTickets.ticket.status.' + cellData)}</span>`;
     return html;
   },
   ticketCommentButton(cellData) {

@@ -4,13 +4,13 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 import { _ } from 'meteor/underscore';
 
 import { Topics } from '/imports/api/topics/topics.js';
-import { TicketUrgencyValues, TicketStatusNames, TicketTypeNames } from '/imports/api/topics/tickets/ticket-status.js';
+import { TicketUrgencyValues, TicketTypes, TicketStatuses } from '/imports/api/topics/tickets/ticket-status.js';
 
 export const Tickets = {};
 
 Tickets.extensionSchema = new SimpleSchema({
-  type: { type: String, allowedValues: TicketTypeNames, autoform: autoformOptions(TicketTypeNames, 'schemaTickets.ticket.type.') },
-  status: { type: String, allowedValues: TicketStatusNames, autoform: autoformOptions(TicketStatusNames, 'schemaTickets.ticket.status.') },
+  type: { type: String, allowedValues: Object.keys(TicketTypes), autoform: autoformOptions(Object.keys(TicketTypes), 'schemaTickets.ticket.type.') },
+  status: { type: String, allowedValues: Object.keys(TicketStatuses), autoform: autoformOptions(Object.keys(TicketStatuses), 'schemaTickets.ticket.status.') },
 //  category: { type: String, allowedValues: Tickets.categoryValues, autoform: autoformOptions(Topics.ticketCategoryValues, 'schemaTickets.ticket.category.'), optional: true },
   urgency: { type: String, allowedValues: TicketUrgencyValues, autoform: autoformOptions(TicketUrgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
   localizer: { type: String, optional: true },

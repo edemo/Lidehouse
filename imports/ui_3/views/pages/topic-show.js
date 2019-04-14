@@ -50,8 +50,8 @@ Template.Topic_show.helpers({
       }
       case 'ticket': {
         return [{
-          title: __('Tickets'),
-          url: FlowRouter.path('Tickets.report'),
+          title: __('Worksheets'),
+          url: FlowRouter.path('Worksheets'),
         }];
       }
       default: return [];
@@ -60,9 +60,9 @@ Template.Topic_show.helpers({
 });
 
 Template.Ticket_topic_show.helpers({
-  statusColor(statusName) {
+  /*statusColor(statusName) {
     return TicketStatuses[statusName].color;
-  },
+  },*/
   urgencyColor(value) {
     return TicketUrgencyColors[value];
   },

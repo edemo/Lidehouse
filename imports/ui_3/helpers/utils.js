@@ -90,3 +90,10 @@ Template.registerHelper('entriesOf', function entriesOf(obj) {
 Template.registerHelper('statusColor', function statusColor(statusName) {
   return TicketStatuses[statusName].color;
 });
+
+Template.registerHelper('keys', function keys(object) {
+  return Object.keys(object);
+});
+Template.registerHelper('select', function select(key, object) {
+  return object[key];
+});

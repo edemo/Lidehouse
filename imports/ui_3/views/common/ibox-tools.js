@@ -4,6 +4,8 @@ import './ibox-tools.html';
 Template.iboxTools.onRendered(function () {
   const element = this.$('.collapse-link');
   const ibox = element.closest('div.ibox');
+  element.parent().css('position', 'relative');
+  element.addClass('collapse-link-size');
   if (ibox.hasClass('closed-ibox')) {
     const button = element.closest('div.collapse-link').find('i');
     ibox.find('div.ibox-content').css('display', 'none');
