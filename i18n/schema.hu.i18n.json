@@ -256,8 +256,7 @@
       "placeholder": "(pl. Elromlott a lift)"
     },
     "text": {
-      "label": "Hiba leírása",
-      "placeholder": "(pl. Megakadt a harmadik és negyedik között...)"
+      "label": "Megjegyzések"
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
@@ -265,8 +264,26 @@
       "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
     },
     "ticket": {
-      "label": "Hibajegy",
-        "category": {
+      "label": "Hibajegy adatok",
+      "type": {
+        "label": "Típus",
+        "scheduled": "Ütemezett",
+        "reported": "Bejelentett"
+      },
+      "status": {
+        "label": "Státusz",
+        "scheduled": "Ütemezve",
+        "reported": "Bejelentve",
+        "confirmed": "Betervezve",
+        "toApprove": "Jóváhagyásra",
+        "toVote": "Megszavazásra",
+        "progressing": "Folyamatban",
+        "suspended": "Felfüggesztve",
+        "finished": "Elvégezve",
+        "closed": "Lezárva",
+        "deleted": "Törölt"
+      },
+      "category": {
         "label": "Kategória",
         "building": "épület",
         "garden": "kert",
@@ -278,25 +295,36 @@
         "normal": "közepes",
         "low": "alacsony"
       },
-      "status": {
-        "label": "Státusz",
-        "reported": "megerősítés alatt",
-        "confirmed": "megerősítve",
-        "progressing": "folyamatban",
-        "finished": "megoldva",
-        "checked": "ellenőrizve",
-        "closed": "lezárva",
-        "deleted": "törölt"
+      "localizer": {
+        "label": "Hiba helye"
+      },
+      "expectedCost": { 
+        "label": "Várható költség"
+      },
+      "expectedStart": { 
+        "label": "Várható kezdés"
+      },
+      "expectedFinish": { 
+        "label": "Várható befejezés"
+      },
+      "expectedContinue": { 
+        "label": "Várható folytatás"
+      },
+      "waitingFor": {
+        "label": "Mire várakozik"
+      },
+      "actualCost": { 
+        "label": "Tényleges költség"
+      },
+      "actualStart": { 
+        "label": "Tényleges kezdés"
+      },
+      "actualFinish": { 
+        "label": "Tényleges befejezés"
+      },
+      "actualContinue": { 
+        "label": "Tényleges folytatás"
       }
-    }
-  },
-  "schemaTicketStatusChange": {
-    "text": {
-      "label": "Hozzáfűzött szöveg",
-      "placeholder": "(pl. A törött alkatrész cseréje megtörtént)"
-    },
-    "status": {
-      "label": "Új státusz"
     }
   },
   "schemaFeedback": {

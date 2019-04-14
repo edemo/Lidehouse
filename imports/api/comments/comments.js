@@ -31,10 +31,14 @@ class CommentsCollection extends Mongo.Collection {
 
 export const Comments = new CommentsCollection('comments');
 
+Comments.typeValues = ['statusChange', 'pointAt'];
+
 Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  type: { type: String, optional: true, allowedValues: Comments.typeValues, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
+  data: { type: Object, blackbox: true, optional: true },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id,
     autoValue() {
@@ -80,6 +84,9 @@ Comments.helpers({
   isHiddenBy(userId) {
     const author = this.createdBy();
     return this.isFlaggedBy(userId) || (author && author.isFlaggedBy(userId));
+  },
+  getType() {
+    return this.type || 'comment';
   },
 });
 

@@ -197,6 +197,18 @@
   "Show more": "Tovább",
   "Show less": "Kevesebb",
 
+  "statusChange": "Státusz váltás",
+  "changed the status": "megváltoztatta a státuszt",
+  "scheduled": "Ütemezve",
+  "reported": "Bejelentve",
+  "confirmed": "Betervezve",
+  "toApprove": "Jóváhagyásra",
+  "toVote": "Megszavazásra",
+  "progressing": "Folyamatban",
+  "suspended": "Felfüggesztve",
+  "finished": "Elvégezve",
+  "deleted": "Törölt",
+
   // community page
   "representor": "képviselője",
   "Lead parcel": "Vezető albetét",
@@ -264,7 +276,7 @@
   "Proxy voting" : "Szavazás mások nevében",
   "Please select voters": "Válassza ki kiknek a nevében szeretné ezt a szavazatot leadni",
   "Attachments" : "Csatolmányok",
-  "Activity": "Változások",
+  "Amendments": "Módosítások",
   "All votings": "Aktív és lezárt szavazások teljes listája",
   "This is a voting type": "Ez egy <i>%s</i> szavazás",
   "votingInstructions": {

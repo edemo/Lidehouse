@@ -252,8 +252,7 @@
       "placeholder": "(eg. Elevator not working)"
     },
     "text": {
-      "label": "Description",
-      "placeholder": "(eg. Got stuck between third and fourth floor)"
+      "label": "Remarks"
     },
     "photo": {
       "label": "Photo (if applicable)",
@@ -261,7 +260,25 @@
       "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
     },
     "ticket": {
-      "label": "Ticket",
+      "label": "Ticket data",
+      "type": {
+        "label": "Type",
+        "scheduled": "Scheduled",
+        "reported": "Reported"
+      },
+      "status": {
+        "label": "Status",
+        "scheduled": "Scheduled",
+        "reported": "Reported",
+        "confirmed": "Planned",
+        "toApprove": "To approve",
+        "toVote": "To vote on",
+        "progressing": "Progressing",
+        "suspended": "Suspended",
+        "finished": "Done",
+        "closed": "Closed",
+        "deleted": "Deleted"
+      },
       "category": {
         "label": "Category",
         "building": "Building",
@@ -274,26 +291,36 @@
         "normal": "Normal",
         "low": "Low"
       },
-      "status": {
-        "label": "Status",
-        "reported": "Reported",
-        "scheduled": "Ütemezve",
-        "confirmed": "Confirmed",
-        "progressing": "Progressing",
-        "finished": "Finished",
-        "checked": "Checked",
-        "closed": "Closed",
-        "deleted": "Deleted"
+      "localizer": {
+        "label": "Location"
+      },
+      "expectedCost": { 
+        "label": "Expected cost"
+      },
+      "expectedStart": { 
+        "label": "Expected start"
+      },
+      "expectedFinish": { 
+        "label": "Expected finish"
+      },
+      "expectedContinue": { 
+        "label": "Expected continuation"
+      },
+      "waitingFor": {
+        "label": "Waiting for"
+      },
+      "actualCost": { 
+        "label": "Actual cost"
+      },
+      "actualStart": { 
+        "label": "Actual start"
+      },
+      "actualFinish": {
+        "label": "Actual finish"
+      },
+      "actualContinue": { 
+        "label": "Actual continuation"
       }
-    }
-  },
-  "schemaTicketStatusChange": {
-    "text": {
-      "label": "Comment",
-      "placeholder": "(eg. We replaced the broken part)"
-    },
-    "status": {
-      "label": "New status"
     }
   },
   "schemaFeedback": {

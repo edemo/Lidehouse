@@ -52,14 +52,14 @@ Template.Comments_section.helpers({
     const topic = this;
     return topic.category === 'vote';
   },
-  comments() {
+  events() {
     const route = FlowRouter.current().route.name;
-    const comments = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
+    const events = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
     if (route === 'Board') {
       // on the board showing only the most recent ones
-      return comments.fetch().slice(-1 * RECENT_COMMENT_COUNT);
+      return events.fetch().slice(-1 * RECENT_COMMENT_COUNT);
     }
-    return comments;
+    return events;
   },
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
@@ -87,12 +87,8 @@ Template.Comments_section.events({
 
 //------------------------------------
 
-Template.Comment.helpers({
-});
-
 Template.Comment.events({
   'click .js-like'(event) {
-    event.preventDefault();
     like.call({
       coll: 'comments',
       id: this._id,
@@ -113,9 +109,15 @@ Template.Comment.events({
     $(textareaEdit).insertAfter('span[data-id="' + instance.data._id + '"]');
     $('#editableSpan > textarea').focus();
   },
+  'click .js-delete'(event, instance) {
+    Modal.confirmAndCall(removeComment, { _id: this._id }, {
+      action: 'delete comment',
+      message: 'It will disappear forever',
+    });
+  },
   'keydown .js-send-edited'(event, instance) {
     // pressing escape key
-    if (event.keyCode === 27) { 
+    if (event.keyCode === 27) {
       event.preventDefault();
       $('#editableSpan').remove();
       $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
@@ -131,11 +133,5 @@ Template.Comment.events({
       $('#editableSpan').remove();
       $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
     }
-  },
-  'click .js-delete'(event, instance) {
-    Modal.confirmAndCall(removeComment, { _id: this._id }, {
-      action: 'delete comment',
-      message: 'It will disappear forever',
-    });
   },
 });

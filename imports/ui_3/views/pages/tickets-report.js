@@ -7,8 +7,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
 import { Topics } from '/imports/api/topics/topics.js';
-import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
-import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
+import { TicketUrgencyColors, possibleNextStatuses } from '/imports/api/topics/tickets/ticket-status.js';
 import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -20,11 +19,8 @@ Template.Tickets_report.viewmodel({
   activesOnly: false,
   filterUserId: null,
   searchText: '',
-  statusColor(value) {
-    return Topics.statusColors[value];
-  },
   urgencyColor(value) {
-    return Topics.urgencyColors[value];
+    return TicketUrgencyColors[value];
   },
   activeClassForActives() {
     return this.activesOnly() && 'active';
@@ -52,6 +48,9 @@ Template.Tickets_report.viewmodel({
       createdAt: { $gt: moment().subtract(2, 'week').toDate() },
     }, { sort: { createdAt: -1 } });
   },
+  possibleNextStatuses(topic) {
+    return possibleNextStatuses(topic);
+  },
 });
 
 Template.Tickets_report.events({
@@ -64,7 +63,8 @@ Template.Tickets_report.events({
   },
   'click .js-status'(event) {
     const id = $(event.target).data('id');
-    afTicketStatusChangeModal(id);
+    const status = $(event.target).data('status');
+    afTicketStatusChangeModal(id, status);
   },
   'click .js-delete'(event) {
     const id = $(event.target).data('id');
