@@ -109,30 +109,22 @@ Template.Comment.viewmodel({
 Template.Comment.events({
   'click .js-like'(event) {
     event.preventDefault();
-    like.call({
-      coll: 'comments',
-      id: this._id,
-    }, handleError);
+    like.call({ coll: 'comments', id: this._id }, handleError);
   },
   'click .js-flag'(event) {
     event.preventDefault();
-    flag.call({
-      coll: 'comments',
-      id: this._id,
-    }, handleError);
+    flag.call({ coll: 'comments', id: this._id }, handleError);
   },
   'click .js-edit'(event, instance) {
+    const element = $(event.target).closest('.media-body');
+    Meteor.setTimeout(() => element.find('textarea')[0].focus(), 100);
     instance.viewmodel.editing(true);
-    setTimeout(function () {
-      const textarea = $(event.target).closest('.media-body').find('textarea')[0];
-      textarea.focus();
-    }, 100);
   },
   'click .js-save'(event, instance) {
-    const editedText = $(event.target).closest('.media-body').find('textarea')[0].value;
+    const text = $(event.target).closest('.media-body').find('textarea')[0].value;
     updateComment.call({
       _id: instance.data._id,
-      modifier: { $set: { text: editedText } },
+      modifier: { $set: { text } },
     }, handleError);
     instance.viewmodel.editing(false);
   },
