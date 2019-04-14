@@ -2,74 +2,67 @@ import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
-import { JournalEntries } from '/imports/api/journals/entries.js';
+import { JournalEntries } from '/imports/api/transactions/entries.js';
 //-----
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-
+import { AccountSpecification } from '/imports/api/transactions/account-specification';
 import './account-history.html';
-import { AccountSpecification } from '../../../api/journals/account-specification';
 
 Template.Account_history.viewmodel({
-  startDate: '',
+  sign: +1,
+  beginDate: '',
   endDate: '',
   accountSelected: '',
   accountOptions: [],
-  status: 'Reconciled',
-  onCreated() {
-//    const today = moment().format('L');
-//    this.endDate(today);
-  },
-  journalEntries() {
-    const accountSpec = AccountSpecification.fromNames(this.accountSelected());
-    const entries = JournalEntries.find({
-      ['account.' + accountSpec.mainFamily]: accountSpec.mainLeaf,
-      valueDate: { $gte: new Date(this.startDate()), $lte: new Date(this.endDate()) },
-    }, { sort: { valueDate: 1 } }).fetch();
-    let total = 0;
-    const entriesWithRunningTotal = entries.map(e => {
-      total += e.effectiveAmount();
-      return _.extend(e, { total });
-    });
-    return entriesWithRunningTotal;
-  },
-  negativeClass(entry) {
-    return entry.effectiveAmount() < 0 ? 'negative' : '';
-  },
-});
-
-
-
-Template.Parcel_history.viewmodel({
-  startDate: '',
-  endDate: '',
   localizerSelected: '',
-  localizerOptions: '',
-  onCreated() {
-    const communityId = Session.get('activeCommunityId');
-    const myParcelRefs = Memberships.find({ communityId, personId: Meteor.userId(), role: 'owner' }).map(m => m.parcel() ? m.parcel().ref : null);
-    this.localizerOptions(myParcelRefs);
-    if (myParcelRefs && myParcelRefs[0]) {
-      this.localizerSelected(myParcelRefs[0]);
-    }
+  localizerOptions: [],
+  status: 'Reconciled',
+  onCreated(instance) {
+    const self = this;
+    instance.autorun(() => {
+      const communityId = Session.get('activeCommunityId');
+//      console.log('subscribing:', communityId, this.accountSelected(), this.localizerSelected());
+      instance.subscribe('transactions.byAccount', {
+        communityId,
+        account: self.accountSelected(),
+        localizer: self.localizerSelected(),
+        begin: moment(self.beginDate()).toDate(),
+        end: moment(self.endDate()).add(1, 'day').toDate(),
+      });
 //    const today = moment().format('L');
 //    this.endDate(today);
+    });
   },
+  autorun: [
+    function defaultOptionSelect() {
+      const instance = this.templateInstance;
+      instance.autorun(() => {
+        if (this.accountOptions().length && !this.accountSelected()) {
+          this.accountSelected(this.accountOptions()[0].value);
+        }
+        if (this.localizerOptions().length && !this.localizerSelected()) {
+          this.localizerSelected(this.localizerOptions()[0].value);
+        }
+      });
+    },
+  ],
   journalEntries() {
+//    const accountSpec = new AccountSpecification(this.accountSelected());
+    const selector = { valueDate: { $gte: moment(this.beginDate()).toDate(), $lt: moment(this.endDate()).add(1, 'day').toDate() } };
+    if (this.accountSelected()) selector.account = this.accountSelected();
+    if (this.localizerSelected()) selector.localizer = this.localizerSelected();
+//    console.log('data fetching:', selector);
+    const entries = JournalEntries.find(selector, { sort: { valueDate: 1 } });
     let total = 0;
-    const entries = JournalEntries.find({
-      'account.Liabilities': { $exists: true },
-      'account.Localizer': this.localizerSelected(),
-      valueDate: { $gte: new Date(this.startDate()), $lte: new Date(this.endDate()) },
-    }, { sort: { valueDate: 1 } }).fetch();
     const entriesWithRunningTotal = entries.map(e => {
-      total += e.effectiveAmount();
+      total += e.effectiveAmount(this.sign());
       return _.extend(e, { total });
     });
     return entriesWithRunningTotal;
   },
   negativeClass(entry) {
-    return entry.effectiveAmount() < 0 ? 'negative' : '';
+    return entry.effectiveAmount(this.sign()) < 0 ? 'negative' : '';
   },
 });

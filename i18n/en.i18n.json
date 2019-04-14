@@ -51,6 +51,8 @@
   "err_sanityCheckFailed": "Data input is invalid",
   "errorInFormFieldValidation": "The form is incomplete. The red fields have to be filled with valid data.",
 
+  "youNeedToSaveYourChanges": "The change becomes active once you press Save on the form",
+  "needToRemoveCurrentToAddNew" : "To add a different file, you need to remove the current one",
   "pageNotFound": "Page not found",
   "tryingToConnect": "Trying to connect…",
   "connectionIssue": "There seems to be a connection issue",
@@ -86,8 +88,8 @@
   "Parcel benefactors list": "Benefactors of parcel %s",
 
   // topics
-  "Hide comments from": "Hide comments from %s",
-  "Unhide comments from": "Reveal comments from %s",
+  "Block content from": "Hide comments from %s",
+  "Unblock content from": "Reveal comments from %s",
   "Content hidden by": "Content hidden by %s",
   "View previous comments": "View %s previous comments",
   
@@ -131,5 +133,8 @@
     "Those belong to the community, and you need to ask the community's admin to delete them. <br /><br />",
     "You may read our <a href='privacy' target='blank'>Privacy Statement</a>"],
   "welcome": "Welcome on Honline!",
-  "welcomeMessage": "Please set your most important settings. You will be able to change these settings later on the profile page, where you can also enter your personal information."
+  "welcomeMessage": "Please set your most important settings. You will be able to change these settings later on the profile page, where you can also enter your personal information.",
+  "Name mismatch notification": ["Your profile name (<strong>__userName__</strong>) does not match the name registered with the management (which is <strong>__personName__</strong>).<br /><br />",
+    "If you typed incorrect data here on the profile page, please correct it here, otherwise if the management knows your name incorrectly, and you are not __personName__, then please contact your managament, so they can fix it.",
+    "Meanwhile in __communityName__ the other owners will see you commenting and voting officially in the name of: __personName__."]
 }

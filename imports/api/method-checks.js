@@ -5,6 +5,12 @@ import { Permissions } from '/imports/api/permissions/permissions.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import '/imports/api/users/users.js';
 
+export function checkConstraint(predicate, errorMessage) {
+  if (!predicate) {
+    throw new Meteor.Error('err_constraint', errorMessage);
+  }
+}
+
 export function checkLoggedIn(userId) {
   if (!userId) {
     throw new Meteor.Error('err_notLoggedIn',
@@ -80,4 +86,18 @@ export function checkModifier(object, modifier, modifiableFields, exclude = fals
         `Field: ${mf}\n Modifier: ${JSON.stringify(modifier)}\n Object: ${JSON.stringify(object)}`);
     }
   });
+}
+
+export function checkPermissionsToUpload(userId, collection, doc) {
+  if (!collection.hasPermissionToUpload(userId, doc)) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `Permission: ${"Upload"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
+  }
+}
+
+export function checkPermissionsToRemoveUploaded(userId, collection, doc) {
+  if (!collection.hasPermissionToRemoveUploaded(userId, doc)) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `Permission: ${"Remove"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
+  }
 }

@@ -26,6 +26,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/tickets-tasks.js';
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
+  import '/imports/ui_3/views/pages/accounting-page.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
   import '/imports/ui_3/views/pages/topic-show.js';
 
@@ -219,6 +220,14 @@ FlowRouter.route('/community-finances', {
   },
 });
 CommunityRelatedRoutes.push('Community.finances');
+
+FlowRouter.route('/accounting', {
+  name: 'Accounting.page',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Accounting_page' });
+  },
+});
+CommunityRelatedRoutes.push('Accounting.page');
 
 FlowRouter.route('/community', {
   name: 'Community.page.default',

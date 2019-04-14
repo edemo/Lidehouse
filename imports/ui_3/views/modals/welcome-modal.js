@@ -15,7 +15,6 @@ export function showWelcomeModal() {
     type: 'method-update',
     meteormethod: 'user.update',
     singleMethodArgument: true,
-    template: 'bootstrap3-inline',
   });
 }
 

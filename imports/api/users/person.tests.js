@@ -144,11 +144,11 @@ if (Meteor.isServer) {
 
       });
 
-      describe('Scenario A2: Person creates user account, manager adds him to the community', function () {
+      describe('Scenario A2: Person creates user account, admin adds him to the community', function () {
         let membershipId;
         let userId;
         after(function () {
-          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Memberships.methods.remove._execute({ userId: Fixture.demoAdminId }, { _id: membershipId });
           Meteor.users.remove(userId);
         });
         
@@ -157,8 +157,8 @@ if (Meteor.isServer) {
           done();
         });
 
-        it('[2] manager adds him with a role', function (done) {
-          membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+        it('[2] admin adds him with a role', function (done) {
+          membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, {
             communityId: Fixture.demoCommunityId,
             approved: true,
             person: {

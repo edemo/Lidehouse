@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
@@ -8,27 +9,21 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
+import { namesMatch } from '/imports/utils/compare-names.js';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { Communities } from '/imports/api/communities/communities.js';
+import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
-let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
+export let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {
   import { currentUserLanguage } from '/imports/startup/client/language.js';
 
   getCurrentUserLang = currentUserLanguage;
-}
-
-let getActiveCommunityId = () => { debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"'); };
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  getActiveCommunityId = function () { return Session.get('activeCommunityId'); };
 }
 
 export const nullUser = {
@@ -116,7 +111,7 @@ Meteor.users.schema = new SimpleSchema({
   'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
-  avatar: { type: String, /* regEx: SimpleSchema.RegEx.Url,*/ defaultValue: defaultAvatar, optional: true },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
   profile: { type: PersonProfileSchema, optional: true },
   settings: { type: UserSettingsSchema },
 
@@ -180,6 +175,16 @@ Meteor.users.helpers({
   toString() {
     return this.displayOfficialName();
   },
+  personNameMismatch(communityId = getActiveCommunityId()) {
+    const membership = Memberships.findOne({ communityId, approved: true, active: true, personId: this._id, 'person.idCard.name': { $exists: true } });
+    const personName = membership ? membership.person.idCard.name : undefined;
+    if (!personName || !this.profile) return;
+    if (!this.profile.firstName && !this.profile.lastName) return;
+    if (!this.profile.firstName || !this.profile.lastName) return 'different';
+    const nameMatch = namesMatch(this.profile, membership.person.idCard);
+    if (nameMatch) return;
+    else return 'different';
+  },
   getPrimaryEmail() {
     return this.emails[0].address;
   },
@@ -201,6 +206,9 @@ Meteor.users.helpers({
     const parcels = parcelIds.map(pid => Parcels.findOne(pid));
     const ownedParcels = parcels.filter(elem => elem);
     return ownedParcels;
+  },
+  ownedLeadParcels(communityId) {
+    return this.ownedParcels(communityId).filter(p => !p.isLed());
   },
   activeRoles(communityId) {
     return Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role);
@@ -228,7 +236,7 @@ Meteor.users.helpers({
     const userHasTheseRoles = this.activeRoles(communityId);
     return _.contains(userHasTheseRoles, roleName);
   },
-  hasPermission(permissionName, communityId, object) {
+  hasPermission(permissionName, communityId = getActiveCommunityId(), object) {
     const permission = Permissions.find(p => p.name === permissionName);
     debugAssert(permission, `No such permission "${permissionName}"`);
     const rolesWithThePermission = permission.roles;
@@ -258,15 +266,6 @@ Meteor.users.helpers({
     if (!community) return new Fraction(0);
     const totalVotingUnits = this.totalOwnedUnits(communityId) + this.totalDelegatedToMeUnits(communityId);
     return new Fraction(totalVotingUnits, community.totalunits);
-  },
-  // Finances
-  balance(communityId) {
-    const parcels = this.ownedParcels(communityId);
-    let totalBalance = 0;
-    parcels.forEach((parcel) => {
-      totalBalance += parcel.balance();
-    });
-    return totalBalance;
   },
   hasBlocked(userId) {
     const user = Meteor.users.findOne(userId);

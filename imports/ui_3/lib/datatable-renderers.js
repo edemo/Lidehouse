@@ -2,6 +2,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { $ } from 'meteor/jquery';
 
 export const Render = {
   translate(cellData, renderType, currentRow) {
@@ -13,17 +14,23 @@ export const Render = {
       return __(`${scope}.${cellData}`);
     };
   },
+  formatNumber: $.fn.dataTable.render.number(' ', ',', 0),  // numeral no good here, it renders a string, so sorting not working correctly on this column afterwards
+  // https://datatables.net/manual/data/renderers#Number-helper
   formatDate(cellData, renderType, currentRow) {
     return moment(cellData).format('L');
   },
   formatTime(cellData, renderType, currentRow) {
     return moment(cellData).format('L LT');
   },
-  formatNumber(cellData, renderType, currentRow) {
-    return numeral(cellData).format();
-  },
   buttonView(cellData, renderType, currentRow) {
     const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-view" title=${__('view')}><i class="fa fa-eye"></i></button>`;
+    return html;
+  },
+  buttonViewLink(cellData, renderType, currentRow) {
+    let html = '';
+    html += `<a href="#view-target">`;
+    html += `<button data-id=${cellData} class="btn btn-white btn-xs js-view" title=${__('view')}><i class="fa fa-eye"></i></button>`;
+    html += `</a>`;
     return html;
   },
   buttonEdit(cellData, renderType, currentRow) {
@@ -96,4 +103,14 @@ export const Render = {
     const html = `<span class='label label-${Topics.statusColors[cellData]}'>${__('schemaTickets.ticket.status.' + cellData)}</span>`;
     return html;
   },
+};
+
+Render.joinOccupants = function joinOccupants(occupants) {
+  let result = '';
+  occupants.forEach((m) => {
+    const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
+    const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
+    result += `${m.Person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
+  });
+  return result;
 };

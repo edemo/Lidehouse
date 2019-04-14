@@ -34,7 +34,7 @@ export const nobody = [];
 export const Roles = new Mongo.Collection('roles');
 
 Roles.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
               // If not exist, that is a built-in role for all communities
   name: { type: String, max: 100 },
   permissions: { type: Array },

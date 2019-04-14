@@ -5,25 +5,31 @@ import { Session } from 'meteor/session';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 
-import { Journals } from '/imports/api/journals/journals.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import '/imports/api/users/users.js';
 import './balance-widget.html';
 
-Template.Balance_widget.onCreated(function() {
-  // Subscriptions
-  this.autorun(() => {
-//    const communityId = Session.get('activeCommunityId');
-//    this.subscribe('journals.inCommunity', { communityId });
-  });
-});
-
-Template.Balance_widget.helpers({
+Template.Balance_widget.viewmodel({
+  autorun() {
+    const communityId = Session.get('activeCommunityId');
+    this.templateInstance.subscribe('breakdowns.inCommunity', { communityId });
+    this.templateInstance.subscribe('balances.ofSelf', { communityId });
+  },
+  ownedParcels() {
+    const user = Meteor.user();
+    const communityId = Session.get('activeCommunityId');
+    if (!user || !communityId) return [];
+    return user.ownedParcels(communityId);
+  },
   balance() {
     const communityId = Session.get('activeCommunityId');
-    const user = Meteor.user();
-    if (!user || !communityId) return 0;
-    const result = user.balance(communityId);
-    return result;
+    const parcels = this.ownedParcels();
+    let result = 0;
+    parcels.forEach((parcel) => {
+      result += Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcel.ref), tag: 'T' });
+    });
+    return (-1) * result;
   },
   display(balance) {
     const signPrefix = balance > 0 ? '+' : '';

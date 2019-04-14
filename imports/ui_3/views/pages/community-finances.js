@@ -3,65 +3,237 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Session } from 'meteor/session';
-import { TAPi18n } from 'meteor/tap:i18n';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-
+import { _ } from 'meteor/underscore';
+import { numeral } from 'meteor/numeral:numeral';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { monthTags } from '/imports/api/journals/breakdowns/breakdowns-utils.js';
-import { journalColumns } from '/imports/api/journals/tables.js';
-import { breakdownColumns } from '/imports/api/journals/breakdowns/tables.js';
-import { Reports } from '/imports/api/journals/breakdowns/reports.js';
+import { monthTags, PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
+import { Reports } from '/imports/api/transactions/reports/reports.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { insert as insertTx, remove as removeTx } from '/imports/api/journals/methods.js';
-import { TxDefRegistry } from '/imports/api/journals/txdefs/txdef-registry.js';
-import { ParcelBillings } from '/imports/api/journals/batches/parcel-billings.js';
-import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { AccountSpecification } from '/imports/api/transactions/account-specification';
+import { Balances } from '/imports/api/transactions/balances/balances';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/account-history.js';
+import '/imports/ui_3/views/components/balance-report.js';
 import './community-finances.html';
-import { AccountSpecification } from '../../../api/journals/account-specification';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
 const notVotedColor = '#dedede';
 
-Template.Community_finances.onCreated(function communityFinancesOnCreated() {
-  this.autorun(() => {
-//    const communityId = Session.get('activeCommunityId');
-//    this.subscribe('breakdowns.inCommunity', { communityId });
-//    this.subscribe('journals.inCommunity', { communityId });
-//    this.subscribe('txs.inCommunity', { communityId });
-//    this.subscribe('txDefs.inCommunity', { communityId });
-  });
-});
+// generated with:
+// https://coolors.co/ed6a5e-dbbea1-a37b73-e3a857-1ab394
+// https://www.hexcolortool.com
 
-Template.Community_finances.onRendered(function communityFinancesOnRendered() {
-  // Filling the Balance Sheet chart with DEMO data
-  this.autorun(() => {
-    const doughnutData = {
-      labels: [__('Bank főszámla'), __('Bank felújítási alap'), __('Fundamenta felújítási hitel'), __('Pénztár')],
-      datasets: [{
-        data: [6943500, 120000, 2300000, 100000],
-        backgroundColor: choiceColors,
-      }],
+const plusColors = [
+  { // green
+    backgroundColor: "rgba(26,179,148,0.5)",
+    borderColor: "rgba(26,179,148,0.7)",
+    pointBackgroundColor: "rgba(26,179,148,1)",
+    pointBorderColor: "#fff",
+  },
+  { // blue
+    backgroundColor: "rgba(87, 117, 144,0.5)",
+    borderColor: "rgba(87, 117, 144,1)",
+    pointBackgroundColor: "rgba(87, 117, 144,1)",
+    pointBorderColor: "#fff",
+  },
+  { // green
+    backgroundColor: "rgba(26,179,148,0.5)",
+    borderColor: "rgba(26,179,148,0.7)",
+    pointBackgroundColor: "rgba(26,179,148,1)",
+    pointBorderColor: "#fff",
+  },
+  { // pastel brown
+    backgroundColor: "rgba(192, 165, 155, 0.5)",
+    borderColor: "rgba(192, 165, 155, 0.7)",
+    pointBackgroundColor: "rgba(192, 165, 155, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // indian yellow
+    backgroundColor: "rgba(227, 168, 87, 0.5)",
+    borderColor: "rgba(227, 168, 87, 0.7)",
+    pointBackgroundColor: "rgba(227, 168, 87, 1)",
+    pointBorderColor: "#fff",
+  },
+];
+
+const minusColors = [
+  { // red
+    backgroundColor: "rgba(237, 106, 94, 0.5)",
+    borderColor: "rgba(237, 106, 94, 0.7)",
+    pointBackgroundColor: "rgba(237, 106, 94, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // pastel pink
+    backgroundColor: "rgba(208, 173, 167, 0.5)",
+    borderColor: "rgba(208, 173, 167, 0.7)",
+    pointBackgroundColor: "rgba(208, 173, 167, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // pastel dark 1
+    backgroundColor: "rgba(163, 123, 115,  0.5)",
+    borderColor: "rgba(163, 123, 115,  0.7)",
+    pointBackgroundColor: "rgba(163, 123, 115, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // pastel dark 2
+    backgroundColor: "rgba(173, 106, 108,  0.5)",
+    borderColor: "rgba(173, 106, 108,  0.7)",
+    pointBackgroundColor: "rgba(173, 106, 108, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // grey
+    backgroundColor: "rgba(220,220,220,0.5)",
+    borderColor: "rgba(220,220,220,1)",
+    pointBackgroundColor: "rgba(220,220,220,1)",
+    pointBorderColor: "#fff",
+  },
+];
+
+Template.Community_finances.viewmodel({
+  accountToView: '323',
+  onCreated(instance) {
+    instance.autorun(() => {
+      const communityId = Session.get('activeCommunityId');
+      instance.subscribe('breakdowns.inCommunity', { communityId });
+      instance.subscribe('balances.ofAccounts', { communityId });
+    });
+  },
+  onRendered(instance) {
+    instance.autorun(this.syncBalanceChartData);
+    instance.autorun(this.syncHistoryChartData);
+  },
+  syncBalanceChartData() {
+    const communityId = Session.get('activeCommunityId');
+    const community = Communities.findOne(communityId);
+    const DEMO = community && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], community.name);
+    const startTag = 'T-2016-12';
+    const endTag = PeriodBreakdown.currentCode();
+    const startIndex = PeriodBreakdown.leafs().findIndex(l => l.code === startTag);
+    const endIndex = PeriodBreakdown.leafs().findIndex(l => l.code === endTag);
+    const periods = PeriodBreakdown.leafs().slice(startIndex, endIndex);
+    const prePeriods = PeriodBreakdown.leafs().slice(0, startIndex);
+    const labels = periods.map(l => `${l.label === 'JAN' ? l.parent.name : l.label}`);
+    const demoLabels = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
+    const aggregate = function (array, startValue) {
+      let sum = startValue || 0;
+      return array.map((elem) => { sum += elem; return sum; });
     };
-    const doughnutOptions = {
+    const monthlyDataFromTbalances = function (account) {
+      return aggregate(
+        periods.map(l => Balances.getDisplayTotal({ communityId, account, tag: l.code })),
+        aggregate(prePeriods.map(l => Balances.getDisplayTotal({ communityId, account, tag: l.code }))).pop()
+      );
+    };
+    const monthlyDataFromCbalances = function (account) {
+      return periods.map(l => Balances.getDisplayTotal({ communityId, account, tag: 'C' + l.code.substring(1) }));
+    };
+    const statusData = DEMO ? {
+      labels: demoLabels,
+      datasets: [
+        _.extend({
+          label: __("Money accounts"),
+          data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
+        }, plusColors[0]),
+        _.extend({
+          label: __("Commitments"),
+          data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
+        }, minusColors[0]),
+      ],
+    } : {
+      labels,
+      datasets: [
+        _.extend({
+          label: __("Money accounts"),
+          data: monthlyDataFromCbalances('38'),
+        }, plusColors[0]),
+        _.extend({
+          label: __("Commitments"),
+          data: monthlyDataFromTbalances('46'),
+        }, minusColors[0]),
+      ],
+    };
+    let moneyData;
+    if (DEMO) {
+      moneyData = {
+        labels: demoLabels,
+        datasets: [
+          _.extend({
+            label: "Folyószámla",
+            data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
+          }, plusColors[0]),
+          _.extend({
+            label: "Megtakarítási számla",
+            data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
+          }, plusColors[1]),
+          _.extend({
+            label: "Pénztár",
+            data: [10, 40, 40, 90, 60, 70, 90, 50, 80, 50, 75, 40],
+          }, plusColors[2]),
+        ],
+      };
+    } else {
+      const datasets = [];
+      const coa = ChartOfAccounts.get();
+      const moneyAccounts = coa ? coa.findNodeByName('Money accounts') : [];
+      moneyAccounts.leafs().forEach((account, index) => {
+        datasets.push(_.extend({
+          label: account.name,
+          data: monthlyDataFromCbalances(account.code),
+        }, plusColors[index + 1]));
+      });
+      moneyData = { labels, datasets };
+    }
+    const commitmentData = DEMO ? {
+      labels: demoLabels,
+      datasets: [
+        _.extend({
+          label: "Hosszú lejáratú bank hitel",
+          data: [1265, 1590, 1800, 1810, 1560, 1450, 1700, 1340, 1560, 1900, 2140, 2240],
+        }, minusColors[1]),
+        _.extend({
+          label: __("Suppliers"),
+          data: [280, 480, 400, 190, 860, 270, 590, 450, 280, 350, 575, 740],
+        }, minusColors[2]),
+      ],
+    } : {
+      labels,
+      datasets: [
+        _.extend({
+          label: __("Suppliers"),
+          data: monthlyDataFromTbalances('46'),
+        }, minusColors[0]),
+      ],
+    };
+    const chartOptions = {
       responsive: true,
-      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+          ticks: {
+            callback: (value, index, values) => numeral(value).format('0,0$'),
+          },
+        }],
+      },
     };
-    const elem = document.getElementById('balanceSheetChart').getContext('2d');
-    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
-  });
 
-  // Filling the History chart with DEMO data
-  this.autorun(() => {
+    const statusContext = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusContext, { type: 'line', data: statusData, options: chartOptions });
+    const moneyContext = document.getElementById('moneyChart').getContext('2d');
+    new Chart(moneyContext, { type: 'line', data: moneyData, options: chartOptions });
+    const commitmentContext = document.getElementById('commitmentChart').getContext('2d');
+    new Chart(commitmentContext, { type: 'line', data: commitmentData, options: chartOptions });
+  },
+  syncHistoryChartData() {
     const monthsArray = monthTags.children.map(c => c.label);
     const barData = {
       labels: monthsArray,
@@ -83,409 +255,70 @@ Template.Community_finances.onRendered(function communityFinancesOnRendered() {
     };
     const elem = document.getElementById('historyChart').getContext('2d');
     new Chart(elem, { type: 'bar', data: barData, options: barOptions });
-  });
-
-  // Filling the Incomes chart with DEMO data
-  this.autorun(() => {
-    const doughnutData = {
-      labels: [__('Lakói befizetések'), __('Kamat pénzintézetektől'), __('Hitelfelvétel'), __('Adóköteles bevételek'), __('Támogatás')],
-      datasets: [{
-        data: [6440000, 2150, 2300000, 558500, 500000],
-        backgroundColor: choiceColors,
-      }],
-    };
-    const doughnutOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-    const elem = document.getElementById('incomesChart').getContext('2d');
-    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
-  });
-
-  // Filling the Expenses chart with DEMO data
-  this.autorun(() => {
-    const doughnutData = {
-      labels: [__('Költségek'), __('Beruházások'), __('Hiteltörlesztés')],
-      datasets: [{
-        data: [5000000, 2000000, 1000000],
-        backgroundColor: choiceColors,
-      }],
-    };
-    const doughnutOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-    const elem = document.getElementById('expensesChart').getContext('2d');
-    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
-  });
-});
-
-Template.Community_finances.helpers({
+  },
+  getBalance(account) {
+    const communityId = Session.get('activeCommunityId');
+    const coa = ChartOfAccounts.get(); if (!coa) return 0;
+    const accountCode = parseInt(account, 10) ? account : coa.findNodeByName(account).code;
+    return Balances.getDisplayTotal({ communityId, account: accountCode, tag: 'P' })
+      || Balances.getDisplayTotal({ communityId, account: accountCode, tag: 'C' });
+  },
+  getStatusBalance() {
+    return this.getBalance('Money accounts') - this.getBalance('Suppliers');
+  },
+  statusAccounts() {
+    return [
+      { name: 'Money accounts', code: '38' },
+      { name: 'Commitments', code: '46' },
+    ];
+  },
+  publishDate() {
+    return Balances.findOne({ tag: 'P' }).updatedAt;
+  },
+  leafsOf(account) {
+    const coa = ChartOfAccounts.get(); if (!coa) return [];
+    const moneyAccounts = coa.findNodeByName(account);
+    return moneyAccounts.leafs();
+  },
+  commitmentAccounts() {
+    return ['HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK', 'RÖVID LEJÁRATÚ KÖTELEZETTSÉGEK', 'Suppliers'];
+  },
+  breakdown(name) {
+    return Breakdowns.findOneByName(name, Session.get('activeCommunityId'));
+  },
+  totalTag() {
+    return ['T'];
+  },
+  last12MonthsTag() {
+    return ['T-2017-1', 'T-2017-2', 'T-2017-3', 'T-2017-4', 'T-2017-5', 'T-2017-6',
+          'T-2017-7', 'T-2017-8', 'T-2017-9', 'T-2017-10', 'T-2017-11', 'T-2017-12'];
+  },
   report(name, year) {
     if (!Template.instance().subscriptionsReady()) return Reports['Blank']();
     return Reports[name](year);
   },
-  txDefs() {
-/*    const txDefs = [
-      { _id: '1', name: 'Payin' },
-      { _id: '2', name: 'Obligation' }, 
-      { _id: '3', name: 'Income' },
-      { _id: '4', name: 'Expense'},
-      { _id: '5', name: 'Backoffice op'},
-    ];
-    */
-//    const communityId = Session.get('activeCommunityId');
-//    const txDefs = TxDefs.find({ communityId });
-    return TxDefRegistry;
-  },
-  mainBreakdownsTableDataFn() {
-    const templateInstance = Template.instance();
-    function getTableData() {
-      if (!templateInstance.subscriptionsReady()) return [];
-      const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId, sign: { $exists: true } }).fetch();
-    }
-    return getTableData;
-  },
-  otherBreakdownsTableDataFn() {
-    const templateInstance = Template.instance();
-    function getTableData() {
-      if (!templateInstance.subscriptionsReady()) return [];
-      const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId, sign: { $exists: false } }).fetch();
-    }
-    return getTableData;
-  },
-  breakdownsOptionsFn() {
-    function getOptions() {
-      return {
-        columns: breakdownColumns(),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-        paging: false,
-        info: false,
-      };
-    }
-    return getOptions;
-  },
-  optionsOf(accountName) {
-    const communityId = Session.get('activeCommunityId');
-    const account = AccountSpecification.fromNames(accountName);
-    const brk = Breakdowns.findOne({ communityId, name: account.mainFamily });
-    if (brk) return brk.leafOptions(account.mainLeaf);
+  subAccountOptionsOf(accountCode) {
+//    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
+    const brk = ChartOfAccounts.get();
+    if (brk) return brk.nodeOptionsOf(accountCode, true);
     return [];
   },
-  journalsTableDataFn() {
-    const templateInstance = Template.instance();
-    function getTableData() {
-      if (!templateInstance.subscriptionsReady()) return [];
-      const communityId = Session.get('activeCommunityId');
-      return Journals.find({ communityId, phase: 'done' }).fetch();
-    }
-    return getTableData;
-  },
-  journalsOptionsFn() {
-    function getOptions() {
-      return {
-        columns: journalColumns(),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-      };
-    }
-    return getOptions;
-  },
-  afCommunityFinancesData() {
-    const communityId = Session.get('activeCommunityId');
-    const financesOnlySchema = Communities.simpleSchema().pick(['finances', 'finances.ccArea', 'finances.ccVolume', 'finances.ccHabitants']);
-    return {
-      id: 'af.communities.finances',
-      collection: Communities,
-      schema: financesOnlySchema,
-      doc: Communities.findOne(communityId),
-      type: 'method-update',
-      meteormethod: 'communities.update',
-      singleMethodArgument: true,
-      template: 'bootstrap3-inline',
-    };
-  },
 });
-
-function newParcelBillingSchema() {
-  function chooseAccountsSchema() {
-    const obj = {};
-    const communityId = Session.get('activeCommunityId');
-    const breakdown1 = Breakdowns.findOne({ communityId, name: 'Incomes' });
-    const breakdown2 = Breakdowns.findOne({ communityId, name: 'Localizer' });
-    obj[breakdown1.name] = { type: String, optional: true, label: breakdown1.name, 
-      autoform: { options() { return breakdown1.leafOptions(); }, firstOption: () => __('(Select one)') },
-    };
-    obj[breakdown2.name] = { type: String, optional: true, label: breakdown2.name, 
-      autoform: { options() { return breakdown2.nodeOptions(); }, firstOption: () => __('(Select one)') },
-    };
-    return new SimpleSchema(obj);
-  }
-  return new SimpleSchema([
-    ParcelBillings.simpleSchema(),
-    { accountFrom: { type: chooseAccountsSchema(), optional: true } },
-  ]);
-}
 
 Template.Community_finances.events({
-  'click #breakdowns .js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.breakdown.insert',
-      collection: Breakdowns,
-      omitFields: ['communityId'],
-      type: 'insert',
-      //      type: 'method',
-//      meteormethod: 'breakdowns.insert',
-      template: 'bootstrap3-inline',
-    });
+  'click #moneyBalances .js-view'(event, instance) {
+//    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
+    const accountCode = $(event.target).closest('a').data('id');
+    instance.viewmodel.accountToView(accountCode);
   },
-  'click #breakdowns .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    const breakdown = Breakdowns.findOne(id);
-    const modalContext = {
-      title: 'Edit Breakdown',
-      body: 'Nestable_edit',
-      bodyContext: { json: breakdown },
-      btnClose: 'cancel',
-      btnOK: 'save',
-      onOK() {
-        const json = serializeNestable();
-        // console.log('saving nestable:', JSON.stringify(json));
-        // assert json.length === 1
-        // assert json[0].name === breakdown.name
-        // assert locked elements are still there 
-        Breakdowns.update(id, { $set: { children: json[0].children } },
-          onSuccess(res => displayMessage('success', 'Breakdown saved'))
-        );
-      },
-    };
-    Modal.show('Modal', modalContext);
-  },
-  'click #breakdowns .js-edit-af'(event) {
+  'click #account-history .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
-      id: 'af.breakdown.update',
-      collection: Breakdowns,
-      omitFields: ['communityId'],
-      doc: Breakdowns.findOne(id),
-      type: 'update',
-//      type: 'method-update',
-//      meteormethod: 'journals.update',
-      singleMethodArgument: true,
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #breakdowns .js-view'(event, instance) {
-    const id = $(event.target).closest('button').data('id');
-    const breakdown = Breakdowns.findOne(id);
-    const modalContext = {
-      title: 'View Breakdown',
-      body: 'Nestable_edit',
-      bodyContext: { json: breakdown, disabled: true },
-    };
-    Modal.show('Modal', modalContext);
-  },
-  'click #breakdowns .js-view-af'(event, instance) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.breakdown.view',
-      collection: Breakdowns,
-      omitFields: ['communityId'],
-      doc: Breakdowns.findOne(id),
+      id: 'af.transaction.view',
+      collection: Transactions,
+      schema: Transactions.inputSchema,
+      doc: Transactions.findOne(id),
       type: 'readonly',
-      template: 'bootstrap3-inline',
     });
-  },
-  'click #breakdowns .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(Breakdowns.remove, { _id: id }, {
-      action: 'delete breakdown',
-    });
-  },
-  'click #journals .js-new'(event, instance) {
-    const defId = $(event.target).data("id");
-    Session.set('activeTxDef', defId);
-//    const def = TxDefs.findOne(defId);
-    const def = TxDefRegistry.find(d => d.name === defId);
-    Modal.show('Autoform_edit', {
-      id: 'af.journal.insert',
-      collection: Journals,
-      schema: def.schema,
-      omitFields: ['communityId', 'phase'],
-//      type: 'method',
-//      meteormethod: 'journals.insert',
-      template: 'bootstrap3-inline',
-    });
-  },
-/*  'click #journals .js-new-def'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.txdef.insert',
-      collection: TxDefs,
-      omitFields: ['communityId'],
-      type: 'method',
-      meteormethod: 'txDefs.insert',
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #journals .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.journal.update',
-      collection: Journals,
-      schema: newJournalSchema(),
-      omitFields: ['communityId', 'phase'],
-      doc: Journals.findOne(id),
-      type: 'method-update',
-      meteormethod: 'journals.update',
-      singleMethodArgument: true,
-      template: 'bootstrap3-inline',
-    });
-  },*/
-  'click #journals .js-view, #account-history .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.journal.view',
-      collection: Journals,
-      schema: Journals.inputSchema,
-      omitFields: ['communityId', 'phase'],
-      doc: Journals.findOne(id),
-      type: 'readonly',
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #journals .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    const tx = Journals.findOne(id);
-    Modal.confirmAndCall(removeTx, { _id: id }, {
-      action: 'delete journal',
-      message: tx.isOld() ? 'Remove not possible after 24 hours' : '',
-    });
-  },
-  'click #bills .js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.insert',
-      collection: Journals,
-      schema: newJournalSchema(),
-      omitFields: ['communityId', 'phase'],
-      type: 'method',
-      meteormethod: 'bills.insert',
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #bills .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.update',
-      collection: Journals,
-      schema: newJournalSchema(),
-      omitFields: ['communityId', 'phase'],
-      doc: Journals.findOne(id),
-      type: 'method-update',
-      meteormethod: 'bills.update',
-      singleMethodArgument: true,
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #bills .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.view',
-      collection: Journals,
-      schema: newJournalSchema(),
-      omitFields: ['communityId', 'phase'],
-      doc: Journals.findOne(id),
-      type: 'readonly',
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #bills .js-many'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.parcelBilling.insert',
-      collection: ParcelBillings,
-      schema: newParcelBillingSchema(),
-      omitFields: ['communityId'],
-      type: 'method',
-      meteormethod: 'parcelBillings.insert',
-      template: 'bootstrap3-inline',
-    });
-  },
-  'click #bills .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(removeJournal, { _id: id }, {
-      action: 'delete bill',
-    });
-  },
-  'click #bills .js-bill'(event) {
-    const communityId = Session.get('activeCommunityId');
-    Modal.confirmAndCall(billParcels, { communityId }, {
-      action: 'bill parcels',
-      message: 'This will bill all parcels',
-    });
-  },
-});
-
-AutoForm.addModalHooks('af.breakdown.insert');
-AutoForm.addModalHooks('af.breakdown.update');
-AutoForm.addHooks('af.breakdown.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});
-
-AutoForm.addModalHooks('af.journal.insert');
-AutoForm.addModalHooks('af.journal.update');
-AutoForm.addHooks('af.journal.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.phase = 'done';
-    return doc;
-  },
-  onSubmit(doc) {
-    AutoForm.validateForm('af.journal.insert');
-    const defId = Session.get('activeTxDef');
-    const def = TxDefRegistry.find(d => d.name === defId);
-    def.transformToJournal(doc);
-    const afContext = this;
-    insertTx.call(doc, function handler(err, res) {
-      if (err) {
-//        displayError(err);
-        afContext.done(err);
-        return;
-      }
-      afContext.done(null, res);
-    });
-    return false;
-  },
-});
-/*
-AutoForm.addModalHooks('af.txdef.insert');
-AutoForm.addModalHooks('af.txdef.update');
-AutoForm.addHooks('af.txdef.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});
-*/
-AutoForm.addModalHooks('af.bill.insert');
-AutoForm.addModalHooks('af.bill.update');
-AutoForm.addHooks('af.bill.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.phase = 'plan';
-    doc.amount *= -1;
-    return doc;
-  },
-});
-
-AutoForm.addModalHooks('af.parcelBilling.insert');
-AutoForm.addHooks('af.parcelBilling.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
   },
 });

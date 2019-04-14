@@ -19,10 +19,8 @@ Template.Agendas.events({
         Modal.show('Autoform_edit', {
             id: 'af.agenda.insert',
             collection: Agendas,
-            omitFields: ['communityId'],
             type: 'method',
             meteormethod: 'agendas.insert',
-            template: 'bootstrap3-inline',
         });
     },
     'click .js-edit'(event) {
@@ -30,12 +28,10 @@ Template.Agendas.events({
         Modal.show('Autoform_edit', {
             id: 'af.agenda.update',
             collection: Agendas,
-            omitFields: ['communityId'],
             doc: Agendas.findOne(id),
             type: 'method-update',
             meteormethod: 'agendas.update',
             singleMethodArgument: true,
-            template: 'bootstrap3-inline',
         });
     },
     'click .js-delete'(event) {

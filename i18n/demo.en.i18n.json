@@ -5,9 +5,12 @@
     "house": "Demo house",
     "city": "Boston",
     "street": "Primrose street",
-    "ground": "GF",
-    "attic": "attic",
-    "cellar": "BF",
+    "ground": "GroudFloor",
+    "groundCode": "G",
+    "attic": "Attic",
+    "atticCode": "A",
+    "cellar": "Basement",
+    "cellarCode": "B",
     "user": {
       "0": {
         "firstName": "Stephen",
@@ -102,7 +105,7 @@
         "firstName": "Rose",
         "lastName": "Ingram"
       },
-      "firstNames": ["0", "Adam", "Bonnie", "Cecil", "David", "Eve", "Frank", "Gabe", "Hellen", "Ike", "James", "Kitty", "Louis", "Maggie", "Nick", "Oliver", "Peter", "Rose", "Sarah", "Thomas", "Zachary"]
+      "firstNames": ["Adam", "Bonnie", "Cecil", "David", "Eve", "Frank", "Gabe", "Hellen", "Ike", "James", "Kitty", "Louis", "Maggie", "Nick", "Oliver", "Peter", "Rose", "Sarah", "Thomas", "Zachary"]
     },
     "manager": {
       "firstName": "Lewis",
@@ -234,7 +237,7 @@
       "0": "Hi! I've found your post box keys. You've left it in the post box. :)",
       "1": "Ooops. Thanks a lot! I was looking for it, thought I lost it. I'll drop by to pick it up after dinner."
     },
-    "journals": {
+    "transactions": {
       "note": {
         "0": "Decided during the year",
         "1": "From local government",

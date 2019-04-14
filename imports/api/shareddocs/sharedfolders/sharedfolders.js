@@ -3,9 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { Shareddocs, hasPermissionToUpload } from '/imports/api/shareddocs/shareddocs.js';
 
 // Declare store collection
 export const Sharedfolders = new Mongo.Collection('sharedfolders');
@@ -19,7 +17,7 @@ Sharedfolders.deny({
 
 
 Sharedfolders.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true, optional: true },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String },
 });
 
