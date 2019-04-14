@@ -131,6 +131,11 @@ Template.Comment.events({
   'click .js-cancel'(event, instance) {
     instance.viewmodel.editing(false);
   },
+  'keydown textarea'(event, instance) {
+    if (event.keyCode === 27) {
+      instance.viewmodel.editing(false);
+    }
+  },
   'click .js-delete'(event, instance) {
     Modal.confirmAndCall(removeComment, { _id: this._id }, {
       action: 'delete comment',
