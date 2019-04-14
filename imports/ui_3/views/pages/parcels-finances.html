@@ -3,7 +3,6 @@
     {{> Page_heading title=(_ 'Parcel finances')}}
 
     <div class="wrapper wrapper-content  animated fadeInRight">
-    {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
     <div class="row">
 
     <!--div class="col-md-6">
@@ -31,10 +30,49 @@
         </div>
     </div-->
 
-    <div class="col-md-12">
+    {{#if userHasPermission 'balances.ofAccounts' communityId }}
+    <div class="col-lg-12">
         {{> Balance_widget}}
     </div>
+    {{/if}}
 
+    {{#if userHasPermission 'balances.ofAccounts' communityId }}
+    <div class="col-lg-12">
+    <div class="ibox ibox-dark" id="balances">
+        <!--div class="ibox-title">
+            <h5>{{_ 'Parcel balances'}}</h5>
+            {{>iboxTools}}
+        </div-->
+        <div class="ibox-content">
+            <span class="text-muted small pull-right">{{_ 'Tulajdonos a saját albetéteit láthatja itt - Közös Képviselő mindenkiét'}}</span>
+            <h2 class="text-capitalize">{{_ 'Parcel balances'}}</h2>
+            {{#if userHasPermission 'balances.ofLocalizers' communityId }}
+            <div class="btn-group pull-right">
+                {{#unless showAllParcels}}
+                <button class="btn btn-primary btn-sm js-show-all"><strong> {{_ 'Show all parcels'}}</strong></button>
+                {{/unless}}
+            </div>
+            <p>
+                {{#unless showAllParcels}}
+                {{_ 'A lista jelenleg csak a legnagyobb hátralékosokat mutatja'}} - <i class="fa fa-building"></i> 10<br>
+                {{_ 'A teljes lista lekérhető a jobb oldali gombbal, de ez egy kis időt vehet igénybe'}}.
+                {{else}}
+                {{_ 'A lista valamennyi albetétet mutatja'}} <br>
+                {{/unless}}
+            </p>
+            {{/if}}
+            <br>
+            {{#if Template.subscriptionsReady}}
+            {{> ReactiveDatatable tableData=parcelFinancesTableDataFn options=parcelFinancesOptionsFn }}
+            {{else}}
+            {{_ 'Loading'}}...
+            {{/if}}
+        </div>
+    </div>
+    </div>
+    {{/if}}
+
+    <!--div class="col-md-6">
     <div class="ibox ibox-dark" id='parcel-balances'>
         <div class="ibox-title">
             <h5>{{_ 'My parcel balances'}}</h5>
@@ -42,49 +80,29 @@
         </div>
         <div class="ibox-content">
             {{#if Template.subscriptionsReady}}
-            {{> Custom_table report=(report 'MyParcelBalances' 2017)}}
+                <h3>{{_ 'MyParcelBalances'}}</h3>
+                {{> Balance_report breakdown=myLeadParcels tags=totalTag }}
             {{else}}
-            {{_ 'Loading'}}...
+                {{_ 'Loading'}}...
             {{/if}}
         </div>
     </div>
+    </div-->
 
+    {{#if userHasPermission 'balances.ofAccounts' communityId }}
+    <div class="col-md-12" id='view-target'>
     <div class="ibox ibox-dark" id='parcel-history'>
         <div class="ibox-title">
-            <h5>{{_ 'My parcel history'}}</h5>
+            <h5>{{_ 'Parcel history'}}</h5>
             {{>iboxTools}}
         </div>  
         <div class="ibox-content">
-            {{>Parcel_history startDate='2017-01-01' endDate='2017-12-31'}}
+            {{>Account_history sign=-1 beginDate='2017-01-01' endDate='2017-12-31' localizerOptions=parcelChoices localizerSelected=parcelToView}}
         </div>
     </div>
-
-
-    <div class="ibox ibox-dark" id='accounting'>
-        <div class="ibox-title">
-            <h5>{{_ 'Parcel balances'}}</h5>
-            {{>iboxTools}}
-        </div>  
-        <div class="ibox-content">
-            {{#if Template.subscriptionsReady}}
-            {{> Custom_table report=(report 'ParcelBalances' 2017)}}      
-            {{else}}
-            {{_ 'Loading'}}...
-            {{/if}}
-        </div>
-    </div>
-
-    </div>
-    {{else}}
-    <div class="row">
-        <div class="col-md-12">
-        <div class="ibox ibox-dark">
-            <div class="ibox-content">
-                {{_ 'Data upload in progress'}}...
-            </div>
-        </div>
-        </div>
     </div>
     {{/if}}
+
+    </div>
     </div>
 </template>

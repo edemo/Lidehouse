@@ -12,10 +12,43 @@ import { FreeFields } from '/imports/api/freefields.js';
 
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Journals } from '/imports/api/journals/journals.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 
-export const Parcels = new Mongo.Collection('parcels');
+class ParcelsCollection extends Mongo.Collection {
+  insert(doc, callback) {
+    const result = super.insert(doc, callback);
+    this._updateCommunity(doc);
+    return result;
+  }
+  update(selector, modifier, options, callback) {
+    const originalDocs = this.find(selector);
+    originalDocs.forEach((doc) => {
+      this._updateCommunity(doc, -1);
+    });
+    const result = super.update(selector, modifier, options, callback);
+    const updatedDocs = this.find(selector);
+    updatedDocs.forEach((doc) => {
+      this._updateCommunity(doc, 1);
+    });
+    return result;
+  }
+  remove(selector, callback) {
+    const docs = this.find(selector);
+    docs.forEach((doc) => {
+      this._updateCommunity(doc, -1);
+    });
+    return super.remove(selector, callback);
+  }
+  _updateCommunity(doc, revertSign = 1) {
+    if (!doc.type) return;
+    const modifier = {}; modifier.$inc = {};
+    modifier.$inc[`parcels.${doc.type}`] = revertSign;
+    Communities.update(doc.communityId, modifier);
+  }
+}
+
+export const Parcels = new ParcelsCollection('parcels');
 
 Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'other'];
 Parcels.heatingTypeValues = ['centralHeating', 'ownHeating'];
@@ -86,6 +119,9 @@ Parcels.helpers({
   occupants() {
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId() });
   },
+  owners() {
+    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId(), role: 'owner' });
+  },
   representors() {
     return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId(), role: 'owner', 'ownership.representor': true });
   },
@@ -108,47 +144,32 @@ Parcels.helpers({
     if (!community) return undefined;
     return community.totalunits;
   },
+  forEachLed(callback) {
+    if (this.isLed()) return;
+    const ledParcels = Parcels.find({
+      communityId: this.communityId,
+      $or: [{ ref: this.ref }, { leadRef: this.ref }],
+    });
+    ledParcels.forEach(parcel => callback(parcel));
+  },
   // Voting
   ledUnits() {
-    if (this.isLed()) return 0;
-    let cumulatedUnits = this.units;
-    const ledParcels = Parcels.find({ communityId: this.communityId, leadRef: this.ref });
-    ledParcels.forEach((parcel) => {
-      if (parcel.isLed()) { // This avoids counting twice the self-led parcel 
-        cumulatedUnits += parcel.units;
-      }
-    });
+    let cumulatedUnits = 0;
+    this.forEachLed(parcel => cumulatedUnits += parcel.units);
     return cumulatedUnits;
   },
   share() {
     return new Fraction(this.units, this.totalunits());
   },
   ledShare() {
-    if (this.isLed()) return new Fraction(0);
-    let cumulatedShare = this.share();
-    const ledParcels = Parcels.find({ communityId: this.communityId, leadRef: this.ref });
-    ledParcels.forEach((parcel) => {
-      if (parcel.isLed()) { // This avoids counting twice the self-led parcel 
-        cumulatedShare = cumulatedShare.add(parcel.share());
-      }
-    });
-    return cumulatedShare;
+    return new Fraction(this.ledUnits(), this.totalunits());
   },
   ownedShare() {
     if (this.isLed()) return this.leadParcel().ownedShare();
     let total = new Fraction(0);
-    Memberships.find({ parcelId: this._id, active: true, approved: true, role: 'owner' }).forEach(p => total = total.add(p.ownership.share));
+    Memberships.find({ parcelId: this._id, active: true, approved: true, role: 'owner' })
+      .forEach(p => total = total.add(p.ownership.share));
     return total;
-  },
-  // Finances
-  balance() {
-    const communityId = this.communityId;
-    const journalsIn = Journals.find({ communityId, 'accountTo.Owners': { $exists: true }, 'accountTo.Localizer': this.ref });
-    const journalsOut = Journals.find({ communityId, 'accountFrom.Owners': { $exists: true }, 'accountFrom.Localizer': this.ref });
-    let parcelBalance = 0;
-    journalsIn.forEach(p => parcelBalance += p.amount);
-    journalsOut.forEach(p => parcelBalance -= p.amount);
-    return parcelBalance;
   },
 });
 

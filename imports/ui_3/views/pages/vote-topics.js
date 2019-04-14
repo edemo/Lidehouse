@@ -47,7 +47,6 @@ Template.Vote_topics.events({
       schema: votingSchema,
       type: 'method',
       meteormethod: 'topics.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-filter'(event, instance) {

@@ -2,15 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { insertBreakdownTemplate } from '/imports/api/journals//template.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
-import { Topics } from '/imports/api/topics/topics.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Breakdowns } from '/imports/api/journals/breakdowns/breakdowns.js';
-import { Journals } from '/imports/api/journals/journals.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from './communities.js';
 import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
@@ -24,7 +16,6 @@ export const create = new ValidatedMethod({
     checkNotExists(Communities, { name: doc.name });
     const communityId = Communities.insert(doc);
     
-    insertBreakdownTemplate(communityId);
     // The user creating the community, becomes the first 'admin' of it.
     Memberships.insert({ communityId, person: { userId: this.userId }, role: 'admin' });
     return communityId;
@@ -61,14 +52,6 @@ export const remove = new ValidatedMethod({
         `Found: {${officers.count()}}`);
     }
     // Once there are no active officers, the community can be purged
-    Communities.remove(_id);
-    Parcels.remove({ communityId: _id });
-    Memberships.remove({ communityId: _id });
-    Agendas.remove({ communityId: _id });
-    Topics.remove({ communityId: _id });
-    Comments.remove({ communityId: _id });
-    Delegations.remove({ communityId: _id });
-    Breakdowns.remove({ communityId: _id });
-    Journals.remove({ communityId: _id });
+    community.remove();
   },
 });

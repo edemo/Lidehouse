@@ -20,6 +20,9 @@ export const Notification_Email = {
       if (text.length < chars) return text;
       return text.substr(0, chars) + `... [${TAPi18n.__('see full text with View button', {}, Meteor.users.findOne(this.userId).settings.language)}]`;
     },
+    userUrlFor(user) {
+      return FlowRouterHelpers.urlFor('User.show', { _id: user._id });
+    },
     topicUrlFor(topic) {
       if (topic.category === 'room') {
         return FlowRouterHelpers.urlFor('Room.show', { _rid: topic._id });

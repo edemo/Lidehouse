@@ -48,7 +48,6 @@ Template.Chatbox.events({
       type: 'method-update',
       meteormethod: 'topics.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-delete'(event, instance) {
@@ -58,22 +57,13 @@ Template.Chatbox.events({
     });
   },
   'click .js-block'(event, instance) {
-    flag.call({
-      coll: 'users',
-      id: instance.data.userId,
-    }, handleError);
+    flag.call({ coll: 'users', id: instance.data.userId }, handleError);
   },
   'click .js-report'(event, instance) {
-    flag.call({
-      coll: 'topics',
-      id: this._id,
-    }, handleError);
+    flag.call({ coll: 'topics', id: this._id }, handleError);
   },
   'click .social-body .js-like'(event) {
-    like.call({
-      coll: 'topics',
-      id: this._id,
-    }, handleError);
+    like.call({ coll: 'topics', id: this._id }, handleError);
   },
 });
 

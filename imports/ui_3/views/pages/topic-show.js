@@ -24,42 +24,39 @@ Template.Topic_show.onCreated(function topicShowOnCreated() {
 });
 
 Template.Topic_show.helpers({
-    topic() {
-        const topic = Topics.findOne(FlowRouter.getParam('_tid'));
-        return topic;
-    },
-    pageTitle() {
-        return __('topic.' + this.category) + ' ' + __('details');
-    },
-    smallTitle() {
-        return this.title;
-    },
-    pageCrumbs() {
-        switch(this.category) {
-            case 'vote': {
-                return [{
-                    title: __('Votings'),
-                    url: FlowRouter.path('Topics.vote'),
-                }];
-                break;
-            }
-            case 'forum': {
-                return [{
-                    title: __('Forum'),
-                    url: FlowRouter.path('Topics.forum'),
-                }];
-                break;
-            }
-            case 'ticket': {
-                return [{
-                    title: __('Worksheets'),
-                    url: FlowRouter.path('Worksheets'),
-                }];
-                break;
-            }
-            default: return [];
-        }
-    },
+  topic() {
+    const topic = Topics.findOne(FlowRouter.getParam('_tid'));
+    return topic;
+  },
+  pageTitle() {
+    return __('topic.' + this.category) + ' ' + __('details');
+  },
+  smallTitle() {
+    return this.title;
+  },
+  pageCrumbs() {
+    switch (this.category) {
+      case 'vote': {
+        return [{
+          title: __('Votings'),
+          url: FlowRouter.path('Topics.vote'),
+        }];
+      }
+      case 'forum': {
+        return [{
+          title: __('Forum'),
+          url: FlowRouter.path('Topics.forum'),
+        }];
+      }
+      case 'ticket': {
+        return [{
+          title: __('Worksheets'),
+          url: FlowRouter.path('Worksheets'),
+        }];
+      }
+      default: return [];
+    }
+  },
 });
 
 Template.Ticket_topic_show.helpers({

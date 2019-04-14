@@ -27,7 +27,7 @@ export function ticketColumns(permissions) {
     { data: 'title', title: __('schemaTickets.title.label') },
     { data: 'createdBy()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
-    { data: 'ticket.type', title: __('schemaTickets.ticket.category.label'), render: Render.translateWithScope('schemaTickets.ticket.type') },
+    { data: 'ticket.category', title: __('schemaTickets.ticket.category.label'), render: Render.translateWithScope('schemaTickets.ticket.category') },
     { data: '_id', title: __('Action buttons'), render: Render.ticketButtonGroup(ticketButtonRenderers) },
   ];
 }

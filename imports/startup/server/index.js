@@ -1,8 +1,5 @@
-// Initial db data
-import '/imports/api/permissions/config.js';
-import '/imports/api/shareddocs/sharedfolders/builtin.js';
-
 // This defines a starting set of data to be loaded if the app is loaded with an empty db.
+import './initialization.js';
 import './live-fixtures.js';
 
 // This file configures the Accounts package to define the UI of the enrollment / verification / reset password email.

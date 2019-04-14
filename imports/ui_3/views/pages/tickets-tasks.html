@@ -1,0 +1,201 @@
+<template name="Tickets_tasks">
+  <!-- Page heading -->
+  {{> Page_heading title=(_ 'Tasks') }}
+
+  <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox">
+      <div class="ibox-title">
+        <div class="row">
+          <div class="col-sm-5 m-b-sm">
+            <select class="form-control-sm form-control input-s-sm inline" id="ticket-type-selector">
+              <option value="tickets">{{_ 'tickets'}}</option>
+              <option value="tasks">{{_ 'tasks'}}</option>
+            </select>
+          </div>
+          <div class="col-sm-7">
+            {{> iboxTools}}
+          </div>
+        </div>
+      </div>
+
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="input-group">
+              {{#if option}}
+              <label class="control-label">{{_ 'Task status'}}</label><br>
+              {{#each taskStatusValue in taskStatusValues}}
+              <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{taskStatusColor taskStatusValue}} {{activeButton taskStatusValue}}" data-value="{{taskStatusValue}}">{{_ (concat 'schemaTickets.ticket.status.' taskStatusValue)}}</button>
+              {{/each}}
+              {{else}}
+              <label class="control-label">{{_ 'Ticket status'}}</label><br>
+              {{#each statusValue in statusValues}}
+              <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{statusColor statusValue}} {{activeButton statusValue}}" data-value="{{statusValue}}">{{_ (concat 'schemaTickets.ticket.status.' statusValue)}}</button>
+              {{/each}}
+              {{/if}}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <label class="control-label">{{_ 'Title'}}</label>
+            <div class="form-group">
+              <div class="input-group">    
+                <input type="text" placeholder="{{_ 'search'}}..." {{b "value: ticketText"}} class="form-control js-search">
+                <span class="input-group-addon">
+                  <i class="fa fa-search"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="start_date">{{_ 'Start date'}}</label>
+              <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+              <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-9">
+            <button type="button" class="js-reported-by-current-user btn btn-primary btn-xs btn-outline btn-warning {{activeButton}}">{{_ 'Reported by me'}}</button>
+          </div>
+          <div class="col-sm-3 align">
+            <button type="button" class="js-status-filter btn btn-primary btn-xs {{#if noFilters}}disabled{{/if}}" data-value="cancel">{{_ 'clear filters'}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{#if option}}
+    <div class="ibox">
+      <div class="ibox-title"> 
+        <div class="row">
+          <div class="col-sm-10">
+            <h5>{{_ 'Task archive'}}</h5>
+          </div>
+          {{#if userHasPermission 'task.insert' (fromSession 'activeCommunityId')  }}
+          <div class="col-sm-2 m-b-xs">  
+            <a href="" class="btn btn-primary btn-xs js-new pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'task'}}</a>
+          </div>
+          {{/if}}
+        </div>
+      </div>
+      <div class="ibox-content">
+        <div class="no-padding table-responsive">
+          {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
+        </div>
+  
+      </div>
+    </div>
+    {{else}}
+    <div class="ibox">
+      <div class="ibox-title"> 
+        <div class="row">
+          <div class="col-sm-10">
+            <h5>{{_ 'Ticket archive'}}</h5>
+          </div>
+          {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')  }}
+          <div class="col-sm-2 m-b-xs">  
+            <a href="" class="btn btn-primary btn-xs js-new pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'ticket'}}</a>
+          </div>
+          {{/if}}
+        </div>    
+      </div>
+      <div class="ibox-content">
+        <div class="no-padding table-responsive">
+          {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
+        </div>
+
+      </div>
+    </div>
+    {{/if}}
+          
+    
+    <!-- closed errors start -->
+    <!--
+    <div class="row">
+      <div class="col-lg-12">
+      <div class="ibox">
+        <div class="ibox-title">
+            <h5>{{_ 'Ticket archive'}}</h5>
+            {{> iboxTools}}
+        </div>
+        <div class="ibox-content">
+          <div class="table-responsive">
+              <table class="table table-hover issue-tracker">
+                  <thead>
+                    <tr>
+                      {{#each column in columns}}
+                      <th>
+                      {{_ column}}
+                      </th>
+                      {{/each}}
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {{#each tickets}}
+                  <tr>
+                      <td>
+                          {{#if ticket.status}}                        
+                          <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
+                          {{/if}}
+                      </td>
+                      <td class="issue-info">
+                          <a href="{{pathFor 'Topic.show' _tid=_id}}">{{title}}</a>
+                          <small>{{>Chopped text=text chars=400}}</small>
+                      </td>
+                      <td>
+                          {{createdBy}}
+                      </td>
+                      <td>
+                          {{displayTime createdAt}}
+                      </td>
+                      <td>
+                          {{#if ticket.category}}
+                          <span class="label label-default">{{_ (concat 'schemaTickets.ticket.category.' ticket.category)}}</span>
+                          {{/if}}
+                      </td>
+                      <td class="text-right">
+                          <div class="btn-group">
+                              {{#if userHasPermission 'ticket.update' (fromSession 'activeCommunityId')  }}
+                              <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                              <button class="btn btn-xs btn-white js-status" data-id={{_id}}><i class="fa fa-cog"></i> {{_ 'status'}}</button>
+                              {{/if}}
+                              {{#if userHasPermission 'ticket.remove' (fromSession 'activeCommunityId')  }}
+                              <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                              {{/if}}
+                          </div>
+                      </td>
+                  </tr>
+                  {{/each}}
+                  </tbody>
+              </table>
+          </div>
+        </div>-->
+        <!--div class="ibox">
+          <div class="ibox-title">
+            <h5>{{_ 'Closed tickets'}}</h5>
+            {{> iboxTools}}
+          </div>
+          <div class="ibox-content">
+            <div class="no-padding table-responsive archive-div">
+              {{> ReactiveDatatable tableData=closedTicketsDataFn options=closedTicketsOptionsFn }}
+            </div>
+          </div>
+        </div-->
+      <!--</div>
+      </div>-->
+    <!-- closed errrors end -->
+    <!--</div>-->
+
+  </div>
+</template>

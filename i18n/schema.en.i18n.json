@@ -17,8 +17,8 @@
       }
     },
     "avatar": {
-      "label": "Avatar",
-      "placeholder": "(eg. http://marketplaza.hu/38-small_default/micimacko-disney-labda-.jpg)"
+      "label": "Profile picture",
+      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
     },
     "profile": {
       "label": "Profile  (This data is public to the members of your community)",
@@ -197,6 +197,10 @@
     "agendaId": {
       "label": "Agenda (of which it is part of)"
     },
+    "photo": {
+      "label": "Photo (if applicable)",
+      "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
+    },
     "sticky" : {
       "label": "Sticky"
     }
@@ -250,6 +254,11 @@
     "text": {
       "label": "Remarks"
     },
+    "photo": {
+      "label": "Photo (if applicable)",
+      "placeholder": "Link to file (eg. https://imgbb.com/pic.jpg)",
+      "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
+    },
     "ticket": {
       "label": "Ticket data",
       "type": {
@@ -274,7 +283,7 @@
         "label": "Category",
         "building": "Building",
         "garden": "Garden",
-        "service": "Service"      
+        "service": "Service"
       },
       "urgency": {
         "label": "Urgency",
@@ -333,6 +342,9 @@
     }
   },
   "schemaBreakdowns": {
+    "digit": {
+      "label": "Code"
+    },
     "name": {
       "label": "Name",
       "placeholder": "(eg. Division breakdown)"
@@ -340,24 +352,45 @@
     "sign": {
       "label": "Sign (Debit +, Credit -)"
     },
+    "include": {
+      "label": "Include"
+    },
     "children": {
       "label": "Cathegory account",
       "$": {
+        "digit": {
+          "label": "Code"
+        },
         "name": {
-          "label": "Name (or empty if not needed)"
+          "label": "Name"
+        },
+        "include": {
+          "label": "Include"
         },
         "children": {
           "label": "Container account",
           "$": {
+            "digit": {
+              "label": "Code"
+            },
             "name": {
-              "label": "Name (or empty if not needed)"
+              "label": "Name"
+            },
+            "include": {
+              "label": "Include"
             },
             "children": {
               "label": "Sub account",
               "$": {
+                "digit": {
+                  "label": "Code"
+                },
                 "name": {
-                  "label": "Name (or id of parcel)",
-                  "placeholder": "(eg. Garden or K114)"
+                  "label": "Name",
+                  "placeholder": "(Account name or Parcel ref)"
+                },
+                "include": {
+                  "label": "Include"
                 }
               }
             }
@@ -366,10 +399,7 @@
       }
     }
   },
-  "schemaJournals": {
-    "phase": {
-      "label": "Phase"
-    },
+  "schemaTransactions": {
     "valueDate": {
       "label": "Accounting date",
       "placeholder": "(eg. 2017-05-06)"
@@ -384,24 +414,6 @@
     "batchId": {
       "label": "Batch id"
     },
-    "credit": {
-      "label": "Credit",
-      "$": {
-        "amount": {
-          "label": "Amount",
-          "placeholder": "Leave blank if its the whole amount"
-        },
-        "account": {
-          "label": "Account specification",
-          "account": {
-            "label": "Account"
-          },
-          "localizer": {
-            "label": "Accounting location"
-          }
-        }
-      }
-    },
     "debit": {
       "label": "Debit",
       "$": {
@@ -410,13 +422,25 @@
           "placeholder": "Leave blank if its the whole amount"
         },
         "account": {
-          "label": "Account specification",
-          "account": {
-            "label": "Account"
-          },
-          "localizer": {
-            "label": "Accounting location"
-          }
+          "label": "Account"
+        },
+        "localizer": {
+          "label": "Accounting location"
+        }
+      }
+    },
+    "credit": {
+      "label": "Credit",
+      "$": {
+        "amount": {
+          "label": "Amount",
+          "placeholder": "Leave blank if its the whole amount"
+        },
+        "account": {
+          "label": "Account"
+        },
+        "localizer": {
+          "label": "Accounting location"
         }
       }
     },
@@ -446,28 +470,17 @@
     }
   },
   "schemaTxDefs": {
-    "journals": {
-      "label": "Journals",
-      "$": {
-        "accountFrom": {
-          "label": "Account from",
-          "accountGroup": {
-            "label": "Account group"
-          },
-          "localizerNeeded": {
-            "label": "Localizer needed"
-          }
-        },
-        "accountTo": {
-          "label": "Account to",
-          "accountGroup": {
-            "label": "Account group"
-          },
-          "localizerNeeded": {
-            "label": "Localizer needed"
-          }
-        }
-      }
+    "name": {
+      "label": "Transaction type name",
+      "placeholder": ""
+    },
+    "credit": {
+      "label": "Credited",
+      "placeholder": ""
+    },
+    "debit": {
+      "label": "Debited",
+      "placeholder": ""
     }
   },
   "schemaParcelBillings": {
@@ -479,19 +492,26 @@
       "label": "For which month",
       "placeholder": "(eg. 11)"
     },
+    "valueDate": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
     "projection": {
       "label": "Projection basis"
     },
     "amount": {
       "label": "Amount",
-      "placeholder": "(pl. 14560)"
+      "placeholder": "(eg. 14560)"
+    },
+    "payinType": {
+      "label": "Payin type"
+    },
+    "localizer": {
+      "label": "Payin location"
     },
     "note": {
       "label": "Note",
       "placeholder": "(eg. reminder)"
-    },
-    "account": {
-      "label": "Account"
     }
   },
   "schemaSharedfolders": {

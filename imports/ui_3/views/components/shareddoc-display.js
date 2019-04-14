@@ -2,9 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { Shareddocs, hasPermissionToRemoveUploaded } from '/imports/api/shareddocs/shareddocs.js';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { remove as removeShareddocs } from '/imports/api/shareddocs/methods.js';
-
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '/imports/ui_3/views/modals/confirmation.js';
 import './shareddoc-display.html';
 
 Template.Shareddoc_inline.helpers({
@@ -12,7 +13,7 @@ Template.Shareddoc_inline.helpers({
     return Math.round(this.progress * 100);
   },
   userHasPermissionToRemoveUploaded() {
-    return hasPermissionToRemoveUploaded(Meteor.userId(), this);
+    return Shareddocs.hasPermissionToRemoveUploaded(Meteor.userId(), this);
   },
 });
 
@@ -22,16 +23,14 @@ Template.Shareddoc_inline.events({
   },
 });
 
-
 //---------------------------
-
 
 Template.Shareddoc_boxy.helpers({
   completed() {
     return Math.round(this.progress * 100);
   },
   userHasPermissionToRemoveUploaded() {
-    return hasPermissionToRemoveUploaded(Meteor.userId(), this);
+    return Shareddocs.hasPermissionToRemoveUploaded(Meteor.userId(), this);
   },
 });
 

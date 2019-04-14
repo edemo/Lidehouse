@@ -1,12 +1,9 @@
 /* eslint-disable prefer-arrow-callback */
 
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Shareddocs } from './shareddocs.js';
-import { checkExists } from '../method-checks.js';
 
 Meteor.publish('shareddocs.ofCommunity', function (params) {
   new SimpleSchema({

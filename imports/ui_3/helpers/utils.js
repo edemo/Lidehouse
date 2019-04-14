@@ -21,6 +21,10 @@ Template.registerHelper('equals', function equals(a, b) {
     return a == b;
 });
 
+Template.registerHelper('add', function add(a, b) {
+    return a + b;
+});
+
 Template.registerHelper('includes', function includes(a, b) {
     return a.includes(b);
 });
@@ -38,7 +42,7 @@ Template.registerHelper('displayRoundPercent', function percentage(number) {
 });
 
 Template.registerHelper('displayMoney', function displayMoney(number) {
-    return numeral(number).format();
+    return numeral(number).format('0,0$');
 });
 
 Template.registerHelper('currentTime', function currentTime() {

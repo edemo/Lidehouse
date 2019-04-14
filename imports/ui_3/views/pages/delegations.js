@@ -107,7 +107,6 @@ export function insertDelegationForm(doc) {
     doc,
     type: 'method',
     meteormethod: 'delegations.insert',
-    template: 'bootstrap3-inline',
   });
 }
 
@@ -128,7 +127,6 @@ Template.Delegations.events({
       type: 'method-update',
       meteormethod: 'delegations.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .delegations-from .js-delete'(event) {
@@ -162,7 +160,6 @@ Template.Delegations.events({
       omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
-      template: 'bootstrap3-inline',
     });
   },
 });

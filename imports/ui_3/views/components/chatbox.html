@@ -11,20 +11,20 @@
                 {{/if}}
                 {{#if userHasPermission 'forum.remove' (fromSession 'activeCommunityId') this}}
                 <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
-                {{/if}}
                 <li role="separator" class="divider"></li>
+                {{/if}}
+                {{#unless this.isFlaggedBy currentUser._id}}
+                <li><a class="js-report" href="">{{_ 'Block content'}}</a></li>
+                {{/unless}}
                 <li>
                   <a class="js-block" href="">
                   {{#if currentUser.hasBlocked createdBy._id}}
-                    {{_ 'Unhide comments from' createdBy}}
+                    {{_ 'Unblock content from' createdBy}}
                   {{else}}
-                    {{_ 'Hide comments from' createdBy}}
+                    {{_ 'Block content from' createdBy}}
                   {{/if}}
                   </a>
                 </li>
-                {{#unless this.isFlaggedBy currentUser._id}}
-                <li><a class="js-report" href="">{{_ 'Report this'}}</a></li>
-                {{/unless}}
             </ul>
         </div>
         <div class="social-avatar">
@@ -45,8 +45,9 @@
         {{/if}}
         <div class="{{#if hiddenBy}}collapse{{/if}}" id="content-{{this._id}}">
           <div class="social-body">
-              <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
-              <p data-id="{{_id}}">{{>Chopped text=text}}</p>
+              <a href="{{pathFor 'Topic.show' _tid=_id}}" class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</a>
+              {{#markdown}}{{text}}{{/markdown}}
+              {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
               <div class="btn-group">
                   <button class="btn btn-white btn-xs js-like">
                       <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>

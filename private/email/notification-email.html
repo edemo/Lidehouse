@@ -1,5 +1,6 @@
 <div>
   {{#each topic in topics}}
+  {{#unless topic.isHiddenBy this.userId}}
     <table class="table table-hover">
         <tbody>    
             <tr class='topic-row'>
@@ -36,25 +37,28 @@
     <table class="table table-hover">
         <tbody>
             {{#each comment in comments}}
+            {{#unless comment.isHiddenBy this.userId}}
             <tr class="social-comment">   
                 <td class='puffer'>
                 </td>
                 <td class='avatar-container'>      
-                    <a href="{{urlFor 'User.show' _id=comment.user._id}}" class="pull-left">
+                    <a href="{{userUrlFor comment.user}}" class="pull-left">
                         <img alt="avatar" class="message-avatar" src='{{urlFor comment.user.avatar}}'>
                     </a>
                 </td>
                 <td class="media-body">
-                    <a href="{{urlFor 'User.show' _id=comment.user._id}}">{{comment.user.displayOfficialName this.communityId user.settings.language}}</a>
+                    <a href="{{userUrlFor  comment.user}}">{{comment.user.displayOfficialName this.communityId user.settings.language}}</a>
                     <span>{{curb comment.text 500 }}</span>
                     <br/>
                     <small class="text-muted" >{{displayTime comment.createdAt}}</small>
                 </td>
             </tr>
+            {{/unless}}
             {{/each}}
         </tbody>
     </table>
     {{/if}}
     {{/let}}
+  {{/unless}}
   {{/each}}
 </div>

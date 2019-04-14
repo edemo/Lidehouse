@@ -4,7 +4,7 @@ import { Factory } from 'meteor/dburles:factory';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-
+import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -12,8 +12,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { RevisionedCollection } from '/imports/api/revision.js';
-import { likesSchema, likesHelpers } from './likes.js';
-import { flagsSchema, flagsHelpers } from './flags.js';
+import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
+import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
 export const Topics = new RevisionedCollection('topics', ['text', 'title', 'closed']);
 
@@ -29,6 +29,7 @@ Topics.schema = new SimpleSchema({
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { rows: 8 } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  photo: { type: String, optional: true, autoform: fileUpload },
   closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
@@ -58,6 +59,9 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
+  isHiddenBy(userId) {
+    return this.isFlaggedBy(userId) || this.createdBy().isFlaggedBy(userId);
+  },
   isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
     const lastSeenInfo = user.lastSeens[seenType][this._id];
@@ -81,7 +85,6 @@ Topics.helpers({
     return 0; // TODO
   },
   needsAttention(userId, seenType) {
-    if (this.closed) return 0;
     if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
     switch (this.category) {
       case 'news':
@@ -95,7 +98,7 @@ Topics.helpers({
         break;
       case 'vote':
         if (seenType === Meteor.users.SEEN_BY.EYES
-          && !this.hasVotedIndirect(userId)) return 1;
+          && !this.closed && !this.hasVotedIndirect(userId)) return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
           && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
         break;
@@ -120,7 +123,7 @@ Topics.helpers({
 });
 
 Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
-  return Topics.find({ communityId, closed: false }).fetch()
+  return Topics.find({ communityId }).fetch()
     .filter(t => t.needsAttention(userId, seenType));
 };
 
@@ -149,6 +152,7 @@ Topics.publicFields = {
   title: 1,
   text: 1,
   agendaId: 1,
+  photo: 1,
   createdAt: 1,
   updatedAt: 1,
   closed: 1,

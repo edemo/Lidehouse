@@ -26,6 +26,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/worksheets.js';
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
+  import '/imports/ui_3/views/pages/accounting-page.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
   import '/imports/ui_3/views/pages/topic-show.js';
 
@@ -196,10 +197,10 @@ CommunityRelatedRoutes.push('Worksheets');
 });
 CommunityRelatedRoutes.push('Tickets.own');*/
 
-FlowRouter.route('/tickets-report', {
-  name: 'Tickets-report',
+FlowRouter.route('/tickets', {
+  name: 'Tickets',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Tickets_report' });
+    BlazeLayout.render('Main_layout', { content: 'Tickets_simple' });
   },
 });
 CommunityRelatedRoutes.push('Tickets');
@@ -219,6 +220,14 @@ FlowRouter.route('/community-finances', {
   },
 });
 CommunityRelatedRoutes.push('Community.finances');
+
+FlowRouter.route('/accounting', {
+  name: 'Accounting.page',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Accounting_page' });
+  },
+});
+CommunityRelatedRoutes.push('Accounting.page');
 
 FlowRouter.route('/community', {
   name: 'Community.page.default',

@@ -20,6 +20,7 @@
 </template>
 
 <template name="Event">
+    {{#unless this.isHiddenBy currentUser._id }}
     <div class="social-comment">         
         <a href="{{pathFor 'User.show' _id=user._id}}" class="pull-left">
             <img alt="avatar" class="message-avatar" src={{user.avatar}}>
@@ -36,6 +37,7 @@
             {{/if}}
         </div>
     </div>
+    {{/unless}}
 </template>
 
 <template name="StatusChange">
@@ -67,5 +69,8 @@
         {{#if userHasPermission 'comment.remove' (fromSession 'activeCommunityId') this}}
         <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
         {{/if}}
+        {{#unless (equals currentUser._id this.userId)}}
+        <button class="btn btn-white btn-xs js-flag" title="{{_ 'Block content'}}"><i class="fa fa-ban"></i></button>
+        {{/unless}}
     </div>
 </template>

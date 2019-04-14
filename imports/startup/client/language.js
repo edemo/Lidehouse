@@ -66,11 +66,11 @@ Meteor.startup(function setupLanguage() {
 });
 
 // In numeral locales replacing the ' ' with a '.' in the hu locale
-Meteor.startup(function amendNumeralLocale() {
-  const huLocale = numeral.languageData('hu');
-  huLocale.delimiters.thousands = '.';
-  numeral.language('hu', huLocale);
-});
+// Meteor.startup(function amendNumeralLocale() {
+//   const huLocale = numeral.languageData('hu');
+//   huLocale.delimiters.thousands = '.';
+//   numeral.language('hu', huLocale);
+// });
 
 // Known problems with this language and translation system
 // 1. If there is no english label, the other language labels are not used either

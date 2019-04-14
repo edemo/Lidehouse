@@ -19,7 +19,7 @@
                 <div class="col-xs-12 col-md-6 col-lg-6">
                     {{> afQuickField name="title"}}
                     {{> afQuickField name="text"}}
-                    {{> afQuickField name="agendaId" options=agendaOptions}}
+                    {{> afQuickField name="agendaId" options=agendaOptions firstOption=(_ '(Select one)') }}
                     <div class="left-padded">
                         <label>{{_ "Attachments"}}</label>
                     </div>
@@ -34,7 +34,8 @@
                     </div>
                     <div>
                         <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-info js-upload" name="docupload"> + {{_ 'Upload file'}}</button>
+                        <button type="button" name="upload" class="btn btn-info js-upload" >
+                          <i class="fa fa-upload"></i> {{_ 'Upload file'}}</button>
                         </div>
                     </div>
                 </div>
@@ -45,7 +46,8 @@
                     {{> afQuickField name="vote.effect"}}
                     {{> afQuickField name="vote.type"}}
                     <div class="form-group">
-                        <label>{{_ "Choices"}}</label>
+                        <label>{{_ 'schemaVotings.vote.choices.label'}}</label>
+                        {{> Help_icon title=(_ 'schemaVotings.vote.choices.help')}}
                         <ul class="file-list list-unstyled">
                             {{#each choice in choices}}
                             <li class="{{#if updateForm}}grey-background{{/if}}" >
@@ -68,7 +70,8 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-info js-add-choice {{#if updateForm}}disabled{{/if}}" name="upload"> + {{_ "new"}} {{_ "choice"}}</button>
+                        <button type="button" class="btn btn-info js-add-choice {{#if updateForm}}disabled{{/if}}">
+                          <i class="fa fa-plus"></i> {{_ "new"}} {{_ "choice"}}</button>
                         </div>
                     </div>
                 </div>

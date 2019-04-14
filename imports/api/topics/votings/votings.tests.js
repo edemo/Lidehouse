@@ -104,7 +104,7 @@ if (Meteor.isServer) {
       });
     });
 
-    describe('evaluation', function () {
+    xdescribe('evaluation', function () {
       let votingId;
 
       before(function () {

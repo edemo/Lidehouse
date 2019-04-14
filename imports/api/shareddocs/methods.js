@@ -2,22 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Shareddocs, hasPermissionToUpload, hasPermissionToRemoveUploaded } from '/imports/api/shareddocs/shareddocs.js';
-import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
-
-function checkPermissionsToUpload(userId, doc) {
-  if (!hasPermissionToUpload(userId, doc)) {
-    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-      `Permission: ${"Upload"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
-  }
-}
-
-function checkPermissionsToRemoveUploaded(userId, doc) {
-  if (!hasPermissionToRemoveUploaded(userId, doc)) {
-    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-      `Permission: ${"Remove"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
-  }
-}
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
+import { checkExists, checkNotExists, checkPermissionsToUpload, checkPermissionsToRemoveUploaded, checkModifier } from '/imports/api/method-checks.js';
 
 export const update = new ValidatedMethod({
   name: 'shareddocs.update',
@@ -30,7 +16,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Shareddocs, _id);
     checkModifier(doc, modifier, ['folderId']);
     checkNotExists(Shareddocs, { _id: { $ne: doc._id }, communityId: doc.communityId, folderId: modifier.$set.folderId, name: doc.name });
-    checkPermissionsToUpload(this.userId, doc); 
+    checkPermissionsToUpload(this.userId, Shareddocs, doc);
 
     Shareddocs.update({ _id }, modifier);
   },
@@ -44,7 +30,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Shareddocs, _id);
-    checkPermissionsToRemoveUploaded(this.userId, doc);
+    checkPermissionsToRemoveUploaded(this.userId, Shareddocs, doc);
 
     Shareddocs.remove(_id);
   },

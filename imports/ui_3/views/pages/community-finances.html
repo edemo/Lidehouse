@@ -1,56 +1,139 @@
+<template name="Disclaimer">
+    <div class="m-t-md">
+        <small class="pull-right">
+            <i class="fa fa-clock-o"> </i>
+            {{_ 'Refreshed'}}: {{displayDate publishDate}}
+        </small>
+        <small>
+            <strong>Az adatok tájékoztató jellegűek.</strong>
+            A kivonatok feltöltése némi késéssel történhet. Hivatalos adatok a beszámolóban.
+        </small>
+    </div>
+</template>
+
 <template name="Community_finances">
     <!-- Page heading -->
     {{> Page_heading title=(_ 'Community finances') }}
 
     <div class="wrapper wrapper-content  animated fadeInRight">
-    {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
     <div class="row">
 
+    {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
     <div class="col-md-12">
-        <div class="ibox ibox-dark" id='balances-report'>
-            <div class="ibox-title">
-                <h5>{{_ 'community'}} {{_ "'s status report"}} ({{_ 'Balance sheet'}})</h5>
-                {{>iboxTools}}
-            </div>
+        <div class="ibox float-e-margins" id="moneyBalances">
             <div class="ibox-content">
-                {{#if Template.subscriptionsReady}}
-                <div class="row">
-                    <div class="col-md-6 p-md">
-                    {{> Custom_table report=(report 'Assets')}}
-                    </div>
-                    <div class="col-md-6 p-md">
-                    {{> Custom_table report=(report 'Liabilities')}}
-                    </div>
-                </div>
-                {{else}}
-                {{_ 'Loading'}}...
-                {{/if}}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="ibox ibox-dark" id='assets-chart'>
-            <div class="ibox-title">
-                <h5>{{_ 'Assets'}} {{_ "'s chart"}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                <canvas id="balanceSheetChart" height="250"></canvas>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="ibox ibox-dark" id='liabilities-chart'>
-            <div class="ibox-title">
-                <h5>{{_ 'Liabilities'}} {{_ "'s chart"}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                <canvas id="balanceSheetChart" height="250"></canvas>
-            </div>
-        </div>
-    </div>
+                <div class= "row">
 
+                    <div class="col-md-6 text-right pull-right">
+                    <!--span class="pull-right text-right"-->
+                        <small>A behajtás alatt álló ügyeket az alábbi adat nem tartalmazza</small><br/>
+                            {{_ 'Money outstanding'}}: <strong>{{displayMoney (getBalance 'Owner obligations')}}</strong>
+                    <!--/span-->
+                    </div>
+
+                    <div class="col-md-3">
+                        <h1 class="m-b-xs">{{displayMoney getStatusBalance}}</h1>
+                        <h3 class="font-bold no-margins"> {{_ 'community'}}{{_ "'s status report"}}</h3>
+                    </div>
+
+                    <div class="col-md-3">
+                      <table class="table table-condensed nowrap">
+                        {{#each account in statusAccounts}}
+                        <tr>
+                            <td>{{_ account.name}}</td>
+                            <td class="text-right text-bold"> 
+                                {{displayMoney (getBalance account.code)}}
+                            </td>
+                        </tr>
+                        {{/each}}
+                      </table>
+                    </div>
+
+                </div>
+
+                <div>
+                    <canvas id="statusChart" height="70"></canvas>
+                </div>
+
+                {{> Disclaimer}}
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
+    <div class="col-md-12">
+        <div class="ibox float-e-margins" id="moneyBalances">
+            <div class="ibox-content">
+                <div class= "row">
+
+                    <div class="col-md-3">
+                        <h1 class="m-b-xs">{{displayMoney (getBalance 'Money accounts')}}</h1>
+                        <h3 class="font-bold no-margins"> {{_ 'Money accounts total'}}</h3>
+                    </div>
+
+                    <div class="col-md-3">
+                      <table class="table table-condensed nowrap">
+                        {{#each account in (leafsOf 'Money accounts')}}
+                        <tr>
+                            <td>{{_ account.name}}</td>
+                            <td class="text-right text-bold"> 
+                                <!--a href="#account-history" class="js-view" data-id={{account.code}}-->
+                                {{displayMoney (getBalance account.code)}}
+                                <!--/a-->
+                            </td>
+                        </tr>
+                        {{/each}}
+                      </table>
+                    </div>
+
+                </div>
+
+                <div>
+                    <canvas id="moneyChart" height="70"></canvas>
+                </div>
+
+                {{> Disclaimer}}
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
+    <div class="col-md-12">
+        <div class="ibox float-e-margins" id="commitmentBalances">
+            <div class="ibox-content">
+                <div class= "row">
+
+                    <div class="col-md-3">
+                        <h1 class="m-b-xs">{{displayMoney (add (getBalance 'HOSSZÚ LEJÁRATÚ KÖTELEZETTSÉGEK') (getBalance 'Suppliers'))}}</h1>
+                        <h3 class="font-bold no-margins"> {{_ 'Commitments total'}}</h3>
+                    </div>
+
+                    <div class="col-md-3">
+                      <table class="table table-condensed nowrap">
+                        {{#each account in commitmentAccounts}}
+                        <tr>
+                            <td>{{_ account}}</td>
+                            <td class="text-right text-bold"> {{displayMoney (getBalance account)}}</td>
+                        </tr>
+                        {{/each}}
+                      </table>
+                    </div>
+
+                </div>
+
+                <div>
+                    <canvas id="commitmentChart" height="70"></canvas>
+                </div>
+
+                {{> Disclaimer}}
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    {{#if userHasPermission 'balances.ofLocalizers' (fromSession 'activeCommunityId')}}
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='account-history'>
             <div class="ibox-title">
@@ -58,39 +141,42 @@
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
-               {{>Account_history startDate='2017-01-01' endDate='2017-01-31' accountSelected='Assets:Money accounts:Bank főszámla' accountOptions=(optionsOf 'Assets:Money accounts')}}
+                {{>Account_history beginDate='2017-01-01' endDate='2017-01-31' accountOptions=(subAccountOptionsOf '38') accountSelected=accountToView}}
             </div>
         </div>
     </div>
+    {{/if}}
 
-    <div class="col-md-12">
-        <div class="ibox ibox-dark" id='journals'>
+    {{#if userHasPermission 'balances.ofLocalizers' (fromSession 'activeCommunityId')}}
+    <!--div class="col-md-12">
+        <div class="ibox ibox-dark" id='balances-report'>
             <div class="ibox-title">
-                <h5>{{_ 'Journals'}}</h5>
+                <h5>{{_ 'Balance sheet'}}</h5>
                 {{>iboxTools}}
-            </div>  
+            </div>
             <div class="ibox-content">
-                {{#if userHasPermission 'journals.insert' (fromSession 'activeCommunityId')}}
-                <div class="dropdown">
-                    <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-primary btn-sm">
-                        <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'journal'}} <b class="caret"></b>
-                    </a>
-                    <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
-                        {{#each def in txDefs}}
-                        <li><a href="" class="js-new" data-id="{{def.name}}"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ def.name}}</a></li>
-                        {{/each}}
-                        <!--li role="separator" class="divider"></li>
-                        <li><a href="" class="js-new-def"> + {{_ 'new'}} {{_ 'tx'}} {{_ 'def'}}</a></li-->
-                    </ul>
+                {{#if Template.subscriptionsReady}}
+                <div class="row">
+                    <div class="col-md-6 p-md">
+                        <h3>{{_ 'Assets'}}</h3>
+                        {{> Balance_report breakdown=(breakdown 'Assets') tags=totalTag }}
+                    </div>
+                    <div class="col-md-6 p-md">
+                        <h3>{{_ 'Liabilities'}}</h3>
+                        {{> Balance_report breakdown=(breakdown 'Liabilities') tags=totalTag }}
+                    </div>
                 </div>
+                {{else}}
+                {{_ 'Loading'}}...
                 {{/if}}
-                <div class="m-b-lg"></div>
-                {{> ReactiveDatatable tableData=journalsTableDataFn options=journalsOptionsFn }}
+                {{> Disclaimer}}
             </div>
         </div>
-    </div>
-   
-    <div class="col-md-12">
+    </div-->
+    {{/if}}
+
+    {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
+    <!--div class="col-md-12">
         <div class="ibox ibox-dark" id='incomes-expenses-history'>
             <div class="ibox-title">
                 <h5>{{_ 'Incomes'}}/{{_ 'Expenses'}} {{_ "'s history"}}</h5>
@@ -98,104 +184,26 @@
             </div>
             <div class="ibox-content">
                 <canvas id="historyChart" height="250"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-12">
-        <div class="ibox ibox-dark" id='community-status-report'>
-            <div class="ibox-title">
-                <h5 class="text=capitalize">{{_ 'community'}} {{_ "'s performance"}}</h5>
-                {{>iboxTools}}
-            </div>  
-            <div class="ibox-content">
-              {{#if Template.subscriptionsReady}}
-              {{> Custom_table report=(report 'Performance' 2017)}}
-              {{else}}
-              {{_ 'Loading'}}...
-              {{/if}}
-          </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="ibox ibox-dark" id='incomes-chart'>
-            <div class="ibox-title">
-                <h5>{{_ 'Incomes'}} {{_ "'s chart"}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                <canvas id="incomesChart" height="250"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="ibox ibox-dark" id='expenses-chart'>
-            <div class="ibox-title">
-                <h5>{{_ 'Expenses'}} {{_ "'s chart"}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                <canvas id="expensesChart" height="250"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!--div class="col-md-12">
-        <div class="ibox ibox-dark" id='bills'>
-            <div class="ibox-title">
-                <h5>{{_ 'Bills'}}</h5>
-                {{>iboxTools}}
-            </div>  
-            <div class="ibox-content">
-            {{> ReactiveDatatable tableData=billsTableDataFn options=journalsOptionsFn }}
-            <button class="js-many btn-primary">{{_ 'createMany'}}</button>
-          </div>
-        </div>
-    </div-->
-    
-    <!--div class="col-md-12">
-        <div class="ibox ibox-dark" id='breakdowns-nestable'>
-            <div class="ibox-title">
-                <h5>{{_ 'Breakdowns'}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                {{> Nestable_edit}}
+                {{#if Template.subscriptionsReady}}
+                <div class="row nowrap">
+                    <div class="col-md-12 p-md">
+                        <h3>{{_ 'Incomes'}}</h3>
+                        {{> Balance_report breakdown=(breakdown 'Incomes') tags=last12MonthsTag }}
+                    </div>
+                    <div class="col-md-12 p-md">
+                        <h3>{{_ 'Expenses'}}</h3>
+                        {{> Balance_report breakdown=(breakdown 'Expenses') tags=last12MonthsTag }}
+                    </div>
+                </div>
+                {{else}}
+                {{_ 'Loading'}}...
+                {{/if}}
+                {{> Disclaimer}}
             </div>
         </div>
     </div-->
-
-    <div class="col-md-12">
-        <div class="ibox ibox-dark" id='breakdowns'>
-            <div class="ibox-title">
-                <h5>{{_ 'Chart of accounts' }}</h5>
-                {{>iboxTools}}
-            </div>  
-            <div class="ibox-content">
-              <h2>{{_ 'Main breakdowns'}}</h2>
-              {{> ReactiveDatatable tableData=mainBreakdownsTableDataFn options=breakdownsOptionsFn }}
-              <h2 class="m-t-md">{{_ 'Other breakdowns'}}</h2>
-              {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
-              <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
-              {{/if}}
-              {{> ReactiveDatatable tableData=otherBreakdownsTableDataFn options=breakdownsOptionsFn }}
-            </div>
-        </div>
-    </div>
-    
-    </div>
-    {{else}}
-    <div class="row">
-        <div class="col-md-12">
-        <div class="ibox ibox-dark">
-            <div class="ibox-content">
-                {{_ 'Data upload in progress'}}...
-            </div>
-        </div>
-        </div>
-    </div>
     {{/if}}
+
+    </div>
     </div>
 </template>
