@@ -18,6 +18,10 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 const rABS = true;
 const delayCalls = 0;
 
+// Problem of dealing with dates as js Date objects:
+// https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
+// https://stackoverflow.com/questions/15130735/how-can-i-remove-time-from-date-with-moment-js
+
 function transformMarinaParcels(jsons) {
   const tjsons = jsons.map((doc) => {
     const tdoc = $.extend(true, {}, doc);
