@@ -13,9 +13,9 @@ import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, de
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
-import './tickets-report.html';
+import './tickets.html';
 
-Template.Tickets_report.viewmodel({
+Template.Tickets.viewmodel({
   activesOnly: false,
   filterUserId: null,
   searchText: '',
@@ -53,7 +53,7 @@ Template.Tickets_report.viewmodel({
   },
 });
 
-Template.Tickets_report.events({
+Template.Tickets.events({
   'click .js-new'() {
     afTicketInsertModal();
   },
