@@ -211,6 +211,9 @@
   "Submit join request": "Csatlakozási kérelem beadása",
   "Submitted join request": "Csatlakozási kérelem beadva",
   "Show all parcels": "Összes albetét mutatása",
+  "Number of parcels in the house": "Ennyi albetét van összesen a házban.",
+  "The list currently shows your own parcels": "A lista most csak az Ön saját albetéteit mutatja",
+  "Click the button on the right to see all parcels": "Az összes albetét megtekintése a jobb oldali gombbal",
 
   // topics
   "The": "A",
@@ -356,6 +359,10 @@
   "ParcelBalance": "Túlfizetés/Hátralék",
   "Parcel balances": "Albetétek egyenlege",
   "My parcel balances": "Albetéteim egyenlege",
+  "Owner can see their own parcel's data - Manager can see everyone's": "Tulajdonos a saját albetéteit láthatja itt - Közös Képviselő mindenkiét",
+  "The list currently shows parcels with the most arrears": "A lista jelenleg csak a legnagyobb hátralékosokat mutatja",
+  "You can get the full list with the button on the right, this may take some time": "A teljes lista lekérhető a jobb oldali gombbal, de ez egy kis időt vehet igénybe",
+  "The list shows all of the parcels": "A lista valamennyi albetétet mutatja",
   "Parcel history": "Albetét története",
   "Total change in this period": "Egyenleg változása az adott időszak alatt",
   "Select account to view": "Válasszon megtekintendő számlát",
@@ -525,6 +532,7 @@
   "delete user successful": "Felhasználói fiók törölve",
   "update user successful": "Felhasználói adatok elmentve",
   "insert community successful": "Közösség sikeresen létrehozva.",
+  "update community successful": "Közösség adatai módosítva",
   "delete community successful": "Közösség törölve",
   "insert parcel successful": "Albetét rögzítésre került",
   "update parcel successful": "Albetét adatai módosítva",
