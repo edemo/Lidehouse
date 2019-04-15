@@ -1,6 +1,7 @@
 /* global alert */
 
 import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
 import { Communities } from '/imports/api/communities/communities.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -21,7 +22,7 @@ export function afCommunityUpdateModal() {
   Modal.show('Autoform_edit', {
     id: 'af.community.update',
     collection: Communities,
-    doc: Communities.findOne(Template.instance().getCommunityId()),
+    doc: Communities.findOne(Session.get('selectedCommunityId')),
     omitFields: ['description'],
     type: 'method-update',
     meteormethod: 'communities.update',
