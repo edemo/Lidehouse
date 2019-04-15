@@ -43,7 +43,7 @@ Communities.schema = new SimpleSchema([
   comtype.profileSchema,
   { totalunits: { type: Number } },
   // redundant fields:
-  { parcels: { type: Object, blackbox: true, defaultValue: {} } },
+  { parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } } },
 ]);
 
 Meteor.startup(function indexCommunities() {
