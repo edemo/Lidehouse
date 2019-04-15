@@ -1,6 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
+import { TAPi18n } from 'meteor/tap:i18n';
+import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
@@ -120,6 +122,7 @@ Template.Parcels_finances.viewmodel({
           { data: 'balance', title: __('Balance'), render: Render.formatNumber },
           { data: 'parcelRef', title: __('Action buttons'), render: Render.buttonViewLink },
         ],
+        language: datatables_i18n[TAPi18n.getLanguage()],
       };
     };
   },
