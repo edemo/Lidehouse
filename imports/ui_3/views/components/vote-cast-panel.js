@@ -111,8 +111,8 @@ Template.Vote_cast_panel.viewmodel({
   },
   // Single choice voting
   pressedClassForVoteBtn(choice) {
-    if (this.temporaryVote()) return _.isEqual([choice], this.temporaryVote()) && 'btn-pressed';
-    if (this.registeredVote()) return _.isEqual([choice], this.registeredVote()) && 'btn-pressed';
+    if (this.temporaryVote()) return this.temporaryVote().includes(choice) && 'btn-pressed';
+    if (this.registeredVote()) return this.registeredVote().includes(choice) && 'btn-pressed';
     return undefined;
   },
   // Preferential voting
@@ -127,10 +127,24 @@ Template.Vote_cast_panel.viewmodel({
     return choices.map(function obj(text, index) { return { text, value: index }; });
   },
   events: {
-    'click .btn-vote'(event, instance) {  // event handler for the single choice vote type
+    'click .js-btn-vote'(event, instance) {  // event handler for the single choice vote type
       if (this.registeredVote() && !this.temporaryVote()) return;
       const selecetedChoice = $(event.target).closest('.btn').data('value');
       this.temporaryVote([selecetedChoice]);
+    },
+    'click .js-btn-vote-multi'(event, instance) {  // event handler for the single choice vote type
+      if (this.registeredVote() && !this.temporaryVote()) return;
+      const selectedChoice = $(event.target).closest('.btn').data('value');
+      const selectedChoices = this.temporaryVote();
+
+      if (selectedChoices === undefined) {
+        this.temporaryVote([selectedChoice]);
+      } else if (selectedChoices.includes(selectedChoice)) {
+        this.temporaryVote(_.without(selectedChoices, selectedChoice));
+      } else {
+        selectedChoices.push(selectedChoice);
+        this.temporaryVote(selectedChoices);
+      }
     },
     'click .js-send'(event, instance) {
       const topicId = this.topic()._id;

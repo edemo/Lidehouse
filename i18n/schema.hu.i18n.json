@@ -239,7 +239,8 @@
         "yesno": "Igen-nem",
         "choose": "Egyszerű választásos",
         "preferential": "Preferencia szerint sorba rendező",
-        "petition": "Támogatásgyűjtő"
+        "petition": "Támogatásgyűjtő",
+        "multi-choice": "Több választási lehetőséges"
       },
       "voters": {
         "label": "Szavazatot leadók"

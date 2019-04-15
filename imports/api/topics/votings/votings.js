@@ -13,7 +13,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
 Topics.voteEffectValues = ['poll', 'legal'];
-Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition'];
+Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition', 'multi-choice'];
 Topics.voteTypeChoices = {
   'yesno': ['yes', 'no', 'abstain'],
   'petition': ['support'],
@@ -121,6 +121,7 @@ Topics.helpers({
     const voteParticipation = { count: 0, units: 0 };
     const directVotes = this.voteCasts || {};
     const self = this;
+    const voteType = this.vote.type;
     const voterships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner' });
     voterships.forEach((ownership) => {
       const ownerId = ownership.Person().id();
@@ -139,7 +140,11 @@ Topics.helpers({
           votePaths[ownerId] = votePath;
           castedVote.forEach((choice, i) => {
             voteSummary[choice] = voteSummary[choice] || 0;
-            voteSummary[choice] += ownership.votingUnits() * (1 - (i / castedVote.length));
+            if (voteType === 'multi-choice') {
+              voteSummary[choice] += ownership.votingUnits();
+            } else {
+              voteSummary[choice] += ownership.votingUnits() * (1 - (i / castedVote.length));
+            }
           });
           voteParticipation.count += 1;
           voteParticipation.units += ownership.votingUnits();
