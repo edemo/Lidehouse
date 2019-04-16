@@ -24,7 +24,7 @@ Meteor.publish('parcels.ofSelf', function parcelsOfSelf(params) {
   }).validate(params);
   const { communityId } = params;
   if (!Meteor.user()) return this.ready();
-  const parcelIds = Meteor.user().memberships(communityId).fetch().map(m => m.parcelId);
+  const parcelIds = Meteor.user().memberships(communityId).map(m => m.parcelId);
 
   return Parcels.find({ _id: { $in: parcelIds } });
 });
