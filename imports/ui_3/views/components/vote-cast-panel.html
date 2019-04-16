@@ -16,25 +16,17 @@
                   <ul class="sortable droptrue">
                     {{#each p in preference}}
                     <!-- would be nicer: https://stackoverflow.com/questions/20782368/use-font-awesome-icon-as-css-content -->
-                    <li class="btn btn-vote-choice js-button-vote-choice ui-state-default js-btn-vote-choice" data-value="{{p.value}}">
+                    <li class="btn btn-vote-choice ui-state-default js-btn-vote-choice" data-value="{{p.value}}">
                       <i class="fa fa-lg fa-circle"></i><i class="fa fa-sort"></i> {{p.text}}
                     </li>
                     {{/each}}
                   </ul>
                 {{else}}
-                  {{#if (equals topic.vote.type 'multi-choice')}}
-                    {{#each choice in topic.vote.choices}}
-                    <button class="btn btn-vote js-btn-vote-multi {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
-                      <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
-                    </button>
-                    {{/each}}
-                  {{else}}
-                    {{#each choice in topic.vote.choices}}
-                    <button class="btn btn-vote js-btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
-                      <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
-                    </button>
-                    {{/each}}
-                  {{/if}}
+                  {{#each choice in topic.vote.choices}}
+                  <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
+                    <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{_ choice}}
+                  </button>
+                  {{/each}}
                 {{/if}}
 
                 {{#if envelopeIsClosed}}

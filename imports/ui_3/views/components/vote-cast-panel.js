@@ -127,24 +127,11 @@ Template.Vote_cast_panel.viewmodel({
     return choices.map(function obj(text, index) { return { text, value: index }; });
   },
   events: {
-    'click .js-btn-vote'(event, instance) {  // event handler for the single choice vote type
+    'click .btn-vote'(event, instance) {  // event handler for the single choice vote type
       if (this.registeredVote() && !this.temporaryVote()) return;
       const selecetedChoice = $(event.target).closest('.btn').data('value');
-      this.temporaryVote([selecetedChoice]);
-    },
-    'click .js-btn-vote-multi'(event, instance) {  // event handler for the single choice vote type
-      if (this.registeredVote() && !this.temporaryVote()) return;
-      const selectedChoice = $(event.target).closest('.btn').data('value');
-      const selectedChoices = this.temporaryVote();
-
-      if (selectedChoices === undefined) {
-        this.temporaryVote([selectedChoice]);
-      } else if (selectedChoices.includes(selectedChoice)) {
-        this.temporaryVote(_.without(selectedChoices, selectedChoice));
-      } else {
-        selectedChoices.push(selectedChoice);
-        this.temporaryVote(selectedChoices);
-      }
+      if (instance.data.vote.type === 'multi-choice') this.temporaryVote(_.without(_.union(this.temporaryVote(), [selecetedChoice]), undefined));
+      else this.temporaryVote([selecetedChoice]);
     },
     'click .js-send'(event, instance) {
       const topicId = this.topic()._id;
