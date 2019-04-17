@@ -487,6 +487,7 @@ export function insertDemoFixture(lang) {
     userId: demoUserId,
     category: 'room',
     title: 'private chat',
+    text: 'private chat',
     participantIds: [demoUserId, dummyUsers[2]],
   });
 

@@ -40,6 +40,24 @@ if (Meteor.isServer) {
       },
     };
   };
+  const createClosedVoting = function (type) {
+    return {
+      communityId: Fixture.demoCommunityId,
+      userId: Fixture.demoUserId,
+      category: 'vote',
+      title: `${type} Voting`,
+      text: 'Choose!',
+      closed: true,
+      agendaId,
+      vote: {
+        closesAt: moment().add(14, 'day').toDate(),
+        procedure: 'online',
+        effect: 'legal',
+        type,
+        choices: ['white', 'red', 'yellow', 'grey'],
+      },
+    };
+  };
 
   describe('votings', function () {
     this.timeout(5000);
@@ -331,6 +349,24 @@ if (Meteor.isServer) {
         done();
       });
 
+      describe('multi-choice evaluation', function () {
+
+        let votingId2;
+
+        before(function () {
+          votingId2 = insertTopic._execute({ userId: Fixture.demoManagerId }, createClosedVoting('multi-choice'));
+        });
+
+        it('evaluates correct vote summary on multi-choice vote', function (done) {
+          chai.assert.isDefined(votingId2);
+          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId2, castedVote: [1] });
+          castVote._execute({ userId: Fixture.dummyUsers[4] }, { topicId: votingId2, castedVote: [0, 1] });
+          const updatedVoting = Topics.findOne(votingId2);
+          chai.assert.deepEqual(updatedVoting.voteSummary, { 0: 40, 1: 50 });
+          done();
+        });
+
+      });
 
         // TODO: ownership changes during vote period
 
