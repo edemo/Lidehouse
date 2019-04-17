@@ -12,7 +12,7 @@ export function toggleElementInArray(collection, id, arrayName, element) {
 export function toggle(element, array) {
   if (!Array.isArray(array)) array = [];
   if (array.includes(element)) return _.without(array, element);
-  return _.union(array, [element]);
+  return array.concat([element]);
 }
 
 export function deaccentLowerCase (text) { 
