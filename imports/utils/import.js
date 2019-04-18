@@ -16,7 +16,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 const rABS = true;
-const delayCalls = 0;
+const delayCalls = 250;
 
 // Problem of dealing with dates as js Date objects:
 // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
@@ -51,7 +51,7 @@ function transformMarinaMemberships(jsons) {
     doc.person.contact = doc.person.contact || {};
     doc.person.idCard.type = 'natural';
     doc.role = 'owner';
-    const names = doc.owners.split(/,|;|\n/);
+    const names = doc.owners ? doc.owners.split(/,|;|\n/) : [];
     const emails = doc.emails ? doc.emails.split(/,|;| |\n/) : [];
     names.forEach((name) => {
       const tdoc = {}; $.extend(true, tdoc, doc);
@@ -170,6 +170,8 @@ export function importCollectionFromFile(collection, options) {
         if (collection._name === 'memberships') jsons = transformMarinaMemberships(jsons);
         if (collection._name === 'transactions') jsons = transformMarinaTransactions(jsons, options);
         if (collection._name === 'balances') jsons = transformMarinaBalances(jsons, options);
+      } else {
+        if (collection._name === 'memberships') jsons = transformMarinaMemberships(jsons);
       }
       // ------------------------------
 
