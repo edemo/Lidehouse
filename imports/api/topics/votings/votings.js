@@ -140,11 +140,8 @@ Topics.helpers({
           votePaths[ownerId] = votePath;
           castedVote.forEach((choice, i) => {
             voteSummary[choice] = voteSummary[choice] || 0;
-            if (voteType === 'multi-choice') {
-              voteSummary[choice] += ownership.votingUnits();
-            } else {
-              voteSummary[choice] += ownership.votingUnits() * (1 - (i / castedVote.length));
-            }
+            const choiceWeight = (voteType === 'preferential') ? (1 - (i / castedVote.length)) : 1;
+            voteSummary[choice] += ownership.votingUnits() * choiceWeight;
           });
           voteParticipation.count += 1;
           voteParticipation.units += ownership.votingUnits();
