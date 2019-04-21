@@ -111,7 +111,7 @@ Template.Community_finances.viewmodel({
   },
   onRendered(instance) {
     instance.autorun(this.syncBalanceChartData);
-    instance.autorun(this.syncHistoryChartData);
+//    instance.autorun(this.syncHistoryChartData);
   },
   syncBalanceChartData() {
     const communityId = Session.get('activeCommunityId');
@@ -215,7 +215,7 @@ Template.Community_finances.viewmodel({
         }, minusColors[0]),
       ],
     };
-    const chartOptions = {
+    const normalChartOptions = {
       responsive: true,
       scales: {
         yAxes: [{
@@ -225,13 +225,24 @@ Template.Community_finances.viewmodel({
         }],
       },
     };
+    const stackedChartOptions = {
+      responsive: true,
+      scales: {
+        yAxes: [{
+          stacked: true,
+          ticks: {
+            callback: (value, index, values) => numeral(value).format('0,0$'),
+          },
+        }],
+      },
+    };
 
     const statusContext = document.getElementById('statusChart').getContext('2d');
-    new Chart(statusContext, { type: 'line', data: statusData, options: chartOptions });
+    new Chart(statusContext, { type: 'line', data: statusData, options: normalChartOptions });
     const moneyContext = document.getElementById('moneyChart').getContext('2d');
-    new Chart(moneyContext, { type: 'line', data: moneyData, options: chartOptions });
+    new Chart(moneyContext, { type: 'line', data: moneyData, options: stackedChartOptions });
     const commitmentContext = document.getElementById('commitmentChart').getContext('2d');
-    new Chart(commitmentContext, { type: 'line', data: commitmentData, options: chartOptions });
+    new Chart(commitmentContext, { type: 'line', data: commitmentData, options: stackedChartOptions });
   },
   syncHistoryChartData() {
     const monthsArray = monthTags.children.map(c => c.label);
