@@ -39,6 +39,7 @@ Accounts.emailTemplates.enrollAccount = {
     return dualTranslate('email.EnrollAccount', {
       name: community.name,
       role: TAPi18n.__(membership.role, {}, user.language()),
+      roleen: membership.role,
       email: adminEmail,
       url,
     },
