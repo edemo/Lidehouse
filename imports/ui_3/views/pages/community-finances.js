@@ -100,6 +100,13 @@ const minusColors = [
   },
 ];
 
+Template.Disclaimer.helpers({
+  publishDate() {
+    const publishedBalance = Balances.findOne({ tag: 'P' });
+    return publishedBalance ? publishedBalance.updatedAt : new Date('2000-01-01');
+  },
+});
+
 Template.Community_finances.viewmodel({
   accountToView: '323',
   onCreated(instance) {
@@ -282,9 +289,6 @@ Template.Community_finances.viewmodel({
       { name: 'Money accounts', code: '38' },
       { name: 'Commitments', code: '46' },
     ];
-  },
-  publishDate() {
-    return Balances.findOne({ tag: 'P' }).updatedAt;
   },
   leafsOf(account) {
     const coa = ChartOfAccounts.get(); if (!coa) return [];
