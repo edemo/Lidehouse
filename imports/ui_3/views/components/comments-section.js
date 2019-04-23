@@ -47,14 +47,15 @@ Template.Comments_section.onDestroyed(function chatboxOnDestroyed() {
 
 const RECENT_COMMENT_COUNT = 5;
 
-Template.Comments_section.helpers({
+Template.Comments_section.viewmodel({
+  commentText: '',
   isVote() {
-    const topic = this;
+    const topic = this.templateInstance.data;
     return topic.category === 'vote';
   },
-  comments() {
+  commentsOfTopic() {
     const route = FlowRouter.current().route.name;
-    const comments = Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
+    const comments = Comments.find({ topicId: this._id.value }, { sort: { createdAt: 1 } });
     if (route === 'Board') {
       // on the board showing only the most recent ones
       return comments.fetch().slice(-1 * RECENT_COMMENT_COUNT);
@@ -63,7 +64,7 @@ Template.Comments_section.helpers({
   },
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
-    const comments = Comments.find({ topicId: this._id });
+    const comments = Comments.find({ topicId: this._id.value });
     return (route === 'Board' && comments.count() > RECENT_COMMENT_COUNT)
       ? comments.count() - RECENT_COMMENT_COUNT
       : 0;
@@ -71,7 +72,7 @@ Template.Comments_section.helpers({
 });
 
 Template.Comments_section.events({
-  'keydown .js-send-enter'(event) {
+ /* 'keydown .js-send-enter'(event) {
     const topicId = this._id;
     const userId = Meteor.userId();
     if (event.keyCode === 13 && !event.shiftKey) {
@@ -82,54 +83,57 @@ Template.Comments_section.events({
         })
       );
     }
+  },*/
+  'click .social-comment .js-send'(event, instance) {
+    // if ($(event.target).hasClass('disabled')) return;
+    const textarea = $(event.target).closest('.media-body').find('textarea')[0];
+    insertComment.call({
+      topicId: this._id,
+      userId: Meteor.userId(),
+      text: textarea.value,
+    },
+    onSuccess((res) => {
+      textarea.value = '';
+      instance.viewmodel.commentText('');
+      // $(event.target).addClass('disabled');
+    }));
   },
 });
 
 //------------------------------------
 
-Template.Comment.helpers({
+Template.Comment.viewmodel({
+  editing: false,
 });
 
 Template.Comment.events({
   'click .js-like'(event) {
     event.preventDefault();
-    like.call({
-      coll: 'comments',
-      id: this._id,
-    }, handleError);
+    like.call({ coll: 'comments', id: this._id }, handleError);
   },
   'click .js-flag'(event) {
     event.preventDefault();
-    flag.call({
-      coll: 'comments',
-      id: this._id,
-    }, handleError);
+    flag.call({ coll: 'comments', id: this._id }, handleError);
   },
   'click .js-edit'(event, instance) {
-    $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-    const originalText = Comments.findOne({ _id: instance.data._id }).text;
-    const textareaEdit = '<span id="editableSpan"><textarea class="form-control js-send-edited">' + 
-      originalText + '</textarea>' + `<small class="text-muted">${__('commentEditInstruction')} </small></span>`;
-    $(textareaEdit).insertAfter('span[data-id="' + instance.data._id + '"]');
-    $('#editableSpan > textarea').focus();
+    const element = $(event.target).closest('.media-body');
+    Meteor.setTimeout(() => element.find('textarea')[0].focus(), 100);
+    instance.viewmodel.editing(true);
   },
-  'keydown .js-send-edited'(event, instance) {
-    // pressing escape key
-    if (event.keyCode === 27) { 
-      event.preventDefault();
-      $('#editableSpan').remove();
-      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
-    }
-    // pressing enter key
-    if (event.keyCode === 13 && !event.shiftKey) {
-      event.preventDefault();
-      const editedText = $('#editableSpan > textarea').val();
-      updateComment.call({
-        _id: instance.data._id,
-        modifier: { $set: { text: editedText } },
-      }, handleError);
-      $('#editableSpan').remove();
-      $('span[data-id="' + instance.data._id + '"]').toggleClass('hidden');
+  'click .js-save'(event, instance) {
+    const text = $(event.target).closest('.media-body').find('textarea')[0].value;
+    updateComment.call({
+      _id: instance.data._id,
+      modifier: { $set: { text } },
+    }, handleError);
+    instance.viewmodel.editing(false);
+  },
+  'click .js-cancel'(event, instance) {
+    instance.viewmodel.editing(false);
+  },
+  'keydown textarea'(event, instance) {
+    if (event.keyCode === 27) {
+      instance.viewmodel.editing(false);
     }
   },
   'click .js-delete'(event, instance) {

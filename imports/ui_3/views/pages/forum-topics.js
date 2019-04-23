@@ -1,13 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { Session } from 'meteor/session';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { $ } from 'meteor/jquery';
 
+import { handleError } from '/imports/ui_3/lib/errors';
 import { Topics } from '/imports/api/topics/topics.js';
 import { like } from '/imports/api/topics/likes.js';
-
 //import '/imports/ui_3/stylesheets/animatecss/animate.css';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -17,9 +17,7 @@ import '../common/page-heading.js';
 import '../components/votebox.js';
 import '../components/voting-list.html';
 import './vote-topics.html';
-
 import './forum-topics.html';
-import { handleError } from '../../../ui_3/lib/errors';
 
 
 Template.Forum_topics.helpers({
@@ -40,7 +38,6 @@ Template.Forum_topics.events({
       omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky'],
       type: 'method',
       meteormethod: 'topics.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-like'(event) {

@@ -5,9 +5,12 @@
     "house": "Demo ház",
     "city": "Budapest",
     "street": "Kankalin utca",
-    "ground": "Fszt.",
+    "ground": "Fszt",
+    "groundCode": "F",
     "attic": "Tetőtér",
+    "atticCode": "T",
     "cellar": "Pince",
+    "cellarCode": "P",
     "user": {
       "0": {
         "firstName": "Imre",
@@ -101,7 +104,7 @@
         "firstName": "Ildikó",
         "lastName": "Rózsa"
       },
-      "firstNames": ["0", "Aladár", "Boris", "Cecília", "Dávid", "Ede", "Ferenc", "Gabi", "Hedvig", "István", "Jolán", "Klára", "Lajos", "Margit", "Nándor", "Olivér", "Péter", "Róza", "Sarolta", "Tivadar", "Zsuzsanna"]
+      "firstNames": ["Aladár", "Boris", "Cecília", "Dávid", "Ede", "Ferenc", "Gabi", "Hedvig", "István", "Jolán", "Klára", "Lajos", "Margit", "Nándor", "Olivér", "Péter", "Róza", "Sarolta", "Tivadar", "Zsuzsanna"]
     },
     "manager": {
         "firstName": "Levente",
@@ -235,7 +238,7 @@
       "0": "Szervusz! Megtaláltam a postaláda kulcsodat. Benne hagytad a levélszekrény ajtajában. :)",
       "1": "Ó de jó. Köszönöm szépen! Már azt hittem elhagytam. Felmegyek érte este, a Barátok közt után."
     },
-    "journals": {
+    "transactions": {
       "note": {
         "0": "Évközben elhatározott",
         "1": "Önkormányzattól",

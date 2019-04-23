@@ -32,7 +32,7 @@ Template.Shareddoc_store.helpers({
     return Shareddocs.find({ communityId: activeCommunityId }).count() > 0;
   },
   builtinFolders() {
-    return Sharedfolders.find({ communityId: { $exists: false } });
+    return Sharedfolders.find({ communityId: null });
   },
   communityFolders() {
     const communityId = Session.get('activeCommunityId');
@@ -78,10 +78,8 @@ Template.Shareddoc_store.events({
     Modal.show('Autoform_edit', {
       id: 'af.sharedfolder.insert',
       collection: Sharedfolders,
-      omitFields: ['communityId'],
       type: 'method',
       meteormethod: 'sharedfolders.insert',
-      template: 'bootstrap3-inline',
     });
   },
   'click .js-edit'(event) {
@@ -91,11 +89,9 @@ Template.Shareddoc_store.events({
       id: 'af.sharedfolder.update',
       collection: Sharedfolders,
       doc: Sharedfolders.findOne(_id),
-      omitFields: ['communityId'],
       type: 'method-update',
       meteormethod: 'sharedfolders.update',
       singleMethodArgument: true,
-      template: 'bootstrap3-inline',
     });
   },
   'click .file-manager .js-delete'(event) {

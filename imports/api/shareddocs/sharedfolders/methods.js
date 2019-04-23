@@ -28,7 +28,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Sharedfolders, _id);
     checkModifier(doc, modifier, ['name']);
     checkNotExists(Sharedfolders, { _id: { $ne: doc._id }, communityId: doc.communityId, name: modifier.$set.name });
-    checkPermissions(this.userId, 'shareddocs.upload', doc.communityId); 
+    checkPermissions(this.userId, 'shareddocs.upload', doc.communityId);
 
     Sharedfolders.update({ _id }, modifier);
   },

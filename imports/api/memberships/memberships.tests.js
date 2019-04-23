@@ -6,6 +6,7 @@ import { PublicationCollector } from 'meteor/johanbrook:publication-collector';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { Random } from 'meteor/random';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
 
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
@@ -57,9 +58,20 @@ if (Meteor.isServer) {
 
     describe('representor', function () {
       let parcelId;
-      let ownership1Id, ownership2Id, ownership3Id, benefactorship1Id;
+      let ownership10d, ownership1Id, ownership2Id, ownership3Id, benefactorship1Id;
       beforeEach(function () {
         parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 });
+        ownership0Id = Memberships.insert({
+          communityId: Fixture.demoCommunityId,
+          parcelId,
+          activeTime: {  // this is the previous owner
+            begin: moment().subtract(1, 'weeks').toDate(),
+            end: moment().subtract(1, 'days').toDate(),
+          },
+          person: { userId: Fixture.dummyUsers[3] },
+          role: 'owner',
+          ownership: { share: new Fraction(1), representor: true },
+        });
         ownership1Id = Memberships.insert({
           communityId: Fixture.demoCommunityId,
           parcelId,
@@ -89,6 +101,9 @@ if (Meteor.isServer) {
           benefactorship: { type: 'favor' },
         });
       });
+      afterEach(function () {
+        Parcels.remove(parcelId);
+      });
 
       it('selects flagged representor when specified', function (done) {
         const parcel = Parcels.findOne(parcelId);
@@ -108,7 +123,10 @@ if (Meteor.isServer) {
 
       it('a parcel should have maximum one representor', function (done) {
         chai.assert.throws(() =>
-          Memberships.update(ownership1Id, { $set: { 'ownership.representor': true } })
+          Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, {
+            _id: ownership1Id,
+            modifier: { $set: { 'ownership.representor': true } },
+          })
         );
         done();
       });

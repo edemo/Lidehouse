@@ -17,7 +17,7 @@ Sharedfolders.deny({
 
 
 Sharedfolders.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true, optional: true },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String },
 });
 

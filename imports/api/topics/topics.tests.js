@@ -9,10 +9,10 @@ import { PublicationCollector } from 'meteor/johanbrook:publication-collector';
 import { Random } from 'meteor/random';
 import { DDP } from 'meteor/ddp-client';
 import { _ } from 'meteor/underscore';
-import { Topics } from './topics.js';
-import { Comments } from '../comments/comments.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { Comments } from '/imports/api/comments/comments.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
-import '../../../i18n/en.i18n.json';
+import '/i18n/en.i18n.json';
 
 if (Meteor.isServer) {
   // eslint-disable-next-line import/no-unresolved

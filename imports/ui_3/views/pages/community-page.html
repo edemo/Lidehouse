@@ -191,7 +191,6 @@
             </div>
         </div>
         
-        {{#if Template.subscriptionsReady}}
         {{#if userHasPermission 'memberships.inCommunity' communityId}}
         <div class="row">
             <div class="col-lg-12">
@@ -209,37 +208,45 @@
                             {{/if}}
                         </div>
                         <p>
-                            {{_ 'List of parcels'}} - <i class="fa fa-building"></i> {{parcels.count}}<br>
-                            {{_ "Click the little person buttons to see the occupants"}}
+                            {{#if showAllParcels}}
+                            {{_ 'List of parcels'}} - <i class="fa fa-building"></i> {{parcels.count}} {{> Help_icon title=(_ 'Number of parcels in the house')}}<br>
+                            {{_ 'Click the little person buttons to see the occupants'}}
+                            {{else}}
+                            {{_ 'The list currently shows your own parcels'}} - <i class="fa fa-building"></i> {{parcels.count}}<br>
+                            {{_ 'Click the button on the right to see all parcels'}}                            
+                            {{/if}}
                         </p>
                         <br>
-                        {{#if userHasPermission 'parcels.update' communityId}}
-                        <ul class="nav nav-tabs m-b-md">
-                            <li class="active"><a data-toggle="tab" href="#tab-p1"><i class="fa fa-building"></i> {{_ 'Approved'}}</a></li>
-                            <li class=""><a data-toggle="tab" href="#tab-p2"><i class="fa fa-building-o"></i> {{_ 'Waiting for approval'}}
-                                {{#if unapprovedParcels.count}}
-                                <span class="label badge badge-danger">{{unapprovedParcels.count}}</span>
-                                {{/if}}
-                            </a></li>
-                        </ul>
+                        {{#if Template.subscriptionsReady}}
+                            {{#if userHasPermission 'parcels.update' communityId}}
+                            <ul class="nav nav-tabs m-b-md">
+                                <li class="active"><a data-toggle="tab" href="#tab-p1"><i class="fa fa-building"></i> {{_ 'Approved'}}</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-p2"><i class="fa fa-building-o"></i> {{_ 'Waiting for approval'}}
+                                    {{#if unapprovedParcels.count}}
+                                    <span class="label badge badge-danger">{{unapprovedParcels.count}}</span>
+                                    {{/if}}
+                                </a></li>
+                            </ul>
+                            {{/if}}
+                            <div class="tab-content">
+                                <div id="tab-p1" class="tab-pane active">
+                                    <div class="table-responsive">
+                                        {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
+                                    </div>
+                                </div>
+                                <div id="tab-p2" class="tab-pane">
+                                    <div class="table-responsive">
+                                        {{> ReactiveDatatable tableData=unapprovedParcelsTableDataFn options=parcelsOptionsFn }}
+                                    </div>
+                                </div>
+                            </div>
+                        {{else}}
+                        {{_ 'Loading'}}...
                         {{/if}}
-                        <div class="tab-content">
-                            <div id="tab-p1" class="tab-pane active">
-                                <div class="table-responsive">
-                                    {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
-                                </div>
-                            </div>
-                            <div id="tab-p2" class="tab-pane">
-                                <div class="table-responsive">
-                                    {{> ReactiveDatatable tableData=unapprovedParcelsTableDataFn options=parcelsOptionsFn }}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        {{/if}}
         {{/if}}
 
         <div id="occupants" class="row">

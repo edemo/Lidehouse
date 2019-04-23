@@ -36,7 +36,7 @@ const BenefactorshipSchema = new SimpleSchema({
 
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection
 Memberships.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },  // manager approved this membership
   accepted: { type: Boolean, autoform: { omit: true }, defaultValue: false },  // person accepted this membership
