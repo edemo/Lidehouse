@@ -105,7 +105,7 @@ if (Meteor.isServer) {
       });
     });
 
-    xdescribe('evaluation', function () {
+    describe('evaluation', function () {
       let votingId;
 
       before(function () {
@@ -253,8 +253,8 @@ if (Meteor.isServer) {
           // summaryShouldBe[0] = 70;
           summaryShouldBe[0] = 90;
         } else if (choice === 1) {
-          // summaryShouldBe[1] = 80;
-          summaryShouldBe[1] = 100;
+          summaryShouldBe[1] = 80;
+          // summaryShouldBe[1] = 100;
           summaryShouldBe[2] = 20;
         }
         chai.assert.deepEqual(voting.voteSummary, summaryShouldBe);
