@@ -122,24 +122,6 @@ export const Render = {
     const html = `<span class='label label-${color}'>${__('schemaTickets.ticket.status.' + cellData)}</span>`;
     return html;
   },
-  ticketCommentButton(cellData) {
-    const html = `<a href="/topic/${cellData}" class="btn btn-white btn-xs"><i class="fa fa-comments"></i>${__('Comment')}</a>`;
-    return html;
-  },
-  ticketButtonGroup(ticketButtonRenderers) {
-    return function groupRenderer(cellData, renderType, currentRow) {
-      let html = '<div class="btn-group">';
-      ticketButtonRenderers.forEach((renderer) => {
-        html += renderer(cellData, renderType, currentRow);
-      });
-      html += '</div>';
-      return html;
-    };
-  },
-  ticketStatus(cellData) {
-    const html = `<span class='label label-${Topics.statusColors[cellData]}'>${__('schemaTickets.ticket.status.' + cellData)}</span>`;
-    return html;
-  },
 };
 
 Render.joinOccupants = function joinOccupants(occupants) {
