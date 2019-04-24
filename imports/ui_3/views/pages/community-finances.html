@@ -12,6 +12,7 @@
 </template>
 
 <template name="Community_finances">
+
     <!-- Page heading -->
     {{> Page_heading title=(_ 'Community finances') }}
 
@@ -51,9 +52,9 @@
 
                 </div>
 
-                <div>
-                    <canvas id="statusChart" height="70"></canvas>
-                </div>
+                {{#if Template.subscriptionsReady}}
+                {{> Chart type='line' data=statusData options=normalChartOptions height="70"}}
+                {{/if}}
 
                 {{> Disclaimer}}
             </div>
@@ -89,9 +90,9 @@
 
                 </div>
 
-                <div>
-                    <canvas id="moneyChart" height="70"></canvas>
-                </div>
+                {{#if Template.subscriptionsReady}}
+                {{> Chart type='line' data=moneyData options=stackedChartOptions height="70"}}
+                {{/if}}
 
                 {{> Disclaimer}}
             </div>
@@ -123,9 +124,9 @@
 
                 </div>
 
-                <div>
-                    <canvas id="commitmentChart" height="70"></canvas>
-                </div>
+                {{#if Template.subscriptionsReady}}
+                {{> Chart type='line' data=commitmentData options=stackedChartOptions height="70"}}
+                {{/if}}
 
                 {{> Disclaimer}}
             </div>
@@ -175,16 +176,17 @@
     </div-->
     {{/if}}
 
+    {{#if this.DEMO}}
     {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
-    <!--div class="col-md-12">
+    <div class="col-md-12">
         <div class="ibox ibox-dark" id='incomes-expenses-history'>
             <div class="ibox-title">
                 <h5>{{_ 'Incomes'}}/{{_ 'Expenses'}} {{_ "'s history"}}</h5>
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
-                <canvas id="historyChart" height="250"></canvas>
                 {{#if Template.subscriptionsReady}}
+                {{> Chart type='bar' data=barData options=barOptions height="250"}}
                 <div class="row nowrap">
                     <div class="col-md-12 p-md">
                         <h3>{{_ 'Incomes'}}</h3>
@@ -201,7 +203,8 @@
                 {{> Disclaimer}}
             </div>
         </div>
-    </div-->
+    </div>
+    {{/if}}
     {{/if}}
 
     </div>

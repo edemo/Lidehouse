@@ -7,7 +7,6 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
-import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
@@ -20,6 +19,7 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { AccountSpecification } from '/imports/api/transactions/account-specification';
 import { Balances } from '/imports/api/transactions/balances/balances';
+import '/imports/ui_3/views/blocks/chart.js';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -109,44 +109,42 @@ Template.Disclaimer.helpers({
 
 Template.Community_finances.viewmodel({
   accountToView: '323',
+  communityId() { return Session.get('activeCommunityId'); },
+  community() { return Communities.findOne(this.communityId()); },
+  DEMO() { return this.community() && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], this.community().name); },
+  startTag: 'T-2016-12',
+  endTag: PeriodBreakdown.currentCode(),
+  startIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.startTag()); },
+  endIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.endTag()); },
+  periods() { return PeriodBreakdown.leafs().slice(this.startIndex(), this.endIndex()); },
+  prePeriods() { return PeriodBreakdown.leafs().slice(0, this.startIndex()); },
+  demoLabels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"],
+  marinaLabels() { return this.periods().map(l => `${l.label === 'JAN' ? l.parent.name : l.label}`); },
+
   onCreated(instance) {
     instance.autorun(() => {
-      const communityId = Session.get('activeCommunityId');
-      instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('balances.ofAccounts', { communityId });
+      instance.subscribe('breakdowns.inCommunity', { communityId: this.communityId() });
+      instance.subscribe('balances.ofAccounts', { communityId: this.communityId() });
     });
   },
   onRendered(instance) {
-    instance.autorun(this.syncBalanceChartData);
-//    instance.autorun(this.syncHistoryChartData);
   },
-  syncBalanceChartData() {
-    const communityId = Session.get('activeCommunityId');
-    const community = Communities.findOne(communityId);
-    const DEMO = community && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], community.name);
-    const startTag = 'T-2016-12';
-    const endTag = PeriodBreakdown.currentCode();
-    const startIndex = PeriodBreakdown.leafs().findIndex(l => l.code === startTag);
-    const endIndex = PeriodBreakdown.leafs().findIndex(l => l.code === endTag);
-    const periods = PeriodBreakdown.leafs().slice(startIndex, endIndex);
-    const prePeriods = PeriodBreakdown.leafs().slice(0, startIndex);
-    const labels = periods.map(l => `${l.label === 'JAN' ? l.parent.name : l.label}`);
-    const demoLabels = ["May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
-    const aggregate = function (array, startValue) {
-      let sum = startValue || 0;
-      return array.map((elem) => { sum += elem; return sum; });
-    };
-    const monthlyDataFromTbalances = function (account) {
-      return aggregate(
-        periods.map(l => Balances.getDisplayTotal({ communityId, account, tag: l.code })),
-        aggregate(prePeriods.map(l => Balances.getDisplayTotal({ communityId, account, tag: l.code }))).pop()
-      );
-    };
-    const monthlyDataFromCbalances = function (account) {
-      return periods.map(l => Balances.getDisplayTotal({ communityId, account, tag: 'C' + l.code.substring(1) }));
-    };
-    const statusData = DEMO ? {
-      labels: demoLabels,
+  aggregate(array, startValue) {
+    let sum = startValue || 0;
+    return array.map((elem) => { sum += elem; return sum; });
+  },
+  monthlyDataFromTbalances(account) {
+    return this.aggregate(
+      this.periods().map(l => Balances.getDisplayTotal({ communityId: this.communityId(), account, tag: l.code })),
+      this.aggregate(this.prePeriods().map(l => Balances.getDisplayTotal({ communityId: this.communityId(), account, tag: l.code }))).pop()
+    );
+  },
+  monthlyDataFromCbalances(account) {
+    return this.periods().map(l => Balances.getDisplayTotal({ communityId: this.communityId(), account, tag: 'C' + l.code.substring(1) }));
+  },
+  statusData() {
+    return this.DEMO() ? {
+      labels: this.demoLabels(),
       datasets: [
         _.extend({
           label: __("Money accounts"),
@@ -158,22 +156,24 @@ Template.Community_finances.viewmodel({
         }, minusColors[0]),
       ],
     } : {
-      labels,
+      labels: this.marinaLabels(),
       datasets: [
         _.extend({
           label: __("Money accounts"),
-          data: monthlyDataFromCbalances('38'),
+          data: this.monthlyDataFromCbalances('38'),
         }, plusColors[0]),
         _.extend({
           label: __("Commitments"),
-          data: monthlyDataFromTbalances('46'),
+          data: this.monthlyDataFromTbalances('46'),
         }, minusColors[0]),
       ],
     };
+  },
+  moneyData() {
     let moneyData;
-    if (DEMO) {
+    if (this.DEMO()) {
       moneyData = {
-        labels: demoLabels,
+        labels: this.demoLabels(),
         datasets: [
           _.extend({
             label: "Folyószámla",
@@ -196,13 +196,16 @@ Template.Community_finances.viewmodel({
       moneyAccounts.leafs().forEach((account, index) => {
         datasets.push(_.extend({
           label: account.name,
-          data: monthlyDataFromCbalances(account.code),
+          data: this.monthlyDataFromCbalances(account.code),
         }, plusColors[index + 1]));
       });
-      moneyData = { labels, datasets };
+      moneyData = { labels: this.marinaLabels(), datasets };
     }
-    const commitmentData = DEMO ? {
-      labels: demoLabels,
+    return moneyData;
+  },
+  commitmentData() {
+    return this.DEMO() ? {
+      labels: this.demoLabels(),
       datasets: [
         _.extend({
           label: "Hosszú lejáratú bank hitel",
@@ -214,15 +217,17 @@ Template.Community_finances.viewmodel({
         }, minusColors[2]),
       ],
     } : {
-      labels,
+      labels: this.marinaLabels(),
       datasets: [
         _.extend({
           label: __("Suppliers"),
-          data: monthlyDataFromTbalances('46'),
+          data: this.monthlyDataFromTbalances('46'),
         }, minusColors[0]),
       ],
     };
-    const normalChartOptions = {
+  },
+  normalChartOptions() {
+    return {
       responsive: true,
       scales: {
         yAxes: [{
@@ -232,7 +237,9 @@ Template.Community_finances.viewmodel({
         }],
       },
     };
-    const stackedChartOptions = {
+  },
+  stackedChartOptions() {
+    return {
       responsive: true,
       scales: {
         yAxes: [{
@@ -243,17 +250,10 @@ Template.Community_finances.viewmodel({
         }],
       },
     };
-
-    const statusContext = document.getElementById('statusChart').getContext('2d');
-    new Chart(statusContext, { type: 'line', data: statusData, options: normalChartOptions });
-    const moneyContext = document.getElementById('moneyChart').getContext('2d');
-    new Chart(moneyContext, { type: 'line', data: moneyData, options: stackedChartOptions });
-    const commitmentContext = document.getElementById('commitmentChart').getContext('2d');
-    new Chart(commitmentContext, { type: 'line', data: commitmentData, options: stackedChartOptions });
   },
-  syncHistoryChartData() {
+  barData() {
     const monthsArray = monthTags.children.map(c => c.label);
-    const barData = {
+    return {
       labels: monthsArray,
       datasets: [{
         label: __('Bevételek (e Ft)'),
@@ -267,12 +267,12 @@ Template.Community_finances.viewmodel({
         borderWidth: 2,
       }],
     };
-    const barOptions = {
+  },
+  barOptions() {
+    return {
       responsive: true,
       maintainAspectRatio: false,
     };
-    const elem = document.getElementById('historyChart').getContext('2d');
-    new Chart(elem, { type: 'bar', data: barData, options: barOptions });
   },
   getBalance(account) {
     const communityId = Session.get('activeCommunityId');
