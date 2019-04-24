@@ -8,13 +8,13 @@ import { Communities } from '/imports/api/communities/communities.js';
 
 export function sendHasVotedNoti(voters, topicId, executor) {
   const topic = Topics.findOne(topicId);
+  const community = Communities.findOne(topic.communityId).name;
+  const link = FlowRouterHelpers.urlFor('Topic.show', { _tid: topicId });
   voters.forEach((voterId) => {
     const user = Meteor.users.findOne(voterId);
     if (!user) return;
     const language = user.language();
     const personname = user.displayOfficialName(topic.communityId, language);
-    const community = Communities.findOne(topic.communityId).name;
-    const link = FlowRouterHelpers.urlFor('Topic.show', { _tid: topicId });
     let votedby;
     if (voters.length === 1 && voters[0] === executor) {
       votedby = '';
