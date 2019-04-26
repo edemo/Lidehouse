@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
+import { numeral } from 'meteor/numeral:numeral';
 
 // Global helpers for all email templates
 // TODO: duplicates from the clients side - maybe we should try reference in the client helpers here?
@@ -22,6 +23,9 @@ export const EmailTemplateHelpers = {
       result = FlowRouterHelpers.urlFor(route, hash);
     } else { result = route; }
     return result;
+  },
+  displayPercent(number) {
+    return numeral(number).format('0.00') + '%';
   },
 };
 

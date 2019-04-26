@@ -60,7 +60,7 @@ export const castVote = new ValidatedMethod({
 });
 
 function closeVoteFulfill(topicId) {
-  const res = Topics.update(topicId, { $set: { closed: true } });
+  const res = Topics.update(topicId, { $set: { closed: true, 'vote.closesAt': new Date() } });
   debugAssert(res === 1);
   const topic = Topics.findOne(topicId);
   if (Meteor.isServer) {

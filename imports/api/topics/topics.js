@@ -82,7 +82,6 @@ Topics.helpers({
     return 0; // TODO
   },
   needsAttention(userId, seenType) {
-    if (this.closed) return 0;
     if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
     switch (this.category) {
       case 'news':
@@ -96,9 +95,10 @@ Topics.helpers({
         break;
       case 'vote':
         if (seenType === Meteor.users.SEEN_BY.EYES
-          && !this.hasVotedIndirect(userId)) return 1;
+          && !this.closed && !this.hasVotedIndirect(userId)) return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
-          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
+          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0
+          || (this.closed === true && this.vote.closesAt > Meteor.users.findOne(userId).lastSeens[seenType][this._id].timestamp))) return 1;
         break;
       case 'ticket':
         if (seenType === Meteor.users.SEEN_BY.EYES
@@ -121,7 +121,7 @@ Topics.helpers({
 });
 
 Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
-  return Topics.find({ communityId, closed: false }).fetch()
+  return Topics.find({ communityId }).fetch()
     .filter(t => t.needsAttention(userId, seenType));
 };
 

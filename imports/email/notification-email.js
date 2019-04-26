@@ -40,6 +40,11 @@ export const Notification_Email = {
       const comments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY.NOTI);
       return comments;
     },
+    voteHasBeenClosed(topic) {
+      if (topic.closed === true && topic.category === 'vote' &&
+        (topic.vote.closesAt > Meteor.users.findOne(this.userId).lastSeens[Meteor.users.SEEN_BY.EYES][topic._id].timestamp)) return true;
+      return false;
+    },
     categoryImgUrlFor(category) {
       const file = {
         // feedback: '',
