@@ -6,7 +6,6 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { $ } from 'meteor/jquery';
 
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
@@ -19,6 +18,7 @@ import { remove as removeDelegation, allow as allowDelegations } from '/imports/
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/blocks/chart.js';
 
 import './delegations.html';
 
@@ -27,37 +27,16 @@ const colorDelegatedToMe = '#b5b8cf';
 const colorOthers = '#dedede';
 
 Template.Delegations.onCreated(function onCreated() {
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('delegations.inCommunity', { communityId });
+  });
 });
 
 Template.Delegations.onRendered(function onRendered() {
   const allowCheckbox = this.find('#allow');
   this.autorun(() => {
     if (Meteor.user()) allowCheckbox.checked = Meteor.user().settings.delegatee;
-  });
-
-  // Filling the chart with data
-  this.autorun(() => {
-    const user = Meteor.user();
-    const communityId = Session.get('activeCommunityId');
-    const community = Communities.findOne(communityId);
-    if (!user || !community) return;
-    const unitsOwned = user.totalOwnedUnits(communityId);
-    const unitsDelegatedToMe = user.totalDelegatedToMeUnits(communityId);
-    const unitsOthers = community.totalunits - unitsOwned - unitsDelegatedToMe;
-
-    const doughnutData = {
-      labels: [__('From ownership'), __('From delegations'), __('Others')],
-      datasets: [{
-        data: [unitsOwned, unitsDelegatedToMe, unitsOthers],
-        backgroundColor: [colorOwned, colorDelegatedToMe, colorOthers],
-      }],
-    };
-    const doughnutOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-    const elem = document.getElementById('votingPowerChart').getContext('2d');
-    new Chart(elem, { type: 'doughnut', data: doughnutData, options: doughnutOptions });
   });
 });
 
@@ -94,7 +73,28 @@ Template.Delegations.helpers({
       };
     };
   },
-
+  doughnutData() {
+    const user = Meteor.user();
+    const communityId = Session.get('activeCommunityId');
+    const community = Communities.findOne(communityId);
+    if (!user || !community) return { labels: [], datasets: [] };
+    const unitsOwned = user.totalOwnedUnits(communityId);
+    const unitsDelegatedToMe = user.totalDelegatedToMeUnits(communityId);
+    const unitsOthers = community.totalunits - unitsOwned - unitsDelegatedToMe;
+    return {
+      labels: [__('From ownership'), __('From delegations'), __('Others')],
+      datasets: [{
+        data: [unitsOwned, unitsDelegatedToMe, unitsOthers],
+        backgroundColor: [colorOwned, colorDelegatedToMe, colorOthers],
+      }],
+    };
+  },
+  doughnutOptions() {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+    };
+  },
 });
 
 export function insertDelegationForm(doc) {

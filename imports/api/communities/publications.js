@@ -88,14 +88,6 @@ function communityPublication(userId, _id) {
         return undefined;
       },
     }, {
-      // Publish the Delegations of the Community
-      find(community) {
-        if (hasPermission('delegations.inCommunity')) {
-          return Delegations.find({ communityId: community._id });
-        }
-        return undefined;
-      },
-    }, {
       // Publish the Breakdowns of the Community
       find(community) {
         if (hasPermission('breakdowns.inCommunity')) {
