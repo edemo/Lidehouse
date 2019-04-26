@@ -30,7 +30,9 @@ export const ActivePeriodSchema = new SimpleSchema({
       const beginDate = this.field('activeTime.begin').value;
       const endDate = this.field('activeTime.end').value;
       const nowDate = new Date();
-      return (!beginDate || beginDate <= nowDate) && (!endDate || nowDate <= endDate);
+      if (this.isUpdate && !beginDate && !endDate) return undefined;
+      if ((beginDate && beginDate >= nowDate) || (endDate && endDate <= nowDate)) return false;
+      return true;
     },
   },
 });
