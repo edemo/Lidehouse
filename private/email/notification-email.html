@@ -14,7 +14,7 @@
                     </div>
                 </td>
                 {{else}}
-                <td class="project-title {{oldTopic}}">
+                <td class="project-title {{oldTopic topic}}">
                     <h3 class = "topicTitle">{{topic.title}}</h3>
                     {{#if (isUnseen topic)}}
                       <p>{{curb topic.text 1000}}</p>

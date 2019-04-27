@@ -41,8 +41,9 @@ export const Notification_Email = {
       return comments;
     },
     voteHasBeenClosed(topic) {
-      if (topic.closed === true && topic.category === 'vote' &&
-        (topic.vote.closesAt > Meteor.users.findOne(this.userId).lastSeens[Meteor.users.SEEN_BY.EYES][topic._id].timestamp)) return true;
+      const userLastSeens = Meteor.users.findOne(this.userId).lastSeens[Meteor.users.SEEN_BY.EYES][topic._id];
+      if (topic.closed === true && topic.category === 'vote' && userLastSeens
+        && (topic.vote.closesAt > userLastSeens.timestamp)) return true;
       return false;
     },
     categoryImgUrlFor(category) {
@@ -56,6 +57,10 @@ export const Notification_Email = {
       };
       // return 'https://honline.hu/images/email/' + file[category]; // use this for testing, because localhost may not be accessible by mail clients
       return FlowRouterHelpers.urlFor('/images/email/' + file[category]);
+    },
+    oldTopic(topic) {
+      if (topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY.NOTI)) return '';
+      return 'oldTopic';
     },
   },
 
