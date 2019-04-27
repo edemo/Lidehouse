@@ -40,6 +40,7 @@
     "NotificationFooter": ["Ön azért kapja ezeket az értesítéseket, mert beállításaiban az szerepel, hogy a társasházban történő eseményekről email értesítőt küldjünk __frequency__.<br>",
       "Az email értesítések gyakoriságát átállíthatja vagy teljesen ki is kapcsolhatja <a href=\"__link__\"> ezen a linken</a>.<br>",
       "Ha bármi egyéb kérdése lenne, lépjen kapcsolatba a társasház <a href=\"mailto:__adminEmail__\">adminisztrátorával</a>."],
+    "VoteClosesTitle": "Az alábbi szavazás hamarosan lezárul. Ön még nem adta le szavazatát a kérdésben, a megtekintés gombra kattintva ezt online megteheti.",
     "HasVotedTitle": "Szavazata rögzítve a __community__ társasházban",
     "HasVotedText": ["Tisztelt __personname__!\n",
       "A __community__ társasházban __votetitle__ címen kiírt szavazáson az Ön szavazata rögzítésre került.\n",
