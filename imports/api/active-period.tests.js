@@ -42,7 +42,6 @@ if (Meteor.isServer) {
 
     const updateMembershipModifier = function (beginDate, endDate) {
       const modifier = {};
-      if (!beginDate && !endDate) return { undefined };
       if (beginDate) modifier['activeTime.begin'] = beginDate;
       if (endDate) modifier['activeTime.end'] = endDate;
       return modifier;
@@ -101,26 +100,27 @@ if (Meteor.isServer) {
         { _id: testMembershipId, modifier: { $set: updateMembershipModifier(future, undefined) } });
       });
 
-      /* chai.assert.throws(() => {
+      chai.assert.throws(() => {
+        console.log('before: ', Memberships.findOne(testMembershipId));
         updateMembership._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: { $set: updateMembershipModifier(undefined, now) } });
-      }); -- UI throws error only */
+        console.log('after: ', Memberships.findOne(testMembershipId));
+      }); //-- UI throws error only
 
       chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: { $set: updateMembershipModifier(undefined, future) } });
       });
 
-      /* chai.assert.throws(() => {
+      chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: { $set: updateMembershipModifier(undefined, past) } });
-      }); -- UI throws error only */
-
-      console.log(testMembership, updateMembershipModifier(undefined, past));
+      }); /* -- UI throws error only */
 
       updateMembership._execute({ userId: Fixture.demoAdminId },
       { _id: testMembershipId, modifier: { $set: updateMembershipModifier(undefined, undefined) } });
       testMembership = Memberships.findOne(testMembershipId);
+      console.log('testMembership: ', testMembership);
       chai.assert.equal(testMembership.active, true);
 
       updateMembership._execute({ userId: Fixture.demoAdminId },

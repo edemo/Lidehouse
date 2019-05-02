@@ -195,9 +195,9 @@ if (Meteor.isServer) {
         chai.assert.equal(testMembership.role, randomRole);
 
         updateMembership._execute({ userId: Fixture.demoAdminId },
-          { _id: testMembershipId, modifier: { $set: { 'activeTime.end': new Date() } } });
+          { _id: testMembershipId, modifier: { $set: { 'activeTime.begin': new Date() } } });
         testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership.active, false);
+        chai.assert.equal(testMembership.active, true);
 
         removeMembership._execute({ userId: Fixture.demoAdminId },
           { _id: testMembershipId });
