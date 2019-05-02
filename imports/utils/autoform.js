@@ -19,7 +19,7 @@ export const chooseUser = {
   options() {
     const users = Meteor.users.find({});
     const options = users.map(function option(u) {
-      return { label: u.displayName(), value: u._id };
+      return { label: u.displayOfficialName(), value: u._id };
     });
     const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
     return sortedOptions;
