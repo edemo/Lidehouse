@@ -245,10 +245,11 @@ if (Meteor.isServer) {
         const summaryShouldBe = {};
         if (choice === 0) {
           summaryShouldBe[1] = 10;
+          summaryShouldBe[2] = 20;
           summaryShouldBe[0] = 70;
-          summaryShouldBe[0] = 90;
         } else if (choice === 1) {
           summaryShouldBe[1] = 80;
+          // summaryShouldBe[1] = 100;
           summaryShouldBe[2] = 20;
         }
         chai.assert.deepEqual(voting.voteSummary, summaryShouldBe);
