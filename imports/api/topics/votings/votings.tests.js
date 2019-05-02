@@ -219,17 +219,13 @@ if (Meteor.isServer) {
       const assertsAfterThirdVote = function (choice = 0) {
         const voting = Topics.findOne(votingId);
         chai.assert.deepEqual(voting.voteParticipation, { count: 3, units: 60 });
-        // chai.assert.deepEqual(voting.voteParticipation, { count: 4, units: 80 });
-        // chai.assert.deepEqual(voting.voteParticipation, { count: 4, units: 100 }); 
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[3]], [choice]);
         chai.assert.isUndefined(voting.voteCasts[Fixture.dummyUsers[4]]);
-        // chai.assert.isUndefined(voting.voteCastsIndirect[Fixture.dummyUsers[4]]);
       };
 
       const assertsAfterIndirectVote = function (choice = 0) {
         const voting = Topics.findOne(votingId);
         chai.assert.deepEqual(voting.voteParticipation, { count: 4, units: 100 });
-        // chai.assert.deepEqual(voting.voteParticipation, { count: 5, units: 120 });
         const castsShouldBe = {};
         const membership3 = Memberships.findOne({ parcelId: Fixture.dummyParcels[3] }); // there is no representor
         const membership4 = Memberships.findOne({ parcelId: Fixture.dummyParcels[4], 'ownership.representor': true });
@@ -240,7 +236,6 @@ if (Meteor.isServer) {
         castsShouldBe[Fixture.dummyUsers[4]] = [choice];
         chai.assert.deepEqual(voting.voteCastsIndirect, castsShouldBe);
         chai.assert.equal(_.keys(voting.voteResults).length, 4);
-        // chai.assert.equal(_.keys(voting.voteResults).length, 5);
         chai.assert.deepEqual(voting.voteResults[membership3._id].votingShare, 30);
         chai.assert.deepEqual(voting.voteResults[membership3._id].castedVote, [choice]);
         chai.assert.deepEqual(voting.voteResults[membership3._id].votePath, [Fixture.dummyUsers[3]]);
@@ -250,15 +245,13 @@ if (Meteor.isServer) {
         const summaryShouldBe = {};
         if (choice === 0) {
           summaryShouldBe[1] = 10;
-          summaryShouldBe[2] = 20;
-          // summaryShouldBe[0] = 70;
+          summaryShouldBe[0] = 70;
           summaryShouldBe[0] = 90;
         } else if (choice === 1) {
           summaryShouldBe[1] = 80;
-          // summaryShouldBe[1] = 100;
           summaryShouldBe[2] = 20;
         }
-        // chai.assert.deepEqual(voting.voteSummary, summaryShouldBe);
+        chai.assert.deepEqual(voting.voteSummary, summaryShouldBe);
       };
 
       it('evaluates well on indirect votes', function (done) {
