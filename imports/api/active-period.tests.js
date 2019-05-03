@@ -58,37 +58,46 @@ if (Meteor.isServer) {
       // inserts
 
       chai.assert.throws(() => {
+        console.log('insert future undefined');
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(future, undefined));
       });
 
       chai.assert.throws(() => {
+        console.log('insert undefined now');
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, now));
       });
 
       chai.assert.throws(() => {
+        console.log('insert undefined future');
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, future));
       });
 
       chai.assert.throws(() => {
+        console.log('insert undefined past');
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, past));
       });
 
       chai.assert.throws(() => {
+        console.log('insert now future');
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(now, future));
       });
 
+      console.log('insert undefined undefined');
       testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, undefined));
       let testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, true);
 
+      console.log('insert now undefined');
       testMembershipId2 = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(now, undefined));
       const testMembership2 = Memberships.findOne(testMembershipId2);
       chai.assert.equal(testMembership2.active, true);
 
+      console.log('insert past undefined');
       testMembershipId3 = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(past, undefined));
       const testMembership3 = Memberships.findOne(testMembershipId3);
       chai.assert.equal(testMembership3.active, true);
 
+      console.log('insert past2 past');
       testMembershipId4 = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(past2, past));
       const testMembership4 = Memberships.findOne(testMembershipId4);
       chai.assert.equal(testMembership4.active, false);

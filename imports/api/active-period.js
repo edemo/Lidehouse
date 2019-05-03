@@ -11,8 +11,8 @@ function assureFields(fieldsArray, docId) {
   const doc = Memberships.findOne(docId);
   const fieldObject = {};
   fieldsArray.forEach((field) => {
+    console.log('this field (this.field.value, this.value): ', field, this.field(field).value, this.value);
     if (doc && Object.byString(doc, field) && !this.field(field).value) fieldObject[field] = doc[field];
-    console.log('this field: ', field, this.field(field).value, this.value, this);
     if (this.field(field).value) fieldObject[field] = this.field(field).value;
   });
   return fieldObject;
@@ -21,30 +21,36 @@ function assureFields(fieldsArray, docId) {
 const TimePeriodSchema = new SimpleSchema({
   begin: { type: Date, optional: true,
     custom() {
-      const doc = updateDataContext(this.docId);
-      let beginDate = this.value;
-      let endDate = this.field('activeTime.end').value;
+      console.log('begin path');
+      //console.log('assureFields:', assureFields.call(this, ['activeTime.begin'], this.docId));
+      //const doc = updateDataContext(this.docId);
+      //let beginDate = this.value;
+      //let endDate = this.field('activeTime.end').value;
       const nowDate = new Date();
-      //const object = assureFields.call(this, ['activeTime.begin', 'activeTime.end'], this.docId);
-      if (!beginDate && doc && doc.activeTime) beginDate = doc.activeTime.begin;
-      if (!endDate && doc && doc.activeTime) endDate = doc.activeTime.end;
-      if (!beginDate && endDate) return 'required';
-      if (beginDate && beginDate > nowDate) return 'notAllowed';
+      const object = assureFields.call(this, ['activeTime.begin', 'activeTime.end'], this.docId);
+      console.log('returned object begin', object);
+      //if (!beginDate && doc && doc.activeTime) beginDate = doc.activeTime.begin;
+      //if (!endDate && doc && doc.activeTime) endDate = doc.activeTime.end;
+      if (!object['activeTime.begin'] && object['activeTime.end']) return 'required';
+      if (object['activeTime.begin'] && object['activeTime.begin'] > nowDate) return 'notAllowed';
       return undefined;
     },
   },
   end: { type: Date, optional: true,
     custom() {
-      const doc = updateDataContext(this.docId);
-      let beginDate = this.field('activeTime.begin').value;
-      let endDate = this.value;
+      console.log('end path');
+      //console.log('assureFields:', assureFields.call(this, ['activeTime.end'], this.docId));
+      //const doc = updateDataContext(this.docId);
+      //let beginDate = this.field('activeTime.begin').value;
+      //let endDate = this.value;
       const nowDate = new Date();
-      //const object = assureFields.call(this, ['activeTime.begin', 'activeTime.end'], this.docId);
-      if (!beginDate && doc && doc.activeTime) beginDate = doc.activeTime.begin;
-      if (!endDate && doc && doc.activeTime) endDate = doc.activeTime.end;
-      if (endDate && !beginDate) return 'notAllowed';
-      if (endDate && endDate < beginDate) return 'notAllowed';
-      if (endDate && endDate > nowDate) return 'notAllowed';
+      const object = assureFields.call(this, ['activeTime.begin', 'activeTime.end'], this.docId);
+      console.log('returned object end', object);
+      //if (!beginDate && doc && doc.activeTime) beginDate = doc.activeTime.begin;
+      // if (!endDate && doc && doc.activeTime) endDate = doc.activeTime.end;
+      if (object['activeTime.end'] && !object['activeTime.begin']) return 'notAllowed';
+      if (object['activeTime.end'] && object['activeTime.end'] < object['activeTime.begin']) return 'notAllowed';
+      if (object['activeTime.end'] && object['activeTime.end'] > nowDate) return 'notAllowed';
       return undefined;
     },
   },
