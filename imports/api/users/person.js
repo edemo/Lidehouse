@@ -77,7 +77,7 @@ export class Person {
   }
   displayName(lang) {
     if (this.idCard && this.idCard.name) return this.idCard.name;
-    if (this.userId && this.user()) return this.user().displayName(lang);
+    if (this.userId && this.user()) return this.user().displayProfileName(lang);
     if (this.contact && this.contact.email) {
       const emailSplit = this.contact.email.split('@');
       const emailName = emailSplit[0];
