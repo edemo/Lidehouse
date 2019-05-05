@@ -164,13 +164,13 @@ Meteor.users.helpers({
     }
     return undefined;
   },
-  displayName(lang = getCurrentUserLang()) {
+  displayProfileName(lang = getCurrentUserLang()) {
     return this.fullName(lang) || this.safeUsername();     // or fallback to the username
   },
   displayOfficialName(communityId = getActiveCommunityId(), lang = getCurrentUserLang()) {
     const membership = Memberships.findOne({ communityId, approved: true, active: true, personId: this._id, 'person.idCard.name': { $exists: true } });
     if (membership) { return membership.Person().displayName(lang)};
-    return this.displayName(lang);
+    return this.displayProfileName(lang);
   },
   toString() {
     return this.displayOfficialName();
