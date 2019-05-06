@@ -41,14 +41,15 @@ if (Meteor.isServer) {
     };
 
     const updateMembershipModifier = function (beginDate, endDate) {
-      const modifier = {};
-      if (beginDate) modifier['activeTime.begin'] = beginDate;
-      if (endDate) modifier['activeTime.end'] = endDate;
+      const modifier = { $set: {}, $unset: {} };
+      if (beginDate) modifier.$set['activeTime.begin'] = beginDate;
+      else modifier.$unset['activeTime.begin'] = false;
+      if (endDate) modifier.$set['activeTime.end'] = endDate;
+      else modifier.$unset['activeTime.end'] = false;
       return modifier;
     };
 
-
-    it('right active value after insert/update', function (done) {
+    it('calculates right active value after insert/update', function (done) {
 
       const now = moment().toDate();
       const past = moment().subtract(1, 'weeks').toDate();
@@ -97,45 +98,52 @@ if (Meteor.isServer) {
 
       chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
-        { _id: testMembershipId, modifier: { $set: updateMembershipModifier(future, undefined) } });
+        { _id: testMembershipId, modifier: updateMembershipModifier(future, undefined) });
       });
 
       chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
-        { _id: testMembershipId, modifier: { $set: updateMembershipModifier(undefined, now) } });
+        { _id: testMembershipId, modifier: updateMembershipModifier(undefined, now) });
       });
 
       chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
-        { _id: testMembershipId, modifier: { $set: updateMembershipModifier(undefined, future) } });
+        { _id: testMembershipId, modifier: updateMembershipModifier(undefined, future) });
       });
 
       chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
-        { _id: testMembershipId, modifier: { $set: updateMembershipModifier(undefined, past) } });
+        { _id: testMembershipId, modifier: updateMembershipModifier(undefined, past) });
       });
 
       updateMembership._execute({ userId: Fixture.demoAdminId },
-        { _id: testMembershipId, modifier: { $set: updateMembershipModifier(undefined, undefined) } });
+        { _id: testMembershipId, modifier: updateMembershipModifier(undefined, undefined) });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, true);
 
       updateMembership._execute({ userId: Fixture.demoAdminId },
-        { _id: testMembershipId, modifier: { $set: updateMembershipModifier(now, undefined) } });
+        { _id: testMembershipId, modifier: updateMembershipModifier(now, undefined) });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, true);
 
       updateMembership._execute({ userId: Fixture.demoAdminId },
-        { _id: testMembershipId, modifier: { $set: updateMembershipModifier(past, undefined) } });
+        { _id: testMembershipId, modifier: updateMembershipModifier(past, undefined) });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, true);
 
       updateMembership._execute({ userId: Fixture.demoAdminId },
-        { _id: testMembershipId, modifier: { $set: updateMembershipModifier(past2, past) } });
+        { _id: testMembershipId, modifier: updateMembershipModifier(past2, past) });
+      testMembership = Memberships.findOne(testMembershipId);
+      chai.assert.equal(testMembership.active, false);
+
+      // it('doesnt update active value, when nothing relevant is touched', function (done) {
+      updateMembership._execute({ userId: Fixture.demoAdminId },
+        { _id: testMembershipId, modifier: { $set: { accepted: true } } });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, false);
 
       done();
     });
+    
   });
 }
