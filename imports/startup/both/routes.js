@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import { __ } from '/imports/localization/i18n.js';
 
 // Import UI pages only on the client!
 // But the route defs need to be available on the server as well, for calculating link paths in emails
@@ -37,6 +38,13 @@ if (Meteor.isClient) {
 
   //
   FlowRouter.triggers.enter([() => { window.scrollTo(0, 0); }]);
+  FlowRouter.triggers.enter([() => {
+    setTimeout(() => {
+      const routeName = FlowRouter.current().route.name;
+      const cleanedRouteName = routeName.split('.').join(' ');
+      document.title = __(cleanedRouteName);
+    }, 1);
+  }]);
 }
 
 //-------------------

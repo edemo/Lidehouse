@@ -18,11 +18,6 @@ import '../common/connection-issue.js';
 import './main.html';
 
 Template.Main_layout.onCreated(function() {
-  FlowRouter.triggers.enter([function(){
-    const routeName = FlowRouter.current().route.name;
-    const cleanedRouteName = routeName.split('.').join(' ');
-    document.title = __(cleanedRouteName);
-  }]);
   // Subscriptions
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {
