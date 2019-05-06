@@ -243,7 +243,7 @@
         "choose": "Egyszerű választásos",
         "preferential": "Preferencia szerint sorba rendező",
         "petition": "Támogatásgyűjtő",
-        "multi-choice": "Több választási lehetőséges",
+        "multiChoose": "Több választási lehetőséges",
         "help": "A szavazás típusát célszerű jól megválasztani, hogy a közösség számára optimális döntés születhessen."
       },
       "voters": {

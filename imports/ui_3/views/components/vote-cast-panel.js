@@ -128,10 +128,10 @@ Template.Vote_cast_panel.viewmodel({
     return choices.map(function obj(text, index) { return { text, value: index }; });
   },
   events: {
-    'click .btn-vote'(event, instance) {  // event handler for the single and multi-choice vote types
+    'click .btn-vote'(event, instance) {  // event handler for the single and multiChoose vote types
       if (this.registeredVote() && !this.temporaryVote()) return;
       const selectedChoice = $(event.target).closest('.btn').data('value');
-      if (instance.data.vote.type === 'multi-choice') this.temporaryVote(toggle(selectedChoice, this.temporaryVote()));
+      if (instance.data.vote.type === 'multiChoose') this.temporaryVote(toggle(selectedChoice, this.temporaryVote()));
       else this.temporaryVote([selectedChoice]);
     },
     'click .js-send'(event, instance) {

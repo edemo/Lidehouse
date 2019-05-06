@@ -240,7 +240,7 @@
         "choose": "Simple selection",
         "preferential": "Rank choices by preference",
         "petition": "Petition",
-        "multi-choice": "Multiple choice"
+        "multiChoose": "Multiple choice"
       },
       "voters": {
         "label": "Voters"

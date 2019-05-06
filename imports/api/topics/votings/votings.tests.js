@@ -336,15 +336,15 @@ if (Meteor.isServer) {
         done();
       });
 
-      describe('multi-choice evaluation', function () {
+      describe('multiChoose evaluation', function () {
 
         let votingId2;
 
         before(function () {
-          votingId2 = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('multi-choice'));
+          votingId2 = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('multiChoose'));
         });
 
-        it('evaluates correct vote summary on multi-choice vote', function (done) {
+        it('evaluates correct vote summary on multiChoose vote', function (done) {
           chai.assert.isDefined(votingId2);
           castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId2, castedVote: [1] });
           castVote._execute({ userId: Fixture.dummyUsers[4] }, { topicId: votingId2, castedVote: [0, 1] });

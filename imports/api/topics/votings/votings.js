@@ -13,7 +13,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
 Topics.voteEffectValues = ['poll', 'legal'];
-Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition', 'multi-choice'];
+Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition', 'multiChoose'];
 Topics.voteTypeChoices = {
   'yesno': ['yes', 'no', 'abstain'],
   'petition': ['support'],

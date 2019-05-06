@@ -62,13 +62,13 @@ Template.Votebox.onRendered(function voteboxOnRendered() {
           backgroundColor: voteSummaryDisplay.map((s, i) => choiceColors[i]), // .concat(notVotedColor),
         }],
       };
-      const chartData = (vote.type === 'preferential' || vote.type === 'multi-choice') ? barData : doughnutData;
+      const chartData = (vote.type === 'preferential' || vote.type === 'multiChoose') ? barData : doughnutData;
       const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
       };
       const elem = document.getElementById('chart-' + voting._id).getContext('2d');
-      const chartType = (vote.type === 'preferential' || vote.type === 'multi-choice') ? 'bar' : 'doughnut';
+      const chartType = (vote.type === 'preferential' || vote.type === 'multiChoose') ? 'bar' : 'doughnut';
       new Chart(elem, { type: chartType, data: chartData, options: chartOptions });
     }
   });
