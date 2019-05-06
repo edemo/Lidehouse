@@ -10,6 +10,14 @@
   },
 
     // routes
+  "App home": "App home",
+  "App intro": "App intro",
+  "Demo login": "Demo login",
+  "Privacy": "Privacy",
+  "Terms": "Feltételek",
+  "Community page": "Community page",
+  "Communities listing": "Communities listing",
+  "Profile show": "Profile show",
   "Board": "Board",
   "Room show": "Room",
   "Topics forum": "Forums",

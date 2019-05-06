@@ -4,6 +4,14 @@
   "appDescription": "Hatékony társasház menedzsment",
 
   // routes
+  "App home": "Kezdőoldal",
+  "App intro": "Bemutató",
+  "Demo login": "Demo belépés",
+  "Privacy": "Titoktartás",
+  "Terms": "Feltételek",
+  "Community page": "Házlap",
+  "Communities listing": "Házak",
+  "Profile show": "Profil",
   // "Board": "Főoldal",
   "Room show": "Szoba",
   "Topics forum": "Fórum",
