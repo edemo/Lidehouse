@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
+import { FlowRouter } from 'meteor/kadira:flow-router';
+
 
 import { __ } from '/imports/localization/i18n.js';
 
@@ -16,6 +18,11 @@ import '../common/connection-issue.js';
 import './main.html';
 
 Template.Main_layout.onCreated(function() {
+  FlowRouter.triggers.enter([function(){
+    const routeName = FlowRouter.current().route.name;
+    const cleanedRouteName = routeName.split('.').join(' ');
+    document.title = __(cleanedRouteName);
+  }]);
   // Subscriptions
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {

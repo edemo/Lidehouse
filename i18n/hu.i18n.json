@@ -3,6 +3,22 @@
   "appName": "honline",
   "appDescription": "Hatékony társasház menedzsment",
 
+  // routes
+  // "Board": "Főoldal",
+  "Room show": "Szoba",
+  "Topics forum": "Fórum",
+  "Topics vote": "Szavazás",
+  "Topic show": "Lista",
+  // "Agendas": "Közgyűlések",
+  // "Delegations": "Delegációk",
+  "Tickets report": "Hibabejelentés",
+  "Parcels finances": "Albetét elszámolás",
+  // "Community finances": "Ház pénzügyek",
+  "Accounting page": "Könyvelés",
+  "Community page default": "Házlap",
+  "DocumentStore": "Dokumentumtár",
+  "User show": "Felhasználó",
+
   // Shared
   "createdAt": "Létrehozva",
   "createdBy": "Létrehozta",
