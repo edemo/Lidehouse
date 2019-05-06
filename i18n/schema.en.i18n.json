@@ -239,7 +239,8 @@
         "yesno": "Yes-no",
         "choose": "Simple selection",
         "preferential": "Rank choices by preference",
-        "petition": "Petition"
+        "petition": "Petition",
+        "multi-choice": "Multiple choice"
       },
       "voters": {
         "label": "Voters"

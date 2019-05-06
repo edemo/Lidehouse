@@ -13,7 +13,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
 Topics.voteEffectValues = ['poll', 'legal'];
-Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition'];
+Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition', 'multi-choice'];
 Topics.voteTypeChoices = {
   'yesno': ['yes', 'no', 'abstain'],
   'petition': ['support'],
@@ -121,7 +121,15 @@ Topics.helpers({
     const voteParticipation = { count: 0, units: 0 };
     const directVotes = this.voteCasts || {};
     const self = this;
-    const voterships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner' });
+    const voteType = this.vote.type;
+    const ownerships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner' });
+    const representedBySomeoneElse = (ownership) => {
+      const parcel = Parcels.findOne(ownership.parcelId);
+      const representor = parcel.representor();
+      if (!representor || representor._id === ownership._id) return false;
+      return true;
+    };
+    const voterships = ownerships.fetch().filter(v => !representedBySomeoneElse(v));
     voterships.forEach((ownership) => {
       const ownerId = ownership.Person().id();
       const votePath = [ownerId];
@@ -139,7 +147,8 @@ Topics.helpers({
           votePaths[ownerId] = votePath;
           castedVote.forEach((choice, i) => {
             voteSummary[choice] = voteSummary[choice] || 0;
-            voteSummary[choice] += ownership.votingUnits() * (1 - (i / castedVote.length));
+            const choiceWeight = (voteType === 'preferential') ? (1 - (i / castedVote.length)) : 1;
+            voteSummary[choice] += ownership.votingUnits() * choiceWeight;
           });
           voteParticipation.count += 1;
           voteParticipation.units += ownership.votingUnits();

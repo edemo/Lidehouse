@@ -12,6 +12,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
+import { toggle } from '/imports/api/utils.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '../components/select-voters.js';
 import './vote-cast-panel.html';
@@ -111,8 +112,8 @@ Template.Vote_cast_panel.viewmodel({
   },
   // Single choice voting
   pressedClassForVoteBtn(choice) {
-    if (this.temporaryVote()) return _.isEqual([choice], this.temporaryVote()) && 'btn-pressed';
-    if (this.registeredVote()) return _.isEqual([choice], this.registeredVote()) && 'btn-pressed';
+    if (this.temporaryVote()) return this.temporaryVote().includes(choice) && 'btn-pressed';
+    if (this.registeredVote()) return this.registeredVote().includes(choice) && 'btn-pressed';
     return undefined;
   },
   // Preferential voting
@@ -127,10 +128,11 @@ Template.Vote_cast_panel.viewmodel({
     return choices.map(function obj(text, index) { return { text, value: index }; });
   },
   events: {
-    'click .btn-vote'(event, instance) {  // event handler for the single choice vote type
+    'click .btn-vote'(event, instance) {  // event handler for the single and multi-choice vote types
       if (this.registeredVote() && !this.temporaryVote()) return;
-      const selecetedChoice = $(event.target).closest('.btn').data('value');
-      this.temporaryVote([selecetedChoice]);
+      const selectedChoice = $(event.target).closest('.btn').data('value');
+      if (instance.data.vote.type === 'multi-choice') this.temporaryVote(toggle(selectedChoice, this.temporaryVote()));
+      else this.temporaryVote([selectedChoice]);
     },
     'click .js-send'(event, instance) {
       const topicId = this.topic()._id;
