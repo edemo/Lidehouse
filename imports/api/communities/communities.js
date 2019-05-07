@@ -42,6 +42,7 @@ Communities.schema = new SimpleSchema([
   { avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload } },
   comtype.profileSchema,
   { totalunits: { type: Number } },
+  { management: { type: String, optional: true, autoform: { type: 'textarea' } } },
   // redundant fields:
   { parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } } },
 ]);

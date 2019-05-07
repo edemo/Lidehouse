@@ -58,6 +58,10 @@ export const HouseTranslation = {
       "totalunits": {
         "label": "Total shares outstanding",
         "placeholder": "(eg. 10000)"
+      },
+      "management": {
+        "label": "Contact info of management",
+        "placeholder": "(eg. office address, phone, opening hours)"
       }
     },
     "schemaParcels": {
@@ -182,7 +186,7 @@ export const HouseTranslation = {
       },
       "street": {
         "label": "Utca/közterület",
-        "placeholder": "(pl.Kankalin u. vagy Zsigmond tér)"
+        "placeholder": "(pl. Kankalin u. vagy Zsigmond tér)"
       },
       "number": {
         "label": "Házszám",
@@ -195,6 +199,10 @@ export const HouseTranslation = {
       "totalunits": {
         "label": "Összes tulajdoni hányad",
         "placeholder": "(pl. 1000 vagy 9999)"
+      },
+      "management": {
+        "label": "Közös képviselet elérhetősége",
+        "placeholder": "(pl. iroda címe, telefonszáma, nyitvatartása)"
       }
     },
     "schemaParcels": {

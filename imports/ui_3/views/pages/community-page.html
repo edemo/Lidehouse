@@ -113,9 +113,20 @@
     <!-- Page heading -->
     {{> Page_heading title=title }}
 
-    <div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-md-8">
+                {{#if community.management}}
+                <div class="ibox">
+                    <div class="ibox-content">
+                        {{#if userHasPermission 'communities.update' communityId}}
+                        <span class="text-muted small pull-right">{{_ 'Modifiable at Building Data edit'}}</span>
+                        {{/if}}
+                        <h2>{{_ 'schemaCommunities.management.label'}}</h2>
+                        <p>{{#markdown}}{{community.management}}{{/markdown}}</p>
+                    </div>
+                </div>
+                {{/if}}
                 <div class="ibox roles-section">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
