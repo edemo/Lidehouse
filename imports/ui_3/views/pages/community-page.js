@@ -292,7 +292,6 @@ Template.Community_page.events({
       id: 'af.roleship.insert',
       collection: Memberships,
       fields: ['role', 'person', 'activeTime'],
-      omitFields: ['person.idCard'],
       type: 'method',
       meteormethod: 'memberships.insert',
     });
@@ -315,7 +314,6 @@ Template.Community_page.events({
       id: 'af.roleship.view',
       collection: Memberships,
       fields: ['role', 'person', 'activeTime'],
-      omitFields: ['person.idCard', 'person.contact'],
       doc: Memberships.findOne(id),
       type: 'readonly',
     });
@@ -336,7 +334,6 @@ Template.Community_page.events({
       id: 'af.ownership.insert',
       collection: Memberships,
       fields: ['person', 'ownership', 'activeTime'],
-      omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
     });
@@ -347,7 +344,6 @@ Template.Community_page.events({
       id: 'af.ownership.update',
       collection: Memberships,
       fields: ['person', 'ownership', 'activeTime'],
-      omitFields: ['person.userId'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
@@ -376,7 +372,6 @@ Template.Community_page.events({
       id: 'af.benefactorship.insert',
       collection: Memberships,
       fields: ['person', 'benefactorship', 'activeTime'],
-      omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
     });
@@ -387,7 +382,6 @@ Template.Community_page.events({
       id: 'af.benefactorship.update',
       collection: Memberships,
       fields: ['person', 'benefactorship', 'activeTime'],
-      omitFields: ['person.userId'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',

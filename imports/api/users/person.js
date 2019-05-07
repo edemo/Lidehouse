@@ -3,10 +3,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions, chooseUser } from '/imports/utils/autoform.js';
+import { autoformOptions, chooseUser, noUpdate } from '/imports/utils/autoform.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { votingRoles } from '/imports/api/permissions/roles.js';
 
 const ContactSchema = new SimpleSchema({
   address: { type: String, optional: true },
@@ -26,7 +25,7 @@ const IdCardSchema = new SimpleSchema({
 
 export const PersonSchema = new SimpleSchema({
   // *userId* (connecting to a registered user in the system),
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: _.extend({}, chooseUser, noUpdate) },
   // *idCard* (identity papers confirmed by manager, so person can officially vote now)
   // this person might or might not wish to register in the system ever, but still can do voting (if manager votes in his name)
   idCard: { type: IdCardSchema, optional: true },
