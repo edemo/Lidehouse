@@ -8,7 +8,6 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';

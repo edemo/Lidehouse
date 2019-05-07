@@ -64,6 +64,7 @@
                             <input type="checkbox" name="allow" id="allow">
                             <label for="allow">{{_ 'allowDelegationsToMe'}}</label>
                         </form>
+                        {{#if Template.subscriptionsReady}}
                         <p>
                           {{_ 'A házban lévő összes aktív meghatalmazás listája'}}<br>
                         </p>
@@ -76,6 +77,7 @@
                         <div class="text-center m-t-lg">
                             <small>{{_ 'No delegations'}}</small>
                         </div>
+                        {{/if}}
                         {{/if}}
                     </div>
                 </div>    
@@ -92,6 +94,7 @@
                           {{_ 'delegationsFromMeInstructions'}}<br>
                           {{_ 'delegationsFromMeInstructions2'}}
                         </p>
+                        {{#if Template.subscriptionsReady}}
                         <a href="" class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
                         {{#if delegationsFromMe.count}}
                             {{>Delegation_list items=delegationsFromMe}}
@@ -99,6 +102,7 @@
                         <div class="text-center m-t-lg">
                             <small>{{_ 'No delegations'}}</small>
                         </div>
+                        {{/if}}
                         {{/if}}
                     </div>
                 </div>    
@@ -118,12 +122,14 @@
                           {{_ 'delegationsToMeInstructions'}}<br>
                           {{_ 'delegationsToMeInstructions2'}}
                         </p>
+                        {{#if Template.subscriptionsReady}}
                         {{#if delegationsToMe.count}}
                           {{>Delegation_list items=delegationsToMe}}
                         {{else}}
                         <div class="text-center m-t-lg">
                             <small>{{_ 'No delegations'}}</small>
                         </div>
+                        {{/if}}
                         {{/if}}
                     </div>
                 </div>              
@@ -143,9 +149,9 @@
                       {{currentUser.totalDelegatedToMeUnits activeCommunityId}} {{_ 'from delegated voting units'}}<br>
                       <strong>{{_ 'In total'}}: {{currentUser.totalVotingPower activeCommunityId}}</strong>
                     </p>
-                    <div>
-                        <canvas id="votingPowerChart" height="250"></canvas>
-                    </div>
+                    {{#if Template.subscriptionsReady}}
+                    {{> Chart type='doughnut' data=doughnutData options=doughnutOptions height="250"}}
+                    {{/if}}
                 </div>
             </div>
             </div>
