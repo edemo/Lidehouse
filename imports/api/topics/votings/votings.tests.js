@@ -43,7 +43,7 @@ if (Meteor.isServer) {
   };
 
   describe('votings', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
       agendaId = insertAgenda._execute({ userId: Fixture.demoManagerId }, { communityId: Fixture.demoCommunityId, title: 'Test Agenda' });
