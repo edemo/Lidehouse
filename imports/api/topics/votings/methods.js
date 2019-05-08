@@ -7,7 +7,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from '../topics.js';
 import './votings.js';
-import { sendHasVotedNoti } from '/imports/email/voting-notifications.js';
+import { voteCastConfirmationEmail } from '/imports/email/voting-notifications.js';
 
 export const castVote = new ValidatedMethod({
   name: 'vote.cast',
@@ -54,7 +54,7 @@ export const castVote = new ValidatedMethod({
     if (Meteor.isServer) {
       const updatedTopic = Topics.findOne(topicId);
       updatedTopic.voteEvaluate(false); // writes only voteParticipation, no results
-      if (res === 1) sendHasVotedNoti(_voters, topicId, this.userId);
+      if (res === 1) voteCastConfirmationEmail(_voters, topicId, this.userId);
     }
   },
 });

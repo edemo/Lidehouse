@@ -19,7 +19,7 @@ export function sendDelegationNoti(delegation, method, formerDelegation) {
     const user = Meteor.users.findOne(personId);
     if (!user) return;
     const language = user.language();
-    const personname = user.displayOfficialName(delegation.communityId, language);
+    const personName = user.displayOfficialName(delegation.communityId, language);
     const sourcePersonName = sourcePerson.displayName(language);
     const targetPersonName = targetPerson.displayName(language);
     function scopeObject(deleg) {
@@ -54,7 +54,7 @@ export function sendDelegationNoti(delegation, method, formerDelegation) {
       bcc: 'Honline <noreply@honline.hu>',
       subject: TAPi18n.__('email.DelegationNotiTitle', { community, methodType: methodType() }, language),
       text: TAPi18n.__('email.DelegationNotiText', {
-        personname,
+        personName,
         methodType: methodType(),
         community,
         date,

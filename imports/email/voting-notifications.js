@@ -6,7 +6,7 @@ import { _ } from 'meteor/underscore';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Communities } from '/imports/api/communities/communities.js';
 
-export function sendHasVotedNoti(voters, topicId, executor) {
+export function voteCastConfirmationEmail(voters, topicId, registrator) {
   const topic = Topics.findOne(topicId);
   const community = Communities.findOne(topic.communityId).name;
   const link = FlowRouterHelpers.urlFor('Topic.show', { _tid: topicId });
@@ -14,17 +14,17 @@ export function sendHasVotedNoti(voters, topicId, executor) {
     const user = Meteor.users.findOne(voterId);
     if (!user) return;
     const language = user.language();
-    const personname = user.displayOfficialName(topic.communityId, language);
-    let votedby;
-    if (voters.length === 1 && voters[0] === executor) {
-      votedby = '';
+    const personName = user.displayOfficialName(topic.communityId, language);
+    let registeredBy;
+    if (voters.length === 1 && voters[0] === registrator) {
+      registeredBy = '';
       if (!_.contains(Object.keys(topic.voteCastsIndirect), voterId)) {
         return;
         // TODO: delegations
       }
     } else {
-      const executorName = Meteor.users.findOne(executor).displayOfficialName(topic.communityId, language);
-      votedby = TAPi18n.__('email.HasVotedVotedby', { executor: executorName }, language);
+      const registratorName = Meteor.users.findOne(registrator).displayOfficialName(topic.communityId, language);
+      registeredBy = TAPi18n.__('email.ConfirmVoteRegistrator', { registrator: registratorName }, language);
     }
     const voteValue = [];
     const castedVoteKey = topic.voteCastsIndirect[voterId]; // || TODO: delegations;
@@ -40,14 +40,14 @@ export function sendHasVotedNoti(voters, topicId, executor) {
       from: 'Honline <noreply@honline.hu>',
       to: user.getPrimaryEmail(),
       bcc: 'Honline <noreply@honline.hu>',
-      subject: TAPi18n.__('email.HasVotedTitle', { community }, language),
-      text: TAPi18n.__('email.HasVotedText', {
-        personname,
+      subject: TAPi18n.__('email.ConfirmVoteTitle', { community }, language),
+      text: TAPi18n.__('email.ConfirmVoteText', {
+        personName,
         community,
-        votetitle: topic.title,
-        votetext: topic.text,
-        castedvote: voteValue.toString(),
-        votedby,
+        voteTitle: topic.title,
+        voteText: topic.text,
+        castedVote: voteValue.toString(),
+        registeredBy,
         link,
       }, language),
     });
