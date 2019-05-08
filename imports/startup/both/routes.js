@@ -200,8 +200,7 @@ FlowRouter.route('/topic/:_tid', {
   },
   title(params) {
     const topic = Topics.findOne(params._tid);
-    if (topic && topic.title) return `${topic.title}`;
-    return __('Loading');
+    return topic && `${topic.title}`;
   },
 });
 CommunityRelatedRoutes.push('Topic.show');
@@ -301,8 +300,7 @@ FlowRouter.route('/user/:_id', {
   },
   title(params) {
     const User = Meteor.users.findOne(params._id);
-    if (User && User.profile && User.profile.lastName) return `${__('User show')} > ${User.displayOfficialName()}`;
-    return __('Loading');
+    return User && `${User.displayOfficialName()}`;
   },
 });
 CommunityRelatedRoutes.push('User.show');
