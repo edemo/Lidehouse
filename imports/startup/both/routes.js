@@ -42,13 +42,6 @@ if (Meteor.isClient) {
   //
   FlowRouter.triggers.enter([() => { window.scrollTo(0, 0); }]);
   new FlowRouterTitle(FlowRouter);
-  /*FlowRouter.triggers.enter([() => {
-    setTimeout(() => {
-      const routeName = FlowRouter.current().route.name;
-      const cleanedRouteName = routeName.split('.').join(' ');
-      document.title = __(cleanedRouteName);
-    }, 1);
-  }]);*/
 }
 
 //-------------------
@@ -117,11 +110,8 @@ FlowRouter.route('/community/:_cid', {
   },
   title(params) {
     const Community = Communities.findOne({ _id: params._cid });
-    if (Community && Community.name) {
-      return `${__('Community page')} > ${Community.name}`;
-    } else {
-      return __('Loading');
-    }
+    if (Community && Community.name) return `${Community.name}`;
+    return __('Loading');
   },
 });
 
@@ -175,11 +165,8 @@ FlowRouter.route('/room/:_rid', {
   },
   title(params) {
     const Room = Topics.findOne(params._rid);
-    if (Room && Room.title) {
-      return `${__('Room show')} > ${Room.title}`;
-    } else {
-      return __('Loading');
-    }
+    if (Room && Room.title) return `${Room.title}`;
+    return __('Loading');
   },
 });
 CommunityRelatedRoutes.push('Messages');
@@ -213,11 +200,8 @@ FlowRouter.route('/topic/:_tid', {
   },
   title(params) {
     const topic = Topics.findOne(params._tid);
-    if (topic && topic.title) {
-      return `${__(topic.category)} > ${topic.title}`;
-    } else {
-      return __('Loading');
-    }
+    if (topic && topic.title) return `${topic.title}`;
+    return __('Loading');
   },
 });
 CommunityRelatedRoutes.push('Topic.show');
@@ -317,11 +301,8 @@ FlowRouter.route('/user/:_id', {
   },
   title(params) {
     const User = Meteor.users.findOne(params._id);
-    if (User && User.profile && User.profile.lastName) {
-      return `${__('User show')} > ${User.displayOfficialName()}`;
-    } else {
-      return __('Loading');
-    }
+    if (User && User.profile && User.profile.lastName) return `${__('User show')} > ${User.displayOfficialName()}`;
+    return __('Loading');
   },
 });
 CommunityRelatedRoutes.push('User.show');
