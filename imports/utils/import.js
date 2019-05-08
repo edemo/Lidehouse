@@ -16,7 +16,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 const rABS = true;
-const delayCalls = 250;
+const delayCalls = 0;
 
 // Problem of dealing with dates as js Date objects:
 // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
@@ -72,9 +72,9 @@ function transformMarinaTransactions(jsons, options) {
   const tjsons = [];
   jsons.forEach((doc) => {
     const docRef = doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
-    const cutoffDate = moment(moment.utc('2019-04-01'));
+    const cutoffDate = moment(moment.utc('2019-05-01'));
     const incomingDate = moment(moment.utc(doc['A számla fizetési határideje'] || doc['Számla kelte']));
-    if (!incomingDate.isValid()) console.err('ERROR: Invalid date in import', doc);
+    if (!incomingDate.isValid()) console.error('ERROR: Invalid date in import', doc);
     if (incomingDate < cutoffDate) {
       const bill = {
         ref: '>' + docRef,
@@ -90,7 +90,7 @@ function transformMarinaTransactions(jsons, options) {
     }
     if (doc['A számla kiegyenlítésének időpontja']) {
       const paymentDate = moment(moment.utc(doc['A számla kiegyenlítésének időpontja']));
-      if (!paymentDate.isValid()) console.err('ERROR: Invalid date in import', doc);
+      if (!paymentDate.isValid()) console.error('ERROR: Invalid date in import', doc);
       if (paymentDate < cutoffDate) {
         const payment = {
           ref: '<' + docRef,

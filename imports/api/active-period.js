@@ -30,6 +30,9 @@ export const ActivePeriodSchema = new SimpleSchema({
       const beginDate = this.field('activeTime.begin').value;
       const endDate = this.field('activeTime.end').value;
       const nowDate = new Date();
+      if (this.isUpdate && !beginDate && !endDate) return undefined;
+        // If we have one of those set (begin or end) then both should be set
+        // - autoform does that - and if you call update by hand, make sure you do that too!
       return (!beginDate || beginDate <= nowDate) && (!endDate || nowDate <= endDate);
     },
   },

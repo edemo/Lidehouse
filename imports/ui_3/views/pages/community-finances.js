@@ -53,16 +53,16 @@ const plusColors = [
     pointBackgroundColor: "rgba(26,179,148,1)",
     pointBorderColor: "#fff",
   },
-  { // pastel brown
-    backgroundColor: "rgba(192, 165, 155, 0.5)",
-    borderColor: "rgba(192, 165, 155, 0.7)",
-    pointBackgroundColor: "rgba(192, 165, 155, 1)",
-    pointBorderColor: "#fff",
-  },
   { // indian yellow
     backgroundColor: "rgba(227, 168, 87, 0.5)",
     borderColor: "rgba(227, 168, 87, 0.7)",
     pointBackgroundColor: "rgba(227, 168, 87, 1)",
+    pointBorderColor: "#fff",
+  },
+  { // pastel brown
+    backgroundColor: "rgba(192, 165, 155, 0.5)",
+    borderColor: "rgba(192, 165, 155, 0.7)",
+    pointBackgroundColor: "rgba(192, 165, 155, 1)",
     pointBorderColor: "#fff",
   },
 ];
@@ -193,10 +193,11 @@ Template.Community_finances.viewmodel({
       const datasets = [];
       const coa = ChartOfAccounts.get();
       const moneyAccounts = coa ? coa.findNodeByName('Money accounts') : [];
-      moneyAccounts.leafs().forEach((account, index) => {
+      moneyAccounts.leafs().reverse().forEach((account, index) => {
         datasets.push(_.extend({
           label: account.name,
           data: this.monthlyDataFromCbalances(account.code),
+          fill: true,
         }, plusColors[index + 1]));
       });
       moneyData = { labels: this.marinaLabels(), datasets };

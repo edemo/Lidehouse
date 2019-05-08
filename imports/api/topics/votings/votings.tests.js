@@ -14,6 +14,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/topics/votings/votings.js';
 import { insert as insertAgenda } from '/imports/api/agendas/methods.js';
 import { insert as insertTopic, update as updateTopic } from '/imports/api/topics/methods.js';
@@ -42,7 +43,7 @@ if (Meteor.isServer) {
   };
 
   describe('votings', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
       agendaId = insertAgenda._execute({ userId: Fixture.demoManagerId }, { communityId: Fixture.demoCommunityId, title: 'Test Agenda' });
@@ -104,7 +105,7 @@ if (Meteor.isServer) {
       });
     });
 
-    xdescribe('evaluation', function () {
+    describe('evaluation', function () {
       let votingId;
 
       before(function () {
@@ -125,13 +126,14 @@ if (Meteor.isServer) {
         const voting = Topics.findOne(votingId);
         chai.assert.deepEqual(voting.voteParticipation, { count: 1, units: 10 });
         const castsShouldBe = {};
+        const membership = Memberships.findOne({ parcelId: Fixture.dummyParcels[1] });
         castsShouldBe[Fixture.dummyUsers[1]] = [choice];
         chai.assert.deepEqual(voting.voteCasts, castsShouldBe);
         chai.assert.deepEqual(voting.voteCastsIndirect, castsShouldBe);
         chai.assert.equal(_.keys(voting.voteResults).length, 1);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].votingShare, new Fraction(10, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].castedVote, [choice]);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].votePath, [Fixture.dummyUsers[1]]);
+        chai.assert.deepEqual(voting.voteResults[membership._id].votingShare, 10);
+        chai.assert.deepEqual(voting.voteResults[membership._id].castedVote, [choice]);
+        chai.assert.deepEqual(voting.voteResults[membership._id].votePath, [Fixture.dummyUsers[1]]);
         const summaryShouldBe = {};
         summaryShouldBe[choice] = 10;
         chai.assert.deepEqual(voting.voteSummary, summaryShouldBe);
@@ -141,17 +143,19 @@ if (Meteor.isServer) {
         const voting = Topics.findOne(votingId);
         chai.assert.deepEqual(voting.voteParticipation, { count: 2, units: 30 });
         const castsShouldBe = {};
+        const membership = Memberships.findOne({ parcelId: Fixture.dummyParcels[1] });
+        const membership2 = Memberships.findOne({ parcelId: Fixture.dummyParcels[2], 'ownership.representor': true });
         castsShouldBe[Fixture.dummyUsers[1]] = [1];
         castsShouldBe[Fixture.dummyUsers[2]] = [choice];
         chai.assert.deepEqual(voting.voteCasts, castsShouldBe);
         chai.assert.deepEqual(voting.voteCastsIndirect, castsShouldBe);
         chai.assert.equal(_.keys(voting.voteResults).length, 2);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].votingShare, new Fraction(10, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].castedVote, [1]);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[1]].votePath, [Fixture.dummyUsers[1]]);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[2]].votingShare, new Fraction(20, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[2]].castedVote, [choice]);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[2]].votePath, [Fixture.dummyUsers[2]]);
+        chai.assert.deepEqual(voting.voteResults[membership._id].votingShare, 10);
+        chai.assert.deepEqual(voting.voteResults[membership._id].castedVote, [1]);
+        chai.assert.deepEqual(voting.voteResults[membership._id].votePath, [Fixture.dummyUsers[1]]);
+        chai.assert.deepEqual(voting.voteResults[membership2._id].votingShare, 20);
+        chai.assert.deepEqual(voting.voteResults[membership2._id].castedVote, [choice]);
+        chai.assert.deepEqual(voting.voteResults[membership2._id].votePath, [Fixture.dummyUsers[2]]);
         const summaryShouldBe = {};
         if (choice === 1) {
           summaryShouldBe[1] = 30;
@@ -217,13 +221,14 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(voting.voteParticipation, { count: 3, units: 60 });
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[3]], [choice]);
         chai.assert.isUndefined(voting.voteCasts[Fixture.dummyUsers[4]]);
-        chai.assert.isUndefined(voting.voteCastsIndirect[Fixture.dummyUsers[4]]);
       };
 
       const assertsAfterIndirectVote = function (choice = 0) {
         const voting = Topics.findOne(votingId);
         chai.assert.deepEqual(voting.voteParticipation, { count: 4, units: 100 });
         const castsShouldBe = {};
+        const membership3 = Memberships.findOne({ parcelId: Fixture.dummyParcels[3] }); // there is no representor
+        const membership4 = Memberships.findOne({ parcelId: Fixture.dummyParcels[4], 'ownership.representor': true });
         castsShouldBe[Fixture.dummyUsers[1]] = [1];
         castsShouldBe[Fixture.dummyUsers[2]] = [2];
         castsShouldBe[Fixture.dummyUsers[3]] = [choice];
@@ -231,12 +236,12 @@ if (Meteor.isServer) {
         castsShouldBe[Fixture.dummyUsers[4]] = [choice];
         chai.assert.deepEqual(voting.voteCastsIndirect, castsShouldBe);
         chai.assert.equal(_.keys(voting.voteResults).length, 4);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].votingShare, new Fraction(30, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].castedVote, [choice]);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[3]].votePath, [Fixture.dummyUsers[3]]);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].votingShare, new Fraction(40, 100));
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].castedVote, [choice]);
-        chai.assert.deepEqual(voting.voteResults[Fixture.dummyParcels[4]].votePath, [Fixture.dummyUsers[4], Fixture.dummyUsers[3]]);
+        chai.assert.deepEqual(voting.voteResults[membership3._id].votingShare, 30);
+        chai.assert.deepEqual(voting.voteResults[membership3._id].castedVote, [choice]);
+        chai.assert.deepEqual(voting.voteResults[membership3._id].votePath, [Fixture.dummyUsers[3]]);
+        chai.assert.deepEqual(voting.voteResults[membership4._id].votingShare, 40);
+        chai.assert.deepEqual(voting.voteResults[membership4._id].castedVote, [choice]);
+        chai.assert.deepEqual(voting.voteResults[membership4._id].votePath, [Fixture.dummyUsers[4], Fixture.dummyUsers[3]]);
         const summaryShouldBe = {};
         if (choice === 0) {
           summaryShouldBe[1] = 10;
@@ -331,6 +336,24 @@ if (Meteor.isServer) {
         done();
       });
 
+      describe('multiChoose evaluation', function () {
+
+        let votingId2;
+
+        before(function () {
+          votingId2 = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('multiChoose'));
+        });
+
+        it('evaluates correct vote summary on multiChoose vote', function (done) {
+          chai.assert.isDefined(votingId2);
+          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId2, castedVote: [1] });
+          castVote._execute({ userId: Fixture.dummyUsers[4] }, { topicId: votingId2, castedVote: [0, 1] });
+          const updatedVoting = Topics.findOne(votingId2);
+          chai.assert.deepEqual(updatedVoting.voteSummary, { 0: 40, 1: 50 });
+          done();
+        });
+
+      });
 
         // TODO: ownership changes during vote period
 
