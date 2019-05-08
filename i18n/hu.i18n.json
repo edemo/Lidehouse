@@ -461,6 +461,7 @@
   "No such object": "Ilyen objektum nem létezik a rendszerben",
   "err_alreadyExists": "Már van ilyen objektum",
   "Already has such object": "Ilyen objektum már létezik a rendszerben",
+  "Field is not modifiable": "A mező nem módosítható",
   "err_permissionDenied": "Jogosultság megtagadva",
   "No permission to perform this activity": "Önnek nincs megfelelő jogosultsága a kért művelethez",
   "err_notLoggedIn": "Nincs bejelentkezve felhasználó",

@@ -82,7 +82,7 @@ export function checkModifier(object, modifier, modifiableFields, exclude = fals
   modifiedFields.forEach((mf) => {
     if ((exclude && _.contains(modifiableFields, mf) && !_.isEqual(Object.byString(object, mf), modifier.$set[mf]))
       || (!exclude && !_.contains(modifiableFields, mf) && !_.isEqual(Object.byString(object, mf), modifier.$set[mf]))) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      throw new Meteor.Error('err_permissionDenied', 'Field is not modifiable',
         `Field: ${mf}\n Modifier: ${JSON.stringify(modifier)}\n Object: ${JSON.stringify(object)}`);
     }
   });
