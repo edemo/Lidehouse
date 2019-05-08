@@ -163,6 +163,7 @@ Memberships.modifiableFields = [
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',
+  'personId',
 ].concat(PersonSchema.modifiableFields)
 .concat(ActivePeriodSchema.fields);
 
