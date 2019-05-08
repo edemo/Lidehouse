@@ -43,6 +43,12 @@ export const Notification_Email = {
       const comments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY.NOTI);
       return comments;
     },
+    voteHasBeenClosed(topic) {
+      const userLastSeens = Meteor.users.findOne(this.userId).lastSeens[Meteor.users.SEEN_BY.EYES][topic._id];
+      if (topic.closed === true && topic.category === 'vote' && userLastSeens
+        && (topic.vote.closesAt > userLastSeens.timestamp)) return true;
+      return false;
+    },
     categoryImgUrlFor(category) {
       const file = {
         // feedback: '',
@@ -54,6 +60,10 @@ export const Notification_Email = {
       };
       // return 'https://honline.hu/images/email/' + file[category]; // use this for testing, because localhost may not be accessible by mail clients
       return FlowRouterHelpers.urlFor('/images/email/' + file[category]);
+    },
+    oldTopic(topic) {
+      if (topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY.NOTI)) return '';
+      return 'oldTopic';
     },
   },
 

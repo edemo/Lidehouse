@@ -252,7 +252,10 @@
   "Actives only": "Aktívak mutatása",
   "Show results": "Eredmények megtekintése",
   "Show attachment": "Előterjesztés megtekintése",
+  "The voting has been closed": "A szavazás lezárult",
   "Vote results": "Szavazási eredmények",
+  "Aggregation of votes": "Szavazatok összesítése",
+  "Support of options": "Opciók támogatottsága",
   "voter": "Szavazó",
   "casted vote": "Szavazat",
   "Casted votes": "Szavazatok",
@@ -303,6 +306,7 @@
   "Cancel": "Mégsem",
   "If you made your choice": "Ha döntött",
   "send your vote": "küldje el szavazatát",
+  "matters": "ügyek",
 
   // rooms
   "Send messages": "Küldjön üzenetet",
@@ -583,6 +587,10 @@
   "close vote successful": "Szavazás lezárva",
   "update settings successful": "Beállítások módosítva",
   "publish balances successful": "Aktuális egyenlegek publikálva",
+
+  "was inserted": "rögzítésre került",
+  "was updated": "módosításra került",
+  "was removed": "TÖRLÉSRE került",
 
   "Are you sure you want to": "Biztos benne, hogy",
   "invite user": "meghívja a felhasználót",
