@@ -27,7 +27,7 @@ export const displayError = (error) => {
       message = __(error.error) + '\n' + __(error.reason);
       if (Meteor.isDevelopment) message += '\n' + error.details;
     } else {
-      message = __(error.message);
+      message = (error.message);
     }
     if (Meteor.isDevelopment) message += '\n\n' + error.stack;
     alert(message);     // It would be better to not alert the error here but inform the user in some more subtle way
