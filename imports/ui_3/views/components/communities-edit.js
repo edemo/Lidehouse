@@ -12,7 +12,7 @@ export function afCommunityInsertModal() {
   Modal.show('Autoform_edit', {
     id: 'af.community.insert',
     collection: Communities,
-    omitFields: ['description', 'parcels'],
+    omitFields: ['parcels'],
     type: 'method',
     meteormethod: 'communities.create',
   });
@@ -23,7 +23,6 @@ export function afCommunityUpdateModal() {
     id: 'af.community.update',
     collection: Communities,
     doc: Communities.findOne(Session.get('selectedCommunityId')),
-    omitFields: ['description'],
     type: 'method-update',
     meteormethod: 'communities.update',
     singleMethodArgument: true,

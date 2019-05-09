@@ -29,7 +29,7 @@ export const HouseTranslation = {
       },
       "description": {
         "label": "Description",
-        "placeholder": "The administrator welcomes you on the community's page! If you own a parcel in this building, you can apply to join by pressing the button below."
+        "placeholder": "(eg. The most colourful building in the street.)"
       },
       "avatar": {
         "label": "Image",
@@ -58,6 +58,13 @@ export const HouseTranslation = {
       "totalunits": {
         "label": "Total shares outstanding",
         "placeholder": "(eg. 10000)"
+      },
+      "management": {
+        "label": "Contact info of management",
+        "placeholder": "(eg. office address, phone, opening hours)"
+      },
+      "joinable": {
+        "label": "Accepts join requests"
       }
     },
     "schemaParcels": {
@@ -166,7 +173,7 @@ export const HouseTranslation = {
       },
       "description": {
         "label": "Leírás",
-        "placeholder": "Az adminisztrátor üdvözli önt itt a ház adatlapján. Ha ön albetét tulajdonos a házban, csatlakozási kérelmet tud beadni a lenti gomb megnyomásával."
+        "placeholder": "(pl. Az utca legszínesebb háza.)"
       },
       "avatar": {
         "label": "Fénykép",
@@ -182,7 +189,7 @@ export const HouseTranslation = {
       },
       "street": {
         "label": "Utca/közterület",
-        "placeholder": "(pl.Kankalin u. vagy Zsigmond tér)"
+        "placeholder": "(pl. Kankalin u. vagy Zsigmond tér)"
       },
       "number": {
         "label": "Házszám",
@@ -195,6 +202,13 @@ export const HouseTranslation = {
       "totalunits": {
         "label": "Összes tulajdoni hányad",
         "placeholder": "(pl. 1000 vagy 9999)"
+      },
+      "management": {
+        "label": "Közös képviselet elérhetősége",
+        "placeholder": "(pl. iroda címe, telefonszáma, nyitvatartása)"
+      },
+      "joinable": {
+        "label": "Csatlakozási kérelmeket fogad"
       }
     },
     "schemaParcels": {
