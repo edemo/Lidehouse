@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { _ } from 'meteor/underscore';
 import { Accounts } from 'meteor/accounts-base';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
@@ -8,14 +9,14 @@ if (Meteor.settings.mailSender) {
 }
 
 // When translating to non-english languages, we include the english version at the end, as an extra safety against wrong lang setting
+// context must be an object, see: https://github.com/TAPevents/tap-i18n/issues/196
 function dualTranslate(symbol, context, lang, separator) {
   let result = TAPi18n.__(symbol, context, lang);
-// Transalting to one language, then translating to a different one, does not work (something in TAPI keeps transalting to the first lang)
-// so we now make the hungarian translation itself include an english translation as well (for enrollment)
-//  if (lang !== 'en') {
-//    if (separator === '/') result += ' (' + TAPi18n.__(symbol, context, 'en') + ')';
-//    if (separator === '-') result += '\n\n[English]\n' + TAPi18n.__(symbol, context, 'en');
-//  }
+  if (lang !== 'en') {
+    _.extend(context, { lng: 'en' }); 
+    if (separator === '/') result += ' (' + TAPi18n.__(symbol, context) + ')';
+    if (separator === '-') result += '\n\n[English]\n' + TAPi18n.__(symbol, context);
+  }
   return result;
 }
 
