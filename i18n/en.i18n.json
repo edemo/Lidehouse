@@ -84,6 +84,7 @@
     // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",
+  "join request text": "If you own a parcel in this building, you can apply to join by pressing the button below.",
   "Parcel owners list": "Owners of parcel %s",
   "Parcel benefactors list": "Benefactors of parcel %s",
 

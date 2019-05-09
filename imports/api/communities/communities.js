@@ -43,6 +43,7 @@ Communities.schema = new SimpleSchema([
   comtype.profileSchema,
   { totalunits: { type: Number } },
   { management: { type: String, optional: true, autoform: { type: 'textarea' } } },
+  { joinable: { type: Boolean, defaultValue: true } },
   // redundant fields:
   { parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } } },
 ]);

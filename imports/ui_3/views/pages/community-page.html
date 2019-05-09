@@ -167,10 +167,13 @@
                             <h4><strong>{{community.name}}</strong></h4>
                             <p>{{_ 'schemaCommunities.lot.label'}}: {{community.lot}}<br>
                             <i class="fa fa-map-marker"></i>{{community.displayAddress}}</p>
-                            <br>
-                            <h5>{{_ 'schemaCommunities.description.label'}}</h5>
-                            <p> {{_ 'schemaCommunities.description.placeholder'}}</p>
-                            <table class="m-t-lg" width="100%">
+                            {{#if community.description}}
+                            <div class="m-t-md">
+                                <h5>{{_ 'schemaCommunities.description.label'}}</h5>
+                                <p> {{community.description}}</p>
+                            </div>
+                            {{/if}}
+                            <table class="m-t-md" width="100%">
                             <tr>
                                 {{#each parcelTypesWithCount}}
                                 <td>
@@ -179,21 +182,25 @@
                                 {{/each}}
                             </tr>
                             </table>
-                            {{#unless (currentUser.isInCommunity communityId) }}
-                            <br>
-                                {{#if (currentUser.isUnapprovedInCommunity communityId)}}
-                                <button type="button" class="btn btn-primary btn-sm btn-block btn-outline">
-                                    <i class="fa fa-suitcase"></i>
-                                    {{_ 'Submitted join request'}}
-                                </button>
-                                {{else}}
-                                <button type="button" class="btn btn-primary btn-sm btn-block js-join">
-                                    <i class="fa fa-suitcase"></i>
-                                    {{_ 'Submit join request'}}
-                                </button>
-                                {{/if}}
-                              {{/unless}}
+                            {{#if community.joinable}}
+                                {{#unless (currentUser.isInCommunity communityId) }}
+                                    <br>
+                                    <p>{{_ 'join request text'}}</p>
+                                    {{#if (currentUser.isUnapprovedInCommunity communityId)}}
+                                    <button type="button" class="btn btn-primary btn-sm btn-block btn-outline">
+                                        <i class="fa fa-suitcase"></i>
+                                        {{_ 'Submitted join request'}}
+                                    </button>
+                                    {{else}}
+                                    <button type="button" class="btn btn-primary btn-sm btn-block js-join">
+                                        <i class="fa fa-suitcase"></i>
+                                        {{_ 'Submit join request'}}
+                                    </button>
+                                    {{/if}}
+                                {{/unless}}
+                            {{/if}}
                             {{#if userHasPermission 'communities.remove' communityId}}
+                            <br>
                               <button class="btn btn-danger btn-block btn-outline js-delete"><!--i class="fa fa-trash"></i--> {{_ 'Delete community'}}</button>
                             {{/if}}
                         </div>
