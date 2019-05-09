@@ -185,7 +185,7 @@
                             {{#if community.joinable}}
                                 {{#unless (currentUser.isInCommunity communityId) }}
                                     <br>
-                                    <p>{{_ 'join request text'}}</p>
+                                    <p>{{_ 'joinRequestInstructions'}}</p>
                                     {{#if (currentUser.isUnapprovedInCommunity communityId)}}
                                     <button type="button" class="btn btn-primary btn-sm btn-block btn-outline">
                                         <i class="fa fa-suitcase"></i>
