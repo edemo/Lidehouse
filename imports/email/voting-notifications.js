@@ -29,8 +29,7 @@ export function voteCastConfirmationEmail(voters, topicId, registrator) {
     const voteValue = [];
     const castedVoteKey = topic.voteCastsIndirect[voterId]; // || TODO: delegations;
     castedVoteKey.forEach((key) => {
-      let choice = topic.vote.choices[key];
-      if (topic.vote.type === 'yesno' || topic.vote.type === 'petition') choice = TAPi18n.__(choice, {}, language);
+      const choice = topic.displayChoice(key, language);
       voteValue.push(choice);
     });
 

@@ -3,7 +3,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
+import { TAPi18n } from 'meteor/tap:i18n';
 
+import { getCurrentUserLang } from '/imports/api/users/users.js';
 import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -13,11 +15,27 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
 Topics.voteEffectValues = ['poll', 'legal'];
-Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition', 'multiChoose'];
-Topics.voteTypeChoices = {
-  'yesno': ['yes', 'no', 'abstain'],
-  'petition': ['support'],
+Topics.voteTypes = {
+  yesno: {
+    name: 'yesno',
+    fixedChoices: ['yes', 'no', 'abstain'],
+  },
+  choose: {
+    name: 'choose',
+  },
+  preferential: {
+    name: 'preferential',
+  },
+  petition: {
+    name: 'petition',
+    fixedChoices: ['support'],
+  },
+  multiChoose: {
+    name: 'multiChoose',
+  },
 };
+Topics.voteTypeValues = Object.keys(Topics.voteTypes);
+
 
 let currentUsersPossibleEffectValues = () => Topics.voteEffectValues;
 if (Meteor.isClient) {
@@ -37,7 +55,7 @@ const voteSchema = new SimpleSchema({
   procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: _.extend({}, autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.'), noUpdate) },
   effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: _.extend({}, autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), noUpdate) },
   type: { type: String, allowedValues: Topics.voteTypeValues, autoform: _.extend({}, autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.'), noUpdate) },
-  choices: { type: Array, autoValue() { return Topics.voteTypeChoices[this.field('vote.type').value]; } },
+  choices: { type: Array, autoValue() { return Topics.voteTypes[this.field('vote.type').value].fixedChoices; } },
   'choices.$': { type: String },
 });
 
@@ -71,6 +89,11 @@ const votingsExtensionSchema = new SimpleSchema({
 });
 
 Topics.helpers({
+  displayChoice(index, language = getCurrentUserLang()) {
+    let choice = this.vote.choices[index];
+    if (Topics.voteTypes[this.vote.type].fixedChoices) choice = TAPi18n.__(choice, {}, language);
+    return choice;
+  },
   unitsToShare(units) {
     const votingShare = new Fraction(units, this.community().totalunits);
     return votingShare;
