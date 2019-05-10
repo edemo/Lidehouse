@@ -3,9 +3,9 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 const TimePeriodSchema = new SimpleSchema({
   begin: { type: Date, optional: true,
     custom() {
-      const nowDate = new Date();
       const beginDate = this.value;
       const endDate = this.field('activeTime.end').value;
+      const nowDate = new Date();
       if (!beginDate && endDate) return 'required';
       if (beginDate && beginDate > nowDate) return 'notAllowed';
       return undefined;
@@ -13,12 +13,11 @@ const TimePeriodSchema = new SimpleSchema({
   },
   end: { type: Date, optional: true,
     custom() {
-      const nowDate = new Date();
       const beginDate = this.field('activeTime.begin').value;
       const endDate = this.value;
-      if (endDate && !beginDate) return 'notAllowed';
+      const nowDate = new Date();
       if (endDate && endDate < beginDate) return 'notAllowed';
-      if (endDate && endDate > nowDate) return 'notAllowed';
+      if (endDate && endDate > nowDate) return 'notAllowed';  // We can allow this if needed, if we set up a timer
       return undefined;
     },
   },
