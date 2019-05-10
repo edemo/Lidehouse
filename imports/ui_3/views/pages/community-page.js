@@ -104,15 +104,14 @@ Template.Community_page.viewmodel({
   },*/
   leaders() {
     const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } });
+    return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } }).fetch();
   },
   nonLeaders() {
     const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } });
+    return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } }).fetch();
   },
   officers() {
-    const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: officerRoles } });
+    return this.leaders().concat(this.nonLeaders());
   },
   ownerships() {
     const communityId = this.communityId();
@@ -255,7 +254,7 @@ Template.Community_page.events({
     });
   },
   // community events
-  'click .community-section .js-edit'() {
+  'click .community-section .js-edit, .management-section .js-edit'() {
     afCommunityUpdateModal();
   },
   'click .community-section .js-delete'() {
