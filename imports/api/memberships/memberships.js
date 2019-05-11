@@ -160,6 +160,7 @@ Memberships.publicFields = {
 };
 
 Memberships.modifiableFields = [
+  // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',

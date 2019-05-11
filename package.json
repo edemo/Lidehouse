@@ -22,7 +22,8 @@
     "flat": "^4.1.0",
     "fractional": "^1.0.0",
     "meteor-node-stubs": "^0.4.1",
-    "nestable": "^0.2.0"
+    "nestable": "^0.2.0",
+    "rus-diff": "^1.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
