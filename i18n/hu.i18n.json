@@ -57,7 +57,10 @@
   "favor": "Szívességi használat",
   "right": "Haszonélvezeti jog",
 
-  // menu
+  // routes
+  "App intro": "Bemutatkozó oldal",
+  "Privacy": "Adatkezelési tájékoztató",
+  "Terms": "Felhasználási feltételek",
   "Board": "Főoldal",
   "Messages": "Üzenetek",
   "Forum": "Fórum",
@@ -71,6 +74,7 @@
   "Community finances": "Ház pénzügyek",
   "Accounting": "Könyvelés",
   "Documentstore": "Dokumentumtár",
+  "User data page": "Felhasználói adatlap",
 
   "News board": "Faliújság",
   "Useful Informations": "Hasznos Információk",
@@ -511,7 +515,6 @@
   "pageNotFoundMessage": "A %s nem található a rendszerben.\nEnnek lehet oka, hogy időközben már törölték.\nDe az is lehet hogy önnek nincs megfelelő jogosultsága hogy megtekintse.",
   "Back to the board": "Vissza a főoldalra",
 
-  "User data page": "Felhasználói adatlap",
   "userAccountsSubtitle": {
     "signIn": "A rendszer használatához lépjen be",
     "signIn_Forced": "A kért tartalom eléréséhez belépés szükséges",

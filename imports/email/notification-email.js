@@ -21,13 +21,13 @@ export const Notification_Email = {
       return text.substr(0, chars) + `... [${TAPi18n.__('see full text with View button', {}, Meteor.users.findOne(this.userId).settings.language)}]`;
     },
     userUrlFor(user) {
-      return FlowRouterHelpers.urlFor('User.show', { _id: user._id });
+      return FlowRouterHelpers.urlFor('User show', { _id: user._id });
     },
     topicUrlFor(topic) {
       if (topic.category === 'room') {
-        return FlowRouterHelpers.urlFor('Room.show', { _rid: topic._id });
+        return FlowRouterHelpers.urlFor('Room show', { _rid: topic._id });
       }
-      return FlowRouterHelpers.urlFor('Topic.show', { _tid: topic._id });
+      return FlowRouterHelpers.urlFor('Topic show', { _tid: topic._id });
     },
     topics() {
       const topics = Topics.topicsNeedingAttention(this.userId, this.communityId, Meteor.users.SEEN_BY.NOTI);

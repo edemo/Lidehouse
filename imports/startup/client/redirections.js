@@ -10,7 +10,7 @@ import { CommunityRelatedRoutes } from '/imports/startup/both/routes.js';
 
 Meteor.autorun(() => {
   const currentRoute = FlowRouter.getRouteName();
-  if (CommunityRelatedRoutes.includes(currentRoute) || currentRoute === 'Profile.show') {
+  if (CommunityRelatedRoutes.includes(currentRoute) || currentRoute === 'User data page') {
     AccountsTemplates.forceLogin();
   }
 });

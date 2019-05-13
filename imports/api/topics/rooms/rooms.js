@@ -28,7 +28,7 @@ if (Meteor.isClient) {
   Rooms.goToRoom = function goToRoom(roomType, otherUserId) {
     const room = Rooms.getRoom(roomType, otherUserId);
     if (room) {
-      FlowRouter.go('Room.show', { _rid: room._id });
+      FlowRouter.go('Room show', { _rid: room._id });
     } else {
       Meteor.call('topics.insert', {
         communityId: Session.get('activeCommunityId'),
@@ -38,7 +38,7 @@ if (Meteor.isClient) {
         title: roomType,
         text: roomType,
       }, onSuccess((res) => {
-        FlowRouter.go('Room.show', { _rid: res });
+        FlowRouter.go('Room show', { _rid: res });
       }),
       );
     }
