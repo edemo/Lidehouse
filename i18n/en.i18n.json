@@ -9,30 +9,6 @@
     "feedback": "feedback"
   },
 
-    // routes
-  "App home": "App home",
-  "App intro": "App intro",
-  "Demo login": "Demo login",
-  "Privacy": "Privacy",
-  "Terms": "Feltételek",
-  "Community page": "Community page",
-  "Communities listing": "Communities listing",
-  "Profile show": "Profile show",
-  "Board": "Board",
-  "Room show": "Room",
-  "Topics forum": "Forums",
-  "Topics vote": "Votings",
-  "Topic show": "List",
-  "Agendas": "Agendas",
-  "Delegations": "Delegations",
-  "Tickets report": "Tickets report",
-  "Parcels finances": "Parcels finances",
-  "Community finances": "Community finances",
-  "Accounting page": "Accounting page",
-  "Community page default": "Community page",
-  "DocumentStore": "Document store",
-  "User show": "User",
-
   // buttons etc.
   "confirm": "Are you sure?",
   "inviteSend": "Send invitation",

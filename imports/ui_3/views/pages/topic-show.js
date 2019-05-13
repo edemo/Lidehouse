@@ -38,19 +38,19 @@ Template.Topic_show.helpers({
       case 'vote': {
         return [{
           title: __('Votings'),
-          url: FlowRouter.path('Topics.vote'),
+          url: FlowRouter.path('Votings'),
         }];
       }
       case 'forum': {
         return [{
           title: __('Forum'),
-          url: FlowRouter.path('Topics.forum'),
+          url: FlowRouter.path('Forum'),
         }];
       }
       case 'ticket': {
         return [{
           title: __('Tickets'),
-          url: FlowRouter.path('Tickets.report'),
+          url: FlowRouter.path('Tickets'),
         }];
       }
       default: return [];

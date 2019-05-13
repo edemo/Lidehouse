@@ -10,7 +10,7 @@
                         </div>
                     </form-->
                 {{else}}
-                <a href="{{pathFor 'App.intro'}}" id="logo" class="minimalize-styl-2">
+                <a href="{{pathFor 'App intro'}}" id="logo" class="minimalize-styl-2">
                     <img src="/images/logo-duo-text.png" width="80" alt="Logo">
                 </a>
                 <a class="minimalize-styl-2 btn btn-primary " href="{{pathFor 'signin'}}">
@@ -36,7 +36,7 @@
                         <li><a href="" class="js-switch-community">{{name}}</a></li>
                         {{/each}}
                         <li role="separator" class="divider"></li>
-                        <li><a href="{{pathFor 'Communities.listing'}}"> + {{_ 'Join a community'}} </a></li>
+                        <li><a href="{{pathFor 'Communities list'}}"> + {{_ 'Join a community'}} </a></li>
                         <li><a class="js-create-community" href=""> + {{_ 'Create a community'}} </a></li>
                     </ul>
                 </li>
@@ -68,7 +68,7 @@
                     </a>
                     <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="user-menu-dropdown">
                         <li>                
-                            <a href="{{pathFor 'Profile.show' _id=currentUser._id}}">
+                            <a href="{{pathFor 'User data page' _id=currentUser._id}}">
                                 <i class="glyphicon glyphicon-cog" aria-hidden="true"></i> 
                                 {{_ 'Profile settings'}}
                                 {{#if currentUser.personNameMismatch}}

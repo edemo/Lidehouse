@@ -229,7 +229,7 @@ function onJoinParcelInsertSuccess(parcelId) {
       text: __('Join request notification'),
       btnOK: 'ok',
 //      btnClose: 'cancel',
-      onOK() { FlowRouter.go('App.home'); },
+      onOK() { FlowRouter.go('App home'); },
 //      onClose() { removeMembership.call({ _id: res }); }, -- has no permission to do it, right now
     }), 3000);
   });

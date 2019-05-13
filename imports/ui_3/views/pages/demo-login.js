@@ -13,7 +13,7 @@ Template.Demo_login.onRendered(function onRendered() {
     else {
       Meteor.loginWithPassword(result, 'password', function (error) {
         if (error) displayError(error);
-        else FlowRouter.go('App.home');
+        else FlowRouter.go('App home');
       });
     }
   });
