@@ -110,8 +110,7 @@ FlowRouter.route('/community/:_cid', {
   },
   title(params) {
     const Community = Communities.findOne({ _id: params._cid });
-    if (Community && Community.name) return `${Community.name}`;
-    return __('Loading');
+    return Community && `${Community.name}`;
   },
 });
 
@@ -165,8 +164,7 @@ FlowRouter.route('/room/:_rid', {
   },
   title(params) {
     const Room = Topics.findOne(params._rid);
-    if (Room && Room.title) return `${Room.title}`;
-    return __('Loading');
+    return Room && `${Room.title}`;
   },
 });
 CommunityRelatedRoutes.push('Messages');
