@@ -7,7 +7,7 @@ import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
-export function sendDelegationNoti(delegation, method, formerDelegation) {
+export function delegationConfirmationEmail(delegation, method, formerDelegation) {
   const community = Communities.findOne(delegation.communityId).name;
   const date = delegation.updatedAt.toLocaleDateString();
   const link = FlowRouterHelpers.urlFor('Delegations');
@@ -37,9 +37,9 @@ export function sendDelegationNoti(delegation, method, formerDelegation) {
       return '';
     }
     const acceptance = method === 'remove' ?
-      TAPi18n.__('email.DelegationRemoved', { date }, language) : TAPi18n.__('email.DelegationAcceptance', {}, language);
+      TAPi18n.__('email.delegationRemoved', { date }, language) : TAPi18n.__('email.delegationAcceptance', {}, language);
     const beforeUpdate = method === 'update' ?
-      TAPi18n.__('email.DelegationBefore', { 
+      TAPi18n.__('email.delegationBefore', { 
         formerSourcePerson: Memberships.findOne({ personId: formerDelegation.sourcePersonId }).Person().displayName(language),
         formerTargetPerson: Memberships.findOne({ personId: formerDelegation.targetPersonId }).Person().displayName(language),
         formerScopeObject: scopeObject(formerDelegation),
@@ -52,8 +52,8 @@ export function sendDelegationNoti(delegation, method, formerDelegation) {
       from: 'Honline <noreply@honline.hu>',
       to: user.getPrimaryEmail(),
       bcc: 'Honline <noreply@honline.hu>',
-      subject: TAPi18n.__('email.DelegationNotiTitle', { community, methodType: methodType() }, language),
-      text: TAPi18n.__('email.DelegationNotiText', {
+      subject: TAPi18n.__('email.ConfirmDelegationTitle', { community, methodType: methodType() }, language),
+      text: TAPi18n.__('email.ConfirmDelegationText', {
         personName,
         methodType: methodType(),
         community,
