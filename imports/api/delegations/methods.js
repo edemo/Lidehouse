@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { sendDelegationNoti } from '/imports/email/delegation-notifications.js';
+import { delegationConfirmationEmail } from '/imports/email/delegation-notifications.js';
 import { Delegations } from './delegations.js';
 
 // User can only delegate to those who allow incoming delegations
@@ -31,7 +31,7 @@ export const insert = new ValidatedMethod({
     const delegation = Delegations.findOne(delegationId);
 
     Delegations._transform(doc).getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
-    if (Meteor.isServer) { sendDelegationNoti(delegation, 'insert'); }
+    if (Meteor.isServer) { delegationConfirmationEmail(delegation, 'insert'); }
     return delegationId;
   },
 });
@@ -59,7 +59,7 @@ export const update = new ValidatedMethod({
     const newDelegationAffects = newDoc.getAffectedVotings();
     const affectedVotings = _.uniq(_.union(oldDelegationAffects.fetch(), newDelegationAffects.fetch()), v => v._id);
     affectedVotings.forEach(voting => voting.voteEvaluate(false));
-    if (Meteor.isServer) { sendDelegationNoti(newDoc, 'update', doc); }
+    if (Meteor.isServer) { delegationConfirmationEmail(newDoc, 'update', doc); }
   },
 });
 
@@ -79,7 +79,7 @@ export const remove = new ValidatedMethod({
     Delegations.remove(_id);
 
     doc.getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
-    if (Meteor.isServer) { sendDelegationNoti(doc, 'remove'); }
+    if (Meteor.isServer) { delegationConfirmationEmail(doc, 'remove'); }
   },
 });
 
@@ -97,7 +97,7 @@ export const allow = new ValidatedMethod({
       affectedDelegations.forEach(delegation => affectedVotings = _.uniq(_.union(affectedVotings, delegation.getAffectedVotings().fetch()), v => v._id));
       Delegations.remove({ targetPersonId: userId });
       if (Meteor.isServer) {
-        affectedDelegations.forEach(delegation => sendDelegationNoti(delegation, 'remove'));
+        affectedDelegations.forEach(delegation => delegationConfirmationEmail(delegation, 'remove'));
       }
       affectedVotings.forEach(voting => voting.voteEvaluate(false));
     }

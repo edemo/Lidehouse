@@ -55,7 +55,13 @@ const voteSchema = new SimpleSchema({
   procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: _.extend({}, autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.'), noUpdate) },
   effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: _.extend({}, autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), noUpdate) },
   type: { type: String, allowedValues: Topics.voteTypeValues, autoform: _.extend({}, autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.'), noUpdate) },
-  choices: { type: Array, autoValue() { return Topics.voteTypes[this.field('vote.type').value].fixedChoices; } },
+  choices: { 
+    type: Array,
+    autoValue() { 
+      if (this.field('vote.type').value) return Topics.voteTypes[this.field('vote.type').value].fixedChoices; 
+      return undefined; 
+    } 
+  },
   'choices.$': { type: String },
 });
 
