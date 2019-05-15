@@ -10,7 +10,15 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 const ContactSchema = new SimpleSchema({
   address: { type: String, optional: true },
   phone: { type: String, optional: true },
-  email: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
+  email: {
+    type: String,
+    optional: true,
+    regEx: SimpleSchema.RegEx.Email,
+    autoValue() {
+      if (this.isSet) return (this.value).toLowerCase();
+      return undefined;
+    },
+  },
 });
 
 const idCardTypeValues = ['natural', 'legal'];

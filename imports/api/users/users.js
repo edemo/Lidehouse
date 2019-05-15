@@ -66,7 +66,15 @@ export const PersonProfileSchema = new SimpleSchema({
 const PersonProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
-  publicEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
+  publicEmail: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Email,
+    optional: true,
+    autoValue() {
+      if (this.isSet) return (this.value).toLowerCase();
+      return undefined;
+    },
+  },
   address: { type: String, optional: true },
   phone: { type: String, max: 20, optional: true },
   bio: { type: String, optional: true },
@@ -108,7 +116,14 @@ Meteor.users.schema = new SimpleSchema({
 
   emails: { type: Array },
   'emails.$': { type: Object },
-  'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
+  'emails.$.address': { 
+    type: String,
+    regEx: SimpleSchema.RegEx.Email,
+    autoValue() {
+      if (this.isSet) return (this.value).toLowerCase();
+      return undefined;
+    },
+  },
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
