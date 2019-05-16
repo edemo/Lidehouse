@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { numeral } from 'meteor/numeral:numeral';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
+import { __ } from '/imports/localization/i18n.js';
 
 Template.registerHelper('and', function and(a, b) {
     return a && b;
@@ -64,6 +65,14 @@ Template.registerHelper('displayTimeFrom', function displayTimeFrom(time) {
 // Takes any number of arguments and returns them concatenated.
 Template.registerHelper('concat', function concat() {
     return Array.prototype.slice.call(arguments, 0, -1).join('');
+});
+
+Template.registerHelper('join', function join(items) {
+    return items.join(', ');
+});
+
+Template.registerHelper('translateArray', function translateArray(items) {
+    return items.map(i => __(i));
 });
 
 Template.registerHelper('log', function log(stuff) {
