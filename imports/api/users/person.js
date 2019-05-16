@@ -33,7 +33,7 @@ const IdCardSchema = new SimpleSchema({
 
 export const PersonSchema = new SimpleSchema({
   // *userId* (connecting to a registered user in the system),
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: _.extend({}, chooseUser, noUpdate) },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   // *idCard* (identity papers confirmed by manager, so person can officially vote now)
   // this person might or might not wish to register in the system ever, but still can do voting (if manager votes in his name)
   idCard: { type: IdCardSchema, optional: true },
