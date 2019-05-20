@@ -24,7 +24,7 @@ const TimePeriodSchema = new SimpleSchema({
 });
 
 export const ActivePeriodSchema = new SimpleSchema({
-  activeTime: { type: TimePeriodSchema, defaultValue: {} },
+  activeTime: { type: TimePeriodSchema, optional: true },
   active: { type: Boolean, autoform: { omit: true },
     autoValue() {
       const beginDate = this.field('activeTime.begin').value;
