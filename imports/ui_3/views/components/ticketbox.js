@@ -20,9 +20,6 @@ Template.Ticketbox.helpers({
     const communityId = Session.get('activeCommunityId');
     return this.flaggedStatus(communityId) || this.createdBy().flaggedStatus(communityId);
   },
-  join(memberships) {
-    return _.uniq(memberships.map(m => __(m.role))).join(', ');
-  },
 });
 
 Template.Ticketbox.events({

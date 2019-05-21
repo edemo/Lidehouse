@@ -30,10 +30,6 @@ Template.Chatbox.helpers({
     const communityId = Session.get('activeCommunityId');
     return this.flaggedStatus(communityId) || this.createdBy().flaggedStatus(communityId);
   },
-  join(memberships) {
-    // return memberships.map(m => m.toString()).join(', ');
-    return _.uniq(memberships.map(m => __(m.role))).join(', ');
-  },
 });
 
 Template.Chatbox.events({

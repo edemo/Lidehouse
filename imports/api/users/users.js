@@ -226,7 +226,7 @@ Meteor.users.helpers({
     return this.ownedParcels(communityId).filter(p => !p.isLed());
   },
   activeRoles(communityId) {
-    return Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role);
+    return _.uniq(Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role));
   },
   communities() {
     const memberships = Memberships.find({ approved: true, active: true, personId: this._id }).fetch();
