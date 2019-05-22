@@ -46,12 +46,10 @@ export function delegationConfirmationEmail(delegation, method, formerDelegation
       }, language) :
       '';
 
-    import { Email } from 'meteor/email';
-
-    Email.send({
-      from: 'Honline <noreply@honline.hu>',
+    import { emailSender } from '/imports/startup/server/email-sender.js';
+    
+    emailSender.sendPlainText({
       to: user.getPrimaryEmail(),
-      bcc: 'Honline <noreply@honline.hu>',
       subject: TAPi18n.__('email.ConfirmDelegationTitle', { community, methodType: methodType() }, language),
       text: TAPi18n.__('email.ConfirmDelegationText', {
         personName,
