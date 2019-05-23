@@ -27,8 +27,9 @@ export const insert = new ValidatedMethod({
     }
     checkTargetUserAllowsDelegatingTo(doc.targetPersonId, doc);
     const delegationId = Delegations.insert(doc);
-
-    Delegations._transform(doc).getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
+    if (Meteor.isServer) {
+      Delegations._transform(doc).getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
+    }
     return delegationId;
   },
 });
@@ -50,12 +51,13 @@ export const update = new ValidatedMethod({
     checkTargetUserAllowsDelegatingTo(modifier.$set.targetPersonId, doc);
 
     Delegations.update({ _id }, modifier);
-
-    const oldDelegationAffects = doc.getAffectedVotings();
-    const newDoc = Delegations.findOne(_id);
-    const newDelegationAffects = newDoc.getAffectedVotings();
-    const affectedVotings = _.uniq(_.union(oldDelegationAffects.fetch(), newDelegationAffects.fetch()), v => v._id);
-    affectedVotings.forEach(voting => voting.voteEvaluate(false));
+    if (Meteor.isServer) {
+      const oldDelegationAffects = doc.getAffectedVotings();
+      const newDoc = Delegations.findOne(_id);
+      const newDelegationAffects = newDoc.getAffectedVotings();
+      const affectedVotings = _.uniq(_.union(oldDelegationAffects.fetch(), newDelegationAffects.fetch()), v => v._id);
+      affectedVotings.forEach(voting => voting.voteEvaluate(false));
+    }
   },
 });
 
@@ -73,8 +75,9 @@ export const remove = new ValidatedMethod({
     }
 
     Delegations.remove(_id);
-
-    doc.getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
+    if (Meteor.isServer) {
+      doc.getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
+    }
   },
 });
 
@@ -90,7 +93,9 @@ export const allow = new ValidatedMethod({
       let affectedVotings = [];
       Delegations.find({ targetPersonId: userId }).forEach(delegation => affectedVotings = _.uniq(_.union(affectedVotings, delegation.getAffectedVotings().fetch()), v => v._id));
       Delegations.remove({ targetPersonId: userId });
-      affectedVotings.forEach(voting => voting.voteEvaluate(false));
+      if (Meteor.isServer) {
+        affectedVotings.forEach(voting => voting.voteEvaluate(false));
+      }
     }
     Meteor.users.update(userId, { $set: { 'settings.delegatee': value } });
   },

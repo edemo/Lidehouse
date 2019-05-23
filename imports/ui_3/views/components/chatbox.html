@@ -36,7 +36,7 @@
                     {{createdBy}}
                 </a>                  
                 <small class="text-muted" title="{{_ 'memberships'}}">
-                    {{join (createdBy.memberships activeCommunityId)}}
+                    {{join (translateArray (createdBy.activeRoles activeCommunityId))}}
                 </small>
             </div>
         </div>

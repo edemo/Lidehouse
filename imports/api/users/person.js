@@ -33,7 +33,7 @@ const IdCardSchema = new SimpleSchema({
 
 export const PersonSchema = new SimpleSchema({
   // *userId* (connecting to a registered user in the system),
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: _.extend({}, chooseUser, noUpdate) },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
   // *idCard* (identity papers confirmed by manager, so person can officially vote now)
   // this person might or might not wish to register in the system ever, but still can do voting (if manager votes in his name)
   idCard: { type: IdCardSchema, optional: true },
@@ -93,6 +93,9 @@ export class Person {
     if (this.userId && !this.user()) return __('deletedUser');
     return __('unknownUser');
   }
+  activeRoles(communityId) {
+    return _.uniq(Memberships.find({ communityId, approved: true, active: true, personId: this.id() }).fetch().map(m => m.role));
+  }
   toString() {
     return this.displayName();
   }
@@ -106,9 +109,10 @@ if (Meteor.isClient) {
   choosePerson = {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const memberships = Memberships.find({ communityId }).fetch().filter(m => m.personId);
+      let memberships = Memberships.find({ communityId }).fetch().filter(m => m.personId);
+      memberships = _.uniq(memberships, false, m => m.personId);
       const options = memberships.map(function option(m) {
-        return { label: (m.Person().displayName() + ', ' + m.toString()), value: m.personId };
+        return { label: (m.Person().displayName() + ', ' + m.Person().activeRoles(communityId).map(role => __(role)).join(', ')), value: m.personId };
       });
       const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
       return sortedOptions;
