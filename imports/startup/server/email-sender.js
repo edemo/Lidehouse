@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mailer } from 'meteor/lookback:emails';
+import { Email } from 'meteor/email';
 import { EmailTemplates, SampleEmailTemplates } from '/imports/email/email-templates.js';
 import { EmailTemplateHelpers, SampleEmailTemplateHelpers } from '/imports/email/email-template-helpers.js';
 import { Notification_Layout } from '/imports/email/notification-layout.js';
@@ -35,8 +36,35 @@ export const EmailSender = {
 };
 */
 
+export const emailSender = {
+  config: {
+    from: 'Honline <noreply@honline.hu>',
+    bcc: 'Honline <noreply@honline.hu>',
+    siteName: 'Honline',
+  },
+  sendHTML(options) {
+    Mailer.send({
+      from: this.config.from,
+      to: options.to,
+      bcc: this.config.bcc,
+      subject: options.subject,
+      template: options.template,
+      data: options.data,
+    });
+  },
+  sendPlainText(options) {
+    Email.send({
+      from: this.config.from,
+      to: options.to,
+      bcc: this.config.bcc,
+      subject: options.subject,
+      text: options.text,
+    });
+  },
+};
+
 Mailer.config({
-  from: 'Honline <noreply@honline.hu>',
+  from: emailSender.config.from,
 //  replyTo: 'Honline <noreply@honline.hu>',
   addRoutes: true,  // only allow this in debug mode
   testEmail: null,  // set your email here to be able to send by url 

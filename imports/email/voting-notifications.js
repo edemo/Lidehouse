@@ -32,13 +32,11 @@ export function voteCastConfirmationEmail(voters, topicId, registrator) {
       const choice = topic.displayChoice(key, language);
       voteValue.push(choice);
     });
+    
+    import { emailSender } from '/imports/startup/server/email-sender.js';
 
-    import { Email } from 'meteor/email';
-
-    Email.send({
-      from: 'Honline <noreply@honline.hu>',
+    emailSender.sendPlainText({
       to: user.getPrimaryEmail(),
-      bcc: 'Honline <noreply@honline.hu>',
       subject: TAPi18n.__('email.ConfirmVoteTitle', { community }, language),
       text: TAPi18n.__('email.ConfirmVoteText', {
         personName,

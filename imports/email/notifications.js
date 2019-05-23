@@ -5,14 +5,14 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { Topics } from '/imports/api/topics/topics.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
+import { emailSender } from '/imports/startup/server/email-sender.js';
 
 function sendNotifications(user) {
   user.communities().forEach((community) => {
     const topics = Topics.topicsNeedingAttention(user._id, community._id, Meteor.users.SEEN_BY.NOTI);
     if (topics.length > 0) {
-      Mailer.send({
+      emailSender.sendHTML({
         to: user.getPrimaryEmail(),
-        bcc: 'Honline <noreply@honline.hu>',
         subject: TAPi18n.__('email.NotificationTitle', { name: community.name }, user.settings.language),
         template: 'Notification_Email',
         data: {
@@ -47,9 +47,8 @@ export function sendVoteexpiresNoti() {
         [userVoteIndirect]: { $exists: false },
       }).fetch();
       if (votes.length > 0) {
-        Mailer.send({
+        emailSender.sendHTML({
           to: user.getPrimaryEmail(),
-          bcc: 'Honline <noreply@honline.hu>',
           subject: TAPi18n.__('email.NotificationTitle', { name: community.name }, user.settings.language),
           template: 'Voteexpires_Email',
           data: {
