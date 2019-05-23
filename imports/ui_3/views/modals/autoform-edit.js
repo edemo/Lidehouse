@@ -31,6 +31,7 @@ Template.Autoform_edit.helpers({
     if (actionName === 'insert') return __('new') + ' ' + __(objectName) + ' ' + __('insertion');
     else if (actionName === 'update') return __(objectName) + ' ' + __('editing data');
     else if (actionName === 'view') return __(objectName) + ' ' + __('viewing data');
+    else if (actionName === 'move') return __(objectName) + ' ' + __('move');
     else return 'data';
   },
 });

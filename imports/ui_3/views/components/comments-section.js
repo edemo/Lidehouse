@@ -1,14 +1,14 @@
-/* globals document */
+/* globals document Waypoint */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-/* globals Waypoint */
+import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
+import '/imports/api/comments/methods.js';
 import { like } from '/imports/api/topics/likes.js';
 import { flag } from '/imports/api/topics/flags.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -87,7 +87,7 @@ Template.Comments_section.events({
   'click .social-comment .js-send'(event, instance) {
     // if ($(event.target).hasClass('disabled')) return;
     const textarea = $(event.target).closest('.media-body').find('textarea')[0];
-    insertComment.call({
+    Comments.methods.insert.call({
       topicId: this._id,
       userId: Meteor.userId(),
       text: textarea.value,
@@ -122,7 +122,7 @@ Template.Comment.events({
   },
   'click .js-save'(event, instance) {
     const text = $(event.target).closest('.media-body').find('textarea')[0].value;
-    updateComment.call({
+    Comments.methods.update.call({
       _id: instance.data._id,
       modifier: { $set: { text } },
     }, handleError);
@@ -137,9 +137,25 @@ Template.Comment.events({
     }
   },
   'click .js-delete'(event, instance) {
-    Modal.confirmAndCall(removeComment, { _id: this._id }, {
+    Modal.confirmAndCall(Comments.methods.remove, { _id: this._id }, {
       action: 'delete comment',
       message: 'It will disappear forever',
     });
+  },
+  'click .js-move'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.comment.move',
+      schema: Comments.moveSchema,
+      doc: { _id: instance.data._id },
+    });
+  },
+});
+
+AutoForm.addModalHooks('af.comment.move');
+AutoForm.addHooks('af.comment.move', {
+  onSubmit(doc) {
+    AutoForm.validateForm('af.comment.move');
+    Comments.methods.move.call(doc, handleError);
+    return true;
   },
 });

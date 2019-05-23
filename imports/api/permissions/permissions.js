@@ -57,6 +57,7 @@ export const Permissions = [
   { name: 'feedback.update',        roles: nobody },
   { name: 'comments.insert',        roles: exceptGuest },
   { name: 'comments.update',        roles: nobody, allowAuthor: true },
+  { name: 'comments.move',          roles: ['moderator'], allowAuthor: true },
   { name: 'comments.remove',        roles: ['moderator'], allowAuthor: true },
   { name: 'comments.listing',       roles: exceptGuest },
   { name: 'like.toggle',            roles: exceptGuest },

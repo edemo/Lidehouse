@@ -42,6 +42,21 @@ export const update = new ValidatedMethod({
   },
 });
 
+export const move = new ValidatedMethod({
+  name: 'comments.move',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    destinationId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id, destinationId }) {
+    const doc = checkExists(Comments, _id);
+    checkPermissions(this.userId, 'comments.move', doc.communityId, doc);
+
+    Comments.update(_id, { $set: { topicId: destinationId } });
+  },
+});
+
 export const remove = new ValidatedMethod({
   name: 'comments.remove',
   validate: new SimpleSchema({
@@ -58,16 +73,12 @@ export const remove = new ValidatedMethod({
 });
 
 Comments.methods = {
-  insert, update, remove,
+  insert, update, move, remove,
 };
 
 //--------------------------------------------------------
 
-const COMMENTS_METHOD_NAMES = _.pluck([
-  insert,
-  update,
-  remove,
-], 'name');
+const COMMENTS_METHOD_NAMES = _.pluck([insert, update, move, remove], 'name');
 
 if (Meteor.isServer) {
   // Only allow 5 comments operations per connection per second

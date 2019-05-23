@@ -3,10 +3,12 @@ import { Mongo } from 'meteor/mongo';
 import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { __ } from '/imports/localization/i18n.js';
 import faker from 'faker';
 
+import { Timestamps } from '/imports/api/timestamps.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
+import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
 import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
@@ -32,7 +34,7 @@ class CommentsCollection extends Mongo.Collection {
 export const Comments = new CommentsCollection('comments');
 
 Comments.schema = new SimpleSchema({
-  topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
+  topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
@@ -86,6 +88,24 @@ Comments.helpers({
 Comments.helpers(likesHelpers);
 Comments.helpers(flagsHelpers);
 
+Comments.moveSchema = new SimpleSchema({
+  _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
+  destinationId: { type: String, regEx: SimpleSchema.RegEx.Id,
+    autoform: {
+      options() {
+        const communityId = getActiveCommunityId();
+        const topics = Topics.find({ communityId });
+        return topics.map(function option(t) { return { label: t.title, value: t._id }; });
+      },
+      firstOption: () => __('(Select one)'),
+    },
+  },
+});
+
+Meteor.startup(function attach() {
+  Comments.simpleSchema().i18n('schemaComments');
+  Comments.moveSchema.i18n('schemaComments');
+});
 
 // TODO This factory has a name - do we have a code style for this?
 //   - usually I've used the singular, sometimes you have more than one though, like

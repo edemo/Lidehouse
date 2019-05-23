@@ -317,6 +317,15 @@
       }
     }
   },
+  "schemaComments": {
+    "text": {
+      "label": "Szöveg",
+      "placeholder": "Arra gondoltam hogy..."
+    },
+    "destinationId": {
+      "label": "Áthelyezés ehhez a témához:"
+    }
+  },
   "schemaBreakdowns": {
     "digit": {
       "label": "Kód"

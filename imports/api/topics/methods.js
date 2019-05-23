@@ -6,7 +6,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
 
-import { checkExists, checkNotExists, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from './topics.js';
@@ -46,6 +46,27 @@ export const update = new ValidatedMethod({
   },
 });
 
+export const move = new ValidatedMethod({
+  name: 'topics.move',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    destinationId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id, destinationId }) {
+    const doc = checkExists(Topics, _id);
+    checkPermissions(this.userId, 'comments.move', doc.communityId, doc);
+    Comments.insert({
+      _id,
+      topicId: destinationId,
+      text: doc.text,
+    });
+    doc.comments().forEach((comment) => {
+      Comments.update(comment._id, { $set: { topicId: destinationId } });
+    });
+    Topics.remove(_id);
+  },
+});
+
 export const remove = new ValidatedMethod({
   name: 'topics.remove',
   validate: new SimpleSchema({
@@ -61,13 +82,13 @@ export const remove = new ValidatedMethod({
 });
 
 Topics.methods = {
-  insert, update, remove,
+  insert, update, move, remove,
 };
 
 // ----- RATE LIMITING --------
 
 // Get list of all method names on Topics
-const TOPICS_METHOD_NAMES = _.pluck([insert, update, remove], 'name');
+const TOPICS_METHOD_NAMES = _.pluck([insert, update, move, remove], 'name');
 // TODO: don't differentiate, overall rate limit needed
 
 if (Meteor.isServer) {
