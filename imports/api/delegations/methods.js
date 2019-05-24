@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
-import { delegationConfirmationEmail } from '/imports/email/delegation-notifications.js';
+import { delegationConfirmationEmail } from '/imports/email/delegation-confirmation.js';
 import { Delegations } from './delegations.js';
 
 // User can only delegate to those who allow incoming delegations
