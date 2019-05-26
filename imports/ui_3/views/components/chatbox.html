@@ -32,11 +32,11 @@
                 <img alt="avatar" class="message-avatar" src={{createdBy.avatar}}>
             </a>
             <div class="media-body">
-                <a href="{{pathFor 'User.show' _id=createdBy._id}}">
+                <a href="{{pathFor 'User show' _id=createdBy._id}}">
                     {{createdBy}}
                 </a>                  
                 <small class="text-muted" title="{{_ 'memberships'}}">
-                    {{join (createdBy.memberships activeCommunityId)}}
+                    {{join (translateArray (createdBy.activeRoles activeCommunityId))}}
                 </small>
             </div>
         </div>

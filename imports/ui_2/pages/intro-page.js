@@ -20,7 +20,7 @@ Template.Old_intro_page.events({
       else {
         Meteor.loginWithPassword(result, 'password', function (error) {
           if (error) displayError(error);
-          else FlowRouter.go('App.home');
+          else FlowRouter.go('App home');
         });
       }
     });

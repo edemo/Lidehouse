@@ -10,6 +10,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { debugAssert } from '/imports/utils/assert.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
 Topics.voteEffectValues = ['poll', 'legal'];
@@ -114,6 +115,7 @@ Topics.helpers({
     return (this.voteCasts && this.voteCasts[userId]) || (this.voteCastsIndirect && this.voteCastsIndirect[userId]);
   },
   voteEvaluate(revealResults) {
+    debugAssert(Meteor.isServer, 'voteEvaluate should only run on the server');
     const voteResults = {};         // results by ownerships
     const voteCastsIndirect = {};   // results by users
     const votePaths = {};
