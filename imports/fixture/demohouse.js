@@ -1168,7 +1168,7 @@ Meteor.methods({
     Localizer.addParcel(demoCommunityId, demoParcel, lang);
 
     const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;
-    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex: '.1@demo.hu' } })._id;
+    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex:  `${lang}.dummyuser@honline.hu` } })._id;
 
     const demoUserMessageRoom = Topics.insert({
       communityId: demoCommunityId,
