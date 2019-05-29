@@ -60,6 +60,7 @@ export class Person {
   }
   // A personId is either a userId (for registered users) or an idCard identifier (for non-registered users)
   static constructFromId(personId) {
+    debugAssert(personId);
     const m = Memberships.findOne({ personId });
     if (m) return new Person(m.person);
     throw new Meteor.Error('Cannot find person with this id', personId);

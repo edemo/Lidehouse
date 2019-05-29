@@ -124,16 +124,17 @@ Topics.helpers({
     const directVotes = this.voteCasts || {};
     const self = this;
     const voteType = this.vote.type;
-    const ownerships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner' });
     const representedBySomeoneElse = (ownership) => {
       const parcel = Parcels.findOne(ownership.parcelId);
       const representor = parcel.representor();
       if (!representor || representor._id === ownership._id) return false;
       return true;
     };
-    const voterships = ownerships.fetch().filter(v => !representedBySomeoneElse(v));
+    const voterships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner', personId: { $exists: true } })
+      .fetch().filter(ownership => !representedBySomeoneElse(ownership));
     voterships.forEach((ownership) => {
-      const ownerId = ownership.Person().id();
+      const ownerId = ownership.personId;
+      debugAssert(ownerId);
       const votePath = [ownerId];
 
       function getVoteResult(voterId) {
