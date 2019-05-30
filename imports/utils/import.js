@@ -72,7 +72,7 @@ function transformMarinaTransactions(jsons, options) {
   const tjsons = [];
   jsons.forEach((doc) => {
     const docRef = doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
-    const cutoffDate = moment(moment.utc('2019-05-01'));
+    const cutoffDate = moment(moment.utc('2019-06-01'));
     const incomingDate = moment(moment.utc(doc['A számla fizetési határideje'] || doc['Számla kelte']));
     if (!incomingDate.isValid()) console.error('ERROR: Invalid date in import', doc);
     if (incomingDate < cutoffDate) {
