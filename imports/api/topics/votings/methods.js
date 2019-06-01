@@ -7,7 +7,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from '../topics.js';
 import './votings.js';
-import { voteCastConfirmationEmail } from '/imports/email/voting-notifications.js';
+import { voteCastConfirmationEmail } from '/imports/email/voting-confirmation.js';
 
 export const castVote = new ValidatedMethod({
   name: 'vote.cast',

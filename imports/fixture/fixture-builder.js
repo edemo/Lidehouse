@@ -94,12 +94,9 @@ export class FixtureBuilder {
     const userNo = this.dummyUsers.length;
     const lastName = this.__(`demo.user.${userNo}.lastName`);
     const firstName = this.__(`demo.user.${userNo}.firstName`);
-    function emailFriendly(name) {
-      return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    }
     const userId = Meteor.users.insert({
       emails: [{
-        address: `${emailFriendly(firstName)}.${emailFriendly(lastName)}.${userNo}@${this.demoOrTest}.${this.com}`,
+        address: `${userNo}.${this.demoOrTest}.${this.lang}.dummyuser@honline.hu`,
         verified: true,
       }],
       profile: { lastName, firstName },

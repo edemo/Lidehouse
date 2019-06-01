@@ -4,6 +4,7 @@ import { Email } from 'meteor/email';
 import { EmailTemplates, SampleEmailTemplates } from '/imports/email/email-templates.js';
 import { EmailTemplateHelpers, SampleEmailTemplateHelpers } from '/imports/email/email-template-helpers.js';
 import { Notification_Layout } from '/imports/email/notification-layout.js';
+import { defaultRoles } from '/imports/api/permissions/roles.js';
 
 /* SSR EmailSender
 import fs from 'fs';
@@ -36,6 +37,14 @@ export const EmailSender = {
 };
 */
 
+const fakeEmailAddresses = [];
+defaultRoles.forEach((role) => {
+  fakeEmailAddresses.push(`${role.name}@demo.hu`);
+  fakeEmailAddresses.push(`${role.name}@demo.com`);
+  fakeEmailAddresses.push(`${role.name}@test.hu`);
+  fakeEmailAddresses.push(`${role.name}@test.com`);
+});
+
 export const emailSender = {
   config: {
     from: 'Honline <noreply@honline.hu>',
@@ -43,6 +52,8 @@ export const emailSender = {
     siteName: 'Honline',
   },
   sendHTML(options) {
+    if (options.to.includes('demouser@honline.hu') || options.to.includes('dummyuser@honline.hu')
+      || fakeEmailAddresses.includes(options.to)) return;
     Mailer.send({
       from: this.config.from,
       to: options.to,
@@ -53,6 +64,8 @@ export const emailSender = {
     });
   },
   sendPlainText(options) {
+    if (options.to.includes('demouser@honline.hu') || options.to.includes('dummyuser@honline.hu')
+    || fakeEmailAddresses.includes(options.to)) return;
     Email.send({
       from: this.config.from,
       to: options.to,
