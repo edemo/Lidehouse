@@ -16,7 +16,7 @@
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td class="alert {{alertColor}}">
-                            {{{_ 'email.NotificationTitle' name=community.name}}}
+                            {{{_ 'email.NotificationSubject' name=community.name}}}
                         </td>
                     </tr>
                     <tr>
@@ -24,6 +24,7 @@
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td class="content-block">
+                                        {{{_ 'email.NotificationInstructions'}}}
                                         {{{body}}} 
                                     </td>
                                 </tr>

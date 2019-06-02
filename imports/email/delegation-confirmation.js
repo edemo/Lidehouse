@@ -50,7 +50,7 @@ export function delegationConfirmationEmail(delegation, method, formerDelegation
     
     emailSender.sendPlainText({
       to: user.getPrimaryEmail(),
-      subject: TAPi18n.__('email.ConfirmDelegationTitle', { community, methodType: methodType() }, language),
+      subject: TAPi18n.__('email.ConfirmDelegationSubject', { community, methodType: methodType() }, language),
       text: TAPi18n.__('email.ConfirmDelegationText', {
         personName,
         methodType: methodType(),

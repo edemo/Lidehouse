@@ -37,7 +37,7 @@ export function voteCastConfirmationEmail(voters, topicId, registrator) {
 
     emailSender.sendPlainText({
       to: user.getPrimaryEmail(),
-      subject: TAPi18n.__('email.ConfirmVoteTitle', { community }, language),
+      subject: TAPi18n.__('email.ConfirmVoteSubject', { community }, language),
       text: TAPi18n.__('email.ConfirmVoteText', {
         personName,
         community,

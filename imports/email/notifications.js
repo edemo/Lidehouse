@@ -13,7 +13,7 @@ function sendNotifications(user) {
     if (topics.length > 0) {
       emailSender.sendHTML({
         to: user.getPrimaryEmail(),
-        subject: TAPi18n.__('email.NotificationTitle', { name: community.name }, user.settings.language),
+        subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
         template: 'Notification_Email',
         data: {
           userId: user._id,
@@ -49,7 +49,7 @@ export function sendVoteexpiresNoti() {
       if (votes.length > 0) {
         emailSender.sendHTML({
           to: user.getPrimaryEmail(),
-          subject: TAPi18n.__('email.NotificationTitle', { name: community.name }, user.settings.language),
+          subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
           template: 'Voteexpires_Email',
           data: {
             userId: user._id,
