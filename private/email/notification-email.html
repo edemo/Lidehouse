@@ -1,6 +1,6 @@
 <div>
   {{#each topic in topics}}
-  {{#unless topic.isHiddenBy this.userId}}
+  {{#unless topic.hiddenBy this.userId this.communityId}}
     <table class="table table-hover">
         <tbody>    
             <tr class='topic-row'>
@@ -58,7 +58,7 @@
     <table class="table table-hover">
         <tbody>
             {{#each comment in comments}}
-            {{#unless comment.isHiddenBy this.userId}}
+            {{#unless comment.hiddenBy this.userId this.communityId}}
             <tr class="social-comment">   
                 <td class='puffer'>
                 </td>

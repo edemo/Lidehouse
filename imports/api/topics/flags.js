@@ -16,23 +16,25 @@ export const flagsSchema = new SimpleSchema({
 });
 
 export const flagsHelpers = {
+  getFlags() {
+    return this.flags || [];
+  },
   isFlaggedBy(userId) {
-    return _.contains(this.flags, userId);
+    return _.contains(this.getFlags(), userId);
   },
   flagsCount() {
-    return this.flags.length;
+    return this.getFlags().length;
   },
-  flaggedStatus(communityId) {
+  flaggedBy(userId, communityId) {
     if (this.flagsCount() >= 3
       /* && this.flagsCount() >= this.likesCount() */) {
       return 'community';
     }
     let result;
-    this.flags.forEach((flag) => {
-      const userId = flag;
-      if (userId === Meteor.userId()) result = 'you';
-      const user = Meteor.users.findOne(userId);
-      if (user.hasPermission('topic.hide.forOthers', communityId)) result = 'moderator';
+    this.getFlags().forEach((flaggerId) => {
+      if (flaggerId === userId) result = 'you';
+      const flagger = Meteor.users.findOne(flaggerId);
+      if (flagger.hasPermission('topic.hide.forOthers', communityId)) result = 'moderator';
     });
     return result;
   },

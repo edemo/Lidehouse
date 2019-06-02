@@ -59,8 +59,9 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
-  isHiddenBy(userId) {
-    return this.isFlaggedBy(userId) || this.createdBy().isFlaggedBy(userId);
+  hiddenBy(userId, communityId) {
+    const author = this.createdBy();
+    return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
   },
   isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);

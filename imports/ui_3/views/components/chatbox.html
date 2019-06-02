@@ -40,10 +40,11 @@
                 </small>
             </div>
         </div>
-        {{#if hiddenBy}}
-          <p class="hidden-by-text">{{_ 'Content hidden by' (_ hiddenBy)}} - <i><a href="#content-{{this._id}}" data-toggle="collapse">{{_ "Do show content"}}</a></i></p>
+        {{#let hider=(this.hiddenBy currentUser._id (fromSession 'activeCommunityId')) }}
+        {{#if hider}}
+          <p class="hidden-by-text">{{_ 'Content hidden by' (_ hider)}} - <i><a href="#content-{{this._id}}" data-toggle="collapse">{{_ "Do show content"}}</a></i></p>
         {{/if}}
-        <div class="{{#if hiddenBy}}collapse{{/if}}" id="content-{{this._id}}">
+        <div class="{{#if hider}}collapse{{/if}}" id="content-{{this._id}}">
           <div class="social-body">
               <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
               {{#markdown}}{{text}}{{/markdown}}
@@ -63,5 +64,6 @@
           </div>
           {{> Comments_section this}}
         </div>
+        {{/let}}
     </div>
 </template>

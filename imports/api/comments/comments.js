@@ -77,9 +77,9 @@ Comments.helpers({
   editableBy(userId) {
     return this.userId === userId;
   },
-  isHiddenBy(userId) {
+  hiddenBy(userId, communityId) {
     const author = this.createdBy();
-    return this.isFlaggedBy(userId) || (author && author.isFlaggedBy(userId));
+    return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
   },
 });
 
