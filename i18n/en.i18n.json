@@ -93,7 +93,7 @@
   // topics
   "Block content from": "Hide comments from %s",
   "Unblock content from": "Reveal comments from %s",
-  "Content hidden by": "Content hidden by %s",
+  "Content hidden by": "Content hidden by __hider__",
   "View previous comments": "View %s previous comments",
   
   "insert forumtopic successful": "insert forum topic successful",
