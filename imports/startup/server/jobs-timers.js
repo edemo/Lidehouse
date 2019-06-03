@@ -4,7 +4,7 @@ import { later } from 'meteor/mrt:later';
 import { closeClosableVotings } from '/imports/api/topics/votings/methods.js';
 import { cleanExpiredEmails } from '/imports/startup/server/accounts-verification.js';
 import { cleanCanceledVoteAttachments } from '/imports/api/shareddocs/methods.js';
-import { processNotifications } from '/imports/email/notifications.js';
+import { processNotifications, sendVoteexpiresNoti } from '/imports/email/notifications.js';
 
 const bindEnv = func => Meteor.bindEnvironment(func, (err) => { throw err; });
 
@@ -15,6 +15,7 @@ Meteor.startup(() => {
   later.setInterval(bindEnv(closeClosableVotings), dailySchedule);
 //  later.setInterval(bindEnv(cleanExpiredEmails), dailySchedule);
   later.setInterval(bindEnv(cleanCanceledVoteAttachments), dailySchedule);
+  later.setInterval(bindEnv(sendVoteexpiresNoti), dailySchedule);
 
   later.setInterval(bindEnv(() => processNotifications('frequent')), later.parse.recur().on(8, 12, 16, 20).hour());
   later.setInterval(bindEnv(() => processNotifications('daily')), later.parse.recur().on(18).hour());

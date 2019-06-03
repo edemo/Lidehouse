@@ -19,5 +19,9 @@ export const Notification_Layout = {
     adminEmail() {
       return Communities.findOne(this.communityId).admin().profile.publicEmail;
     },
+    alertColor() {
+      if (this.alertColor) return this.alertColor;
+      return 'alert-good';
+    },
   },
 };

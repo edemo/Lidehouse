@@ -7,6 +7,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from '../topics.js';
 import './votings.js';
+import { voteCastConfirmationEmail } from '/imports/email/voting-confirmation.js';
 
 export const castVote = new ValidatedMethod({
   name: 'vote.cast',
@@ -53,12 +54,13 @@ export const castVote = new ValidatedMethod({
     if (Meteor.isServer) {
       const updatedTopic = Topics.findOne(topicId);
       updatedTopic.voteEvaluate(false); // writes only voteParticipation, no results
+      if (res === 1) voteCastConfirmationEmail(_voters, topicId, this.userId);
     }
   },
 });
 
 function closeVoteFulfill(topicId) {
-  const res = Topics.update(topicId, { $set: { closed: true } });
+  const res = Topics.update(topicId, { $set: { closed: true, 'vote.closesAt': new Date() } });
   debugAssert(res === 1);
   const topic = Topics.findOne(topicId);
   if (Meteor.isServer) {

@@ -29,10 +29,6 @@ export const Notification_Email = {
       }
       return FlowRouterHelpers.urlFor('Topic show', { _tid: topic._id });
     },
-    topics() {
-      const topics = Topics.topicsNeedingAttention(this.userId, this.communityId, Meteor.users.SEEN_BY.NOTI);
-      return topics.sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
-    },
     isUnseen(topic) {
       return topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY.NOTI);
     },
@@ -42,6 +38,15 @@ export const Notification_Email = {
     unseenCommentList(topic) {
       const comments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY.NOTI);
       return comments;
+    },
+    voteHasBeenClosed(topic) {
+      const userLastSeens = Meteor.users.findOne(this.userId).lastSeens[Meteor.users.SEEN_BY.EYES][topic._id];
+      if (topic.closed === true && topic.category === 'vote' && userLastSeens
+        && (topic.vote.closesAt > userLastSeens.timestamp)) return true;
+      return false;
+    },
+    hider(comment) {
+      return comment.hiddenBy(this.userId, this.communityId);
     },
     categoryImgUrlFor(category) {
       const file = {
@@ -55,6 +60,10 @@ export const Notification_Email = {
       // return 'https://honline.hu/images/email/' + file[category]; // use this for testing, because localhost may not be accessible by mail clients
       return FlowRouterHelpers.urlFor('/images/email/' + file[category]);
     },
+    oldTopic(topic) {
+      if (topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY.NOTI)) return '';
+      return 'oldTopic';
+    },
   },
 
   route: {
@@ -62,6 +71,8 @@ export const Notification_Email = {
     data: params => ({
       userId: params.uid,
       communityId: params.cid,
+      topics: Topics.topicsNeedingAttention(params.uid, params.cid, Meteor.users.SEEN_BY.NOTI)
+        .sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category)),
     }),
   },
 };

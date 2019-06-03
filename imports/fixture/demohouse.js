@@ -258,39 +258,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     heatingType: 'ownHeating',
   });
 
-  // ==== Loginable users with Roles =====
-
-  const demoManagerId = fixtureBuilder.createLoginableUser('manager', {
-    avatar: '/images/avatars/avatar20.jpg',
-    'profile.phone': '06 60 555 4321',
-  });
-
-  const demoAdminId = fixtureBuilder.createLoginableUser('admin', {
-    avatar: '/images/avatars/avatar21.jpg',
-    'profile.phone': '06 60 762 7288',
-  });
-
-  if (demoOrTest === 'test') {
-    defaultRoles.forEach((role) => {
-      if (role.name === 'manager' || role.name === 'admin') return;
-
-      const parcelId = Parcels.findOne({ communityId: demoCommunityId, serial: 7 })._id;
-      let ownershipData;
-      if (role.name === 'owner') {
-        Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
-        ownershipData = { parcelId, ownership: { share: new Fraction(1, 2), representor: true } };
-      } else if (role.name === 'benefactor') {
-        ownershipData = { parcelId, benefactorship: { type: 'rental' } };
-      }
-
-      const firstNames = __('demo.user.firstNames').split('\n');
-      fixtureBuilder.createLoginableUser(role.name, {
-        avatar: '/images/avatars/avatarTestUser.png',
-        profile: { lastName: __(role.name).capitalize(), firstName: _.sample(firstNames) },
-      }, ownershipData);
-    });
-  }
-
   // ===== Non-loginable Dummy Users =====
 
   for (let userNo = 0; userNo < 18; userNo++) {
@@ -391,6 +358,39 @@ export function insertDemoHouse(lang, demoOrTest) {
     parcelId: demoParcels[9],
     benefactorship: { type: 'rental' },
   });
+
+  // ==== Loginable users with Roles =====
+
+  const demoManagerId = fixtureBuilder.createLoginableUser('manager', {
+    avatar: '/images/avatars/avatar20.jpg',
+    'profile.phone': '06 60 555 4321',
+  });
+
+  const demoAdminId = fixtureBuilder.createLoginableUser('admin', {
+    avatar: '/images/avatars/avatar21.jpg',
+    'profile.phone': '06 60 762 7288',
+  });
+
+  if (demoOrTest === 'test') {
+    defaultRoles.forEach((role) => {
+      if (role.name === 'manager' || role.name === 'admin') return;
+
+      const parcelId = Parcels.findOne({ communityId: demoCommunityId, serial: 7 })._id;
+      let ownershipData;
+      if (role.name === 'owner') {
+        Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
+        ownershipData = { parcelId, ownership: { share: new Fraction(1, 2), representor: true } };
+      } else if (role.name === 'benefactor') {
+        ownershipData = { parcelId, benefactorship: { type: 'rental' } };
+      }
+
+      const firstNames = __('demo.user.firstNames').split('\n');
+      fixtureBuilder.createLoginableUser(role.name, {
+        avatar: '/images/avatars/avatarTestUser.png',
+        profile: { lastName: __(role.name).capitalize(), firstName: _.sample(firstNames) },
+      }, ownershipData);
+    });
+  }
 
   // ===== Forum =====
 
@@ -1168,7 +1168,7 @@ Meteor.methods({
     Localizer.addParcel(demoCommunityId, demoParcel, lang);
 
     const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;
-    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex: '.1@demo.hu' } })._id;
+    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex:  `${lang}.dummyuser@honline.hu` } })._id;
 
     const demoUserMessageRoom = Topics.insert({
       communityId: demoCommunityId,

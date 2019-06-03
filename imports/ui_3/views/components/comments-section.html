@@ -24,7 +24,6 @@
 </template>
 
 <template name="Comment">
-    {{#unless this.isHiddenBy currentUser._id }}
     <div class="social-comment">         
         <a href="{{pathFor 'User show' _id=this.user._id}}" class="pull-left">
             <img alt="avatar" class="message-avatar" src={{this.user.avatar}}>
@@ -40,26 +39,29 @@
                     <span class="js-save btn btn-xs btn-primary m-t-xs">{{_ 'save'}}</span>
                 </div>
             {{else}}
-                <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
-                <br/>
-                <a href="" class="small cap-first js-like">
-                    <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
-                    {{_ 'important'}}! ({{likesCount}})
-                </a> -
-                <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
-                <div class="btn-group">
-                    {{#if userHasPermission 'comments.update' (fromSession 'activeCommunityId') this}}
-                    <button class="btn btn-white btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
-                    {{/if}}
-                    {{#if userHasPermission 'comments.remove' (fromSession 'activeCommunityId') this}}
-                    <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
-                    {{/if}}
-                    {{#unless (equals currentUser._id this.userId)}}
-                    <button class="btn btn-white btn-xs js-flag" title="{{_ 'Block content'}}"><i class="fa fa-ban"></i></button>
-                    {{/unless}}
-                </div>
+                {{#hideable}}
+                    <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
+                    <br/>
+                    <a href="" class="small cap-first js-like">
+                        <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                        {{_ 'important'}}! ({{likesCount}})
+                    </a> -
+                    <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+                    <div class="btn-group">
+                        {{#if userHasPermission 'comments.update' (fromSession 'activeCommunityId') this}}
+                        <button class="btn btn-white btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
+                        {{/if}}
+                        {{#if userHasPermission 'comments.remove' (fromSession 'activeCommunityId') this}}
+                        <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
+                        {{/if}}
+                        {{#if this.isFlaggedBy currentUser._id}}
+                        <button class="btn btn-white btn-xs js-flag" title="{{_ 'Unblock content'}}"><i class="fa fa-check"></i></button>
+                        {{else}}
+                        <button class="btn btn-white btn-xs js-flag" title="{{_ 'Block content'}}"><i class="fa fa-ban"></i></button>
+                        {{/if}}
+                    </div>
+                {{/hideable}}
             {{/if}}
         </div>
     </div>
-    {{/unless}}
 </template>

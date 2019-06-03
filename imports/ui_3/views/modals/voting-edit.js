@@ -44,10 +44,8 @@ Template.Voting_edit.onCreated(function () {
   votingEditInstance = instance;
   this.autorun(() => {
     const currentVoteType = AutoForm.getFieldValue('vote.type', `af.vote.${Template.Voting_edit.actionFromId()}`);
-    const newChoices = Topics.voteTypeChoices[currentVoteType] || [];
-    if (newChoices.length) {
-      instance.choices.set(newChoices);
-    }
+    const newChoices = currentVoteType && Topics.voteTypes[currentVoteType].fixedChoices;
+    if (newChoices) instance.choices.set(newChoices);
   });
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
@@ -87,10 +85,6 @@ Template.Voting_edit.helpers({
     const communityId = Session.get('activeCommunityId');
     const agendas = Agendas.find({ communityId });
     return agendas.map(function option(a) { return { label: a.title, value: a._id }; });
-  },
-  needsChoicesSpecified() {
-    const currentVoteType = AutoForm.getFieldValue('vote.type');
-    return !!(Topics.voteTypeChoices[currentVoteType]);
   },
   choices() {
     const instance = Template.instance();
