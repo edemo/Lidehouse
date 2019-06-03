@@ -5,15 +5,15 @@ import { Template } from 'meteor/templating';
 import './hideable.html';
 
 Template.hideable.viewmodel({
-  hider: null,
-  onCreated(instance) {
+  doShow: false,
+  hider() {
     const userId = Meteor.userId();
     const communityId = Session.get('activeCommunityId');
-    this.hider(instance.data.hiddenBy(userId, communityId));
+    return this.templateInstance.data.hiddenBy(userId, communityId);
   },
   events: {
     'click .js-show'(event, instance) {
-      this.hider(null);
+      this.doShow(true);
     },
   },
 });
