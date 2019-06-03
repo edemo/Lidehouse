@@ -39,13 +39,7 @@
                     <span class="js-save btn btn-xs btn-primary m-t-xs">{{_ 'save'}}</span>
                 </div>
             {{else}}
-                {{#let hider=(this.hiddenBy currentUser._id (fromSession 'activeCommunityId')) }}
-                {{#if hider}}
-                <div class="hidden-by-text">{{_ 'Content hidden by' (_ hider)}} - 
-                  <i><a href="#content-{{this._id}}" data-toggle="collapse">{{_ "Do show content"}}</a></i>
-                </div>
-                {{/if}}
-                <span class="{{#if hider}}collapse{{/if}}" id="content-{{this._id}}">
+                {{#hideable}}
                     <span class="newlines" data-id="{{_id}}">{{>Chopped text=text}}</span>
                     <br/>
                     <a href="" class="small cap-first js-like">
@@ -64,8 +58,7 @@
                         <button class="btn btn-white btn-xs js-flag" title="{{_ 'Block content'}}"><i class="fa fa-ban"></i></button>
                         {{/unless}}
                     </div>
-                </span>
-                {{/let}}
+                {{/hideable}}
             {{/if}}
         </div>
     </div>

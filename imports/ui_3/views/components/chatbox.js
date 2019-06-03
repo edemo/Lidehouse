@@ -15,6 +15,7 @@ import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import '/imports/ui_3/views/components/comments-section.js';
 import './chatbox.html';

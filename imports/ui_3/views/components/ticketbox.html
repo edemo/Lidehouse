@@ -43,30 +43,25 @@
                  </small>
              </div>
          </div>
-         {{#let hider=(this.hiddenBy currentUser._id (fromSession 'activeCommunityId')) }}
-         {{#if hider}}
-           <p class="hidden-by-text">{{_ 'Content hidden by' (_ hider)}} - <i><a href="#content-{{this._id}}" data-toggle="collapse">{{_ "Do show content"}}</a></i></p>
-         {{/if}}
-         <div class="{{#if hider}}collapse{{/if}}" id="content-{{this._id}}">
-           <div class="social-body">
-               <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
-               <p data-id="{{_id}}">{{>Chopped text=text}}</p>
-               {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
-               <div class="btn-group">
-                   <button class="btn btn-white btn-xs js-like">
-                       <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
-                       {{_ 'important'}}!
-                       ({{likesCount}})
-                   </button>
-                   <button class="btn btn-white btn-xs">
-                       <i class="fa fa-comments"></i>
-                       {{_ 'Comment'}}
-                       ({{commentCounter}})
-                   </button>
-               </div>
-            </div>
-         </div>
-         {{/let}}
+         {{#hideable}}
+          <div class="social-body">
+              <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
+              <p data-id="{{_id}}">{{>Chopped text=text}}</p>
+              {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
+              <div class="btn-group">
+                  <button class="btn btn-white btn-xs js-like">
+                      <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                      {{_ 'important'}}!
+                      ({{likesCount}})
+                  </button>
+                  <button class="btn btn-white btn-xs">
+                      <i class="fa fa-comments"></i>
+                      {{_ 'Comment'}}
+                      ({{commentCounter}})
+                  </button>
+              </div>
+          </div>
+         {{/hideable}}
      </div>
  </template>
  

@@ -13,6 +13,7 @@ import { like } from '/imports/api/topics/likes.js';
 import { flag } from '/imports/api/topics/flags.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import './comments-section.html';
 
