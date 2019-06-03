@@ -9,7 +9,8 @@ import { emailSender } from '/imports/startup/server/email-sender.js';
 
 function sendNotifications(user) {
   user.communities().forEach((community) => {
-    const topics = Topics.topicsNeedingAttention(user._id, community._id, Meteor.users.SEEN_BY.NOTI);
+    const topics = Topics.topicsNeedingAttention(user._id, community._id, Meteor.users.SEEN_BY.NOTI)
+      .sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
     if (topics.length > 0) {
       emailSender.sendHTML({
         to: user.getPrimaryEmail(),
@@ -18,6 +19,7 @@ function sendNotifications(user) {
         data: {
           userId: user._id,
           communityId: community._id,
+          topics,
         },
       });
       topics.forEach((topic) => {
@@ -41,14 +43,14 @@ export function sendVoteexpiresNoti() {
   users.forEach((user) => {
     user.communities().forEach((community) => {
       const userVoteIndirect = 'voteCastsIndirect.' + user._id;
-      const votes = Topics.find({
+      const expiringVotings = Topics.find({
         communityId: community._id,
         category: 'vote',
         closed: false,
         'vote.closesAt': { $gte: moment().add(DAYS_BEFORE - 1, 'day').toDate(), $lt: moment().add(DAYS_BEFORE, 'day').toDate() },
         [userVoteIndirect]: { $exists: false },
       }).fetch();
-      if (votes.length > 0) {
+      if (expiringVotings.length > 0) {
         emailSender.sendHTML({
           to: user.getPrimaryEmail(),
           subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
@@ -56,6 +58,7 @@ export function sendVoteexpiresNoti() {
           data: {
             userId: user._id,
             communityId: community._id,
+            topics: expiringVotings,
             alertColor: 'alert-warning',
           },
         });

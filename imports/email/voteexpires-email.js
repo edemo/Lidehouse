@@ -17,24 +17,14 @@ export const Voteexpires_Email = {
     topicUrlFor(vote) {
       return FlowRouterHelpers.urlFor('Topic.show', { _tid: vote._id });
     },
-    votes() {
-      const userVoteIndirect = 'voteCastsIndirect.' + this.userId;
-      const votes = Topics.find({
-        communityId: this.communityId,
-        category: 'vote',
-        closed: false,
-        'vote.closesAt': { $gte: moment().add(4, 'day').toDate(), $lt: moment().add(5, 'day').toDate() },
-        [userVoteIndirect]: { $exists: false },
-      });
-      return votes;
-    },
   },
 
   route: {
-    path: '/voteexpires-email/:uid/:cid',
+    path: '/voteexpires-email/:uid/:cid/:tid',
     data: params => ({
       userId: params.uid,
       communityId: params.cid,
+      topics: Topics.find({ _id: params.tid }).fetch(),
       alertColor: 'alert-warning',
     }),
   },

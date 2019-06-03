@@ -29,10 +29,6 @@ export const Notification_Email = {
       }
       return FlowRouterHelpers.urlFor('Topic.show', { _tid: topic._id });
     },
-    topics() {
-      const topics = Topics.topicsNeedingAttention(this.userId, this.communityId, Meteor.users.SEEN_BY.NOTI);
-      return topics.sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
-    },
     isUnseen(topic) {
       return topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY.NOTI);
     },
@@ -72,6 +68,8 @@ export const Notification_Email = {
     data: params => ({
       userId: params.uid,
       communityId: params.cid,
+      topics: Topics.topicsNeedingAttention(params.uid, params.cid, Meteor.users.SEEN_BY.NOTI)
+        .sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category)),
     }),
   },
 };
