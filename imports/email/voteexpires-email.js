@@ -15,7 +15,7 @@ export const Voteexpires_Email = {
       return text.substr(0, chars) + `... [${TAPi18n.__('see full text with View button', {}, Meteor.users.findOne(this.userId).settings.language)}]`;
     },
     topicUrlFor(vote) {
-      return FlowRouterHelpers.urlFor('Topic.show', { _tid: vote._id });
+      return FlowRouterHelpers.urlFor('Topic show', { _tid: vote._id });
     },
   },
 

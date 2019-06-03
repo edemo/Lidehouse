@@ -1,9 +1,9 @@
 <template name="Votebox">
       <div class="row m-b-sm">
       <div class="col-xs-6 title-size">
-        <!--a href="{{pathFor 'Topic.show' _tid=_id}}"-->
+        <a class="text-primary" href="{{pathFor 'Topic show' _tid=_id}}">
           <h2>{{title}}</h2>
-        <!--/a-->
+        </a>
       </div>
       <div class="col-xs-5 small-size text-right">
         {{#if this.closed}}

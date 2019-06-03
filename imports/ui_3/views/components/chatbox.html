@@ -44,7 +44,9 @@
         </div>
         {{#hideable}}
             <div class="social-body">
-                <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
+                <a class="text-primary" href="{{pathFor 'Topic show' _tid=_id}}">
+                    <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
+                </a>
                 {{#markdown}}{{text}}{{/markdown}}
                 {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
                 <div class="btn-group">

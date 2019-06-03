@@ -9,7 +9,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 export function voteCastConfirmationEmail(voters, topicId, registrator) {
   const topic = Topics.findOne(topicId);
   const community = Communities.findOne(topic.communityId).name;
-  const link = FlowRouterHelpers.urlFor('Topic.show', { _tid: topicId });
+  const link = FlowRouterHelpers.urlFor('Topic show', { _tid: topicId });
   voters.forEach((voterId) => {
     const user = Meteor.users.findOne(voterId);
     if (!user) return;
