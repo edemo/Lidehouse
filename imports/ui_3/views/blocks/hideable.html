@@ -1,7 +1,7 @@
 <template name='hideable'>
     {{#let hidden=(and hider (not doShow))}}
     {{#if hidden}}
-        <div class="hidden-by-text">{{_ 'Content hidden by' (_ hider)}} - 
+        <div class="hidden-by-text">{{_ 'Content hidden by' hider=(_ hider)}} - 
             <a class="#content-{{this._id}} js-show" data-toggle="collapse"><i>{{_ "Do show content"}}</i></a>
         </div>
     {{/if}}

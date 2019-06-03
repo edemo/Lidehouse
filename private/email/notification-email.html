@@ -58,24 +58,29 @@
     <table class="table table-hover">
         <tbody>
             {{#each comment in comments}}
-            {{#unless comment.hiddenBy this.userId this.communityId}}
             <tr class="social-comment">   
                 <td class='puffer'>
                 </td>
-                <td class='avatar-container'>      
+                <td class='avatar-container'>
+                {{#unless comment.hiddenBy this.userId this.communityId}}      
                     <a href="{{userUrlFor comment.user}}" class="pull-left">
                         <img alt="avatar" class="message-avatar" src='{{urlFor comment.user.avatar}}'>
                     </a>
+                {{/unless}}
                 </td>
                 <td class="media-body">
+                {{#unless comment.hiddenBy this.userId this.communityId}}  
                     <a href="{{userUrlFor  comment.user}}">{{comment.user.displayOfficialName this.communityId user.settings.language}}</a>
                     <span>{{curb comment.text 500 }}</span>
+                {{/unless}}
+                {{#if comment.hiddenBy this.userId this.communityId}}
+                    <span>{{_ 'Content hidden by' hider=(_ (hider comment))}}</span>
+                {{/if}}
                     <br/>
                     <small class="text-muted" >{{displayTime comment.createdAt}}</small>
-                </td>
+                </td> 
             </tr>
-            {{/unless}}
-            {{/each}}
+           {{/each}}
         </tbody>
     </table>
     {{/if}}

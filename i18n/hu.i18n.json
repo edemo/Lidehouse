@@ -221,7 +221,7 @@
   "Report this": "Hozzászólás jelentése",
   "Block content from": "%s teljes lenémítása",
   "Unblock content from": "%s újra engedélyezése",
-  "Content hidden by": "A tartalmat nem mutatjuk a(z) %s kérésére",
+  "Content hidden by": "A tartalmat nem mutatjuk a(z) __hider__ kérésére",
   "you": "ön",
   "Do show content": "Én azért megnézem",
   "private chat": "privát üzenet",
