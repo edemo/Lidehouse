@@ -21,7 +21,7 @@
                     {{#if (isUnseen topic)}}
                       <p>{{curb topic.text 1000}}</p>
                     {{/if}}
-                    {{#if (voteHasBeenClosed topic)}}
+                    <!--{{#if (voteHasBeenClosed topic)}}
                         <br><h4 class="text-center">{{_ 'The voting has been closed'}}.</h4>
                         {{#if equals topic.vote.effect 'legal'}}
                             {{#if topic.isVoteSuccessful}}
@@ -41,7 +41,7 @@
                         {{#each sum in topic.voteSummaryDisplay}}
                         <p>{{_ sum.choice}}: {{sum.votingUnits}} ({{displayPercent sum.percentOfVotes}})</p>
                         {{/each}}
-                    {{/if}}
+                    {{/if}}-->
                     {{/unless}} 
                     {{#if topic.hiddenBy this.userId this.communityId}}
                         <span>{{_ 'Content hidden by' hider=(_ (hider topic))}}</span>
