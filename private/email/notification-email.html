@@ -1,12 +1,12 @@
 <div>
   {{#each topic in topics}}
-  {{#unless topic.hiddenBy this.userId this.communityId}}
+  
     <table class="table table-hover">
         <tbody>    
             <tr class='topic-row'>
                 <td class='topic-icon-container'>
                     <a href=""><img alt="image" class="img-icon" src="{{categoryImgUrlFor topic.category}}"></a>
-                </td>
+                </td>        
                 {{#if equals topic.category 'room'}}
                 <td class="project-title">
                     <h3 class = "topicTitle">{{_ topic.title}}</h3>
@@ -16,6 +16,7 @@
                 </td>
                 {{else}}
                 <td class="project-title {{oldTopic topic}}">
+                    {{#unless topic.hiddenBy this.userId this.communityId}}
                     <h3 class = "topicTitle">{{topic.title}}</h3>
                     {{#if (isUnseen topic)}}
                       <p>{{curb topic.text 1000}}</p>
@@ -41,6 +42,10 @@
                         <p>{{_ sum.choice}}: {{sum.votingUnits}} ({{displayPercent sum.percentOfVotes}})</p>
                         {{/each}}
                     {{/if}}
+                    {{/unless}} 
+                    {{#if topic.hiddenBy this.userId this.communityId}}
+                        <span>{{_ 'Content hidden by' hider=(_ (hider topic))}}</span>
+                    {{/if}}
                     <div class='btn-container'>
                         <a href="{{topicUrlFor topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
                     </div>
@@ -48,7 +53,7 @@
                 <td class>
                     <!--small>{{displayDate vote.closesAt}}</small-->
                 </td>
-                {{/if}}                     
+                {{/if}} 
             </tr>
         </tbody>
     </table>
@@ -85,6 +90,5 @@
     </table>
     {{/if}}
     {{/let}}
-  {{/unless}}
   {{/each}}
 </div>

@@ -49,8 +49,8 @@ export const Notification_Email = {
         && (topic.vote.closesAt > userLastSeens.timestamp)) return true;
       return false;
     },
-    hider(comment) {
-      return comment.hiddenBy(this.userId, this.communityId);
+    hider(doc) {
+      return doc.hiddenBy(this.userId, this.communityId);
     },
     categoryImgUrlFor(category) {
       const file = {
