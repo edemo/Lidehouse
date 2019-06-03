@@ -19,6 +19,9 @@
   "edit": "Edit",
   "close topic": "Close",
 
+  // topics
+  "Do show content": "I want to see it now",
+  
   // voting
   "Proxy voting" : "Voting in the name of others",
   "Please select voters": "Please select the people you would like to vote in the name of",
