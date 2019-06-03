@@ -54,9 +54,11 @@
                         {{#if userHasPermission 'comments.remove' (fromSession 'activeCommunityId') this}}
                         <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
                         {{/if}}
-                        {{#unless (equals currentUser._id this.userId)}}
+                        {{#if this.isFlaggedBy currentUser._id}}
+                        <button class="btn btn-white btn-xs js-flag" title="{{_ 'Unblock content'}}"><i class="fa fa-check"></i></button>
+                        {{else}}
                         <button class="btn btn-white btn-xs js-flag" title="{{_ 'Block content'}}"><i class="fa fa-ban"></i></button>
-                        {{/unless}}
+                        {{/if}}
                     </div>
                 {{/hideable}}
             {{/if}}
