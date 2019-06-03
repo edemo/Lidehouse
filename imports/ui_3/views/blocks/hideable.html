@@ -1,12 +1,11 @@
 <template name='hideable'>
-    {{#let hider=(this.hiddenBy currentUser._id (fromSession 'activeCommunityId')) }}
     {{#if hider}}
         <div class="hidden-by-text">{{_ 'Content hidden by' (_ hider)}} - 
-            <i><a href="#content-{{this._id}}" data-toggle="collapse">{{_ "Do show content"}}</a></i>
+            <a><i class="js-show">{{_ "Do show content"}}</i></a>
         </div>
-    {{/if}}
-        <span class="{{#if hider}}collapse{{/if}}" id="content-{{this._id}}">
+    {{else}}
+        <span>
             {{> Template.contentBlock}}
         </span>
-    {{/let}}
+    {{/if}}
 </template>
