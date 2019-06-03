@@ -24,13 +24,6 @@ Template.Chatbox.onRendered(function chatboxOnRendered() {
 });
 
 Template.Chatbox.helpers({
-  comments() {
-    return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
-  },
-  join(memberships) {
-    // return memberships.map(m => m.toString()).join(', ');
-    return _.uniq(memberships.map(m => __(m.role))).join(', ');
-  },
 });
 
 Template.Chatbox.events({

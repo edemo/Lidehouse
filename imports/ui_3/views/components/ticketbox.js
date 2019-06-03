@@ -17,9 +17,6 @@ Template.Ticketbox.onRendered(function ticketboxOnRendered() {
 });
 
 Template.Ticketbox.helpers({
-  join(memberships) {
-    return _.uniq(memberships.map(m => __(m.role))).join(', ');
-  },
 });
 
 Template.Ticketbox.events({
