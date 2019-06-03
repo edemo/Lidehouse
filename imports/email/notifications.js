@@ -34,6 +34,8 @@ export function processNotifications(frequency) {
   usersToBeNotified.forEach(user => sendNotifications(user));
 }
 
+const DAYS_BEFORE = 3;
+
 export function sendVoteexpiresNoti() {
   const users = Meteor.users.find({ 'settings.notiFrequency': { $ne: 'never' } });
   users.forEach((user) => {
@@ -43,7 +45,7 @@ export function sendVoteexpiresNoti() {
         communityId: community._id,
         category: 'vote',
         closed: false,
-        'vote.closesAt': { $gte: moment().add(4, 'day').toDate(), $lt: moment().add(5, 'day').toDate() },
+        'vote.closesAt': { $gte: moment().add(DAYS_BEFORE - 1, 'day').toDate(), $lt: moment().add(DAYS_BEFORE, 'day').toDate() },
         [userVoteIndirect]: { $exists: false },
       }).fetch();
       if (votes.length > 0) {
