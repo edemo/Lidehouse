@@ -102,7 +102,8 @@ Topics.helpers({
           && !this.closed && !this.hasVotedIndirect(userId)) return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
           && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0
-          || (this.closed === true && this.vote.closesAt > Meteor.users.findOne(userId).lastSeens[seenType][this._id].timestamp))) return 1;
+          //|| (this.closed === true && this.vote.closesAt > Meteor.users.findOne(userId).lastSeens[seenType][this._id].timestamp)
+          )) return 1;
         break;
       case 'ticket':
         if (seenType === Meteor.users.SEEN_BY.EYES
