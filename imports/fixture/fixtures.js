@@ -137,7 +137,7 @@ export function insertDemoFixture(lang) {
   // ===== Dummy Users =====
 
   const dummyUsers = [];
-  for (let userNo = 0; userNo <= 4; userNo++) {
+  for (let userNo = 0; userNo <= 5; userNo++) {
     dummyUsers[userNo] = fixtureBuilder.createDummyUser();
   }
 
@@ -235,7 +235,7 @@ export function insertDemoFixture(lang) {
   });
   Memberships.insert({
     communityId: demoCommunityId,
-    person: { userId: demoUserId },
+    person: { userId: dummyUsers[5] },
     role: 'owner',
     parcelId: dummyParcels[4],
     ownership: {
