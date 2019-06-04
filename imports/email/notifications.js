@@ -6,6 +6,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { Topics } from '/imports/api/topics/topics.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import { emailSender } from '/imports/startup/server/email-sender.js';
+import { Communities } from '../api/communities/communities';
 
 function sendNotifications(user) {
   user.communities().forEach((community) => {
@@ -36,29 +37,31 @@ export function processNotifications(frequency) {
   usersToBeNotified.forEach(user => sendNotifications(user));
 }
 
-const DAYS_BEFORE = 3;
+export const EXPIRY_NOTI_DAYS = 3;
 
 export function sendVoteexpiresNoti() {
-  const users = Meteor.users.find({ 'settings.notiFrequency': { $ne: 'never' } });
-  users.forEach((user) => {
-    user.communities().forEach((community) => {
-      const userVoteIndirect = 'voteCastsIndirect.' + user._id;
-      const expiringVotings = Topics.find({
-        communityId: community._id,
-        category: 'vote',
-        closed: false,
-        'vote.closesAt': { $gte: moment().add(DAYS_BEFORE - 1, 'day').toDate(), $lt: moment().add(DAYS_BEFORE, 'day').toDate() },
-        [userVoteIndirect]: { $exists: false },
-      }).fetch();
-      if (expiringVotings.length > 0) {
+  Communities.forEach((community) => {
+    const expiringVotings = Topics.find({
+      communityId: community._id,
+      category: 'vote',
+      closed: false,
+      'vote.closesAt': { $gte: moment().add(EXPIRY_NOTI_DAYS - 1, 'day').toDate(), $lt: moment().add(EXPIRY_NOTI_DAYS, 'day').toDate() },
+    }).fetch();
+    if (expiringVotings.length === 0) return;
+    community.voters().filter(v => v.settings.notiFrequency !== 'never').forEach((voter) => {
+      const notVotedYetVotings = expiringVotings.filter((voting) => {
+        const userVoteIndirect = 'voteCastsIndirect.' + voter._id;
+        return voting[userVoteIndirect];
+      });
+      if (notVotedYetVotings.length > 0) {
         emailSender.sendHTML({
-          to: user.getPrimaryEmail(),
-          subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
+          to: voter.getPrimaryEmail(),
+          subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, voter.settings.language),
           template: 'Voteexpires_Email',
           data: {
-            userId: user._id,
+            userId: voter._id,
             communityId: community._id,
-            topics: expiringVotings,
+            topics: notVotedYetVotings,
             alertColor: 'alert-warning',
           },
         });

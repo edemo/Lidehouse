@@ -120,6 +120,14 @@ Memberships.helpers({
   isRepresentor() {
     return (this.ownership && this.ownership.representor);
   },
+  isRepresentedBySomeoneElse() {
+    if (!this.ownership) return false;
+    debugAssert(this.parcelId);
+    const parcel = Parcels.findOne(this.parcelId);
+    const representor = parcel.representor();
+    if (!representor || representor._id === this._id) return false;
+    return true;
+  },
   votingUnits() {
     if (!this.parcel()) return 0;
     if (!this.parcel().approved) return 0;

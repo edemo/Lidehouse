@@ -8,6 +8,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { getCurrentUserLang } from '/imports/api/users/users.js';
 import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
@@ -153,15 +154,8 @@ Topics.helpers({
     const directVotes = this.voteCasts || {};
     const self = this;
     const voteType = this.vote.type;
-    const representedBySomeoneElse = (ownership) => {
-      const parcel = Parcels.findOne(ownership.parcelId);
-      const representor = parcel.representor();
-      if (!representor || representor._id === ownership._id) return false;
-      return true;
-    };
-    const voterships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner', personId: { $exists: true } })
-      .fetch().filter(ownership => !representedBySomeoneElse(ownership));
-    voterships.forEach((ownership) => {
+    const community = Communities.findOne(this.communityId);
+    community.voterships().forEach((ownership) => {
       const ownerId = ownership.personId;
       debugAssert(ownerId);
       const votePath = [ownerId];

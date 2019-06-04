@@ -81,6 +81,14 @@ Communities.helpers({
     const users = Memberships.find({ communityId: this._id, active: true, 'person.userId': { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);
   },
+  voterships() {
+    return Memberships.find({ communityId: this._id, active: true, approved: true, role: 'owner', personId: { $exists: true } })
+      .fetch().filter(ownership => !ownership.isRepresentedBySomeoneElse());
+  },
+  voters() {
+    const voters = this.voterships().map(v => v.user());
+    return _.uniq(voters, false, u => u._id);
+  },
   // --- writers ---
   remove() {
     const communityId = this._id;
