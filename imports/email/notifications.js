@@ -40,18 +40,17 @@ export function processNotifications(frequency) {
 export const EXPIRY_NOTI_DAYS = 3;
 
 export function sendVoteexpiresNoti() {
-  Communities.forEach((community) => {
+  Communities.find().forEach((community) => {
     const expiringVotings = Topics.find({
       communityId: community._id,
       category: 'vote',
       closed: false,
-      'vote.closesAt': { $gte: moment().add(EXPIRY_NOTI_DAYS - 1, 'day').toDate(), $lt: moment().add(EXPIRY_NOTI_DAYS, 'day').toDate() },
+      'vote.closesAt': { $gte: moment().add((EXPIRY_NOTI_DAYS - 1), 'day').toDate(), $lt: moment().add(EXPIRY_NOTI_DAYS, 'day').toDate() },
     }).fetch();
     if (expiringVotings.length === 0) return;
     community.voters().filter(v => v.settings.notiFrequency !== 'never').forEach((voter) => {
       const notVotedYetVotings = expiringVotings.filter((voting) => {
-        const userVoteIndirect = 'voteCastsIndirect.' + voter._id;
-        return voting[userVoteIndirect];
+        return !voting.voteCastsIndirect[voter._id];
       });
       if (notVotedYetVotings.length > 0) {
         emailSender.sendHTML({
