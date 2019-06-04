@@ -89,6 +89,10 @@ Memberships.helpers({
     debugAssert(this.person);
     return new Person(this.person);
   },
+  user() {
+    debugAssert(this.person.userId);
+    return Meteor.users.findOne(this.person.userId);
+  },
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);
