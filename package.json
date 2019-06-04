@@ -84,7 +84,13 @@
       ],
       "no-return-assign": "warn",
       "no-useless-concat": "warn",
-      "no-unused-vars": "warn"
+      "no-unused-vars": "warn",
+      "no-plusplus": [
+        "error",
+        { 
+          "allowForLoopAfterthoughts": true
+        }
+      ]
     },
     "settings": {
       "import/resolver": "meteor"

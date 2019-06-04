@@ -137,33 +137,9 @@ export function insertDemoFixture(lang) {
   // ===== Dummy Users =====
 
   const dummyUsers = [];
-  dummyUsers[0] = Meteor.users.insert({
-    emails: [{ address: `user.0@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.0.lastName'), firstName: __('demo.user.0.firstName'), phone: '06 30 234 5678' },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-2.png',
-    status: 'online',
-  });
-  dummyUsers[1] = Meteor.users.insert({
-    emails: [{ address: `user.1@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.1.lastName'), firstName: __('demo.user.1.firstName'), phone: '+36 70 1234 567' },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-7.png',
-  });
-  dummyUsers[2] = Meteor.users.insert({
-    emails: [{ address: `user.2@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.2.lastName'), firstName: __('demo.user.2.firstName') },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-6.png',
-    status: 'standby',
-  });
-  dummyUsers[3] = Meteor.users.insert({
-    emails: [{ address: `user.3@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.3.lastName'), firstName: __('demo.user.3.firstName') },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-5.png',
-  });
-  dummyUsers[4] = Meteor.users.insert({
-    emails: [{ address: `user.4@demo.${com}`, verified: true }],
-    profile: { lastName: __('demo.user.4.lastName'), firstName: __('demo.user.4.firstName') },
-    avatar: 'http://pannako.hu/wp-content/uploads/avatar-3.png',
-  });
+  for (let userNo = 0; userNo <= 4; userNo++) {
+    dummyUsers[userNo] = fixtureBuilder.createDummyUser();
+  }
 
   // ===== Memberships =====
 
