@@ -49,12 +49,12 @@ export const castVote = new ValidatedMethod({
     }
 */
     const res = Topics.update(topicId, topicModifier);
-    debugAssert(res === 1);
+    debugAssert(res === 1); // should not continue if it was not successful
 
     if (Meteor.isServer) {
       const updatedTopic = Topics.findOne(topicId);
       updatedTopic.voteEvaluate(false); // writes only voteParticipation, no results
-      if (res === 1) voteCastConfirmationEmail(_voters, topicId, this.userId);
+      if (topic.vote.effect === 'legal') voteCastConfirmationEmail(_voters, topicId, this.userId);
     }
   },
 });
