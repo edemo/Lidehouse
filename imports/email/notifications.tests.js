@@ -28,18 +28,29 @@ if (Meteor.isServer) {
     this.timeout(5000);
     let topicId;
     let demoCommunity;
-    let demoUser;
-    let demoManager;
+    let demoManager;    
+    let ownerWithNotiFrequent;
+    let ownerWithNotiDaily;
+    let ownerWithNotiWeekly;
+    let ownerWithRepresentorOnParcel;
+    let ownerWithNotiNever;
+
     before(function () {
       // Fixture
       Fixture = freshFixture();
       demoCommunity = Communities.findOne(Fixture.demoCommunityId);
-      demoUser = Meteor.users.findOne(Fixture.demoUserId);
       demoManager = Meteor.users.findOne(Fixture.demoManagerId);
       Meteor.users.update(Fixture.demoUserId, { $set: { 'settings.notiFrequency': 'frequent' } });
       Meteor.users.update(Fixture.dummyUsers[3], { $set: { 'settings.notiFrequency': 'daily' } });
       Meteor.users.update(Fixture.dummyUsers[4], { $set: { 'settings.notiFrequency': 'daily' } });
       Meteor.users.update(Fixture.demoManagerId, { $set: { 'settings.notiFrequency': 'weekly' } });
+      Meteor.users.update(Fixture.dummyUsers[2], { $set: { 'settings.notiFrequency': 'weekly' } });
+      Meteor.users.update(Fixture.dummyUsers[5], { $set: { 'settings.notiFrequency': 'weekly' } });
+      ownerWithNotiFrequent = Meteor.users.findOne(Fixture.demoUserId);
+      ownerWithNotiDaily = Meteor.users.findOne(Fixture.dummyUsers[3]);
+      ownerWithNotiWeekly = Meteor.users.findOne(Fixture.dummyUsers[2]);
+      ownerWithRepresentorOnParcel = Meteor.users.findOne(Fixture.dummyUsers[5]);
+      ownerWithNotiNever = Meteor.users.findOne(Fixture.dummyUsers[1]);
     });
     beforeEach(function () {
       // Mocking the Email sending
@@ -49,9 +60,9 @@ if (Meteor.isServer) {
 
     describe('notifications', function () {   
       before(function () {
-        topicId = Topics.methods.insert._execute({ userId: Fixture.demoUserId }, { 
+        topicId = Topics.methods.insert._execute({ userId: ownerWithNotiFrequent._id }, { 
           communityId: Fixture.demoCommunityId,
-          userId: Fixture.demoUserId,
+          userId: ownerWithNotiFrequent._id,
           category: 'forum',
           title: 'New topic',
           text: 'This is the new topic',
@@ -64,7 +75,7 @@ if (Meteor.isServer) {
       });
 
       it('No email about your own comment', function () {
-        Comments.methods.insert._execute({ userId: Fixture.demoUserId }, { userId: Fixture.demoUserId, topicId, text: 'Hello' });
+        Comments.methods.insert._execute({ userId: ownerWithNotiFrequent._id }, { userId: ownerWithNotiFrequent._id, topicId, text: 'Hello' });
         processNotifications('frequent');
         chai.assert(emailSender.sendHTML.notCalled);
       });
@@ -74,10 +85,10 @@ if (Meteor.isServer) {
         processNotifications('frequent');
         chai.assert(emailSender.sendHTML.calledOnce);
         const emailOptions = emailSender.sendHTML.getCall(0).args[0];
-        chai.assert.equal(emailOptions.to, demoUser.getPrimaryEmail());
+        chai.assert.equal(emailOptions.to, ownerWithNotiFrequent.getPrimaryEmail());
         chai.assert.match(emailOptions.subject, /Updates/);
         chai.assert.equal(emailOptions.template, 'Notification_Email');
-        chai.assert.equal(emailOptions.data.userId, demoUser._id);
+        chai.assert.equal(emailOptions.data.userId, ownerWithNotiFrequent._id);
         chai.assert.equal(emailOptions.data.communityId, demoCommunity._id);
         chai.assert.deepEqual(emailOptions.data.topics, Topics.find(topicId).fetch());
       });
@@ -85,9 +96,9 @@ if (Meteor.isServer) {
 
     describe('Vote expires notification', function () {
       before(function () {
-        topicId = Topics.methods.insert._execute({ userId: Fixture.demoUserId }, { 
+        topicId = Topics.methods.insert._execute({ userId: ownerWithNotiFrequent._id }, { 
           communityId: Fixture.demoCommunityId,
-          userId: Fixture.demoUserId,
+          userId: ownerWithNotiFrequent._id,
           category: 'vote',
           title: 'New voting',
           text: 'This is the new voting',
@@ -99,9 +110,9 @@ if (Meteor.isServer) {
           },
         });
         castVote._execute({ userId: Fixture.dummyUsers[4] }, { topicId, castedVote: [2] });
-        Topics.methods.insert._execute({ userId: Fixture.demoUserId }, { 
+        Topics.methods.insert._execute({ userId: Fixture.demoManagerId }, { 
           communityId: Fixture.demoCommunityId,
-          userId: Fixture.demoUserId,
+          userId: Fixture.demoManagerId,
           category: 'vote',
           title: 'Later voting',
           text: 'This is an other voting',
@@ -115,12 +126,7 @@ if (Meteor.isServer) {
       });
 
       it('Emails about vote closes soon', function () {
-        Meteor.users.update(Fixture.dummyUsers[2], { $set: { 'settings.notiFrequency': 'daily' } });
-        Meteor.users.update(Fixture.dummyUsers[5], { $set: { 'settings.notiFrequency': 'weekly' } });
-        const dummyUser2 = Meteor.users.findOne(Fixture.dummyUsers[2]);
-        const dummyUser3 = Meteor.users.findOne(Fixture.dummyUsers[3]);
-        const dummyUser4 = Meteor.users.findOne(Fixture.dummyUsers[4]);
-        const dummyUser5 = Meteor.users.findOne(Fixture.dummyUsers[5]);
+        const userWhoHasVoted = Meteor.users.findOne(Fixture.dummyUsers[4]);
         sendVoteexpiresNoti();
         chai.assert.equal(emailSender.sendHTML.callCount, 3);
         const emailOptions = emailSender.sendHTML.getCall(0).args[0];
@@ -128,12 +134,13 @@ if (Meteor.isServer) {
         chai.assert.equal(emailOptions.data.communityId, demoCommunity._id);
         chai.assert.equal(emailOptions.data.topics.length, 1);
         chai.assert.deepEqual(emailOptions.data.topics, Topics.find(topicId).fetch());
-        chai.assert(emailSender.sendHTML.calledWithMatch({ to: dummyUser2.getPrimaryEmail() }));
-        chai.assert(emailSender.sendHTML.calledWithMatch({ to: dummyUser3.getPrimaryEmail() }));
-        chai.assert(emailSender.sendHTML.calledWithMatch({ to: demoUser.getPrimaryEmail() }));
-        chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: dummyUser4.getPrimaryEmail() }));
+        chai.assert(emailSender.sendHTML.calledWithMatch({ to: ownerWithNotiWeekly.getPrimaryEmail() }));
+        chai.assert(emailSender.sendHTML.calledWithMatch({ to: ownerWithNotiDaily.getPrimaryEmail() }));
+        chai.assert(emailSender.sendHTML.calledWithMatch({ to: ownerWithNotiFrequent.getPrimaryEmail() }));
+        chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: userWhoHasVoted.getPrimaryEmail() }));
         chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: demoManager.getPrimaryEmail() }));          
-        chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: dummyUser5.getPrimaryEmail() }));
+        chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: ownerWithRepresentorOnParcel.getPrimaryEmail() }));
+        chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: ownerWithNotiNever.getPrimaryEmail() }));
       });
     });
   });
