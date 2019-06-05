@@ -43,10 +43,11 @@ if (Meteor.isServer) {
       });
 
       it('sends all memberships.ofUser', function (done) {
-        const collector = new PublicationCollector({ userId: Fixture.demoUserId });
+        const userWithTwoParcelsId = Fixture.dummyUsers[3]
+        const collector = new PublicationCollector({ userId: userWithTwoParcelsId });
         collector.collect(
           'memberships.ofUser',
-          { userId: Fixture.demoUserId },
+          { userId: userWithTwoParcelsId },
           (collections) => {
             chai.assert.equal(collections.memberships.length, 2);
             chai.assert.equal(collections.communities.length, 1);
