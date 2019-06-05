@@ -40,11 +40,11 @@ if (Meteor.isServer) {
       Meteor.users.update(Fixture.dummyUsers[3], { $set: { 'settings.notiFrequency': 'daily' } });
       Meteor.users.update(Fixture.dummyUsers[4], { $set: { 'settings.notiFrequency': 'daily' } });
       Meteor.users.update(Fixture.demoManagerId, { $set: { 'settings.notiFrequency': 'weekly' } });
-    });
-    beforeEach(function () {
       // Mocking the Email sending
-      emailSender.sendHTML = sinon.spy();
-      emailSender.sendPlainText = sinon.spy();
+      sinon.stub(emailSender);
+    });
+    afterEach(function () {
+      sinon.resetHistory();
     });
 
     describe('notifications', function () {   
