@@ -25,7 +25,7 @@ if (Meteor.isServer) {
   let Fixture;
 
   describe('EmailSender calling', function () {
-    this.timeout(50000);
+    this.timeout(5000);
     let topicId;
     let demoCommunity;
     let demoUser;
@@ -116,11 +116,13 @@ if (Meteor.isServer) {
 
       it('Emails about vote closes soon', function () {
         Meteor.users.update(Fixture.dummyUsers[2], { $set: { 'settings.notiFrequency': 'daily' } });
+        Meteor.users.update(Fixture.dummyUsers[5], { $set: { 'settings.notiFrequency': 'weekly' } });
         const dummyUser2 = Meteor.users.findOne(Fixture.dummyUsers[2]);
         const dummyUser3 = Meteor.users.findOne(Fixture.dummyUsers[3]);
         const dummyUser4 = Meteor.users.findOne(Fixture.dummyUsers[4]);
+        const dummyUser5 = Meteor.users.findOne(Fixture.dummyUsers[5]);
         sendVoteexpiresNoti();
-        chai.assert.equal(emailSender.sendHTML.callCount, 2);
+        chai.assert.equal(emailSender.sendHTML.callCount, 3);
         const emailOptions = emailSender.sendHTML.getCall(0).args[0];
         chai.assert.equal(emailOptions.template, 'Voteexpires_Email');
         chai.assert.equal(emailOptions.data.communityId, demoCommunity._id);
@@ -128,9 +130,10 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(emailOptions.data.topics, Topics.find(topicId).fetch());
         chai.assert(emailSender.sendHTML.calledWithMatch({ to: dummyUser2.getPrimaryEmail() }));
         chai.assert(emailSender.sendHTML.calledWithMatch({ to: dummyUser3.getPrimaryEmail() }));
-        chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: demoUser.getPrimaryEmail() }));
+        chai.assert(emailSender.sendHTML.calledWithMatch({ to: demoUser.getPrimaryEmail() }));
         chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: dummyUser4.getPrimaryEmail() }));
-        chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: demoManager.getPrimaryEmail() }));
+        chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: demoManager.getPrimaryEmail() }));          
+        chai.assert(emailSender.sendHTML.neverCalledWithMatch({ to: dummyUser5.getPrimaryEmail() }));
       });
     });
   });
