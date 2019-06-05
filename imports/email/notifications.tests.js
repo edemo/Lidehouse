@@ -51,12 +51,12 @@ if (Meteor.isServer) {
       ownerWithNotiWeekly = Meteor.users.findOne(Fixture.dummyUsers[2]);
       ownerWithRepresentorOnParcel = Meteor.users.findOne(Fixture.dummyUsers[5]);
       ownerWithNotiNever = Meteor.users.findOne(Fixture.dummyUsers[1]);
-    });
-    beforeEach(function () {
       // Mocking the Email sending
-      emailSender.sendHTML = sinon.spy();
-      emailSender.sendPlainText = sinon.spy();
+      sinon.stub(emailSender);
     });
+    afterEach(function () {
+      sinon.resetHistory();
+    });	    
 
     describe('notifications', function () {   
       before(function () {
