@@ -14,7 +14,7 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import '/i18n/en.i18n.json';
 import '/i18n/email.en.i18n.json';
-import { processNotifications, sendVoteexpiresNoti, EXPIRY_NOTI_DAYS } from './notifications.js';
+import { processNotifications, notifyExpiringVotings, EXPIRY_NOTI_DAYS } from './notifications.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 
 import { emailSender } from '/imports/startup/server/email-sender.js';   // We will be mocking it over
@@ -127,7 +127,7 @@ if (Meteor.isServer) {
 
       it('Emails about vote closes soon', function () {
         const userWhoHasVoted = Meteor.users.findOne(Fixture.dummyUsers[4]);
-        sendVoteexpiresNoti();
+        notifyExpiringVotings();
         chai.assert.equal(emailSender.sendHTML.callCount, 3);
         const emailOptions = emailSender.sendHTML.getCall(0).args[0];
         chai.assert.equal(emailOptions.template, 'Voteexpires_Email');

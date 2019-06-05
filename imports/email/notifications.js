@@ -39,7 +39,7 @@ export function processNotifications(frequency) {
 
 export const EXPIRY_NOTI_DAYS = 3;
 
-export function sendVoteexpiresNoti() {
+export function notifyExpiringVotings() {
   Communities.find().forEach((community) => {
     const expiringVotings = Topics.find({
       communityId: community._id,
