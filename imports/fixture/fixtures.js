@@ -28,7 +28,7 @@ import '/imports/api/topics/rooms/rooms.js';
 import '/imports/api/transactions/txdefs/methods.js';
 
 
-export function insertDemoFixture(lang) {
+export function insertUnittestFixture(lang) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
 
   // if Demo house data already populated, no need to do anything

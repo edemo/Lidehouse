@@ -5,7 +5,7 @@ import { resetDatabase } from 'meteor/xolvio:cleaner';
 import { chai } from 'meteor/practicalmeteor:chai';
 
 import { initializePermissions } from '/imports/api/permissions/config.js';
-import { insertDemoFixture } from '/imports/fixture/fixtures.js';
+import { insertUnittestFixture } from '/imports/fixture/fixtures.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Roles } from '/imports/api/permissions/roles.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
@@ -42,12 +42,12 @@ function initializeDatabase() {
 
 export function emptyFixture() {
   resetDatabase();
-  initializeDatebase();
+  initializeDatabase();
 }
 
 export function freshFixture() {
   resetDatabase();
   initializeDatabase();
-  const result = insertDemoFixture('en');
+  const result = insertUnittestFixture('en');
   return result;
 }
