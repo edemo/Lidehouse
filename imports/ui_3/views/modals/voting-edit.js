@@ -143,7 +143,7 @@ AutoForm.addHooks('af.vote.insert', {
       doc.userId = Meteor.userId();
       doc.category = 'vote';
       doc.vote.choices = votingEditInstance.choices.get();
-      doc.vote.closesAt = moment(doc.vote.closesAt).add(23, 'hours').add(59, 'minutes').add(59, 'seconds').toDate();
+      doc.vote.closesAt = new Date(doc.vote.closesAt.getFullYear(), doc.vote.closesAt.getMonth(), doc.vote.closesAt.getDate(), 23, 59, 59);
     });
     return doc;
   },

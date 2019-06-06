@@ -45,7 +45,10 @@ export function notifyExpiringVotings() {
       communityId: community._id,
       category: 'vote',
       closed: false,
-      'vote.closesAt': { $gte: moment().add((EXPIRY_NOTI_DAYS - 1), 'day').toDate(), $lt: moment().add(EXPIRY_NOTI_DAYS, 'day').toDate() },
+      'vote.closesAt': {
+        $gt: moment().add(EXPIRY_NOTI_DAYS, 'day').subtract(12, 'hour').toDate(),
+        $lte: moment().add(EXPIRY_NOTI_DAYS, 'day').add(12, 'hour').toDate(),
+      },
     }).fetch();
     if (expiringVotings.length === 0) return;
     community.voters().filter(v => v.settings.notiFrequency !== 'never').forEach((voter) => {
