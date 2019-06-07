@@ -17,7 +17,7 @@
                         <div class="vote-actions">
                             {{#let liked=(this.isLikedBy currentUser._id) }}
                             <a href="" class="{{#if liked}}invisible{{/if}} js-like"><i class="fa fa-hand-o-up"> </i></a>
-                            <div>{{likesCount}}</div>
+                            <div>{{likesCount this}}</div>
                             <a href="" class="{{#unless liked}}invisible{{/unless}} js-like"><i class="fa fa-hand-o-down"> </i></a>
                             {{/let}}
                         </div>
