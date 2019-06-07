@@ -17,8 +17,8 @@ export const likesHelpers = {
   isLikedBy(userId) {
     return _.contains(this.likes, userId);
   },
-  likesCount(dataContext) {
-    return dataContext.likes.length;
+  likesCount() {
+    return this.likes.length;
   },
   /* To update, you need to call the 'like' meteormethod
   toggleLike(userId) {
