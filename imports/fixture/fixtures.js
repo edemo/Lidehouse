@@ -105,100 +105,75 @@ export function insertUnittestFixture(lang) {
 
   // ===== Memberships =====
 
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[0] },
-    role: 'maintainer',
-  });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[1] },
-    role: 'treasurer',
-  });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[1] },
-    role: 'owner',
+  demoBuilder.createMembership(dummyUsers[0], 'maintainer');
+  demoBuilder.createMembership(dummyUsers[1], 'treasurer');
+  demoBuilder.createMembership(dummyUsers[1], 'owner', {
     parcelId: dummyParcels[1],
     ownership: {
       share: new Fraction(1, 1),
     },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    // no userId -- This person is benefactor of parcel[1], but he is not a registered user of the app
-    person: { idCard: {
+  // This person is benefactor of parcel[1], but he is not a registered user of the app
+  const nonUserPerson = {
+    idCard: {
       type: 'natural',
       name: __('demo.user.1.benefactor.name'),
       address: __('demo.user.1.benefactor.address'),
       identifier: '987201NA',
       dob: new Date(1951, 1, 5),
       mothersName: __('demo.user.1.benefactor.mothersName'),
-    } },
-    role: 'benefactor',
+    },
+  };
+  demoBuilder.createMembership(nonUserPerson, 'benefactor', {
     parcelId: dummyParcels[1],
     benefactorship: {
       type: 'rental',
     },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    // no userId -- This parcel is owned by a legal entity, and the representor for them is user[2]
-    person: { idCard: {
+  // This parcel is owned by a legal entity, and the representor for them is user[2]
+  const legalPerson = {
+    idCard: {
       type: 'legal',
       name: __('demo.user.3.company.name'),
       address: __('demo.user.3.company.address'),
       identifier: 'Cg.123456-89',
-    } },
-    role: 'owner',
+    },
+  };
+  demoBuilder.createMembership(legalPerson, 'owner', {
     parcelId: dummyParcels[2],
     ownership: {
       share: new Fraction(1, 1),
     },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[2] },
-    role: 'owner',
+  // --- ---
+  demoBuilder.createMembership(dummyUsers[2], 'owner', {
     parcelId: dummyParcels[2],
     ownership: {
       share: new Fraction(0),
       representor: true,
     },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[3] },
-    role: 'owner',
+  demoBuilder.createMembership(dummyUsers[3], 'owner', {
     parcelId: dummyParcels[3],
     ownership: {
       share: new Fraction(1, 1),
     },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[3] },
-    role: 'owner',
+  demoBuilder.createMembership(dummyUsers[3], 'owner', {
     parcelId: dummyParcels[4],
     ownership: {
       share: new Fraction(1, 2),
       representor: false,
     },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[4] },
-    role: 'owner',
+  demoBuilder.createMembership(dummyUsers[4], 'owner', {
     parcelId: dummyParcels[4],
     ownership: {
       share: new Fraction(1, 4),
       representor: true,
     },
   });
-  Memberships.insert({
-    communityId: demoCommunityId,
-    person: { userId: dummyUsers[5] },
-    role: 'owner',
+  demoBuilder.createMembership(dummyUsers[5], 'owner', {
     parcelId: dummyParcels[4],
     ownership: {
       share: new Fraction(1, 4),
@@ -207,11 +182,11 @@ export function insertUnittestFixture(lang) {
   });
 
   // Give them some parcels in the other community, so to make tests more realistic with more than 1 community
-  otherBuilder.addRoleToUser(dummyUsers[1], 'owner');
-  otherBuilder.addRoleToUser(dummyUsers[2], 'benefactor');
-  otherBuilder.addRoleToUser(dummyUsers[3], 'admin');
-  otherBuilder.addRoleToUser(dummyUsers[4], 'accountant');
-  otherBuilder.addRoleToUser(dummyUsers[5], 'manager');
+  otherBuilder.createMembership(dummyUsers[1], 'owner');
+  otherBuilder.createMembership(dummyUsers[2], 'benefactor');
+  otherBuilder.createMembership(dummyUsers[3], 'admin');
+  otherBuilder.createMembership(dummyUsers[4], 'accountant');
+  otherBuilder.createMembership(dummyUsers[5], 'manager');
 
   // ===== Forum =====
 
@@ -454,7 +429,7 @@ export function insertUnittestFixture(lang) {
   // ===== Transactions =====
 
   //
-//  otherBuilder.insertLoadsOfDummyData(10);
+//  otherBuilder.insertLoadsOfFakeData(10);
 
   // ===== Returning a bunch of pointers, for easy direct access
 

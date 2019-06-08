@@ -1,6 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check';
-import { DDP } from 'meteor/ddp';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
@@ -11,15 +9,8 @@ import faker from 'faker';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
-import { update as updateCommunity } from '/imports/api/communities/methods.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { defaultRoles } from '/imports/api/permissions/roles.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
-import { Topics } from '/imports/api/topics/topics.js';
-import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -32,8 +23,6 @@ import { insert as insertTx } from '/imports/api/transactions/methods.js';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
-import { Clock } from '/imports/utils/clock';
-
 export class CommunityBuilder {
   constructor(communityId, demoOrTest, lang) {
     this.communityId = communityId;
@@ -52,11 +41,14 @@ export class CommunityBuilder {
   community() {
     return Communities.findOne(this.communityId);
   }
-  createParcel(doc) {
-    const ref = 'A' + doc.floor + doc.door;
-    const volume = 3 * (doc.area || 0);
-    _.extend(doc, {
-      communityId: this.communityId,
+  create(name, data) {
+    const dataExtended = _.extend({ communityId: this.communityId }, data);
+    return Factory.create(name, dataExtended)._id;
+  }
+  createParcel(data) {
+    const ref = 'A' + data.floor + data.door;
+    const volume = 3 * (data.area || 0);
+    _.extend(data, {
       serial: this.nextSerial,
       ref,
       lot: '4532/8/A/' + this.nextSerial.toString(),
@@ -65,14 +57,14 @@ export class CommunityBuilder {
     });
 
     const registeredUnits = this.community().registeredUnits();
-    const newUnits = doc.units;
+    const newUnits = data.units;
     const totalunits = this.community().totalunits;
     if (registeredUnits + newUnits > totalunits) {
       Communities.update({ _id: this.communityId }, { $set: { totalunits: (totalunits + newUnits) } });
     }
 
     this.nextSerial += 1;
-    return Factory.create('parcel', doc)._id;
+    return this.create('parcel', data);
   }
   createLoginableUser(role, userData, membershipData) {
     const emailAddress = `${role}@${this.demoOrTest}.${this.com}`;
@@ -87,8 +79,7 @@ export class CommunityBuilder {
       },
     } });
     if (userData) Meteor.users.update(userId, { $set: userData });
-    const mId = Memberships.insert({ communityId: this.communityId, person: { userId }, accepted: true, role });
-    if (membershipData) Memberships.update(mId, { $set: membershipData });
+    this.createMembership(userId, role, membershipData);
     return userId;
   }
   createDummyUser() {
@@ -107,9 +98,27 @@ export class CommunityBuilder {
     this.dummyUsers.push(userId);
     return userId;
   }
-  addRoleToUser(userNoOrId, role, membershipData) {
-    const userId = (typeof userNoOrId === 'number') ? this.dummyUsers[userNoOrId] : userNoOrId;
-    const mId = Memberships.insert({ communityId: this.communityId, person: { userId }, accepted: true, role });
+  createFakeUser() {
+    return Accounts.createUser({
+      email: `${faker.name.lastName()}_${i}@${this.demoOrTest}.${this.com}`,
+      password: 'password',
+      language: this.lang,
+    });
+  }
+  createFakePerson() {
+    return {
+      userId: this.createFakeUser(),
+      idCard: { type: 'natural', name: faker.name.findName() },
+      contact: { phone: faker.phone.phoneNumber() },
+    };
+  }
+  createMembership(personSpec, role, membershipData) {
+    let person;
+    if (typeof personSpec === 'number') person = { userId: this.dummyUsers[personSpec] };
+    else if (typeof personSpec === 'string') person = { userId: personSpec };
+    else if (typeof personSpec === 'object') person = personSpec;
+    else debugAssert(false);
+    const mId = Memberships.insert({ communityId: this.communityId, person, accepted: true, role });
     if (membershipData) Memberships.update(mId, { $set: membershipData });
     return mId;
   }
@@ -147,26 +156,16 @@ export class CommunityBuilder {
       });
     }
   }
-  insertLoadsOfDummyData(parcelCount) {
+  insertLoadsOfFakeData(parcelCount) {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;
 
     for (let i = 0; i < parcelCount; i++) {
-      const parcel = this.createParcel({});
-      const membershipId = Memberships.insert({
-        communityId: this.communityId,
+      const parcelId = this.createParcel({});
+      const parcel = Parcels.finOne(parcelId);
+      this.createMembership(this.createFakePerson(), 'owner', {
         parcelId,
         approved: !!(i % 2),
         accepted: !!(i + 1),
-        role: 'owner',
-        person: {
-          userId: Accounts.createUser({
-            email: `${faker.name.lastName()}_${i}@${this.demoOrTest}.${this.com}`,
-            password: 'password',
-            language: this.lang,
-          }),
-          idCard: { type: 'natural', name: faker.name.findName(), },
-          contact: { phone: faker.phone.phoneNumber() },
-        },
         ownership: { share: new Fraction(1, 1) },
       });
 
@@ -175,7 +174,6 @@ export class CommunityBuilder {
       this.generateDemoPayments(parcel);
     }
   }
-
 }
 
 export class DemoCommunityBuilder extends CommunityBuilder {

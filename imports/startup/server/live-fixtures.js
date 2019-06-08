@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { TAPi18n } from 'meteor/tap:i18n';
 
-import { insertDemoHouse, insertLoginableUsersWithRoles, insertLoadsOfDummyData, deleteDemoUsersAfterRestart } from '/imports/fixture/demohouse.js';
+import { insertDemoHouse, insertLoginableUsersWithRoles, insertLoadsOfFakeData, deleteDemoUsersAfterRestart } from '/imports/fixture/demohouse.js';
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {

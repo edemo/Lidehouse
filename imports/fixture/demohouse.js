@@ -263,11 +263,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   for (let userNo = 0; userNo < 18; userNo++) {
     const dummyUserId = demoBuilder.createDummyUser();
     switch (userNo) {
-      case 2: demoBuilder.addRoleToUser(dummyUserId, 'maintainer'); break;
-      case 3: demoBuilder.addRoleToUser(dummyUserId, 'accountant'); break;
+      case 2: demoBuilder.createMembership(dummyUserId, 'maintainer'); break;
+      case 3: demoBuilder.createMembership(dummyUserId, 'accountant'); break;
       case 4:
       case 10:
-      case 16: demoBuilder.addRoleToUser(dummyUserId, 'overseer'); break;
+      case 16: demoBuilder.createMembership(dummyUserId, 'overseer'); break;
       default: break;
     }
   }
@@ -278,23 +278,23 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Ownerships =====
 
   [0, 1, 4, 5, 6, 7, 8, 9, 10, 12].forEach((parcelNo) => {
-    demoBuilder.addRoleToUser(parcelNo, 'owner', {
+    demoBuilder.createMembership(parcelNo, 'owner', {
       parcelId: demoParcels[parcelNo],
       ownership: { share: new Fraction(1, 1) },
     });
   });
-  demoBuilder.addRoleToUser(5, 'owner', {
+  demoBuilder.createMembership(5, 'owner', {
     parcelId: demoParcels[11],
     ownership: { share: new Fraction(1, 1) },
   });
-  demoBuilder.addRoleToUser(2, 'owner', {
+  demoBuilder.createMembership(2, 'owner', {
     parcelId: demoParcels[2],
     ownership: {
       share: new Fraction(1, 2),
       representor: true,
     },
   });
-  demoBuilder.addRoleToUser(14, 'owner', {
+  demoBuilder.createMembership(14, 'owner', {
     parcelId: demoParcels[2],
     ownership: {
       share: new Fraction(1, 2),
@@ -302,22 +302,22 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   [3, 13].forEach((parcelNo) => {
-    Memberships.insert({
-      communityId: demoCommunityId,
-      // no userId -- This parcel is owned by a legal entity, and the representor for them is user[]
-      person: { idCard: {
+    // This legal person is represented by a user
+    const legalPerson = {
+      idCard: {
         type: 'legal',
         name: __(`demo.user.${parcelNo}.company.name`),
         address: __(`demo.user.${parcelNo}.company.address`),
         identifier: __(`demo.user.${parcelNo}.company.regno`),
-      } },
-      role: 'owner',
+      },
+    };
+    demoBuilder.createMembership(legalPerson, 'owner', {
       parcelId: demoParcels[parcelNo],
       ownership: {
         share: new Fraction(1, 1),
       },
     });
-    demoBuilder.addRoleToUser(parcelNo, 'owner', {
+    demoBuilder.createMembership(parcelNo, 'owner', {
       parcelId: demoParcels[parcelNo],
       ownership: {
         share: new Fraction(0),
@@ -325,36 +325,36 @@ export function insertDemoHouse(lang, demoOrTest) {
       },
     });
   });
-  [1, 7].forEach((parcelNo) => { 
-    Memberships.insert({
-      communityId: demoCommunityId,
-      // no userId -- This person is benefactor of parcel[], but she is not a registered user of the app
-      person: { idCard: {
+  [1, 7].forEach((parcelNo) => {
+    // This person is benefactor of parcel[], but she is not a registered user of the app
+    const nonUserPerson = {
+      idCard: {
         type: 'natural',
         name: __(`demo.user.${parcelNo}.benefactor.name`),
         address: __(`demo.user.${parcelNo}.benefactor.address`),
         identifier: `${parcelNo}87201NA`,
         dob: new Date(1965, `${parcelNo}`, 5),
         mothersName: __(`demo.user.${parcelNo}.benefactor.mothersName`),
-      } },
-      role: 'benefactor',
+      },
+    };
+    demoBuilder.createMembership(nonUserPerson, 'benefactor', {
       parcelId: demoParcels[parcelNo],
       benefactorship: { type: 'rental' },
     });
   });
-  demoBuilder.addRoleToUser(11, 'benefactor', {
+  demoBuilder.createMembership(11, 'benefactor', {
     parcelId: demoParcels[4],
     benefactorship: { type: 'rental' },
   });
-  demoBuilder.addRoleToUser(15, 'benefactor', {
+  demoBuilder.createMembership(15, 'benefactor', {
     parcelId: demoParcels[5],
     benefactorship: { type: 'favor' },
   });
-  demoBuilder.addRoleToUser(16, 'benefactor', {
+  demoBuilder.createMembership(16, 'benefactor', {
     parcelId: demoParcels[8],
     benefactorship: { type: 'favor' },
   });
-  demoBuilder.addRoleToUser(17, 'benefactor', {
+  demoBuilder.createMembership(17, 'benefactor', {
     parcelId: demoParcels[9],
     benefactorship: { type: 'rental' },
   });
@@ -1160,7 +1160,7 @@ Meteor.methods({
     });
     const demoUserId = demoBuilder.createDemoUser(demoParcelId);
     const demoParcel = Parcels.findOne(demoParcelId);
-    demoBuilder.addRoleToUser(demoUserId, 'owner', {
+    demoBuilder.createMembership(demoUserId, 'owner', {
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) },
     });

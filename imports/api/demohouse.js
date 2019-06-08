@@ -1420,7 +1420,7 @@ export function insertLoginableUsersWithRoles(lang, demoOrTest) {
   });
 }
 
-export function insertLoadsOfDummyData(lang, demoOrTest) {
+export function insertLoadsOfFakeData(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const com = { en: 'com', hu: 'hu' }[lang];
   const communityId = Communities.findOne({ name: __(`${demoOrTest}.house`) })._id;
