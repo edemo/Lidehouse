@@ -72,7 +72,17 @@ if (Meteor.isServer) {
       it('New users get all the past events in one bunch', function () {
         processNotifications('frequent');
         sinon.assert.calledOnce(emailSender.sendHTML);
+        // TODO: might want to check if all topics are included here
         processNotifications('daily');
+        sinon.assert.calledThrice(emailSender.sendHTML);
+      });
+
+      it('No emails after you seen it all', function () {
+        processNotifications('frequent');
+        sinon.assert.notCalled(emailSender.sendHTML);
+        processNotifications('daily');
+        sinon.assert.notCalled(emailSender.sendHTML);
+        processNotifications('weekly');
         sinon.assert.calledThrice(emailSender.sendHTML);
       });
 

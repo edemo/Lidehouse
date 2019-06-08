@@ -3,6 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 import { Tracker } from 'meteor/tracker';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -179,4 +181,18 @@ Parcels.attachSchema(Timestamps);
 
 Meteor.startup(function attach() {
   Parcels.simpleSchema().i18n('schemaParcels');
+});
+
+Factory.define('parcel', Parcels, {
+  communityId: () => Factory.get('community'),
+  // serial
+  // ref
+  // leadRef
+  units: 0,
+  type: 'flat',
+  building: 'A',
+  floor: faker.random.number(10).toString(),
+  door: faker.random.number(10).toString(),
+  lot: '123456/1234/1',
+  area: faker.random.number(150),
 });

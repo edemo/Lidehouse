@@ -3,6 +3,8 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
+import { Factory } from 'meteor/dburles:factory';
+import { debugAssert } from '/imports/utils/assert.js';
 
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -31,57 +33,53 @@ import '/imports/api/transactions/txdefs/methods.js';
 export function insertUnittestFixture(lang) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
 
-  // if Demo house data already populated, no need to do anything
-  if (Communities.findOne({ name: __('demo.house') })) {
-    return;
-  }
-
   // ===== Communities =====
 
-  const demoCommunityId = Communities.insert({
-    name: __('demo.house'),
-    zip: '1144',
-    city: __('demo.city'),
-    street: __('demo.street'),
-    number: '86',
-    lot: '123456/1234',
-    avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
+  let demoCommunityId = Communities.findOne({ name: 'Unittest house' });
+  debugAssert(!demoCommunityId, 'Db was not cleaned before unit test');
+  demoCommunityId = Factory.create('community', {
+    name: 'Unittest house',
     totalunits: 100,
-  });
+  })._id;
+
+  const otherCommunityId = Factory.create('community', {
+    name: 'Another community',
+  })._id;
 
 // ===== Parcels =====
-  const fixtureBuilder = new FixtureBuilder(demoCommunityId, lang);
+  const demoFixtureBuilder = new FixtureBuilder(demoCommunityId, 'test', lang);
+  const otherFixtureBuilder = new FixtureBuilder(otherCommunityId, 'test', lang);
 
   const dummyParcels = [];
-  dummyParcels[0] = fixtureBuilder.createParcel({
+  dummyParcels[0] = demoFixtureBuilder.createParcel({
     units: 0,
     floor: 'P',
     door: '02',
     type: 'parking',
     area: 6,
   });
-  dummyParcels[1] = fixtureBuilder.createParcel({
+  dummyParcels[1] = demoFixtureBuilder.createParcel({
     units: 10,
     floor: '1',
     door: '12',
     type: 'flat',
     area: 65,
   });
-  dummyParcels[2] = fixtureBuilder.createParcel({
+  dummyParcels[2] = demoFixtureBuilder.createParcel({
     units: 20,
     floor: '2',
     door: '23',
     type: 'flat',
     area: 142,
   });
-  dummyParcels[3] = fixtureBuilder.createParcel({
+  dummyParcels[3] = demoFixtureBuilder.createParcel({
     units: 30,
     floor: '3',
     door: '34',
     type: 'flat',
     area: 98.4,
   });
-  dummyParcels[4] = fixtureBuilder.createParcel({
+  dummyParcels[4] = demoFixtureBuilder.createParcel({
     units: 40,
     floor: '4',
     door: '45',
@@ -91,54 +89,18 @@ export function insertUnittestFixture(lang) {
 
   // ===== Demo Users with Memberships =====
 
-  // Someone can log in as the demo user, if he doesn't want to register
   const com = { en: 'com', hu: 'hu' }[lang];
-  let demoUserId;
-  let demoManagerId;
-  let demoAdminId;
-  let demoAccountantId;
-  defaultRoles.forEach(function (role) {
-    const boyNames = __('demo.user.boyNames').split('\n');
-    const girlNames = __('demo.user.girlNames').split('\n');
-    const firstNames = boyNames.concat(girlNames);
-    const avatarBoys = ['http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png',
-      'http://pannako.hu/wp-content/uploads/avatar-1.png',
-      'http://pannako.hu/wp-content/uploads/avatar-2.png',
-      'http://pannako.hu/wp-content/uploads/avatar-5.png',
-      'http://pannako.hu/wp-content/uploads/avatar-7.png'];
-    const avatarGirls = ['http://www.mycustomer.com/sites/all/themes/pp/img/default-user.png',
-      'http://pannako.hu/wp-content/uploads/avatar-3.png',
-      'http://pannako.hu/wp-content/uploads/avatar-4.png',
-      'http://pannako.hu/wp-content/uploads/avatar-6.png',
-      'http://pannako.hu/wp-content/uploads/avatar-8.png'];
-    const userWithRoleId = Accounts.createUser({ email: role.name + `@demo.${com}`, password: 'password',
-      profile: { lastName: role.name.charAt(0).toUpperCase() + role.name.slice(1), firstName: _.sample(firstNames) } });
-    const user = Meteor.users.findOne(userWithRoleId);
-    if (boyNames.includes(user.profile.firstName)) {
-      Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarBoys), 'settings.language': lang } });
-    } else {
-      Meteor.users.update({ _id: userWithRoleId }, { $set: { 'emails.0.verified': true, avatar: _.sample(avatarGirls), 'settings.language': lang } });
-    }
-    if (role.name === 'owner') {
-      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name,
-        parcelId: dummyParcels[0], ownership: { share: new Fraction(1, 10) } });
-      demoUserId = userWithRoleId;
-    } else if (role.name === 'benefactor') {
-      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name,
-        parcelId: dummyParcels[0], benefactorship: { type: 'rental' } });
-    } else {
-      Memberships.insert({ communityId: demoCommunityId, person: { userId: userWithRoleId }, role: role.name });
-    }
-    if (role.name === 'manager') demoManagerId = userWithRoleId;
-    if (role.name === 'admin') demoAdminId = userWithRoleId;
-    if (role.name === 'accountant') demoAccountantId = userWithRoleId;
-  });
+  const demoManagerId = demoFixtureBuilder.createLoginableUser('manager');
+  const demoAdminId = demoFixtureBuilder.createLoginableUser('admin');
+  const demoAccountantId = demoFixtureBuilder.createLoginableUser('accountant');
+  const demoUserId = demoFixtureBuilder.createLoginableUser('owner', { parcelId: dummyParcels[0] }, { share: new Fraction(1, 10) });
+  const demoBenefactorId = demoFixtureBuilder.createLoginableUser('benefactor', { parcelId: dummyParcels[0] }, { share: new Fraction(1, 10) });
 
   // ===== Dummy Users =====
 
   const dummyUsers = [];
   for (let userNo = 0; userNo <= 5; userNo++) {
-    dummyUsers[userNo] = fixtureBuilder.createDummyUser();
+    dummyUsers[userNo] = demoFixtureBuilder.createDummyUser();
   }
 
   // ===== Memberships =====
@@ -146,12 +108,12 @@ export function insertUnittestFixture(lang) {
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: dummyUsers[0] },
-    role: 'manager',
+    role: 'maintainer',
   });
   Memberships.insert({
     communityId: demoCommunityId,
     person: { userId: dummyUsers[1] },
-    role: 'admin',
+    role: 'treasurer',
   });
   Memberships.insert({
     communityId: demoCommunityId,
@@ -243,6 +205,13 @@ export function insertUnittestFixture(lang) {
       representor: false,
     },
   });
+
+  // Give them some parcels in the other community, so to make tests more realistic with more than 1 community
+  otherFixtureBuilder.addRoleToUser(dummyUsers[1], 'owner');
+  otherFixtureBuilder.addRoleToUser(dummyUsers[2], 'benefactor');
+  otherFixtureBuilder.addRoleToUser(dummyUsers[3], 'admin');
+  otherFixtureBuilder.addRoleToUser(dummyUsers[4], 'accountant');
+  otherFixtureBuilder.addRoleToUser(dummyUsers[5], 'manager');
 
   // ===== Forum =====
 
@@ -466,8 +435,6 @@ export function insertUnittestFixture(lang) {
   });
 
   // ===== Breakdowns =====
-
-  // ===== Breakdowns =====
   const breakdownsToClone = ['Owner payin types', 'Incomes', 'Expenses', 'Assets', 'Liabilities', 'COA', 'Places', 'Localizer'];
   breakdownsToClone.forEach((breakdownName) => {
     Breakdowns.methods.clone._execute(
@@ -485,6 +452,9 @@ export function insertUnittestFixture(lang) {
   Localizer.generateParcels(demoCommunityId, lang);
 
   // ===== Transactions =====
+
+  //
+//  otherFixtureBuilder.insertLoadsOfDummyData(10);
 
   // ===== Returning a bunch of pointers, for easy direct access
 

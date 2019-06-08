@@ -115,6 +115,13 @@ Meteor.startup(function attach() {
 });
 
 Factory.define('community', Communities, {
-  name: () => faker.lorem.sentence(),
-  totalunits: 10000,
+  name: () => faker.random.word() + 'house',
+  description: () => faker.lorem.sentence(),
+  zip: () => faker.random.number({ min: 1000, max: 2000 }),
+  city: () => faker.address.city(),
+  street: () => faker.address.streetName(),
+  number: () => faker.random.number(),
+  lot: '123456/1234',
+  avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
+  totalunits: 1000,
 });
