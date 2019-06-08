@@ -33,7 +33,7 @@ import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
-import { FixtureBuilder, DemoFixtureBuilder } from './fixture-builder.js';
+import { CommunityBuilder, DemoCommunityBuilder } from './community-builder.js';
 
 if (Meteor.isServer) {
   import fs from 'fs';
@@ -102,12 +102,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     totalunits: 10000,
   });
 
-  const fixtureBuilder = new FixtureBuilder(demoCommunityId, demoOrTest, lang);
+  const demoBuilder = new CommunityBuilder(demoCommunityId, demoOrTest, lang);
 
 // ===== Parcels =====
 
   const demoParcels = [];
-  demoParcels[0] = fixtureBuilder.createParcel({
+  demoParcels[0] = demoBuilder.createParcel({
     units: 489,
     floor: __('demo.groundCode'),
     door: '01',
@@ -118,7 +118,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[1] = fixtureBuilder.createParcel({
+  demoParcels[1] = demoBuilder.createParcel({
     units: 427,
     floor: __('demo.groundCode'),
     door: '02',
@@ -129,7 +129,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: false,
     heatingType: 'centralHeating',
   });
-  demoParcels[2] = fixtureBuilder.createParcel({
+  demoParcels[2] = demoBuilder.createParcel({
     units: 587,
     floor: '1',
     door: '03',
@@ -140,7 +140,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[3] = fixtureBuilder.createParcel({
+  demoParcels[3] = demoBuilder.createParcel({
     units: 622,
     floor: '1',
     door: '04',
@@ -151,7 +151,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[4] = fixtureBuilder.createParcel({
+  demoParcels[4] = demoBuilder.createParcel({
     units: 587,
     floor: '2',
     door: '05',
@@ -162,7 +162,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: false,
     heatingType: 'centralHeating',
   });
-  demoParcels[5] = fixtureBuilder.createParcel({
+  demoParcels[5] = demoBuilder.createParcel({
     units: 622,
     floor: '2',
     door: '06',
@@ -173,7 +173,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[6] = fixtureBuilder.createParcel({
+  demoParcels[6] = demoBuilder.createParcel({
     units: 587,
     floor: '3',
     door: '07',
@@ -184,7 +184,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[7] = fixtureBuilder.createParcel({
+  demoParcels[7] = demoBuilder.createParcel({
     units: 622,
     floor: '3',
     door: '08',
@@ -195,7 +195,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: false,
     heatingType: 'centralHeating',
   });
-  demoParcels[8] = fixtureBuilder.createParcel({
+  demoParcels[8] = demoBuilder.createParcel({
     units: 587,
     floor: '4',
     door: '09',
@@ -206,7 +206,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[9] = fixtureBuilder.createParcel({
+  demoParcels[9] = demoBuilder.createParcel({
     units: 622,
     floor: '4',
     door: '10',
@@ -217,7 +217,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'centralHeating',
   });
-  demoParcels[10] = fixtureBuilder.createParcel({
+  demoParcels[10] = demoBuilder.createParcel({
     units: 996,
     floor: __('demo.atticCode'),
     door: '11',
@@ -227,7 +227,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'ownHeating',
   });
-  demoParcels[11] = fixtureBuilder.createParcel({
+  demoParcels[11] = demoBuilder.createParcel({
     units: 444,
     floor: __('demo.cellarCode'),
     door: '01',
@@ -237,7 +237,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'ownHeating',
   });
-  demoParcels[12] = fixtureBuilder.createParcel({
+  demoParcels[12] = demoBuilder.createParcel({
     units: 613,
     floor: __('demo.cellarCode'),
     door: '02',
@@ -247,7 +247,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     waterMetered: true,
     heatingType: 'ownHeating',
   });
-  demoParcels[13] = fixtureBuilder.createParcel({
+  demoParcels[13] = demoBuilder.createParcel({
     units: 196,
     floor: __('demo.groundCode'),
     door: '00',
@@ -261,40 +261,40 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Non-loginable Dummy Users =====
 
   for (let userNo = 0; userNo < 18; userNo++) {
-    const dummyUserId = fixtureBuilder.createDummyUser();
+    const dummyUserId = demoBuilder.createDummyUser();
     switch (userNo) {
-      case 2: fixtureBuilder.addRoleToUser(dummyUserId, 'maintainer'); break;
-      case 3: fixtureBuilder.addRoleToUser(dummyUserId, 'accountant'); break;
+      case 2: demoBuilder.addRoleToUser(dummyUserId, 'maintainer'); break;
+      case 3: demoBuilder.addRoleToUser(dummyUserId, 'accountant'); break;
       case 4:
       case 10:
-      case 16: fixtureBuilder.addRoleToUser(dummyUserId, 'overseer'); break;
+      case 16: demoBuilder.addRoleToUser(dummyUserId, 'overseer'); break;
       default: break;
     }
   }
-  const demoMaintainerId = fixtureBuilder.dummyUsers[2];
-  const demoAccountantId = fixtureBuilder.dummyUsers[3];
-  const dummyUserId = fixtureBuilder.dummyUsers[5];
+  const demoMaintainerId = demoBuilder.dummyUsers[2];
+  const demoAccountantId = demoBuilder.dummyUsers[3];
+  const dummyUserId = demoBuilder.dummyUsers[5];
 
   // ===== Ownerships =====
 
   [0, 1, 4, 5, 6, 7, 8, 9, 10, 12].forEach((parcelNo) => {
-    fixtureBuilder.addRoleToUser(parcelNo, 'owner', {
+    demoBuilder.addRoleToUser(parcelNo, 'owner', {
       parcelId: demoParcels[parcelNo],
       ownership: { share: new Fraction(1, 1) },
     });
   });
-  fixtureBuilder.addRoleToUser(5, 'owner', {
+  demoBuilder.addRoleToUser(5, 'owner', {
     parcelId: demoParcels[11],
     ownership: { share: new Fraction(1, 1) },
   });
-  fixtureBuilder.addRoleToUser(2, 'owner', {
+  demoBuilder.addRoleToUser(2, 'owner', {
     parcelId: demoParcels[2],
     ownership: {
       share: new Fraction(1, 2),
       representor: true,
     },
   });
-  fixtureBuilder.addRoleToUser(14, 'owner', {
+  demoBuilder.addRoleToUser(14, 'owner', {
     parcelId: demoParcels[2],
     ownership: {
       share: new Fraction(1, 2),
@@ -317,7 +317,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         share: new Fraction(1, 1),
       },
     });
-    fixtureBuilder.addRoleToUser(parcelNo, 'owner', {
+    demoBuilder.addRoleToUser(parcelNo, 'owner', {
       parcelId: demoParcels[parcelNo],
       ownership: {
         share: new Fraction(0),
@@ -342,31 +342,31 @@ export function insertDemoHouse(lang, demoOrTest) {
       benefactorship: { type: 'rental' },
     });
   });
-  fixtureBuilder.addRoleToUser(11, 'benefactor', {
+  demoBuilder.addRoleToUser(11, 'benefactor', {
     parcelId: demoParcels[4],
     benefactorship: { type: 'rental' },
   });
-  fixtureBuilder.addRoleToUser(15, 'benefactor', {
+  demoBuilder.addRoleToUser(15, 'benefactor', {
     parcelId: demoParcels[5],
     benefactorship: { type: 'favor' },
   });
-  fixtureBuilder.addRoleToUser(16, 'benefactor', {
+  demoBuilder.addRoleToUser(16, 'benefactor', {
     parcelId: demoParcels[8],
     benefactorship: { type: 'favor' },
   });
-  fixtureBuilder.addRoleToUser(17, 'benefactor', {
+  demoBuilder.addRoleToUser(17, 'benefactor', {
     parcelId: demoParcels[9],
     benefactorship: { type: 'rental' },
   });
 
   // ==== Loginable users with Roles =====
 
-  const demoManagerId = fixtureBuilder.createLoginableUser('manager', {
+  const demoManagerId = demoBuilder.createLoginableUser('manager', {
     avatar: '/images/avatars/avatar20.jpg',
     'profile.phone': '06 60 555 4321',
   });
 
-  const demoAdminId = fixtureBuilder.createLoginableUser('admin', {
+  const demoAdminId = demoBuilder.createLoginableUser('admin', {
     avatar: '/images/avatars/avatar21.jpg',
     'profile.phone': '06 60 762 7288',
   });
@@ -385,7 +385,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }
 
       const firstNames = __('demo.user.firstNames').split('\n');
-      fixtureBuilder.createLoginableUser(role.name, {
+      demoBuilder.createLoginableUser(role.name, {
         avatar: '/images/avatars/avatarTestUser.png',
         profile: { lastName: __(role.name).capitalize(), firstName: _.sample(firstNames) },
       }, ownershipData);
@@ -397,12 +397,12 @@ export function insertDemoHouse(lang, demoOrTest) {
   // The demo (filling) users comment one after the other, round robin style
   let nextUserIndex = 1;
   function sameUser() {
-    return fixtureBuilder.dummyUsers[nextUserIndex];
+    return demoBuilder.dummyUsers[nextUserIndex];
   }
   function nextUser() {
     nextUserIndex += 7; // relative prime
-    nextUserIndex %= fixtureBuilder.dummyUsers.length;
-    return fixtureBuilder.dummyUsers[nextUserIndex];
+    nextUserIndex %= demoBuilder.dummyUsers.length;
+    return demoBuilder.dummyUsers[nextUserIndex];
   }
 
   const demoTopicDates = [
@@ -442,7 +442,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
     const newsId = Topics.insert({
       communityId: demoCommunityId,
-      userId: fixtureBuilder.dummyUsers[0],
+      userId: demoBuilder.dummyUsers[0],
       category: 'news',
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
@@ -780,7 +780,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate,
       projection: 'perArea',
       amount: 275,
-      payinType: fixtureBuilder.name2code('Owner payin types', 'Közös költség előírás'),
+      payinType: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
       localizer: '@',
     });
 
@@ -791,7 +791,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         valueDate,
         projection: 'perHabitant',
         amount: 2500,
-        payinType: fixtureBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
+        payinType: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
       });
     });
@@ -801,7 +801,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate,
       projection: 'perArea',
       amount: 85,
-      payinType: fixtureBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
+      payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
       localizer: '@A',
     });
   });
@@ -811,7 +811,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     projection: 'absolute',
     amount: 75000,
     valueDate: new Date('2017-08-15'),
-    payinType: fixtureBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
+    payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
     note: __('demo.transactions.note.0'),
   });
@@ -834,7 +834,7 @@ export function insertDemoHouse(lang, demoOrTest) {
                 localizer: entry.localizer,
               }],
               debit: [{
-                account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+                account: demoBuilder.name2code('Assets', 'Folyószámla'),
               }],
             });
           }
@@ -851,7 +851,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     projection: 'perArea',
     amount: 200,
     valueDate: new Date('2017-12-15'),
-    payinType: fixtureBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
+    payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
   });
 
@@ -862,7 +862,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     amount: 24500,
     note: 'Sogoromnak fizetem be mert elutazott Madridba',
     debit: [{
-      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+      account: demoBuilder.name2code('Assets', 'Folyószámla'),
     }],
   });
 
@@ -883,10 +883,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-01-01'),
       amount: opening[2],
       credit: [{
-        account: fixtureBuilder.name2code('COA', 'Opening'),
+        account: demoBuilder.name2code('COA', 'Opening'),
       }],
       debit: [{
-        account: fixtureBuilder.name2code(opening[0], opening[1]),
+        account: demoBuilder.name2code(opening[0], opening[1]),
       }],
     });
   });
@@ -899,11 +899,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-06-01'),
     amount: 3500,
     credit: [{
-      account: fixtureBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
-      localizer: fixtureBuilder.name2code('Localizer', 'Central'),
+      account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
+      localizer: demoBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+      account: demoBuilder.name2code('Assets', 'Folyószámla'),
     }],
   });
 
@@ -914,11 +914,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
       credit: [{
-        account: fixtureBuilder.name2code('Incomes', 'Hitelintézettől kapott kamatok'),
-        localizer: fixtureBuilder.name2code('Localizer', 'Central'),
+        account: demoBuilder.name2code('Incomes', 'Hitelintézettől kapott kamatok'),
+        localizer: demoBuilder.name2code('Localizer', 'Central'),
       }],
       debit: [{
-        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+        account: demoBuilder.name2code('Assets', 'Folyószámla'),
       }],
     });
   });
@@ -929,11 +929,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-09-15'),
     amount: 500000,
     credit: [{
-      account: fixtureBuilder.name2code('Incomes', 'Támogatások'),
-      localizer: fixtureBuilder.name2code('Localizer', 'Central'),
+      account: demoBuilder.name2code('Incomes', 'Támogatások'),
+      localizer: demoBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+      account: demoBuilder.name2code('Assets', 'Folyószámla'),
     }],
     note: __('demo.transactions.note.1'),
   });
@@ -944,11 +944,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-05-10'),
     amount: 55000,
     credit: [{
-      account: fixtureBuilder.name2code('Incomes', 'Bérleti díj bevételek'),
-      localizer: fixtureBuilder.name2code('Localizer', 'Central'),
+      account: demoBuilder.name2code('Incomes', 'Bérleti díj bevételek'),
+      localizer: demoBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+      account: demoBuilder.name2code('Assets', 'Folyószámla'),
     }],
     note: __('demo.transactions.note.2'),
   });
@@ -959,11 +959,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-10-15'),
     amount: 500000,
     credit: [{
-      account: fixtureBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
-      localizer: fixtureBuilder.name2code('Localizer', 'Central'),
+      account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
+      localizer: demoBuilder.name2code('Localizer', 'Central'),
     }],
     debit: [{
-      account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+      account: demoBuilder.name2code('Assets', 'Folyószámla'),
     }],
     note: __('demo.transactions.note.3'),
   });
@@ -974,10 +974,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
     credit: [{
-      account: fixtureBuilder.name2code('Liabilities', 'Hosszú lejáratú bank hitel'),
+      account: demoBuilder.name2code('Liabilities', 'Hosszú lejáratú bank hitel'),
     }],
     debit: [{
-      account: fixtureBuilder.name2code('Assets', 'Megtakarítási számla'),
+      account: demoBuilder.name2code('Assets', 'Megtakarítási számla'),
     }],
     note: __('demo.transactions.note.4'),
   });
@@ -991,11 +991,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: 80000 + Math.floor(Math.random() * 50000),
       credit: [{
-        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+        account: demoBuilder.name2code('Assets', 'Folyószámla'),
       }],
       debit: [{
-        account: fixtureBuilder.name2code('Expenses', 'Víz díj'),
-        localizer: fixtureBuilder.name2code('Localizer', 'Central'),
+        account: demoBuilder.name2code('Expenses', 'Víz díj'),
+        localizer: demoBuilder.name2code('Localizer', 'Central'),
       }],
     });
 
@@ -1005,11 +1005,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: 98500,
       credit: [{
-        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+        account: demoBuilder.name2code('Assets', 'Folyószámla'),
       }],
       debit: [{
-        account: fixtureBuilder.name2code('Expenses', 'Csatorna díjak'),
-        localizer: fixtureBuilder.name2code('Localizer', 'Central'),
+        account: demoBuilder.name2code('Expenses', 'Csatorna díjak'),
+        localizer: demoBuilder.name2code('Localizer', 'Central'),
       }],
     });
 
@@ -1019,11 +1019,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 150000 + Math.floor(Math.random() * 50000),
       credit: [{
-        account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+        account: demoBuilder.name2code('Assets', 'Folyószámla'),
       }],
       debit: [{
-        account: fixtureBuilder.name2code('Expenses', 'Áram díj'),
-        localizer: fixtureBuilder.name2code('Localizer', 'Central'),
+        account: demoBuilder.name2code('Expenses', 'Áram díj'),
+        localizer: demoBuilder.name2code('Localizer', 'Central'),
       }],
     });
   }
@@ -1038,10 +1038,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       amount: 282600,
       partner: 'Super-Clean Kft',
       credit: [{
-        account: fixtureBuilder.name2code('Liabilities', 'Suppliers'),
+        account: demoBuilder.name2code('Liabilities', 'Suppliers'),
       }],
       debit: [{
-        account: fixtureBuilder.name2code('Expenses', 'Takarítás'),
+        account: demoBuilder.name2code('Expenses', 'Takarítás'),
       }],
     });
 
@@ -1053,10 +1053,10 @@ export function insertDemoHouse(lang, demoOrTest) {
         partner: 'Super-Clean Kft',
         ref: `SC/2017/${mm}`,
         credit: [{
-          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+          account: demoBuilder.name2code('Assets', 'Folyószámla'),
         }],
         debit: [{
-          account: fixtureBuilder.name2code('Liabilities', 'Suppliers'),
+          account: demoBuilder.name2code('Liabilities', 'Suppliers'),
         }],
       });
     } else {
@@ -1066,7 +1066,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         amount: 282600,
         ref: `SC/2017/${mm}`,
         credit: [{
-          account: fixtureBuilder.name2code('Assets', 'Folyószámla'),
+          account: demoBuilder.name2code('Assets', 'Folyószámla'),
         }],
       });
     }
@@ -1101,7 +1101,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     demoManagerId,
     demoMaintainerId,
     demoAccountantId,
-    dummyUsers: fixtureBuilder.dummyUsers,
+    dummyUsers: demoBuilder.dummyUsers,
     demoParcels,
   };
 }
@@ -1148,19 +1148,19 @@ Meteor.methods({
     const demoHouse = Communities.findOne({ name: __('demo.house') });
     if (!demoHouse) throw new Meteor.Error('err_notImplemented', 'Demo house not available on this server');
     const demoCommunityId = demoHouse._id;
-    const fixtureBuilder = new DemoFixtureBuilder(demoCommunityId, lang);
-    const counter = fixtureBuilder.nextSerial;
+    const demoBuilder = new DemoCommunityBuilder(demoCommunityId, lang);
+    const counter = demoBuilder.nextSerial;
 
-    const demoParcelId = fixtureBuilder.createParcel({
+    const demoParcelId = demoBuilder.createParcel({
       units: 100,
       floor: '5',
       door: counter.toString(),
       type: 'flat',
       area: 25,
     });
-    const demoUserId = fixtureBuilder.createDemoUser(demoParcelId);
+    const demoUserId = demoBuilder.createDemoUser(demoParcelId);
     const demoParcel = Parcels.findOne(demoParcelId);
-    fixtureBuilder.addRoleToUser(demoUserId, 'owner', {
+    demoBuilder.addRoleToUser(demoUserId, 'owner', {
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) },
     });
@@ -1212,7 +1212,7 @@ Meteor.methods({
       ],
     } });
 
-    fixtureBuilder.generateDemoPayments(demoParcel);
+    demoBuilder.generateDemoPayments(demoParcel);
 
     Meteor.setTimeout(function () {
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
@@ -1229,9 +1229,9 @@ export function deleteDemoUsersAfterRestart(lang, demoOrTest = 'demo') {
   if (!community) return;
 
   const communityId = community._id;
-  const fixtureBuilder = new DemoFixtureBuilder(communityId, lang);
-  fixtureBuilder.demoUsersList().forEach((user) => {
-    const parcelId = fixtureBuilder.parcelIdOfDemoUser(user);
+  const demoBuilder = new DemoCommunityBuilder(communityId, lang);
+  demoBuilder.demoUsersList().forEach((user) => {
+    const parcelId = demoBuilder.parcelIdOfDemoUser(user);
     const currentTime = moment().valueOf();
     let timeUntilDelete = moment(user.createdAt).add(demoUserLifetime).subtract(currentTime).valueOf();
     if (timeUntilDelete < 0) timeUntilDelete = 0;

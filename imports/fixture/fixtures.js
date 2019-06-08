@@ -22,7 +22,7 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/transactions/batches/methods.js';
-import { FixtureBuilder } from './fixture-builder.js';
+import { CommunityBuilder } from './community-builder.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -47,39 +47,39 @@ export function insertUnittestFixture(lang) {
   })._id;
 
 // ===== Parcels =====
-  const demoFixtureBuilder = new FixtureBuilder(demoCommunityId, 'test', lang);
-  const otherFixtureBuilder = new FixtureBuilder(otherCommunityId, 'test', lang);
+  const demoBuilder = new CommunityBuilder(demoCommunityId, 'test', lang);
+  const otherBuilder = new CommunityBuilder(otherCommunityId, 'test', lang);
 
   const dummyParcels = [];
-  dummyParcels[0] = demoFixtureBuilder.createParcel({
+  dummyParcels[0] = demoBuilder.createParcel({
     units: 0,
     floor: 'P',
     door: '02',
     type: 'parking',
     area: 6,
   });
-  dummyParcels[1] = demoFixtureBuilder.createParcel({
+  dummyParcels[1] = demoBuilder.createParcel({
     units: 10,
     floor: '1',
     door: '12',
     type: 'flat',
     area: 65,
   });
-  dummyParcels[2] = demoFixtureBuilder.createParcel({
+  dummyParcels[2] = demoBuilder.createParcel({
     units: 20,
     floor: '2',
     door: '23',
     type: 'flat',
     area: 142,
   });
-  dummyParcels[3] = demoFixtureBuilder.createParcel({
+  dummyParcels[3] = demoBuilder.createParcel({
     units: 30,
     floor: '3',
     door: '34',
     type: 'flat',
     area: 98.4,
   });
-  dummyParcels[4] = demoFixtureBuilder.createParcel({
+  dummyParcels[4] = demoBuilder.createParcel({
     units: 40,
     floor: '4',
     door: '45',
@@ -90,17 +90,17 @@ export function insertUnittestFixture(lang) {
   // ===== Demo Users with Memberships =====
 
   const com = { en: 'com', hu: 'hu' }[lang];
-  const demoManagerId = demoFixtureBuilder.createLoginableUser('manager');
-  const demoAdminId = demoFixtureBuilder.createLoginableUser('admin');
-  const demoAccountantId = demoFixtureBuilder.createLoginableUser('accountant');
-  const demoUserId = demoFixtureBuilder.createLoginableUser('owner', { parcelId: dummyParcels[0] }, { share: new Fraction(1, 10) });
-  const demoBenefactorId = demoFixtureBuilder.createLoginableUser('benefactor', { parcelId: dummyParcels[0] }, { share: new Fraction(1, 10) });
+  const demoManagerId = demoBuilder.createLoginableUser('manager');
+  const demoAdminId = demoBuilder.createLoginableUser('admin');
+  const demoAccountantId = demoBuilder.createLoginableUser('accountant');
+  const demoUserId = demoBuilder.createLoginableUser('owner', { parcelId: dummyParcels[0] }, { share: new Fraction(1, 10) });
+  const demoBenefactorId = demoBuilder.createLoginableUser('benefactor', { parcelId: dummyParcels[0] }, { share: new Fraction(1, 10) });
 
   // ===== Dummy Users =====
 
   const dummyUsers = [];
   for (let userNo = 0; userNo <= 5; userNo++) {
-    dummyUsers[userNo] = demoFixtureBuilder.createDummyUser();
+    dummyUsers[userNo] = demoBuilder.createDummyUser();
   }
 
   // ===== Memberships =====
@@ -207,11 +207,11 @@ export function insertUnittestFixture(lang) {
   });
 
   // Give them some parcels in the other community, so to make tests more realistic with more than 1 community
-  otherFixtureBuilder.addRoleToUser(dummyUsers[1], 'owner');
-  otherFixtureBuilder.addRoleToUser(dummyUsers[2], 'benefactor');
-  otherFixtureBuilder.addRoleToUser(dummyUsers[3], 'admin');
-  otherFixtureBuilder.addRoleToUser(dummyUsers[4], 'accountant');
-  otherFixtureBuilder.addRoleToUser(dummyUsers[5], 'manager');
+  otherBuilder.addRoleToUser(dummyUsers[1], 'owner');
+  otherBuilder.addRoleToUser(dummyUsers[2], 'benefactor');
+  otherBuilder.addRoleToUser(dummyUsers[3], 'admin');
+  otherBuilder.addRoleToUser(dummyUsers[4], 'accountant');
+  otherBuilder.addRoleToUser(dummyUsers[5], 'manager');
 
   // ===== Forum =====
 
@@ -454,7 +454,7 @@ export function insertUnittestFixture(lang) {
   // ===== Transactions =====
 
   //
-//  otherFixtureBuilder.insertLoadsOfDummyData(10);
+//  otherBuilder.insertLoadsOfDummyData(10);
 
   // ===== Returning a bunch of pointers, for easy direct access
 

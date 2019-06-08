@@ -2,10 +2,12 @@ import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { DDP } from 'meteor/ddp';
 import { TAPi18n } from 'meteor/tap:i18n';
-import faker from 'faker';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
+
 import { debugAssert } from '/imports/utils/assert.js';
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -32,7 +34,7 @@ import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
 
-export class FixtureBuilder {
+export class CommunityBuilder {
   constructor(communityId, demoOrTest, lang) {
     this.communityId = communityId;
     this.demoOrTest = demoOrTest;
@@ -69,9 +71,8 @@ export class FixtureBuilder {
       Communities.update({ _id: this.communityId }, { $set: { totalunits: (totalunits + newUnits) } });
     }
 
-    const id = Parcels.insert(doc);
     this.nextSerial += 1;
-    return id;
+    return Factory.create('parcel', doc)._id;
   }
   createLoginableUser(role, userData, membershipData) {
     const emailAddress = `${role}@${this.demoOrTest}.${this.com}`;
@@ -150,14 +151,7 @@ export class FixtureBuilder {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;
 
     for (let i = 0; i < parcelCount; i++) {
-      const parcelId = this.createParcel({
-        units: 0,
-        floor: faker.random.number(10).toString(),
-        door: faker.random.number(10).toString(),
-        type: 'flat',
-        area: faker.random.number(150),
-      });
-      const parcel = Parcels.findOne(parcelId);
+      const parcel = this.createParcel({});
       const membershipId = Memberships.insert({
         communityId: this.communityId,
         parcelId,
@@ -184,7 +178,7 @@ export class FixtureBuilder {
 
 }
 
-export class DemoFixtureBuilder extends FixtureBuilder {
+export class DemoCommunityBuilder extends CommunityBuilder {
   constructor(communityId, lang) {
     super(communityId, 'demo', lang);
   }
