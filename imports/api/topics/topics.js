@@ -170,7 +170,7 @@ Topics.publicFields = {
 Topics.categoryValues.forEach((category) => {
   Factory.define(category, Topics, {
     category,
-    title: `New ${(category)} about ${faker.random.word()}`,
+    title: () => `New ${(category)} about ${faker.random.word()}`,
     text: faker.lorem.paragraph(),
   });
 });

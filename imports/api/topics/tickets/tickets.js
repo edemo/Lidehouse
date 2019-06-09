@@ -60,8 +60,8 @@ Meteor.startup(function attach() {
 
 Factory.define('ticket', Topics, {
   category: 'ticket',
-  title: 'New ticket on ' + faker.random.word(),
-  text: faker.lorem.paragraph(),
+  title: () => 'New ticket on ' + faker.random.word(),
+  text: () => faker.lorem.paragraph(),
   ticket: {
     category: 'building',
     urgency: 'normal',

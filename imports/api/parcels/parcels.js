@@ -191,8 +191,8 @@ Factory.define('parcel', Parcels, {
   units: 0,
   type: 'flat',
   building: 'A',
-  floor: faker.random.number(10).toString(),
-  door: faker.random.number(10).toString(),
+  floor: () => faker.random.number(10).toString(),
+  door: () => faker.random.number(10).toString(),
   lot: '123456/1234/1',
-  area: faker.random.number(150),
+  area: () => faker.random.number(150),
 });

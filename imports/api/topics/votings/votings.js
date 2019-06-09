@@ -275,8 +275,8 @@ Topics.publicFields.extendForUser = function extendForUser(userId, communityId) 
 
 Factory.define('vote', Topics, {
   category: 'vote',
-  title: 'New voting on ' + faker.random.word(),
-  text: faker.lorem.paragraph(),
+  title: () => 'New voting on ' + faker.random.word(),
+  text: () => faker.lorem.paragraph(),
   vote: {
     closesAt: () => moment().add(14, 'day').toDate(),
     procedure: 'online',

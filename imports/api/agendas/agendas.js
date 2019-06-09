@@ -56,5 +56,5 @@ Meteor.startup(function attach() {
 });
 
 Factory.define('agenda', Agendas, {
-  title: `New agenda on ${faker.random.word()}`,
+  title: () => `New agenda on ${faker.random.word()}`,
 });
