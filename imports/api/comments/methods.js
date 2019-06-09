@@ -19,8 +19,9 @@ export const insert = new ValidatedMethod({
     doc.userId = this.userId;   // One can only post in her own name
     const commentId = Comments.insert(doc);
     const newComment = Comments.findOne(commentId); // we need the createdAt timestamp from the server
-    updateMyLastSeen._execute({ userId: this.userId }, 
-    { topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt } });
+    updateMyLastSeen._execute({ userId: this.userId },
+      { topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt } }
+    );
     return commentId;
   },
 });

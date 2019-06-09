@@ -14,6 +14,7 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import '/imports/api/comments/methods.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
@@ -979,46 +980,20 @@ export function insertDemoHouse(lang, demoOrTest) {
       });
     }
   });
-
-  // === Tervezetek ===
-
- /* Transactions.insert({
-    communityId: demoCommunityId,
-    valueDate: new Date('2017-01-01'),
-    amount: -24000,
-    account: {
-      'Expenses': 'Anyagok',
-    },
-  });
-
-  Transactions.insert({
-    communityId: demoCommunityId,
-    valueDate: new Date('2017-01-01'),
-    amount: -415000,
-    account: {
-      'Expenses': 'Üzemeltetés',
-    },
-  });*/
-
-  // ===== Returning a bunch of pointers, for easy direct access
-
-  return {
-    demoCommunityId,
-    dummyUserId,
-    demoAdminId,
-    demoManagerId,
-    demoMaintainerId,
-    demoAccountantId,
-    dummyUsers: demoBuilder.dummyUsers,
-    demoParcels,
-  };
 }
 
-function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
-  debugAssert(userId && parcelId && communityId, `deleteDemoUserWithRelevancies parameter not defined ${userId} ${parcelId} ${communityId}`);
-  const parcel = Parcels.findOne(parcelId);
+// ----------------------------------------------------------------
+const DEMO_LIFETIME = moment.duration(2, 'hours').asMilliseconds();
+
+function purgeDemoUserWithParcel(userId, parcelId, communityId) {
+  debugAssert(userId && parcelId && communityId, `purgeDemoUserWithParcel parameter not defined ${userId} ${parcelId} ${communityId}`);
+  // Purge user activity
   Topics.remove({ userId });
   Topics.remove({ 'participantIds.$': userId });
+  Comments.remove({ userId });
+  Delegations.remove({ sourcePersonId: userId });
+  Delegations.remove({ targetPersonId: userId });
+  // Purge votes
   const demoUserVote = 'voteCasts.' + userId;
   const demoUserVoteIndirect = 'voteCastsIndirect.' + userId;
   Topics.update({ [demoUserVote]: { $exists: true } },
@@ -1027,24 +1002,23 @@ function deleteDemoUserWithRelevancies(userId, parcelId, communityId) {
   if (Meteor.isServer) {
     modifiedTopics.forEach(topic => topic.voteEvaluate(false));
   }
-  Comments.remove({ userId });
-  Delegations.remove({ sourcePersonId: userId });
-  Delegations.remove({ targetPersonId: userId });
+  // Purge parcel
+  const parcel = Parcels.findOne(parcelId);
   Memberships.remove({ parcelId }); // removing added benefactors as well
   Parcels.remove({ _id: parcelId });
   const currentTotalunits = Communities.findOne({ _id: communityId }).totalunits;
   if (currentTotalunits > 10000) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
+  // Purge finacial records
   ParcelBillings.remove({ 'account.Localizer': parcel.ref });
   Transactions.remove({ 'entries.0.account.Localizer': parcel.ref });
   Breakdowns.update({ communityId, name: 'Parcels' }, {
     $pull: { children: { name: parcel.ref } },
   });
-  Meteor.users.remove({ _id: userId });
-}
 
-const demoUserLifetime = moment.duration(2, 'hours').asMilliseconds();
+  Meteor.users.remove(userId);
+}
 
 Meteor.methods({
   createDemoUserWithParcel(lang) {
@@ -1076,54 +1050,48 @@ Meteor.methods({
     Localizer.addParcel(demoCommunityId, demoParcel, lang);
 
     const demoManagerId = demoBuilder.getUserWithRole('manager');
-    const dummyUserId = demoBuilder.getUserWithRole('owner');
+    const chatPartnerId = demoBuilder.getUserWithRole('owner');
 
     const demoUserMessageRoom = demoBuilder.create('room', {
       userId: demoUserId,
       participantIds: [demoUserId, demoManagerId],
     });
-    Comments.insert({
+    Comments.methods.insert._execute({ userId: demoManagerId }, {
       topicId: demoUserMessageRoom,
       userId: demoManagerId,
       text: __('demo.manager.message'),
     });
     const demoUserMessageRoom2 = demoBuilder.create('room', {
       userId: demoUserId,
-      participantIds: [demoUserId, dummyUserId],
+      participantIds: [demoUserId, chatPartnerId],
     });
     Clock.setSimulatedTime(moment().subtract(6, 'hours').toDate());
-    Comments.insert({
+    Comments.methods.insert._execute({ userId: demoUserId }, {
       topicId: demoUserMessageRoom2,
       userId: demoUserId,
       text: __('demo.messages.0'),
     });
     Clock.setSimulatedTime(moment().subtract(3, 'hours').toDate());
-    Comments.insert({
+    Comments.methods.insert._execute({ userId: chatPartnerId }, {
       topicId: demoUserMessageRoom2,
-      userId: dummyUserId,
+      userId: chatPartnerId,
       text: __('demo.messages.1'),
     });
     Clock.clear();
-    // TODO: Do this thing in the comments.insert method,
-    // Everyone has seen his own comments! So set it to be seen by him, when he comments.
-    Meteor.users.update({ _id: demoUserId }, { $set: {
-      lastSeens: [
-        { [demoUserMessageRoom2]: { timestamp: moment().subtract(4, 'hours').toDate() } },
-      ],
-    } });
+    // lastSeens were updated in the comments.insert method,
 
     demoBuilder.generateDemoPayments(demoParcel);
 
     Meteor.setTimeout(function () {
-      deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
-    }, demoUserLifetime);
+      purgeDemoUserWithParcel(demoUserId, demoParcelId, demoCommunityId);
+    }, DEMO_LIFETIME);
 
     const email = Meteor.users.findOne({ _id: demoUserId }).getPrimaryEmail();
     return email;
   },
 });
 
-export function deleteDemoUsersAfterRestart(lang, demoOrTest = 'demo') {
+export function purgeExpiringDemoUsers(lang, demoOrTest = 'demo') {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const community = Communities.findOne({ name: __(`${demoOrTest}.house`) });
   if (!community) return;
@@ -1133,9 +1101,9 @@ export function deleteDemoUsersAfterRestart(lang, demoOrTest = 'demo') {
   demoBuilder.demoUsersList().forEach((user) => {
     const parcelId = demoBuilder.parcelIdOfDemoUser(user);
     const currentTime = moment().valueOf();
-    let timeUntilDelete = moment(user.createdAt).add(demoUserLifetime).subtract(currentTime).valueOf();
+    let timeUntilDelete = moment(user.createdAt).add(DEMO_LIFETIME).subtract(currentTime).valueOf();
     if (timeUntilDelete < 0) timeUntilDelete = 0;
-    Meteor.setTimeout(() => deleteDemoUserWithRelevancies(user._id, parcelId, communityId),
+    Meteor.setTimeout(() => purgeDemoUserWithParcel(user._id, parcelId, communityId),
       timeUntilDelete);
   });
 }
