@@ -1,0 +1,37 @@
+import { Meteor } from 'meteor/meteor';
+import { DDP } from 'meteor/ddp';
+import fs from 'fs';
+import { ShareddocsStore as store } from '/imports/api/shareddocs/shareddocs-store.js';
+
+export function uploadFileSimulation(storeParams, path) {
+  // console.log('upload file simulation', path, storeParams);
+  // The object passed can potentially be empty, BUT if you do custom-checks in `transformWrite`
+  //  be sure to pass it the information it needs there. It is important, that in `transformWrite`
+  //  you link up from & to parameters, otherwise nothing will happen
+  const fileId = store.create(storeParams);
+  const readStream = fs.createReadStream(path);  // create the stream
+  readStream.on('error', (err) => {
+    console.log('error in readStream', err);
+  });
+  // Save the file to the store
+  store.write(readStream, fileId, Meteor.bindEnvironment((err, file) => {
+    if (err) console.log('error in Store.write', err, file);
+    // else console.log('successful', file);
+  }));
+}
+
+export function runWithFakeUserId(userId, toRun) {
+  const DDPCommon = Package['ddp-common'].DDPCommon;
+  const invocation = new DDPCommon.MethodInvocation({
+    isSimulation: false,
+    userId,
+    setUserId: () => {},
+    unblock: () => {},
+    connection: {},
+    randomSeed: Math.random(),
+  });
+
+  DDP._CurrentInvocation.withValue(invocation, () => {
+    toRun();
+  });
+}

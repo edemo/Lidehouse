@@ -19,7 +19,7 @@ import '/imports/api/transactions/breakdowns/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/transactions/batches/methods.js';
 import { insert as insertTx } from '/imports/api/transactions/methods.js';
-
+import { runWithFakeUserId, uploadFileSimulation } from './demo-upload';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
@@ -40,6 +40,9 @@ export class CommunityBuilder {
   }
   community() {
     return Communities.findOne(this.communityId);
+  }
+  getUserWithRole(role) {
+    return Memberships.findOne({ communityId: this.communityId, role }).personId;
   }
   create(name, data) {
     const dataExtended = _.extend({ communityId: this.communityId }, data);
@@ -173,6 +176,18 @@ export class CommunityBuilder {
 
       this.generateDemoPayments(parcel);
     }
+  }
+  uploadShareddoc(fileSpec) {
+    const managerId = this.getUserWithRole('manager');
+    runWithFakeUserId(managerId, () => {
+      uploadFileSimulation({
+        communityId: this.communityId,
+        userId: managerId,
+        name: fileSpec.name[this.lang] || fileSpec.name,
+        type: fileSpec.type,
+        folderId: fileSpec.folder,
+      }, fileSpec.file[this.lang] || fileSpec.file);
+    });
   }
 }
 

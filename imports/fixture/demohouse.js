@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
-import { DDP } from 'meteor/ddp';
 import { TAPi18n } from 'meteor/tap:i18n';
 import faker from 'faker';
 import { moment } from 'meteor/momentjs:moment';
@@ -34,46 +33,6 @@ import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
 import { CommunityBuilder, DemoCommunityBuilder } from './community-builder.js';
-
-if (Meteor.isServer) {
-  import fs from 'fs';
-  import { ShareddocsStore as store } from '/imports/api/shareddocs/shareddocs-store.js';
-
-  function uploadFileSimulation(storeParams, path) {
-     // the object passed can potentially be empty, BUT if you do custom-checks in `transformWrite`
-    //  be sure to pass it the information it needs there. It is important, that in `transformWrite`
-    //  you link up from & to parameters, otherwise nothing will happen
-    const fileId = store.create(
-      storeParams
-    );
-    const readStream = fs.createReadStream(path)  // create the stream
-    readStream.on('error', (err) => {
-      console.log('error in readStream', err);
-    });
-    // Save the file to the store
-    store.write(readStream, fileId, Meteor.bindEnvironment((err, file) => {
-      if (err) {
-        console.log('error in Store.write', err, file);
-      }
-    }));
-  }
-
-  function runWithFakeUserId(userId, toRun) {
-    const DDPCommon = Package['ddp-common'].DDPCommon;
-    const invocation = new DDPCommon.MethodInvocation({
-      isSimulation: false,
-      userId,
-      setUserId: () => {},
-      unblock: () => {},
-      connection: {},
-      randomSeed: Math.random(),
-    });
-
-    DDP._CurrentInvocation.withValue(invocation, () => {
-      toRun();
-    });
-  }
-}
 
 export function insertDemoHouse(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
@@ -621,85 +580,61 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Shareddocs =====
 
-  let filename1;
-  let filename2;
-  let filename3;
-  let filename4;
-  let filename5 = 'bikestorage.jpg';
-  let demofile1 = 'assets/app/demohouseDocs/alaprajz.jpg';
-  let demofile2;
-  let demofile3;
-  let demofile4;
-  let demofile5 = 'assets/app/demohouseDocs/kerekpartarolo.jpg';
+  const serverFilePath = 'assets/app/demohouseDocs/';
 
-  if (lang === 'hu') {
-    filename1 = 'Alaprajz.jpg';
-    filename2 = 'Fontos_telefonszámok.xls';
-    filename3 = 'Társasházi_törvény.pdf';
-    filename4 = 'SZMSZ_201508.pdf';
-    demofile2 = 'assets/app/demohouseDocs/telefon.xls';
-    demofile3 = 'assets/app/demohouseDocs/tv.pdf';
-    demofile4 = 'assets/app/demohouseDocs/szmsz.pdf';
-  }
-  if (lang === 'en') {
-    filename1 = 'Floorplan.jpg';
-    filename2 = 'Important_phone_numbers.xls';
-    filename3 = 'Act.pdf';
-    filename4 = 'ByLaws.pdf';
-    demofile2 = 'assets/app/demohouseDocs/phone.xls';
-    demofile3 = 'assets/app/demohouseDocs/act.pdf';
-    demofile4 = 'assets/app/demohouseDocs/bylaws.pdf';
-  }
-
-  runWithFakeUserId(demoManagerId, () => {
-    uploadFileSimulation({
-      name: filename1,
-      type: 'image/jpg',
-      communityId: demoCommunityId,
-      userId: demoManagerId,
-      folderId: 'main',
-    }, demofile1);
+  demoBuilder.uploadShareddoc({
+    file: serverFilePath + 'alaprajz.jpg',
+    name: {
+      en: 'Floorplan.jpg',
+      hu: 'Alaprajz.jpg',
+    },
+    type: 'image/jpg',
+    folder: 'main',
   });
-
-  runWithFakeUserId(demoManagerId, () => {
-    uploadFileSimulation({
-      name: filename2,
-      type: 'application/vnd.ms-excel',
-      communityId: demoCommunityId,
-      userId: demoManagerId,
-      folderId: 'main',
-    }, demofile2);
+  demoBuilder.uploadShareddoc({
+    file: {
+      en: serverFilePath + 'phone.xls',
+      hu: serverFilePath + 'telefon.xls',
+    },
+    name: {
+      en: 'Important_phone_numbers.xls',
+      hu: 'Fontos_telefonszámok.xls',
+    },
+    type: 'application/vnd.ms-excel',
+    folder: 'main',
   });
-
-  runWithFakeUserId(demoManagerId, () => {
-    uploadFileSimulation({
-      name: filename3,
-      type: 'application/pdf',
-      communityId: demoCommunityId,
-      userId: demoManagerId,
-      folderId: 'main',
-    }, demofile3);
+  demoBuilder.uploadShareddoc({
+    file: {
+      en: serverFilePath + 'act.pdf',
+      hu: serverFilePath + 'tv.pdf',
+    },
+    name: {
+      en: 'Act.pdf',
+      hu: 'Társasházi_törvény.pdf',
+    },
+    type: 'application/pdf',
+    folder: 'main',
   });
-
-  runWithFakeUserId(demoManagerId, () => {
-    uploadFileSimulation({
-      name: filename4,
-      type: 'application/pdf',
-      communityId: demoCommunityId,
-      userId: demoManagerId,
-      folderId: 'community',
-    }, demofile4);
+  demoBuilder.uploadShareddoc({
+    file: {
+      en: serverFilePath + 'bylaws.pdf',
+      hu: serverFilePath + 'szmsz.pdf',
+    },
+    name: {
+      en: 'ByLaws.pdf',
+      hu: 'SZMSZ_201508.pdf',
+    },
+    type: 'application/pdf',
+    folder: 'community',
   });
-
-  runWithFakeUserId(demoManagerId, () => {
-    uploadFileSimulation({
-      name: filename5,
-      type: 'image/jpg',
-      communityId: demoCommunityId,
-      userId: demoManagerId,
-      folderId: 'voting',
-      topicId: voteTopic3,
-    }, demofile5);
+  demoBuilder.uploadShareddoc({
+    file: serverFilePath + 'kerekpartarolo.jpg',
+    name: {
+      en: 'bikestorage.jpg',
+      hu: 'kerekpartarolo.jpg',
+    },
+    type: 'image/jpg',
+    folder: 'voting',
   });
 
   // ===== Tickets =====
