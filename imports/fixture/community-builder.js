@@ -11,18 +11,20 @@ import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Comments } from '/imports/api/comments/comments.js';
+import '/imports/api/comments/methods.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-// import { TxDefs } from '/imports/api/transactions/tx-defs.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import '/imports/api/transactions/breakdowns/methods.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/api/transactions/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
-import { insert as insertParcelBilling } from '/imports/api/transactions/batches/methods.js';
-import { insert as insertTx } from '/imports/api/transactions/methods.js';
-import { runWithFakeUserId, uploadFileSimulation } from './demo-upload';
+import '/imports/api/transactions/batches/methods.js';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
+import { runWithFakeUserId, uploadFileSimulation } from './demo-upload';
+
 export class CommunityBuilder {
   constructor(communityId, demoOrTest, lang) {
     this.communityId = communityId;
@@ -129,6 +131,10 @@ export class CommunityBuilder {
     if (membershipData) Memberships.update(mId, { $set: membershipData });
     return mId;
   }
+  createComment(data) {
+    const comment = Factory.build('comment', data);
+    Comments.methods.insert._execute({ userId: data.userId }, comment);
+  }
   name2code(breakdownName, nodeName) {
     return Breakdowns.name2code(breakdownName, nodeName, this.communityId);
   }
@@ -136,21 +142,27 @@ export class CommunityBuilder {
     const parcel = Parcels.findOne({ communityId: this.communityId, serial });
     return Localizer.parcelRef2code(parcel.ref);
   }
+  createTx(data) {
+    Transactions.methods.insert._execute({ userId: this.getUserWithRole('accountant') },
+      _.extend({ communityId: this.communityId }, data),
+    );
+  }
+  createParcelBilling(data) {
+    ParcelBillings.methods.insert._execute({ userId: this.getUserWithRole('accountant') },
+      _.extend({ communityId: this.communityId }, data),
+    );
+  }
   generateDemoPayments(parcel) {
-    const accountantId = Memberships.findOne({ communityId: this.communityId, role: 'accountant' }).person.userId;
-
     for (let mm = 1; mm < 13; mm++) {
       const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
-      insertParcelBilling._execute({ userId: accountantId }, {
-        communityId: this.communityId,
+      this.createParcelBilling({
         valueDate,
         projection: 'perArea',
         amount: 275,
         payinType: this.name2code('Owner payin types', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
       });
-      insertTx._execute({ userId: accountantId }, {
-        communityId: this.communityId,
+      this.createTx({
         valueDate,
         amount: 275 * parcel.area,
         credit: [{
@@ -163,7 +175,7 @@ export class CommunityBuilder {
       });
     }
   }
-  insertLoadsOfFakeData(parcelCount) {
+  insertLoadsOfFakeMembers(parcelCount) {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;
 
     for (let i = 0; i < parcelCount; i++) {

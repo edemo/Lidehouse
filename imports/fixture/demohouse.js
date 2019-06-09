@@ -4,8 +4,8 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
+
 import { debugAssert } from '/imports/utils/assert.js';
-import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -19,14 +19,10 @@ import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
-// import { TxDefs } from '/imports/api/transactions/tx-defs.js';
 import '/imports/api/transactions/breakdowns/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
-import { insert as insertParcelBilling } from '/imports/api/transactions/batches/methods.js';
-import { insert as insertTx } from '/imports/api/transactions/methods.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -383,7 +379,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       const path = `demo.topic.${topicNo}.comment.${commentNo}`;
       const commentText = __(path);
       if (commentText !== path) {
-        Comments.insert({
+        demoBuilder.createComment({
           topicId,
           userId: (topicNo == 2 && commentNo == 2) ? sameUser() : nextUser(),
           text: commentText,
@@ -420,13 +416,13 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Votes =====
 
-  const agendaFirstId = demoBuilder.create('agenda', {
+  const agenda0 = demoBuilder.create('agenda', {
     title: __('demo.agenda.0.title'),
 //    topicIds: [voteTopic0, voteTopic1],
   });
-  const agendaSecondId = demoBuilder.create('agenda', {
+  const agenda1 = demoBuilder.create('agenda', {
     title: __('demo.agenda.1.title'),
-//    topicIds: [voteTopic4, voteTopic5, voteTopic5],
+//    topicIds: [voteTopic3, voteTopic4, voteTopic5],
   });
 
   const ownerships = Memberships.find({ communityId: demoCommunityId, active: true, role: 'owner', 'person.userId': { $exists: true } }).fetch();
@@ -441,7 +437,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     userId: demoManagerId,
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
-    agendaId: agendaFirstId,
+    agendaId: agenda0,
     vote: {
       closesAt: moment(demoTopicDates[1]).add(5, 'weeks').toDate(),  // its past close date
       procedure: 'online',
@@ -460,7 +456,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     userId: demoManagerId,
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
-    agendaId: agendaFirstId,
+    agendaId: agenda0,
     vote: {
       closesAt: moment('2017-10-14 09:04').toDate(),
       procedure: 'online',
@@ -501,7 +497,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     userId: demoManagerId,
     title: __('demo.vote.3.title'),
     text: __('demo.vote.3.text'),
-    agendaId: agendaSecondId,
+    agendaId: agenda1,
     vote: {
       closesAt: moment().add(2, 'month').toDate(),
       procedure: 'online',
@@ -517,7 +513,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     userId: ownerships[1].person.userId,
     title: __('demo.vote.4.title'),
     text: __('demo.vote.4.text'),
-    agendaId: agendaSecondId,
+    agendaId: agenda1,
     vote: {
       closesAt: moment().add(2, 'month').toDate(),
       type: 'preferential',
@@ -535,7 +531,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   castDemoVotes(voteTopic4, [null, [0, 1, 2, 3], null, [1, 2, 3, 0], null, [2, 3, 0, 1], null, [1, 0, 2, 3], null, [1, 2, 3, 0], null, [1, 2, 0, 3]]);
   ['0', '1'].forEach((commentNo) => {
     Clock.setSimulatedTime(moment().subtract(3, 'days').add(commentNo + 2, 'minutes').toDate());
-    Comments.insert({
+    demoBuilder.createComment({
       topicId: voteTopic4,
       userId: nextUser(),
       text: __(`demo.vote.4.comment.${commentNo}`),
@@ -548,7 +544,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     userId: ownerships[8].person.userId,
     title: __('demo.vote.5.title'),
     text: __('demo.vote.5.text'),
-    agendaId: agendaSecondId,
+    agendaId: agenda1,
     vote: {
       closesAt: moment().add(2, 'month').toDate(),
       procedure: 'online',
@@ -655,7 +651,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.setSimulatedTime(moment().subtract(3950, 'minutes').toDate())
-  Comments.insert({
+  demoBuilder.createComment({
     topicId: ticket2,
     userId: nextUser(),
     text: __('demo.ticket.2.comment.0'),
@@ -684,8 +680,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     const valueDate = new Date(`2017-${mm}-12`);
 
-    insertParcelBilling._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
+    demoBuilder.createParcelBilling({
       valueDate,
       projection: 'perArea',
       amount: 275,
@@ -695,8 +690,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     const parcelsWithNoWaterMeter = Parcels.find({ communityId: demoCommunityId, waterMetered: false });
     parcelsWithNoWaterMeter.forEach((parcel) => {
-      insertParcelBilling._execute({ userId: demoAccountantId }, {
-        communityId: demoCommunityId,
+      demoBuilder.createParcelBilling({
         valueDate,
         projection: 'perHabitant',
         amount: 2500,
@@ -705,8 +699,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       });
     });
 
-    insertParcelBilling._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
+    demoBuilder.createParcelBilling({
       valueDate,
       projection: 'perArea',
       amount: 85,
@@ -715,8 +708,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   });
 
-  insertParcelBilling._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
+  demoBuilder.createParcelBilling({
     projection: 'absolute',
     amount: 75000,
     valueDate: new Date('2017-08-15'),
@@ -734,8 +726,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       txs.forEach((tx) => {
         tx.journalEntries().forEach((entry) => {
           if (entry.side === 'debit') {
-            insertTx._execute({ userId: demoAccountantId }, {
-              communityId: demoCommunityId,
+            demoBuilder.createTx({
               valueDate: moment(entry.valueDate).add(_.sample([-2, -1, 0, 1, 2]), 'days').toDate(),
               amount: entry.amount,
               credit: [{
@@ -755,8 +746,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   everybodyPaysHisObligations();
 
   // Some unpaid bills (so we can show the parcels that are in debt)
-  insertParcelBilling._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
+  demoBuilder.createParcelBilling({
     projection: 'perArea',
     amount: 200,
     valueDate: new Date('2017-12-15'),
@@ -765,11 +755,10 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   // Unidentified payin
-  insertTx._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
+  demoBuilder.createTx({
     valueDate: new Date('2017-12-30'),
     amount: 24500,
-    note: 'Sogoromnak fizetem be mert elutazott Madridba',
+    note: 'Sógoromnak fizetem be mert elutazott Madridba',
     debit: [{
       account: demoBuilder.name2code('Assets', 'Folyószámla'),
     }],
@@ -786,9 +775,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     ['Assets', 'Megtakarítási számla', 120000],
   ];
   openings.forEach((opening) => {
-    insertTx._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-    //  defId: defOpening,
+    demoBuilder.createTx({
       valueDate: new Date('2017-01-01'),
       amount: opening[2],
       credit: [{
@@ -802,9 +789,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // === Incomes ===
 
-  insertTx._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
-//    defId: defIncome,
+  demoBuilder.createTx({
     valueDate: new Date('2017-06-01'),
     amount: 3500,
     credit: [{
@@ -817,9 +802,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
-    insertTx._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-//      defId: defIncome,
+    demoBuilder.createTx({
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
       credit: [{
@@ -832,9 +815,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   });
 
-  insertTx._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
-//    defId: defIncome,
+  demoBuilder.createTx({
     valueDate: new Date('2017-09-15'),
     amount: 500000,
     credit: [{
@@ -847,9 +828,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.1'),
   });
 
-  insertTx._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
-//    defId: defIncome,
+  demoBuilder.createTx({
     valueDate: new Date('2017-05-10'),
     amount: 55000,
     credit: [{
@@ -862,9 +841,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.2'),
   });
 
-  insertTx._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
-//    defId: defIncome,
+  demoBuilder.createTx({
     valueDate: new Date('2017-10-15'),
     amount: 500000,
     credit: [{
@@ -877,9 +854,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.3'),
   });
 
-  insertTx._execute({ userId: demoAccountantId }, {
-    communityId: demoCommunityId,
-//    defId: defLoan,
+  demoBuilder.createTx({
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
     credit: [{
@@ -894,9 +869,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // == Expenses
 
   for (let mm = 1; mm < 13; mm++) {
-    insertTx._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-//      defId: defExpense,
+    demoBuilder.createTx({
       valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: 80000 + Math.floor(Math.random() * 50000),
       credit: [{
@@ -908,9 +881,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
 
-    insertTx._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-//      defId: defExpense,
+    demoBuilder.createTx({
       valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: 98500,
       credit: [{
@@ -922,9 +893,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
 
-    insertTx._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-//      defId: defExpense,
+    demoBuilder.createTx({
       valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 150000 + Math.floor(Math.random() * 50000),
       credit: [{
@@ -940,9 +909,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // == Bills
 
   ['03', '06', '09', '12'].forEach(mm => {
-    insertTx._execute({ userId: demoAccountantId }, {
-      communityId: demoCommunityId,
-  //      defId: defExpense,
+    demoBuilder.createTx({
       valueDate: new Date(`2017-${mm}-20`),
       amount: 282600,
       partner: 'Super-Clean Kft',
@@ -955,8 +922,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     if (mm !== '12') {  // Last bill is paid but not yet processed
-      insertTx._execute({ userId: demoAccountantId }, {
-        communityId: demoCommunityId,
+      demoBuilder.createTx({
         valueDate: new Date(`2017-${mm}-25`),
         amount: 282600,
         partner: 'Super-Clean Kft',
@@ -969,8 +935,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         }],
       });
     } else {
-      insertTx._execute({ userId: demoAccountantId }, {
-        communityId: demoCommunityId,
+      demoBuilder.createTx({
         valueDate: new Date(`2017-${mm}-25`),
         amount: 282600,
         ref: `SC/2017/${mm}`,
@@ -1056,7 +1021,7 @@ Meteor.methods({
       userId: demoUserId,
       participantIds: [demoUserId, demoManagerId],
     });
-    Comments.methods.insert._execute({ userId: demoManagerId }, {
+    demoBuilder.createComment({
       topicId: demoUserMessageRoom,
       userId: demoManagerId,
       text: __('demo.manager.message'),
@@ -1066,13 +1031,13 @@ Meteor.methods({
       participantIds: [demoUserId, chatPartnerId],
     });
     Clock.setSimulatedTime(moment().subtract(6, 'hours').toDate());
-    Comments.methods.insert._execute({ userId: demoUserId }, {
+    demoBuilder.createComment({
       topicId: demoUserMessageRoom2,
       userId: demoUserId,
       text: __('demo.messages.0'),
     });
     Clock.setSimulatedTime(moment().subtract(3, 'hours').toDate());
-    Comments.methods.insert._execute({ userId: chatPartnerId }, {
+    demoBuilder.createComment({
       topicId: demoUserMessageRoom2,
       userId: chatPartnerId,
       text: __('demo.messages.1'),

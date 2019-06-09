@@ -35,12 +35,13 @@ export function insertUnittestFixture(lang) {
 
   // ===== Communities =====
 
-  let demoCommunityId = Communities.findOne({ name: 'Unittest house' });
-  debugAssert(!demoCommunityId, 'Db was not cleaned before unit test');
-  demoCommunityId = Factory.create('community', {
+  let demoCommunity = Communities.findOne({ name: 'Unittest house' });
+  debugAssert(!demoCommunity, 'Db was not cleaned before unit test');
+  demoCommunity = Factory.create('community', {
     name: 'Unittest house',
     totalunits: 100,
-  })._id;
+  });
+  const demoCommunityId = demoCommunity._id;
 
   const otherCommunityId = Factory.create('community', {
     name: 'Another community',
@@ -225,7 +226,7 @@ export function insertUnittestFixture(lang) {
   // ===== Votes =====
 
   const agendaId = demoBuilder.create('agenda');
-  const ownerships = Memberships.find({ communityId: demoCommunityId, active: true, role: 'owner', 'person.userId': { $exists: true } }).fetch();
+  const voterships = demoCommunity.voterships();
 
   const voteTopic0 = demoBuilder.create('vote', {
     userId: demoUserId,
@@ -238,10 +239,10 @@ export function insertUnittestFixture(lang) {
     },
   });
 
-  castVote._execute({ userId: ownerships[0].person.userId }, { topicId: voteTopic0, castedVote: [2] });  // no
-  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic0, castedVote: [1] });  // yes
-  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic0, castedVote: [2] });  // no
-  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
+  castVote._execute({ userId: voterships[0].personId }, { topicId: voteTopic0, castedVote: [2] });  // no
+  castVote._execute({ userId: voterships[1].personId }, { topicId: voteTopic0, castedVote: [1] });  // yes
+  castVote._execute({ userId: voterships[2].personId }, { topicId: voteTopic0, castedVote: [2] });  // no
+  castVote._execute({ userId: voterships[3].personId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
 
   closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic0 }); // This vote is already closed
 
@@ -263,15 +264,14 @@ export function insertUnittestFixture(lang) {
     // not part of any agenda
   });
 
-  castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
-  castVote._execute({ userId: ownerships[2].person.userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
-  castVote._execute({ userId: ownerships[3].person.userId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
+  castVote._execute({ userId: voterships[1].personId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
+  castVote._execute({ userId: voterships[2].personId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: voterships[3].personId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
 
   ['0', '1'].forEach(commentNo =>
-    Comments.insert({
+    demoBuilder.createComment({
       topicId: voteTopic2,
       userId: nextUser(),
-      text: __(`demo.vote.2.comment.${commentNo}`),
     })
   );
 
@@ -285,21 +285,18 @@ export function insertUnittestFixture(lang) {
 
   // ===== Rooms =====
 
+  const chatPartnerId = dummyUsers[2];
   const demoMessageRoom = demoBuilder.create('room', {
     userId: demoUserId,
-    participantIds: [demoUserId, dummyUsers[2]],
+    participantIds: [demoUserId, chatPartnerId],
   });
-
-  Comments.insert({
+  demoBuilder.createComment({
     topicId: demoMessageRoom,
-    userId: dummyUsers[2],
-    text: __('demo.messages.0'),
+    userId: chatPartnerId,
   });
-
-  Comments.insert({
+  demoBuilder.createComment({
     topicId: demoMessageRoom,
     userId: demoUserId,
-    text: __('demo.messages.1'),
   });
 
   // ===== Breakdowns =====
@@ -322,7 +319,7 @@ export function insertUnittestFixture(lang) {
   // ===== Transactions =====
 
   //
-//  otherBuilder.insertLoadsOfFakeData(10);
+//  otherBuilder.insertLoadsOfFakeMembers(10);
 
   // ===== Returning a bunch of pointers, for easy direct access
 

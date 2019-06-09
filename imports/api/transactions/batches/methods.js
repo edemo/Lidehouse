@@ -85,3 +85,7 @@ export const insert = new ValidatedMethod({
     return id;
   },
 });
+
+ParcelBillings.methods = {
+  insert, apply,
+};
