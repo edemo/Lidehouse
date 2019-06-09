@@ -44,6 +44,10 @@ export class CommunityBuilder {
   getUserWithRole(role) {
     return Memberships.findOne({ communityId: this.communityId, role }).personId;
   }
+  build(name, data) {
+    const dataExtended = _.extend({ communityId: this.communityId }, data);
+    return Factory.build(name, dataExtended);
+  }
   create(name, data) {
     const dataExtended = _.extend({ communityId: this.communityId }, data);
     return Factory.create(name, dataExtended)._id;

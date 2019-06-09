@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { _ } from 'meteor/underscore';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 
 import { Topics } from '../topics.js';
 
@@ -54,4 +56,15 @@ export const ticketsSchema = new SimpleSchema([
 Meteor.startup(function attach() {
   ticketsSchema.i18n('schemaTickets');   // translation is different from schemaTopics
   TicketStatusChangeSchema.i18n('schemaTicketStatusChange');
+});
+
+Factory.define('ticket', Topics, {
+  category: 'ticket',
+  title: 'New ticket on ' + faker.random.word(),
+  text: faker.lorem.paragraph(),
+  ticket: {
+    category: 'building',
+    urgency: 'normal',
+    status: 'reported',
+  },
 });

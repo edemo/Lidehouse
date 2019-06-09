@@ -23,37 +23,19 @@ import { castVote } from '/imports/api/topics/votings/methods.js';
 
 if (Meteor.isServer) {
   let Fixture;
-  let agendaId;
-  const createVoting = function (type) {
-    return {
-      communityId: Fixture.demoCommunityId,
-      userId: Fixture.demoUserId,
-      category: 'vote',
-      title: `${type} Voting`,
-      text: 'Choose!',
-      agendaId,
-      vote: {
-        closesAt: moment().add(14, 'day').toDate(),
-        procedure: 'online',
-        effect: 'legal',
-        type,
-        choices: ['white', 'red', 'yellow', 'grey'],
-      },
-    };
-  };
-
   describe('votings', function () {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
-      agendaId = insertAgenda._execute({ userId: Fixture.demoManagerId }, { communityId: Fixture.demoCommunityId, title: 'Test Agenda' });
     });
 
     describe('permissions', function () {
       let votingId;
 
       it('can create new voting', function (done) {
-        votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('yesno'));
+        votingId = insertTopic._execute({ userId: Fixture.demoManagerId },
+          Fixture.builder.build('vote', { userId: Fixture.demoManagerId })
+        );
         chai.assert.isDefined(votingId);
         const voting = Topics.findOne(votingId);
         chai.assert.equal(voting._id, votingId);
@@ -61,7 +43,8 @@ if (Meteor.isServer) {
       });
 
       it('cannot create new legal voting without permission', function (done) {
-        const voting = createVoting('yesno');
+        const voting = Fixture.builder.build('vote', { userId: Fixture.demoUserId });
+        voting.vote.effect = 'legal';
         chai.assert.throws(() => {
           insertTopic._execute({ userId: Fixture.demoUserId }, voting);
         });
@@ -107,9 +90,19 @@ if (Meteor.isServer) {
 
     describe('evaluation', function () {
       let votingId;
+      let agendaId;
 
       before(function () {
-        votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('yesno'));
+        agendaId = insertAgenda._execute({ userId: Fixture.demoManagerId }, {
+          communityId: Fixture.demoCommunityId,
+          title: 'Test Agenda',
+        });
+        const voting = Fixture.builder.build('vote', {
+          userId: Fixture.demoManagerId,
+          agendaId,
+        });
+        voting.vote.type = 'yesno';
+        votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, voting);
       });
 
       it('no evaluation on fresh voting', function (done) {
@@ -313,7 +306,9 @@ if (Meteor.isServer) {
         revokeDelegation3To4();
         assertsAfterThirdVote();
 
-        insertDelegation3To4('agenda', Agendas.findOne({})._id);
+        console.log(agendaId, Agendas.findOne({ _id: { $ne: agendaId } }));
+        insertDelegation3To4('agenda', Agendas.findOne({ _id: { $ne: agendaId } })._id);
+        console.log(JSON.stringify(Topics.findOne(votingId)));
         assertsAfterThirdVote();  // no effect here
         revokeDelegation3To4();
         assertsAfterThirdVote();
@@ -323,7 +318,7 @@ if (Meteor.isServer) {
         revokeDelegation3To4();
         assertsAfterThirdVote();
 
-        insertDelegation3To4('topic', Topics.findOne({})._id);
+        insertDelegation3To4('topic', Topics.findOne({ _id: { $ne: votingId } })._id);
         assertsAfterThirdVote();  // no effect here
         revokeDelegation3To4();
         assertsAfterThirdVote();
@@ -338,17 +333,17 @@ if (Meteor.isServer) {
 
       describe('multiChoose evaluation', function () {
 
-        let votingId2;
-
         before(function () {
-          votingId2 = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('multiChoose'));
+          const voting = Fixture.builder.build('vote', { userId: Fixture.demoManagerId });
+          voting.vote.type = 'multiChoose';
+          votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, voting);
         });
 
         it('evaluates correct vote summary on multiChoose vote', function (done) {
-          chai.assert.isDefined(votingId2);
-          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId2, castedVote: [1] });
-          castVote._execute({ userId: Fixture.dummyUsers[4] }, { topicId: votingId2, castedVote: [0, 1] });
-          const updatedVoting = Topics.findOne(votingId2);
+          chai.assert.isDefined(votingId);
+          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [1] });
+          castVote._execute({ userId: Fixture.dummyUsers[4] }, { topicId: votingId, castedVote: [0, 1] });
+          const updatedVoting = Topics.findOne(votingId);
           chai.assert.deepEqual(updatedVoting.voteSummary, { 0: 40, 1: 50 });
           done();
         });

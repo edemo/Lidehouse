@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
@@ -166,6 +167,10 @@ Topics.publicFields = {
   revision: 1,
 };
 
-Factory.define('topic', Topics, {
-  communityId: () => Factory.get('community'),
+Topics.categoryValues.forEach((category) => {
+  Factory.define(category, Topics, {
+    category,
+    title: `New ${(category)} about ${faker.random.word()}`,
+    text: faker.lorem.paragraph(),
+  });
 });

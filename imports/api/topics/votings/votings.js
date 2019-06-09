@@ -4,6 +4,8 @@ import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 
 import { getCurrentUserLang } from '/imports/api/users/users.js';
 import { Person } from '/imports/api/users/person.js';
@@ -270,3 +272,16 @@ Topics.publicFields.extendForUser = function extendForUser(userId, communityId) 
 //    return _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
 //  }
 };
+
+Factory.define('vote', Topics, {
+  category: 'vote',
+  title: 'New voting on ' + faker.random.word(),
+  text: faker.lorem.paragraph(),
+  vote: {
+    closesAt: () => moment().add(14, 'day').toDate(),
+    procedure: 'online',
+    effect: 'legal',
+    type: 'choose',
+    choices: ['white', 'red', 'yellow', 'grey'],
+  },
+});

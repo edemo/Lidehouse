@@ -202,61 +202,34 @@ export function insertUnittestFixture(lang) {
   }
 
   ['0', '1', '2'].forEach((topicNo) => {
-    const topicId = Topics.insert({
-      communityId: demoCommunityId,
+    const topicId = demoBuilder.create('forum', {
       userId: nextUser(),
-      category: 'forum',
-      title: __(`demo.topic.${topicNo}.title`),
-      text: __(`demo.topic.${topicNo}.text`),
     });
-
     ['0', '1', '2'].forEach((commentNo) => {
-      const path = `demo.topic.${topicNo}.comment.${commentNo}`;
-      const commentText = __(path);
-      if (commentText !== path) {
-        Comments.insert({
-          topicId,
-          userId: (topicNo == 2 && commentNo == 2) ? sameUser() : nextUser(),
-          text: commentText,
-        });
-      }
+      Comments.insert({
+        topicId,
+        userId: (topicNo == 2 && commentNo == 2) ? sameUser() : nextUser(),
+      });
     });
   });
 
   // ===== News =====
 
-  ['0', '1', '2'].forEach((newsNo) => {
-    const newsId = Topics.insert({
-      communityId: demoCommunityId,
+  ['0', '1', '2'].forEach((topicNo) => {
+    const topicId = demoBuilder.create('news', {
       userId: dummyUsers[0],
-      category: 'news',
-      title: __(`demo.news.${newsNo}.title`),
-      text: __(`demo.news.${newsNo}.text`),
+      sticky: topicNo == 2,
     });
-
-    if (newsNo == 2) {
-      Topics.update(newsId, {
-        $set: {
-          text: 'Doctor: <span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +36 (1) 345-562 <br>' +
-                'Polizei: <small class="text-alt">07</small> <br>' +
-                'Information: <small class="text-alt"><span class="glyphicon glyphicon-phone" aria-hidden="true"></span> +3630 6545621' +
-                ' / <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> baltazar.imre@demo.com</small>',
-          sticky: true,
-        },
-      });
-    }
   });
 
   // ===== Votes =====
 
+  const agendaId = demoBuilder.create('agenda');
   const ownerships = Memberships.find({ communityId: demoCommunityId, active: true, role: 'owner', 'person.userId': { $exists: true } }).fetch();
 
-  const voteTopic0 = Topics.insert({
-    communityId: demoCommunityId,
+  const voteTopic0 = demoBuilder.create('vote', {
     userId: demoUserId,
-    category: 'vote',
-    title: __('demo.vote.0.title'),
-    text: __('demo.vote.0.text'),
+    agendaId,
     vote: {
       closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
       procedure: 'online',
@@ -272,12 +245,9 @@ export function insertUnittestFixture(lang) {
 
   closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic0 }); // This vote is already closed
 
-  const voteTopic1 = Topics.insert({
-    communityId: demoCommunityId,
+  const voteTopic1 = demoBuilder.create('vote', {
     userId: nextUser(),
-    category: 'vote',
-    title: __('demo.vote.1.title'),
-    text: __('demo.vote.1.text'),
+    agendaId,
     vote: {
       closesAt: moment().add(2, 'week').toDate(),
       procedure: 'online',
@@ -288,24 +258,9 @@ export function insertUnittestFixture(lang) {
 
   // No one voted on this yet
 
-  const voteTopic2 = Topics.insert({
-    communityId: demoCommunityId,
+  const voteTopic2 = demoBuilder.create('vote', {
     userId: nextUser(),
-    category: 'vote',
-    title: __('demo.vote.2.title'),
-    text: __('demo.vote.2.text'),
-    vote: {
-      closesAt: moment().add(1, 'month').toDate(),
-      type: 'preferential',
-      procedure: 'online',
-      effect: 'legal',
-      choices: [
-        __('demo.vote.2.choice.0'),
-        __('demo.vote.2.choice.1'),
-        __('demo.vote.2.choice.2'),
-        __('demo.vote.2.choice.3'),
-      ],
-    },
+    // not part of any agenda
   });
 
   castVote._execute({ userId: ownerships[1].person.userId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
@@ -320,80 +275,18 @@ export function insertUnittestFixture(lang) {
     })
   );
 
-  const agenda = Agendas.insert({
-    communityId: demoCommunityId,
-    title: __('demo.agenda.0.title'),
-    topicIds: [voteTopic0, voteTopic1, voteTopic2],
-  });
-
   // ===== Tickets =====
 
-  const ticket0 = Topics.insert({
-    communityId: demoCommunityId,
-    userId: nextUser(),
-    category: 'ticket',
-    title: __('demo.ticket.0.title'),
-    text: __('demo.ticket.0.text'),
-    ticket: {
-      category: 'building',
-      urgency: 'high',
-      status: 'progressing',
-    },
-  });
-
-  const ticket1 = Topics.insert({
-    communityId: demoCommunityId,
-    userId: nextUser(),
-    category: 'ticket',
-    title: __('demo.ticket.1.title'),
-    text: __('demo.ticket.1.text'),
-    ticket: {
-      category: 'building',
-      urgency: 'normal',
-      status: 'closed',
-    },
-  });
-
-  const ticket2 = Topics.insert({
-    communityId: demoCommunityId,
-    userId: nextUser(),
-    category: 'ticket',
-    title: __('demo.ticket.2.title'),
-    text: __('demo.ticket.2.text'),
-    ticket: {
-      category: 'service',
-      urgency: 'normal',
-      status: 'reported',
-    },
-  });
-
-  Comments.insert({
-    topicId: ticket2,
-    userId: nextUser(),
-    text: __('demo.ticket.2.comment.0'),
-  });
-
-  const ticket3 = Topics.insert({
-    communityId: demoCommunityId,
-    userId: nextUser(),
-    category: 'ticket',
-    title: __('demo.ticket.3.title'),
-    text: __('demo.ticket.3.text'),
-    ticket: {
-      category: 'building',
-      urgency: 'low',
-      status: 'closed',
-    },
+  ['0', '1', '2'].forEach((topicNo) => {
+    const topicId = demoBuilder.create('ticket', {
+      userId: nextUser(),
+    });
   });
 
   // ===== Rooms =====
 
-  const demoMessageRoom = Topics.insert({
-    communityId: demoCommunityId,
+  const demoMessageRoom = demoBuilder.create('room', {
     userId: demoUserId,
-    category: 'room',
-    title: 'private chat',
-    text: 'private chat',
     participantIds: [demoUserId, dummyUsers[2]],
   });
 
@@ -441,5 +334,6 @@ export function insertUnittestFixture(lang) {
     demoAccountantId,
     dummyUsers,
     dummyParcels,
+    builder: demoBuilder,
   };
 }

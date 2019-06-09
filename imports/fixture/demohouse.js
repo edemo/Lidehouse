@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { check } from 'meteor/check';
 import { TAPi18n } from 'meteor/tap:i18n';
-import faker from 'faker';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
@@ -372,10 +371,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['0', '1', '2'].forEach((topicNo) => {
     Clock.setSimulatedTime(demoTopicDates[topicNo]);
-    const topicId = Topics.insert({
-      communityId: demoCommunityId,
+    const topicId = demoBuilder.create('forum', {
       userId: nextUser(),
-      category: 'forum',
       title: __(`demo.topic.${topicNo}.title`),
       text: __(`demo.topic.${topicNo}.text`),
     });
@@ -399,10 +396,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['0', '1'].forEach((newsNo) => {
     Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
-    const newsId = Topics.insert({
-      communityId: demoCommunityId,
+    const newsId = demoBuilder.create('news', {
       userId: demoBuilder.dummyUsers[0],
-      category: 'news',
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
     });
@@ -424,13 +419,11 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Votes =====
 
-  const agendaFirstId = Agendas.insert({
-    communityId: demoCommunityId,
+  const agendaFirstId = demoBuilder.create('agenda', {
     title: __('demo.agenda.0.title'),
 //    topicIds: [voteTopic0, voteTopic1],
   });
-  const agendaSecondId = Agendas.insert({
-    communityId: demoCommunityId,
+  const agendaSecondId = demoBuilder.create('agenda', {
     title: __('demo.agenda.1.title'),
 //    topicIds: [voteTopic4, voteTopic5, voteTopic5],
   });
@@ -443,10 +436,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   Clock.setSimulatedTime(moment(demoTopicDates[1]).add(1, 'weeks').toDate());
-  const voteTopic0 = Topics.insert({
-    communityId: demoCommunityId,
+  const voteTopic0 = demoBuilder.create('vote', {
     userId: demoManagerId,
-    category: 'vote',
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
     agendaId: agendaFirstId,
@@ -464,10 +455,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.clear();
   
   Clock.setSimulatedTime(moment('2017-09-20 09:04').toDate());
-  const voteTopic1 = Topics.insert({
-    communityId: demoCommunityId,
+  const voteTopic1 = demoBuilder.create('vote', {
     userId: demoManagerId,
-    category: 'vote',
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
     agendaId: agendaFirstId,
@@ -485,10 +474,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.clear();
 
   Clock.setSimulatedTime(moment('2018-01-03 13:12').toDate());
-  const voteTopic2 = Topics.insert({
-    communityId: demoCommunityId,
+  const voteTopic2 = demoBuilder.create('vote', {
     userId: dummyUserId,
-    category: 'vote',
     title: __('demo.vote.2.title'),
     text: __('demo.vote.2.text'),
     vote: {
@@ -509,10 +496,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.clear();
 
   Clock.setSimulatedTime(moment().subtract(3, 'weeks').toDate());
-  const voteTopic3 = Topics.insert({
-    communityId: demoCommunityId,
+  const voteTopic3 = demoBuilder.create('vote', {
     userId: demoManagerId,
-    category: 'vote',
     title: __('demo.vote.3.title'),
     text: __('demo.vote.3.text'),
     agendaId: agendaSecondId,
@@ -527,10 +512,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   // No one voted on this yet
 
   Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
-  const voteTopic4 = Topics.insert({
-    communityId: demoCommunityId,
+  const voteTopic4 = demoBuilder.create('vote', {
     userId: ownerships[1].person.userId,
-    category: 'vote',
     title: __('demo.vote.4.title'),
     text: __('demo.vote.4.text'),
     agendaId: agendaSecondId,
@@ -560,10 +543,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.clear();
 
   Clock.setSimulatedTime(moment().subtract(3, 'days').toDate());
-  const voteTopic5 = Topics.insert({
-    communityId: demoCommunityId,
+  const voteTopic5 = demoBuilder.create('vote', {
     userId: ownerships[8].person.userId,
-    category: 'vote',
     title: __('demo.vote.5.title'),
     text: __('demo.vote.5.text'),
     agendaId: agendaSecondId,
@@ -639,10 +620,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Tickets =====
 
-  const ticket0 = Topics.insert({
-    communityId: demoCommunityId,
+  const ticket0 = demoBuilder.create('ticket', {
     userId: nextUser(),
-    category: 'ticket',
     title: __('demo.ticket.0.title'),
     text: __('demo.ticket.0.text'),
     ticket: {
@@ -653,10 +632,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   Clock.setSimulatedTime(moment().subtract(3, 'months').add(25, 'minutes').toDate());
-  const ticket1 = Topics.insert({
-    communityId: demoCommunityId,
+  const ticket1 = demoBuilder.create('ticket', {
     userId: nextUser(),
-    category: 'ticket',
     title: __('demo.ticket.1.title'),
     text: __('demo.ticket.1.text'),
     ticket: {
@@ -666,10 +643,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.setSimulatedTime(moment().subtract(3982, 'minutes').toDate());
-  const ticket2 = Topics.insert({
-    communityId: demoCommunityId,
+  const ticket2 = demoBuilder.create('ticket', {
     userId: nextUser(),
-    category: 'ticket',
     title: __('demo.ticket.2.title'),
     text: __('demo.ticket.2.text'),
     ticket: {
@@ -686,10 +661,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(123, 'minutes').toDate());
-  const ticket3 = Topics.insert({
-    communityId: demoCommunityId,
+  const ticket3 = demoBuilder.create('ticket', {
     userId: nextUser(),
-    category: 'ticket',
     title: __('demo.ticket.3.title'),
     text: __('demo.ticket.3.text'),
     ticket: {
@@ -1076,7 +1049,7 @@ const demoUserLifetime = moment.duration(2, 'hours').asMilliseconds();
 Meteor.methods({
   createDemoUserWithParcel(lang) {
     check(lang, String);
-    if (Meteor.isClient) return;  // This should run only on the server side
+    if (Meteor.isClient) return '';  // This should run only on the server side
 
     const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
 
@@ -1102,15 +1075,11 @@ Meteor.methods({
 
     Localizer.addParcel(demoCommunityId, demoParcel, lang);
 
-    const demoManagerId = Memberships.findOne({ communityId: demoCommunityId, role: 'manager' }).person.userId;
-    const dummyUserId = Meteor.users.findOne({ 'emails.0.address': { $regex:  `${lang}.dummyuser@honline.hu` } })._id;
+    const demoManagerId = demoBuilder.getUserWithRole('manager');
+    const dummyUserId = demoBuilder.getUserWithRole('owner');
 
-    const demoUserMessageRoom = Topics.insert({
-      communityId: demoCommunityId,
+    const demoUserMessageRoom = demoBuilder.create('room', {
       userId: demoUserId,
-      category: 'room',
-      title: 'private chat',
-      text: 'private chat',
       participantIds: [demoUserId, demoManagerId],
     });
     Comments.insert({
@@ -1118,12 +1087,8 @@ Meteor.methods({
       userId: demoManagerId,
       text: __('demo.manager.message'),
     });
-    const demoUserMessageRoom2 = Topics.insert({
-      communityId: demoCommunityId,
+    const demoUserMessageRoom2 = demoBuilder.create('room', {
       userId: demoUserId,
-      category: 'room',
-      title: 'private chat',
-      text: 'private chat',
       participantIds: [demoUserId, dummyUserId],
     });
     Clock.setSimulatedTime(moment().subtract(6, 'hours').toDate());
@@ -1153,7 +1118,7 @@ Meteor.methods({
       deleteDemoUserWithRelevancies(demoUserId, demoParcelId, demoCommunityId);
     }, demoUserLifetime);
 
-    const email = Meteor.users.findOne({ _id: demoUserId }).emails[0].address;
+    const email = Meteor.users.findOne({ _id: demoUserId }).getPrimaryEmail();
     return email;
   },
 });

@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
+import { Factory } from 'meteor/dburles:factory';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '../topics.js';
@@ -44,3 +45,9 @@ if (Meteor.isClient) {
     }
   };
 }
+
+Factory.define('room', Topics, {
+  category: 'room',
+  title: 'private chat',
+  text: 'private chat',
+});
