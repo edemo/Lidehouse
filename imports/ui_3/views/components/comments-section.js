@@ -54,7 +54,7 @@ Template.Comments_section.viewmodel({
     const topic = this.templateInstance.data;
     return topic.category === 'vote';
   },
-  events() {
+  eventsOfTopic() {
     const route = FlowRouter.current().route.name;
     const events = Comments.find({ topicId: this._id.value }, { sort: { createdAt: 1 } });
     if (route === 'Board') {
@@ -63,7 +63,7 @@ Template.Comments_section.viewmodel({
     }
     return events;
   },
-  hasMoreComments() {
+  hasMoreEvents() {
     const route = FlowRouter.current().route.name;
     const comments = Comments.find({ topicId: this._id.value });
     return (route === 'Board' && comments.count() > RECENT_COMMENT_COUNT)

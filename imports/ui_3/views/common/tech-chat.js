@@ -6,6 +6,7 @@ import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Rooms } from '/imports/api/topics/rooms/rooms.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import '/imports/api/comments/methods.js';
 import { Communities } from '/imports/api/communities/communities.js';
 
 import './tech-chat.html';
@@ -83,7 +84,7 @@ Template.Tech_chat.events({
     const room = getMyTechSupportRoom();
     let roomId;
     const insertMessage = () => {
-      Meteor.call('comments.insert', {
+      Comments.methods.insert.call({
         communityId,
         topicId: roomId,
         userId: Meteor.userId(),
