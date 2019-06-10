@@ -42,8 +42,10 @@ Communities.schema = new SimpleSchema([
   { avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload } },
   comtype.profileSchema,
   { totalunits: { type: Number } },
+  { management: { type: String, optional: true, autoform: { type: 'textarea' } } },
+  { joinable: { type: Boolean, defaultValue: true } },
   // redundant fields:
-  { parcels: { type: Object, blackbox: true, defaultValue: {} } },
+  { parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } } },
 ]);
 
 Meteor.startup(function indexCommunities() {
@@ -79,6 +81,14 @@ Communities.helpers({
     const users = Memberships.find({ communityId: this._id, active: true, 'person.userId': { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);
   },
+  voterships() {
+    return Memberships.find({ communityId: this._id, active: true, approved: true, role: 'owner', personId: { $exists: true } })
+      .fetch().filter(ownership => !ownership.isRepresentedBySomeoneElse());
+  },
+  voters() {
+    const voters = this.voterships().map(v => v.user());
+    return _.uniq(voters, false, u => u._id);
+  },
   // --- writers ---
   remove() {
     const communityId = this._id;
@@ -105,6 +115,13 @@ Meteor.startup(function attach() {
 });
 
 Factory.define('community', Communities, {
-  name: () => faker.lorem.sentence(),
-  totalunits: 10000,
+  name: () => faker.random.word() + 'house',
+  description: () => faker.lorem.sentence(),
+  zip: () => faker.random.number({ min: 1000, max: 2000 }),
+  city: () => faker.address.city(),
+  street: () => faker.address.streetName(),
+  number: () => faker.random.number(),
+  lot: '123456/1234',
+  avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
+  totalunits: 1000,
 });

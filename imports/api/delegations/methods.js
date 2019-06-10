@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
+import { delegationConfirmationEmail } from '/imports/email/delegation-confirmation.js';
 import { Delegations } from './delegations.js';
 
 // User can only delegate to those who allow incoming delegations
@@ -27,8 +28,13 @@ export const insert = new ValidatedMethod({
     }
     checkTargetUserAllowsDelegatingTo(doc.targetPersonId, doc);
     const delegationId = Delegations.insert(doc);
+    const delegation = Delegations._transform(doc);
 
-    Delegations._transform(doc).getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
+    if (Meteor.isServer) {
+      delegation.getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
+      delegationConfirmationEmail(delegation, 'insert');
+    }
+
     return delegationId;
   },
 });
@@ -51,11 +57,15 @@ export const update = new ValidatedMethod({
 
     Delegations.update({ _id }, modifier);
 
-    const oldDelegationAffects = doc.getAffectedVotings();
-    const newDoc = Delegations.findOne(_id);
-    const newDelegationAffects = newDoc.getAffectedVotings();
-    const affectedVotings = _.uniq(_.union(oldDelegationAffects.fetch(), newDelegationAffects.fetch()), v => v._id);
-    affectedVotings.forEach(voting => voting.voteEvaluate(false));
+    if (Meteor.isServer) {
+      const oldDelegationAffects = doc.getAffectedVotings();
+      const newDoc = Delegations.findOne(_id);
+      const newDelegationAffects = newDoc.getAffectedVotings();
+      const affectedVotings = _.uniq(_.union(oldDelegationAffects.fetch(), newDelegationAffects.fetch()), v => v._id);
+      affectedVotings.forEach(voting => voting.voteEvaluate(false));
+
+      delegationConfirmationEmail(newDoc, 'update', doc);
+    }
   },
 });
 
@@ -74,7 +84,10 @@ export const remove = new ValidatedMethod({
 
     Delegations.remove(_id);
 
-    doc.getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
+    if (Meteor.isServer) {
+      doc.getAffectedVotings().forEach(voting => voting.voteEvaluate(false));
+      delegationConfirmationEmail(doc, 'remove');
+    }
   },
 });
 
@@ -88,9 +101,13 @@ export const allow = new ValidatedMethod({
     const userId = this.userId;
     if (value === false) {
       let affectedVotings = [];
-      Delegations.find({ targetPersonId: userId }).forEach(delegation => affectedVotings = _.uniq(_.union(affectedVotings, delegation.getAffectedVotings().fetch()), v => v._id));
+      const affectedDelegations = Delegations.find({ targetPersonId: userId }).fetch();
+      affectedDelegations.forEach(delegation => affectedVotings = _.uniq(_.union(affectedVotings, delegation.getAffectedVotings().fetch()), v => v._id));
       Delegations.remove({ targetPersonId: userId });
-      affectedVotings.forEach(voting => voting.voteEvaluate(false));
+      if (Meteor.isServer) {
+        affectedVotings.forEach(voting => voting.voteEvaluate(false));
+        affectedDelegations.forEach(delegation => delegationConfirmationEmail(delegation, 'remove'));
+      }
     }
     Meteor.users.update(userId, { $set: { 'settings.delegatee': value } });
   },

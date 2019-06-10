@@ -8,20 +8,20 @@ export const Permissions = [
   { name: 'communities.update',     roles: ['admin'] },
   { name: 'communities.remove',     roles: ['admin'] },
   { name: 'memberships.inCommunity',roles: everyRole },
-  { name: 'memberships.details',    roles: ['admin', 'manager'] },
+  { name: 'memberships.details',    roles: ['manager'] },
   { name: 'roleships.insert',       roles: ['admin'] },
   { name: 'roleships.update',       roles: ['admin'] },
   { name: 'roleships.remove',       roles: ['admin'] },
-  { name: 'ownerships.insert',      roles: ['admin', 'manager'] },
-  { name: 'ownerships.update',      roles: ['admin', 'manager'] },
-  { name: 'ownerships.remove',      roles: ['admin', 'manager'] },
-  { name: 'benefactorships.insert', roles: ['admin', 'manager'] },
-  { name: 'benefactorships.update', roles: ['admin', 'manager'] },
-  { name: 'benefactorships.remove', roles: ['admin', 'manager'] },
+  { name: 'ownerships.insert',      roles: ['manager'] },
+  { name: 'ownerships.update',      roles: ['manager'] },
+  { name: 'ownerships.remove',      roles: ['manager'] },
+  { name: 'benefactorships.insert', roles: ['manager'] },
+  { name: 'benefactorships.update', roles: ['manager'] },
+  { name: 'benefactorships.remove', roles: ['manager'] },
   { name: 'parcels.inCommunity',    roles: everyRole },
-  { name: 'parcels.insert',         roles: ['admin', 'manager'] },
-  { name: 'parcels.update',         roles: ['admin', 'manager'] },
-  { name: 'parcels.remove',         roles: ['admin', 'manager'] },
+  { name: 'parcels.insert',         roles: ['manager'] },
+  { name: 'parcels.update',         roles: ['manager'] },
+  { name: 'parcels.remove',         roles: ['manager'] },
   { name: 'forum.insert',           roles: exceptGuest },
   { name: 'forum.update',           roles: nobody, allowAuthor: true },
   { name: 'forum.remove',           roles: ['moderator'], allowAuthor: true },
@@ -79,14 +79,14 @@ export const Permissions = [
   { name: 'balances.publish',       roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'txdefs.inCommunity',     roles: exceptGuest },
   { name: 'transactions.inCommunity',   roles: ['manager', 'accountant', 'treasurer', 'overseer'] },
-  { name: 'transactions.insert',        roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'transactions.update',        roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'transactions.remove',        roles: ['manager', 'accountant', 'treasurer'] },
+  { name: 'transactions.insert',    roles: ['manager', 'accountant', 'treasurer'] },
+  { name: 'transactions.update',    roles: ['manager', 'accountant', 'treasurer'] },
+  { name: 'transactions.remove',    roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
-  { name: 'attachments.upload',          roles: exceptGuest },
-  { name: 'attachments.download',        roles: exceptGuest },
-  { name: 'attachments.remove',          roles: ['admin', 'moderator'], allowAuthor: true  },
+  { name: 'attachments.upload',     roles: exceptGuest },
+  { name: 'attachments.download',   roles: exceptGuest },
+  { name: 'attachments.remove',     roles: ['admin', 'moderator'], allowAuthor: true  },
   { name: 'do.techsupport',         roles: ['admin'] },
 
   { name: 'statusChangeTo.reported.insert',     roles: exceptGuest },
@@ -106,7 +106,10 @@ export const Permissions = [
 
 // The board member has now exactly the same permissions as the manager
 Permissions.forEach((perm) => {
-  if (_.contains(perm.roles, 'manager')) perm.roles.push('board');
+  if (_.contains(perm.roles, 'manager')) {
+    if (!_.contains(perm.roles, 'board')) perm.roles.push('board'); // The board member has now exactly the same permissions as the manager
+    if (!_.contains(perm.roles, 'admin')) perm.roles.push('admin'); // Admin can do anything that a manager can (plus some more)
+  }
 });
 
 /* what if more compacted...

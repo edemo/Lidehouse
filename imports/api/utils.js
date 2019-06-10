@@ -1,3 +1,4 @@
+import { _ } from 'meteor/underscore';
 import { checkExists } from '/imports/api/method-checks.js';
 
 export function toggleElementInArray(collection, id, arrayName, element) {
@@ -6,6 +7,12 @@ export function toggleElementInArray(collection, id, arrayName, element) {
   const action = (index >= 0) ? '$pull' : '$push';
   const modifier = { [action]: { [arrayName]: element } };
   collection.update(id, modifier);
+}
+
+export function toggle(element, array) {
+  if (!Array.isArray(array)) array = [];
+  if (array.includes(element)) return _.without(array, element);
+  return array.concat([element]);
 }
 
 export function deaccentLowerCase (text) { 

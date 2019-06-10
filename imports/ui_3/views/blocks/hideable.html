@@ -1,0 +1,14 @@
+<template name='hideable'>
+    {{#let hidden=(and hider (not doShow))}}
+    {{#if hidden}}
+        <div class="hidden-by-text">{{_ 'Content hidden by' hider=(_ hider)}} - 
+            <a class="#content-{{this._id}} js-show" data-toggle="collapse"><i>{{_ "Do show content"}}</i></a>
+        </div>
+    {{/if}}
+    <!-- This could be in a simple else clause, but the collapse animation looks slightly better 
+    {{else }}-->
+        <span id="content-{{this._id}}" class="{{#if hidden}}collapse{{/if}}">
+            {{> Template.contentBlock}}
+        </span>
+    {{/let}}
+</template>

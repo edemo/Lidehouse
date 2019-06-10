@@ -23,9 +23,8 @@ Meteor.publish('parcels.ofSelf', function parcelsOfSelf(params) {
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validate(params);
   const { communityId } = params;
+  if (!Meteor.user()) return this.ready();
+  const parcelIds = Meteor.user().memberships(communityId).map(m => m.parcelId);
 
-  const user = Meteor.users.findOneOrNull(this.userId);
-  const parcelRefs = user.ownedParcels(communityId).map(p => p.ref);
-
-  return Parcels.find({ communityId, ref: { $in: parcelRefs } });
+  return Parcels.find({ _id: { $in: parcelIds } });
 });

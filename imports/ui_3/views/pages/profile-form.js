@@ -12,6 +12,7 @@ import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { remove as removeUser } from '/imports/api/users/methods.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/api/users/users.js';
 import './profile-form.html';
@@ -33,6 +34,10 @@ Template.Profile_form.onCreated(function usersShowPageOnCreated() {
   });
 });
 
+Template.Profile_form.onRendered(function usersShowPageOnRendered() {
+  initializeHelpIcons(this, 'schemaUsers');
+});
+
 Template.Profile_form.helpers({
   users() {
     return Meteor.users;
@@ -41,10 +46,12 @@ Template.Profile_form.helpers({
     return Meteor.users.findOne({ _id: Template.instance().getUserId() });
   },
   schema() {
-    return new SimpleSchema([
+    const profileSchema = new SimpleSchema([
       { email: { type: String, regEx: SimpleSchema.RegEx.Email, autoform: { disabled: true } } },
       Meteor.users.simpleSchema(),
     ]);
+    profileSchema.i18n('schemaUsers');
+    return profileSchema;
   },
 });
 

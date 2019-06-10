@@ -1,9 +1,15 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
   "schemaUsers": {
+    "email": {
+      "label": "Regisztrált e-mail cím",
+      "placeholder": "(pl. margitka21@ingyenmail.com)",
+      "help": "Ezzel az e-mail címmel tud belépni a rendszerbe, és erre az email címre mennek az értesítők."
+    },
     "username": {
       "label": "Felhasználónév",
-      "placeholder": "(pl. Miki75)"
+      "placeholder": "(pl. Miki75)",
+      "help": "A felhasználónév csak egy becenév. A belépéshez a regiszrált e-mail címet kell használni."
     },
     "emails": {
       "$": {
@@ -21,7 +27,8 @@
       "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "profile": {
-      "label": "Profil  (Az itt megadott adatokat a ház lakói és tisztségviselői láthatják.)",
+      "label": "Profil [Az itt megadott adatokat a közösség többi tagjai is látják]",
+      "help": "Az itt megadott adatokat a közösség többi tagjai is látják.",
 
       "firstName": {
         "label": "Keresztnév",
@@ -33,7 +40,8 @@
       },
       "publicEmail": {
         "label": "Publikus email cím",
-        "placeholder": "(pl. Miki75@leveledjott.hu)"
+        "placeholder": "(pl. Miki75@leveledjott.hu)",
+        "help": "Ezt az e-mail címet fogja látni a közösség többi tagja. Ez különbözhet a regisztrált e-mail címtől, de lehet ugyanaz is. Ha itt nem ad meg címet, akkor a többiek nem látnak ön mellett e-mail címet, de az alkalmazáson belül azért tudnak önnek üzenetet küldeni."
       },
       "address": {
         "label": "Kapcsolati cím",
@@ -243,6 +251,7 @@
         "choose": "Egyszerű választásos",
         "preferential": "Preferencia szerint sorba rendező",
         "petition": "Támogatásgyűjtő",
+        "multiChoose": "Több választási lehetőséges",
         "help": "A szavazás típusát célszerű jól megválasztani, hogy a közösség számára optimális döntés születhessen."
       },
       "voters": {

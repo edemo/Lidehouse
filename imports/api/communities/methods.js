@@ -17,7 +17,7 @@ export const create = new ValidatedMethod({
     const communityId = Communities.insert(doc);
     
     // The user creating the community, becomes the first 'admin' of it.
-    Memberships.insert({ communityId, person: { userId: this.userId }, role: 'admin' });
+    Memberships.insert({ communityId, person: { userId: this.userId }, role: 'admin', approved: true, accepted: true });
     return communityId;
   },
 });

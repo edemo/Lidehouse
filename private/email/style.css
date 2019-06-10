@@ -196,6 +196,9 @@ p li, ul li, ol li {
     list-style-position: inside;
 }
 
+small {
+    font-size: 10px;
+}
 
 /* -------------------------------------
     LINKS & BUTTONS

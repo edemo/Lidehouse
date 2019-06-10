@@ -3,15 +3,22 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions, chooseUser } from '/imports/utils/autoform.js';
+import { autoformOptions, chooseUser, noUpdate } from '/imports/utils/autoform.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { votingRoles } from '/imports/api/permissions/roles.js';
 
 const ContactSchema = new SimpleSchema({
   address: { type: String, optional: true },
   phone: { type: String, optional: true },
-  email: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
+  email: {
+    type: String,
+    optional: true,
+    regEx: SimpleSchema.RegEx.Email,
+    autoValue() {
+      if (this.isSet) return (this.value).toLowerCase();
+      return undefined;
+    },
+  },
 });
 
 const idCardTypeValues = ['natural', 'legal'];
@@ -26,8 +33,8 @@ const IdCardSchema = new SimpleSchema({
 
 export const PersonSchema = new SimpleSchema({
   // *userId* (connecting to a registered user in the system),
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseUser },
-  // *idCard* (identity papers validated by manager, so person can officially vote now)
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { type: 'hidden' } },
+  // *idCard* (identity papers confirmed by manager, so person can officially vote now)
   // this person might or might not wish to register in the system ever, but still can do voting (if manager votes in his name)
   idCard: { type: IdCardSchema, optional: true },
   // Contact details provided by the person - the email address is used for sending invitation to user account creation
@@ -53,6 +60,7 @@ export class Person {
   }
   // A personId is either a userId (for registered users) or an idCard identifier (for non-registered users)
   static constructFromId(personId) {
+    debugAssert(personId);
     const m = Memberships.findOne({ personId });
     if (m) return new Person(m.person);
     throw new Meteor.Error('Cannot find person with this id', personId);
@@ -77,7 +85,7 @@ export class Person {
   }
   displayName(lang) {
     if (this.idCard && this.idCard.name) return this.idCard.name;
-    if (this.userId && this.user()) return this.user().displayName(lang);
+    if (this.userId && this.user()) return this.user().displayProfileName(lang);
     if (this.contact && this.contact.email) {
       const emailSplit = this.contact.email.split('@');
       const emailName = emailSplit[0];
@@ -85,6 +93,9 @@ export class Person {
     }
     if (this.userId && !this.user()) return __('deletedUser');
     return __('unknownUser');
+  }
+  activeRoles(communityId) {
+    return _.uniq(Memberships.find({ communityId, approved: true, active: true, personId: this.id() }).fetch().map(m => m.role));
   }
   toString() {
     return this.displayName();
@@ -99,9 +110,10 @@ if (Meteor.isClient) {
   choosePerson = {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const memberships = Memberships.find({ communityId }).fetch().filter(m => m.personId);
+      let memberships = Memberships.find({ communityId }).fetch().filter(m => m.personId);
+      memberships = _.uniq(memberships, false, m => m.personId);
       const options = memberships.map(function option(m) {
-        return { label: (m.Person().displayName() + ', ' + m.toString()), value: m.personId };
+        return { label: (m.Person().displayName() + ', ' + m.Person().activeRoles(communityId).map(role => __(role)).join(', ')), value: m.personId };
       });
       const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
       return sortedOptions;

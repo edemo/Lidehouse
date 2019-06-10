@@ -66,7 +66,15 @@ export const PersonProfileSchema = new SimpleSchema({
 const PersonProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
-  publicEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
+  publicEmail: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Email,
+    optional: true,
+    autoValue() {
+      if (this.isSet) return (this.value).toLowerCase();
+      return undefined;
+    },
+  },
   address: { type: String, optional: true },
   phone: { type: String, max: 20, optional: true },
   bio: { type: String, optional: true },
@@ -108,7 +116,14 @@ Meteor.users.schema = new SimpleSchema({
 
   emails: { type: Array },
   'emails.$': { type: Object },
-  'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
+  'emails.$.address': { 
+    type: String,
+    regEx: SimpleSchema.RegEx.Email,
+    autoValue() {
+      if (this.isSet) return (this.value).toLowerCase();
+      return undefined;
+    },
+  },
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
@@ -164,13 +179,13 @@ Meteor.users.helpers({
     }
     return undefined;
   },
-  displayName(lang = getCurrentUserLang()) {
+  displayProfileName(lang = getCurrentUserLang()) {
     return this.fullName(lang) || this.safeUsername();     // or fallback to the username
   },
   displayOfficialName(communityId = getActiveCommunityId(), lang = getCurrentUserLang()) {
     const membership = Memberships.findOne({ communityId, approved: true, active: true, personId: this._id, 'person.idCard.name': { $exists: true } });
     if (membership) { return membership.Person().displayName(lang)};
-    return this.displayName(lang);
+    return this.displayProfileName(lang);
   },
   toString() {
     return this.displayOfficialName();
@@ -211,7 +226,7 @@ Meteor.users.helpers({
     return this.ownedParcels(communityId).filter(p => !p.isLed());
   },
   activeRoles(communityId) {
-    return Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role);
+    return _.uniq(Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role));
   },
   communities() {
     const memberships = Memberships.find({ approved: true, active: true, personId: this._id }).fetch();

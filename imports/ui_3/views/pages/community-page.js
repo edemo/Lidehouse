@@ -104,15 +104,14 @@ Template.Community_page.viewmodel({
   },*/
   leaders() {
     const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } });
+    return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } }).fetch();
   },
   nonLeaders() {
     const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } });
+    return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } }).fetch();
   },
   officers() {
-    const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: officerRoles } });
+    return this.leaders().concat(this.nonLeaders());
   },
   ownerships() {
     const communityId = this.communityId();
@@ -229,7 +228,7 @@ function onJoinParcelInsertSuccess(parcelId) {
       text: __('Join request notification'),
       btnOK: 'ok',
 //      btnClose: 'cancel',
-      onOK() { FlowRouter.go('App.home'); },
+      onOK() { FlowRouter.go('App home'); },
 //      onClose() { removeMembership.call({ _id: res }); }, -- has no permission to do it, right now
     }), 3000);
   });
@@ -255,7 +254,7 @@ Template.Community_page.events({
     });
   },
   // community events
-  'click .community-section .js-edit'() {
+  'click .community-section .js-edit, .management-section .js-edit'() {
     afCommunityUpdateModal();
   },
   'click .community-section .js-delete'() {
@@ -292,7 +291,6 @@ Template.Community_page.events({
       id: 'af.roleship.insert',
       collection: Memberships,
       fields: ['role', 'person', 'activeTime'],
-      omitFields: ['person.idCard'],
       type: 'method',
       meteormethod: 'memberships.insert',
     });
@@ -315,7 +313,6 @@ Template.Community_page.events({
       id: 'af.roleship.view',
       collection: Memberships,
       fields: ['role', 'person', 'activeTime'],
-      omitFields: ['person.idCard', 'person.contact'],
       doc: Memberships.findOne(id),
       type: 'readonly',
     });
@@ -336,7 +333,6 @@ Template.Community_page.events({
       id: 'af.ownership.insert',
       collection: Memberships,
       fields: ['person', 'ownership', 'activeTime'],
-      omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
     });
@@ -347,7 +343,6 @@ Template.Community_page.events({
       id: 'af.ownership.update',
       collection: Memberships,
       fields: ['person', 'ownership', 'activeTime'],
-      omitFields: ['person.userId'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
@@ -376,7 +371,6 @@ Template.Community_page.events({
       id: 'af.benefactorship.insert',
       collection: Memberships,
       fields: ['person', 'benefactorship', 'activeTime'],
-      omitFields: ['person.userId'],
       type: 'method',
       meteormethod: 'memberships.insert',
     });
@@ -387,7 +381,6 @@ Template.Community_page.events({
       id: 'af.benefactorship.update',
       collection: Memberships,
       fields: ['person', 'benefactorship', 'activeTime'],
-      omitFields: ['person.userId'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',

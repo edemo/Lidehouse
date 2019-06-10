@@ -19,6 +19,9 @@
   "edit": "Edit",
   "close topic": "Close",
 
+  // topics
+  "Do show content": "I want to see it now",
+  
   // voting
   "Proxy voting" : "Voting in the name of others",
   "Please select voters": "Please select the people you would like to vote in the name of",
@@ -84,13 +87,14 @@
     // housing
   "Acknowledge save effects": "I acknowledge that all saved modifications are immediately visible on the community's page.",
   "Create your own community": "Couldn't find your community? Why not create it yourself?",
+  "joinRequestInstructions": "If you own a parcel in this building, you can apply to join by pressing the button below.",
   "Parcel owners list": "Owners of parcel %s",
   "Parcel benefactors list": "Benefactors of parcel %s",
 
   // topics
   "Block content from": "Hide comments from %s",
   "Unblock content from": "Reveal comments from %s",
-  "Content hidden by": "Content hidden by %s",
+  "Content hidden by": "Content hidden by __hider__",
   "View previous comments": "View %s previous comments",
   
   "insert forumtopic successful": "insert forum topic successful",

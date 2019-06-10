@@ -13,15 +13,15 @@ Template.app_rootRedirector.onCreated(() => {
         if (Session.get('activeCommunityId')) {
           FlowRouter.go('Board');
         } else {
-          FlowRouter.go('Communities.listing');
+          FlowRouter.go('Communities list');
         }
       }
     });
   } else {
       if (Meteor.settings.public.communityId) {
-        FlowRouter.go('Community.page', { _cid: Meteor.settings.public.communityId });
+        FlowRouter.go('Community page', { _cid: Meteor.settings.public.communityId });
       } else {
-        FlowRouter.go('App.intro');
+        FlowRouter.go('App intro');
       }
   }
 });

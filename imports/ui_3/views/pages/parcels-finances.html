@@ -44,7 +44,7 @@
             {{>iboxTools}}
         </div-->
         <div class="ibox-content">
-            <span class="text-muted small pull-right">{{_ 'Tulajdonos a saját albetéteit láthatja itt - Közös Képviselő mindenkiét'}}</span>
+            <span class="text-muted small pull-right">{{_ "Owner can see their own parcel's data - Manager can see everyone's"}}</span>
             <h2 class="text-capitalize">{{_ 'Parcel balances'}}</h2>
             {{#if userHasPermission 'balances.ofLocalizers' communityId }}
             <div class="btn-group pull-right">
@@ -54,10 +54,10 @@
             </div>
             <p>
                 {{#unless showAllParcels}}
-                {{_ 'A lista jelenleg csak a legnagyobb hátralékosokat mutatja'}} - <i class="fa fa-building"></i> 10<br>
-                {{_ 'A teljes lista lekérhető a jobb oldali gombbal, de ez egy kis időt vehet igénybe'}}.
+                {{_ 'The list currently shows parcels with the most arrears'}} - <i class="fa fa-building"></i> 10<br>
+                {{_ 'You can get the full list with the button on the right, this may take some time'}}.
                 {{else}}
-                {{_ 'A lista valamennyi albetétet mutatja'}} <br>
+                {{_ 'The list shows all of the parcels'}} <br>
                 {{/unless}}
             </p>
             {{/if}}

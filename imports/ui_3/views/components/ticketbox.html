@@ -16,18 +16,20 @@
                  <li><a class="js-delete" href="">{{_ 'delete'}}</a></li>
                  <li role="separator" class="divider"></li>
                  {{/if}}
-                 {{#unless this.isFlaggedBy currentUser._id}}
-                 <li><a class="js-report" href="">{{_ 'Report this'}}</a></li>
-                 {{/unless}}
-                 <li>
-                   <a class="js-block" href="">
+                 <li><a class="js-report" href="">
+                  {{#if this.isFlaggedBy currentUser._id}}
+                    {{_ 'Unblock content'}}
+                  {{else}}
+                    {{_ 'Block content'}}
+                  {{/if}}
+                 </a></li>
+                 <li><a class="js-block" href="">
                    {{#if currentUser.hasBlocked createdBy._id}}
                      {{_ 'Unblock content from' createdBy}}
                    {{else}}
                      {{_ 'Block content from' createdBy}}
                    {{/if}}
-                   </a>
-                 </li>
+                 </a></li>
              </ul>
          </div>
          <div class="social-avatar">
@@ -35,36 +37,35 @@
                  <img alt="avatar" class="message-avatar" src={{createdBy.avatar}}>
              </a>
              <div class="media-body">
-                 <a href="{{pathFor 'User.show' _id=createdBy._id}}">
+                 <a href="{{pathFor 'User show' _id=createdBy._id}}">
                      {{createdBy}}
                  </a>                  
                  <small class="text-muted" title="{{_ 'memberships'}}">
-                     {{join (createdBy.memberships activeCommunityId)}}
+                     {{join (translateArray (createdBy.activeRoles activeCommunityId))}}
                  </small>
              </div>
          </div>
-         {{#if hiddenBy}}
-           <p class="hidden-by-text">{{_ 'Content hidden by' (_ hiddenBy)}} - <i><a href="#content-{{this._id}}" data-toggle="collapse">{{_ "Do show content"}}</a></i></p>
-         {{/if}}
-         <div class="{{#if hiddenBy}}collapse{{/if}}" id="content-{{this._id}}">
-           <div class="social-body">
-               <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
-               <p data-id="{{_id}}">{{>Chopped text=text}}</p>
-               {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
-               <div class="btn-group">
-                   <button class="btn btn-white btn-xs js-like">
-                       <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
-                       {{_ 'important'}}!
-                       ({{likesCount}})
-                   </button>
-                   <button class="btn btn-white btn-xs">
-                       <i class="fa fa-comments"></i>
-                       {{_ 'Comment'}}
-                       ({{commentCounter}})
-                   </button>
-               </div>
-            </div>
-         </div>
+         {{#hideable}}
+          <div class="social-body">
+              <a class="text-primary" href="{{pathFor 'Topic show' _tid=_id}}">
+                  <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
+              </a>
+              <p data-id="{{_id}}">{{>Chopped text=text}}</p>
+              {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
+              <div class="btn-group">
+                  <button class="btn btn-white btn-xs js-like">
+                      <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+                      {{_ 'important'}}!
+                      ({{this.likesCount}})
+                  </button>
+                  <button class="btn btn-white btn-xs">
+                      <i class="fa fa-comments"></i>
+                      {{_ 'Comment'}}
+                      ({{commentCounter}})
+                  </button>
+              </div>
+          </div>
+         {{/hideable}}
      </div>
  </template>
  

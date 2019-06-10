@@ -26,7 +26,7 @@ if (Meteor.isServer) {
   describe('person', function () {
     this.timeout(5000);
     before(function () {
-      Email.send = sinon.spy();   // Mocking the Email sending
+      sinon.stub(Email);          // Mocking the Email sending
       Fixture = freshFixture();
       parcelId = insertParcel._execute({ userId: Fixture.demoManagerId }, {
         communityId: Fixture.demoCommunityId,
@@ -37,6 +37,7 @@ if (Meteor.isServer) {
         door: '11',
         type: 'flat',
       });
+      sinon.resetHistory();     // Clearing emails sent during fixture initialization
     });
 
     describe('onboarding', function () {
@@ -277,7 +278,7 @@ if (Meteor.isServer) {
           chai.assert.equal(membership.Person().id(), userId);
           chai.assert.isFalse(membership.accepted);
 
-          chai.assert(Email.send.calledOnce);
+          sinon.assert.calledOnce(Email.send);
           const emailOptions = Email.send.getCall(0).args[0];
           chai.assert.equal(emailOptions.to, user.getPrimaryEmail());
           chai.assert.match(emailOptions.text, /enroll/);
@@ -302,7 +303,7 @@ if (Meteor.isServer) {
           chai.assert.equal(membership.Person().id(), userId);
           chai.assert.isFalse(membership.accepted);
 
-          chai.assert(Email.send.calledTwice);
+          sinon.assert.calledTwice(Email.send);
           const emailOptions = Email.send.getCall(1).args[0];
           const emailOptionsPrevious = Email.send.getCall(0).args[0];
           chai.assert.equal(emailOptions.to, user.getPrimaryEmail());

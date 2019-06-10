@@ -1,7 +1,7 @@
 <template name="Votebox">
       <div class="row m-b-sm">
       <div class="col-xs-6 title-size">
-        <a href="{{pathFor 'Topic.show' _tid=_id}}" class="clickable-title">
+        <a class="text-primary" href="{{pathFor 'Topic show' _tid=_id}}">
           <h2>{{title}}</h2>
         </a>
       </div>
@@ -80,9 +80,9 @@
           <!-- voting results -->
             <h4 class="text-center">
             {{#if equals this.vote.type "preferential"}}
-              Opciók támogatottsága:            
+              {{_ 'Support of options'}}:            
             {{else}}
-              Szavazatok összesítése:
+              {{_ 'Aggregation of votes'}}:
             {{/if}}
             </h4>
             <div class="row">

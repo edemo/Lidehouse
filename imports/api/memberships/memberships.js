@@ -89,6 +89,10 @@ Memberships.helpers({
     debugAssert(this.person);
     return new Person(this.person);
   },
+  user() {
+    debugAssert(this.person.userId);
+    return Meteor.users.findOne(this.person.userId);
+  },
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);
@@ -119,6 +123,14 @@ Memberships.helpers({
   },
   isRepresentor() {
     return (this.ownership && this.ownership.representor);
+  },
+  isRepresentedBySomeoneElse() {
+    if (!this.ownership) return false;
+    debugAssert(this.parcelId);
+    const parcel = Parcels.findOne(this.parcelId);
+    const representor = parcel.representor();
+    if (!representor || representor._id === this._id) return false;
+    return true;
   },
   votingUnits() {
     if (!this.parcel()) return 0;
@@ -163,6 +175,7 @@ Memberships.modifiableFields = [
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',
+  'personId',
 ].concat(PersonSchema.modifiableFields)
 .concat(ActivePeriodSchema.fields);
 

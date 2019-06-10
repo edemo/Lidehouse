@@ -3,21 +3,43 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { moment } from 'meteor/momentjs:moment';
 import { _ } from 'meteor/underscore';
 import { Fraction } from 'fractional';
+import { TAPi18n } from 'meteor/tap:i18n';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 
+import { getCurrentUserLang } from '/imports/api/users/users.js';
 import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { debugAssert } from '/imports/utils/assert.js';
 
 Topics.voteProcedureValues = ['online', 'meeting'];
 Topics.voteEffectValues = ['poll', 'legal'];
-Topics.voteTypeValues = ['yesno', 'choose', 'preferential', 'petition'];
-Topics.voteTypeChoices = {
-  'yesno': ['yes', 'no', 'abstain'],
-  'petition': ['support'],
+Topics.voteTypes = {
+  yesno: {
+    name: 'yesno',
+    fixedChoices: ['yes', 'no', 'abstain'],
+  },
+  choose: {
+    name: 'choose',
+  },
+  preferential: {
+    name: 'preferential',
+  },
+  petition: {
+    name: 'petition',
+    fixedChoices: ['support'],
+  },
+  multiChoose: {
+    name: 'multiChoose',
+  },
 };
+Topics.voteTypeValues = Object.keys(Topics.voteTypes);
+
 
 let currentUsersPossibleEffectValues = () => Topics.voteEffectValues;
 if (Meteor.isClient) {
@@ -37,7 +59,13 @@ const voteSchema = new SimpleSchema({
   procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: _.extend({}, autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.'), noUpdate) },
   effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: _.extend({}, autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), noUpdate) },
   type: { type: String, allowedValues: Topics.voteTypeValues, autoform: _.extend({}, autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.'), noUpdate) },
-  choices: { type: Array, autoValue() { return Topics.voteTypeChoices[this.field('vote.type').value]; } },
+  choices: { 
+    type: Array,
+    autoValue() { 
+      if (this.field('vote.type').value) return Topics.voteTypes[this.field('vote.type').value].fixedChoices; 
+      return undefined; 
+    } 
+  },
   'choices.$': { type: String },
 });
 
@@ -71,6 +99,11 @@ const votingsExtensionSchema = new SimpleSchema({
 });
 
 Topics.helpers({
+  displayChoice(index, language = getCurrentUserLang()) {
+    let choice = this.vote.choices[index];
+    if (Topics.voteTypes[this.vote.type].fixedChoices) choice = TAPi18n.__(choice, {}, language);
+    return choice;
+  },
   unitsToShare(units) {
     const votingShare = new Fraction(units, this.community().totalunits);
     return votingShare;
@@ -114,6 +147,7 @@ Topics.helpers({
     return (this.voteCasts && this.voteCasts[userId]) || (this.voteCastsIndirect && this.voteCastsIndirect[userId]);
   },
   voteEvaluate(revealResults) {
+    debugAssert(Meteor.isServer, 'voteEvaluate should only run on the server');
     const voteResults = {};         // results by ownerships
     const voteCastsIndirect = {};   // results by users
     const votePaths = {};
@@ -121,9 +155,11 @@ Topics.helpers({
     const voteParticipation = { count: 0, units: 0 };
     const directVotes = this.voteCasts || {};
     const self = this;
-    const voterships = Memberships.find({ communityId: this.communityId, active: true, approved: true, role: 'owner' });
-    voterships.forEach((ownership) => {
-      const ownerId = ownership.Person().id();
+    const voteType = this.vote.type;
+    const community = Communities.findOne(this.communityId);
+    community.voterships().forEach((ownership) => {
+      const ownerId = ownership.personId;
+      debugAssert(ownerId);
       const votePath = [ownerId];
 
       function getVoteResult(voterId) {
@@ -139,7 +175,8 @@ Topics.helpers({
           votePaths[ownerId] = votePath;
           castedVote.forEach((choice, i) => {
             voteSummary[choice] = voteSummary[choice] || 0;
-            voteSummary[choice] += ownership.votingUnits() * (1 - (i / castedVote.length));
+            const choiceWeight = (voteType === 'preferential') ? (1 - (i / castedVote.length)) : 1;
+            voteSummary[choice] += ownership.votingUnits() * choiceWeight;
           });
           voteParticipation.count += 1;
           voteParticipation.units += ownership.votingUnits();
@@ -235,3 +272,16 @@ Topics.publicFields.extendForUser = function extendForUser(userId, communityId) 
 //    return _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
 //  }
 };
+
+Factory.define('vote', Topics, {
+  category: 'vote',
+  title: () => 'New voting on ' + faker.random.word(),
+  text: () => faker.lorem.paragraph(),
+  vote: {
+    closesAt: () => moment().add(14, 'day').toDate(),
+    procedure: 'online',
+    effect: 'legal',
+    type: 'choose',
+    choices: ['white', 'red', 'yellow', 'grey'],
+  },
+});

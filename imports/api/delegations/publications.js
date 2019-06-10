@@ -5,6 +5,16 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Delegations } from './delegations.js';
 
+Meteor.publish('delegations.inCommunity', function delegationsOfCommunity(params) {
+  new SimpleSchema({
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validate(params);
+  const { communityId } = params;
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('delegations.inCommunity', communityId)) return this.ready();
+  return Delegations.find({ communityId });
+});
+
 // Everyone has access to all of his own stuff automatically
 Meteor.publishComposite(null, function delegationsFromUser() {
   return {

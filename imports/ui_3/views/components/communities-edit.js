@@ -1,6 +1,7 @@
 /* global alert */
 
 import { Template } from 'meteor/templating';
+import { Session } from 'meteor/session';
 import { Communities } from '/imports/api/communities/communities.js';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -11,7 +12,7 @@ export function afCommunityInsertModal() {
   Modal.show('Autoform_edit', {
     id: 'af.community.insert',
     collection: Communities,
-    omitFields: ['description', 'parcels'],
+    omitFields: ['parcels'],
     type: 'method',
     meteormethod: 'communities.create',
   });
@@ -21,8 +22,7 @@ export function afCommunityUpdateModal() {
   Modal.show('Autoform_edit', {
     id: 'af.community.update',
     collection: Communities,
-    doc: Communities.findOne(Template.instance().getCommunityId()),
-    omitFields: ['description'],
+    doc: Communities.findOne(Session.get('selectedCommunityId')),
     type: 'method-update',
     meteormethod: 'communities.update',
     singleMethodArgument: true,

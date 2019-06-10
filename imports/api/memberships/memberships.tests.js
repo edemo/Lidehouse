@@ -43,13 +43,14 @@ if (Meteor.isServer) {
       });
 
       it('sends all memberships.ofUser', function (done) {
-        const collector = new PublicationCollector({ userId: Fixture.demoUserId });
+        const userWithMultipleParcels = Fixture.dummyUsers[3];
+        const collector = new PublicationCollector({ userId: userWithMultipleParcels });
         collector.collect(
           'memberships.ofUser',
-          { userId: Fixture.demoUserId },
+          { userId: userWithMultipleParcels },
           (collections) => {
-            chai.assert.equal(collections.memberships.length, 2);
-            chai.assert.equal(collections.communities.length, 1);
+            chai.assert.equal(collections.memberships.length, 3);
+            chai.assert.equal(collections.communities.length, 2);
             done();
           }
         );
@@ -195,9 +196,9 @@ if (Meteor.isServer) {
         chai.assert.equal(testMembership.role, randomRole);
 
         updateMembership._execute({ userId: Fixture.demoAdminId },
-          { _id: testMembershipId, modifier: { $set: { 'activeTime.end': new Date() } } });
+          { _id: testMembershipId, modifier: { $set: { 'activeTime.begin': new Date() } } });
         testMembership = Memberships.findOne(testMembershipId);
-        chai.assert.equal(testMembership.active, false);
+        chai.assert.equal(testMembership.active, true);
 
         removeMembership._execute({ userId: Fixture.demoAdminId },
           { _id: testMembershipId });

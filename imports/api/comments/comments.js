@@ -1,11 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { Timestamps } from '/imports/api/timestamps.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Topics } from '/imports/api/topics/topics.js';
 import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
@@ -81,9 +81,9 @@ Comments.helpers({
   editableBy(userId) {
     return this.userId === userId;
   },
-  isHiddenBy(userId) {
+  hiddenBy(userId, communityId) {
     const author = this.createdBy();
-    return this.isFlaggedBy(userId) || (author && author.isFlaggedBy(userId));
+    return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
   },
   getType() {
     return this.type || 'comment';
@@ -93,12 +93,7 @@ Comments.helpers({
 Comments.helpers(likesHelpers);
 Comments.helpers(flagsHelpers);
 
-
-// TODO This factory has a name - do we have a code style for this?
-//   - usually I've used the singular, sometimes you have more than one though, like
-//   'comment', 'emptyComment', 'readedComment'
 Factory.define('comment', Comments, {
   topicId: () => Factory.get('topic'),
   text: () => faker.lorem.sentence(),
-  createdAt: () => new Date(),
 });

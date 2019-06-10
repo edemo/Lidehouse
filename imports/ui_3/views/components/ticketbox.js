@@ -9,6 +9,7 @@ import { flag } from '/imports/api/topics/flags.js';
 import { afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import './ticketbox.html';
 
@@ -16,13 +17,6 @@ Template.Ticketbox.onRendered(function ticketboxOnRendered() {
 });
 
 Template.Ticketbox.helpers({
-  hiddenBy() {
-    const communityId = Session.get('activeCommunityId');
-    return this.flaggedStatus(communityId) || this.createdBy().flaggedStatus(communityId);
-  },
-  join(memberships) {
-    return _.uniq(memberships.map(m => __(m.role))).join(', ');
-  },
 });
 
 Template.Ticketbox.events({

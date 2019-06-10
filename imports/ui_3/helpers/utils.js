@@ -79,6 +79,14 @@ Template.registerHelper('concat', function concat() {
     return Array.prototype.slice.call(arguments, 0, -1).join('');
 });
 
+Template.registerHelper('join', function join(items) {
+    return items.join(', ');
+});
+
+Template.registerHelper('translateArray', function translateArray(items) {
+    return items.map(i => __(i));
+});
+
 Template.registerHelper('log', function log(stuff) {
     console.log(stuff);
 });

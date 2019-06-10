@@ -39,7 +39,7 @@
                     </a>
                 </li-->
                 <li class="{{isActivePath regex='forum'}}">
-                    <a href="{{pathFor 'Topics.forum'}}">
+                    <a href="{{pathFor 'Forum'}}">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Forum'}}</span>
                     </a>
@@ -56,7 +56,7 @@
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='votings|agendas|delegations' className='submenu-open'}}">
                         <li class="{{isActivePath regex='votings'}}">
-                            <a href="{{pathFor 'Topics.vote'}}">
+                            <a href="{{pathFor 'Votings'}}">
                                 <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Votings'}}</span>
                                 {{#if Template.subscriptionsReady}}
@@ -81,7 +81,7 @@
                     </ul>
                 </li><!--
                 <li class="{{isActivePath regex='tickets'}}">
-                    <a href="{{pathFor 'Tickets.control'}}">
+                    <a href="{{pathFor 'Tickets'}}">
                         <i class="glyphicon glyphicon-wrench" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Tickets'}}</span>
                         {{#if Template.subscriptionsReady}}
@@ -130,20 +130,20 @@
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='finances|accounting' className='submenu-open'}}">
                         <li class="{{isActivePath regex='parcel-finances'}}">
-                            <a href="{{pathFor 'Parcels.finances'}}">
+                            <a href="{{pathFor 'Parcel finances'}}">
                                 <i class="fa fa-pie-chart" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Parcel finances'}}</span>
                             </a>
                         </li>
                         <li class="{{isActivePath regex='community-finances'}}">
-                            <a href="{{pathFor 'Community.finances'}}">
+                            <a href="{{pathFor 'Community finances'}}">
                                 <i class="fa fa-bar-chart" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Community finances'}}</span>
                             </a>
                         </li>
                         {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
                         <li class="{{isActivePath regex='accounting'}}">
-                            <a href="{{pathFor 'Accounting.page'}}">
+                            <a href="{{pathFor 'Accounting'}}">
                                 <i class="fa fa-calculator" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Accounting'}}</span>
                             </a>
@@ -152,7 +152,7 @@
                     </ul>
                 </li>
                 <li class="{{isActivePath regex='community/'}} {{isActivePath path='/community'}}">
-                    <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
+                    <a href="{{pathFor 'Community page' _cid=(fromSession 'activeCommunityId')}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
                         {{#if Template.subscriptionsReady}}
@@ -165,7 +165,7 @@
                     </a>
                 </li>
                 <li class="{{isActivePath regex='documents'}}">
-                    <a href="{{pathFor 'DocumentStore'}}">
+                    <a href="{{pathFor 'Documentstore'}}">
                         <i class="glyphicon glyphicon-paperclip" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Documentstore'}}</span>
                     </a>
@@ -182,7 +182,7 @@
             <!-- link to home page -->
             <ul style="position: absolute; bottom: 0; left: 10px; width: 90%; background-color: white; border-radius: 5px;">
                 <div class="logo-container">
-                    <a href="{{pathFor 'App.intro'}}" id="logo" class="minimalize-styl-2">
+                    <a href="{{pathFor 'App intro'}}" id="logo" class="minimalize-styl-2">
                         <img src="/images/logo-duo-text.png" width="100" alt="Logo">
                     </a>
                 </div>

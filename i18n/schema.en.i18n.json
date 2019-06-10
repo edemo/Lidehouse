@@ -1,9 +1,15 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
   "schemaUsers": {
+    "email": {
+      "label": "Registered e-mail address",
+      "placeholder": "(pl. margitka21@ingyenmail.com)",
+      "help": "This is the e-mail address you use to log in with, and notifications are sent to this address."
+    },
     "username": {
       "label": "Username",
-      "placeholder": "(eg. Mike75)"
+      "placeholder": "(eg. Mike75)",
+      "help": "The username is just a nick name. You need to use your registered e-mail address to log in."
     },
     "emails": {
       "$": {
@@ -21,7 +27,8 @@
       "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
     },
     "profile": {
-      "label": "Profile  (This data is public to the members of your community)",
+      "label": "Profile [This data is publicly shown to the members of your community]",
+      "help": "This data is publicly shown to the members of your community",
 
       "firstName": {
         "label": "First name",
@@ -33,7 +40,8 @@
       },
       "publicEmail": {
         "label": "Public email",
-        "placeholder": "(eg. Mikey75@cats.com)"
+        "placeholder": "(eg. Mikey75@cats.com)",
+        "help": "Members of your community can see this e-mail address. This can be different from your registered address, or be the same. If you leave this blank, others will not see an e-mail address for you, but can still conatct you within the app's messaging system."
       },
       "address": {
         "label": "Contact address",
@@ -239,7 +247,8 @@
         "yesno": "Yes-no",
         "choose": "Simple selection",
         "preferential": "Rank choices by preference",
-        "petition": "Petition"
+        "petition": "Petition",
+        "multiChoose": "Multiple choice"
       },
       "voters": {
         "label": "Voters"

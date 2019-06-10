@@ -51,7 +51,7 @@ function transformMarinaMemberships(jsons) {
     doc.person.contact = doc.person.contact || {};
     doc.person.idCard.type = 'natural';
     doc.role = 'owner';
-    const names = doc.owners.split(/,|;|\n/);
+    const names = doc.owners ? doc.owners.split(/,|;|\n/) : [];
     const emails = doc.emails ? doc.emails.split(/,|;| |\n/) : [];
     names.forEach((name) => {
       const tdoc = {}; $.extend(true, tdoc, doc);
@@ -72,9 +72,9 @@ function transformMarinaTransactions(jsons, options) {
   const tjsons = [];
   jsons.forEach((doc) => {
     const docRef = doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
-    const cutoffDate = moment(moment.utc('2019-04-01'));
+    const cutoffDate = moment(moment.utc('2019-06-01'));
     const incomingDate = moment(moment.utc(doc['A számla fizetési határideje'] || doc['Számla kelte']));
-    if (!incomingDate.isValid()) console.err('ERROR: Invalid date in import', doc);
+    if (!incomingDate.isValid()) console.error('ERROR: Invalid date in import', doc);
     if (incomingDate < cutoffDate) {
       const bill = {
         ref: '>' + docRef,
@@ -90,7 +90,7 @@ function transformMarinaTransactions(jsons, options) {
     }
     if (doc['A számla kiegyenlítésének időpontja']) {
       const paymentDate = moment(moment.utc(doc['A számla kiegyenlítésének időpontja']));
-      if (!paymentDate.isValid()) console.err('ERROR: Invalid date in import', doc);
+      if (!paymentDate.isValid()) console.error('ERROR: Invalid date in import', doc);
       if (paymentDate < cutoffDate) {
         const payment = {
           ref: '<' + docRef,
@@ -170,6 +170,8 @@ export function importCollectionFromFile(collection, options) {
         if (collection._name === 'memberships') jsons = transformMarinaMemberships(jsons);
         if (collection._name === 'transactions') jsons = transformMarinaTransactions(jsons, options);
         if (collection._name === 'balances') jsons = transformMarinaBalances(jsons, options);
+      } else {
+        if (collection._name === 'memberships') jsons = transformMarinaMemberships(jsons);
       }
       // ------------------------------
 

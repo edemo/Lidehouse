@@ -1,0 +1,34 @@
+#!/bin/bash
+cd /home/lidehouse/Lidehouse
+git pull > ../pull.txt
+a=$(cat ../pull.txt)
+if [ "$a" != "Already up-to-date." ]
+then
+    cp ../images/logo.png ./public/images/brand
+    meteor npm install
+    # rm package-lock.json
+    ##/home/lidehouse/.meteor/meteor update --all-packages
+    ##/home/lidehouse/.meteor/meteor npm install --save @babel/runtime fractional faker autoprefixer bcrypt
+    echo régi targz törlése
+    rm ../Lidehouse.tar.gz
+    echo meteor build
+    /home/lidehouse/.meteor/meteor build --server-only ../
+    echo passenger stop
+    /home/lidehouse/passenger-stop
+    sleep 5
+    echo előző bundle mentése
+    rm -rf ../bundle.old
+    mv ../bundle ../bundle.old
+    echo új targz kicsomagolása
+    tar -xf ../Lidehouse.tar.gz -C ../
+    echo accessories másolása
+    cp ../accessories/* ../bundle
+    echo public és tmp könyvtárak létrehozása
+    mkdir ../bundle/public ../bundle/tmp
+    cd /home/lidehouse/bundle/programs/server
+    echo production install
+    npm install --production
+    cd /home/lidehouse/bundle
+    echo kész
+    nohup sudo passenger start &
+fi

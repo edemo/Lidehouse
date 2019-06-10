@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
@@ -59,8 +60,9 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
-  isHiddenBy(userId) {
-    return this.isFlaggedBy(userId) || this.createdBy().isFlaggedBy(userId);
+  hiddenBy(userId, communityId) {
+    const author = this.createdBy();
+    return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
   },
   isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
@@ -100,7 +102,9 @@ Topics.helpers({
         if (seenType === Meteor.users.SEEN_BY.EYES
           && !this.closed && !this.hasVotedIndirect(userId)) return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
-          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
+          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0
+          //|| (this.closed === true && this.vote.closesAt > Meteor.users.findOne(userId).lastSeens[seenType][this._id].timestamp)
+          )) return 1;
         break;
       case 'ticket':
         if (seenType === Meteor.users.SEEN_BY.EYES
@@ -163,6 +167,10 @@ Topics.publicFields = {
   revision: 1,
 };
 
-Factory.define('topic', Topics, {
-  communityId: () => Factory.get('community'),
+Topics.categoryValues.forEach((category) => {
+  Factory.define(category, Topics, {
+    category,
+    title: () => `New ${(category)} about ${faker.random.word()}`,
+    text: faker.lorem.paragraph(),
+  });
 });

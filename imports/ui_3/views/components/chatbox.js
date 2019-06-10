@@ -15,6 +15,7 @@ import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import '/imports/ui_3/views/components/comments-section.js';
 import './chatbox.html';
@@ -23,17 +24,6 @@ Template.Chatbox.onRendered(function chatboxOnRendered() {
 });
 
 Template.Chatbox.helpers({
-  comments() {
-    return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
-  },
-  hiddenBy() {
-    const communityId = Session.get('activeCommunityId');
-    return this.flaggedStatus(communityId) || this.createdBy().flaggedStatus(communityId);
-  },
-  join(memberships) {
-    // return memberships.map(m => m.toString()).join(', ');
-    return _.uniq(memberships.map(m => __(m.role))).join(', ');
-  },
 });
 
 Template.Chatbox.events({

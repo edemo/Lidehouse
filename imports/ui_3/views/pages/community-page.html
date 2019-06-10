@@ -5,8 +5,8 @@
                 <tbody>
                     {{#each rows}}
                     <tr>
-                        <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
-                        <td><a href="{{pathFor 'User.show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
+                        <td><a href="{{pathFor 'User show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
+                        <td><a href="{{pathFor 'User show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
                         <td><span class="label label-plain">{{_ role}}</span></td>
                         <td>
                             {{#if Person.user.profile.publicEmail}}
@@ -113,9 +113,21 @@
     <!-- Page heading -->
     {{> Page_heading title=title }}
 
-    <div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-md-8">
+                {{#if community.management}}
+                <div class="ibox community-section">
+                    <div class="ibox-content">
+                        {{#if userHasPermission 'communities.update' communityId}}
+                        <!--span class="text-muted small pull-right">{{_ 'Modifiable at Building Data edit'}}</span-->
+                        <button class="btn-white btn btn-xs js-edit pull-right"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                        {{/if}}
+                        <h2>{{_ 'schemaCommunities.management.label'}}</h2>
+                        <p>{{#markdown}}{{community.management}}{{/markdown}}</p>
+                    </div>
+                </div>
+                {{/if}}
                 <div class="ibox roles-section">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
@@ -156,10 +168,13 @@
                             <h4><strong>{{community.name}}</strong></h4>
                             <p>{{_ 'schemaCommunities.lot.label'}}: {{community.lot}}<br>
                             <i class="fa fa-map-marker"></i>{{community.displayAddress}}</p>
-                            <br>
-                            <h5>{{_ 'schemaCommunities.description.label'}}</h5>
-                            <p> {{_ 'schemaCommunities.description.placeholder'}}</p>
-                            <table class="m-t-lg" width="100%">
+                            {{#if community.description}}
+                            <div class="m-t-md">
+                                <h5>{{_ 'schemaCommunities.description.label'}}</h5>
+                                <p> {{community.description}}</p>
+                            </div>
+                            {{/if}}
+                            <table class="m-t-md" width="100%">
                             <tr>
                                 {{#each parcelTypesWithCount}}
                                 <td>
@@ -168,21 +183,25 @@
                                 {{/each}}
                             </tr>
                             </table>
-                            {{#unless (currentUser.isInCommunity communityId) }}
-                            <br>
-                                {{#if (currentUser.isUnapprovedInCommunity communityId)}}
-                                <button type="button" class="btn btn-primary btn-sm btn-block btn-outline">
-                                    <i class="fa fa-suitcase"></i>
-                                    {{_ 'Submitted join request'}}
-                                </button>
-                                {{else}}
-                                <button type="button" class="btn btn-primary btn-sm btn-block js-join">
-                                    <i class="fa fa-suitcase"></i>
-                                    {{_ 'Submit join request'}}
-                                </button>
-                                {{/if}}
-                              {{/unless}}
+                            {{#if community.joinable}}
+                                {{#unless (currentUser.isInCommunity communityId) }}
+                                    <br>
+                                    <p>{{_ 'joinRequestInstructions'}}</p>
+                                    {{#if (currentUser.isUnapprovedInCommunity communityId)}}
+                                    <button type="button" class="btn btn-primary btn-sm btn-block btn-outline">
+                                        <i class="fa fa-suitcase"></i>
+                                        {{_ 'Submitted join request'}}
+                                    </button>
+                                    {{else}}
+                                    <button type="button" class="btn btn-primary btn-sm btn-block js-join">
+                                        <i class="fa fa-suitcase"></i>
+                                        {{_ 'Submit join request'}}
+                                    </button>
+                                    {{/if}}
+                                {{/unless}}
+                            {{/if}}
                             {{#if userHasPermission 'communities.remove' communityId}}
+                            <br>
                               <button class="btn btn-danger btn-block btn-outline js-delete"><!--i class="fa fa-trash"></i--> {{_ 'Delete community'}}</button>
                             {{/if}}
                         </div>
@@ -209,11 +228,11 @@
                         </div>
                         <p>
                             {{#if showAllParcels}}
-                            {{_ 'List of parcels'}} - <i class="fa fa-building"></i> {{parcels.count}} {{> Help_icon title='Ennyi albetét van összesen a házban.'}}<br>
+                            {{_ 'List of parcels'}} - <i class="fa fa-building"></i> {{parcels.count}} {{> Help_icon title=(_ 'Number of parcels in the house')}}<br>
                             {{_ 'Click the little person buttons to see the occupants'}}
                             {{else}}
-                            {{_ 'A lista most csak az Ön saját albetéteit mutatja'}} - <i class="fa fa-building"></i> {{parcels.count}}<br>
-                            {{_ 'Az összes albetét megtekintése a jobb oldali gombbal'}}                            
+                            {{_ 'The list currently shows your own parcels'}} - <i class="fa fa-building"></i> {{parcels.count}}<br>
+                            {{_ 'Click the button on the right to see all parcels'}}                            
                             {{/if}}
                         </p>
                         <br>

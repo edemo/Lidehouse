@@ -12,6 +12,10 @@ import './autoform-edit.html';
 // How to instantiate an Autoform_edit window: Modal.show('Autoform_edit', afOptions)
 // Make sure afOptions you omitFields if it is auto filled in an Autoform.hook
 
+Template.Autoform_edit.onCreated(function () {
+  Session.set('autoformType', this.data.type);
+});
+
 Template.Autoform_edit.onRendered(function () {
   const schemaName = `schema${this.data.id.split('.')[1].capitalize()}s`;
   initializeHelpIcons(this, schemaName);
