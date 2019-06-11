@@ -5,8 +5,10 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkNotExists, checkPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
+import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from '../topics.js';
 import './votings.js';
+import './voting-status.js';
 import { voteCastConfirmationEmail } from '/imports/email/voting-confirmation.js';
 
 export const castVote = new ValidatedMethod({
@@ -68,6 +70,14 @@ function closeVoteFulfill(topicId) {
   }
 }
 
+function insertCloseEvent(topicId) {
+  Comments.insert({
+    topicId,
+    userId: Meteor.userId(),
+    type: 'voteStatusChangeTo.closed',
+  });
+}
+
 export const closeVote = new ValidatedMethod({
   name: 'vote.close',
   validate: new SimpleSchema({
@@ -84,6 +94,7 @@ export const closeVote = new ValidatedMethod({
     checkPermissions(this.userId, 'vote.close', topic.communityId, topic);
 
     closeVoteFulfill(topicId);
+    insertCloseEvent(topicId);
   },
 });
 

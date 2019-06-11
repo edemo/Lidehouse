@@ -38,6 +38,9 @@
             {{#if (includes getType "statusChangeTo")}}
                 {{> StatusChange this}}
             {{/if}}
+            {{#if (includes getType "voteStatusChangeTo")}}
+                {{> VoteStatusChange this}}
+            {{/if}}
         </div>
     </div>
 </template>
@@ -86,5 +89,10 @@
     {{displayValue dataEntry.[1]}} 
     </span><br>
     {{/each}}
+    <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+</template>
+
+<template name="VoteStatusChange">
+    {{_ 'changed the status to closed'}}<br>
     <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
 </template>
