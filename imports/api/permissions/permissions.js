@@ -99,9 +99,9 @@ export const Permissions = [
   { name: 'statusChangeTo.finished.insert',     roles: ['manager', 'maintainer'] },
   { name: 'statusChangeTo.closed.insert',       roles: ['manager', 'maintainer'] },
   { name: 'statusChangeTo.deleted.insert',      roles: ['manager', 'maintainer'] },
-  { name: 'voteStatusChangeTo.closed.insert',   roles: ['manager', 'maintainer'] },
   { name: 'statusChange.update',     roles: nobody, allowAuthor: true },
   { name: 'statusChange.remove',     roles: nobody },
+  { name: 'event.statusChangeTo.closed.insert', roles: ['manager', 'maintainer'] },
 ];
 
 
