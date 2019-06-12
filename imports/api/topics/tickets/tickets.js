@@ -12,7 +12,6 @@ export const Tickets = {};
 
 Tickets.extensionSchema = new SimpleSchema({
   type: { type: String, allowedValues: Object.keys(TicketTypes), autoform: autoformOptions(Object.keys(TicketTypes), 'schemaTickets.ticket.type.') },
-  status: { type: String, allowedValues: Object.keys(TicketStatuses), autoform: autoformOptions(Object.keys(TicketStatuses), 'schemaTickets.ticket.status.') },
 //  category: { type: String, allowedValues: Tickets.categoryValues, autoform: autoformOptions(Topics.ticketCategoryValues, 'schemaTickets.ticket.category.'), optional: true },
   urgency: { type: String, allowedValues: TicketUrgencyValues, autoform: autoformOptions(TicketUrgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
   localizer: { type: String, optional: true },
@@ -29,6 +28,7 @@ Tickets.extensionSchema = new SimpleSchema({
 });
 
 Tickets.modifiableFields = ['ticket.category', 'ticket.urgency'];
+Topics.allowedStatuses = _.union(Topics.allowedStatuses, Object.keys(TicketStatuses));
 
 Topics.helpers({
 });
@@ -50,9 +50,9 @@ Factory.define('ticket', Topics, {
   category: 'ticket',
   title: () => 'New ticket on ' + faker.random.word(),
   text: () => faker.lorem.paragraph(),
+  status: 'reported',
   ticket: {
     category: 'building',
     urgency: 'normal',
-    status: 'reported',
   },
 });

@@ -211,6 +211,15 @@
     },
     "sticky" : {
       "label": "Rögzített"
+    },
+    "status": {
+      "label": "Státusz"
+    },
+    "closed": {
+      "label": "Lezárt"
+    },
+    "closesAt": {
+      "label": "Lezárulás ideje"
     }
   },
   "schemaVotings": {
@@ -229,9 +238,6 @@
       "choices": {
         "label": "Választási lehetőségek",
         "help": "A szavazás típusa (például igen-nem szavazás esetén) meghatározhatja a választási lehetőségeket. Ha nem, akkor ön adhatja hozzá a lehetséges válaszokat. Előszőr tehát mindenképpen válassza meg a típust."
-      },
-      "closesAt": {
-        "label": "Szavazás lezárása"
       },
       "procedure": {
         "label": "Szavazás menete",
