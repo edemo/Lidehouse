@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { checkExists, checkNotExists, checkPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { insertEventAsComment } from '../events.js';
+import { insertEventAsComment } from '/imports/api/comments/events.js';
 
 import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from '../topics.js';
