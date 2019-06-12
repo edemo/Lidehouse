@@ -79,7 +79,7 @@ if (Meteor.isServer) {
           insertDelegation._execute({ userId: Fixture.demoUserId },
             { sourcePersonId: Fixture.demoUserId, targetPersonId: Fixture.dummyUsers[0], scope: 'invalid' }
           );
-        });
+        }, 'validation-error');
         done();
       });
 
@@ -136,7 +136,7 @@ if (Meteor.isServer) {
         // new delegations to him cannot be added now
         chai.assert.throws(() => {
           createDelegation(Fixture.dummyUsers[1], Fixture.demoUserId);
-        });
+        }, 'err_otherPartyNotAllowed');
         chai.assert.equal(Delegations.find({ targetPersonId: Fixture.demoUserId }).fetch().length, 0);
 
         // until he allows it again
@@ -160,17 +160,19 @@ if (Meteor.isServer) {
           );
         });
         done();
-      });
+      }, 'err_permissionDenied');
 
       it('only allows to insert the user\'s own outbound delegations (unless manager)', function (done) {
         chai.assert.throws(() => {
           insertDelegation._execute({ userId: Fixture.demoUserId },
             { sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.demoUserId, scope: 'community', scopeObjectId: Fixture.demoCommunityId }
           );
+        }, 'err_permissionDenied');
+        chai.assert.doesNotThrow(() => {
+          insertDelegation._execute({ userId: Fixture.demoManagerId },
+            { sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.demoUserId, scope: 'community', scopeObjectId: Fixture.demoCommunityId }
+          );
         });
-        insertDelegation._execute({ userId: Fixture.demoManagerId },
-          { sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.demoUserId, scope: 'community', scopeObjectId: Fixture.demoCommunityId }
-        );
         done();
       });
 
@@ -178,9 +180,9 @@ if (Meteor.isServer) {
         const delegation = Delegations.findOne({ sourcePersonId: Fixture.dummyUsers[0], targetPersonId: Fixture.demoUserId });
         chai.assert.isDefined(delegation);
         chai.assert.throws(() => {
-          removeDelegation._execute({ userId: Fixture.Fixture.dummyUsers[1] }, { _id: delegation._id });
-        });
-        removeDelegation._execute({ userId: Fixture.demoManagerId }, { _id: delegation._id });
+          removeDelegation._execute({ userId: Fixture.dummyUsers[1] }, { _id: delegation._id });
+        }, 'err_permissionDenied');
+        chai.assert.doesNotThrow(() => removeDelegation._execute({ userId: Fixture.demoManagerId }, { _id: delegation._id }));
         done();
       });
     });
