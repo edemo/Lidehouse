@@ -861,11 +861,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     category: 'ticket',
     title: __('demo.ticket.0.title'),
     text: __('demo.ticket.0.text'),
+    status: 'progressing',
     ticket: {
       type: 'issue',
       category: 'building',
       urgency: 'high',
-      status: 'progressing',
     },
   });
 
@@ -876,11 +876,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     category: 'ticket',
     title: __('demo.ticket.1.title'),
     text: __('demo.ticket.1.text'),
+    status: 'closed',
     ticket: {
       type: 'issue',
       category: 'building',
       urgency: 'normal',
-      status: 'closed',
     },
   });
   Clock.setSimulatedTime(moment().subtract(3982, 'minutes').toDate());
@@ -890,11 +890,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     category: 'ticket',
     title: __('demo.ticket.2.title'),
     text: __('demo.ticket.2.text'),
+    status: 'reported',
     ticket: {
       type: 'issue',
       category: 'service',
       urgency: 'normal',
-      status: 'reported',
     },
   });
   Clock.setSimulatedTime(moment().subtract(3950, 'minutes').toDate())
@@ -911,11 +911,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     category: 'ticket',
     title: __('demo.ticket.3.title'),
     text: __('demo.ticket.3.text'),
+    status: 'closed',
     ticket: {
       type: 'issue',
       category: 'building',
       urgency: 'low',
-      status: 'closed',
     },
   });
   Clock.clear();

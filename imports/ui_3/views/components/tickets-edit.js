@@ -87,7 +87,7 @@ AutoForm.addHooks('af.ticket.insert', {
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
     doc.ticket.type = doc.ticket.type || 'issue';
-    doc.ticket.status = TicketTypes.issue.start;
+    doc.status = TicketTypes.issue.start;
     return doc;
   },
 });
@@ -99,7 +99,7 @@ AutoForm.addHooks('af.task.insert', {
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
     doc.ticket.type = doc.ticket.type || 'maintenance';
-    doc.ticket.status = TicketTypes.maintenance.start;
+    doc.status = TicketTypes.maintenance.start;
     return doc;
   },
 });
@@ -111,7 +111,7 @@ AutoForm.addHooks('af.ticket.statusChange', {
     doc.userId = Meteor.userId();
     doc.type = `statusChangeTo.${newStatusName}`;
     doc.ticket = doc.ticket || {};
-    doc.ticket.status = newStatusName;
+    doc.status = newStatusName;
     return doc;
   },
   onSuccess(formType, result) {

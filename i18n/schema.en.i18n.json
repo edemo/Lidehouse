@@ -211,6 +211,15 @@
     },
     "sticky" : {
       "label": "Sticky"
+    },
+    "status": {
+      "label": "Status"
+    },
+    "closed": {
+      "label": "Closed"
+    },
+    "closesAt": {
+      "label": "Closes At"
     }
   },
   "schemaVotings": {
@@ -228,9 +237,6 @@
     "vote": {
       "choices": {
         "label": "Vote choices"
-      },
-      "closesAt": {
-        "label": "Closes At"
       },
       "procedure": {
         "label": "Voting procedure",

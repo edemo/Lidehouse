@@ -103,8 +103,8 @@
                   <tr class="ticket-row" data-href="{{pathFor 'Topic.show' _tid=_id}}">
                   <tr>
                     <td>
-                      {{#if ticket.status}}                        
-                      <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
+                      {{#if status}}                        
+                      <span class="label label-{{statusColor status}}">{{_ (concat 'schemaTickets.ticket.status.' status)}}</span>
                       {{/if}}
                     </td>
                     <td class="issue-info">

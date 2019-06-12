@@ -5,7 +5,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
+import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -16,7 +16,7 @@ import { RevisionedCollection } from '/imports/api/revision.js';
 import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
 import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
-export const Topics = new RevisionedCollection('topics', ['text', 'title', 'closed']);
+export const Topics = new RevisionedCollection('topics', ['text', 'title']);
 
 // Topic categories in order of increasing importance
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
@@ -31,10 +31,14 @@ Topics.schema = new SimpleSchema({
   text: { type: String, max: 5000, autoform: { rows: 8 } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   photo: { type: String, optional: true, autoform: fileUpload },
-  closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
+  status: { type: String, defaultValue: 'open', allowedValues() { return Topics.allowedValues; }, autoform: autoformOptions(Topics.allowedValues, 'schemaTickets.ticket.status.') },
+  closed: { type: Boolean, autoValue() { return this.field('status') === 'closed'; }, autoform: { omit: true } },
+  closesAt: { type: Date, optional: true, autoform: noUpdate },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
+
+Topics.allowedValues = ['open', 'closed', 'deleted'];
 
 Meteor.startup(function indexTopics() {
   Topics.ensureIndex({ agendaId: 1 }, { sparse: true });
