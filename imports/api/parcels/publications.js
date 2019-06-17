@@ -2,6 +2,8 @@
 
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Parcels } from '../parcels/parcels.js';
 
 Meteor.publish('parcels.inCommunity', function parcelsOfCommunity(params) {
@@ -22,12 +24,14 @@ Meteor.publish('parcels.ofSelf', function parcelsOfSelf(params) {
   new SimpleSchema({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validate(params);
-  const { communityId } = params;
   if (!Meteor.user()) return this.ready();
-  const parcelIds = Meteor.user().memberships(communityId).map(m => m.parcelId);
+  const { communityId } = params;
+  const permissionRoles = Permissions.find(p => p.name === 'parcels.details').roles;
+  const personId = Meteor.userId();
+  const parcelIds = Memberships.find({ communityId, approved: true, active: true,
+    personId, parcelId: { $exists: true }, role: { $in: permissionRoles } }).map(m => m.parcelId);
   const ledParcelIds = [];
   parcelIds.forEach((parcelId) => {
-    if (parcelId === undefined) return;
     Parcels.findOne(parcelId).forEachLed(parcel => ledParcelIds.push(parcel._id));
   });
   return Parcels.find({ _id: { $in: ledParcelIds } });
