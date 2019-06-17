@@ -27,6 +27,7 @@ Meteor.publish('parcels.ofSelf', function parcelsOfSelf(params) {
   const parcelIds = Meteor.user().memberships(communityId).map(m => m.parcelId);
   const ledParcelIds = [];
   parcelIds.forEach((parcelId) => {
+    if (parcelId === undefined) return;
     Parcels.findOne(parcelId).forEachLed(parcel => ledParcelIds.push(parcel._id));
   });
   return Parcels.find({ _id: { $in: ledParcelIds } });
