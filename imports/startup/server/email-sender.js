@@ -79,7 +79,6 @@ export const emailSender = {
 Mailer.config({
   from: emailSender.config.from,
 //  replyTo: 'Honline <noreply@honline.hu>',
-  addRoutes: true,  // only allow this in debug mode
   testEmail: null,  // set your email here to be able to send by url 
   plainTextOpts: {
     ignoreImage: true,
