@@ -19,6 +19,7 @@ export const Permissions = [
   { name: 'benefactorships.update', roles: ['manager'] },
   { name: 'benefactorships.remove', roles: ['manager'] },
   { name: 'parcels.inCommunity',    roles: everyRole },
+  { name: 'parcels.details',        roles: ['owner', 'benefactor'] },
   { name: 'parcels.insert',         roles: ['manager'] },
   { name: 'parcels.update',         roles: ['manager'] },
   { name: 'parcels.remove',         roles: ['manager'] },
