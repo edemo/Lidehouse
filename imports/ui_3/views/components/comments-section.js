@@ -5,6 +5,7 @@ import { $ } from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 /* globals Waypoint */
 
+import { Topics } from '/imports/api/topics/topics.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -69,6 +70,15 @@ Template.Comments_section.viewmodel({
     return (route === 'Board' && comments.count() > RECENT_COMMENT_COUNT)
       ? comments.count() - RECENT_COMMENT_COUNT
       : 0;
+  },
+});
+
+Template.StatusChange.helpers({
+  content() {
+    const topic = Topics.findOne(this.topicId);
+    if (topic.category === 'ticket') return 'ticketStatusChange';
+    if (topic.category === 'vote') return 'voteStatusChange';
+    return undefined;
   },
 });
 
