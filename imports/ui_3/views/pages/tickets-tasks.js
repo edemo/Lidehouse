@@ -92,7 +92,7 @@ Template.Tickets_tasks.viewmodel({
     const communityId = Session.get('activeCommunityId');
     const recentTickets = [];
     const allTickets = Topics.find({ communityId, category: 'ticket',
-      $or: [{ 'ticket.status': { $ne: 'closed' } }, { createdAt: { $gt: moment().subtract(1, 'week').toDate() } }],
+      $or: [{ status: { $ne: 'closed' } }, { createdAt: { $gt: moment().subtract(1, 'week').toDate() } }],
     }, { sort: { createdAt: -1 } }).fetch();
     for (let i = 0; i <= 1; i += 1) {
       recentTickets.push(allTickets[i]);
@@ -112,7 +112,7 @@ Template.Tickets_tasks.viewmodel({
       const reportedByCurrentUser = this.reportedByCurrentUser();
       const selector = { communityId, category: 'ticket' };
       selector.createdAt = {};
-      if (ticketStatusArray.length > 0) selector['ticket.status'] = { $in: ticketStatusArray };
+      if (ticketStatusArray.length > 0) selector.status = { $in: ticketStatusArray };
       if (startDate) selector.createdAt.$gte = new Date(this.startDate());
       if (endDate) selector.createdAt.$lte = new Date(this.endDate());
       if (reportedByCurrentUser) selector.userId = Meteor.userId();
