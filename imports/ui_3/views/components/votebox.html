@@ -9,8 +9,8 @@
         {{#if this.closed}}
           {{_ "closed"}}<!--a href="" class="js-view-results">: {{_ "Vote results"}}</a-->
         {{else}}
-          <span title="{{_ 'createdAt'}}: {{displayDate createdAt}} {{_ 'closes'}}: {{displayDate vote.closesAt}}">
-           {{_ "closes"}}: {{displayTimeFrom vote.closesAt}}
+          <span title="{{_ 'createdAt'}}: {{displayDate createdAt}} {{_ 'closes'}}: {{closesAt}}">
+           {{_ "closes"}}: {{displayTimeFrom closesAt}}
           </span>
         {{/if}}
       </div>
@@ -20,7 +20,7 @@
           <button class="dropdown-toggle drop-unfoll glyphicon glyphicon-option-horizontal" type="button" id="drop_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           </button>
           <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{_id}}">
-            {{#if and (userHasPermission 'vote.close' this.communityId this) (equals this.closed false)}}
+            {{#if and (userHasPermission 'vote.statusChangeTo.closed.insert' this.communityId this) (equals this.closed false)}}
             <li><a class="js-close" href=""><i class="fa fa-legal"></i> {{_ 'close topic'}}</a></li>
             {{/if}}
             {{#if and (userHasPermission 'vote.update' this.communityId this) (equals this.closed false) }}

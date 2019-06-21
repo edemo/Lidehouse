@@ -42,7 +42,7 @@ export const Notification_Email = {
     voteHasBeenClosed(topic) {
       const userLastSeens = Meteor.users.findOne(this.userId).lastSeens[Meteor.users.SEEN_BY.EYES][topic._id];
       if (topic.closed === true && topic.category === 'vote' && userLastSeens
-        && (topic.vote.closesAt > userLastSeens.timestamp)) return true;
+        && (topic.closesAt > userLastSeens.timestamp)) return true;
       return false;
     },
     hider(doc) {
