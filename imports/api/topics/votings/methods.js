@@ -4,9 +4,12 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { checkExists, checkNotExists, checkPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { insertEventAsComment } from '/imports/api/comments/events.js';
+import { ticketStatusChange } from '/imports/api/topics/tickets/methods.js';
+//import { statusChangeEventSchema } from '/imports/api/topics/tickets/ticket-status.js';
 
 import { Comments } from '/imports/api/comments/comments.js';
+import '/imports/api/topics/events.js';
+
 import { Topics } from '../topics.js';
 import './votings.js';
 import { voteCastConfirmationEmail } from '/imports/email/voting-confirmation.js';
@@ -61,8 +64,8 @@ export const castVote = new ValidatedMethod({
   },
 });
 
-function closeVoteFulfill(topicId) {
-  const res = Topics.update(topicId, { $set: { status: 'closed', closesAt: new Date() } });
+/*function closeVoteFulfill(topicId) {
+  const res = Topics.update(topicId, { $set: { closed: true, status: 'closed', closesAt: new Date() } });
   debugAssert(res === 1);
   const topic = Topics.findOne(topicId);
   if (Meteor.isServer) {
@@ -72,6 +75,7 @@ function closeVoteFulfill(topicId) {
 
 export const closeVote = new ValidatedMethod({
   name: 'vote.close',
+  //validate: statusChangeEventSchema('closed').validator({ clean: true }),
   validate: new SimpleSchema({
     topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator({ clean: true }),  // we 'clean' here to convert the vote strings (eg "1") into numbers (1)
@@ -84,14 +88,15 @@ export const closeVote = new ValidatedMethod({
       );
     }
     checkPermissions(this.userId, 'vote.close', topic.communityId, topic);
-
     closeVoteFulfill(topicId);
-    insertEventAsComment(topicId, 'statusChangeTo', 'closed');
+
+    ticketStatusChange._execute({ userId: this.userId }, { topicId, userId: this.userId, type: 'statusChangeTo', status: 'closed' });
+    //Comments.insert({ topicId, userId: this.userId, type: 'statusChangeTo', subject: 'closed' });
   },
-});
+});*/
 
 export function closeClosableVotings() {
   const now = new Date();
-  const expiredVotings = Topics.find({ category: 'vote', closed: false, 'vote.closesAt': { $lt: now } });
+  const expiredVotings = Topics.find({ category: 'vote', closed: false, 'closesAt': { $lt: now } });
   expiredVotings.forEach(voting => closeVoteFulfill(voting._id));
 }

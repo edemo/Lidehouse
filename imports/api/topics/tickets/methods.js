@@ -6,21 +6,32 @@ import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, c
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { statusChangeEventSchema } from '/imports/api/topics/tickets/ticket-status.js';
+//import { statusChangeEventSchema } from '/imports/api/topics/tickets/ticket-status.js';
+import { VoteStatuses } from '/imports/api/topics/votings/voting-status.js';
 
-export const ticketStatusChange = new ValidatedMethod({
+/*export const ticketStatusChange = new ValidatedMethod({
   name: 'ticket.statusChange',
-  validate: statusChangeEventSchema().validator({ clean: true }),
+  validate(doc) { statusChangeEventSchema(doc.status, doc.topicId); },
 
   run(event) {
     const topic = checkExists(Topics, event.topicId);
-    checkPermissions(this.userId, `${event.type}.insert`, topic.communityId);
+    checkPermissions(this.userId, `${event.type}.${event.status}.insert`, topic.communityId);
     const topicModifier = {};
-    Object.keys(event.ticket).forEach(key => topicModifier[`ticket.${key}`] = event.ticket[key]);
+    if (topic.category === 'ticket') {
+      Object.keys(event.ticket).forEach(key => topicModifier[`ticket.${key}`] = event.ticket[key]);
+      event.data = event.ticket; delete event.ticket;
+    }
+    topicModifier.status = event.status;
     const result = Topics.update(event.topicId, { $set: topicModifier });
 
-    event.data = event.ticket; delete event.ticket;
-    Comments.methods.insert._execute({ userId: this.userId }, event);
+    event.type = event.type;
+    event.subject = event.status;
+
+    //VoteStatuses[event.status].postProcess(event.topicId);
+
+    //Comments.methods.insert._execute({ userId: this.userId }, event);
+    Comments.insert(event);
     return result;
   },
-});
+});*/
+
