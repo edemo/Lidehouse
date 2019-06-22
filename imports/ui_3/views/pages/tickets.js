@@ -31,7 +31,7 @@ Template.Tickets.viewmodel({
   tickets() {
     const communityId = Session.get('activeCommunityId');
     const selector = { communityId, category: 'ticket', 'ticket.type' : 'issue' };
-    if (this.activesOnly()) selector['ticket.status'] = { $ne: 'closed' };
+    if (this.activesOnly()) selector.status = { $ne: 'closed' };
     if (this.filterUserId()) selector.userId = this.filterUserId();
     let topicsList = Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
     if (this.searchText()) {

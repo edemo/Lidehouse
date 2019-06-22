@@ -23,7 +23,7 @@ export function ticketColumns(permissions) {
   ticketButtonRenderers.push(Render.ticketCommentButton);
 
   return [
-    { data: 'ticket.status', title: __('schemaTickets.ticket.status.label'), render: Render.ticketStatus },
+    { data: 'status', title: __('schemaTickets.ticket.status.label'), render: Render.ticketStatus },
     { data: 'title', title: __('schemaTickets.title.label') },
     { data: 'createdBy()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },

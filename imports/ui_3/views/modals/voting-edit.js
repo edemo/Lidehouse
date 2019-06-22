@@ -143,7 +143,7 @@ AutoForm.addHooks('af.vote.insert', {
       doc.userId = Meteor.userId();
       doc.category = 'vote';
       doc.vote.choices = votingEditInstance.choices.get();
-      doc.vote.closesAt = new Date(doc.vote.closesAt.getFullYear(), doc.vote.closesAt.getMonth(), doc.vote.closesAt.getDate(), 23, 59, 59);
+      doc.closesAt = new Date(doc.closesAt.getFullYear(), doc.closesAt.getMonth(), doc.closesAt.getDate(), 23, 59, 59);
     });
     return doc;
   },
@@ -161,7 +161,7 @@ AutoForm.addHooks('af.vote.update', {
   },
   formToModifier(modifier) {
     delete modifier.$set.createdAt;
-    delete modifier.$set['vote.closesAt'];
+    delete modifier.$set.closesAt;
     modifier.$set['vote.choices'] = votingEditInstance.choices.get();
     return modifier;
   },

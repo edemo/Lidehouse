@@ -32,7 +32,7 @@ Topics.schema = new SimpleSchema({
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   photo: { type: String, optional: true, autoform: fileUpload },
   status: { type: String, defaultValue: 'open', allowedValues() { return Topics.allowedValues; }, autoform: autoformOptions(Topics.allowedValues, 'schemaTickets.ticket.status.') },
-  closed: { type: Boolean, autoValue() { return this.field('status') === 'closed'; }, autoform: { omit: true } },
+  closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   closesAt: { type: Date, optional: true, autoform: noUpdate },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
@@ -112,7 +112,7 @@ Topics.helpers({
         break;
       case 'ticket':
         if (seenType === Meteor.users.SEEN_BY.EYES
-          && this.ticket.status !== 'closed') return 1;
+          && this.status !== 'closed') return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
           && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
         break;
@@ -162,6 +162,7 @@ Topics.publicFields = {
   agendaId: 1,
   photo: 1,
   createdAt: 1,
+  closesAt: 1,
   updatedAt: 1,
   closed: 1,
   sticky: 1,
@@ -169,6 +170,7 @@ Topics.publicFields = {
   flags: 1,
   commentCounter: 1,
   revision: 1,
+  status: 1,
 };
 
 Topics.categoryValues.forEach((category) => {

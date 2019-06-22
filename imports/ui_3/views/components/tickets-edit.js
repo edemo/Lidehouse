@@ -5,7 +5,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
-import { statusChangeEventSchema } from '/imports/api/topics/tickets/ticket-status.js';
+import { statusChangeEventSchema } from '/imports/api/topics/events.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -61,10 +61,10 @@ export function afTicketStatusChangeModal(topicId, newStatusName) {
   Session.set('newStatusName', newStatusName);
   Modal.show('Autoform_edit', {
     id: 'af.ticket.statusChange',
-    schema: statusChangeEventSchema(newStatusName),
+    schema: statusChangeEventSchema(newStatusName, topicId),
     omitFields: ['topicId', 'userId', 'data', 'communityId'],
     type: 'method',
-    meteormethod: 'ticket.statusChange',
+    meteormethod: 'statusChange',
     btnOK: 'Change status',
   });
 }
@@ -109,9 +109,9 @@ AutoForm.addHooks('af.ticket.statusChange', {
     const newStatusName = Session.get('newStatusName');
     doc.topicId = Session.get('activeTopicId');
     doc.userId = Meteor.userId();
-    doc.type = `statusChangeTo.${newStatusName}`;
-    doc.ticket = doc.ticket || {};
+    doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
     doc.status = newStatusName;
+    doc.ticket = doc.ticket || {};
     return doc;
   },
   onSuccess(formType, result) {
