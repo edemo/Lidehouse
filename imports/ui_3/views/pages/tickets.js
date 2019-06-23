@@ -7,7 +7,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
 import { Topics } from '/imports/api/topics/topics.js';
-import { TicketUrgencyColors, possibleNextStatuses } from '/imports/api/topics/tickets/ticket-status.js';
+import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -20,7 +20,7 @@ Template.Tickets.viewmodel({
   filterUserId: null,
   searchText: '',
   urgencyColor(value) {
-    return TicketUrgencyColors[value];
+    return Tickets.urgencyColors[value];
   },
   activeClassForActives() {
     return this.activesOnly() && 'active';
@@ -47,9 +47,6 @@ Template.Tickets.viewmodel({
     return Topics.find({ communityId, category: 'ticket',
       createdAt: { $gt: moment().subtract(2, 'week').toDate() },
     }, { sort: { createdAt: -1 } });
-  },
-  possibleNextStatuses(topic) {
-    return possibleNextStatuses(topic);
   },
 });
 

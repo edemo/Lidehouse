@@ -10,7 +10,7 @@
                  <li><a class="js-edit" href="">{{_ 'edit'}}</a></li>
                  {{/if}}
                  {{#if userHasPermission 'ticket.statusChange' (fromSession 'activeCommunityId') this}}
-                    {{#each possibleNextStatus in possibleNextStatuses}}
+                    {{#each possibleNextStatus in this.possibleNextStatuses}}
                     <li><a class="js-status" data-status="{{possibleNextStatus}}" href="">{{_ 'Change status'}}: {{_ possibleNextStatus}}</a></li>
                     {{/each}}
                  {{/if}}

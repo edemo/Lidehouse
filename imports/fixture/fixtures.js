@@ -231,8 +231,8 @@ export function insertUnittestFixture(lang) {
   const voteTopic0 = demoBuilder.create('vote', {
     userId: demoUserId,
     agendaId,
+    closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
     vote: {
-      closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',
@@ -249,8 +249,8 @@ export function insertUnittestFixture(lang) {
   const voteTopic1 = demoBuilder.create('vote', {
     userId: nextUser(),
     agendaId,
+    closesAt: moment().add(2, 'week').toDate(),
     vote: {
-      closesAt: moment().add(2, 'week').toDate(),
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',

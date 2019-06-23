@@ -6,7 +6,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
 
-import { checkExists, checkNotExists, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from './topics.js';
@@ -17,12 +17,26 @@ import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import './rooms/rooms.js';
 import './feedbacks/feedbacks.js';
 
+function checkStatusStartAllowed(topic, status) {
+  if (!_.contains(topic.possibleStartStatuses(), status)) {
+    throw new Meteor.Error('err_permissionDenied', `Topic ${topic._id} cannot start in ${status}`, topic.toString());
+  }
+}
+
+function checkStatusChangeAllowed(topic, statusTo) {
+  if (!_.contains(topic.possibleNextStatuses(), statusTo)) {
+    throw new Meteor.Error('err_permissionDenied', `Topic ${topic._id} cannot move from ${topic.status} into status ${statusTo}`, topic.toString());
+  }
+}
+
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
   validate: Topics.simpleSchema().validator({ clean: true }),
   run(doc) {
     if (doc._id) checkNotExists(Topics, doc._id);
+    doc = Topics._transform(doc);
     checkTopicPermissions(this.userId, 'insert', doc);
+    checkStatusStartAllowed(doc, doc.status);
     doc.userId = this.userId;   // One can only post in her own name
     const topicId = Topics.insert(doc);
     const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
@@ -46,6 +60,41 @@ export const update = new ValidatedMethod({
   },
 });
 
+export const statusChange = new ValidatedMethod({
+  name: 'topics.statusChange',
+  validate: Comments.simpleSchema().validator({ clean: true }),
+  run(event) {
+    const topic = checkExists(Topics, event.topicId);
+    const category = topic.category;
+    // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic.communityId);
+    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId);
+    const workflow = topic.workflow();
+    checkStatusChangeAllowed(topic, event.status);
+
+    // leaving the old status
+    const onLeave = workflow[topic.status].obj.onLeave;
+    if (onLeave) onLeave(event, topic);
+
+    // modify topic
+    const topicModifier = {};
+    topicModifier.status = event.status;
+    if (event.data) {
+      Object.keys(event.data).forEach(key => topicModifier[`${category}.${key}`] = event.data[key]);
+    }
+    const updateResult = Topics.update(event.topicId, { $set: topicModifier });
+
+    // insert event
+//    event.data = event[category]; delete event[category];
+    const insertResult = Comments.insert(event);
+
+    // entering the new status
+    const onEnter = workflow[event.status].obj.onEnter;
+    if (onEnter) onEnter(event, Topics.findOne(event.topicId));
+
+    return insertResult;
+  },
+});
+
 export const remove = new ValidatedMethod({
   name: 'topics.remove',
   validate: new SimpleSchema({
@@ -60,8 +109,9 @@ export const remove = new ValidatedMethod({
   },
 });
 
+
 Topics.methods = {
-  insert, update, remove,
+  insert, update, statusChange, remove,
 };
 
 // ----- RATE LIMITING --------

@@ -17,6 +17,7 @@ import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import './tickets-tasks.html';
+import { Tickets } from '../../../api/topics/tickets/tickets';
 
 Template.Tickets_tasks.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
@@ -42,7 +43,7 @@ Template.Tickets_tasks.viewmodel({
     if (this.ticketTypeSelector() === 'tickets') return false;
   },
   statusColor(value) {
-    return Topics.statusColors[value];
+    return Tickets.statuses.find(s => s.name === value).color;
   },
   taskStatusColor(value) {
     return Topics.taskStatusColors[value];

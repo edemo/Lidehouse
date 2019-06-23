@@ -13,8 +13,8 @@ import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
-import { votingsExtensionSchema } from '/imports/api/topics/votings/votings.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import '/imports/ui_3/views/components/shareddoc-display.js';
 import './voting-edit.html';
@@ -44,7 +44,7 @@ Template.Voting_edit.onCreated(function () {
   votingEditInstance = instance;
   this.autorun(() => {
     const currentVoteType = AutoForm.getFieldValue('vote.type', `af.vote.${Template.Voting_edit.actionFromId()}`);
-    const newChoices = currentVoteType && Topics.voteTypes[currentVoteType].fixedChoices;
+    const newChoices = currentVoteType && Votings.voteTypes[currentVoteType].fixedChoices;
     if (newChoices) instance.choices.set(newChoices);
   });
   this.autorun(() => {
@@ -142,6 +142,7 @@ AutoForm.addHooks('af.vote.insert', {
       doc.communityId = Session.get('activeCommunityId');
       doc.userId = Meteor.userId();
       doc.category = 'vote';
+      doc.status = 'open';
       doc.vote.choices = votingEditInstance.choices.get();
       doc.closesAt = new Date(doc.closesAt.getFullYear(), doc.closesAt.getMonth(), doc.closesAt.getDate(), 23, 59, 59);
     });

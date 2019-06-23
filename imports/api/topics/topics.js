@@ -20,6 +20,18 @@ export const Topics = new RevisionedCollection('topics', ['text', 'title']);
 
 // Topic categories in order of increasing importance
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
+Topics.categorySpecs = {};
+Topics.categoryValues.forEach(cat => Topics.categorySpecs[cat] = {}); // Specific categories will add their own specs
+
+Topics.defaultWorkflow = {
+  start: { name: 'open' },
+  open: { next: [{ name: 'closed' }, { name: 'deleted' }] },
+  closed: { next: [{ name: 'deleted' }] },
+  deleted: { next: [] },
+};
+Topics.statusValues = ['open', 'closed', 'deleted'];
+
+Topics.extensionSchemas = {};
 
 Topics.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
@@ -31,14 +43,17 @@ Topics.schema = new SimpleSchema({
   text: { type: String, max: 5000, autoform: { rows: 8 } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   photo: { type: String, optional: true, autoform: fileUpload },
-  status: { type: String, defaultValue: 'open', allowedValues() { return Topics.allowedValues; }, autoform: autoformOptions(Topics.allowedValues, 'schemaTickets.ticket.status.') },
-  closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
+  status: { type: String, autoform: { omit: true } }, /* needs to be checked against the workflow rules */
+  closed: { type: Boolean, autoform: { omit: true }, autoValue() {
+    const status = this.field('status').value;
+    if (!status) return undefined; // don't touch
+    if (status === 'closed') return true;
+    else return false;
+  } },
   closesAt: { type: Date, optional: true, autoform: noUpdate },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
-
-Topics.allowedValues = ['open', 'closed', 'deleted'];
 
 Meteor.startup(function indexTopics() {
   Topics.ensureIndex({ agendaId: 1 }, { sparse: true });
@@ -124,6 +139,22 @@ Topics.helpers({
     }
     return 0;
   },
+  workflow() {
+    const specificFunc = Topics.categorySpecs[this.category].workflowOf;
+    if (specificFunc) return specificFunc(this);
+    return Topics.defaultWorkflow;
+  },
+  statusObject() {
+    return this.workflow()[this.status].obj;
+  },
+  possibleStartStatuses() {
+    const statuses = this.workflow().start;
+    return _.pluck(statuses, 'name');
+  },
+  possibleNextStatuses() {
+    const statuses = this.workflow()[this.status].next;
+    return _.pluck(statuses, 'name');
+  },
   remove() {
     Comments.remove({ topicId: this._id });
     Topics.remove({ _id: this._id });
@@ -178,5 +209,6 @@ Topics.categoryValues.forEach((category) => {
     category,
     title: () => `New ${(category)} about ${faker.random.word()}`,
     text: faker.lorem.paragraph(),
+    status: 'open',
   });
 });

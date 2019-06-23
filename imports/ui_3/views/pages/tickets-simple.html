@@ -104,7 +104,7 @@
                   <tr>
                     <td>
                       {{#if status}}                        
-                      <span class="label label-{{statusColor status}}">{{_ (concat 'schemaTickets.ticket.status.' status)}}</span>
+                      <span class="label label-{{this.statusObject.color}}">{{_ (concat 'schemaTickets.ticket.status.' status)}}</span>
                       {{/if}}
                     </td>
                     <td class="issue-info">

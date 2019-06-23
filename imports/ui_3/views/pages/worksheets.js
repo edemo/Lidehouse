@@ -10,8 +10,7 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { _ } from 'meteor/underscore';
 
 import { Topics } from '/imports/api/topics/topics.js';
-import { TicketStatuses, TicketTypes } from '/imports/api/topics/tickets/ticket-status.js';
-import { ticketsSchema } from '/imports/api/topics/tickets/tickets.js';
+import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { afTicketInsertModal, afTaskInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
@@ -30,7 +29,7 @@ Template.Tickets_tasks.onCreated(function onCreated() {
 Template.Tickets_tasks.viewmodel({
   ticketText: '',
   ticketStatusArray: [],
-  ticketTypeArray: Object.keys(TicketTypes),
+  ticketTypeArray: Tickets.typeValues,
   startDate: moment().subtract(30, 'days').format('YYYY-MM-DD'),
   endDate: '',
   reportedByCurrentUser: false,
@@ -41,16 +40,16 @@ Template.Tickets_tasks.viewmodel({
     this.communityId(this.templateInstance.getCommunityId());
   },
   ticketStatuses() {
-    return TicketStatuses;
+    return Object.values(Tickets.statuses);
   },
   ticketTypes() {
-    return TicketTypes;
+    return Tickets.typeValues;
   },
   urgencyColor(value) {
     return Topics.urgencyColors[value];
   },
   ticketsSchema() {
-    return ticketsSchema;
+    return Tickets.chema;
   },
   noFilters() {
     const ticketText = this.ticketText();

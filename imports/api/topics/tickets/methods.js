@@ -6,8 +6,6 @@ import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, c
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Comments } from '/imports/api/comments/comments.js';
-//import { statusChangeEventSchema } from '/imports/api/topics/tickets/ticket-status.js';
-import { VoteStatuses } from '/imports/api/topics/votings/voting-status.js';
 
 /*export const ticketStatusChange = new ValidatedMethod({
   name: 'ticket.statusChange',
@@ -25,7 +23,6 @@ import { VoteStatuses } from '/imports/api/topics/votings/voting-status.js';
     const result = Topics.update(event.topicId, { $set: topicModifier });
 
     event.type = event.type;
-    event.subject = event.status;
 
     //VoteStatuses[event.status].postProcess(event.topicId);
 

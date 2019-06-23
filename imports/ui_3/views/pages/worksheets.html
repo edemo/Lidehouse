@@ -15,15 +15,15 @@
           <div class="col-sm-12">
             <div class="input-group">
               <label class="control-label">{{_ 'Ticket status'}}</label><br>
-              {{#each ticketStatus in (keys ticketStatuses)}}
-              <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{select 'color' (select ticketStatus ticketStatuses)}} {{activeStatusButton ticketStatus}}" data-value="{{ticketStatus}}">{{_ (concat 'schemaTickets.ticket.status.' ticketStatus)}}</button>
+              {{#each ticketStatus in ticketStatuses}}
+              <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{ticketStatus.color}} {{activeStatusButton ticketStatus.name}}" data-value="{{ticketStatus.name}}">{{_ (concat 'schemaTickets.ticket.status.' ticketStatus.name)}}</button>
               {{/each}}
             </div>
           </div>
           <div class="col-sm-12">
             <div class="input-group">
               <label class="control-label">{{_ 'Ticket type'}}</label><br>
-              {{#each ticketType in (keys ticketTypes)}}
+              {{#each ticketType in ticketTypes}}
               <button type="button" class="js-type-filter btn btn-primary btn-xs btn-outline btn-warning {{activeTypeButton ticketType}}" data-value="{{ticketType}}">{{_ (concat 'schemaTickets.ticket.type.' ticketType)}}</button>
               {{/each}}
             </div>

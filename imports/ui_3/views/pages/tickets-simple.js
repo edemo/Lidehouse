@@ -30,9 +30,6 @@ Template.Tickets_simple.onRendered(function slim() {
 Template.Tickets_simple.viewmodel({
   ticketText: '',
   communityId: null,
-  statusColor(value) {
-    return Topics.statusColors[value];
-  },
   ownTickets() {
     const userId = Meteor.userId();
     const communityId = Session.get('activeCommunityId');

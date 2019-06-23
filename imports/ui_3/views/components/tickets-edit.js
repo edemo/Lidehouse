@@ -3,14 +3,13 @@ import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
+import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Comments } from '/imports/api/comments/comments.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
-import { statusChangeEventSchema } from '/imports/api/topics/events.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import { checkTopicPermissions } from '../../../api/method-checks';
-import { TicketTypes } from '../../../api/topics/tickets/ticket-status';
 
 export function afTicketInsertModal() {
 /*  const communityId = Session.get('activeCommunityId');
@@ -56,15 +55,39 @@ export function afTicketUpdateModal(topicId) {
   });
 }
 
+export function fixedStatusValue(value) {
+  return {
+    options() { return [{ label: __('schemaTickets.ticket.status.' + value), value }]; },
+    firstOption: false,
+    disabled: true,
+  };
+}
+
+function ticketStatusChangeSchema(statusName, topicId) {
+  const topic = Topics.findOne(topicId);
+  const statusObject = Topics.categorySpecs[topic.category].statuses[statusName];
+  const schema = statusName ?
+    new SimpleSchema([Comments.schema, {
+      status: { type: String, autoform: fixedStatusValue(statusName), autoValue() { return statusName; } },
+      ticket: { type: statusObject.schema, optional: true },
+    }]) :
+    new SimpleSchema([Comments.schema, {
+      status: { type: String },
+      ticket: { type: Object, blackbox: true },
+    }]);
+  schema.i18n('schemaTickets');
+  return schema;
+}
+
 export function afTicketStatusChangeModal(topicId, newStatusName) {
   Session.set('activeTopicId', topicId);
   Session.set('newStatusName', newStatusName);
   Modal.show('Autoform_edit', {
     id: 'af.ticket.statusChange',
-    schema: statusChangeEventSchema(newStatusName, topicId),
+    schema: ticketStatusChangeSchema(newStatusName, topicId),
     omitFields: ['topicId', 'userId', 'data', 'communityId'],
     type: 'method',
-    meteormethod: 'statusChange',
+    meteormethod: 'topics.statusChange',
     btnOK: 'Change status',
   });
 }
@@ -87,7 +110,7 @@ AutoForm.addHooks('af.ticket.insert', {
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
     doc.ticket.type = doc.ticket.type || 'issue';
-    doc.status = TicketTypes.issue.start;
+    doc.status = Tickets.workflows.issue.start[0].name;
     return doc;
   },
 });
@@ -99,7 +122,7 @@ AutoForm.addHooks('af.task.insert', {
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
     doc.ticket.type = doc.ticket.type || 'maintenance';
-    doc.status = TicketTypes.maintenance.start;
+    doc.status = Tickets.workflows.maintenance.start[0].name;
     return doc;
   },
 });
@@ -111,7 +134,7 @@ AutoForm.addHooks('af.ticket.statusChange', {
     doc.userId = Meteor.userId();
     doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
     doc.status = newStatusName;
-    doc.ticket = doc.ticket || {};
+    doc.data = doc.ticket || {};
     return doc;
   },
   onSuccess(formType, result) {

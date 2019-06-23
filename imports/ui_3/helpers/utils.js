@@ -3,7 +3,6 @@ import { numeral } from 'meteor/numeral:numeral';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
 import { __ } from '/imports/localization/i18n.js';
-import { TicketStatuses } from '/imports/api/topics/tickets/ticket-status.js';
 
 Template.registerHelper('and', function and(a, b) {
     return a && b;
@@ -93,10 +92,6 @@ Template.registerHelper('log', function log(stuff) {
 
 Template.registerHelper('entriesOf', function entriesOf(obj) {
   return Object.entries(obj);
-});
-
-Template.registerHelper('statusColor', function statusColor(statusName) {
-  return TicketStatuses[statusName].color;
 });
 
 Template.registerHelper('keys', function keys(object) {

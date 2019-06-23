@@ -2,7 +2,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { possibleNextStatuses, TicketStatuses } from '/imports/api/topics/tickets/ticket-status.js';
+import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { $ } from 'meteor/jquery';
 
 export const Render = {
@@ -92,7 +92,7 @@ export const Render = {
                     <b class="caret"></b>
                   </a>
                   <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">`;
-    possibleNextStatuses(thisTopic).forEach((status) => {
+    thisTopic.possibleNextStatuses().forEach((status) => {
       html += `<li>
                 <a href="" class="js-status" data-id="${cellData}" data-status="${status}">
                   ${__('schemaTickets.ticket.status.' + status)}
@@ -118,7 +118,7 @@ export const Render = {
   },
   ticketStatus(cellData) {
     const ticketStatusName = cellData;
-    const color = TicketStatuses[ticketStatusName].color;
+    const color = Tickets.statuses[ticketStatusName].color;
     const html = `<span class='label label-${color}'>${__('schemaTickets.ticket.status.' + cellData)}</span>`;
     return html;
   },

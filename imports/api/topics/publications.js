@@ -5,8 +5,8 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import './votings/votings.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
 
@@ -26,7 +26,7 @@ Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
     ],
   };
 
-  const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
+  const publicFields = Votings.extendPublicFieldsForUser(this.userId, communityId);
   return [
     Topics.find(selector, { fields: publicFields }),
     Topics.find(_.extend({}, selector, { category: 'vote', closed: true })),

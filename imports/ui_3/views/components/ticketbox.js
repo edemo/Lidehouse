@@ -8,7 +8,6 @@ import { handleError } from '/imports/ui_3/lib/errors.js';
 import { like } from '/imports/api/topics/likes.js';
 import { flag } from '/imports/api/topics/flags.js';
 import { afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal } from '/imports/ui_3/views/components/tickets-edit.js';
-import { possibleNextStatuses } from '/imports/api/topics/tickets/ticket-status.js';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/hideable.js';
@@ -19,9 +18,6 @@ Template.Ticketbox.onRendered(function ticketboxOnRendered() {
 });
 
 Template.Ticketbox.helpers({
-  possibleNextStatuses() {
-    return possibleNextStatuses(this);
-  },
 });
 
 Template.Ticketbox.events({

@@ -17,9 +17,11 @@ import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
-Topics.voteProcedureValues = ['online', 'meeting'];
-Topics.voteEffectValues = ['poll', 'legal'];
-Topics.voteTypes = {
+export const Votings = {};
+
+Votings.voteProcedureValues = ['online', 'meeting'];
+Votings.voteEffectValues = ['poll', 'legal'];
+Votings.voteTypes = {
   yesno: {
     name: 'yesno',
     fixedChoices: ['yes', 'no', 'abstain'],
@@ -38,37 +40,36 @@ Topics.voteTypes = {
     name: 'multiChoose',
   },
 };
-Topics.voteTypeValues = Object.keys(Topics.voteTypes);
+Votings.voteTypeValues = Object.keys(Votings.voteTypes);
 
-
-let currentUsersPossibleEffectValues = () => Topics.voteEffectValues;
+let currentUsersPossibleEffectValues = () => Votings.voteEffectValues;
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 
-  currentUsersPossibleEffectValues = function() {
+  currentUsersPossibleEffectValues = function () {
     const user = Meteor.user();
     if (!user.hasPermission('vote.insert', Session.get('activeCommunityId'))) {
       return ['poll'];
     }
-    return Topics.voteEffectValues;      
-  }
+    return Votings.voteEffectValues;
+  };
 }
 
-const voteSchema = new SimpleSchema({
-  procedure: { type: String, allowedValues: Topics.voteProcedureValues, autoform: _.extend({}, autoformOptions(Topics.voteProcedureValues, 'schemaVotings.vote.procedure.'), noUpdate) },
-  effect: { type: String, allowedValues: Topics.voteEffectValues, autoform: _.extend({}, autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), noUpdate) },
-  type: { type: String, allowedValues: Topics.voteTypeValues, autoform: _.extend({}, autoformOptions(Topics.voteTypeValues, 'schemaVotings.vote.type.'), noUpdate) },
-  choices: { 
+Votings.voteSchema = new SimpleSchema({
+  procedure: { type: String, allowedValues: Votings.voteProcedureValues, autoform: _.extend({}, autoformOptions(Votings.voteProcedureValues, 'schemaVotings.vote.procedure.'), noUpdate) },
+  effect: { type: String, allowedValues: Votings.voteEffectValues, autoform: _.extend({}, autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), noUpdate) },
+  type: { type: String, allowedValues: Votings.voteTypeValues, autoform: _.extend({}, autoformOptions(Votings.voteTypeValues, 'schemaVotings.vote.type.'), noUpdate) },
+  choices: {
     type: Array,
-    autoValue() { 
-      if (this.field('vote.type').value) return Topics.voteTypes[this.field('vote.type').value].fixedChoices; 
-      return undefined; 
-    } 
+    autoValue() {
+      if (this.field('vote.type').value) return Votings.voteTypes[this.field('vote.type').value].fixedChoices;
+      return undefined;
+    },
   },
   'choices.$': { type: String },
 });
 
-const voteParticipationSchema = new SimpleSchema({
+Votings.voteParticipationSchema = new SimpleSchema({
   count: { type: Number },
   units: { type: Number, decimal: true /* so that partial owned units are OK to vote */ },
 });
@@ -84,8 +85,8 @@ function defaultsTo(val) {
   };
 }
 
-const votingsExtensionSchema = new SimpleSchema({
-  vote: { type: voteSchema, optional: true },
+Votings.extensionSchema = new SimpleSchema({
+  vote: { type: Votings.voteSchema, optional: true },
   voteCasts: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
   voteCastsIndirect: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
   votePaths: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
@@ -94,13 +95,13 @@ const votingsExtensionSchema = new SimpleSchema({
     // ownershipId -> {}
   voteSummary: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
     // choiceIndex -> {}
-  voteParticipation: { type: voteParticipationSchema, optional: true, autoValue: defaultsTo({ count: 0, units: 0 }) },
+  voteParticipation: { type: Votings.voteParticipationSchema, optional: true, autoValue: defaultsTo({ count: 0, units: 0 }) },
 });
 
-Topics.helpers({
+Votings.helpers = {
   displayChoice(index, language = getCurrentUserLang()) {
     let choice = this.vote.choices[index];
-    if (Topics.voteTypes[this.vote.type].fixedChoices) choice = TAPi18n.__(choice, {}, language);
+    if (Votings.voteTypes[this.vote.type].fixedChoices) choice = TAPi18n.__(choice, {}, language);
     return choice;
   },
   unitsToShare(units) {
@@ -146,7 +147,7 @@ Topics.helpers({
     return (this.voteCasts && this.voteCasts[userId]) || (this.voteCastsIndirect && this.voteCastsIndirect[userId]);
   },
   voteEvaluate(revealResults) {
-    debugAssert(Meteor.isServer, 'voteEvaluate should only run on the server');
+    if (Meteor.isClient) return; // 'voteEvaluate' should only run on the server, client does not have the necessary data to perform it
     const voteResults = {};         // results by ownerships
     const voteCastsIndirect = {};   // results by users
     const votePaths = {};
@@ -243,16 +244,14 @@ Topics.helpers({
       return { choice, votingUnits, votingShare, percentOfTotal, percentOfVotes };
     });
   },
-});
+};
 
-Topics.attachSchema(votingsExtensionSchema);   // TODO: should be conditional on category === 'vote'
-
-_.extend(Topics.publicFields, {
+Votings.publicFields = {
   vote: 1,
   voteParticipation: 1,
-});
-
-Topics.publicFields.extendForUser = function extendForUser(userId, communityId) {
+};
+_.extend(Topics.publicFields, Votings.publicFields);
+Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) {
   // User cannot see other user's votes, but need to see his own votes (during active voting)
   // Soution: Use 2 subsrciptions, one on the live votings, one on the closed, and the public fields are different for the two
 //  const user = Meteor.users.findOne(userId);
@@ -272,12 +271,53 @@ Topics.publicFields.extendForUser = function extendForUser(userId, communityId) 
 //  }
 };
 
+Topics.helpers(Votings.helpers);
+Topics.attachSchema(Votings.extensionSchema);   // TODO: should be conditional on category === 'vote'
+
+// === Vote statuses
+
+const open = {
+  name: 'open',
+};
+
+const closed = {
+  name: 'closed',
+  onEnter(event, topic) {
+    console.log('Voting is entering closed');
+    topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
+    // Topics.update(topic._id, { $set: { closed: true, closesAt: new Date() } });  Needs to happen in autovalue
+  },
+  onLeave() {
+    console.log('Voting is leaving closed');
+  },
+};
+
+Votings.statuses = {
+  open, closed,
+};
+Votings.statusValues = Object.keys(Votings.statuses);
+
+Votings.workflow = {
+  start: [open],
+  open: { obj: open, next: [closed] },
+  closed: { obj: closed, next: [] },
+};
+
+Votings.workflowOf = function workflowOf(voting) {
+  return Votings.workflow;
+};
+
+// ===================================================
+
+Topics.categorySpecs.vote = Votings;
+
 Factory.define('vote', Topics, {
   category: 'vote',
   title: () => 'New voting on ' + faker.random.word(),
   text: () => faker.lorem.paragraph(),
+  status: 'open',
+  closesAt: () => moment().add(14, 'day').toDate(),
   vote: {
-    closesAt: () => moment().add(14, 'day').toDate(),
     procedure: 'online',
     effect: 'legal',
     type: 'choose',

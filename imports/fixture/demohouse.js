@@ -438,8 +438,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
     agendaId: agenda0,
+    closesAt: moment(demoTopicDates[1]).add(5, 'weeks').toDate(),  // its past close date
     vote: {
-      closesAt: moment(demoTopicDates[1]).add(5, 'weeks').toDate(),  // its past close date
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',
@@ -448,7 +448,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic0, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1], [0], [0], [0]]);
   Clock.setSimulatedTime(moment(demoTopicDates[1]).add(5, 'weeks').toDate());
-  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic0 }); // This vote is already closed
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic0, status: 'closed' });
   Clock.clear();
   
   Clock.setSimulatedTime(moment('2017-09-20 09:04').toDate());
@@ -457,8 +457,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
     agendaId: agenda0,
+    closesAt: moment('2017-10-14 09:04').toDate(),
     vote: {
-      closesAt: moment('2017-10-14 09:04').toDate(),
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',
@@ -467,7 +467,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic1, [[0], [0], [0], [0], [0], [0], [0], [0], [0], [1], [0], [0]]);
   Clock.setSimulatedTime(moment('2017-10-14 09:04').toDate());
-  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic1 }); // This vote is already closed
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic1, status: 'closed' });
   Clock.clear();
 
   Clock.setSimulatedTime(moment('2018-01-03 13:12').toDate());
@@ -475,8 +475,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     userId: dummyUserId,
     title: __('demo.vote.2.title'),
     text: __('demo.vote.2.text'),
+    closesAt: moment('2018-01-18 22:45').toDate(),
     vote: {
-      closesAt: moment('2018-01-18 22:45').toDate(),
       procedure: 'online',
       effect: 'poll',
       type: 'choose',
@@ -489,7 +489,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic2, [null, null, null, null, null, null, null, [0], [0], [0], [0], [0]]);
   Clock.setSimulatedTime(moment('2018-01-18 22:45').toDate());
-  closeVote._execute({ userId: demoManagerId }, { topicId: voteTopic2 }); // This vote is already closed
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic2, status: 'closed' });
   Clock.clear();
 
   Clock.setSimulatedTime(moment().subtract(3, 'weeks').toDate());
@@ -498,8 +498,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.3.title'),
     text: __('demo.vote.3.text'),
     agendaId: agenda1,
+    closesAt: moment().add(2, 'month').toDate(),
     vote: {
-      closesAt: moment().add(2, 'month').toDate(),
       procedure: 'online',
       effect: 'legal',
       type: 'yesno',
@@ -514,8 +514,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.4.title'),
     text: __('demo.vote.4.text'),
     agendaId: agenda1,
+    closesAt: moment().add(2, 'month').toDate(),
     vote: {
-      closesAt: moment().add(2, 'month').toDate(),
       type: 'preferential',
       procedure: 'online',
       effect: 'poll',
@@ -545,8 +545,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.5.title'),
     text: __('demo.vote.5.text'),
     agendaId: agenda1,
+    closesAt: moment().add(2, 'month').toDate(),
     vote: {
-      closesAt: moment().add(2, 'month').toDate(),
       procedure: 'online',
       effect: 'poll',
       type: 'petition',
