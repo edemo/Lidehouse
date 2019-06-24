@@ -16,7 +16,7 @@
             <div class="input-group">
               <label class="control-label">{{_ 'Ticket status'}}</label><br>
               {{#each ticketStatus in ticketStatuses}}
-              <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{ticketStatus.color}} {{activeStatusButton ticketStatus.name}}" data-value="{{ticketStatus.name}}">{{_ (concat 'schemaTickets.ticket.status.' ticketStatus.name)}}</button>
+              <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{ticketStatus.color}} {{activeStatusButton ticketStatus.name}}" data-value="{{ticketStatus.name}}">{{_ (concat 'schemaTopics.status.' ticketStatus.name)}}</button>
               {{/each}}
             </div>
           </div>

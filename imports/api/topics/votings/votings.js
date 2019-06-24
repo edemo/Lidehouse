@@ -276,8 +276,8 @@ Topics.attachSchema(Votings.extensionSchema);   // TODO: should be conditional o
 
 // === Vote statuses
 
-const open = {
-  name: 'open',
+const opened = {
+  name: 'opened',
 };
 
 const closed = {
@@ -293,13 +293,13 @@ const closed = {
 };
 
 Votings.statuses = {
-  open, closed,
+  opened, closed,
 };
 Votings.statusValues = Object.keys(Votings.statuses);
 
 Votings.workflow = {
-  start: [open],
-  open: { obj: open, next: [closed] },
+  start: [opened],
+  opened: { obj: opened, next: [closed] },
   closed: { obj: closed, next: [] },
 };
 

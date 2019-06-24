@@ -18,7 +18,7 @@ Tickets.urgencyColors = {
 };
 // Tickets.categoryValues = ['building', 'garden', 'service'];
 
-Tickets.extensionSchema = new SimpleSchema({
+Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
 //  category: { type: String, allowedValues: Tickets.categoryValues, autoform: autoformOptions(Tickets.categoryValues, 'schemaTickets.ticket.category.'), optional: true },
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
@@ -33,7 +33,9 @@ Tickets.extensionSchema = new SimpleSchema({
   actualStart: { type: Date, optional: true },
   actualFinish: { type: Date, optional: true },
   actualContinue: { type: Date, optional: true },
-});
+};
+
+Tickets.extensionSchema = new SimpleSchema(Tickets.extensionRawSchema);
 
 Tickets.schema = new SimpleSchema([
   Topics.schema,
@@ -59,40 +61,27 @@ Meteor.startup(function attach() {
 const reported = {
   name: 'reported',
   color: 'warning',
-  data: ['ticket.urgency'],
-  schema: new SimpleSchema({
-    urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
-  }),
+  data: ['urgency'],
 };
 
 const confirmed = {
   name: 'confirmed',
   color: 'info',
   data: [
-    'ticket.localizer',
-    'ticket.expectedCost',
-    'ticket.expectedStart',
-    'ticket.expectedFinish',
+    'localizer',
+    'expectedCost',
+    'expectedStart',
+    'expectedFinish',
   ],
-  schema: new SimpleSchema({
-    localizer: { type: String, optional: true },
-    expectedCost: { type: Number, decimal: true, optional: true },
-    expectedStart: { type: Date, optional: true },
-    expectedFinish: { type: Date, optional: true },
-  }),
 };
 
 const scheduled = {
   name: 'scheduled',
   color: 'warning',
   data: [
-    'ticket.expectedStart',
-    'ticket.expectedFinish',
+    'expectedStart',
+    'expectedFinish',
   ],
-  schema: new SimpleSchema({
-    expectedStart: { type: Date, optional: true },
-    expectedFinish: { type: Date, optional: true },
-  }),
 };
 
 const toApprove = {
@@ -109,9 +98,6 @@ const progressing = {
   name: 'progressing',
   color: 'info',
   data: ['expectedFinish'],
-  schema: new SimpleSchema({
-    expectedFinish: { type: Date, optional: true },
-  }),
 };
 
 const suspended = {
@@ -121,10 +107,6 @@ const suspended = {
     'waitingFor',
     'expectedContinue',
   ],
-  schema: new SimpleSchema({
-    waitingFor: { type: String, optional: true },
-    expectedContinue: { type: Date, optional: true },
-  }),
 };
 
 const finished = {
@@ -135,11 +117,6 @@ const finished = {
     'actualStart',
     'actualFinish',
   ],
-  schema: new SimpleSchema({
-    actualCost: { type: Number, decimal: true, optional: true },
-    actualStart: { type: Date, optional: true },
-    actualFinish: { type: Date, optional: true },
-  }),
 };
 
 const closed = {

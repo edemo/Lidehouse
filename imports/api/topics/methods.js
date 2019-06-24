@@ -66,28 +66,24 @@ export const statusChange = new ValidatedMethod({
   run(event) {
     const topic = checkExists(Topics, event.topicId);
     const category = topic.category;
+    const workflow = topic.workflow();
     // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic.communityId);
     checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId);
-    const workflow = topic.workflow();
     checkStatusChangeAllowed(topic, event.status);
 
-    // leaving the old status
     const onLeave = workflow[topic.status].obj.onLeave;
     if (onLeave) onLeave(event, topic);
 
-    // modify topic
     const topicModifier = {};
     topicModifier.status = event.status;
-    if (event.data) {
-      Object.keys(event.data).forEach(key => topicModifier[`${category}.${key}`] = event.data[key]);
+    const statusObject = Topics.categorySpecs[category].statuses[event.status];
+    if (statusObject.data) {
+      statusObject.data.forEach(key => topicModifier[`${category}.${key}`] = event.data[key]);
     }
     const updateResult = Topics.update(event.topicId, { $set: topicModifier });
 
-    // insert event
-//    event.data = event[category]; delete event[category];
     const insertResult = Comments.insert(event);
 
-    // entering the new status
     const onEnter = workflow[event.status].obj.onEnter;
     if (onEnter) onEnter(event, Topics.findOne(event.topicId));
 

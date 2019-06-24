@@ -95,7 +95,7 @@ export const Render = {
     thisTopic.possibleNextStatuses().forEach((status) => {
       html += `<li>
                 <a href="" class="js-status" data-id="${cellData}" data-status="${status}">
-                  ${__('schemaTickets.ticket.status.' + status)}
+                  ${__('schemaTopics.status.' + status)}
                 </a>
               </li>`;
     });
@@ -119,7 +119,7 @@ export const Render = {
   ticketStatus(cellData) {
     const ticketStatusName = cellData;
     const color = Tickets.statuses[ticketStatusName].color;
-    const html = `<span class='label label-${color}'>${__('schemaTickets.ticket.status.' + cellData)}</span>`;
+    const html = `<span class='label label-${color}'>${__('schemaTopics.status.' + cellData)}</span>`;
     return html;
   },
 };

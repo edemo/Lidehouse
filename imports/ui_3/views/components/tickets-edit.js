@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -57,24 +58,23 @@ export function afTicketUpdateModal(topicId) {
 
 export function fixedStatusValue(value) {
   return {
-    options() { return [{ label: __('schemaTickets.ticket.status.' + value), value }]; },
+    options() { return [{ label: __('schemaTopics.status.' + value), value }]; },
     firstOption: false,
     disabled: true,
   };
 }
 
 function ticketStatusChangeSchema(statusName, topicId) {
+  debugAssert(statusName);
   const topic = Topics.findOne(topicId);
-  const statusObject = Topics.categorySpecs[topic.category].statuses[statusName];
-  const schema = statusName ?
-    new SimpleSchema([Comments.schema, {
-      status: { type: String, autoform: fixedStatusValue(statusName), autoValue() { return statusName; } },
-      ticket: { type: statusObject.schema, optional: true },
-    }]) :
-    new SimpleSchema([Comments.schema, {
-      status: { type: String },
-      ticket: { type: Object, blackbox: true },
-    }]);
+  const statusObject = Tickets.statuses[statusName];
+  const dataSchema = statusObject.data ? new SimpleSchema(
+    statusObject.data.map(function (dataField) { return { [dataField]: Tickets.extensionRawSchema[dataField] }; })
+  ) : undefined;
+  const schema = new SimpleSchema([Comments.schema,
+    { status: { type: String, autoform: fixedStatusValue(statusName), autoValue() { return statusName; } } },
+    statusObject.data ? { ticket: { type: dataSchema, optional: true } } : {},
+  ]);
   schema.i18n('schemaTickets');
   return schema;
 }

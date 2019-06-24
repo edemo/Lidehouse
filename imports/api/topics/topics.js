@@ -24,12 +24,12 @@ Topics.categorySpecs = {};
 Topics.categoryValues.forEach(cat => Topics.categorySpecs[cat] = {}); // Specific categories will add their own specs
 
 Topics.defaultWorkflow = {
-  start: { name: 'open' },
-  open: { next: [{ name: 'closed' }, { name: 'deleted' }] },
+  start: { name: 'opened' },
+  opened: { next: [{ name: 'closed' }, { name: 'deleted' }] },
   closed: { next: [{ name: 'deleted' }] },
   deleted: { next: [] },
 };
-Topics.statusValues = ['open', 'closed', 'deleted'];
+Topics.statusValues = ['opened', 'closed', 'deleted'];
 
 Topics.extensionSchemas = {};
 
@@ -140,12 +140,12 @@ Topics.helpers({
     return 0;
   },
   workflow() {
-    const specificFunc = Topics.categorySpecs[this.category].workflowOf;
-    if (specificFunc) return specificFunc(this);
+    const workflowProviderFunc = Topics.categorySpecs[this.category].workflowOf;
+    if (workflowProviderFunc) return workflowProviderFunc(this);
     return Topics.defaultWorkflow;
   },
-  statusObject() {
-    return this.workflow()[this.status].obj;
+  statusObject(statusName) {
+    return this.workflow()[statusName || this.status].obj;
   },
   possibleStartStatuses() {
     const statuses = this.workflow().start;
