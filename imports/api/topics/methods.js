@@ -70,6 +70,7 @@ export const statusChange = new ValidatedMethod({
     // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic.communityId);
     checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId);
     checkStatusChangeAllowed(topic, event.status);
+    event.userId = this.userId;   // One can only post in her own name
 
     const onLeave = workflow[topic.status].obj.onLeave;
     if (onLeave) onLeave(event, topic);
@@ -84,8 +85,13 @@ export const statusChange = new ValidatedMethod({
 
     const insertResult = Comments.insert(event);
 
+    const newTopic = Topics.findOne(event.topicId);
     const onEnter = workflow[event.status].obj.onEnter;
-    if (onEnter) onEnter(event, Topics.findOne(event.topicId));
+    if (onEnter) onEnter(event, newTopic);
+
+    updateMyLastSeen._execute({ userId: this.userId },
+      { topicId: topic._id, lastSeenInfo: { timestamp: newTopic.createdAt } },
+    );
 
     return insertResult;
   },
