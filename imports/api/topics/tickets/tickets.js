@@ -175,7 +175,7 @@ Factory.define('ticket', Topics, {
   text: () => faker.lorem.paragraph(),
   status: 'reported',
   ticket: {
-    type: 'reported',
+    type: 'issue',
     category: 'building',
     urgency: 'normal',
   },

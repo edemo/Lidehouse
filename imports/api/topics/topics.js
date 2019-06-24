@@ -21,7 +21,7 @@ export const Topics = new RevisionedCollection('topics', ['text', 'title']);
 // Topic categories in order of increasing importance
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
 Topics.categories = {};
-Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific categories will add their own specs
+Topics.categoryValues.forEach(cat => Topics.categories[cat] = { virtualFunctions: {} }); // Specific categories will add their own specs
 
 Topics.defaultWorkflow = {
   start: { name: 'opened' },

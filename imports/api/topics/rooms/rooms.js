@@ -50,4 +50,5 @@ Factory.define('room', Topics, {
   category: 'room',
   title: 'private chat',
   text: 'private chat',
+  status: 'opened',
 });
