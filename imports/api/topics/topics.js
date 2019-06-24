@@ -220,6 +220,6 @@ Topics.categoryValues.forEach((category) => {
     category,
     title: () => `New ${(category)} about ${faker.random.word()}`,
     text: faker.lorem.paragraph(),
-    status: 'open',
+    status: 'opened',
   });
 });

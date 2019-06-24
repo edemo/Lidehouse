@@ -64,7 +64,7 @@ if (Meteor.isServer) {
           communityId: Fixture.demoCommunityId,
           userId: ownerWithNotiFrequent._id,
           category: 'forum',
-          status: 'open',
+          status: 'opened',
           title: 'New topic',
           text: 'This is the new topic',
         });
@@ -121,7 +121,7 @@ if (Meteor.isServer) {
           category: 'vote',
           title: 'New voting',
           text: 'This is the new voting',
-          status: 'open',
+          status: 'opened',
           closesAt: moment().add(EXPIRY_NOTI_DAYS, 'day').toDate(),
           vote: {
             procedure: 'online',
@@ -139,7 +139,7 @@ if (Meteor.isServer) {
           category: 'vote',
           title: 'Earlier voting',
           text: 'This voting expired already',
-          status: 'open',
+          status: 'opened',
           closesAt: moment().add((EXPIRY_NOTI_DAYS - 1), 'day').toDate(),
           vote: {
             procedure: 'online',
@@ -153,7 +153,7 @@ if (Meteor.isServer) {
           category: 'vote',
           title: 'Later voting',
           text: 'This voting will expire later',
-          status: 'open',
+          status: 'opened',
           closesAt: moment().add((EXPIRY_NOTI_DAYS + 1), 'day').toDate(),
           vote: {
             procedure: 'online',

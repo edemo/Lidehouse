@@ -69,7 +69,7 @@ if (Meteor.isServer) {
             communityId: Fixture.demoCommunityId,
             userId: otherUserId,
             category: 'forum',
-            status: 'open',
+            status: 'opened',
             title: 'Just a topic',
             text: 'Not much to say',
           });
@@ -94,7 +94,7 @@ if (Meteor.isServer) {
             communityId: Fixture.demoCommunityId,
             userId,
             category: 'forum',
-            status: 'open',
+            status: 'opened',
             title: 'This is my topic',
             text: 'My thoughts are here',
           });

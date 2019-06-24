@@ -99,7 +99,7 @@ export const Permissions = [
   { name: 'ticket.statusChangeTo.finished.enter',     roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChangeTo.closed.enter',       roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChangeTo.deleted.enter',      roles: ['manager', 'maintainer'] },
-  { name: 'vote.statusChangeTo.open.enter',           roles: ['manager', 'maintainer'] },
+  { name: 'vote.statusChangeTo.opened.enter',           roles: ['manager', 'maintainer'] },
   { name: 'vote.statusChangeTo.closed.enter',         roles: ['manager', 'maintainer'] },
 ];
 

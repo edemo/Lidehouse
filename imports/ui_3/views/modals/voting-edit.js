@@ -142,7 +142,7 @@ AutoForm.addHooks('af.vote.insert', {
       doc.communityId = Session.get('activeCommunityId');
       doc.userId = Meteor.userId();
       doc.category = 'vote';
-      doc.status = 'open';
+      doc.status = 'opened';
       doc.vote.choices = votingEditInstance.choices.get();
       doc.closesAt = new Date(doc.closesAt.getFullYear(), doc.closesAt.getMonth(), doc.closesAt.getDate(), 23, 59, 59);
     });

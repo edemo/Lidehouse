@@ -317,7 +317,7 @@ Factory.define('vote', Topics, {
   category: 'vote',
   title: () => 'New voting on ' + faker.random.word(),
   text: () => faker.lorem.paragraph(),
-  status: 'open',
+  status: 'opened',
   closesAt: () => moment().add(14, 'day').toDate(),
   vote: {
     procedure: 'online',
