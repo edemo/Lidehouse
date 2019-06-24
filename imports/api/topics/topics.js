@@ -20,8 +20,8 @@ export const Topics = new RevisionedCollection('topics', ['text', 'title']);
 
 // Topic categories in order of increasing importance
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
-Topics.categorySpecs = {};
-Topics.categoryValues.forEach(cat => Topics.categorySpecs[cat] = {}); // Specific categories will add their own specs
+Topics.categories = {};
+Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific categories will add their own specs
 
 Topics.defaultWorkflow = {
   start: { name: 'opened' },
@@ -139,10 +139,15 @@ Topics.helpers({
     }
     return 0;
   },
+  callVirtualFunction(fnName, ...params) {
+    const specificFn = Topics.categories[this.category].virtualFunctions[fnName];
+    if (specificFn) return specificFn(this, params);
+    const generalFn = Topics.virtualFunctions[fnName];
+    if (generalFn) return generalFn(this, params);
+    return undefined;
+  },
   workflow() {
-    const workflowProviderFunc = Topics.categorySpecs[this.category].workflowOf;
-    if (workflowProviderFunc) return workflowProviderFunc(this);
-    return Topics.defaultWorkflow;
+    return this.callVirtualFunction('workflow');
   },
   statusObject(statusName) {
     return this.workflow()[statusName || this.status].obj;
@@ -160,6 +165,12 @@ Topics.helpers({
     Topics.remove({ _id: this._id });
   },
 });
+
+Topics.virtualFunctions = {
+  workflow(topic) {
+    return Topics.defaultWorkflow;
+  },
+};
 
 Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
   return Topics.find({ communityId }).fetch()

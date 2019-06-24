@@ -303,13 +303,15 @@ Votings.workflow = {
   closed: { obj: closed, next: [] },
 };
 
-Votings.workflowOf = function workflowOf(voting) {
-  return Votings.workflow;
+Votings.virtualFunctions = {
+  workflow(topic) {
+    return Votings.workflow;
+  },
 };
 
 // ===================================================
 
-Topics.categorySpecs.vote = Votings;
+Topics.categories.vote = Votings;
 
 Factory.define('vote', Topics, {
   category: 'vote',

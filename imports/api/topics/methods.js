@@ -76,7 +76,7 @@ export const statusChange = new ValidatedMethod({
 
     const topicModifier = {};
     topicModifier.status = event.status;
-    const statusObject = Topics.categorySpecs[category].statuses[event.status];
+    const statusObject = Topics.categories[category].statuses[event.status];
     if (statusObject.data) {
       statusObject.data.forEach(key => topicModifier[`${category}.${key}`] = event.data[key]);
     }

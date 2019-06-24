@@ -159,13 +159,15 @@ Tickets.workflows = {
   },
 };
 
-Tickets.workflowOf = function workflowOf(ticket) {
-  return Tickets.workflows[ticket.ticket.type];
+Tickets.virtualFunctions = {
+  workflow(topic) {
+    return Tickets.workflows[topic.ticket.type];
+  },
 };
 
 // ===================================================
 
-Topics.categorySpecs.ticket = Tickets;
+Topics.categories.ticket = Tickets;
 
 Factory.define('ticket', Topics, {
   category: 'ticket',
