@@ -55,7 +55,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'update', topic);
-    checkModifier(topic, modifier, ['title', 'text', 'sticky', 'agendaId', 'photo'].concat(Tickets.modifiableFields));
+    checkModifier(topic, modifier, topic.modifiableFields());
     Topics.update(_id, modifier);
   },
 });

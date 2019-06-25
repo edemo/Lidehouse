@@ -98,7 +98,7 @@ Votings.extensionSchema = new SimpleSchema({
   voteParticipation: { type: Votings.voteParticipationSchema, optional: true, autoValue: defaultsTo({ count: 0, units: 0 }) },
 });
 
-Votings.helpers = {
+Topics.categoryHelpers('vote', {
   displayChoice(index, language = getCurrentUserLang()) {
     let choice = this.vote.choices[index];
     if (Votings.voteTypes[this.vote.type].fixedChoices) choice = TAPi18n.__(choice, {}, language);
@@ -244,13 +244,17 @@ Votings.helpers = {
       return { choice, votingUnits, votingShare, percentOfTotal, percentOfVotes };
     });
   },
-};
+  workflow() {
+    return Votings.workflow;
+  },
+});
 
-Votings.publicFields = {
+Votings.publicExtensionFields = {
   vote: 1,
   voteParticipation: 1,
 };
-_.extend(Topics.publicFields, Votings.publicFields);
+_.extend(Topics.publicFields, Votings.publicExtensionFields);
+
 Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) {
   // User cannot see other user's votes, but need to see his own votes (during active voting)
   // Soution: Use 2 subsrciptions, one on the live votings, one on the closed, and the public fields are different for the two
@@ -271,7 +275,6 @@ Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) 
 //  }
 };
 
-Topics.helpers(Votings.helpers);
 Topics.attachSchema(Votings.extensionSchema);   // TODO: should be conditional on category === 'vote'
 
 // === Vote statuses
@@ -301,12 +304,6 @@ Votings.workflow = {
   start: [opened],
   opened: { obj: opened, next: [closed] },
   closed: { obj: closed, next: [] },
-};
-
-Votings.virtualFunctions = {
-  workflow(topic) {
-    return Votings.workflow;
-  },
 };
 
 // ===================================================

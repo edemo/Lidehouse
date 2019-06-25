@@ -42,15 +42,12 @@ Tickets.schema = new SimpleSchema([
   { ticket: { type: Tickets.extensionSchema, optional: true } },
 ]);
 
-Tickets.helpers = {
-};
-Tickets.publicFields = { ticket: 1 };
-Tickets.modifiableFields = ['ticket.category', 'ticket.urgency'];
+Tickets.modifiableFields = Topics.modifiableFields.concat(['ticket.category', 'ticket.urgency']);
 
-Topics.attachSchema({
-  ticket: { type: Tickets.extensionSchema, optional: true } });
+Tickets.publicExtensionFields = { ticket: 1 };
+_.extend(Topics.publicFields, Tickets.publicExtensionFields);
 
-_.extend(Topics.publicFields, Tickets.publicFields);
+Topics.attachSchema({ ticket: { type: Tickets.extensionSchema, optional: true } });
 
 Meteor.startup(function attach() {
   Tickets.schema.i18n('schemaTickets');   // translation is different from schemaTopics
@@ -159,11 +156,14 @@ Tickets.workflows = {
   },
 };
 
-Tickets.virtualFunctions = {
-  workflow(topic) {
-    return Tickets.workflows[topic.ticket.type];
+Topics.categoryHelpers('ticket', {
+  workflow() {
+    return Tickets.workflows[this.ticket.type];
   },
-};
+  modifiableFields() {
+    return Tickets.modifiableFields;
+  },
+});
 
 // ===================================================
 

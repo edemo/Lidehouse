@@ -16,12 +16,14 @@ import { RevisionedCollection } from '/imports/api/revision.js';
 import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
 import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
+import './category-helpers.js';
+
 export const Topics = new RevisionedCollection('topics', ['text', 'title']);
 
 // Topic categories in order of increasing importance
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
 Topics.categories = {};
-Topics.categoryValues.forEach(cat => Topics.categories[cat] = { virtualFunctions: {} }); // Specific categories will add their own specs
+Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific categories will add their own specs
 
 Topics.defaultWorkflow = {
   start: { name: 'opened' },
@@ -139,15 +141,11 @@ Topics.helpers({
     }
     return 0;
   },
-  callVirtualFunction(fnName, ...params) {
-    const specificFn = Topics.categories[this.category].virtualFunctions[fnName];
-    if (specificFn) return specificFn(this, params);
-    const generalFn = Topics.virtualFunctions[fnName];
-    if (generalFn) return generalFn(this, params);
-    return undefined;
+  modifiableFields() {
+    return Topics.modifiableFields;
   },
   workflow() {
-    return this.callVirtualFunction('workflow');
+    return Topics.defaultWorkflow;
   },
   statusObject(statusName) {
     return this.workflow()[statusName || this.status].obj;
@@ -165,12 +163,6 @@ Topics.helpers({
     Topics.remove({ _id: this._id });
   },
 });
-
-Topics.virtualFunctions = {
-  workflow(topic) {
-    return Topics.defaultWorkflow;
-  },
-};
 
 Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
   return Topics.find({ communityId }).fetch()
@@ -193,8 +185,8 @@ Meteor.startup(function attach() {
   Topics.schema.i18n('schemaTopics');
 });
 
-// This represents the keys from Topics objects that should be published to the client.
-// If we add secret properties to Topic objects, don't list them here to keep them private to the server.
+Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'photo'];
+
 Topics.publicFields = {
   communityId: 1,
   userId: 1,
