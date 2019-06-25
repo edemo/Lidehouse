@@ -233,6 +233,13 @@ if (Meteor.isServer) {
           statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'confirmed', data });
           done();
         });
+
+        it('inserts an event', function (done) {
+          const topic = Topics.findOne(topicId);
+          const comment = Comments.findOne({ topicId: topic._id });
+          chai.assert.deepEqual(topic._id, comment.topicId);
+          done();
+        });
       });
       /*
       describe('rate limiting', function () {
