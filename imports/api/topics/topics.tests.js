@@ -12,6 +12,9 @@ import { _ } from 'meteor/underscore';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
+import { statusChange } from '/imports/api/topics/methods.js';
+import { moment } from 'meteor/momentjs:moment';
+
 import '/i18n/en.i18n.json';
 
 if (Meteor.isServer) {
@@ -172,7 +175,62 @@ if (Meteor.isServer) {
           chai.assert.equal(unseenComments[0].text, 'comment 1');
           chai.assert.equal(unseenComments[1].text, 'comment 2');
           chai.assert.equal(unseenComments[2].text, 'comment 4');   // 3 was deleted
-          chai.assert.equal(unseenComments[3].text, 'comment 5'); 
+          chai.assert.equal(unseenComments[3].text, 'comment 5');
+          done();
+        });
+      });
+
+      describe('statusChange', function () {
+        before(function () {
+          // Clear
+          Topics.remove({});
+          Comments.remove({});
+
+          // Create a ticket
+          topicId = Topics.methods.insert._execute({ userId: otherUserId }, {
+            communityId: Fixture.demoCommunityId,
+            userId: otherUserId,
+            category: 'ticket',
+            ticket: {
+              type: 'issue',
+              urgency: 'normal',
+            },
+            status: 'reported',
+            title: 'Just a ticket',
+            text: 'Not much to say',
+          });
+        });
+
+        it('doesn\'t let you change the status if you don\'t have the right permission', function (done) {
+          chai.assert.throws(() => {
+            const data = {
+              localizer: 'At the basement',
+              expectedCost: 5000,
+              expectedStart: moment().toDate(),
+              expectedFinish: moment().add(1, 'weeks').toDate(),
+            };
+            statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'confirmed', data });
+          });
+          done();
+        });
+
+        it('doesn\'t let you change the status outside the workflow', function (done) {
+          chai.assert.throws(() => {
+            const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
+            userId = Fixture.demoManagerId;
+            statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'progressing', data });
+          });
+          done();
+        });
+
+        it('let you change the status inside the workflow', function (done) {
+          const data = {
+            localizer: 'At the basement',
+            expectedCost: 5000,
+            expectedStart: moment().toDate(),
+            expectedFinish: moment().add(1, 'weeks').toDate(),
+          };
+          statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'confirmed', data });
           done();
         });
       });
