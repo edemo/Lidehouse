@@ -26,7 +26,7 @@ Topics.categories = {};
 Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific categories will add their own specs
 
 Topics.defaultWorkflow = {
-  start: { name: 'opened' },
+  start: [{ name: 'opened' }],
   opened: { next: [{ name: 'closed' }, { name: 'deleted' }] },
   closed: { next: [{ name: 'deleted' }] },
   deleted: { next: [] },
