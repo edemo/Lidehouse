@@ -35,7 +35,7 @@ Topics.statusValues = ['opened', 'closed', 'deleted'];
 
 Topics.extensionSchemas = {};
 
-Topics.schema = new SimpleSchema({
+Topics.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
@@ -52,7 +52,7 @@ Topics.schema = new SimpleSchema({
     if (status === 'closed') return true;
     else return false;
   } },
-  closesAt: { type: Date, optional: true, autoform: noUpdate },
+  closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate) },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
@@ -172,11 +172,8 @@ Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communit
 Topics.helpers(likesHelpers);
 Topics.helpers(flagsHelpers);
 
+Topics.schema = new SimpleSchema([Topics.baseSchema, likesSchema, flagsSchema, Timestamps]);
 Topics.attachSchema(Topics.schema);
-Topics.attachSchema(likesSchema);
-Topics.attachSchema(flagsSchema);
-Topics.attachSchema(Timestamps);
-
 Meteor.startup(function attach() {
   // Topics.schema is just the core schema, shared by all.
   // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.

@@ -14,12 +14,12 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/topics/votings/votings.js';
-import { insert as insertAgenda } from '/imports/api/agendas/methods.js';
-import { insert as insertTopic, update as updateTopic } from '/imports/api/topics/methods.js';
-import { insert as insertDelegation, remove as removeDelegation } from '/imports/api/delegations/methods.js';
+import '/imports/api/topics/methods.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { insert as insertAgenda } from '/imports/api/agendas/methods.js';
+import { insert as insertDelegation, remove as removeDelegation } from '/imports/api/delegations/methods.js';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -33,7 +33,7 @@ if (Meteor.isServer) {
       let votingId;
 
       it('can create new voting', function (done) {
-        votingId = insertTopic._execute({ userId: Fixture.demoManagerId },
+        votingId = Topics.methods.insert._execute({ userId: Fixture.demoManagerId },
           Fixture.builder.build('vote', { userId: Fixture.demoManagerId })
         );
         chai.assert.isDefined(votingId);
@@ -46,11 +46,11 @@ if (Meteor.isServer) {
         const voting = Fixture.builder.build('vote', { userId: Fixture.demoUserId });
         voting.vote.effect = 'legal';
         chai.assert.throws(() => {
-          insertTopic._execute({ userId: Fixture.demoUserId }, voting);
+          Topics.methods.insert._execute({ userId: Fixture.demoUserId }, voting);
         });
         // polls on the other hand are allowed to be created by everybody
         voting.vote.effect = 'poll';
-        insertTopic._execute({ userId: Fixture.demoUserId }, voting);
+        Topics.methods.insert._execute({ userId: Fixture.demoUserId }, voting);
         done();
       });
 
@@ -102,7 +102,7 @@ if (Meteor.isServer) {
           agendaId,
         });
         voting.vote.type = 'yesno';
-        votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, voting);
+        votingId = Topics.methods.insert._execute({ userId: Fixture.demoManagerId }, voting);
       });
 
       it('no evaluation on fresh voting', function (done) {
@@ -336,7 +336,7 @@ if (Meteor.isServer) {
         before(function () {
           const voting = Fixture.builder.build('vote', { userId: Fixture.demoManagerId });
           voting.vote.type = 'multiChoose';
-          votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, voting);
+          votingId = Topics.methods.insert._execute({ userId: Fixture.demoManagerId }, voting);
         });
 
         it('evaluates correct vote summary on multiChoose vote', function (done) {

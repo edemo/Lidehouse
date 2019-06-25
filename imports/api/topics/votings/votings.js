@@ -249,12 +249,17 @@ Topics.categoryHelpers('vote', {
   },
 });
 
+Topics.attachSchema(Votings.extensionSchema);   // TODO: should be conditional on category === 'vote'
+Votings.schema = new SimpleSchema([Topics.schema, Votings.extensionSchema]);
+Meteor.startup(function attach() {
+  Votings.schema.i18n('schemaVotings');
+});
+
 Votings.publicExtensionFields = {
   vote: 1,
   voteParticipation: 1,
 };
 _.extend(Topics.publicFields, Votings.publicExtensionFields);
-
 Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) {
   // User cannot see other user's votes, but need to see his own votes (during active voting)
   // Soution: Use 2 subsrciptions, one on the live votings, one on the closed, and the public fields are different for the two
@@ -274,8 +279,6 @@ Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) 
 //    return _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
 //  }
 };
-
-Topics.attachSchema(Votings.extensionSchema);   // TODO: should be conditional on category === 'vote'
 
 // === Vote statuses
 

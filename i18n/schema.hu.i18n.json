@@ -245,6 +245,9 @@
     "createdAt": {
       "label": "Szavazás kezdete"
     },
+    "closesAt": {
+      "label": "Szavazás lezárulása"
+    },
     "vote": {
       "choices": {
         "label": "Választási lehetőségek",

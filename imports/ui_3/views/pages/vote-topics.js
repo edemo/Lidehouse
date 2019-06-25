@@ -1,10 +1,9 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import { ReactiveDict } from 'meteor/reactive-dict';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { $ } from 'meteor/jquery';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Votings } from '/imports/api/topics/votings/votings.js';
 
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -37,14 +36,10 @@ Template.Vote_topics.viewmodel({
 
 Template.Vote_topics.events({
   'click .js-new'(event) {
-    const votingSchema = new SimpleSchema([
-      Topics.simpleSchema(),
-    ]);
-    votingSchema.i18n('schemaVotings');
     Modal.show('Voting_edit', {
       id: 'af.vote.insert',
       collection: Topics,
-      schema: votingSchema,
+      schema: Votings.schema,
       type: 'method',
       meteormethod: 'topics.insert',
     });

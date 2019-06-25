@@ -13,6 +13,7 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
@@ -85,15 +86,11 @@ Template.Votebox.helpers({
 
 Template.Votebox.events({
   'click .js-edit'(event) {
-    const votingSchema = new SimpleSchema([
-      Topics.simpleSchema(),
-    ]);
-    votingSchema.i18n('schemaVotings');
     const voting = Topics.findOne(this._id);
     Modal.show('Voting_edit', {
       id: 'af.vote.update',
       collection: Topics,
-      schema: votingSchema,
+      schema: Votings.schema,
       type: 'method-update',
       meteormethod: 'topics.update',
       singleMethodArgument: true,

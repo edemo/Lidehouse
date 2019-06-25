@@ -243,7 +243,10 @@
       "placeholder": "Longer description (if needed)..."
     },
     "createdAt": {
-      "label": "Created At"
+      "label": "Voting starts at"
+    },
+    "closesAt": {
+      "label": "Voting closes at"
     },
     "vote": {
       "choices": {

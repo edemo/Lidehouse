@@ -36,22 +36,19 @@ Tickets.extensionRawSchema = {
 };
 
 Tickets.extensionSchema = new SimpleSchema(Tickets.extensionRawSchema);
-
+Topics.attachSchema({ ticket: { type: Tickets.extensionSchema, optional: true } });
 Tickets.schema = new SimpleSchema([
   Topics.schema,
   { ticket: { type: Tickets.extensionSchema, optional: true } },
 ]);
+Meteor.startup(function attach() {
+  Tickets.schema.i18n('schemaTickets');   // translation is different from schemaTopics
+});
 
 Tickets.modifiableFields = Topics.modifiableFields.concat(['ticket.category', 'ticket.urgency']);
 
 Tickets.publicExtensionFields = { ticket: 1 };
 _.extend(Topics.publicFields, Tickets.publicExtensionFields);
-
-Topics.attachSchema({ ticket: { type: Tickets.extensionSchema, optional: true } });
-
-Meteor.startup(function attach() {
-  Tickets.schema.i18n('schemaTickets');   // translation is different from schemaTopics
-});
 
 // === Ticket statuses
 
