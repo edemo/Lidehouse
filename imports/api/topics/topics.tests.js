@@ -202,6 +202,7 @@ if (Meteor.isServer) {
         });
 
         it('doesn\'t let you change the status if you don\'t have the right permission', function (done) {
+          // We expect this error:  No permission to perform this activity [err_permissionDenied]
           chai.assert.throws(() => {
             const data = {
               localizer: 'At the basement',
@@ -215,6 +216,7 @@ if (Meteor.isServer) {
         });
 
         it('doesn\'t let you change the status outside the workflow', function (done) {
+          // We expect this error: Topic cannot move from reported into status progressing [err_permissionDenied]
           chai.assert.throws(() => {
             const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
             userId = Fixture.demoManagerId;
