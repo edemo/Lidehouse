@@ -187,18 +187,9 @@ if (Meteor.isServer) {
           Comments.remove({});
 
           // Create a ticket
-          topicId = Topics.methods.insert._execute({ userId: otherUserId }, {
-            communityId: Fixture.demoCommunityId,
-            userId: otherUserId,
-            category: 'ticket',
-            ticket: {
-              type: 'issue',
-              urgency: 'normal',
-            },
-            status: 'reported',
-            title: 'Just a ticket',
-            text: 'Not much to say',
-          });
+          topicId = Topics.methods.insert._execute({ userId: otherUserId },
+            Fixture.builder.build('ticket', { userId: otherUserId })
+          );
         });
 
         it('doesn\'t let you change the status if you don\'t have the right permission', function (done) {
