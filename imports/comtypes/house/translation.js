@@ -59,6 +59,10 @@ export const HouseTranslation = {
         "label": "Total shares outstanding",
         "placeholder": "(eg. 10000)"
       },
+      "parcelRefFormat": {
+        "label": "Parcel ref format",
+        "placeholder": "(eg. F/D means Floor/Door)"
+      },
       "management": {
         "label": "Contact info of management",
         "placeholder": "(eg. office address, phone, opening hours)"
@@ -198,6 +202,10 @@ export const HouseTranslation = {
       "lot": {
         "label": "Helyrajzi szám",
         "placeholder": "(pl. 29732/9)"
+      },
+      "parcelRefFormat": {
+        "label": "Albetét azonosító formátuma",
+        "placeholder": "(pl. F/D azt jelenti Emelet/Ajto)"
       },
       "totalunits": {
         "label": "Összes tulajdoni hányad",

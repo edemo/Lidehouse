@@ -2,25 +2,30 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
+import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
+import { extractFieldsFromRef } from '/imports/comtypes/house/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Parcels } from './parcels.js';
 import { Memberships } from '../memberships/memberships.js';
-import { checkNotExists } from '../method-checks';
 
 export const insert = new ValidatedMethod({
   name: 'parcels.insert',
   validate: Parcels.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    if (doc.ref) checkNotExists(Parcels, { communityId: doc.communityId, ref: doc.ref });
+    const community = Communities.findOne(doc.communityId);
+    if (doc.ref) {
+      checkNotExists(Parcels, { communityId: doc.communityId, ref: doc.ref });
+      const format = community.parcelRefFormat;
+      if (format) doc = extractFieldsFromRef(format, doc);
+    }
     if (!doc.approved) {
       // Nothing to check. Things will be checked when it gets approved by community admin/manager.
     } else {
       checkPermissions(this.userId, 'parcels.insert', doc.communityId);
-      const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
+      const total = community.registeredUnits();
       const newTotal = total + doc.units;
-      const totalunits = Communities.findOne({ _id: doc.communityId }).totalunits;
+      const totalunits = community.totalunits;
       if (newTotal > totalunits) {
         throw new Meteor.Error('err_sanityCheckFailed', 'Registered units cannot exceed totalunits of community',
         `Registered units: ${total}/${totalunits}, With new unit: ${newTotal}/${totalunits}`);
@@ -43,9 +48,10 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['communityId'], true);
     checkNotExists(Parcels, { _id: { $ne: doc._id }, communityId: doc.communityId, ref: modifier.$set.ref });
     checkPermissions(this.userId, 'parcels.update', doc.communityId);
-    const total = Communities.findOne({ _id: doc.communityId }).registeredUnits();
+    const community = Communities.findOne(doc.communityId);
+    const total = community.registeredUnits();
     const newTotal = (total - doc.units) + modifier.$set.units;
-    const totalunits = Communities.findOne({ _id: doc.communityId }).totalunits;
+    const totalunits = community.totalunits;
     if (newTotal > totalunits) {
       throw new Meteor.Error('err_sanityCheckFailed', 'Registered units cannot exceed totalunits of community',
       `Registered units: ${total}/${totalunits}, With new unit: ${newTotal}/${totalunits}`);
