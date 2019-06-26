@@ -135,6 +135,7 @@ AutoForm.addHooks('af.ticket.statusChange', {
     doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
     doc.status = newStatusName;
     doc.data = doc.ticket || {};
+    delete doc.ticket;
     return doc;
   },
   onSuccess(formType, result) {
