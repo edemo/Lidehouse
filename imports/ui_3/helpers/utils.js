@@ -68,7 +68,7 @@ Template.registerHelper('displayTimeFrom', function displayTimeFrom(time) {
 
 // TODO: This aims to be a generic display, but now works only for ticket data - needs generalization!
 Template.registerHelper('displayValue', function displayValue(val) {
-    if (_.isDate(val)) return moment().format('L');
+    if (_.isDate(val)) return moment(val).format('L');
     if (_.isString(val)) return __(val);
     return val;
 });
