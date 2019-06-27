@@ -216,11 +216,13 @@
     "ticket": {
       "0": {
         "title": "Elromlott a lift",
-        "text": "A hatodikon megállt. Semmilyen gombra nem reagál."
+        "text": "A hatodikon megállt. Semmilyen gombra nem reagál.",
+        "localizer": "2-es lift"
       },
       "1": {
         "title": "Beázik a fürdőszobám a felettem lakótól.",
-        "text": "Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék."
+        "text": "Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék.",
+        "localizer": "322-es lakás"
       },
       "2": {
         "title": "Áramkimaradás éjjelente",
@@ -231,7 +233,8 @@
       },
       "3": {
         "title": "A lépcsőházban hullik a vakolat",
-        "text": "A II. emeleti lépcsőfordulónál vettem észre."
+        "text": "A II. emeleti lépcsőfordulónál vettem észre.",
+        "localizer": "4-es lépcsőház"
       }
     },
     "messages": {
