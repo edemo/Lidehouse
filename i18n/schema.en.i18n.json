@@ -298,12 +298,6 @@
         "maintenance": "Maintenance",
         "issue": "Issue"
       },
-      "category": {
-        "label": "Category",
-        "building": "Building",
-        "garden": "Garden",
-        "service": "Service"
-      },
       "urgency": {
         "label": "Urgency",
         "high": "High",

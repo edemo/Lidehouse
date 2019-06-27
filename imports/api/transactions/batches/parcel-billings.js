@@ -5,10 +5,9 @@ import { Timestamps } from '/imports/api/timestamps.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { chooseSubAccount } from '/imports/api/transactions/account-specification.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 

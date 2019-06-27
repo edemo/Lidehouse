@@ -7,7 +7,6 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
 
 function deepCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
@@ -42,8 +41,11 @@ Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) 
 };
 
 export let chooseBreakdown = {};
+export let chooseSubAccount = function () { return {}; };
+
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
+
   chooseBreakdown = {
     options() {
       const communityId = Session.get('activeCommunityId');
@@ -52,6 +54,17 @@ if (Meteor.isClient) {
       });
     },
     firstOption: () => __('(Select one)'),
+  };
+
+  chooseSubAccount = function (brk, nodeCode, leafsOnly = true) {
+    return {
+      options() {
+        const communityId = Session.get('activeCommunityId');
+        const breakdown = Breakdowns.findOneByName(brk, communityId);
+        return breakdown.nodeOptionsOf(nodeCode, leafsOnly);
+      },
+      firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
+    };
   };
 }
 

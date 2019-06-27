@@ -1,10 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { autoformOptions } from '/imports/utils/autoform.js';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { autoformOptions } from '/imports/utils/autoform.js';
+import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 export const Tickets = {};
@@ -16,13 +17,11 @@ Tickets.urgencyColors = {
   normal: 'warning',
   low: 'primary',
 };
-// Tickets.categoryValues = ['building', 'garden', 'service'];
 
 Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
-//  category: { type: String, allowedValues: Tickets.categoryValues, autoform: autoformOptions(Tickets.categoryValues, 'schemaTickets.ticket.category.'), optional: true },
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
-  localizer: { type: String, optional: true },
+  localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
 
   expectedCost: { type: Number, decimal: true, optional: true },
   expectedStart: { type: Date, optional: true },
@@ -45,7 +44,7 @@ Meteor.startup(function attach() {
   Tickets.schema.i18n('schemaTickets');   // translation is different from schemaTopics
 });
 
-Tickets.modifiableFields = Topics.modifiableFields.concat(['ticket.category', 'ticket.urgency']);
+Tickets.modifiableFields = Topics.modifiableFields.concat(['ticket.localizer', 'ticket.urgency']);
 
 Tickets.publicExtensionFields = { ticket: 1 };
 _.extend(Topics.publicFields, Tickets.publicExtensionFields);

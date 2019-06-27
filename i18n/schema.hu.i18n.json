@@ -302,12 +302,6 @@
         "maintenance": "Ütemezett",
         "issue": "Bejelentett"
       },
-      "category": {
-        "label": "Kategória",
-        "building": "épület",
-        "garden": "kert",
-        "service": "közmű"
-      },
       "urgency": {
         "label": "Sürgősség",
         "high": "sürgős",

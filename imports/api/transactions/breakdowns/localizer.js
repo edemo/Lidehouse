@@ -1,3 +1,4 @@
+import { __ } from '/imports/localization/i18n.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -62,4 +63,11 @@ export const Localizer = {
     });
     Breakdowns.define(parcelBreakdown);
   },
+};
+
+export const chooseLocalizerNode = {
+  options() {
+    return Localizer.get().nodeOptions();
+  },
+  firstOption: () => __('(Select one)'),
 };
