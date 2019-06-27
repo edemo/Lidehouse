@@ -135,10 +135,6 @@ export class CommunityBuilder {
     const comment = Factory.build('comment', data);
     Comments.methods.insert._execute({ userId: data.userId }, comment);
   }
-  createEvent(data) {
-    const event = Factory.build('event', data);
-    Comments.insert(event);
-  }
   name2code(breakdownName, nodeName) {
     return Breakdowns.name2code(breakdownName, nodeName, this.communityId);
   }
