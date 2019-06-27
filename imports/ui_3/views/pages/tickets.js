@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
@@ -47,6 +48,16 @@ Template.Tickets.viewmodel({
     return Topics.find({ communityId, category: 'ticket',
       createdAt: { $gt: moment().subtract(2, 'week').toDate() },
     }, { sort: { createdAt: -1 } });
+  },
+  showLocalizer(data) {
+    const localizers = Localizer.get().nodeOptions();
+    const localizer = data.ticket.localizer;
+    let localizerToUI = '';
+    localizers.forEach((entry) => {
+      if (entry.value === localizer) localizerToUI = entry.label;
+      return undefined;
+    });
+    return localizerToUI;
   },
 });
 
