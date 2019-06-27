@@ -448,7 +448,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic0, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1], [0], [0], [0]]);
   Clock.setSimulatedTime(moment(demoTopicDates[1]).add(5, 'weeks').toDate());
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic0, status: 'closed' });
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic0, status: 'closed', type: 'statusChangeTo', data: {} });
   Clock.clear();
   
   Clock.setSimulatedTime(moment('2017-09-20 09:04').toDate());
@@ -467,7 +467,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic1, [[0], [0], [0], [0], [0], [0], [0], [0], [0], [1], [0], [0]]);
   Clock.setSimulatedTime(moment('2017-10-14 09:04').toDate());
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic1, status: 'closed' });
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic1, status: 'closed', type: 'statusChangeTo', data: {} });
   Clock.clear();
 
   Clock.setSimulatedTime(moment('2018-01-03 13:12').toDate());
@@ -489,7 +489,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic2, [null, null, null, null, null, null, null, [0], [0], [0], [0], [0]]);
   Clock.setSimulatedTime(moment('2018-01-18 22:45').toDate());
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic2, status: 'closed' });
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic2, status: 'closed', type: 'statusChangeTo', data: {} });
   Clock.clear();
 
   Clock.setSimulatedTime(moment().subtract(3, 'weeks').toDate());
@@ -617,30 +617,45 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Tickets =====
 
+  Clock.setSimulatedTime(moment().subtract(140, 'minutes').toDate());
   const ticket0 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.0.title'),
     text: __('demo.ticket.0.text'),
-    status: 'progressing',
+    status: 'reported',
     ticket: {
       type: 'issue',
       category: 'building',
       urgency: 'high',
     },
   });
+  Clock.setSimulatedTime(moment().subtract(100, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'confirmed', type: 'statusChangeTo', data: {} });
+  Clock.setSimulatedTime(moment().subtract(40, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'progressing', type: 'statusChangeTo', data: {} });
 
   Clock.setSimulatedTime(moment().subtract(3, 'months').add(25, 'minutes').toDate());
   const ticket1 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.1.title'),
     text: __('demo.ticket.1.text'),
-    status: 'closed',
+    status: 'reported',
     ticket: {
       type: 'issue',
       category: 'building',
       urgency: 'normal',
     },
   });
+
+  Clock.setSimulatedTime(moment().subtract(3, 'months').add(30, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'confirmed', type: 'statusChangeTo', data: {} });
+  Clock.setSimulatedTime(moment().subtract(3, 'months').add(1440, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'progressing', type: 'statusChangeTo', data: {} });
+  Clock.setSimulatedTime(moment().subtract(3, 'months').add(1480, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'finished', type: 'statusChangeTo', data: {} });
+  Clock.setSimulatedTime(moment().subtract(3, 'months').add(1500, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'closed', type: 'statusChangeTo', data: {} });
+
   Clock.setSimulatedTime(moment().subtract(3982, 'minutes').toDate());
   const ticket2 = demoBuilder.create('ticket', {
     userId: nextUser(),
@@ -653,7 +668,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'normal',
     },
   });
-  Clock.setSimulatedTime(moment().subtract(3950, 'minutes').toDate())
+  Clock.setSimulatedTime(moment().subtract(3950, 'minutes').toDate());
   demoBuilder.createComment({
     topicId: ticket2,
     userId: nextUser(),
@@ -665,13 +680,23 @@ export function insertDemoHouse(lang, demoOrTest) {
     userId: nextUser(),
     title: __('demo.ticket.3.title'),
     text: __('demo.ticket.3.text'),
-    status: 'closed',
+    status: 'reported',
     ticket: {
       type: 'issue',
       category: 'building',
       urgency: 'low',
     },
   });
+
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(200, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'confirmed', type: 'statusChangeTo', data: {} });
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(260, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'progressing', type: 'statusChangeTo', data: {} });
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(320, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'finished', type: 'statusChangeTo', data: {} });
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(325, 'minutes').toDate());
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'closed', type: 'statusChangeTo', data: {} });
+
   Clock.clear();
 
   // ===== Accounting =====
