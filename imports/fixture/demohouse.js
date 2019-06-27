@@ -630,7 +630,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.setSimulatedTime(moment().subtract(100, 'minutes').toDate());
-  let data = { localizer: __('demo.ticket.0.localizer'), expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
+  let data = { localizer: '#1', expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'confirmed', type: 'statusChangeTo', data });
   Clock.setSimulatedTime(moment().subtract(40, 'minutes').toDate());
   data = { expectedFinish: moment().add(2, 'days').toDate() };
@@ -650,7 +650,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   Clock.setSimulatedTime(moment().subtract(3, 'months').add(30, 'minutes').toDate());
-  data = { localizer: __('demo.ticket.1.localizer'), expectedCost: 1200, expectedStart: moment().subtract(3, 'months').add(3, 'days').toDate(), expectedFinish: moment().subtract(3, 'months').add(4, 'days').toDate() };
+  data = { localizer: '@A409', expectedCost: 1200, expectedStart: moment().subtract(3, 'months').add(3, 'days').toDate(), expectedFinish: moment().subtract(3, 'months').add(4, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'confirmed', type: 'statusChangeTo', data });
   Clock.setSimulatedTime(moment().subtract(3, 'months').add(1440, 'minutes').toDate());
   data = { expectedFinish: moment().subtract(3, 'months').add(3, 'days').toDate() };
@@ -694,7 +694,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(200, 'minutes').toDate());
-  data = { localizer: __('demo.ticket.3.localizer'), expectedCost: 1500, expectedStart: moment().subtract(6, 'weeks').add(1, 'days').toDate(), expectedFinish: moment().subtract(6, 'weeks').add(2, 'days').toDate() };
+  data = { localizer: '#16', expectedCost: 1500, expectedStart: moment().subtract(6, 'weeks').add(1, 'days').toDate(), expectedFinish: moment().subtract(6, 'weeks').add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'confirmed', type: 'statusChangeTo', data });
   Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(1440, 'minutes').toDate());
   data = { expectedFinish: moment().subtract(6, 'weeks').add(2, 'days').toDate() };
