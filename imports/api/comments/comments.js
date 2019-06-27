@@ -100,3 +100,11 @@ Factory.define('comment', Comments, {
   topicId: () => Factory.get('topic'),
   text: () => faker.lorem.sentence(),
 });
+
+Factory.define('event', Comments, {
+  topicId: () => Factory.get('topic'),
+  text: () => faker.lorem.sentence(),
+  type: 'statusChangeTo',
+  status: 'reported',
+  data: {},
+});

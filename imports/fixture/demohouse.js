@@ -617,6 +617,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Tickets =====
 
+  Clock.setSimulatedTime(moment().subtract(140, 'minutes').toDate());
   const ticket0 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.0.title'),
@@ -627,6 +628,26 @@ export function insertDemoHouse(lang, demoOrTest) {
       category: 'building',
       urgency: 'high',
     },
+  });
+
+  Clock.setSimulatedTime(moment().subtract(100, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket0,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'confirmed',
+    data: {},
+  });
+
+  Clock.setSimulatedTime(moment().subtract(40, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket0,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'progressing',
+    data: {},
   });
 
   Clock.setSimulatedTime(moment().subtract(3, 'months').add(25, 'minutes').toDate());
@@ -641,6 +662,47 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'normal',
     },
   });
+
+  Clock.setSimulatedTime(moment().subtract(3, 'months').add(30, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket1,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'confirmed',
+    data: {},
+  });
+
+  Clock.setSimulatedTime(moment().subtract(3, 'months').add(1440, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket1,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'progressing',
+    data: {},
+  });
+
+  Clock.setSimulatedTime(moment().subtract(3, 'months').add(1480, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket1,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'finished',
+    data: {},
+  });
+
+  Clock.setSimulatedTime(moment().subtract(3, 'months').add(1500, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket1,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'closed',
+    data: {},
+  });
+
   Clock.setSimulatedTime(moment().subtract(3982, 'minutes').toDate());
   const ticket2 = demoBuilder.create('ticket', {
     userId: nextUser(),
@@ -653,7 +715,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'normal',
     },
   });
-  Clock.setSimulatedTime(moment().subtract(3950, 'minutes').toDate())
+  Clock.setSimulatedTime(moment().subtract(3950, 'minutes').toDate());
   demoBuilder.createComment({
     topicId: ticket2,
     userId: nextUser(),
@@ -672,6 +734,47 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'low',
     },
   });
+
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(200, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket3,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'confirmed',
+    data: {},
+  });
+
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(260, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket3,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'progressing',
+    data: {},
+  });
+
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(320, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket3,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'finished',
+    data: {},
+  });
+
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(325, 'minutes').toDate());
+  demoBuilder.createEvent({
+    topicId: ticket3,
+    userId: demoManagerId,
+    text: '',
+    type: 'statusChangeTo',
+    status: 'closed',
+    data: {},
+  });
+
   Clock.clear();
 
   // ===== Accounting =====
