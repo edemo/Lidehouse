@@ -4,6 +4,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { $ } from 'meteor/jquery';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 
 export const Render = {
   translate(cellData, renderType, currentRow) {
@@ -121,6 +122,15 @@ export const Render = {
     const color = Tickets.statuses[ticketStatusName].color;
     const html = `<span class='label label-${color}'>${__('schemaTopics.status.' + cellData)}</span>`;
     return html;
+  },
+  ticketLocalizer(cellData) {
+    const topicId = cellData;
+    const topic = Topics.findOne(topicId);
+    const localizer = topic.ticket.localizer;
+    const displayLocalizer = Localizer.get(topic.communityId).display(localizer);
+    const html = `<span class="label label-success label-xs">${displayLocalizer}</span>`;
+    if (localizer) return html;
+    return undefined;
   },
 };
 
