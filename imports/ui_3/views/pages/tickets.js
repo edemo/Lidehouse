@@ -50,14 +50,8 @@ Template.Tickets.viewmodel({
     }, { sort: { createdAt: -1 } });
   },
   showLocalizer(data) {
-    const localizers = Localizer.get().nodeOptions();
     const localizer = data.ticket.localizer;
-    let localizerToUI = '';
-    localizers.forEach((entry) => {
-      if (entry.value === localizer) localizerToUI = entry.label;
-      return undefined;
-    });
-    return localizerToUI;
+    return Localizer.get(data.communityId).display(localizer);
   },
 });
 
