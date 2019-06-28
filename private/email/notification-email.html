@@ -21,7 +21,7 @@
                     {{#if (isUnseen topic)}}
                       <p>{{curb topic.text 1000}}</p>
                     {{/if}}
-                    <!--{{#if (voteHasBeenClosed topic)}}
+                    {{#if (voteHasBeenClosed topic)}}
                         <br><h4 class="text-center">{{_ 'The voting has been closed'}}.</h4>
                         {{#if equals topic.vote.effect 'legal'}}
                             {{#if topic.isVoteSuccessful}}
@@ -41,7 +41,7 @@
                         {{#each sum in topic.voteSummaryDisplay}}
                         <p>{{_ sum.choice}}: {{sum.votingUnits}} ({{displayPercent sum.percentOfVotes}})</p>
                         {{/each}}
-                    {{/if}}-->
+                    {{/if}}
                     {{/unless}} 
                     {{#if topic.hiddenBy this.userId this.communityId}}
                         <span>{{_ 'Content hidden by' hider=(_ (hider topic))}}</span>
@@ -76,12 +76,28 @@
                 <td class="media-body">
                 {{#unless comment.hiddenBy this.userId this.communityId}}  
                     <a href="{{userUrlFor  comment.user}}">{{comment.user.displayOfficialName this.communityId user.settings.language}}</a>
-                    <span>{{curb comment.text 500 }}</span>
+                    {{#if (equals comment.type 'statusChangeTo')}}
+                        {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
+                        {{_ 'changed the status'}}: <span class="label {{eventStatusObject.color}}">
+                           {{_ (concat 'schemaTopics.status.' comment.status)}}
+                        </span><br>
+                        {{/let}}
+                        {{#if (equals comment.topic.category 'ticket')}}
+                            {{#each dataEntry in entriesOf comment.data}}
+                            <span>
+                            {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
+                            {{displayValue dataEntry.[1]}} 
+                            </span><br>
+                            {{/each}}
+                        {{/if}}
+                    {{/if}}
+                    {{#if comment.text}}
+                    <span>{{curb comment.text 500 }}</span><br>
+                    {{/if}}
                 {{/unless}}
                 {{#if comment.hiddenBy this.userId this.communityId}}
-                    <span>{{_ 'Content hidden by' hider=(_ (hider comment))}}</span>
+                    <span>{{_ 'Content hidden by' hider=(_ (hider comment))}}</span><br>
                 {{/if}}
-                    <br/>
                     <small class="text-muted" >{{displayTime comment.createdAt}}</small>
                 </td> 
             </tr>

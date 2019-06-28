@@ -3,6 +3,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { numeral } from 'meteor/numeral:numeral';
+import { _ } from 'meteor/underscore';
 
 // Global helpers for all email templates
 // TODO: duplicates from the clients side - maybe we should try reference in the client helpers here?
@@ -17,6 +18,12 @@ export const EmailTemplateHelpers = {
     const user = Meteor.users.findOne(this.userId);
     return TAPi18n.__(text, kw.hash, user.settings.language);
   },
+  displayValue(val) {
+    const user = Meteor.users.findOne(this.userId);
+    if (_.isDate(val)) return moment(val).format('L');
+    if (_.isString(val)) return TAPi18n.__(val, user.settings.language);
+    return val;
+  },
   urlFor(route, hash = {}) {
     let result;
     if (route.charAt(0) === '/') {
@@ -26,6 +33,12 @@ export const EmailTemplateHelpers = {
   },
   displayPercent(number) {
     return numeral(number).format('0.00') + '%';
+  },
+  concat() {
+    return Array.prototype.slice.call(arguments, 0, -1).join('');
+  },
+  entriesOf(obj) {
+    return Object.entries(obj);
   },
 };
 
