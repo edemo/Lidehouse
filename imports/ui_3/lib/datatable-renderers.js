@@ -123,6 +123,12 @@ export const Render = {
     const html = `<span class='label label-${color}'>${__('schemaTopics.status.' + cellData)}</span>`;
     return html;
   },
+  ticketId(cellData) {
+    const readableIdObject = cellData;
+    if (!readableIdObject) return undefined;
+    const html = `<span>${readableIdObject.preKey}${readableIdObject.number}/${readableIdObject.year}</span>`;
+    return html;
+  },
   ticketLocalizer(cellData) {
     const topicId = cellData;
     const topic = Topics.findOne(topicId);
