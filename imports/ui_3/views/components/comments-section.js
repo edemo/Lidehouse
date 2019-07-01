@@ -74,7 +74,7 @@ Template.Comments_section.viewmodel({
 });
 
 Template.StatusChange.helpers({
-  content() {
+  templateByCategory() {
     const topic = Topics.findOne(this.topicId);
     if (topic.category === 'ticket') return 'ticketStatusChange';
     if (topic.category === 'vote') return 'voteStatusChange';
