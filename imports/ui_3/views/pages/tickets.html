@@ -110,8 +110,8 @@
                           <small>{{>Chopped text=text chars=400}}</small>
                       </td>
                       <td>
-                          {{#if ticket.category}}
-                          <span class="label label-default">{{_ (concat 'schemaTickets.ticket.category.' ticket.category)}}</span>
+                          {{#if ticket.localizer}}
+                          <span class="label label-success label-xs">{{ticket.localizer}}</span>
                           {{/if}}
                       </td>
                       <td>

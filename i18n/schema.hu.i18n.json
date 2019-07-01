@@ -202,9 +202,6 @@
       "label": "Részletek",
       "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
     },
-    "agendaId": {
-      "label": "Közgyűlés (aminek része)"
-    },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
       "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
@@ -241,6 +238,9 @@
     "text": {
       "label": "Részletek",
       "placeholder": "A szavazás kérdésének bővebb kifejtése ..."
+    },
+    "agendaId": {
+      "label": "Közgyűlés (aminek része)"
     },
     "createdAt": {
       "label": "Szavazás kezdete"
@@ -301,12 +301,6 @@
         "label": "Típus",
         "maintenance": "Ütemezett",
         "issue": "Bejelentett"
-      },
-      "category": {
-        "label": "Kategória",
-        "building": "épület",
-        "garden": "kert",
-        "service": "közmű"
       },
       "urgency": {
         "label": "Sürgősség",

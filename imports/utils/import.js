@@ -22,24 +22,6 @@ const delayCalls = 0;
 // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
 // https://stackoverflow.com/questions/15130735/how-can-i-remove-time-from-date-with-moment-js
 
-function transformMarinaParcels(jsons) {
-  const tjsons = jsons.map((doc) => {
-    const tdoc = $.extend(true, {}, doc);
-    if (tdoc.ref.indexOf('P') >= 0) {
-      tdoc.type = 'parking';
-    } else if (tdoc.ref.indexOf('T') >= 0) {
-      tdoc.type = 'storage';
-    } else {
-      tdoc.type = 'flat';
-      tdoc.building = doc.ref[0];
-      tdoc.floor = doc.ref[1];
-      tdoc.door = doc.ref[3];
-    }
-    return tdoc;
-  });
-  return tjsons;
-}
-
 function transformMarinaMemberships(jsons) {
   const tjsons = [];
   const communityId = Session.get('activeCommunityId');
@@ -166,7 +148,6 @@ export function importCollectionFromFile(collection, options) {
 
       // ---- custom transformation ----
       if (community.name.indexOf('Marina') >= 0) {
-        if (collection._name === 'parcels') jsons = transformMarinaParcels(jsons);
         if (collection._name === 'memberships') jsons = transformMarinaMemberships(jsons);
         if (collection._name === 'transactions') jsons = transformMarinaTransactions(jsons, options);
         if (collection._name === 'balances') jsons = transformMarinaBalances(jsons, options);

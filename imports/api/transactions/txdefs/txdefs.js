@@ -5,10 +5,10 @@ import { _ } from 'meteor/underscore';
 
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamps } from '/imports/api/timestamps.js';
-import { chooseAccountNode, chooseSubAccount } from '/imports/api/transactions/account-specification.js';
+import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
 class TxDefsCollection extends Mongo.Collection {
   define(doc) {

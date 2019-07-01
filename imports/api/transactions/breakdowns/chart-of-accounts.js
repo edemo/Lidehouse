@@ -1,3 +1,4 @@
+import { __ } from '/imports/localization/i18n.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
@@ -17,3 +18,9 @@ export const ChartOfAccounts = {
   },
 };
 
+export const chooseAccountNode = {
+  options() {
+    return ChartOfAccounts.get().nodeOptions();
+  },
+  firstOption: () => __('(Select one)'),
+};

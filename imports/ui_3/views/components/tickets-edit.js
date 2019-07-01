@@ -17,7 +17,6 @@ export function afTicketInsertModal() {
   const omitFields = ['agendaId', 'sticky', 'ticket.status'];
   if (!Meteor.user().hasPermission('ticket.update', communityId)) {
     omitFields.push('ticket.type');
-    omitFields.push('ticket.category');
   } */
   Modal.show('Autoform_edit', {
     id: 'af.ticket.insert',
@@ -135,6 +134,7 @@ AutoForm.addHooks('af.ticket.statusChange', {
     doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
     doc.status = newStatusName;
     doc.data = doc.ticket || {};
+    delete doc.ticket;
     return doc;
   },
   onSuccess(formType, result) {

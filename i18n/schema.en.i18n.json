@@ -202,9 +202,6 @@
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
     },
-    "agendaId": {
-      "label": "Agenda (of which it is part of)"
-    },
     "photo": {
       "label": "Photo (if applicable)",
       "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
@@ -241,6 +238,9 @@
     "text": {
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
+    },
+    "agendaId": {
+      "label": "Agenda (of which it is part of)"
     },
     "createdAt": {
       "label": "Voting starts at"
@@ -297,12 +297,6 @@
         "label": "Type",
         "maintenance": "Maintenance",
         "issue": "Issue"
-      },
-      "category": {
-        "label": "Category",
-        "building": "Building",
-        "garden": "Garden",
-        "service": "Service"
       },
       "urgency": {
         "label": "Urgency",
