@@ -17,7 +17,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Flaggable } from '/imports/api/topics/flags.js';
+import { Flagable } from '/imports/api/topics/flags.js';
 
 export let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {
@@ -99,8 +99,6 @@ Meteor.users.SEEN_BY = {
   EYES: 0,
   NOTI: 1,
 };
-
-console.log("in users.js");
 
 Meteor.users.schema = new SimpleSchema({
   // For accounts-password, either emails or username is required, but not both.
@@ -293,7 +291,7 @@ Meteor.users.helpers({
 
 Meteor.users.attachSchema(Meteor.users.schema);
 Meteor.users.attachBehaviour(Timestamped);
-Meteor.users.attachBehaviour(Flaggable);
+Meteor.users.attachBehaviour(Flagable);
 
 Meteor.startup(function attach() {
   Meteor.users.simpleSchema().i18n('schemaUsers');

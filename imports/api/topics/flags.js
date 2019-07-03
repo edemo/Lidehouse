@@ -55,6 +55,6 @@ export const flag = new ValidatedMethod({
   },
 });
 
-export const Flaggable = {
+export const Flagable = {
   schema, helpers, methods: { flag },
 };

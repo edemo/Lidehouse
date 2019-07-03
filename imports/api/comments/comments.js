@@ -9,7 +9,7 @@ import { Timestamped } from '/imports/api/timestamps.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Likeable } from '/imports/api/topics/likes.js';
-import { Flaggable } from '/imports/api/topics/flags.js';
+import { Flagable } from '/imports/api/topics/flags.js';
 
 class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
@@ -66,7 +66,7 @@ Meteor.startup(function indexComments() {
 Comments.attachSchema(Comments.schema);
 Comments.attachBehaviour(Timestamped);
 Comments.attachBehaviour(Likeable);
-Comments.attachBehaviour(Flaggable);
+Comments.attachBehaviour(Flagable);
 
 Comments.helpers({
   user() {

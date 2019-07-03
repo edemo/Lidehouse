@@ -14,7 +14,7 @@ import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { RevisionedCollection } from '/imports/api/revision.js';
 import { Likeable } from '/imports/api/topics/likes.js';
-import { Flaggable } from '/imports/api/topics/flags.js';
+import { Flagable } from '/imports/api/topics/flags.js';
 
 import './category-helpers.js';
 
@@ -171,7 +171,7 @@ Topics.attachSchema(Topics.baseSchema);
 Topics.attachBehaviour(Timestamped);
 Topics.schema = new SimpleSchema(Topics.simpleSchema());
 Topics.attachBehaviour(Likeable);
-Topics.attachBehaviour(Flaggable);
+Topics.attachBehaviour(Flagable);
 
 // Topics.schema is just the core schema, shared by all.
 // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.

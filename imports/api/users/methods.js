@@ -99,8 +99,6 @@ if (Meteor.isClient) {
   });
 }
 
-console.log("in users/methods.js");
-
 Meteor.users.methods = {
   update, remove, updateMyLastSeen,
 };
