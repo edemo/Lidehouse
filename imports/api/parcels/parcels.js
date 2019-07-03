@@ -9,7 +9,7 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/timestamps.js';
 import { FreeFields } from '/imports/api/freefields.js';
 
 import { Communities } from '/imports/api/communities/communities.js';
@@ -177,7 +177,7 @@ Parcels.helpers({
 
 Parcels.attachSchema(Parcels.schema);
 // Parcels.attachSchema(FreeFields);
-Parcels.attachSchema(Timestamps);
+Parcels.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Parcels.simpleSchema().i18n('schemaParcels');

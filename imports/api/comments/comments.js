@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/timestamps.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Likeable } from '/imports/api/topics/likes.js';
@@ -64,8 +64,7 @@ Meteor.startup(function indexComments() {
 });
 
 Comments.attachSchema(Comments.schema);
-Comments.attachSchema(Timestamps);
-
+Comments.attachBehaviour(Timestamped);
 Comments.attachBehaviour(Likeable);
 Comments.attachBehaviour(Flaggable);
 

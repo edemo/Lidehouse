@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/timestamps.js';
 
 export const Vouchers = new Mongo.Collection('vouchers');
 
@@ -17,7 +17,7 @@ Vouchers.helpers({
 });
 
 Vouchers.attachSchema(Vouchers.schema);
-Vouchers.attachSchema(Timestamps);
+Vouchers.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Vouchers.simpleSchema().i18n('schemaVouchers');

@@ -7,7 +7,7 @@ import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/timestamps.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
 class TxDefsCollection extends Mongo.Collection {
@@ -62,7 +62,7 @@ TxDefs.helpers({
 });
 
 TxDefs.attachSchema(TxDefs.schema);
-TxDefs.attachSchema(Timestamps);
+TxDefs.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   TxDefs.simpleSchema().i18n('schemaTxDefs');

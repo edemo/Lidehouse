@@ -8,7 +8,7 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { displayAddress } from '/imports/localization/localization.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/timestamps.js';
 
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -108,7 +108,7 @@ Communities.helpers({
 });
 
 Communities.attachSchema(Communities.schema);
-Communities.attachSchema(Timestamps);
+Communities.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Communities.simpleSchema().i18n('schemaCommunities');

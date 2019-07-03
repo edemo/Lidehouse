@@ -37,7 +37,7 @@ const helpers = {
   },
 };
 
-const flag = new ValidatedMethod({
+export const flag = new ValidatedMethod({
   name: 'flag',
   validate: new SimpleSchema({
     coll: { type: String },

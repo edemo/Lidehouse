@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/timestamps.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
 function deepCopy(obj) {
@@ -293,7 +293,7 @@ Breakdowns.helpers({
 });
 
 Breakdowns.attachSchema(Breakdowns.schema);
-Breakdowns.attachSchema(Timestamps);
+Breakdowns.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Breakdowns.simpleSchema().i18n('schemaBreakdowns');

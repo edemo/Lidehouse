@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/timestamps.js';
 
 /*
 const PersonIdentifierSchema = new SimpleSchema({
@@ -51,7 +51,7 @@ Certificates.schema = new SimpleSchema([
 ]);
 
 Certificates.attachSchema(Certificates.schema);
-Certificates.attachSchema(Timestamps);
+Certificates.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Certificates.simpleSchema().i18n('schemaCertificates');

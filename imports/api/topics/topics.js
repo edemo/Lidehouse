@@ -7,7 +7,7 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/timestamps.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
@@ -167,16 +167,17 @@ Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communit
     .filter(t => t.needsAttention(userId, seenType));
 };
 
-Topics.schema = new SimpleSchema([Topics.baseSchema, Timestamps]);
-Topics.attachSchema(Topics.schema);
-
+Topics.attachSchema(Topics.baseSchema);
+Topics.attachBehaviour(Timestamped);
+Topics.schema = new SimpleSchema(Topics.simpleSchema());
 Topics.attachBehaviour(Likeable);
 Topics.attachBehaviour(Flaggable);
 
+// Topics.schema is just the core schema, shared by all.
+// Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
+// Topics.schema.i18n('schemaTopics'); // sub-type of Topics will define their own translations
+
 Meteor.startup(function attach() {
-  // Topics.schema is just the core schema, shared by all.
-  // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
-  // Topics.schema.i18n('schemaTopics'); // sub-type of Topics will define their own translations
   Topics.simpleSchema().i18n('schemaTopics');
   Topics.schema.i18n('schemaTopics');
 });

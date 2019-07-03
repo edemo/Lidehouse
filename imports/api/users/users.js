@@ -11,7 +11,7 @@ import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/timestamps.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -292,8 +292,7 @@ Meteor.users.helpers({
 });
 
 Meteor.users.attachSchema(Meteor.users.schema);
-Meteor.users.attachSchema(Timestamps);
-
+Meteor.users.attachBehaviour(Timestamped);
 Meteor.users.attachBehaviour(Flaggable);
 
 Meteor.startup(function attach() {
