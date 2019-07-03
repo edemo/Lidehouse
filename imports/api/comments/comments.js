@@ -8,8 +8,8 @@ import faker from 'faker';
 import { Timestamps } from '/imports/api/timestamps.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-index';
 import { Topics } from '/imports/api/topics/topics.js';
-import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
-import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
+import { Likeable } from '/imports/api/topics/likes.js';
+import { Flaggable } from '/imports/api/topics/flags.js';
 
 class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {
@@ -64,9 +64,10 @@ Meteor.startup(function indexComments() {
 });
 
 Comments.attachSchema(Comments.schema);
-Comments.attachSchema(likesSchema);
-Comments.attachSchema(flagsSchema);
 Comments.attachSchema(Timestamps);
+
+Comments.attachBehaviour(Likeable);
+Comments.attachBehaviour(Flaggable);
 
 Comments.helpers({
   user() {
@@ -92,9 +93,6 @@ Comments.helpers({
     return this.type || 'comment';
   },
 });
-
-Comments.helpers(likesHelpers);
-Comments.helpers(flagsHelpers);
 
 Factory.define('comment', Comments, {
   topicId: () => Factory.get('topic'),

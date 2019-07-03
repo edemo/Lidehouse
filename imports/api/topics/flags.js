@@ -7,12 +7,12 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkPermissions } from '/imports/api/method-checks.js';
 import { toggleElementInArray } from '/imports/api/utils.js';
 
-export const flagsSchema = new SimpleSchema({
+const schema = new SimpleSchema({
   flags: { type: Array, defaultValue: [], autoform: { omit: true } },
   'flags.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
 });
 
-export const flagsHelpers = {
+const helpers = {
   getFlags() {
     return this.flags || [];
   },
@@ -37,7 +37,7 @@ export const flagsHelpers = {
   },
 };
 
-export const flag = new ValidatedMethod({
+const flag = new ValidatedMethod({
   name: 'flag',
   validate: new SimpleSchema({
     coll: { type: String },
@@ -54,3 +54,7 @@ export const flag = new ValidatedMethod({
     toggleElementInArray(collection, id, 'flags', userId);
   },
 });
+
+export const Flaggable = {
+  schema, helpers, methods: { flag },
+};

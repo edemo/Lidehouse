@@ -1,11 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
-
 import './users.js';
 
 export const update = new ValidatedMethod({
@@ -98,3 +98,9 @@ if (Meteor.isClient) {
     },
   });
 }
+
+console.log("in users/methods.js");
+
+Meteor.users.methods = {
+  update, remove, updateMyLastSeen,
+};

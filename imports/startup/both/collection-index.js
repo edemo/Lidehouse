@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { _ } from 'meteor/underscore';
 import 'meteor/helfer:minimongo-index';
 
 export const MinimongoIndexing = true;
@@ -26,4 +27,15 @@ Mongo.Collection.prototype.define = function define(selector, doc) {
     return existingId;
   }
   return this.insert(doc);
+};
+
+Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
+  const collection = this;
+  collection.attachSchema(behaviour.schema);
+  collection.helpers(behaviour.helpers);
+//  const methodsToAttach = _.extend({}, behaviour.methods);
+//  _.forEach(methodsToAttach, function (key, validatedMethod) {
+//    validatedMethod.name = collection._name + '.' + validatedMethod.name;
+//  });
+//  _.extend(this.methods, methodsToAttach);
 };

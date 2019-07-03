@@ -17,7 +17,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
+import { Flaggable } from '/imports/api/topics/flags.js';
 
 export let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {
@@ -100,6 +100,8 @@ Meteor.users.SEEN_BY = {
   NOTI: 1,
 };
 
+console.log("in users.js");
+
 Meteor.users.schema = new SimpleSchema({
   // For accounts-password, either emails or username is required, but not both.
   // It is OK to make this optional because the accounts-password package does its own validation.
@@ -157,7 +159,7 @@ export function initialUsername(user) {
   const idChunk = userId.substring(0, 5);
   const userName = emailChunk + '_' + idChunk;
   return userName;
-};
+}
 
 Meteor.users.helpers({
   language() {
@@ -289,11 +291,10 @@ Meteor.users.helpers({
   },
 });
 
-Meteor.users.helpers(flagsHelpers);
-
 Meteor.users.attachSchema(Meteor.users.schema);
-Meteor.users.attachSchema(flagsSchema);
 Meteor.users.attachSchema(Timestamps);
+
+Meteor.users.attachBehaviour(Flaggable);
 
 Meteor.startup(function attach() {
   Meteor.users.simpleSchema().i18n('schemaUsers');

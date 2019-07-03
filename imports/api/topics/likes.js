@@ -6,12 +6,12 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkPermissions } from '/imports/api/method-checks.js';
 import { toggleElementInArray } from '/imports/api/utils.js';
 
-export const likesSchema = new SimpleSchema({
+const schema = new SimpleSchema({
   likes: { type: Array, defaultValue: [], autoform: { omit: true } },
   'likes.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
 });
 
-export const likesHelpers = {
+const helpers = {
   isLikedBy(userId) {
     return _.contains(this.likes, userId);
   },
@@ -43,3 +43,7 @@ export const like = new ValidatedMethod({
     toggleElementInArray(collection, id, 'likes', userId);
   },
 });
+
+export const Likeable = {
+  schema, helpers, methods: { like },
+};

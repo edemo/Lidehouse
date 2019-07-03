@@ -13,8 +13,8 @@ import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { RevisionedCollection } from '/imports/api/revision.js';
-import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
-import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
+import { Likeable } from '/imports/api/topics/likes.js';
+import { Flaggable } from '/imports/api/topics/flags.js';
 
 import './category-helpers.js';
 
@@ -167,11 +167,12 @@ Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communit
     .filter(t => t.needsAttention(userId, seenType));
 };
 
-Topics.helpers(likesHelpers);
-Topics.helpers(flagsHelpers);
-
-Topics.schema = new SimpleSchema([Topics.baseSchema, likesSchema, flagsSchema, Timestamps]);
+Topics.schema = new SimpleSchema([Topics.baseSchema, Timestamps]);
 Topics.attachSchema(Topics.schema);
+
+Topics.attachBehaviour(Likeable);
+Topics.attachBehaviour(Flaggable);
+
 Meteor.startup(function attach() {
   // Topics.schema is just the core schema, shared by all.
   // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
