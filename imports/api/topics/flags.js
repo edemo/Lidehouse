@@ -1,14 +1,11 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
 import { _ } from 'meteor/underscore';
 import { checkExists, checkPermissions } from '/imports/api/method-checks.js';
 import { toggleElementInArray } from '/imports/api/utils.js';
-
-import { Topics } from '/imports/api/topics/topics.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import '/imports/api/users/users.js';
 
 export const flagsSchema = new SimpleSchema({
   flags: { type: Array, defaultValue: [], autoform: { omit: true } },
@@ -47,14 +44,11 @@ export const flag = new ValidatedMethod({
     id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ coll, id }) {
-    let collection;
-    if (coll === 'topics') collection = Topics;
-    else if (coll === 'comments') collection = Comments;
-    else if (coll === 'users') collection = Meteor.users;
+    const collection = Mongo.Collection.get(coll);
     const object = checkExists(collection, id);
     const userId = this.userId;
 
-    if (coll !== 'users') checkPermissions(userId, 'flag.toggle', object.community()._id, object);
+    checkPermissions(userId, 'flag.toggle', object.community()._id, object);
 
     // toggle Flag status of this user
     toggleElementInArray(collection, id, 'flags', userId);
