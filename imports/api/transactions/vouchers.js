@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
-import { Timestamped } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 export const Vouchers = new Mongo.Collection('vouchers');
 

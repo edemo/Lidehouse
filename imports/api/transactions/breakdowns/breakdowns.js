@@ -5,7 +5,7 @@ import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Timestamped } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
 function deepCopy(obj) {

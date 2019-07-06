@@ -3,7 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Timestamped } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 // Declare store collection
 export const Sharedfolders = new Mongo.Collection('sharedfolders');

@@ -12,7 +12,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { officerRoles, everyRole, Roles } from '/imports/api/permissions/roles.js';
 import { Factory } from 'meteor/dburles:factory';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { Timestamped } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Person, PersonSchema } from '/imports/api/users/person.js';
