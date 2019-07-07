@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 
 export const Attachments = new Mongo.Collection('attachments');
 

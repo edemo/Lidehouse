@@ -4,6 +4,7 @@ import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { debugAssert } from '/imports/utils/assert.js';

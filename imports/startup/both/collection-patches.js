@@ -38,4 +38,10 @@ Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
 //    validatedMethod.name = collection._name + '.' + validatedMethod.name;
 //  });
 //  _.extend(this.methods, methodsToAttach);
+  if (Meteor.isClient) return;  // No hooking on the client side
+  _.each(behaviour.hooks, (actions, when) => {
+    _.each(actions, (actionFunc, action) => {
+      collection[when][action](actionFunc);
+    });
+  });
 };

@@ -5,11 +5,11 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-index';
-import { Topics } from '/imports/api/topics/topics.js';
 import { Likeable } from '/imports/api/behaviours/likeable.js';
 import { Flagable } from '/imports/api/behaviours/flagable.js';
+import { Topics } from '/imports/api/topics/topics.js';
 
 class CommentsCollection extends Mongo.Collection {
   insert(doc, callback) {

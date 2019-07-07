@@ -11,13 +11,14 @@ import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Flagable } from '/imports/api/behaviours/flagable.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Flagable } from '/imports/api/behaviours/flagable.js';
 
 export let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {

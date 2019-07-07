@@ -9,9 +9,9 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { FreeFields } from '/imports/api/freefields.js';
-
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';

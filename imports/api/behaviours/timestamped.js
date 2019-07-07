@@ -43,5 +43,5 @@ const schema = new SimpleSchema({
 });
 
 export const Timestamped = {
-  schema, helpers: {}, methods: {},
+  schema, helpers: {}, methods: {}, hooks: {},
 };

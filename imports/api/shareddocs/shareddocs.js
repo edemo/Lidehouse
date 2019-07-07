@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { UploadFS } from 'meteor/jalik:ufs';
 import { _ } from 'meteor/underscore';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 
 export const Shareddocs = new Mongo.Collection('shareddocs');
 

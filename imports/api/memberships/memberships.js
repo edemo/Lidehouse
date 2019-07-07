@@ -6,11 +6,12 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but not included in tests
+import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { officerRoles, everyRole, Roles } from '/imports/api/permissions/roles.js';
-import { Factory } from 'meteor/dburles:factory';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Communities } from '/imports/api/communities/communities.js';

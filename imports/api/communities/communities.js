@@ -8,8 +8,8 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { displayAddress } from '/imports/localization/localization.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';

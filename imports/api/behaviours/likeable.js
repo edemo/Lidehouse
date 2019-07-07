@@ -45,5 +45,5 @@ export const like = new ValidatedMethod({
 });
 
 export const Likeable = {
-  schema, helpers, methods: { like },
+  schema, helpers, methods: { like }, hooks: {},
 };

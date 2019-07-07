@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
@@ -6,19 +7,19 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-index';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Revisioned } from '/imports/api/behaviours/revisioned.js';
+import { Likeable } from '/imports/api/behaviours/likeable.js';
+import { Flagable } from '/imports/api/behaviours/flagable.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
-import { RevisionedCollection } from '/imports/api/revision.js';
-import { Likeable } from '/imports/api/behaviours/likeable.js';
-import { Flagable } from '/imports/api/behaviours/flagable.js';
 
 import './category-helpers.js';
 
-export const Topics = new RevisionedCollection('topics', ['text', 'title']);
+export const Topics = new Mongo.Collection('topics');
 
 // Topic categories in order of increasing importance
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
@@ -169,6 +170,7 @@ Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communit
 
 Topics.attachSchema(Topics.baseSchema);
 Topics.attachBehaviour(Timestamped);
+Topics.attachBehaviour(Revisioned(['text', 'title']));
 Topics.schema = new SimpleSchema(Topics.simpleSchema());
 Topics.attachBehaviour(Likeable);
 Topics.attachBehaviour(Flagable);

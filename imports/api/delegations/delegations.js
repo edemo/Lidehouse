@@ -9,6 +9,7 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Person, choosePerson } from '/imports/api/users/person.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Communities } from '/imports/api/communities/communities.js';
