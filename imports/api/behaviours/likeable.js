@@ -37,7 +37,9 @@ export const like = new ValidatedMethod({
     const object = checkExists(collection, id);
     const userId = this.userId;
 
-    checkPermissions(userId, 'like.toggle', object.community()._id, object);
+    if (object.communityId) { // A user for example does not have a community()
+      checkPermissions(userId, 'like.toggle', object.communityId, object);
+    }
 
     // toggle Like status of this user
     toggleElementInArray(collection, id, 'likes', userId);

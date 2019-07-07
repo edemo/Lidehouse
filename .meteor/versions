@@ -96,7 +96,7 @@ manuel:isdev@1.0.0
 manuel:reactivearray@1.0.9
 manuel:viewmodel@6.3.4
 manuel:viewmodel-debug@2.7.1
-matb33:collection-hooks@0.8.4
+matb33:collection-hooks@0.9.0-rc.4
 mdg:validated-method@1.1.0
 mdg:validation-error@0.5.1
 meteor@1.8.2

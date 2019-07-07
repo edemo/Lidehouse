@@ -48,7 +48,9 @@ export const flag = new ValidatedMethod({
     const object = checkExists(collection, id);
     const userId = this.userId;
 
-    checkPermissions(userId, 'flag.toggle', object.community()._id, object);
+    if (object.communityId) { // A user for example does not have a community()
+      checkPermissions(userId, 'flag.toggle', object.communityId, object);
+    }
 
     // toggle Flag status of this user
     toggleElementInArray(collection, id, 'flags', userId);
