@@ -11,13 +11,13 @@ import { Factory } from 'meteor/dburles:factory';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { officerRoles, everyRole, Roles } from '/imports/api/permissions/roles.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { ActivePeriodSchema } from '/imports/api/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Person, PersonSchema } from '/imports/api/users/person.js';
-import { ActivePeriodSchema } from '/imports/api/active-period.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 

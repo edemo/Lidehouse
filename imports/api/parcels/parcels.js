@@ -11,7 +11,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { FreeFields } from '/imports/api/freefields.js';
+import { FreeFields } from '/imports/api/behaviours/freefields.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -176,7 +176,7 @@ Parcels.helpers({
 });
 
 Parcels.attachSchema(Parcels.schema);
-// Parcels.attachSchema(FreeFields);
+// Parcels.attachBehaviour(FreeFields);
 Parcels.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
