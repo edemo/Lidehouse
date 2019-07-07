@@ -20,15 +20,6 @@ Mongo.Collection.prototype.ensureIndex = function ensureIndex(map, options) {
   }
 };
 
-Mongo.Collection.prototype.define = function define(selector, doc) {
-  const existingId = this.findOne(selector);
-  if (existingId) {
-    this.update(existingId, { $set: doc });
-    return existingId;
-  }
-  return this.insert(doc);
-};
-
 Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
   const collection = this;
   collection.attachSchema(behaviour.schema);

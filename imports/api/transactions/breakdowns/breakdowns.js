@@ -12,12 +12,11 @@ import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 function deepCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-class BreakdownsCollection extends Mongo.Collection {
-  define(breakdown) {
-    return super.define({ communityId: breakdown.communityId, name: breakdown.name }, breakdown);
-  }
-}
-export const Breakdowns = new BreakdownsCollection('breakdowns');
+export const Breakdowns = new Mongo.Collection('breakdowns');
+
+Breakdowns.define = function define(doc) {
+  Breakdowns.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
+};
 
 Breakdowns.findOneByName = function findOneByName(name, communityId = getActiveCommunityId()) {
   const result = Breakdowns.findOne({ name, communityId })
