@@ -11,25 +11,7 @@ import { Likeable } from '/imports/api/behaviours/likeable.js';
 import { Flagable } from '/imports/api/behaviours/flagable.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
-class CommentsCollection extends Mongo.Collection {
-  insert(doc, callback) {
-    const result = super.insert(doc, callback);
-    Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
-    return result;
-  }
-  update(selector, modifier, options, callback) {
-    const result = super.update(selector, modifier, options, callback);
-    return result;
-  }
-  remove(selector, callback) {
-    const selection = this.find(selector);
-    selection.forEach(comment => Topics.update(comment.topicId, { $inc: { commentCounter: -1 } }));
-    const result = super.remove(selector, callback);
-    return result;
-  }
-}
-
-export const Comments = new CommentsCollection('comments');
+export const Comments = new Mongo.Collection('comments');
 
 Comments.typeValues = ['statusChangeTo', 'pointAt'];
 
@@ -92,6 +74,17 @@ Comments.helpers({
     return this.type || 'comment';
   },
 });
+
+// --- Before/after actions ---
+if (Meteor.isServer) {
+  Comments.after.insert(function (userId, doc) {
+    Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
+  });
+
+  Comments.after.remove(function (userId, doc) {
+    Topics.update(doc.topicId, { $inc: { commentCounter: -1 } });
+  });
+}
 
 Factory.define('comment', Comments, {
   topicId: () => Factory.get('topic'),
