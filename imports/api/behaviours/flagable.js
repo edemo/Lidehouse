@@ -31,7 +31,7 @@ const helpers = {
     this.getFlags().forEach((flaggerId) => {
       if (flaggerId === userId) result = 'you';
       const flagger = Meteor.users.findOne(flaggerId);
-      if (flagger.hasPermission('topic.hide.forOthers', communityId)) result = 'moderator';
+      if (flagger.hasPermission('flag.forOthers', communityId)) result = 'moderator';
     });
     return result;
   },
