@@ -1,5 +1,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
@@ -63,6 +64,5 @@ export const remove = new ValidatedMethod({
   },
 });
 
-TxDefs.methods = {
-  insert, update, clone, remove,
-};
+TxDefs.methods = TxDefs.methods || {};
+_.extend(TxDefs.methods, { insert, update, clone, remove });

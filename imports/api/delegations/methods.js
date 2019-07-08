@@ -112,3 +112,6 @@ export const allow = new ValidatedMethod({
     Meteor.users.update(userId, { $set: { 'settings.delegatee': value } });
   },
 });
+
+Delegations.methods = Delegations.methods || {};
+_.extend(Delegations.methods, { insert, update, remove, allow });

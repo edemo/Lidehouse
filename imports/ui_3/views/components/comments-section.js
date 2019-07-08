@@ -9,9 +9,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
-import { like } from '/imports/api/behaviours/likeable.js';
-import { flag } from '/imports/api/behaviours/flagable.js';
+import '/imports/api/comments/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/hideable.js';
@@ -98,7 +96,7 @@ Template.Comments_section.events({
   'click .social-comment .js-send'(event, instance) {
     // if ($(event.target).hasClass('disabled')) return;
     const textarea = $(event.target).closest('.media-body').find('textarea')[0];
-    insertComment.call({
+    Comments.methods.insert.call({
       topicId: this._id,
       userId: Meteor.userId(),
       text: textarea.value,
@@ -120,11 +118,11 @@ Template.Comment.viewmodel({
 Template.Comment.events({
   'click .js-like'(event) {
     event.preventDefault();
-    like.call({ coll: 'comments', id: this._id }, handleError);
+    Comments.methods.like.call({ id: this._id }, handleError);
   },
   'click .js-flag'(event) {
     event.preventDefault();
-    flag.call({ coll: 'comments', id: this._id }, handleError);
+    Comments.methods.flag.call({ id: this._id }, handleError);
   },
   'click .js-edit'(event, instance) {
     const element = $(event.target).closest('.media-body');
@@ -132,14 +130,14 @@ Template.Comment.events({
     instance.viewmodel.editing(true);
   },
   'click .js-delete'(event, instance) {
-    Modal.confirmAndCall(removeComment, { _id: this._id }, {
+    Modal.confirmAndCall(Comments.methods.remove, { _id: this._id }, {
       action: 'delete comment',
       message: 'It will disappear forever',
     });
   },
   'click .js-save'(event, instance) {
     const text = $(event.target).closest('.media-body').find('textarea')[0].value;
-    updateComment.call({
+    Comments.methods.update.call({
       _id: instance.data._id,
       modifier: { $set: { text } },
     }, handleError);

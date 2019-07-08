@@ -246,7 +246,7 @@ Template.Community_page.events({
     instance.viewmodel.selectedParcelId(id);
   },
   'click .js-invite'(event, instance) {
-    const _id = $(event.target).data('id');
+    const _id = $(event.target).closest('button').data('id');
     const membership = Memberships.findOne(_id);
     Modal.confirmAndCall(Memberships.methods.linkUser, { _id }, {
       action: 'invite user',
@@ -290,25 +290,37 @@ Template.Community_page.events({
     Modal.show('Autoform_edit', {
       id: 'af.roleship.insert',
       collection: Memberships,
-      fields: ['role', 'person', 'activeTime'],
+      fields: ['role', 'person'],
       type: 'method',
       meteormethod: 'memberships.insert',
     });
   },
   'click .roles-section .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.roleship.update',
       collection: Memberships,
-      fields: ['person', 'activeTime'],
+      fields: ['person'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
     });
   },
+  'click .roles-section .js-period'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.roleship.update',
+      collection: Memberships,
+      fields: ['activeTime'],
+      doc: Memberships.findOne(id),
+      type: 'method-update',
+      meteormethod: 'memberships.updateActivePeriod',
+      singleMethodArgument: true,
+    });
+  },
   'click .roles-section .js-view'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.roleship.view',
       collection: Memberships,
@@ -318,7 +330,7 @@ Template.Community_page.events({
     });
   },
   'click .roles-section .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
       action: 'delete roleship',
       message: 'You should rather archive it',
@@ -338,19 +350,31 @@ Template.Community_page.events({
     });
   },
   'click #owners .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.ownership.update',
       collection: Memberships,
-      fields: ['person', 'ownership', 'activeTime'],
+      fields: ['person', 'ownership'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
     });
   },
+  'click  #owners .js-period'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.ownership.update',
+      collection: Memberships,
+      fields: ['activeTime'],
+      doc: Memberships.findOne(id),
+      type: 'method-update',
+      meteormethod: 'memberships.updateActivePeriod',
+      singleMethodArgument: true,
+    });
+  },
   'click #owners .js-view'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.ownership.view',
       collection: Memberships,
@@ -360,7 +384,7 @@ Template.Community_page.events({
     });
   },
   'click #owners .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
       action: 'delete ownership',
       message: 'You should rather archive it',
@@ -376,19 +400,31 @@ Template.Community_page.events({
     });
   },
   'click #benefactors .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.benefactorship.update',
       collection: Memberships,
-      fields: ['person', 'benefactorship', 'activeTime'],
+      fields: ['person', 'benefactorship'],
       doc: Memberships.findOne(id),
       type: 'method-update',
       meteormethod: 'memberships.update',
       singleMethodArgument: true,
     });
   },
+  'click #benefactors .js-period'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.benefactorship.update',
+      collection: Memberships,
+      fields: ['activeTime'],
+      doc: Memberships.findOne(id),
+      type: 'method-update',
+      meteormethod: 'memberships.updateActivePeriod',
+      singleMethodArgument: true,
+    });
+  },
   'click #benefactors .js-view'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.show('Autoform_edit', {
       id: 'af.benefactorship.view',
       collection: Memberships,
@@ -398,7 +434,7 @@ Template.Community_page.events({
     });
   },
   'click #benefactors .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
       action: 'delete benefactorship',
       message: 'You should rather archive it',

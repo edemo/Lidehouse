@@ -111,10 +111,8 @@ export const remove = new ValidatedMethod({
   },
 });
 
-
-Topics.methods = {
-  insert, update, statusChange, remove,
-};
+Topics.methods = Topics.methods || {};
+_.extend(Topics.methods, { insert, update, statusChange, remove });
 
 // ----- RATE LIMITING --------
 

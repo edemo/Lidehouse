@@ -1,3 +1,20 @@
+<template name="Active_period">
+    {{#let begin=this.activeTime.begin}}
+    {{#let end=this.activeTime.end}}
+    {{#unless and (not begin) (not end)}}
+        <small>{{displayDate begin}} - {{displayDate end}}</small>
+    {{/unless}}    
+    {{#if userHasPermission (concat this.permissionCategory '.update') communityId}}
+        {{#if and (not begin) (not end)}}
+        <button class="btn btn-xs btn-white js-period" data-id={{_id}}><i class="fa fa-history"></i> {{_ 'period'}}</button>
+        {{else}}
+        <button class="btn btn-xs btn-white js-period" data-id={{_id}}><i class="fa fa-pencil"></i></button>
+        {{/if}}
+    {{/if}}
+    {{/let}}
+    {{/let}}
+</template>
+
 <template name="Roleship_table">
     <div class="full-height-scroll">
         <div class="table-responsive">
@@ -49,6 +66,7 @@
                 <tr data-id="{{_id}}">
                     <td><a href="#member" class="client-avatar js-member"><img alt="image" src={{Person.avatar}}></a></td>
                     <td><a href="#member" class="client-link js-member">{{Person.displayName}}</a></td>
+                    <td>{{>Active_period this}}</td>
                     <td class="contact-type"><i class="fa fa-pie-chart"></i></td>
                     <td>{{ownership.share}}</td>
                     <td>
@@ -86,6 +104,7 @@
                 <tr data-id="{{_id}}">
                     <td><a href="#member" class="client-avatar js-member"><img alt="image" src={{Person.avatar}}></a></td>
                     <td><a href="#member" class="client-link js-member">{{Person.displayName}}</a></td>
+                    <td>{{>Active_period this}}</td>
                     <td><span class="label label-plain">{{_ benefactorship.type}}</span></td>
                     <td class="text-right">
                         <div class="btn-group">

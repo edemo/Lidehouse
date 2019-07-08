@@ -26,14 +26,14 @@ const helpers = {
   },*/
 };
 
-export const like = new ValidatedMethod({
+const like = new ValidatedMethod({
   name: 'like',
   validate: new SimpleSchema({
-    coll: { type: String },
     id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-  run({ coll, id }) {
-    const collection = Mongo.Collection.get(coll);
+  run({ id }) {
+    const collectionName = this.name.split('.')[0];
+    const collection = Mongo.Collection.get(collectionName);
     const object = checkExists(collection, id);
     const userId = this.userId;
 

@@ -29,6 +29,12 @@ export const everyBody = ['null']; // Even the not-logged-in user
 export const exceptGuest = _.without(everyRole, 'guest');
 export const nobody = [];
 
+export function permissionCategoryOf(role) {
+  if (role === 'owner') return 'ownerships';
+  if (role === 'benefactor') return 'benefactorships';
+  return 'roleships';
+}
+
 // =====================================
 
 export const Roles = new Mongo.Collection('roles');

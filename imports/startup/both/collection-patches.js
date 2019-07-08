@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
+import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import 'meteor/helfer:minimongo-index';
 
 export const MinimongoIndexing = true;
@@ -24,11 +25,17 @@ Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
   const collection = this;
   collection.attachSchema(behaviour.schema);
   collection.helpers(behaviour.helpers);
-//  const methodsToAttach = _.extend({}, behaviour.methods);
-//  _.forEach(methodsToAttach, function (key, validatedMethod) {
-//    validatedMethod.name = collection._name + '.' + validatedMethod.name;
-//  });
-//  _.extend(this.methods, methodsToAttach);
+
+  collection.methods = collection.methods || {};
+  _.forEach(behaviour.methods, (method, key) => {
+    const methodCopy = new ValidatedMethod({
+      name: collection._name + '.' + method.name,
+      validate: method.validate,
+      run: method.run,
+    });
+    _.extend(collection.methods, { [key]: methodCopy });
+  });
+
   if (Meteor.isClient) return;  // No hooking on the client side
   _.each(behaviour.hooks, (actions, when) => {
     _.each(actions, (actionFunc, action) => {

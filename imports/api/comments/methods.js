@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
+import { _ } from 'meteor/underscore';
 
 import { Comments } from './comments.js';
 import { Topics } from '../topics/topics.js';
@@ -59,9 +59,8 @@ export const remove = new ValidatedMethod({
   },
 });
 
-Comments.methods = {
-  insert, update, remove,
-};
+Comments.methods = Comments.methods || {};
+_.extend(Comments.methods, { insert, update, remove });
 
 //--------------------------------------------------------
 

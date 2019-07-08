@@ -4,10 +4,10 @@ import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { $ } from 'meteor/jquery';
+
 import { handleError } from '/imports/ui_3/lib/errors.js';
-import { like } from '/imports/api/behaviours/likeable.js';
-import { flag } from '/imports/api/behaviours/flagable.js';
 import { afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal } from '/imports/ui_3/views/components/tickets-edit.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/hideable.js';
@@ -35,21 +35,12 @@ Template.Ticketbox.events({
     deleteTicketConfirmAndCallModal(id);
   },
   'click .js-block'(event, instance) {
-    flag.call({
-      coll: 'users',
-      id: instance.data.userId,
-    }, handleError);
+    Meteor.users.methods.flag.call({ id: instance.data.userId }, handleError);
   },
   'click .js-report'(event, instance) {
-    flag.call({
-      coll: 'topics',
-      id: this._id,
-    }, handleError);
+    Topics.methods.flag.call({ id: this._id }, handleError);
   },
   'click .social-body .js-like'(event) {
-    like.call({
-      coll: 'topics',
-      id: this._id,
-    }, handleError);
+    Topics.methods.like.call({ id: this._id }, handleError);
   },
 });

@@ -86,6 +86,5 @@ export const insert = new ValidatedMethod({
   },
 });
 
-ParcelBillings.methods = {
-  insert, apply,
-};
+ParcelBillings.methods = ParcelBillings.methods || {};
+_.extend(ParcelBillings.methods, { insert, apply });
