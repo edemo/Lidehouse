@@ -52,7 +52,7 @@ Topics.readableId();*/
 export function readableId(collection, doc) {
   const year = new Date().getFullYear();
   const preKey = doc.category ? doc.category.charAt(0).toUpperCase() : 'D';
-  const max = collection.findOne({ 'readableId.year': year, 'readableId.preKey': preKey }, { sort: { 'readableId.number': -1 } });
+  const max = collection.findOne({ 'readableId.year': year, 'readableId.preKey': preKey, communityId: doc.communityId }, { sort: { 'readableId.number': -1 } });
   const number = max ? max.readableId.number + 1 : 1;
   doc.readableId = { preKey, number, year };
 }
