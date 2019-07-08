@@ -124,10 +124,8 @@ export const Render = {
     return html;
   },
   ticketId(cellData) {
-    const readableIdObject = cellData;
-    if (!readableIdObject) return undefined;
-    const html = `<span>${readableIdObject.preKey}${readableIdObject.number}/${readableIdObject.year}</span>`;
-    return html;
+    if (!cellData) return undefined;
+    return `<span>${cellData}</span>`;
   },
   ticketLocalizer(cellData) {
     const topicId = cellData;

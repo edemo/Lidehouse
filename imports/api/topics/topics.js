@@ -163,6 +163,10 @@ Topics.helpers({
     Comments.remove({ topicId: this._id });
     Topics.remove({ _id: this._id });
   },
+  readableIdForUI() {
+    if (this.readableId) return `${this.readableId.preKey}${this.readableId.number}/${this.readableId.year}`;
+    return false;
+  },
 });
 
 Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
@@ -206,6 +210,7 @@ Topics.publicFields = {
   commentCounter: 1,
   revision: 1,
   status: 1,
+  readableId: 1,
 };
 
 Topics.categoryValues.forEach((category) => {
