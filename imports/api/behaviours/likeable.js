@@ -1,3 +1,4 @@
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
@@ -5,15 +6,12 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkPermissions } from '/imports/api/method-checks.js';
 import { toggleElementInArray } from '/imports/api/utils.js';
 
-import { Topics } from '/imports/api/topics/topics.js';
-import { Comments } from '/imports/api/comments/comments.js';
-
-export const likesSchema = new SimpleSchema({
+const schema = new SimpleSchema({
   likes: { type: Array, defaultValue: [], autoform: { omit: true } },
   'likes.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
 });
 
-export const likesHelpers = {
+const helpers = {
   isLikedBy(userId) {
     return _.contains(this.likes, userId);
   },
@@ -35,15 +33,19 @@ export const like = new ValidatedMethod({
     id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ coll, id }) {
-    let collection;
-    if (coll === 'topics') collection = Topics;
-    else if (coll === 'comments') collection = Comments;
+    const collection = Mongo.Collection.get(coll);
     const object = checkExists(collection, id);
     const userId = this.userId;
 
-    checkPermissions(userId, 'like.toggle', object.community()._id, object);
+    if (object.communityId) { // A user for example does not have a community()
+      checkPermissions(userId, 'like.toggle', object.communityId, object);
+    }
 
     // toggle Like status of this user
     toggleElementInArray(collection, id, 'likes', userId);
   },
 });
+
+export const Likeable = {
+  schema, helpers, methods: { like }, hooks: {},
+};

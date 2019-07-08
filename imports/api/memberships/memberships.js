@@ -6,17 +6,18 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but not included in tests
+import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { officerRoles, everyRole, Roles } from '/imports/api/permissions/roles.js';
-import { Factory } from 'meteor/dburles:factory';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { ActivePeriodSchema } from '/imports/api/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Person, PersonSchema } from '/imports/api/users/person.js';
-import { ActivePeriodSchema } from '/imports/api/active-period.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -154,7 +155,7 @@ Memberships.helpers({
 
 Memberships.attachSchema(Memberships.schema);
 Memberships.attachSchema(ActivePeriodSchema);
-Memberships.attachSchema(Timestamps);
+Memberships.attachBehaviour(Timestamped);
 
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,

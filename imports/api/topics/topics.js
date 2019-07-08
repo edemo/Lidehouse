@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
@@ -6,19 +7,19 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-index';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Revisioned } from '/imports/api/behaviours/revisioned.js';
+import { Likeable } from '/imports/api/behaviours/likeable.js';
+import { Flagable } from '/imports/api/behaviours/flagable.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
-import { RevisionedCollection } from '/imports/api/revision.js';
-import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
-import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
 import './category-helpers.js';
 
-export const Topics = new RevisionedCollection('topics', ['text', 'title']);
+export const Topics = new Mongo.Collection('topics');
 
 // Topic categories in order of increasing importance
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
@@ -124,9 +125,7 @@ Topics.helpers({
         if (seenType === Meteor.users.SEEN_BY.EYES
           && !this.closed && !this.hasVotedIndirect(userId)) return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
-          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0
-          //|| (this.closed === true && this.vote.closesAt > Meteor.users.findOne(userId).lastSeens[seenType][this._id].timestamp)
-          )) return 1;
+          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
         break;
       case 'ticket':
         if (seenType === Meteor.users.SEEN_BY.EYES
@@ -170,15 +169,18 @@ Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communit
     .filter(t => t.needsAttention(userId, seenType));
 };
 
-Topics.helpers(likesHelpers);
-Topics.helpers(flagsHelpers);
+Topics.attachSchema(Topics.baseSchema);
+Topics.attachBehaviour(Timestamped);
+Topics.attachBehaviour(Revisioned(['text', 'title']));
+Topics.schema = new SimpleSchema(Topics.simpleSchema());
+Topics.attachBehaviour(Likeable);
+Topics.attachBehaviour(Flagable);
 
-Topics.schema = new SimpleSchema([Topics.baseSchema, likesSchema, flagsSchema, Timestamps]);
-Topics.attachSchema(Topics.schema);
+// Topics.schema is just the core schema, shared by all.
+// Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
+// Topics.schema.i18n('schemaTopics'); // sub-type of Topics will define their own translations
+
 Meteor.startup(function attach() {
-  // Topics.schema is just the core schema, shared by all.
-  // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
-  // Topics.schema.i18n('schemaTopics'); // sub-type of Topics will define their own translations
   Topics.simpleSchema().i18n('schemaTopics');
   Topics.schema.i18n('schemaTopics');
 });

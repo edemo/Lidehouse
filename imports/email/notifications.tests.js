@@ -16,6 +16,7 @@ import '/i18n/en.i18n.json';
 import '/i18n/email.en.i18n.json';
 import { processNotifications, notifyExpiringVotings, EXPIRY_NOTI_DAYS } from './notifications.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
+import { statusChange } from '/imports/api/topics/methods.js';
 
 import { emailSender } from '/imports/startup/server/email-sender.js';   // We will be mocking it over
 
@@ -27,6 +28,7 @@ if (Meteor.isServer) {
   describe('Notifications', function () {
     this.timeout(5000);
     let topicId;
+    let ticketId;
     let demoCommunity;
     let demoManager;
     let ownerWithNotiFrequent;
@@ -68,6 +70,9 @@ if (Meteor.isServer) {
           title: 'New topic',
           text: 'This is the new topic',
         });
+        ticketId = Topics.methods.insert._execute({ userId: demoManager._id },
+          Fixture.builder.build('ticket', { userId: demoManager._id })
+        );
       });
 
       it('New users get all the past events in one bunch', function () {
@@ -108,6 +113,14 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(emailOptions.data.topics, Topics.find(topicId).fetch());
         processNotifications('daily');
         sinon.assert.calledThrice(emailSender.sendHTML);
+      });
+
+      it('Emails about new statusChange event', function () {
+        const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
+        statusChange._execute({ userId: demoManager._id }, 
+          { userId: demoManager._id, topicId: ticketId, type: 'statusChangeTo', status: 'confirmed', data });
+        processNotifications('daily');
+        sinon.assert.calledTwice(emailSender.sendHTML);
       });
     });
 

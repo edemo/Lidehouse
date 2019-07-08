@@ -2,9 +2,10 @@
 /* eslint-disable func-names, prefer-arrow-callback, padded-blocks */
 
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
-import { RevisionedCollection } from './revision.js';
+import { Revisioned } from './revisioned.js';
 
 if (Meteor.isServer) {
 
@@ -16,8 +17,9 @@ if (Meteor.isServer) {
       nonRevisionedField: { type: String, optional: true },
       booleanField: { type: Boolean, optional: true },
     });
-    const collection = new RevisionedCollection('somethings', ['textField', 'booleanField']);
+    const collection = new Mongo.Collection('somethings');
     collection.attachSchema(schema);
+    collection.attachBehaviour(Revisioned(['textField', 'booleanField']));
 
     let docId;
 

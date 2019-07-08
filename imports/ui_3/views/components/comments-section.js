@@ -10,8 +10,8 @@ import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { insert as insertComment, update as updateComment, remove as removeComment } from '/imports/api/comments/methods.js';
-import { like } from '/imports/api/topics/likes.js';
-import { flag } from '/imports/api/topics/flags.js';
+import { like } from '/imports/api/behaviours/likeable.js';
+import { flag } from '/imports/api/behaviours/flagable.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/hideable.js';
@@ -74,7 +74,7 @@ Template.Comments_section.viewmodel({
 });
 
 Template.StatusChange.helpers({
-  content() {
+  templateByCategory() {
     const topic = Topics.findOne(this.topicId);
     if (topic.category === 'ticket') return 'ticketStatusChange';
     if (topic.category === 'vote') return 'voteStatusChange';

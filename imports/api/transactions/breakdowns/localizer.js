@@ -54,7 +54,7 @@ export const Localizer = {
     delete parcelBreakdown._id;
     delete parcelBreakdown.createdAt;
     delete parcelBreakdown.updatedAt;
-    Breakdowns.define(parcelBreakdown);
+    Breakdowns.update(id, { $set: parcelBreakdown });
   },
   generateParcels(communityId, lang) {
     const parcelBreakdown = { communityId, name: 'Parcels', digit: '@', children: [] };

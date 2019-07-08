@@ -9,8 +9,9 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Person, choosePerson } from '/imports/api/users/person.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -103,7 +104,7 @@ Delegations.helpers({
 });
 
 Delegations.attachSchema(Delegations.schema);
-Delegations.attachSchema(Timestamps);
+Delegations.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Delegations.simpleSchema().i18n('schemaDelegations');

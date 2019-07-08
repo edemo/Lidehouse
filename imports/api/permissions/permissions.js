@@ -67,7 +67,7 @@ export const Permissions = [
   { name: 'pointAt.remove',         roles: nobody, allowAuthor: true },
   { name: 'like.toggle',            roles: exceptGuest },
   { name: 'flag.toggle',            roles: exceptGuest },
-  { name: 'topic.hide.forOthers',   roles: ['moderator'] },
+  { name: 'flag.forOthers',         roles: ['moderator'] },
   { name: 'finances.view',          roles: exceptGuest },
   { name: 'breakdowns.inCommunity', roles: exceptGuest },
   { name: 'breakdowns.insert',      roles: ['accountant'] },

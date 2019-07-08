@@ -3,7 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 // Declare store collection
 export const Sharedfolders = new Mongo.Collection('sharedfolders');
@@ -22,7 +23,7 @@ Sharedfolders.schema = new SimpleSchema({
 });
 
 Sharedfolders.attachSchema(Sharedfolders.schema);
-Sharedfolders.attachSchema(Timestamps);
+Sharedfolders.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Sharedfolders.simpleSchema().i18n('schemaSharedfolders');

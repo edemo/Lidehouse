@@ -9,48 +9,15 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { Timestamps } from '/imports/api/timestamps.js';
-import { FreeFields } from '/imports/api/freefields.js';
-
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { FreeFields } from '/imports/api/behaviours/freefields.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 
-class ParcelsCollection extends Mongo.Collection {
-  insert(doc, callback) {
-    const result = super.insert(doc, callback);
-    this._updateCommunity(doc);
-    return result;
-  }
-  update(selector, modifier, options, callback) {
-    const originalDocs = this.find(selector);
-    originalDocs.forEach((doc) => {
-      this._updateCommunity(doc, -1);
-    });
-    const result = super.update(selector, modifier, options, callback);
-    const updatedDocs = this.find(selector);
-    updatedDocs.forEach((doc) => {
-      this._updateCommunity(doc, 1);
-    });
-    return result;
-  }
-  remove(selector, callback) {
-    const docs = this.find(selector);
-    docs.forEach((doc) => {
-      this._updateCommunity(doc, -1);
-    });
-    return super.remove(selector, callback);
-  }
-  _updateCommunity(doc, revertSign = 1) {
-    if (!doc.type) return;
-    const modifier = {}; modifier.$inc = {};
-    modifier.$inc[`parcels.${doc.type}`] = revertSign;
-    Communities.update(doc.communityId, modifier);
-  }
-}
-
-export const Parcels = new ParcelsCollection('parcels');
+export const Parcels = new Mongo.Collection('parcels');
 
 Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'other'];
 Parcels.heatingTypeValues = ['centralHeating', 'ownHeating'];
@@ -176,12 +143,40 @@ Parcels.helpers({
 });
 
 Parcels.attachSchema(Parcels.schema);
-// Parcels.attachSchema(FreeFields);
-Parcels.attachSchema(Timestamps);
+// Parcels.attachBehaviour(FreeFields);
+Parcels.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Parcels.simpleSchema().i18n('schemaParcels');
 });
+
+// --- Before/after actions ---
+function updateCommunity(parcel, revertSign = 1) {
+  if (!parcel.type) return;
+  const modifier = {}; modifier.$inc = {};
+  modifier.$inc[`parcels.${parcel.type}`] = revertSign;
+  Communities.update(parcel.communityId, modifier);
+}
+
+if (Meteor.isServer) {
+  Parcels.after.insert(function (userId, doc) {
+    updateCommunity(doc, 1);
+  });
+
+  Parcels.before.update(function (userId, doc, fieldNames, modifier, options) {
+    updateCommunity(doc, -1);
+  });
+
+  Parcels.after.update(function (userId, doc, fieldNames, modifier, options) {
+    updateCommunity(doc, 1);
+  });
+
+  Parcels.after.remove(function (userId, doc) {
+    updateCommunity(doc, -1);
+  });
+}
+
+// --- Factory ---
 
 Factory.define('parcel', Parcels, {
   communityId: () => Factory.get('community'),

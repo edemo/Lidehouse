@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
-import { Timestamps } from '/imports/api/timestamps.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { AccountSchema } from '/imports/api/transactions/account-specification.js';
 import { JournalEntries } from '/imports/api/transactions/entries.js';
@@ -186,7 +186,7 @@ Transactions.helpers({
 });
 
 Transactions.attachSchema(Transactions.schema);
-Transactions.attachSchema(Timestamps);
+Transactions.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Transactions.simpleSchema().i18n('schemaTransactions');

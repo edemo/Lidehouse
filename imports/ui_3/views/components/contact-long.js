@@ -2,7 +2,7 @@ import { Template } from 'meteor/templating';
 
 import { handleError } from '/imports/ui_3/lib/errors.js';
 import { Rooms } from '/imports/api/topics/rooms/rooms.js';
-import { flag } from '/imports/api/topics/flags.js';
+import { flag } from '/imports/api/behaviours/flagable.js';
 import { insertDelegationForm } from '../pages/delegations';
 import './contact-long.html';
 

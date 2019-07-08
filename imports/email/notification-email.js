@@ -40,9 +40,12 @@ export const Notification_Email = {
       return comments;
     },
     voteHasBeenClosed(topic) {
-      const userLastSeens = Meteor.users.findOne(this.userId).lastSeens[Meteor.users.SEEN_BY.EYES][topic._id];
-      if (topic.closed === true && topic.category === 'vote' && userLastSeens
-        && (topic.closesAt > userLastSeens.timestamp)) return true;
+      if (topic.status === 'closed' && topic.category === 'vote') {
+        const unseenComments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY.NOTI);
+        const closingEvent = unseenComments.find(comment => comment.type === 'statusChangeTo' && comment.status === 'closed');
+        if (closingEvent) return true;
+        return false;
+      }
       return false;
     },
     hider(doc) {

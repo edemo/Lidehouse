@@ -1,12 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 import { Sharedfolders } from './sharedfolders.js';
 
+Sharedfolders.define = function define(doc) {
+  Sharedfolders.upsert({ _id: doc._id }, { $set: doc });
+};
+
 export function initializeBuiltinFolders() {
-  Sharedfolders.define({ _id: 'main' }, { _id: 'main', communityId: null, name: 'Main folder' });
-  Sharedfolders.define({ _id: 'community' }, { _id: 'community', communityId: null, name: 'Founding documents' });
-  Sharedfolders.define({ _id: 'voting' }, { _id: 'voting', communityId: null, name: 'Voting attachments' });
-  Sharedfolders.define({ _id: 'agenda' }, { _id: 'agenda', communityId: null, name: 'Agenda records' });
-  Sharedfolders.define({ _id: 'decision' }, { _id: 'decision', communityId: null, name: 'Decision logs' });
+  Sharedfolders.define({ _id: 'main', communityId: null, name: 'Main folder' });
+  Sharedfolders.define({ _id: 'community', communityId: null, name: 'Founding documents' });
+  Sharedfolders.define({ _id: 'voting', communityId: null, name: 'Voting attachments' });
+  Sharedfolders.define({ _id: 'agenda', communityId: null, name: 'Agenda records' });
+  Sharedfolders.define({ _id: 'decision', communityId: null, name: 'Decision logs' });
 }
 
 if (Meteor.isServer) {

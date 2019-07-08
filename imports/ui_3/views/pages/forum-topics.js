@@ -7,7 +7,7 @@ import { $ } from 'meteor/jquery';
 
 import { handleError } from '/imports/ui_3/lib/errors';
 import { Topics } from '/imports/api/topics/topics.js';
-import { like } from '/imports/api/topics/likes.js';
+import { like } from '/imports/api/behaviours/likeable.js';
 //import '/imports/ui_3/stylesheets/animatecss/animate.css';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';

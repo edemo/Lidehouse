@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 
@@ -6,16 +7,12 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkPermissions } from '/imports/api/method-checks.js';
 import { toggleElementInArray } from '/imports/api/utils.js';
 
-import { Topics } from '/imports/api/topics/topics.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import '/imports/api/users/users.js';
-
-export const flagsSchema = new SimpleSchema({
+const schema = new SimpleSchema({
   flags: { type: Array, defaultValue: [], autoform: { omit: true } },
   'flags.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
 });
 
-export const flagsHelpers = {
+const helpers = {
   getFlags() {
     return this.flags || [];
   },
@@ -34,7 +31,7 @@ export const flagsHelpers = {
     this.getFlags().forEach((flaggerId) => {
       if (flaggerId === userId) result = 'you';
       const flagger = Meteor.users.findOne(flaggerId);
-      if (flagger.hasPermission('topic.hide.forOthers', communityId)) result = 'moderator';
+      if (flagger.hasPermission('flag.forOthers', communityId)) result = 'moderator';
     });
     return result;
   },
@@ -47,16 +44,19 @@ export const flag = new ValidatedMethod({
     id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ coll, id }) {
-    let collection;
-    if (coll === 'topics') collection = Topics;
-    else if (coll === 'comments') collection = Comments;
-    else if (coll === 'users') collection = Meteor.users;
+    const collection = Mongo.Collection.get(coll);
     const object = checkExists(collection, id);
     const userId = this.userId;
 
-    if (coll !== 'users') checkPermissions(userId, 'flag.toggle', object.community()._id, object);
+    if (object.communityId) { // A user for example does not have a community()
+      checkPermissions(userId, 'flag.toggle', object.communityId, object);
+    }
 
     // toggle Flag status of this user
     toggleElementInArray(collection, id, 'flags', userId);
   },
 });
+
+export const Flagable = {
+  schema, helpers, methods: { flag }, hooks: {},
+};

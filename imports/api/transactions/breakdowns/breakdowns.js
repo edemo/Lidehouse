@@ -5,18 +5,18 @@ import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
 function deepCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-class BreakdownsCollection extends Mongo.Collection {
-  define(breakdown) {
-    return super.define({ communityId: breakdown.communityId, name: breakdown.name }, breakdown);
-  }
-}
-export const Breakdowns = new BreakdownsCollection('breakdowns');
+export const Breakdowns = new Mongo.Collection('breakdowns');
+
+Breakdowns.define = function define(doc) {
+  Breakdowns.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
+};
 
 Breakdowns.findOneByName = function findOneByName(name, communityId = getActiveCommunityId()) {
   const result = Breakdowns.findOne({ name, communityId })
@@ -293,7 +293,7 @@ Breakdowns.helpers({
 });
 
 Breakdowns.attachSchema(Breakdowns.schema);
-Breakdowns.attachSchema(Timestamps);
+Breakdowns.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Breakdowns.simpleSchema().i18n('schemaBreakdowns');

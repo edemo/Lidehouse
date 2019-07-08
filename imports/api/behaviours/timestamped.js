@@ -2,13 +2,13 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Clock } from '/imports/utils/clock.js';
 import { _ } from 'meteor/underscore';
 
-// The way to add Timestamps to a Schema:
+// The way to add Timestamped to a Schema:
 //
 // Collection.schema = ... the normal schema here without timestamps
 // Collection.attachSchema(Collection.schema);
-// Collection.attachSchema(Timestamps);
+// Collection.attachBehaviour(Timestamped);
 //
-// Deprecated: This way Timestamps are added in additon to the normal schema
+// Deprecated: This way Timestamped are added in additon to the normal schema
 // And when you validate the inserting ValidatedMethod parameters you can use
 // Collection.schema.validator({ clean: true })
 // so you validate against the timestamp-less schema.
@@ -19,7 +19,7 @@ import { _ } from 'meteor/underscore';
 //
 
 // TODO: Would be advisable to refer to these fields together at Mongo projections (publicFields)
-export const Timestamps = new SimpleSchema({
+const schema = new SimpleSchema({
   createdAt: {
     type: Date,
     optional: true,
@@ -41,3 +41,7 @@ export const Timestamps = new SimpleSchema({
     autoform: { omit: true },
   },
 });
+
+export const Timestamped = {
+  schema, helpers: {}, methods: {}, hooks: {},
+};

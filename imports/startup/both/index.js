@@ -1,4 +1,4 @@
-import './collection-index.js';
+import './collection-patches.js';
 import './debug.js';
 import './fractional.js';
 import './language.js';

@@ -1,7 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -33,7 +34,7 @@ ParcelBillings.helpers({
 });
 
 ParcelBillings.attachSchema(ParcelBillings.schema);
-ParcelBillings.attachSchema(Timestamps);
+ParcelBillings.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   ParcelBillings.simpleSchema().i18n('schemaParcelBillings');
