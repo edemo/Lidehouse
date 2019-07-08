@@ -34,7 +34,7 @@ Tickets.extensionRawSchema = {
   actualFinish: { type: Date, optional: true },
   actualContinue: { type: Date, optional: true },
 
-  readableId: { type: readableId(Topics, 'T', 'ticket'), optional: true },
+  //readableId: { type: readableId(Topics, 'T', 'ticket'), optional: true },
 };
 
 Tickets.extensionSchema = new SimpleSchema(Tickets.extensionRawSchema);

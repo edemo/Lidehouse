@@ -1,9 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+//import { CollectionBehaviours } from 'meteor/sewdn:collection-behaviours';
 import { _ } from 'meteor/underscore';
+import { Topics } from './topics/topics';
 
 
-export function readableId(collection, preKey, folder) {
+/*export function readableId(collection, preKey, folder) {
   const schema = new SimpleSchema({
     preKey: {
       type: String,
@@ -31,3 +33,27 @@ export function readableId(collection, preKey, folder) {
   });
   return schema;
 }
+
+CollectionBehaviours.defineBehaviour('readableId', function (getTransform, args) {
+  const self = this;
+  self.before.insert(function (doc) {
+    const currentYear = new Date().getFullYear();
+    const preKey = doc.category ? doc.category.charAt(0).toUpperCase() : 'D';
+    const max = self.findOne({ 'readableId.year': currentYear }, { sort: { 'readableId.number': -1 } });
+    const number = max ? max.readableId.number + 1 : 1;
+    doc.readableId = { preKey, number, currentYear };
+  });
+});
+
+CollectionBehaviours.extendCollectionInstance(Topics);
+
+Topics.readableId();*/
+
+export function readableId(collection, doc) {
+  const year = new Date().getFullYear();
+  const preKey = doc.category ? doc.category.charAt(0).toUpperCase() : 'D';
+  const max = collection.findOne({ 'readableId.year': year }, { sort: { 'readableId.number': -1 } });
+  const number = max ? max.readableId.number + 1 : 1;
+  doc.readableId = { preKey, number, year };
+}
+

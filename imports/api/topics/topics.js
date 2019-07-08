@@ -55,6 +55,7 @@ Topics.baseSchema = new SimpleSchema({
   closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate) },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
+  readableId: { type: Object, blackbox: true, optional: true },
 });
 
 Meteor.startup(function indexTopics() {
