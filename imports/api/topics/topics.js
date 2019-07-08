@@ -6,6 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { readableId } from '/imports/api/readable-id.js';
 import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -215,3 +216,10 @@ Topics.categoryValues.forEach((category) => {
     status: 'opened',
   });
 });
+
+// --- Before/after actions ---
+if (Meteor.isServer) {
+  Topics.before.insert(function (userId, doc) {
+    if (doc.category === 'ticket') readableId(Topics, doc);
+  });
+}

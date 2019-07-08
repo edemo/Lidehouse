@@ -5,7 +5,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
-import { readableId } from '/imports/api/readable-id.js';
+// import { readableId } from '/imports/api/readable-id.js';
 
 import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
@@ -36,7 +36,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     if (doc._id) checkNotExists(Topics, doc._id);
     doc = Topics._transform(doc);
-    readableId(Topics, doc);
+    // readableId(Topics, doc);
     checkTopicPermissions(this.userId, 'insert', doc);
     checkStatusStartAllowed(doc, doc.status);
     doc.userId = this.userId;   // One can only post in her own name
