@@ -60,23 +60,23 @@ if (Meteor.isServer) {
 
       chai.assert.throws(() => {
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(future, undefined));
-      });
+      }, 'validation-error');
 
       chai.assert.throws(() => {
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, now));
-      });
+      }, 'validation-error');
 
       chai.assert.throws(() => {
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, future));
-      });
+      }, 'validation-error');
 
       chai.assert.throws(() => {
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, past));
-      });
+      }, 'validation-error');
 
       chai.assert.throws(() => {
         insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(now, future));
-      });
+      }, 'validation-error');
 
       testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, undefined));
       let testMembership = Memberships.findOne(testMembershipId);
@@ -99,22 +99,22 @@ if (Meteor.isServer) {
       chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(future, undefined) });
-      });
+      }, 'is not an allowed value');
 
       chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, now) });
-      });
+      }, 'required');
 
       chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, future) });
-      });
+      }, 'is not an allowed value');
 
       chai.assert.throws(() => {
         updateMembership._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, past) });
-      });
+      }, 'required');
 
       updateMembership._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, undefined) });

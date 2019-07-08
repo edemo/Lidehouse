@@ -22,8 +22,8 @@ if (Meteor.isServer) {
     const prefixedString = 'Dr. Kőrösi János Imre számlájára kérem jóváírni';
 
     it('only works with right parameters', function (done) {
-      chai.assert.throws(() => { compareNames(normalString, lazyString); });
-      chai.assert.throws(() => { compareNames({ other: 'thing' }, name); });
+      chai.assert.throws(() => { compareNames(normalString, lazyString); }, 'Debug assertion failed');
+      chai.assert.throws(() => { compareNames({ other: 'thing' }, name); }, 'Debug assertion failed');
       done();
     });
 
