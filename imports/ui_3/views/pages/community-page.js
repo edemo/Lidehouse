@@ -34,6 +34,25 @@ import '../components/action-buttons.html';
 import '../components/contact-long.js';
 import './community-page.html';
 
+Template.Occupants_box.viewmodel({
+  memberships(role, subset) {
+    const communityId = this.templateInstance.data.communityId;
+    const parcelId = this.templateInstance.data.parcelId;
+    let selector = { communityId, active: true, role, parcelId, approved: true };
+    if (subset === 'unapproved') selector = { communityId, role, parcelId, approved: false };
+    if (subset === 'archived') selector = { communityId, role, parcelId, active: false };
+    return Memberships.find(selector);
+  },
+  membershipsCount(role, subset) {
+    return this.memberships(role, subset).count();
+  },
+  parcelDisplay() {
+    const parcelId = this.templateInstance.data.parcelId;
+    const parcel = Parcels.findOne(parcelId);
+    return parcel ? parcel.display() : __('unknown');
+  },
+});
+
 Template.Community_page.viewmodel({
   showAllParcels: false,
   reactive: false,
@@ -82,11 +101,6 @@ Template.Community_page.viewmodel({
     const community = this.community();
     return `${__('Community page')} - ${community ? community.name : ''}`;
   },
-  parcelDisplay() {
-    const parcelId = this.selectedParcelId();
-    const parcel = Parcels.findOne(parcelId);
-    return parcel ? parcel.display() : __('unknown');
-  },
 /*  thingsToDisplayWithCounter() {
     const result = [];
     const communityId = Template.instance().getCommunityId();
@@ -112,36 +126,6 @@ Template.Community_page.viewmodel({
   },
   officers() {
     return this.leaders().concat(this.nonLeaders());
-  },
-  ownerships() {
-    const communityId = this.communityId();
-    const parcelId = this.selectedParcelId();
-    return Memberships.find({ communityId, active: true, role: 'owner', parcelId, approved: true });
-  },
-  unapprovedOwnerships() {
-    const communityId = this.communityId();
-    const parcelId = this.selectedParcelId();
-    return Memberships.find({ communityId, role: 'owner', parcelId, approved: false });
-  },
-  archivedOwnerships() {
-    const communityId = this.communityId();
-    const parcelId = this.selectedParcelId();
-    return Memberships.find({ communityId, role: 'owner', parcelId, active: false });
-  },
-  benefactorships() {
-    const communityId = this.communityId();
-    const parcelId = this.selectedParcelId();
-    return Memberships.find({ communityId, active: true, role: 'benefactor', parcelId, approved: true });
-  },
-  unapprovedBenefactorships() {
-    const communityId = this.communityId();
-    const parcelId = this.selectedParcelId();
-    return Memberships.find({ communityId, role: 'benefactor', parcelId, approved: false });
-  },
-  archivedBenefactorships() {
-    const communityId = this.communityId();
-    const parcelId = this.selectedParcelId();
-    return Memberships.find({ communityId, role: 'benefactor', parcelId, active: false });
   },
   activeTabClass(index) {
     return index === 0 ? 'active' : '';
