@@ -123,10 +123,6 @@ export const Render = {
     const html = `<span class='label label-${color}'>${__('schemaTopics.status.' + cellData)}</span>`;
     return html;
   },
-  ticketId(cellData) {
-    if (!cellData) return undefined;
-    return `<span>${cellData}</span>`;
-  },
   ticketLocalizer(cellData) {
     const topicId = cellData;
     const topic = Topics.findOne(topicId);

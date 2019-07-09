@@ -36,7 +36,7 @@ Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
     _.extend(collection.methods, { [key]: methodCopy });
   });
 
-  if (Meteor.isClient) return;  // No hooking on the client side
+  // if (Meteor.isClient) return;  // No hooking on the client side
   _.each(behaviour.hooks, (actions, when) => {
     _.each(actions, (actionFunc, action) => {
       collection[when][action](actionFunc);

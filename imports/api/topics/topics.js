@@ -6,13 +6,13 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { readableId } from '/imports/api/readable-id.js';
 import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Revisioned } from '/imports/api/behaviours/revisioned.js';
 import { Likeable } from '/imports/api/behaviours/likeable.js';
 import { Flagable } from '/imports/api/behaviours/flagable.js';
+import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
@@ -57,7 +57,6 @@ Topics.baseSchema = new SimpleSchema({
   closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate) },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
-  readableId: { type: Object, blackbox: true, optional: true },
 });
 
 Meteor.startup(function indexTopics() {
@@ -163,10 +162,6 @@ Topics.helpers({
     Comments.remove({ topicId: this._id });
     Topics.remove({ _id: this._id });
   },
-  readableIdForUI() {
-    if (this.readableId) return `${this.readableId.preKey}${this.readableId.number}/${this.readableId.year}`;
-    return false;
-  },
 });
 
 Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
@@ -180,6 +175,8 @@ Topics.attachBehaviour(Revisioned(['text', 'title']));
 Topics.schema = new SimpleSchema(Topics.simpleSchema());
 Topics.attachBehaviour(Likeable);
 Topics.attachBehaviour(Flagable);
+Topics.attachBehaviour(SerialId(Topics, ['category']));
+
 
 // Topics.schema is just the core schema, shared by all.
 // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
@@ -210,7 +207,7 @@ Topics.publicFields = {
   commentCounter: 1,
   revision: 1,
   status: 1,
-  readableId: 1,
+  serial: 1,
 };
 
 Topics.categoryValues.forEach((category) => {
@@ -221,10 +218,3 @@ Topics.categoryValues.forEach((category) => {
     status: 'opened',
   });
 });
-
-// --- Before/after actions ---
-if (Meteor.isServer) {
-  Topics.before.insert(function (userId, doc) {
-    if (doc.category === 'ticket') readableId(Topics, doc);
-  });
-}
