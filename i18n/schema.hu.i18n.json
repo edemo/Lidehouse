@@ -280,6 +280,9 @@
     }
   },
   "schemaTickets": {
+    "id": {
+      "label": "Azonosító"
+    },
     "title": {
       "label": "Hiba lényege",
       "placeholder": "(pl. Elromlott a lift)"

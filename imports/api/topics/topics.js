@@ -12,6 +12,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Revisioned } from '/imports/api/behaviours/revisioned.js';
 import { Likeable } from '/imports/api/behaviours/likeable.js';
 import { Flagable } from '/imports/api/behaviours/flagable.js';
+import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
@@ -174,6 +175,8 @@ Topics.attachBehaviour(Revisioned(['text', 'title']));
 Topics.schema = new SimpleSchema(Topics.simpleSchema());
 Topics.attachBehaviour(Likeable);
 Topics.attachBehaviour(Flagable);
+Topics.attachBehaviour(SerialId(Topics, ['category']));
+
 
 // Topics.schema is just the core schema, shared by all.
 // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
@@ -204,6 +207,7 @@ Topics.publicFields = {
   commentCounter: 1,
   revision: 1,
   status: 1,
+  serial: 1,
 };
 
 Topics.categoryValues.forEach((category) => {

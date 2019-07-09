@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { moment } from 'meteor/momentjs:moment';
 
 let simulatedTime = null;
 
@@ -12,7 +13,10 @@ export const Clock = {
   setSimulatedTime(time) {
     simulatedTime = time;
   },
+  add(...args) {
+    Clock.setSimulatedTime(moment(simulatedTime).add(...args).toDate());
+  },
   clear() {
     simulatedTime = null;
   },
-}
+};

@@ -9,8 +9,10 @@ export function ticketColumns(permissions) {
   ticketButtonRenderers.push(Render.ticketCommentButton);
 
   return [
+    { data: 'serialId()', title: __('schemaTickets.id.label') },
     { data: 'status', title: __('schemaTopics.status.label'), render: Render.ticketStatus },
     { data: 'title', title: __('schemaTickets.title.label') },
+    { data: '_id', title: __('schemaTickets.ticket.localizer.label'), render: Render.ticketLocalizer },
     { data: 'createdBy()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
     { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: Render.translateWithScope('schemaTickets.ticket.type') },

@@ -7,6 +7,7 @@ import faker from 'faker';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Topics } from '/imports/api/topics/topics.js';
+// import { readableId } from '/imports/api/readable-id.js';
 
 export const Tickets = {};
 
@@ -32,6 +33,8 @@ Tickets.extensionRawSchema = {
   actualStart: { type: Date, optional: true },
   actualFinish: { type: Date, optional: true },
   actualContinue: { type: Date, optional: true },
+
+  // readableId: { type: readableId(Topics, 'T', 'ticket'), optional: true },
 };
 
 Tickets.extensionSchema = new SimpleSchema(Tickets.extensionRawSchema);
