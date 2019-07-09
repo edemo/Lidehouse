@@ -1,4 +1,8 @@
+import { Meteor } from 'meteor/meteor';
+import { ValidatedMethod } from 'meteor/mdg:validated-method';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { checkExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 
 const TimePeriodSchema = new SimpleSchema({
   begin: { type: Date, optional: true,
@@ -23,7 +27,7 @@ const TimePeriodSchema = new SimpleSchema({
   },
 });
 
-export const ActivePeriodSchema = new SimpleSchema({
+const schema = new SimpleSchema({
   activeTime: { type: TimePeriodSchema, optional: true },
   active: { type: Boolean, autoform: { omit: true },
     autoValue() {
@@ -38,8 +42,45 @@ export const ActivePeriodSchema = new SimpleSchema({
   },
 });
 
-ActivePeriodSchema.fields = [
+const helpers = {
+  wasActiveAt(time) {
+    return (!this.activeTime.begin || this.activeTime.begin <= time)
+      && (!this.activeTime.end || this.activeTime.end >= time);
+  },
+};
+
+const methods = {};
+const hooks = {};
+
+export const ActivePeriod = {
+  schema, helpers, methods, hooks,
+};
+
+ActivePeriod.fields = [
   'activeTime.begin',
   'activeTime.end',
   'active',
 ];
+
+const updateActivePeriod = new ValidatedMethod({
+  name: 'updateActivePeriod',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    modifier: { type: Object, blackbox: true },
+  }).validator(),
+  run({ _id, modifier }) {
+    const collectionName = this.name.split('.')[0];
+    const collection = Mongo.Collection.get(collectionName);
+    const doc = checkExists(collection, _id);
+    const userId = this.userId;
+
+    if (doc.communityId) {   // TODO: figure out which permission needed
+      checkPermissions(userId, `${"ownerships"}.update`, doc.communityId, doc);
+    }
+    checkModifier(doc, modifier, ActivePeriod.fields);
+
+    collection.update(_id, modifier);
+  },
+});
+
+methods.updateActivePeriod = updateActivePeriod;

@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import './users.js';
@@ -99,6 +99,6 @@ if (Meteor.isClient) {
   });
 }
 
-Meteor.users.methods = {
-  update, remove, updateMyLastSeen,
-};
+Meteor.users.methods = Meteor.users.methods || {};
+_.extend(Meteor.users.methods, { update, remove, updateMyLastSeen });
+

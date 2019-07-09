@@ -8,7 +8,7 @@ import { moment } from 'meteor/momentjs:moment';
 
 import { freshFixture } from '/imports/api/test-utils.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { insert as insertMembership, update as updateMembership } from '/imports/api/memberships/methods.js';
+import '/imports/api/memberships/methods.js';
 
 if (Meteor.isServer) {
 
@@ -59,91 +59,91 @@ if (Meteor.isServer) {
        // inserts
 
       chai.assert.throws(() => {
-        insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(future, undefined));
+        Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(future, undefined));
       });
 
       chai.assert.throws(() => {
-        insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, now));
+        Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, now));
       });
 
       chai.assert.throws(() => {
-        insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, future));
+        Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, future));
       });
 
       chai.assert.throws(() => {
-        insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, past));
+        Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, past));
       });
 
       chai.assert.throws(() => {
-        insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(now, future));
+        Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(now, future));
       });
 
-      testMembershipId = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, undefined));
+      testMembershipId = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, undefined));
       let testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, true);
 
-      testMembershipId2 = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(now, undefined));
+      testMembershipId2 = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(now, undefined));
       const testMembership2 = Memberships.findOne(testMembershipId2);
       chai.assert.equal(testMembership2.active, true);
 
-      testMembershipId3 = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(past, undefined));
+      testMembershipId3 = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(past, undefined));
       const testMembership3 = Memberships.findOne(testMembershipId3);
       chai.assert.equal(testMembership3.active, true);
 
-      testMembershipId4 = insertMembership._execute({ userId: Fixture.demoAdminId }, createMembership(past2, past));
+      testMembershipId4 = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(past2, past));
       const testMembership4 = Memberships.findOne(testMembershipId4);
       chai.assert.equal(testMembership4.active, false);
 
       // updates
 
       chai.assert.throws(() => {
-        updateMembership._execute({ userId: Fixture.demoAdminId },
+        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(future, undefined) });
       });
 
       chai.assert.throws(() => {
-        updateMembership._execute({ userId: Fixture.demoAdminId },
+        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, now) });
       });
 
       chai.assert.throws(() => {
-        updateMembership._execute({ userId: Fixture.demoAdminId },
+        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, future) });
       });
 
       chai.assert.throws(() => {
-        updateMembership._execute({ userId: Fixture.demoAdminId },
+        Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, past) });
       });
 
-      updateMembership._execute({ userId: Fixture.demoAdminId },
+      Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, undefined) });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, true);
 
-      updateMembership._execute({ userId: Fixture.demoAdminId },
+      Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(now, undefined) });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, true);
 
-      updateMembership._execute({ userId: Fixture.demoAdminId },
+      Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(past, undefined) });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, true);
 
-      updateMembership._execute({ userId: Fixture.demoAdminId },
+      Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(past2, past) });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, false);
 
       // it('doesnt update active value, when nothing relevant is touched', function (done) {
-      updateMembership._execute({ userId: Fixture.demoAdminId },
+      Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: { $set: { accepted: true } } });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, false);
 
       done();
     });
-    
+
   });
 }

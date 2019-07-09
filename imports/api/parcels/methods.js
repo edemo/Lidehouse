@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { extractFieldsFromRef } from '/imports/comtypes/house/parcelref-format.js';
@@ -79,6 +80,5 @@ export const remove = new ValidatedMethod({
   },
 });
 
-Parcels.methods = {
-  insert, update, remove,
-};
+Parcels.methods = Parcels.methods || {};
+_.extend(Parcels.methods, { insert, update, remove });

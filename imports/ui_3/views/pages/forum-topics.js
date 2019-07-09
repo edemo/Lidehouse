@@ -7,7 +7,6 @@ import { $ } from 'meteor/jquery';
 
 import { handleError } from '/imports/ui_3/lib/errors';
 import { Topics } from '/imports/api/topics/topics.js';
-import { like } from '/imports/api/behaviours/likeable.js';
 //import '/imports/ui_3/stylesheets/animatecss/animate.css';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -45,7 +44,7 @@ Template.Forum_topics.events({
   },
   'click .js-like'(event) {
     const id = $(event.target).closest('div.vote-item').data('id');
-    like.call({ coll: 'topics', id }, handleError);
+    Topics.methods.like.call({ id }, handleError);
   },
   'click .js-show' (event) {
     $('.new-topic').toggleClass("hidden");

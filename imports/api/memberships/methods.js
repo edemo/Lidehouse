@@ -3,11 +3,24 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Accounts } from 'meteor/accounts-base';
 import { Random } from 'meteor/random';
+import { _ } from 'meteor/underscore';
 
+import { permissionCategoryOf } from '/imports/api/permissions/roles.js';
 import { Log } from '/imports/utils/log.js';
-import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from './memberships.js';
+
+function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
+  // Checks that *user* has permission to add new member in given *community*  
+  const user = Meteor.users.findOne(userId);
+  if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?)
+  const permissionName = permissionCategoryOf(roleOfNewMember) + '.update';
+  if (!user.hasPermission(permissionName, communityId)) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
+  }
+}
 
 function checkSanityOfTotalShare(parcel, totalShare, representorCount) {
   if (totalShare.numerator > totalShare.denominator) {
@@ -167,6 +180,6 @@ export const remove = new ValidatedMethod({
   },
 });
 
-Memberships.methods = {
-  insert, update, linkUser, accept, remove,
-};
+Memberships.methods = Memberships.methods || {};
+_.extend(Memberships.methods, { insert, update, linkUser, accept, remove });
+

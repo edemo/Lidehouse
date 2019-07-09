@@ -58,22 +58,6 @@ export function checkTopicPermissions(userId, permissionName, topic) {
   checkPermissions(userId, derivedPermissionName, topic.communityId, topic);
 }
 
-export function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
-  // Checks that *user* has permission to add new member in given *community*  
-  const user = Meteor.users.findOne(userId);
-  let permName;
-  switch (roleOfNewMember) {
-    case ('guest'): return;  // TODO: who can join as guest? or only in Demo house?)
-    case ('owner'): permName = 'ownerships.update'; break;
-    case ('benefactor'): permName = 'benefactorships.update'; break;
-    default: permName = 'roleships.update';
-  }
-  if (!user.hasPermission(permName, communityId)) {
-    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-      `roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
-  }
-}
-
 export function checkModifier(object, modifier, modifiableFields, exclude = false) {
   // Checks that the *modifier* only tries to modify the *modifiableFields* on the given *object*
   // if exclude === true, then the fields given, are the ones that should NOT be modified, and all other fields can be modified

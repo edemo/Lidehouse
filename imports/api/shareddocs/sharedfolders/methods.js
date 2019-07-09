@@ -1,5 +1,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
@@ -48,3 +49,6 @@ export const remove = new ValidatedMethod({
     Sharedfolders.remove(_id);
   },
 });
+
+Sharedfolders.methods = Sharedfolders.methods || {};
+_.extend(Sharedfolders.methods, { insert, update, remove });

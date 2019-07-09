@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
@@ -51,3 +52,6 @@ export const remove = new ValidatedMethod({
     Agendas.remove(_id);
   },
 });
+
+Agendas.methods = Agendas.methods || {};
+_.extend(Agendas.methods, { insert, update, remove });

@@ -10,11 +10,11 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { officerRoles, everyRole, Roles } from '/imports/api/permissions/roles.js';
+import { Roles, officerRoles, everyRole, permissionCategoryOf } from '/imports/api/permissions/roles.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { ActivePeriodSchema } from '/imports/api/active-period.js';
+import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Person, PersonSchema } from '/imports/api/users/person.js';
@@ -110,6 +110,9 @@ Memberships.helpers({
     if (!community) return undefined;
     return community.totalunits;
   },
+  permissionCategory() {
+    return permissionCategoryOf(this.role);
+  },
   isOwnership() {
     if (this.role === 'owner') return true;
     debugAssert(!this.ownership);
@@ -154,7 +157,7 @@ Memberships.helpers({
 });
 
 Memberships.attachSchema(Memberships.schema);
-Memberships.attachSchema(ActivePeriodSchema);
+Memberships.attachBehaviour(ActivePeriod);
 Memberships.attachBehaviour(Timestamped);
 
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
@@ -177,8 +180,7 @@ Memberships.modifiableFields = [
   'ownership.representor',
   'benefactorship.type',
   'personId',
-].concat(PersonSchema.modifiableFields)
-.concat(ActivePeriodSchema.fields);
+].concat(PersonSchema.modifiableFields);
 
 Factory.define('membership', Memberships, {
   communityId: () => Factory.get('community'),

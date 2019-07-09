@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { checkExists, checkNotExists, checkPermissionsToUpload, checkPermissionsToRemoveUploaded, checkModifier } from '/imports/api/method-checks.js';
@@ -41,3 +42,6 @@ export function cleanCanceledVoteAttachments() {
   // Using $expr would be faster, but only mongo 3.6 supports it (and currently we are on 3.4)
   // Shareddocs.remove({ $expr: { $eq: ['$topicId', '$userId'] } });
 }
+
+Shareddocs.methods = Shareddocs.methods || {};
+_.extend(Shareddocs.methods, { /* insert,*/ update, remove });

@@ -1,6 +1,7 @@
 
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
@@ -61,7 +62,5 @@ export const publish = new ValidatedMethod({
   },
 });
 
-
-Balances.methods = {
-  insert, publish,
-};
+Balances.methods = Balances.methods || {};
+_.extend(Balances.methods, { insert, publish });
