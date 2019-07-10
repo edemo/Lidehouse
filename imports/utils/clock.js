@@ -16,6 +16,9 @@ export const Clock = {
   add(...args) {
     Clock.setSimulatedTime(moment(simulatedTime).add(...args).toDate());
   },
+  subtract(...args) {
+    Clock.setSimulatedTime(moment(simulatedTime).subtract(...args).toDate());
+  },
   clear() {
     simulatedTime = null;
   },

@@ -655,7 +655,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(3, 'hours').toDate());
+  Clock.add(3, 'hours');
   data = { localizer: '#16', expectedCost: 1500, expectedStart: Clock.add(1, 'days'), expectedFinish: Clock.add(2, 'days') };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'confirmed', type: 'statusChangeTo', data });
   Clock.add(1, 'days');
@@ -698,10 +698,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'high',
     },
   });
-  Clock.setSimulatedTime(moment().subtract(100, 'minutes').toDate());
+  Clock.subtract(100, 'minutes');
   data = { localizer: '#1', expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'confirmed', type: 'statusChangeTo', data });
-  Clock.setSimulatedTime(moment().subtract(40, 'minutes').toDate());
+  Clock.subtract(40, 'minutes');
   data = { expectedFinish: moment().add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'progressing', type: 'statusChangeTo', data });
 
