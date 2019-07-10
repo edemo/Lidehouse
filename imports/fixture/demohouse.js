@@ -698,10 +698,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'high',
     },
   });
-  Clock.subtract(100, 'minutes');
+  Clock.add(40, 'minutes');
   data = { localizer: '#1', expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'confirmed', type: 'statusChangeTo', data });
-  Clock.subtract(40, 'minutes');
+  Clock.add(60, 'minutes');
   data = { expectedFinish: moment().add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'progressing', type: 'statusChangeTo', data });
 
