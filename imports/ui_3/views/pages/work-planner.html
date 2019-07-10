@@ -1,0 +1,78 @@
+<template name="Work_planner">
+    
+    {{> Page_heading title=(_ 'Work Planner') }}
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="ibox">
+            <div class="ibox-title">
+              <h5>{{_ 'Work Planner'}}</h5>
+              {{> iboxTools}}
+            </div>
+      
+            <div class="ibox-content">
+
+              <div class="row">
+
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="control-label" for="Title">{{_ 'Localizer'}}</label>
+                        <select name="Localizer" class="form-control" id="localizer">
+                            {{#each localizer in localizers}}
+                            <option value={{localizer.value}}>{{localizer.label}}</option>
+                            {{/each}}
+                        </select>
+                        <label class="control-label" for="Title">{{_ 'Title'}}</label>
+                        <input type="text" name="Title" class="form-control" id="title">
+                        <label class="control-label" for="Text">{{_ 'Text'}}</label>
+                        <textarea name="Text" class="form-control" id="text"></textarea>
+                        <label class="control-label" for="expected_start">{{_ 'Expected start'}}</label>
+                        <input type="date" id="expectedStart" name="expected_start" {{b "value: expectedStart"}} class="form-control">
+                        <br>
+                        <button type="button" class="js-add-date btn btn-primary btn-xs btn-outline btn-warning">{{_ 'Add'}}</button>
+                    </div>
+                    {{#each date in dates}}
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <input type="date" name="expected_starts" value={{date.expectedStart}} class="form-control">
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="button" class="js-delete-date btn btn-primary btn-m btn-outline btn-warning" data-value={{date.index}}>{{_ 'Delete'}}</button>
+                        </div>
+                    </div>
+                    {{/each}}
+                    {{#if lengthOfArray}}
+                    <br>
+                    <button type="button" class="js-insert-date btn btn-primary btn-m btn-outline btn-warning">{{_ 'Insert'}}</button>
+                    {{/if}}
+                </div>
+                
+              </div>
+      
+              <div class="row">
+                
+              </div>
+
+            </div>
+        </div>
+
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>{{_ 'Active Works'}}</h5>
+                {{> iboxTools}}
+            </div>
+        
+            <div class="ibox-content">
+
+                <div class="row">
+                
+                </div>
+        
+                <div class="row">
+                
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</template>

@@ -19,14 +19,14 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import './worksheets.html';
 
-Template.Tickets_tasks.onCreated(function onCreated() {
+Template.Worksheets.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   this.autorun(() =>
     this.subscribe('communities.byId', { _id: this.getCommunityId() })
   );
 });
 
-Template.Tickets_tasks.viewmodel({
+Template.Worksheets.viewmodel({
   ticketText: '',
   ticketStatusArray: [],
   ticketTypeArray: Tickets.typeValues,
@@ -147,7 +147,7 @@ Template.Tickets_tasks.viewmodel({
   },
 });
 
-Template.Tickets_tasks.events({
+Template.Worksheets.events({
   'click .js-new'() {
     afTicketInsertModal();
   },
