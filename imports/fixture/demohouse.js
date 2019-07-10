@@ -617,27 +617,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Tickets =====
 
-  Clock.setSimulatedTime(moment().subtract(140, 'minutes').toDate());
-  const ticket0 = demoBuilder.create('ticket', {
-    userId: nextUser(),
-    title: __('demo.ticket.0.title'),
-    text: __('demo.ticket.0.text'),
-    status: 'reported',
-    ticket: {
-      type: 'issue',
-      category: 'building',
-      urgency: 'high',
-    },
-  });
-  Clock.setSimulatedTime(moment().subtract(100, 'minutes').toDate());
-  let data = { localizer: '#1', expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'confirmed', type: 'statusChangeTo', data });
-  Clock.setSimulatedTime(moment().subtract(40, 'minutes').toDate());
-  data = { expectedFinish: moment().add(2, 'days').toDate() };
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'progressing', type: 'statusChangeTo', data });
-
   Clock.setSimulatedTime(moment().subtract(3, 'months').add(25, 'minutes').toDate());
-  const ticket1 = demoBuilder.create('ticket', {
+  const ticket0 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.1.title'),
     text: __('demo.ticket.1.text'),
@@ -649,39 +630,20 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Clock.setSimulatedTime(moment().subtract(3, 'months').add(30, 'minutes').toDate());
-  data = { localizer: '@A409', expectedCost: 1200, expectedStart: moment().subtract(3, 'months').add(3, 'days').toDate(), expectedFinish: moment().subtract(3, 'months').add(4, 'days').toDate() };
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'confirmed', type: 'statusChangeTo', data });
-  Clock.setSimulatedTime(moment().subtract(3, 'months').add(1440, 'minutes').toDate());
-  data = { expectedFinish: moment().subtract(3, 'months').add(3, 'days').toDate() };
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'progressing', type: 'statusChangeTo', data });
-  Clock.setSimulatedTime(moment().subtract(3, 'months').add(4620, 'minutes').toDate());
-  data = { actualCost: 800, actualStart: moment().subtract(3, 'months').add(3, 'days').toDate(), actualFinish: moment().subtract(3, 'months').add(4, 'days').toDate() };
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'finished', type: 'statusChangeTo', data });
-  Clock.setSimulatedTime(moment().subtract(3, 'months').add(4700, 'minutes').toDate());
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'closed', type: 'statusChangeTo', data: {} });
+  Clock.add(30, 'minutes');
+  let data = { localizer: '@A409', expectedCost: 1200, expectedStart: Clock.add(3, 'days'), expectedFinish: Clock.add(4, 'days') };
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'confirmed', type: 'statusChangeTo', data });
+  Clock.add(1, 'days');
+  data = { expectedFinish: Clock.add(3, 'days') };
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'progressing', type: 'statusChangeTo', data });
+  Clock.add(3, 'days');
+  data = { actualCost: 800, actualStart: Clock.add(3, 'days'), actualFinish: Clock.add(4, 'days') };
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'finished', type: 'statusChangeTo', data });
+  Clock.add(4, 'days');
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'closed', type: 'statusChangeTo', data: {} });
 
-  Clock.setSimulatedTime(moment().subtract(3982, 'minutes').toDate());
-  const ticket2 = demoBuilder.create('ticket', {
-    userId: nextUser(),
-    title: __('demo.ticket.2.title'),
-    text: __('demo.ticket.2.text'),
-    status: 'reported',
-    ticket: {
-      type: 'issue',
-      category: 'service',
-      urgency: 'normal',
-    },
-  });
-  Clock.setSimulatedTime(moment().subtract(3950, 'minutes').toDate());
-  demoBuilder.createComment({
-    topicId: ticket2,
-    userId: nextUser(),
-    text: __('demo.ticket.2.comment.0'),
-  });
-
-  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(123, 'minutes').toDate());
-  const ticket3 = demoBuilder.create('ticket', {
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(2, 'hours').toDate());
+  const ticket1 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.3.title'),
     text: __('demo.ticket.3.text'),
@@ -693,17 +655,55 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(200, 'minutes').toDate());
-  data = { localizer: '#16', expectedCost: 1500, expectedStart: moment().subtract(6, 'weeks').add(1, 'days').toDate(), expectedFinish: moment().subtract(6, 'weeks').add(2, 'days').toDate() };
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(3, 'hours').toDate());
+  data = { localizer: '#16', expectedCost: 1500, expectedStart: Clock.add(1, 'days'), expectedFinish: Clock.add(2, 'days') };
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'confirmed', type: 'statusChangeTo', data });
+  Clock.add(1, 'days');
+  data = { expectedFinish: Clock.add(2, 'days') };
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'progressing', type: 'statusChangeTo', data });
+  Clock.add(2, 'days');
+  data = { actualCost: 1300, actualStart: Clock.add(2, 'days'), actualFinish: Clock.add(3, 'days') };
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'finished', type: 'statusChangeTo', data });
+  Clock.add(3, 'days');
+  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'closed', type: 'statusChangeTo', data: {} });
+
+  Clock.setSimulatedTime(moment().subtract(3, 'days').toDate());
+  const ticket2 = demoBuilder.create('ticket', {
+    userId: nextUser(),
+    title: __('demo.ticket.2.title'),
+    text: __('demo.ticket.2.text'),
+    status: 'reported',
+    ticket: {
+      type: 'issue',
+      category: 'service',
+      urgency: 'normal',
+    },
+  });
+  Clock.setSimulatedTime(moment().subtract(3, 'days').subtract(30, 'minutes').toDate());
+  demoBuilder.createComment({
+    topicId: ticket2,
+    userId: nextUser(),
+    text: __('demo.ticket.2.comment.0'),
+  });
+
+  Clock.setSimulatedTime(moment().subtract(140, 'minutes').toDate());
+  const ticket3 = demoBuilder.create('ticket', {
+    userId: nextUser(),
+    title: __('demo.ticket.0.title'),
+    text: __('demo.ticket.0.text'),
+    status: 'reported',
+    ticket: {
+      type: 'issue',
+      category: 'building',
+      urgency: 'high',
+    },
+  });
+  Clock.setSimulatedTime(moment().subtract(100, 'minutes').toDate());
+  data = { localizer: '#1', expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'confirmed', type: 'statusChangeTo', data });
-  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(1440, 'minutes').toDate());
-  data = { expectedFinish: moment().subtract(6, 'weeks').add(2, 'days').toDate() };
+  Clock.setSimulatedTime(moment().subtract(40, 'minutes').toDate());
+  data = { expectedFinish: moment().add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'progressing', type: 'statusChangeTo', data });
-  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(2880, 'minutes').toDate());
-  data = { actualCost: 1300, actualStart: moment().subtract(6, 'weeks').add(2, 'days').toDate(), actualFinish: moment().subtract(6, 'weeks').add(2, 'days').toDate() };
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'finished', type: 'statusChangeTo', data });
-  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(3500, 'minutes').toDate());
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'closed', type: 'statusChangeTo', data: {} });
 
   Clock.clear();
 
