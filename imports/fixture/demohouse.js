@@ -620,8 +620,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.setSimulatedTime(moment().subtract(3, 'months').add(25, 'minutes').toDate());
   const ticket0 = demoBuilder.create('ticket', {
     userId: nextUser(),
-    title: __('demo.ticket.1.title'),
-    text: __('demo.ticket.1.text'),
+    title: __('demo.ticket.0.title'),
+    text: __('demo.ticket.0.text'),
     status: 'reported',
     ticket: {
       type: 'issue',
@@ -645,8 +645,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(2, 'hours').toDate());
   const ticket1 = demoBuilder.create('ticket', {
     userId: nextUser(),
-    title: __('demo.ticket.3.title'),
-    text: __('demo.ticket.3.text'),
+    title: __('demo.ticket.1.title'),
+    text: __('demo.ticket.1.text'),
     status: 'reported',
     ticket: {
       type: 'issue',
@@ -689,8 +689,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.setSimulatedTime(moment().subtract(140, 'minutes').toDate());
   const ticket3 = demoBuilder.create('ticket', {
     userId: nextUser(),
-    title: __('demo.ticket.0.title'),
-    text: __('demo.ticket.0.text'),
+    title: __('demo.ticket.3.title'),
+    text: __('demo.ticket.3.text'),
     status: 'reported',
     ticket: {
       type: 'issue',
