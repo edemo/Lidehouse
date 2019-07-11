@@ -302,8 +302,9 @@
       "label": "Hibajegy adatok",
       "type": {
         "label": "Típus",
-        "maintenance": "Ütemezett",
-        "issue": "Bejelentett"
+        "issue": "Hiba",
+        "upgrade": "Felújítás",
+        "maintenance": "Karbantartás"
       },
       "urgency": {
         "label": "Sürgősség",

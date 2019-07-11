@@ -295,8 +295,9 @@
       "label": "Ticket data",
       "type": {
         "label": "Type",
-        "maintenance": "Maintenance",
-        "issue": "Issue"
+        "issue": "Issue",
+        "upgrade": "Upgrade",
+        "maintenance": "Maintenance"
       },
       "urgency": {
         "label": "Urgency",

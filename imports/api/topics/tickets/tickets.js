@@ -11,7 +11,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 export const Tickets = {};
 
-Tickets.typeValues = ['issue', 'maintenance'];
+Tickets.typeValues = ['issue', 'upgrade', 'maintenance'];
 Tickets.urgencyValues = ['high', 'normal', 'low'];
 Tickets.urgencyColors = {
   high: 'danger',
@@ -134,6 +134,16 @@ Tickets.statusValues = Object.keys(Tickets.statuses);
 
 Tickets.workflows = {
   issue: {
+    start: [reported],
+    reported: { obj: reported, next: [confirmed, deleted] },
+    confirmed: { obj: confirmed, next: [progressing] },
+    progressing: { obj: progressing, next: [finished, suspended] },
+    suspended: { obj: suspended, next: [progressing] },
+    finished: { obj: finished, next: [closed, progressing] },
+    closed: { obj: closed, next: [] },
+    deleted: { obj: deleted, next: [reported] },
+  },
+  upgrade: {
     start: [reported],
     reported: { obj: reported, next: [confirmed, deleted] },
     confirmed: { obj: confirmed, next: [progressing, toApprove, toVote] },
