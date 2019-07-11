@@ -4,6 +4,7 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 
 export const SerialId = function (collection, definerFields = []) {
+  // indexing needed for quickly determining last id
   Meteor.startup(function indexCollection() {
     const indexDefinition = { communityId: 1 };
     definerFields.forEach((field) => {
@@ -12,9 +13,11 @@ export const SerialId = function (collection, definerFields = []) {
     indexDefinition.serial = -1;
     collection.ensureIndex(indexDefinition);
   });
+
   const schema = new SimpleSchema({
     serial: { type: Number, optional: true },
   });
+
   const helpers = {
     serialId() {
       let preKey = '';
@@ -25,7 +28,8 @@ export const SerialId = function (collection, definerFields = []) {
       return `${preKey}${this.serial}/${this.createdAt.getFullYear()}`;
     },
   };
-  return { schema, helpers, methods: {}, hooks: {
+
+  const hooks = {
     before: {
       insert(userId, doc) {
         const selector = { communityId: doc.communityId };
@@ -38,8 +42,11 @@ export const SerialId = function (collection, definerFields = []) {
         return true;
       },
     },
-  } };
+  };
+
+  return { schema, helpers, methods: {}, hooks };
 };
+
 /*
 export function readableId(collection, doc) {
   const year = new Date().getFullYear();

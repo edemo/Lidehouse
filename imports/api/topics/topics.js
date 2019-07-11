@@ -10,6 +10,7 @@ import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.j
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Revisioned } from '/imports/api/behaviours/revisioned.js';
+import { Workflow } from '/imports/api/behaviours/workflow.js';
 import { Likeable } from '/imports/api/behaviours/likeable.js';
 import { Flagable } from '/imports/api/behaviours/flagable.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
@@ -27,14 +28,6 @@ Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
 Topics.categories = {};
 Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific categories will add their own specs
 
-Topics.defaultWorkflow = {
-  start: [{ name: 'opened' }],
-  opened: { next: [{ name: 'closed' }, { name: 'deleted' }] },
-  closed: { next: [{ name: 'deleted' }] },
-  deleted: { next: [] },
-};
-Topics.statusValues = ['opened', 'closed', 'deleted'];
-
 Topics.extensionSchemas = {};
 
 Topics.baseSchema = new SimpleSchema({
@@ -47,14 +40,6 @@ Topics.baseSchema = new SimpleSchema({
   text: { type: String, max: 5000, autoform: { rows: 8 } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   photo: { type: String, optional: true, autoform: fileUpload },
-  status: { type: String, autoform: { omit: true } }, /* needs to be checked against the workflow rules */
-  closed: { type: Boolean, autoform: { omit: true }, autoValue() {
-    const status = this.field('status').value;
-    if (!status) return undefined; // don't touch
-    if (status === 'closed') return true;
-    else return false;
-  } },
-  closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate) },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
@@ -144,20 +129,6 @@ Topics.helpers({
   modifiableFields() {
     return Topics.modifiableFields;
   },
-  workflow() {
-    return Topics.defaultWorkflow;
-  },
-  statusObject(statusName) {
-    return this.workflow()[statusName || this.status].obj;
-  },
-  possibleStartStatuses() {
-    const statuses = this.workflow().start;
-    return _.pluck(statuses, 'name');
-  },
-  possibleNextStatuses() {
-    const statuses = this.workflow()[this.status].next;
-    return _.pluck(statuses, 'name');
-  },
   remove() {
     Comments.remove({ topicId: this._id });
     Topics.remove({ _id: this._id });
@@ -172,10 +143,11 @@ Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communit
 Topics.attachSchema(Topics.baseSchema);
 Topics.attachBehaviour(Timestamped);
 Topics.attachBehaviour(Revisioned(['text', 'title']));
-Topics.schema = new SimpleSchema(Topics.simpleSchema());
 Topics.attachBehaviour(Likeable);
 Topics.attachBehaviour(Flagable);
+Topics.attachBehaviour(Workflow());
 Topics.attachBehaviour(SerialId(Topics, ['category']));
+Topics.schema = new SimpleSchema(Topics.simpleSchema());
 
 
 // Topics.schema is just the core schema, shared by all.
