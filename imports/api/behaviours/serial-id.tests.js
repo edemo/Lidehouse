@@ -5,70 +5,154 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
+import { resetDatabase } from 'meteor/xolvio:cleaner';
+import faker from 'faker';
 import { SerialId } from './serial-id.js';
 
 if (Meteor.isServer) {
 
-  describe('serialId behaviour', function () {
+  describe('SerialId behaviour', function () {
     this.timeout(5000);
+    after(function () {
+      resetDatabase();
+    });
 
     const schema = new SimpleSchema({
       textField: { type: String, optional: true },
       category: { type: String, optional: true },
-      otherField: { type: String, optional: true },
+      otherField: { type: Object, blackbox: true, optional: true },
+      communityId: { type: String, optional: true },
     });
     const collection = new Mongo.Collection('tobeserialized');
     collection.attachSchema(schema);
     collection.attachBehaviour(SerialId(collection, ['category']));
 
+    const collection2 = new Mongo.Collection('otherCollection');
+    collection2.attachSchema(schema);
+    collection2.attachBehaviour(SerialId(collection2, ['category', 'otherField.color']));
+    
+    const collection3 = new Mongo.Collection('lastCollection');
+    collection3.attachSchema(schema);
+    collection3.attachBehaviour(SerialId(collection3));
 
-    let docId;
+    const docData1 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'pink' }, communityId: 'no1' };
+    const docData2 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'green' }, communityId: 'no1' };
+    const docData3 = { textField: faker.random.word(), category: 'Testable', otherField: { color: 'pink' }, communityId: 'no1' };
+    const docData4 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'green' }, communityId: 'no2' };
+    const docData5 = { textField: faker.random.word(), otherField: { color: 'pink' }, communityId: 'no1' };
 
-    describe('normal operation', function () {
-      before(function () {
-        docId = collection.insert({
-          textField: 'text',
-          category: 'Countable',
-          otherField: '42',
-        });
-      });
+    describe('1 definer field', function () {
 
       it('inserts doc with serial', function (done) {
-        const doc = collection.findOne({ textField: 'text' });
+        const docId = collection.insert(docData1);
+        const doc = collection.findOne(docId);
         chai.assert.equal(doc.category, 'Countable');
-        chai.assert.equal(doc.otherField, '42');
         chai.assert.isDefined(doc.serial);
         chai.assert.equal(doc.serial, 1);
         done();
       });
 
       it('serial increases by 1', function (done) {
-        const nextDocId = collection.insert({
-          textField: 'next text',
-          category: 'Countable',
-        });
-        const doc = collection.findOne(nextDocId);
+        const docId = collection.insert(docData2);
+        const doc = collection.findOne(docId);
         chai.assert.equal(doc.category, 'Countable');
-        chai.assert.isDefined(doc.serial);
         chai.assert.equal(doc.serial, 2);
         done();
       });
-        
-      it('new serial in case of other definer field', function (done) {
-        const differentDocId = collection.insert({
-          textField: 'next text',
-          category: 'Testable',
-          otherField: 'field',
-        });
-        const doc = collection.findOne(differentDocId);
+
+      it('new serial in case of other definer field value', function (done) {
+        const docId = collection.insert(docData3);
+        const doc = collection.findOne(docId);
         chai.assert.equal(doc.category, 'Testable');
-        chai.assert.isDefined(doc.serial);
         chai.assert.equal(doc.serial, 1);
         done();
       });
 
+      it('new serial in case of different community Id', function (done) {
+        const docId = collection.insert(docData4);
+        const doc = collection.findOne(docId);
+        chai.assert.equal(doc.category, 'Countable');
+        chai.assert.equal(doc.serial, 1);
+        done();
+      });
 
+      it('new serial if definer field is missing from doc', function (done) {
+        const docId = collection.insert(docData5);
+        const doc = collection.findOne(docId);
+        chai.assert.isUndefined(doc.category);
+        chai.assert.equal(doc.serial, 1);
+        done();
+      });
+    });
 
+    describe('2 definer fields', function () {
+
+      it('inserts doc with serial with 2 definerfields', function (done) {
+        const docId = collection2.insert(docData1);
+        const doc = collection2.findOne(docId);
+        chai.assert.equal(doc.category, 'Countable');
+        chai.assert.equal(doc.otherField.color, 'pink');
+        chai.assert.equal(doc.serial, 1);
+        done();
+      });
+
+      it('new serial for 1 different definerfield value', function (done) {
+        const docId = collection2.insert(docData2);
+        const doc = collection2.findOne(docId);
+        chai.assert.equal(doc.category, 'Countable');
+        chai.assert.equal(doc.otherField.color, 'green');
+        chai.assert.equal(doc.serial, 1);
+        done();
+      });
+
+      it('new serial if 1 definer field is missing from doc', function (done) {
+        const docId = collection2.insert(docData5);
+        const doc = collection2.findOne(docId);
+        chai.assert.isUndefined(doc.category);
+        chai.assert.equal(doc.otherField.color, 'pink');
+        chai.assert.equal(doc.serial, 1);
+        done();
+      });
+    });
+
+    describe('no definer field', function () {
+      it('inserts doc with serial with no definer field', function (done) {
+        const docId = collection3.insert(docData1);
+        const doc = collection3.findOne(docId);
+        chai.assert.equal(doc.category, 'Countable');
+        chai.assert.equal(doc.serial, 1);
+        done();
+      });
+
+      it('serial increases by 1', function (done) {
+        const docId = collection3.insert(docData3);
+        const doc = collection3.findOne(docId);
+        chai.assert.equal(doc.category, 'Testable');
+        chai.assert.equal(doc.serial, 2);
+        done();
+      });
+
+      it('new serial in case of different community Id', function (done) {
+        const docId = collection3.insert(docData4);
+        const doc = collection3.findOne(docId);
+        chai.assert.equal(doc.category, 'Countable');
+        chai.assert.equal(doc.serial, 1);
+        done();
+      });
+    });
+
+    describe('edge cases', function () {
+      it('throws error if no collection is given as attribute', function (done) {
+        const collection4 = new Mongo.Collection('noCollection');
+        collection4.attachSchema(schema);
+        chai.assert.throws(() => collection4.attachBehaviour(SerialId()));
+        done();
+      });
+
+      xit('continues serial in case of removing doc', function (done) {
+        // Are documents with serial removable?
+        done();
+      });
     });
   });
 }

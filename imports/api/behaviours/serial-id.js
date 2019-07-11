@@ -30,7 +30,7 @@ export const SerialId = function (collection, definerFields = []) {
       insert(userId, doc) {
         const selector = { communityId: doc.communityId };
         definerFields.forEach((field) => {
-          selector[field] = doc[field];
+          selector[field] = Object.byString(doc, field);
         });
         const last = collection.findOne(selector, { sort: { serial: -1 } });
         const nextSerial = last ? last.serial + 1 : 1;
