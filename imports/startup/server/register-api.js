@@ -10,6 +10,8 @@ import '/imports/api/delegations/methods.js';
 import '/imports/api/delegations/publications.js';
 import '/imports/api/agendas/methods.js';
 import '/imports/api/agendas/publications.js';
+import '/imports/api/contracts/methods.js';
+import '/imports/api/contracts/publications.js';
 import '/imports/api/topics/methods.js';
 import '/imports/api/topics/publications.js';
 import '/imports/api/topics/votings/methods.js';

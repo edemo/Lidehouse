@@ -14,6 +14,7 @@ import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, de
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
+import '/imports/ui_3/views/components/ticket-list.html';
 import './tickets.html';
 
 Template.Tickets.viewmodel({
@@ -48,10 +49,6 @@ Template.Tickets.viewmodel({
     return Topics.find({ communityId, category: 'ticket',
       createdAt: { $gt: moment().subtract(2, 'week').toDate() },
     }, { sort: { createdAt: -1 } });
-  },
-  showLocalizer(data) {
-    const localizer = data.ticket.localizer;
-    return Localizer.get(data.communityId).display(localizer);
   },
 });
 

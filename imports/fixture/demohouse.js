@@ -618,6 +618,35 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Tickets =====
 
   Clock.setSimulatedTime(moment().subtract(140, 'minutes').toDate());
+  const contract0 = demoBuilder.create('contract', {
+    title: 'Gondnoki szerződés',
+    partner: 'EV',
+  });
+  const contract1 = demoBuilder.create('contract', {
+    title: 'Lift karbantartási szerződés',
+    text: 'Havi időszerű karbantartás és garanciális alkatrészellátás',
+    partner: 'Lift fix ultra',
+  });
+  const ticketTime = Clock.currentTime();
+  [1, 2, 3].forEach(m => {
+    const maintainanceDate = moment(ticketTime).subtract(m, 'month');
+    Clock.setSimulatedTime(maintainanceDate.toDate());
+    demoBuilder.create('ticket', {
+      userId: demoMaintainerId,
+      title: 'Lift karbantartás ' + maintainanceDate.format('MMM YYYY'),
+      text: 'Havi időszerű karbantartás',
+      status: 'scheduled',
+      ticket: {
+        type: 'maintenance',
+        urgency: 'normal',
+        contractId: contract1,
+        actualStart: maintainanceDate.toDate(),
+        actualFinish: maintainanceDate.toDate(),
+      },
+    });
+  });
+
+  Clock.add(3, 'day');
   const ticket0 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.0.title'),
@@ -625,12 +654,17 @@ export function insertDemoHouse(lang, demoOrTest) {
     status: 'reported',
     ticket: {
       type: 'issue',
-      category: 'building',
       urgency: 'high',
     },
   });
   Clock.setSimulatedTime(moment().subtract(100, 'minutes').toDate());
-  let data = { localizer: demoBuilder.name2code('Localizer', 'Lift'), expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
+  let data = {
+    localizer: demoBuilder.name2code('Localizer', 'Lift'),
+    chargeType: 'lumpsum',
+    contractId: contract1,
+    expectedStart: moment().add(1, 'days').toDate(),
+    expectedFinish: moment().add(2, 'days').toDate(),
+  };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'confirmed', type: 'statusChangeTo', data });
   Clock.setSimulatedTime(moment().subtract(40, 'minutes').toDate());
   data = { expectedFinish: moment().add(2, 'days').toDate() };
@@ -644,7 +678,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     status: 'reported',
     ticket: {
       type: 'issue',
-      category: 'building',
       urgency: 'normal',
     },
   });
@@ -669,7 +702,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     status: 'reported',
     ticket: {
       type: 'issue',
-      category: 'service',
       urgency: 'normal',
     },
   });
@@ -688,7 +720,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     status: 'reported',
     ticket: {
       type: 'issue',
-      category: 'building',
       urgency: 'low',
     },
   });

@@ -11,6 +11,7 @@ import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Attachments } from '/imports/api/attachments/attachments.js';
@@ -85,6 +86,14 @@ function communityPublication(userId, _id) {
       find(community) {
         if (hasPermission('agendas.inCommunity')) {
           return Agendas.find({ communityId: community._id });
+        }
+        return undefined;
+      },
+    }, {
+      // Publish the Contracts of the Community
+      find(community) {
+        if (hasPermission('contracts.inCommunity')) {
+          return Contracts.find({ communityId: community._id });
         }
         return undefined;
       },

@@ -28,6 +28,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/community-page.js';
   import '/imports/ui_3/views/pages/tickets.js';
   import '/imports/ui_3/views/pages/worksheets.js';
+  import '/imports/ui_3/views/pages/contracts.js';
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
   import '/imports/ui_3/views/pages/accounting-page.js';
@@ -241,6 +242,14 @@ FlowRouter.route('/worksheets', {
   name: 'Worksheets',
   action() {
     BlazeLayout.render('Main_layout', { content: 'Tickets_tasks' });
+  },
+});
+CommunityRelatedRoutes.push('Worksheets');
+
+FlowRouter.route('/contracts', {
+  name: 'Contracts',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Contracts' });
   },
 });
 CommunityRelatedRoutes.push('Worksheets');

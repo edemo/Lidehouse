@@ -324,6 +324,9 @@
         "lumpsum": "Átalánydíjas",
         "warranty": "Garanciális"
       },
+      "contractId" : {
+        "label": "Szerződés"
+      },
       "txId": {
         "label": "Kifizetés"
       },

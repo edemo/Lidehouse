@@ -317,6 +317,9 @@
         "lumpsum": "Lump sum contract",
         "warranty": "Under warranty"
       },
+      "contractId" : {
+        "label": "Contract"
+      },
       "txId": {
         "label": "Payment"
       },

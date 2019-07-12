@@ -1,0 +1,54 @@
+<template name="Ticket_list">
+    <div class="table-responsive">
+        <table class="table table-hover issue-tracker">
+            <tbody>
+            {{#each tickets}}
+            <tr>
+                <td>
+                    {{#if status}}                        
+                    <span class="label label-{{this.statusObject.color}}">{{_ (concat 'schemaTopics.status.' status)}}</span>
+                    {{/if}}
+                </td>
+                <td class="issue-info">
+                    <a href="{{pathFor 'Topic show' _tid=_id}}">{{title}}</a>
+                    <small>{{>Chopped text=text chars=150}}</small>
+                </td>
+                <td>
+                    {{#if ticket.localizer}}
+                    <span class="label label-success label-xs">{{displayLocalizer this.ticket.localizer (fromSession 'activeCommunityId')}}</span>
+                    {{/if}}
+                </td>
+                <td>
+                    {{createdBy}}
+                </td>
+                <td>
+                    {{displayTime createdAt}}
+                </td>
+                <td class="text-right">
+                    <div class="btn-group">
+                        {{#if userHasPermission 'ticket.statusChange' (fromSession 'activeCommunityId')  }}
+                        <div class="dropdown pull-left">
+                            <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white">
+                                <i class="fa fa-cog"></i> {{_ 'statusChange'}} <b class="caret"></b>
+                            </a>
+                            <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
+                                {{#each status in (this.possibleNextStatuses)}}
+                                <li><a href="" class="js-status" data-id="{{this._id}}" data-status="{{status}}">{{_ (concat 'schemaTopics.status.' status)}}</a></li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                        {{/if}}
+                        {{#if userHasPermission 'ticket.update' (fromSession 'activeCommunityId')  }}
+                        <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                        {{/if}}
+                        {{#if userHasPermission 'ticket.remove' (fromSession 'activeCommunityId')  }}
+                        <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                        {{/if}}
+                    </div>
+                </td>
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</template>

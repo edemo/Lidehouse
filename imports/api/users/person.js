@@ -103,7 +103,6 @@ export class Person {
 }
 
 export let choosePerson = {};
-
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 

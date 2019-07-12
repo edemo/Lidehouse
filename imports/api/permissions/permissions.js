@@ -39,6 +39,10 @@ export const Permissions = [
   { name: 'agendas.insert',         roles: ['manager'] },
   { name: 'agendas.update',         roles: ['manager'] },
   { name: 'agendas.remove',         roles: ['manager'] },
+  { name: 'contracts.inCommunity',  roles: everyRole },
+  { name: 'contracts.insert',       roles: ['manager'] },
+  { name: 'contracts.update',       roles: ['manager'] },
+  { name: 'contracts.remove',       roles: ['manager'] },
   { name: 'delegations.inCommunity',roles: ['manager'] },
   { name: 'delegations.forOthers',  roles: ['manager'] },
 //  { name: 'delegations.update',     roles: nobody, allowAuthor: true },
@@ -99,7 +103,7 @@ export const Permissions = [
   { name: 'ticket.statusChangeTo.finished.enter',     roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChangeTo.closed.enter',       roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChangeTo.deleted.enter',      roles: ['manager', 'maintainer'] },
-  { name: 'vote.statusChangeTo.opened.enter',           roles: ['manager', 'maintainer'] },
+  { name: 'vote.statusChangeTo.opened.enter',         roles: ['manager', 'maintainer'] },
   { name: 'vote.statusChangeTo.closed.enter',         roles: ['manager', 'maintainer'] },
 ];
 
