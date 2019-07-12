@@ -9,11 +9,20 @@ export const Clock = {
     if (simulatedTime) return simulatedTime;
     return new Date();
   },
-  time(...args) {
+  currentDate() {
+    return moment(Clock.currentTime()).endOf('date').toDate();
+  },
+  _moment(...args) {
     debugAssert(args.length === 3);
-    if (args[2] === 'ago') return moment(Clock.currentTime()).subtract(args[0], args[1]).toDate();
-    if (args[2] === 'ahead') return moment(Clock.currentTime()).add(args[0], args[1]).toDate();
+    if (args[2] === 'ago') return moment(Clock.currentTime()).subtract(args[0], args[1]);
+    if (args[2] === 'ahead') return moment(Clock.currentTime()).add(args[0], args[1]);
     debugAssert(false); return undefined;
+  },
+  time(...args) {
+    return Clock._moment(...args).toDate();
+  },
+  date(...args) {
+    return Clock._moment(...args).endOf('date').toDate();
   },
   // WARNING: Calling these methods will make everyone see a modified Time.
   // Dont forget to call clear() after you are done!!!

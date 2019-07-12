@@ -630,7 +630,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   [1, 2, 3, 4].forEach(m => {
     Clock.tick(1, 'month');
-    const maintainanceDate = moment(Clock.currentTime());
+    const maintainanceDate = moment(Clock.currentDate());
     const ticket = demoBuilder.create('ticket', {
       userId: demoMaintainerId,
       title: 'Lift karbantartás ' + maintainanceDate.format('MMM YYYY'),
@@ -674,13 +674,13 @@ export function insertDemoHouse(lang, demoOrTest) {
       localizer: demoBuilder.name2code('Localizer', 'Lift'),
       chargeType: 'lumpsum',
       contractId: contract1,
-      expectedStart: Clock.time(1, 'days', 'ahead'),
-      expectedFinish: Clock.time(2, 'days', 'ahead'),
+      expectedStart: Clock.date(1, 'days', 'ahead'),
+      expectedFinish: Clock.date(2, 'days', 'ahead'),
     },
   });
   Clock.tickSome('days');
   demoBuilder.statusChange(ticket0, { status: 'progressing',
-    data: { expectedFinish: Clock.time(3, 'days', 'ahead') },
+    data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
 
   Clock.tickSome('days');
@@ -699,20 +699,20 @@ export function insertDemoHouse(lang, demoOrTest) {
     data: {
       localizer: '@A409',
       expectedCost: 1200,
-      expectedStart: Clock.time(3, 'days', 'ahead'),
-      expectedFinish: Clock.time(4, 'days', 'ahead'),
+      expectedStart: Clock.date(3, 'days', 'ahead'),
+      expectedFinish: Clock.date(4, 'days', 'ahead'),
     },
   });
   Clock.tickSome('hours');
   demoBuilder.statusChange(ticket1, { status: 'progressing',
-    data: { expectedFinish: Clock.time(3, 'days', 'ahead') },
+    data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
   Clock.tickSome('hours');
   demoBuilder.statusChange(ticket1, { status: 'finished',
     data: {
       actualCost: 800,
-      actualStart: Clock.time(3, 'days', 'ahead'),
-      actualFinish: Clock.time(3, 'days', 'ahead'),
+      actualStart: Clock.date(3, 'days', 'ahead'),
+      actualFinish: Clock.date(3, 'days', 'ahead'),
     },
   });
   Clock.tickSome('minutes');
@@ -752,8 +752,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     data: {
       localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'),
       expectedCost: 1500,
-      expectedStart: Clock.time(1, 'days', 'ahead'),
-      expectedFinish: Clock.time(2, 'days', 'ahead'),
+      expectedStart: Clock.date(1, 'days', 'ahead'),
+      expectedFinish: Clock.date(2, 'days', 'ahead'),
     },
   });
   Clock.tickSome('hours');
@@ -764,8 +764,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoBuilder.statusChange(ticket3, { status: 'finished',
     data: {
       actualCost: 1300,
-      actualStart: Clock.time(2, 'days', 'ahead'),
-      actualFinish: Clock.time(2, 'days', 'ahead'),
+      actualStart: Clock.date(2, 'days', 'ahead'),
+      actualFinish: Clock.date(2, 'days', 'ahead'),
     },
   });
   Clock.tickSome('minutes');
