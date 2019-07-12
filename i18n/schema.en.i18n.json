@@ -295,8 +295,9 @@
       "label": "Ticket data",
       "type": {
         "label": "Type",
-        "maintenance": "Maintenance",
-        "issue": "Issue"
+        "issue": "Issue",
+        "upgrade": "Upgrade",
+        "maintenance": "Maintenance"
       },
       "urgency": {
         "label": "Urgency",
@@ -306,6 +307,18 @@
       },
       "localizer": {
         "label": "Location"
+      },
+      "partner": {
+        "label": "Servicing partner"
+      },
+      "chargeType": {
+        "label": "Charge type",
+        "oneoff": "One-off",
+        "lumpsum": "Lump sum contract",
+        "warranty": "Under warranty"
+      },
+      "txId": {
+        "label": "Payment"
       },
       "expectedCost": { 
         "label": "Expected cost"

@@ -13,22 +13,10 @@ import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
-import { Tickets } from './tickets/tickets.js';
+import './tickets/tickets.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import './rooms/rooms.js';
 import './feedbacks/feedbacks.js';
-
-function checkStatusStartAllowed(topic, status) {
-  if (!_.contains(topic.possibleStartStatuses(), status)) {
-    throw new Meteor.Error('err_permissionDenied', `Topic ${topic._id} cannot start in ${status}`, topic.toString());
-  }
-}
-
-function checkStatusChangeAllowed(topic, statusTo) {
-  if (!_.contains(topic.possibleNextStatuses(), statusTo)) {
-    throw new Meteor.Error('err_permissionDenied', `Topic ${topic._id} cannot move from ${topic.status} into status ${statusTo}`, topic.toString());
-  }
-}
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
@@ -38,7 +26,6 @@ export const insert = new ValidatedMethod({
     doc = Topics._transform(doc);
     // readableId(Topics, doc);
     checkTopicPermissions(this.userId, 'insert', doc);
-    checkStatusStartAllowed(doc, doc.status);
     doc.userId = this.userId;   // One can only post in her own name
     const topicId = Topics.insert(doc);
     const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
@@ -62,43 +49,6 @@ export const update = new ValidatedMethod({
   },
 });
 
-export const statusChange = new ValidatedMethod({
-  name: 'topics.statusChange',
-  validate: Comments.simpleSchema().validator({ clean: true }),
-  run(event) {
-    const topic = checkExists(Topics, event.topicId);
-    const category = topic.category;
-    const workflow = topic.workflow();
-    // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic.communityId);
-    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId);
-    checkStatusChangeAllowed(topic, event.status);
-    event.userId = this.userId;   // One can only post in her own name
-
-    const onLeave = workflow[topic.status].obj.onLeave;
-    if (onLeave) onLeave(event, topic);
-
-    const topicModifier = {};
-    topicModifier.status = event.status;
-    const statusObject = Topics.categories[category].statuses[event.status];
-    if (statusObject.data) {
-      statusObject.data.forEach(key => topicModifier[`${category}.${key}`] = event.data[key]);
-    }
-    const updateResult = Topics.update(event.topicId, { $set: topicModifier });
-
-    const insertResult = Comments.insert(event);
-
-    const newTopic = Topics.findOne(event.topicId);
-    const onEnter = workflow[event.status].obj.onEnter;
-    if (onEnter) onEnter(event, newTopic);
-
-    updateMyLastSeen._execute({ userId: this.userId },
-      { topicId: topic._id, lastSeenInfo: { timestamp: newTopic.createdAt } },
-    );
-
-    return insertResult;
-  },
-});
-
 export const remove = new ValidatedMethod({
   name: 'topics.remove',
   validate: new SimpleSchema({
@@ -114,7 +64,7 @@ export const remove = new ValidatedMethod({
 });
 
 Topics.methods = Topics.methods || {};
-_.extend(Topics.methods, { insert, update, statusChange, remove });
+_.extend(Topics.methods, { insert, update, remove });
 
 // ----- RATE LIMITING --------
 

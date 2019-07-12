@@ -276,24 +276,43 @@ export function defineBreakdownTemplates() {
 
   Breakdowns.define({ communityId: null,
     digit: '#', name: 'Places', children: [ // Elszámolási egységek
-      { digit: '0', name: 'Central' },   //Központ
-      { digit: '1', name: 'Common areas', include: 'Common areas' }, // Közös tulajdonú helyiségek
-      { digit: '3', name: 'Heating system' }, //Kazán
-      { digit: '4', name: 'Klima' },
-      { digit: '5', name: 'Villamos hálózat' },
-      { digit: '6', name: 'Felügyeleti rendszer' },
-      { digit: '1', name: 'Lift' },   // a Garden helyébe
-    ],
-  });
-
-  Breakdowns.define({ communityId: null,
-    digit: '1', name: 'Common areas', children: [
-      { digit: '1', name: 'Padlás' },
-      { digit: '2', name: 'Pince' },
-      { digit: '3', name: 'Kert' },
-      { digit: '4', name: 'Tárolók' },
-      { digit: '5', name: 'Garázs' },
-      { digit: '6', name: 'Egyeb helyiségek' },
+      { digit: '0', name: 'Central' },   // Központ
+      { digit: '1', name: 'Common areas', // Közös tulajdonú helyiségek
+        children: [
+          { digit: '1', name: 'Padlás' },
+          { digit: '2', name: 'Pince' },
+          { digit: '3', name: 'Kert' },
+          { digit: '4', name: 'Tárolók' },
+          { digit: '5', name: 'Garázs' },
+          { digit: '6', name: 'Lépcőház' },
+          { digit: '7', name: 'Folyosók' },
+          { digit: '9', name: 'Egyeb helyiségek' },
+        ],
+      },
+      { digit: '2', name: 'Tartószerkezetek',
+        children: [
+          { digit: '1', name: 'Falak' },
+          { digit: '2', name: 'Födémek' },
+          { digit: '3', name: 'Tető' },
+        ],
+      },          
+      { digit: '3', name: 'Szakipari szerkezetek',
+        children: [
+          { digit: '1', name: 'Homlokzat' },
+          { digit: '2', name: 'Burkolat' },
+        ],
+      },
+      { digit: '4', name: 'Gépészeti szerkezetek',
+        children: [
+          { digit: '1', name: 'Ventillation' }, // Szellőző rendszer
+          { digit: '3', name: 'Heating system' }, // Kazán
+          { digit: '4', name: 'Klima' },
+          { digit: '5', name: 'Villamos hálózat' },
+          { digit: '6', name: 'Felügyeleti rendszer' },
+          { digit: '7', name: 'Lift' },
+          { digit: '8', name: 'Kamera rendszer' },
+        ],
+      },
     ],
   });
 

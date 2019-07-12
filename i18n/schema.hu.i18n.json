@@ -302,8 +302,9 @@
       "label": "Hibajegy adatok",
       "type": {
         "label": "Típus",
-        "maintenance": "Ütemezett",
-        "issue": "Bejelentett"
+        "issue": "Hiba",
+        "upgrade": "Felújítás",
+        "maintenance": "Karbantartás"
       },
       "urgency": {
         "label": "Sürgősség",
@@ -313,6 +314,18 @@
       },
       "localizer": {
         "label": "Hiba helye"
+      },
+      "partner": {
+        "label": "Szolgáltató partner"
+      },
+      "chargeType": {
+        "label": "Költség vonzat",
+        "oneoff": "Egyedi megrendelés",
+        "lumpsum": "Átalánydíjas",
+        "warranty": "Garanciális"
+      },
+      "txId": {
+        "label": "Kifizetés"
       },
       "expectedCost": { 
         "label": "Várható költség"

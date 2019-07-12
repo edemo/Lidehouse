@@ -629,9 +629,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'normal',
     },
   });
-
-  Clock.add(30, 'minutes');
-  let data = { localizer: '@A409', expectedCost: 1200, expectedStart: Clock.add(3, 'days'), expectedFinish: Clock.add(4, 'days') };
+  Clock.setSimulatedTime(moment().subtract(100, 'minutes').toDate());
+  let data = { localizer: demoBuilder.name2code('Localizer', 'Lift'), expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'confirmed', type: 'statusChangeTo', data });
   Clock.add(1, 'days');
   data = { expectedFinish: Clock.add(3, 'days') };
@@ -698,8 +697,14 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'high',
     },
   });
+<<<<<<< HEAD
   Clock.add(40, 'minutes');
   data = { localizer: '#1', expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
+=======
+
+  Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(200, 'minutes').toDate());
+  data = { localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'), expectedCost: 1500, expectedStart: moment().subtract(6, 'weeks').add(1, 'days').toDate(), expectedFinish: moment().subtract(6, 'weeks').add(2, 'days').toDate() };
+>>>>>>> upstream/ticket
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'confirmed', type: 'statusChangeTo', data });
   Clock.add(60, 'minutes');
   data = { expectedFinish: moment().add(2, 'days').toDate() };

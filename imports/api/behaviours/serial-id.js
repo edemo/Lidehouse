@@ -2,8 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
+import { noUpdate } from '/imports/utils/autoform.js';
 
 export const SerialId = function (collection, definerFields = []) {
+  // indexing needed for quickly determining last id
   Meteor.startup(function indexCollection() {
     const indexDefinition = { communityId: 1 };
     definerFields.forEach((field) => {
@@ -12,9 +14,11 @@ export const SerialId = function (collection, definerFields = []) {
     indexDefinition.serial = -1;
     collection.ensureIndex(indexDefinition);
   });
+
   const schema = new SimpleSchema({
-    serial: { type: Number, optional: true },
+    serial: { type: Number, optional: true, autoform: _.extend({ omit: true }, noUpdate) },
   });
+
   const helpers = {
     serialId() {
       let preKey = '';
@@ -25,12 +29,13 @@ export const SerialId = function (collection, definerFields = []) {
       return `${preKey}${this.serial}/${this.createdAt.getFullYear()}`;
     },
   };
-  return { schema, helpers, methods: {}, hooks: {
+
+  const hooks = {
     before: {
       insert(userId, doc) {
         const selector = { communityId: doc.communityId };
         definerFields.forEach((field) => {
-          selector[field] = doc[field];
+          selector[field] = Object.byString(doc, field);
         });
         const last = collection.findOne(selector, { sort: { serial: -1 } });
         const nextSerial = last ? last.serial + 1 : 1;
@@ -38,8 +43,11 @@ export const SerialId = function (collection, definerFields = []) {
         return true;
       },
     },
-  } };
+  };
+
+  return { schema, helpers, methods: {}, hooks };
 };
+
 /*
 export function readableId(collection, doc) {
   const year = new Date().getFullYear();

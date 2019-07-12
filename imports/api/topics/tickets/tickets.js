@@ -11,18 +11,22 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 export const Tickets = {};
 
-Tickets.typeValues = ['issue', 'maintenance'];
+Tickets.typeValues = ['issue', 'upgrade', 'maintenance'];
 Tickets.urgencyValues = ['high', 'normal', 'low'];
 Tickets.urgencyColors = {
   high: 'danger',
   normal: 'warning',
   low: 'primary',
 };
+Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty'];
 
 Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
+  partner: { type: String, optional: true },
+  chargeType: { type: String, allowedValues: Tickets.chargeTypeValues, autoform: autoformOptions(Tickets.chargeTypeValues, 'schemaTickets.ticket.chargeType.'), optional: true },
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },
 
   expectedCost: { type: Number, decimal: true, optional: true },
   expectedStart: { type: Date, optional: true },
@@ -65,6 +69,8 @@ const confirmed = {
   color: 'info',
   data: [
     'localizer',
+    'partner',
+    'chargeType',
     'expectedCost',
     'expectedStart',
     'expectedFinish',
@@ -75,6 +81,7 @@ const scheduled = {
   name: 'scheduled',
   color: 'warning',
   data: [
+    'partner',
     'expectedStart',
     'expectedFinish',
   ],
@@ -109,6 +116,7 @@ const finished = {
   name: 'finished',
   color: 'primary',
   data: [
+    'txId',
     'actualCost',
     'actualStart',
     'actualFinish',
@@ -134,6 +142,16 @@ Tickets.statusValues = Object.keys(Tickets.statuses);
 
 Tickets.workflows = {
   issue: {
+    start: [reported],
+    reported: { obj: reported, next: [confirmed, deleted] },
+    confirmed: { obj: confirmed, next: [progressing] },
+    progressing: { obj: progressing, next: [finished, suspended] },
+    suspended: { obj: suspended, next: [progressing] },
+    finished: { obj: finished, next: [closed, progressing] },
+    closed: { obj: closed, next: [] },
+    deleted: { obj: deleted, next: [reported] },
+  },
+  upgrade: {
     start: [reported],
     reported: { obj: reported, next: [confirmed, deleted] },
     confirmed: { obj: confirmed, next: [progressing, toApprove, toVote] },
