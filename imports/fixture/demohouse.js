@@ -697,14 +697,9 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'high',
     },
   });
-<<<<<<< HEAD
-  Clock.add(40, 'minutes');
-  data = { localizer: '#1', expectedCost: 1000, expectedStart: moment().add(1, 'days').toDate(), expectedFinish: moment().add(2, 'days').toDate() };
-=======
 
   Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(200, 'minutes').toDate());
   data = { localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'), expectedCost: 1500, expectedStart: moment().subtract(6, 'weeks').add(1, 'days').toDate(), expectedFinish: moment().subtract(6, 'weeks').add(2, 'days').toDate() };
->>>>>>> upstream/ticket
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'confirmed', type: 'statusChangeTo', data });
   Clock.add(60, 'minutes');
   data = { expectedFinish: moment().add(2, 'days').toDate() };
