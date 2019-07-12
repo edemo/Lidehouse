@@ -252,7 +252,7 @@ FlowRouter.route('/contracts', {
     BlazeLayout.render('Main_layout', { content: 'Contracts' });
   },
 });
-CommunityRelatedRoutes.push('Worksheets');
+CommunityRelatedRoutes.push('Contracts');
 
 FlowRouter.route('/parcels-finances', {
   name: 'Parcel finances',
