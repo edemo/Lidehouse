@@ -308,6 +308,18 @@
       "localizer": {
         "label": "Location"
       },
+      "partner": {
+        "label": "Servicing partner"
+      },
+      "chargeType": {
+        "label": "Charge type",
+        "oneoff": "One-off",
+        "lumpsum": "Lump sum contract",
+        "warranty": "Under warranty"
+      },
+      "txId": {
+        "label": "Payment"
+      },
       "expectedCost": { 
         "label": "Expected cost"
       },

@@ -315,6 +315,18 @@
       "localizer": {
         "label": "Hiba helye"
       },
+      "partner": {
+        "label": "Szolgáltató partner"
+      },
+      "chargeType": {
+        "label": "Költség vonzat",
+        "oneoff": "Egyedi megrendelés",
+        "lumpsum": "Átalánydíjas",
+        "warranty": "Garanciális"
+      },
+      "txId": {
+        "label": "Kifizetés"
+      },
       "expectedCost": { 
         "label": "Várható költség"
       },

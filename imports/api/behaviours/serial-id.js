@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
+import { noUpdate } from '/imports/utils/autoform.js';
 
 export const SerialId = function (collection, definerFields = []) {
   // indexing needed for quickly determining last id
@@ -15,7 +16,7 @@ export const SerialId = function (collection, definerFields = []) {
   });
 
   const schema = new SimpleSchema({
-    serial: { type: Number, optional: true },
+    serial: { type: Number, optional: true, autoform: _.extend({ omit: true }, noUpdate) },
   });
 
   const helpers = {
