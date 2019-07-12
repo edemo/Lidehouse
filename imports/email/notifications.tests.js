@@ -16,7 +16,6 @@ import '/i18n/en.i18n.json';
 import '/i18n/email.en.i18n.json';
 import { processNotifications, notifyExpiringVotings, EXPIRY_NOTI_DAYS } from './notifications.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
-import { statusChange } from '/imports/api/topics/methods.js';
 
 import { emailSender } from '/imports/startup/server/email-sender.js';   // We will be mocking it over
 
@@ -117,7 +116,7 @@ if (Meteor.isServer) {
 
       it('Emails about new statusChange event', function () {
         const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
-        statusChange._execute({ userId: demoManager._id }, 
+        Topics.methods.statusChange._execute({ userId: demoManager._id }, 
           { userId: demoManager._id, topicId: ticketId, type: 'statusChangeTo', status: 'confirmed', data });
         processNotifications('daily');
         sinon.assert.calledTwice(emailSender.sendHTML);
