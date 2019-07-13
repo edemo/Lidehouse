@@ -193,6 +193,22 @@
       "label": "Napirendi pontok"
     }
   },
+  "schemaContracts": {
+    "title": {
+      "label": "Név",
+      "placeholder": "(pl. Lift karbantartási szerződés)"
+    },
+    "text": {
+      "label": "Leírás",
+      "placeholder": "(pl. 2012 CXXL. kormányrendelet alapján kötelező)"
+    },
+    "partner": {
+      "label": "Szolgáltató partner"
+    },
+    "topicIds": {
+      "label": "Munkalapok"
+    }
+  },
   "schemaTopics": {
     "title": {
       "label": "Cím",
@@ -322,7 +338,8 @@
         "label": "Költség vonzat",
         "oneoff": "Egyedi megrendelés",
         "lumpsum": "Átalánydíjas",
-        "warranty": "Garanciális"
+        "warranty": "Garanciális",
+        "insurance": "Biztosító fizeti"
       },
       "contractId" : {
         "label": "Szerződés"

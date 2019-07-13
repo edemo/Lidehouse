@@ -213,6 +213,19 @@
         "title": "Közgyűlés 2018-I."
       }
     },
+    "contract": {
+      "0": {
+        "title": "Gondnoki szerződés",
+        "text": "Apróbb hibák javítása. Nagyobb hibák javításának kiszervezése. Gépészeti rendszerek havi ellenőrzése. Karbantartók fogadása. Ügyelet munkaszüneti napokon. Pontos munkaköri leírás a dokumentumtárban taláható.",
+        "partner": "Bokor Péter EV"
+      },
+      "1": {
+        "title": "Lift karbantartási szerződés",
+        "text": "Havi időszerű karbantartás és garanciális alkatrészellátás",
+        "partner": "Lift fix ultra",
+        "ticketText": "Havi időszerű karbantartás"
+      }
+    },
     "ticket": {
       "0": {
         "title": "Elromlott a lift",
@@ -231,7 +244,14 @@
       },
       "3": {
         "title": "A lépcsőházban hullik a vakolat",
-        "text": "A II. emeleti lépcsőfordulónál vettem észre."
+        "text": "A II. emeleti lépcsőfordulónál vettem észre.",
+        "comment": {
+          "0": "Jövő héten meg tudom csinálni. Csak az anyagot kell megvennünk hozzá.",
+          "1": "Le is festem. De a nagy létrát csak kedden tudom elkérni.",
+          "2": "Hétvégén is volt időm dolgozgatni rajta. Így kicsit előbb készültem el, mint gondoltam.",
+          "3": "Nagyon szép lett Bokor úr! Olyan mintha profi festő csinálta volna.",
+          "4": "Nagyapám festő volt."
+        }
       }
     },
     "messages": {

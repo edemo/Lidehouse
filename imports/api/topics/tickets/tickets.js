@@ -20,7 +20,7 @@ Tickets.urgencyColors = {
   normal: 'warning',
   low: 'primary',
 };
-Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty'];
+Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 
 let chooseContract = {};
 if (Meteor.isClient) {

@@ -137,7 +137,7 @@ export class CommunityBuilder {
     Comments.methods.insert._execute({ userId: data.userId }, comment);
   }
   statusChange(topicId, data) {
-    const managerId = this.getUserWithRole('manager');
+    const managerId = this.getUserWithRole('maintainer');
     Topics.methods.statusChange._execute({ userId: managerId },
       _.extend({ userId: managerId, topicId, type: 'statusChangeTo' }, data)
     );

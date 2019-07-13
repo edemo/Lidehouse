@@ -212,6 +212,19 @@
         "title": "Owners Association Meeting 2018-I."
       }
     },
+    "contract": {
+      "0": {
+        "title": "Caretaker agreement",
+        "text": "Detailed caretaker duties list in the document store.",
+        "partner": "Peter Baker SC"
+      },
+      "1": {
+        "title": "Elevator maintenance contract",
+        "text": "Monthly planned maintenance and part supplly by warranty",
+        "partner": "Lift fix ultra",
+        "ticketText": "Monthly planned maintenance"
+      }
+    },
     "ticket": {
       "0": {
         "title": "Elevator out of order",
@@ -230,7 +243,14 @@
       },
       "3": {
         "title": "Cracks in the wall",
-        "text": "On the second floor the wall is cracked, pieces of it fallen down."
+        "text": "On the second floor the wall is cracked, pieces of it fallen down.",
+        "comment": {
+          "0": "I can fix this next week. We only need to buy the materials.",
+          "1": "I will also paint it over nicely. But the big ladder I can only get on Tuesday.",
+          "2": "I had some time over the weekend too to work on it. So I finished a bit earlier.",
+          "3": "Looks lovely Mr Baker! Looks just like a professional paint job.",
+          "4": "My grandfather was actually a professional painter."
+        }
       }
     },
     "messages": {

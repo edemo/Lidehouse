@@ -35,11 +35,15 @@ export const Clock = {
   },
   tick(...args) {
     debugAssert(args.length === 2);
-    Clock.setSimulatedTime(moment(simulatedTime).add(...args).toDate());
+    const newTime = moment(simulatedTime).add(...args).toDate();
+    Clock.setSimulatedTime(newTime);
+    return newTime;
   },
   tickSome(arg) {
     const some = Math.floor(Math.random() * 10) + 1;
-    Clock.setSimulatedTime(moment(simulatedTime).add(some, arg).toDate());
+    const newTime = moment(simulatedTime).add(some, arg).toDate();
+    Clock.setSimulatedTime(newTime);
+    return newTime;
   },
   clear() {
     simulatedTime = null;

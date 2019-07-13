@@ -14,8 +14,8 @@ export const Contracts = new Mongo.Collection('contracts');
 Contracts.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   title: { type: String, max: 100, optional: true },
-  text: { type: String, max: 1000, optional: true },
-  partner: { type: String, max: 100, optional: true },
+  text: { type: String, max: 5000, autoform: { rows: 8 } },
+  partner: { type: String, max: 50, optional: true },
 });
 
 Contracts.helpers({

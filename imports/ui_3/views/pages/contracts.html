@@ -20,7 +20,9 @@
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
-                <div class="btn-group">
+                <div>{{_ 'schemaContracts.partner.label'}}: {{this.partner}}</div>
+                <div>{{_ 'schemaContracts.text.label'}}: {{this.text}}</div>
+                <div class="btn-group m-t-sm m-b-sm">
                   {{#if userHasPermission 'contracts.update' (fromSession 'activeCommunityId')}}
                   <button class="btn-white btn btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                   {{/if}}

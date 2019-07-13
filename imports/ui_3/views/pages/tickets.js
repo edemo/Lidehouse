@@ -32,7 +32,7 @@ Template.Tickets.viewmodel({
   },
   tickets() {
     const communityId = Session.get('activeCommunityId');
-    const selector = { communityId, category: 'ticket', 'ticket.type' : 'issue' };
+    const selector = { communityId, category: 'ticket', 'ticket.type': 'issue' };
     if (this.activesOnly()) selector.status = { $ne: 'closed' };
     if (this.filterUserId()) selector.userId = this.filterUserId();
     let topicsList = Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
@@ -46,7 +46,7 @@ Template.Tickets.viewmodel({
   },
   recentTickets() {
     const communityId = Session.get('activeCommunityId');
-    return Topics.find({ communityId, category: 'ticket',
+    return Topics.find({ communityId, category: 'ticket', 'ticket.type': 'issue',
       createdAt: { $gt: moment().subtract(2, 'week').toDate() },
     }, { sort: { createdAt: -1 } });
   },

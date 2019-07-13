@@ -193,6 +193,22 @@
       "label": "Agenda topics"
     }
   },
+  "schemaContracts": {
+    "title": {
+      "label": "Name",
+      "placeholder": "(eg. Elevator regular maintenance)"
+    },
+    "text": {
+      "label": "Decription",
+      "placeholder": "(eg. 2012 CXXL. regulation makes it mandatory)"
+    },
+    "partner": {
+      "label": "Servicing partner"
+    },
+    "topicIds": {
+      "label": "Worksheets"
+    }
+  },
   "schemaTopics": {
     "title": {
       "label": "Title",
@@ -315,7 +331,8 @@
         "label": "Charge type",
         "oneoff": "One-off",
         "lumpsum": "Lump sum contract",
-        "warranty": "Under warranty"
+        "warranty": "Under warranty",
+        "insurance": "Covered by insurance"
       },
       "contractId" : {
         "label": "Contract"

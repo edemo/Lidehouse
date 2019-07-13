@@ -620,21 +620,22 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   Clock.starts(4, 'month', 'ago');
   const contract0 = demoBuilder.create('contract', {
-    title: 'Gondnoki szerződés',
-    partner: 'Bokor Peter EV',
+    title: __('demo.contract.0.title'),
+    text: __('demo.contract.0.text'),
+    partner: __('demo.contract.0.partner'),
   });
   const contract1 = demoBuilder.create('contract', {
-    title: 'Lift karbantartási szerződés',
-    text: 'Havi időszerű karbantartás és garanciális alkatrészellátás',
-    partner: 'Lift fix ultra',
+    title: __('demo.contract.1.title'),
+    text: __('demo.contract.1.text'),
+    partner: __('demo.contract.1.partner'),
   });
   [1, 2, 3, 4].forEach(m => {
     Clock.tick(1, 'month');
     const maintainanceDate = moment(Clock.currentDate());
     const ticket = demoBuilder.create('ticket', {
       userId: demoMaintainerId,
-      title: 'Lift karbantartás ' + maintainanceDate.format('MMM YYYY'),
-      text: 'Havi időszerű karbantartás',
+      title: __('demo.contract.1.title') + ' ' + maintainanceDate.format('MMM YYYY'),
+      text: __('demo.contract.1.ticketText'),
       status: 'scheduled',
       ticket: {
         type: 'maintenance',
@@ -718,7 +719,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tickSome('minutes');
   demoBuilder.statusChange(ticket1, { status: 'closed', data: {} });
 
-  Clock.tickSome('hours');
+  Clock.tickSome('days');
   const ticket2 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.2.title'),
@@ -747,29 +748,42 @@ export function insertDemoHouse(lang, demoOrTest) {
       urgency: 'low',
     },
   });
-  Clock.tickSome('minutes');
+  Clock.tickSome('hours');
   demoBuilder.statusChange(ticket3, { status: 'confirmed',
     data: {
+      text: __('demo.ticket.3.comment.0'),
       localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'),
-      expectedCost: 1500,
-      expectedStart: Clock.date(1, 'days', 'ahead'),
-      expectedFinish: Clock.date(2, 'days', 'ahead'),
+      contractId: contract0,
+      expectedCost: 10000,
+      expectedStart: Clock.date(1, 'week', 'ahead'),
+      expectedFinish: Clock.date(2, 'week', 'ahead'),
     },
   });
-  Clock.tickSome('hours');
+  const actualStart3 = Clock.tick(1, 'week');
   demoBuilder.statusChange(ticket3, { status: 'progressing',
-    data: { expectedFinish: Clock.time(2, 'days', 'ahead') },
+    data: {
+      text: __('demo.ticket.3.comment.1'),
+      expectedFinish: Clock.time(10, 'day', 'ahead'),
+    },
   });
-  Clock.tickSome('hours'); Clock.tickSome('minutes');
+  const actualFinish3 = Clock.tick(8, 'day');
   demoBuilder.statusChange(ticket3, { status: 'finished',
     data: {
-      actualCost: 1300,
-      actualStart: Clock.date(2, 'days', 'ahead'),
-      actualFinish: Clock.date(2, 'days', 'ahead'),
+      text: __('demo.ticket.3.comment.2'),
+      actualCost: 8500,
+      actualStart: actualStart3,
+      actualFinish: actualFinish3,
     },
   });
+  demoBuilder.createComment({
+    topicId: ticket3,
+    userId: nextUser(),
+    text: __('demo.ticket.3.comment.3'),
+  });
   Clock.tickSome('minutes');
-  demoBuilder.statusChange(ticket3, { status: 'closed', data: {} });
+  demoBuilder.statusChange(ticket3, { status: 'closed', data: {
+    text: __('demo.ticket.3.comment.4'),
+  } });
 
   Clock.clear();
 
