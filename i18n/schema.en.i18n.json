@@ -293,7 +293,7 @@
   },
   "schemaTickets": {
     "title": {
-      "label": "Title",
+      "label": "Short summary",
       "placeholder": "(eg. Elevator not working)"
     },
     "text": {
@@ -367,6 +367,9 @@
       "actualContinue": { 
         "label": "Actual continuation"
       }
+    },
+    "moreDates": {
+      "label": "More dates (if adding more than one occasions)"
     }
   },
   "schemaFeedback": {

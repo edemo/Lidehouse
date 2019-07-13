@@ -300,7 +300,7 @@
       "label": "Azonosító"
     },
     "title": {
-      "label": "Hiba lényege",
+      "label": "Rövid leírás",
       "placeholder": "(pl. Elromlott a lift)"
     },
     "text": {
@@ -374,6 +374,9 @@
       "actualContinue": { 
         "label": "Tényleges folytatás"
       }
+    },
+    "moreDates": {
+      "label": "További dátumok (ha több jegyet visz fel egyszerre)"
     }
   },
   "schemaFeedback": {
