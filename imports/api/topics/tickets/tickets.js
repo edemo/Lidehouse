@@ -100,7 +100,7 @@ const confirmed = {
 
 const scheduled = {
   name: 'scheduled',
-  color: 'warning',
+  color: 'info',
   data: [
     'partner',
     'chargeType',
