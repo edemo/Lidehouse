@@ -241,7 +241,7 @@ CommunityRelatedRoutes.push('Tickets');
 FlowRouter.route('/worksheets', {
   name: 'Worksheets',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'Tickets_tasks' });
+    BlazeLayout.render('Main_layout', { content: 'Worksheets' });
   },
 });
 CommunityRelatedRoutes.push('Worksheets');

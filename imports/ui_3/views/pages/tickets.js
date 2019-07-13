@@ -53,7 +53,7 @@ Template.Tickets.viewmodel({
 
 Template.Tickets.events({
   'click .js-new'() {
-    afTicketInsertModal();
+    afTicketInsertModal('issue');
   },
   'click .js-filter-actives'(event, instance) {
     $(event.target).blur();

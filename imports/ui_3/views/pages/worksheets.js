@@ -12,21 +12,21 @@ import { _ } from 'meteor/underscore';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
-import { afTicketInsertModal, afTaskInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
+import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import './worksheets.html';
 
-Template.Tickets_tasks.onCreated(function onCreated() {
+Template.Worksheets.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   this.autorun(() =>
     this.subscribe('communities.byId', { _id: this.getCommunityId() })
   );
 });
 
-Template.Tickets_tasks.viewmodel({
+Template.Worksheets.viewmodel({
   ticketText: '',
   ticketStatusArray: [],
   ticketTypeArray: Tickets.typeValues,
@@ -143,12 +143,10 @@ Template.Tickets_tasks.viewmodel({
   },
 });
 
-Template.Tickets_tasks.events({
-  'click .js-new'() {
-    afTicketInsertModal();
-  },
-  'click .js-new-task'() {
-    afTaskInsertModal();
+Template.Worksheets.events({
+  'click .js-new'(event) {
+    const type = $(event.target).closest('a').data('type');
+    afTicketInsertModal(type);
   },
   'click .js-view'(event) {
     const id = $(event.target).closest('button').data('id');

@@ -351,7 +351,6 @@
   "Worksheet archive": "Munkalap archívum",
   "Ticket search": "Hibajegy keresés",
   "New ticket": "Új hiba bejelentése",
-  "Own tickets": "Saját bejelentések",
   "Please dont report twice": "Karbantartó kollegáink munkáját segítendő, kérjük csak akkor adja fel hibabejelentését, ha az még nem szerepel a közelmúltban felvett hibajegyek között.",
   "Thank you": "Köszönjük",
   "Create ticket": "Bejelentés elküldése",
@@ -359,14 +358,11 @@
   "Filter settings": "Szűrő beállítás",
   "Clear filters": "Szűrők törlése",
   "Title": "Cím",
-  "Reported by me": "Csak a saját bejelentéseim",
   "Reported by": "Bejelentő",
   "Reported at": "Bejelentve",
   "Type": "Típus",
   "No tickets yet": "Még nincs bejelentése",
-  "task": "feladat",
-  "tasks": "feladatok",
-  "My own only": "Sajátjaim mutatása",
+  "My own only": "Csak a sajátjaim",
 
   // finances
   "Money accounts total": "Pénzeszközök összesen",
