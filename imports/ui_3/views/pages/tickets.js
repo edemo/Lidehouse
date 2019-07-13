@@ -9,12 +9,11 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
-import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
-  from '/imports/ui_3/views/components/tickets-edit.js';
+import { afTicketInsertModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
-import '/imports/ui_3/views/components/ticket-list.html';
+import '/imports/ui_3/views/components/ticket-list.js';
 import './tickets.html';
 
 Template.Tickets.viewmodel({
@@ -55,19 +54,6 @@ Template.Tickets.viewmodel({
 Template.Tickets.events({
   'click .js-new'() {
     afTicketInsertModal();
-  },
-  'click .js-edit'(event) {
-    const id = $(event.target).data('id');
-    afTicketUpdateModal(id);
-  },
-  'click .js-status'(event) {
-    const id = $(event.target).data('id');
-    const status = $(event.target).data('status');
-    afTicketStatusChangeModal(id, status);
-  },
-  'click .js-delete'(event) {
-    const id = $(event.target).data('id');
-    deleteTicketConfirmAndCallModal(id);
   },
   'click .js-filter-actives'(event, instance) {
     $(event.target).blur();

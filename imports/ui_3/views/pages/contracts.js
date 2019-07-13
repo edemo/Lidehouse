@@ -10,7 +10,7 @@ import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/components/ticket-list.html';
+import '/imports/ui_3/views/components/ticket-list.js';
 import './contracts.html';
 
 Template.Contracts.onCreated(function onCreated() {

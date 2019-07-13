@@ -292,6 +292,9 @@
     }
   },
   "schemaTickets": {
+    "id": {
+      "label": "Identifier"
+    },
     "title": {
       "label": "Short summary",
       "placeholder": "(eg. Elevator not working)"

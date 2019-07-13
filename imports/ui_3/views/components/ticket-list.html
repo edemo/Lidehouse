@@ -5,18 +5,14 @@
             {{#each tickets}}
             <tr>
                 <td>
-                    {{#if status}}                        
-                    <span class="label label-{{this.statusObject.color}}">{{_ (concat 'schemaTopics.status.' status)}}</span>
-                    {{/if}}
+                    {{{displayTicketStatus status}}}
                 </td>
                 <td class="issue-info">
                     <a href="{{pathFor 'Topic show' _tid=_id}}">{{title}}</a>
                     <small>{{>Chopped text=text chars=150}}</small>
                 </td>
                 <td>
-                    {{#if ticket.localizer}}
-                    <span class="label label-success label-xs">{{displayLocalizer this.ticket.localizer (fromSession 'activeCommunityId')}}</span>
-                    {{/if}}
+                    {{{displayLocalizer this.ticket.localizer (fromSession 'activeCommunityId')}}}
                 </td>
                 <td>
                     {{createdBy}}
@@ -29,7 +25,7 @@
                         {{#if userHasPermission 'ticket.statusChange' (fromSession 'activeCommunityId')  }}
                         <div class="dropdown pull-left">
                             <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white">
-                                <i class="fa fa-cog"></i> {{_ 'statusChange'}} <b class="caret"></b>
+                                <i class="fa fa-cogs"></i> {{_ 'statusChange'}} <b class="caret"></b>
                             </a>
                             <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
                                 {{#each status in (this.possibleNextStatuses)}}

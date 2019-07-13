@@ -6,7 +6,7 @@
 
     <div class="ibox filters">
       <div class="ibox-title">
-        <h5>{{_ 'Filters'}}</h5>
+        <h5>{{_ 'Filter settings'}}</h5>
         {{> iboxTools}}
       </div>
 
@@ -24,7 +24,7 @@
             <div class="input-group">
               <label class="control-label text-capitalize">{{_ 'work'}} {{_'type'}}</label><br>
               {{#each ticketType in ticketTypes}}
-              <button type="button" class="js-type-filter btn btn-info btn-xs btn-outline {{activeTypeButton ticketType}}" data-value="{{ticketType}}">{{_ (concat 'schemaTickets.ticket.type.' ticketType)}}</button>
+              <button type="button" class="js-type-filter btn btn-default btn-xs btn-outline {{activeTypeButton ticketType}}" data-value="{{ticketType}}">{{_ (concat 'schemaTickets.ticket.type.' ticketType)}}</button>
               {{/each}}
             </div>
           </div>
@@ -58,7 +58,8 @@
 
         <div class="row">
           <div class="col-sm-9">
-            <button type="button" class="js-reported-by-current-user btn btn-primary btn-xs btn-outline btn-warning {{activeReportedByCurrentUserButton}}">{{_ 'Reported by me'}}</button>
+            <input type="checkbox" name="allow" id="mine-only" {{b "check: reportedByCurrentUser"}}>
+            <label for="mine-only">{{_ 'Reported by me'}}</label>
           </div>
           <div class="col-sm-3 align">
             <button type="button" class="js-clear-filter btn btn-default btn-xs {{#if noFilters}}disabled{{/if}}" data-value="cancel">
