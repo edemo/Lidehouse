@@ -634,12 +634,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     const maintainanceDate = moment(Clock.currentDate());
     const ticket = demoBuilder.create('ticket', {
       userId: demoMaintainerId,
-      title: __('demo.contract.1.title') + ' ' + maintainanceDate.format('MMM YYYY'),
+      title: __('demo.contract.1.ticketTitle') + ' ' + maintainanceDate.format('YYYY MMM'),
       text: __('demo.contract.1.ticketText'),
       status: 'scheduled',
       ticket: {
         type: 'maintenance',
         urgency: 'normal',
+        localizer: demoBuilder.name2code('Localizer', 'Lift'),
         chargeType: 'lumpsum',
         contractId: contract1,
         expectedStart: maintainanceDate.toDate(),
@@ -659,6 +660,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   Clock.starts(1, 'month', 'ago');
+  nextUser(); // to skip the caretaker
   const ticket0 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.0.title'),
@@ -671,6 +673,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tickSome('minutes');
   demoBuilder.statusChange(ticket0, { status: 'confirmed',
+    text: __('demo.ticket.0.comment.0'),
     data: {
       localizer: demoBuilder.name2code('Localizer', 'Lift'),
       chargeType: 'lumpsum',
@@ -681,6 +684,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tickSome('days');
   demoBuilder.statusChange(ticket0, { status: 'progressing',
+    text: __('demo.ticket.0.comment.1'),
     data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
 
@@ -697,27 +701,32 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tickSome('minutes');
   demoBuilder.statusChange(ticket1, { status: 'confirmed',
+    text: __('demo.ticket.1.comment.0'),
     data: {
       localizer: '@A409',
-      expectedCost: 1200,
+      chargeType: 'insurance',
       expectedStart: Clock.date(3, 'days', 'ahead'),
       expectedFinish: Clock.date(4, 'days', 'ahead'),
     },
   });
-  Clock.tickSome('hours');
+  const actualStart1 = Clock.tick(2, 'days');
   demoBuilder.statusChange(ticket1, { status: 'progressing',
+    text: __('demo.ticket.1.comment.1'),
     data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
-  Clock.tickSome('hours');
+  const actualFinish1 = Clock.tick(2, 'days');
   demoBuilder.statusChange(ticket1, { status: 'finished',
+    text: __('demo.ticket.1.comment.2'),
     data: {
-      actualCost: 800,
-      actualStart: Clock.date(3, 'days', 'ahead'),
-      actualFinish: Clock.date(3, 'days', 'ahead'),
+      actualStart: actualStart1,
+      actualFinish: actualFinish1,
     },
   });
-  Clock.tickSome('minutes');
-  demoBuilder.statusChange(ticket1, { status: 'closed', data: {} });
+  Clock.tick(2, 'days');
+  demoBuilder.statusChange(ticket1, { status: 'closed',
+    text: __('demo.ticket.1.comment.3'),
+    data: {},
+  });
 
   Clock.tickSome('days');
   const ticket2 = demoBuilder.create('ticket', {
@@ -750,8 +759,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.tickSome('hours');
   demoBuilder.statusChange(ticket3, { status: 'confirmed',
+    text: __('demo.ticket.3.comment.0'),
     data: {
-      text: __('demo.ticket.3.comment.0'),
       localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'),
       contractId: contract0,
       expectedCost: 10000,
@@ -761,15 +770,15 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   const actualStart3 = Clock.tick(1, 'week');
   demoBuilder.statusChange(ticket3, { status: 'progressing',
+    text: __('demo.ticket.3.comment.1'),
     data: {
-      text: __('demo.ticket.3.comment.1'),
       expectedFinish: Clock.time(10, 'day', 'ahead'),
     },
   });
   const actualFinish3 = Clock.tick(8, 'day');
   demoBuilder.statusChange(ticket3, { status: 'finished',
+    text: __('demo.ticket.3.comment.2'),
     data: {
-      text: __('demo.ticket.3.comment.2'),
       actualCost: 8500,
       actualStart: actualStart3,
       actualFinish: actualFinish3,
@@ -781,9 +790,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.ticket.3.comment.3'),
   });
   Clock.tickSome('minutes');
-  demoBuilder.statusChange(ticket3, { status: 'closed', data: {
+  demoBuilder.statusChange(ticket3, { status: 'closed',
     text: __('demo.ticket.3.comment.4'),
-  } });
+    data: {},
+  });
 
   Clock.clear();
 

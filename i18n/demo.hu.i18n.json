@@ -223,17 +223,28 @@
         "title": "Lift karbantartási szerződés",
         "text": "Havi időszerű karbantartás és garanciális alkatrészellátás",
         "partner": "Lift fix ultra",
+        "ticketTitle": "Lift karbantartás",
         "ticketText": "Havi időszerű karbantartás"
       }
     },
     "ticket": {
       "0": {
         "title": "Elromlott a lift",
-        "text": "A hatodikon megállt. Semmilyen gombra nem reagál."
+        "text": "A hatodikon megállt. Semmilyen gombra nem reagál.",
+        "comment": {
+          "0": "Kihívtam a lift karbantartókat. Ha rutin javítási munkáról van csak szó, azt a karbantartási szerződésünk fedezi. Csak akkor kell fizetnünk, ha valami komolyabb probléma van.",
+          "1": "Úgy néz ki egyszerűen javítható, de el kellett vinniük az elektromos panelt, csak a műhelyben tudják javítani. Sajnos így egy pár napot várnunk kell mire visszahozzák."
+        }
       },
       "1": {
         "title": "Beázik a fürdőszobám a felettem lakótól.",
-        "text": "Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék."
+        "text": "Le is omlott egy darab a mennyezetből. Még szerencse hogy nem fürödtem éppen akkor. Most lehet már nem élnék.",
+        "comment": {
+          "0": "A biztosításunk szerencsére fedezi az ehhez hasonló eseteket. Azonnal hívom a biztosítót.",
+          "1": "A kibontás már megtörtént, a biztosító lefényképezett mindent. Holnapután fognak jönni visszaburkolni.",
+          "2": "A munka ma rendben el lett végezve. Már csak a biztosítótol várjuk az utálást",
+          "3": "A pénz is megjött. A számlát rendeztük."
+        }
       },
       "2": {
         "title": "Áramkimaradás éjjelente",
@@ -250,7 +261,7 @@
           "1": "Le is festem. De a nagy létrát csak kedden tudom elkérni.",
           "2": "Hétvégén is volt időm dolgozgatni rajta. Így kicsit előbb készültem el, mint gondoltam.",
           "3": "Nagyon szép lett Bokor úr! Olyan mintha profi festő csinálta volna.",
-          "4": "Nagyapám festő volt."
+          "4": "Talán még nem is említettem, hogy nagyapám festő volt."
         }
       }
     },

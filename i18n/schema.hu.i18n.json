@@ -345,7 +345,7 @@
         "label": "Szerződés"
       },
       "txId": {
-        "label": "Kifizetés"
+        "label": "Pénzügyi tranzakció"
       },
       "expectedCost": { 
         "label": "Várható költség"
