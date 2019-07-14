@@ -13,7 +13,6 @@ import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import { createHmac } from 'crypto';
 
 export function afTicketInsertModal(type, contractId) {
   const workflow = Tickets.workflows[type];
@@ -23,7 +22,7 @@ export function afTicketInsertModal(type, contractId) {
   }]);
   schemaWithMoreDates.i18n('schemaTickets');
 
-  let fields = ['title', 'text'].concat(startStatus.data.map(d => 'ticket.' + d));
+  let fields = ['title', 'text', 'photo'].concat(startStatus.data.map(d => 'ticket.' + d));
   if (type === 'maintenance') {
     fields.push('moreDates');
   }
@@ -154,5 +153,6 @@ AutoForm.addHooks('af.ticket.statusChange', {
   },
   onSuccess(formType, result) {
     Session.set('activeTopicId');  // clear it
+    Session.set('newStatusName');  // clear it
   },
 });
