@@ -71,15 +71,6 @@ Template.Comments_section.viewmodel({
   },
 });
 
-Template.StatusChange.helpers({
-  templateByCategory() {
-    const topic = Topics.findOne(this.topicId);
-    if (topic.category === 'ticket') return 'ticketStatusChange';
-    if (topic.category === 'vote') return 'voteStatusChange';
-    return undefined;
-  },
-});
-
 Template.Comments_section.events({
  /* 'keydown .js-send-enter'(event) {
     const topicId = this._id;

@@ -144,6 +144,15 @@
     </div>
 </template>
 
+<template name="Ticket_field">
+    <dt>{{_ (concat 'schema' coll '.' key '.label')}}:</dt> <dd>
+        {{#if value}}
+        {{{displayValue key value}}}
+        {{else}}---
+        {{/if}}
+    </dd>
+</template>
+
 <template name="Ticket_topic_show">    
     <div class="wrapper wrapper-content animated fadeInUp">
         <div class="row">
@@ -179,26 +188,14 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="wrapper wrapper-content project-manager"> 
+                <div class="wrapper wrapper-content project-manager">
                     <dl class="">
-                        <dt>{{_ 'schemaTopics.status.label'}}:</dt> <dd>
-                            {{#if status}}
-                            <span class="label label-{{this.statusObject.color}}">{{_ (concat 'schemaTopics.status.' status)}}</span>
-                            {{else}}---
-                            {{/if}}
-                        </dd>
+                        {{>Ticket_field coll='Topics' key='status' value=this.status}}
+                        {{>Ticket_field coll='Tickets' key='ticket.urgency' value=this.ticket.urgency}}
                     </dl>
                     <dl class="">
-                        <dt>{{_ 'schemaTickets.ticket.urgency.label'}}:</dt> <dd>
-                            {{#if ticket.urgency}}
-                            <span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span>
-                            {{else}}---
-                            {{/if}}
-                        </dd>
-                    </dl>
-                    <dl class="">
-                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy}}</dd>
-                        <dt>{{_ 'createdAt'}}:</dt> <dd>{{displayDate createdAt}}</dd>
+                        {{>Ticket_field coll='General' key='createdBy' value=this.createdBy}}
+                        {{>Ticket_field coll='General' key='createdAt' value=this.createdAt}}
                     </dl>
                 </div>
             </div>

@@ -1,5 +1,19 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaGeneral": {
+    "createdBy": {
+      "label": "Created by"
+    },
+    "createdAt": {
+      "label": "Created at"
+    },
+    "updatedAt": {
+      "label": "Last updated at"
+    },
+    "updatedBy": {
+      "label": "Updated by"
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Registered e-mail address",

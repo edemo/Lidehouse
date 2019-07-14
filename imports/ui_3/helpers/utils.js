@@ -66,13 +66,6 @@ Template.registerHelper('displayTimeFrom', function displayTimeFrom(time) {
     return moment(time).from(serverTimeNow);
 });
 
-// TODO: This aims to be a generic display, but now works only for ticket data - needs generalization!
-Template.registerHelper('displayValue', function displayValue(val) {
-    if (_.isDate(val)) return moment(val).format('L');
-    if (_.isString(val)) return __(val);
-    return val;
-});
-
 // Takes any number of arguments and returns them concatenated.
 Template.registerHelper('concat', function concat() {
     return Array.prototype.slice.call(arguments, 0, -1).join('');

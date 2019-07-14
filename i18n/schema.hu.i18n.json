@@ -1,5 +1,19 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaGeneral": {
+    "createdBy": {
+      "label": "Létrehozta"
+    },
+    "createdAt": {
+      "label": "Létrehozva"
+    },
+    "updatedAt": {
+      "label": "Utoljára módosítva"
+    },
+    "updatedBy": {
+      "label": "Módosította"
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Regisztrált e-mail cím",
