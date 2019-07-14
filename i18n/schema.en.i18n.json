@@ -8,10 +8,10 @@
       "label": "Created at"
     },
     "updatedAt": {
-      "label": "Last updated at"
+      "label": "Last activity at"
     },
     "updatedBy": {
-      "label": "Updated by"
+      "label": "Last activity by"
     }
   },
   "schemaUsers": {

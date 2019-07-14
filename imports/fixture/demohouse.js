@@ -762,6 +762,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.ticket.3.comment.0'),
     data: {
       localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'),
+      chargeType: 'oneoff',
       contractId: contract0,
       expectedCost: 10000,
       expectedStart: Clock.date(1, 'week', 'ahead'),
@@ -772,7 +773,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoBuilder.statusChange(ticket3, { status: 'progressing',
     text: __('demo.ticket.3.comment.1'),
     data: {
-      expectedFinish: Clock.time(10, 'day', 'ahead'),
+      expectedFinish: Clock.date(10, 'day', 'ahead'),
     },
   });
   const actualFinish3 = Clock.tick(8, 'day');

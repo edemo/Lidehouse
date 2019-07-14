@@ -203,6 +203,9 @@ Topics.categoryHelpers('ticket', {
   modifiableFields() {
     return Tickets.modifiableFields;
   },
+  contract() {
+    return Contracts.findOne(this._id);
+  },
 });
 
 // ===================================================
