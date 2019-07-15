@@ -23,15 +23,16 @@
                 <div class="contract-details">
                     <span class="pull-right">
                       {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')}}
-                      <div class="dropdown pull-right">
-                          <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
+                      <div class="dropdown btn-group pull-right">
+                          <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
                               <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheets'}} <b class="caret"></b>
-                          </a>
+                          </button>
                           <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
                               {{#each type in ticketTypes}}
                               <li><a href="" class="js-add" data-id={{this._id}} data-type="{{type}}">{{_ (concat 'schemaTickets.ticket.type.' type)}}</a></li>
                               {{/each}}
                           </ul>
+                          <button class="btn btn-white btn-xs js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
                       </div>
                       <!--button class="btn btn-primary btn-xs js-add" ><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheets'}}</button-->
                       {{/if}}
