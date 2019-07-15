@@ -64,7 +64,7 @@ export const Render = {
   buttonStatusChange(cellData) {
     const thisTopic = Topics.findOne(cellData);
     let html = `<div class="dropdown pull-left">
-                  <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white" title=${__('statusChange')}>
+                  <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white" title="${__('statusChange')}"}>
                     <i class="fa fa-cogs"></i> 
                     <b class="caret"></b>
                   </a>

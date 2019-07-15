@@ -8,19 +8,21 @@ import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 
-function label(value, color) {
+function label(value, color, icon) {
   if (!value) return undefined;
-  return `<span class="label label-${color} label-xs">${value}</span>`;
+  const iconBadge = icon ? `<i class="fa fa-${icon}"></i> ` : '';
+  return `<span class="label label-${color} label-xs">${iconBadge}${value}</span>`;
 }
 
 export function displayAccount(account, communityId) {
   if (!account) return '';
-  return label(ChartOfAccounts.get({ communityId }).display(account), 'success');
+  return label(ChartOfAccounts.get({ communityId }).display(account), 'success', 'tag');
 }
 
 export function displayLocalizer(localizer, communityId) {
   if (!localizer) return '';
-  return label(Localizer.get(communityId).display(localizer), 'success');
+  const displayText = Localizer.get(communityId).display(localizer);
+  return label(displayText.substring(1), 'success', 'map-marker');
 }
 
 export function displayTicketType(name) {
@@ -53,7 +55,6 @@ Template.registerHelper('displayUrgency', displayUrgency);
 Template.registerHelper('displayChargeType', displayChargeType);
 
 const Renderers = {
-  'Topics.agendaId': id => Agendas.findOne(id).title,
   'Topics.status': displayTicketStatus,
   'Tickets.ticket.type': displayTicketType,
   'Tickets.ticket.urgency': displayUrgency,
@@ -61,6 +62,7 @@ const Renderers = {
   'Tickets.ticket.chargeType': displayChargeType,
   'Tickets.ticket.contractId': id => Contracts.findOne(id).title,
   //'ticket.txId'
+  'Votings.agendaId': id => Agendas.findOne(id).title,
 };
 
 // This aims to be a generic display -- works for Tickets only for now
