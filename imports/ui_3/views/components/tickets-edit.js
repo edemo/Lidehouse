@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
@@ -128,8 +129,13 @@ AutoForm.addHooks('af.ticket.insert', {
       });
     }
     insert(doc);
+
+    const expectedLength = (doc.ticket.expectedStart && doc.ticket.expectedFinish) ?
+      moment(doc.ticket.expectedFinish).diff(moment(doc.ticket.expectedStart)) : undefined;
     doc.moreDates.forEach((date) => {
+      if (!date) return;
       doc.ticket.expectedStart = date;
+      if (expectedLength) doc.ticket.expectedFinish = moment(date).add(expectedLength).toDate();
       insert(doc);
     });
     return false;
