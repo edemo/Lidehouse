@@ -12,7 +12,7 @@ import { _ } from 'meteor/underscore';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
-import { afTicketInsertModal, afTaskInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
+import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -75,11 +75,6 @@ Template.Worksheets.viewmodel({
     if ((ticketTypeArray.includes(data))) return 'active';
     return '';
   },
-  activeReportedByCurrentUserButton() {
-    const reportedByCurrentUser = this.reportedByCurrentUser();
-    if (reportedByCurrentUser) return 'active';
-    return '';
-  },
   recentTickets() {
     const communityId = Session.get('activeCommunityId');
     const recentTickets = [];
@@ -119,6 +114,7 @@ Template.Worksheets.viewmodel({
     return () => {
       const communityId = self.communityId();
       const permissions = {
+        view: true,
         edit: Meteor.userOrNull().hasPermission('ticket.update', communityId),
         delete: Meteor.userOrNull().hasPermission('ticket.remove', communityId),
       };
@@ -148,23 +144,30 @@ Template.Worksheets.viewmodel({
 });
 
 Template.Worksheets.events({
+<<<<<<< HEAD
   'click .js-new'() {
     afTicketInsertModal();
+=======
+  'click .js-new'(event) {
+    const type = $(event.target).closest('a').data('type');
+    afTicketInsertModal(type);
+>>>>>>> upstream/ticket
   },
-  'click .js-new-task'() {
-    afTaskInsertModal();
+  'click .js-view'(event) {
+    const id = $(event.target).closest('button').data('id');
+    FlowRouter.go('Topic show', { _tid: id });
   },
   'click .js-edit'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     afTicketUpdateModal(id);
   },
   'click .js-status'(event) {
-    const id = $(event.target).data('id');
-    const status = $(event.target).data('status');
+    const id = $(event.target).closest('a').data('id');
+    const status = $(event.target).closest('a').data('status');
     afTicketStatusChangeModal(id, status);
   },
   'click .js-delete'(event) {
-    const id = $(event.target).data('id');
+    const id = $(event.target).closest('button').data('id');
     deleteTicketConfirmAndCallModal(id);
   },
   'click .js-clear-filter'(event, instance) {
@@ -196,11 +199,6 @@ Template.Worksheets.events({
       ticketTypeArray.push(ticketType);
       instance.viewmodel.ticketTypeArray(ticketTypeArray);
     }
-  },
-  'click .js-reported-by-current-user'(event, instance) {
-    const oldValue = instance.viewmodel.reportedByCurrentUser();
-    instance.viewmodel.reportedByCurrentUser(!oldValue);
-    if (oldValue) $(event.target).blur();
   },
   'keyup .js-search'(event, instance) {
     instance.viewmodel.ticketText(event.target.value);

@@ -4,9 +4,9 @@
 
   <div class="wrapper wrapper-content animated fadeInRight">
 
-    <div class="ibox">
+    <div class="ibox filters">
       <div class="ibox-title">
-        <h5>{{_ 'Filters'}}</h5>
+        <h3>{{_ 'Filter settings'}}</h3>
         {{> iboxTools}}
       </div>
 
@@ -14,7 +14,7 @@
         <div class="row">
           <div class="col-sm-12">
             <div class="input-group">
-              <label class="control-label">{{_ 'Ticket status'}}</label><br>
+              <label class="control-label text-capitalize">{{_ 'work'}} {{_ 'status'}}</label><br>
               {{#each ticketStatus in ticketStatuses}}
               <button type="button" class="js-status-filter btn btn-primary btn-xs btn-outline btn-{{ticketStatus.color}} {{activeStatusButton ticketStatus.name}}" data-value="{{ticketStatus.name}}">{{_ (concat 'schemaTopics.status.' ticketStatus.name)}}</button>
               {{/each}}
@@ -22,9 +22,9 @@
           </div>
           <div class="col-sm-12">
             <div class="input-group">
-              <label class="control-label">{{_ 'Ticket type'}}</label><br>
+              <label class="control-label text-capitalize">{{_ 'work'}} {{_'type'}}</label><br>
               {{#each ticketType in ticketTypes}}
-              <button type="button" class="js-type-filter btn btn-primary btn-xs btn-outline btn-warning {{activeTypeButton ticketType}}" data-value="{{ticketType}}">{{_ (concat 'schemaTickets.ticket.type.' ticketType)}}</button>
+              <button type="button" class="js-type-filter btn btn-default btn-xs btn-outline {{activeTypeButton ticketType}}" data-value="{{ticketType}}">{{_ (concat 'schemaTickets.ticket.type.' ticketType)}}</button>
               {{/each}}
             </div>
           </div>
@@ -58,31 +58,33 @@
 
         <div class="row">
           <div class="col-sm-9">
-            <button type="button" class="js-reported-by-current-user btn btn-primary btn-xs btn-outline btn-warning {{activeReportedByCurrentUserButton}}">{{_ 'Reported by me'}}</button>
+            <input type="checkbox" name="allow" id="mine-only" {{b "check: reportedByCurrentUser"}}>
+            <label for="mine-only">{{_ 'My own only'}}</label>
           </div>
           <div class="col-sm-3 align">
-            <button type="button" class="js-clear-filter btn btn-primary btn-xs {{#if noFilters}}disabled{{/if}}" data-value="cancel">{{_ 'clear filters'}}</button>
+            <button type="button" class="js-clear-filter btn btn-default btn-xs {{#if noFilters}}disabled{{/if}}" data-value="cancel">
+                <i class="fa fa-times"></i> {{_ 'Clear filters'}}
+            </button>
           </div>
         </div>
       </div>
     </div>
     <div class="ibox">
       <div class="ibox-title"> 
-        <div class="row">
-          <div class="col-sm-8">
-            <h5>{{_ 'Worksheet archive'}}</h5>
+        <h3>{{_ 'worksheets'}}</h3>
+        {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')  }}
+          <div class="dropdown pull-right">
+              <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
+                  <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}} <b class="caret"></b>
+              </a>
+              <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
+                  {{#each type in ticketTypes}}
+                  <li><a href="" class="js-new" data-type="{{type}}">{{_ (concat 'schemaTickets.ticket.type.' type)}}</a></li>
+                  {{/each}}
+              </ul>
           </div>
-          {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')  }}
-          <div class="col-sm-2 m-b-xs">  
-            <a href="" class="btn btn-primary btn-xs js-new pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'ticket'}}</a>
-          </div>
-          {{/if}}
-          {{#if userHasPermission 'task.insert' (fromSession 'activeCommunityId')  }}
-          <div class="col-sm-2 m-b-xs">  
-            <a href="" class="btn btn-primary btn-xs js-new-task pull-right"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'task'}}</a>
-          </div>
-          {{/if}}
-        </div>    
+          <!--a href="" class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}}</a-->
+        {{/if}}
       </div>
       <div class="ibox-content">
         <div class="no-padding table-responsive">

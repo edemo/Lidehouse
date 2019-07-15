@@ -11,6 +11,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/comments/methods.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
@@ -134,6 +135,12 @@ export class CommunityBuilder {
   createComment(data) {
     const comment = Factory.build('comment', data);
     Comments.methods.insert._execute({ userId: data.userId }, comment);
+  }
+  statusChange(topicId, data) {
+    const managerId = this.getUserWithRole('maintainer');
+    Topics.methods.statusChange._execute({ userId: managerId },
+      _.extend({ userId: managerId, topicId, type: 'statusChangeTo' }, data)
+    );
   }
   name2code(breakdownName, nodeName) {
     return Breakdowns.name2code(breakdownName, nodeName, this.communityId);

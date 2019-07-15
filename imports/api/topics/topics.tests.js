@@ -12,7 +12,6 @@ import { _ } from 'meteor/underscore';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
-import { statusChange } from '/imports/api/topics/methods.js';
 import { moment } from 'meteor/momentjs:moment';
 
 import '/i18n/en.i18n.json';
@@ -200,7 +199,7 @@ if (Meteor.isServer) {
               expectedStart: moment().toDate(),
               expectedFinish: moment().add(1, 'weeks').toDate(),
             };
-            statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'confirmed', data });
+            Topics.methods.statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'confirmed', data });
           }, 'err_permissionDenied');
           done();
         });
@@ -209,7 +208,7 @@ if (Meteor.isServer) {
           chai.assert.throws(() => {
             const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
             userId = Fixture.demoManagerId;
-            statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'progressing', data });
+            Topics.methods.statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'progressing', data });
           }, 'err_permissionDenied');
           done();
         });
@@ -221,7 +220,7 @@ if (Meteor.isServer) {
             expectedStart: moment().toDate(),
             expectedFinish: moment().add(1, 'weeks').toDate(),
           };
-          statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'confirmed', data });
+          Topics.methods.statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'confirmed', data });
           done();
         });
 

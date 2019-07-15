@@ -78,26 +78,22 @@
 <template name="StatusChange">
     {{#let eventStatusObject = (this.topic.statusObject this.status)}}
     {{_ 'changed the status'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaTopics.status.' this.status)}}</span><!--<strong>{{_ this.data.status}}</strong>--><br>
-    {{> Template.dynamic template=templateByCategory}}
+    <span>
+    <!--{{_ 'schemaTickets.text.label'}}:--> {{this.text}}
+    </span><br>
     <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+    {{#if entriesOf this.data}}
+    <div class="well">
+        {{#each dataEntry in entriesOf this.data}}
+        <span>
+        {{#let key=(concat 'Tickets.ticket.' dataEntry.[0])}}
+        {{displayKey key}}: {{{displayValue key dataEntry.[1]}}}
+        {{/let}}
+        </span><br>
+        {{/each}}
+    </div>
+    {{/if}}
     {{/let}}
 </template>
-
-<template name="ticketStatusChange">
-    <span>
-    {{_ 'schemaTickets.text.label'}}: {{this.text}}
-    </span><br>
-    {{#each dataEntry in entriesOf this.data}}
-    <span>
-    {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
-    {{displayValue dataEntry.[1]}} 
-    </span><br>
-    {{/each}}
-</template>
-
-<template name="voteStatusChange">
-
-</template>
-
 
 

@@ -4,9 +4,11 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 // import { readableId } from '/imports/api/readable-id.js';
 
 export const Tickets = {};
@@ -18,7 +20,24 @@ Tickets.urgencyColors = {
   normal: 'warning',
   low: 'primary',
 };
-Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty'];
+Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
+
+let chooseContract = {};
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+
+  chooseContract = {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const contracts = Contracts.find({ communityId });
+      const options = contracts.map(function option(c) {
+        return { label: c.title, value: c._id };
+      });
+      return options;
+    },
+    firstOption: () => __('(Select one)'),
+  };
+}
 
 Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
@@ -26,6 +45,7 @@ Tickets.extensionRawSchema = {
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
   partner: { type: String, optional: true },
   chargeType: { type: String, allowedValues: Tickets.chargeTypeValues, autoform: autoformOptions(Tickets.chargeTypeValues, 'schemaTickets.ticket.chargeType.'), optional: true },
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract, optional: true },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },
 
   expectedCost: { type: Number, decimal: true, optional: true },
@@ -71,6 +91,7 @@ const confirmed = {
     'localizer',
     'partner',
     'chargeType',
+    'contractId',
     'expectedCost',
     'expectedStart',
     'expectedFinish',
@@ -79,9 +100,11 @@ const confirmed = {
 
 const scheduled = {
   name: 'scheduled',
-  color: 'warning',
+  color: 'info',
   data: [
     'partner',
+    'chargeType',
+    'contractId',
     'expectedStart',
     'expectedFinish',
   ],
@@ -179,6 +202,9 @@ Topics.categoryHelpers('ticket', {
   },
   modifiableFields() {
     return Tickets.modifiableFields;
+  },
+  contract() {
+    return Contracts.findOne(this._id);
   },
 });
 

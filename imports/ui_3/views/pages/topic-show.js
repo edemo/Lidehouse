@@ -60,9 +60,3 @@ Template.Topic_show.helpers({
     }
   },
 });
-
-Template.Ticket_topic_show.helpers({
-  urgencyColor(value) {
-    return Tickets.urgencyColors[value];
-  },
-});

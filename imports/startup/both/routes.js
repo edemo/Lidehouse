@@ -28,7 +28,11 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/community-page.js';
   import '/imports/ui_3/views/pages/tickets.js';
   import '/imports/ui_3/views/pages/worksheets.js';
+<<<<<<< HEAD
   import '/imports/ui_3/views/pages/work-planner.js';
+=======
+  import '/imports/ui_3/views/pages/contracts.js';
+>>>>>>> upstream/ticket
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
   import '/imports/ui_3/views/pages/accounting-page.js';
@@ -246,6 +250,7 @@ FlowRouter.route('/worksheets', {
 });
 CommunityRelatedRoutes.push('Worksheets');
 
+<<<<<<< HEAD
 FlowRouter.route('/work-planner', {
   name: 'WorkPlanner',
   action() {
@@ -253,6 +258,15 @@ FlowRouter.route('/work-planner', {
   },
 });
 CommunityRelatedRoutes.push('WorkPlanner');
+=======
+FlowRouter.route('/contracts', {
+  name: 'Contracts',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Contracts' });
+  },
+});
+CommunityRelatedRoutes.push('Contracts');
+>>>>>>> upstream/ticket
 
 FlowRouter.route('/parcels-finances', {
   name: 'Parcel finances',

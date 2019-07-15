@@ -93,7 +93,11 @@
                         {{/if}}
                     </a>
                 </li>-->
+<<<<<<< HEAD
                 <li class="{{isActivePath regex='tickets|worksheets|work-planner'}}">
+=======
+                <li class="{{isActivePath regex='tickets|worksheets|contracts'}}">
+>>>>>>> upstream/ticket
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
                         <span class="nav-label">{{_ 'Maintenance'}}</span>
                         <!--span class="fa arrow"> </span-->
@@ -103,7 +107,11 @@
                         {{/if}}
                         {{/if}}
                     </a>
+<<<<<<< HEAD
                     <ul class="nav nav-second-level {{isActivePath regex='tickets|worksheets|work-planner' className='submenu-open'}}">
+=======
+                    <ul class="nav nav-second-level {{isActivePath regex='tickets|worksheets|contracts' className='submenu-open'}}">
+>>>>>>> upstream/ticket
                         <li class="{{isActivePath regex='tickets'}}">
                             <a href="{{pathFor 'Tickets'}}">
                                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -117,14 +125,21 @@
                         </li>
                         <li class="{{isActivePath regex='worksheets'}}">
                             <a href="{{pathFor 'Worksheets'}}">
-                                <i class="fa fa-archive" aria-hidden="true"></i>
+                                <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Worksheets'}}</span>
                             </a>
                         </li>
+<<<<<<< HEAD
                         <li class="{{isActivePath regex='work-planner'}}">
                             <a href="{{pathFor 'WorkPlanner'}}">
                                 <i class="fa fa-briefcase" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Work Planner'}}</span>
+=======
+                        <li class="{{isActivePath regex='contracts'}}">
+                            <a href="{{pathFor 'Contracts'}}">
+                                <i class="fa fa-handshake-o" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Contracts'}}</span>
+>>>>>>> upstream/ticket
                             </a>
                         </li>
                     </ul>

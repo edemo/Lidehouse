@@ -1,5 +1,19 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaGeneral": {
+    "createdBy": {
+      "label": "Created by"
+    },
+    "createdAt": {
+      "label": "Created at"
+    },
+    "updatedAt": {
+      "label": "Last activity at"
+    },
+    "updatedBy": {
+      "label": "Last activity by"
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Registered e-mail address",
@@ -193,6 +207,22 @@
       "label": "Agenda topics"
     }
   },
+  "schemaContracts": {
+    "title": {
+      "label": "Name",
+      "placeholder": "(eg. Elevator regular maintenance)"
+    },
+    "text": {
+      "label": "Decription",
+      "placeholder": "(eg. 2012 CXXL. regulation makes it mandatory)"
+    },
+    "partner": {
+      "label": "Servicing partner"
+    },
+    "topicIds": {
+      "label": "Worksheets"
+    }
+  },
   "schemaTopics": {
     "title": {
       "label": "Title",
@@ -276,8 +306,11 @@
     }
   },
   "schemaTickets": {
+    "id": {
+      "label": "Identifier"
+    },
     "title": {
-      "label": "Title",
+      "label": "Short summary",
       "placeholder": "(eg. Elevator not working)"
     },
     "text": {
@@ -315,10 +348,14 @@
         "label": "Charge type",
         "oneoff": "One-off",
         "lumpsum": "Lump sum contract",
-        "warranty": "Under warranty"
+        "warranty": "Under warranty",
+        "insurance": "Covered by insurance"
+      },
+      "contractId" : {
+        "label": "Contract"
       },
       "txId": {
-        "label": "Payment"
+        "label": "Payment transaction"
       },
       "expectedCost": { 
         "label": "Expected cost"
@@ -347,6 +384,9 @@
       "actualContinue": { 
         "label": "Actual continuation"
       }
+    },
+    "moreDates": {
+      "label": "More dates (if adding more than one occasions)"
     }
   },
   "schemaFeedback": {

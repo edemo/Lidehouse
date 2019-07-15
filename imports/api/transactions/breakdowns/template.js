@@ -284,7 +284,7 @@ export function defineBreakdownTemplates() {
           { digit: '3', name: 'Kert' },
           { digit: '4', name: 'Tárolók' },
           { digit: '5', name: 'Garázs' },
-          { digit: '6', name: 'Lépcőház' },
+          { digit: '6', name: 'Lépcsőház' },
           { digit: '7', name: 'Folyosók' },
           { digit: '9', name: 'Egyeb helyiségek' },
         ],

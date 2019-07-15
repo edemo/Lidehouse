@@ -45,6 +45,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     }
   }
 
+  Clock.starts(6, 'month', 'ago');
   console.log('Creating house:', demoHouseName);
   const demoCommunityId = Communities.insert({
     name: __(`${demoOrTest}.house`),
@@ -617,7 +618,53 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Tickets =====
 
+<<<<<<< HEAD
   Clock.setSimulatedTime(moment().subtract(3, 'months').add(25, 'minutes').toDate());
+=======
+  Clock.starts(4, 'month', 'ago');
+  const contract0 = demoBuilder.create('contract', {
+    title: __('demo.contract.0.title'),
+    text: __('demo.contract.0.text'),
+    partner: __('demo.contract.0.partner'),
+  });
+  const contract1 = demoBuilder.create('contract', {
+    title: __('demo.contract.1.title'),
+    text: __('demo.contract.1.text'),
+    partner: __('demo.contract.1.partner'),
+  });
+  [1, 2, 3, 4].forEach(m => {
+    Clock.tick(1, 'month');
+    const maintainanceDate = moment(Clock.currentDate());
+    const ticket = demoBuilder.create('ticket', {
+      userId: demoMaintainerId,
+      title: __('demo.contract.1.ticketTitle') + ' ' + maintainanceDate.format('YYYY MMM'),
+      text: __('demo.contract.1.ticketText'),
+      status: 'scheduled',
+      ticket: {
+        type: 'maintenance',
+        urgency: 'normal',
+        localizer: demoBuilder.name2code('Localizer', 'Lift'),
+        chargeType: 'lumpsum',
+        contractId: contract1,
+        expectedStart: maintainanceDate.toDate(),
+        expectedFinish: maintainanceDate.toDate(),
+      },
+    });
+
+    if (m <= 2) {
+      demoBuilder.statusChange(ticket, { status: 'progressing', data: {} });
+      demoBuilder.statusChange(ticket, { status: 'finished',
+        data: {
+          actualStart: maintainanceDate.toDate(),
+          actualFinish: maintainanceDate.toDate(),
+        },
+      });
+    }
+  });
+
+  Clock.starts(1, 'month', 'ago');
+  nextUser(); // to skip the caretaker
+>>>>>>> upstream/ticket
   const ticket0 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.0.title'),
@@ -625,6 +672,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     status: 'reported',
     ticket: {
       type: 'issue',
+<<<<<<< HEAD
       category: 'building',
       urgency: 'normal',
     },
@@ -642,6 +690,29 @@ export function insertDemoHouse(lang, demoOrTest) {
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket0, status: 'closed', type: 'statusChangeTo', data: {} });
 
   Clock.setSimulatedTime(moment().subtract(6, 'weeks').add(2, 'hours').toDate());
+=======
+      urgency: 'high',
+    },
+  });
+  Clock.tickSome('minutes');
+  demoBuilder.statusChange(ticket0, { status: 'confirmed',
+    text: __('demo.ticket.0.comment.0'),
+    data: {
+      localizer: demoBuilder.name2code('Localizer', 'Lift'),
+      chargeType: 'lumpsum',
+      contractId: contract1,
+      expectedStart: Clock.date(1, 'days', 'ahead'),
+      expectedFinish: Clock.date(2, 'days', 'ahead'),
+    },
+  });
+  Clock.tickSome('days');
+  demoBuilder.statusChange(ticket0, { status: 'progressing',
+    text: __('demo.ticket.0.comment.1'),
+    data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
+  });
+
+  Clock.tickSome('days');
+>>>>>>> upstream/ticket
   const ticket1 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.1.title'),
@@ -649,11 +720,44 @@ export function insertDemoHouse(lang, demoOrTest) {
     status: 'reported',
     ticket: {
       type: 'issue',
+<<<<<<< HEAD
       category: 'building',
       urgency: 'low',
+=======
+      urgency: 'normal',
+>>>>>>> upstream/ticket
     },
   });
+  Clock.tickSome('minutes');
+  demoBuilder.statusChange(ticket1, { status: 'confirmed',
+    text: __('demo.ticket.1.comment.0'),
+    data: {
+      localizer: '@A409',
+      chargeType: 'insurance',
+      expectedStart: Clock.date(3, 'days', 'ahead'),
+      expectedFinish: Clock.date(4, 'days', 'ahead'),
+    },
+  });
+  const actualStart1 = Clock.tick(2, 'days');
+  demoBuilder.statusChange(ticket1, { status: 'progressing',
+    text: __('demo.ticket.1.comment.1'),
+    data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
+  });
+  const actualFinish1 = Clock.tick(2, 'days');
+  demoBuilder.statusChange(ticket1, { status: 'finished',
+    text: __('demo.ticket.1.comment.2'),
+    data: {
+      actualStart: actualStart1,
+      actualFinish: actualFinish1,
+    },
+  });
+  Clock.tick(2, 'days');
+  demoBuilder.statusChange(ticket1, { status: 'closed',
+    text: __('demo.ticket.1.comment.3'),
+    data: {},
+  });
 
+<<<<<<< HEAD
   Clock.add(3, 'hours');
   data = { localizer: '#16', expectedCost: 1500, expectedStart: Clock.add(1, 'days'), expectedFinish: Clock.add(2, 'days') };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'confirmed', type: 'statusChangeTo', data });
@@ -667,6 +771,9 @@ export function insertDemoHouse(lang, demoOrTest) {
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket1, status: 'closed', type: 'statusChangeTo', data: {} });
 
   Clock.setSimulatedTime(moment().subtract(3, 'days').toDate());
+=======
+  Clock.tickSome('days');
+>>>>>>> upstream/ticket
   const ticket2 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.2.title'),
@@ -674,18 +781,25 @@ export function insertDemoHouse(lang, demoOrTest) {
     status: 'reported',
     ticket: {
       type: 'issue',
-      category: 'service',
       urgency: 'normal',
     },
   });
+<<<<<<< HEAD
   Clock.setSimulatedTime(moment().subtract(3, 'days').subtract(30, 'minutes').toDate());
+=======
+  Clock.tickSome('minutes');
+>>>>>>> upstream/ticket
   demoBuilder.createComment({
     topicId: ticket2,
     userId: nextUser(),
     text: __('demo.ticket.2.comment.0'),
   });
 
+<<<<<<< HEAD
   Clock.setSimulatedTime(moment().subtract(140, 'minutes').toDate());
+=======
+  Clock.tickSome('days');
+>>>>>>> upstream/ticket
   const ticket3 = demoBuilder.create('ticket', {
     userId: nextUser(),
     title: __('demo.ticket.3.title'),
@@ -693,6 +807,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     status: 'reported',
     ticket: {
       type: 'issue',
+<<<<<<< HEAD
       category: 'building',
       urgency: 'high',
     },
@@ -704,6 +819,49 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.add(60, 'minutes');
   data = { expectedFinish: moment().add(2, 'days').toDate() };
   Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: ticket3, status: 'progressing', type: 'statusChangeTo', data });
+=======
+      urgency: 'low',
+    },
+  });
+  Clock.tickSome('hours');
+  demoBuilder.statusChange(ticket3, { status: 'confirmed',
+    text: __('demo.ticket.3.comment.0'),
+    data: {
+      localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'),
+      chargeType: 'oneoff',
+      contractId: contract0,
+      expectedCost: 10000,
+      expectedStart: Clock.date(1, 'week', 'ahead'),
+      expectedFinish: Clock.date(2, 'week', 'ahead'),
+    },
+  });
+  const actualStart3 = Clock.tick(1, 'week');
+  demoBuilder.statusChange(ticket3, { status: 'progressing',
+    text: __('demo.ticket.3.comment.1'),
+    data: {
+      expectedFinish: Clock.date(10, 'day', 'ahead'),
+    },
+  });
+  const actualFinish3 = Clock.tick(8, 'day');
+  demoBuilder.statusChange(ticket3, { status: 'finished',
+    text: __('demo.ticket.3.comment.2'),
+    data: {
+      actualCost: 8500,
+      actualStart: actualStart3,
+      actualFinish: actualFinish3,
+    },
+  });
+  demoBuilder.createComment({
+    topicId: ticket3,
+    userId: nextUser(),
+    text: __('demo.ticket.3.comment.3'),
+  });
+  Clock.tickSome('minutes');
+  demoBuilder.statusChange(ticket3, { status: 'closed',
+    text: __('demo.ticket.3.comment.4'),
+    data: {},
+  });
+>>>>>>> upstream/ticket
 
   Clock.clear();
 
@@ -982,6 +1140,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       });
     }
   });
+
+  Clock.clear();
 }
 
 // ----------------------------------------------------------------

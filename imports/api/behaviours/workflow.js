@@ -97,7 +97,7 @@ const statusChange = new ValidatedMethod({
 const hooks = {
   before: {
     insert(userId, doc) {
-      checkStatusStartAllowed(doc, doc.status);
+      checkStatusStartAllowed(Topics._transform(doc), doc.status);
     },
   },
 };

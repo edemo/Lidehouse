@@ -1,5 +1,19 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaGeneral": {
+    "createdBy": {
+      "label": "Létrehozta"
+    },
+    "createdAt": {
+      "label": "Létrehozva"
+    },
+    "updatedAt": {
+      "label": "Utolsó aktivitás"
+    },
+    "updatedBy": {
+      "label": "Módosította"
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Regisztrált e-mail cím",
@@ -193,6 +207,22 @@
       "label": "Napirendi pontok"
     }
   },
+  "schemaContracts": {
+    "title": {
+      "label": "Név",
+      "placeholder": "(pl. Lift karbantartási szerződés)"
+    },
+    "text": {
+      "label": "Leírás",
+      "placeholder": "(pl. 2012 CXXL. kormányrendelet alapján kötelező)"
+    },
+    "partner": {
+      "label": "Szolgáltató partner"
+    },
+    "topicIds": {
+      "label": "Munkalapok"
+    }
+  },
   "schemaTopics": {
     "title": {
       "label": "Cím",
@@ -284,7 +314,7 @@
       "label": "Azonosító"
     },
     "title": {
-      "label": "Hiba lényege",
+      "label": "Rövid leírás",
       "placeholder": "(pl. Elromlott a lift)"
     },
     "text": {
@@ -322,10 +352,14 @@
         "label": "Költség vonzat",
         "oneoff": "Egyedi megrendelés",
         "lumpsum": "Átalánydíjas",
-        "warranty": "Garanciális"
+        "warranty": "Garanciális",
+        "insurance": "Biztosító fizeti"
+      },
+      "contractId" : {
+        "label": "Szerződés"
       },
       "txId": {
-        "label": "Kifizetés"
+        "label": "Pénzügyi tranzakció"
       },
       "expectedCost": { 
         "label": "Várható költség"
@@ -354,6 +388,9 @@
       "actualContinue": { 
         "label": "Tényleges folytatás"
       }
+    },
+    "moreDates": {
+      "label": "További dátumok (ha több jegyet visz fel egyszerre)"
     }
   },
   "schemaFeedback": {
