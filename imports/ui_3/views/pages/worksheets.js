@@ -144,14 +144,9 @@ Template.Worksheets.viewmodel({
 });
 
 Template.Worksheets.events({
-<<<<<<< HEAD
-  'click .js-new'() {
-    afTicketInsertModal();
-=======
   'click .js-new'(event) {
     const type = $(event.target).closest('a').data('type');
     afTicketInsertModal(type);
->>>>>>> upstream/ticket
   },
   'click .js-view'(event) {
     const id = $(event.target).closest('button').data('id');
