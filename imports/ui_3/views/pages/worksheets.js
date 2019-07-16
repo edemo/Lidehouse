@@ -28,6 +28,7 @@ Template.Worksheets.onCreated(function onCreated() {
 });
 
 Template.Worksheets.viewmodel({
+  calendarView: false,
   ticketText: '',
   ticketStatusArray: [],
   ticketTypeArray: Tickets.typeValues,
@@ -39,6 +40,35 @@ Template.Worksheets.viewmodel({
   sortBy: { createdAt: -1 },
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
+  },
+  calendarOptions() {
+    const viewmodel = this;
+    return {
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay',
+      },
+      editable: true,
+      droppable: true, // this allows things to be dropped onto the calendar
+      drop() {
+        // is the "remove after drop" checkbox checked?
+        if ($('#drop-remove').is(':checked')) {
+            // if so, remove the element from the "Draggable Events" list
+            $(this).remove();
+        }
+      },
+      events(start, end, timezone, callback) {
+        const events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
+          return {
+            title: t.title,
+            start: t.ticket.expectedStart,
+            end: t.ticket.expectedFinish,
+          };
+        });
+        callback(events);
+      },
+    };
   },
   ticketStatuses() {
     return Object.values(Tickets.statuses);
@@ -87,27 +117,30 @@ Template.Worksheets.viewmodel({
     }
     return recentTickets;
   },
+  filterSelector() {
+    const communityId = Session.get('activeCommunityId');
+    const ticketText = this.ticketText();
+    const ticketStatusArray = this.ticketStatusArray();
+    const ticketTypeArray = this.ticketTypeArray();
+    const startDate = this.startDate();
+    const endDate = this.endDate();
+    const reportedByCurrentUser = this.reportedByCurrentUser();
+    const selector = { communityId, category: 'ticket' };
+    selector.createdAt = {};
+    if (ticketTypeArray.length > 0) selector['ticket.type'] = { $in: ticketTypeArray };
+    if (ticketStatusArray.length > 0) selector.status = { $in: ticketStatusArray };
+    if (startDate) selector.createdAt.$gte = new Date(this.startDate());
+    if (endDate) selector.createdAt.$lte = new Date(this.endDate());
+    if (reportedByCurrentUser) selector.userId = Meteor.userId();
+    if (ticketText) {
+      return Topics.find(selector, { sort: { createdAt: -1 } }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
+    || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
+    }
+    return selector;
+  },
   ticketsDataFn() {
     return () => {
-      const communityId = Session.get('activeCommunityId');
-      const ticketText = this.ticketText();
-      const ticketStatusArray = this.ticketStatusArray();
-      const ticketTypeArray = this.ticketTypeArray();
-      const startDate = this.startDate();
-      const endDate = this.endDate();
-      const reportedByCurrentUser = this.reportedByCurrentUser();
-      const selector = { communityId, category: 'ticket' };
-      selector.createdAt = {};
-      if (ticketTypeArray.length > 0) selector['ticket.type'] = { $in: ticketTypeArray };
-      if (ticketStatusArray.length > 0) selector.status = { $in: ticketStatusArray };
-      if (startDate) selector.createdAt.$gte = new Date(this.startDate());
-      if (endDate) selector.createdAt.$lte = new Date(this.endDate());
-      if (reportedByCurrentUser) selector.userId = Meteor.userId();
-      if (ticketText) {
-        return Topics.find(selector, { sort: { createdAt: -1 } }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
-      || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
-      }
-      return Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
+      return Topics.find(this.filterSelector(), { sort: { createdAt: -1 } }).fetch();
     };
   },
   ticketsOptionsFn() {
@@ -145,6 +178,10 @@ Template.Worksheets.viewmodel({
 });
 
 Template.Worksheets.events({
+  'click .js-mode'(event, instance) {
+    const oldVal = instance.viewmodel.calendarView();
+    instance.viewmodel.calendarView(!oldVal);
+  },
   'click .js-new'(event) {
     const type = $(event.target).closest('a').data('type');
     afTicketInsertModal(type);
