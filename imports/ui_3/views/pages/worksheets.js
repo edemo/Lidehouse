@@ -31,15 +31,23 @@ Template.Worksheets.viewmodel({
   calendarView: false,
   ticketText: '',
   ticketStatusArray: [],
-  ticketTypeArray: Tickets.typeValues,
-  startDate: moment().subtract(30, 'days').format('YYYY-MM-DD'),
+  ticketTypeArray: [],
+  startDate: '',
   endDate: '',
   reportedByCurrentUser: false,
   communityId: null,
   ticketTypeSelector: '',
-  sortBy: { createdAt: -1 },
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
+    this.setDefaultFilter();
+  },
+  setDefaultFilter() {
+    this.ticketText('');
+    this.ticketStatusArray([]);
+    this.ticketTypeArray([]);
+    this.startDate(moment().subtract(30, 'days').format('YYYY-MM-DD'));
+    this.endDate('');
+    this.reportedByCurrentUser(false);
   },
   calendarOptions() {
     const viewmodel = this;
@@ -76,24 +84,13 @@ Template.Worksheets.viewmodel({
   ticketTypes() {
     return Tickets.typeValues;
   },
-  urgencyColor(value) {
-    return Topics.urgencyColors[value];
-  },
-  ticketsSchema() {
-    return Tickets.chema;
-  },
-  noFilters() {
-    const ticketText = this.ticketText();
-    const ticketStatusArray = this.ticketStatusArray();
-    const ticketTypeArray = this.ticketTypeArray();
-    const startDate = this.startDate();
-    const endDate = this.endDate();
-    const reportedByCurrentUser = this.reportedByCurrentUser();
-    if (!ticketText &&
-        ticketStatusArray.length === 0 &&
-        ticketTypeArray.length === 0 && !startDate &&
-        !endDate &&
-        !reportedByCurrentUser) return true;
+  hasFilters() {
+    if (this.ticketText() ||
+        this.ticketStatusArray().length ||
+        this.ticketTypeArray().length ||
+        this.startDate() !== moment().subtract(30, 'days').format('YYYY-MM-DD') ||
+        this.endDate() ||
+        this.reportedByCurrentUser()) return true;
     return false;
   },
   activeStatusButton(data) {
@@ -119,28 +116,29 @@ Template.Worksheets.viewmodel({
   },
   filterSelector() {
     const communityId = Session.get('activeCommunityId');
-    const ticketText = this.ticketText();
     const ticketStatusArray = this.ticketStatusArray();
     const ticketTypeArray = this.ticketTypeArray();
     const startDate = this.startDate();
     const endDate = this.endDate();
     const reportedByCurrentUser = this.reportedByCurrentUser();
     const selector = { communityId, category: 'ticket' };
-    selector.createdAt = {};
     if (ticketTypeArray.length > 0) selector['ticket.type'] = { $in: ticketTypeArray };
     if (ticketStatusArray.length > 0) selector.status = { $in: ticketStatusArray };
-    if (startDate) selector.createdAt.$gte = new Date(this.startDate());
-    if (endDate) selector.createdAt.$lte = new Date(this.endDate());
+    selector.createdAt = {};
+    if (startDate) selector.createdAt.$gte = new Date(startDate);
+    if (endDate) selector.createdAt.$lte = new Date(endDate);
     if (reportedByCurrentUser) selector.userId = Meteor.userId();
-    if (ticketText) {
-      return Topics.find(selector, { sort: { createdAt: -1 } }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
-    || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
-    }
     return selector;
   },
   ticketsDataFn() {
     return () => {
-      return Topics.find(this.filterSelector(), { sort: { createdAt: -1 } }).fetch();
+      const selector = this.filterSelector();
+      const ticketText = this.ticketText();
+      if (ticketText) {
+        return Topics.find(selector, { sort: { createdAt: -1 } }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
+      || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
+      }
+      return Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
     };
   },
   ticketsOptionsFn() {
@@ -207,12 +205,7 @@ Template.Worksheets.events({
     deleteTicketConfirmAndCallModal(id);
   },
   'click .js-clear-filter'(event, instance) {
-    instance.viewmodel.ticketText('');
-    instance.viewmodel.ticketStatusArray([]);
-    instance.viewmodel.ticketTypeArray([]);
-    instance.viewmodel.startDate('');
-    instance.viewmodel.endDate('');
-    instance.viewmodel.reportedByCurrentUser(false);
+    instance.viewmodel.setDefaultFilter();
   },
   'click .js-status-filter'(event, instance) {
     const ticketStatus = $(event.target).data('value');
