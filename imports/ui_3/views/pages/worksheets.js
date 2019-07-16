@@ -29,20 +29,19 @@ Template.Worksheets.onCreated(function onCreated() {
 
 Template.Worksheets.viewmodel({
   calendarView: false,
-  ticketText: '',
+  searchText: '',
   ticketStatusArray: [],
   ticketTypeArray: [],
   startDate: '',
   endDate: '',
   reportedByCurrentUser: false,
   communityId: null,
-  ticketTypeSelector: '',
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
     this.setDefaultFilter();
   },
   setDefaultFilter() {
-    this.ticketText('');
+    this.searchText('');
     this.ticketStatusArray([]);
     this.ticketTypeArray([]);
     this.startDate(moment().subtract(30, 'days').format('YYYY-MM-DD'));
@@ -85,7 +84,7 @@ Template.Worksheets.viewmodel({
     return Tickets.typeValues;
   },
   hasFilters() {
-    if (this.ticketText() ||
+    if (this.searchText() ||
         this.ticketStatusArray().length ||
         this.ticketTypeArray().length ||
         this.startDate() !== moment().subtract(30, 'days').format('YYYY-MM-DD') ||
@@ -133,12 +132,13 @@ Template.Worksheets.viewmodel({
   ticketsDataFn() {
     return () => {
       const selector = this.filterSelector();
-      const ticketText = this.ticketText();
-      if (ticketText) {
-        return Topics.find(selector, { sort: { createdAt: -1 } }).fetch().filter(t => t.title.toLowerCase().search(ticketText.toLowerCase()) >= 0
-      || t.text.toLowerCase().search(ticketText.toLowerCase()) >= 0);
-      }
-      return Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
+      const searchText = this.searchText();
+      let result = Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
+      if (searchText) result = result.filter(t =>
+        t.title.toLowerCase().search(searchText.toLowerCase()) >= 0
+        || t.text.toLowerCase().search(searchText.toLowerCase()) >= 0
+      );
+      return result;
     };
   },
   ticketsOptionsFn() {
@@ -159,19 +159,6 @@ Template.Worksheets.viewmodel({
         info: false,
       };
     };
-  },
-  tableColumns() {
-    const tableColumns = [
-      { name: 'status', sortBy: 'status' },
-      { name: 'text', sortBy: 'title' },
-      { name: 'type', sortBy: 'ticket.type' },
-      { name: 'createdBy', sortBy: 'userId' },
-      { name: 'createdAt', sortBy: 'createdAt' },
-    ];
-    return tableColumns;
-  },
-  columns() {
-    return Topics.columns;
   },
 });
 
@@ -228,8 +215,5 @@ Template.Worksheets.events({
       ticketTypeArray.push(ticketType);
       instance.viewmodel.ticketTypeArray(ticketTypeArray);
     }
-  },
-  'keyup .js-search'(event, instance) {
-    instance.viewmodel.ticketText(event.target.value);
   },
 });
