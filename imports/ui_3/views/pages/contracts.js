@@ -8,6 +8,7 @@ import { $ } from 'meteor/jquery';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
+import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
@@ -65,6 +66,9 @@ Template.Contracts.events({
     const type = $(event.target).closest('a').data('type');
     const id = $(event.target).data('id');
     afTicketInsertModal(type, id);
+  },
+  'click .contract-details .js-import'(event, instance) {
+    importCollectionFromFile(Topics); // TODO Make it Ticket specific
   },
 });
 

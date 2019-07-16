@@ -386,7 +386,7 @@
       }
     },
     "moreDates": {
-      "label": "More dates (if adding more than one occasions)"
+      "label": "More start dates (if adding more than one occasions)"
     }
   },
   "schemaFeedback": {
