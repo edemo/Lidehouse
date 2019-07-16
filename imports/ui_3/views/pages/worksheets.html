@@ -72,6 +72,10 @@
     <div class="ibox">
       <div class="ibox-title"> 
         <h3>{{_ 'worksheets'}}</h3>
+        <div class="btn-group m-l-md">
+          <button type="button" class="btn btn-xs btn-white js-mode {{#if (not calendarView)}}active{{/if}}"><i class="fa fa-list"></i></button>
+          <button type="button" class="btn btn-xs btn-white js-mode {{#if calendarView}}active{{/if}}" ><i class="fa fa-calendar"></i></button>
+        </div>
         {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')  }}
           <div class="dropdown btn-group pull-right">
               <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
@@ -88,9 +92,15 @@
         {{/if}}
       </div>
       <div class="ibox-content">
+        {{#if calendarView}}
+        <div>
+          {{> ReactiveFullcalendar options=calendarOptions }}
+        </div>
+        {{else}}
         <div class="no-padding table-responsive">
           {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
         </div>
+        {{/if}}
       </div>
     </div>
   </div>

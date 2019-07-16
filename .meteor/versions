@@ -66,6 +66,7 @@ force-ssl-common@1.1.0
 fortawesome:fontawesome@4.7.0
 geojson-utils@1.0.10
 google-oauth@1.2.5
+gquemart:meteor-reactive-fullcalendar@1.0.1
 gwendall:autoform-i18n@0.1.9_1
 gwendall:simple-schema-i18n@0.2.3
 helfer:minimongo-index@0.0.1
@@ -118,7 +119,9 @@ momentjs:moment@2.10.6
 mongo@1.4.2
 mongo-dev-server@1.1.0
 mongo-id@1.0.6
+mrt:jquery-ui@1.9.2
 mrt:later@1.6.1
+mrt:moment@2.8.1
 npm-bcrypt@0.9.3
 npm-mongo@2.2.33
 numeral:languages@1.5.3
