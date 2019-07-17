@@ -104,11 +104,11 @@ Template.Community_page.viewmodel({
   },*/
   leaders() {
     const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } }).fetch();
+    return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } }, { sort: { createdAt: 1 } }).fetch();
   },
   nonLeaders() {
     const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } }).fetch();
+    return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } }, { sort: { createdAt: 1 } }).fetch();
   },
   officers() {
     return this.leaders().concat(this.nonLeaders());
