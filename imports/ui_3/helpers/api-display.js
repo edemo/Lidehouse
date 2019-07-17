@@ -4,6 +4,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
@@ -30,9 +31,13 @@ export function displayTicketType(name) {
   return label(__('schemaTickets.ticket.type.' + name), 'default');
 }
 
-export function displayTicketStatus(name) {
+export function displayStatus(name) {
   if (!name) return '';
-  const color = Tickets.statuses[name].color;
+  let color;
+  ['ticket', 'vote'].forEach((cat) => {
+    const statusObject = Topics.categories[cat].statuses[name];
+    if (statusObject) color = statusObject.color;
+  });
   return label(__('schemaTopics.status.' + name), color);
 }
 
@@ -49,13 +54,13 @@ export function displayChargeType(name) {
 
 Template.registerHelper('displayAccount', displayAccount);
 Template.registerHelper('displayLocalizer', displayLocalizer);
+Template.registerHelper('displayStatus', displayStatus);
 Template.registerHelper('displayTicketType', displayTicketType);
-Template.registerHelper('displayTicketStatus', displayTicketStatus);
 Template.registerHelper('displayUrgency', displayUrgency);
 Template.registerHelper('displayChargeType', displayChargeType);
 
 const Renderers = {
-  'Topics.status': displayTicketStatus,
+  'Topics.status': displayStatus,
   'Tickets.ticket.type': displayTicketType,
   'Tickets.ticket.urgency': displayUrgency,
   'Tickets.ticket.localizer': displayLocalizer,
