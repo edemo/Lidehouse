@@ -28,7 +28,7 @@ peppelg:bootstrap-3-modal
 momentjs:moment
 numeral:numeral
 mizzao:timesync
-djk:jquery-ui
+mrt:jquery-ui@1.9.2
 ephemer:reactive-datatables
 flawless:meteor-toastr
 perak:markdown
@@ -112,3 +112,4 @@ lookback:emails
 
 droka:autoform-ufs
 ostrio:flow-router-title
+mrt:jquery-ui-sortable@=1.10.3
