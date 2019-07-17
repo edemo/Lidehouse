@@ -8,6 +8,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { _ } from 'meteor/underscore';
+import { currentUserLanguage } from '/imports/startup/client/language.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
@@ -51,6 +52,7 @@ Template.Worksheets.viewmodel({
   calendarOptions() {
     const viewmodel = this;
     return {
+      lang: currentUserLanguage(),
       header: {
         left: 'prev,next today',
         center: 'title',
