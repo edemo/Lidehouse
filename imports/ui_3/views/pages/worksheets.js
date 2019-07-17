@@ -55,7 +55,7 @@ Template.Worksheets.viewmodel({
         // is the "remove after drop" checkbox checked?
         if ($('#drop-remove').is(':checked')) {
             // if so, remove the element from the "Draggable Events" list
-            $(this).remove();
+          $(this).remove();
         }
       },
       events(start, end, timezone, callback) {
@@ -64,6 +64,7 @@ Template.Worksheets.viewmodel({
             title: t.title,
             start: t.ticket.expectedStart,
             end: t.ticket.expectedFinish,
+            color: Tickets.statuses[t.status].colorCode,
           };
         });
         callback(events);

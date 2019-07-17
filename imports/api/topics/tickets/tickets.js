@@ -101,6 +101,7 @@ const confirmed = {
 const scheduled = {
   name: 'scheduled',
   color: 'info',
+  colorCode: '#1FAEB0',
   data: [
     'partner',
     'chargeType',
@@ -113,22 +114,26 @@ const scheduled = {
 const toApprove = {
   name: 'toApprove',
   color: 'warning',
+  colorCode: '#F1A148',
 };
 
 const toVote = {
   name: 'toVote',
   color: 'warning',
+  colorCode: '#F1A148',
 };
 
 const progressing = {
   name: 'progressing',
   color: 'info',
+  colorCode: '#1FAEB0',
   data: ['expectedFinish'],
 };
 
 const suspended = {
   name: 'suspended',
   color: 'warning',
+  colorCode: '#F1A148',
   data: [
     'waitingFor',
     'expectedContinue',
@@ -138,6 +143,7 @@ const suspended = {
 const finished = {
   name: 'finished',
   color: 'primary',
+  colorCode: '#18A689',
   data: [
     'txId',
     'actualCost',
@@ -148,12 +154,14 @@ const finished = {
 
 const closed = {
   name: 'closed',
+  colorCode: '#D1DADE',
   color: 'default',
 };
 
 const deleted = {
   name: 'deleted',
   color: 'danger',
+  colorCode: '#EC4758',
 };
 
 Tickets.statuses = {
