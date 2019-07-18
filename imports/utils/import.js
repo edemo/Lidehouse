@@ -54,39 +54,39 @@ function transformMarinaTransactions(jsons, options) {
   const tjsons = [];
   jsons.forEach((doc) => {
     const docRef = doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
-    const cutoffDate = moment(moment.utc('2019-06-01'));
+//    const cutoffDate = moment(moment.utc('2019-06-01'));
     const incomingDate = moment(moment.utc(doc['A számla fizetési határideje'] || doc['Számla kelte']));
     if (!incomingDate.isValid()) console.error('ERROR: Invalid date in import', doc);
-    if (incomingDate < cutoffDate) {
-      const bill = {
-        ref: '>' + docRef,
-        partner: doc['Szállító neve adóigazgatási azonosító száma'],
-        valueDate: incomingDate.toDate(),
-        amount: parseInt(doc['Számla összege'], 10),
-        // debit is one of the '8' accounts
-        credit: [{
-          account: '46',
-        }],
-      };
-      tjsons.push(bill);
-    }
+//    if (incomingDate < cutoffDate) {
+    const bill = {
+      ref: '>' + docRef,
+      partner: doc['Szállító neve adóigazgatási azonosító száma'],
+      valueDate: incomingDate.toDate(),
+      amount: parseInt(doc['Számla összege'], 10),
+      // debit is one of the '8' accounts
+      credit: [{
+        account: '46',
+      }],
+    };
+    tjsons.push(bill);
+//    }
     if (doc['A számla kiegyenlítésének időpontja']) {
       const paymentDate = moment(moment.utc(doc['A számla kiegyenlítésének időpontja']));
       if (!paymentDate.isValid()) console.error('ERROR: Invalid date in import', doc);
-      if (paymentDate < cutoffDate) {
-        const payment = {
-          ref: '<' + docRef,
-          partner: doc['Szállító neve adóigazgatási azonosító száma'],
-          valueDate: paymentDate.toDate(),
-          amount: parseInt(doc['Számla összege'], 10),
-  //        amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
-          debit: [{
-            account: '46',
-          }],
-          // credit is one of the '38' accounts
-        };
-        tjsons.push(payment);
-      }
+//      if (paymentDate < cutoffDate) {
+      const payment = {
+        ref: '<' + docRef,
+        partner: doc['Szállító neve adóigazgatási azonosító száma'],
+        valueDate: paymentDate.toDate(),
+        amount: parseInt(doc['Számla összege'], 10),
+//          amount: parseInt(doc['A számla kiegyenlítésének összege'], 10),
+        debit: [{
+          account: '46',
+        }],
+        // credit is one of the '38' accounts
+      };
+      tjsons.push(payment);
+//      }
     }
   });
   return tjsons;

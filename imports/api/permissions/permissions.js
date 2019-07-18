@@ -19,6 +19,7 @@ export const Permissions = [
   { name: 'benefactorships.update', roles: ['manager'] },
   { name: 'benefactorships.remove', roles: ['manager'] },
   { name: 'parcels.inCommunity',    roles: everyRole },
+  { name: 'parcels.details',        roles: ['owner', 'benefactor'] },
   { name: 'parcels.insert',         roles: ['manager'] },
   { name: 'parcels.update',         roles: ['manager'] },
   { name: 'parcels.remove',         roles: ['manager'] },
@@ -112,9 +113,9 @@ export const Permissions = [
 
 // The board member has now exactly the same permissions as the manager
 Permissions.forEach((perm) => {
+  if (!_.contains(perm.roles, 'admin')) perm.roles.push('admin'); // Admin can do anything
   if (_.contains(perm.roles, 'manager')) {
     if (!_.contains(perm.roles, 'board')) perm.roles.push('board'); // The board member has now exactly the same permissions as the manager
-    if (!_.contains(perm.roles, 'admin')) perm.roles.push('admin'); // Admin can do anything that a manager can (plus some more)
   }
 });
 

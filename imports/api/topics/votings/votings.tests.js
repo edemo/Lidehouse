@@ -47,7 +47,7 @@ if (Meteor.isServer) {
         voting.vote.effect = 'legal';
         chai.assert.throws(() => {
           Topics.methods.insert._execute({ userId: Fixture.demoUserId }, voting);
-        });
+        }, 'err_permissionDenied');
         // polls on the other hand are allowed to be created by everybody
         voting.vote.effect = 'poll';
         Topics.methods.insert._execute({ userId: Fixture.demoUserId }, voting);
@@ -77,7 +77,7 @@ if (Meteor.isServer) {
       it('only admin can vote in the name of others', function (done) {
         chai.assert.throws(() => {
           castVote._execute({ userId: Fixture.demoUserId }, { topicId: votingId, castedVote: [0], voters: [Fixture.dummyUsers[1]] });
-        });
+        }, 'err_permissionDenied');
         castVote._execute({ userId: Fixture.demoAdminId }, { topicId: votingId, castedVote: [0], voters: [Fixture.dummyUsers[1], Fixture.dummyUsers[2], Fixture.dummyUsers[3]] });
 
         const voting = Topics.findOne(votingId);

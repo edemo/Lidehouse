@@ -57,7 +57,7 @@ if (Meteor.isServer) {
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
           Meteor.users.remove(userId);
         });
-        
+
         it('[1] user creates an account for himself', function (done) {
           userId = Accounts.createUser({ email: 'newuser@honline.hu', password: 'password' });
           done();
@@ -77,7 +77,7 @@ if (Meteor.isServer) {
               parcelId,
               ownership: { share: new Fraction(1, 1) },
             });
-          });
+          }, 'err_permissionDenied');
           done();
         });
 
@@ -111,7 +111,7 @@ if (Meteor.isServer) {
               _id: membershipId,
               modifier: { $set: { approved: true } },
             });
-          });
+          }, 'err_permissionDenied');
           done();
         });
 
@@ -208,7 +208,7 @@ if (Meteor.isServer) {
         it('[x] cannot link user, when no email address supplied', function (done) {
           chai.assert.throws(() => {
             Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
-          });
+          }, 'err_sanityCheckFailed');
           done();
         });
       });
@@ -235,7 +235,7 @@ if (Meteor.isServer) {
               parcelId,
               ownership: { share: new Fraction(1, 1) },
             });
-          });
+          }, 'err_sanityCheckFailed');
           done();
         });
 
@@ -256,7 +256,7 @@ if (Meteor.isServer) {
           chai.assert.isUndefined(membership.person.userId);
           chai.assert.isUndefined(membership.Person().id());
 
-          Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, { 
+          Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, {
             _id: membershipId,
             modifier: { $set: { 'person.idCard.identifier': 'JIMS_ID_NUMBER' } },
           });
@@ -268,7 +268,7 @@ if (Meteor.isServer) {
           done();
         });
 
-        it('[2] manager connects an email adress to the ownership - this triggers an enrollment/invitation email', function (done) {          
+        it('[2] manager connects an email adress to the ownership - this triggers an enrollment/invitation email', function (done) {
           Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
 
           const membership = Memberships.findOne(membershipId);
@@ -286,17 +286,17 @@ if (Meteor.isServer) {
           done();
         });
 
-        it('[x] cannot change the linked userId under an existing person', function (done) {          
+        it('[x] cannot change the linked userId under an existing person', function (done) {
           chai.assert.throws(() => {
-            Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, { 
+            Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, {
               _id: membershipId,
               modifier: { $set: { 'person.userId': Fixture.demoUserId } },
             });
-          });
+          }, 'err_permissionDenied');
           done();
         });
 
-        it('[o] manager re-links to re-trigger enrollment/invitation email', function (done) {          
+        it('[o] manager re-links to re-trigger enrollment/invitation email', function (done) {
           Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
 
           const membership = Memberships.findOne(membershipId);

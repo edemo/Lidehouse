@@ -60,23 +60,23 @@ if (Meteor.isServer) {
 
       chai.assert.throws(() => {
         Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(future, undefined));
-      });
+      }, 'validation-error');
 
       chai.assert.throws(() => {
         Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, now));
-      });
+      }, 'validation-error');
 
       chai.assert.throws(() => {
         Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, future));
-      });
+      }, 'validation-error');
 
       chai.assert.throws(() => {
         Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, past));
-      });
+      }, 'validation-error');
 
       chai.assert.throws(() => {
         Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(now, future));
-      });
+      }, 'validation-error');
 
       testMembershipId = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership(undefined, undefined));
       let testMembership = Memberships.findOne(testMembershipId);
@@ -99,22 +99,22 @@ if (Meteor.isServer) {
       chai.assert.throws(() => {
         Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(future, undefined) });
-      });
+      }, 'is not an allowed value');
 
       chai.assert.throws(() => {
         Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, now) });
-      });
+      }, 'required');
 
       chai.assert.throws(() => {
         Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, future) });
-      });
+      }, 'is not an allowed value');
 
       chai.assert.throws(() => {
         Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, past) });
-      });
+      }, 'required');
 
       Memberships.methods.updateActivePeriod._execute({ userId: Fixture.demoAdminId },
         { _id: testMembershipId, modifier: updateMembershipModifier(undefined, undefined) });

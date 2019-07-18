@@ -127,7 +127,7 @@ if (Meteor.isServer) {
           Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, {
             _id: ownership1Id,
             modifier: { $set: { 'ownership.representor': true } },
-          })
+          }), 'err_sanityCheckFailed'
         );
         done();
       });
@@ -216,10 +216,10 @@ if (Meteor.isServer) {
 
         chai.assert.throws(() => {
           Memberships.methods.insert._execute({ userId: Fixture.demoUserId }, createMembership('manager'));
-        });
+        }, 'err_permissionDenied');
         chai.assert.throws(() => {
           Memberships.methods.insert._execute({ userId: Fixture.demoUserId }, createMembership('owner'));
-        });
+        }, 'err_permissionDenied');
 
         Memberships.methods.update._execute({ userId: Fixture.demoUserId },
           { _id: testMembershipId, modifier: { $set: { 'benefactorship.type': 'favor' } } });
@@ -228,19 +228,24 @@ if (Meteor.isServer) {
         chai.assert.throws(() => {
           Memberships.methods.update._execute({ userId: Fixture.demoUserId },
             { _id: testMembershipId, modifier: { $set: { role: 'manager' } } });
-        });
+        }, 'err_permissionDenied');
         chai.assert.throws(() => {
           Memberships.methods.update._execute({ userId: Fixture.demoUserId },
             { _id: testMembershipId, modifier: { $set: { role: 'owner' } } });
-        });
+        }, 'err_permissionDenied');
 
         Memberships.methods.remove._execute({ userId: Fixture.demoUserId }, { _id: testMembershipId });
         testMembership = Memberships.findOne(testMembershipId);
         chai.assert.isUndefined(testMembership);
         testMembershipId = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership('owner'));
         chai.assert.throws(() => {
+<<<<<<< HEAD
           Memberships.methods.remove._execute({ userId: Fixture.demoUserId }, { _id: testMembershipId });
         });
+=======
+          removeMembership._execute({ userId: Fixture.demoUserId }, { _id: testMembershipId });
+        }, 'err_permissionDenied');
+>>>>>>> master
         done();
       });
 
@@ -251,8 +256,13 @@ if (Meteor.isServer) {
         let testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.role, 'owner');
         chai.assert.throws(() => {
+<<<<<<< HEAD
           Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, createMembership('manager'));
         });
+=======
+          insertMembership._execute({ userId: Fixture.demoManagerId }, createMembership('manager'));
+        }, 'err_permissionDenied');
+>>>>>>> master
 
         Memberships.methods.update._execute({ userId: Fixture.demoManagerId },
           { _id: testMembershipId, modifier: { $set: { role: 'benefactor' } } });
@@ -261,15 +271,20 @@ if (Meteor.isServer) {
         chai.assert.throws(() => {
           Memberships.methods.update._execute({ userId: Fixture.demoManagerId },
             { _id: testMembershipId, modifier: { $set: { role: 'manager' } } });
-        });
+        }, 'err_permissionDenied');
 
         Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: testMembershipId });
         testMembership = Memberships.findOne(testMembershipId);
         chai.assert.isUndefined(testMembership);
         testMembershipId = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership('manager'));
         chai.assert.throws(() => {
+<<<<<<< HEAD
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: testMembershipId });
         });
+=======
+          removeMembership._execute({ userId: Fixture.demoManagerId }, { _id: testMembershipId });
+        }, 'err_permissionDenied');
+>>>>>>> master
         done();
       });
     });
@@ -293,7 +308,7 @@ if (Meteor.isServer) {
         chai.assert.throws(() => {
           Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },
             createMembershipWithShare(testParcelId, new Fraction(2, 1)));
-        });
+        }, 'err_sanityCheckFailed');
         let testParcel = Parcels.findOne(testParcelId);
         chai.assert.equal(testParcel.ownedShare(), 0);
 
@@ -305,7 +320,7 @@ if (Meteor.isServer) {
         chai.assert.throws(() => {
           Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },
             createMembershipWithShare(testParcelId, new Fraction(1, 16)));
-        });
+        }, 'err_sanityCheckFailed');
 
         Memberships.methods.update._execute({ userId: Fixture.demoAdminId },
           { _id: testMembershipId, modifier: { $set: { 'ownership.share': new Fraction(1, 3) } } });
@@ -316,7 +331,7 @@ if (Meteor.isServer) {
         chai.assert.throws(() => {
           Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },
             createMembershipWithShare(testParcelId, new Fraction(4, 9)));
-        });
+        }, 'err_sanityCheckFailed');
 
         Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembershipWithShare(testParcelId, new Fraction(2, 6)));
         testParcel = Parcels.findOne(testParcelId);
@@ -324,7 +339,7 @@ if (Meteor.isServer) {
         chai.assert.throws(() => {
           Memberships.methods.update._execute({ userId: Fixture.demoAdminId },
             { _id: testMembershipId, modifier: { $set: { 'ownership.share': new Fraction(3, 8) } } });
-        });
+        }, 'err_sanityCheckFailed');
         done();
       });
 
@@ -338,7 +353,7 @@ if (Meteor.isServer) {
         chai.assert.throws(() => {
           Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },
             createMembershipWithShare(parcelId, new Fraction(1, 2)));
-        });
+        }, 'err_sanityCheckFailed');
 
         done();
       });

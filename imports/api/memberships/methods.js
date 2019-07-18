@@ -66,7 +66,7 @@ export const insert = new ValidatedMethod({
       const linkedUser = Meteor.users.findOne(doc.person.userId);
       const email = doc.person && doc.person.contact && doc.person.contact.email;
       if (email && linkedUser.emails[0].address !== email) {
-        throw new Meteor.Error('err_sanityCheckFailed', 'User and conact email doesnt match', `${linkedUser.emails[0].address} !== ${email}`);
+        throw new Meteor.Error('err_sanityCheckFailed', 'User and contact email doesnt match', `${linkedUser.emails[0].address} !== ${email}`);
       }
       if (linkedUser.emails[0].verified === false) {
         // maybe we should Accounts.sendEnrollmentEmail(doc.person.userId);
