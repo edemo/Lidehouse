@@ -52,6 +52,16 @@ Template.Worksheets.viewmodel({
     this.endDate('');
     this.reportedByCurrentUser(false);
   },
+  toggleTemporaryCalendar(eventObject) {
+    this.temporaryCalendar($('#fullCalendar').fullCalendar('clientEvents'));
+    const eventsToUpdate = this.eventsToUpdate();
+    if (eventsToUpdate.includes(eventObject)) {
+      this.eventsToUpdate(_.without(eventsToUpdate, eventObject));
+    } else {
+      eventsToUpdate.push(eventObject);
+      this.eventsToUpdate(eventsToUpdate);
+    }
+  },
   calendarOptions() {
     const viewmodel = this;
     return {
@@ -64,15 +74,11 @@ Template.Worksheets.viewmodel({
       eventClick(eventObject) {
         afTicketUpdateModal(eventObject.id);
       },
+      eventResizeStop(eventObject, jsEvent, ui, view) {
+        viewmodel.toggleTemporaryCalendar(eventObject);
+      },
       eventDrop(eventObject) {
-        viewmodel.temporaryCalendar($('#fullCalendar').fullCalendar('clientEvents'));
-        const eventsToUpdate = viewmodel.eventsToUpdate();
-        if (eventsToUpdate.includes(eventObject)) {
-          viewmodel.eventsToUpdate(_.without(eventsToUpdate, eventObject));
-        } else {
-          eventsToUpdate.push(eventObject);
-          viewmodel.eventsToUpdate(eventsToUpdate);
-        }
+        viewmodel.toggleTemporaryCalendar(eventObject);
       },
       editable: true,
       droppable: true, // this allows things to be dropped onto the calendar
