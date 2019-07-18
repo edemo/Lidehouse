@@ -40,11 +40,12 @@ Shareddocs.upload = function upload(extraFields) {
   UploadFS.selectFiles(function (file) {
     // Prepare the file to insert in database, note that we don't provide a URL,
     // it will be set automatically by the uploader when file transfer is complete.
-    const shareddoc = _.extend({
+    const shareddoc = {
       name: file.name,
       size: file.size,
       type: file.type,
-    }, extraFields);
+      ...extraFields,
+    };
 
     // Create a new Uploader for this file
     const uploader = new UploadFS.Uploader({

@@ -9,7 +9,7 @@ export function initializePermissions() {
     Permissions.forEach(perm => {
       if (_.contains(perm.roles, role)) roleHasPermissions.push(perm.name);
     });
-    Roles.upsert({ _id: role.name }, { $set: _.extend(role, { permissions: roleHasPermissions }) });
+    Roles.upsert({ _id: role.name }, { $set: { ...role, permissions: roleHasPermissions } });
   });
 }
 
