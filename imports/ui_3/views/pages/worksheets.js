@@ -14,6 +14,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
+//import { momentWithoutTZ } from '/imports/api/utils.js';
 import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -60,6 +61,10 @@ Template.Worksheets.viewmodel({
       },
       eventClick(eventObject) {
         afTicketUpdateModal(eventObject.id);
+      },
+      eventDrop(eventObject) {
+        const modifier = { $set: { 'ticket.expectedStart': eventObject.start.toISOString() } };
+        Meteor.call('topics.update', { _id: eventObject.id, modifier });
       },
       editable: true,
       droppable: true, // this allows things to be dropped onto the calendar
