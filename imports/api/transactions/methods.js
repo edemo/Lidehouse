@@ -3,6 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
+import { BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -117,3 +118,8 @@ Transactions.methods = {
   insert, update, remove, cloneAccountingTemplates,
 };
 
+Transactions.methods.batch = {
+  insert: new BatchMethod(insert),
+  update: new BatchMethod(update),
+  remove: new BatchMethod(remove),
+};
