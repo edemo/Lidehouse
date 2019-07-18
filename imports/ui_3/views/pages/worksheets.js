@@ -30,6 +30,8 @@ Template.Worksheets.onCreated(function onCreated() {
 });
 
 Template.Worksheets.viewmodel({
+  temporaryCalendar: false,
+  eventsToUpdate: [],
   calendarView: false,
   searchText: '',
   ticketStatusArray: [],
@@ -63,8 +65,14 @@ Template.Worksheets.viewmodel({
         afTicketUpdateModal(eventObject.id);
       },
       eventDrop(eventObject) {
-        const modifier = { $set: { 'ticket.expectedStart': eventObject.start.toISOString() } };
-        Meteor.call('topics.update', { _id: eventObject.id, modifier });
+        viewmodel.temporaryCalendar($('#fullCalendar').fullCalendar('clientEvents'));
+        const eventsToUpdate = viewmodel.eventsToUpdate();
+        if (eventsToUpdate.includes(eventObject)) {
+          viewmodel.eventsToUpdate(_.without(eventsToUpdate, eventObject));
+        } else {
+          eventsToUpdate.push(eventObject);
+          viewmodel.eventsToUpdate(eventsToUpdate);
+        }
       },
       editable: true,
       droppable: true, // this allows things to be dropped onto the calendar
@@ -76,7 +84,7 @@ Template.Worksheets.viewmodel({
         }
       },
       events(start, end, timezone, callback) {
-        const events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
+        let events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
           return {
             title: t.title,
             start: t.ticket.expectedStart,
@@ -85,6 +93,7 @@ Template.Worksheets.viewmodel({
             id: t._id,
           };
         });
+        if (viewmodel.temporaryCalendar()) events = viewmodel.temporaryCalendar();
         callback(events);
       },
     };
@@ -227,5 +236,17 @@ Template.Worksheets.events({
       ticketTypeArray.push(ticketType);
       instance.viewmodel.ticketTypeArray(ticketTypeArray);
     }
+  },
+  'click .js-save-calendar'(event, instance) {
+    const eventsToUpdate = instance.viewmodel.eventsToUpdate();
+    eventsToUpdate.forEach((eventObject) => {
+      const dates = {};
+      if (eventObject.start) dates['ticket.expectedStart'] = eventObject.start.toISOString();
+      if (eventObject.end) dates['ticket.expectedFinish'] = eventObject.end.toISOString();
+      const modifier = { $set: dates };
+      Meteor.call('topics.update', { _id: eventObject.id, modifier });
+    });
+    instance.viewmodel.eventsToUpdate([]);
+    instance.viewmodel.temporaryCalendar(false);
   },
 });

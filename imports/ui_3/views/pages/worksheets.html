@@ -95,6 +95,9 @@
         {{#if calendarView}}
         <div>
           {{> ReactiveFullcalendar options=calendarOptions }}
+          {{#if temporaryCalendar}}
+          <button type="button" class="js-save-calendar btn btn-xs btn-outline btn-default">{{_ 'save'}}</button>
+          {{/if}}
         </div>
         {{else}}
         <div class="no-padding table-responsive">
