@@ -58,6 +58,9 @@ Template.Worksheets.viewmodel({
         center: 'title',
         right: 'month,agendaWeek,agendaDay',
       },
+      eventClick(eventObject) {
+        afTicketUpdateModal(eventObject.id);
+      },
       editable: true,
       droppable: true, // this allows things to be dropped onto the calendar
       drop() {
@@ -74,6 +77,7 @@ Template.Worksheets.viewmodel({
             start: t.ticket.expectedStart,
             end: t.ticket.expectedFinish,
             color: Tickets.statuses[t.status].colorCode,
+            id: t._id,
           };
         });
         callback(events);
