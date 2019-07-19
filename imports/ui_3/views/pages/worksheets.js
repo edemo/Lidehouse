@@ -106,14 +106,16 @@ Template.Worksheets.viewmodel({
             }
           });
         });*/
-        events.forEach((eventObject) => {
-          _.forEach(viewmodel.eventsToUpdate(), function(value, key) {
-            if (eventObject.id === key) {
-              eventObject.start = value.start.toISOString();
-              eventObject.end = value.end.toISOString();
-            }
+        if (!_.isEmpty(viewmodel.eventsToUpdate())) {
+          events.forEach((eventObject) => {
+            _.forEach(viewmodel.eventsToUpdate(), function(value, key) {
+              if (eventObject.id === key) {
+                eventObject.start = value.start.toISOString();
+                eventObject.end = value.end.toISOString();
+              }
+            });
           });
-        });
+        }
         callback(events);
       },
     };
