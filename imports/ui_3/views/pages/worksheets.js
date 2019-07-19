@@ -257,4 +257,7 @@ Template.Worksheets.events({
     });
     instance.viewmodel.eventsToUpdate([]);
   },
+  'click .js-reset-calendar'(event, instance) {
+    instance.viewmodel.eventsToUpdate([]);
+  },
 });
