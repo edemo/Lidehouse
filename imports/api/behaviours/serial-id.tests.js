@@ -36,11 +36,11 @@ if (Meteor.isServer) {
     collection2.attachSchema(schema);
     collection2.attachBehaviour(SerialId(collection2, ['category', 'otherField.color']));
     
-    const docData1 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'pink' }, communityId: 'no1' };
-    const docData2 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'green' }, communityId: 'no1' };
-    const docData3 = { textField: faker.random.word(), category: 'Testable', otherField: { color: 'pink' }, communityId: 'no1' };
-    const docData4 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'green' }, communityId: 'no2' };
-    const docData5 = { textField: faker.random.word(), otherField: { color: 'pink' }, communityId: 'no1' };
+    const docData1 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'pink' }, communityId: 'no1', serial: 0 };
+    const docData2 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'green' }, communityId: 'no1', serial: 0 };
+    const docData3 = { textField: faker.random.word(), category: 'Testable', otherField: { color: 'pink' }, communityId: 'no1', serial: 0 };
+    const docData4 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'green' }, communityId: 'no2', serial: 0 };
+    const docData5 = { textField: faker.random.word(), otherField: { color: 'pink' }, communityId: 'no1', serial: 0 };
 
     describe('1 definer field', function () {
 

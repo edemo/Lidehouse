@@ -26,7 +26,7 @@
                         {{#if equals category 'roleships'}}
                         <td><a href="{{pathFor 'User show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
                         <td><a href="{{pathFor 'User show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
-                        <td><span class="label label-plain">{{_ role}}</span></td>
+                        <td><span class="label label-plain">{{_ role}} <i class="fa fa-star"></i></span></td>
                         {{else}}
                         <td><a href="#member" class="client-avatar js-member"><img alt="image" src={{Person.avatar}}></a></td>
                         <td><a href="#member" class="client-link js-member">{{Person.displayName}}</a></td>

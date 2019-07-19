@@ -289,12 +289,12 @@ const opened = {
 const closed = {
   name: 'closed',
   onEnter(event, topic) {
-    console.log('Voting is entering closed');
+//    console.log('Voting is entering closed');
     topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
     // Topics.update(topic._id, { $set: { closed: true, closesAt: new Date() } });  Needs to happen in autovalue
   },
   onLeave() {
-    console.log('Voting is leaving closed');
+//    console.log('Voting is leaving closed');
   },
 };
 
@@ -315,6 +315,7 @@ Topics.categories.vote = Votings;
 
 Factory.define('vote', Topics, {
   category: 'vote',
+  serial: 0,
   title: () => 'New voting on ' + faker.random.word(),
   text: () => faker.lorem.paragraph(),
   status: 'opened',

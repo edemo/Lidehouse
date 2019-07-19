@@ -8,6 +8,7 @@ import { extractFieldsFromRef } from '/imports/comtypes/house/parcelref-format.j
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from './parcels.js';
 import { Memberships } from '../memberships/memberships.js';
+import { crudBatchOps } from '../batch-method.js';
 
 export const insert = new ValidatedMethod({
   name: 'parcels.insert',
@@ -82,3 +83,4 @@ export const remove = new ValidatedMethod({
 
 Parcels.methods = Parcels.methods || {};
 _.extend(Parcels.methods, { insert, update, remove });
+_.extend(Parcels.methods, crudBatchOps(Parcels));

@@ -8,7 +8,12 @@ import { flatten } from 'flat';
 import { moment } from 'meteor/momentjs:moment';
 import { UploadFS } from 'meteor/jalik:ufs';
 import { XLSX } from 'meteor/huaming:js-xlsx';
-import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+
+import '/imports/ui_3/views/modals/confirmation.js';
+import { __ } from '/imports/localization/i18n.js';
+import { debugAssert } from '/imports/utils/assert.js';
+import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -151,53 +156,64 @@ export function importCollectionFromFile(collection, options) {
         if (collection._name === 'memberships') jsons = transformMarinaMemberships(jsons);
         if (collection._name === 'transactions') jsons = transformMarinaTransactions(jsons, options);
         if (collection._name === 'balances') jsons = transformMarinaBalances(jsons, options);
-      } else {
-        if (collection._name === 'memberships') jsons = transformMarinaMemberships(jsons);
       }
       // ------------------------------
+/*
+      let idSet;  // The set of fields, that identify uniquely an element within a community.
+      switch (collection._name) {  // If we find such an item, we do an update, otherwise we will insert.
+        case 'parcels': idSet = ['communityId', 'ref']; break;
+        case 'memberships': idSet = ['communityId', 'role', 'parcelId', 'person.idCard.name', 'person.contact.email']; break;
+        case 'transactions': idSet = ['communityId', 'ref']; break;
+        case 'balances': idSet = ['communityId', 'account', 'localizer', 'tag']; break;
+        case 'topics': idSet = ['communityId', 'category', 'serial']; break;
+        default: debugAssert(false, `Cannot handle collection ${collection}`);
+      }
 
-      let index = 0;
-      const handleNextJson = function () {
-        const doc = _.extend(jsons[index], { communityId });
-        const scheduleNext = function (level, ...params) {
-          displayMessage(level, ...params);
-          index += 1;
-          Meteor.setTimeout(handleNextJson, delayCalls);
-        };
-
-        // Skipping already existing docs
-        if (collection._name === 'parcels') {
-          if (!doc.ref) { scheduleNext('warning', 'Ref is missing from %s', doc); return; }
-          const parcel = Parcels.findOne({ communityId, ref: doc.ref });
-          if (parcel) { scheduleNext('warning', 'Document %s already exists', doc.ref); return; }
-        }
-        if (collection._name === 'memberships') {
-          if (!doc.ref) { scheduleNext('warning', 'Ref is missing from %s', doc); return; }
-          const parcel = Parcels.findOne({ communityId, ref: doc.ref });
-          const membership = Memberships.findOne({ communityId, parcelId: parcel._id, 'person.idCard.name': doc.person.idCard.name });
-          if (membership) { scheduleNext('warning', 'Document %s already exists', doc.ref + ':' + doc.person.idCard.name); return; }
-        }
-        if (collection._name === 'transactions') {
-          const tx = Transactions.findOne({ communityId, ref: doc.ref });
-          if (tx) { scheduleNext('warning', 'Document %s already exists', doc.ref); return; }
-        }
-        if (collection._name === 'balances') {
-          const bal = Balances.findOne({ communityId, account: doc.account, localizer: doc.localizer, tag: doc.tag });
-          if (bal) { scheduleNext('warning', 'Document %s already exists', doc.tag); return; }
-        }
-
-        // Inserting the doc into the db
-        console.log('Importing: ', doc);
-        collection.methods.insert.call(doc, function handler(err, res) {
-          if (err) {
-            console.error(err);
-            scheduleNext('error', 'Document errored!!!', doc); return;
+      function hasChanges(newObj, oldObj) {
+        let hasChange = false;
+        _.each(newObj, (value, key) => {
+          if (_.isEqual(value, oldObj[key])) {
+            hasChange = key;
+            return false;
           }
-          scheduleNext('success', 'Document %s inserted', res); return;
+          return true;
         });
-      };
+        return hasChange;
+      }
 
-      handleNextJson();
+      const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
+      jsons.forEach(json => {
+        json.communityId = communityId;
+        const selector = {};
+        idSet.forEach(field => {
+          selector[field] = json[field];
+        });
+        console.log("selector", selector);
+        const existingDoc = collection.findOne(selector);
+        if (!existingDoc) neededOperations.insert.push(json);
+        else if (hasChanges(json, existingDoc)) {
+          neededOperations.update.push({ _id: existingDoc._id, modifier: { $set: json } });
+          console.log(`Field ${hasChanges(json, existingDoc)} has changed`);
+        } else neededOperations.noChange.push(json);
+      });
+*/
+      collection.methods.batch.test.call({ communityId, args: jsons }, function (err, res) {
+        if (err) { displayError(err); return; }
+        const neededOperations = res;
+        Modal.confirmAndCall(() => {
+          if (neededOperations.insert.length > 0)
+            collection.methods.batch.insert.call({ communityId, args: neededOperations.insert });
+          if (neededOperations.update.length > 0)
+            collection.methods.batch.update.call({ communityId, args: neededOperations.update });
+        }, undefined, {
+          action: 'import data',
+          message: __('This operation will do the following') + '<br>' +
+            __('creates') + ' ' + neededOperations.insert.length + __(' documents') + ',<br>' +
+            __('modifies') + ' ' + neededOperations.update.length + __(' documents') + ',<br>' +
+            __('deletes') + ' ' + neededOperations.remove.length + __(' documents') + ',<br>' +
+            __('leaves unchanged') + ' ' + neededOperations.noChange.length + __(' documents'),
+        });
+      });
     };
     if (rABS) reader.readAsBinaryString(file); else reader.readAsArrayBuffer(file);
   });

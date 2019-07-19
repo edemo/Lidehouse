@@ -127,6 +127,8 @@ Transactions.schema = new SimpleSchema([
   _.clone(Transactions.noteSchema),
 ]);
 
+Transactions.idSet = ['communityId', 'ref'];
+
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
 });

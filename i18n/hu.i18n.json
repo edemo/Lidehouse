@@ -221,6 +221,13 @@
   "finished": "Elvégezve",
   "deleted": "Törölt",
 
+  "This operation will do the following": "Ezzel a következő műveleteket hajtja végre",
+  "creates": "Létrehoz",
+  "modifies": "Módosít",
+  "deletes": "Töröl",
+  "leaves unchanged": "Helybenhagy",
+  " documents": " dokumentumot",
+
   // community page
   "representor": "képviselője",
   "Lead parcel": "Vezető albetét",
@@ -623,6 +630,7 @@
   "close vote successful": "Szavazás lezárva",
   "update settings successful": "Beállítások módosítva",
   "publish balances successful": "Aktuális egyenlegek publikálva",
+  "import data successful": "Adatok importálva",
 
   "was inserted": "rögzítésre került",
   "was updated": "módosításra került",
@@ -653,6 +661,7 @@
   "delete sharedfolder": "törli a mappát",
   "close vote": "lezárja a szavazást",
   "publish balances": "publikálja az aktuális egyenlegeket",
+  "import data": "importálja az adatokat",
 
   "It will disappear forever": "Ezzel a művelettel véglegesen törlödni fog!",
   "This will let others to delegate to you": "Ez lehetővé teszik mások számára, hogy átadják önnek a szavazatukat.",

@@ -44,6 +44,8 @@ Topics.baseSchema = new SimpleSchema({
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
 
+Topics.idSet = ['communityId', 'category', 'serial'];
+
 Meteor.startup(function indexTopics() {
   Topics.ensureIndex({ agendaId: 1 }, { sparse: true });
   if (Meteor.isClient && MinimongoIndexing) {
@@ -185,6 +187,7 @@ Topics.publicFields = {
 Topics.categoryValues.forEach((category) => {
   Factory.define(category, Topics, {
     category,
+    serial: 0,
     title: () => `New ${(category)} about ${faker.random.word()}`,
     text: faker.lorem.paragraph(),
     status: 'opened',

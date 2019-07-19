@@ -8,6 +8,7 @@ import { _ } from 'meteor/underscore';
 import { permissionCategoryOf } from '/imports/api/permissions/roles.js';
 import { Log } from '/imports/utils/log.js';
 import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from './memberships.js';
 
@@ -182,4 +183,4 @@ export const remove = new ValidatedMethod({
 
 Memberships.methods = Memberships.methods || {};
 _.extend(Memberships.methods, { insert, update, linkUser, accept, remove });
-
+_.extend(Memberships.methods, crudBatchOps(Memberships));

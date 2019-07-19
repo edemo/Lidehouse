@@ -222,6 +222,7 @@ Topics.categories.ticket = Tickets;
 
 Factory.define('ticket', Topics, {
   category: 'ticket',
+  serial: 0,
   title: () => 'New ticket on ' + faker.random.word(),
   text: () => faker.lorem.paragraph(),
   status: 'reported',

@@ -48,6 +48,7 @@ if (Meteor.isClient) {
 
 Factory.define('room', Topics, {
   category: 'room',
+  serial: 0,
   title: 'private chat',
   text: 'private chat',
   status: 'opened',

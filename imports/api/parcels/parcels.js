@@ -60,6 +60,8 @@ Parcels.schema = new SimpleSchema({
   heatingType: { type: String, optional: true, allowedValues: Parcels.heatingTypeValues, autoform: autoformOptions(Parcels.heatingTypeValues) },
 });
 
+Parcels.idSet = ['communityId', 'ref'];
+
 Meteor.startup(function indexParcels() {
   Parcels.ensureIndex({ communityId: 1, ref: 1 }, { sparse: true });
   Parcels.ensureIndex({ communityId: 1, leadRef: 1 }, { sparse: true });

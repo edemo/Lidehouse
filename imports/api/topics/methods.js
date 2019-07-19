@@ -7,7 +7,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
 // import { readableId } from '/imports/api/readable-id.js';
 
-import { BatchMethod } from '/imports/api/batch-method.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -66,12 +66,8 @@ export const remove = new ValidatedMethod({
 
 Topics.methods = Topics.methods || {};
 _.extend(Topics.methods, { insert, update, remove });
+_.extend(Topics.methods, crudBatchOps(Topics));
 
-Topics.methods.batch = {
-  insert: new BatchMethod(insert),
-  update: new BatchMethod(update),
-  remove: new BatchMethod(remove),
-};
 
 // ----- RATE LIMITING --------
 

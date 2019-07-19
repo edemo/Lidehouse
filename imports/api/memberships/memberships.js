@@ -61,6 +61,8 @@ Memberships.schema = new SimpleSchema({
   benefactorship: { type: BenefactorshipSchema, optional: true },
 });
 
+Memberships.idSet = ['communityId', 'role', 'parcelId', 'person.idCard.name', 'person.contact.email'];
+
 Meteor.startup(function indexMemberships() {
   Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
   Memberships.ensureIndex({ personId: 1 }, { sparse: true });

@@ -27,6 +27,8 @@ Balances.schema = new SimpleSchema([Balances.defSchema, {
   credit: { type: Number, defaultValue: 0 }, // credit total
 }]);
 
+Balances.idSet = ['communityId', 'account', 'localizer', 'tag'];
+
 Balances.helpers({
   total() {
     return this.debit - this.credit;

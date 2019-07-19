@@ -239,13 +239,8 @@ if (Meteor.isServer) {
         chai.assert.isUndefined(testMembership);
         testMembershipId = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership('owner'));
         chai.assert.throws(() => {
-<<<<<<< HEAD
           Memberships.methods.remove._execute({ userId: Fixture.demoUserId }, { _id: testMembershipId });
-        });
-=======
-          removeMembership._execute({ userId: Fixture.demoUserId }, { _id: testMembershipId });
         }, 'err_permissionDenied');
->>>>>>> master
         done();
       });
 
@@ -256,13 +251,8 @@ if (Meteor.isServer) {
         let testMembership = Memberships.findOne(testMembershipId);
         chai.assert.equal(testMembership.role, 'owner');
         chai.assert.throws(() => {
-<<<<<<< HEAD
           Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, createMembership('manager'));
-        });
-=======
-          insertMembership._execute({ userId: Fixture.demoManagerId }, createMembership('manager'));
         }, 'err_permissionDenied');
->>>>>>> master
 
         Memberships.methods.update._execute({ userId: Fixture.demoManagerId },
           { _id: testMembershipId, modifier: { $set: { role: 'benefactor' } } });
@@ -278,13 +268,8 @@ if (Meteor.isServer) {
         chai.assert.isUndefined(testMembership);
         testMembershipId = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, createMembership('manager'));
         chai.assert.throws(() => {
-<<<<<<< HEAD
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: testMembershipId });
-        });
-=======
-          removeMembership._execute({ userId: Fixture.demoManagerId }, { _id: testMembershipId });
         }, 'err_permissionDenied');
->>>>>>> master
         done();
       });
     });
