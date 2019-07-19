@@ -30,7 +30,7 @@ Template.Worksheets.onCreated(function onCreated() {
 });
 
 Template.Worksheets.viewmodel({
-  eventsToUpdate: [],
+  eventsToUpdate: {},
   calendarView: false,
   searchText: '',
   ticketStatusArray: [],
@@ -52,9 +52,12 @@ Template.Worksheets.viewmodel({
     this.reportedByCurrentUser(false);
   },
   addEventsToUpdate(eventObject) {
-    const eventsToUpdate = this.eventsToUpdate();
+    /*const eventsToUpdate = this.eventsToUpdate();
     if (eventsToUpdate.includes(eventObject)) return;
     eventsToUpdate.push(eventObject);
+    this.eventsToUpdate(eventsToUpdate);*/
+    const eventsToUpdate = this.eventsToUpdate();
+    eventsToUpdate[eventObject.id] = eventObject;
     this.eventsToUpdate(eventsToUpdate);
   },
   calendarOptions() {
@@ -95,11 +98,19 @@ Template.Worksheets.viewmodel({
           };
         });
         // I need this nested loop, cause the objects in the 2 arrays are not identical.
-        events.forEach((eventObject1) => {
+        /*events.forEach((eventObject1) => {
           viewmodel.eventsToUpdate().forEach((eventObject2) => {
             if (eventObject1.id === eventObject2.id) {
               eventObject1.start = eventObject2.start.toISOString();
               eventObject1.end = eventObject2.end.toISOString();
+            }
+          });
+        });*/
+        events.forEach((eventObject) => {
+          _.forEach(viewmodel.eventsToUpdate(), function(value, key) {
+            if (eventObject.id === key) {
+              eventObject.start = value.start.toISOString();
+              eventObject.end = value.end.toISOString();
             }
           });
         });
@@ -248,16 +259,23 @@ Template.Worksheets.events({
   },
   'click .js-save-calendar'(event, instance) {
     const eventsToUpdate = instance.viewmodel.eventsToUpdate();
-    eventsToUpdate.forEach((eventObject) => {
+    /*eventsToUpdate.forEach((eventObject) => {
       const dates = {};
       if (eventObject.start) dates['ticket.expectedStart'] = eventObject.start.toISOString();
       if (eventObject.end) dates['ticket.expectedFinish'] = eventObject.end.toISOString();
       const modifier = { $set: dates };
       Meteor.call('topics.update', { _id: eventObject.id, modifier });
+    });*/
+    _.forEach(eventsToUpdate, function(value, key) {
+      const dates = {};
+      if (value.start) dates['ticket.expectedStart'] = value.start.toISOString();
+      if (value.end) dates['ticket.expectedFinish'] = value.end.toISOString();
+      const modifier = { $set: dates };
+      Meteor.call('topics.update', { _id: key, modifier });
     });
-    instance.viewmodel.eventsToUpdate([]);
+    instance.viewmodel.eventsToUpdate({});
   },
   'click .js-reset-calendar'(event, instance) {
-    instance.viewmodel.eventsToUpdate([]);
+    instance.viewmodel.eventsToUpdate({});
   },
 });

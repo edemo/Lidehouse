@@ -28,6 +28,10 @@ Template.registerHelper('includes', function includes(a, b) {
     return a.includes(b);
 });
 
+Template.registerHelper('isNotEmptyObject', function isNotEmptyObject(object) {
+    return Object.getOwnPropertyNames(object).length !== 0;
+});
+
 Template.registerHelper('round', function round(number, digits) {
     return number.toFixed(digits);
 });
