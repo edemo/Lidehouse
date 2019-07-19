@@ -58,7 +58,8 @@ Template.Worksheets.viewmodel({
     this.eventsToUpdate(eventsToUpdate);*/
     const eventsToUpdate = this.eventsToUpdate();
     eventsToUpdate[eventObject.id] = eventObject;
-    this.eventsToUpdate(eventsToUpdate);
+    const newRef = _.clone(eventsToUpdate);
+    this.eventsToUpdate(newRef);
   },
   calendarOptions() {
     const viewmodel = this;
@@ -107,13 +108,12 @@ Template.Worksheets.viewmodel({
           });
         });*/
         if (!_.isEmpty(viewmodel.eventsToUpdate())) {
+          const eventsToUpdate = viewmodel.eventsToUpdate();
           events.forEach((eventObject) => {
-            _.forEach(viewmodel.eventsToUpdate(), function(value, key) {
-              if (eventObject.id === key) {
-                eventObject.start = value.start.toISOString();
-                eventObject.end = value.end.toISOString();
-              }
-            });
+            if (eventsToUpdate[eventObject.id]) {
+              if (eventsToUpdate[eventObject.id].start) eventObject.start = eventsToUpdate[eventObject.id].start.toISOString();
+              if (eventsToUpdate[eventObject.id].end) eventObject.end = eventsToUpdate[eventObject.id].end.toISOString();
+            }
           });
         }
         callback(events);
