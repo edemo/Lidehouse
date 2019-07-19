@@ -71,7 +71,7 @@ Meteor.startup(function attach() {
   Tickets.schema.i18n('schemaTickets');   // translation is different from schemaTopics
 });
 
-Tickets.modifiableFields = Topics.modifiableFields.concat(['ticket.localizer', 'ticket.urgency', 'ticket.expectedStart']);
+Tickets.modifiableFields = Topics.modifiableFields.concat(['ticket.localizer', 'ticket.urgency', 'ticket.expectedStart', 'ticket.expectedFinish']);
 
 Tickets.publicExtensionFields = { ticket: 1 };
 _.extend(Topics.publicFields, Tickets.publicExtensionFields);
