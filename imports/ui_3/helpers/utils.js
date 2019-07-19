@@ -20,6 +20,10 @@ Template.registerHelper('equals', function equals(a, b) {
     return a == b;
 });
 
+Template.registerHelper('gt', function gt(a, b) {
+    return a.length >= b;
+});
+
 Template.registerHelper('add', function add(a, b) {
     return a + b;
 });

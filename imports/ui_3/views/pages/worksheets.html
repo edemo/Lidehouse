@@ -95,7 +95,7 @@
         {{#if calendarView}}
         <div>
           {{> ReactiveFullcalendar options=calendarOptions }}
-          {{#if temporaryCalendar}}
+          {{#if (gt eventsToUpdate 1)}}
           <button type="button" class="js-save-calendar btn btn-xs btn-outline btn-default">{{_ 'save'}}</button>
           {{/if}}
         </div>

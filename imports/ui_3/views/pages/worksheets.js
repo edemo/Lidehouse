@@ -3,13 +3,13 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
+import { ReactiveDict } from 'meteor/reactive-dict';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { _ } from 'meteor/underscore';
-
 import { currentUserLanguage } from '/imports/startup/client/language.js';
-import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
+
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
@@ -30,7 +30,6 @@ Template.Worksheets.onCreated(function onCreated() {
 });
 
 Template.Worksheets.viewmodel({
-  temporaryCalendar: false,
   eventsToUpdate: [],
   calendarView: false,
   searchText: '',
@@ -52,15 +51,11 @@ Template.Worksheets.viewmodel({
     this.endDate('');
     this.reportedByCurrentUser(false);
   },
-  toggleTemporaryCalendar(eventObject) {
-    this.temporaryCalendar($('#fullCalendar').fullCalendar('clientEvents'));
+  addEventsToUpdate(eventObject) {
     const eventsToUpdate = this.eventsToUpdate();
-    if (eventsToUpdate.includes(eventObject)) {
-      this.eventsToUpdate(_.without(eventsToUpdate, eventObject));
-    } else {
-      eventsToUpdate.push(eventObject);
-      this.eventsToUpdate(eventsToUpdate);
-    }
+    if (eventsToUpdate.includes(eventObject)) return;
+    eventsToUpdate.push(eventObject);
+    this.eventsToUpdate(eventsToUpdate);
   },
   calendarOptions() {
     const viewmodel = this;
@@ -75,10 +70,10 @@ Template.Worksheets.viewmodel({
         afTicketUpdateModal(eventObject.id);
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
-        viewmodel.toggleTemporaryCalendar(eventObject);
+        viewmodel.addEventsToUpdate(eventObject);
       },
       eventDrop(eventObject) {
-        viewmodel.toggleTemporaryCalendar(eventObject);
+        viewmodel.addEventsToUpdate(eventObject);
       },
       editable: true,
       droppable: true, // this allows things to be dropped onto the calendar
@@ -90,7 +85,7 @@ Template.Worksheets.viewmodel({
         }
       },
       events(start, end, timezone, callback) {
-        let events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
+        const events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
           return {
             title: t.title,
             start: t.ticket.expectedStart,
@@ -99,7 +94,15 @@ Template.Worksheets.viewmodel({
             id: t._id,
           };
         });
-        if (viewmodel.temporaryCalendar()) events = viewmodel.temporaryCalendar();
+        // I need this nested loop, cause the objects in the 2 arrays are not identical.
+        events.forEach((eventObject1) => {
+          viewmodel.eventsToUpdate().forEach((eventObject2) => {
+            if (eventObject1.id === eventObject2.id) {
+              eventObject1.start = eventObject2.start.toISOString();
+              eventObject1.end = eventObject2.end.toISOString();
+            }
+          });
+        });
         callback(events);
       },
     };
@@ -183,7 +186,7 @@ Template.Worksheets.viewmodel({
         language: datatables_i18n[TAPi18n.getLanguage()],
         searching: false,
         paging: false,
-        ...DatatablesExportButtons,
+        info: false,
       };
     };
   },
@@ -253,6 +256,5 @@ Template.Worksheets.events({
       Meteor.call('topics.update', { _id: eventObject.id, modifier });
     });
     instance.viewmodel.eventsToUpdate([]);
-    instance.viewmodel.temporaryCalendar(false);
   },
 });
