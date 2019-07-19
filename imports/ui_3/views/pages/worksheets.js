@@ -3,13 +3,13 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
-import { ReactiveDict } from 'meteor/reactive-dict';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { _ } from 'meteor/underscore';
-import { currentUserLanguage } from '/imports/startup/client/language.js';
 
+import { currentUserLanguage } from '/imports/startup/client/language.js';
+import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
@@ -183,7 +183,7 @@ Template.Worksheets.viewmodel({
         language: datatables_i18n[TAPi18n.getLanguage()],
         searching: false,
         paging: false,
-        info: false,
+        ...DatatablesExportButtons,
       };
     };
   },

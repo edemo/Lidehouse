@@ -56,9 +56,9 @@ if (Meteor.isClient) {
 }
 
 Votings.voteSchema = new SimpleSchema({
-  procedure: { type: String, allowedValues: Votings.voteProcedureValues, autoform: _.extend({}, autoformOptions(Votings.voteProcedureValues, 'schemaVotings.vote.procedure.'), noUpdate) },
-  effect: { type: String, allowedValues: Votings.voteEffectValues, autoform: _.extend({}, autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), noUpdate) },
-  type: { type: String, allowedValues: Votings.voteTypeValues, autoform: _.extend({}, autoformOptions(Votings.voteTypeValues, 'schemaVotings.vote.type.'), noUpdate) },
+  procedure: { type: String, allowedValues: Votings.voteProcedureValues, autoform: { ...autoformOptions(Votings.voteProcedureValues, 'schemaVotings.vote.procedure.'), ...noUpdate } },
+  effect: { type: String, allowedValues: Votings.voteEffectValues, autoform: { ...autoformOptions(currentUsersPossibleEffectValues, 'schemaVotings.vote.effect.'), ...noUpdate } },
+  type: { type: String, allowedValues: Votings.voteTypeValues, autoform: { ...autoformOptions(Votings.voteTypeValues, 'schemaVotings.vote.type.'), ...noUpdate } },
   choices: {
     type: Array,
     autoValue() {

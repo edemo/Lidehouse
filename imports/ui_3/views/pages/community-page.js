@@ -161,14 +161,15 @@ Template.Community_page.viewmodel({
         delete: Meteor.userOrNull().hasPermission('parcels.remove', communityId),
         assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
       };
-      return _.extend({
+      return {
         columns: parcelColumns(permissions),
         createdRow: highlightMyRow,
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
         lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
         pageLength: 25,
-      }, DatatablesExportButtons);
+        ...DatatablesExportButtons,
+      };
     };
   },
   parcels() {

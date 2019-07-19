@@ -306,9 +306,7 @@ if (Meteor.isServer) {
         revokeDelegation3To4();
         assertsAfterThirdVote();
 
-        console.log(agendaId, Agendas.findOne({ _id: { $ne: agendaId } }));
         insertDelegation3To4('agenda', Agendas.findOne({ _id: { $ne: agendaId } })._id);
-        console.log(JSON.stringify(Topics.findOne(votingId)));
         assertsAfterThirdVote();  // no effect here
         revokeDelegation3To4();
         assertsAfterThirdVote();

@@ -16,7 +16,7 @@ export const SerialId = function (collection, definerFields = []) {
   });
 
   const schema = new SimpleSchema({
-    serial: { type: Number, optional: true, autoform: _.extend({ omit: true }, noUpdate) },
+    serial: { type: Number, optional: true, autoform: { omit: true, ...noUpdate } },
   });
 
   const helpers = {
