@@ -18,7 +18,7 @@ export class BatchMethod extends ValidatedMethod {
       name: batchMethodName,
       validate: batchOperationSchema.validator({ clean: true }),
       run({ communityId, args }) {
-        console.log("running batch with", args.length, ":", args[0]);
+//        console.log("running batch with", args.length, ":", args[0]);
         const userId = this.userId;
         checkPermissions(userId, method.name, communityId);  // Whoever has perm for the method, can do it in batch as well
         if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
@@ -110,10 +110,10 @@ export class UpsertMethod extends ValidatedMethod {
 //        console.log("selector", selector);
         const existingDoc = collection.findOne(selector);
         if (!existingDoc) {
-          console.log('No existing doc, so inserting', doc);
+//          console.log('No existing doc, so inserting', doc);
           return collection.methods.insert._execute({ userId }, doc);
         } else if (hasChanges(doc, existingDoc)) {
-          console.log(`Field ${hasChanges(doc, existingDoc)} has changed in doc:`, existingDoc);
+//          console.log(`Field ${hasChanges(doc, existingDoc)} has changed in doc:`, existingDoc);
           return collection.methods.update._execute({ userId }, { _id: existingDoc._id, modifier: { $set: doc } });
         }
         return null;
