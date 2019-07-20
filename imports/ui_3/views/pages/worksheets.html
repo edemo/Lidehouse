@@ -95,6 +95,10 @@
         {{#if calendarView}}
         <div>
           {{> ReactiveFullcalendar options=calendarOptions }}
+          {{#if (isNotEmptyObject eventsToUpdate)}}
+          <button type="button" class="js-save-calendar btn btn-xs btn-outline btn-default">{{_ 'save'}}</button>
+          <button type="button" class="js-reset-calendar btn btn-xs btn-outline btn-default">{{_ 'cancel'}}</button>
+          {{/if}}
         </div>
         {{else}}
         <div class="no-padding table-responsive">

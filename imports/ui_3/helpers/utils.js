@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { numeral } from 'meteor/numeral:numeral';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
+import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 
 Template.registerHelper('and', function and(a, b) {
@@ -26,6 +27,10 @@ Template.registerHelper('add', function add(a, b) {
 
 Template.registerHelper('includes', function includes(a, b) {
     return a.includes(b);
+});
+
+Template.registerHelper('isNotEmptyObject', function isNotEmptyObject(object) {
+    return !_.isEmpty(object);
 });
 
 Template.registerHelper('round', function round(number, digits) {

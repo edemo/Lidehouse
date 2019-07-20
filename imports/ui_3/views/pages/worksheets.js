@@ -3,17 +3,18 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
+import { ReactiveDict } from 'meteor/reactive-dict';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { _ } from 'meteor/underscore';
-
 import { currentUserLanguage } from '/imports/startup/client/language.js';
-import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
+
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
+//import { momentWithoutTZ } from '/imports/api/utils.js';
 import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
   from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -29,6 +30,7 @@ Template.Worksheets.onCreated(function onCreated() {
 });
 
 Template.Worksheets.viewmodel({
+  eventsToUpdate: {},
   calendarView: false,
   searchText: '',
   ticketStatusArray: [],
@@ -49,6 +51,16 @@ Template.Worksheets.viewmodel({
     this.endDate('');
     this.reportedByCurrentUser(false);
   },
+  addEventsToUpdate(eventObject) {
+    /*const eventsToUpdate = this.eventsToUpdate();
+    if (eventsToUpdate.includes(eventObject)) return;
+    eventsToUpdate.push(eventObject);
+    this.eventsToUpdate(eventsToUpdate);*/
+    const eventsToUpdate = this.eventsToUpdate();
+    eventsToUpdate[eventObject.id] = eventObject;
+    const newRef = _.clone(eventsToUpdate);
+    this.eventsToUpdate(newRef);
+  },
   calendarOptions() {
     const viewmodel = this;
     return {
@@ -57,6 +69,15 @@ Template.Worksheets.viewmodel({
         left: 'prev,next today',
         center: 'title',
         right: 'month,agendaWeek,agendaDay',
+      },
+      eventClick(eventObject) {
+        afTicketUpdateModal(eventObject.id);
+      },
+      eventResizeStop(eventObject, jsEvent, ui, view) {
+        viewmodel.addEventsToUpdate(eventObject);
+      },
+      eventDrop(eventObject) {
+        viewmodel.addEventsToUpdate(eventObject);
       },
       editable: true,
       droppable: true, // this allows things to be dropped onto the calendar
@@ -74,8 +95,27 @@ Template.Worksheets.viewmodel({
             start: t.ticket.expectedStart,
             end: t.ticket.expectedFinish,
             color: Tickets.statuses[t.status].colorCode,
+            id: t._id,
           };
         });
+        // I need this nested loop, cause the objects in the 2 arrays are not identical.
+        /*events.forEach((eventObject1) => {
+          viewmodel.eventsToUpdate().forEach((eventObject2) => {
+            if (eventObject1.id === eventObject2.id) {
+              eventObject1.start = eventObject2.start.toISOString();
+              eventObject1.end = eventObject2.end.toISOString();
+            }
+          });
+        });*/
+        if (!_.isEmpty(viewmodel.eventsToUpdate())) {
+          const eventsToUpdate = viewmodel.eventsToUpdate();
+          events.forEach((eventObject) => {
+            if (eventsToUpdate[eventObject.id]) {
+              if (eventsToUpdate[eventObject.id].start) eventObject.start = eventsToUpdate[eventObject.id].start.toISOString();
+              if (eventsToUpdate[eventObject.id].end) eventObject.end = eventsToUpdate[eventObject.id].end.toISOString();
+            }
+          });
+        }
         callback(events);
       },
     };
@@ -159,7 +199,7 @@ Template.Worksheets.viewmodel({
         language: datatables_i18n[TAPi18n.getLanguage()],
         searching: false,
         paging: false,
-        ...DatatablesExportButtons,
+        info: false,
       };
     };
   },
@@ -218,5 +258,26 @@ Template.Worksheets.events({
       ticketTypeArray.push(ticketType);
       instance.viewmodel.ticketTypeArray(ticketTypeArray);
     }
+  },
+  'click .js-save-calendar'(event, instance) {
+    const eventsToUpdate = instance.viewmodel.eventsToUpdate();
+    /*eventsToUpdate.forEach((eventObject) => {
+      const dates = {};
+      if (eventObject.start) dates['ticket.expectedStart'] = eventObject.start.toISOString();
+      if (eventObject.end) dates['ticket.expectedFinish'] = eventObject.end.toISOString();
+      const modifier = { $set: dates };
+      Meteor.call('topics.update', { _id: eventObject.id, modifier });
+    });*/
+    _.forEach(eventsToUpdate, function(value, key) {
+      const dates = {};
+      if (value.start) dates['ticket.expectedStart'] = value.start.toISOString();
+      if (value.end) dates['ticket.expectedFinish'] = value.end.toISOString();
+      const modifier = { $set: dates };
+      Meteor.call('topics.update', { _id: key, modifier });
+    });
+    instance.viewmodel.eventsToUpdate({});
+  },
+  'click .js-reset-calendar'(event, instance) {
+    instance.viewmodel.eventsToUpdate({});
   },
 });
