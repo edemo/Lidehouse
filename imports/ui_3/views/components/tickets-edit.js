@@ -42,11 +42,14 @@ export function afTicketInsertModal(type, contractId) {
 }
 
 export function afTicketUpdateModal(topicId) {
+  const ticket = Topics.findOne(topicId);
+  const statusObject = Tickets.statuses[ticket.status];
   Modal.show('Autoform_edit', {
     id: 'af.ticket.update',
     collection: Topics,
     schema: Tickets.schema,
-    omitFields: ['agendaId', 'sticky'],
+//    omitFields: ['agendaId', 'sticky'],  // Can edit everything
+    fields: statusObject.data.map(d => 'ticket.' + d),  // Can only edit actual status fields
     doc: Topics.findOne(topicId),
     type: 'method-update',
     meteormethod: 'topics.update',
