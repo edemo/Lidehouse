@@ -53,6 +53,7 @@ Meteor.startup(function indexTopics() {
     Topics._collection._ensureIndex('closed');
     Topics._collection._ensureIndex(['title', 'participantIds']);
   } else if (Meteor.isServer) {
+    Topics._ensureIndex({ communityId: 1, category: 1, serial: 1 });
     Topics._ensureIndex({ communityId: 1, category: 1, createdAt: -1 });
   }
 });

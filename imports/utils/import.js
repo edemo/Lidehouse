@@ -21,7 +21,6 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 
 const rABS = true;
-const delayCalls = 0;
 
 // Problem of dealing with dates as js Date objects:
 // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
@@ -57,8 +56,8 @@ function transformMarinaMemberships(jsons) {
 //
 function transformMarinaTransactions(jsons, options) {
   const tjsons = [];
-  jsons.forEach((doc) => {
-    const docRef = doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
+  jsons.forEach((doc, i) => {
+    const docRef = '' + (i+2) + '-' + doc['Számla kelte'] + '@' + doc['Szállító neve adóigazgatási azonosító száma'] + '#' + doc['Számla száma, vevőkód, fogy hely az'];
 //    const cutoffDate = moment(moment.utc('2019-06-01'));
     const incomingDate = moment(moment.utc(doc['A számla fizetési határideje'] || doc['Számla kelte']));
     if (!incomingDate.isValid()) console.error('ERROR: Invalid date in import', doc);
@@ -158,6 +157,8 @@ export function importCollectionFromFile(collection, options) {
         if (collection._name === 'balances') jsons = transformMarinaBalances(jsons, options);
       }
       // ------------------------------
+      jsons.forEach(json => json.communityId = communityId);
+
 /*
       let idSet;  // The set of fields, that identify uniquely an element within a community.
       switch (collection._name) {  // If we find such an item, we do an update, otherwise we will insert.
@@ -199,20 +200,23 @@ export function importCollectionFromFile(collection, options) {
 */
       collection.methods.batch.test.call({ communityId, args: jsons }, function (err, res) {
         if (err) { displayError(err); return; }
-        const neededOperations = res;
-        Modal.confirmAndCall(() => {
+        const neededOps = res;
+        Modal.confirmAndCall(collection.methods.batch.upsert, { communityId, args: jsons },
+/*      () => {
           if (neededOperations.insert.length > 0)
             collection.methods.batch.insert.call({ communityId, args: neededOperations.insert });
           if (neededOperations.update.length > 0)
             collection.methods.batch.update.call({ communityId, args: neededOperations.update });
-        }, undefined, {
-          action: 'import data',
-          message: __('This operation will do the following') + '<br>' +
-            __('creates') + ' ' + neededOperations.insert.length + __(' documents') + ',<br>' +
-            __('modifies') + ' ' + neededOperations.update.length + __(' documents') + ',<br>' +
-            __('deletes') + ' ' + neededOperations.remove.length + __(' documents') + ',<br>' +
-            __('leaves unchanged') + ' ' + neededOperations.noChange.length + __(' documents'),
-        });
+        }, undefined, */
+          {
+            action: 'import data',
+            message: __('This operation will do the following') + '<br>' +
+              __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>' +
+              __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>' +
+              __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>' +
+              __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
+          },
+        );
       });
     };
     if (rABS) reader.readAsBinaryString(file); else reader.readAsArrayBuffer(file);

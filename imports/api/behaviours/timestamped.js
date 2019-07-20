@@ -20,28 +20,25 @@ import { _ } from 'meteor/underscore';
 
 // TODO: Would be advisable to refer to these fields together at Mongo projections (publicFields)
 const schema = new SimpleSchema({
-  createdAt: {
-    type: Date,
-    optional: true,
-    autoValue() {
-      if (this.isInsert) {
-        return Clock.currentTime();
-      }
-      return undefined;   // means leave it alone
-    },
-    denyUpdate: true,
-    autoform: { omit: true, disabled: true },
-  },
-  updatedAt: {
-    type: Date,
-    optional: true,
-    autoValue() {
-      return Clock.currentTime();
-    },
-    autoform: { omit: true },
-  },
+  createdAt: { type: Date, optional: true, denyUpdate: true, autoform: { omit: true, disabled: true } },
+  updatedAt: { type: Date, optional: true, autoform: { omit: true } },
 });
 
+const hooks = {
+  before: {
+    insert(userId, doc) {
+      doc.createdAt = Clock.currentTime();
+      doc.updatedAt = doc.createdAt;
+      return true;
+    },
+    update(userId, doc, fieldNames, modifier, options) {
+      modifier.$set = modifier.$set || {};
+      modifier.$set.updatedAt = Clock.currentTime();
+      return true;
+    },
+  },
+};
+
 export const Timestamped = {
-  schema, helpers: {}, methods: {}, hooks: {},
+  schema, helpers: {}, methods: {}, hooks,
 };

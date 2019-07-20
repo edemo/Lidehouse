@@ -94,8 +94,8 @@ export function insertUnittestFixture(lang) {
   const demoManagerId = demoBuilder.createLoginableUser('manager');
   const demoAdminId = demoBuilder.createLoginableUser('admin');
   const demoAccountantId = demoBuilder.createLoginableUser('accountant');
-  const demoUserId = demoBuilder.createLoginableUser('owner', { parcelId: dummyParcels[0] }, { share: new Fraction(1, 10) });
-  const demoBenefactorId = demoBuilder.createLoginableUser('benefactor', { parcelId: dummyParcels[0] }, { share: new Fraction(1, 10) });
+  const demoUserId = demoBuilder.createLoginableUser('owner', undefined, { parcelId: dummyParcels[0], ownership: { share: new Fraction(1, 10) } });
+  const demoBenefactorId = demoBuilder.createLoginableUser('benefactor', undefined, { parcelId: dummyParcels[0], benefactorship: { type: 'rental' } });
 
   // ===== Dummy Users =====
 

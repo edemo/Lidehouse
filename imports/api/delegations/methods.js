@@ -28,7 +28,7 @@ export const insert = new ValidatedMethod({
     }
     checkTargetUserAllowsDelegatingTo(doc.targetPersonId, doc);
     const delegationId = Delegations.insert(doc);
-    const delegation = Delegations._transform(doc);
+    const delegation = Delegations.findOne(delegationId); // Refetch needed for timestamps and helper methods
 
     if (Meteor.isServer) {
       delegation.getAffectedVotings().forEach(voting => voting.voteEvaluate(false));

@@ -8,7 +8,7 @@ import { checkPermissions } from '/imports/api/method-checks.js';
 const batchOperationSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   args: { type: Array },
-  'args.$': { type: Object, blackbox: true },
+  'args.$': { type: Object, blackbox: true }, // Each arg will be checked against the schema when individual method execution happens
 });
 
 export class BatchMethod extends ValidatedMethod {
@@ -18,18 +18,19 @@ export class BatchMethod extends ValidatedMethod {
       name: batchMethodName,
       validate: batchOperationSchema.validator({ clean: true }),
       run({ communityId, args }) {
-//        console.log("running batch for", args.length);
-        checkPermissions(this.userId, batchMethodName, communityId);
+        console.log("running batch with", args.length, ":", args[0]);
+        const userId = this.userId;
+        checkPermissions(userId, method.name, communityId);  // Whoever has perm for the method, can do it in batch as well
         if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
         const results = [];
         const errors = [];
-        args.forEach(arg => {
+        args.forEach((arg) => {
           try {
-            const res = method._execute({ userId: this.userId }, arg);
+            const res = method._execute({ userId }, arg);
 //            console.log("successful batch call", arg);
             results.push(res);
-          } catch (err) {   // The batch method continues exectuing even after an error. Just collects all errors on the way
-//            console.log("error in batch call", err);
+          } catch (err) {   // The batch method continues exectuing even after an error. Just collects all errors on the way/            console.log("error in batch call", err);
+            console.log(err);
             errors.push(err);
           }
         });
@@ -55,29 +56,30 @@ function hasChanges(newObj, oldObj) {
 export class BatchTester extends ValidatedMethod {
   constructor(collection) {
     const batchTesterName = collection._name + '.test.batch';
-    const batchMethodName = collection._name + '.insert.batch';
+    const batchUpsertName = collection._name + '.upsert';
     const options = {
       name: batchTesterName,
       validate: batchOperationSchema.validator({ clean: true }),
       run({ communityId, args }) {
-        checkPermissions(this.userId, batchMethodName, communityId);
+        checkPermissions(this.userId, batchUpsertName, communityId);
         if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
 
         const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
-        args.forEach(newDoc => {
-          newDoc.communityId = communityId;
+        args.forEach((doc, i) => {
+          collection.simpleSchema().clean(doc);
+          collection.simpleSchema().validate(doc);
           const selector = {};
-          collection.idSet.forEach(field => {
-            if (!newDoc[field]) selector[field] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
-            selector[field] = newDoc[field];
+          collection.idSet.forEach((field) => {
+            if (doc[field]) selector[field] = doc[field];
+            else selector[field] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
           });
-//          console.log("selector", selector);
+          // console.log("selector", selector);
           const existingDoc = collection.findOne(selector);
-          if (!existingDoc) neededOperations.insert.push(newDoc);
-          else if (hasChanges(newDoc, existingDoc)) {
-            neededOperations.update.push({ _id: existingDoc._id, modifier: { $set: newDoc } });
-//            console.log(`Field ${hasChanges(newDoc, existingDoc)} has changed`);
-          } else neededOperations.noChange.push(newDoc);
+          if (!existingDoc) neededOperations.insert.push(i);
+          else if (hasChanges(doc, existingDoc)) {
+            neededOperations.update.push({ _id: existingDoc._id, modifier: { $set: doc } });
+            // console.log(`Field ${hasChanges(doc, existingDoc)} has changed in doc: ${JSON.stringify(existingDoc)}`);
+          } else neededOperations.noChange.push(i);
           // Shall we determine also what to remove?
         });
         return neededOperations;
@@ -87,12 +89,49 @@ export class BatchTester extends ValidatedMethod {
   }
 }
 
+export class UpsertMethod extends ValidatedMethod {
+  constructor(collection) {
+    const upsertName = collection._name + '.upsert';
+    const options = {
+      name: upsertName,
+      validate: collection.simpleSchema().validator({ clean: true }),
+      run(doc) {
+//        console.log('Upserting:', doc);
+        const communityId = doc.communityId;
+        const userId = this.userId;
+        checkPermissions(userId, upsertName, communityId);
+        if (Meteor.isClient) return null; // Upsert methods are not simulated on the client, just executed on the server
+
+        const selector = {};
+        collection.idSet.forEach((field) => {
+          if (doc[field]) selector[field] = doc[field];
+          else selector[field] = { $exists: false }; // throw new Meteor.Error('err_idFieldMissing', `Id set field ${field} must be present when performing batch operation with ${JSON.stringify(newDoc)}`);
+        });
+//        console.log("selector", selector);
+        const existingDoc = collection.findOne(selector);
+        if (!existingDoc) {
+          console.log('No existing doc, so inserting', doc);
+          return collection.methods.insert._execute({ userId }, doc);
+        } else if (hasChanges(doc, existingDoc)) {
+          console.log(`Field ${hasChanges(doc, existingDoc)} has changed in doc:`, existingDoc);
+          return collection.methods.update._execute({ userId }, { _id: existingDoc._id, modifier: { $set: doc } });
+        }
+        return null;
+      },
+    };
+    super(options);
+  }
+}
+
 export function crudBatchOps(collection) {
+  const upsert = new UpsertMethod(collection);
   return {
+    upsert,
     batch: {
-      insert: new BatchMethod(collection.methods.insert),
-      update: new BatchMethod(collection.methods.update),
-      remove: new BatchMethod(collection.methods.remove),
+//      insert: new BatchMethod(collection.methods.insert),
+//      update: new BatchMethod(collection.methods.update),
+//      remove: new BatchMethod(collection.methods.remove),
+      upsert: new BatchMethod(upsert),
       test: new BatchTester(collection),
     },
   };

@@ -22,13 +22,6 @@ if (Meteor.isServer) {
 
   describe('batch-method', function () {
     this.timeout(5000);
-    before(function () {
-      Fixture = freshFixture();
-      Topics.remove({});
-      communityId = Fixture.demoCommunityId;
-      userId = Fixture.demoAdminId;
-      header = { communityId, userId, category: 'ticket', status: 'reported', ticket: { type: 'issue' } };
-    });
 /*
     const collection = new Mongo.Collection('batchables');
     const insertMethod = new ValidatedMethod({
@@ -43,7 +36,14 @@ if (Meteor.isServer) {
     describe('normal operation', function () {
       let topic1, topic2, topic3;
       let doc1, doc2, doc3;
-      
+      before(function () {
+        Fixture = freshFixture();
+        Topics.remove({});
+        communityId = Fixture.demoCommunityId;
+        userId = Fixture.demoAdminId;
+        header = { communityId, userId, category: 'ticket', status: 'reported', ticket: { type: 'issue' } };
+      });
+
       it('inserts single', function (done) {
         topic1 = { ...header, serial: 1, title: 'First', text: '-' };
         const params1 = { communityId, args: [topic1] };
@@ -52,9 +52,10 @@ if (Meteor.isServer) {
         chai.assert.equal(ops.insert.length, 1);
         chai.assert.equal(ops.update.length, 0);
         chai.assert.equal(ops.noChange.length, 0);
-        chai.assert.deepEqual(ops.insert, params1.args);
+        chai.assert.deepEqual(ops.insert, [1-1]);
 
-        Topics.methods.batch.insert._execute({ userId }, params1);
+//        Topics.methods.batch.insert._execute({ userId }, params1);
+        Topics.methods.batch.upsert._execute({ userId }, params1);
         doc1 = Topics.findOne({ title: 'First' });
         chai.assert.isDefined(doc1);
         done();
@@ -64,14 +65,17 @@ if (Meteor.isServer) {
         topic1 = { ...header, serial: 1, title: 'First', text: '-' };
         topic2 = { ...header, serial: 2, title: 'Second', text: '-' };
         topic3 = { ...header, serial: 3, title: 'Third', text: '-' };
+        const insert23 = { communityId, args: [topic2, topic3] };
+        const params = { communityId, args: [topic1, topic2, topic3] };
 
-        const ops = Topics.methods.batch.test._execute({ userId }, { communityId, args: [topic1, topic2, topic3] });
+        const ops = Topics.methods.batch.test._execute({ userId }, params);
         chai.assert.equal(ops.insert.length, 2);
         chai.assert.equal(ops.update.length, 0);
         chai.assert.equal(ops.noChange.length, 1);
-        chai.assert.deepEqual(ops.insert, [topic2, topic3]);
+        chai.assert.deepEqual(ops.insert, [2-1, 3-1]);
 
-        Topics.methods.batch.insert._execute({ userId }, { communityId, args: [topic2, topic3] });
+//        Topics.methods.batch.insert._execute({ userId }, insert23);
+        Topics.methods.batch.upsert._execute({ userId }, params);
         doc2 = Topics.findOne({ title: 'Second' });
         doc3 = Topics.findOne({ title: 'Third' });
         chai.assert.isDefined(doc2);
@@ -81,15 +85,17 @@ if (Meteor.isServer) {
 
       it('updates single', function (done) {
         topic3 = { ...header, serial: 3, title: 'Third', text: 'third' };
+        const params3 = { communityId, args: [topic3] };
         const update3 = { communityId, args: [{ _id: doc3._id, modifier: { $set: topic3 } }] };
 
-        const ops = Topics.methods.batch.test._execute({ userId }, { communityId, args: [topic3] });
+        const ops = Topics.methods.batch.test._execute({ userId }, params3);
         chai.assert.equal(ops.insert.length, 0);
         chai.assert.equal(ops.update.length, 1);
         chai.assert.equal(ops.noChange.length, 0);
         chai.assert.deepEqual(ops.update, update3.args);
 
-        Topics.methods.batch.update._execute({ userId }, update3);
+//        Topics.methods.batch.update._execute({ userId }, update3);
+        Topics.methods.batch.upsert._execute({ userId }, params3);
         doc3 = Topics.findOne({ title: 'Third' });
         chai.assert.equal(doc3.text, 'third');
         done();
@@ -102,14 +108,16 @@ if (Meteor.isServer) {
         const update21 = { communityId,
           args: [{ _id: doc2._id, modifier: { $set: topic2 } }, { _id: doc1._id, modifier: { $set: topic1 } }],
         };
+        const params = { communityId, args: [topic3, topic2, topic1] };
 
-        const ops = Topics.methods.batch.test._execute({ userId }, { communityId, args: [topic3, topic2, topic1] });
+        const ops = Topics.methods.batch.test._execute({ userId }, params);
         chai.assert.equal(ops.insert.length, 0);
         chai.assert.equal(ops.update.length, 2);
         chai.assert.equal(ops.noChange.length, 1);
         chai.assert.deepEqual(ops.update, update21.args);
 
-        Topics.methods.batch.update._execute({ userId }, update21);
+//        Topics.methods.batch.update._execute({ userId }, update21);
+        Topics.methods.batch.upsert._execute({ userId }, params);
         doc2 = Topics.findOne({ title: 'Second' });
         doc1 = Topics.findOne({ title: 'First' });
         chai.assert.equal(doc2.text, 'second');
@@ -117,11 +125,12 @@ if (Meteor.isServer) {
         done();
       });
 
-      it('removes multiple', function (done) {
-        Topics.methods.batch.remove._execute({ userId }, { communityId,
+      xit('removes multiple', function (done) {
+        const remove123 = { communityId,
           args: [{ _id: doc1._id }, { _id: doc2._id }, { _id: doc3._id }],
-        });
+        };
 
+        Topics.methods.batch.remove._execute({ userId }, remove123);
         doc1 = Topics.findOne({ title: 'First' });
         doc2 = Topics.findOne({ title: 'Second' });
         doc3 = Topics.findOne({ title: 'Third' });
@@ -131,14 +140,27 @@ if (Meteor.isServer) {
         done();
       });
 
+    });
+
+    describe('exception handling', function () {
+      let topic1, topic2, topic3;
+      let doc1, doc2, doc3;
+      before(function () {
+        Fixture = freshFixture();
+        Topics.remove({});
+        communityId = Fixture.demoCommunityId;
+        userId = Fixture.demoAdminId;
+        header = { communityId, userId, category: 'ticket', status: 'reported', ticket: { type: 'issue' } };
+      });
+
       it('when inerting multiple, and one has error, the rest is inserted', function (done) {
         topic1 = { ...header, serial: 1, title: 'First', text: '-' };
         topic2 = { /* missing header */ title: 'Second', text: '-' };
         topic3 = { ...header, serial: 3, title: 'Third', text: '-' };
-        const ret = Topics.methods.batch.insert._execute({ userId }, { communityId,
-          args: [topic1, topic2, topic3],
-        });
+        const params = { communityId, args: [topic1, topic2, topic3] };
 
+//        const ret = Topics.methods.batch.insert._execute({ userId }, params);
+        const ret = Topics.methods.batch.upsert._execute({ userId }, params);
         chai.assert.equal(ret.errors.length, 1);
         chai.assert.equal(ret.results.length, 2);
         doc1 = Topics.findOne({ title: 'First' });
