@@ -674,6 +674,7 @@
   "Connecting user": "A(z) <strong>'%s'</strong> email című felhasználót kapcsolni fogja a tagsághoz. Ha az illetőnek még nincs felhasználói fiókja a rendszerben, akkor most meghívót fog neki küldeni erre az email címre.",
   "This will publish the current account balances": "Ezzel a jelen pillanatban élő számlaegyenlegek lesznek mostantól láthatóak a tulajdonosok felé mutatott kimutatásokban",
   
+  "Warning": "Figyelmeztetés",
   "anonymous": "névtelen",
   "deletedUser": "Törölt felhasználó",
   "unknownUser": "Ismeretlen felhasználó",

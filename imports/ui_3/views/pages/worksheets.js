@@ -6,10 +6,12 @@ import { moment } from 'meteor/momentjs:moment';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
+import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
+import { __ } from '/imports/localization/i18n.js';
 import { currentUserLanguage } from '/imports/startup/client/language.js';
-
+import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
@@ -32,6 +34,7 @@ Template.Worksheets.onCreated(function onCreated() {
 Template.Worksheets.viewmodel({
   eventsToUpdate: {},
   calendarView: false,
+  showNeedToSaveWarning: true,
   searchText: '',
   ticketStatusArray: [],
   ticketTypeArray: [],
@@ -61,6 +64,17 @@ Template.Worksheets.viewmodel({
     const newRef = _.clone(eventsToUpdate);
     this.eventsToUpdate(newRef);
   },
+  warnToSave() {
+    const viewmodel = this;
+    if (viewmodel.showNeedToSaveWarning()) {
+      Modal.show('Modal', {
+        title: 'Warning',
+        text: __('youNeedToSaveYourChanges'),
+        btnOK: 'OK',
+        onOK() { viewmodel.showNeedToSaveWarning(false); },
+      });
+    }
+  },
   calendarOptions() {
     const viewmodel = this;
     return {
@@ -75,11 +89,14 @@ Template.Worksheets.viewmodel({
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
         viewmodel.addEventsToUpdate(eventObject);
+        viewmodel.warnToSave();
       },
       eventDrop(eventObject) {
         viewmodel.addEventsToUpdate(eventObject);
+        viewmodel.warnToSave();
       },
       editable: true,
+      /*
       droppable: true, // this allows things to be dropped onto the calendar
       drop() {
         // is the "remove after drop" checkbox checked?
@@ -87,7 +104,7 @@ Template.Worksheets.viewmodel({
             // if so, remove the element from the "Draggable Events" list
           $(this).remove();
         }
-      },
+      },*/
       events(start, end, timezone, callback) {
         const events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
           return {
@@ -199,7 +216,7 @@ Template.Worksheets.viewmodel({
         language: datatables_i18n[TAPi18n.getLanguage()],
         searching: false,
         paging: false,
-        info: false,
+        ...DatatablesExportButtons,
       };
     };
   },
@@ -277,7 +294,7 @@ Template.Worksheets.events({
     });
     instance.viewmodel.eventsToUpdate({});
   },
-  'click .js-reset-calendar'(event, instance) {
+  'click .js-cancel-calendar'(event, instance) {
     instance.viewmodel.eventsToUpdate({});
   },
 });
