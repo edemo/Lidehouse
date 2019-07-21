@@ -29,6 +29,7 @@ momentjs:moment
 numeral:numeral
 mizzao:timesync
 mrt:jquery-ui@1.9.2
+mrt:jquery-ui-sortable@=1.10.3
 ephemer:reactive-datatables
 flawless:meteor-toastr
 perak:markdown
@@ -44,6 +45,7 @@ gquemart:meteor-reactive-fullcalendar
 mongo@1.4.2
 aldeed:simple-schema
 aldeed:collection2
+matb33:collection-hooks
 dburles:collection-helpers
 reywood:publish-composite
 mdg:validated-method
@@ -113,4 +115,3 @@ lookback:emails
 
 droka:autoform-ufs
 ostrio:flow-router-title
-mrt:jquery-ui-sortable@=1.10.3

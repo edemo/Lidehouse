@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { DDP } from 'meteor/ddp';
 import fs from 'fs';
+import { CollectionHooks } from 'meteor/matb33:collection-hooks';
 import { ShareddocsStore as store } from '/imports/api/shareddocs/shareddocs-store.js';
 
 export function uploadFileSimulation(storeParams, path) {
@@ -31,7 +32,9 @@ export function runWithFakeUserId(userId, toRun) {
     randomSeed: Math.random(),
   });
 
+  CollectionHooks.defaultUserId = userId;
   DDP._CurrentInvocation.withValue(invocation, () => {
     toRun();
   });
+  CollectionHooks.defaultUserId = undefined;
 }

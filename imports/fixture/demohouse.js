@@ -649,8 +649,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     if (m <= 2) {
-      demoBuilder.statusChange({ topicId: ticket, status: 'progressing', data: {} });
-      demoBuilder.statusChange({ topicId: ticket, status: 'finished',
+      demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket, status: 'progressing', data: {} });
+      demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket, status: 'finished',
         data: {
           actualStart: maintainanceDate.toDate(),
           actualFinish: maintainanceDate.toDate(),
@@ -672,7 +672,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('minutes');
-  demoBuilder.statusChange({ topicId: ticket0, status: 'confirmed',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket0, status: 'confirmed',
     text: __('demo.ticket.0.comment.0'),
     data: {
       localizer: demoBuilder.name2code('Localizer', 'Lift'),
@@ -683,7 +683,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('days');
-  demoBuilder.statusChange({ topicId: ticket0, status: 'progressing',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket0, status: 'progressing',
     text: __('demo.ticket.0.comment.1'),
     data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
@@ -700,7 +700,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('minutes');
-  demoBuilder.statusChange({ topicId: ticket1, status: 'confirmed',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket1, status: 'confirmed',
     text: __('demo.ticket.1.comment.0'),
     data: {
       localizer: '@A409',
@@ -710,12 +710,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   const actualStart1 = Clock.tick(2, 'days');
-  demoBuilder.statusChange({ topicId: ticket1, status: 'progressing',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket1, status: 'progressing',
     text: __('demo.ticket.1.comment.1'),
     data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
   const actualFinish1 = Clock.tick(2, 'days');
-  demoBuilder.statusChange({ topicId: ticket1, status: 'finished',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket1, status: 'finished',
     text: __('demo.ticket.1.comment.2'),
     data: {
       actualStart: actualStart1,
@@ -723,7 +723,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tick(2, 'days');
-  demoBuilder.statusChange({ topicId: ticket1, status: 'closed',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket1, status: 'closed',
     text: __('demo.ticket.1.comment.3'),
     data: {},
   });
@@ -758,7 +758,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('hours');
-  demoBuilder.statusChange({ topicId: ticket3, status: 'confirmed',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket3, status: 'confirmed',
     text: __('demo.ticket.3.comment.0'),
     data: {
       localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'),
@@ -770,14 +770,14 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   const actualStart3 = Clock.tick(1, 'week');
-  demoBuilder.statusChange({ topicId: ticket3, status: 'progressing',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket3, status: 'progressing',
     text: __('demo.ticket.3.comment.1'),
     data: {
       expectedFinish: Clock.date(10, 'day', 'ahead'),
     },
   });
   const actualFinish3 = Clock.tick(8, 'day');
-  demoBuilder.statusChange({ topicId: ticket3, status: 'finished',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket3, status: 'finished',
     text: __('demo.ticket.3.comment.2'),
     data: {
       actualCost: 8500,
@@ -791,7 +791,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.ticket.3.comment.3'),
   });
   Clock.tickSome('minutes');
-  demoBuilder.statusChange({ topicId: ticket3, status: 'closed',
+  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket3, status: 'closed',
     text: __('demo.ticket.3.comment.4'),
     data: {},
   });

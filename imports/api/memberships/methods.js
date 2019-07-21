@@ -18,8 +18,8 @@ function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
   if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?)
   const permissionName = permissionCategoryOf(roleOfNewMember) + '.update';
   if (!user.hasPermission(permissionName, communityId)) {
-    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-      `roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
+    throw new Meteor.Error('err_permissionDenied',
+      `No permission to add membership, roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
   }
 }
 
@@ -46,8 +46,8 @@ export const insert = new ValidatedMethod({
     if (!doc.approved) {
       // Users can submit non-approved membership requests, just for themselves
       if (doc.person.userId && doc.person.userId !== this.userId) {
-        throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-            `memberships.insert: ${doc}, user: ${this.userId}`);
+        throw new Meteor.Error('err_permissionDenied',
+          `No permission to perform this activity: memberships.insert: ${doc}, user: ${this.userId}`);
       }
       // Nothing else to check. Things will be checked when it gets approved by community admin/manager.
     } else {

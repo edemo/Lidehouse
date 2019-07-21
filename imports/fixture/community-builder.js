@@ -26,6 +26,7 @@ import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
 import { runWithFakeUserId, uploadFileSimulation } from './demo-upload';
 
+
 export class CommunityBuilder {
   constructor(communityId, demoOrTest, lang) {
     this.communityId = communityId;
@@ -137,10 +138,11 @@ export class CommunityBuilder {
     Comments.methods.insert._execute({ userId: data.creatorId }, comment);
   }
   statusChange(data) {
-    const managerId = this.getUserWithRole('maintainer');
-    Topics.methods.statusChange._execute({ userId: managerId },
-      _.extend({ type: 'statusChangeTo' }, data)
-    );
+    const creatorId = data.creatorId || this.getUserWithRole('manager');
+//    runWithFakeUserId(creatorId, () => {
+    Topics.methods.statusChange._execute({ userId: creatorId },
+      _.extend({ type: 'statusChangeTo' }, data));
+//    });
   }
   name2code(breakdownName, nodeName) {
     return Breakdowns.name2code(breakdownName, nodeName, this.communityId);
