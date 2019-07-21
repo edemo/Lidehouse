@@ -18,7 +18,7 @@ import './tickets.html';
 
 Template.Tickets.viewmodel({
   activesOnly: false,
-  filterUserId: null,
+  filterCreatedBy: null,
   searchText: '',
   urgencyColor(value) {
     return Tickets.urgencyColors[value];
@@ -27,13 +27,13 @@ Template.Tickets.viewmodel({
     return this.activesOnly() && 'active';
   },
   activeClassForUser() {
-    return this.filterUserId() && 'active';
+    return this.filterCreatedBy() && 'active';
   },
   tickets() {
     const communityId = Session.get('activeCommunityId');
     const selector = { communityId, category: 'ticket', 'ticket.type': 'issue' };
     if (this.activesOnly()) selector.status = { $ne: 'closed' };
-    if (this.filterUserId()) selector.userId = this.filterUserId();
+    if (this.filterCreatedBy()) selector.creatorId = this.filterCreatedBy();
     let topicsList = Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
     if (this.searchText()) {
       topicsList = topicsList.filter(t =>
@@ -62,9 +62,9 @@ Template.Tickets.events({
   },
   'click .js-filter-user'(event, instance) {
     $(event.target).blur();
-    if (instance.viewmodel.filterUserId() === null) {
-      instance.viewmodel.filterUserId(Meteor.userId());
-    } else instance.viewmodel.filterUserId(null);
+    if (instance.viewmodel.filterCreatedBy() === null) {
+      instance.viewmodel.filterCreatedBy(Meteor.userId());
+    } else instance.viewmodel.filterCreatedBy(null);
   },
   'keyup .js-search'(event, instance) {
     instance.viewmodel.searchText(event.target.value);

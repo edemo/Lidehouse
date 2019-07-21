@@ -17,7 +17,6 @@ export const insert = new ValidatedMethod({
     doc = Comments._transform(doc);
     const topic = checkExists(Topics, doc.topicId);
     checkPermissions(this.userId, `${doc.getType()}.insert`, topic.communityId);
-    doc.userId = this.userId;   // One can only post in her own name
     const docId = Comments.insert(doc);
     const newDoc = Comments.findOne(docId); // we need the createdAt timestamp from the server
     updateMyLastSeen._execute({ userId: this.userId },

@@ -68,14 +68,14 @@
                 </td>
                 <td class='avatar-container'>
                 {{#unless comment.hiddenBy this.userId this.communityId}}      
-                    <a href="{{userUrlFor comment.user}}" class="pull-left">
-                        <img alt="avatar" class="message-avatar" src='{{urlFor comment.user.avatar}}'>
+                    <a href="{{userUrlFor comment.creator}}" class="pull-left">
+                        <img alt="avatar" class="message-avatar" src='{{urlFor comment.creator.avatar}}'>
                     </a>
                 {{/unless}}
                 </td>
                 <td class="media-body">
                 {{#unless comment.hiddenBy this.userId this.communityId}}  
-                    <a href="{{userUrlFor  comment.user}}">{{comment.user.displayOfficialName this.communityId user.settings.language}}</a>
+                    <a href="{{userUrlFor  comment.creator}}">{{comment.creator.displayOfficialName this.communityId user.settings.language}}</a>
                     {{#if (equals comment.type 'statusChangeTo')}}
                         {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
                         {{_ 'changed the status'}}: <span class="label {{eventStatusObject.color}}">

@@ -17,7 +17,7 @@ Comments.typeValues = ['statusChangeTo', 'pointAt'];
 
 Comments.rawSchema = {
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, denyUpdate: true },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   type: { type: String, optional: true, allowedValues: Comments.typeValues, autoform: { omit: true } },
   status: { type: String, optional: true, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
@@ -51,23 +51,14 @@ Comments.attachBehaviour(Likeable);
 Comments.attachBehaviour(Flagable);
 
 Comments.helpers({
-  user() {
-    return Meteor.users.findOne(this.userId);
-  },
-  createdBy() {
-    return Meteor.users.findOne(this.userId);
-  },
   topic() {
     return Topics.findOne(this.topicId);
   },
   community() {
     return this.topic().community();
   },
-  editableBy(userId) {
-    return this.userId === userId;
-  },
   hiddenBy(userId, communityId) {
-    const author = this.createdBy();
+    const author = this.creator();
     return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
   },
   getType() {

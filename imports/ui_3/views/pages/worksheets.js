@@ -186,7 +186,7 @@ Template.Worksheets.viewmodel({
     selector.createdAt = {};
     if (startDate) selector.createdAt.$gte = new Date(startDate);
     if (endDate) selector.createdAt.$lte = new Date(endDate);
-    if (reportedByCurrentUser) selector.userId = Meteor.userId();
+    if (reportedByCurrentUser) selector.creatorId = Meteor.userId();
     return selector;
   },
   ticketsDataFn() {

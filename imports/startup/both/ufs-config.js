@@ -7,10 +7,10 @@ UploadFS.config.defaultStorePermissions = new UploadFS.StorePermissions({
     return userId;
   },
   update(userId, doc) {
-    return userId === doc.userId;
+    return userId === doc.creatorId;
   },
   remove(userId, doc) {
-    return userId === doc.userId;
+    return userId === doc.creatorId;
   },
 });
 

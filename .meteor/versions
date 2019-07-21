@@ -133,6 +133,7 @@ ordered-dict@1.1.0
 ostrio:flow-router-title@3.1.5
 peppelg:bootstrap-3-modal@1.0.4
 perak:markdown@1.0.5
+percolate:migrations@1.0.2
 percolate:momentum@0.7.2
 percolate:velocityjs@1.1.0
 practicalmeteor:chai@2.1.0_1

@@ -62,7 +62,7 @@ export const castVote = new ValidatedMethod({
 export function closeClosableVotings() {
   const now = new Date();
   const expiredVotings = Topics.find({ category: 'vote', closed: false, closesAt: { $lt: now } });
-  expiredVotings.forEach(voting => Topics.methods.statusChange._execute({ userId: voting.userId }, // permissionwise the creator is the one closing it
-    { userId: voting.userId, topicId: voting._id, status: 'closed', text: 'Automated closing' },
+  expiredVotings.forEach(voting => Topics.methods.statusChange._execute({ userId: voting.creatorId }, // permissionwise the creator is the one closing it
+    { userId: voting.creatorId, topicId: voting._id, status: 'closed', text: 'Automated closing' },
   ));
 }

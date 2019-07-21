@@ -31,15 +31,15 @@
                 </div>
             </div>
             {{#each message in messages}}
-            <div class="{{sideOfMessage message.userId}}">
+            <div class="{{sideOfMessage message.creatorId}}">
                 <div class="author-name">
-                    {{#unless questioner message.userId}} {{message.user}} {{/unless}}
+                    {{#unless questioner message.creatorId}} {{message.creator}} {{/unless}}
                     <small class="chat-date">
                         {{displayTimeFrom message.createdAt}}
                     </small>
-                    {{#if questioner message.userId}} {{message.user}} {{/if}}
+                    {{#if questioner message.creatorId}} {{message.creator}} {{/if}}
                 </div>
-                <div class="chat-message {{authorStyle message.userId}}">
+                <div class="chat-message {{authorStyle message.creatorId}}">
                     {{message.text}}
                 </div>
             </div>

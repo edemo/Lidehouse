@@ -134,12 +134,12 @@ export class CommunityBuilder {
   }
   createComment(data) {
     const comment = Factory.build('comment', data);
-    Comments.methods.insert._execute({ userId: data.userId }, comment);
+    Comments.methods.insert._execute({ userId: data.creatorId }, comment);
   }
-  statusChange(topicId, data) {
+  statusChange(data) {
     const managerId = this.getUserWithRole('maintainer');
     Topics.methods.statusChange._execute({ userId: managerId },
-      _.extend({ userId: managerId, topicId, type: 'statusChangeTo' }, data)
+      _.extend({ type: 'statusChangeTo' }, data)
     );
   }
   name2code(breakdownName, nodeName) {

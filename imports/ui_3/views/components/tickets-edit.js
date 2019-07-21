@@ -107,7 +107,6 @@ AutoForm.addModalHooks('af.ticket.statusChange');
 AutoForm.addHooks('af.ticket.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.userId = Meteor.userId();
     doc.category = 'ticket';
     if (!doc.ticket) doc.ticket = {};
     doc.ticket.type = Session.get('activeTicketType');
@@ -156,7 +155,6 @@ AutoForm.addHooks('af.ticket.statusChange', {
   formToDoc(doc) {
     const newStatusName = Session.get('newStatusName');
     doc.topicId = Session.get('activeTopicId');
-    doc.userId = Meteor.userId();
     doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
     doc.status = newStatusName;
     doc.data = doc.ticket || {};

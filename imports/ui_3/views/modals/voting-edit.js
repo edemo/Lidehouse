@@ -140,7 +140,6 @@ AutoForm.addHooks('af.vote.insert', {
     Tracker.nonreactive(() => {   // AutoForm will run the formToDoc each time any field on the form, like the vote.type is simply queried (maybe so that if its a calculated field, it gets calculated)
       doc.createdAt = Clock.currentTime();
       doc.communityId = Session.get('activeCommunityId');
-      doc.userId = Meteor.userId();
       doc.category = 'vote';
       doc.status = 'opened';
       doc.vote.choices = votingEditInstance.choices.get();

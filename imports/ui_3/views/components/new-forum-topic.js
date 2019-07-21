@@ -25,7 +25,6 @@ Template.New_forum_topic.events({
     }
     Topics.methods.insert.call({
       communityId: Session.get('activeCommunityId'),
-      userId: Meteor.userId(),
       category: 'forum',
       title: titlearea.value,
       text: textarea.value,

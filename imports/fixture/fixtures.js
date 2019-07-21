@@ -204,12 +204,12 @@ export function insertUnittestFixture(lang) {
 
   ['0', '1', '2'].forEach((topicNo) => {
     const topicId = demoBuilder.create('forum', {
-      userId: nextUser(),
+      creatorId: nextUser(),
     });
     ['0', '1', '2'].forEach((commentNo) => {
       Comments.insert({
         topicId,
-        userId: (topicNo == 2 && commentNo == 2) ? sameUser() : nextUser(),
+        creatorId: (topicNo == 2 && commentNo == 2) ? sameUser() : nextUser(),
       });
     });
   });
@@ -218,7 +218,7 @@ export function insertUnittestFixture(lang) {
 
   ['0', '1', '2'].forEach((topicNo) => {
     const topicId = demoBuilder.create('news', {
-      userId: dummyUsers[0],
+      creatorId: dummyUsers[0],
       sticky: topicNo == 2,
     });
   });
@@ -229,7 +229,7 @@ export function insertUnittestFixture(lang) {
   const voterships = demoCommunity.voterships();
 
   const voteTopic0 = demoBuilder.create('vote', {
-    userId: demoUserId,
+    creatorId: demoUserId,
     agendaId,
     closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
     vote: {
@@ -244,10 +244,10 @@ export function insertUnittestFixture(lang) {
   castVote._execute({ userId: voterships[2].personId }, { topicId: voteTopic0, castedVote: [2] });  // no
   castVote._execute({ userId: voterships[3].personId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
 
-  Topics.methods.statusChange._execute({ userId: demoManagerId }, { userId: demoManagerId, topicId: voteTopic0, status: 'closed' });
+  demoBuilder.statusChange({ topicId: voteTopic0, status: 'closed' });
 
   const voteTopic1 = demoBuilder.create('vote', {
-    userId: nextUser(),
+    creatorId: nextUser(),
     agendaId,
     closesAt: moment().add(2, 'week').toDate(),
     vote: {
@@ -260,7 +260,7 @@ export function insertUnittestFixture(lang) {
   // No one voted on this yet
 
   const voteTopic2 = demoBuilder.create('vote', {
-    userId: nextUser(),
+    creatorId: nextUser(),
     // not part of any agenda
   });
 
@@ -271,7 +271,7 @@ export function insertUnittestFixture(lang) {
   ['0', '1'].forEach(commentNo =>
     demoBuilder.createComment({
       topicId: voteTopic2,
-      userId: nextUser(),
+      creatorId: nextUser(),
     })
   );
 
@@ -279,7 +279,7 @@ export function insertUnittestFixture(lang) {
 
   ['0', '1', '2'].forEach((topicNo) => {
     const topicId = demoBuilder.create('ticket', {
-      userId: nextUser(),
+      creatorId: nextUser(),
     });
   });
 
@@ -287,16 +287,16 @@ export function insertUnittestFixture(lang) {
 
   const chatPartnerId = dummyUsers[2];
   const demoMessageRoom = demoBuilder.create('room', {
-    userId: demoUserId,
+    creatorId: demoUserId,
     participantIds: [demoUserId, chatPartnerId],
   });
   demoBuilder.createComment({
+    creatorId: chatPartnerId,
     topicId: demoMessageRoom,
-    userId: chatPartnerId,
   });
   demoBuilder.createComment({
+    creatorId: demoUserId,
     topicId: demoMessageRoom,
-    userId: demoUserId,
   });
 
   // ===== Breakdowns =====

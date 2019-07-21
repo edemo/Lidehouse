@@ -82,7 +82,6 @@ AutoForm.addModalHooks('af.news.update');
 AutoForm.addHooks('af.news.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.userId = Meteor.userId();
     doc.category = 'news';
     return doc;
   },

@@ -32,7 +32,7 @@ Topics.extensionSchemas = {};
 
 Topics.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
@@ -65,14 +65,11 @@ Topics.helpers({
   agenda() {
     return Agendas.findOne(this.agendaId);
   },
-  createdBy() {
-    return Meteor.users.findOne(this.userId);
-  },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
   hiddenBy(userId, communityId) {
-    const author = this.createdBy();
+    const author = this.creator();
     return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
   },
   isUnseenBy(userId, seenType) {
@@ -166,15 +163,16 @@ Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'photo'];
 
 Topics.publicFields = {
   communityId: 1,
-  userId: 1,
   category: 1,
   title: 1,
   text: 1,
   agendaId: 1,
   photo: 1,
   createdAt: 1,
-  closesAt: 1,
   updatedAt: 1,
+  creatorId: 1,
+  updatorId: 1,
+  closesAt: 1,
   closed: 1,
   sticky: 1,
   likes: 1,

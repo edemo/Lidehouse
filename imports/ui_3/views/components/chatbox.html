@@ -21,24 +21,24 @@
                   {{/if}}   
                 </a></li>
                 <li><a class="js-block" href="">
-                  {{#if currentUser.hasBlocked createdBy._id}}
-                    {{_ 'Unblock content from' createdBy}}
+                  {{#if currentUser.hasBlocked creatorId}}
+                    {{_ 'Unblock content from' creator}}
                   {{else}}
-                    {{_ 'Block content from' createdBy}}
+                    {{_ 'Block content from' creator}}
                   {{/if}}  
                 </a></li>
             </ul>
         </div>
         <div class="social-avatar">
             <a href="" class="pull-left">
-                <img alt="avatar" class="message-avatar" src={{createdBy.avatar}}>
+                <img alt="avatar" class="message-avatar" src={{creator.avatar}}>
             </a>
             <div class="media-body">
-                <a href="{{pathFor 'User show' _id=createdBy._id}}">
-                    {{createdBy}}
+                <a href="{{pathFor 'User show' _id=creatorId}}">
+                    {{creator}}
                 </a>                  
                 <small class="text-muted" title="{{_ 'memberships'}}">
-                    {{join (translateArray (createdBy.activeRoles activeCommunityId))}}
+                    {{join (translateArray (creator.activeRoles activeCommunityId))}}
                 </small>
             </div>
         </div>

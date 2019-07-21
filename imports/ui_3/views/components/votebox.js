@@ -106,7 +106,7 @@ Template.Votebox.events({
   /*'click .js-close'(event, instance) {
     const serverTimeNow = new Date(TimeSync.serverTime());
     const closureDate = moment(this.closesAt).from(serverTimeNow);
-    Modal.confirmAndCall(closeVote, { topicId: this._id, userId: this.userId }, {
+    Modal.confirmAndCall(closeVote, { topicId: this._id }, {
       action: 'close vote',
       message: __('The planned date of closure was ') + closureDate,
     });
@@ -114,7 +114,7 @@ Template.Votebox.events({
   'click .js-close'(event, instance) {
     const serverTimeNow = new Date(TimeSync.serverTime());
     const closureDate = moment(this.closesAt).from(serverTimeNow);
-    Modal.confirmAndCall(Topics.methods.statusChange, { topicId: this._id, userId: Meteor.userId(), type: 'statusChangeTo', status: 'closed' }, {
+    Modal.confirmAndCall(Topics.methods.statusChange, { topicId: this._id, type: 'statusChangeTo', status: 'closed' }, {
       action: 'close vote',
       message: __('The planned date of closure was ') + closureDate,
     });

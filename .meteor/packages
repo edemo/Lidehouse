@@ -52,6 +52,7 @@ jalik:ufs
 jalik:ufs-gridfs
 dburles:mongo-collection-instances
 helfer:minimongo-index
+percolate:migrations
 
 # routing
 kadira:flow-router

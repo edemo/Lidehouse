@@ -63,14 +63,13 @@ if (Meteor.isServer) {
       before(function () {
         topicId = Topics.methods.insert._execute({ userId: ownerWithNotiFrequent._id }, {
           communityId: Fixture.demoCommunityId,
-          userId: ownerWithNotiFrequent._id,
           category: 'forum',
           status: 'opened',
           title: 'New topic',
           text: 'This is the new topic',
         });
         ticketId = Topics.methods.insert._execute({ userId: demoManager._id },
-          Fixture.builder.build('ticket', { userId: demoManager._id })
+          Fixture.builder.build('ticket', { creatorId: demoManager._id })
         );
       });
 
@@ -92,7 +91,7 @@ if (Meteor.isServer) {
       });
 
       it('No email about your own comment', function () {
-        Comments.methods.insert._execute({ userId: ownerWithNotiFrequent._id }, { userId: ownerWithNotiFrequent._id, topicId, text: 'Hello' });
+        Comments.methods.insert._execute({ userId: ownerWithNotiFrequent._id }, { creatorId: ownerWithNotiFrequent._id, topicId, text: 'Hello' });
         processNotifications('frequent');
         sinon.assert.notCalled(emailSender.sendHTML);
         processNotifications('daily');
@@ -100,7 +99,7 @@ if (Meteor.isServer) {
       });
 
       it('Emails about other users comment', function () {
-        Comments.methods.insert._execute({ userId: Fixture.dummyUsers[1] }, { userId: Fixture.dummyUsers[1], topicId, text: 'Hello' });
+        Comments.methods.insert._execute({ userId: Fixture.dummyUsers[1] }, { creatorId: Fixture.dummyUsers[1], topicId, text: 'Hello' });
         processNotifications('frequent');
         sinon.assert.calledOnce(emailSender.sendHTML);
         const emailOptions = emailSender.sendHTML.getCall(0).args[0];
@@ -117,7 +116,7 @@ if (Meteor.isServer) {
       it('Emails about new statusChange event', function () {
         const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
         Topics.methods.statusChange._execute({ userId: demoManager._id }, 
-          { userId: demoManager._id, topicId: ticketId, type: 'statusChangeTo', status: 'confirmed', data });
+          { topicId: ticketId, type: 'statusChangeTo', status: 'confirmed', data });
         processNotifications('daily');
         sinon.assert.calledTwice(emailSender.sendHTML);
       });
@@ -129,7 +128,6 @@ if (Meteor.isServer) {
       before(function () {
         topicId = Topics.methods.insert._execute({ userId: ownerWithNotiFrequent._id }, {
           communityId: Fixture.demoCommunityId,
-          userId: ownerWithNotiFrequent._id,
           category: 'vote',
           title: 'New voting',
           text: 'This is the new voting',
@@ -147,7 +145,6 @@ if (Meteor.isServer) {
 
         Topics.methods.insert._execute({ userId: Fixture.demoManagerId }, {
           communityId: Fixture.demoCommunityId,
-          userId: Fixture.demoManagerId,
           category: 'vote',
           title: 'Earlier voting',
           text: 'This voting expired already',
@@ -161,7 +158,6 @@ if (Meteor.isServer) {
         });
         Topics.methods.insert._execute({ userId: Fixture.demoManagerId }, {
           communityId: Fixture.demoCommunityId,
-          userId: Fixture.demoManagerId,
           category: 'vote',
           title: 'Later voting',
           text: 'This voting will expire later',

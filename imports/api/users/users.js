@@ -257,7 +257,8 @@ Meteor.users.helpers({
     debugAssert(permission, `No such permission "${permissionName}"`);
     const rolesWithThePermission = permission.roles;
     if (_.contains(rolesWithThePermission, 'null')) return true;
-    if (permission.allowAuthor && object && (object.userId === this._id)) return true;
+    if (object) console.log("object.creatorId", object.creatorId);
+    if (permission.allowAuthor && object && object.creatorId && (object.creatorId === this._id)) return true;
     const userHasTheseRoles = this.activeRoles(communityId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
 //  console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);

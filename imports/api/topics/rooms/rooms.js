@@ -33,7 +33,6 @@ if (Meteor.isClient) {
     } else {
       Meteor.call('topics.insert', {
         communityId: Session.get('activeCommunityId'),
-        userId: Meteor.userId(),
         participantIds: [Meteor.userId(), otherUserId],
         category: 'room',
         title: roomType,

@@ -45,7 +45,7 @@ Template.Chatbox.events({
     });
   },
   'click .js-block'(event, instance) {
-    Meteor.users.methods.flag.call({ id: instance.data.userId }, handleError);
+    Meteor.users.methods.flag.call({ id: instance.data.creatorId }, handleError);
   },
   'click .js-report'(event, instance) {
     Topics.methods.flag.call({ id: this._id }, handleError);

@@ -332,7 +332,7 @@ if (Meteor.isServer) {
       describe('multiChoose evaluation', function () {
 
         before(function () {
-          const voting = Fixture.builder.build('vote', { userId: Fixture.demoManagerId });
+          const voting = Fixture.builder.build('vote', { creatorId: Fixture.demoManagerId });
           voting.vote.type = 'multiChoose';
           votingId = Topics.methods.insert._execute({ userId: Fixture.demoManagerId }, voting);
         });

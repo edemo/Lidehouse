@@ -5,9 +5,9 @@
 
   // Shared
   "createdAt": "Létrehozva",
-  "createdBy": "Létrehozta",
+  "creatorId": "Létrehozta",
   "updatedAt": "Módosítva",
-  "updatedBy": "Módosította",
+  "updatorId": "Módosította",
   "reportedAt": "Bejelentve",
   "reportedBy": "Bejelentette",
   "Last activity": "Utolsó aktivitás",

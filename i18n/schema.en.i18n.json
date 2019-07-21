@@ -1,7 +1,7 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
   "schemaGeneral": {
-    "createdBy": {
+    "creatorId": {
       "label": "Created by"
     },
     "createdAt": {
@@ -10,7 +10,7 @@
     "updatedAt": {
       "label": "Last activity at"
     },
-    "updatedBy": {
+    "updatorId": {
       "label": "Last activity by"
     }
   },

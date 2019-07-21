@@ -27,7 +27,6 @@ export const insert = new ValidatedMethod({
     doc = Topics._transform(doc);
     // readableId(Topics, doc);
     checkTopicPermissions(this.userId, 'insert', doc);
-    doc.userId = this.userId;   // One can only post in her own name
     const topicId = Topics.insert(doc);
     const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
     updateMyLastSeen._execute({ userId: this.userId },

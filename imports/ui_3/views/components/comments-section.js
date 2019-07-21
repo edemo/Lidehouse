@@ -89,7 +89,6 @@ Template.Comments_section.events({
     const textarea = $(event.target).closest('.media-body').find('textarea')[0];
     Comments.methods.insert.call({
       topicId: this._id,
-      userId: Meteor.userId(),
       text: textarea.value,
     },
     onSuccess((res) => {

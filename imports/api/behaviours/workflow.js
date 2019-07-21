@@ -67,7 +67,6 @@ const statusChange = new ValidatedMethod({
     // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic.communityId);
     checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId);
     checkStatusChangeAllowed(topic, event.status);
-    event.userId = this.userId;   // One can only post in her own name
 
     const onLeave = workflow[topic.status].obj.onLeave;
     if (onLeave) onLeave(event, topic);

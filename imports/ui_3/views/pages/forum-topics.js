@@ -60,7 +60,6 @@ AutoForm.addModalHooks('af.forumtopic.insert');
 AutoForm.addHooks('af.forumtopic.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.userId = Meteor.userId();
     doc.category = 'forum';
     if (!doc.title && doc.text) {
       doc.title = (doc.text).substring(0, 25) + '...';

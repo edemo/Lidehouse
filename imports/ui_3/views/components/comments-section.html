@@ -25,12 +25,12 @@
 
 <template name="Frame">
     <div class="social-comment">         
-        <a href="{{pathFor 'User show' _id=this.user._id}}" class="pull-left">
-            <img alt="avatar" class="message-avatar" src={{this.user.avatar}}>
+        <a href="{{pathFor 'User show' _id=this.creatorId}}" class="pull-left">
+            <img alt="avatar" class="message-avatar" src={{this.creator.avatar}}>
         </a>
         <div class="media-body" >
-            <a href="{{pathFor 'User show' _id=this.user._id}}">
-                {{user}}
+            <a href="{{pathFor 'User show' _id=this.creatorId}}">
+                {{creator}}
             </a>
             {{#if (equals getType "comment")}}
                 {{> Comment this}}
@@ -78,9 +78,9 @@
 <template name="StatusChange">
     {{#let eventStatusObject = (this.topic.statusObject this.status)}}
     {{_ 'changed the status'}}: <span class="label label-{{eventStatusObject.color}}">{{_ (concat 'schemaTopics.status.' this.status)}}</span><!--<strong>{{_ this.data.status}}</strong>--><br>
-    <span>
-    <!--{{_ 'schemaTickets.text.label'}}:--> {{this.text}}
-    </span><br>
+    {{#if this.text}}
+    <span><!--{{_ 'schemaTickets.text.label'}}:--> {{this.text}}</span><br>
+    {{/if}}
     <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
     {{#if entriesOf this.data}}
     <div class="well">

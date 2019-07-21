@@ -69,7 +69,6 @@ if (Meteor.isServer) {
           // Create a topic
           topicId = Topics.methods.insert._execute({ userId: otherUserId }, {
             communityId: Fixture.demoCommunityId,
-            userId: otherUserId,
             category: 'forum',
             status: 'opened',
             title: 'Just a topic',
@@ -79,6 +78,8 @@ if (Meteor.isServer) {
 
         it('notifies on new topic', function (done) {
           const topic = Topics.findOne(topicId);
+          console.log(topic);
+          chai.assert.equal(topic.creatorId, otherUserId);
           chai.assert.isTrue(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
           done();
         });
@@ -94,7 +95,6 @@ if (Meteor.isServer) {
         it('doesn\'t notify on own topic', function (done) {
           const myTopicId = Topics.methods.insert._execute({ userId }, {
             communityId: Fixture.demoCommunityId,
-            userId,
             category: 'forum',
             status: 'opened',
             title: 'This is my topic',
@@ -106,7 +106,7 @@ if (Meteor.isServer) {
         });
 
         it('notifies on new comment', function (done) {
-          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, userId: otherUserId, text: 'comment 1' });
+          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, text: 'comment 1' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
@@ -125,8 +125,8 @@ if (Meteor.isServer) {
         });
 
         it('notifies on several new comments', function (done) {
-          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, userId: otherUserId, text: 'comment 2' });
-          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, userId: otherUserId, text: 'comment 3' });
+          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, text: 'comment 2' });
+          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, text: 'comment 3' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 2);
@@ -147,7 +147,7 @@ if (Meteor.isServer) {
         it('notifies on new comment even if meanwhile there is a deleted comment', function (done) {
           const deleteComment = Comments.findOne({ text: 'comment 3' });
           Comments.methods.remove._execute({ userId: otherUserId }, { _id: deleteComment._id });
-          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, userId: otherUserId, text: 'comment 4' });
+          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, text: 'comment 4' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 1);
@@ -157,7 +157,7 @@ if (Meteor.isServer) {
         });
 
         it('doesn\'t notify on own comment', function (done) {
-          Comments.methods.insert._execute({ userId }, { topicId, userId, text: 'comment 5' });
+          Comments.methods.insert._execute({ userId }, { topicId, text: 'comment 5' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 0);
@@ -187,7 +187,7 @@ if (Meteor.isServer) {
 
           // Create a ticket
           topicId = Topics.methods.insert._execute({ userId: otherUserId },
-            Fixture.builder.build('ticket', { userId: otherUserId })
+            Fixture.builder.build('ticket', {})
           );
         });
 
@@ -199,7 +199,7 @@ if (Meteor.isServer) {
               expectedStart: moment().toDate(),
               expectedFinish: moment().add(1, 'weeks').toDate(),
             };
-            Topics.methods.statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'confirmed', data });
+            Topics.methods.statusChange._execute({ userId }, { topicId, type: 'statusChangeTo', status: 'confirmed', data });
           }, 'err_permissionDenied');
           done();
         });
@@ -208,7 +208,7 @@ if (Meteor.isServer) {
           chai.assert.throws(() => {
             const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
             userId = Fixture.demoManagerId;
-            Topics.methods.statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'progressing', data });
+            Topics.methods.statusChange._execute({ userId }, { topicId, type: 'statusChangeTo', status: 'progressing', data });
           }, 'err_permissionDenied');
           done();
         });
@@ -220,7 +220,7 @@ if (Meteor.isServer) {
             expectedStart: moment().toDate(),
             expectedFinish: moment().add(1, 'weeks').toDate(),
           };
-          Topics.methods.statusChange._execute({ userId }, { userId, topicId, type: 'statusChangeTo', status: 'confirmed', data });
+          Topics.methods.statusChange._execute({ userId }, { topicId, type: 'statusChangeTo', status: 'confirmed', data });
           done();
         });
 
