@@ -10,8 +10,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
-  from '/imports/ui_3/views/components/tickets-edit.js';
+import { afTicketInsertModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/components/ticket-list.js';
 import './contracts.html';
 

@@ -17,8 +17,7 @@ import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 //import { momentWithoutTZ } from '/imports/api/utils.js';
-import { afTicketInsertModal, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal }
-  from '/imports/ui_3/views/components/tickets-edit.js';
+import { TicketEventHandlers, afTicketUpdateModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
@@ -224,38 +223,13 @@ Template.Worksheets.viewmodel({
   },
 });
 
-Template.Worksheets.events({
+Template.Worksheets.events({ ...TicketEventHandlers,
   'click .js-mode'(event, instance) {
     const oldVal = instance.viewmodel.calendarView();
     instance.viewmodel.calendarView(!oldVal);
   },
-  'click .js-new'(event) {
-    const type = $(event.target).closest('[data-type]').data('type');
-    afTicketInsertModal(type);
-  },
   'click .js-import'(event, instance) {
     importCollectionFromFile(Topics); // TODO Make it Ticket specific
-  },
-  'click .js-view'(event) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    FlowRouter.go('Topic show', { _tid: id });
-  },
-  'click .js-edit'(event) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    afTicketUpdateModal(id, 'topicUpdate');
-  },
-  'click .js-status-change'(event) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    const status = $(event.target).closest('[data-status]').data('status');
-    afTicketStatusChangeModal(id, status);
-  },
-  'click .js-status-update'(event) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    afTicketUpdateModal(id, 'statusUpdate');
-  },
-  'click .js-delete'(event) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    deleteTicketConfirmAndCallModal(id);
   },
   'click .js-clear-filter'(event, instance) {
     instance.viewmodel.setDefaultFilter();

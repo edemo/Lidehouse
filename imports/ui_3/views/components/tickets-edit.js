@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { FlowRouter } from 'meteor/kadira:flow-router';
+import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
@@ -115,6 +117,38 @@ export function deleteTicketConfirmAndCallModal(topicId) {
     message: 'It will disappear forever',
   });
 }
+
+//-------------------------------------------------------------
+
+export const TicketEventHandlers = {
+  'click .js-new'(event) {
+    const type = $(event.target).closest('[data-type]').data('type');
+    afTicketInsertModal(type);
+  },
+  'click .js-view'(event) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    FlowRouter.go('Topic show', { _tid: id });
+  },
+  'click .js-edit'(event) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    afTicketUpdateModal(id, 'topicUpdate');
+  },
+  'click .js-status-update'(event) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    afTicketUpdateModal(id, 'statusUpdate');
+  },
+  'click .js-status-change'(event) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    const status = $(event.target).closest('[data-status]').data('status');
+    afTicketStatusChangeModal(id, status);
+  },
+  'click .js-delete'(event) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    deleteTicketConfirmAndCallModal(id);
+  },
+};
+
+//-------------------------------------------------------------
 
 AutoForm.addModalHooks('af.ticket.insert');
 AutoForm.addModalHooks('af.ticket.update');
