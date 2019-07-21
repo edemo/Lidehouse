@@ -49,12 +49,16 @@ export function afTicketInsertModal(type, contractId) {
 export function afTicketUpdateModal(topicId, mode) {
   const topic = Topics.findOne(topicId);
   const statusObject = Tickets.statuses[topic.status];
-  const currentStatusFields = statusObject.data.map(d => 'ticket.' + d);
+  const currentStatusFields = (statusObject.data || []).map(d => 'ticket.' + d);
   let fields;
   switch (mode) {
     case 'all': fields = { omitFields: ['agendaId', 'sticky'] }; break; // Can edit anything at all
     case 'topicUpdate': fields = { fields: starterFields(topic.ticket.type) }; break;  // Can edit the starter fields
-    case 'statusUpdate': fields = { fields: currentStatusFields }; break; // Can only edit actual status fields
+    case 'statusUpdate': {
+      if (currentStatusFields.length === 0) return;
+      fields = { fields: currentStatusFields }; // Can only edit actual status fields
+      break;
+    }
     default: debugAssert(false);
   }
   Modal.show('Autoform_edit', {

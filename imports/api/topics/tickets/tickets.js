@@ -156,14 +156,12 @@ const closed = {
   name: 'closed',
   colorCode: '#D1DADE',
   color: 'default',
-  data: [],
 };
 
 const deleted = {
   name: 'deleted',
   color: 'danger',
   colorCode: '#EC4758',
-  data: [],
 };
 
 Tickets.statuses = {
