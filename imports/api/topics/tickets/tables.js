@@ -8,7 +8,8 @@ export function ticketColumns(permissions) {
   const buttonRenderers = [];
   if (permissions.view) buttonRenderers.push(Render.buttonView);
   if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
-  if (permissions.edit) buttonRenderers.push(Render.buttonStatusChange);
+  if (permissions.statusChange) buttonRenderers.push(Render.buttonStatusChange);
+  if (permissions.statusUpdate) buttonRenderers.push(Render.buttonStatusUpdate);
   if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
 
   return [

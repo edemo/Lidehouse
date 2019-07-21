@@ -71,12 +71,16 @@ export const Render = {
                   <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">`;
     thisTopic.possibleNextStatuses().forEach((status) => {
       html += `<li>
-                <a href="" class="js-status" data-id="${cellData}" data-status="${status.name}">
+                <a href="" class="js-status-change" data-id="${cellData}" data-status="${status.name}">
                   ${__('schemaTopics.status.' + status.name)}
                 </a>
               </li>`;
     });
     html += '</ul></div>';
+    return html;
+  },
+  buttonStatusUpdate(cellData) {
+    const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-status-update" title=${__('statusUpdate')}><i class="fa fa-edit"></i></button>`;
     return html;
   },
 };

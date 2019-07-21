@@ -8,19 +8,22 @@
             {{#if userHasPermission (concat category '.statusChange') (fromSession 'activeCommunityId') this}}
                 {{#each status in this.possibleNextStatuses}}
                 {{#if (userHasPermission (concat category '.statusChangeTo.' status.name '.enter') this.communityId this)}}
-                   <li><a class="js-status" data-status="{{status.name}}" href="">{{{displayStatusChange status}}}</a></li>
+                   <li><a class="js-status-change" data-status="{{status.name}}" href="">{{{displayStatusChange status}}}</a></li>
                 {{/if}}
                 {{/each}}
+                {{#if (userHasPermission (concat category '.statusChangeTo.' this.status '.enter') this.communityId this)}}
+                <li><a class="js-status-update" href=""><i class="fa fa-edit"></i>{{{_ 'statusUpdate'}}}</a></li>
+                {{/if}}
                 <li role="separator" class="divider"></li>
             {{/if}}
-            {{#if (and (userHasPermission (concat category '.update') this.communityId this) (equals this.closed false) )}}
+            {{#if (and (userHasPermission (concat category '.update') this.communityId this) (not this.closed) )}}
                 <li><a class="js-edit" href=""><i class="fa fa-pencil"></i> {{_ 'edit'}}</a></li>
             {{/if}}
             {{#if userHasPermission (concat category '.remove') this.communityId this}}
                 <li><a class="js-delete" href=""><i class="fa fa-trash"></i> {{_ 'delete'}}</a></li>
                 <li role="separator" class="divider"></li>
             {{/if}}
-            {{#unless (equals category 'vote')}}
+            {{#unless or (equals category 'vote') (equals currentUser._id this.creatorId)}}
                 <li><a class="js-report" href="">
                     {{#if this.isFlaggedBy currentUser._id}}
                     <i class="fa fa-check"></i> {{_ 'Unblock content'}}

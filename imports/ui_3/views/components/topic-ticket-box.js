@@ -18,9 +18,13 @@ import './topic-ticket-box.html';
 Template.Topic_ticket_header.events({
   'click .ticket .js-edit'(event) {
     const id = this._id;
-    afTicketUpdateModal(id);
+    afTicketUpdateModal(id, 'topicUpdate');
   },
-  'click .ticket .js-status'(event) {
+  'click .ticket .js-status-update'(event) {
+    const id = this._id;
+    afTicketUpdateModal(id, 'statusUpdate');
+  },
+  'click .ticket .js-status-change'(event) {
     const id = this._id;
     const status = $(event.target).closest('[data-status]').data('status');
     afTicketStatusChangeModal(id, status);

@@ -15,15 +15,20 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 
-export function afTicketInsertModal(type, contractId) {
+function starterFields(type) {
   const workflow = Tickets.workflows[type];
   const startStatus = workflow.start[0];
+  const fields = ['title', 'text', 'photo'].concat(startStatus.data.map(d => 'ticket.' + d));
+  return fields;
+}
+
+export function afTicketInsertModal(type, contractId) {
   const schemaWithMoreDates = new SimpleSchema([Tickets.schema, {
     moreDates: { type: [Date], optional: true },
   }]);
   schemaWithMoreDates.i18n('schemaTickets');
 
-  let fields = ['title', 'text', 'photo'].concat(startStatus.data.map(d => 'ticket.' + d));
+  let fields = starterFields(type);
   if (type === 'maintenance') {
     fields.push('moreDates');
   }
@@ -41,15 +46,22 @@ export function afTicketInsertModal(type, contractId) {
   });
 }
 
-export function afTicketUpdateModal(topicId) {
-  const ticket = Topics.findOne(topicId);
-  const statusObject = Tickets.statuses[ticket.status];
+export function afTicketUpdateModal(topicId, mode) {
+  const topic = Topics.findOne(topicId);
+  const statusObject = Tickets.statuses[topic.status];
+  const currentStatusFields = statusObject.data.map(d => 'ticket.' + d);
+  let fields;
+  switch (mode) {
+    case 'all': fields = { omitFields: ['agendaId', 'sticky'] }; break; // Can edit anything at all
+    case 'topicUpdate': fields = { fields: starterFields(topic.ticket.type) }; break;  // Can edit the starter fields
+    case 'statusUpdate': fields = { fields: currentStatusFields }; break; // Can only edit actual status fields
+    default: debugAssert(false);
+  }
   Modal.show('Autoform_edit', {
     id: 'af.ticket.update',
     collection: Topics,
     schema: Tickets.schema,
-//    omitFields: ['agendaId', 'sticky'],  // Can edit everything
-    fields: statusObject.data.map(d => 'ticket.' + d),  // Can only edit actual status fields
+    ...fields,
     doc: Topics.findOne(topicId),
     type: 'method-update',
     meteormethod: 'topics.update',

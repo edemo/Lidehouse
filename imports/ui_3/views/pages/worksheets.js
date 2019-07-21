@@ -208,6 +208,8 @@ Template.Worksheets.viewmodel({
       const permissions = {
         view: true,
         edit: Meteor.userOrNull().hasPermission('ticket.update', communityId),
+        statusChange: Meteor.userOrNull().hasPermission('ticket.statusChange', communityId),
+        statusUpdate: Meteor.userOrNull().hasPermission('ticket.statusChange', communityId),
         delete: Meteor.userOrNull().hasPermission('ticket.remove', communityId),
       };
       return {
@@ -228,27 +230,31 @@ Template.Worksheets.events({
     instance.viewmodel.calendarView(!oldVal);
   },
   'click .js-new'(event) {
-    const type = $(event.target).closest('a').data('type');
+    const type = $(event.target).closest('[data-type]').data('type');
     afTicketInsertModal(type);
   },
   'click .js-import'(event, instance) {
     importCollectionFromFile(Topics); // TODO Make it Ticket specific
   },
   'click .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
+    const id = $(event.target).closest('[data-id]').data('id');
     FlowRouter.go('Topic show', { _tid: id });
   },
   'click .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    afTicketUpdateModal(id);
+    const id = $(event.target).closest('[data-id]').data('id');
+    afTicketUpdateModal(id, 'topicUpdate');
   },
-  'click .js-status'(event) {
-    const id = $(event.target).closest('a').data('id');
-    const status = $(event.target).closest('a').data('status');
+  'click .js-status-change'(event) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    const status = $(event.target).closest('[data-status]').data('status');
     afTicketStatusChangeModal(id, status);
   },
+  'click .js-status-update'(event) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    afTicketUpdateModal(id, 'statusUpdate');
+  },
   'click .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
+    const id = $(event.target).closest('[data-id]').data('id');
     deleteTicketConfirmAndCallModal(id);
   },
   'click .js-clear-filter'(event, instance) {
@@ -266,7 +272,7 @@ Template.Worksheets.events({
     }
   },
   'click .js-type-filter'(event, instance) {
-    const ticketType = $(event.target).data('value');
+    const ticketType = $(event.target).closest('[data-value]').data('value');
     const ticketTypeArray = instance.viewmodel.ticketTypeArray();
     if (ticketTypeArray.includes(ticketType)) {
       instance.viewmodel.ticketTypeArray(_.without(ticketTypeArray, ticketType));
