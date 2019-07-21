@@ -29,7 +29,7 @@
                             </a>
                             <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
                                 {{#each status in (this.possibleNextStatuses)}}
-                                <li><a href="" class="js-status" data-id="{{this._id}}" data-status="{{status}}">{{_ (concat 'schemaTopics.status.' status)}}</a></li>
+                                <li><a href="" class="js-status" data-id="{{this._id}}" data-status="{{status.name}}">{{_ (concat 'schemaTopics.status.' status.name)}}</a></li>
                                 {{/each}}
                             </ul>
                         </div>

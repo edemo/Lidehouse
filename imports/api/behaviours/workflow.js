@@ -29,11 +29,11 @@ const helpers = {
   },
   possibleStartStatuses() {
     const statuses = this.workflow().start;
-    return _.pluck(statuses, 'name');
+    return statuses;
   },
   possibleNextStatuses() {
     const statuses = this.workflow()[this.status].next;
-    return _.pluck(statuses, 'name');
+    return statuses;
   },
 };
 
@@ -46,13 +46,13 @@ export const defaultWorkflow = {
 };
 
 function checkStatusStartAllowed(topic, status) {
-  if (!_.contains(topic.possibleStartStatuses(), status)) {
+  if (!_.contains(topic.possibleStartStatuses().map(s => s.name), status)) {
     throw new Meteor.Error('err_permissionDenied', `Topic ${topic._id} cannot start in ${status}`, topic.toString());
   }
 }
 
 function checkStatusChangeAllowed(topic, statusTo) {
-  if (!_.contains(topic.possibleNextStatuses(), statusTo)) {
+  if (!_.contains(topic.possibleNextStatuses().map(s => s.name), statusTo)) {
     throw new Meteor.Error('err_permissionDenied', `Topic ${topic._id} cannot move from ${topic.status} into status ${statusTo}`, topic.toString());
   }
 }

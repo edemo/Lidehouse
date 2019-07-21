@@ -9,7 +9,7 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/voting-edit.js';
 import '../common/page-heading.js';
-import '../components/votebox.js';
+import '../components/topic-vote-box.js';
 import '../components/voting-list.html';
 import './vote-topics.html';
 

@@ -71,8 +71,8 @@ export const Render = {
                   <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">`;
     thisTopic.possibleNextStatuses().forEach((status) => {
       html += `<li>
-                <a href="" class="js-status" data-id="${cellData}" data-status="${status}">
-                  ${__('schemaTopics.status.' + status)}
+                <a href="" class="js-status" data-id="${cellData}" data-status="${status.name}">
+                  ${__('schemaTopics.status.' + status.name)}
                 </a>
               </li>`;
     });

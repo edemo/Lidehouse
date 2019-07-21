@@ -250,7 +250,7 @@
       "progressing": "Folyamatban",
       "suspended": "Felfüggesztve",
       "finished": "Elvégezve",
-      "closed": "Lezárva",
+      "closed": "Lezárt",
       "deleted": "Törölt"
     },
     "closed": {

@@ -41,6 +41,12 @@ export function displayStatus(name) {
   return label(__('schemaTopics.status.' + name), color);
 }
 
+export function displayStatusChange(status) {
+  const icon = `<i class="fa ${status.icon || 'fa-cogs'}"></i>`;
+  const statusName = __('schemaTopics.status.' + status.name);
+  return `${icon} ${__('Change status to', statusName)}`;
+}
+
 export function displayUrgency(name) {
   if (!name) return '';
   const color = Tickets.urgencyColors[name];
@@ -55,6 +61,7 @@ export function displayChargeType(name) {
 Template.registerHelper('displayAccount', displayAccount);
 Template.registerHelper('displayLocalizer', displayLocalizer);
 Template.registerHelper('displayStatus', displayStatus);
+Template.registerHelper('displayStatusChange', displayStatusChange);
 Template.registerHelper('displayTicketType', displayTicketType);
 Template.registerHelper('displayUrgency', displayUrgency);
 Template.registerHelper('displayChargeType', displayChargeType);

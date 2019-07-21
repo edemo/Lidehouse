@@ -12,35 +12,21 @@ import '/imports/ui_3/views/modals/modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
-import './ticketbox.html';
+import './topic-box.js';
+import './topic-ticket-box.html';
 
-Template.Ticketbox.onRendered(function ticketboxOnRendered() {
-});
-
-Template.Ticketbox.helpers({
-});
-
-Template.Ticketbox.events({
-  'click .js-edit'(event) {
+Template.Topic_ticket_header.events({
+  'click .ticket .js-edit'(event) {
     const id = this._id;
     afTicketUpdateModal(id);
   },
-  'click .js-status'(event) {
+  'click .ticket .js-status'(event) {
     const id = this._id;
-    const status = $(event.target).data('status');
+    const status = $(event.target).closest('[data-status]').data('status');
     afTicketStatusChangeModal(id, status);
   },
-  'click .js-delete'(event) {
+  'click .ticket .js-delete'(event) {
     const id = this._id;
     deleteTicketConfirmAndCallModal(id);
-  },
-  'click .js-block'(event, instance) {
-    Meteor.users.methods.flag.call({ id: instance.data.creatorId }, handleError);
-  },
-  'click .js-report'(event, instance) {
-    Topics.methods.flag.call({ id: this._id }, handleError);
-  },
-  'click .social-body .js-like'(event) {
-    Topics.methods.like.call({ id: this._id }, handleError);
   },
 });

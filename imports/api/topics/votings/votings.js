@@ -288,6 +288,7 @@ const opened = {
 
 const closed = {
   name: 'closed',
+  icon: 'fa-legal',
   onEnter(event, topic) {
 //    console.log('Voting is entering closed');
     topic.voteEvaluate(true); // writes results out into voteResults and voteSummary

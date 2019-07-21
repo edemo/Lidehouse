@@ -11,10 +11,9 @@ import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 
 import '../common/error.js';
 import '../common/page-heading.js';
-import '../components/chatbox.js';
-import '../components/ticketbox.js';
-import '../components/votebox.js';
-import '../components/comments-section.js';
+import '../components/topic-box.js';
+import '../components/topic-ticket-box.js';
+import '../components/topic-vote-box.js';
 import '../components/revision-history.js';
 import './topic-show.html';
 

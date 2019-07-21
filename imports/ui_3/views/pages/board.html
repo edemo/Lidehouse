@@ -1,5 +1,5 @@
 <template name="Board">
-  <div class="wrapper wrapper-content animated fadeInRight">
+  <div id="board" class="wrapper wrapper-content animated fadeInRight">
 
     <div class="row">
 
@@ -11,15 +11,8 @@
 
       <div class="col-xs-12 col-lg-8">
         {{#Collapse_section id='vote' title=activeVotingsTitle }}
-          {{#each topics 'vote'}}
-            <div class="ibox">
-              <div class="ibox-content">             
-                {{> Votebox}}
-              </div>
-              <div>  
-                {{> Comments_section this}}
-              </div>
-            </div>
+          {{#each topic in (topics 'vote')}}
+            {{> Topic_box topic=topic commentsIncluded=true}}
           {{else}}
             <!-- ha nincs szavazás ~ empty state -->
             <div class="vote-container white-box text-center">
@@ -35,8 +28,8 @@
 
         {{#Collapse_section id='forum' title='Forum' notFirst=true}}
           {{> New_forum_topic}}
-          {{#each topics 'forum'}}
-          {{> Chatbox}}
+          {{#each topic in (topics 'forum')}}
+            {{> Topic_box topic=topic commentsIncluded=true}}
           {{/each}}
         {{/Collapse_section}}
       </div>

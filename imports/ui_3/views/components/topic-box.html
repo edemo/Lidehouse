@@ -1,0 +1,122 @@
+<template name="Topic_edit_menu">
+    {{#let category=this.category}}
+    {{#if userHasPermission (concat category '.update') this.communityId this}}
+    <div class="dropdown {{category}} js-menu">
+        <button class="dropdown-toggle drop-unfoll glyphicon glyphicon-option-horizontal" type="button" id="drop_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        </button>
+        <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{_id}}">
+            {{#if userHasPermission (concat category '.statusChange') (fromSession 'activeCommunityId') this}}
+                {{#each status in this.possibleNextStatuses}}
+                {{#if (userHasPermission (concat category '.statusChangeTo.' status.name '.enter') this.communityId this)}}
+                   <li><a class="js-status" data-status="{{status.name}}" href="">{{{displayStatusChange status}}}</a></li>
+                {{/if}}
+                {{/each}}
+                <li role="separator" class="divider"></li>
+            {{/if}}
+            {{#if (and (userHasPermission (concat category '.update') this.communityId this) (equals this.closed false) )}}
+                <li><a class="js-edit" href=""><i class="fa fa-pencil"></i> {{_ 'edit'}}</a></li>
+            {{/if}}
+            {{#if userHasPermission (concat category '.remove') this.communityId this}}
+                <li><a class="js-delete" href=""><i class="fa fa-trash"></i> {{_ 'delete'}}</a></li>
+                <li role="separator" class="divider"></li>
+            {{/if}}
+            {{#unless (equals category 'vote')}}
+                <li><a class="js-report" href="">
+                    {{#if this.isFlaggedBy currentUser._id}}
+                    <i class="fa fa-check"></i> {{_ 'Unblock content'}}
+                    {{else}}
+                    <i class="fa fa-ban"></i> {{_ 'Block content'}}
+                    {{/if}}   
+                </a></li>
+                <li><a class="js-block" href="">
+                    {{#if currentUser.hasBlocked creatorId}}
+                    {{_ 'Unblock content from' creator}}
+                    {{else}}
+                    {{_ 'Block content from' creator}}
+                    {{/if}}  
+                </a></li>
+            {{/unless}}
+        </ul>
+    </div>
+    {{/if}}
+    {{/let}}
+</template>
+
+<template name="Topic_reactions">
+    <div class="btn-group">
+        <button class="btn btn-white btn-xs js-like">
+            <i class="fa {{#if this.isLikedBy currentUser._id}} fa-exclamation-circle {{else}} fa-hand-o-up {{/if}}"></i>
+            {{_ 'important'}}!
+            ({{this.likesCount}})
+        </button>
+        <button class="btn btn-white btn-xs">
+            <i class="fa fa-comments"></i>
+            {{_ 'Comment'}}
+            ({{commentCounter}})
+        </button>
+    </div>
+</template>
+
+<template name="Topic_header">
+    <!-- creator avatar at the left corner -->
+    <a href="" class="pull-left">
+        <img alt="avatar" class="message-avatar" src={{creator.avatar}}>
+    </a>
+    <!-- editing options at the right corner -->
+    <div class="pull-right social-action">
+        {{> Topic_edit_menu this}}
+    </div>
+    <!-- create time before the right corner -->
+    <div class="pull-right">
+        <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
+    </div>
+    <!-- creator details after the left corner -->
+    <div class="media-body">
+        <a href="{{pathFor 'User show' _id=creatorId}}">
+            {{creator}}
+        </a>                  
+        <small class="text-muted" title="{{_ 'memberships'}}">
+            {{join (translateArray (creator.activeRoles activeCommunityId))}}
+        </small>
+    </div>
+</template>
+
+<template name="Topic_body">
+    <a class="text-primary" href="{{pathFor 'Topic show' _tid=_id}}">
+        <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
+    </a>
+    {{#markdown}}{{text}}{{/markdown}}
+    {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
+</template>
+
+<template name="Topic_box">
+   {{#let commentsIncluded=commentsIncluded}}
+   {{#with topic}}
+   <div class="social-feed-box">
+        <div class="social-avatar">
+            {{> Template.dynamic template=(concat 'Topic_' this.category '_header') data=this}}
+        </div>
+        {{#hideable}}
+        <div class="social-body">
+            {{> Template.dynamic template=(concat 'Topic_' this.category '_body') data=this}}
+            {{> Topic_reactions}}
+        </div>
+        {{/hideable}}
+        <!-- Board boxes need to contain its comment section, so it is attached to it -->
+        {{#if commentsIncluded}}
+            {{> Comments_section this}}
+        {{/if}}
+    </div>
+    {{/with}}
+    {{/let}}
+</template>
+
+<!-- Some categories will want to override some subcomponenents, others leave it generic -->
+
+<template name="Topic_forum_header">
+  {{>Topic_header}}
+</template>
+
+<template name="Topic_forum_body">
+  {{>Topic_body}}
+</template>

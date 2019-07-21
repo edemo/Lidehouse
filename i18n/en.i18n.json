@@ -22,6 +22,7 @@
 
   // topics
   "Do show content": "I want to see it now",
+  "Change status to": "Change status to %s",
   
   // voting
   "Proxy voting" : "Voting in the name of others",

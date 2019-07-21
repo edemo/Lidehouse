@@ -5,9 +5,8 @@ import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
-import { __ } from '/imports/localization/i18n.js';
 import { handleError } from '/imports/ui_3/lib/errors.js';
-import { Comments } from '/imports/api/comments/comments.js';
+import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/methods.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -16,16 +15,17 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import '/imports/ui_3/views/components/comments-section.js';
-import './chatbox.html';
 
-Template.Chatbox.onRendered(function chatboxOnRendered() {
-});
+import './topic-box.html';
 
-Template.Chatbox.helpers({
-});
-
-Template.Chatbox.events({
-  'click .js-edit-topic'(event, instance) {
+Template.Topic_edit_menu.events({
+  'click .js-menu .js-block'(event, instance) {
+    Meteor.users.methods.flag.call({ id: instance.data.creatorId }, handleError);
+  },
+  'click .js-menu .js-report'(event, instance) {
+    Topics.methods.flag.call({ id: this._id }, handleError);
+  },
+  'click .forum .js-edit'(event, instance) {
     const id = this._id;
     Modal.show('Autoform_edit', {
       id: 'af.forumtopic.update',
@@ -38,19 +38,16 @@ Template.Chatbox.events({
       singleMethodArgument: true,
     });
   },
-  'click .js-delete'(event, instance) {
+  'click .forum .js-delete'(event, instance) {
     Modal.confirmAndCall(Topics.methods.remove, { _id: this._id }, {
       action: 'delete topic',
       message: 'It will disappear forever',
     });
   },
-  'click .js-block'(event, instance) {
-    Meteor.users.methods.flag.call({ id: instance.data.creatorId }, handleError);
-  },
-  'click .js-report'(event, instance) {
-    Topics.methods.flag.call({ id: this._id }, handleError);
-  },
-  'click .social-body .js-like'(event) {
+});
+
+Template.Topic_reactions.events({
+  'click .js-like'(event) {
     Topics.methods.like.call({ id: this._id }, handleError);
   },
 });

@@ -312,6 +312,8 @@
     "preferential": "Kérjük rendezze sorrendbe, hogy legfelül az Ön számárá leginkább kívánatos, legalul pedig a legkevésbé szimpatikus opció legyen, majd küldje el szavazatát a zöld gombbal.",
     "petition": "Ha támogatja a kezdeményezést, kattintson a Támogatom gombra, majd küldje el szavazatát a zöld gombbal. Ha nem támogatja, akkor nincsen semmi teendője."
   },
+  "No amendments were made to this document": "A dokumentumon nem történt módosítás",
+  "Vote results become availailable once voting is closed": "A szavazatok azonnal láthatóvá válnak, amint a szavazás lezárul",
 
   // delegations
   "Delegations from me": "Meghatalmazásaim",
@@ -361,7 +363,7 @@
   "Please dont report twice": "Karbantartó kollegáink munkáját segítendő, kérjük csak akkor adja fel hibabejelentését, ha az még nem szerepel a közelmúltban felvett hibajegyek között.",
   "Thank you": "Köszönjük",
   "Create ticket": "Bejelentés elküldése",
-  "Change status": "Státusz váltása",
+  "Change status to": "%s állapotra váltás",
   "Filter settings": "Szűrő beállítás",
   "Clear filters": "Szűrők törlése",
   "Title": "Cím",

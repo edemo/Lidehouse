@@ -1,7 +1,5 @@
 <template name="Revision_history">
-
-     {{#each version in (sortedRevisions doc)}}
-        
+      {{#each version in (sortedRevisions doc)}}  
         {{#if (equals version.field 'closed')}}
         <div class="feed-element">
             <!--a href="" class="pull-left">
@@ -29,6 +27,7 @@
             </div>
         </div> 
         {{/if}}
-     {{/each}}
-    
+      {{else}}
+        <h5 class="text-center">{{_ 'No amendments were made to this document'}}</h5>
+      {{/each}}
 </template>

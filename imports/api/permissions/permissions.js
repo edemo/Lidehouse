@@ -53,7 +53,6 @@ export const Permissions = [
   { name: 'vote.peek',              roles: ['manager'] },
   { name: 'ticket.insert',          roles: exceptGuest },
   { name: 'ticket.update',          roles: ['manager', 'maintainer'], allowAuthor: true },
-  { name: 'ticket.statusChange',    roles: ['manager', 'maintainer'] },
   { name: 'ticket.remove',          roles: ['manager'], allowAuthor: true },
   { name: 'room.insert',            roles: everyRole },
   { name: 'room.update',            roles: nobody },
@@ -96,6 +95,7 @@ export const Permissions = [
   { name: 'attachments.remove',     roles: ['admin', 'moderator'], allowAuthor: true  },
   { name: 'do.techsupport',         roles: ['admin'] },
 
+  { name: 'ticket.statusChange',                      roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChangeTo.reported.enter',     roles: exceptGuest },
   { name: 'ticket.statusChangeTo.confirmed.enter',    roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChangeTo.toApprove.enter',    roles: ['manager', 'maintainer'] },
@@ -106,8 +106,18 @@ export const Permissions = [
   { name: 'ticket.statusChangeTo.finished.enter',     roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChangeTo.closed.enter',       roles: ['manager', 'maintainer'] },
   { name: 'ticket.statusChangeTo.deleted.enter',      roles: ['manager', 'maintainer'] },
-  { name: 'vote.statusChangeTo.opened.enter',         roles: ['manager', 'maintainer'] },
-  { name: 'vote.statusChangeTo.closed.enter',         roles: ['manager', 'maintainer'] },
+  { name: 'vote.statusChange',                        roles: ['manager'] },
+  { name: 'vote.statusChangeTo.opened.enter',         roles: ['manager'] },
+  { name: 'vote.statusChangeTo.closed.enter',         roles: ['manager'] },
+  { name: 'vote.statusChangeTo.deleted.enter',        roles: ['manager'] },
+  { name: 'forum.statusChange',                       roles: ['manager'] },
+  { name: 'forum.statusChangeTo.opened.enter',        roles: ['manager'] },
+  { name: 'forum.statusChangeTo.closed.enter',        roles: ['manager'] },
+  { name: 'forum.statusChangeTo.deleted.enter',       roles: ['manager'] },
+  { name: 'news.statusChange',                        roles: ['manager'] },
+  { name: 'news.statusChangeTo.opened.enter',         roles: ['manager'] },
+  { name: 'news.statusChangeTo.closed.enter',         roles: ['manager'] },
+  { name: 'news.statusChangeTo.deleted.enter',        roles: ['manager'] },
 ];
 
 
