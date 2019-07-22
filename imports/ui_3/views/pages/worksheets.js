@@ -84,7 +84,7 @@ Template.Worksheets.viewmodel({
         right: 'month,agendaWeek,agendaDay',
       },
       eventClick(eventObject) {
-        afTicketUpdateModal(eventObject.id);
+        afTicketUpdateModal(eventObject.id, 'statusUpdate');
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
         viewmodel.addEventsToUpdate(eventObject);
