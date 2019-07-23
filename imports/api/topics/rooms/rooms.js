@@ -37,6 +37,7 @@ if (Meteor.isClient) {
         category: 'room',
         title: roomType,
         text: roomType,
+        status: 'opened',
       }, onSuccess((res) => {
         FlowRouter.go('Room show', { _rid: res });
       }),
