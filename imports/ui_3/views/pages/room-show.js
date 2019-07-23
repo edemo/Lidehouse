@@ -103,7 +103,7 @@ Template.Message_send.events({
     const text = textarea.value;
     const roomId = FlowRouter.getParam('_rid');
     const topic = Topics.findOne(roomId);
-    Meteor.call('comment.insert', {
+    Meteor.call('comments.insert', {
       topicId: roomId,
       text,
     },
