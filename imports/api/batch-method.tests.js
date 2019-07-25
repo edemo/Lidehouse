@@ -46,7 +46,7 @@ if (Meteor.isServer) {
 
       it('inserts single', function (done) {
         topic1 = { ...header, serial: 1, title: 'First', text: '-' };
-        const params1 = { communityId, args: [topic1] };
+        const params1 = { args: [topic1] };
 
         const ops = Topics.methods.batch.test._execute({ userId }, params1);
         chai.assert.equal(ops.insert.length, 1);
@@ -65,8 +65,8 @@ if (Meteor.isServer) {
         topic1 = { ...header, serial: 1, title: 'First', text: '-' };
         topic2 = { ...header, serial: 2, title: 'Second', text: '-' };
         topic3 = { ...header, serial: 3, title: 'Third', text: '-' };
-        const insert23 = { communityId, args: [topic2, topic3] };
-        const params = { communityId, args: [topic1, topic2, topic3] };
+        const insert23 = { args: [topic2, topic3] };
+        const params = { args: [topic1, topic2, topic3] };
 
         const ops = Topics.methods.batch.test._execute({ userId }, params);
         chai.assert.equal(ops.insert.length, 2);
@@ -85,8 +85,8 @@ if (Meteor.isServer) {
 
       it('updates single', function (done) {
         topic3 = { ...header, serial: 3, title: 'Third', text: 'third' };
-        const params3 = { communityId, args: [topic3] };
-        const update3 = { communityId, args: [{ _id: doc3._id, modifier: { $set: topic3 } }] };
+        const params3 = { args: [topic3] };
+        const update3 = { args: [{ _id: doc3._id, modifier: { $set: topic3 } }] };
 
         const ops = Topics.methods.batch.test._execute({ userId }, params3);
         chai.assert.equal(ops.insert.length, 0);
@@ -105,10 +105,10 @@ if (Meteor.isServer) {
         topic3 = { ...header, serial: 3, title: 'Third', text: 'third' };
         topic2 = { ...header, serial: 2, title: 'Second', text: 'second' };
         topic1 = { ...header, serial: 1, title: 'First', text: 'first' };
-        const update21 = { communityId,
+        const update21 = {
           args: [{ _id: doc2._id, modifier: { $set: topic2 } }, { _id: doc1._id, modifier: { $set: topic1 } }],
         };
-        const params = { communityId, args: [topic3, topic2, topic1] };
+        const params = { args: [topic3, topic2, topic1] };
 
         const ops = Topics.methods.batch.test._execute({ userId }, params);
         chai.assert.equal(ops.insert.length, 0);
@@ -126,7 +126,7 @@ if (Meteor.isServer) {
       });
 
       xit('removes multiple', function (done) {
-        const remove123 = { communityId,
+        const remove123 = {
           args: [{ _id: doc1._id }, { _id: doc2._id }, { _id: doc3._id }],
         };
 
@@ -157,7 +157,7 @@ if (Meteor.isServer) {
         topic1 = { ...header, serial: 1, title: 'First', text: '-' };
         topic2 = { /* missing header */ title: 'Second', text: '-' };
         topic3 = { ...header, serial: 3, title: 'Third', text: '-' };
-        const params = { communityId, args: [topic1, topic2, topic3] };
+        const params = { args: [topic1, topic2, topic3] };
 
 //        const ret = Topics.methods.batch.insert._execute({ userId }, params);
         const ret = Topics.methods.batch.upsert._execute({ userId }, params);
