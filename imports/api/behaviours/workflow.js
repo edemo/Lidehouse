@@ -79,7 +79,7 @@ const statusChange = new ValidatedMethod({
     }
     const updateResult = Topics.update(event.topicId, { $set: topicModifier });
 
-    const insertResult = Comments.insert(event);
+    const insertResult = Comments.insert({ type: 'statusChangeTo', ...event });
 
     const newTopic = Topics.findOne(event.topicId);
     const onEnter = workflow[event.status].obj.onEnter;

@@ -4,10 +4,12 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { Clock } from '/imports/utils/clock.js';
 import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Comments } from '/imports/api/comments/comments.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 // import { readableId } from '/imports/api/readable-id.js';
 
@@ -228,7 +230,16 @@ Factory.define('ticket', Topics, {
   status: 'reported',
   ticket: {
     type: 'issue',
-    category: 'building',
     urgency: 'normal',
+  },
+});
+
+Factory.define('ticketStatusChange', Comments, {
+  text: () => faker.lorem.paragraph(),
+  data: {
+    localizer: 'At the basement',
+    expectedCost: 5000,
+    expectedStart: () => Clock.currentDate(),
+    expectedFinish: () => Clock.date(1, 'week', 'ahead'),
   },
 });

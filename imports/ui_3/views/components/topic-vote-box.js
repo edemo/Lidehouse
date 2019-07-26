@@ -107,7 +107,7 @@ Template.Topic_vote_header.events({
   'click .vote .js-status[data-status="closed"]'(event, instance) {
     const serverTimeNow = new Date(TimeSync.serverTime());
     const closureDate = moment(this.closesAt).from(serverTimeNow);
-    Modal.confirmAndCall(Topics.methods.statusChange, { topicId: this._id, type: 'statusChangeTo', status: 'closed' }, {
+    Modal.confirmAndCall(Topics.methods.statusChange, { topicId: this._id, status: 'closed' }, {
       action: 'close vote',
       message: __('The planned date of closure was ') + closureDate,
     });

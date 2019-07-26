@@ -205,7 +205,6 @@ AutoForm.addHooks('af.ticket.statusChange', {
   formToDoc(doc) {
     const newStatusName = Session.get('newStatusName');
     doc.topicId = Session.get('activeTopicId');
-    doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
     doc.status = newStatusName;
     doc.data = doc.ticket || {};
     delete doc.ticket;

@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
@@ -38,6 +39,7 @@ export class CommunityBuilder {
     const lastCreatedParcel = parcels.fetch()[0];
     this.nextSerial = (lastCreatedParcel ? lastCreatedParcel.serial : 0) + 1;
     this.dummyUsers = [];
+    this.nextUserIndex = 1;
   }
   __(text) {
     return TAPi18n.__(text, {}, this.lang);
@@ -46,15 +48,79 @@ export class CommunityBuilder {
     return Communities.findOne(this.communityId);
   }
   getUserWithRole(role) {
-    return Memberships.findOne({ communityId: this.communityId, role }).personId;
+    const member = Memberships.findOne({ communityId: this.communityId, role });
+    if (!member) console.log(`No user with role ${role} in the community`);
+    return member.personId;
+  }
+  sameUser() {
+    return this.dummyUsers[this.nextUserIndex];
+  }
+  nextUser() {
+    this.nextUserIndex += 7; // relative prime
+    this.nextUserIndex %= this.dummyUsers.length;
+    return this.dummyUsers[this.nextUserIndex];
+  }
+  autoDetermineCreator(method, params) {
+    const split = method.name.split('.');
+    const collName = split[0], opName = split[1];
+    const collection = Mongo.Collection.get(collName);
+    // Using the string 'sameUser' means you want to do this with the same user that did the last operation
+    if (params.creatorId === 'sameUser') return this.sameUser();
+    switch (opName) {
+      case 'update':
+      case 'remove': return collection.findOne(params._id).creatorId;
+      case 'statusChange': switch (Topics.findOne(params.topicId).category) {
+        case 'vote': return this.getUserWithRole('manager');
+        case 'ticket': return this.getUserWithRole('maintainer');
+        default: return collection.findOne(params._id).creatorId;
+      }
+      case 'insert': switch (collName) {
+        case 'agendas':
+        case 'parcels': return this.getUserWithRole('manager');
+        case 'memberships': return this.getUserWithRole('admin');
+        case 'transactions':
+        case 'parcelBillings':
+        case 'breakdowns':
+        case 'txDefs': return this.getUserWithRole('accountant');
+        case 'comments': return this.nextUser();
+        case 'topics': switch (params.category) {
+          case 'vote': switch (params.vote.effect) {
+            case 'legal': return this.getUserWithRole('manager');
+            case 'poll': return this.getUserWithRole('owner');
+            default: debugAssert(false, `No such vote.effect ${params.vote.effect}`);
+          } break;
+          case 'ticket': switch (params.ticket.type) {
+            case 'issue': return this.nextUser();
+            case 'upgrade': return this.getUserWithRole('manager');
+            case 'maintenace': return this.getUserWithRole('maintainer');
+            default: debugAssert(false, `No such ticket.type ${params.ticket.type}`);
+          } break;
+          case 'forum': return this.nextUser();
+          case 'news': return this.getUserWithRole('manager');
+          default: debugAssert(false, `No such topics.category ${params.category}`);
+        } break;
+        default: debugAssert(false, `No such collection ${collName}`);
+      } break;
+      default: debugAssert(false, `No such operation ${opName}`);
+    }
+    return undefined; // never gets here
   }
   build(name, data) {
     const dataExtended = _.extend({ communityId: this.communityId }, data);
-    return Factory.build(name, dataExtended);
+    return name ? Factory.build(name, dataExtended) : dataExtended;
   }
   create(name, data) {
-    const dataExtended = _.extend({ communityId: this.communityId }, data);
-    return Factory.create(name, dataExtended)._id;
+    const doc = this.build(name, data);
+    const collection = Factory.get(name).collection;
+    return this.execute(collection.methods.insert, doc);
+  }
+  execute(method, params, executorId) {
+    const creatorId = executorId || params.creatorId || this.autoDetermineCreator(method, params);
+    return method._execute({ userId: creatorId }, params);
+  }
+  insert(collection, docType, data) {
+    const doc = this.build(docType, data);
+    return this.execute(collection.methods.insert, doc);
   }
   createParcel(data) {
     const ref = 'A' + data.floor + data.door;
@@ -133,17 +199,6 @@ export class CommunityBuilder {
     if (membershipData) Memberships.update(mId, { $set: membershipData });
     return mId;
   }
-  createComment(data) {
-    const comment = Factory.build('comment', data);
-    Comments.methods.insert._execute({ userId: data.creatorId }, comment);
-  }
-  statusChange(data) {
-    const creatorId = data.creatorId || this.getUserWithRole('manager');
-//    runWithFakeUserId(creatorId, () => {
-    Topics.methods.statusChange._execute({ userId: creatorId },
-      _.extend({ type: 'statusChangeTo' }, data));
-//    });
-  }
   name2code(breakdownName, nodeName) {
     return Breakdowns.name2code(breakdownName, nodeName, this.communityId);
   }
@@ -151,27 +206,17 @@ export class CommunityBuilder {
     const parcel = Parcels.findOne({ communityId: this.communityId, serial });
     return Localizer.parcelRef2code(parcel.ref);
   }
-  createTx(data) {
-    Transactions.methods.insert._execute({ userId: this.getUserWithRole('accountant') },
-      _.extend({ communityId: this.communityId }, data),
-    );
-  }
-  createParcelBilling(data) {
-    ParcelBillings.methods.insert._execute({ userId: this.getUserWithRole('accountant') },
-      _.extend({ communityId: this.communityId }, data),
-    );
-  }
   generateDemoPayments(parcel) {
     for (let mm = 1; mm < 13; mm++) {
       const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
-      this.createParcelBilling({
+      this.insert(ParcelBillings, '', {
         valueDate,
         projection: 'perArea',
         amount: 275,
         payinType: this.name2code('Owner payin types', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
       });
-      this.createTx({
+      this.insert(Transactions, 'tx', {
         valueDate,
         amount: 275 * parcel.area,
         credit: [{

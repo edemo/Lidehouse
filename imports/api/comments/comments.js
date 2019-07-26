@@ -78,6 +78,5 @@ if (Meteor.isServer) {
 }
 
 Factory.define('comment', Comments, {
-  topicId: () => Factory.get('topic'),
   text: () => faker.lorem.sentence(),
 });
