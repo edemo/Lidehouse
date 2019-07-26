@@ -372,7 +372,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         demoBuilder.insert(Comments, 'comment', {
           topicId,
           text: commentText,
-          creatorId: (topicNo == 2 && commentNo == 2) ? 'sameUser' : undefined,
+          creatorId: (topicNo == 2 && commentNo == 2) ? null : undefined,
         });
       }
     });

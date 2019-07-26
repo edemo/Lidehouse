@@ -17,20 +17,14 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 
-function starterFields(type) {
-  const workflow = Tickets.workflows[type];
-  const startStatus = workflow.start[0];
-  const fields = ['title', 'text', 'photo'].concat(startStatus.data.map(d => 'ticket.' + d));
-  return fields;
-}
-
 export function afTicketInsertModal(type, contractId) {
   const schemaWithMoreDates = new SimpleSchema([Tickets.schema, {
     moreDates: { type: [Date], optional: true },
   }]);
   schemaWithMoreDates.i18n('schemaTickets');
 
-  let fields = starterFields(type);
+  const topic = Topics._transform({ category: 'ticket', text: '-', ticket: { type } });
+  let fields = topic.modifiableFields().concat(topic.startFields());
   if (type === 'maintenance') {
     fields.push('moreDates');
   }
@@ -50,27 +44,25 @@ export function afTicketInsertModal(type, contractId) {
 
 export function afTicketUpdateModal(topicId, mode) {
   const topic = Topics.findOne(topicId);
-  const statusObject = Tickets.statuses[topic.status];
-  const currentStatusFields = (statusObject.data || []).map(d => 'ticket.' + d);
-  let fields;
+  let fields = [];
   switch (mode) {
-    case 'all': fields = { omitFields: ['agendaId', 'sticky'] }; break; // Can edit anything at all
-    case 'topicUpdate': fields = { fields: starterFields(topic.ticket.type) }; break;  // Can edit the starter fields
-    case 'statusUpdate': {
-      if (currentStatusFields.length === 0) return;
-      fields = { fields: currentStatusFields }; // Can only edit actual status fields
+    case 'update':
+      fields = topic.modifiableFields();
       break;
-    }
+    case 'statusUpdate':
+      fields = topic.statusFields();
+      break;
     default: debugAssert(false);
   }
+  if (fields.length === 0) return;
   Modal.show('Autoform_edit', {
     id: 'af.ticket.update',
     collection: Topics,
     schema: Tickets.schema,
-    ...fields,
+    fields,
     doc: Topics.findOne(topicId),
     type: 'method-update',
-    meteormethod: 'topics.update',
+    meteormethod: 'topics.' + mode,
     singleMethodArgument: true,
   });
 }
@@ -131,7 +123,7 @@ export const TicketEventHandlers = {
   },
   'click .js-edit'(event) {
     const id = $(event.target).closest('[data-id]').data('id');
-    afTicketUpdateModal(id, 'topicUpdate');
+    afTicketUpdateModal(id, 'update');
   },
   'click .js-status-update'(event) {
     const id = $(event.target).closest('[data-id]').data('id');

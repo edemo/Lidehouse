@@ -18,7 +18,7 @@ import './topic-ticket-box.html';
 Template.Topic_ticket_header.events({
   'click .ticket .js-edit'(event) {
     const id = this._id;
-    afTicketUpdateModal(id, 'topicUpdate');
+    afTicketUpdateModal(id, 'update');
   },
   'click .ticket .js-status-update'(event) {
     const id = this._id;

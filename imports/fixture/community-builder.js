@@ -65,7 +65,7 @@ export class CommunityBuilder {
     const collName = split[0], opName = split[1];
     const collection = Mongo.Collection.get(collName);
     // Using the string 'sameUser' means you want to do this with the same user that did the last operation
-    if (params.creatorId === 'sameUser') return this.sameUser();
+    if (params.creatorId === null) return this.sameUser();
     switch (opName) {
       case 'update':
       case 'remove': return collection.findOne(params._id).creatorId;
@@ -76,6 +76,7 @@ export class CommunityBuilder {
       }
       case 'insert': switch (collName) {
         case 'agendas':
+        case 'contracts':
         case 'parcels': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');
         case 'transactions':
@@ -86,13 +87,13 @@ export class CommunityBuilder {
         case 'topics': switch (params.category) {
           case 'vote': switch (params.vote.effect) {
             case 'legal': return this.getUserWithRole('manager');
-            case 'poll': return this.getUserWithRole('owner');
+            case 'poll': this.nextUser(); return this.nextUser();
             default: debugAssert(false, `No such vote.effect ${params.vote.effect}`);
           } break;
           case 'ticket': switch (params.ticket.type) {
             case 'issue': return this.nextUser();
             case 'upgrade': return this.getUserWithRole('manager');
-            case 'maintenace': return this.getUserWithRole('maintainer');
+            case 'maintenance': return this.getUserWithRole('maintainer');
             default: debugAssert(false, `No such ticket.type ${params.ticket.type}`);
           } break;
           case 'forum': return this.nextUser();

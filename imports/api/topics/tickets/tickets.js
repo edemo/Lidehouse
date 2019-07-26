@@ -73,8 +73,6 @@ Meteor.startup(function attach() {
   Tickets.schema.i18n('schemaTickets');   // translation is different from schemaTopics
 });
 
-Tickets.modifiableFields = Topics.modifiableFields.concat(['ticket.localizer', 'ticket.urgency', 'ticket.expectedStart', 'ticket.expectedFinish']);
-
 Tickets.publicExtensionFields = { ticket: 1 };
 _.extend(Topics.publicFields, Tickets.publicExtensionFields);
 
@@ -207,14 +205,20 @@ Tickets.workflows = {
 };
 
 Topics.categoryHelpers('ticket', {
+  contract() {
+    return Contracts.findOne(this._id);
+  },
   workflow() {
     return Tickets.workflows[this.ticket.type];
   },
-  modifiableFields() {
-    return Tickets.modifiableFields;
+  statusFields(statusObject = this.statusObject()) {
+    return (statusObject.data || []).map(d => 'ticket.' + d);
   },
-  contract() {
-    return Contracts.findOne(this._id);
+  startFields() {
+    return this.statusFields(this.startStatus());
+  },
+  modifiableFields() {
+    return ['title', 'text', 'photo'].concat(this.startFields());
   },
 });
 
