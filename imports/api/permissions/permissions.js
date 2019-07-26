@@ -52,7 +52,7 @@ export const Permissions = [
   //{ name: 'vote.close',             roles: ['manager'] },
   { name: 'vote.peek',              roles: ['manager'] },
   { name: 'ticket.insert',          roles: exceptGuest },
-  { name: 'ticket.update',          roles: nobody, allowAuthor: true },
+  { name: 'ticket.update',          roles: ['manager'], allowAuthor: true },
   { name: 'ticket.remove',          roles: nobody, allowAuthor: true },
   { name: 'room.insert',            roles: everyRole },
   { name: 'room.update',            roles: nobody },

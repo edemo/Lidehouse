@@ -108,6 +108,7 @@ Template.Tech_chat.events({
         category: 'room',
         title: 'tech support',
         text,
+        status: 'opened',
       }, onSuccess((res) => {
         roomId = res;
         insertMessage();

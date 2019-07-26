@@ -68,10 +68,10 @@ export function importCollectionFromFile(collection, options) {
       // ------------------------------
       jsons.forEach(json => json.communityId = communityId);
 
-      collection.methods.batch.test.call({ communityId, args: jsons }, function (err, res) {
+      collection.methods.batch.test.call({ args: jsons }, function (err, res) {
         if (err) { displayError(err); return; }
         const neededOps = res;
-        Modal.confirmAndCall(collection.methods.batch.upsert, { communityId, args: jsons }, {
+        Modal.confirmAndCall(collection.methods.batch.upsert, { args: jsons }, {
           action: 'import data',
           message: __('This operation will do the following') + '<br>' +
             __('creates') + ' ' + neededOps.insert.length + __(' documents') + ',<br>' +

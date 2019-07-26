@@ -84,7 +84,7 @@ Template.Worksheets.viewmodel({
         right: 'month,agendaWeek,agendaDay',
       },
       eventClick(eventObject) {
-        afTicketUpdateModal(eventObject.id);
+        afTicketUpdateModal(eventObject.id, 'statusUpdate');
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
         viewmodel.addEventsToUpdate(eventObject);
@@ -265,13 +265,16 @@ Template.Worksheets.events({ ...TicketEventHandlers,
       const modifier = { $set: dates };
       Meteor.call('topics.update', { _id: eventObject.id, modifier });
     });*/
+    const args = [];
+    const communityId = instance.viewmodel.communityId();
     _.forEach(eventsToUpdate, function(value, key) {
       const dates = {};
       if (value.start) dates['ticket.expectedStart'] = value.start.toISOString();
       if (value.end) dates['ticket.expectedFinish'] = value.end.toISOString();
       const modifier = { $set: dates };
-      Meteor.call('topics.update', { _id: key, modifier });
+      args.push({ _id: key, modifier });
     });
+    Topics.methods.batch.update.call({ args });
     instance.viewmodel.eventsToUpdate({});
   },
   'click .js-cancel-calendar'(event, instance) {
