@@ -14,46 +14,28 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/topics/votings/votings.js';
-import { insert as insertAgenda } from '/imports/api/agendas/methods.js';
-import { insert as insertTopic, update as updateTopic } from '/imports/api/topics/methods.js';
-import { insert as insertDelegation, remove as removeDelegation } from '/imports/api/delegations/methods.js';
+import '/imports/api/topics/methods.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { insert as insertAgenda } from '/imports/api/agendas/methods.js';
+import { insert as insertDelegation, remove as removeDelegation } from '/imports/api/delegations/methods.js';
 
 if (Meteor.isServer) {
   let Fixture;
-  let agendaId;
-  const createVoting = function (type) {
-    return {
-      communityId: Fixture.demoCommunityId,
-      userId: Fixture.demoUserId,
-      category: 'vote',
-      title: `${type} Voting`,
-      text: 'Choose!',
-      agendaId,
-      vote: {
-        closesAt: moment().add(14, 'day').toDate(),
-        procedure: 'online',
-        effect: 'legal',
-        type,
-        choices: ['white', 'red', 'yellow', 'grey'],
-      },
-    };
-  };
-
   describe('votings', function () {
     this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
-      agendaId = insertAgenda._execute({ userId: Fixture.demoManagerId }, { communityId: Fixture.demoCommunityId, title: 'Test Agenda' });
     });
 
     describe('permissions', function () {
       let votingId;
 
       it('can create new voting', function (done) {
-        votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('yesno'));
+        votingId = Topics.methods.insert._execute({ userId: Fixture.demoManagerId },
+          Fixture.builder.build('vote', { userId: Fixture.demoManagerId })
+        );
         chai.assert.isDefined(votingId);
         const voting = Topics.findOne(votingId);
         chai.assert.equal(voting._id, votingId);
@@ -61,13 +43,14 @@ if (Meteor.isServer) {
       });
 
       it('cannot create new legal voting without permission', function (done) {
-        const voting = createVoting('yesno');
+        const voting = Fixture.builder.build('vote', { userId: Fixture.demoUserId });
+        voting.vote.effect = 'legal';
         chai.assert.throws(() => {
-          insertTopic._execute({ userId: Fixture.demoUserId }, voting);
-        });
+          Topics.methods.insert._execute({ userId: Fixture.demoUserId }, voting);
+        }, 'err_permissionDenied');
         // polls on the other hand are allowed to be created by everybody
         voting.vote.effect = 'poll';
-        insertTopic._execute({ userId: Fixture.demoUserId }, voting);
+        Topics.methods.insert._execute({ userId: Fixture.demoUserId }, voting);
         done();
       });
 
@@ -94,7 +77,7 @@ if (Meteor.isServer) {
       it('only admin can vote in the name of others', function (done) {
         chai.assert.throws(() => {
           castVote._execute({ userId: Fixture.demoUserId }, { topicId: votingId, castedVote: [0], voters: [Fixture.dummyUsers[1]] });
-        });
+        }, 'err_permissionDenied');
         castVote._execute({ userId: Fixture.demoAdminId }, { topicId: votingId, castedVote: [0], voters: [Fixture.dummyUsers[1], Fixture.dummyUsers[2], Fixture.dummyUsers[3]] });
 
         const voting = Topics.findOne(votingId);
@@ -107,9 +90,19 @@ if (Meteor.isServer) {
 
     describe('evaluation', function () {
       let votingId;
+      let agendaId;
 
       before(function () {
-        votingId = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('yesno'));
+        agendaId = insertAgenda._execute({ userId: Fixture.demoManagerId }, {
+          communityId: Fixture.demoCommunityId,
+          title: 'Test Agenda',
+        });
+        const voting = Fixture.builder.build('vote', {
+          userId: Fixture.demoManagerId,
+          agendaId,
+        });
+        voting.vote.type = 'yesno';
+        votingId = Topics.methods.insert._execute({ userId: Fixture.demoManagerId }, voting);
       });
 
       it('no evaluation on fresh voting', function (done) {
@@ -313,7 +306,7 @@ if (Meteor.isServer) {
         revokeDelegation3To4();
         assertsAfterThirdVote();
 
-        insertDelegation3To4('agenda', Agendas.findOne({})._id);
+        insertDelegation3To4('agenda', Agendas.findOne({ _id: { $ne: agendaId } })._id);
         assertsAfterThirdVote();  // no effect here
         revokeDelegation3To4();
         assertsAfterThirdVote();
@@ -323,7 +316,7 @@ if (Meteor.isServer) {
         revokeDelegation3To4();
         assertsAfterThirdVote();
 
-        insertDelegation3To4('topic', Topics.findOne({})._id);
+        insertDelegation3To4('topic', Topics.findOne({ _id: { $ne: votingId } })._id);
         assertsAfterThirdVote();  // no effect here
         revokeDelegation3To4();
         assertsAfterThirdVote();
@@ -338,17 +331,17 @@ if (Meteor.isServer) {
 
       describe('multiChoose evaluation', function () {
 
-        let votingId2;
-
         before(function () {
-          votingId2 = insertTopic._execute({ userId: Fixture.demoManagerId }, createVoting('multiChoose'));
+          const voting = Fixture.builder.build('vote', { creatorId: Fixture.demoManagerId });
+          voting.vote.type = 'multiChoose';
+          votingId = Topics.methods.insert._execute({ userId: Fixture.demoManagerId }, voting);
         });
 
         it('evaluates correct vote summary on multiChoose vote', function (done) {
-          chai.assert.isDefined(votingId2);
-          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId2, castedVote: [1] });
-          castVote._execute({ userId: Fixture.dummyUsers[4] }, { topicId: votingId2, castedVote: [0, 1] });
-          const updatedVoting = Topics.findOne(votingId2);
+          chai.assert.isDefined(votingId);
+          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [1] });
+          castVote._execute({ userId: Fixture.dummyUsers[4] }, { topicId: votingId, castedVote: [0, 1] });
+          const updatedVoting = Topics.findOne(votingId);
           chai.assert.deepEqual(updatedVoting.voteSummary, { 0: 40, 1: 50 });
           done();
         });

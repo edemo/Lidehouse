@@ -1,0 +1,113 @@
+<template name="Worksheets">
+  <!-- Page heading -->
+  {{> Page_heading title=(_ 'Worksheets') }}
+
+  <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="ibox filters">
+      <div class="ibox-title">
+        <h3>{{_ 'Filter settings'}}</h3>
+        {{> iboxTools}}
+      </div>
+
+      <div class="ibox-content">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="input-group">
+              <label class="control-label text-capitalize">{{_ 'work'}} {{_ 'status'}}</label><br>
+              {{#each ticketStatus in ticketStatuses}}
+              <button type="button" class="js-status-filter btn btn-xs btn-outline btn-{{ticketStatus.color}} {{activeStatusButton ticketStatus.name}}" data-value="{{ticketStatus.name}}">{{_ (concat 'schemaTopics.status.' ticketStatus.name)}}</button>
+              {{/each}}
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="input-group">
+              <label class="control-label text-capitalize">{{_ 'work'}} {{_'type'}}</label><br>
+              {{#each ticketType in ticketTypes}}
+              <button type="button" class="js-type-filter btn btn-xs btn-outline btn-default {{activeTypeButton ticketType}}" data-value="{{ticketType}}">{{_ (concat 'schemaTickets.ticket.type.' ticketType)}}</button>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <label class="control-label">{{_ 'Title'}}</label>
+            <div class="form-group">
+              <div class="input-group">    
+                <input type="text" placeholder="{{_ 'search'}}..." {{b "value: searchText"}} class="form-control js-search">
+                <span class="input-group-addon">
+                  <i class="fa fa-search"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="start_date">{{_ 'Begin date'}}</label>
+              <input type="date" id="start_date" name="start_date" {{b "value: startDate"}} class="form-control">
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+              <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-9">
+            <input type="checkbox" name="allow" id="mine-only" {{b "check: reportedByCurrentUser"}}>
+            <label for="mine-only">{{_ 'My own only'}}</label>
+          </div>
+          <div class="col-sm-3 align">
+            <button type="button" class="js-clear-filter btn btn-default btn-xs {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">
+                <i class="fa fa-times"></i> {{_ 'Clear filters'}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ibox">
+      <div class="ibox-title"> 
+        <h3>{{_ 'worksheets'}}</h3>
+        <div class="btn-group m-l-md">
+          <button type="button" class="btn btn-xs btn-white js-mode {{#if (not calendarView)}}active{{/if}}"><i class="fa fa-list"></i></button>
+          <button type="button" class="btn btn-xs btn-white js-mode {{#if calendarView}}active{{/if}}" ><i class="fa fa-calendar"></i></button>
+        </div>
+        {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')  }}
+          <div class="dropdown btn-group pull-right">
+              <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
+                  <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}} <b class="caret"></b>
+              </button>
+              <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
+                  {{#each type in ticketTypes}}
+                  <li><a href="" class="js-new" data-type="{{type}}">{{_ (concat 'schemaTickets.ticket.type.' type)}}</a></li>
+                  {{/each}}
+              </ul>
+              <button class="btn btn-white btn-xs js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+          </div>
+          <!--a href="" class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}}</a-->
+        {{/if}}
+      </div>
+      <div class="ibox-content">
+        {{#if calendarView}}
+        <div>
+          {{> ReactiveFullcalendar options=calendarOptions }}
+        </div>
+        {{else}}
+        <div class="no-padding table-responsive">
+          {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
+        </div>
+        {{/if}}
+      </div>
+      {{#if (isNotEmptyObject eventsToUpdate)}}
+      <div class="ibox-footer text-right">
+          <button type="button" class="btn btn-sm btn-default js-cancel-calendar">{{_ 'cancel'}}</button>
+          <button type="button" class="btn btn-sm btn-primary js-save-calendar">{{_ 'save'}}</button>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+</template>

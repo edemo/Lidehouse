@@ -5,14 +5,14 @@ import { $ } from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
+import { Topics } from '/imports/api/topics/topics.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/comments/methods.js';
-import { like } from '/imports/api/topics/likes.js';
-import { flag } from '/imports/api/topics/flags.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import './comments-section.html';
 
@@ -53,16 +53,16 @@ Template.Comments_section.viewmodel({
     const topic = this.templateInstance.data;
     return topic.category === 'vote';
   },
-  commentsOfTopic() {
+  eventsOfTopic() {
     const route = FlowRouter.current().route.name;
-    const comments = Comments.find({ topicId: this._id.value }, { sort: { createdAt: 1 } });
+    const events = Comments.find({ topicId: this._id.value }, { sort: { createdAt: 1 } });
     if (route === 'Board') {
       // on the board showing only the most recent ones
-      return comments.fetch().slice(-1 * RECENT_COMMENT_COUNT);
+      return events.fetch().slice(-1 * RECENT_COMMENT_COUNT);
     }
-    return comments;
+    return events;
   },
-  hasMoreComments() {
+  hasMoreEvents() {
     const route = FlowRouter.current().route.name;
     const comments = Comments.find({ topicId: this._id.value });
     return (route === 'Board' && comments.count() > RECENT_COMMENT_COUNT)
@@ -89,7 +89,6 @@ Template.Comments_section.events({
     const textarea = $(event.target).closest('.media-body').find('textarea')[0];
     Comments.methods.insert.call({
       topicId: this._id,
-      userId: Meteor.userId(),
       text: textarea.value,
     },
     onSuccess((res) => {
@@ -109,16 +108,29 @@ Template.Comment.viewmodel({
 Template.Comment.events({
   'click .js-like'(event) {
     event.preventDefault();
-    like.call({ coll: 'comments', id: this._id }, handleError);
+    Comments.methods.like.call({ id: this._id }, handleError);
   },
   'click .js-flag'(event) {
     event.preventDefault();
-    flag.call({ coll: 'comments', id: this._id }, handleError);
+    Comments.methods.flag.call({ id: this._id }, handleError);
   },
   'click .js-edit'(event, instance) {
     const element = $(event.target).closest('.media-body');
     Meteor.setTimeout(() => element.find('textarea')[0].focus(), 100);
     instance.viewmodel.editing(true);
+  },
+  'click .js-move'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.comment.move',
+      schema: Comments.moveSchema,
+      doc: { _id: instance.data._id },
+    });
+  },
+  'click .js-delete'(event, instance) {
+    Modal.confirmAndCall(Comments.methods.remove, { _id: this._id }, {
+      action: 'delete comment',
+      message: 'It will disappear forever',
+    });
   },
   'click .js-save'(event, instance) {
     const text = $(event.target).closest('.media-body').find('textarea')[0].value;
@@ -135,19 +147,6 @@ Template.Comment.events({
     if (event.keyCode === 27) {
       instance.viewmodel.editing(false);
     }
-  },
-  'click .js-delete'(event, instance) {
-    Modal.confirmAndCall(Comments.methods.remove, { _id: this._id }, {
-      action: 'delete comment',
-      message: 'It will disappear forever',
-    });
-  },
-  'click .js-move'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.comment.move',
-      schema: Comments.moveSchema,
-      doc: { _id: instance.data._id },
-    });
   },
 });
 

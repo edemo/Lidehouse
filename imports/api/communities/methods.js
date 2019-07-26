@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
@@ -55,3 +56,6 @@ export const remove = new ValidatedMethod({
     community.remove();
   },
 });
+
+Communities.methods = Communities.methods || {};
+_.extend(Communities.methods, { create, update, remove });

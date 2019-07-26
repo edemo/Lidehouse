@@ -22,7 +22,7 @@ if (Meteor.isServer) {
 
     describe('api', function () {
       before(function () {
-        const rootId = Breakdowns.define({ communityId: null,
+        Breakdowns.define({ communityId: null,
           name: 'Root',
           children: [
             { digit: '1', name: 'Level1',
@@ -57,7 +57,7 @@ if (Meteor.isServer) {
             },
           ],
         });
-        breakdown = Breakdowns.findOne(rootId);
+        breakdown = Breakdowns.findOne({ communityId: null, name: 'Root' });
       });
 
       it('access to node names', function () {
@@ -203,7 +203,7 @@ if (Meteor.isServer) {
           ],
         });
 
-        breakdown = Breakdowns.findOne(assemblyId);
+        breakdown = Breakdowns.findOne({ communityId: null, name: 'Assembly' });
       });
 
       it('clones for a community simply renaming it', function () {

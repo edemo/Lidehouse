@@ -1,0 +1,102 @@
+<template name="Topic_vote_header">
+    <!-- NO creator avatar at the left corner -->
+    <!--a href="" class="pull-left">
+        <i class="fa fa-legal fa-lg"></i>
+    </a-->
+    <!-- editing options at the right corner -->
+    <div class="pull-right social-action">
+        {{> Topic_edit_menu this}}
+    </div>
+    <!-- create time before the right corner -->
+    <div class="pull-right">
+        {{#if this.closed}}
+          {{_ "closed"}}<!--a href="" class="js-view-results">: {{_ "Vote results"}}</a-->
+        {{else}}
+          <span title="{{_ 'createdAt'}}: {{displayDate createdAt}} {{_ 'closes'}}: {{closesAt}}">
+           {{_ "closes"}}: {{displayTimeFrom closesAt}}
+          </span>
+        {{/if}}
+    </div>
+    <!-- creator details at the left  -->
+    <div class="media-body">
+        <a class="text-primary" href="{{pathFor 'Topic show' _tid=_id}}">
+          <h2 class="m-t-none m-b-none">{{title}}</h2>
+        </a>
+    </div>
+</template>
+
+     
+<template name="Topic_vote_body">
+
+      <div class="row m-b-md">
+      <div class="col-lg-12">
+          <div class="progress {{#unless closed}}progress-striped active{{/unless}} m-b-xs">
+            <div style="{{concat 'width: ' (round votedPercent 2) '%;'}}" class="progress-bar {{#unless isVoteSuccessful}}progress-bar-warning{{/unless}}"></div>
+          </div>
+          <div class="col-sm-6 text-left">
+            <p>{{_ 'Participation'}}: <strong>{{displayPercent votedPercent}}</strong></p>
+          </div>
+          <div class="col-sm-6 text-right">
+          {{#if (equals vote.effect 'legal')}}
+            {{#if closed}}
+              {{#if isVoteSuccessful}}
+              <strong>{{_ 'Successful voting'}}</strong>
+              {{else}}
+              <strong>{{_ 'Unsuccessful voting'}}</strong>
+              {{/if}}
+            {{else}}
+            <p>{{_ 'Participation necessary'}}: <strong>{{displayRoundPercent voteSuccessLimit}}</strong></p>
+            {{/if}}
+          {{/if}}
+          </div>
+      </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <!-- voting text -->
+          {{#markdown}}{{text}}{{/markdown}}
+          {{#if attachments.count}}
+          <button class="btn btn-white btn-xs dropdown-toggle drop-unfoll" type="button" id="attachments_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+             <i class="glyphicon glyphicon-paperclip"></i> 
+             {{_ 'Attachments'}} ({{attachments.count}})
+             <b class="caret"></b>
+          </button>
+          <ul class="slim-menu dropdown-menu dropdown-menu-left" aria-labelledby="attachments_{{_id}}">
+            {{#each doc in attachments}}
+            <li><a class="filename" target="_blank" href="{{doc.url}}">{{doc.name}}</a></li>
+            {{/each}}
+          </ul>
+          {{/if}}
+        </div>
+        <div class="col-xs-12 m-b-sm">
+          {{#if this.closed}}
+          <!-- voting results -->
+            <h4 class="text-center">
+            {{#if equals this.vote.type "preferential"}}
+              {{_ 'Support of options'}}:            
+            {{else}}
+              {{_ 'Aggregation of votes'}}:
+            {{/if}}
+            </h4>
+            <div class="row">
+              <div class="col-lg-12 text-center">
+                {{#each sum in this.voteSummaryDisplay}}
+                <div>{{_ sum.choice}}: {{sum.votingUnits}} ({{displayPercent sum.percentOfVotes}})</div>
+                {{/each}}
+                <div>
+                  <canvas id="{{concat 'chart-' this._id}}" height="200"></canvas>
+                </div>
+              </div>
+            </div>
+          {{else}}
+          <!-- voting buttons -->
+          {{#if userHasPermission 'vote.cast' this.communityId this}}
+          {{> Vote_cast_panel this}}
+          {{/if}}
+
+          {{/if}}
+        </div>
+      </div>
+
+</template>

@@ -1,8 +1,9 @@
 import { Meteor } from 'meteor/meteor';
-import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
+import { _ } from 'meteor/underscore';
+import { CollectionHooks } from 'meteor/matb33:collection-hooks';
 
 import { Comments } from './comments.js';
 import { Topics } from '../topics/topics.js';
@@ -14,14 +15,17 @@ export const insert = new ValidatedMethod({
   validate: Comments.simpleSchema().validator({ clean: true }),
 
   run(doc) {
+    CollectionHooks.defaultUserId = this.userId;
+    doc = Comments._transform(doc);
     const topic = checkExists(Topics, doc.topicId);
-    checkPermissions(this.userId, 'comments.insert', topic.communityId);
-    doc.userId = this.userId;   // One can only post in her own name
-    const commentId = Comments.insert(doc);
-    const newComment = Comments.findOne(commentId); // we need the createdAt timestamp from the server
-    updateMyLastSeen._execute({ userId: this.userId }, 
-    { topicId: topic._id, lastSeenInfo: { timestamp: newComment.createdAt } });
-    return commentId;
+    checkPermissions(this.userId, `${doc.getType()}.insert`, topic.communityId);
+    const docId = Comments.insert(doc);
+    const newDoc = Comments.findOne(docId); // we need the createdAt timestamp from the server
+    updateMyLastSeen._execute({ userId: this.userId },
+      { topicId: topic._id, lastSeenInfo: { timestamp: newDoc.createdAt } },
+    );
+    CollectionHooks.defaultUserId = undefined;
+    return docId;
   },
 });
 
@@ -33,12 +37,14 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
+    CollectionHooks.defaultUserId = this.userId;
     const doc = checkExists(Comments, _id);
     const topic = checkExists(Topics, doc.topicId);
     checkModifier(doc, modifier, ['text']);     // only the text can be modified
-    checkPermissions(this.userId, 'comments.update', topic.communityId, doc);
+    checkPermissions(this.userId, `${doc.getType()}.update`, topic.communityId, doc);
 
     Comments.update(_id, modifier);
+    CollectionHooks.defaultUserId = undefined;
   },
 });
 
@@ -51,7 +57,7 @@ export const move = new ValidatedMethod({
 
   run({ _id, destinationId }) {
     const doc = checkExists(Comments, _id);
-    checkPermissions(this.userId, 'comments.move', doc.communityId, doc);
+    checkPermissions(this.userId, 'comment.move', doc.communityId, doc);
 
     Comments.update(_id, { $set: { topicId: destinationId } });
   },
@@ -64,17 +70,18 @@ export const remove = new ValidatedMethod({
   }).validator(),
 
   run({ _id }) {
+    CollectionHooks.defaultUserId = this.userId;
     const doc = checkExists(Comments, _id);
     const topic = checkExists(Topics, doc.topicId);
-    checkPermissions(this.userId, 'comments.remove', topic.communityId, doc);
+    checkPermissions(this.userId, `${doc.getType()}.remove`, topic.communityId, doc);
 
     Comments.remove(_id);
+    CollectionHooks.defaultUserId = undefined;
   },
 });
 
-Comments.methods = {
-  insert, update, move, remove,
-};
+Comments.methods = Comments.methods || {};
+_.extend(Comments.methods, { insert, update, move, remove });
 
 //--------------------------------------------------------
 

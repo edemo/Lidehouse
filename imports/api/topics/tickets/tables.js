@@ -1,16 +1,25 @@
+import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
+import { displayLocalizer, displayTicketType, displayStatus } from '/imports/ui_3/helpers/api-display.js';
 
-export function ticketColumns() {
+export function ticketColumns(permissions) {
+  const communityId = Session.get('activeCommunityId');
+  const buttonRenderers = [];
+  if (permissions.view) buttonRenderers.push(Render.buttonView);
+  if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
+  if (permissions.statusChange) buttonRenderers.push(Render.buttonStatusChange);
+  if (permissions.statusUpdate) buttonRenderers.push(Render.buttonStatusUpdate);
+  if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
+
   return [
+    { data: 'serialId()', title: __('schemaTickets.id.label') },
+    { data: 'status', title: __('schemaTopics.status.label'), render: displayStatus },
     { data: 'title', title: __('schemaTickets.title.label') },
-    { data: 'text', title: __('schemaTickets.text.label') },
-    { data: 'ticket.category', title: __('schemaTickets.ticket.category.label'), render: Render.translateWithScope('schemaTickets.ticket.category') },
-    { data: 'createdBy()', title: __('reportedBy') },
+    { data: 'ticket.localizer', title: __('schemaTickets.ticket.localizer.label'), render: l => displayLocalizer(l, communityId) },
+    { data: 'creator()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
-    { data: 'ticket.urgency', title: __('schemaTickets.ticket.urgency.label'), render: Render.translateWithScope('schemaTickets.ticket.urgency') },
-    { data: 'ticket.status', title: __('schemaTickets.ticket.status.label'), render: Render.translateWithScope('schemaTickets.ticket.status') },
-    { data: '_id', render: Render.buttonEdit },
-    { data: '_id', render: Render.buttonDelete },
+    { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: displayTicketType },
+    { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
   ];
 }

@@ -118,9 +118,13 @@
 
 // A light border demarks boxes better
 
-.ibox, .social-feed-box {
+#board > .social-feed-box {
     border: solid 1px lighten(gray, 35%);
 //    border-radius: 5px;
+}
+
+.social-action {
+  margin: 0px 0px 0px 15px;
 }
 
 .page-heading {
@@ -134,13 +138,14 @@
 }
 
 .ibox-title {
-    h1, h2, h3, h4 {
+    h1, h2, h3, h4 , h5 {
         display: inline-block;
         vertical-align: middle;
         margin: 0 0 7px;
         padding: 0;
         text-overflow: ellipsis;
         float: left;
+        pointer-events: none;
     }
 }
 
@@ -201,33 +206,7 @@
   width: 210px;
 }
 
-@media (max-width: 768px) {
-    .wrapper-content {
-        padding: 20px 10px 75px;
-    }
-    .vote-icon {
-        display: none;
-    }
+.js-sort {
+    cursor: pointer;
+    user-select: none;
 }
-
-@media (max-width: 350px) {
-    .project-list table tr td {
-        padding: 8px;
-    }
-}
-
-@media (max-width: 425px) {
-    .m-t-n-xs {
-        margin: 5px;
-    }
-}
-
-@media (max-height: 300px) {
-    .footer {
-        display: none;
-    }
-    .wrapper-content {
-        padding: 20px 10px 0px;
-    }
-}
-

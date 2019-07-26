@@ -1,12 +1,14 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
+import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
+import { extractFieldsFromRef } from '/imports/comtypes/house/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Parcels } from './parcels.js';
 import { Memberships } from '../memberships/memberships.js';
-import { checkNotExists } from '../method-checks';
+import { crudBatchOps } from '../batch-method.js';
 
 function checkCommunityParcelsSanity(communityId) {
   const community = Communities.findOne(communityId);
@@ -22,7 +24,12 @@ export const insert = new ValidatedMethod({
   validate: Parcels.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    if (doc.ref) checkNotExists(Parcels, { communityId: doc.communityId, ref: doc.ref });
+    const community = Communities.findOne(doc.communityId);
+    if (doc.ref) {
+      checkNotExists(Parcels, { communityId: doc.communityId, ref: doc.ref });
+      const format = community.parcelRefFormat;
+      if (format) doc = extractFieldsFromRef(format, doc);
+    }
     if (!doc.approved) {
       // Nothing to check. Things will be checked when it gets approved by community admin/manager.
     } else {
@@ -87,6 +94,6 @@ export const remove = new ValidatedMethod({
   },
 });
 
-Parcels.methods = {
-  insert, update, remove,
-};
+Parcels.methods = Parcels.methods || {};
+_.extend(Parcels.methods, { insert, update, remove });
+_.extend(Parcels.methods, crudBatchOps(Parcels));

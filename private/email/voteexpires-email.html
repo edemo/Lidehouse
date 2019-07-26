@@ -1,0 +1,19 @@
+<div>
+    <p>{{_ 'email.VoteClosesTitle'}}</p>
+    {{#each voting in topics}}
+    <table class="table table-hover">
+        <tbody>    
+            <tr class='topic-row'>
+                <td class="project-title">
+                    <h3 class = "topicTitle">{{voting.title}}</h3>
+                        <p>{{curb voting.text 1000}}</p>
+                        <p> {{_ 'closes'}}: <strong>{{displayTime voting.closesAt}}</strong></p>
+                    <div class='btn-container'>
+                          <a href="{{topicUrlFor vote}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    {{/each}}
+</div>

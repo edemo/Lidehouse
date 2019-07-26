@@ -1,11 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
-import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
-
 import './users.js';
 
 export const update = new ValidatedMethod({
@@ -18,8 +18,8 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Meteor.users, _id);
     if (_id !== this.userId) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: users.update, userId: ${this.userId}, _id: ${_id}`);
+      throw new Meteor.Error('err_permissionDenied', 
+        `No permission to perform this activity: users.update, userId: ${this.userId}, _id: ${_id}`);
     }
     checkModifier(doc, modifier, ['emails', 'status', 'services', 'heartbeat'], true);
     const newUsername = modifier.$set.username;
@@ -38,8 +38,8 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     if (_id !== this.userId) {
-      throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-        `Method: user.remove, userId: ${this.userId}, _id: ${_id}`);
+      throw new Meteor.Error('err_permissionDenied',
+        `No permission to perform this activity: user.remove, userId: ${this.userId}, _id: ${_id}`);
     }
     // We are not removing the user document, because many references to it would be dangling
     // Just blanking out the personal user data
@@ -87,14 +87,18 @@ if (Meteor.isClient) {
       const topic = Topics.findOne(topicId);
       const oldLastSeenInfo = this.lastSeens[seenType][topic._id];
       const comments = topic.comments().fetch(); // returns newest-first order
-      if (!comments[0] && topic.userId === this._id) { return; }
-      if (comments[0] && comments[0].userId === this._id) { return; }  
+      if (!comments[0] && topic.creatorId === this._id) { return; }
+      if (comments[0] && comments[0].creatorId === this._id) { return; }  
       const lastseenTimestamp = comments[0] ? comments[0].createdAt : topic.createdAt;
       const newLastSeenInfo = { timestamp: lastseenTimestamp };
-      if (oldLastSeenInfo && oldLastSeenInfo.timestamp.getTime() === newLastSeenInfo.timestamp.getTime()) {
+      if (oldLastSeenInfo && oldLastSeenInfo.timestamp.getTime() >= newLastSeenInfo.timestamp.getTime()) {
         return; // this avoids infinite loop and unnecessary server bothering
       }
       updateMyLastSeen.call({ topicId, lastSeenInfo: newLastSeenInfo }, handleError);
     },
   });
 }
+
+Meteor.users.methods = Meteor.users.methods || {};
+_.extend(Meteor.users.methods, { update, remove, updateMyLastSeen });
+

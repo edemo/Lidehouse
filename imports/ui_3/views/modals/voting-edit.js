@@ -13,8 +13,8 @@ import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
-import { votingsExtensionSchema } from '/imports/api/topics/votings/votings.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import '/imports/ui_3/views/components/shareddoc-display.js';
 import './voting-edit.html';
@@ -44,10 +44,8 @@ Template.Voting_edit.onCreated(function () {
   votingEditInstance = instance;
   this.autorun(() => {
     const currentVoteType = AutoForm.getFieldValue('vote.type', `af.vote.${Template.Voting_edit.actionFromId()}`);
-    const newChoices = Topics.voteTypeChoices[currentVoteType] || [];
-    if (newChoices.length) {
-      instance.choices.set(newChoices);
-    }
+    const newChoices = currentVoteType && Votings.voteTypes[currentVoteType].fixedChoices;
+    if (newChoices) instance.choices.set(newChoices);
   });
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
@@ -87,10 +85,6 @@ Template.Voting_edit.helpers({
     const communityId = Session.get('activeCommunityId');
     const agendas = Agendas.find({ communityId });
     return agendas.map(function option(a) { return { label: a.title, value: a._id }; });
-  },
-  needsChoicesSpecified() {
-    const currentVoteType = AutoForm.getFieldValue('vote.type');
-    return !!(Topics.voteTypeChoices[currentVoteType]);
   },
   choices() {
     const instance = Template.instance();
@@ -146,10 +140,10 @@ AutoForm.addHooks('af.vote.insert', {
     Tracker.nonreactive(() => {   // AutoForm will run the formToDoc each time any field on the form, like the vote.type is simply queried (maybe so that if its a calculated field, it gets calculated)
       doc.createdAt = Clock.currentTime();
       doc.communityId = Session.get('activeCommunityId');
-      doc.userId = Meteor.userId();
       doc.category = 'vote';
+      doc.status = 'opened';
       doc.vote.choices = votingEditInstance.choices.get();
-      doc.vote.closesAt = moment(doc.vote.closesAt).add(23, 'hours').add(59, 'minutes').add(59, 'seconds').toDate();
+      doc.closesAt = new Date(doc.closesAt.getFullYear(), doc.closesAt.getMonth(), doc.closesAt.getDate(), 23, 59, 59);
     });
     return doc;
   },
@@ -167,7 +161,7 @@ AutoForm.addHooks('af.vote.update', {
   },
   formToModifier(modifier) {
     delete modifier.$set.createdAt;
-    delete modifier.$set['vote.closesAt'];
+    delete modifier.$set.closesAt;
     modifier.$set['vote.choices'] = votingEditInstance.choices.get();
     return modifier;
   },

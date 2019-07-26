@@ -1,9 +1,29 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaGeneral": {
+    "creatorId": {
+      "label": "Létrehozta"
+    },
+    "createdAt": {
+      "label": "Létrehozva"
+    },
+    "updatedAt": {
+      "label": "Utolsó aktivitás"
+    },
+    "updatorId": {
+      "label": "Módosította"
+    }
+  },
   "schemaUsers": {
+    "email": {
+      "label": "Regisztrált e-mail cím",
+      "placeholder": "(pl. margitka21@ingyenmail.com)",
+      "help": "Ezzel az e-mail címmel tud belépni a rendszerbe, és erre az email címre mennek az értesítők."
+    },
     "username": {
       "label": "Felhasználónév",
-      "placeholder": "(pl. Miki75)"
+      "placeholder": "(pl. Miki75)",
+      "help": "A felhasználónév csak egy becenév. A belépéshez a regiszrált e-mail címet kell használni."
     },
     "emails": {
       "$": {
@@ -21,7 +41,8 @@
       "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "profile": {
-      "label": "Profil  (Az itt megadott adatokat a ház lakói és tisztségviselői láthatják.)",
+      "label": "Profil [Az itt megadott adatokat a közösség többi tagjai is látják]",
+      "help": "Az itt megadott adatokat a közösség többi tagjai is látják.",
 
       "firstName": {
         "label": "Keresztnév",
@@ -33,7 +54,8 @@
       },
       "publicEmail": {
         "label": "Publikus email cím",
-        "placeholder": "(pl. Miki75@leveledjott.hu)"
+        "placeholder": "(pl. Miki75@leveledjott.hu)",
+        "help": "Ezt az e-mail címet fogja látni a közösség többi tagja. Ez különbözhet a regisztrált e-mail címtől, de lehet ugyanaz is. Ha itt nem ad meg címet, akkor a többiek nem látnak ön mellett e-mail címet, de az alkalmazáson belül azért tudnak önnek üzenetet küldeni."
       },
       "address": {
         "label": "Kapcsolati cím",
@@ -185,6 +207,22 @@
       "label": "Napirendi pontok"
     }
   },
+  "schemaContracts": {
+    "title": {
+      "label": "Név",
+      "placeholder": "(pl. Lift karbantartási szerződés)"
+    },
+    "text": {
+      "label": "Leírás",
+      "placeholder": "(pl. 2012 CXXL. kormányrendelet alapján kötelező)"
+    },
+    "partner": {
+      "label": "Szolgáltató partner"
+    },
+    "topicIds": {
+      "label": "Munkalapok"
+    }
+  },
   "schemaTopics": {
     "title": {
       "label": "Cím",
@@ -194,15 +232,32 @@
       "label": "Részletek",
       "placeholder": "Bővebb kifejtés (amennyiben szükséges)..."
     },
-    "agendaId": {
-      "label": "Közgyűlés (aminek része)"
-    },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
       "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
     },
     "sticky" : {
       "label": "Rögzített"
+    },
+    "status": {
+      "label": "Státusz",
+      "opened": "Nyitott",
+      "scheduled": "Ütemezve",
+      "reported": "Bejelentve",
+      "confirmed": "Betervezve",
+      "toApprove": "Jóváhagyásra",
+      "toVote": "Megszavazásra",
+      "progressing": "Folyamatban",
+      "suspended": "Felfüggesztve",
+      "finished": "Elvégezve",
+      "closed": "Lezárt",
+      "deleted": "Törölt"
+    },
+    "closed": {
+      "label": "Lezárt"
+    },
+    "closesAt": {
+      "label": "Lezárulás ideje"
     }
   },
   "schemaVotings": {
@@ -214,16 +269,19 @@
       "label": "Részletek",
       "placeholder": "A szavazás kérdésének bővebb kifejtése ..."
     },
+    "agendaId": {
+      "label": "Közgyűlés (aminek része)"
+    },
     "createdAt": {
       "label": "Szavazás kezdete"
+    },
+    "closesAt": {
+      "label": "Szavazás lezárulása"
     },
     "vote": {
       "choices": {
         "label": "Választási lehetőségek",
         "help": "A szavazás típusa (például igen-nem szavazás esetén) meghatározhatja a választási lehetőségeket. Ha nem, akkor ön adhatja hozzá a lehetséges válaszokat. Előszőr tehát mindenképpen válassza meg a típust."
-      },
-      "closesAt": {
-        "label": "Szavazás lezárása"
       },
       "procedure": {
         "label": "Szavazás menete",
@@ -252,26 +310,31 @@
     }
   },
   "schemaTickets": {
+    "id": {
+      "label": "Azonosító"
+    },
     "title": {
-      "label": "Hiba lényege",
+      "label": "Rövid leírás",
       "placeholder": "(pl. Elromlott a lift)"
     },
     "text": {
-      "label": "Hiba leírása",
-      "placeholder": "(pl. Megakadt a harmadik és negyedik között...)"
+      "label": "Megjegyzések"
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",
       "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)",
       "help": "Megadhat egy linket már meglévő képhez bárhol az interneten. Vagy feltölthet egy kép fájlt, ami nem nagyobb mint 1024x768 felbontású. Ha ennél nagyobb képet tölt fel, automatikusan letömörítjük, de ez egy kis időt vehet igénybe."
     },
+    "status": {
+      "label": "Státusz"
+    },
     "ticket": {
-      "label": "Hibajegy",
-        "category": {
-        "label": "Kategória",
-        "building": "épület",
-        "garden": "kert",
-        "service": "közmű"
+      "label": "Hibajegy adatok",
+      "type": {
+        "label": "Típus",
+        "issue": "Hiba",
+        "upgrade": "Felújítás",
+        "maintenance": "Karbantartás"
       },
       "urgency": {
         "label": "Sürgősség",
@@ -279,24 +342,55 @@
         "normal": "közepes",
         "low": "alacsony"
       },
-      "status": {
-        "label": "Státusz",
-        "reported": "megerősítés alatt",
-        "confirmed": "megerősítve",
-        "progressing": "folyamatban",
-        "finished": "megoldva",
-        "checked": "ellenőrizve",
-        "closed": "lezárva"
+      "localizer": {
+        "label": "Hiba helye"
+      },
+      "partner": {
+        "label": "Szolgáltató partner"
+      },
+      "chargeType": {
+        "label": "Költség vonzat",
+        "oneoff": "Egyedi megrendelés",
+        "lumpsum": "Átalánydíjas",
+        "warranty": "Garanciális",
+        "insurance": "Biztosító fizeti"
+      },
+      "contractId" : {
+        "label": "Szerződés"
+      },
+      "txId": {
+        "label": "Pénzügyi tranzakció"
+      },
+      "expectedCost": { 
+        "label": "Várható költség"
+      },
+      "expectedStart": { 
+        "label": "Várható kezdés"
+      },
+      "expectedFinish": { 
+        "label": "Várható befejezés"
+      },
+      "expectedContinue": { 
+        "label": "Várható folytatás"
+      },
+      "waitingFor": {
+        "label": "Mire várakozik"
+      },
+      "actualCost": { 
+        "label": "Tényleges költség"
+      },
+      "actualStart": { 
+        "label": "Tényleges kezdés"
+      },
+      "actualFinish": { 
+        "label": "Tényleges befejezés"
+      },
+      "actualContinue": { 
+        "label": "Tényleges folytatás"
       }
-    }
-  },
-  "schemaTicketStatusChange": {
-    "text": {
-      "label": "Hozzáfűzött szöveg",
-      "placeholder": "(pl. A törött alkatrész cseréje megtörtént)"
     },
-    "status": {
-      "label": "Új státusz"
+    "moreDates": {
+      "label": "További kezdés dátumok (ha több jegyet visz fel egyszerre)"
     }
   },
   "schemaFeedback": {

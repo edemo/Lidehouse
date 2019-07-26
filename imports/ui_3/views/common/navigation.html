@@ -39,7 +39,7 @@
                     </a>
                 </li-->
                 <li class="{{isActivePath regex='forum'}}">
-                    <a href="{{pathFor 'Topics.forum'}}">
+                    <a href="{{pathFor 'Forum'}}">
                         <i class="fa fa-commenting" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Forum'}}</span>
                     </a>
@@ -56,7 +56,7 @@
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='votings|agendas|delegations' className='submenu-open'}}">
                         <li class="{{isActivePath regex='votings'}}">
-                            <a href="{{pathFor 'Topics.vote'}}">
+                            <a href="{{pathFor 'Votings'}}">
                                 <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Votings'}}</span>
                                 {{#if Template.subscriptionsReady}}
@@ -79,9 +79,9 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li><!--
                 <li class="{{isActivePath regex='tickets'}}">
-                    <a href="{{pathFor 'Tickets.report'}}">
+                    <a href="{{pathFor 'Tickets'}}">
                         <i class="glyphicon glyphicon-wrench" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Tickets'}}</span>
                         {{#if Template.subscriptionsReady}}
@@ -92,6 +92,42 @@
                         {{/if}}
                         {{/if}}
                     </a>
+                </li>-->
+                <li class="{{isActivePath regex='tickets|worksheets|contracts'}}">
+                    <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
+                        <span class="nav-label">{{_ 'Maintenance'}}</span>
+                        <!--span class="fa arrow"> </span-->
+                        {{#if Template.subscriptionsReady}}
+                        {{#if countNotifications 'ticket'}}
+                        <span class="badge badge-danger pull-right">{{countNotifications 'ticket'}}</span>
+                        {{/if}}
+                        {{/if}}
+                    </a>
+                    <ul class="nav nav-second-level {{isActivePath regex='tickets|worksheets|contracts' className='submenu-open'}}">
+                        <li class="{{isActivePath regex='tickets'}}">
+                            <a href="{{pathFor 'Tickets'}}">
+                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Tickets report'}}</span>
+                                {{#if Template.subscriptionsReady}}
+                                {{#if countNotifications 'ticket'}}
+                                <span class="badge badge-danger pull-right">{{countNotifications 'ticket'}}</span>
+                                {{/if}}
+                                {{/if}}
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='worksheets'}}">
+                            <a href="{{pathFor 'Worksheets'}}">
+                                <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Worksheets'}}</span>
+                            </a>
+                        </li>
+                        <li class="{{isActivePath regex='contracts'}}">
+                            <a href="{{pathFor 'Contracts'}}">
+                                <i class="fa fa-handshake-o" aria-hidden="true"></i>
+                                <span class="nav-label">{{_ 'Contracts'}}</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="{{isActivePath regex='finances'}}">
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-piggy-bank"></i>
@@ -100,20 +136,20 @@
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='finances|accounting' className='submenu-open'}}">
                         <li class="{{isActivePath regex='parcel-finances'}}">
-                            <a href="{{pathFor 'Parcels.finances'}}">
+                            <a href="{{pathFor 'Parcel finances'}}">
                                 <i class="fa fa-pie-chart" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Parcel finances'}}</span>
                             </a>
                         </li>
                         <li class="{{isActivePath regex='community-finances'}}">
-                            <a href="{{pathFor 'Community.finances'}}">
+                            <a href="{{pathFor 'Community finances'}}">
                                 <i class="fa fa-bar-chart" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Community finances'}}</span>
                             </a>
                         </li>
                         {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
                         <li class="{{isActivePath regex='accounting'}}">
-                            <a href="{{pathFor 'Accounting.page'}}">
+                            <a href="{{pathFor 'Accounting'}}">
                                 <i class="fa fa-calculator" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Accounting'}}</span>
                             </a>
@@ -122,7 +158,7 @@
                     </ul>
                 </li>
                 <li class="{{isActivePath regex='community/'}} {{isActivePath path='/community'}}">
-                    <a href="{{pathFor 'Community.page' _cid=(fromSession 'activeCommunityId')}}">
+                    <a href="{{pathFor 'Community page' _cid=(fromSession 'activeCommunityId')}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
                         {{#if Template.subscriptionsReady}}
@@ -135,7 +171,7 @@
                     </a>
                 </li>
                 <li class="{{isActivePath regex='documents'}}">
-                    <a href="{{pathFor 'DocumentStore'}}">
+                    <a href="{{pathFor 'Documentstore'}}">
                         <i class="glyphicon glyphicon-paperclip" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Documentstore'}}</span>
                     </a>
@@ -152,7 +188,7 @@
             <!-- link to home page -->
             <ul style="position: absolute; bottom: 0; left: 10px; width: 90%; background-color: white; border-radius: 5px;">
                 <div class="logo-container">
-                    <a href="{{pathFor 'App.intro'}}" id="logo" class="minimalize-styl-2">
+                    <a href="{{pathFor 'App intro'}}" id="logo" class="minimalize-styl-2">
                         <img src="/images/logo-duo-text.png" width="100" alt="Logo">
                     </a>
                 </div>

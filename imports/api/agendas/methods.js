@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
@@ -45,9 +46,11 @@ export const remove = new ValidatedMethod({
     checkPermissions(this.userId, 'agendas.remove', doc.communityId);
     const votings = Topics.find({ agendaId: _id });
     if (votings.count() > 0) {
-      throw new Meteor.Error('err_unableToRemove', 'Agenda cannot be deleted while it contains topics',
-       `Found: {${votings.count()}}`);
+      throw new Meteor.Error('err_unableToRemove', 'Agenda cannot be deleted while it contains topics', `Found: {${votings.count()}}`);
     }
     Agendas.remove(_id);
   },
 });
+
+Agendas.methods = Agendas.methods || {};
+_.extend(Agendas.methods, { insert, update, remove });

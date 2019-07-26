@@ -1,10 +1,13 @@
 
+import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { checkExists, checkNotExists, checkPermissions, checkConstraint } from '/imports/api/method-checks.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
+import { Balances } from './balances.js';
 
 export const insert = new ValidatedMethod({
   name: 'balances.insert',
@@ -24,6 +27,22 @@ export const insert = new ValidatedMethod({
       { upsert: true }
     );
     return result;
+  },
+});
+
+export const update = new ValidatedMethod({
+  name: 'balances.update',
+  validate: null,
+  run(doc) {
+    throw new Meteor.Error('err_notImplemented');
+  },
+});
+
+export const remove = new ValidatedMethod({
+  name: 'balances.remove',
+  validate: null,
+  run(doc) {
+    throw new Meteor.Error('err_notImplemented');
   },
 });
 
@@ -61,7 +80,6 @@ export const publish = new ValidatedMethod({
   },
 });
 
-
-Balances.methods = {
-  insert, publish,
-};
+Balances.methods = Balances.methods || {};
+_.extend(Balances.methods, { insert, update, remove, publish });
+_.extend(Balances.methods, crudBatchOps(Balances));

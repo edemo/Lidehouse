@@ -1,11 +1,9 @@
 <template name="Revision_history">
-
-     {{#each version in (sortedRevisions doc)}}
-        
+      {{#each version in (sortedRevisions doc)}}  
         {{#if (equals version.field 'closed')}}
         <div class="feed-element">
             <!--a href="" class="pull-left">
-                <img alt="image" class="img-circle" src="{{doc.createdBy.avatar}}">
+                <img alt="image" class="img-circle" src="{{doc.creator.avatar}}">
             </a-->
             <div class="media-body ">
                 <small class="pull-right" title="{{displayTime version.time}}">{{displayTimeFrom version.time}}</small>
@@ -17,7 +15,7 @@
         <div class="feed-activity-list">
             <div class="feed-element">
                 <!--a href="" class="pull-left">
-                    <img alt="image" class="img-circle" src="{{doc.createdBy.avatar}}">
+                    <img alt="image" class="img-circle" src="{{doc.creator.avatar}}">
                 </a-->
                 <div class="media-body ">
                     <small class="pull-right" title="{{displayTime version.time}}">{{displayTimeFrom version.time}}</small>
@@ -29,6 +27,7 @@
             </div>
         </div> 
         {{/if}}
-     {{/each}}
-    
+      {{else}}
+        <h5 class="text-center">{{_ 'No amendments were made to this document'}}</h5>
+      {{/each}}
 </template>

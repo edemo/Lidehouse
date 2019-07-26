@@ -3,7 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
@@ -26,6 +27,8 @@ Balances.schema = new SimpleSchema([Balances.defSchema, {
   credit: { type: Number, defaultValue: 0 }, // credit total
 }]);
 
+Balances.idSet = ['communityId', 'account', 'localizer', 'tag'];
+
 Balances.helpers({
   total() {
     return this.debit - this.credit;
@@ -37,7 +40,7 @@ Meteor.startup(function indexBalances() {
 });
 
 Balances.attachSchema(Balances.schema);
-Balances.attachSchema(Timestamps);
+Balances.attachBehaviour(Timestamped);
 
 Balances.getTotal = function getTotal(def) {
   Balances.defSchema.validate(def);

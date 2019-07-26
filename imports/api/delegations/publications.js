@@ -11,8 +11,7 @@ Meteor.publish('delegations.inCommunity', function delegationsOfCommunity(params
   }).validate(params);
   const { communityId } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('delegations.inCommunity')) return this.ready();
-
+  if (!user.hasPermission('delegations.inCommunity', communityId)) return this.ready();
   return Delegations.find({ communityId });
 });
 

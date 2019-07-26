@@ -114,19 +114,19 @@ if (Meteor.isClient) {
       FlowRouter.go(signinRedirectRoute.path, signinRedirectRoute.params);
       Meteor.setTimeout(signinRedirectAction, 500);
       signinRedirectRoute = null;
-    } else FlowRouter.go('App.home');
+    } else FlowRouter.go('App home');
   };
 
   verifyRedirect = function () {
     Memberships.methods.accept.call();
-    FlowRouter.go('App.home');
+    FlowRouter.go('App home');
     showWelcomeModal();
   };
 
   enrollRedirect = function () {
     Memberships.methods.accept.call();
     setCurrentUserLanguage();
-    FlowRouter.go('App.home');
+    FlowRouter.go('App home');
     showWelcomeModal();
   };
 

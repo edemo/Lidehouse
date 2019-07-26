@@ -1,3 +1,4 @@
+import { __ } from '/imports/localization/i18n.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -24,7 +25,7 @@ export const Localizer = {
     return leaf.code && leaf.code.substr(0, 1) === '@';
   },
   _addParcel(parcelBreakdown, parcel, lang) {
-    const __ = function translate(text) {
+    const ___ = function translate(text) {
 //      console.log('lang', lang);
 //      console.log('text', text);
 //      console.log('trans', TAPi18n.__(text, {}, lang));
@@ -32,17 +33,17 @@ export const Localizer = {
     };
     let buildingNode = parcelBreakdown.children.find(c => c.digit === parcel.building);
     if (!buildingNode) {
-      buildingNode = { digit: parcel.building, name: `${__('buiding')} ${parcel.building}`, children: [] };
+      buildingNode = { digit: parcel.building, name: `${___('buiding')} ${parcel.building}`, label: ___('buiding'), children: [] };
       parcelBreakdown.children.push(buildingNode);
     }
     let floorNode = buildingNode.children.find(c => c.digit === parcel.floor);
     if (!floorNode) {
-      floorNode = { digit: parcel.floor, name: `${__('floor')} ${parcel.floor}`, children: [] };
+      floorNode = { digit: parcel.floor, name: `${___('floor')} ${parcel.floor}`, label: ___('floor'), children: [] };
       buildingNode.children.push(floorNode);
     }
     let doorNode = floorNode.children.find(c => c.digit === parcel.door);
     if (!doorNode) {
-      doorNode = { digit: parcel.door, name: parcel.ref };
+      doorNode = { digit: parcel.door, name: parcel.ref, label: ___('parcel') };
       floorNode.children.push(doorNode);
     }
   },
@@ -53,7 +54,7 @@ export const Localizer = {
     delete parcelBreakdown._id;
     delete parcelBreakdown.createdAt;
     delete parcelBreakdown.updatedAt;
-    Breakdowns.define(parcelBreakdown);
+    Breakdowns.update(id, { $set: parcelBreakdown });
   },
   generateParcels(communityId, lang) {
     const parcelBreakdown = { communityId, name: 'Parcels', digit: '@', children: [] };
@@ -62,4 +63,11 @@ export const Localizer = {
     });
     Breakdowns.define(parcelBreakdown);
   },
+};
+
+export const chooseLocalizerNode = {
+  options() {
+    return Localizer.get().nodeOptions();
+  },
+  firstOption: () => __('(Select one)'),
 };

@@ -8,8 +8,8 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { displayAddress } from '/imports/localization/localization.js';
-import { Timestamps } from '/imports/api/timestamps.js';
-
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
@@ -81,6 +81,14 @@ Communities.helpers({
     const users = Memberships.find({ communityId: this._id, active: true, 'person.userId': { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);
   },
+  voterships() {
+    return Memberships.find({ communityId: this._id, active: true, approved: true, role: 'owner', personId: { $exists: true } })
+      .fetch().filter(ownership => !ownership.isRepresentedBySomeoneElse());
+  },
+  voters() {
+    const voters = this.voterships().map(v => v.user());
+    return _.uniq(voters, false, u => u._id);
+  },
   // --- writers ---
   remove() {
     const communityId = this._id;
@@ -100,13 +108,20 @@ Communities.helpers({
 });
 
 Communities.attachSchema(Communities.schema);
-Communities.attachSchema(Timestamps);
+Communities.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Communities.simpleSchema().i18n('schemaCommunities');
 });
 
 Factory.define('community', Communities, {
-  name: () => faker.lorem.sentence(),
-  totalunits: 10000,
+  name: () => faker.random.word() + 'house',
+  description: () => faker.lorem.sentence(),
+  zip: () => faker.random.number({ min: 1000, max: 2000 }),
+  city: () => faker.address.city(),
+  street: () => faker.address.streetName(),
+  number: () => faker.random.number(),
+  lot: '123456/1234',
+  avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
+  totalunits: 1000,
 });

@@ -1,42 +1,30 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { Factory } from 'meteor/dburles:factory';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { __ } from '/imports/localization/i18n.js';
+import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
-import { Timestamps } from '/imports/api/timestamps.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-index';
+import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Likeable } from '/imports/api/behaviours/likeable.js';
+import { Flagable } from '/imports/api/behaviours/flagable.js';
+
 import { Topics } from '/imports/api/topics/topics.js';
-import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
-import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
-class CommentsCollection extends Mongo.Collection {
-  insert(doc, callback) {
-    const result = super.insert(doc, callback);
-    Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
-    return result;
-  }
-  update(selector, modifier, options, callback) {
-    const result = super.update(selector, modifier, options, callback);
-    return result;
-  }
-  remove(selector, callback) {
-    const selection = this.find(selector);
-    selection.forEach(comment => Topics.update(comment.topicId, { $inc: { commentCounter: -1 } }));
-    const result = super.remove(selector, callback);
-    return result;
-  }
-}
+export const Comments = new Mongo.Collection('comments');
 
-export const Comments = new CommentsCollection('comments');
+Comments.typeValues = ['statusChangeTo', 'pointAt'];
 
-Comments.schema = new SimpleSchema({
+Comments.schema = {
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
+  type: { type: String, optional: true, allowedValues: Comments.typeValues, autoform: { omit: true } },
+  status: { type: String, optional: true, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
+  data: { type: Object, blackbox: true, optional: true },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id,
     autoValue() {
@@ -48,7 +36,7 @@ Comments.schema = new SimpleSchema({
       return undefined; // means leave whats there alone for Updates, Upserts
     },
   },
-});
+};
 
 Meteor.startup(function indexComments() {
   if (Meteor.isClient && MinimongoIndexing) {
@@ -59,34 +47,36 @@ Meteor.startup(function indexComments() {
 });
 
 Comments.attachSchema(Comments.schema);
-Comments.attachSchema(likesSchema);
-Comments.attachSchema(flagsSchema);
-Comments.attachSchema(Timestamps);
+Comments.attachBehaviour(Timestamped);
+Comments.attachBehaviour(Likeable);
+Comments.attachBehaviour(Flagable);
 
 Comments.helpers({
-  user() {
-    return Meteor.users.findOne(this.userId);
-  },
-  createdBy() {
-    return Meteor.users.findOne(this.userId);
-  },
   topic() {
     return Topics.findOne(this.topicId);
   },
   community() {
     return this.topic().community();
   },
-  editableBy(userId) {
-    return this.userId === userId;
+  hiddenBy(userId, communityId) {
+    const author = this.creator();
+    return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
   },
-  isHiddenBy(userId) {
-    const author = this.createdBy();
-    return this.isFlaggedBy(userId) || (author && author.isFlaggedBy(userId));
+  getType() {
+    return this.type || 'comment';
   },
 });
 
-Comments.helpers(likesHelpers);
-Comments.helpers(flagsHelpers);
+// --- Before/after actions ---
+if (Meteor.isServer) {
+  Comments.after.insert(function (userId, doc) {
+    Topics.update(doc.topicId, { $inc: { commentCounter: 1 } });
+  });
+
+  Comments.after.remove(function (userId, doc) {
+    Topics.update(doc.topicId, { $inc: { commentCounter: -1 } });
+  });
+}
 
 Comments.moveSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { type: 'hidden' } },
@@ -107,11 +97,6 @@ Meteor.startup(function attach() {
   Comments.moveSchema.i18n('schemaComments');
 });
 
-// TODO This factory has a name - do we have a code style for this?
-//   - usually I've used the singular, sometimes you have more than one though, like
-//   'comment', 'emptyComment', 'readedComment'
 Factory.define('comment', Comments, {
-  topicId: () => Factory.get('topic'),
   text: () => faker.lorem.sentence(),
-  createdAt: () => new Date(),
 });

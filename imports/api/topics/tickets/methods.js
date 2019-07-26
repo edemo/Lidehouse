@@ -2,24 +2,33 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { TicketStatusChangeSchema } from './tickets.js';
 
-export const ticketStatusChange = new ValidatedMethod({
+/*export const ticketStatusChange = new ValidatedMethod({
   name: 'ticket.statusChange',
-  validate: TicketStatusChangeSchema.validator({ clean: true }),
+  validate(doc) { statusChangeEventSchema(doc.status, doc.topicId); },
 
-  run({ topicId, status, text }) {
-    const topic = checkExists(Topics, topicId);
-    checkTopicPermissions(this.userId, 'statusChange', topic);
-    const result = Topics.update(topicId, { $set: { 'ticket.status': status } });
+  run(event) {
+    const topic = checkExists(Topics, event.topicId);
+    checkPermissions(this.userId, `${event.type}.${event.status}.insert`, topic.communityId);
+    const topicModifier = {};
+    if (topic.category === 'ticket') {
+      Object.keys(event.ticket).forEach(key => topicModifier[`ticket.${key}`] = event.ticket[key]);
+      event.data = event.ticket; delete event.ticket;
+    }
+    topicModifier.status = event.status;
+    const result = Topics.update(event.topicId, { $set: topicModifier });
 
-    if (!text) return result; // Or maybe set a text: `Status changed to ${status}` ?
-    Comments.methods.insert._execute({ userId: this.userId },
-      { topicId, userId: this.userId, text }
-    );
+    event.type = event.type;
+
+    //VoteStatuses[event.status].postProcess(event.topicId);
+
+    //Comments.methods.insert._execute({ userId: this.userId }, event);
+    Comments.insert(event);
     return result;
   },
-});
+});*/
+

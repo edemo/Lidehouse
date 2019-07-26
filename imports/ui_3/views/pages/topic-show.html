@@ -1,207 +1,119 @@
 <template name="Topic_show">
     {{#if Template.subscriptionsReady}}
         {{#if topic}}
+            {{#if (equals topic.category 'news')}}
+            {{> app_rootRedirector}}
+            {{else}}
             {{#with topic}}
             <!-- Page heading -->
             {{> Page_heading title=pageTitle smallTitle=smallTitle crumbs=pageCrumbs }}
-
-            {{#if (equals topic.category 'vote')}}
-            {{> Vote_topic_show}}
-            {{/if}}
-
-            {{#if (equals topic.category 'forum')}}
-            {{> Forum_topic_show}}
-            {{/if}}
-
-            {{#if (equals topic.category 'ticket')}}
-            {{> Ticket_topic_show}}
-            {{/if}}
-
-            {{#if (equals topic.category 'news')}}
-            {{> app_rootRedirector}}
-            {{/if}}
-
+            <div class="wrapper wrapper-content animated fadeInUp">
+                <div class="row">
+                <div class="col-md-9">
+                  <div class="ibox-content">
+                    {{> Topic_box topic=topic}}
+                      <div class="panel blank-panel">
+                          <div class="panel-heading">
+                              <div class="panel-options">
+                                  <ul class="nav nav-tabs">
+                                      <li class="active"><a href="#tab-1" data-toggle="tab" class="cap-first">{{_ 'comments'}}</a></li>
+                                      <li class=""><a href="#tab-2" data-toggle="tab">{{_ 'Amendments'}}</a></li>
+                                      {{#if (equals topic.category 'vote')}}
+                                      <li class=""><a href="#tab-3" data-toggle="tab">{{_ 'Casted votes'}}</a></li>
+                                      {{/if}}
+                                  </ul>
+                              </div>
+                          </div>
+                          <div class="panel-body">
+                              <div class="tab-content">
+                                  <div class="tab-pane active" id="tab-1">
+                                      {{> Comments_section}}
+                                  </div>
+                                  <div class="tab-pane" id="tab-2">
+                                      {{> Revision_history doc=this schemaName='schemaTopics'}}
+                                  </div>
+                                  {{#if (equals topic.category 'vote')}}
+                                  <div class="tab-pane" id="tab-3">
+                                      {{#if or closed (currentUser.hasPermission 'vote.peek' communityId)}}
+                                          {{> Vote_results}}
+                                      {{else}}
+                                          <h5 class="text-center">{{_ 'Vote results become availailable once voting is closed'}}</h5>
+                                      {{/if}}
+                                  </div>
+                                  {{/if}}
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="wrapper wrapper-content project-manager"> 
+                        {{> Template.dynamic template=(concat 'Topic_' this.category '_data')}}
+                    </div>
+                </div>
+                </div>
+            </div>
             {{/with}}
+            {{/if}}
         {{else}}
             {{>Error code='404' type='Page not found' message='pageNotFoundMessage' item='topic.general'}}
         {{/if}}
     {{/if}}
 </template>
 
-<template name="Vote_topic_show">
-    <div class="wrapper wrapper-content animated fadeInUp">
-        <div class="row">
-            <div class="col-md-10">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        {{> Votebox}}
-
-                        <div class="row m-t-sm">
-                            <div class="col-lg-12">
-                                <div class="panel blank-panel">
-                                    <div class="panel-heading">
-                                        <div class="panel-options">
-                                            <ul class="nav nav-tabs">
-                                                <li class="active"><a href="#tab-1" data-toggle="tab" class="cap-first">{{_ 'comments'}}</a></li>
-                                                <li class=""><a href="#tab-2" data-toggle="tab">{{_ 'Activity'}}</a></li>
-                                                {{#if or closed (currentUser.hasPermission 'vote.peek' communityId)}}
-                                                <li class=""><a href="#tab-3" data-toggle="tab">{{_ 'Casted votes'}}</a></li>
-                                                {{/if}}
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="panel-body">
-
-                                        <div class="tab-content">
-                                            <div class="tab-pane active" id="tab-1">
-                                                {{> Comments_section}}
-                                            </div>
-                                            <div class="tab-pane" id="tab-2">
-                                                {{> Revision_history doc=this schemaName='schemaTopics'}}
-                                            </div>
-                                            {{#if or closed (currentUser.hasPermission 'vote.peek' communityId)}}
-                                            <div class="tab-pane" id="tab-3">
-                                                {{> Vote_results}}
-                                            </div>
-                                            {{/if}}
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="wrapper wrapper-content project-manager"> 
-                    <dl class="">
-                        <dt>{{_ 'Status'}}:</dt>
-                        <dd>
-                            {{#if closed}}
-                            <span class="label label-default text-capitalize">{{_ 'closed'}}</span>
-                            {{else}}
-                            <span class="label label-primary text-capitalize">{{_ 'active'}}</span>
-                            {{/if}}
-                        </dd>
-                    </dl>
-
-                    <dl class="">
-                        {{#if agendaId}}
-                        <dt>{{_ 'agenda'}}:</dt><dd>{{agenda.title}}</dd>
-                        {{/if}}
-                    </dl>
-
-                    <dl class="">
-                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy}}</dd>
-                        <dt>{{_ 'createdAt'}}:</dt> <dd>{{displayDate createdAt}}</dd>
-                        <dt>{{_ 'Last activity'}}:</dt> <dd>{{displayDate updatedAt}}</dd>
-                    </dl>
-
-                    <!--h4>Project description</h4>
-                    <img src="img/zender_logo.png" class="img-responsive">
-                    <p class="small">
-                        There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look
-                        even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing
-                    </p>
-                    <p class="small font-bold">
-                        <span><i class="fa fa-circle text-warning"></i> High priority</span>
-                    </p>
-                    <h5>Project tag</h5>
-                    <ul class="tag-list" style="padding: 0">
-                        <li><a href=""><i class="fa fa-tag"></i> Zender</a></li>
-                        <li><a href=""><i class="fa fa-tag"></i> Lorem ipsum</a></li>
-                        <li><a href=""><i class="fa fa-tag"></i> Passages</a></li>
-                        <li><a href=""><i class="fa fa-tag"></i> Variations</a></li>
-                    </ul>
-                    <h5>Project files</h5>
-                    <ul class="list-unstyled project-files">
-                        <li><a href=""><i class="fa fa-file"></i> Project_document.docx</a></li>
-                        <li><a href=""><i class="fa fa-file-picture-o"></i> Logo_zender_company.jpg</a></li>
-                        <li><a href=""><i class="fa fa-stack-exchange"></i> Email_from_Alex.mln</a></li>
-                        <li><a href=""><i class="fa fa-file"></i> Contract_20_11_2014.docx</a></li>
-                    </ul>
-                    <div class="text-center m-t-md">
-                        <a href="" class="btn btn-xs btn-primary">Add files</a>
-                        <a href="" class="btn btn-xs btn-primary">Report contact</a>
-
-                    </div-->
-                </div>
-            </div>
-        </div>
-    </div>
+<template name="Data_field">
+    {{#if value}}
+    <dt>{{displayKey key}}:</dt>
+    <dd>{{{displayValue key value}}}</dd>
+    <!--div class="m-b-xs"><strong>{{displayKey key}}:</strong> {{{displayValue key value}}}</div-->
+    <!--div class="row mb-0">
+      <div class="col-sm-6" style="text-align: right !important"><dt>{{displayKey key}}:</dt> </div>
+      <div class="col-sm-6" style="text-align: left !important"><dd class="mb-1">{{{displayValue key value}}}</dd></div>
+    </div-->
+    {{/if}}
 </template>
 
-<template name="Forum_topic_show">    
-    <div class="wrapper wrapper-content animated fadeInUp">
-        <div class="row">
-            <div class="col-md-9">
-                {{> Chatbox}}
-            </div>
-        </div>
-    </div>
+<template name="Topic_forum_data">
 </template>
 
-<template name="Ticket_topic_show">    
-    <div class="wrapper wrapper-content animated fadeInUp">
-        <div class="row">
-            <div class="col-md-9">
-                <div class="ibox">
-                    <div class="ibox-content">
-                        {{> Ticketbox}}
-                        <div class="row m-t-sm">
-                            <div class="col-lg-12">
-                                <div class="panel blank-panel">
-                                    <div class="panel-heading">
-                                        <div class="panel-options">
-                                            <ul class="nav nav-tabs">
-                                                <li class="active"><a href="#tab-1" data-toggle="tab" class="cap-first">{{_ 'comments'}}</a></li>
-                                                <li class=""><a href="#tab-2" data-toggle="tab">{{_ 'Activity'}}</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="panel-body">
-                                        <div class="tab-content">
-                                            <div class="tab-pane active" id="tab-1">
-                                                {{> Comments_section}}
-                                            </div>
-                                            <div class="tab-pane" id="tab-2">
-                                                {{> Revision_history doc=this schemaName='schemaTickets'}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="wrapper wrapper-content project-manager"> 
-                    <dl class="">
-                        <dt>{{_ 'schemaTickets.ticket.status.label'}}:</dt> <dd>
-                            {{#if ticket.status}}
-                            <span class="label label-{{statusColor ticket.status}}">{{_ (concat 'schemaTickets.ticket.status.' ticket.status)}}</span>
-                            {{else}}---
-                            {{/if}}
-                        </dd>
-                    </dl>
-                    <dl class="">
-                        <dt>{{_ 'schemaTickets.ticket.urgency.label'}}:</dt> <dd>
-                            {{#if ticket.urgency}}
-                            <span class="label label-{{urgencyColor ticket.urgency}}">{{_ (concat 'schemaTickets.ticket.urgency.' ticket.urgency)}}</span>
-                            {{else}}---
-                            {{/if}}
-                        </dd>
-                    </dl>
-                    <dl class="">
-                        <dt>{{_ 'createdBy'}}:</dt> <dd>{{createdBy}}</dd>
-                        <dt>{{_ 'createdAt'}}:</dt> <dd>{{displayDate createdAt}}</dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-    </div>
+<template name="Topic_vote_data">
+    <dl class="">
+        {{>Data_field key='Topics.status' value=this.status}}
+    </dl>
+    <dl class="">
+        {{>Data_field key='Votings.agendaId' value=this.agendaId}}
+    </dl>
+    <dl class="">
+        {{>Data_field key='General.creatorId' value=this.creator}}
+        {{>Data_field key='General.createdAt' value=this.createdAt}}
+        {{>Data_field key='General.updatedAt' value=this.createdAt}}
+    </dl>
+</template>
+
+<template name="Topic_ticket_data">    
+    <dl class="">
+        {{>Data_field key='Tickets.ticket.type' value=this.ticket.type}}
+        {{>Data_field key='Topics.status' value=this.status}}
+        {{>Data_field key='Tickets.ticket.urgency' value=this.ticket.urgency}}
+        {{>Data_field key='Tickets.ticket.localizer' value=this.ticket.localizer}}
+        {{>Data_field key='Tickets.ticket.chargeType' value=this.ticket.chargeType}}
+        {{>Data_field key='Tickets.ticket.contractId' value=this.ticket.contractId}}
+        {{>Data_field key='Tickets.ticket.txId' value=this.ticket.txId}}
+    </dl>
+    <dl class="">
+        {{>Data_field key='Tickets.ticket.expectedCost' value=this.ticket.expectedCost}}
+        {{>Data_field key='Tickets.ticket.expectedStart' value=this.ticket.expectedStart}}
+        {{>Data_field key='Tickets.ticket.expectedFinish' value=this.ticket.expectedFinish}}
+        {{>Data_field key='Tickets.ticket.expectedContinue' value=this.ticket.expectedContinue}}
+        {{>Data_field key='Tickets.ticket.waitingFor' value=this.ticket.waitingFor}}
+        {{>Data_field key='Tickets.ticket.actualCost' value=this.ticket.actualCost}}
+        {{>Data_field key='Tickets.ticket.actualStart' value=this.ticket.actualStart}}
+        {{>Data_field key='Tickets.ticket.actualFinish' value=this.ticket.actualFinish}}
+        {{>Data_field key='Tickets.ticket.actualContinue' value=this.ticket.actualContinue}}
+    </dl>
+    <dl class="">
+        {{>Data_field key='General.creatorId' value=this.creator}}
+        {{>Data_field key='General.createdAt' value=this.createdAt}}
+        {{>Data_field key='General.updatedAt' value=this.createdAt}}
+    </dl>
 </template>

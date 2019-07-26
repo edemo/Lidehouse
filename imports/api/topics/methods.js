@@ -1,18 +1,20 @@
 /* eslint-disable dot-notation */
 
 import { Meteor } from 'meteor/meteor';
-import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
+import { ValidatedMethod } from 'meteor/mdg:validated-method';
+import { CollectionHooks } from 'meteor/matb33:collection-hooks';
 import { _ } from 'meteor/underscore';
 
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
-import { TicketModifiableFields } from './tickets/tickets.js';
+import './tickets/tickets.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import './rooms/rooms.js';
 import './feedbacks/feedbacks.js';
@@ -21,13 +23,16 @@ export const insert = new ValidatedMethod({
   name: 'topics.insert',
   validate: Topics.simpleSchema().validator({ clean: true }),
   run(doc) {
+    CollectionHooks.defaultUserId = this.userId;
     if (doc._id) checkNotExists(Topics, doc._id);
+    doc = Topics._transform(doc);
+    // readableId(Topics, doc);
     checkTopicPermissions(this.userId, 'insert', doc);
-    doc.userId = this.userId;   // One can only post in her own name
     const topicId = Topics.insert(doc);
     const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
     updateMyLastSeen._execute({ userId: this.userId },
       { topicId, lastSeenInfo: { timestamp: newTopic.createdAt } });
+    CollectionHooks.defaultUserId = undefined;
     return topicId;
   },
 });
@@ -39,10 +44,12 @@ export const update = new ValidatedMethod({
     modifier: { type: Object, blackbox: true },
   }).validator(),
   run({ _id, modifier }) {
+    CollectionHooks.defaultUserId = this.userId;
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'update', topic);
-    checkModifier(topic, modifier, ['title', 'text', 'sticky', 'agendaId', 'photo'].concat(TicketModifiableFields));
+    checkModifier(topic, modifier, topic.modifiableFields());
     Topics.update(_id, modifier);
+    CollectionHooks.defaultUserId = undefined;
   },
 });
 
@@ -73,17 +80,19 @@ export const remove = new ValidatedMethod({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ _id }) {
+    CollectionHooks.defaultUserId = this.userId;
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'remove', topic);
 
     Topics.remove(_id);
     Comments.remove({ topicId: _id });
+    CollectionHooks.defaultUserId = undefined;
   },
 });
 
-Topics.methods = {
-  insert, update, move, remove,
-};
+Topics.methods = Topics.methods || {};
+_.extend(Topics.methods, { insert, update, move, remove });
+_.extend(Topics.methods, crudBatchOps(Topics));
 
 // ----- RATE LIMITING --------
 

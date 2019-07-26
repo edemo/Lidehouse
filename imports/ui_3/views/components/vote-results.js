@@ -19,10 +19,10 @@ import { voteResultsColumns } from '/imports/api/topics/votings/tables.js';
 
 import '../components/vote-results.html';
 
-Template.Vote_results.onCreated(function voteboxOnCreated() {
+Template.Vote_results.onCreated(function () {
 });
 
-Template.Vote_results.onRendered(function voteboxOnRendered() {
+Template.Vote_results.onRendered(function () {
 });
 
 Template.Vote_results.helpers({

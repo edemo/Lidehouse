@@ -112,7 +112,7 @@ Template.Community_finances.viewmodel({
   communityId() { return Session.get('activeCommunityId'); },
   community() { return Communities.findOne(this.communityId()); },
   DEMO() { return this.community() && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], this.community().name); },
-  startTag: 'T-2016-12',
+  startTag: 'T-2017-1',
   endTag: PeriodBreakdown.currentCode(),
   startIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.startTag()); },
   endIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.endTag()); },

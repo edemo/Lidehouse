@@ -1,9 +1,29 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
+  "schemaGeneral": {
+    "creatorId": {
+      "label": "Created by"
+    },
+    "createdAt": {
+      "label": "Created at"
+    },
+    "updatedAt": {
+      "label": "Last activity at"
+    },
+    "updatorId": {
+      "label": "Last activity by"
+    }
+  },
   "schemaUsers": {
+    "email": {
+      "label": "Registered e-mail address",
+      "placeholder": "(pl. margitka21@ingyenmail.com)",
+      "help": "This is the e-mail address you use to log in with, and notifications are sent to this address."
+    },
     "username": {
       "label": "Username",
-      "placeholder": "(eg. Mike75)"
+      "placeholder": "(eg. Mike75)",
+      "help": "The username is just a nick name. You need to use your registered e-mail address to log in."
     },
     "emails": {
       "$": {
@@ -21,7 +41,8 @@
       "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
     },
     "profile": {
-      "label": "Profile  (This data is public to the members of your community)",
+      "label": "Profile [This data is publicly shown to the members of your community]",
+      "help": "This data is publicly shown to the members of your community",
 
       "firstName": {
         "label": "First name",
@@ -33,7 +54,8 @@
       },
       "publicEmail": {
         "label": "Public email",
-        "placeholder": "(eg. Mikey75@cats.com)"
+        "placeholder": "(eg. Mikey75@cats.com)",
+        "help": "Members of your community can see this e-mail address. This can be different from your registered address, or be the same. If you leave this blank, others will not see an e-mail address for you, but can still conatct you within the app's messaging system."
       },
       "address": {
         "label": "Contact address",
@@ -185,6 +207,22 @@
       "label": "Agenda topics"
     }
   },
+  "schemaContracts": {
+    "title": {
+      "label": "Name",
+      "placeholder": "(eg. Elevator regular maintenance)"
+    },
+    "text": {
+      "label": "Decription",
+      "placeholder": "(eg. 2012 CXXL. regulation makes it mandatory)"
+    },
+    "partner": {
+      "label": "Servicing partner"
+    },
+    "topicIds": {
+      "label": "Worksheets"
+    }
+  },
   "schemaTopics": {
     "title": {
       "label": "Title",
@@ -194,15 +232,32 @@
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
     },
-    "agendaId": {
-      "label": "Agenda (of which it is part of)"
-    },
     "photo": {
       "label": "Photo (if applicable)",
       "placeholder": "Can use existing link (eg. https://imgbb.com/pic.jpg)"
     },
     "sticky" : {
       "label": "Sticky"
+    },
+    "status": {
+      "label": "Status",
+      "opened": "Opened",
+      "scheduled": "Scheduled",
+      "reported": "Reported",
+      "confirmed": "Planned",
+      "toApprove": "To approve",
+      "toVote": "To vote on",
+      "progressing": "Progressing",
+      "suspended": "Suspended",
+      "finished": "Done",
+      "closed": "Closed",
+      "deleted": "Deleted"
+    },
+    "closed": {
+      "label": "Closed"
+    },
+    "closesAt": {
+      "label": "Closes At"
     }
   },
   "schemaVotings": {
@@ -214,15 +269,18 @@
       "label": "Details",
       "placeholder": "Longer description (if needed)..."
     },
+    "agendaId": {
+      "label": "Agenda (of which it is part of)"
+    },
     "createdAt": {
-      "label": "Created At"
+      "label": "Voting starts at"
+    },
+    "closesAt": {
+      "label": "Voting closes at"
     },
     "vote": {
       "choices": {
         "label": "Vote choices"
-      },
-      "closesAt": {
-        "label": "Closes At"
       },
       "procedure": {
         "label": "Voting procedure",
@@ -248,26 +306,31 @@
     }
   },
   "schemaTickets": {
+    "id": {
+      "label": "Identifier"
+    },
     "title": {
-      "label": "Title",
+      "label": "Short summary",
       "placeholder": "(eg. Elevator not working)"
     },
     "text": {
-      "label": "Description",
-      "placeholder": "(eg. Got stuck between third and fourth floor)"
+      "label": "Remarks"
     },
     "photo": {
       "label": "Photo (if applicable)",
       "placeholder": "Link to file (eg. https://imgbb.com/pic.jpg)",
       "help": "You can provide a link to an existing file anywhere on the internet, or you can upload a file from your computer. Image size may not be above 1024x768, anything larger we will compress down, which may take some time"
     },
+    "status": {
+      "label": "Status"
+    },
     "ticket": {
-      "label": "Ticket",
-      "category": {
-        "label": "Category",
-        "building": "Building",
-        "garden": "Garden",
-        "service": "Service"
+      "label": "Ticket data",
+      "type": {
+        "label": "Type",
+        "issue": "Issue",
+        "upgrade": "Upgrade",
+        "maintenance": "Maintenance"
       },
       "urgency": {
         "label": "Urgency",
@@ -275,24 +338,55 @@
         "normal": "Normal",
         "low": "Low"
       },
-      "status": {
-        "label": "Status",
-        "reported": "Reported",
-        "confirmed": "Confirmed",
-        "progressing": "Progressing",
-        "finished": "Finished",
-        "checked": "Checked",
-        "closed": "Closed"
+      "localizer": {
+        "label": "Location"
+      },
+      "partner": {
+        "label": "Servicing partner"
+      },
+      "chargeType": {
+        "label": "Charge type",
+        "oneoff": "One-off",
+        "lumpsum": "Lump sum contract",
+        "warranty": "Under warranty",
+        "insurance": "Covered by insurance"
+      },
+      "contractId" : {
+        "label": "Contract"
+      },
+      "txId": {
+        "label": "Payment transaction"
+      },
+      "expectedCost": { 
+        "label": "Expected cost"
+      },
+      "expectedStart": { 
+        "label": "Expected start"
+      },
+      "expectedFinish": { 
+        "label": "Expected finish"
+      },
+      "expectedContinue": { 
+        "label": "Expected continuation"
+      },
+      "waitingFor": {
+        "label": "Waiting for"
+      },
+      "actualCost": { 
+        "label": "Actual cost"
+      },
+      "actualStart": { 
+        "label": "Actual start"
+      },
+      "actualFinish": {
+        "label": "Actual finish"
+      },
+      "actualContinue": { 
+        "label": "Actual continuation"
       }
-    }
-  },
-  "schemaTicketStatusChange": {
-    "text": {
-      "label": "Comment",
-      "placeholder": "(eg. We replaced the broken part)"
     },
-    "status": {
-      "label": "New status"
+    "moreDates": {
+      "label": "More start dates (if adding more than one occasions)"
     }
   },
   "schemaFeedback": {

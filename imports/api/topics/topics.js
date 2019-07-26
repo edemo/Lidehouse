@@ -1,28 +1,38 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-index';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Revisioned } from '/imports/api/behaviours/revisioned.js';
+import { Workflow } from '/imports/api/behaviours/workflow.js';
+import { Likeable } from '/imports/api/behaviours/likeable.js';
+import { Flagable } from '/imports/api/behaviours/flagable.js';
+import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
-import { RevisionedCollection } from '/imports/api/revision.js';
-import { likesSchema, likesHelpers } from '/imports/api/topics/likes.js';
-import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
-export const Topics = new RevisionedCollection('topics', ['text', 'title', 'closed']);
+import './category-helpers.js';
+
+export const Topics = new Mongo.Collection('topics');
 
 // Topic categories in order of increasing importance
 Topics.categoryValues = ['feedback', 'forum', 'ticket', 'room', 'vote', 'news'];
+Topics.categories = {};
+Topics.categoryValues.forEach(cat => Topics.categories[cat] = {}); // Specific categories will add their own specs
 
-Topics.schema = new SimpleSchema({
+Topics.extensionSchemas = {};
+
+Topics.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  userId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   participantIds: { type: Array, optional: true, autoform: { omit: true } },
   'participantIds.$': { type: String, regEx: SimpleSchema.RegEx.Id },   // userIds
   category: { type: String, allowedValues: Topics.categoryValues, autoform: { omit: true } },
@@ -30,10 +40,11 @@ Topics.schema = new SimpleSchema({
   text: { type: String, max: 5000, autoform: { rows: 8 } },
   agendaId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   photo: { type: String, optional: true, autoform: fileUpload },
-  closed: { type: Boolean, optional: true, defaultValue: false, autoform: { omit: true } },
   sticky: { type: Boolean, optional: true, defaultValue: false },
   commentCounter: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
+
+Topics.idSet = ['communityId', 'category', 'serial'];
 
 Meteor.startup(function indexTopics() {
   Topics.ensureIndex({ agendaId: 1 }, { sparse: true });
@@ -42,6 +53,7 @@ Meteor.startup(function indexTopics() {
     Topics._collection._ensureIndex('closed');
     Topics._collection._ensureIndex(['title', 'participantIds']);
   } else if (Meteor.isServer) {
+    Topics._ensureIndex({ communityId: 1, category: 1, serial: 1 });
     Topics._ensureIndex({ communityId: 1, category: 1, createdAt: -1 });
   }
 });
@@ -53,14 +65,12 @@ Topics.helpers({
   agenda() {
     return Agendas.findOne(this.agendaId);
   },
-  createdBy() {
-    return Meteor.users.findOne(this.userId);
-  },
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
-  isHiddenBy(userId) {
-    return this.isFlaggedBy(userId) || this.createdBy().isFlaggedBy(userId);
+  hiddenBy(userId, communityId) {
+    const author = this.creator();
+    return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
   },
   isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
@@ -104,7 +114,7 @@ Topics.helpers({
         break;
       case 'ticket':
         if (seenType === Meteor.users.SEEN_BY.EYES
-          && this.ticket.status !== 'closed') return 1;
+          && this.status !== 'closed') return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
           && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
         break;
@@ -115,6 +125,9 @@ Topics.helpers({
         debugAssert(false);
     }
     return 0;
+  },
+  modifiableFields() {
+    return Topics.modifiableFields;
   },
   remove() {
     Comments.remove({ topicId: this._id });
@@ -127,27 +140,29 @@ Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communit
     .filter(t => t.needsAttention(userId, seenType));
 };
 
-Topics.helpers(likesHelpers);
-Topics.helpers(flagsHelpers);
+Topics.attachSchema(Topics.baseSchema);
+Topics.attachBehaviour(Timestamped);
+Topics.attachBehaviour(Revisioned(['text', 'title']));
+Topics.attachBehaviour(Likeable);
+Topics.attachBehaviour(Flagable);
+Topics.attachBehaviour(Workflow());
+Topics.attachBehaviour(SerialId(Topics, ['category']));
+Topics.schema = new SimpleSchema(Topics.simpleSchema());
 
-Topics.attachSchema(Topics.schema);
-Topics.attachSchema(likesSchema);
-Topics.attachSchema(flagsSchema);
-Topics.attachSchema(Timestamps);
+
+// Topics.schema is just the core schema, shared by all.
+// Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
+// Topics.schema.i18n('schemaTopics'); // sub-type of Topics will define their own translations
 
 Meteor.startup(function attach() {
-  // Topics.schema is just the core schema, shared by all.
-  // Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
-  // Topics.schema.i18n('schemaTopics'); // sub-type of Topics will define their own translations
   Topics.simpleSchema().i18n('schemaTopics');
   Topics.schema.i18n('schemaTopics');
 });
 
-// This represents the keys from Topics objects that should be published to the client.
-// If we add secret properties to Topic objects, don't list them here to keep them private to the server.
+Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'photo'];
+
 Topics.publicFields = {
   communityId: 1,
-  userId: 1,
   category: 1,
   title: 1,
   text: 1,
@@ -155,14 +170,25 @@ Topics.publicFields = {
   photo: 1,
   createdAt: 1,
   updatedAt: 1,
+  creatorId: 1,
+  updatorId: 1,
+  closesAt: 1,
   closed: 1,
   sticky: 1,
   likes: 1,
   flags: 1,
   commentCounter: 1,
   revision: 1,
+  status: 1,
+  serial: 1,
 };
 
-Factory.define('topic', Topics, {
-  communityId: () => Factory.get('community'),
+Topics.categoryValues.forEach((category) => {
+  Factory.define(category, Topics, {
+    category,
+    serial: 0,
+    title: () => `New ${(category)} about ${faker.random.word()}`,
+    text: faker.lorem.paragraph(),
+    status: 'opened',
+  });
 });

@@ -17,8 +17,8 @@ import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/collapse-section.js';
 import '/imports/ui_3/views/components/new-forum-topic.js';
-import '../components/chatbox.js';
-import '../components/votebox.js';
+import '../components/topic-box.js';
+import '../components/topic-vote-box.js';
 import '../components/comments-section.js';
 import '../components/balance-widget.js';
 import './board.html';
@@ -82,7 +82,6 @@ AutoForm.addModalHooks('af.news.update');
 AutoForm.addHooks('af.news.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.userId = Meteor.userId();
     doc.category = 'news';
     return doc;
   },

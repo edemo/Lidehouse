@@ -11,13 +11,14 @@ import { availableLanguages } from '/imports/startup/both/language.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { namesMatch } from '/imports/utils/compare-names.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { Flagable } from '/imports/api/behaviours/flagable.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
-import { flagsSchema, flagsHelpers } from '/imports/api/topics/flags.js';
 
 export let getCurrentUserLang = () => { debugAssert(false, 'On the server you need to supply the language, because there is no "currentUser"'); };
 if (Meteor.isClient) {
@@ -66,7 +67,15 @@ export const PersonProfileSchema = new SimpleSchema({
 const PersonProfileSchema = new SimpleSchema({
   firstName: { type: String, optional: true },
   lastName: { type: String, optional: true },
-  publicEmail: { type: String, regEx: SimpleSchema.RegEx.Email, optional: true },
+  publicEmail: {
+    type: String,
+    regEx: SimpleSchema.RegEx.Email,
+    optional: true,
+    autoValue() {
+      if (this.isSet) return (this.value).toLowerCase();
+      return undefined;
+    },
+  },
   address: { type: String, optional: true },
   phone: { type: String, max: 20, optional: true },
   bio: { type: String, optional: true },
@@ -108,7 +117,14 @@ Meteor.users.schema = new SimpleSchema({
 
   emails: { type: Array },
   'emails.$': { type: Object },
-  'emails.$.address': { type: String, regEx: SimpleSchema.RegEx.Email },
+  'emails.$.address': { 
+    type: String,
+    regEx: SimpleSchema.RegEx.Email,
+    autoValue() {
+      if (this.isSet) return (this.value).toLowerCase();
+      return undefined;
+    },
+  },
   'emails.$.verified': { type: Boolean, defaultValue: false, optional: true },
 
   avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
@@ -142,7 +158,7 @@ export function initialUsername(user) {
   const idChunk = userId.substring(0, 5);
   const userName = emailChunk + '_' + idChunk;
   return userName;
-};
+}
 
 Meteor.users.helpers({
   language() {
@@ -211,7 +227,7 @@ Meteor.users.helpers({
     return this.ownedParcels(communityId).filter(p => !p.isLed());
   },
   activeRoles(communityId) {
-    return Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role);
+    return _.uniq(Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role));
   },
   communities() {
     const memberships = Memberships.find({ approved: true, active: true, personId: this._id }).fetch();
@@ -241,10 +257,11 @@ Meteor.users.helpers({
     debugAssert(permission, `No such permission "${permissionName}"`);
     const rolesWithThePermission = permission.roles;
     if (_.contains(rolesWithThePermission, 'null')) return true;
-    if (permission.allowAuthor && object && (object.userId === this._id)) return true;
+    if (permission.allowAuthor && object && object.creatorId && (object.creatorId === this._id)) return true;
     const userHasTheseRoles = this.activeRoles(communityId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
 //  console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
+//  if (!result) console.log(this.safeUsername(), 'current permissions:', this.activeRoles(communityId));
     return result;
   },
   totalOwnedUnits(communityId) {
@@ -274,11 +291,9 @@ Meteor.users.helpers({
   },
 });
 
-Meteor.users.helpers(flagsHelpers);
-
 Meteor.users.attachSchema(Meteor.users.schema);
-Meteor.users.attachSchema(flagsSchema);
-Meteor.users.attachSchema(Timestamps);
+Meteor.users.attachBehaviour(Timestamped);
+Meteor.users.attachBehaviour(Flagable);
 
 Meteor.startup(function attach() {
   Meteor.users.simpleSchema().i18n('schemaUsers');

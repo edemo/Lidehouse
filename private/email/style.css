@@ -86,10 +86,6 @@ table td {
     font-style: italic;
 }
 
-.oldTopic p {
-    display: none;
-}
-
 /* -------------------------------------
     BODY & CONTAINER
 ------------------------------------- */
@@ -196,6 +192,9 @@ p li, ul li, ol li {
     list-style-position: inside;
 }
 
+small {
+    font-size: 10px;
+}
 
 /* -------------------------------------
     LINKS & BUTTONS
@@ -228,6 +227,45 @@ a {
 .btn-container {
     width: 100%;
     text-align: right;
+}
+
+ .label {
+    display: inline;
+    padding: .2em .6em .3em;
+    font-size: 80%;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    text-shadow: none;
+    background-color: #d1dade;
+    color: #5e5e5e;
+}
+
+/* -------------------------------------
+    COLORS
+ ------------------------------------- */
+
+.info {
+    background-color: #23c6c8;
+    color: #FFFFFF;
+}
+.warning {
+    background-color: #f8ac59;
+    color: #FFFFFF;
+}
+.primary {
+    background-color: #1ab394;
+    color: #FFFFFF;
+}
+.danger {
+    background-color: #ed5565;
+    color: #ffffff;
+}
+.muted {
+    background-color: #f3f3f4;
 }
 
 /* -------------------------------------

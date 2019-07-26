@@ -28,7 +28,8 @@ peppelg:bootstrap-3-modal
 momentjs:moment
 numeral:numeral
 mizzao:timesync
-djk:jquery-ui
+mrt:jquery-ui@1.9.2
+mrt:jquery-ui-sortable@=1.10.3
 ephemer:reactive-datatables
 flawless:meteor-toastr
 perak:markdown
@@ -38,11 +39,13 @@ meteorhacks:ssr
 manuel:viewmodel
 bigu:waypoints
 huaming:js-xlsx
+gquemart:meteor-reactive-fullcalendar
 
 # data
 mongo@1.4.2
 aldeed:simple-schema
 aldeed:collection2
+matb33:collection-hooks
 dburles:collection-helpers
 reywood:publish-composite
 mdg:validated-method
@@ -51,6 +54,7 @@ jalik:ufs
 jalik:ufs-gridfs
 dburles:mongo-collection-instances
 helfer:minimongo-index
+percolate:migrations
 
 # routing
 kadira:flow-router
@@ -110,3 +114,4 @@ mrt:later
 lookback:emails
 
 droka:autoform-ufs
+ostrio:flow-router-title

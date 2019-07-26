@@ -21,17 +21,13 @@ export const Notification_Email = {
       return text.substr(0, chars) + `... [${TAPi18n.__('see full text with View button', {}, Meteor.users.findOne(this.userId).settings.language)}]`;
     },
     userUrlFor(user) {
-      return FlowRouterHelpers.urlFor('User.show', { _id: user._id });
+      return FlowRouterHelpers.urlFor('User show', { _id: user._id });
     },
     topicUrlFor(topic) {
       if (topic.category === 'room') {
-        return FlowRouterHelpers.urlFor('Room.show', { _rid: topic._id });
+        return FlowRouterHelpers.urlFor('Room show', { _rid: topic._id });
       }
-      return FlowRouterHelpers.urlFor('Topic.show', { _tid: topic._id });
-    },
-    topics() {
-      const topics = Topics.topicsNeedingAttention(this.userId, this.communityId, Meteor.users.SEEN_BY.NOTI);
-      return topics.sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
+      return FlowRouterHelpers.urlFor('Topic show', { _tid: topic._id });
     },
     isUnseen(topic) {
       return topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY.NOTI);
@@ -42,6 +38,18 @@ export const Notification_Email = {
     unseenCommentList(topic) {
       const comments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY.NOTI);
       return comments;
+    },
+    voteHasBeenClosed(topic) {
+      if (topic.status === 'closed' && topic.category === 'vote') {
+        const unseenComments = topic.unseenCommentListBy(this.userId, Meteor.users.SEEN_BY.NOTI);
+        const closingEvent = unseenComments.find(comment => comment.type === 'statusChangeTo' && comment.status === 'closed');
+        if (closingEvent) return true;
+        return false;
+      }
+      return false;
+    },
+    hider(doc) {
+      return doc.hiddenBy(this.userId, this.communityId);
     },
     categoryImgUrlFor(category) {
       const file = {
@@ -55,6 +63,10 @@ export const Notification_Email = {
       // return 'https://honline.hu/images/email/' + file[category]; // use this for testing, because localhost may not be accessible by mail clients
       return FlowRouterHelpers.urlFor('/images/email/' + file[category]);
     },
+    oldTopic(topic) {
+      if (topic.isUnseenBy(this.userId, Meteor.users.SEEN_BY.NOTI)) return '';
+      return 'oldTopic';
+    },
   },
 
   route: {
@@ -62,6 +74,8 @@ export const Notification_Email = {
     data: params => ({
       userId: params.uid,
       communityId: params.cid,
+      topics: Topics.topicsNeedingAttention(params.uid, params.cid, Meteor.users.SEEN_BY.NOTI)
+        .sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category)),
     }),
   },
 };

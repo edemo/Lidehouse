@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { $ } from 'meteor/jquery';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { FlowRouter } from 'meteor/kadira:flow-router';
@@ -76,7 +77,9 @@ export function parcelColumns(permissions) {
 
 export function highlightMyRow(row, data, index) {
   const parcelId = data._id;
-  const isMine = Memberships.findOne({ parcelId, personId: Meteor.userId() });
+  const leadParcelId = Parcels.findOne(data._id).leadParcelId();
+  const isMine = Memberships.findOne({ parcelId, personId: Meteor.userId() }) ||
+    Memberships.findOne({ parcelId: leadParcelId, personId: Meteor.userId() });
   if (isMine) {
     $(row).addClass('tr-bold');
   }

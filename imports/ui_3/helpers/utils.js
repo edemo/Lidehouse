@@ -2,6 +2,8 @@ import { Template } from 'meteor/templating';
 import { numeral } from 'meteor/numeral:numeral';
 import { moment } from 'meteor/momentjs:moment';
 import { TimeSync } from 'meteor/mizzao:timesync';
+import { _ } from 'meteor/underscore';
+import { __ } from '/imports/localization/i18n.js';
 
 Template.registerHelper('and', function and(a, b) {
     return a && b;
@@ -21,6 +23,14 @@ Template.registerHelper('equals', function equals(a, b) {
 
 Template.registerHelper('add', function add(a, b) {
     return a + b;
+});
+
+Template.registerHelper('includes', function includes(a, b) {
+    return a.includes(b);
+});
+
+Template.registerHelper('isNotEmptyObject', function isNotEmptyObject(object) {
+    return !_.isEmpty(object);
 });
 
 Template.registerHelper('round', function round(number, digits) {
@@ -66,6 +76,25 @@ Template.registerHelper('concat', function concat() {
     return Array.prototype.slice.call(arguments, 0, -1).join('');
 });
 
+Template.registerHelper('join', function join(items) {
+    return items.join(', ');
+});
+
+Template.registerHelper('translateArray', function translateArray(items) {
+    return items.map(i => __(i));
+});
+
 Template.registerHelper('log', function log(stuff) {
     console.log(stuff);
+});
+
+Template.registerHelper('entriesOf', function entriesOf(obj) {
+  return Object.entries(obj);
+});
+
+Template.registerHelper('keys', function keys(object) {
+  return Object.keys(object);
+});
+Template.registerHelper('select', function select(key, object) {
+  return object[key];
 });

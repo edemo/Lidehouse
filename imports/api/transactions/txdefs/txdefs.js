@@ -4,18 +4,18 @@ import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Timestamps } from '/imports/api/timestamps.js';
-import { chooseAccountNode, chooseSubAccount } from '/imports/api/transactions/account-specification.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
-class TxDefsCollection extends Mongo.Collection {
-  define(doc) {
-    return super.define({ communityId: doc.communityId, name: doc.name }, doc);
-  }
-}
-export const TxDefs = new TxDefsCollection('txdefs');
+export const TxDefs = new Mongo.Collection('txdefs');
+
+TxDefs.define = function define(doc) {
+  TxDefs.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
+};
 
 TxDefs.clone = function clone(name, communityId) {
   const doc = TxDefs.findOne({ name, communityId: null });
@@ -62,7 +62,7 @@ TxDefs.helpers({
 });
 
 TxDefs.attachSchema(TxDefs.schema);
-TxDefs.attachSchema(Timestamps);
+TxDefs.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   TxDefs.simpleSchema().i18n('schemaTxDefs');

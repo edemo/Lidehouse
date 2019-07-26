@@ -15,8 +15,13 @@
             <div class="content">
                 <table class="main" width="100%" cellpadding="0" cellspacing="0">
                     <tr>
-                        <td class="alert alert-good">
-                            {{{_ 'email.NotificationTitle' name=community.name}}}
+                        <td class="alert {{alertColor}}">
+                            {{{_ 'email.NotificationSubject' name=community.name}}}
+                            <p><small>{{{_ 'email.NotificationInstructions'}}}</small></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                         </td>
                     </tr>
                     <tr>
@@ -34,7 +39,7 @@
                 <div class="footer">
                     <table width="100%">
                         <tr>
-                            <td class="aligncenter content-block">{{{_ 'email.NotificationFooter' frequency=(_ frequencyKey) link=(urlFor 'Profile.show') adminEmail=adminEmail }}}</td>
+                            <td class="aligncenter content-block">{{{_ 'email.NotificationFooter' frequency=(_ frequencyKey) link=(urlFor 'User data page') adminEmail=adminEmail }}}</td>
                         </tr>
                     </table>
                 </div></div>

@@ -5,8 +5,9 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkNotExists, checkPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
-import { Topics } from '../topics.js';
+import { Topics } from '/imports/api/topics/topics.js';
 import './votings.js';
+import { voteCastConfirmationEmail } from '/imports/email/voting-confirmation.js';
 
 export const castVote = new ValidatedMethod({
   name: 'vote.cast',
@@ -48,45 +49,20 @@ export const castVote = new ValidatedMethod({
     }
 */
     const res = Topics.update(topicId, topicModifier);
-    debugAssert(res === 1);
+    debugAssert(res === 1); // should not continue if it was not successful
 
     if (Meteor.isServer) {
       const updatedTopic = Topics.findOne(topicId);
       updatedTopic.voteEvaluate(false); // writes only voteParticipation, no results
+      if (topic.vote.effect === 'legal') voteCastConfirmationEmail(_voters, topicId, this.userId);
     }
-  },
-});
-
-function closeVoteFulfill(topicId) {
-  const res = Topics.update(topicId, { $set: { closed: true } });
-  debugAssert(res === 1);
-  const topic = Topics.findOne(topicId);
-  if (Meteor.isServer) {
-    topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
-  }
-}
-
-export const closeVote = new ValidatedMethod({
-  name: 'vote.close',
-  validate: new SimpleSchema({
-    topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator({ clean: true }),  // we 'clean' here to convert the vote strings (eg "1") into numbers (1)
-
-  run({ topicId }) {
-    const topic = checkExists(Topics, topicId);
-    if (topic.closed) {
-      throw new Meteor.Error('err_invalidOperation', 'Topic already closed',
-        `Method: topics.closeVote, Collection: topics, id: ${topicId}`
-      );
-    }
-    checkPermissions(this.userId, 'vote.close', topic.communityId, topic);
-
-    closeVoteFulfill(topicId);
   },
 });
 
 export function closeClosableVotings() {
   const now = new Date();
-  const expiredVotings = Topics.find({ category: 'vote', closed: false, 'vote.closesAt': { $lt: now } });
-  expiredVotings.forEach(voting => closeVoteFulfill(voting._id));
+  const expiredVotings = Topics.find({ category: 'vote', closed: false, closesAt: { $lt: now } });
+  expiredVotings.forEach(voting => Topics.methods.statusChange._execute({ userId: voting.creatorId }, // permissionwise the creator is the one closing it
+    { userId: voting.creatorId, topicId: voting._id, status: 'closed', text: 'Automated closing' },
+  ));
 }

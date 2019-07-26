@@ -7,13 +7,13 @@ import { __ } from '/imports/localization/i18n.js';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { Topics } from '/imports/api/topics/topics.js';
+import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 
 import '../common/error.js';
 import '../common/page-heading.js';
-import '../components/chatbox.js';
-import '../components/ticketbox.js';
-import '../components/votebox.js';
-import '../components/comments-section.js';
+import '../components/topic-box.js';
+import '../components/topic-ticket-box.js';
+import '../components/topic-vote-box.js';
 import '../components/revision-history.js';
 import './topic-show.html';
 
@@ -38,31 +38,24 @@ Template.Topic_show.helpers({
       case 'vote': {
         return [{
           title: __('Votings'),
-          url: FlowRouter.path('Topics.vote'),
+          url: FlowRouter.path('Votings'),
         }];
       }
       case 'forum': {
         return [{
           title: __('Forum'),
-          url: FlowRouter.path('Topics.forum'),
+          url: FlowRouter.path('Forum'),
         }];
       }
       case 'ticket': {
         return [{
-          title: __('Tickets'),
-          url: FlowRouter.path('Tickets.report'),
+          title: __('Worksheets'),
+          url: FlowRouter.path('Worksheets'),
+//          title: __('Tickets'),
+//          url: FlowRouter.path('Tickets'),
         }];
       }
       default: return [];
     }
-  },
-});
-
-Template.Ticket_topic_show.helpers({
-  statusColor(value) {
-    return Topics.statusColors[value];
-  },
-  urgencyColor(value) {
-    return Topics.urgencyColors[value];
   },
 });

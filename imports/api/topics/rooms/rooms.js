@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
+import { Factory } from 'meteor/dburles:factory';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '../topics.js';
@@ -28,19 +29,27 @@ if (Meteor.isClient) {
   Rooms.goToRoom = function goToRoom(roomType, otherUserId) {
     const room = Rooms.getRoom(roomType, otherUserId);
     if (room) {
-      FlowRouter.go('Room.show', { _rid: room._id });
+      FlowRouter.go('Room show', { _rid: room._id });
     } else {
       Meteor.call('topics.insert', {
         communityId: Session.get('activeCommunityId'),
-        userId: Meteor.userId(),
         participantIds: [Meteor.userId(), otherUserId],
         category: 'room',
         title: roomType,
         text: roomType,
+        status: 'opened',
       }, onSuccess((res) => {
-        FlowRouter.go('Room.show', { _rid: res });
+        FlowRouter.go('Room show', { _rid: res });
       }),
       );
     }
   };
 }
+
+Factory.define('room', Topics, {
+  category: 'room',
+  serial: 0,
+  title: 'private chat',
+  text: 'private chat',
+  status: 'opened',
+});

@@ -17,17 +17,17 @@
                         <div class="vote-actions">
                             {{#let liked=(this.isLikedBy currentUser._id) }}
                             <a href="" class="{{#if liked}}invisible{{/if}} js-like"><i class="fa fa-hand-o-up"> </i></a>
-                            <div>{{likesCount}}</div>
+                            <div>{{this.likesCount}}</div>
                             <a href="" class="{{#unless liked}}invisible{{/unless}} js-like"><i class="fa fa-hand-o-down"> </i></a>
                             {{/let}}
                         </div>
-                        <a href="{{pathFor 'Topic.show' _tid=_id}}" class="vote-title">
+                        <a href="{{pathFor 'Topic show' _tid=_id}}" class="vote-title">
                             {{title}}
                         </a>
                         <div class="vote-info">
-                            <i class="fa fa-comments-o"></i> <a class="text-capitalize" href="{{pathFor 'Topic.show' _tid=_id}}">{{_ 'Comment'}} ({{commentCounter}})</a>
+                            <i class="fa fa-comments-o"></i> <a class="text-capitalize" href="{{pathFor 'Topic show' _tid=_id}}">{{_ 'Comment'}} ({{commentCounter}})</a>
                             <i class="fa fa-clock-o"></i> <a href="">{{displayTimeFrom createdAt}}</a>
-                            <i class="fa fa-user"></i> <a href="">{{createdBy}}</a>
+                            <i class="fa fa-user"></i> <a href="">{{creator}}</a>
                         </div>
                     </div>
                     <div class="col-sm-2 ">

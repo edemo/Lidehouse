@@ -6,10 +6,12 @@ import { _ } from 'meteor/underscore';
 import { leaderRoles } from '/imports/api/permissions/roles.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Memberships } from '/imports/api/memberships/memberships';
-import { Topics } from '/imports/api/topics/topics';
+import { Topics } from '/imports/api/topics/topics.js';
+import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { Parcels } from '/imports/api/parcels/parcels';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Attachments } from '/imports/api/attachments/attachments.js';
@@ -64,7 +66,7 @@ function communityPublication(userId, _id) {
               { participantIds: this.userId },
             ],
           };
-          const publicFields = Topics.publicFields.extendForUser(this.userId, community._id);
+          const publicFields = Votings.extendPublicFieldsForUser(this.userId, community._id);
           return Topics.find(selector, { fields: publicFields });
 //            Topics.find(_.extend({}, selector, { category: 'vote', closed: true })),
 //          ];
@@ -84,6 +86,14 @@ function communityPublication(userId, _id) {
       find(community) {
         if (hasPermission('agendas.inCommunity')) {
           return Agendas.find({ communityId: community._id });
+        }
+        return undefined;
+      },
+    }, {
+      // Publish the Contracts of the Community
+      find(community) {
+        if (hasPermission('contracts.inCommunity')) {
+          return Contracts.find({ communityId: community._id });
         }
         return undefined;
       },

@@ -15,15 +15,15 @@
                     {{/if}}
                 </td>
                 <td class="project-people">
-                    <a href=""><img alt="image" class="img-circle" src={{createdBy/avatar}}></a>
+                    <a href=""><img alt="image" class="img-circle" src={{creator.avatar}}></a>
                 </td>
                 <td class="project-title">
-                    <a href="{{pathFor 'Topic.show' _tid=_id}}">{{title}}</a>
+                    <a href="{{pathFor 'Topic show' _tid=_id}}">{{title}}</a>
                     <br/>
                     {{#if closed}}
                     <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>
                     {{else}}
-                    <small>{{_ 'closes'}}: {{displayTimeFrom vote.closesAt}}</small>
+                    <small>{{_ 'closes'}}: {{displayTimeFrom closesAt}}</small>
                     {{/if}}
                 </td>
                 <td class="project-status">
@@ -38,10 +38,12 @@
                     </div>
                 </td>
                 <td class="project-actions">
-                    <a href="{{pathFor 'Topic.show' _tid=_id}}" class="btn btn-white btn-sm"><i class="fa fa-eye" title="{{_ 'view'}}"></i></a>
-                    <!--{{#if userHasPermission 'vote.update' activeCommunityId this}}
-                    <a href="" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Edit </a>
-                    {{/if}}-->
+                    <div class="btn-group">
+                        <a href="{{pathFor 'Topic show' _tid=_id}}" class="btn btn-white btn-xs"><i class="fa fa-eye" title="{{_ 'view'}}"></i></a>
+                        <!--{{#if userHasPermission 'vote.update' activeCommunityId this}}
+                        <a href="" class="btn btn-white btn-xs"><i class="fa fa-pencil"></i>{{_ 'edit'}} </a>
+                        {{/if}}-->
+                    </div>
                 </td>
             </tr>
             {{/each}}

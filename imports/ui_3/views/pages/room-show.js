@@ -91,7 +91,7 @@ Template.Message_history.helpers({
     return Comments.find({ topicId: roomId }, { sort: { createdAt: 1 } });
   },
   ownMessage(comment) {
-    return comment.userId === Meteor.userId();
+    return comment.creatorId === Meteor.userId();
   },
 });
 
@@ -105,7 +105,6 @@ Template.Message_send.events({
     const topic = Topics.findOne(roomId);
     Meteor.call('comments.insert', {
       topicId: roomId,
-      userId: Meteor.userId(),
       text,
     },
     onSuccess((res) => {

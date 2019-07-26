@@ -2,8 +2,11 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/users/users.js';
@@ -47,8 +50,12 @@ Agendas.helpers({
 });
 
 Agendas.attachSchema(Agendas.schema);
-Agendas.attachSchema(Timestamps);
+Agendas.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Agendas.simpleSchema().i18n('schemaAgendas');
+});
+
+Factory.define('agenda', Agendas, {
+  title: () => `New agenda on ${faker.random.word()}`,
 });

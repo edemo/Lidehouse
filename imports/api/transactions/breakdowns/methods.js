@@ -1,5 +1,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { _ } from 'meteor/underscore';
 
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
@@ -63,6 +64,5 @@ export const remove = new ValidatedMethod({
   },
 });
 
-Breakdowns.methods = {
-  insert, update, clone, remove,
-};
+Breakdowns.methods = Breakdowns.methods || {};
+_.extend(Breakdowns.methods, { insert, update, clone, remove });

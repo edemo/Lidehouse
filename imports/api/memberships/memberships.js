@@ -6,17 +6,18 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Fraction } from 'fractional';
 import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but not included in tests
+import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { officerRoles, everyRole, Roles } from '/imports/api/permissions/roles.js';
-import { Factory } from 'meteor/dburles:factory';
+import { Roles, officerRoles, everyRole, permissionCategoryOf } from '/imports/api/permissions/roles.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Person, PersonSchema } from '/imports/api/users/person.js';
-import { ActivePeriodSchema } from '/imports/api/active-period.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
@@ -60,6 +61,8 @@ Memberships.schema = new SimpleSchema({
   benefactorship: { type: BenefactorshipSchema, optional: true },
 });
 
+Memberships.idSet = ['communityId', 'role', 'parcelId', 'person.idCard.name', 'person.contact.email'];
+
 Meteor.startup(function indexMemberships() {
   Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
   Memberships.ensureIndex({ personId: 1 }, { sparse: true });
@@ -89,6 +92,10 @@ Memberships.helpers({
     debugAssert(this.person);
     return new Person(this.person);
   },
+  user() {
+    debugAssert(this.person.userId);
+    return Meteor.users.findOne(this.person.userId);
+  },
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);
@@ -105,6 +112,9 @@ Memberships.helpers({
     if (!community) return undefined;
     return community.totalunits;
   },
+  permissionCategory() {
+    return permissionCategoryOf(this.role);
+  },
   isOwnership() {
     if (this.role === 'owner') return true;
     debugAssert(!this.ownership);
@@ -119,6 +129,14 @@ Memberships.helpers({
   },
   isRepresentor() {
     return (this.ownership && this.ownership.representor);
+  },
+  isRepresentedBySomeoneElse() {
+    if (!this.ownership) return false;
+    debugAssert(this.parcelId);
+    const parcel = Parcels.findOne(this.parcelId);
+    const representor = parcel.representor();
+    if (!representor || representor._id === this._id) return false;
+    return true;
   },
   votingUnits() {
     if (!this.parcel()) return 0;
@@ -141,8 +159,8 @@ Memberships.helpers({
 });
 
 Memberships.attachSchema(Memberships.schema);
-Memberships.attachSchema(ActivePeriodSchema);
-Memberships.attachSchema(Timestamps);
+Memberships.attachBehaviour(ActivePeriod);
+Memberships.attachBehaviour(Timestamped);
 
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
@@ -165,8 +183,7 @@ Memberships.modifiableFields = [
   'ownership.representor',
   'benefactorship.type',
   'personId',
-].concat(PersonSchema.modifiableFields)
-.concat(ActivePeriodSchema.fields);
+].concat(PersonSchema.modifiableFields);
 
 Factory.define('membership', Memberships, {
   communityId: () => Factory.get('community'),

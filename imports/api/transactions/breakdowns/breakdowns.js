@@ -5,19 +5,18 @@ import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Timestamps } from '/imports/api/timestamps.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
 
 function deepCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
-class BreakdownsCollection extends Mongo.Collection {
-  define(breakdown) {
-    return super.define({ communityId: breakdown.communityId, name: breakdown.name }, breakdown);
-  }
-}
-export const Breakdowns = new BreakdownsCollection('breakdowns');
+export const Breakdowns = new Mongo.Collection('breakdowns');
+
+Breakdowns.define = function define(doc) {
+  Breakdowns.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
+};
 
 Breakdowns.findOneByName = function findOneByName(name, communityId = getActiveCommunityId()) {
   const result = Breakdowns.findOne({ name, communityId })
@@ -42,8 +41,11 @@ Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) 
 };
 
 export let chooseBreakdown = {};
+export let chooseSubAccount = function () { return {}; };
+
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
+
   chooseBreakdown = {
     options() {
       const communityId = Session.get('activeCommunityId');
@@ -52,6 +54,17 @@ if (Meteor.isClient) {
       });
     },
     firstOption: () => __('(Select one)'),
+  };
+
+  chooseSubAccount = function (brk, nodeCode, leafsOnly = true) {
+    return {
+      options() {
+        const communityId = Session.get('activeCommunityId');
+        const breakdown = Breakdowns.findOneByName(brk, communityId);
+        return breakdown.nodeOptionsOf(nodeCode, leafsOnly);
+      },
+      firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
+    };
   };
 }
 
@@ -232,12 +245,12 @@ Breakdowns.helpers({
   nodeByCode(code) {
     if (!code) return this.root();
     const node = this.root()._nodeMap[code];
-    if (!node) throw new Meteor.Error(`Looking for ${code} in ${this.name}`, 'Cannot find breakdown node by code', JSON.stringify(this.root()._nodeMap));
+    if (!node) throw new Meteor.Error(`Looking for ${code} in ${this.name}`, 'Cannot find breakdown node by code', this.nodeNames());
     return node;
   },
   findNodeByName(name) {  // warning!! Name is not a unique id,  and searching is inefficient
     const node = this.nodes().find(l => l.name === name);
-    if (!node) throw new Meteor.Error(`Looking for ${name} in ${this.name}`, 'Cannot find breakdown node by name', JSON.stringify(this.nodes()));
+    if (!node) throw new Meteor.Error(`Looking for ${name} in ${this.name}`, 'Cannot find breakdown node by name', this.nodeNames());
     return node;
   },
   nodesOf(code, leafsOnly) {
@@ -280,7 +293,7 @@ Breakdowns.helpers({
 });
 
 Breakdowns.attachSchema(Breakdowns.schema);
-Breakdowns.attachSchema(Timestamps);
+Breakdowns.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Breakdowns.simpleSchema().i18n('schemaBreakdowns');

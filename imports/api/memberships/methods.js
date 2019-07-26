@@ -3,11 +3,25 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Accounts } from 'meteor/accounts-base';
 import { Random } from 'meteor/random';
-import rusdiff from 'rus-diff';
+import { _ } from 'meteor/underscore';
+
+import { permissionCategoryOf } from '/imports/api/permissions/roles.js';
 import { Log } from '/imports/utils/log.js';
-import { checkExists, checkNotExists, checkModifier, checkAddMemberPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from './memberships.js';
+
+function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
+  // Checks that *user* has permission to add new member in given *community*  
+  const user = Meteor.users.findOne(userId);
+  if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?)
+  const permissionName = permissionCategoryOf(roleOfNewMember) + '.update';
+  if (!user.hasPermission(permissionName, communityId)) {
+    throw new Meteor.Error('err_permissionDenied',
+      `No permission to add membership, roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
+  }
+}
 
 function checkParcelMembershipsSanity(parcelId) {
   if (!parcelId) return;
@@ -41,8 +55,8 @@ export const insert = new ValidatedMethod({
     if (!doc.approved) {
       // Users can submit non-approved membership requests, just for themselves
       if (doc.person.userId && doc.person.userId !== this.userId) {
-        throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
-            `memberships.insert: ${doc}, user: ${this.userId}`);
+        throw new Meteor.Error('err_permissionDenied',
+          `No permission to perform this activity: memberships.insert: ${doc}, user: ${this.userId}`);
       }
       // Nothing else to check. Things will be checked when it gets approved by community admin/manager.
     } else {
@@ -54,7 +68,7 @@ export const insert = new ValidatedMethod({
       const linkedUser = Meteor.users.findOne(doc.person.userId);
       const email = doc.person && doc.person.contact && doc.person.contact.email;
       if (email && linkedUser.emails[0].address !== email) {
-        throw new Meteor.Error('err_sanityCheckFailed', 'User and conact email doesnt match', `${linkedUser.emails[0].address} !== ${email}`);
+        throw new Meteor.Error('err_sanityCheckFailed', 'User and contact email doesnt match', `${linkedUser.emails[0].address} !== ${email}`);
       }
       if (linkedUser.emails[0].verified === false) {
         // maybe we should Accounts.sendEnrollmentEmail(doc.person.userId);
@@ -174,6 +188,6 @@ export const remove = new ValidatedMethod({
   },
 });
 
-Memberships.methods = {
-  insert, update, linkUser, accept, remove,
-};
+Memberships.methods = Memberships.methods || {};
+_.extend(Memberships.methods, { insert, update, linkUser, accept, remove });
+_.extend(Memberships.methods, crudBatchOps(Memberships));
