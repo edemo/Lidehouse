@@ -61,7 +61,7 @@ export class BatchTester extends ValidatedMethod {
     const options = {
       name: batchTesterName,
       validate: batchOperationSchema.validator({ clean: true }),
-      run(args) {
+      run({ args }) {
         checkPermissions(this.userId, batchUpsertName, args[0].communityId);
         if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
 

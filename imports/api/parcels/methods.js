@@ -10,6 +10,15 @@ import { Parcels } from './parcels.js';
 import { Memberships } from '../memberships/memberships.js';
 import { crudBatchOps } from '../batch-method.js';
 
+function checkCommunityParcelsSanity(communityId) {
+  const community = Communities.findOne(communityId);
+  const registeredUnits = community.registeredUnits();
+  if (registeredUnits > community.totalunits) {
+    throw new Meteor.Error('err_sanityCheckFailed', 'Registered units cannot exceed totalunits of community',
+    `Registered units: ${registeredUnits}, Total units: ${community.totalunits}`);
+  }
+}
+
 export const insert = new ValidatedMethod({
   name: 'parcels.insert',
   validate: Parcels.simpleSchema().validator({ clean: true }),
@@ -25,16 +34,17 @@ export const insert = new ValidatedMethod({
       // Nothing to check. Things will be checked when it gets approved by community admin/manager.
     } else {
       checkPermissions(this.userId, 'parcels.insert', doc.communityId);
-      const total = community.registeredUnits();
-      const newTotal = total + doc.units;
-      const totalunits = community.totalunits;
-      if (newTotal > totalunits) {
-        throw new Meteor.Error('err_sanityCheckFailed', 'Registered units cannot exceed totalunits of community',
-        `Registered units: ${total}/${totalunits}, With new unit: ${newTotal}/${totalunits}`);
-      }
     }
 
-    return Parcels.insert(doc);
+    // Try the operation, and if it produces an insane state, revert it
+    const _id = Parcels.insert(doc);
+    try {
+      checkCommunityParcelsSanity(doc.communityId);
+    } catch (err) {
+      Parcels.remove(_id);
+      throw err;
+    }
+    return _id;
   },
 });
 
@@ -50,15 +60,16 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['communityId'], true);
     checkNotExists(Parcels, { _id: { $ne: doc._id }, communityId: doc.communityId, ref: modifier.$set.ref });
     checkPermissions(this.userId, 'parcels.update', doc.communityId);
-    const community = Communities.findOne(doc.communityId);
-    const total = community.registeredUnits();
-    const newTotal = (total - doc.units) + modifier.$set.units;
-    const totalunits = community.totalunits;
-    if (newTotal > totalunits) {
-      throw new Meteor.Error('err_sanityCheckFailed', 'Registered units cannot exceed totalunits of community',
-      `Registered units: ${total}/${totalunits}, With new unit: ${newTotal}/${totalunits}`);
+
+    // Try the operation, and if it produces an insane state, revert it
+    const result = Parcels.update({ _id }, modifier);
+    try {
+      checkCommunityParcelsSanity(doc.communityId);
+    } catch (err) {
+      Parcels.update({ _id }, { $set: doc });
+      throw err;
     }
-    Parcels.update({ _id }, modifier);
+    return result;
   },
 });
 

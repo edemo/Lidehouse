@@ -55,7 +55,7 @@ if (Meteor.isServer) {
       let commentId;
       let otherTopicId;
       let userId;
-      let otherUserId;
+      let managerId;
 
       describe('notifications', function () {
         before(function () {
@@ -64,22 +64,15 @@ if (Meteor.isServer) {
           Comments.remove({});
 
           userId = Fixture.demoUserId;
-          otherUserId = Fixture.demoManagerId;
+          managerId = Fixture.demoManagerId;
 
           // Create a topic
-          topicId = Topics.methods.insert._execute({ userId: otherUserId }, {
-            communityId: Fixture.demoCommunityId,
-            category: 'forum',
-            status: 'opened',
-            title: 'Just a topic',
-            text: 'Not much to say',
-          });
+          topicId = Fixture.builder.create('forum', { creatorId: managerId });
         });
 
         it('notifies on new topic', function (done) {
           const topic = Topics.findOne(topicId);
-          console.log(topic);
-          chai.assert.equal(topic.creatorId, otherUserId);
+          chai.assert.equal(topic.creatorId, managerId);
           chai.assert.isTrue(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
           done();
         });
@@ -93,20 +86,15 @@ if (Meteor.isServer) {
         });
 
         it('doesn\'t notify on own topic', function (done) {
-          const myTopicId = Topics.methods.insert._execute({ userId }, {
-            communityId: Fixture.demoCommunityId,
-            category: 'forum',
-            status: 'opened',
-            title: 'This is my topic',
-            text: 'My thoughts are here',
-          });
+          const myTopicId = Fixture.builder.create('forum', { creatorId: userId });
           const topic = Topics.findOne(myTopicId);
           chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
           done();
         });
 
         it('notifies on new comment', function (done) {
-          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, text: 'comment 1' });
+          Fixture.builder.create('comment', {
+            creatorId: managerId, topicId, text: 'comment 1' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.isFalse(topic.isUnseenBy(userId, Meteor.users.SEEN_BY.NOTI));
@@ -125,8 +113,10 @@ if (Meteor.isServer) {
         });
 
         it('notifies on several new comments', function (done) {
-          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, text: 'comment 2' });
-          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, text: 'comment 3' });
+          Fixture.builder.create('comment', {
+            creatorId: managerId, topicId, text: 'comment 2' });
+          Fixture.builder.create('comment', {
+            creatorId: managerId, topicId, text: 'comment 3' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 2);
@@ -146,8 +136,9 @@ if (Meteor.isServer) {
 
         it('notifies on new comment even if meanwhile there is a deleted comment', function (done) {
           const deleteComment = Comments.findOne({ text: 'comment 3' });
-          Comments.methods.remove._execute({ userId: otherUserId }, { _id: deleteComment._id });
-          Comments.methods.insert._execute({ userId: otherUserId }, { topicId, text: 'comment 4' });
+          Fixture.builder.execute(Comments.methods.remove, { _id: deleteComment._id });
+          Fixture.builder.create('comment', {
+            creatorId: managerId, topicId, text: 'comment 4' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 1);
@@ -157,7 +148,8 @@ if (Meteor.isServer) {
         });
 
         it('doesn\'t notify on own comment', function (done) {
-          Comments.methods.insert._execute({ userId }, { topicId, text: 'comment 5' });
+          Fixture.builder.create('comment', {
+            creatorId: userId, topicId, text: 'comment 5' });
 
           const topic = Topics.findOne(topicId);
           chai.assert.equal(topic.unseenCommentCountBy(userId, Meteor.users.SEEN_BY.NOTI), 0);
@@ -186,20 +178,13 @@ if (Meteor.isServer) {
           Comments.remove({});
 
           // Create a ticket
-          topicId = Topics.methods.insert._execute({ userId: otherUserId },
-            Fixture.builder.build('ticket', {})
-          );
+          topicId = Fixture.builder.create('ticket', { creatorId: managerId });
         });
 
         it('doesn\'t let you change the status if you don\'t have the right permission', function (done) {
           chai.assert.throws(() => {
-            const data = {
-              localizer: 'At the basement',
-              expectedCost: 5000,
-              expectedStart: moment().toDate(),
-              expectedFinish: moment().add(1, 'weeks').toDate(),
-            };
-            Topics.methods.statusChange._execute({ userId }, { topicId, type: 'statusChangeTo', status: 'confirmed', data });
+            Fixture.builder.execute(Topics.methods.statusChange, {
+              topicId, status: 'confirmed', data: {} }, userId);  // user is just owner
           }, 'err_permissionDenied');
           done();
         });
@@ -207,8 +192,8 @@ if (Meteor.isServer) {
         it('doesn\'t let you change the status outside the workflow', function (done) {
           chai.assert.throws(() => {
             const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
-            userId = Fixture.demoManagerId;
-            Topics.methods.statusChange._execute({ userId }, { topicId, type: 'statusChangeTo', status: 'progressing', data });
+            Fixture.builder.execute(Topics.methods.statusChange, {
+              topicId, status: 'finished', data });
           }, 'err_permissionDenied');
           done();
         });
@@ -220,7 +205,8 @@ if (Meteor.isServer) {
             expectedStart: moment().toDate(),
             expectedFinish: moment().add(1, 'weeks').toDate(),
           };
-          Topics.methods.statusChange._execute({ userId }, { topicId, type: 'statusChangeTo', status: 'confirmed', data });
+          Fixture.builder.execute(Topics.methods.statusChange, {
+            topicId, status: 'confirmed', data });
           done();
         });
 

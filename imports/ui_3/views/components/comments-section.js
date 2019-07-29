@@ -1,9 +1,9 @@
-/* globals document */
+/* globals document Waypoint */
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-/* globals Waypoint */
+import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { Topics } from '/imports/api/topics/topics.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -119,6 +119,13 @@ Template.Comment.events({
     Meteor.setTimeout(() => element.find('textarea')[0].focus(), 100);
     instance.viewmodel.editing(true);
   },
+  'click .js-move'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.comment.move',
+      schema: Comments.moveSchema,
+      doc: { _id: instance.data._id },
+    });
+  },
   'click .js-delete'(event, instance) {
     Modal.confirmAndCall(Comments.methods.remove, { _id: this._id }, {
       action: 'delete comment',
@@ -140,5 +147,14 @@ Template.Comment.events({
     if (event.keyCode === 27) {
       instance.viewmodel.editing(false);
     }
+  },
+});
+
+AutoForm.addModalHooks('af.comment.move');
+AutoForm.addHooks('af.comment.move', {
+  onSubmit(doc) {
+    AutoForm.validateForm('af.comment.move');
+    Comments.methods.move.call(doc, handleError);
+    return true;
   },
 });

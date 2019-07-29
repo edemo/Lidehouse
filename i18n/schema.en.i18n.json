@@ -407,6 +407,15 @@
       }
     }
   },
+  "schemaComments": {
+    "text": {
+      "label": "Text",
+      "placeholder": "My comment here..."
+    },
+    "destinationId": {
+      "label": "Move this over to:"
+    }
+  },
   "schemaBreakdowns": {
     "digit": {
       "label": "Code"

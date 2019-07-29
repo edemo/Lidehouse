@@ -47,9 +47,15 @@ export function insertUnittestFixture(lang) {
     name: 'Another community',
   })._id;
 
-// ===== Parcels =====
   const demoBuilder = new CommunityBuilder(demoCommunityId, 'test', lang);
   const otherBuilder = new CommunityBuilder(otherCommunityId, 'test', lang);
+
+  const com = { en: 'com', hu: 'hu' }[lang];
+  const demoManagerId = demoBuilder.createLoginableUser('manager');
+  const demoAdminId = demoBuilder.createLoginableUser('admin');
+  const demoAccountantId = demoBuilder.createLoginableUser('accountant');
+
+// ===== Parcels =====
 
   const dummyParcels = [];
   dummyParcels[0] = demoBuilder.createParcel({
@@ -88,12 +94,8 @@ export function insertUnittestFixture(lang) {
     area: 70,
   });
 
-  // ===== Demo Users with Memberships =====
+  // ===== Demo owners =====
 
-  const com = { en: 'com', hu: 'hu' }[lang];
-  const demoManagerId = demoBuilder.createLoginableUser('manager');
-  const demoAdminId = demoBuilder.createLoginableUser('admin');
-  const demoAccountantId = demoBuilder.createLoginableUser('accountant');
   const demoUserId = demoBuilder.createLoginableUser('owner', undefined, { parcelId: dummyParcels[0], ownership: { share: new Fraction(1, 10) } });
   const demoBenefactorId = demoBuilder.createLoginableUser('benefactor', undefined, { parcelId: dummyParcels[0], benefactorship: { type: 'rental' } });
 
@@ -191,26 +193,10 @@ export function insertUnittestFixture(lang) {
 
   // ===== Forum =====
 
-  // The dummy users comment one after the other, round robin style
-  let nextUserIndex = 1;
-  function sameUser() {
-    return dummyUsers[nextUserIndex];
-  }
-  function nextUser() {
-    nextUserIndex += 7; // relative prime
-    nextUserIndex %= dummyUsers.length;
-    return dummyUsers[nextUserIndex];
-  }
-
   ['0', '1', '2'].forEach((topicNo) => {
-    const topicId = demoBuilder.create('forum', {
-      creatorId: nextUser(),
-    });
+    const topicId = demoBuilder.create('forum', {});
     ['0', '1', '2'].forEach((commentNo) => {
-      Comments.insert({
-        topicId,
-        creatorId: (topicNo == 2 && commentNo == 2) ? sameUser() : nextUser(),
-      });
+      demoBuilder.create('comment', { topicId });
     });
   });
 
@@ -218,7 +204,6 @@ export function insertUnittestFixture(lang) {
 
   ['0', '1', '2'].forEach((topicNo) => {
     const topicId = demoBuilder.create('news', {
-      creatorId: dummyUsers[0],
       sticky: topicNo == 2,
     });
   });
@@ -229,7 +214,6 @@ export function insertUnittestFixture(lang) {
   const voterships = demoCommunity.voterships();
 
   const voteTopic0 = demoBuilder.create('vote', {
-    creatorId: demoUserId,
     agendaId,
     closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
     vote: {
@@ -244,10 +228,9 @@ export function insertUnittestFixture(lang) {
   castVote._execute({ userId: voterships[2].personId }, { topicId: voteTopic0, castedVote: [2] });  // no
   castVote._execute({ userId: voterships[3].personId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
 
-  demoBuilder.statusChange({ topicId: voteTopic0, status: 'closed' });
+  demoBuilder.execute(Topics.methods.statusChange, { topicId: voteTopic0, status: 'closed' });
 
   const voteTopic1 = demoBuilder.create('vote', {
-    creatorId: nextUser(),
     agendaId,
     closesAt: moment().add(2, 'week').toDate(),
     vote: {
@@ -260,7 +243,6 @@ export function insertUnittestFixture(lang) {
   // No one voted on this yet
 
   const voteTopic2 = demoBuilder.create('vote', {
-    creatorId: nextUser(),
     // not part of any agenda
   });
 
@@ -269,18 +251,15 @@ export function insertUnittestFixture(lang) {
   castVote._execute({ userId: voterships[3].personId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
 
   ['0', '1'].forEach(commentNo =>
-    demoBuilder.createComment({
+    demoBuilder.create('comment', {
       topicId: voteTopic2,
-      creatorId: nextUser(),
     })
   );
 
   // ===== Tickets =====
 
   ['0', '1', '2'].forEach((topicNo) => {
-    const topicId = demoBuilder.create('ticket', {
-      creatorId: nextUser(),
-    });
+    const topicId = demoBuilder.create('ticket', {});
   });
 
   // ===== Rooms =====
@@ -290,31 +269,18 @@ export function insertUnittestFixture(lang) {
     creatorId: demoUserId,
     participantIds: [demoUserId, chatPartnerId],
   });
-  demoBuilder.createComment({
+  demoBuilder.create('comment', {
     creatorId: chatPartnerId,
     topicId: demoMessageRoom,
   });
-  demoBuilder.createComment({
+  demoBuilder.create('comment', {
     creatorId: demoUserId,
     topicId: demoMessageRoom,
   });
 
   // ===== Breakdowns =====
-  const breakdownsToClone = ['Owner payin types', 'Incomes', 'Expenses', 'Assets', 'Liabilities', 'COA', 'Places', 'Localizer'];
-  breakdownsToClone.forEach((breakdownName) => {
-    Breakdowns.methods.clone._execute(
-      { userId: demoAccountantId },
-      { name: breakdownName, communityId: demoCommunityId },
-    );
-  });
-  const txDefsToClone = TxDefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
-  txDefsToClone.forEach((txDefName) => {
-    TxDefs.methods.clone._execute(
-      { userId: demoAccountantId },
-      { name: txDefName, communityId: demoCommunityId },
-    );
-  });
-  Localizer.generateParcels(demoCommunityId, lang);
+
+  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
 
   // ===== Transactions =====
 
