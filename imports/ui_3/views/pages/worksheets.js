@@ -280,4 +280,13 @@ Template.Worksheets.events({ ...TicketEventHandlers,
   'click .js-cancel-calendar'(event, instance) {
     instance.viewmodel.eventsToUpdate({});
   },
+  'click .fc-widget-content'(event) {
+    event.stopPropagation();
+    const pageHeading = $('.page-heading').height();
+    const navbar = $('.navbar').height();
+    const top = event.pageY - pageHeading - navbar;
+    const left = event.pageX - $('#fullCalendar').offset().left;
+    $('#floating-dropdown').css({left, top});
+    $('#floating-dropdown').toggleClass('open');
+  },
 });
