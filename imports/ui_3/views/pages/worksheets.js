@@ -17,7 +17,7 @@ import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 //import { momentWithoutTZ } from '/imports/api/utils.js';
-import { TicketEventHandlers, afTicketUpdateModal } from '/imports/ui_3/views/components/tickets-edit.js';
+import { TicketEventHandlers, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
@@ -35,6 +35,9 @@ Template.Worksheets.onDestroyed(function onDestroyed() {
 });
 
 Template.Worksheets.viewmodel({
+  possibleNextStatuses: [],
+  ticketModify: false,
+  eventId:'',
   eventsToUpdate: {},
   calendarView: false,
   showNeedToSaveWarning: true,
@@ -88,7 +91,8 @@ Template.Worksheets.viewmodel({
         right: 'month,agendaWeek,agendaDay',
       },
       eventClick(eventObject) {
-        afTicketUpdateModal(eventObject.id, 'statusUpdate');
+        viewmodel.eventId(eventObject.id);
+        //afTicketUpdateModal(eventObject.id, 'statusUpdate');
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
         viewmodel.addEventsToUpdate(eventObject);
@@ -121,6 +125,7 @@ Template.Worksheets.viewmodel({
             end,
             color: Tickets.statuses[t.status].colorCode,
             id: t._id,
+            status: t.status,
           };
         });
         // I need this nested loop, cause the objects in the 2 arrays are not identical.
@@ -150,6 +155,9 @@ Template.Worksheets.viewmodel({
   },
   ticketTypes() {
     return Tickets.typeValues;
+  },
+  ticketEvents() {
+    return Tickets.events;
   },
   hasFilters() {
     if (this.searchText() ||
@@ -289,11 +297,20 @@ Template.Worksheets.events({ ...TicketEventHandlers,
   'click .js-cancel-calendar'(event, instance) {
     instance.viewmodel.eventsToUpdate({});
   },
-  'click .fc-event-container'(event) {
+  'click .fc-event-container'(event, instance) {
     event.stopPropagation();
+    instance.viewmodel.ticketModify(true);
+    instance.viewmodel.possibleNextStatuses([]);
+    const pageHeading = $('.page-heading').height();
+    const navbar = $('.navbar').height();
+    const top = event.pageY - pageHeading - navbar;
+    const left = event.pageX - $('#fullCalendar').offset().left;
+    $('#floating-dropdown').css({left, top});
+    $('#floating-dropdown').toggleClass('open');
   },
-  'click .fc-widget-content'(event) {
+  'click .fc-widget-content'(event, instance) {
     event.stopPropagation();
+    instance.viewmodel.ticketModify(false);
     const pageHeading = $('.page-heading').height();
     const navbar = $('.navbar').height();
     const top = event.pageY - pageHeading - navbar;
@@ -303,5 +320,33 @@ Template.Worksheets.events({ ...TicketEventHandlers,
   },
   'click #floating-dropdown .dropdown-menu .js-new'() {
     $('#floating-dropdown').removeClass('open');
+  },
+  'click .js-modify'(event, instance) {
+    const ticketEvent = $(event.target).closest('[data-event]').data('event');
+    const eventId = instance.viewmodel.eventId();
+    const ticket = Topics.findOne(eventId);
+    switch (ticketEvent) {
+      case 'update':
+          $('#floating-dropdown').removeClass('open');
+          afTicketUpdateModal(eventId, 'update');
+          break;
+      case 'statusUpdate':
+          $('#floating-dropdown').removeClass('open');
+          afTicketUpdateModal(eventId, 'statusUpdate');
+          break;
+      case 'statusChange':
+          instance.viewmodel.possibleNextStatuses(ticket.possibleNextStatuses());
+          break;
+      case 'delete':
+          $('#floating-dropdown').removeClass('open');
+          deleteTicketConfirmAndCallModal(eventId);
+      default: break;
+    }
+  },
+  'click .js-next-status'(event, instance) {
+    $('#floating-dropdown').removeClass('open');
+    const eventId = instance.viewmodel.eventId();
+    const status = $(event.target).closest('[data-status]').data('status');
+    afTicketStatusChangeModal(eventId, status);
   },
 });

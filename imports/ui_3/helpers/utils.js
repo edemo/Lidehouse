@@ -33,6 +33,10 @@ Template.registerHelper('isNotEmptyObject', function isNotEmptyObject(object) {
     return !_.isEmpty(object);
 });
 
+Template.registerHelper('isNotEmptyArray', function isNotEmptyArray(object) {
+    return object.length > 0;
+});
+
 Template.registerHelper('round', function round(number, digits) {
     return number.toFixed(digits);
 });
