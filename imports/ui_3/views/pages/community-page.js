@@ -111,7 +111,9 @@ Template.Community_page.viewmodel({
     return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } }, { sort: { createdAt: 1 } }).fetch();
   },
   officers() {
-    return this.leaders().concat(this.nonLeaders());
+    const officers = this.leaders().concat(this.nonLeaders());
+    officers.push(officers.shift());  // put admin from front to the end
+    return officers;
   },
   ownerships() {
     const communityId = this.communityId();
