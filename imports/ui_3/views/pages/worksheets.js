@@ -287,6 +287,9 @@ Template.Worksheets.events({ ...TicketEventHandlers,
   'click .js-cancel-calendar'(event, instance) {
     instance.viewmodel.eventsToUpdate({});
   },
+  'click .fc-event-container'(event) {
+    event.stopPropagation();
+  },
   'click .fc-widget-content'(event) {
     event.stopPropagation();
     const pageHeading = $('.page-heading').height();
@@ -297,6 +300,6 @@ Template.Worksheets.events({ ...TicketEventHandlers,
     $('#floating-dropdown').toggleClass('open');
   },
   'click #floating-dropdown .dropdown-menu .js-new'() {
-    $('#floating-dropdown').toggleClass('open');
+    $('#floating-dropdown').removeClass('open');
   },
 });
