@@ -113,10 +113,12 @@ Template.Worksheets.viewmodel({
       },*/
       events(start, end, timezone, callback) {
         const events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
+        const start = t.ticket.actualStart ? t.ticket.actualStart : t.ticket.expectedStart;
+        const end = t.ticket.actualFinish ? t.ticket.actualFinish : t.ticket.expectedFinish;
           return {
             title: t.title,
-            start: t.ticket.expectedStart,
-            end: t.ticket.expectedFinish,
+            start,
+            end,
             color: Tickets.statuses[t.status].colorCode,
             id: t._id,
           };
