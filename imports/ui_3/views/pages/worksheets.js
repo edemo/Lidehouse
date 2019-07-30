@@ -296,4 +296,7 @@ Template.Worksheets.events({ ...TicketEventHandlers,
     $('#floating-dropdown').css({left, top});
     $('#floating-dropdown').toggleClass('open');
   },
+  'click #floating-dropdown .dropdown-menu .js-new'() {
+    $('#floating-dropdown').toggleClass('open');
+  },
 });
