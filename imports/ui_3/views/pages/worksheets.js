@@ -30,6 +30,10 @@ Template.Worksheets.onCreated(function onCreated() {
   );
 });
 
+Template.Worksheets.onDestroyed(function onDestroyed() {
+  Session.set('expectedStart', undefined);
+});
+
 Template.Worksheets.viewmodel({
   eventsToUpdate: {},
   calendarView: false,
@@ -93,6 +97,9 @@ Template.Worksheets.viewmodel({
       eventDrop(eventObject) {
         viewmodel.addEventsToUpdate(eventObject);
         viewmodel.warnToSave();
+      },
+      dayClick(date, allDay, jsEvent, view) {
+        Session.set('expectedStart', date.toDate());
       },
       editable: true,
       /*
