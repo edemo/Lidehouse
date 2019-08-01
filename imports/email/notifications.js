@@ -10,9 +10,8 @@ import { Communities } from '../api/communities/communities';
 
 function sendNotifications(user) {
   user.communities().forEach((community) => {
-    const topics = Topics.topicsNeedingAttention(user._id, community._id, Meteor.users.SEEN_BY.NOTI)
-      .sort((t1, t2) => Topics.categoryValues.indexOf(t2.category) - Topics.categoryValues.indexOf(t1.category));
-    if (topics.length > 0) {
+    const topicsWithEvents = Topics.topicsWithUnseenEvents(user._id, community._id, Meteor.users.SEEN_BY.NOTI);
+    if (topicsWithEvents.length > 0) {
       emailSender.sendHTML({
         to: user.getPrimaryEmail(),
         subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
@@ -20,12 +19,12 @@ function sendNotifications(user) {
         data: {
           userId: user._id,
           communityId: community._id,
-          topics,
+          topicsWithEvents,
         },
       });
-      topics.forEach((topic) => {
+      topicsWithEvents.forEach((te) => {
         const lastSeenInfo = { timestamp: new Date() };
-        updateMyLastSeen._execute({ userId: user._id }, { topicId: topic._id, lastSeenInfo, seenType: Meteor.users.SEEN_BY.NOTI });
+        updateMyLastSeen._execute({ userId: user._id }, { topicId: te.topic._id, lastSeenInfo, seenType: Meteor.users.SEEN_BY.NOTI });
       });
     }
   });
