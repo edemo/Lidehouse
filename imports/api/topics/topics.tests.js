@@ -55,7 +55,7 @@ if (Meteor.isServer) {
       let userId;
       let otherUserId;
 
-      describe('notifications', function () {
+      describe('isUnseen', function () {
         before(function () {
           // Clear
           Topics.remove({});
@@ -170,10 +170,14 @@ if (Meteor.isServer) {
           chai.assert.equal(unseenComments[0].text, 'comment 1');
           chai.assert.equal(unseenComments[1].text, 'comment 2');
           chai.assert.equal(unseenComments[2].text, 'comment 4');   // 3 was deleted
-          chai.assert.equal(unseenComments[3].text, 'comment 5'); 
+          chai.assert.equal(unseenComments[3].text, 'comment 5');
           done();
         });
       });
+    });
+  });
+}
+
       /*
       describe('rate limiting', function () {
         it('does not allow more than 5 operations rapidly', function () {
@@ -191,6 +195,3 @@ if (Meteor.isServer) {
         });
       });
       */
-    });
-  });
-}

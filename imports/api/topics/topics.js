@@ -44,6 +44,7 @@ Meteor.startup(function indexTopics() {
     Topics._collection._ensureIndex(['title', 'participantIds']);
   } else if (Meteor.isServer) {
     Topics._ensureIndex({ communityId: 1, category: 1, createdAt: -1 });
+    Topics._ensureIndex({ communityId: 1, participantIds: 1 });
   }
 });
 
@@ -150,10 +151,18 @@ Topics.helpers({
 });
 
 Topics.topicsWithUnseenEvents = function topicsWithUnseenEvents(userId, communityId, seenType) {
-  return Topics.find({ communityId, closed: false })
-    .map(topic => topic.unseenEventsBy(userId, seenType))
-    .filter(t => t.hasThingsToDisplay())
-    .sort((t1, t2) => Topics.categoryValues.indexOf(t2.topic.category) - Topics.categoryValues.indexOf(t1.topic.category));
+  debugAssert(userId);
+  debugAssert(communityId);
+  debugAssert(seenType);
+  return Topics.find({ communityId, closed: false,
+    $or: [
+      { participantIds: { $exists: false } },
+      { participantIds: userId },
+    ],
+  })
+  .map(topic => topic.unseenEventsBy(userId, seenType))
+  .filter(t => t.hasThingsToDisplay())
+  .sort((t1, t2) => Topics.categoryValues.indexOf(t2.topic.category) - Topics.categoryValues.indexOf(t1.topic.category));
 };
 
 Topics.helpers(likesHelpers);
