@@ -57,7 +57,7 @@ if (Meteor.isServer) {
       let userId;
       let managerId;
 
-      describe('notifications', function () {
+      describe('isUnseen', function () {
         before(function () {
           // Clear
           Topics.remove({});
@@ -217,6 +217,10 @@ if (Meteor.isServer) {
           done();
         });
       });
+    });
+  });
+}
+
       /*
       describe('rate limiting', function () {
         it('does not allow more than 5 operations rapidly', function () {
@@ -234,6 +238,3 @@ if (Meteor.isServer) {
         });
       });
       */
-    });
-  });
-}
