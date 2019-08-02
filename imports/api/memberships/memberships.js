@@ -10,7 +10,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Roles, officerRoles, everyRole, permissionCategoryOf } from '/imports/api/permissions/roles.js';
+import { officerRoles, everyRole, Roles, ranks } from '/imports/api/permissions/roles.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -49,6 +49,7 @@ Memberships.schema = new SimpleSchema({
       firstOption: () => __('(Select one)'),
     },
   },
+  rank: { type: String, optional: true, allowedValues: ranks, autoform: autoformOptions(ranks) },
   person: { type: PersonSchema },
   personId: { type: String, optional: true, autoform: { omit: true },
     autoValue() {
@@ -178,6 +179,7 @@ Memberships.publicFields = {
 };
 
 Memberships.modifiableFields = [
+  // 'role' and 'parcelId' are definitely not allowed to change! - you should create new Membership in that case
   'ownership.share',
   'ownership.representor',
   'benefactorship.type',

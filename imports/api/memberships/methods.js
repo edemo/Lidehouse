@@ -23,19 +23,28 @@ function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
   }
 }
 
-function checkSanityOfTotalShare(parcel, totalShare, representorCount) {
-  if (totalShare.numerator > totalShare.denominator) {
-    throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1',
-      `New total shares would become: ${totalShare}, for parcel ${parcel._id}`);
-  }
-  if (representorCount > 1) {
-    throw new Meteor.Error('err_sanityCheckFailed', 'Parcel can have only one representor',
-      `Trying to set ${representorCount} for parcel ${parcel._id}`);
-  }
-  if (parcel.isLed()) {
+function checkParcelMembershipsSanity(parcelId) {
+  if (!parcelId) return;
+  const parcel = Parcels.findOne(parcelId);
+  // Parcel cannot be led and have owners at the same time (because led means, the owners are set on the lead parcel)
+  if (parcel.isLed() && parcel.owners().count() > 0) {
     throw new Meteor.Error('err_sanityCheckFailed', 'Parcel cannot have lead and owners at the same time',
       `for parcel ${parcel._id}`);
   }
+  // Parcel can have only one representor
+  const representorsCount = parcel.representors().count();
+  if (representorsCount > 1) {
+    throw new Meteor.Error('err_sanityCheckFailed', 'Parcel can have only one representor',
+      `Trying to set ${representorsCount} for parcel ${parcel._id}`);
+  }
+  // Ownership share cannot exceed 1
+  const ownedShare = parcel.ownedShare();
+  if (ownedShare.numerator > ownedShare.denominator) {
+    throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1',
+      `New total shares would become: ${ownedShare}, for parcel ${parcel._id}`);
+  }
+  // Following check is not good, if we have activePeriods (same guy can have same role at a different time)
+  // checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, person: doc.person });
 }
 
 export const insert = new ValidatedMethod({
@@ -52,18 +61,10 @@ export const insert = new ValidatedMethod({
       // Nothing else to check. Things will be checked when it gets approved by community admin/manager.
     } else {
       checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
-      // This check is not good, if we have activePeriods (same guy can have same role at a different time)
-      // checkNotExists(Memberships, { communityId: doc.communityId, role: doc.role, parcelId: doc.parcelId, person: doc.person });
-      if (doc.role === 'owner' && doc.active) {
-        const parcel = Parcels.findOne({ _id: doc.parcelId });
-        const total = parcel.ownedShare();
-        const newTotal = total.add(doc.ownership.share);
-        const representorCount = parcel.representors().count();
-        const newRepresentorCount = representorCount + doc.ownership.representor ? 1 : 0;
-        checkSanityOfTotalShare(parcel, newTotal, newRepresentorCount);
-      }
     }
-    if (doc.person.userId) {  // Tryng to create a linked membership
+
+    // Link user if there is one specified
+    if (doc.person.userId) {
       const linkedUser = Meteor.users.findOne(doc.person.userId);
       const email = doc.person && doc.person.contact && doc.person.contact.email;
       if (email && linkedUser.emails[0].address !== email) {
@@ -76,7 +77,16 @@ export const insert = new ValidatedMethod({
         doc.accepted = true; // now we auto-accept it for him (if he is already verified user)
       }
     }
-    return Memberships.insert(doc);
+
+    // Try the operation, and if it produces an insane state, revert it
+    const _id = Memberships.insert(doc);
+    try {
+      checkParcelMembershipsSanity(doc.parcelId);
+    } catch (err) {
+      Memberships.remove(_id);
+      throw err;
+    }
+    return _id;
   },
 });
 
@@ -91,21 +101,16 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));  // userId not allowed to change!
-    const newrole = modifier.$set.role;
-    if (newrole && newrole !== doc.role) {
-      checkAddMemberPermissions(this.userId, doc.communityId, newrole);
+
+    // Try the operation, and if it produces an insane state, revert it
+    const result = Memberships.update({ _id }, modifier);
+    try {
+      checkParcelMembershipsSanity(doc.parcelId);
+    } catch (err) {
+      Memberships.update({ _id }, { $set: doc });
+      throw err;
     }
-    if (doc.role === 'owner' && (modifier.$set.active || doc.active)) {
-      const parcel = Parcels.findOne({ _id: doc.parcelId });
-      const total = parcel.ownedShare();
-      const newTotal = total.subtract(doc.active ? doc.ownership.share : 0).add(modifier.$set['ownership.share']);
-      const representorCount = parcel.representors().count();
-      const newRepresentorCount = representorCount - (doc.active && doc.ownership.representor ? 1 : 0) + (modifier.$set['ownership.representor'] ? 1 : 0);
-      checkSanityOfTotalShare(parcel, newTotal, newRepresentorCount);
-    }
-    // This check is not good, if we have activePeriods (same guy can have same role at a different time)
-    // checkNotExists(Memberships, { _id: { $ne: doc._id }, communityId: doc.communityId, role: newrole, parcelId: doc.parcelId, person: newPerson });
-    Memberships.update({ _id }, modifier);
+    return result;
   },
 });
 

@@ -116,7 +116,7 @@ if (Meteor.isServer) {
       it('Emails about new statusChange event', function () {
         const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
         Topics.methods.statusChange._execute({ userId: demoManager._id }, 
-          { topicId: ticketId, type: 'statusChangeTo', status: 'confirmed', data });
+          { topicId: ticketId, status: 'confirmed', data });
         processNotifications('daily');
         sinon.assert.calledTwice(emailSender.sendHTML);
       });
