@@ -199,6 +199,7 @@ const hu = {
       "Please verify your email first. Check the email and follow the link!": "Az ön email címe még nincs megerősítve. Emailben elküldtük önnek a megerősítéshez szükséges link-et.",
       "Already verified": "Az email cím már korábban meg lett erősítve",
       "Token expired": "Lejárt token",
+      "Login forbidden": "Sikertelen bejelentkezés",
     },
   },
   // These transations are there, but not good enough

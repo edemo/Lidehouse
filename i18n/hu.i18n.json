@@ -51,7 +51,10 @@
   "delegate": "meghatalmazott",
   "maintainer": "gondnok",
   "guest": "vendég",
-
+  // ranks
+  "assistant": "asszisztens",
+  "chairman": "elnök",
+  
   "Leaders": "Vezetők",
   "Other roles": "Egyéb tisztségek",
 
@@ -172,6 +175,7 @@
   "Unblock content": "Hozzászólás engedélyezése",
   "Start topic": "Téma indítása",
   "change": "Megváltoztatás",
+  "move": "Áthelyezés",
   "revoke": "Visszavonás",
   "close topic": "Lezárás",
   "invite": "Meghívás",
@@ -606,6 +610,7 @@
   "update ticket successful": "Hibajegy módosítva",
   "delete ticket successful": "Hibajegy törölve",
   "statusChange ticket successful": "Hibajegy státusza megváltoztatva",
+  "move comment successful": "Hozzászólás áthelyezve",
   "enable delegations successful": "Bejövő meghatalmazások engedélyezve",
   "disable delegations successful": "Bejövő meghatalmazások visszautasítva",
   "insert delegation successful": "Meghatalmazás aktiválva",

@@ -3,7 +3,10 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 
+import { Clock } from '/imports/utils/clock.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { AccountSchema } from '/imports/api/transactions/account-specification.js';
@@ -192,4 +195,8 @@ Transactions.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Transactions.simpleSchema().i18n('schemaTransactions');
+});
+
+Factory.define('tx', Transactions, {
+  valueDate: () => Clock.currentDate(),
 });

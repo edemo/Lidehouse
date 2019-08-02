@@ -30,6 +30,8 @@ import '/imports/api/topics/rooms/rooms.js';
 import { Clock } from '/imports/utils/clock';
 import { CommunityBuilder, DemoCommunityBuilder } from './community-builder.js';
 
+const statusChange = Topics.methods.statusChange;
+
 export function insertDemoHouse(lang, demoOrTest) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
 
@@ -59,6 +61,15 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   const demoBuilder = new CommunityBuilder(demoCommunityId, demoOrTest, lang);
+
+  const demoManagerId = demoBuilder.createLoginableUser('manager', {
+    avatar: '/images/avatars/avatar20.jpg',
+    'profile.phone': '06 60 555 4321',
+  });
+  const demoAdminId = demoBuilder.createLoginableUser('admin', {
+    avatar: '/images/avatars/avatar21.jpg',
+    'profile.phone': '06 60 762 7288',
+  });
 
 // ===== Parcels =====
 
@@ -317,16 +328,6 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ==== Loginable users with Roles =====
 
-  const demoManagerId = demoBuilder.createLoginableUser('manager', {
-    avatar: '/images/avatars/avatar20.jpg',
-    'profile.phone': '06 60 555 4321',
-  });
-
-  const demoAdminId = demoBuilder.createLoginableUser('admin', {
-    avatar: '/images/avatars/avatar21.jpg',
-    'profile.phone': '06 60 762 7288',
-  });
-
   if (demoOrTest === 'test') {
     defaultRoles.forEach((role) => {
       if (role.name === 'manager' || role.name === 'admin') return;
@@ -350,17 +351,6 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Forum =====
 
-  // The demo (filling) users comment one after the other, round robin style
-  let nextUserIndex = 1;
-  function sameUser() {
-    return demoBuilder.dummyUsers[nextUserIndex];
-  }
-  function nextUser() {
-    nextUserIndex += 7; // relative prime
-    nextUserIndex %= demoBuilder.dummyUsers.length;
-    return demoBuilder.dummyUsers[nextUserIndex];
-  }
-
   const demoTopicDates = [
     moment('2017-08-03 17:32').toDate(),
     moment('2017-09-16 08:25').toDate(),
@@ -369,8 +359,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['0', '1', '2'].forEach((topicNo) => {
     Clock.setSimulatedTime(demoTopicDates[topicNo]);
-    const topicId = demoBuilder.create('forum', {
-      creatorId: nextUser(),
+    const topicId = demoBuilder.insert(Topics, 'forum', {
       title: __(`demo.topic.${topicNo}.title`),
       text: __(`demo.topic.${topicNo}.text`),
     });
@@ -380,10 +369,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       const path = `demo.topic.${topicNo}.comment.${commentNo}`;
       const commentText = __(path);
       if (commentText !== path) {
-        demoBuilder.createComment({
+        demoBuilder.insert(Comments, 'comment', {
           topicId,
           text: commentText,
-          creatorId: (topicNo == 2 && commentNo == 2) ? sameUser() : nextUser(),
+          creatorId: (topicNo == 2 && commentNo == 2) ? null : undefined,
         });
       }
     });
@@ -395,7 +384,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   ['0', '1'].forEach((newsNo) => {
     Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
     const newsId = demoBuilder.create('news', {
-      creatorId: demoBuilder.dummyUsers[0],
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
     });
@@ -434,8 +422,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   }
 
   Clock.setSimulatedTime(moment(demoTopicDates[1]).add(1, 'weeks').toDate());
-  const voteTopic0 = demoBuilder.create('vote', {
-    creatorId: demoManagerId,
+  const voteTopic0 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
     agendaId: agenda0,
@@ -449,12 +436,11 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic0, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1], [0], [0], [0]]);
   Clock.setSimulatedTime(moment(demoTopicDates[1]).add(5, 'weeks').toDate());
-  demoBuilder.statusChange({ creatorId: demoManagerId, topicId: voteTopic0, status: 'closed', type: 'statusChangeTo', data: {} });
+  demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'closed', data: {} });
   Clock.clear();
   
   Clock.setSimulatedTime(moment('2017-09-20 09:04').toDate());
-  const voteTopic1 = demoBuilder.create('vote', {
-    creatorId: demoManagerId,
+  const voteTopic1 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
     agendaId: agenda0,
@@ -468,12 +454,11 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic1, [[0], [0], [0], [0], [0], [0], [0], [0], [0], [1], [0], [0]]);
   Clock.setSimulatedTime(moment('2017-10-14 09:04').toDate());
-  demoBuilder.statusChange({ creatorId: demoManagerId, topicId: voteTopic1, status: 'closed', type: 'statusChangeTo', data: {} });
+  demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'closed', data: {} });
   Clock.clear();
 
   Clock.setSimulatedTime(moment('2018-01-03 13:12').toDate());
-  const voteTopic2 = demoBuilder.create('vote', {
-    creatorId: dummyUserId,
+  const voteTopic2 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.2.title'),
     text: __('demo.vote.2.text'),
     closesAt: moment('2018-01-18 22:45').toDate(),
@@ -490,12 +475,11 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic2, [null, null, null, null, null, null, null, [0], [0], [0], [0], [0]]);
   Clock.setSimulatedTime(moment('2018-01-18 22:45').toDate());
-  demoBuilder.statusChange({ creatorId: demoManagerId, topicId: voteTopic2, status: 'closed', type: 'statusChangeTo', data: {} });
+  demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'closed', data: {} });
   Clock.clear();
 
   Clock.setSimulatedTime(moment().subtract(3, 'weeks').toDate());
-  const voteTopic3 = demoBuilder.create('vote', {
-    creatorId: demoManagerId,
+  const voteTopic3 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.3.title'),
     text: __('demo.vote.3.text'),
     agendaId: agenda1,
@@ -510,8 +494,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // No one voted on this yet
 
   Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
-  const voteTopic4 = demoBuilder.create('vote', {
-    creatorId: ownerships[1].person.userId,
+  const voteTopic4 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.4.title'),
     text: __('demo.vote.4.text'),
     agendaId: agenda1,
@@ -532,17 +515,15 @@ export function insertDemoHouse(lang, demoOrTest) {
   castDemoVotes(voteTopic4, [null, [0, 1, 2, 3], null, [1, 2, 3, 0], null, [2, 3, 0, 1], null, [1, 0, 2, 3], null, [1, 2, 3, 0], null, [1, 2, 0, 3]]);
   ['0', '1'].forEach((commentNo) => {
     Clock.setSimulatedTime(moment().subtract(3, 'days').add(commentNo + 2, 'minutes').toDate());
-    demoBuilder.createComment({
+    demoBuilder.insert(Comments, 'comment', {
       topicId: voteTopic4,
       text: __(`demo.vote.4.comment.${commentNo}`),
-      creatorId: nextUser(),
     });
   });
   Clock.clear();
 
   Clock.setSimulatedTime(moment().subtract(3, 'days').toDate());
-  const voteTopic5 = demoBuilder.create('vote', {
-    creatorId: ownerships[8].person.userId,
+  const voteTopic5 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.5.title'),
     text: __('demo.vote.5.text'),
     agendaId: agenda1,
@@ -633,7 +614,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     Clock.tick(1, 'month');
     const maintainanceDate = moment(Clock.currentDate());
     const ticket = demoBuilder.create('ticket', {
-      creatorId: demoMaintainerId,
       title: __('demo.contract.1.ticketTitle') + ' ' + maintainanceDate.format('YYYY MMM'),
       text: __('demo.contract.1.ticketText'),
       status: 'scheduled',
@@ -649,8 +629,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     if (m <= 2) {
-      demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket, status: 'progressing', data: {} });
-      demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket, status: 'finished',
+      demoBuilder.execute(statusChange, { topicId: ticket, status: 'progressing', data: {} });
+      demoBuilder.execute(statusChange, { topicId: ticket, status: 'finished',
         data: {
           actualStart: maintainanceDate.toDate(),
           actualFinish: maintainanceDate.toDate(),
@@ -660,9 +640,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   Clock.starts(1, 'month', 'ago');
-  nextUser(); // to skip the caretaker
-  const ticket0 = demoBuilder.create('ticket', {
-    creatorId: nextUser(),
+//  demoBuilder.nextUser(); // just to skip the maintainer
+  const ticket0 = demoBuilder.insert(Topics, 'ticket', {
     title: __('demo.ticket.0.title'),
     text: __('demo.ticket.0.text'),
     status: 'reported',
@@ -672,7 +651,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('minutes');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket0, status: 'confirmed',
+  demoBuilder.execute(statusChange, { topicId: ticket0, status: 'confirmed',
     text: __('demo.ticket.0.comment.0'),
     data: {
       localizer: demoBuilder.name2code('Localizer', 'Lift'),
@@ -683,14 +662,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('days');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket0, status: 'progressing',
+  demoBuilder.execute(statusChange, { topicId: ticket0, status: 'progressing',
     text: __('demo.ticket.0.comment.1'),
     data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
 
   Clock.tickSome('days');
-  const ticket1 = demoBuilder.create('ticket', {
-    creatorId: nextUser(),
+  const ticket1 = demoBuilder.insert(Topics, 'ticket', {
     title: __('demo.ticket.1.title'),
     text: __('demo.ticket.1.text'),
     status: 'reported',
@@ -700,7 +678,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('minutes');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket1, status: 'confirmed',
+  demoBuilder.execute(statusChange, { topicId: ticket1, status: 'confirmed',
     text: __('demo.ticket.1.comment.0'),
     data: {
       localizer: '@A409',
@@ -710,12 +688,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   const actualStart1 = Clock.tick(2, 'days');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket1, status: 'progressing',
+  demoBuilder.execute(statusChange, { topicId: ticket1, status: 'progressing',
     text: __('demo.ticket.1.comment.1'),
     data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
   const actualFinish1 = Clock.tick(2, 'days');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket1, status: 'finished',
+  demoBuilder.execute(statusChange, { topicId: ticket1, status: 'finished',
     text: __('demo.ticket.1.comment.2'),
     data: {
       actualStart: actualStart1,
@@ -723,14 +701,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tick(2, 'days');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket1, status: 'closed',
+  demoBuilder.execute(statusChange, { topicId: ticket1, status: 'closed',
     text: __('demo.ticket.1.comment.3'),
     data: {},
   });
 
   Clock.tickSome('days');
-  const ticket2 = demoBuilder.create('ticket', {
-    creatorId: nextUser(),
+  const ticket2 = demoBuilder.insert(Topics, 'ticket', {
     title: __('demo.ticket.2.title'),
     text: __('demo.ticket.2.text'),
     status: 'reported',
@@ -740,15 +717,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('minutes');
-  demoBuilder.createComment({
-    creatorId: nextUser(),
+  demoBuilder.insert(Comments, 'comment', {
     topicId: ticket2,
     text: __('demo.ticket.2.comment.0'),
   });
 
   Clock.tickSome('days');
-  const ticket3 = demoBuilder.create('ticket', {
-    creatorId: nextUser(),
+  const ticket3 = demoBuilder.insert(Topics, 'ticket', {
     title: __('demo.ticket.3.title'),
     text: __('demo.ticket.3.text'),
     status: 'reported',
@@ -758,7 +733,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   Clock.tickSome('hours');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket3, status: 'confirmed',
+  demoBuilder.execute(statusChange, { topicId: ticket3, status: 'confirmed',
     text: __('demo.ticket.3.comment.0'),
     data: {
       localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'),
@@ -770,14 +745,14 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
   const actualStart3 = Clock.tick(1, 'week');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket3, status: 'progressing',
+  demoBuilder.execute(statusChange, { topicId: ticket3, status: 'progressing',
     text: __('demo.ticket.3.comment.1'),
     data: {
       expectedFinish: Clock.date(10, 'day', 'ahead'),
     },
   });
   const actualFinish3 = Clock.tick(8, 'day');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket3, status: 'finished',
+  demoBuilder.execute(statusChange, { topicId: ticket3, status: 'finished',
     text: __('demo.ticket.3.comment.2'),
     data: {
       actualCost: 8500,
@@ -785,13 +760,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       actualFinish: actualFinish3,
     },
   });
-  demoBuilder.createComment({
-    creatorId: nextUser(),
+  demoBuilder.insert(Comments, 'comment', {
     topicId: ticket3,
     text: __('demo.ticket.3.comment.3'),
   });
   Clock.tickSome('minutes');
-  demoBuilder.statusChange({ creatorId: demoMaintainerId, topicId: ticket3, status: 'closed',
+  demoBuilder.execute(statusChange, { topicId: ticket3, status: 'closed',
     text: __('demo.ticket.3.comment.4'),
     data: {},
   });
@@ -800,15 +774,14 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Accounting =====
 
-  Transactions.methods.cloneAccountingTemplates._execute({ userId: demoAccountantId },
-    { communityId: demoCommunityId });
+  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
 
   // === Parcel Billings ===
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     const valueDate = new Date(`2017-${mm}-12`);
 
-    demoBuilder.createParcelBilling({
+    demoBuilder.insert(ParcelBillings, '', {
       valueDate,
       projection: 'perArea',
       amount: 275,
@@ -818,7 +791,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     const parcelsWithNoWaterMeter = Parcels.find({ communityId: demoCommunityId, waterMetered: false });
     parcelsWithNoWaterMeter.forEach((parcel) => {
-      demoBuilder.createParcelBilling({
+      demoBuilder.insert(ParcelBillings, '', {
         valueDate,
         projection: 'perHabitant',
         amount: 2500,
@@ -827,7 +800,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       });
     });
 
-    demoBuilder.createParcelBilling({
+    demoBuilder.insert(ParcelBillings, '', {
       valueDate,
       projection: 'perArea',
       amount: 85,
@@ -836,7 +809,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   });
 
-  demoBuilder.createParcelBilling({
+  demoBuilder.insert(ParcelBillings, '', {
     projection: 'absolute',
     amount: 75000,
     valueDate: new Date('2017-08-15'),
@@ -854,7 +827,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       txs.forEach((tx) => {
         tx.journalEntries().forEach((entry) => {
           if (entry.side === 'debit') {
-            demoBuilder.createTx({
+            demoBuilder.insert(Transactions, 'tx', {
               valueDate: moment(entry.valueDate).add(_.sample([-2, -1, 0, 1, 2]), 'days').toDate(),
               amount: entry.amount,
               credit: [{
@@ -874,7 +847,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   everybodyPaysHisObligations();
 
   // Some unpaid bills (so we can show the parcels that are in debt)
-  demoBuilder.createParcelBilling({
+  demoBuilder.insert(ParcelBillings, '', {
     projection: 'perArea',
     amount: 200,
     valueDate: new Date('2017-12-15'),
@@ -883,7 +856,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   // Unidentified payin
-  demoBuilder.createTx({
+  demoBuilder.insert(Transactions, 'tx', {
     valueDate: new Date('2017-12-30'),
     amount: 24500,
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
@@ -903,7 +876,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     ['Assets', 'Megtakarítási számla', 120000],
   ];
   openings.forEach((opening) => {
-    demoBuilder.createTx({
+    demoBuilder.insert(Transactions, 'tx', {
       valueDate: new Date('2017-01-01'),
       amount: opening[2],
       credit: [{
@@ -917,7 +890,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // === Incomes ===
 
-  demoBuilder.createTx({
+  demoBuilder.insert(Transactions, 'tx', {
     valueDate: new Date('2017-06-01'),
     amount: 3500,
     credit: [{
@@ -930,7 +903,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
-    demoBuilder.createTx({
+    demoBuilder.insert(Transactions, 'tx', {
       valueDate: new Date(`2017-${mm}-01`),
       amount: 400,
       credit: [{
@@ -943,7 +916,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   });
 
-  demoBuilder.createTx({
+  demoBuilder.insert(Transactions, 'tx', {
     valueDate: new Date('2017-09-15'),
     amount: 500000,
     credit: [{
@@ -956,7 +929,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.1'),
   });
 
-  demoBuilder.createTx({
+  demoBuilder.insert(Transactions, 'tx', {
     valueDate: new Date('2017-05-10'),
     amount: 55000,
     credit: [{
@@ -969,7 +942,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.2'),
   });
 
-  demoBuilder.createTx({
+  demoBuilder.insert(Transactions, 'tx', {
     valueDate: new Date('2017-10-15'),
     amount: 500000,
     credit: [{
@@ -982,7 +955,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.3'),
   });
 
-  demoBuilder.createTx({
+  demoBuilder.insert(Transactions, 'tx', {
     valueDate: new Date('2017-07-21'),
     amount: 2300000,
     credit: [{
@@ -997,7 +970,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // == Expenses
 
   for (let mm = 1; mm < 13; mm++) {
-    demoBuilder.createTx({
+    demoBuilder.insert(Transactions, 'tx', {
       valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: 80000 + Math.floor(Math.random() * 50000),
       credit: [{
@@ -1009,7 +982,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
 
-    demoBuilder.createTx({
+    demoBuilder.insert(Transactions, 'tx', {
       valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
       amount: 98500,
       credit: [{
@@ -1021,7 +994,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
 
-    demoBuilder.createTx({
+    demoBuilder.insert(Transactions, 'tx', {
       valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
       amount: 150000 + Math.floor(Math.random() * 50000),
       credit: [{
@@ -1037,7 +1010,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // == Bills
 
   ['03', '06', '09', '12'].forEach(mm => {
-    demoBuilder.createTx({
+    demoBuilder.insert(Transactions, 'tx', {
       valueDate: new Date(`2017-${mm}-20`),
       amount: 282600,
       partner: 'Super-Clean Kft',
@@ -1050,7 +1023,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     if (mm !== '12') {  // Last bill is paid but not yet processed
-      demoBuilder.createTx({
+      demoBuilder.insert(Transactions, 'tx', {
         valueDate: new Date(`2017-${mm}-25`),
         amount: 282600,
         partner: 'Super-Clean Kft',
@@ -1063,7 +1036,7 @@ export function insertDemoHouse(lang, demoOrTest) {
         }],
       });
     } else {
-      demoBuilder.createTx({
+      demoBuilder.insert(Transactions, 'tx', {
         valueDate: new Date(`2017-${mm}-25`),
         amount: 282600,
         ref: `SC/2017/${mm}`,
@@ -1151,7 +1124,7 @@ Meteor.methods({
       userId: demoUserId,
       participantIds: [demoUserId, demoManagerId],
     });
-    demoBuilder.createComment({
+    demoBuilder.insert(Comments, 'comment', {
       topicId: demoUserMessageRoom,
       creatorId: demoManagerId,
       text: __('demo.manager.message'),
@@ -1161,13 +1134,13 @@ Meteor.methods({
       participantIds: [demoUserId, chatPartnerId],
     });
     Clock.setSimulatedTime(moment().subtract(6, 'hours').toDate());
-    demoBuilder.createComment({
+    demoBuilder.insert(Comments, 'comment', {
       topicId: demoUserMessageRoom2,
       creatorId: demoUserId,
       text: __('demo.messages.0'),
     });
     Clock.setSimulatedTime(moment().subtract(3, 'hours').toDate());
-    demoBuilder.createComment({
+    demoBuilder.insert(Comments, 'comment', {
       topicId: demoUserMessageRoom2,
       creatorId: chatPartnerId,
       text: __('demo.messages.1'),

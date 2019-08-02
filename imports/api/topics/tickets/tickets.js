@@ -4,10 +4,12 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { Clock } from '/imports/utils/clock.js';
 import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Comments } from '/imports/api/comments/comments.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 // import { readableId } from '/imports/api/readable-id.js';
 
@@ -70,8 +72,6 @@ Tickets.schema = new SimpleSchema([
 Meteor.startup(function attach() {
   Tickets.schema.i18n('schemaTickets');   // translation is different from schemaTopics
 });
-
-Tickets.modifiableFields = Topics.modifiableFields.concat(['ticket.localizer', 'ticket.urgency', 'ticket.expectedStart', 'ticket.expectedFinish']);
 
 Tickets.publicExtensionFields = { ticket: 1 };
 _.extend(Topics.publicFields, Tickets.publicExtensionFields);
@@ -205,14 +205,20 @@ Tickets.workflows = {
 };
 
 Topics.categoryHelpers('ticket', {
+  contract() {
+    return Contracts.findOne(this._id);
+  },
   workflow() {
     return Tickets.workflows[this.ticket.type];
   },
-  modifiableFields() {
-    return Tickets.modifiableFields;
+  statusFields(statusObject = this.statusObject()) {
+    return (statusObject.data || []).map(d => 'ticket.' + d);
   },
-  contract() {
-    return Contracts.findOne(this._id);
+  startFields() {
+    return this.statusFields(this.startStatus());
+  },
+  modifiableFields() {
+    return ['title', 'text', 'photo'].concat(this.startFields());
   },
 });
 
@@ -228,7 +234,16 @@ Factory.define('ticket', Topics, {
   status: 'reported',
   ticket: {
     type: 'issue',
-    category: 'building',
     urgency: 'normal',
+  },
+});
+
+Factory.define('ticketStatusChange', Comments, {
+  text: () => faker.lorem.paragraph(),
+  data: {
+    localizer: 'At the basement',
+    expectedCost: 5000,
+    expectedStart: () => Clock.currentDate(),
+    expectedFinish: () => Clock.date(1, 'week', 'ahead'),
   },
 });

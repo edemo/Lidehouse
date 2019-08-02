@@ -3,6 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { _ } from 'meteor/underscore';
+import { CollectionHooks } from 'meteor/matb33:collection-hooks';
 
 import { Comments } from './comments.js';
 import { Topics } from '../topics/topics.js';
@@ -14,6 +15,7 @@ export const insert = new ValidatedMethod({
   validate: Comments.simpleSchema().validator({ clean: true }),
 
   run(doc) {
+    CollectionHooks.defaultUserId = this.userId;
     doc = Comments._transform(doc);
     const topic = checkExists(Topics, doc.topicId);
     checkPermissions(this.userId, `${doc.getType()}.insert`, topic.communityId);
@@ -22,6 +24,7 @@ export const insert = new ValidatedMethod({
     updateMyLastSeen._execute({ userId: this.userId },
       { topicId: topic._id, lastSeenInfo: { timestamp: newDoc.createdAt } },
     );
+    CollectionHooks.defaultUserId = undefined;
     return docId;
   },
 });
@@ -34,12 +37,29 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
+    CollectionHooks.defaultUserId = this.userId;
     const doc = checkExists(Comments, _id);
     const topic = checkExists(Topics, doc.topicId);
     checkModifier(doc, modifier, ['text']);     // only the text can be modified
     checkPermissions(this.userId, `${doc.getType()}.update`, topic.communityId, doc);
 
     Comments.update(_id, modifier);
+    CollectionHooks.defaultUserId = undefined;
+  },
+});
+
+export const move = new ValidatedMethod({
+  name: 'comments.move',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    destinationId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id, destinationId }) {
+    const doc = checkExists(Comments, _id);
+    checkPermissions(this.userId, 'comment.move', doc.communityId, doc);
+
+    Comments.update(_id, { $set: { topicId: destinationId } });
   },
 });
 
@@ -50,24 +70,22 @@ export const remove = new ValidatedMethod({
   }).validator(),
 
   run({ _id }) {
+    CollectionHooks.defaultUserId = this.userId;
     const doc = checkExists(Comments, _id);
     const topic = checkExists(Topics, doc.topicId);
     checkPermissions(this.userId, `${doc.getType()}.remove`, topic.communityId, doc);
 
     Comments.remove(_id);
+    CollectionHooks.defaultUserId = undefined;
   },
 });
 
 Comments.methods = Comments.methods || {};
-_.extend(Comments.methods, { insert, update, remove });
+_.extend(Comments.methods, { insert, update, move, remove });
 
 //--------------------------------------------------------
 
-const COMMENTS_METHOD_NAMES = _.pluck([
-  insert,
-  update,
-  remove,
-], 'name');
+const COMMENTS_METHOD_NAMES = _.pluck([insert, update, move, remove], 'name');
 
 if (Meteor.isServer) {
   // Only allow 5 comments operations per connection per second

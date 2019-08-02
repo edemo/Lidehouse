@@ -6,7 +6,7 @@ import { _ } from 'meteor/underscore';
 import { checkPermissions } from '/imports/api/method-checks.js';
 
 const batchOperationSchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+//  communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   args: { type: Array },
   'args.$': { type: Object, blackbox: true }, // Each arg will be checked against the schema when individual method execution happens
 });
@@ -17,10 +17,10 @@ export class BatchMethod extends ValidatedMethod {
     const options = {
       name: batchMethodName,
       validate: batchOperationSchema.validator({ clean: true }),
-      run({ communityId, args }) {
+      run({ args }) {
 //        console.log("running batch with", args.length, ":", args[0]);
         const userId = this.userId;
-        checkPermissions(userId, method.name, communityId);  // Whoever has perm for the method, can do it in batch as well
+//        checkPermissions(userId, method.name, communityId);  // Whoever has perm for the method, can do it in batch as well
         if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
         const results = [];
         const errors = [];
@@ -29,7 +29,8 @@ export class BatchMethod extends ValidatedMethod {
             const res = method._execute({ userId }, arg);
 //            console.log("successful batch call", arg);
             results.push(res);
-          } catch (err) {   // The batch method continues exectuing even after an error. Just collects all errors on the way/            console.log("error in batch call", err);
+          } catch (err) {
+            if (err.error === 'err_permissionDenied') throw err;  // The batch method continues exectuing even after an error. Just collects all errors on the way/            console.log("error in batch call", err);
             console.log(err);
             errors.push(err);
           }
@@ -60,8 +61,8 @@ export class BatchTester extends ValidatedMethod {
     const options = {
       name: batchTesterName,
       validate: batchOperationSchema.validator({ clean: true }),
-      run({ communityId, args }) {
-        checkPermissions(this.userId, batchUpsertName, communityId);
+      run({ args }) {
+        checkPermissions(this.userId, batchUpsertName, args[0].communityId);
         if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
 
         const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
@@ -129,7 +130,7 @@ export function crudBatchOps(collection) {
     upsert,
     batch: {
 //      insert: new BatchMethod(collection.methods.insert),
-//      update: new BatchMethod(collection.methods.update),
+      update: new BatchMethod(collection.methods.update),
 //      remove: new BatchMethod(collection.methods.remove),
       upsert: new BatchMethod(upsert),
       test: new BatchTester(collection),
