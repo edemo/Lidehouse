@@ -27,6 +27,7 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/balances/methods.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import '/imports/api/transactions/txdefs/methods.js';
+import { matchBillSchema } from '/imports/api/transactions/bills/bills.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
 import { AccountSpecification } from '/imports/api/transactions/account-specification';
@@ -59,11 +60,15 @@ Template.Accounting_page.viewmodel({
 //  amount: undefined,
   onCreated(instance) {
     instance.autorun(() => {
-      const communityId = Session.get('activeCommunityId');
+      const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
       instance.subscribe('txdefs.inCommunity', { communityId });
       instance.subscribe('transactions.incomplete', { communityId });
+      instance.subscribe('bills.outstanding', { communityId });
     });
+  },
+  communityId() {
+    return Session.get('activeCommunityId');
   },
   autorun: [
     function setTxDefOptions() {
@@ -144,38 +149,44 @@ Template.Accounting_page.viewmodel({
     return getOptions;
   },
   optionsOf(accountCode) {
-    const communityId = Session.get('activeCommunityId');
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
-    const brk = Breakdowns.findOneByName('ChartOfAccounts', communityId);
+    const brk = Breakdowns.findOneByName('ChartOfAccounts', this.communityId());
     if (brk) return brk.nodeOptionsOf(accountCode, true);
     return [];
   },
   transactionsIncompleteTableDataFn() {
+    const self = this;
     const templateInstance = Template.instance();
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
-      const communityId = Session.get('activeCommunityId');
-      return Transactions.find({ communityId, complete: false }).fetch();
+      return Transactions.find({ communityId: self.communityId(), complete: false }).fetch();
     }
     return getTableData;
   },
   transactionsTableDataFn() {
+    const self = this;
     const templateInstance = Template.instance();
     function getTableData() {
       if (!templateInstance.subscriptionsReady()) return [];
-      const communityId = Session.get('activeCommunityId');
-      return Transactions.find({ communityId, complete: true }).fetch();
+      return Transactions.find({ communityId: self.communityId(), complete: true }).fetch();
       // Filtered selector would be needed - but client side selector is slow, and we need everything anyways
     }
     return getTableData;
   },
   transactionsOptionsFn() {
+    const self = this;
     function getOptions() {
-      return _.extend({
-        columns: transactionColumns({ view: true, edit: true, delete: true }),
+      return {
+        columns: transactionColumns({
+          view: Meteor.user().hasPermission('transactions.inCommunity', self.communityId()),
+          edit: Meteor.user().hasPermission('transactions.update', self.communityId()),
+          link: Meteor.user().hasPermission('transactions.reconcile', self.communityId()),
+          delete: Meteor.user().hasPermission('transactions.remove', self.communityId()),
+        }),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
-      }, DatatablesExportButtons);
+        ...DatatablesExportButtons,
+      };
     }
     return getOptions;
   },
@@ -217,6 +228,18 @@ Template.Accounting_page.events({
       type: 'method-update',
       meteormethod: 'transactions.update',
       singleMethodArgument: true,
+    });
+  },
+  'click .transactions .js-link'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Session.set('activeTransactionId', id);
+    Modal.show('Autoform_edit', {
+      id: 'af.transaction.reconcile',
+      collection: Transactions,
+      schema: matchBillSchema(),
+      doc: Transactions.findOne(id),
+      type: 'method',
+      meteormethod: 'transactions.reconcile',
     });
   },
   'click .transactions .js-view'(event) {
@@ -396,6 +419,17 @@ AutoForm.addHooks('af.transaction.insert', {
       afContext.done(null, res);
     });
     return false;
+  },
+});
+
+AutoForm.addHooks('af.transaction.reconcile', {
+  formToDoc(doc) {
+    const newDoc = {
+      txId: Session.get('activeTransactionId'),
+      billId: doc.billId,
+    };
+    debugger;
+    return newDoc;
   },
 });
 

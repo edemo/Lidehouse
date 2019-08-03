@@ -98,6 +98,8 @@ Transactions.baseSchema = {
   batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   valueDate: { type: Date },
   amount: { type: Number },
+  billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  paymentId: { type: Number, decimal: true, optional: true },
 //  year: { type: Number, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getFullYear(); },
 //  },

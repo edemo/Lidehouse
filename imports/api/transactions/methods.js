@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -68,6 +69,38 @@ export const update = new ValidatedMethod({
   },
 });
 
+function checkMatches(tx, bill) {
+  if (tx.community !== bill.communityId || tx.amount > bill.amount) {
+    throw new Meteor.Error('err_sanityCheckFailed', 'Tx does not match Bill');
+  }
+}
+
+export const reconcile = new ValidatedMethod({
+  name: 'transactions.reconcile',
+  validate: new SimpleSchema({
+    txId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    billId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ txId, billId }) {
+    console.log("HERE");
+    const tx = checkExists(Transactions, txId);
+    const bill = checkExists(Bills, billId);
+    checkMatches(tx, bill);
+    checkPermissions(this.userId, 'transactions.reconcile', tx.communityId);
+    const paymentId = bill.paymentCount();
+    const payment = {
+      paymentId,
+      amount: tx.amount,
+      valueDate: tx.valueDate,
+      txId: tx._id,
+    };
+    Bills.update(billId, { $push: { payments: payment } });
+    Transactions.update(txId, { $set: { billId, paymentId } });
+//    doc.outstanding = doc.calculateOutstanding();
+  },
+});
+
 export const remove = new ValidatedMethod({
   name: 'transactions.remove',
   validate: new SimpleSchema({
@@ -115,5 +148,5 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 });
 
 Transactions.methods = Transactions.methods || {};
-_.extend(Transactions.methods, { insert, update, remove, cloneAccountingTemplates });
+_.extend(Transactions.methods, { insert, update, reconcile, remove, cloneAccountingTemplates });
 _.extend(Transactions.methods, crudBatchOps(Transactions));

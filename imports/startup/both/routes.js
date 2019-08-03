@@ -31,6 +31,7 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/contracts.js';
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
+  import '/imports/ui_3/views/pages/inventory-page.js';
   import '/imports/ui_3/views/pages/accounting-page.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
   import '/imports/ui_3/views/pages/topic-show.js';
@@ -275,6 +276,17 @@ FlowRouter.route('/community-finances', {
   },
 });
 CommunityRelatedRoutes.push('Community finances');
+
+FlowRouter.route('/inventory', {
+  name: 'Inventory',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Inventory_page' });
+  },
+  title() {
+    return __(FlowRouter.current().route.name);
+  },
+});
+CommunityRelatedRoutes.push('Inventory');
 
 FlowRouter.route('/accounting', {
   name: 'Accounting',

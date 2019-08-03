@@ -558,6 +558,62 @@
       "placeholder": ""
     }
   },
+  "schemaBills": {
+    "category": {
+      "label": "Category",
+      "in": "Invoice",
+      "out": "Outbound bill",
+      "parcel": "Parcel bill"      
+    },
+    "id": {
+      "label": "Id"
+    },
+    "serial": {
+      "label": "Serial"
+    },
+    "createdAt": {
+      "label": "Register date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "issueDate": {
+      "label": "Issue date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "valueDate": {
+      "label": "Delivery date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "dueDate": {
+      "label": "Due date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "paymentDate": {
+      "label": "Payment date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Amount",
+      "placeholder": "(eg. 14560)"
+    },
+    "outstanding": {
+      "label": "Outstanding",
+      "placeholder": "(eg. 14560)"
+    },
+    "account": {
+      "label": "Expense type"
+    },
+    "localizer": {
+      "label": "Accounting location"
+    },
+    "ref": {
+      "label": "Reference id",
+      "placeholder": "(eg. transaction no. from bank statement)"
+    },
+    "note": {
+      "label": "Note",
+      "placeholder": "(eg. reason or partner identifier)"
+    }
+  },
   "schemaParcelBillings": {
     "year": {
       "label": "For which year",

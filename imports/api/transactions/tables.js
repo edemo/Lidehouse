@@ -16,6 +16,7 @@ export function transactionColumns(permissions) {
   const buttonRenderers = [];
   if (permissions.view) buttonRenderers.push(Render.buttonView);
   if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
+  if (permissions.link) buttonRenderers.push(Render.buttonLink);
   if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
 
   const columns = [
