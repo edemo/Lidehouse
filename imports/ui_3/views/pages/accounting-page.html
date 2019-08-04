@@ -5,6 +5,8 @@
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
 
+    {{> Accounting_bills}}
+
     {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
     <div class="col-md-12">
         <div class="ibox ibox-dark transactions" id='incomplete'>

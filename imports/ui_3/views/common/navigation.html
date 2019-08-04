@@ -148,12 +148,12 @@
                             </a>
                         </li>
                         {{#if userHasPermission 'bills.inCommunity' (fromSession 'activeCommunityId')}}
-                        <li class="{{isActivePath regex='inventory'}}">
+                        <!--li class="{{isActivePath regex='inventory'}}">
                             <a href="{{pathFor 'Inventory'}}">
                                 <i class="fa fa-calculator" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Bill registry'}}</span>
                             </a>
-                        </li>
+                        </li-->
                         {{/if}}
                         {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
                         <li class="{{isActivePath regex='accounting'}}">

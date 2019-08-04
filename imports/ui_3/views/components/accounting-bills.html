@@ -1,0 +1,58 @@
+
+<template name="Accounting_bills">
+    {{#if userHasPermission 'bills.update' communityId }}
+    <div class="col-lg-12">
+    <div class="ibox ibox-dark" id="bills">
+        <!--div class="ibox-title">
+            <h5>{{_ 'Parcel balances'}}</h5>
+            {{>iboxTools}}
+        </div-->
+        <div class="ibox-content">
+            <h2 class="text-capitalize">{{_ 'Bill registry'}}</h2>
+            {{#if userHasPermission 'bills.update' communityId }}
+            <div class="btn-group pull-right">
+                {{#if userHasPermission 'bills.insert' communityId}}
+                <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.category.' activeBillCategory)}}</strong></button>
+                <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+                {{/if}}
+            </div>
+            {{/if}}
+            <p>
+                {{_ 'Itt a bejövő/kimenő számlákat és előírásokat látja.'}}<br>
+            </p>
+            <br>
+            <div class="filters m-b-md">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="input-group">
+                    <label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.category.label'}}</label><br>
+                    {{#each billCategory in billCategories}}
+                    <button type="button" class="js-category-filter btn btn-xs btn-outline btn-default {{activeClass billCategory}}" data-value="{{billCategory}}">{{_ (concat 'schemaBills.category.' billCategory)}}</button>
+                    {{/each}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9">
+                  <input type="checkbox" name="allow" id="oustanding-only" {{b "check: outstandingOnly"}}>
+                  <label for="oustanding-only">{{_ 'Outstanding only'}}</label>
+                </div>
+                <div class="col-sm-3 align">
+                  <button type="button" class="js-clear-filter btn btn-default btn-xs {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">
+                      <i class="fa fa-times"></i> {{_ 'Clear filters'}}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+            {{#if Template.subscriptionsReady}}
+            {{> ReactiveDatatable tableData=billsTableDataFn options=billsOptionsFn }}
+            {{else}}
+            {{_ 'Loading'}}...
+            {{/if}}
+            </div>
+        </div>
+    </div>
+    </div>
+    {{/if}}
+</template>
