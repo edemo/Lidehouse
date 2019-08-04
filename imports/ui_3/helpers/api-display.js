@@ -10,9 +10,18 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 
 function label(value, color, icon) {
-  if (!value) return undefined;
+  if (value === undefined) return undefined;
   const iconBadge = icon ? `<i class="fa fa-${icon}"></i> ` : '';
   return `<span class="label label-${color} label-xs">${iconBadge}${value}</span>`;
+}
+
+export function displayMeterService(name) {
+  if (!name) return '';
+  return label(__('schemaMeters.service.' + name), 'default');
+}
+
+export function displayReading(value) {
+  return label(value, 'info');
 }
 
 export function displayAccount(account, communityId) {
@@ -58,6 +67,8 @@ export function displayChargeType(name) {
   return label(__('schemaTickets.ticket.chargeType.' + name), 'default');
 }
 
+Template.registerHelper('displayMeterService', displayMeterService);
+Template.registerHelper('displayReading', displayReading);
 Template.registerHelper('displayAccount', displayAccount);
 Template.registerHelper('displayLocalizer', displayLocalizer);
 Template.registerHelper('displayStatus', displayStatus);

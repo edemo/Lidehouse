@@ -6,7 +6,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
-Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, renderType, currentRow) {
+Render.buttonAssignOccupants = function buttonAssignOccupants(cellData, renderType, currentRow) {
   const parcelId = cellData;
   const parcel = Parcels.findOne(parcelId);
   const userIcon = parcel.isLed() ? 'fa-user-o' : 'fa-user';
@@ -36,6 +36,16 @@ Render.buttonAssignParcelOwner = function buttonAssignParcelOwner(cellData, rend
   return html;
 };
 
+Render.buttonMeters = function buttonAssignMeters(cellData, renderType, currentRow) {
+  let html = '';
+  html += `<a href="#meters">`;
+  html += `<button data-id=${cellData} title=${__('meters')} class="btn btn-white btn-xs js-meters">`;
+  html += `<i class="fa fa-tachometer"></i>`;
+  html += `</button>`;
+  html += `</a>`;
+  return html;
+};
+
 Render.joinOccupants = function joinOccupants(occupants) {
   let result = '';
   occupants.forEach((m) => {
@@ -59,7 +69,8 @@ export function parcelColumns(permissions) {
   const buttonRenderers = [];
   if (permissions.view) buttonRenderers.push(Render.buttonView);
   if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
-  if (permissions.assign) buttonRenderers.push(Render.buttonAssignParcelOwner);
+  if (permissions.assign) buttonRenderers.push(Render.buttonAssignOccupants);
+  if (permissions.assign) buttonRenderers.push(Render.buttonMeters);
   if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
 
   return [

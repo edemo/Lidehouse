@@ -97,6 +97,44 @@
       }
     }
   },
+  "schemaMeters" : {
+    "service": {
+      "label": "Service",
+      "coldWater": "Cold water",
+      "hotWater": "Hot water",
+      "electricity": "Electricity",
+      "gas": "Gas",
+      "heating": "Heating",
+      "cooling": "Cooling"
+    },
+    "identifier": {
+      "label": "Serial number"
+    },
+    "readings": {
+      "label": "Meter readings",
+      "$": {
+        "date": {
+          "label": "Date of reading",
+          "placeholder": "yyyy-mm-dd"
+        },
+        "reading": {
+          "label": "Reading value",
+          "placeholder": "(value on the meter)"
+        }
+      }
+    },
+    "activeTime": {
+      "label": "Active time (install/uninstall)",
+      "begin": {
+        "label": "From",
+        "placeholder": "yyyy-mm-dd"
+      },
+      "end": {
+        "label": "Until",
+        "placeholder": "yyyy-mm-dd"
+      }
+    }
+  },
   "schemaMemberships" : {
     "role": {
       "label": "Role"

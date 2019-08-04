@@ -97,6 +97,44 @@
       }
     }
   },
+  "schemaMeters" : {
+    "service": {
+      "label": "Szolgáltatás",
+      "coldWater": "Hideg víz",
+      "hotWater": "Meleg víz",
+      "electricity": "Áram",
+      "gas": "Gáz",
+      "heating": "Fűtés",
+      "cooling": "Hűtés"
+    },
+    "identifier": {
+      "label": "Gyári azonosító"
+    },
+    "readings": {
+      "label": "Leolvasások",
+      "$": {
+        "date": {
+          "label": "Leolvasás időpontja",
+          "placeholder": "éééé-hh-nn"
+        },
+        "reading": {
+          "label": "Óraállás",
+          "placeholder": "(mérőn olvasható érték)"
+        }
+      }
+    },
+    "activeTime": {
+      "label": "Aktív időszak (felszerelés/leszerelés)",
+      "begin": {
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
+      }
+    }
+  },
   "schemaMemberships" : {
     "role": {
       "label": "Tisztség"

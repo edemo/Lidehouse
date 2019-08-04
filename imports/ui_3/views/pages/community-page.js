@@ -23,6 +23,8 @@ import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
+import { Meters } from '/imports/api/meters/meters.js';
+import '/imports/api/meters/methods.js';
 import '/imports/api/users/users.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -45,6 +47,22 @@ Template.Occupants_box.viewmodel({
   },
   membershipsCount(role, subset) {
     return this.memberships(role, subset).count();
+  },
+  parcelDisplay() {
+    const parcelId = this.templateInstance.data.parcelId;
+    const parcel = Parcels.findOne(parcelId);
+    return parcel ? parcel.display() : __('unknown');
+  },
+});
+
+Template.Meters_box.viewmodel({
+  meters(subset) {
+    const communityId = this.templateInstance.data.communityId;
+    const parcelId = this.templateInstance.data.parcelId;
+    let selector = { communityId, active: true, parcelId /*, approved: true */};
+//    if (subset === 'unapproved') selector = { communityId, role, parcelId, approved: false };
+    if (subset === 'archived') selector = { communityId, parcelId, active: false };
+    return Meters.find(selector);
   },
   parcelDisplay() {
     const parcelId = this.templateInstance.data.parcelId;
@@ -78,6 +96,7 @@ Template.Community_page.viewmodel({
       this.templateInstance.subscribe('communities.byId', { _id: communityId });
       if (this.showAllParcels()) {
         this.templateInstance.subscribe('parcels.inCommunity', { communityId });
+        this.templateInstance.subscribe('meters.inCommunity', { communityId });
       } else {
         this.templateInstance.subscribe('parcels.ofSelf', { communityId });
       }
@@ -226,6 +245,11 @@ Template.Community_page.events({
     instance.viewmodel.selectedMemberId(id);
   },
   'click .js-assign'(event, instance) {
+//    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
+    const id = $(event.target).closest('button').data('id');
+    instance.viewmodel.selectedParcelId(id);
+  },
+  'click .js-meters'(event, instance) {
 //    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
     const id = $(event.target).closest('button').data('id');
     instance.viewmodel.selectedParcelId(id);
@@ -425,6 +449,56 @@ Template.Community_page.events({
       message: 'You should rather archive it',
     });
   },
+  // meters events
+  'click #meters .js-new'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.meter.insert',
+      collection: Meters,
+      omitFields: ['readings'],
+      type: 'method',
+      meteormethod: 'meters.insert',
+    });
+  },
+  'click #meters .js-edit'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.meter.update',
+      collection: Meters,
+      omitFields: ['activeTime'],
+      doc: Meters.findOne(id),
+      type: 'method-update',
+      meteormethod: 'meters.update',
+      singleMethodArgument: true,
+    });
+  },
+  'click  #meters .js-period'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.meter.update',
+      collection: Meters,
+      fields: ['activeTime'],
+      doc: Meters.findOne(id),
+      type: 'method-update',
+      meteormethod: 'meters.updateActivePeriod',
+      singleMethodArgument: true,
+    });
+  },
+  'click #meters .js-view'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.meter.view',
+      collection: Meters,
+      doc: Meters.findOne(id),
+      type: 'readonly',
+    });
+  },
+  'click #meters .js-delete'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.confirmAndCall(Meters.methods.remove, { _id: id }, {
+      action: 'delete meter',
+      message: 'You should rather archive it',
+    });
+  },
   // parcel events
   'click .parcels-section .js-import'(event, instance) {
     importCollectionFromFile(Parcels);
@@ -510,6 +584,23 @@ AutoForm.addHooks('af.benefactorship.insert', {
 AutoForm.addHooks('af.benefactorship.update', {
   formToModifier(modifier) {
     modifier.$set.approved = true;
+    return modifier;
+  },
+});
+
+AutoForm.addModalHooks('af.meter.insert');
+AutoForm.addModalHooks('af.meter.update');
+AutoForm.addHooks('af.meter.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('selectedCommunityId');
+    doc.parcelId = Session.get('selectedParcelId');
+//    doc.approved = true;
+    return doc;
+  },
+});
+AutoForm.addHooks('af.meter.update', {
+  formToModifier(modifier) {
+//    modifier.$set.approved = true;
     return modifier;
   },
 });
