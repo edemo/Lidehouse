@@ -24,7 +24,8 @@ Bills.categoryValues = ['in', 'out', 'parcel'];
 Bills.paymentSchema = new SimpleSchema({
   valueDate: { type: Date },
   amount: { type: Number },
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+//  paymentId: { type: Number, decimal: true },
 });
 
 Bills.schema = new SimpleSchema({
@@ -37,8 +38,8 @@ Bills.schema = new SimpleSchema({
   issueDate: { type: Date },
   valueDate: { type: Date },
   dueDate: { type: Date },
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  payments: { type: Array, optional: true },
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  payments: { type: Array, defaultValue: [] },
   'payments.$': { type: Bills.paymentSchema },
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client ask to sort on outstanding amount
 //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
@@ -82,10 +83,24 @@ Bills.helpers({
 
 // --- Before/after actions ---
 if (Meteor.isServer) {
-  Bills.before.update(function (userId, doc, fieldNames, modifier, options) {
-    let paid = 0;
-    this.payments.forEach(p => paid += p.amount);
-    this.outstanding = this.amount - paid;
+  Bills.before.insert(function (userId, doc) {
+    const tdoc = this.transform();
+    doc.outstanding = tdoc.calculateOutstanding();
+  });
+  Bills.after.update(function (userId, doc, fieldNames, modifier, options) {
+    const tdoc = this.transform();
+//--------------------
+//  Could do this with rusdiff in a before.update
+//    let newDoc = rusdiff.clone(doc);
+//    if (modifier) rusdiff.apply(newDoc, modifier);
+//    newDoc = Bills._transform(newDoc);
+//    const outstanding = newDoc.calculateOutstanding();
+//--------------------
+    if ((modifier.$set && modifier.$set.payments) || (modifier.$push && modifier.$push.payments)) {
+      if (!modifier.$set || modifier.$set.outstanding === undefined) { // avoid infinite update loop!
+        Bills.update(doc._id, { $set: { outstanding: tdoc.calculateOutstanding() } });
+      }
+    }
   });
 }
 

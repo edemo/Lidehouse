@@ -1,6 +1,9 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
   "schemaGeneral": {
+    "serialId": {
+      "label": "Identifier"
+    },
     "creatorId": {
       "label": "Created by"
     },
@@ -602,9 +605,6 @@
       "in": "Invoice",
       "out": "Outbound bill",
       "parcel": "Parcel bill"      
-    },
-    "id": {
-      "label": "Id"
     },
     "serial": {
       "label": "Serial"

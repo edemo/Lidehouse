@@ -26,13 +26,26 @@
                 {{_ 'Itt a bejövő/kimenő számlákat és előírásokat látja.'}}<br>
             </p>
             <br>
-            <div class="row filters">
-              <div class="col-sm-12">
-                <div class="input-group">
-                  <label class="control-label text-capitalize">{{_ 'bill'}} {{_'category'}}</label><br>
-                  {{#each billCategory in billCategories}}
-                  <button type="button" class="js-category-filter btn btn-xs btn-outline btn-default {{activeClass billCategory}}" data-value="{{billCategory}}">{{_ (concat 'schemaBills.category.' billCategory)}}</button>
-                  {{/each}}
+            <div class="filters m-b-md">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="input-group">
+                    <label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.category.label'}}</label><br>
+                    {{#each billCategory in billCategories}}
+                    <button type="button" class="js-category-filter btn btn-xs btn-outline btn-default {{activeClass billCategory}}" data-value="{{billCategory}}">{{_ (concat 'schemaBills.category.' billCategory)}}</button>
+                    {{/each}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-9">
+                  <input type="checkbox" name="allow" id="oustanding-only" {{b "check: outstandingOnly"}}>
+                  <label for="oustanding-only">{{_ 'Outstanding only'}}</label>
+                </div>
+                <div class="col-sm-3 align">
+                  <button type="button" class="js-clear-filter btn btn-default btn-xs {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">
+                      <i class="fa fa-times"></i> {{_ 'Clear filters'}}
+                  </button>
                 </div>
               </div>
             </div>

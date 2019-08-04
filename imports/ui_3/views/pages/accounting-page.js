@@ -11,7 +11,7 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
-import { onSuccess, handleError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
 import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
 import { transactionColumns } from '/imports/api/transactions/tables.js';
 import { breakdownColumns } from '/imports/api/transactions/breakdowns/tables.js';
@@ -235,11 +235,7 @@ Template.Accounting_page.events({
     Session.set('activeTransactionId', id);
     Modal.show('Autoform_edit', {
       id: 'af.transaction.reconcile',
-      collection: Transactions,
       schema: matchBillSchema(),
-      doc: Transactions.findOne(id),
-      type: 'method',
-      meteormethod: 'transactions.reconcile',
     });
   },
   'click .transactions .js-view'(event) {
@@ -428,8 +424,20 @@ AutoForm.addHooks('af.transaction.reconcile', {
       txId: Session.get('activeTransactionId'),
       billId: doc.billId,
     };
-    debugger;
     return newDoc;
+  },
+  onSubmit(doc) {
+    AutoForm.validateForm('af.transaction.reconcile');
+    const afContext = this;
+    Transactions.methods.reconcile.call(doc, function handler(err, res) {
+      if (err) {
+        displayError(err);
+        afContext.done(err);
+        return;
+      }
+      afContext.done(null, res);
+    });
+    return false;
   },
 });
 

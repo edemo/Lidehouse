@@ -1,6 +1,9 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
   "schemaGeneral": {
+    "serialId": {
+      "label": "Azonosító"
+    },
     "creatorId": {
       "label": "Létrehozta"
     },
@@ -606,9 +609,6 @@
       "in": "Bejövő számla",
       "out": "Kimenő számla",
       "parcel": "Előírás"      
-    },
-    "id": {
-      "label": "Azonosító"
     },
     "serial": {
       "label": "Sorszám"

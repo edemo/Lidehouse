@@ -35,8 +35,10 @@ Meteor.publish('bills.filtered', function billsInCommunity(params) {
   if (!user.hasPermission('bills.inCommunity', communityId)) {
     return this.ready();
   }
-  const selector = { communityId, partner, account, localizer, valueDate: { $gte: begin, $lt: end } };
-  return Bills.find(selector);
+//  const selector = { communityId, partner, account, localizer };
+//  if (begin || end) selector.valueDate = { $gte: begin, $lt: end };
+
+  return Bills.find({ communityId });
 });
 
 Meteor.publish('bills.outstanding', function billsIncomplete(params) {

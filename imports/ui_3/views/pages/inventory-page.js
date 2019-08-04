@@ -29,13 +29,27 @@ import './inventory-page.html';
 
 Template.Inventory_page.viewmodel({
   activeBillCategory: 'in',
+  outstandingOnly: true,
   onCreated(instance) {
     instance.autorun(() => {
-      instance.subscribe('bills.outstanding', { communityId: this.communityId() });
+      if (this.outstandingOnly()) {
+        instance.subscribe('bills.outstanding', { communityId: this.communityId() });
+      } else {
+        instance.subscribe('bills.filtered', { communityId: this.communityId() });
+      }
     });
   },
   communityId() {
     return Session.get('activeCommunityId');
+  },
+  hasFilters() {
+    return (this.outstandingOnly() === false);
+  },
+  filterSelector() {
+    const selector = { communityId: this.communityId() };
+    selector.category = this.activeBillCategory();
+    if (this.outstandingOnly()) selector.outstanding = { $gt: 0 };
+    return selector;
   },
   myLeadParcels() {
     const communityId = this.communityId();
@@ -64,7 +78,8 @@ Template.Inventory_page.viewmodel({
     return (this.activeBillCategory() === billCategory) && 'active';
   },
   billsTableDataFn() {
-    return () => Bills.find({ communityId: this.communityId(), category: this.activeBillCategory() }).fetch();
+    const self = this;
+    return () => Bills.find(self.filterSelector()).fetch();
   },
   billsOptionsFn() {
     return () => {

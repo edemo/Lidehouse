@@ -15,8 +15,6 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkPermissions(this.userId, 'bills.insert', doc.communityId);
-    doc = Bills._transform(doc);
-    doc.outstanding = doc.calculateOutstanding();
     const _id = Bills.insert(doc);
     return _id;
   },
@@ -33,8 +31,8 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Bills, _id);
     checkModifier(doc, modifier, Bills.modifiableFields);
     checkPermissions(this.userId, 'bills.update', doc.communityId);
-    Bills.update({ _id }, { $set: doc });
-//    doc.outstanding = doc.calculateOutstanding();
+
+    return Bills.update({ _id }, { $set: doc });
   },
 });
 
@@ -48,7 +46,7 @@ export const remove = new ValidatedMethod({
     const doc = checkExists(Bills, _id);
     checkPermissions(this.userId, 'bills.remove', doc.communityId);
     
-    Bills.remove(_id);
+    return Bills.remove(_id);
   },
 });
 

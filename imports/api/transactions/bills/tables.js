@@ -9,7 +9,8 @@ export function billColumns(permissions) {
   if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
 
   const columns = [
-    { data: 'serial', title: __('schemaBills.serial.label'), render: Render.formatDate },
+    { data: 'serial', title: __('schemaBills.serial.label') },
+    { data: 'serialId()', title: __('schemaGeneral.serialId.label') },
     { data: 'createdAt', title: __('schemaBills.createdAt.label'), render: Render.formatDate },
     { data: 'issueDate', title: __('schemaBills.issueDate.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaBills.valueDate.label'), render: Render.formatDate },

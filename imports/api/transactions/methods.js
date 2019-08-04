@@ -70,7 +70,7 @@ export const update = new ValidatedMethod({
 });
 
 function checkMatches(tx, bill) {
-  if (tx.community !== bill.communityId || tx.amount > bill.amount) {
+  if (tx.communityId !== bill.communityId || tx.amount > bill.amount) {
     throw new Meteor.Error('err_sanityCheckFailed', 'Tx does not match Bill');
   }
 }
@@ -83,21 +83,19 @@ export const reconcile = new ValidatedMethod({
   }).validator(),
 
   run({ txId, billId }) {
-    console.log("HERE");
     const tx = checkExists(Transactions, txId);
     const bill = checkExists(Bills, billId);
     checkMatches(tx, bill);
     checkPermissions(this.userId, 'transactions.reconcile', tx.communityId);
     const paymentId = bill.paymentCount();
     const payment = {
-      paymentId,
       amount: tx.amount,
       valueDate: tx.valueDate,
       txId: tx._id,
+//      paymentId,
     };
     Bills.update(billId, { $push: { payments: payment } });
-    Transactions.update(txId, { $set: { billId, paymentId } });
-//    doc.outstanding = doc.calculateOutstanding();
+    return Transactions.update(txId, { $set: { billId, paymentId } });
   },
 });
 
