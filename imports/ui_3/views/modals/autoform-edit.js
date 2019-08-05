@@ -28,7 +28,7 @@ Template.Autoform_edit.helpers({
     let objectName = split[1];
     let actionName = split[2];
     if (objectName === 'transaction' && actionName === 'insert') objectName = Session.get('activeTxDef');
-    if (objectName === 'ticket' && actionName === 'statusChange') {
+    if (actionName === 'statusChange') {
       objectName = 'statusChange';
       actionName = 'insert';
     }

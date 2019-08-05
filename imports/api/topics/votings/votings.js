@@ -146,6 +146,9 @@ Topics.categoryHelpers('vote', {
   voteOf(userId) {
     return (this.voteCasts && this.voteCasts[userId]) || (this.voteCastsIndirect && this.voteCastsIndirect[userId]);
   },
+  votingClosed() {
+    return this.status === 'votingFinished' || this.status === 'closed';
+  },
   voteEvaluate(revealResults) {
     if (Meteor.isClient) return; // 'voteEvaluate' should only run on the server, client does not have the necessary data to perform it
     const voteResults = {};         // results by ownerships
@@ -282,33 +285,47 @@ Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) 
 
 // === Vote statuses
 
+const announced = {
+  name: 'announced',
+};
+
 const opened = {
   name: 'opened',
+  icon: 'fa-file-text-o',
+};
+
+const votingFinished = {
+  name: 'votingFinished',
+  icon: 'fa-legal',
+  onEnter(event, topic) {
+    topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
+   // Topics.update(topic._id, { $set: { closesAt: new Date() } });
+  },
 };
 
 const closed = {
   name: 'closed',
-  icon: 'fa-legal',
-  onEnter(event, topic) {
-//    console.log('Voting is entering closed');
-    topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
-    // Topics.update(topic._id, { $set: { closed: true, closesAt: new Date() } });  Needs to happen in autovalue
-  },
-  onLeave() {
-//    console.log('Voting is leaving closed');
-  },
+  icon: 'fa-times-circle-o',
 };
 
 Votings.statuses = {
-  opened, closed,
+  announced, opened, votingFinished, closed,
 };
 Votings.statusValues = Object.keys(Votings.statuses);
 
 Votings.workflow = {
   start: [opened],
-  opened: { obj: opened, next: [closed] },
+  announced: { obj: announced, next: [opened, closed] },
+  opened: { obj: opened, next: [votingFinished] },
+  votingFinished: { obj: votingFinished, next: [closed] },
   closed: { obj: closed, next: [] },
 };
+
+Topics.categoryHelpers('vote', {
+  workflow() {
+    return Votings.workflow;
+  },
+});
 
 // ===================================================
 
