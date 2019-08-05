@@ -12,6 +12,7 @@ import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billing
 import { Transactions } from '/imports/api/transactions/transactions.js';
 //  import { TxDefs } from '/imports/api/transactions/tx-defs.js';
 import { insert as insertTx } from '/imports/api/transactions/methods.js';
+import { Bills } from '../bills/bills';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
@@ -26,6 +27,7 @@ export const apply = new ValidatedMethod({
     const parcelBilling = ParcelBillings.findOne(id);
     const parcels = parcelBilling.parcels();
     let totalAmount = 0;
+    const issuedBills = [];
     const debitLegs = [];
     parcels.forEach((parcel) => {
       let amount;
@@ -48,11 +50,13 @@ export const apply = new ValidatedMethod({
       amount = Math.round(amount);
 
       totalAmount += amount;
-      debitLegs.push({
-        amount,
-        account: Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType,
-        localizer: Localizer.parcelRef2code(parcel.ref),
+      const account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+      const localizer = Localizer.parcelRef2code(parcel.ref);
+      issuedBills.push({ communityId: parcelBilling.communityId, category: 'parcel',
+        amount, account, localizer, partner: localizer,
+        issueDate: new Date(), valueDate: new Date(), dueDate: new Date(),
       });
+      debitLegs.push({ amount, account, localizer });
     });
 
     const tx = {
@@ -65,9 +69,11 @@ export const apply = new ValidatedMethod({
       }],
       debit: debitLegs,
       note: parcelBilling.note,
+      reconciled: true,
     };
-    const result = insertTx._execute({ userId: this.userId }, tx);
-    return result;
+    const txId = insertTx._execute({ userId: this.userId }, tx);
+    issuedBills.forEach(bill => Bills.insert(_.extend(bill, { txId })));
+    return txId;
   },
 });
 

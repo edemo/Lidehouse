@@ -128,6 +128,7 @@ Transactions.schema = new SimpleSchema([
       credits.forEach(entry => total -= entry.amount || amount);
       return total === 0;
     } },
+    reconciled: { type: Boolean, autoform: { omit: true }, defaultValue: false },
   },
   _.clone(Transactions.noteSchema),
 ]);
