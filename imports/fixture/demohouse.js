@@ -62,13 +62,13 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const demoBuilder = new CommunityBuilder(demoCommunityId, demoOrTest, lang);
 
-  const demoManagerId = demoBuilder.createLoginableUser('manager', {
-    avatar: '/images/avatars/avatar20.jpg',
-    'profile.phone': '06 60 555 4321',
-  });
   const demoAdminId = demoBuilder.createLoginableUser('admin', {
     avatar: '/images/avatars/avatar21.jpg',
     'profile.phone': '06 60 762 7288',
+  });
+  const demoManagerId = demoBuilder.createLoginableUser('manager', {
+    avatar: '/images/avatars/avatar20.jpg',
+    'profile.phone': '06 60 555 4321',
   });
 
 // ===== Parcels =====
@@ -328,16 +328,6 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ==== Loginable users with Roles =====
 
-  const demoAdminId = demoBuilder.createLoginableUser('admin', {
-    avatar: '/images/avatars/avatar21.jpg',
-    'profile.phone': '06 60 762 7288',
-  });
-
-  const demoManagerId = demoBuilder.createLoginableUser('manager', {
-    avatar: '/images/avatars/avatar20.jpg',
-    'profile.phone': '06 60 555 4321',
-  });
-
   if (demoOrTest === 'test') {
     defaultRoles.forEach((role) => {
       if (role.name === 'manager' || role.name === 'admin') return;
@@ -446,7 +436,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic0, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1], [0], [0], [0]]);
   Clock.setSimulatedTime(moment(demoTopicDates[1]).add(5, 'weeks').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'closed', data: {} });
+  demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'votingFinished' });
+  demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'closed' });
   Clock.clear();
   
   Clock.setSimulatedTime(moment('2017-09-20 09:04').toDate());
@@ -464,7 +455,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic1, [[0], [0], [0], [0], [0], [0], [0], [0], [0], [1], [0], [0]]);
   Clock.setSimulatedTime(moment('2017-10-14 09:04').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'closed', data: {} });
+  demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'votingFinished' });
+  demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'closed' });
   Clock.clear();
 
   Clock.setSimulatedTime(moment('2018-01-03 13:12').toDate());
@@ -485,7 +477,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic2, [null, null, null, null, null, null, null, [0], [0], [0], [0], [0]]);
   Clock.setSimulatedTime(moment('2018-01-18 22:45').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'closed', data: {} });
+  demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'votingFinished' });
+  demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'closed' });
   Clock.clear();
 
   Clock.setSimulatedTime(moment().subtract(3, 'weeks').toDate());
