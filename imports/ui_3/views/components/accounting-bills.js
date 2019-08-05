@@ -3,28 +3,20 @@ import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
-import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
-
-import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { billColumns } from '/imports/api/transactions/bills/tables.js';
-
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/components/custom-table.js';
+import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
-import '../common/ibox-tools.js';
-import '../components/balance-widget.js';
-import '../components/balance-report.js';
 import './accounting-bills.html';
 
 Template.Accounting_bills.viewmodel({
@@ -113,14 +105,24 @@ Template.Accounting_bills.events({
     });
   },
   'click .js-new'(event, instance) {
-    Session.set('activeBillCategory', instance.viewmodel.activeBillCategory());
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.insert',
-      collection: Bills,
-      omitFields: ['category', 'payments'],
-      type: 'method',
-      meteormethod: 'bills.insert',
-    });
+    const activeBillCategory = instance.viewmodel.activeBillCategory();
+    Session.set('activeBillCategory', activeBillCategory);
+    if (activeBillCategory === 'parcel') {
+      Modal.show('Autoform_edit', {
+        id: 'af.parcelBilling.insert',
+        collection: ParcelBillings,
+        type: 'method',
+        meteormethod: 'parcelBillings.insert',
+      });
+    } else {
+      Modal.show('Autoform_edit', {
+        id: 'af.bill.insert',
+        collection: Bills,
+        omitFields: ['category', 'payments'],
+        type: 'method',
+        meteormethod: 'bills.insert',
+      });
+    }
   },
   'click .js-edit'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
@@ -175,3 +177,12 @@ AutoForm.addHooks('af.bill.pay', {
     return doc;
   },
 });
+
+AutoForm.addModalHooks('af.parcelBilling.insert');
+AutoForm.addHooks('af.parcelBilling.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    return doc;
+  },
+});
+

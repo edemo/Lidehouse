@@ -1,0 +1,117 @@
+<template name="Accounting_breakdowns">
+    <!--div class="col-md-12">
+        <div class="ibox ibox-dark" id='breakdowns-nestable'>
+            <div class="ibox-title">
+                <h5>{{_ 'Breakdowns'}}</h5>
+                {{>iboxTools}}
+            </div>
+            <div class="ibox-content">
+                {{> Nestable_edit}}
+            </div>
+        </div>
+    </div-->
+
+    {{#if userHasPermission 'breakdowns.inCommunity' (fromSession 'activeCommunityId')}}
+    <div class="col-md-12">
+        <div class="ibox ibox-dark" id='coa'>
+            <div class="ibox-title">
+                <h5>{{_ 'Accounting configuration' }}</h5>
+                {{>iboxTools}}
+            </div>
+            <div class="ibox-content">
+                {{#if and (noBreakdownsDefined (userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId'))) }}
+                <div class="pull-right">
+                    <!--<div class="dropdown">
+                        <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
+                            <i class="fa fa-clone"></i> {{_ 'Import template'}} <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
+                            {{#each template in accountingTemplates}}
+                            <li><a href="" class="js-clone" data-id="{{template.name}}"><i class="fa fa-clone"></i> {{_ 'template.name'}}</a></li>
+                            {{/each}}
+                        </ul>
+                    </div>-->
+                    <a href="" class="btn btn-primary btn-sm js-clone"><i class="fa fa-clone"></i> {{_ 'Import template'}}</a>
+                </div>
+                {{/if}}
+                <p>
+                    {{_ 'A teljes számlatükör könyvelési bontásokból épül fel.'}}<br>
+                    {{_ 'Használhatja a beépített sablonjainkat, vagy létrehozhat teljesen újat is.'}}<br>
+                </p>
+                <br>
+                <ul class="nav nav-tabs m-b-md">
+                    <li class="active"><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of accounts'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-loc">{{_ 'Localizers'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-others">{{_ 'Other breakdowns'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-defs" class="text-capitalize">{{_ 'txDefs'}}</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-coa" class="tab-pane breakdowns active">
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=coaBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                        </div>
+                    </div>
+                    <div id="tab-loc" class="tab-pane breakdowns">
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=locBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                        </div>
+                    </div>
+                    <div id="tab-others" class="tab-pane breakdowns">
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=othersBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                        </div>
+                        {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
+                        <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <a href="" class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
+                        </div>
+                        </div>
+                        {{/if}}
+                    </div>
+                    <div id="tab-defs" class="tab-pane txdefs">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                  <tr style="font-weight: bold">
+                                      <td>{{_ 'schemaTxDefs.name.label'}}</td>
+                                      <td>{{_ 'schemaTxDefs.debit.label'}}</td>
+                                      <td>{{_ 'schemaTxDefs.credit.label'}}</td>
+                                      <td></td>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {{#each txDef in txDefs}}
+                                  <tr>
+                                      <td>{{_ txDef.name}}</td>
+                                      <td>{{{displayAccount txDef.debit}}}</td>
+                                      <td>{{{displayAccount txDef.credit}}}</td>
+                                      <td class="text-right">
+                                          <div class="btn-group">
+                                              <!--td><button class="btn btn-white btn-xs js-view" data-id="{{entry.txId}}"><i class="fa fa-eye"></i></button></td-->
+                                              {{#if userHasPermission 'breakdowns.update' (fromSession 'activeCommunityId')  }}
+                                              <button class="btn btn-xs btn-white js-edit" data-id={{txDef._id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                              {{/if}}
+                                              {{#if userHasPermission 'breakdowns.remove' (fromSession 'activeCommunityId')  }}
+                                              <button class="btn btn-xs btn-white js-delete" data-id={{txDef._id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                              {{/if}}
+                                          </div>
+                                      </td>
+                                  </tr>
+                                  {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                        {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txDef'}}</button>
+                            </div>
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+</template>
