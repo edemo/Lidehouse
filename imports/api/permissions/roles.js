@@ -17,6 +17,10 @@ export const defaultRoles = [
   { name: 'guest' },        // Just looking around. Somone invited him/her to take a look.
 ];
 
+export const ranks = [
+  'chairman', 'assistant',
+];
+
 // Groupings just to ease configuration
 export const occupantRoles = ['owner', 'benefactor'];
 export const leaderRoles = ['admin', 'manager', 'board'];

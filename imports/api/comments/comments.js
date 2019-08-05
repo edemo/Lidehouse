@@ -58,9 +58,12 @@ Comments.helpers({
   community() {
     return this.topic().community();
   },
-  hiddenBy(userId, communityId) {
+  editableBy(userId) {
+    return this.userId === userId;
+  },
+  hiddenBy(userId) {
     const author = this.creator();
-    return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
+    return this.flaggedBy(userId, this.communityId) || (author && author.flaggedBy(userId, this.communityId));
   },
   getType() {
     return this.type || 'comment';
