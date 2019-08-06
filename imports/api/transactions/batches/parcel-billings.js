@@ -7,6 +7,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
@@ -17,7 +18,7 @@ ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8
 
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  valueDate: { type: Date },
+  valueDate: { type: Date, optional: true },
   projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
   amount: { type: Number },
   payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
@@ -25,11 +26,18 @@ ParcelBillings.schema = new SimpleSchema({
   note: { type: String, max: 100, optional: true },
 });
 
+Meteor.startup(function indexParcelBillings() {
+  ParcelBillings.ensureIndex({ communityId: 1 });
+});
+
 ParcelBillings.helpers({
   parcels() {
     const parcelLeafs = Localizer.get(this.communityId).leafsOf(this.localizer);
     const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
     return parcels;
+  },
+  useCount() {
+    Transactions.find({ ref: this._id }).count();
   },
 });
 

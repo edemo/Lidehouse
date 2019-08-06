@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
@@ -16,14 +17,16 @@ import { Bills } from '../bills/bills';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
+export const BILLING_DUE_DAYS = 8;
 
 export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
   validate: new SimpleSchema({
     id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    valueDate: { type: Date },
   }).validator(),
 
-  run({ id }) {
+  run({ id, valueDate }) {
     const parcelBilling = ParcelBillings.findOne(id);
     const parcels = parcelBilling.parcels();
     let totalAmount = 0;
@@ -54,14 +57,14 @@ export const apply = new ValidatedMethod({
       const localizer = Localizer.parcelRef2code(parcel.ref);
       issuedBills.push({ communityId: parcelBilling.communityId, category: 'parcel',
         amount, account, localizer, partner: localizer,
-        issueDate: new Date(), valueDate: new Date(), dueDate: new Date(),
+        valueDate, issueDate: moment().toDate(), dueDate: moment().add(BILLING_DUE_DAYS, 'days').toDate(),
       });
       debitLegs.push({ amount, account, localizer });
     });
 
     const tx = {
       communityId: parcelBilling.communityId,
-      valueDate: parcelBilling.valueDate,
+      valueDate,
       amount: totalAmount,
 //        defId: TxDefs.findOne({ communityId: parcelBilling.communityId, name: 'Obligation' }),
       credit: [{
@@ -77,6 +80,18 @@ export const apply = new ValidatedMethod({
   },
 });
 
+export const revert = new ValidatedMethod({
+  name: 'parcelBillings.revert',
+  validate: new SimpleSchema({
+    id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    valueDate: { type: Date },
+  }).validator(),
+
+  run({ id, valueDate }) {
+    throw new Meteor.Error('err_NotImplemented', 'TODO');
+  },
+});
+
 export const insert = new ValidatedMethod({
   name: 'parcelBillings.insert',
   validate: ParcelBillings.simpleSchema().validator({ clean: true }),
@@ -85,12 +100,42 @@ export const insert = new ValidatedMethod({
     checkPermissions(this.userId, 'transactions.insert', doc.communityId);
     const id = ParcelBillings.insert(doc);
     if (Meteor.isServer) {
-      // new parcel billings are automatically applied
-      apply._execute({ userId: this.userId }, { id });
+      if (doc.valueDate) { // new parcel billings are automatically applied, if valueDate is given
+        apply._execute({ userId: this.userId }, { id, valueDate: doc.valueDate });
+      }
     }
     return id;
   },
 });
 
+export const update = new ValidatedMethod({
+  name: 'parcelBillings.update',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    modifier: { type: Object, blackbox: true },
+  }).validator(),
+
+  run({ _id, modifier }) {
+    const doc = checkExists(ParcelBillings, _id);
+//    checkModifier(doc, modifier, );
+    checkPermissions(this.userId, 'parcelBillings.update', doc.communityId);
+
+    return ParcelBillings.update({ _id }, { $set: doc });
+  },
+});
+
+export const remove = new ValidatedMethod({
+  name: 'parcelBillings.remove',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id }) {
+    const doc = checkExists(ParcelBillings, _id);
+    checkPermissions(this.userId, 'parcelBillings.remove', doc.communityId);
+    return ParcelBillings.remove(_id);
+  },
+});
+
 ParcelBillings.methods = ParcelBillings.methods || {};
-_.extend(ParcelBillings.methods, { insert, apply });
+_.extend(ParcelBillings.methods, { insert, update, remove, apply, revert });

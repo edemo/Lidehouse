@@ -685,6 +685,9 @@
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. emlékeztető)"
+    },
+    "useCount": {
+      "label": "Eddigi alkalmak"
     }
   },
   "schemaSharedfolders": {

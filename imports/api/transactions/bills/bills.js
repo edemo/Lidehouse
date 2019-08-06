@@ -7,6 +7,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
+import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
@@ -58,6 +59,7 @@ export function matchBillSchema() {
     billId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: autoformOptions },
   });
 }
+
 Meteor.startup(function indexBills() {
   if (Meteor.isClient && MinimongoIndexing) {
     Bills._collection._ensureIndex('category');
@@ -114,10 +116,15 @@ Meteor.startup(function attach() {
 
 // --- Factory ---
 
-Factory.define('invoice', Bills, {
+Factory.define('bill', Bills, {
   communityId: () => Factory.get('community'),
-  category: 'in',
+  partner: faker.random.word(),
+//  account: { type: String, optional: true },
+//  localizer: { type: String, optional: true },
   amount: faker.random.number(10000),
+  issueDate: Clock.currentDate(),
+  valueDate: Clock.currentDate(),
+  dueDate: Clock.currentDate(),
 });
 
 /*
