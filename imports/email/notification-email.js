@@ -57,7 +57,7 @@ export const Notification_Email = {
     data: params => ({
       userId: params.uid,
       communityId: params.cid,
-      topicsWithEvents: Topics.topicsWithUnseenEvents(params.uid, params.cid, Meteor.users.SEEN_BY.NOTI),
+      topicsToDisplay: Topics.topicsWithUnseenEvents(params.uid, params.cid, Meteor.users.SEEN_BY.NOTI).filter(t => t.hasThingsToDisplay()),
     }),
   },
 };

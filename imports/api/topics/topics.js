@@ -91,6 +91,9 @@ Topics.helpers({
       isUnseen: this.isUnseenBy(userId, seenType),
       unseenComments: this.unseenCommentListBy(userId, seenType),
       _hasThingsToDisplay: null,  // cached value
+      hasUnseenThings() {
+        return this.isUnseen || (this.unseenComments.length > 0);
+      },
       hasThingsToDisplay() { // false if everything new with this topic is hidden for the user
         if (this._hasThingsToDisplay === null) {
           this._hasThingsToDisplay = false;
@@ -161,7 +164,7 @@ Topics.topicsWithUnseenEvents = function topicsWithUnseenEvents(userId, communit
     ],
   })
   .map(topic => topic.unseenEventsBy(userId, seenType))
-  .filter(t => t.hasThingsToDisplay())
+  .filter(t => t.hasUnseenThings())
   .sort((t1, t2) => Topics.categoryValues.indexOf(t2.topic.category) - Topics.categoryValues.indexOf(t1.topic.category));
 };
 
