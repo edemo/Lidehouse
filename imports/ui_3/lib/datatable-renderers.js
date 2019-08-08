@@ -91,6 +91,17 @@ export const Render = {
     const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-status-update" title=${__('statusUpdate')}><i class="fa fa-edit"></i></button>`;
     return html;
   },
+  // new way (with Actions):
+  actionButtonsSmall(actions) {
+    return function renderer(cellData, renderType, currentRow) {
+      let html = '<div class="btn-group">';
+      actions.forEach((action) => {
+        html += `<button data-id=${cellData} class="btn btn-white btn-xs js-${action.name}" title=${__(action.name)}><i class="${action.icon}"></i></button>`;
+      });
+      html += '</div>';
+      return html;
+    };
+  },
 };
 
 Render.joinOccupants = function joinOccupants(occupants) {

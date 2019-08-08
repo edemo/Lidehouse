@@ -20,15 +20,16 @@ Template.Parcel_billings.viewmodel({
   },
   optionsFn() {
     return () => {
-      const permissions = {
-        view: Meteor.userOrNull().hasPermission('parcelBillings.inCommunity', this.communityId()),
-        edit: Meteor.userOrNull().hasPermission('parcelBillings.update', this.communityId()),
-        apply: Meteor.userOrNull().hasPermission('parcelBillings.apply', this.communityId()),
-        revert: Meteor.userOrNull().hasPermission('parcelBillings.revert', this.communityId()),
-        delete: Meteor.userOrNull().hasPermission('parcelBillings.remove', this.communityId()),
-      };
+      // Trying out the new way wirth Action buttons here
+//      const permissions = {
+//        view: Meteor.userOrNull().hasPermission('parcelBillings.inCommunity', this.communityId()),
+//        edit: Meteor.userOrNull().hasPermission('parcelBillings.update', this.communityId()),
+//        apply: Meteor.userOrNull().hasPermission('parcelBillings.apply', this.communityId()),
+//        revert: Meteor.userOrNull().hasPermission('parcelBillings.revert', this.communityId()),
+//        delete: Meteor.userOrNull().hasPermission('parcelBillings.remove', this.communityId()),
+//      };
       return {
-        columns: parcelBillingColumns(permissions),
+        columns: parcelBillingColumns(/*permissions*/),
         tableClasses: 'display',
         language: datatables_i18n[TAPi18n.getLanguage()],
         lengthMenu: [[5, 10, 50, -1], [5, 10, 50, __('all')]],
