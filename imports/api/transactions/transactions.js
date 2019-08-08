@@ -90,6 +90,8 @@ Transactions = new TransactionsCollection('transactions');
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
   { amount: { type: Number, optional: true } },
+  { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
+  { paymentId: { type: Number, decimal: true, optional: true } },
 ]);
 
 Transactions.baseSchema = {
@@ -202,4 +204,6 @@ Meteor.startup(function attach() {
 
 Factory.define('tx', Transactions, {
   valueDate: () => Clock.currentDate(),
+  credit: [],
+  debit: [],
 });

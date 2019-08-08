@@ -5,7 +5,7 @@ export function parcelBillingColumns(permissions) {
   const buttonRenderers = [];
   if (permissions.view) buttonRenderers.push(Render.buttonView);
   if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
-//  if (permissions.apply) buttonRenderers.push(Render.buttonApply);
+  if (permissions.apply) buttonRenderers.push(Render.buttonApply);
 //  if (permissions.revert) buttonRenderers.push(Render.buttonRevert);
   if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
 

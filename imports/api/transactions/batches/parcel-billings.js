@@ -1,6 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
+
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Communities } from '/imports/api/communities/communities.js';
@@ -24,6 +27,12 @@ ParcelBillings.schema = new SimpleSchema({
   payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
   localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
   note: { type: String, max: 100, optional: true },
+  appliedAt: { type: [Date], defaultValue: [] },
+});
+
+ParcelBillings.applySchema = new SimpleSchema({
+  id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  valueDate: { type: Date },
 });
 
 Meteor.startup(function indexParcelBillings() {
@@ -46,4 +55,13 @@ ParcelBillings.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   ParcelBillings.simpleSchema().i18n('schemaParcelBillings');
+});
+
+Factory.define('parcelBilling', ParcelBillings, {
+  partner: faker.random.word(),
+  projection: 'absolute',
+  amount: faker.random.number(),
+  payinType: '1',
+  localizer: '@',
+  note: faker.random.word(),
 });

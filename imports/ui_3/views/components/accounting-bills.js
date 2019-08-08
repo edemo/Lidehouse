@@ -139,6 +139,7 @@ Template.Accounting_bills.events({
     Modal.show('Autoform_edit', {
       id: 'af.parcelBilling.apply',
       schema: ParcelBillings.applySchema,
+      omitFields: ['id'],
       type: 'method',
       meteormethod: 'parcelBillings.apply',
     });

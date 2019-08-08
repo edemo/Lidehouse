@@ -95,7 +95,9 @@ export const reconcile = new ValidatedMethod({
 //      paymentId,
     };
     Bills.update(billId, { $push: { payments: payment } });
-    return Transactions.update(txId, { $set: { billId, paymentId } });
+    Transactions.update(txId, { $set: { 'debit.0.billId': billId, 'debit.0.paymentId': paymentId, reconciled: true } });
+    console.log('RECONCILED', Transactions.findOne(txId));
+    return true;
   },
 });
 

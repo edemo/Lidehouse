@@ -21,10 +21,7 @@ export const BILLING_DUE_DAYS = 8;
 
 export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
-  validate: new SimpleSchema({
-    id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    valueDate: { type: Date },
-  }).validator(),
+  validate: ParcelBillings.applySchema.validator(),
 
   run({ id, valueDate }) {
     const parcelBilling = ParcelBillings.findOne(id);
@@ -70,12 +67,17 @@ export const apply = new ValidatedMethod({
       credit: [{
         account: Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.payinType,
       }],
-      debit: debitLegs,
+      // debit will be filled out later
       note: parcelBilling.note,
-      reconciled: true,
     };
     const txId = insertTx._execute({ userId: this.userId }, tx);
-    issuedBills.forEach(bill => Bills.insert(_.extend(bill, { txId })));
+
+    issuedBills.forEach((bill, i) => {
+      const billId = Bills.insert(_.extend(bill, { txId }));
+      _.extend(debitLegs[i], { billId });
+    });
+    Transactions.update(txId, { $set: { debit: debitLegs, reconciled: true } });
+    ParcelBillings.update(id, { $push: { appliedAt: valueDate } });
     return txId;
   },
 });
@@ -98,10 +100,12 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkPermissions(this.userId, 'transactions.insert', doc.communityId);
+    const valueDate = doc.valueDate;
+    delete doc.valueDate;
     const id = ParcelBillings.insert(doc);
     if (Meteor.isServer) {
-      if (doc.valueDate) { // new parcel billings are automatically applied, if valueDate is given
-        apply._execute({ userId: this.userId }, { id, valueDate: doc.valueDate });
+      if (valueDate) { // new parcel billings are automatically applied, if valueDate is given
+        apply._execute({ userId: this.userId }, { id, valueDate });
       }
     }
     return id;

@@ -55,6 +55,10 @@ export const Render = {
     const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-link" title=${__('link')}><i class="fa fa-external-link"></i></button>`;
     return html;
   },
+  buttonApply(cellData, renderType, currentRow) {
+    const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-apply" title=${__('apply')}><i class="fa fa-calendar-plus-o"></i></button>`;
+    return html;
+  },
   buttonGroup(buttonRenderers) {
     return function groupRenderer(cellData, renderType, currentRow) {
       let html = '<div class="btn-group">';

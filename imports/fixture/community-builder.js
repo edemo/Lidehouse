@@ -60,6 +60,9 @@ export class CommunityBuilder {
     this.nextUserIndex %= this.dummyUsers.length;
     return this.dummyUsers[this.nextUserIndex];
   }
+  findSomeoneWhoCanDo(method) {
+    return this.getUserWithRole('admin');
+  }
   autoDetermineCreator(method, params) {
     const split = method.name.split('.');
     const collName = split[0], opName = split[1];
@@ -79,6 +82,7 @@ export class CommunityBuilder {
         case 'contracts':
         case 'parcels': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');
+        case 'bills':
         case 'transactions':
         case 'parcelBillings':
         case 'breakdowns':
@@ -102,13 +106,18 @@ export class CommunityBuilder {
         } break;
         default: debugAssert(false, `No such collection ${collName}`);
       } break;
-      default: debugAssert(false, `No such operation ${opName}`);
+      default: return this.findSomeoneWhoCanDo(method);
     }
     return undefined; // never gets here
   }
   build(name, data) {
     const dataExtended = _.extend({ communityId: this.communityId }, data);
-    return name ? Factory.build(name, dataExtended) : dataExtended;
+    if (name) {
+      const doc = Factory.build(name, dataExtended);
+      delete doc._id; // for some reason Factory builds an _id onto it
+      return doc;
+    }
+    return dataExtended;
   }
   create(name, data) {
     const doc = this.build(name, data);

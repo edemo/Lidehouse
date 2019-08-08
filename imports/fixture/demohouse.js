@@ -778,37 +778,40 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // === Parcel Billings ===
 
+  const parcelBillingIds = [];
+
+  parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+    projection: 'perArea',
+    amount: 275,
+    payinType: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
+    localizer: '@',
+  }));
+
+  const parcelsWithNoWaterMeter = Parcels.find({ communityId: demoCommunityId, waterMetered: false });
+  parcelsWithNoWaterMeter.forEach((parcel) => {
+    parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+      projection: 'perHabitant',
+      amount: 2500,
+      payinType: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
+      localizer: Localizer.parcelRef2code(parcel.ref),
+    }));
+  });
+
+  parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+    projection: 'perArea',
+    amount: 85,
+    payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
+    localizer: '@A',
+  }));
+
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     const valueDate = new Date(`2017-${mm}-12`);
-
-    demoBuilder.insert(ParcelBillings, '', {
-      valueDate,
-      projection: 'perArea',
-      amount: 275,
-      payinType: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
-      localizer: '@',
-    });
-
-    const parcelsWithNoWaterMeter = Parcels.find({ communityId: demoCommunityId, waterMetered: false });
-    parcelsWithNoWaterMeter.forEach((parcel) => {
-      demoBuilder.insert(ParcelBillings, '', {
-        valueDate,
-        projection: 'perHabitant',
-        amount: 2500,
-        payinType: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
-        localizer: Localizer.parcelRef2code(parcel.ref),
-      });
-    });
-
-    demoBuilder.insert(ParcelBillings, '', {
-      valueDate,
-      projection: 'perArea',
-      amount: 85,
-      payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
-      localizer: '@A',
+    parcelBillingIds.forEach(id => {
+      demoBuilder.execute(ParcelBillings.methods.apply, { id, valueDate });
     });
   });
 
+  // This is a one-time, extraordinary parcel billing
   demoBuilder.insert(ParcelBillings, '', {
     projection: 'absolute',
     amount: 75000,
