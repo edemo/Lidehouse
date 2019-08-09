@@ -14,7 +14,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import './context-menu.html';
 
-function positioningMenu(event) {
+function setPosition(event) {
   const pageHeading = $('.page-heading').height();
   const navbar = $('.navbar').height();
   const top = event.pageY - pageHeading - navbar;
@@ -22,23 +22,22 @@ function positioningMenu(event) {
   $('.context-menu').css({ left, top });
 }
 
-function settingUpDummyContext() {
-  const dummyContextObj = {
+function initialize() {
+  const emptyContextObj = {
     topicId: '',
     template: '',
     visible: false,
   };
-  Session.set('context', dummyContextObj);
+  Session.set('context', emptyContextObj);
 }
 
-function settingUpMenu(event, topicId, template) {
+function setMenu(template, topicId) {
   const contextObj = {
     topicId,
     template,
     visible: Session.get('context') ? Session.get('context').visible : false,
   };
   Session.set('context', contextObj);
-  positioningMenu(event);
 }
 
 function buildContext() {
@@ -53,13 +52,13 @@ function buildContext() {
   return context;
 }
 
-function switchMenu(directive) {
+function setVisibility(directive) {
   const contextObj = Session.get('context');
   switch (directive) {
-    case 'on':
+    case 'show':
       contextObj.visible = true;
       break;
-    case 'off':
+    case 'hide':
       contextObj.visible = false;
       break;
     case 'toggle':
@@ -72,16 +71,14 @@ function switchMenu(directive) {
 }
 
 export const contextMenu = {
-  settingUpDummyContext,
-  settingUpMenu,
+  setPosition,
+  initialize,
+  setMenu,
   buildContext,
-  switchMenu,
+  setVisibility,
 };
 
 Template.contextMenu.viewmodel({
-  onCreated() {
-    return settingUpDummyContext();
-  },
   dataVisible() {
     const visible = Session.get('context').visible;
     if (visible) return true;
@@ -91,6 +88,6 @@ Template.contextMenu.viewmodel({
 
 Template.contextMenu.events({
   'click .context-menu'() {
-    switchMenu('off');
+    setVisibility('hide');
   },
 });

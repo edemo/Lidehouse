@@ -50,8 +50,9 @@ Template.Worksheets.viewmodel({
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
     this.setDefaultFilter();
+    contextMenu.initialize();
   },
-  getContext() {
+  buildContext() {
     return contextMenu.buildContext();
   },
   setDefaultFilter() {
@@ -97,14 +98,16 @@ Template.Worksheets.viewmodel({
       },
       eventClick(eventObject, jsEvent) {
         event.stopPropagation();
-        contextMenu.settingUpMenu(event, eventObject._id, 'Topic_edit_context_menu');
-        contextMenu.switchMenu('toggle');
+        contextMenu.setMenu('Topic_edit_context_menu', eventObject._id);
+        contextMenu.setPosition(event)
+        contextMenu.setVisibility('show');
       },
       dayClick(date, jsEvent, view) {
         Session.set('expectedStart', date.toDate());
         event.stopPropagation();
-        contextMenu.settingUpMenu(event, '', 'New_Ticket');
-        contextMenu.switchMenu('toggle');
+        contextMenu.setMenu('New_Ticket');
+        contextMenu.setPosition(event);
+        contextMenu.setVisibility('show');
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
         viewmodel.addEventsToUpdate(eventObject);
