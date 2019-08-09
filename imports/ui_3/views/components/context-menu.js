@@ -42,13 +42,7 @@ function setMenu(template, topicId) {
 
 function buildContext() {
   const context = Session.get('context');
-  const topicId = context.topicId ? context.topicId : false;
-  if (topicId) {
-    const topic = Topics.findOne(topicId);
-    topic.template = context.template;
-    topic.visible = context.visible;
-    return topic;
-  }
+  if (context.topicId) context.topic = Topics.findOne(context.topicId);
   return context;
 }
 
@@ -79,11 +73,7 @@ export const contextMenu = {
 };
 
 Template.contextMenu.viewmodel({
-  dataVisible() {
-    const visible = Session.get('context').visible;
-    if (visible) return true;
-    return false;
-  },
+
 });
 
 Template.contextMenu.events({

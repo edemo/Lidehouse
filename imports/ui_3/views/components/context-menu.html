@@ -1,7 +1,7 @@
 <template name="contextMenu">
     <div class="context-menu dropdown open" style="position: absolute">
-    {{#if dataVisible}}
-        {{> Template.dynamic template=this.template}}
+    {{#if visible}}
+        {{> Template.dynamic template=template data=doc}}
     {{/if}}
     </div>
 </template>
