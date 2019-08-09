@@ -95,25 +95,7 @@
         {{#if calendarView}}
         <div>
           {{> ReactiveFullcalendar options=calendarOptions }}
-          <div id="floating-dropdown" style="position: absolute" class="dropdown btn-group">
-            <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
-              {{#if ticketModify}}
-                {{#if isNotEmptyArray possibleNextStatuses}}
-                  {{#each nextStatus in possibleNextStatuses}}
-                  <li><a href="" class="js-next-status" data-status="{{nextStatus.name}}">{{_ nextStatus.name}}</a></li>
-                  {{/each}} 
-                {{else}}
-                  {{#each event in ticketEvents}}
-                  <li><a href="" class="js-modify" data-event="{{event}}">{{_ event}}</a></li>
-                  {{/each}}
-                {{/if}}
-              {{else}}
-                {{#each type in ticketTypes}}
-                <li><a href="" class="js-new" data-type="{{type}}">{{_ (concat 'schemaTickets.ticket.type.' type)}}</a></li>
-                {{/each}}
-              {{/if}}
-            </ul>
-          </div>
+          {{> contextMenu getContext }}
         </div>
         {{else}}
         <div class="no-padding table-responsive">
