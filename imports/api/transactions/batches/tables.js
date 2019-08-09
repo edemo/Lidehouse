@@ -1,15 +1,12 @@
 import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+import { Blaze } from 'meteor/blaze';
 import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
+import '/imports/ui_3/views/blocks/action-buttons.js';
 
 export function parcelBillingActions(/*permissions*/) {
-//  const buttonRenderers = [];
-//  if (permissions.view) buttonRenderers.push(Render.buttonView);
-//  if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
-//  if (permissions.apply) buttonRenderers.push(Render.buttonApply);
-//  if (permissions.revert) buttonRenderers.push(Render.buttonRevert);
-//  if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
   const user = Meteor.userOrNull();
   const communityId = Session.get('activeCommunityId');
   return [{
@@ -44,7 +41,8 @@ export function parcelBillingColumns() {
     { data: 'amount', title: __('schemaParcelBillings.amount.label') },
     { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'useCount()', title: __('schemaParcelBillings.useCount.label') },
-    { data: '_id', title: __('Action buttons'), render: Render.actionButtonsSmall(parcelBillingActions()) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: parcelBillingActions() }),
+    },
   ];
 
   return columns;
