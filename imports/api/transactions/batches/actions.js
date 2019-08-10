@@ -9,6 +9,7 @@ export function allParcelBillingActions() {
   const user = Meteor.userOrNull();
   const communityId = Session.get('activeCommunityId');
   ParcelBillings.actions = ParcelBillings.actions || {
+    collection: ParcelBillings,
     new: {
       name: 'new',
       icon: 'fa fa-plus',

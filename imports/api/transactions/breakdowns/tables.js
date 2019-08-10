@@ -1,5 +1,8 @@
+import { Template } from 'meteor/templating';
+import { Blaze } from 'meteor/blaze';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
+import { getBreakdownsActionsSmall } from './actions.js';
 
 export function breakdownColumns() {
   const constrainText = function constrainText(text, charCount) {
@@ -19,8 +22,6 @@ export function breakdownColumns() {
     { data: 'name', /*title: __('schemaBreakdowns.name.label'),*/ render: Render.translate },
 //    { data: 'type', title: __('schemaBreakdowns.type.label'), render: Render.translate },
     { data: 'nodeNames()', /*title: __('schemaBreakdowns.children.$.children.$.children.label'),*/ render: displayNames },
-    { data: '_id', render: Render.buttonView },
-    { data: '_id', render: Render.buttonEdit },
-    { data: '_id', render: Render.buttonDelete },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getBreakdownsActionsSmall() }) },
   ];
 }

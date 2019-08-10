@@ -2,7 +2,7 @@
 <template name="Accounting_bills">
     {{#if showParcelBillings}}
     <div class="col-lg-12">
-    <div class="ibox ibox-dark" id="parcel-billings">
+    <div class="ibox ibox-dark">
         <div class="ibox-title">
             <h5>{{_ 'Parcel billings'}}</h5>
             {{>iboxTools}}
@@ -16,7 +16,7 @@
 
     {{#if userHasPermission 'bills.update' communityId }}
     <div class="col-lg-12">
-    <div class="ibox ibox-dark" id="bills">
+    <div class="ibox ibox-dark bills">
         <!--div class="ibox-title">
             <h5>{{_ 'Parcel balances'}}</h5>
             {{>iboxTools}}

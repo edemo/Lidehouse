@@ -18,13 +18,13 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { allBreakdownsActions } from '/imports/api/transactions/breakdowns/actions.js';
+import { allTxDefsActions, getTxDefsActionsSmall } from '/imports/api/transactions/txdefs/actions.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/api/transactions/txdefs/methods.js';
-import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
-
 import './accounting-breakdowns.html';
-
 
 Template.Accounting_breakdowns.viewmodel({
   onCreated(instance) {
@@ -65,16 +65,13 @@ Template.Accounting_breakdowns.viewmodel({
   othersBreakdownsTableDataFn() { return this.breakdownsTableDataFn('others'); },
   //
   breakdownsOptionsFn() {
-    function getOptions() {
-      return {
-        columns: breakdownColumns(),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-        paging: false,
-        info: false,
-      };
-    }
-    return getOptions;
+    return () => Object.create({
+      columns: breakdownColumns(),
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      paging: false,
+      info: false,
+    });
   },
   optionsOf(accountCode) {
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
@@ -82,122 +79,22 @@ Template.Accounting_breakdowns.viewmodel({
     if (brk) return brk.nodeOptionsOf(accountCode, true);
     return [];
   },
+  txDefsActions() {
+    return getTxDefsActionsSmall();
+  },
 });
 
+Template.Accounting_breakdowns.events(
+  actionHandlers(allBreakdownsActions())
+);
+
+Template.Accounting_breakdowns.events(
+  actionHandlers(allTxDefsActions())
+);
+
 Template.Accounting_breakdowns.events({
-  'click .breakdowns .js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.breakdown.insert',
-      collection: Breakdowns,
-      type: 'insert',
-      //      type: 'method',
-//      meteormethod: 'breakdowns.insert',
-    });
-  },
-  'click .breakdowns .js-edit-na'(event) {
-    const id = $(event.target).closest('button').data('id');
-    const breakdown = Breakdowns.findOne(id);
-    const modalContext = {
-      title: 'Edit Breakdown',
-      body: 'Nestable_edit',
-      bodyContext: { json: breakdown },
-      btnClose: 'cancel',
-      btnOK: 'save',
-      onOK() {
-        const json = serializeNestable();
-        // console.log('saving nestable:', JSON.stringify(json));
-        // assert json.length === 1
-        // assert json[0].name === breakdown.name
-        // assert locked elements are still there 
-        Breakdowns.update(id, { $set: { children: json[0].children } },
-          onSuccess(res => displayMessage('success', 'Breakdown saved'))
-        );
-      },
-    };
-    Modal.show('Modal', modalContext);
-  },
-  'click .breakdowns .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.breakdown.update',
-      collection: Breakdowns,
-      doc: Breakdowns.findOne(id),
-      type: 'method-update',
-      meteormethod: 'breakdowns.update',
-      singleMethodArgument: true,
-    });
-  },
-  'click .breakdowns .js-view'(event, instance) {
-    const id = $(event.target).closest('button').data('id');
-    const breakdown = Breakdowns.findOne(id);
-    const modalContext = {
-      title: 'View Breakdown',
-      body: 'Nestable_edit',
-      bodyContext: { json: breakdown, disabled: true },
-    };
-    Modal.show('Modal', modalContext);
-  },
-  'click .breakdowns .js-view-af'(event, instance) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.breakdown.view',
-      collection: Breakdowns,
-      doc: Breakdowns.findOne(id),
-      type: 'readonly',
-    });
-  },
-  'click .breakdowns .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(Breakdowns.remove, { _id: id }, {
-      action: 'delete breakdown',
-    });
-  },
-  'click .txdefs .js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.txDef.insert',
-      collection: TxDefs,
-      type: 'method',
-      meteormethod: 'txDefs.insert',
-    });
-  },
-  'click .txdefs .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.txDef.update',
-      collection: TxDefs,
-      doc: TxDefs.findOne(id),
-      type: 'method-update',
-      meteormethod: 'txDefs.update',
-      singleMethodArgument: true,
-    });
-  },
-  'click .txdefs .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(TxDefs.methods.remove, { _id: id }, {
-      action: 'delete txDef',
-    });
-  },
   'click #coa .js-clone'(event, instance) {
     const communityId = Session.get('activeCommunityId');
     Transactions.methods.cloneAccountingTemplates.call({ communityId }, handleError);
-  },
-});
-
-
-AutoForm.addModalHooks('af.breakdown.insert');
-AutoForm.addModalHooks('af.breakdown.update');
-AutoForm.addHooks('af.breakdown.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});
-
-AutoForm.addModalHooks('af.txDef.insert');
-AutoForm.addModalHooks('af.txDef.update');
-AutoForm.addHooks('af.txDef.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
   },
 });

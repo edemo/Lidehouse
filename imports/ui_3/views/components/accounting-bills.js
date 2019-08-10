@@ -16,6 +16,8 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { billColumns } from '/imports/api/transactions/bills/tables.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
+import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -82,46 +84,25 @@ Template.Accounting_bills.viewmodel({
     return () => Bills.find(self.filterSelector()).fetch();
   },
   billsOptionsFn() {
-    return () => {
-      const permissions = {
-        view: Meteor.userOrNull().hasPermission('bills.inCommunity', this.communityId()),
-        edit: Meteor.userOrNull().hasPermission('bills.update', this.communityId()),
-        statusUpdate: Meteor.userOrNull().hasPermission('bills.update', this.communityId()),
-        delete: Meteor.userOrNull().hasPermission('bills.remove', this.communityId()),
-      };
-      return {
-        columns: billColumns(permissions),
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-        lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
-        pageLength: 25,
-        ...DatatablesExportButtons,
-      };
-    };
+    return () => Object.create({
+      columns: billColumns(),
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+      pageLength: 25,
+      ...DatatablesExportButtons,
+    });
   },
 });
 
+Template.Accounting_bills.events(
+  actionHandlers(allBillsActions())
+);
+
 Template.Accounting_bills.events({
-  'click .js-view'(event, instance) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.view',
-      collection: Bills,
-      omitFields: ['category'],
-      doc: Bills.findOne(id),
-      type: 'readonly',
-    });
-  },
-  'click .js-new'(event, instance) {
-    const activeBillCategory = instance.viewmodel.activeBillCategory();
-    Session.set('activeBillCategory', activeBillCategory);
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.insert',
-      collection: Bills,
-      omitFields: ['category', 'payments'],
-      type: 'method',
-      meteormethod: 'bills.insert',
-    });
+  'click .js-category-filter'(event, instance) {
+    const billCategory = $(event.target).closest('[data-value]').data('value');
+    instance.viewmodel.activeBillCategory(billCategory);
   },
   'click .js-edit-defs'(event, instance) {
     instance.viewmodel.showParcelBillings(true);
@@ -134,57 +115,4 @@ Template.Accounting_bills.events({
     };
     Modal.show('Modal', modalContext);*/
   },
-  'click .js-edit'(event, instance) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.update',
-      collection: Bills,
-      omitFields: ['category'],
-      doc: Bills.findOne(id),
-      type: 'method-update',
-      meteormethod: 'bills.update',
-    });
-  },
-  'click .js-delete'(event) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    Modal.confirmAndCall(Bills.methods.remove, { _id: id }, {
-      action: 'delete bill',
-      message: 'It will disappear forever',
-    });
-  },
-  'click .js-status-update'(event, instance) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    Session.set('activeBillId', id);
-    Modal.show('Autoform_edit', {
-      id: 'af.bill.pay',
-      collection: Bills,
-      schema: Bills.paymentSchema,
-      type: 'method',
-      meteormethod: 'transactions.reconcile',
-    });
-  },
-  'click .js-category-filter'(event, instance) {
-    const billCategory = $(event.target).closest('[data-value]').data('value');
-    instance.viewmodel.activeBillCategory(billCategory);
-  },
 });
-
-AutoForm.addModalHooks('af.bill.insert');
-AutoForm.addModalHooks('af.bill.update');
-AutoForm.addModalHooks('af.bill.pay');
-
-AutoForm.addHooks('af.bill.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.category = Session.get('activeBillCategory');
-    return doc;
-  },
-});
-
-AutoForm.addHooks('af.bill.pay', {
-  formToDoc(doc) {
-    doc._id = Session.get('activeBillId');
-    return doc;
-  },
-});
-

@@ -1,13 +1,11 @@
+import { Template } from 'meteor/templating';
+import { Blaze } from 'meteor/blaze';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
+import '/imports/ui_3/views/blocks/action-buttons.js';
+import { getBillsActionsSmall } from './actions.js';
 
-export function billColumns(permissions) {
-  const buttonRenderers = [];
-  if (permissions.view) buttonRenderers.push(Render.buttonView);
-  if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
-  if (permissions.statusUpdate) buttonRenderers.push(Render.buttonStatusUpdate);
-  if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
-
+export function billColumns() {
   const columns = [
     { data: 'serial', title: __('schemaBills.serial.label') },
     { data: 'serialId()', title: __('schemaGeneral.serialId.label') },
@@ -23,7 +21,7 @@ export function billColumns(permissions) {
     { data: 'partner', title: 'Partner' },
     { data: 'ref', title: __('schemaBills.ref.label') },
     { data: 'note', title: __('schemaBills.note.label') },
-    { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getBillsActionsSmall() }) },
   ];
 
   return columns;
