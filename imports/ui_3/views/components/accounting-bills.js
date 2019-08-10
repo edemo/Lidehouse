@@ -123,27 +123,6 @@ Template.Accounting_bills.events({
       meteormethod: 'bills.insert',
     });
   },
-  'click .js-new-def'(event, instance) {
-    debugAssert(instance.viewmodel.activeBillCategory() === 'parcel');
-    Modal.show('Autoform_edit', {
-      id: 'af.parcelBilling.insert',
-      collection: ParcelBillings,
-      type: 'method',
-      meteormethod: 'parcelBillings.insert',
-    });
-  },
-  'click .js-apply'(event, instance) {
-    debugAssert(instance.viewmodel.activeBillCategory() === 'parcel');
-    const id = $(event.target).closest('[data-id]').data('id');
-    Session.set('activeParcelBillingId', id);
-    Modal.show('Autoform_edit', {
-      id: 'af.parcelBilling.apply',
-      schema: ParcelBillings.applySchema,
-      omitFields: ['id'],
-      type: 'method',
-      meteormethod: 'parcelBillings.apply',
-    });
-  },
   'click .js-edit-defs'(event, instance) {
     instance.viewmodel.showParcelBillings(true);
 /*    const modalContext = {
@@ -209,19 +188,3 @@ AutoForm.addHooks('af.bill.pay', {
   },
 });
 
-AutoForm.addModalHooks('af.parcelBilling.insert');
-AutoForm.addHooks('af.parcelBilling.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-});
-
-AutoForm.addModalHooks('af.parcelBilling.apply');
-AutoForm.addHooks('af.parcelBilling.apply', {
-  formToDoc(doc) {
-//    doc.communityId = Session.get('activeCommunityId');
-    doc.id = Session.get('activeParcelBillingId');
-    return doc;
-  },
-});
