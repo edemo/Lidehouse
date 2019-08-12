@@ -69,34 +69,50 @@ export const update = new ValidatedMethod({
   },
 });
 
-function checkMatches(tx, bill) {
-  if (tx.communityId !== bill.communityId || tx.amount > bill.amount) {
+function checkMatches(tx, txLeg, bill) {
+  const txAmount = txLeg.amount || tx.amount;
+  if (tx.communityId !== bill.communityId || txAmount !== bill.amount) {
     throw new Meteor.Error('err_sanityCheckFailed', 'Tx does not match Bill');
   }
 }
 
 export const reconcile = new ValidatedMethod({
   name: 'transactions.reconcile',
-  validate: new SimpleSchema({
-    txId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    billId: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
+  validate: Bills.reconcileSchema().validator(),
 
-  run({ txId, billId }) {
+  run({ txId, txLegId, billId, paymentId }) {
     const tx = checkExists(Transactions, txId);
     const bill = checkExists(Bills, billId);
-    checkMatches(tx, bill);
     checkPermissions(this.userId, 'transactions.reconcile', tx.communityId);
-    const paymentId = bill.paymentCount();
-    const payment = {
-      amount: tx.amount,
-      valueDate: tx.valueDate,
-      txId: tx._id,
-//      paymentId,
-    };
-    Bills.update(billId, { $push: { payments: payment } });
-    Transactions.update(txId, { $set: { 'debit.0.billId': billId, 'debit.0.paymentId': paymentId, reconciled: true } });
-    console.log('RECONCILED', Transactions.findOne(txId));
+    let txLeg;
+    if (!txLegId) {
+      txLeg = {
+        amount: bill.amount,
+        account: bill.account,
+      };
+    } else {
+      txLeg = tx[bill.txMatchSide()][txLegId];
+      checkMatches(tx, txLeg, bill);
+    }
+    if (!paymentId) { // no paymentId means, let's create the payment now -- we do not reconcile to original bills, those are auto-reconciled
+      paymentId = bill.paymentCount();
+      const payment = {
+        amount: tx.amount,
+        valueDate: tx.valueDate,
+        txId,
+        txLegId,
+      };
+      Bills.update(billId, { $push: { payments: payment } });
+    }
+    const txSide = bill.txMatchSide();
+    Transactions.update(txId, { $set: {
+      [`${txSide}.${txLegId}.billId`]: billId,
+      [`${txSide}.${txLegId}.paymentId`]: paymentId,
+    } });
+    if (_.every(Transactions.findOne(txId)[txSide], leg => leg.billId)) {
+      Transactions.update(txId, { $set: { reconciled: true } });
+    }
+//    console.log('RECONCILED', Transactions.findOne(txId));
     return true;
   },
 });

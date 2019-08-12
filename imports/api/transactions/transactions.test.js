@@ -68,12 +68,13 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 650);
         chai.assert.equal(bill.paymentCount(), 0);
 
-        Fixture.builder.execute(Bills.methods.payment, { _id: billId, payment: { amount: 650, valueDate: Clock.currentDate() } });
+        Fixture.builder.execute(Bills.methods.payment, { _id: billId, modifier: { $set: { payments: [{ amount: 650, valueDate: Clock.currentDate() }] } } });
 
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.outstanding, 0);
         chai.assert.equal(bill.paymentCount(), 1);
 
+        // later if the same tx comes in from bank import, no extra payment is created
         const txId = Fixture.builder.create('tx', { amount: 650 });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId, paymentId: 0, txId });
         chai.assert.equal(bill.outstanding, 0);
@@ -90,19 +91,43 @@ if (Meteor.isServer) {
         Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
 
         bill = Bills.findOne(billId);
+        chai.assert.equal(bill.outstanding, 0);
         chai.assert.equal(bill.paymentCount(), 1);
       });
+    });
 
-      it('Reconcile one Bill - one Payment', function () {
-        const bill1Id = Fixture.builder.create('bill', { category: 'in', amount: 650 });
-        const tx1Id = Fixture.builder.create('tx', { amount: 650 });
-        Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill1Id, txId: tx1Id });
+    describe('transactions reconcile', function () {
+      before(function () {
+      });
 
-        const bill1 = Bills.findOne(bill1Id);
-        const tx1 = Transactions.findOne(tx1Id);
-        chai.assert.equal(bill1.outstanding, 0);
-        chai.assert.isTrue(tx1.reconciled);
-        chai.assert.isTrue(tx1.complete);
+      it('Reconcile and Conteer in one step', function () {
+        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
+        const txId = Fixture.builder.create('tx', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
+        Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
+
+        const bill = Bills.findOne(billId);
+        const tx = Transactions.findOne(txId);
+        chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(bill.account, '38');
+        chai.assert.equal(bill.localizer, '@');
+        chai.assert.isTrue(tx.reconciled);
+        chai.assert.isTrue(tx.complete);
+      });
+
+      it('Conteer first, Reconcile later', function () {
+        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
+        const txId = Fixture.builder.create('tx', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
+
+        Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '38', localizer: '@' } } });
+        Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
+
+        const bill = Bills.findOne(billId);
+        const tx = Transactions.findOne(txId);
+        chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(bill.account, '38');
+        chai.assert.equal(bill.localizer, '@');
+        chai.assert.isTrue(tx.reconciled);
+        chai.assert.isTrue(tx.complete);
       });
 
       it('Reconcile one Bill - multi Payment', function () {

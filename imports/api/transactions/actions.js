@@ -3,10 +3,10 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { matchBillSchema } from '/imports/api/transactions/bills/bills.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Transactions } from './transactions.js';
 import './methods.js';
+import { Bills } from './bills/bills.js';
 
 export function allTransactionsActions() {
   Transactions.actions = Transactions.actions || {
@@ -66,7 +66,7 @@ export function allTransactionsActions() {
         Modal.show('Autoform_edit', {
           id: 'af.transaction.reconcile',
           collection: Transactions,
-          schema: matchBillSchema(),
+          schema: Bills.reconcileSchema(),
           type: 'method',
           meteormethod: 'transactions.reconcile',
         });

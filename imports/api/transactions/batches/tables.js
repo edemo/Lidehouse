@@ -13,7 +13,7 @@ export function parcelBillingColumns() {
     { data: 'projection', title: __('schemaParcelBillings.projection.label') },
     { data: 'amount', title: __('schemaParcelBillings.amount.label') },
     { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
-    { data: 'useCount()', title: __('schemaParcelBillings.useCount.label') },
+    { data: 'applyCount()', title: __('schemaParcelBillings.applyCount.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getParcelBillingActionsSmall() }) },
   ];
 

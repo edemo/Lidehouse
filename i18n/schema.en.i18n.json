@@ -695,8 +695,8 @@
       "label": "Note",
       "placeholder": "(eg. reminder)"
     },
-    "useCount": {
-      "label": "Use count"
+    "applyCount": {
+      "label": "Apply count"
     }
   },
   "schemaSharedfolders": {

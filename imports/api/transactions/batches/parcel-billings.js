@@ -45,8 +45,9 @@ ParcelBillings.helpers({
     const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
     return parcels;
   },
-  useCount() {
-    Transactions.find({ ref: this._id }).count();
+  applyCount() {
+//  return Transactions.find({ ref: this._id }).count();
+    return this.appliedAt.length;
   },
 });
 

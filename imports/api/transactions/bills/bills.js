@@ -26,7 +26,7 @@ Bills.paymentSchema = new SimpleSchema({
   valueDate: { type: Date },
   amount: { type: Number },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-//  paymentId: { type: Number, decimal: true },
+  txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
 });
 
 Bills.schema = new SimpleSchema({
@@ -40,6 +40,7 @@ Bills.schema = new SimpleSchema({
   account: { type: String, optional: true },
   localizer: { type: String, optional: true },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   payments: { type: Array, defaultValue: [] },
   'payments.$': { type: Bills.paymentSchema },
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client ask to sort on outstanding amount
@@ -48,8 +49,8 @@ Bills.schema = new SimpleSchema({
 
 Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partner'];
 
-export function matchBillSchema() {
-  const autoformOptions = {
+Bills.reconcileSchema = function reconcileSchema() {
+  const autoformOptions = Meteor.isServer ? {} : {
     options() {
       const bills = Bills.find({ communityId: getActiveCommunityId(), outstanding: { $gt: 0 } }).fetch();
       return bills.map(function option(bill) { return { label: bill.display(), value: bill._id }; });
@@ -58,9 +59,11 @@ export function matchBillSchema() {
   };
   return new SimpleSchema({
     txId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+    txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
     billId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: autoformOptions },
+    paymentId: { type: Number, decimal: true, optional: true },
   });
-}
+};
 
 Meteor.startup(function indexBills() {
   if (Meteor.isClient && MinimongoIndexing) {
@@ -72,6 +75,12 @@ Meteor.startup(function indexBills() {
 });
 
 Bills.helpers({
+  txMatchSide() {
+    if (this.category === 'in') return 'credit';
+    else if (this.category === 'out' || this.category === 'parcel') return 'debit';
+    debugAssert(false, 'unknown bill category');
+    return undefined;
+  },
   paymentCount() {
     return this.payments.length;
   },

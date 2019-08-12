@@ -699,7 +699,7 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. emlékeztető)"
     },
-    "useCount": {
+    "applyCount": {
       "label": "Eddigi alkalmak"
     }
   },
