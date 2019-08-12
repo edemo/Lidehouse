@@ -15,10 +15,10 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import './context-menu.html';
 
 function setPosition(event) {
-  const pageHeading = $('.page-heading').height();
-  const navbar = $('.navbar').height();
-  const top = event.pageY - pageHeading - navbar;
-  const left = event.pageX - $('#fullCalendar').offset().left;
+  event.preventDefault();
+  const offset = $('.wrapper-content').offset();
+  const top = event.pageY - offset.top - 5;
+  const left = event.pageX - offset.left - 5;
   $('.context-menu').css({ left, top });
 }
 
@@ -48,14 +48,18 @@ function buildContext() {
 
 function setVisibility(directive) {
   const contextObj = Session.get('context');
+  const visible = contextObj.visible ? 'none' : 'block';
   switch (directive) {
     case 'show':
+      $('.context-menu').css('display', 'block');
       contextObj.visible = true;
       break;
     case 'hide':
+      $('.context-menu').css('display', 'none');
       contextObj.visible = false;
       break;
     case 'toggle':
+      $('.context-menu').css('display', visible);
       contextObj.visible = !contextObj.visible;
       break;
     default:
@@ -78,6 +82,9 @@ Template.contextMenu.viewmodel({
 
 Template.contextMenu.events({
   'click .context-menu'() {
+    setVisibility('hide');
+  },
+  'mouseleave .context-menu'() {
     setVisibility('hide');
   },
 });
