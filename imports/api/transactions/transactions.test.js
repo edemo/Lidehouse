@@ -20,6 +20,51 @@ if (Meteor.isServer) {
     after(function () {
     });
 
+    describe('bills conteer', function () {
+      before(function () {
+      });
+
+      it('Can conteer immediately - creates tx in accountig', function () {
+        const billId = Fixture.builder.create('bill', { category: 'in', account: '85', localizer: '@' });
+        const bill = Bills.findOne(billId);
+        chai.assert.isDefined(bill.txId);
+        const tx = Transactions.findOne(bill.txId);
+        chai.assert.deepEqual(tx.debit, [{ account: '85', localizer: '@' }]);
+        chai.assert.deepEqual(tx.credit, [{ account: '46', billId }]);
+      });
+
+      it('Can conteer later - creates tx in accountig', function () {
+        const billId = Fixture.builder.create('bill', { category: 'in' });
+        let bill = Bills.findOne(billId);
+        chai.assert.isUndefined(bill.txId);
+
+        Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '85', localizer: '@' } } });
+        bill = Bills.findOne(billId);
+        chai.assert.isDefined(bill.txId);
+        const tx = Transactions.findOne(bill.txId);
+        chai.assert.deepEqual(tx.debit, [{ account: '85', localizer: '@' }]);
+        chai.assert.deepEqual(tx.credit, [{ account: '46', billId }]);
+      });
+
+      it('Can re-conteer - modifies tx in accountig', function () {
+        const billId = Fixture.builder.create('bill', { category: 'in', account: '85', localizer: '@' });
+        let bill = Bills.findOne(billId);
+        chai.assert.isDefined(bill.txId);
+        let tx = Transactions.findOne(bill.txId);
+        chai.assert.deepEqual(tx.debit, [{ account: '85', localizer: '@' }]);
+        chai.assert.deepEqual(tx.credit, [{ account: '46', billId }]);
+
+        Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '88', localizer: '@' } } });
+        const oldTx = Transactions.findOne(bill.txId);
+        chai.assert.isUndefined(oldTx);
+        bill = Bills.findOne(billId);
+        chai.assert.isDefined(bill.txId);
+        tx = Transactions.findOne(bill.txId);
+        chai.assert.deepEqual(tx.debit, [{ account: '88', localizer: '@' }]);
+        chai.assert.deepEqual(tx.credit, [{ account: '46', billId }]);
+      });
+    });
+
     describe('bills payments', function () {
       before(function () {
       });
@@ -109,7 +154,6 @@ if (Meteor.isServer) {
         chai.assert.isTrue(tx1.complete);
         chai.assert.isFalse(tx2.reconciled);
         chai.assert.isFalse(tx2.complete);
-
       });
     });
   });

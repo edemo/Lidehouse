@@ -2,18 +2,17 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { ParcelBillings } from './parcel-billings.js';
 import './methods.js';
 
 export function allParcelBillingActions() {
-  const user = Meteor.userOrNull();
-  const communityId = Session.get('activeCommunityId');
   ParcelBillings.actions = ParcelBillings.actions || {
     collection: ParcelBillings,
     new: {
       name: 'new',
       icon: 'fa fa-plus',
-      permission: user.hasPermission('parcelBillings.insert', communityId),
+      visible: () => currentUserHasPermission('parcelBillings.insert'),
       run() {
         Modal.show('Autoform_edit', {
           id: 'af.parcelBilling.insert',
@@ -26,7 +25,7 @@ export function allParcelBillingActions() {
     view: {
       name: 'view',
       icon: 'fa fa-eye',
-      permission: user.hasPermission('parcelBillings.inCommunity', communityId),
+      visible: () => currentUserHasPermission('parcelBillings.inCommunity'),
       run(id) {
         Modal.show('Autoform_edit', {
           id: 'af.parcelBilling.view',
@@ -39,7 +38,7 @@ export function allParcelBillingActions() {
     edit: {
       name: 'edit',
       icon: 'fa fa-pencil',
-      permission: user.hasPermission('parcelBillings.update', communityId),
+      visible: () => currentUserHasPermission('parcelBillings.update'),
       run(id) {
         Modal.show('Autoform_edit', {
           id: 'af.parcelBilling.update',
@@ -54,7 +53,7 @@ export function allParcelBillingActions() {
     apply: {
       name: 'apply',
       icon: 'fa fa-calendar-plus-o',
-      permission: user.hasPermission('parcelBillings.apply', communityId),
+      visible: () => currentUserHasPermission('parcelBillings.apply'),
       run(id) {
         Session.set('activeParcelBillingId', id);
         Modal.show('Autoform_edit', {
@@ -69,7 +68,7 @@ export function allParcelBillingActions() {
     revert: {
       name: 'revert',
       icon: 'fa fa-calendar-times-o',
-      permission: user.hasPermission('parcelBillings.revert', communityId),
+      visible: () => currentUserHasPermission('parcelBillings.revert'),
       run(id) {
         Session.set('activeParcelBillingId', id);
         Modal.show('Autoform_edit', {
@@ -84,7 +83,7 @@ export function allParcelBillingActions() {
     delete: {
       name: 'delete',
       icon: 'fa fa-trash',
-      permission: user.hasPermission('parcelBillings.remove', communityId),
+      visible: () => currentUserHasPermission('parcelBillings.remove'),
       run(id) {
         Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: id }, {
           action: 'delete parcelBilling',

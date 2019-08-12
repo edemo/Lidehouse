@@ -98,6 +98,8 @@ export const Permissions = [
   { name: 'bills.inCommunity',      roles: ['manager', 'accountant', 'treasurer', 'overseer'] },
   { name: 'bills.insert',           roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'bills.update',           roles: ['manager', 'accountant', 'treasurer'] },
+  { name: 'bills.conteer',          roles: ['manager', 'accountant', 'treasurer'] },
+  { name: 'bills.payment',          roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'bills.remove',           roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'bills.upsert',           roles: ['manager'] },
   { name: 'parcelBillings.inCommunity', roles: ['manager', 'accountant', 'treasurer', 'overseer'] },

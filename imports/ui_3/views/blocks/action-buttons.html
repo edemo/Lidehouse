@@ -1,5 +1,7 @@
 <template name="Action_button_small">
-  <button data-id={{_id}} class="btn btn-white btn-xs js-{{action.name}}" title="{{_ action.name}}"><i class="{{action.icon}}"></i></button>
+  {{#if action.visible _id}}
+  <button data-id={{_id}} class="btn btn-xs {{#if action.color}}btn-{{action.color}}{{else}}btn-white{{/if}} js-{{action.name}}" title="{{_ action.name}}"><i class="{{action.icon}}"></i></button>
+  {{/if}}
 </template>
 
 <template name="Action_buttons_group_small">

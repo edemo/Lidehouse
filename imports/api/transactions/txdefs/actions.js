@@ -2,18 +2,17 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { TxDefs } from './txdefs.js';
 import './methods.js';
 
 export function allTxDefsActions() {
-  const user = Meteor.userOrNull();
-  const communityId = Session.get('activeCommunityId');
   TxDefs.actions = TxDefs.actions || {
     collection: TxDefs,
     new: {
       name: 'new',
       icon: 'fa fa-plus',
-      permission: user.hasPermission('breakdowns.insert', communityId),
+      visible: () => currentUserHasPermission('breakdowns.insert'),
       run() {
         Modal.show('Autoform_edit', {
           id: 'af.txDef.insert',
@@ -26,7 +25,7 @@ export function allTxDefsActions() {
     edit: {
       name: 'edit',
       icon: 'fa fa-pencil',
-      permission: user.hasPermission('breakdowns.update', communityId),
+      visible: () => currentUserHasPermission('breakdowns.update'),
       run(id) {
         Modal.show('Autoform_edit', {
           id: 'af.txDef.update',
@@ -41,7 +40,7 @@ export function allTxDefsActions() {
     delete: {
       name: 'delete',
       icon: 'fa fa-trash',
-      permission: user.hasPermission('breakdowns.remove', communityId),
+      visible: () => currentUserHasPermission('breakdowns.remove'),
       run(id) {
         Modal.confirmAndCall(TxDefs.methods.remove, { _id: id }, {
           action: 'delete txDef',

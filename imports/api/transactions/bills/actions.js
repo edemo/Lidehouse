@@ -2,18 +2,17 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Bills } from './bills.js';
 import './methods.js';
 
 export function allBillsActions() {
-  const user = Meteor.userOrNull();
-  const communityId = Session.get('activeCommunityId');
   Bills.actions = Bills.actions || {
     collection: Bills,
     new: {
       name: 'new',
       icon: 'fa fa-plus',
-      permission: user.hasPermission('bills.insert', communityId),
+      visible: () => currentUserHasPermission('bills.insert'),
       run(id, event, instance) {
         const activeBillCategory = instance.viewmodel.activeBillCategory();
         Session.set('activeBillCategory', activeBillCategory);
@@ -29,7 +28,7 @@ export function allBillsActions() {
     view: {
       name: 'view',
       icon: 'fa fa-eye',
-      permission: user.hasPermission('bills.inCommunity', communityId),
+      visible: () => currentUserHasPermission('bills.inCommunity'),
       run(id) {
         Modal.show('Autoform_edit', {
           id: 'af.bill.view',
@@ -43,7 +42,7 @@ export function allBillsActions() {
     edit: {
       name: 'edit',
       icon: 'fa fa-pencil',
-      permission: user.hasPermission('bills.update', communityId),
+      visible: () => currentUserHasPermission('bills.update'),
       run(id) {
         Modal.show('Autoform_edit', {
           id: 'af.bill.update',
@@ -52,28 +51,46 @@ export function allBillsActions() {
           doc: Bills.findOne(id),
           type: 'method-update',
           meteormethod: 'bills.update',
+          singleMethodArgument: true,
         });
       },
     },
-    pay: {
-      name: 'pay',
+    conteer: {
+      name: 'conteer',
       icon: 'fa fa-edit',
-      permission: user.hasPermission('transactions.reconcile', communityId),
+      color: 'warning',
+      visible: _id => currentUserHasPermission('bills.conteer') && !(Bills.findOne(_id).txId),
       run(id) {
         Session.set('activeBillId', id);
         Modal.show('Autoform_edit', {
-          id: 'af.bill.pay',
+          id: 'af.bill.conteer',
+          collection: Bills,
+          fields: ['partner', 'account', 'localizer'],
+          type: 'method',
+          meteormethod: 'bills.conteer',
+          singleMethodArgument: true,
+        });
+      },
+    },
+    payment: {
+      name: 'payment',
+      icon: 'fa fa-credit-card',
+      visible: () => currentUserHasPermission('bills.payment'),
+      run(id) {
+        Session.set('activeBillId', id);
+        Modal.show('Autoform_edit', {
+          id: 'af.bill.payment',
           collection: Bills,
           schema: Bills.paymentSchema,
           type: 'method',
-          meteormethod: 'transactions.reconcile',
+          meteormethod: 'bills.payment',
         });
       },
     },
     delete: {
       name: 'delete',
       icon: 'fa fa-trash',
-      permission: user.hasPermission('bills.remove', communityId),
+      visible: () => currentUserHasPermission('bills.remove'),
       run(id) {
         Modal.confirmAndCall(Bills.methods.remove, { _id: id }, {
           action: 'delete bill',
@@ -90,7 +107,8 @@ export function getBillsActionsSmall() {
   const actions = [
     Bills.actions.view,
     Bills.actions.edit,
-    Bills.actions.pay,
+    Bills.actions.conteer,
+    Bills.actions.payment,
     Bills.actions.delete,
   ];
   return actions;
@@ -98,7 +116,8 @@ export function getBillsActionsSmall() {
 
 AutoForm.addModalHooks('af.bill.insert');
 AutoForm.addModalHooks('af.bill.update');
-AutoForm.addModalHooks('af.bill.pay');
+AutoForm.addModalHooks('af.bill.conteer');
+AutoForm.addModalHooks('af.bill.payment');
 
 AutoForm.addHooks('af.bill.insert', {
   formToDoc(doc) {
@@ -108,7 +127,7 @@ AutoForm.addHooks('af.bill.insert', {
   },
 });
 
-AutoForm.addHooks('af.bill.pay', {
+AutoForm.addHooks('af.bill.payment', {
   formToDoc(doc) {
     doc._id = Session.get('activeBillId');
     return doc;

@@ -4,18 +4,17 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { matchBillSchema } from '/imports/api/transactions/bills/bills.js';
+import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Transactions } from './transactions.js';
 import './methods.js';
 
 export function allTransactionsActions() {
-  const user = Meteor.userOrNull();
-  const communityId = Session.get('activeCommunityId');
   Transactions.actions = Transactions.actions || {
     collection: Transactions,
     new: {
       name: 'new',
       icon: 'fa fa-plus',
-      permission: user.hasPermission('transactions.insert', communityId),
+      visible: () => currentUserHasPermission('transactions.insert'),
       run(defId) {
         Session.set('activeTxDef', defId);
         const def = TxDefs.findOne({ name: defId });
@@ -31,7 +30,7 @@ export function allTransactionsActions() {
     view: {
       name: 'view',
       icon: 'fa fa-eye',
-      permission: user.hasPermission('transactions.inCommunity', communityId),
+      visible: () => currentUserHasPermission('transactions.inCommunity'),
       run(id) {
         Modal.show('Autoform_edit', {
           id: 'af.transaction.view',
@@ -45,7 +44,7 @@ export function allTransactionsActions() {
     edit: {
       name: 'edit',
       icon: 'fa fa-pencil',
-      permission: user.hasPermission('transactions.update', communityId),
+      visible: () => currentUserHasPermission('transactions.update'),
       run(id) {
         Modal.show('Autoform_edit', {
           id: 'af.transaction.update',
@@ -60,8 +59,8 @@ export function allTransactionsActions() {
     },
     reconcile: {
       name: 'reconcile',
-      icon: 'fa fa-edit',
-      permission: user.hasPermission('transactions.reconcile', communityId),
+      icon: 'fa fa-external-link',
+      visible: () => currentUserHasPermission('transactions.reconcile'),
       run(id) {
         Session.set('activeTransactionId', id);
         Modal.show('Autoform_edit', {
@@ -76,7 +75,7 @@ export function allTransactionsActions() {
     delete: {
       name: 'delete',
       icon: 'fa fa-trash',
-      permission: user.hasPermission('transactions.remove', communityId),
+      visible: () => currentUserHasPermission('transactions.remove'),
       run(id) {
         const tx = Transactions.findOne(id);
         Modal.confirmAndCall(Transactions.methods.remove, { _id: id }, {

@@ -1,4 +1,4 @@
-// import { Template } from 'meteor/templating';
+import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import './action-buttons.html';
@@ -13,6 +13,12 @@ export function actionHandlers(actions) {
   });
   return eventHandlers;
 }
+
+Template.Action_button_small.helpers({
+  visible() {
+    return this.action.visible(this._id);
+  },
+});
 
 /*
 Template.Action_buttons_group_small.onCreated(function () {

@@ -4,18 +4,17 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
 import { serializeNestable } from '/imports/ui_3/views/modals/nestable-edit.js';
+import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Breakdowns } from './breakdowns.js';
 import './methods.js';
 
 export function allBreakdownsActions() {
-  const user = Meteor.userOrNull();
-  const communityId = Session.get('activeCommunityId');
   Breakdowns.actions = Breakdowns.actions || {
     collection: Breakdowns,
     new: {
       name: 'new',
       icon: 'fa fa-plus',
-      permission: user.hasPermission('breakdowns.insert', communityId),
+      visible: () => currentUserHasPermission('breakdowns.insert'),
       run() {
         Modal.show('Autoform_edit', {
           id: 'af.breakdown.insert',
@@ -29,7 +28,7 @@ export function allBreakdownsActions() {
     view: {
       name: 'view',
       icon: 'fa fa-eye',
-      permission: user.hasPermission('breakdowns.inCommunity', communityId),
+      visible: () => currentUserHasPermission('breakdowns.inCommunity'),
       run(id) {
         const breakdown = Breakdowns.findOne(id);
         const modalContext = {
@@ -51,7 +50,7 @@ export function allBreakdownsActions() {
     edit: {
       name: 'edit',
       icon: 'fa fa-pencil',
-      permission: user.hasPermission('breakdowns.update', communityId),
+      visible: () => currentUserHasPermission('breakdowns.update'),
       run(id) {
         Modal.show('Autoform_edit', {
           id: 'af.breakdown.update',
@@ -87,7 +86,7 @@ export function allBreakdownsActions() {
     delete: {
       name: 'delete',
       icon: 'fa fa-trash',
-      permission: user.hasPermission('breakdowns.remove', communityId),
+      visible: () => currentUserHasPermission('breakdowns.remove'),
       run(id) {
         Modal.confirmAndCall(Breakdowns.remove, { _id: id }, {
           action: 'delete breakdown',

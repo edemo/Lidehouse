@@ -32,19 +32,21 @@ Bills.paymentSchema = new SimpleSchema({
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   category: { type: String, allowedValues: Bills.categoryValues, autoform: { omit: true } },
-  partner: { type: String, optional: true },
-  account: { type: String, optional: true },
-  localizer: { type: String, optional: true },
   amount: { type: Number, decimal: true },
   issueDate: { type: Date },
   valueDate: { type: Date },
   dueDate: { type: Date },
+  partner: { type: String, optional: true },
+  account: { type: String, optional: true },
+  localizer: { type: String, optional: true },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   payments: { type: Array, defaultValue: [] },
   'payments.$': { type: Bills.paymentSchema },
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client ask to sort on outstanding amount
 //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
 });
+
+Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partner'];
 
 export function matchBillSchema() {
   const autoformOptions = {
@@ -77,6 +79,26 @@ Bills.helpers({
     let paid = 0;
     if (this.payments) this.payments.forEach(p => paid += p.amount);
     return this.amount - paid;
+  },
+  makeTx() {
+    const tx = {
+      communityId: this.communityId,
+      valueDate: this.valueDate,  // ?? paymentDate for single entry accounting ??
+      amount: this.amount,
+      billId: this._id,
+      paymentId: undefined, // it is not a payment
+    };
+    if (this.category === 'in') {
+      tx.debit = [{ account: this.account, localizer: this.localizer }];
+      tx.credit = [{ account: '46', billId: this._id }];
+    } else if (this.category === 'out') {
+      tx.debit = [{ account: '31', billId: this._id }];
+      tx.credit = [{ account: this.account, localizer: this.localizer }];
+    } else {
+      debugAssert(this.category === 'parcel');
+      // ...
+    }
+    return tx;
   },
   display() {
     return `${moment(this.valueDate).format('L')} ${this.partner} ${this.amount}`;
