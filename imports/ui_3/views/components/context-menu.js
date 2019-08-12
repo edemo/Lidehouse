@@ -48,18 +48,14 @@ function buildContext() {
 
 function setVisibility(directive) {
   const contextObj = Session.get('context');
-  const visible = contextObj.visible ? 'none' : 'block';
   switch (directive) {
     case 'show':
-      $('.context-menu').css('display', 'block');
       contextObj.visible = true;
       break;
     case 'hide':
-      $('.context-menu').css('display', 'none');
       contextObj.visible = false;
       break;
     case 'toggle':
-      $('.context-menu').css('display', visible);
       contextObj.visible = !contextObj.visible;
       break;
     default:
