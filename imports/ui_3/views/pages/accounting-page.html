@@ -4,13 +4,27 @@
 
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
+    <div class="ibox">
 
-    {{> Accounting_bills}}
+        <ul class="nav nav-tabs m-b-md">
+            <li class="active"><a data-toggle="tab" href="#tab-bills">{{_ 'Bill registry'}}</a></li>
+            <li class=""><a data-toggle="tab" href="#tab-transactions">{{_ 'Transactions'}}</a></li>
+            <li class=""><a data-toggle="tab" href="#tab-reconciliation">{{_ 'Reconciliation'}}</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab-bills" class="tab-pane active">
+                {{> Accounting_bills}}
+            </div>
+            <div id="tab-transactions" class="tab-pane">
+                {{> Accounting_transactions}}
+                {{> Accounting_breakdowns}}
+            </div>
+            <div id="tab-reconciliation" class="tab-pane">
+                {{> Accounting_reconciliation}}
+            </div>
+        </div>
 
-    {{> Accounting_transactions}}
-
-    {{> Accounting_breakdowns}}
-
+    </div>
     </div>
     </div>
 </template>
