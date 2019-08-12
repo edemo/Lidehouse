@@ -654,6 +654,19 @@
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
+    },
+    "payments": {
+      "label": "Pénzügyi teljesítés",
+      "$": {
+        "valueDate": {
+          "label": "Teljesítés ideje",
+          "placeholder": "(pl. 2017-05-06)"
+        },
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        }
+      }
     }
   },
   "schemaParcelBillings": {

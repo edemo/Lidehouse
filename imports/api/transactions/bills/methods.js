@@ -69,14 +69,18 @@ export const payment = new ValidatedMethod({
   name: 'bills.payment',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    payment: { type: Bills.paymentSchema },
+//    payment: { type: Bills.paymentSchema },
+    modifier: { type: Object, blackbox: true },
   }).validator(),
 
-  run({ _id, payment }) {
+  run({ _id, modifier }) {
     const doc = checkExists(Bills, _id);
+    checkModifier(doc, modifier, ['payments']);
     checkPermissions(this.userId, 'bills.payment', doc.communityId);
 
-    return Bills.update({ _id }, { $push: { payments: payment } });
+    const result = Bills.update({ _id }, modifier);
+//    const result = Bills.update({ _id }, { $push: { payments: payment } });
+    return result;
   },
 });
 

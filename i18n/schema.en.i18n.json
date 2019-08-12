@@ -650,6 +650,19 @@
     "note": {
       "label": "Note",
       "placeholder": "(eg. reason or partner identifier)"
+    },
+    "payments": {
+      "label": "Payments",
+      "$": {
+        "valueDate": {
+          "label": "Delivery date",
+          "placeholder": "(eg. 2017-05-06)"
+        },
+        "amount": {
+          "label": "Amount",
+          "placeholder": "(eg. 14560)"
+        }
+      }
     }
   },
   "schemaParcelBillings": {

@@ -58,15 +58,15 @@ export function allBillsActions() {
     conteer: {
       name: 'conteer',
       icon: 'fa fa-edit',
-      color: 'warning',
-      visible: _id => currentUserHasPermission('bills.conteer') && !(Bills.findOne(_id).txId),
+      color: _id => (!(Bills.findOne(_id).txId) ? 'warning' : undefined),
+      visible: () => currentUserHasPermission('bills.conteer'),
       run(id) {
-        Session.set('activeBillId', id);
         Modal.show('Autoform_edit', {
           id: 'af.bill.conteer',
           collection: Bills,
           fields: ['partner', 'account', 'localizer'],
-          type: 'method',
+          doc: Bills.findOne(id),
+          type: 'method-update',
           meteormethod: 'bills.conteer',
           singleMethodArgument: true,
         });
@@ -81,9 +81,11 @@ export function allBillsActions() {
         Modal.show('Autoform_edit', {
           id: 'af.bill.payment',
           collection: Bills,
-          schema: Bills.paymentSchema,
-          type: 'method',
+          fields: ['payments'],
+          doc: Bills.findOne(id),
+          type: 'method-update',
           meteormethod: 'bills.payment',
+          singleMethodArgument: true,
         });
       },
     },
@@ -127,10 +129,12 @@ AutoForm.addHooks('af.bill.insert', {
   },
 });
 
+/*
 AutoForm.addHooks('af.bill.payment', {
   formToDoc(doc) {
+    doc.payment = _.extend({}, doc);
     doc._id = Session.get('activeBillId');
     return doc;
   },
 });
-
+*/

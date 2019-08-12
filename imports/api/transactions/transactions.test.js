@@ -2,6 +2,7 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
+import { Clock } from '/imports/utils/clock.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import '/imports/api/transactions/bills/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -41,21 +42,13 @@ if (Meteor.isServer) {
         Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '85', localizer: '@' } } });
         bill = Bills.findOne(billId);
         chai.assert.isDefined(bill.txId);
-        const tx = Transactions.findOne(bill.txId);
-        chai.assert.deepEqual(tx.debit, [{ account: '85', localizer: '@' }]);
-        chai.assert.deepEqual(tx.credit, [{ account: '46', billId }]);
-      });
-
-      it('Can re-conteer - modifies tx in accountig', function () {
-        const billId = Fixture.builder.create('bill', { category: 'in', account: '85', localizer: '@' });
-        let bill = Bills.findOne(billId);
-        chai.assert.isDefined(bill.txId);
         let tx = Transactions.findOne(bill.txId);
         chai.assert.deepEqual(tx.debit, [{ account: '85', localizer: '@' }]);
         chai.assert.deepEqual(tx.credit, [{ account: '46', billId }]);
 
+        // Can re-conteer
         Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '88', localizer: '@' } } });
-        const oldTx = Transactions.findOne(bill.txId);
+        const oldTx = Transactions.findOne(bill.txId);  // removes tx from accounting
         chai.assert.isUndefined(oldTx);
         bill = Bills.findOne(billId);
         chai.assert.isDefined(bill.txId);
@@ -67,6 +60,37 @@ if (Meteor.isServer) {
 
     describe('bills payments', function () {
       before(function () {
+      });
+
+      it('Can pay bill manually', function () {
+        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
+        let bill = Bills.findOne(billId);
+        chai.assert.equal(bill.outstanding, 650);
+        chai.assert.equal(bill.paymentCount(), 0);
+
+        Fixture.builder.execute(Bills.methods.payment, { _id: billId, payment: { amount: 650, valueDate: Clock.currentDate() } });
+
+        bill = Bills.findOne(billId);
+        chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(bill.paymentCount(), 1);
+
+        const txId = Fixture.builder.create('tx', { amount: 650 });
+        Fixture.builder.execute(Transactions.methods.reconcile, { billId, paymentId: 0, txId });
+        chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(bill.paymentCount(), 1);
+      });
+
+      it('Can pay bill from bank import', function () {
+        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
+        let bill = Bills.findOne(billId);
+        chai.assert.equal(bill.outstanding, 650);
+        chai.assert.equal(bill.paymentCount(), 0);
+
+        const txId = Fixture.builder.create('tx', { amount: 650 });
+        Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
+
+        bill = Bills.findOne(billId);
+        chai.assert.equal(bill.paymentCount(), 1);
       });
 
       it('Reconcile one Bill - one Payment', function () {
