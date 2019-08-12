@@ -98,7 +98,7 @@ Template.Worksheets.viewmodel({
       },
       eventClick(eventObject, jsEvent) {
         event.stopPropagation();
-        contextMenu.setMenu('Topic_edit_context_menu', eventObject._id);
+        contextMenu.setMenu('Topic_edit_menu_content', eventObject._id);
         contextMenu.setPosition(event)
         contextMenu.setVisibility('show');
       },
