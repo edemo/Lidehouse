@@ -108,7 +108,12 @@ export class CommunityBuilder {
   }
   build(name, data) {
     const dataExtended = _.extend({ communityId: this.communityId }, data);
-    return name ? Factory.build(name, dataExtended) : dataExtended;
+    if (name) {
+      const doc = Factory.build(name, dataExtended);
+      delete doc._id;
+      return doc;
+    } 
+    return dataExtended;
   }
   create(name, data) {
     const doc = this.build(name, data);
