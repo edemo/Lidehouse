@@ -19,7 +19,7 @@ function setPosition(event) {
   const offset = $('.wrapper-content').offset();
   const top = event.pageY - offset.top - 5;
   const left = event.pageX - offset.left - 5;
-  $('.context-menu').css({ left, top });
+  $('#context-menu').css({ left, top });
 }
 
 function initialize() {
@@ -51,15 +51,15 @@ function setVisibility(directive) {
   const visible = contextObj.visible ? 'none' : 'block';
   switch (directive) {
     case 'show':
-      $('.context-menu').css('display', 'block');
+      $('#context-menu').css('display', 'block');
       contextObj.visible = true;
       break;
     case 'hide':
-      $('.context-menu').css('display', 'none');
+      $('#context-menu').css('display', 'none');
       contextObj.visible = false;
       break;
     case 'toggle':
-      $('.context-menu').css('display', visible);
+      $('#context-menu').css('display', visible);
       contextObj.visible = !contextObj.visible;
       break;
     default:
@@ -93,10 +93,10 @@ Template.contextMenu.viewmodel({
 });
 
 Template.contextMenu.events({
-  'click .context-menu'() {
+  'click #context-menu'() {
     setVisibility('hide');
   },
-  'mouseleave .context-menu'() {
+  'mouseleave #context-menu'() {
     setVisibility('hide');
   },
 });
