@@ -80,13 +80,6 @@ Template.Worksheets.viewmodel({
       });
     }
   },
-  contextMenuPosition() {
-    const pageHeading = $('.page-heading').height();
-    const navbar = $('.navbar').height();
-    const top = event.pageY - pageHeading - navbar;
-    const left = event.pageX - $('#fullCalendar').offset().left;
-    $('.context-menu').css({left, top});
-  },
   calendarOptions() {
     const viewmodel = this;
     return {
