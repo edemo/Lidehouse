@@ -92,7 +92,7 @@
         <div>
           {{> ReactiveFullcalendar options=calendarOptions }}
           {{#let ctx=contextMenu_ctx}}
-          {{> contextMenu template=ctx.template visible=ctx.visible doc=ctx.topic }}
+          {{> contextMenu template=ctx.template visible=ctx.visible doc=ctx.doc }}
           {{/let}}
         </div>
         {{else}}
