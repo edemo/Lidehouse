@@ -88,12 +88,12 @@ Template.Worksheets.viewmodel({
       },
       eventClick(eventObject, jsEvent) {
         event.stopPropagation();
-        contextMenu.show(event, 'Topic_edit_menu_content', eventObject._id)
+        contextMenu.show(event, 'Topic_edit_menu_content', '.wrapper-content', eventObject._id)
       },
       dayClick(date, jsEvent, view) {
         Session.set('expectedStart', date.toDate());
         event.stopPropagation();
-        contextMenu.show(event, 'New_Ticket')
+        contextMenu.show(event, 'New_Ticket', '.wrapper-content')
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
         viewmodel.addEventsToUpdate(eventObject);

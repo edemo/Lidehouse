@@ -14,9 +14,9 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import './context-menu.html';
 
-function setPosition(event) {
+function setPosition(event, element) {
   event.preventDefault();
-  const offset = $('.wrapper-content').offset();
+  const offset = $(element).offset();
   const top = event.pageY - offset.top - 5;
   const left = event.pageX - offset.left - 5;
   $('#context-menu').css({ left, top });
@@ -69,9 +69,9 @@ function setVisibility(directive) {
   Session.set('context', contextObj);
 }
 
-function show(event, template, topicId) {
+function show(event, template, element, topicId) {
   setMenu(template, topicId);
-  setPosition(event);
+  setPosition(event, element);
   setVisibility('show');
 }
 
