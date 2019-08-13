@@ -91,7 +91,7 @@
         {{#if calendarView}}
         <div>
           {{> ReactiveFullcalendar options=calendarOptions }}
-          {{#let ctx=buildContext}}
+          {{#let ctx=contextMenu_ctx}}
           {{> contextMenu template=ctx.template visible=ctx.visible doc=ctx.topic }}
           {{/let}}
         </div>

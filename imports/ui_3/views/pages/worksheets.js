@@ -50,10 +50,7 @@ Template.Worksheets.viewmodel({
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
     this.setDefaultFilter();
-    contextMenu.initialize();
-  },
-  buildContext() {
-    return contextMenu.buildContext();
+    contextMenu.initialize('Worksheets');
   },
   setDefaultFilter() {
     this.searchText('');

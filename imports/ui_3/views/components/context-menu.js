@@ -22,13 +22,20 @@ function setPosition(event) {
   $('#context-menu').css({ left, top });
 }
 
-function initialize() {
+function initialize(template) {
   const emptyContextObj = {
     topicId: '',
     template: '',
     visible: false,
   };
   Session.set('context', emptyContextObj);
+  Template[template].helpers({
+    contextMenu_ctx() {
+      const context = Session.get('context');
+      if (context.topicId) context.topic = Topics.findOne(context.topicId);
+      return context;
+    },
+  });
 }
 
 function setMenu(template, topicId) {
@@ -38,12 +45,6 @@ function setMenu(template, topicId) {
     visible: Session.get('context') ? Session.get('context').visible : false,
   };
   Session.set('context', contextObj);
-}
-
-function buildContext() {
-  const context = Session.get('context');
-  if (context.topicId) context.topic = Topics.findOne(context.topicId);
-  return context;
 }
 
 function setVisibility(directive) {
@@ -82,7 +83,6 @@ export const contextMenu = {
   setPosition,
   initialize,
   setMenu,
-  buildContext,
   setVisibility,
   show,
   hide,
