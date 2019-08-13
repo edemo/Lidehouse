@@ -106,7 +106,7 @@ Template.Worksheets.viewmodel({
       editable: true,
       events(start, end, timezone, callback) {
         const events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
-        const start = t.ticket.actualStart ? t.ticket.actualStart : (t.ticket.expectedStart ? t.ticket.expectedStart : t.createdAt);
+        const start = t.ticket.actualStart ? t.ticket.actualStart : t.ticket.expectedStart ? t.ticket.expectedStart : t.createdAt;
         const end = t.ticket.actualFinish ? t.ticket.actualFinish : t.ticket.expectedFinish;
           return {
             title: t.title,
