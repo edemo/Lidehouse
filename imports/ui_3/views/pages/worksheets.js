@@ -98,16 +98,12 @@ Template.Worksheets.viewmodel({
       },
       eventClick(eventObject, jsEvent) {
         event.stopPropagation();
-        contextMenu.setMenu('Topic_edit_menu_content', eventObject._id);
-        contextMenu.setPosition(event)
-        contextMenu.setVisibility('show');
+        contextMenu.show(event, 'Topic_edit_menu_content', eventObject._id)
       },
       dayClick(date, jsEvent, view) {
         Session.set('expectedStart', date.toDate());
         event.stopPropagation();
-        contextMenu.setMenu('New_Ticket');
-        contextMenu.setPosition(event);
-        contextMenu.setVisibility('show');
+        contextMenu.show(event, 'New_Ticket')
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
         viewmodel.addEventsToUpdate(eventObject);

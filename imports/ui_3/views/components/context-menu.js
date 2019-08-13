@@ -68,12 +68,24 @@ function setVisibility(directive) {
   Session.set('context', contextObj);
 }
 
+function show(event, template, topicId) {
+  setMenu(template, topicId);
+  setPosition(event);
+  setVisibility('show');
+}
+
+function hide() {
+  setVisibility('hide');
+}
+
 export const contextMenu = {
   setPosition,
   initialize,
   setMenu,
   buildContext,
   setVisibility,
+  show,
+  hide,
 };
 
 Template.contextMenu.viewmodel({
