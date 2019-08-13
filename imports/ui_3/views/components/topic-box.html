@@ -90,6 +90,7 @@
 </template>
 
 <template name="Topic_edit_menu_content">
+    {{#if userHasPermission (concat category '.update') this.communityId this}}
     <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs" aria-labelledby="drop_{{_id}}">
         {{#if userHasPermission (concat category '.statusChange') (fromSession 'activeCommunityId') this}}
             {{#each status in this.possibleNextStatuses}}
@@ -127,4 +128,5 @@
             </li>
         {{/unless}}
     </ul>
+    {{/if}}
 </template>
