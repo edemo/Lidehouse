@@ -89,6 +89,7 @@ _.extend(Topics.publicFields, Tickets.publicExtensionFields);
 const reported = {
   name: 'reported',
   color: 'warning',
+  colorCode: '#F7A54B',
   data: ['urgency'],
 };
 
