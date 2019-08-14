@@ -2,16 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
+import { debugAssert } from '/imports/utils/assert.js';
 
 import './context-menu.html';
-
-function setPosition(event, element) {
-  event.preventDefault();
-  const offset = $(element).offset();
-  const top = event.pageY - offset.top - 5;
-  const left = event.pageX - offset.left - 5;
-  $('#context-menu').css({ left, top });
-}
 
 function initialize(template, collection) {
   const emptyContextObj = {
@@ -38,32 +31,27 @@ function setMenu(template, id) {
   Session.set('context', contextObj);
 }
 
-function setVisibility(directive) {
+function setVisibility(directive, event) {
   const contextObj = Session.get('context');
-  const visible = contextObj.visible ? 'none' : 'block';
   switch (directive) {
     case 'show':
       $('#context-menu').css('display', 'block');
+      $('#context-menu').offset({ left: event.pageX - 5, top: event.pageY - 5 });
       contextObj.visible = true;
       break;
     case 'hide':
       $('#context-menu').css('display', 'none');
       contextObj.visible = false;
       break;
-    case 'toggle':
-      $('#context-menu').css('display', visible);
-      contextObj.visible = !contextObj.visible;
-      break;
     default:
-      console.log('no directive');
+      debugAssert(false, 'no such directive');
   }
   Session.set('context', contextObj);
 }
 
-function show(event, template, element, id) {
+function show(event, template, id) {
   setMenu(template, id);
-  setPosition(event, element);
-  setVisibility('show');
+  setVisibility('show', event);
 }
 
 function hide() {
@@ -71,10 +59,7 @@ function hide() {
 }
 
 export const contextMenu = {
-  setPosition,
   initialize,
-  setMenu,
-  setVisibility,
   show,
   hide,
 };

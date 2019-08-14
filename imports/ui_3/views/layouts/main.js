@@ -7,8 +7,6 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { __ } from '/imports/localization/i18n.js';
 import '/imports/ui_3/views/components/context-menu.js';
-import '/imports/ui_3/views/components/new-ticket.js';
-
 
 import '../common/ibox-tools.js';
 import '../common/navigation.js';
