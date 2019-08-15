@@ -109,8 +109,7 @@ Template.Worksheets.viewmodel({
         const events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
         const start = t.ticket.actualStart || t.ticket.expectedStart || t.createdAt;
         const end = t.ticket.actualFinish || t.ticket.expectedFinish;
-        const modifiableFields = Topics.categories[t.category].statuses[t.status].data;
-        const editable = _.contains(modifiableFields, 'expectedStart');
+        const editable = _.contains(t.modifiableFieldsByStatus(), 'expectedStart');
           return {
             title: t.title,
             start,
