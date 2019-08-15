@@ -107,8 +107,10 @@ Template.Worksheets.viewmodel({
       editable: true,
       events(start, end, timezone, callback) {
         const events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
-        const start = t.ticket.actualStart ? t.ticket.actualStart : t.ticket.expectedStart ? t.ticket.expectedStart : t.createdAt;
-        const end = t.ticket.actualFinish ? t.ticket.actualFinish : t.ticket.expectedFinish;
+        const start = t.ticket.actualStart || t.ticket.expectedStart || t.createdAt;
+        const end = t.ticket.actualFinish || t.ticket.expectedFinish;
+        const modifiableFields = Topics.categories[t.category].statuses[t.status].data;
+        const editable = _.contains(modifiableFields, 'expectedStart');
           return {
             title: t.title,
             start,
@@ -116,6 +118,7 @@ Template.Worksheets.viewmodel({
             color: Tickets.statuses[t.status].colorCode,
             id: t._id,
             status: t.status,
+            editable,
           };
         });
         if (!_.isEmpty(viewmodel.eventsToUpdate())) {
@@ -265,7 +268,7 @@ Template.Worksheets.events({ ...TicketEventHandlers,
       const modifier = { $set: dates };
       args.push({ _id: key, modifier });
     });
-    Topics.methods.batch.update.call({ args });
+    Topics.methods.batch.statusUpdate.call({ args });
     instance.viewmodel.eventsToUpdate({});
   },
   'click .js-cancel-calendar'(event, instance) {
