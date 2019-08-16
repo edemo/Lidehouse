@@ -22,7 +22,6 @@ Tickets.urgencyColors = {
   normal: 'warning',
   low: 'primary',
 };
-Tickets.events = ['update', 'statusUpdate', 'statusChange', 'delete'];
 Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 
 let chooseContract = {};

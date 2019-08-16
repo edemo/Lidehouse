@@ -16,7 +16,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
-import { TicketEventHandlers, afTicketUpdateModal, afTicketStatusChangeModal, deleteTicketConfirmAndCallModal } from '/imports/ui_3/views/components/tickets-edit.js';
+import { TicketEventHandlers, afTicketUpdateModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
@@ -46,8 +46,6 @@ Template.Worksheets.viewmodel({
   endDate: '',
   reportedByCurrentUser: false,
   communityId: null,
-  context: {},
-  template:'',
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
     this.setDefaultFilter();
@@ -138,9 +136,6 @@ Template.Worksheets.viewmodel({
   },
   ticketTypes() {
     return Tickets.typeValues;
-  },
-  ticketEvents() {
-    return Tickets.events;
   },
   hasFilters() {
     if (this.searchText() ||
