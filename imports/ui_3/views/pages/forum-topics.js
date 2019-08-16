@@ -61,6 +61,7 @@ AutoForm.addHooks('af.forumtopic.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.category = 'forum';
+    doc.status = 'opened';
     if (!doc.title && doc.text) {
       doc.title = (doc.text).substring(0, 25) + '...';
     }
