@@ -81,11 +81,7 @@
               <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
                   <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}} <b class="caret"></b>
               </button>
-              <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
-                  {{#each type in ticketTypes}}
-                  <li><a href="" class="js-new" data-type="{{type}}">{{_ (concat 'schemaTickets.ticket.type.' type)}}</a></li>
-                  {{/each}}
-              </ul>
+              {{> New_Ticket }}
               <button class="btn btn-white btn-xs js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
           </div>
           <!--a href="" class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}}</a-->
@@ -95,6 +91,9 @@
         {{#if calendarView}}
         <div>
           {{> ReactiveFullcalendar options=calendarOptions }}
+          {{#let ctx=contextMenu_ctx}}
+          {{> contextMenu template=ctx.template visible=ctx.visible doc=ctx.doc }}
+          {{/let}}
         </div>
         {{else}}
         <div class="no-padding table-responsive">
