@@ -26,7 +26,7 @@ Template.Topic_ticket_header.events({
   },
   'click .ticket .js-status-change'(event) {
     const id = this._id;
-    const status = $(event.target).closest('[data-status]').data('status');
+    const status = $(event.target).attr('data-status');
     afTicketStatusChangeModal(id, status);
   },
   'click .ticket .js-delete'(event) {
