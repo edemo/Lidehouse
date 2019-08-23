@@ -48,22 +48,14 @@
                     <a class="js-submenu-toggle" href="#"><i class="fa fa-legal"></i>
                         <span class="nav-label">{{_ 'Decision making'}}</span>
                         <!--span class="fa arrow"> </span-->
-                        {{#if Template.subscriptionsReady}}
-                        {{#if countNotifications 'vote'}}
-                        <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
-                        {{/if}}
-                        {{/if}}
+                        {{> Badge helper='countNotifications' category='vote'}}
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='votings|agendas|delegations' className='submenu-open'}}">
                         <li class="{{isActivePath regex='votings'}}">
                             <a href="{{pathFor 'Votings'}}">
                                 <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Votings'}}</span>
-                                {{#if Template.subscriptionsReady}}
-                                {{#if countNotifications 'vote'}}
-                                <span class="badge badge-danger pull-right">{{countNotifications 'vote'}}</span>
-                                {{/if}}
-                                {{/if}}
+                                {{> Badge helper='countNotifications' category='vote'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='agendas'}}">
@@ -97,21 +89,21 @@
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
                         <span class="nav-label">{{_ 'Maintenance'}}</span>
                         <!--span class="fa arrow"> </span-->
-                        {{> Badge 'ticket'}}
+                        {{> Badge helper='countTasks' category='ticket'}}
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='tickets|worksheets|contracts' className='submenu-open'}}">
                         <li class="{{isActivePath regex='tickets'}}">
                             <a href="{{pathFor 'Tickets'}}">
                                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Tickets report'}}</span>
-                                {{> Badge 'ticket'}}
+                                {{> Badge helper='countTasks' category='ticket'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='worksheets'}}">
                             <a href="{{pathFor 'Worksheets'}}">
                                 <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Worksheets'}}</span>
-                                {{> Badge 'ticket'}}
+                                {{> Badge helper='countTasks' category='ticket'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='contracts'}}">
@@ -154,12 +146,8 @@
                     <a href="{{pathFor 'Community page' _cid=(fromSession 'activeCommunityId')}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
-                        {{#if Template.subscriptionsReady}}
                         {{#if userHasPermission 'parcels.update' (fromSession 'activeCommunityId')}}
-                        {{#if countUnapprovedEntities}}
-                        <span class="badge badge-danger pull-right">{{countUnapprovedEntities}}</span>
-                        {{/if}}
-                        {{/if}}
+                        {{> Badge helper='countUnapprovedEntities'}}
                         {{/if}}
                     </a>
                 </li>
@@ -193,11 +181,7 @@
                     <a href="{{pathFor 'Feedbacks'}}">
                         <i><img src="/icon/si-glyph-bolt.svg"/></i>
                         <span class="nav-label">Feedbacks (dev)</span>
-                        {{#if Template.subscriptionsReady}}
-                        {{#if countNotifications 'feedback'}}
-                        <span class="badge badge-danger pull-right">{{countNotifications 'feedback'}}</span>
-                        {{/if}}
-                        {{/if}}
+                        {{> Badge helper='countNotifications' category='feedback'}}
                     </a>
                 </li>
                 <li class="{{isActivePath regex='styleguide'}}">

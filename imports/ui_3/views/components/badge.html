@@ -1,7 +1,7 @@
 <template name='Badge'>
     {{#if Template.subscriptionsReady}}
-    {{#if countTasks this}}
-    <span class="badge badge-danger pull-right">{{countTasks this}}</span>
+    {{#if selected helper category}}
+    <span class="badge badge-danger pull-right">{{selected helper category}}</span>
     {{/if}}
     {{/if}}
 </template>
