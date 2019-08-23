@@ -33,16 +33,6 @@ Template.Navigation.onRendered(function() {
 });
 
 Template.Navigation.helpers({
-  countTasks(category) {
-    const communityId = Session.get('activeCommunityId');
-    let count = 0;
-    const topics = Topics.find({ communityId, category });
-    const User = Meteor.user();
-    topics.forEach(t => {
-      if (User.hasPermission(`${category}.statusChangeTo.${t.status}.leave`)) count += 1;
-    });
-    return count;
-  },
   countNotifications(category) {
     const communityId = Session.get('activeCommunityId');
     let count = 0;
