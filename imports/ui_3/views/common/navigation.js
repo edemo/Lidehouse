@@ -6,6 +6,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/users/users.js';
+import '/imports/ui_3/views/components/badge.js';
 
 import './navigation.html';
 
@@ -32,6 +33,16 @@ Template.Navigation.onRendered(function() {
 });
 
 Template.Navigation.helpers({
+  countTasks(category) {
+    const communityId = Session.get('activeCommunityId');
+    let count = 0;
+    const topics = Topics.find({ communityId, category });
+    const User = Meteor.user();
+    topics.forEach(t => {
+      if (User.hasPermission(`${category}.statusChangeTo.${t.status}.leave`)) count += 1;
+    });
+    return count;
+  },
   countNotifications(category) {
     const communityId = Session.get('activeCommunityId');
     let count = 0;

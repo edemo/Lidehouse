@@ -1,0 +1,7 @@
+<template name='Badge'>
+    {{#if Template.subscriptionsReady}}
+    {{#if countTasks this}}
+    <span class="badge badge-danger pull-right">{{countTasks this}}</span>
+    {{/if}}
+    {{/if}}
+</template>

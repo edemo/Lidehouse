@@ -97,28 +97,21 @@
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
                         <span class="nav-label">{{_ 'Maintenance'}}</span>
                         <!--span class="fa arrow"> </span-->
-                        {{#if Template.subscriptionsReady}}
-                        {{#if countNotifications 'ticket'}}
-                        <span class="badge badge-danger pull-right">{{countNotifications 'ticket'}}</span>
-                        {{/if}}
-                        {{/if}}
+                        {{> Badge 'ticket'}}
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='tickets|worksheets|contracts' className='submenu-open'}}">
                         <li class="{{isActivePath regex='tickets'}}">
                             <a href="{{pathFor 'Tickets'}}">
                                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Tickets report'}}</span>
-                                {{#if Template.subscriptionsReady}}
-                                {{#if countNotifications 'ticket'}}
-                                <span class="badge badge-danger pull-right">{{countNotifications 'ticket'}}</span>
-                                {{/if}}
-                                {{/if}}
+                                {{> Badge 'ticket'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='worksheets'}}">
                             <a href="{{pathFor 'Worksheets'}}">
                                 <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Worksheets'}}</span>
+                                {{> Badge 'ticket'}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='contracts'}}">
