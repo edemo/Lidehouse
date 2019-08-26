@@ -139,6 +139,7 @@ Topics.helpers({
       case 'ticket':
         if (seenType === Meteor.users.SEEN_BY.EYES
           && this.status !== 'closed') return 1;
+        if (Meteor.user().hasPermission(`ticket.statusChangeTo.${this.status}.leave`)) return 1;
         if (seenType === Meteor.users.SEEN_BY.NOTI
           && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
         break;
