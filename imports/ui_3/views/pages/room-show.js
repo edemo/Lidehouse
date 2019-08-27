@@ -20,13 +20,15 @@ function messageFooterToBottom() {
   const topbarHeight = $('nav.navbar-fixed-top').height();
   const titleHeight = $('.messages > .ibox-title').height();
   const footerHeight = $('.messages > .ibox-footer').height();
-  const paddings = 70;
-  const largeScreenHeight = windowHeight - topbarHeight - titleHeight - footerHeight - (2 * paddings);
-  const smallScreenHeight = windowHeight - topbarHeight - titleHeight - footerHeight - paddings;
+  const paddings = 80;
+  const baseHeight = windowHeight - topbarHeight - titleHeight - footerHeight;
+  const largeScreenHeight = baseHeight - (2 * paddings);
+  const smallScreenHeight = baseHeight - paddings;
+  const chatArea = $('.messages > .ibox-content');
   if (windowHeight > 700) {
-    $('.messages > .ibox-content').css("height", largeScreenHeight + "px");
+    chatArea.css('height', largeScreenHeight + 'px');
   } else {
-    $('.messages > .ibox-content').css("height", smallScreenHeight + "px");
+    chatArea.css('height', smallScreenHeight + 'px');
   }
 }
 
