@@ -63,6 +63,7 @@ Topics.helpers({
   },
   hiddenBy(userId) {
     const author = this.createdBy();
+    if (this.userId === userId) return undefined;
     return this.flaggedBy(userId, this.communityId) || (author && author.flaggedBy(userId, this.communityId));
   },
   isUnseenBy(userId, seenType) {
