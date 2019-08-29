@@ -33,6 +33,9 @@
                         <td>{{>Active_period this}}</td>
                         {{/if}}
                         {{#if equals category 'roleships'}}
+                        <td><span class="label label-plain">{{_ role}}</span>
+                            {{#if rank}}<span class="label label-plain">{{_ rank}}</span>{{/if}}
+                        </td>
                         <td>
                             {{#if Person.user.profile.publicEmail}}
                             <i class="contact-type fa fa-at"></i>{{Person.user.profile.publicEmail}}

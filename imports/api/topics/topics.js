@@ -55,6 +55,7 @@ Meteor.startup(function indexTopics() {
   } else if (Meteor.isServer) {
     Topics._ensureIndex({ communityId: 1, category: 1, serial: 1 });
     Topics._ensureIndex({ communityId: 1, category: 1, createdAt: -1 });
+    Topics._ensureIndex({ communityId: 1, participantIds: 1 });
   }
 });
 
@@ -68,9 +69,10 @@ Topics.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: -1 } });
   },
-  hiddenBy(userId, communityId) {
+  hiddenBy(userId) {
     const author = this.creator();
-    return this.flaggedBy(userId, communityId) || (author && author.flaggedBy(userId, communityId));
+    if (this.creatorId === userId) return undefined;
+    return this.flaggedBy(userId, this.communityId) || (author && author.flaggedBy(userId, this.communityId));
   },
   isUnseenBy(userId, seenType) {
     const user = Meteor.users.findOne(userId);
@@ -91,9 +93,32 @@ Topics.helpers({
   unseenCommentListBy(userId, seenType) {
     return this.unseenCommentsBy(userId, seenType).fetch();
   },
+  // This goes into the user's event feed
   unseenEventsBy(userId, seenType) {
-    return 0; // TODO
+    return {
+      topic: this,  // need the topic, even if its already seen
+      isUnseen: this.isUnseenBy(userId, seenType),
+      unseenComments: this.unseenCommentListBy(userId, seenType),
+      _hasThingsToDisplay: null,  // cached value
+      hasThingsToDisplay() { // false if everything new with this topic is hidden for the user
+        if (this._hasThingsToDisplay === null) {
+          this._hasThingsToDisplay = false;
+          if (this.isUnseen && !this.topic.hiddenBy(userId)) {
+            this._hasThingsToDisplay = true;
+          } else {
+            this.unseenComments.forEach((comment) => {
+              if (!comment.hiddenBy(userId)) {
+                this._hasThingsToDisplay = true;
+                return false;
+              } else return true;
+            });
+          }
+        }
+        return this._hasThingsToDisplay;
+      },
+    };
   },
+  // This number goes into the red badge to show you how many work to do
   needsAttention(userId, seenType) {
     if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
     switch (this.category) {
@@ -135,9 +160,19 @@ Topics.helpers({
   },
 });
 
-Topics.topicsNeedingAttention = function topicsNeedingAttention(userId, communityId, seenType) {
-  return Topics.find({ communityId }).fetch()
-    .filter(t => t.needsAttention(userId, seenType));
+Topics.topicsWithUnseenEvents = function topicsWithUnseenEvents(userId, communityId, seenType) {
+  debugAssert(userId);
+  debugAssert(communityId);
+  debugAssert(seenType);
+  return Topics.find({ communityId, closed: false,
+    $or: [
+      { participantIds: { $exists: false } },
+      { participantIds: userId },
+    ],
+  })
+  .map(topic => topic.unseenEventsBy(userId, seenType))
+  .filter(t => t.hasThingsToDisplay())
+  .sort((t1, t2) => Topics.categoryValues.indexOf(t2.topic.category) - Topics.categoryValues.indexOf(t1.topic.category));
 };
 
 Topics.attachSchema(Topics.baseSchema);

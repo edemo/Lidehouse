@@ -8,8 +8,7 @@ Template.hideable.viewmodel({
   doShow: false,
   hider() {
     const userId = Meteor.userId();
-    const communityId = Session.get('activeCommunityId');
-    return this.templateInstance.data.hiddenBy(userId, communityId);
+    return this.templateInstance.data.hiddenBy(userId);
   },
   events: {
     'click .js-show'(event, instance) {

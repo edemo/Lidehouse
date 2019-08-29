@@ -1,80 +1,56 @@
 <div>
-  {{#each topic in topics}}
+  {{#each te in this.topicsWithEvents}}
   
     <table class="table table-hover">
         <tbody>    
+            {{#let hider=(te.topic.hiddenBy this.userId)}}
             <tr class='topic-row'>
                 <td class='topic-icon-container'>
                     <a href=""><img alt="image" class="img-icon" src="{{categoryImgUrlFor topic.category}}"></a>
-                </td>        
-                {{#if equals topic.category 'room'}}
+                </td>
+                {{#if equals te.topic.category 'room'}}
                 <td class="project-title">
-                    <h3 class = "topicTitle">{{_ topic.title}}</h3>
+                    <h3 class = "topicTitle">{{_ te.topic.title}}</h3>
                     <div class='btn-container'>
                         <a href="{{topicUrlFor topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
                     </div>
                 </td>
                 {{else}}
-                <td class="project-title {{oldTopic topic}}">
-                    {{#unless topic.hiddenBy this.userId this.communityId}}
-                    <h3 class = "topicTitle">{{topic.title}}</h3>
-                    {{#if (isUnseen topic)}}
-                      <p>{{curb topic.text 1000}}</p>
-                    {{/if}}
-                    {{#if (voteHasBeenClosed topic)}}
-                        <br><h4 class="text-center">{{_ 'The voting has been closed'}}.</h4>
-                        {{#if equals topic.vote.effect 'legal'}}
-                            {{#if topic.isVoteSuccessful}}
-                            <strong>{{_ 'Successful voting'}}</strong>
-                            {{else}}
-                            <strong>{{_ 'Unsuccessful voting'}}</strong>
-                            {{/if}}
+                <td class="project-title {{oldTopic te}}">
+                    {{#if hider}}
+                        <span>{{_ 'Content hidden by' hider=(_ hider)}}</span>
+                    {{else}}
+                        <h3 class = "topicTitle">{{te.topic.title}}</h3>
+                        {{#if te.isUnseen}}
+                          <p>{{curb te.topic.text 1000}}</p>
                         {{/if}}
-                        <p>{{_ 'Participation'}}: <strong>{{displayPercent topic.votedPercent}}</strong></p>
-                        <h4 class="text-center">
-                        {{#if equals topic.vote.type 'preferential'}}
-                            {{_ 'Support of options'}}:            
-                        {{else}}
-                            {{_ 'Aggregation of votes'}}:
-                        {{/if}}
-                        </h4>
-                        {{#each sum in topic.voteSummaryDisplay}}
-                        <p>{{_ sum.choice}}: {{sum.votingUnits}} ({{displayPercent sum.percentOfVotes}})</p>
-                        {{/each}}
                     {{/if}}
-                    {{/unless}} 
-                    {{#if topic.hiddenBy this.userId this.communityId}}
-                        <span>{{_ 'Content hidden by' hider=(_ (hider topic))}}</span>
-                    {{/if}}
-                    <div class='btn-container'>
-                        <a href="{{topicUrlFor topic}}" class="btn btn-primary btn-sm">{{_ 'view'}}</a>
-                    </div>
                 </td>
-                <td class>
-                    <!--small>{{displayDate vote.closesAt}}</small-->
-                </td>
-                {{/if}} 
+                {{/if}}
             </tr>
+            {{/let}}
         </tbody>
     </table>
     
-    {{#let comments=(unseenCommentList topic)}}
-    {{#if comments}}
+    {{#if te.unseenComments}}
     <table class="table table-hover">
         <tbody>
-            {{#each comment in comments}}
+            {{#each comment in te.unseenComments}}
+            {{#let hider=(comment.hiddenBy this.userId)}}
             <tr class="social-comment">   
                 <td class='puffer'>
                 </td>
                 <td class='avatar-container'>
-                {{#unless comment.hiddenBy this.userId this.communityId}}      
+                  {{#unless hider}}      
                     <a href="{{userUrlFor comment.creator}}" class="pull-left">
                         <img alt="avatar" class="message-avatar" src='{{urlFor comment.creator.avatar}}'>
                     </a>
-                {{/unless}}
+                  {{/unless}}
                 </td>
                 <td class="media-body">
-                {{#unless comment.hiddenBy this.userId this.communityId}}  
+                  {{#if hider}}
+                    <span>{{_ 'Content hidden by' hider=(_ hider)}}</span>
+                  {{else}}  
                     <a href="{{userUrlFor  comment.creator}}">{{comment.creator.displayOfficialName this.communityId user.settings.language}}</a>
                     {{#if (equals comment.type 'statusChangeTo')}}
                         {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
@@ -94,17 +70,14 @@
                     {{#if comment.text}}
                     <span>{{curb comment.text 500 }}</span><br>
                     {{/if}}
-                {{/unless}}
-                {{#if comment.hiddenBy this.userId this.communityId}}
-                    <span>{{_ 'Content hidden by' hider=(_ (hider comment))}}</span><br>
-                {{/if}}
-                    <small class="text-muted" >{{displayTime comment.createdAt}}</small>
+                  {{/if}}
+                  <small class="text-muted" >{{displayTime comment.createdAt}}</small>
                 </td> 
             </tr>
-           {{/each}}
+            {{/let}}
+            {{/each}}
         </tbody>
     </table>
     {{/if}}
-    {{/let}}
   {{/each}}
 </div>
