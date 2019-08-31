@@ -699,8 +699,11 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. emlékeztető)"
     },
+    "appliedAt": {
+      "label": "Kivetések idejei"
+    },
     "applyCount": {
-      "label": "Eddigi alkalmak"
+      "label": "Kivetések száma"
     }
   },
   "schemaSharedfolders": {

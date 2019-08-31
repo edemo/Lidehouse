@@ -590,12 +590,12 @@
       "label": "Transaction type name",
       "placeholder": ""
     },
-    "credit": {
-      "label": "Credited",
-      "placeholder": ""
-    },
     "debit": {
       "label": "Debited",
+      "placeholder": ""
+    },
+    "credit": {
+      "label": "Credited",
       "placeholder": ""
     }
   },
@@ -694,6 +694,9 @@
     "note": {
       "label": "Note",
       "placeholder": "(eg. reminder)"
+    },
+    "appliedAt": {
+      "label": "Apply dates"
     },
     "applyCount": {
       "label": "Apply count"

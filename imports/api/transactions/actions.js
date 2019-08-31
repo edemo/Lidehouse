@@ -65,7 +65,6 @@ export function allTransactionsActions() {
         Session.set('activeTransactionId', id);
         Modal.show('Autoform_edit', {
           id: 'af.transaction.reconcile',
-          collection: Transactions,
           schema: Bills.reconcileSchema(),
           type: 'method',
           meteormethod: 'transactions.reconcile',
@@ -123,5 +122,12 @@ AutoForm.addHooks('af.transaction.insert', {
       afContext.done(null, res);
     });
     return false;
+  },
+});
+
+AutoForm.addHooks('af.transaction.reconcile', {
+  formToDoc(doc) {
+    doc.txId = Session.get('activeTransactionId');
+    return doc;
   },
 });

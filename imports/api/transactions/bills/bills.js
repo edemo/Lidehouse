@@ -43,7 +43,7 @@ Bills.schema = new SimpleSchema({
   txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   payments: { type: Array, defaultValue: [] },
   'payments.$': { type: Bills.paymentSchema },
-  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client ask to sort on outstanding amount
+  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client can ask to sort on outstanding amount
 //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
 });
 
@@ -58,10 +58,11 @@ Bills.reconcileSchema = function reconcileSchema() {
     firstOption: () => __('(Select one)'),
   };
   return new SimpleSchema({
-    txId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-    txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
-    billId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: autoformOptions },
+    txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false },
+    txLegId: { type: Number, decimal: true, optional: true },
+    billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false, autoform: autoformOptions },
     paymentId: { type: Number, decimal: true, optional: true },
+    // if txLegId or paymetId not present, it means, lets create a new one now
   });
 };
 
@@ -75,11 +76,18 @@ Meteor.startup(function indexBills() {
 });
 
 Bills.helpers({
-  txMatchSide() {
-    if (this.category === 'in') return 'credit';
-    else if (this.category === 'out' || this.category === 'parcel') return 'debit';
+  matchingTxSide() {
+    if (this.category === 'in') return 'debit';
+    else if (this.category === 'out' || this.category === 'parcel') return 'credit';
     debugAssert(false, 'unknown bill category');
     return undefined;
+  },
+  otherTxSide() {
+    if (this.matchingTxSide() === 'debit') return 'credit';
+    if (this.matchingTxSide() === 'credit') return 'debit';
+  },
+  getPayments() {
+    return this.payments || [];
   },
   paymentCount() {
     return this.payments.length;

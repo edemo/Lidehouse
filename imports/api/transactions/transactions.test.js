@@ -8,7 +8,9 @@ import '/imports/api/transactions/bills/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Parcels } from '/imports/api/parcels/parcels.js'
+import { Parcels } from '/imports/api/parcels/parcels.js';
+
+import '/imports/startup/server/validated-method.js';   // TODO Where to put this? - in a common place
 
 if (Meteor.isServer) {
   let Fixture;
@@ -75,10 +77,22 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.paymentCount(), 1);
 
         // later if the same tx comes in from bank import, no extra payment is created
-        const txId = Fixture.builder.create('tx', { amount: 650 });
+        const txId = Fixture.builder.create('tx', { amount: 650, credit: [{ account: '31' }] });
+        let tx = Transactions.findOne(txId);
+        chai.assert.isFalse(tx.reconciled);
+        chai.assert.isFalse(tx.complete);
+
         Fixture.builder.execute(Transactions.methods.reconcile, { billId, paymentId: 0, txId });
+        bill = Bills.findOne(billId);
         chai.assert.equal(bill.outstanding, 0);
         chai.assert.equal(bill.paymentCount(), 1);
+        tx = Transactions.findOne(txId);
+        chai.assert.isTrue(tx.reconciled);
+        chai.assert.isFalse(tx.complete);
+
+        Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '88', localizer: '@' } } });
+        tx = Transactions.findOne(txId);
+        chai.assert.isTrue(tx.complete);
       });
 
       it('Can pay bill from bank import', function () {
@@ -87,12 +101,18 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 650);
         chai.assert.equal(bill.paymentCount(), 0);
 
-        const txId = Fixture.builder.create('tx', { amount: 650 });
-        Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
+        const txId = Fixture.builder.create('tx', { amount: 650, credit: [{ account: '31' }] });
+        let tx = Transactions.findOne(txId);
+        chai.assert.isFalse(tx.reconciled);
+        chai.assert.isFalse(tx.complete);
 
+        Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.outstanding, 0);
         chai.assert.equal(bill.paymentCount(), 1);
+        tx = Transactions.findOne(txId);
+        chai.assert.isTrue(tx.reconciled);
+        chai.assert.isTrue(tx.complete);
       });
     });
 

@@ -828,9 +828,10 @@ export function insertDemoHouse(lang, demoOrTest) {
     obligationLeafAccounts.forEach((leafAccount) => {
       const txs = Transactions.find({ communityId: demoCommunityId, 'debit.account': leafAccount.code });
       txs.forEach((tx) => {
-        tx.journalEntries().forEach((entry) => {
+        tx.journalEntries().forEach((entry, index) => {
           if (entry.side === 'debit') {
-            demoBuilder.insert(Transactions, 'tx', {
+            // The payment tx is registered
+            const txId = demoBuilder.insert(Transactions, 'tx', {
               valueDate: moment(entry.valueDate).add(_.sample([-2, -1, 0, 1, 2]), 'days').toDate(),
               amount: entry.amount,
               credit: [{
@@ -841,6 +842,8 @@ export function insertDemoHouse(lang, demoOrTest) {
                 account: demoBuilder.name2code('Assets', 'Folyószámla'),
               }],
             });
+            // The payment is reconciled to the proper bill
+            demoBuilder.execute(Transactions.methods.reconcile, { txId, txLegId: index - 1, billId: entry.billId });
           }
         });
       });

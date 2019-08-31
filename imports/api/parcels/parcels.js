@@ -153,6 +153,7 @@ Meteor.startup(function attach() {
 });
 
 // --- Before/after actions ---
+
 function updateCommunity(parcel, revertSign = 1) {
   if (!parcel.type) return;
   const modifier = {}; modifier.$inc = {};

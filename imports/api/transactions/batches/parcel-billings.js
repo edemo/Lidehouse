@@ -27,7 +27,7 @@ ParcelBillings.schema = new SimpleSchema({
   payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
   localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
   note: { type: String, max: 100, optional: true },
-  appliedAt: { type: [Date], defaultValue: [] },
+  appliedAt: { type: [Date], defaultValue: [], autoform: { omit: true } },
 });
 
 ParcelBillings.applySchema = new SimpleSchema({

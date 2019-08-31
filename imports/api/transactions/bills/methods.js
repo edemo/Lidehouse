@@ -61,6 +61,18 @@ export const conteer = new ValidatedMethod({
     if (doc.txId) Transactions.remove(doc.txId);
     const result = Bills.update({ _id }, modifier);
     createAndBindTx(_id);
+
+    const bill = Bills.findOne(_id);
+    bill.getPayments().forEach(payment => {
+      if (payment.txId) {
+        const tx = Transactions.findOne(payment.txId);
+        const side = bill.otherTxSide();
+        const txSide = tx.getSide(side);
+        txSide[payment.txLegId].account = bill.account;
+        txSide[payment.txLegId].localizer = bill.localizer;
+        Transactions.update(payment.txId, { $set: { [txSide]: txSide } });
+      }
+    });
     return result;
   },
 });

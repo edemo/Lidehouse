@@ -84,17 +84,20 @@ export const reconcile = new ValidatedMethod({
     const tx = checkExists(Transactions, txId);
     const bill = checkExists(Bills, billId);
     checkPermissions(this.userId, 'transactions.reconcile', tx.communityId);
+    const txSide = bill.matchingTxSide();
     let txLeg;
-    if (!txLegId) {
+    if (txLegId === undefined) { // no txLegId means, lets create a new one now
+      txLegId = tx.getSide(txSide).length;
       txLeg = {
         amount: bill.amount,
         account: bill.account,
       };
+      Transactions.update(txId, { $push: { [txSide]: txLeg } });
     } else {
-      txLeg = tx[bill.txMatchSide()][txLegId];
+      txLeg = tx[txSide][txLegId];
       checkMatches(tx, txLeg, bill);
     }
-    if (!paymentId) { // no paymentId means, let's create the payment now -- we do not reconcile to original bills, those are auto-reconciled
+    if (paymentId === undefined) { // no paymentId means, let's create the payment now -- we do not reconcile to original bills, those are auto-reconciled
       paymentId = bill.paymentCount();
       const payment = {
         amount: tx.amount,
@@ -104,7 +107,6 @@ export const reconcile = new ValidatedMethod({
       };
       Bills.update(billId, { $push: { payments: payment } });
     }
-    const txSide = bill.txMatchSide();
     Transactions.update(txId, { $set: {
       [`${txSide}.${txLegId}.billId`]: billId,
       [`${txSide}.${txLegId}.paymentId`]: paymentId,

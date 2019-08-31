@@ -11,7 +11,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { flag } from '/imports/api/topics/flags.js';
+import { flag } from '/imports/api/behaviours/flagable.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import '/i18n/en.i18n.json';
 import '/i18n/email.en.i18n.json';
