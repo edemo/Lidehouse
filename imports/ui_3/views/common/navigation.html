@@ -48,14 +48,14 @@
                     <a class="js-submenu-toggle" href="#"><i class="fa fa-legal"></i>
                         <span class="nav-label">{{_ 'Decision making'}}</span>
                         <!--span class="fa arrow"> </span-->
-                        {{> Badge countNotifications 'vote'}}
+                        {{> Badge number=(countNotifications 'vote')}}
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='votings|agendas|delegations' className='submenu-open'}}">
                         <li class="{{isActivePath regex='votings'}}">
                             <a href="{{pathFor 'Votings'}}">
                                 <i class="glyphicon glyphicon-equalizer" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Votings'}}</span>
-                                {{> Badge countNotifications 'vote'}}
+                                {{> Badge number=(countNotifications 'vote')}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='agendas'}}">
@@ -89,21 +89,21 @@
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
                         <span class="nav-label">{{_ 'Maintenance'}}</span>
                         <!--span class="fa arrow"> </span-->
-                        {{> Badge countNotifications 'ticket'}}
+                        {{> Badge number=(countNotifications 'ticket')}}
                     </a>
                     <ul class="nav nav-second-level {{isActivePath regex='tickets|worksheets|contracts' className='submenu-open'}}">
                         <li class="{{isActivePath regex='tickets'}}">
                             <a href="{{pathFor 'Tickets'}}">
                                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Tickets report'}}</span>
-                                {{> Badge countNotifications 'ticket'}}
+                                {{> Badge number=(countNotifications 'ticket')}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='worksheets'}}">
                             <a href="{{pathFor 'Worksheets'}}">
                                 <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Worksheets'}}</span>
-                                {{> Badge countNotifications 'ticket'}}
+                                {{> Badge number=(countNotifications 'ticket')}}
                             </a>
                         </li>
                         <li class="{{isActivePath regex='contracts'}}">
@@ -147,7 +147,7 @@
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
                         {{#if userHasPermission 'parcels.update' (fromSession 'activeCommunityId')}}
-                        {{> Badge countUnapprovedEntities}}
+                        {{> Badge number=countUnapprovedEntities}}
                         {{/if}}
                     </a>
                 </li>
@@ -181,7 +181,7 @@
                     <a href="{{pathFor 'Feedbacks'}}">
                         <i><img src="/icon/si-glyph-bolt.svg"/></i>
                         <span class="nav-label">Feedbacks (dev)</span>
-                        {{> Badge countNotifications 'feedback'}}
+                        {{> Badge number=(countNotifications 'feedback')}}
                     </a>
                 </li>
                 <li class="{{isActivePath regex='styleguide'}}">

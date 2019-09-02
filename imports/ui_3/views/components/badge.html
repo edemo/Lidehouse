@@ -1,7 +1,11 @@
 <template name='Badge'>
-    {{#if Template.subscriptionsReady}}
-    {{#if this}}
-    <span class="badge badge-danger pull-right">{{this}}</span>
+    {{#if parentSubscriptionsReady}}
+    {{#if number}}
+        {{#if color}}
+        <span class="badge badge-{{color}} pull-right">{{number}}</span>
+        {{else}}
+        <span class="badge badge-danger pull-right">{{number}}</span>
+        {{/if}}
     {{/if}}
     {{/if}}
 </template>
