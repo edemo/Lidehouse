@@ -1,7 +1,7 @@
 import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
-import { displayLocalizer, displayTicketType, displayStatus } from '/imports/ui_3/helpers/api-display.js';
+import { displayLocalizer, displayTicketType, displayStatus, displayTitle } from '/imports/ui_3/helpers/api-display.js';
 
 export function ticketColumns(permissions) {
   const communityId = Session.get('activeCommunityId');
@@ -15,7 +15,7 @@ export function ticketColumns(permissions) {
   return [
     { data: 'serialId()', title: __('schemaTickets.id.label') },
     { data: 'status', title: __('schemaTopics.status.label'), render: displayStatus },
-    { data: 'title', title: __('schemaTickets.title.label') },
+    { data: '_id', title: __('schemaTickets.title.label'), render: Render.displayTitle },
     { data: 'ticket.localizer', title: __('schemaTickets.ticket.localizer.label'), render: l => displayLocalizer(l, communityId) },
     { data: 'creator()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
