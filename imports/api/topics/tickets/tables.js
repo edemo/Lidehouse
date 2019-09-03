@@ -1,7 +1,7 @@
 import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
-import { displayLocalizer, displayTicketType, displayStatus, displayTitle } from '/imports/ui_3/helpers/api-display.js';
+import { displayLocalizer, displayTicketType, displayStatus } from '/imports/ui_3/helpers/api-display.js';
 
 export function ticketColumns(permissions) {
   const communityId = Session.get('activeCommunityId');
