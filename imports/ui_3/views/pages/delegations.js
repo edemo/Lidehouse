@@ -29,6 +29,7 @@ const colorOthers = '#dedede';
 Template.Delegations.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
+    this.subscribe('parcels.ofSelf', { communityId });
     this.subscribe('delegations.inCommunity', { communityId });
   });
 });
