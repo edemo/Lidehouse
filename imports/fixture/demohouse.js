@@ -316,14 +316,14 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ==== Loginable users with Roles =====
 
-  const demoManagerId = demoBuilder.createLoginableUser('manager', {
-    avatar: '/images/avatars/avatar20.jpg',
-    'profile.phone': '06 60 555 4321',
-  });
-
   const demoAdminId = demoBuilder.createLoginableUser('admin', {
     avatar: '/images/avatars/avatar21.jpg',
     'profile.phone': '06 60 762 7288',
+  });
+
+  const demoManagerId = demoBuilder.createLoginableUser('manager', {
+    avatar: '/images/avatars/avatar20.jpg',
+    'profile.phone': '06 60 555 4321',
   });
 
   if (demoOrTest === 'test') {

@@ -9,7 +9,7 @@ import '/imports/startup/both/fractional.js';  // TODO: should be automatic, but
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { officerRoles, everyRole, Roles } from '/imports/api/permissions/roles.js';
+import { officerRoles, everyRole, Roles, ranks } from '/imports/api/permissions/roles.js';
 import { Factory } from 'meteor/dburles:factory';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { Timestamps } from '/imports/api/timestamps.js';
@@ -48,6 +48,7 @@ Memberships.schema = new SimpleSchema({
       firstOption: () => __('(Select one)'),
     },
   },
+  rank: { type: String, optional: true, allowedValues: ranks, autoform: autoformOptions(ranks) },
   person: { type: PersonSchema },
   personId: { type: String, optional: true, autoform: { omit: true },
     autoValue() {

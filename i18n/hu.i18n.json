@@ -49,7 +49,10 @@
   "delegate": "meghatalmazott",
   "maintainer": "gondnok",
   "guest": "vendég",
-
+  // ranks
+  "assistant": "asszisztens",
+  "chairman": "elnök",
+  
   "Leaders": "Vezetők",
   "Other roles": "Egyéb tisztségek",
 
@@ -487,7 +490,7 @@
   "errorInFormFieldValidation": "Az adatok megadása hiányos vagy nem megfelelő. A pirossal jelölt mezők kitöltése kötelező ezen az adatlapon",
   "Remove not possible after 24 hours": "MEGJEGYZÉS: Mivel a tranzakció 24 óránál régebbi, a törlése nem lehetséges. Így egy ellentétes előjelű tranzakció bevitelére kerül sor",
   "err_sanityCheckFailed": "Adat beviteli hiba",
-  "User and conact email doesnt match": "A meghívott felhasználó és az email cím különbözik",
+  "User and contact email doesnt match": "A meghívott felhasználó és az email cím különbözik",
   "Ownership share cannot exceed 1": "Tulajdonrészek összesen nem haladhatják meg az 1-et",
   "Parcel can have only one representor": "Egy albetétnek csak egyetlen képviselője lehet",
   "Parcel cannot have lead and owners at the same time": "Ha az albetétnek vezető albetétje van, akkor nem lehet tulajdonosa megadva",
