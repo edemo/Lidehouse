@@ -18,6 +18,7 @@ import './tickets/tickets.js';
 import { updateMyLastSeen } from '/imports/api/users/methods.js';
 import './rooms/rooms.js';
 import './feedbacks/feedbacks.js';
+import { autoOpen } from './votings/methods.js';
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
@@ -30,6 +31,7 @@ export const insert = new ValidatedMethod({
     checkTopicPermissions(this.userId, 'insert', doc);
     const topicId = Topics.insert(doc);
     const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
+    autoOpen(newTopic);
     updateMyLastSeen._execute({ userId: this.userId },
       { topicId, lastSeenInfo: { timestamp: newTopic.createdAt } });
     CollectionHooks.defaultUserId = undefined;
