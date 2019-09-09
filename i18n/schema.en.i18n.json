@@ -274,7 +274,7 @@
     "agendaId": {
       "label": "Agenda (of which it is part of)"
     },
-    "createdAt": {
+    "opensAt": {
       "label": "Voting starts at"
     },
     "closesAt": {

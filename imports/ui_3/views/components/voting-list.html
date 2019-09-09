@@ -5,7 +5,7 @@
             {{#each items}}
             <tr>
                 <td class="project-status">
-                    {{#if closed}}
+                    {{#if or (equals status 'votingFinished') closed}}
                     <span class="label label-default">{{_ 'closed'}}</span>
                     {{else}}
                     <span class="label label-primary">{{_ 'active'}}</span>
@@ -20,7 +20,7 @@
                 <td class="project-title">
                     <a href="{{pathFor 'Topic show' _tid=_id}}">{{title}}</a>
                     <br/>
-                    {{#if closed}}
+                    {{#if or (equals status 'votingFinished') closed}}
                     <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>
                     {{else}}
                     <small>{{_ 'closes'}}: {{displayTimeFrom closesAt}}</small>
