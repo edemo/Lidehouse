@@ -31,7 +31,9 @@ export const insert = new ValidatedMethod({
     checkTopicPermissions(this.userId, 'insert', doc);
     const topicId = Topics.insert(doc);
     const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
-    autoOpen(newTopic);
+    if (Meteor.isServer) {
+      autoOpen(newTopic);
+    };
     updateMyLastSeen._execute({ userId: this.userId },
       { topicId, lastSeenInfo: { timestamp: newTopic.createdAt } });
     CollectionHooks.defaultUserId = undefined;

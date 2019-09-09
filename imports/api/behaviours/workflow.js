@@ -35,7 +35,7 @@ const schema = new SimpleSchema({
   closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate),
     custom() {
       const closingDate = this.value;
-      const openingDate = this.field('opensAt').value; 
+      const openingDate = this.field('opensAt').value || Clock.currentTime(); 
       const dayLater = moment(openingDate).add(1, 'day').toDate()
       if (moment(Clock.currentTime()).add(1, 'day').toDate() > this.value) return 'notAllowed';
       if (closingDate <= dayLater) return 'notAllowed';

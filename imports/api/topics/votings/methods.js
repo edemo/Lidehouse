@@ -63,7 +63,7 @@ export function autoOpen(topic) {
   const now = new Date();
   if (topic.status === 'announced' && topic.opensAt <= now) {
     Topics.methods.statusChange._execute({ userId: topic.creatorId },
-      { userId: topic.creatorId, topicId: topic._id, status: 'opened', text: 'Automated opening' },
+      { userId: topic.creatorId, topicId: topic._id, status: 'opened' },
     );
   }
 }
@@ -77,6 +77,6 @@ export function closeClosableVotings() {
   const now = new Date();
   const expiredVotings = Topics.find({ category: 'vote', status: 'opened', closesAt: { $lt: now } });
   expiredVotings.forEach(voting => Topics.methods.statusChange._execute({ userId: voting.creatorId }, // permissionwise the creator is the one closing it
-    { userId: voting.creatorId, topicId: voting._id, status: 'votingFinished', text: 'Automated closing' },
+    { userId: voting.creatorId, topicId: voting._id, status: 'votingFinished' },
   ));
 }
