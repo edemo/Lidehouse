@@ -155,6 +155,7 @@ AutoForm.addHooks('af.comment.move', {
   onSubmit(doc) {
     AutoForm.validateForm('af.comment.move');
     Comments.methods.move.call(doc, handleError);
-    return true;
+    this.done();
+    return false;
   },
 });
