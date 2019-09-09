@@ -23,7 +23,7 @@
                   </ul>
                 {{else}}
                   {{#each choice in topic.vote.choices}}
-                  <button class="btn btn-vote {{pressedClassForVoteBtn @index}}" data-value="{{@index}}">
+                  <button class="btn btn-vote {{pressedClassForVoteBtn @index}} {{#unless (equals topic.status 'opened')}}disabled{{/unless}}" data-value="{{@index}}">
                     <i class="fa fa-lg fa-circle"></i><img src="/images/x-mark.png"> {{topic.displayChoice @index}}
                   </button>
                   {{/each}}
@@ -40,27 +40,27 @@
           </div>
         </div>
 
-        {{#unless closed}}
-        {{#if userHasPermission 'vote.cast' this.communityId this}}
         <div class="text-left">
-          {{#if temporaryVote}}
-          <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i> {{_ "If you made your choice"}}, <button class="btn btn-primary btn-xs js-send"> {{_ "send your vote"}}</button> - <a class="js-modify">{{_ 'Cancel'}}</a>
+          {{#if (equals topic.status 'announced')}}
+            <i class="glyphicon glyphicon-time fa-lg text-warning" aria-hidden="true"></i> {{_ "Voting has not started yet, please come back"}} {{displayTimeFrom topic.opensAt}}
           {{else}}
-            {{#if this.hasVotedDirect currentUser._id}}
-              <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-modify">{{_ 'Modify vote'}}</a>
+            {{#if temporaryVote}}
+            <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i> {{_ "If you made your choice"}}, <button class="btn btn-primary btn-xs js-send"> {{_ "send your vote"}}</button> - <a class="js-modify">{{_ 'Cancel'}}</a>
             {{else}}
-              {{#if this.hasVotedIndirect currentUser._id}}
-              <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - <a class="js-modify">{{_ 'Modify vote'}}</a>
+              {{#if this.hasVotedDirect currentUser._id}}
+                <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted directly"}} - <a class="js-modify">{{_ 'Modify vote'}}</a>
               {{else}}
-                <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
-                {{_ "You have not yet voted"}} - ({{_ 'Cast your vote'}}, {{_ 'or'}} <a href="{{pathFor 'Delegations'}}">{{_ "setup a delegation"}}!</a>)
+                {{#if this.hasVotedIndirect currentUser._id}}
+                <i class="glyphicon glyphicon-ok-circle fa-lg text-navy" aria-hidden="true"></i> {{_ "You voted via delegation"}} - <a class="js-modify">{{_ 'Modify vote'}}</a>
+                {{else}}
+                  <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i>
+                  {{_ "You have not yet voted"}} - ({{_ 'Cast your vote'}}, {{_ 'or'}} <a href="{{pathFor 'Delegations'}}">{{_ "setup a delegation"}}!</a>)
+                {{/if}}
               {{/if}}
             {{/if}}
           {{/if}}
           
         </div>
-        {{/if}}
-        {{/unless}}
 
       </div>
     </div>

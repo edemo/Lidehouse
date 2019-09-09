@@ -70,7 +70,12 @@
           {{/if}}
         </div>
         <div class="col-xs-12 m-b-sm">
-          {{#if votingClosed}}
+          {{#unless votingClosed}}   
+          <!-- voting buttons -->
+            {{#if userHasPermission 'vote.cast' this.communityId this}}
+            {{> Vote_cast_panel this}}
+            {{/if}}
+          {{else}}
           <!-- voting results -->
             <h4 class="text-center">
             {{#if equals this.vote.type "preferential"}}
@@ -89,13 +94,7 @@
                 </div>
               </div>
             </div>
-          {{else}}
-          <!-- voting buttons -->
-          {{#if userHasPermission 'vote.cast' this.communityId this}}
-          {{> Vote_cast_panel this}}
-          {{/if}}
-
-          {{/if}}
+          {{/unless}}
         </div>
       </div>
 
