@@ -12,7 +12,7 @@
         {{#if votingClosed}}
           {{_ "schemaTopics.status.votingFinished"}}<!--a href="" class="js-view-results">: {{_ "Vote results"}}</a-->
         {{else}}
-          <span title="{{_ 'createdAt'}}: {{displayDate createdAt}} {{_ 'closes'}}: {{closesAt}}">
+          <span title="{{_ 'closes'}}: {{displayDate closesAt}}">
            {{_ "closes"}}: {{displayTimeFrom closesAt}}
           </span>
         {{/if}}

@@ -42,7 +42,8 @@
 
         <div class="text-left">
           {{#if (equals topic.status 'announced')}}
-            <i class="glyphicon glyphicon-time fa-lg text-warning" aria-hidden="true"></i> {{_ "Voting has not started yet, please come back"}} {{displayTimeFrom topic.opensAt}}
+            <i class="glyphicon glyphicon-time fa-lg text-warning" aria-hidden="true"></i> 
+            <span title="{{_ 'schemaVotings.opensAt.label'}}: {{displayDate opensAt}}">{{_ "Voting has not started yet, please come back"}} {{displayTimeFrom topic.opensAt}}</span>
           {{else}}
             {{#if temporaryVote}}
             <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" aria-hidden="true"></i> {{_ "If you made your choice"}}, <button class="btn btn-primary btn-xs js-send"> {{_ "send your vote"}}</button> - <a class="js-modify">{{_ 'Cancel'}}</a>
