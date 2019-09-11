@@ -282,6 +282,7 @@
     },
     "status": {
       "label": "Státusz",
+      "announced": "Kitűzve",
       "opened": "Nyitott",
       "scheduled": "Ütemezve",
       "reported": "Bejelentve",
@@ -291,6 +292,7 @@
       "progressing": "Folyamatban",
       "suspended": "Felfüggesztve",
       "finished": "Elvégezve",
+      "votingFinished": "Szavazás lezárva",
       "closed": "Lezárt",
       "deleted": "Törölt"
     },
@@ -347,7 +349,7 @@
       },
       "voters": {
         "label": "Szavazatot leadók"
-      }
+      }   
     }
   },
   "schemaTickets": {

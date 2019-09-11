@@ -282,6 +282,7 @@
     },
     "status": {
       "label": "Status",
+      "announced": "Announced",
       "opened": "Opened",
       "scheduled": "Scheduled",
       "reported": "Reported",
@@ -291,6 +292,7 @@
       "progressing": "Progressing",
       "suspended": "Suspended",
       "finished": "Done",
+      "votingFinished": "Voting finished",
       "closed": "Closed",
       "deleted": "Deleted"
     },

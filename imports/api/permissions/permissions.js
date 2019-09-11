@@ -128,6 +128,7 @@ export const Permissions = [
   { name: 'ticket.statusChangeTo.deleted.enter',      roles: ['manager', 'maintainer'] },
   { name: 'vote.statusChange',                        roles: ['manager'] },
   { name: 'vote.statusChangeTo.opened.enter',         roles: ['manager'] },
+  { name: 'vote.statusChangeTo.votingFinished.enter', roles: ['manager'] },
   { name: 'vote.statusChangeTo.closed.enter',         roles: ['manager'] },
   { name: 'vote.statusChangeTo.deleted.enter',        roles: ['manager'] },
   { name: 'forum.statusChange',                       roles: ['manager'] },

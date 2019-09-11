@@ -91,6 +91,7 @@ Template.registerHelper('log', function log(stuff) {
 });
 
 Template.registerHelper('entriesOf', function entriesOf(obj) {
+  if (!obj) return undefined;
   return Object.entries(obj);
 });
 

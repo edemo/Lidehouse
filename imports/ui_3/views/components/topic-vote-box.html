@@ -9,8 +9,8 @@
     </div>
     <!-- create time before the right corner -->
     <div class="pull-right">
-        {{#if this.closed}}
-          {{_ "closed"}}<!--a href="" class="js-view-results">: {{_ "Vote results"}}</a-->
+        {{#if votingClosed}}
+          {{_ "schemaTopics.status.votingFinished"}}<!--a href="" class="js-view-results">: {{_ "Vote results"}}</a-->
         {{else}}
           <span title="{{_ 'createdAt'}}: {{displayDate createdAt}} {{_ 'closes'}}: {{closesAt}}">
            {{_ "closes"}}: {{displayTimeFrom closesAt}}
@@ -30,7 +30,7 @@
 
       <div class="row m-b-md">
       <div class="col-lg-12">
-          <div class="progress {{#unless closed}}progress-striped active{{/unless}} m-b-xs">
+          <div class="progress {{#unless votingClosed}}progress-striped active{{/unless}} m-b-xs">
             <div style="{{concat 'width: ' (round votedPercent 2) '%;'}}" class="progress-bar {{#unless isVoteSuccessful}}progress-bar-warning{{/unless}}"></div>
           </div>
           <div class="col-sm-6 text-left">
@@ -38,7 +38,7 @@
           </div>
           <div class="col-sm-6 text-right">
           {{#if (equals vote.effect 'legal')}}
-            {{#if closed}}
+            {{#if votingClosed}}
               {{#if isVoteSuccessful}}
               <strong>{{_ 'Successful voting'}}</strong>
               {{else}}
@@ -70,7 +70,7 @@
           {{/if}}
         </div>
         <div class="col-xs-12 m-b-sm">
-          {{#if this.closed}}
+          {{#if votingClosed}}
           <!-- voting results -->
             <h4 class="text-center">
             {{#if equals this.vote.type "preferential"}}

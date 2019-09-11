@@ -6,7 +6,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { _ } from 'meteor/underscore';
 
-import { crudBatchOps } from '/imports/api/batch-method.js';
+import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -86,6 +86,7 @@ export const remove = new ValidatedMethod({
 Topics.methods = Topics.methods || {};
 _.extend(Topics.methods, { insert, update, move, remove });
 _.extend(Topics.methods, crudBatchOps(Topics));
+Topics.methods.batch.statusUpdate = new BatchMethod(Topics.methods.statusUpdate);
 
 // ----- RATE LIMITING --------
 

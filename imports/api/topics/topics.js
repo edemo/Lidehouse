@@ -154,6 +154,9 @@ Topics.helpers({
   modifiableFields() {
     return Topics.modifiableFields;
   },
+  modifiableFieldsByStatus() {
+    return Topics.categories[this.category].statuses[this.status].data;
+  },
   remove() {
     Comments.remove({ topicId: this._id });
     Topics.remove({ _id: this._id });

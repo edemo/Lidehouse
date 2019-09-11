@@ -4,45 +4,52 @@
     <div class="dropdown {{category}} js-menu">
         <button class="dropdown-toggle drop-unfoll glyphicon glyphicon-option-horizontal" type="button" id="drop_{{_id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         </button>
-        <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{_id}}">
-            {{#if userHasPermission (concat category '.statusChange') (fromSession 'activeCommunityId') this}}
-                {{#each status in this.possibleNextStatuses}}
-                {{#if (userHasPermission (concat category '.statusChangeTo.' status.name '.enter') this.communityId this)}}
-                   <li><a class="js-status-change" data-status="{{status.name}}" href="">{{{displayStatusChange status}}}</a></li>
-                {{/if}}
-                {{/each}}
-                {{#if (userHasPermission (concat category '.statusChangeTo.' this.status '.enter') this.communityId this)}}
-                <li><a class="js-status-update" href=""><i class="fa fa-edit"></i>{{{_ 'statusUpdate'}}}</a></li>
-                {{/if}}
-                <li role="separator" class="divider"></li>
-            {{/if}}
-            {{#if (and (userHasPermission (concat category '.update') this.communityId this) (not this.closed) )}}
-                <li><a class="js-edit" href=""><i class="fa fa-pencil"></i> {{_ 'edit'}}</a></li>
-            {{/if}}
-            {{#if userHasPermission (concat category '.remove') this.communityId this}}
-                <li><a class="js-delete" href=""><i class="fa fa-trash"></i> {{_ 'delete'}}</a></li>
-                <li role="separator" class="divider"></li>
-            {{/if}}
-            {{#unless or (equals category 'vote') (equals currentUser._id this.creatorId)}}
-                <li><a class="js-report" href="">
-                    {{#if this.isFlaggedBy currentUser._id}}
-                    <i class="fa fa-check"></i> {{_ 'Unblock content'}}
-                    {{else}}
-                    <i class="fa fa-ban"></i> {{_ 'Block content'}}
-                    {{/if}}   
-                </a></li>
-                <li><a class="js-block" href="">
-                    {{#if currentUser.hasBlocked creatorId}}
-                    {{_ 'Unblock content from' creator}}
-                    {{else}}
-                    {{_ 'Block content from' creator}}
-                    {{/if}}  
-                </a></li>
-            {{/unless}}
-        </ul>
+        {{> Topic_edit_menu_content}}
     </div>
     {{/if}}
     {{/let}}
+</template>
+
+<template name="Topic_edit_menu_content">
+    {{#if userHasPermission (concat category '.update') this.communityId this}}
+    <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs" aria-labelledby="drop_{{_id}}">
+        {{#if userHasPermission (concat category '.statusChange') (fromSession 'activeCommunityId') this}}
+            {{#each status in this.possibleNextStatuses}}
+            {{#if (userHasPermission (concat category '.statusChangeTo.' status.name '.enter') this.communityId this)}}
+               <li><a class="js-status-change" data-id="{{_id}}" data-status="{{status.name}}" href="">{{{displayStatusChange status}}}</a></li>
+            {{/if}}
+            {{/each}}
+            {{#if (userHasPermission (concat category '.statusChangeTo.' this.status '.enter') this.communityId this)}}
+            <li><a class="js-status-update" data-id="{{_id}}" href=""><i class="fa fa-edit"></i>{{{_ 'statusUpdate'}}}</a></li>
+            {{/if}}
+            <li role="separator" class="divider"></li>
+        {{/if}}
+        {{#if (and (userHasPermission (concat category '.update') this.communityId this) (not this.closed) )}}
+            <li><a class="js-edit" data-id="{{_id}}" href=""><i class="fa fa-pencil"></i> {{_ 'edit'}}</a></li>
+        {{/if}}
+        {{#if userHasPermission (concat category '.remove') this.communityId this}}
+            <li><a class="js-delete" data-id="{{_id}}" href=""><i class="fa fa-trash"></i> {{_ 'delete'}}</a></li>
+            <li role="separator" class="divider"></li>
+        {{/if}}
+        {{#unless or (equals category 'vote') (equals currentUser._id this.creatorId)}}
+            <li><a class="js-report" href="">
+                {{#if this.isFlaggedBy currentUser._id}}
+                <i class="fa fa-check"></i> {{_ 'Unblock content'}}
+                {{else}}
+                <i class="fa fa-ban"></i> {{_ 'Block content'}}
+                {{/if}}   
+                </a></li>
+            <li><a class="js-block" href="">
+                {{#if currentUser.hasBlocked creatorId}}
+                {{_ 'Unblock content from' creator}}
+                {{else}}
+                {{_ 'Block content from' creator}}
+                {{/if}}  
+                </a>
+            </li>
+        {{/unless}}
+    </ul>
+    {{/if}}
 </template>
 
 <template name="Topic_reactions">

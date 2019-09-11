@@ -51,7 +51,14 @@ Tickets.extensionRawSchema = {
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },
 
   expectedCost: { type: Number, decimal: true, optional: true },
-  expectedStart: { type: Date, optional: true },
+  expectedStart: { type: Date, optional: true, autoform: { defaultValue() {
+    if (Meteor.isClient) {
+      import { Session } from 'meteor/session';
+
+      return Session.get('expectedStart');
+    }
+    return undefined;
+  } } },
   expectedFinish: { type: Date, optional: true },
   expectedContinue: { type: Date, optional: true },
   waitingFor: { type: String, optional: true },
@@ -81,6 +88,7 @@ _.extend(Topics.publicFields, Tickets.publicExtensionFields);
 const reported = {
   name: 'reported',
   color: 'warning',
+  colorCode: '#F7A54B',
   data: ['urgency'],
 };
 

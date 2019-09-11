@@ -7,6 +7,7 @@ import { Tracker } from 'meteor/tracker';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
@@ -14,6 +15,8 @@ import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Votings } from '/imports/api/topics/votings/votings.js';
+import { Comments } from '/imports/api/comments/comments.js';
+import { fixedStatusValue } from '/imports/ui_3/views/components/tickets-edit.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import '/imports/ui_3/views/components/shareddoc-display.js';
@@ -134,6 +137,31 @@ Template.Voting_edit.events({
   },
 });
 
+function voteStatusChangeSchema(statusName) {
+  debugAssert(statusName);
+  const schema = new SimpleSchema([Comments.schema,
+    { status: { type: String, autoform: fixedStatusValue(statusName), autoValue() { return statusName; } } },
+  ]);
+  schema.i18n('schemaTickets');
+  return schema;
+}
+
+export function afVoteStatusChangeModal(topicId, newStatusName, message) {
+  Session.set('activeTopicId', topicId);
+  Session.set('newStatusName', newStatusName);
+  let description = '';
+  if (message) description = message;
+  Modal.show('Autoform_edit', {
+    id: 'af.vote.statusChange',
+    description,
+    schema: voteStatusChangeSchema(newStatusName),
+    omitFields: ['topicId', 'userId', 'data', 'communityId'],
+    type: 'method',
+    meteormethod: 'topics.statusChange',
+    btnOK: 'Change status',
+  });
+}
+
 AutoForm.addModalHooks('af.vote.insert');
 AutoForm.addHooks('af.vote.insert', {
   formToDoc(doc) {
@@ -141,7 +169,7 @@ AutoForm.addHooks('af.vote.insert', {
       doc.createdAt = Clock.currentTime();
       doc.communityId = Session.get('activeCommunityId');
       doc.category = 'vote';
-      doc.status = 'opened';
+      doc.status = Votings.workflow.start[0].name;
       doc.vote.choices = votingEditInstance.choices.get();
       doc.closesAt = new Date(doc.closesAt.getFullYear(), doc.closesAt.getMonth(), doc.closesAt.getDate(), 23, 59, 59);
     });
@@ -164,5 +192,20 @@ AutoForm.addHooks('af.vote.update', {
     delete modifier.$set.closesAt;
     modifier.$set['vote.choices'] = votingEditInstance.choices.get();
     return modifier;
+  },
+});
+
+AutoForm.addModalHooks('af.vote.statusChange');
+AutoForm.addHooks('af.vote.statusChange', {
+  formToDoc(doc) {
+    const newStatusName = Session.get('newStatusName');
+    doc.topicId = Session.get('activeTopicId');
+    doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
+    doc.status = newStatusName;
+    return doc;
+  },
+  onSuccess(formType, result) {
+    Session.set('activeTopicId');  // clear it
+    Session.set('newStatusName');  // clear it
   },
 });

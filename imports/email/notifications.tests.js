@@ -11,7 +11,6 @@ import { moment } from 'meteor/momentjs:moment';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { flag } from '/imports/api/behaviours/flagable.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import '/i18n/en.i18n.json';
 import '/i18n/email.en.i18n.json';
@@ -86,11 +85,11 @@ if (Meteor.isServer) {
 
         processNotifications('frequent');
         sinon.assert.calledOnce(emailSender.sendHTML);
-        assertGotAllEmails(ownerWithNotiFrequent, emailSender.sendHTML.getCall(0).args[0], 11);
+        assertGotAllEmails(ownerWithNotiFrequent, emailSender.sendHTML.getCall(0).args[0], 12);
 
         processNotifications('daily');
         sinon.assert.calledThrice(emailSender.sendHTML);
-        assertGotAllEmails(ownerWithNotiDaily, emailSender.sendHTML.getCall(1).args[0], 12);
+        assertGotAllEmails(ownerWithNotiDaily, emailSender.sendHTML.getCall(1).args[0], 11);
       });
 
       it('No emails after you seen it all', function () {
@@ -130,7 +129,7 @@ if (Meteor.isServer) {
       });
 
       it('Doesnt send email at all when there is only hidden comment', function () {
-        flag._execute({ userId: Fixture.demoAdminId }, { coll: 'users', id: ownerWithNotiNever._id });
+        Meteor.users.methods.flag._execute({ userId: Fixture.demoAdminId }, { id: ownerWithNotiNever._id });
 
         Comments.methods.insert._execute({ userId: ownerWithNotiNever._id }, { userId: ownerWithNotiNever._id, topicId, text: 'Hello again' });
         processNotifications('frequent');
@@ -147,6 +146,7 @@ if (Meteor.isServer) {
           category: 'room',
           title: 'private chat',
           text: 'private chat',
+          status: 'opened',
         });
         Comments.methods.insert._execute({ userId: Fixture.demoManagerId }, { userId: Fixture.demoManagerId, topicId: privateTopicId, text: 'Hello buddy' });
         processNotifications('frequent');
@@ -167,6 +167,7 @@ if (Meteor.isServer) {
           category: 'room',
           title: 'private chat',
           text: 'private chat',
+          status: 'opened',
         });
         Comments.methods.insert._execute({ userId: moderatedUserId }, { userId: moderatedUserId, topicId: privateTopicId, text: 'Hello buddy' });
         processNotifications('frequent');

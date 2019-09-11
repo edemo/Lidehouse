@@ -1,0 +1,7 @@
+<template name="New_Ticket">
+    <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
+        {{#each type in ticketTypes}}
+        <li><a href="" class="js-new" data-type="{{type}}">{{_ (concat 'schemaTickets.ticket.type.' type)}}</a></li>
+        {{/each}}
+    </ul>
+</template>

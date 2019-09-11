@@ -107,11 +107,9 @@ const statusUpdate = new ValidatedMethod({
   run({ _id, modifier }) {
     const topic = checkExists(Topics, _id);
     const category = topic.category;
-    const workflow = topic.workflow();
-    const statusObject = Topics.categories[category].statuses[topic.status];
     const modifiableFields = [];
-    if (statusObject.data) {
-      statusObject.data.forEach(key => modifiableFields.push(`${category}.${key}`));
+    if (topic.modifiableFieldsByStatus()) {
+      topic.modifiableFieldsByStatus().forEach(key => modifiableFields.push(`${category}.${key}`));
     }
     checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId);
     checkModifier(topic, modifier, modifiableFields);
