@@ -86,7 +86,7 @@
     {{/if}}
     <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
     {{#if entriesOf this.data}}
-    <div class="well high-line-height">
+    <div class="well">
         {{#each dataEntry in entriesOf this.data}}
         <span>
         {{#let key=(concat 'Tickets.ticket.' dataEntry.[0])}}
