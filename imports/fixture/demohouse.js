@@ -362,6 +362,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     const topicId = demoBuilder.insert(Topics, 'forum', {
       title: __(`demo.topic.${topicNo}.title`),
       text: __(`demo.topic.${topicNo}.text`),
+      status: 'opened',
     });
 
     ['0', '1', '2'].forEach((commentNo) => {
@@ -386,6 +387,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     const newsId = demoBuilder.create('news', {
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
+      status: 'opened',
     });
    
     // This sticky news item is not displayed now
@@ -426,6 +428,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
     agendaId: agenda0,
+    status: 'opened',
     closesAt: moment(demoTopicDates[1]).add(5, 'weeks').toDate(),  // its past close date
     vote: {
       procedure: 'online',
@@ -436,7 +439,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic0, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1], [0], [0], [0]]);
   Clock.setSimulatedTime(moment(demoTopicDates[1]).add(5, 'weeks').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'closed', data: {} });
+  demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'votingFinished' });
+  demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'closed' });
   Clock.clear();
   
   Clock.setSimulatedTime(moment('2017-09-20 09:04').toDate());
@@ -444,6 +448,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
     agendaId: agenda0,
+    status: 'opened',
     closesAt: moment('2017-10-14 09:04').toDate(),
     vote: {
       procedure: 'online',
@@ -454,13 +459,15 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic1, [[0], [0], [0], [0], [0], [0], [0], [0], [0], [1], [0], [0]]);
   Clock.setSimulatedTime(moment('2017-10-14 09:04').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'closed', data: {} });
+  demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'votingFinished' });
+  demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'closed' });
   Clock.clear();
 
   Clock.setSimulatedTime(moment('2018-01-03 13:12').toDate());
   const voteTopic2 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.2.title'),
     text: __('demo.vote.2.text'),
+    status: 'opened',
     closesAt: moment('2018-01-18 22:45').toDate(),
     vote: {
       procedure: 'online',
@@ -475,7 +482,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   castDemoVotes(voteTopic2, [null, null, null, null, null, null, null, [0], [0], [0], [0], [0]]);
   Clock.setSimulatedTime(moment('2018-01-18 22:45').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'closed', data: {} });
+  demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'votingFinished' });
+  demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'closed' });
   Clock.clear();
 
   Clock.setSimulatedTime(moment().subtract(3, 'weeks').toDate());
@@ -483,6 +491,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.3.title'),
     text: __('demo.vote.3.text'),
     agendaId: agenda1,
+    status: 'opened',
     closesAt: moment().add(2, 'month').toDate(),
     vote: {
       procedure: 'online',
@@ -498,6 +507,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.4.title'),
     text: __('demo.vote.4.text'),
     agendaId: agenda1,
+    status: 'opened',
     closesAt: moment().add(2, 'month').toDate(),
     vote: {
       type: 'preferential',
@@ -527,6 +537,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     title: __('demo.vote.5.title'),
     text: __('demo.vote.5.text'),
     agendaId: agenda1,
+    status: 'opened',
     closesAt: moment().add(2, 'month').toDate(),
     vote: {
       procedure: 'online',

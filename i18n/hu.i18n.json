@@ -636,6 +636,7 @@
   "insert vote successful": "Szavazás létrehozva",
   "update vote successful": "Szavazás módosítva",
   "close vote successful": "Szavazás lezárva",
+  "statusChange vote successful": "Szavazás státusza megváltoztatva",
   "update settings successful": "Beállítások módosítva",
   "publish balances successful": "Aktuális egyenlegek publikálva",
   "import data successful": "Adatok importálva",

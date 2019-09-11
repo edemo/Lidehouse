@@ -83,6 +83,7 @@ AutoForm.addHooks('af.news.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.category = 'news';
+    doc.status = 'opened';
     return doc;
   },
 });

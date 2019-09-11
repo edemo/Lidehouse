@@ -16,18 +16,23 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
-//import { momentWithoutTZ } from '/imports/api/utils.js';
 import { TicketEventHandlers, afTicketUpdateModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
+import '/imports/ui_3/views/components/new-ticket.js';
 import './worksheets.html';
+import { contextMenu } from '../components/context-menu';
 
 Template.Worksheets.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
   this.autorun(() =>
     this.subscribe('communities.byId', { _id: this.getCommunityId() })
   );
+});
+
+Template.Worksheets.onDestroyed(function onDestroyed() {
+  Session.set('expectedStart', undefined);
 });
 
 Template.Worksheets.viewmodel({
@@ -44,6 +49,7 @@ Template.Worksheets.viewmodel({
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
     this.setDefaultFilter();
+    contextMenu.initialize('Worksheets', Topics);
   },
   setDefaultFilter() {
     this.searchText('');
@@ -54,10 +60,6 @@ Template.Worksheets.viewmodel({
     this.reportedByCurrentUser(false);
   },
   addEventsToUpdate(eventObject) {
-    /*const eventsToUpdate = this.eventsToUpdate();
-    if (eventsToUpdate.includes(eventObject)) return;
-    eventsToUpdate.push(eventObject);
-    this.eventsToUpdate(eventsToUpdate);*/
     const eventsToUpdate = this.eventsToUpdate();
     eventsToUpdate[eventObject.id] = eventObject;
     const newRef = _.clone(eventsToUpdate);
@@ -83,8 +85,14 @@ Template.Worksheets.viewmodel({
         center: 'title',
         right: 'month,agendaWeek,agendaDay',
       },
-      eventClick(eventObject) {
-        afTicketUpdateModal(eventObject.id, 'statusUpdate');
+      eventClick(eventObject, jsEvent) {
+        event.stopPropagation();
+        contextMenu.show(event, 'Topic_edit_menu_content', eventObject._id)
+      },
+      dayClick(date, jsEvent, view) {
+        Session.set('expectedStart', date.toDate());
+        event.stopPropagation();
+        contextMenu.show(event, 'New_Ticket');
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
         viewmodel.addEventsToUpdate(eventObject);
@@ -95,34 +103,21 @@ Template.Worksheets.viewmodel({
         viewmodel.warnToSave();
       },
       editable: true,
-      /*
-      droppable: true, // this allows things to be dropped onto the calendar
-      drop() {
-        // is the "remove after drop" checkbox checked?
-        if ($('#drop-remove').is(':checked')) {
-            // if so, remove the element from the "Draggable Events" list
-          $(this).remove();
-        }
-      },*/
       events(start, end, timezone, callback) {
         const events = Topics.find(viewmodel.filterSelector()).fetch().map(function (t) {
+        const start = t.ticket.actualStart || t.ticket.expectedStart || t.createdAt;
+        const end = t.ticket.actualFinish || t.ticket.expectedFinish;
+        const editable = _.contains(t.modifiableFieldsByStatus(), 'expectedStart');
           return {
             title: t.title,
-            start: t.ticket.expectedStart,
-            end: t.ticket.expectedFinish,
+            start,
+            end,
             color: Tickets.statuses[t.status].colorCode,
             id: t._id,
+            status: t.status,
+            editable,
           };
         });
-        // I need this nested loop, cause the objects in the 2 arrays are not identical.
-        /*events.forEach((eventObject1) => {
-          viewmodel.eventsToUpdate().forEach((eventObject2) => {
-            if (eventObject1.id === eventObject2.id) {
-              eventObject1.start = eventObject2.start.toISOString();
-              eventObject1.end = eventObject2.end.toISOString();
-            }
-          });
-        });*/
         if (!_.isEmpty(viewmodel.eventsToUpdate())) {
           const eventsToUpdate = viewmodel.eventsToUpdate();
           events.forEach((eventObject) => {
@@ -258,13 +253,6 @@ Template.Worksheets.events({ ...TicketEventHandlers,
   },
   'click .js-save-calendar'(event, instance) {
     const eventsToUpdate = instance.viewmodel.eventsToUpdate();
-    /*eventsToUpdate.forEach((eventObject) => {
-      const dates = {};
-      if (eventObject.start) dates['ticket.expectedStart'] = eventObject.start.toISOString();
-      if (eventObject.end) dates['ticket.expectedFinish'] = eventObject.end.toISOString();
-      const modifier = { $set: dates };
-      Meteor.call('topics.update', { _id: eventObject.id, modifier });
-    });*/
     const args = [];
     const communityId = instance.viewmodel.communityId();
     _.forEach(eventsToUpdate, function(value, key) {
@@ -274,7 +262,7 @@ Template.Worksheets.events({ ...TicketEventHandlers,
       const modifier = { $set: dates };
       args.push({ _id: key, modifier });
     });
-    Topics.methods.batch.update.call({ args });
+    Topics.methods.batch.statusUpdate.call({ args });
     instance.viewmodel.eventsToUpdate({});
   },
   'click .js-cancel-calendar'(event, instance) {
