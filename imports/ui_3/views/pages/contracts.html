@@ -12,10 +12,10 @@
         <div class="ibox collapsed">
             <div class="ibox-title">
                 <h3>{{title}}</h3>
-                {{#if closed}}
-                    <span class="label label-xs label-default">{{_ 'closed'}}</span>
-                {{else}}
+                {{#if this.active}}
                     <span class="label label-xs label-primary">{{_ 'active'}}</span>
+                {{else}}
+                    <span class="label label-xs label-default">{{_ 'closed'}}</span>
                 {{/if}}
                 {{>iboxTools}}
             </div>
@@ -39,6 +39,12 @@
                     </span>
                     <div><span style="font-weight:600">{{_ 'schemaContracts.partner.label'}}:</span> {{this.partner}}</div>
                     <div><span style="font-weight:600">{{_ 'schemaContracts.text.label'}}:</span> {{this.text}}</div>
+                    {{#if this.activeTime.begin}}
+                    <div><span style="font-weight:600">{{_ 'Begin date'}}:</span> {{displayDate this.activeTime.begin}}</div>
+                    {{/if}}
+                    {{#if this.activeTime.end}}
+                    <div><span style="font-weight:600">{{_ 'End date'}}:</span> {{displayDate this.activeTime.end}}</div>
+                    {{/if}}
                     <div class="btn-group m-t-sm m-b-sm">
                       {{#if userHasPermission 'contracts.update' (fromSession 'activeCommunityId')}}
                       <button class="btn btn-white btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>

@@ -5,6 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -22,13 +23,11 @@ Contracts.helpers({
   worksheets() {
     return Topics.find({ communityId: this.communityId, 'ticket.contractId': this._id }).fetch();
   },
-  closed() {
-    return _.all(this.worksheets(), topic => topic.closed);
-  },
 });
 
 Contracts.attachSchema(Contracts.schema);
 Contracts.attachBehaviour(Timestamped);
+Contracts.attachBehaviour(ActivePeriod);
 
 Meteor.startup(function attach() {
   Contracts.simpleSchema().i18n('schemaContracts');
