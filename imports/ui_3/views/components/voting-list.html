@@ -6,12 +6,16 @@
             <tr>
                 <td class="project-status">
                     {{#if votingClosed}}
-                    <span class="label label-default">{{_ 'closed'}}</span>
+                        <span class="label label-default">{{_ 'schemaTopics.status.closed'}}</span>
                     {{else}}
-                    <span class="label label-primary">{{_ 'active'}}</span>
-                        {{#unless hasVotedIndirect currentUser._id}}
-                            <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" title={{_ "You have not yet voted"}}></i>
-                        {{/unless}}
+                        {{#if (equals status 'announced')}}
+                            <span class="label label-info">{{_ 'schemaTopics.status.announced'}}</span>
+                        {{else}}
+                            <span class="label label-primary">{{_ 'schemaTopics.status.opened'}}</span>
+                            {{#unless hasVotedIndirect currentUser._id}}
+                                <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" title={{_ "You have not yet voted"}}></i>
+                            {{/unless}}
+                        {{/if}}
                     {{/if}}
                 </td>
                 <td class="project-people">
