@@ -86,6 +86,23 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(voting.voteCasts[Fixture.dummyUsers[3]], [0]);
         done();
       });
+
+      it('can not vote if voting is not in opened status', function (done) {
+        const closedVotingId = Topics.findOne({ status: 'closed' })._id;
+        chai.assert.throws(() => {
+          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: closedVotingId, castedVote: [1] });
+        }, 'err_permissionDenied');
+        
+        const newVotingId = Topics.methods.insert._execute({ userId: Fixture.demoManagerId },
+          Fixture.builder.build('vote', { status: 'announced', opensAt: moment().add(10, 'day').toDate(), userId: Fixture.demoManagerId })
+        );
+        const voting = Topics.findOne(newVotingId);
+        chai.assert.equal(voting.status, 'announced');
+        chai.assert.throws(() => {
+          castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: newVotingId, castedVote: [1] });
+        }, 'err_permissionDenied');
+        done();
+      })
     });
 
     describe('evaluation', function () {

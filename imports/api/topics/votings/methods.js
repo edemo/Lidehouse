@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { checkExists, checkNotExists, checkPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNeededStatus, checkPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
@@ -21,6 +21,7 @@ export const castVote = new ValidatedMethod({
 
   run({ topicId, castedVote, voters }) {
     const topic = checkExists(Topics, topicId);
+    checkNeededStatus('opened', topic);
     let _voters = voters;
     if (_voters) {
       checkPermissions(this.userId, 'vote.castForOthers', topic.communityId, topic);
