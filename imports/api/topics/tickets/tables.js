@@ -15,7 +15,7 @@ export function ticketColumns(permissions) {
   return [
     { data: 'serialId()', title: __('schemaTickets.id.label') },
     { data: 'status', title: __('schemaTopics.status.label'), render: displayStatus },
-    { data: 'title', title: __('schemaTickets.title.label') },
+    { data: '_id', title: __('schemaTickets.title.label'), render: Render.displayTitle },
     { data: 'ticket.localizer', title: __('schemaTickets.ticket.localizer.label'), render: l => displayLocalizer(l, communityId) },
     { data: 'creator()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },

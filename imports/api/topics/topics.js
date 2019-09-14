@@ -71,6 +71,7 @@ Topics.helpers({
   },
   hiddenBy(userId) {
     const author = this.creator();
+    if (this.creatorId === userId) return undefined;
     return this.flaggedBy(userId, this.communityId) || (author && author.flaggedBy(userId, this.communityId));
   },
   isUnseenBy(userId, seenType) {
@@ -118,7 +119,7 @@ Topics.helpers({
     };
   },
   // This number goes into the red badge to show you how many work to do
-  needsAttention(userId, seenType) {
+  needsAttention(userId, seenType = Meteor.users.SEEN_BY.EYES) {
     if (this.participantIds && !_.contains(this.participantIds, userId)) return 0;
     switch (this.category) {
       case 'news':
@@ -131,16 +132,10 @@ Topics.helpers({
         if (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0) return 1;
         break;
       case 'vote':
-        if (seenType === Meteor.users.SEEN_BY.EYES
-          && !this.closed && !this.hasVotedIndirect(userId)) return 1;
-        if (seenType === Meteor.users.SEEN_BY.NOTI
-          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
+        if (!this.closed && !this.hasVotedIndirect(userId)) return 1;
         break;
       case 'ticket':
-        if (seenType === Meteor.users.SEEN_BY.EYES
-          && this.status !== 'closed') return 1;
-        if (seenType === Meteor.users.SEEN_BY.NOTI
-          && (this.isUnseenBy(userId, seenType) || this.unseenCommentCountBy(userId, seenType) > 0)) return 1;
+        if (Meteor.user().hasPermission(`ticket.statusChangeTo.${this.status}.leave`)) return 1;
         break;
       case 'feedback':
         if (this.isUnseenBy(userId, seenType)) return 1;

@@ -63,6 +63,7 @@ Comments.helpers({
   },
   hiddenBy(userId) {
     const author = this.creator();
+    if (this.creatorId === userId) return undefined;
     return this.flaggedBy(userId, this.communityId) || (author && author.flaggedBy(userId, this.communityId));
   },
   getType() {
