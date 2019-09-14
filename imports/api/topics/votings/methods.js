@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
-import { checkExists, checkNotExists, checkPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNeededStatus, checkPermissions } from '/imports/api/method-checks.js';
 import { debugAssert } from '/imports/utils/assert.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
@@ -21,6 +21,7 @@ export const castVote = new ValidatedMethod({
 
   run({ topicId, castedVote, voters }) {
     const topic = checkExists(Topics, topicId);
+    checkNeededStatus('opened', topic);
     let _voters = voters;
     if (_voters) {
       checkPermissions(this.userId, 'vote.castForOthers', topic.communityId, topic);
@@ -59,10 +60,24 @@ export const castVote = new ValidatedMethod({
   },
 });
 
+export function autoOpen(topic) {
+  const now = new Date();
+  if (topic.status === 'announced' && topic.opensAt <= now) {
+    Topics.methods.statusChange._execute({ userId: topic.creatorId },
+      { userId: topic.creatorId, topicId: topic._id, status: 'opened' },
+    );
+  }
+}
+
+export function openScheduledVotings() {
+  const dueVotings = Topics.find({ category: 'vote', status: 'announced', opensAt: { $lt: new Date() } });
+  dueVotings.forEach(voting => autoOpen(voting));
+}
+
 export function closeClosableVotings() {
   const now = new Date();
-  const expiredVotings = Topics.find({ category: 'vote', closed: false, closesAt: { $lt: now } });
+  const expiredVotings = Topics.find({ category: 'vote', status: 'opened', closesAt: { $lt: now } });
   expiredVotings.forEach(voting => Topics.methods.statusChange._execute({ userId: voting.creatorId }, // permissionwise the creator is the one closing it
-    { userId: voting.creatorId, topicId: voting._id, status: 'votingFinished', text: 'Automated closing' },
+    { userId: voting.creatorId, topicId: voting._id, status: 'votingFinished' },
   ));
 }

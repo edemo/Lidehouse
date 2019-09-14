@@ -77,7 +77,7 @@ Template.Vote_cast_panel.viewmodel({
     },
     function enableDisableSortableState() {
       this.templateInstance.$('.sortable').sortable(
-        (this.registeredVote() && !this.temporaryVote()) ? 'disable' : 'enable'
+        (this.topic().status !== 'opened' || (this.registeredVote() && !this.temporaryVote())) ? 'disable' : 'enable'
       );
     },
     function openCloseEnvelope() {

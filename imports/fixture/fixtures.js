@@ -23,6 +23,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import { insert as insertParcelBilling } from '/imports/api/transactions/batches/methods.js';
 import { CommunityBuilder } from './community-builder.js';
+import { Clock } from '/imports/utils/clock';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -212,7 +213,8 @@ export function insertUnittestFixture(lang) {
 
   const agendaId = demoBuilder.create('agenda');
   const voterships = demoCommunity.voterships();
-
+  
+  Clock.setSimulatedTime(moment().subtract(20, 'day').toDate());
   const voteTopic0 = demoBuilder.create('vote', {
     agendaId,
     closesAt: moment().subtract(10, 'day').toDate(),  // its past close date
@@ -228,6 +230,7 @@ export function insertUnittestFixture(lang) {
   castVote._execute({ userId: voterships[2].personId }, { topicId: voteTopic0, castedVote: [2] });  // no
   castVote._execute({ userId: voterships[3].personId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
 
+  Clock.clear();
   demoBuilder.execute(Topics.methods.statusChange, { topicId: voteTopic0, status: 'votingFinished' });
   demoBuilder.execute(Topics.methods.statusChange, { topicId: voteTopic0, status: 'closed' });
 

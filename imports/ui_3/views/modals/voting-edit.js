@@ -170,6 +170,7 @@ AutoForm.addHooks('af.vote.insert', {
       doc.communityId = Session.get('activeCommunityId');
       doc.category = 'vote';
       doc.status = Votings.workflow.start[0].name;
+      doc.vote = doc.vote || {};
       doc.vote.choices = votingEditInstance.choices.get();
       doc.closesAt = new Date(doc.closesAt.getFullYear(), doc.closesAt.getMonth(), doc.closesAt.getDate(), 23, 59, 59);
     });

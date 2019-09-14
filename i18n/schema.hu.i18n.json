@@ -274,7 +274,7 @@
     "agendaId": {
       "label": "Közgyűlés (aminek része)"
     },
-    "createdAt": {
+    "opensAt": {
       "label": "Szavazás kezdete"
     },
     "closesAt": {

@@ -85,3 +85,10 @@ export function checkPermissionsToRemoveUploaded(userId, collection, doc) {
       `No permission to perform this activity: ${"Remove"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
   }
 }
+
+export function checkNeededStatus(status, doc) {
+  if (status !== doc.status) {
+    throw new Meteor.Error('err_permissionDenied',
+      `No permission to perform this activity in this status: ${doc.status}, needed status: ${status}`);
+  }
+}

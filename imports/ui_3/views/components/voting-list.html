@@ -5,13 +5,17 @@
             {{#each items}}
             <tr>
                 <td class="project-status">
-                    {{#if closed}}
-                    <span class="label label-default">{{_ 'closed'}}</span>
+                    {{#if votingClosed}}
+                        <span class="label label-default">{{_ 'schemaTopics.status.closed'}}</span>
                     {{else}}
-                    <span class="label label-primary">{{_ 'active'}}</span>
-                        {{#unless hasVotedIndirect currentUser._id}}
-                            <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" title={{_ "You have not yet voted"}}></i>
-                        {{/unless}}
+                        {{#if (equals status 'announced')}}
+                            <span class="label label-info">{{_ 'schemaTopics.status.announced'}}</span>
+                        {{else}}
+                            <span class="label label-primary">{{_ 'schemaTopics.status.opened'}}</span>
+                            {{#unless hasVotedIndirect currentUser._id}}
+                                <i class="glyphicon glyphicon-exclamation-sign fa-lg text-danger" title={{_ "You have not yet voted"}}></i>
+                            {{/unless}}
+                        {{/if}}
                     {{/if}}
                 </td>
                 <td class="project-people">
@@ -20,7 +24,7 @@
                 <td class="project-title">
                     <a href="{{pathFor 'Topic show' _tid=_id}}">{{title}}</a>
                     <br/>
-                    {{#if closed}}
+                    {{#if votingClosed}}
                     <small>{{_ 'createdAt'}}: {{displayDate createdAt}}</small>
                     {{else}}
                     <small>{{_ 'closes'}}: {{displayTimeFrom closesAt}}</small>

@@ -4,6 +4,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { CollectionHooks } from 'meteor/matb33:collection-hooks';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
+import { Clock } from '/imports/utils/clock';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { noUpdate } from '/imports/utils/autoform.js';
@@ -22,7 +24,24 @@ const schema = new SimpleSchema({
     if (status === 'closed') return true;
     else return false;
   } },
-  closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate) },
+  opensAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate),
+    custom() {
+      const now = Clock.currentTime();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+      if (startOfToday > this.value) return 'notAllowed';
+      return undefined;
+    },
+  },
+  closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate),
+    custom() {
+      const closingDate = this.value;
+      const openingDate = this.field('opensAt').value || Clock.currentTime(); 
+      const dayLater = moment(openingDate).add(1, 'day').toDate()
+      if (moment(Clock.currentTime()).add(1, 'day').toDate() > this.value) return 'notAllowed';
+      if (closingDate <= dayLater) return 'notAllowed';
+      return undefined;
+    },
+  },
 });
 
 const helpers = {
@@ -73,7 +92,7 @@ const statusChange = new ValidatedMethod({
     const category = topic.category;
     const workflow = topic.workflow();
     // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic.communityId);
-    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId);
+    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId, topic);
     checkStatusChangeAllowed(topic, event.status);
 
     const onLeave = workflow[topic.status].obj.onLeave;
@@ -116,7 +135,7 @@ const statusUpdate = new ValidatedMethod({
     if (topic.modifiableFieldsByStatus()) {
       topic.modifiableFieldsByStatus().forEach(key => modifiableFields.push(`${category}.${key}`));
     }
-    checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId);
+    checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId, topic);
     checkModifier(topic, modifier, modifiableFields);
     Topics.update(_id, modifier);
     CollectionHooks.defaultUserId = undefined;
