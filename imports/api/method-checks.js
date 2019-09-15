@@ -54,6 +54,7 @@ export function checkTopicPermissions(userId, permissionName, topic) {
   if ((topic.category === 'vote') && (topic.vote.effect === 'poll')) {
     derivedPermissionName = `poll.${permissionName}`;
   }
+  if (topic.category === 'ticket') derivedPermissionName = `${topic.ticket.type}.${permissionName}`;
   debugAssert(Permissions.find(perm => perm.name === derivedPermissionName));
   checkPermissions(userId, derivedPermissionName, topic.communityId, topic);
 }

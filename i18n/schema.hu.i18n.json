@@ -221,6 +221,17 @@
     },
     "topicIds": {
       "label": "Munkalapok"
+    },
+    "activeTime": {
+      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
+      "begin": {
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
+      }
     }
   },
   "schemaTopics": {

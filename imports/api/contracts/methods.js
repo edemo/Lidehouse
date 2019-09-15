@@ -27,7 +27,7 @@ export const update = new ValidatedMethod({
 
   run({ _id, modifier }) {
     const doc = checkExists(Contracts, _id);
-    checkModifier(doc, modifier, ['title', 'text', 'partner']);
+    checkModifier(doc, modifier, ['title', 'text', 'partner', 'active', 'activeTime.begin', 'activeTime.end']);
     checkPermissions(this.userId, 'contracts.update', doc.communityId);
 
     Contracts.update({ _id }, modifier);
