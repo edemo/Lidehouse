@@ -20,19 +20,32 @@ Meteor.publish('parcels.inCommunity', function parcelsOfCommunity(params) {
   return Parcels.find({ communityId });
 });
 
-Meteor.publish('parcels.ofSelf', function parcelsOfSelf(params) {
+Meteor.publishComposite('parcels.ofSelf', function parcelsofSelf(params) {
   new SimpleSchema({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validate(params);
-  if (!Meteor.user()) return this.ready();
+  if (!this.userId) return this.ready();
   const { communityId } = params;
   const permissionRoles = Permissions.find(p => p.name === 'parcels.details').roles;
-  const personId = Meteor.userId();
-  const parcelIds = Memberships.find({ communityId, approved: true, active: true,
-    personId, parcelId: { $exists: true }, role: { $in: permissionRoles } }).map(m => m.parcelId);
-  const ledParcelIds = [];
-  parcelIds.forEach((parcelId) => {
-    Parcels.findOne(parcelId).forEachLed(parcel => ledParcelIds.push(parcel._id));
-  });
-  return Parcels.find({ _id: { $in: ledParcelIds } });
+  const personId = this.userId;
+  return {
+    find() {
+      return Memberships.find({ communityId, approved: true, active: true,
+        personId, parcelId: { $exists: true }, role: { $in: permissionRoles } });
+    },
+    children: [{
+      find(membership) {
+        const parcelId = membership.parcelId;
+        return Parcels.find(parcelId);
+      },
+      children: [{
+        find(ownParcel) {
+          return Parcels.find({
+            communityId: ownParcel.communityId,
+            $or: [{ ref: ownParcel.ref }, { leadRef: ownParcel.ref }],
+          });
+        },
+      }],
+    }],
+  };
 });

@@ -945,6 +945,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       });
     }
   });
+  if (demoOrTest === 'test' && lang === 'hu') demoBuilder.insertLoadsOfFakeMembers(1000);
 }
 
 // ----------------------------------------------------------------
