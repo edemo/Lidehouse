@@ -72,9 +72,9 @@ const Renderers = {
   'Tickets.ticket.urgency': displayUrgency,
   'Tickets.ticket.localizer': displayLocalizer,
   'Tickets.ticket.chargeType': displayChargeType,
-  'Tickets.ticket.contractId': id => Contracts.findOne(id).title,
+  'Tickets.ticket.contractId': id => (Contracts.findOne(id) ? Contracts.findOne(id).title : undefined),
   //'ticket.txId'
-  'Votings.agendaId': id => Agendas.findOne(id).title,
+  'Votings.agendaId': id => (Agendas.findOne(id) ? Agendas.findOne(id).title : undefined),
 };
 
 // This aims to be a generic display -- works for Tickets only for now

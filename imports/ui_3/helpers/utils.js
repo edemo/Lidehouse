@@ -81,7 +81,7 @@ Template.registerHelper('join', function join(items) {
 });
 
 Template.registerHelper('translateArray', function translateArray(items) {
-    return items.map(i => __(i));
+    return (items || []).map(i => __(i));
 });
 
 Template.registerHelper('log', function log(stuff) {
