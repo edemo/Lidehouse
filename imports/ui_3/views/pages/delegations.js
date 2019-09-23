@@ -31,6 +31,7 @@ Template.Delegations.onCreated(function onCreated() {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('parcels.ofSelf', { communityId });
     this.subscribe('delegations.inCommunity', { communityId });
+    this.subscribe('delegations.ofUser');
   });
 });
 

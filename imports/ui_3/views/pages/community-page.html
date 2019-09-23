@@ -212,6 +212,7 @@
             </div>
         </div>
         
+        {{#if userHasPermission 'parcels.inCommunity' communityId}}
         {{#if userHasPermission 'memberships.inCommunity' communityId}}
         <div class="row">
             <div class="col-lg-12">
@@ -268,6 +269,7 @@
                 </div>
             </div>
         </div>
+        {{/if}}
         {{/if}}
 
         <div id="occupants" class="row">

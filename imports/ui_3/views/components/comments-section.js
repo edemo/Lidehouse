@@ -19,8 +19,7 @@ import './comments-section.html';
 
 Template.Comments_section.onCreated(function commentsSectionOnCreated() {
   this.autorun(() => {
-    // not needed any more, we subscribe to all comments in main now
-    // this.subscribe('comments.onTopic', { topicId: this.data._id });
+    this.subscribe('comments.onTopic', { topicId: this.data._id });
   });
 });
 

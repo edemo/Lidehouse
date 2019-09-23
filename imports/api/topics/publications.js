@@ -29,7 +29,6 @@ Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
   const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
   return [
     Topics.find(selector, { fields: publicFields }),
-    Topics.find(_.extend({}, selector, { category: 'vote', closed: true })),
   ];
 });
 

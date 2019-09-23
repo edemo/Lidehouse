@@ -17,6 +17,12 @@ import './vote-topics.html';
 Template.Vote_topics.viewmodel({
   activesOnly: false,
   searchText: '',
+  onCreated(instance) {
+    instance.autorun(() => {
+      const communityId = Session.get('activeCommunityId');
+      instance.subscribe('agendas.inCommunity', { communityId });
+    });
+  },
   activeClass() {
     return this.activesOnly() && 'active';
   },
