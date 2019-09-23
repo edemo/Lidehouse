@@ -34,25 +34,6 @@ function communityPublication(userId, _id) {
     },
     // ...Related to Community
     children: [{
-      // Publish the Memberships of the Community
-      find(community) {
-        if (hasPermission('memberships.inCommunity')) {
-          const fields = hasPermission('memberships.details') ? {} : Memberships.publicFields;
-          return Memberships.find({ communityId: community._id }, { fields });
-        } // Otherwise, only the active leaders of the community can be seen
-        return Memberships.find({ communityId: community._id, active: true, role: { $in: leaderRoles } }, { fields: Memberships.publicFields });
-      },
-
-      // ...Related to Memberships
-      children: [{
-        // Publish the User of the Membership
-        find(membership) {
-          const showFields = _.extend({}, Meteor.users.publicFields);
-          if (hasPermission('memberships.details')) showFields.emails = 1;  // to be able to resend invites
-          return Meteor.users.find({ _id: membership.person.userId }, { fields: showFields });
-        },
-      }],
-    }, {
       // Publish the Topics of the Community
       find(community) {
         if (hasPermission('topics.inCommunity')) {

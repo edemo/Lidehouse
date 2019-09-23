@@ -57,6 +57,7 @@ Template.Community_page.viewmodel({
     function parcelSubscription() {
       const communityId = this.communityId();
       this.templateInstance.subscribe('communities.byId', { _id: communityId });
+      this.templateInstance.subscribe('memberships.inCommunity', { communityId });
       if (this.showAllParcels()) {
         this.templateInstance.subscribe('parcels.inCommunity', { communityId });
       } else {
