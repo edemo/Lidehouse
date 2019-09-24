@@ -351,10 +351,13 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Forum =====
 
+  const thisYear = moment().year();
+  const lastYear = moment().year() - 1;
+
   const demoTopicDates = [
-    moment('2017-08-03 17:32').toDate(),
-    moment('2017-09-16 08:25').toDate(),
-    moment('2018-07-09 15:10').toDate(),
+    moment(`${lastYear}-09-16 08:25`).toDate(),
+    moment().subtract(4, 'month').toDate(),
+    moment().subtract(3, 'week').toDate(),,
   ];
 
   ['0', '1', '2'].forEach((topicNo) => {
@@ -366,7 +369,8 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     ['0', '1', '2'].forEach((commentNo) => {
-      Clock.setSimulatedTime(moment(demoTopicDates[topicNo]).add((commentNo + 1) * 45, 'minutes').toDate());
+      Clock.tickSome('minutes');
+      if (commentNo === '2') Clock.tickSome('days');
       const path = `demo.topic.${topicNo}.comment.${commentNo}`;
       const commentText = __(path);
       if (commentText !== path) {
@@ -382,8 +386,9 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== News =====
 
+  Clock.starts(2, 'weeks', 'ago');
   ['0', '1'].forEach((newsNo) => {
-    Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
+    Clock.tickSome('days');
     const newsId = demoBuilder.create('news', {
       title: __(`demo.news.${newsNo}.title`),
       text: __(`demo.news.${newsNo}.text`),
@@ -408,11 +413,11 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Votes =====
 
   const agenda0 = demoBuilder.create('agenda', {
-    title: __('demo.agenda.0.title'),
+    title: `${__('demo.agenda.0.title')} ${lastYear}-III.`,
 //    topicIds: [voteTopic0, voteTopic1],
   });
   const agenda1 = demoBuilder.create('agenda', {
-    title: __('demo.agenda.1.title'),
+    title: `${__('demo.agenda.1.title')} ${thisYear}-I.`,
 //    topicIds: [voteTopic3, voteTopic4, voteTopic5],
   });
 
@@ -423,13 +428,13 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 
-  Clock.setSimulatedTime(moment(demoTopicDates[1]).add(1, 'weeks').toDate());
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(2, 'weeks').toDate());
   const voteTopic0 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.0.title'),
     text: __('demo.vote.0.text'),
     agendaId: agenda0,
     status: 'opened',
-    closesAt: moment(demoTopicDates[1]).add(5, 'weeks').toDate(),  // its past close date
+    closesAt: moment(demoTopicDates[0]).add(6, 'weeks').toDate(),  // its past close date
     vote: {
       procedure: 'online',
       effect: 'legal',
@@ -438,18 +443,18 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   castDemoVotes(voteTopic0, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1], [0], [0], [0]]);
-  Clock.setSimulatedTime(moment(demoTopicDates[1]).add(5, 'weeks').toDate());
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(6, 'weeks').toDate());
   demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'votingFinished' });
   demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'closed' });
   Clock.clear();
   
-  Clock.setSimulatedTime(moment('2017-09-20 09:04').toDate());
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(142, 'hours').toDate());
   const voteTopic1 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.1.title'),
     text: __('demo.vote.1.text'),
     agendaId: agenda0,
     status: 'opened',
-    closesAt: moment('2017-10-14 09:04').toDate(),
+    closesAt: moment(demoTopicDates[0]).add(6, 'weeks').toDate(),
     vote: {
       procedure: 'online',
       effect: 'legal',
@@ -458,17 +463,17 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   castDemoVotes(voteTopic1, [[0], [0], [0], [0], [0], [0], [0], [0], [0], [1], [0], [0]]);
-  Clock.setSimulatedTime(moment('2017-10-14 09:04').toDate());
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).add(6, 'weeks').toDate());
   demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'votingFinished' });
   demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'closed' });
   Clock.clear();
 
-  Clock.setSimulatedTime(moment('2018-01-03 13:12').toDate());
+  Clock.setSimulatedTime(moment(`${lastYear}-12-14 13:42`).toDate());
   const voteTopic2 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.2.title'),
     text: __('demo.vote.2.text'),
     status: 'opened',
-    closesAt: moment('2018-01-18 22:45').toDate(),
+    closesAt: moment(`${lastYear}-12-30 23:59`).toDate(),
     vote: {
       procedure: 'online',
       effect: 'poll',
@@ -481,12 +486,12 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   castDemoVotes(voteTopic2, [null, null, null, null, null, null, null, [0], [0], [0], [0], [0]]);
-  Clock.setSimulatedTime(moment('2018-01-18 22:45').toDate());
+  Clock.setSimulatedTime(moment(`${lastYear}-12-30 23:59`).toDate());
   demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'votingFinished' });
   demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'closed' });
   Clock.clear();
 
-  Clock.setSimulatedTime(moment().subtract(3, 'weeks').toDate());
+  Clock.starts(3, 'weeks', 'ago');
   const voteTopic3 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.3.title'),
     text: __('demo.vote.3.text'),
@@ -502,7 +507,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // No one voted on this yet
 
-  Clock.setSimulatedTime(moment().subtract(1, 'weeks').toDate());
+  Clock.starts(1, 'weeks', 'ago');
   const voteTopic4 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.4.title'),
     text: __('demo.vote.4.text'),
@@ -532,7 +537,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
   Clock.clear();
 
-  Clock.setSimulatedTime(moment().subtract(3, 'days').toDate());
+  Clock.starts(3, 'days', 'ago');
   const voteTopic5 = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.5.title'),
     text: __('demo.vote.5.text'),
@@ -610,7 +615,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Tickets =====
 
-  Clock.starts(4, 'month', 'ago');
+  Clock.starts(3, 'month', 'ago');
   const contract0 = demoBuilder.create('contract', {
     title: __('demo.contract.0.title'),
     text: __('demo.contract.0.text'),
@@ -621,6 +626,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.contract.1.text'),
     partner: __('demo.contract.1.partner'),
   });
+
   [1, 2, 3, 4].forEach(m => {
     Clock.tick(1, 'month');
     const maintainanceDate = moment(Clock.currentDate());
@@ -638,7 +644,6 @@ export function insertDemoHouse(lang, demoOrTest) {
         expectedFinish: maintainanceDate.toDate(),
       },
     });
-
     if (m <= 2) {
       demoBuilder.execute(statusChange, { topicId: ticket, status: 'progressing', data: {} });
       demoBuilder.execute(statusChange, { topicId: ticket, status: 'finished',
@@ -650,7 +655,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     }
   });
 
-  Clock.starts(1, 'month', 'ago');
+  Clock.starts(1, 'week', 'ago');
 //  demoBuilder.nextUser(); // just to skip the maintainer
   const ticket0 = demoBuilder.insert(Topics, 'ticket', {
     title: __('demo.ticket.0.title'),
@@ -672,13 +677,13 @@ export function insertDemoHouse(lang, demoOrTest) {
       expectedFinish: Clock.date(2, 'days', 'ahead'),
     },
   });
-  Clock.tickSome('days');
+  Clock.tick(6, 'days');
   demoBuilder.execute(statusChange, { topicId: ticket0, status: 'progressing',
     text: __('demo.ticket.0.comment.1'),
     data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
 
-  Clock.tickSome('days');
+  Clock.starts(3, 'weeks', 'ago');
   const ticket1 = demoBuilder.insert(Topics, 'ticket', {
     title: __('demo.ticket.1.title'),
     text: __('demo.ticket.1.text'),
@@ -703,6 +708,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.ticket.1.comment.1'),
     data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
+  Clock.tickSome('minutes');
   const actualFinish1 = Clock.tick(2, 'days');
   demoBuilder.execute(statusChange, { topicId: ticket1, status: 'finished',
     text: __('demo.ticket.1.comment.2'),
@@ -717,7 +723,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     data: {},
   });
 
-  Clock.tickSome('days');
+  Clock.starts(2, 'weeks', 'ago');
   const ticket2 = demoBuilder.insert(Topics, 'ticket', {
     title: __('demo.ticket.2.title'),
     text: __('demo.ticket.2.text'),
@@ -733,7 +739,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     text: __('demo.ticket.2.comment.0'),
   });
 
-  Clock.tickSome('days');
+  Clock.starts(3, 'months', 'ago');
   const ticket3 = demoBuilder.insert(Topics, 'ticket', {
     title: __('demo.ticket.3.title'),
     text: __('demo.ticket.3.text'),
@@ -762,6 +768,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       expectedFinish: Clock.date(10, 'day', 'ahead'),
     },
   });
+  Clock.tickSome('minutes');
   const actualFinish3 = Clock.tick(8, 'day');
   demoBuilder.execute(statusChange, { topicId: ticket3, status: 'finished',
     text: __('demo.ticket.3.comment.2'),
@@ -771,6 +778,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       actualFinish: actualFinish3,
     },
   });
+  Clock.tickSome('hours');
   demoBuilder.insert(Comments, 'comment', {
     topicId: ticket3,
     text: __('demo.ticket.3.comment.3'),
@@ -790,7 +798,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // === Parcel Billings ===
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
-    const valueDate = new Date(`2017-${mm}-12`);
+    const valueDate = new Date(`${lastYear}-${mm}-12`);
 
     demoBuilder.insert(ParcelBillings, '', {
       valueDate,
@@ -823,7 +831,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoBuilder.insert(ParcelBillings, '', {
     projection: 'absolute',
     amount: 75000,
-    valueDate: new Date('2017-08-15'),
+    valueDate: new Date(`${lastYear}-08-15`),
     payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
     note: __('demo.transactions.note.0'),
@@ -861,14 +869,14 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoBuilder.insert(ParcelBillings, '', {
     projection: 'perArea',
     amount: 200,
-    valueDate: new Date('2017-12-15'),
+    valueDate: new Date(`${lastYear}-12-15`),
     payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
   });
 
   // Unidentified payin
   demoBuilder.insert(Transactions, 'tx', {
-    valueDate: new Date('2017-12-30'),
+    valueDate: new Date(`${lastYear}-12-30`),
     amount: 24500,
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
     debit: [{
@@ -888,7 +896,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   ];
   openings.forEach((opening) => {
     demoBuilder.insert(Transactions, 'tx', {
-      valueDate: new Date('2017-01-01'),
+      valueDate: new Date(`${lastYear}-01-01`),
       amount: opening[2],
       credit: [{
         account: demoBuilder.name2code('COA', 'Opening'),
@@ -902,7 +910,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // === Incomes ===
 
   demoBuilder.insert(Transactions, 'tx', {
-    valueDate: new Date('2017-06-01'),
+    valueDate: new Date(`${lastYear}-06-01`),
     amount: 3500,
     credit: [{
       account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
@@ -915,7 +923,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
     demoBuilder.insert(Transactions, 'tx', {
-      valueDate: new Date(`2017-${mm}-01`),
+      valueDate: new Date(`${lastYear}-${mm}-01`),
       amount: 400,
       credit: [{
         account: demoBuilder.name2code('Incomes', 'Hitelintézettől kapott kamatok'),
@@ -928,7 +936,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   demoBuilder.insert(Transactions, 'tx', {
-    valueDate: new Date('2017-09-15'),
+    valueDate: new Date(`${lastYear}-09-15`),
     amount: 500000,
     credit: [{
       account: demoBuilder.name2code('Incomes', 'Támogatások'),
@@ -941,7 +949,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   demoBuilder.insert(Transactions, 'tx', {
-    valueDate: new Date('2017-05-10'),
+    valueDate: new Date(`${lastYear}-05-10`),
     amount: 55000,
     credit: [{
       account: demoBuilder.name2code('Incomes', 'Bérleti díj bevételek'),
@@ -954,7 +962,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   demoBuilder.insert(Transactions, 'tx', {
-    valueDate: new Date('2017-10-15'),
+    valueDate: new Date(`${lastYear}-10-15`),
     amount: 500000,
     credit: [{
       account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
@@ -967,7 +975,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   demoBuilder.insert(Transactions, 'tx', {
-    valueDate: new Date('2017-07-21'),
+    valueDate: new Date(`${lastYear}-07-21`),
     amount: 2300000,
     credit: [{
       account: demoBuilder.name2code('Liabilities', 'Hosszú lejáratú bank hitel'),
@@ -982,7 +990,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   for (let mm = 1; mm < 13; mm++) {
     demoBuilder.insert(Transactions, 'tx', {
-      valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
+      valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       amount: 80000 + Math.floor(Math.random() * 50000),
       credit: [{
         account: demoBuilder.name2code('Assets', 'Folyószámla'),
@@ -994,7 +1002,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     demoBuilder.insert(Transactions, 'tx', {
-      valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '08', '10'])),
+      valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       amount: 98500,
       credit: [{
         account: demoBuilder.name2code('Assets', 'Folyószámla'),
@@ -1006,7 +1014,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     demoBuilder.insert(Transactions, 'tx', {
-      valueDate: new Date('2017-' + mm + '-' + _.sample(['03', '04', '05', '06', '07', '08', '10'])),
+      valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '07', '08', '10'])}`),
       amount: 150000 + Math.floor(Math.random() * 50000),
       credit: [{
         account: demoBuilder.name2code('Assets', 'Folyószámla'),
@@ -1022,7 +1030,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['03', '06', '09', '12'].forEach(mm => {
     demoBuilder.insert(Transactions, 'tx', {
-      valueDate: new Date(`2017-${mm}-20`),
+      valueDate: new Date(`${lastYear}-${mm}-20`),
       amount: 282600,
       partner: 'Super-Clean Kft',
       credit: [{
@@ -1035,10 +1043,10 @@ export function insertDemoHouse(lang, demoOrTest) {
 
     if (mm !== '12') {  // Last bill is paid but not yet processed
       demoBuilder.insert(Transactions, 'tx', {
-        valueDate: new Date(`2017-${mm}-25`),
+        valueDate: new Date(`${lastYear}-${mm}-25`),
         amount: 282600,
         partner: 'Super-Clean Kft',
-        ref: `SC/2017/${mm}`,
+        ref: `SC/${lastYear}/${mm}`,
         credit: [{
           account: demoBuilder.name2code('Assets', 'Folyószámla'),
         }],
@@ -1048,9 +1056,9 @@ export function insertDemoHouse(lang, demoOrTest) {
       });
     } else {
       demoBuilder.insert(Transactions, 'tx', {
-        valueDate: new Date(`2017-${mm}-25`),
+        valueDate: new Date(`${lastYear}-${mm}-25`),
         amount: 282600,
-        ref: `SC/2017/${mm}`,
+        ref: `SC/${lastYear}/${mm}`,
         credit: [{
           account: demoBuilder.name2code('Assets', 'Folyószámla'),
         }],

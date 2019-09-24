@@ -98,6 +98,7 @@ export class CommunityBuilder {
           } break;
           case 'forum': return this.nextUser();
           case 'news': return this.getUserWithRole('manager');
+          case 'room': return this.getUserWithRole('manager');
           default: debugAssert(false, `No such topics.category ${params.category}`);
         } break;
         default: debugAssert(false, `No such collection ${collName}`);
