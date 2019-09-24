@@ -32,7 +32,7 @@ export const nullUser = {
     if (!permission) return false;
     return _.contains(permission.roles, 'null');
   },
-  ownedParcels() {
+  ownedParcels(communityId) {
     return [];
   },
 };
