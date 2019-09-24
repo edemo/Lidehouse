@@ -32,6 +32,9 @@ export const nullUser = {
     if (!permission) return false;
     return _.contains(permission.roles, 'null');
   },
+  ownedParcels() {
+    return [];
+  },
 };
 
 Meteor.userOrNull = function userOrNull() {
