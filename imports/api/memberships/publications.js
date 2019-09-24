@@ -41,7 +41,7 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
   }).validate(params);
 
   const { communityId } = params;
-  const user = Meteor.users.findOne(this.userId);
+  const user = Meteor.users.findOneOrNull(this.userId);
 
   return {
     find() {
