@@ -945,7 +945,8 @@ export function insertDemoHouse(lang, demoOrTest) {
       });
     }
   });
-  if (demoOrTest === 'test' && lang === 'hu') demoBuilder.insertLoadsOfFakeMembers(1000);
+  Balances.methods.publish._execute({ userId: demoAccountantId }, { communityId: demoCommunityId });
+  //if (demoOrTest === 'test' && lang === 'hu') demoBuilder.insertLoadsOfFakeMembers(1000);
 }
 
 // ----------------------------------------------------------------
