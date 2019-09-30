@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { autosetActiveCommunity } from '/imports/ui_3/lib/active-community.js'
 
 import './root-redirector.html';
 
@@ -9,15 +10,7 @@ Template.app_rootRedirector.onCreated(() => {
   if (Meteor.userId()) {
     Template.instance().subscribe('memberships.ofUser', { userId: Meteor.userId() });
     Template.instance().autorun(() => {
-      const activeCommunityId = Session.get('activeCommunityId');
-      const user = Meteor.user();
-      if (user && (!activeCommunityId || !user.isInCommunity(activeCommunityId))) {
-        const communities = user.communities();
-        if (communities.count() > 0) {
-          const activeCommunity = communities.fetch()[0];
-          Session.set('activeCommunityId', activeCommunity._id);
-        }
-      }
+      autosetActiveCommunity();
     });
     Template.instance().autorun(() => {
       if (Template.instance().subscriptionsReady()) {
