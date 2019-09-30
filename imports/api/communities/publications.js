@@ -34,16 +34,11 @@ function communityPublication(userId, _id) {
     find() {
       return Communities.find({ _id }, { fields: visibleFields(userId, _id) });
     },
-    // ...Related to Community
     children: [{
-      // Publish the Topics of the Community
       find(community) {
         return Memberships.find({ communityId: community._id, active: true, role: { $in: leaderRoles } });
       },
-
-      // ...Related to Topics
       children: [{
-        // Publish the Comments of the Topic
         find(membership) {
           return Meteor.users.find({ _id: membership.person.userId }, { fields: Meteor.users.publicFields });
         },

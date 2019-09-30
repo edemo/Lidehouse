@@ -27,7 +27,6 @@ Meteor.publishComposite('delegations.fromUser', function delegationsFromUser(par
   }
 
 // Everyone has access to all of his own stuff automatically
-//Meteor.publishComposite(null, function delegationsFromUser() {
   return {
     find() {
       return Delegations.find({ sourcePersonId: userId });
@@ -51,8 +50,6 @@ Meteor.publishComposite('delegations.toUser', function delegationsToUser(params)
     throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
       `Publication: delegations.toUser, userId: {${userId}}, this.userId: {${this.userId}}`);
   }
-
-//Meteor.publishComposite(null, function delegationsToUser() {
   return {
     find() {
       return Delegations.find({ targetPersonId: userId });
