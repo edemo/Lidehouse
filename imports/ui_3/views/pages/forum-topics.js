@@ -23,7 +23,7 @@ Template.Forum_topics.helpers({
     const communityId = Session.get('activeCommunityId');
     const topics = Topics.find(
       { communityId, category: 'forum' },
-      { sort: { updatedAt: -1 } }
+      { sort: { closed: 1, updatedAt: -1 } }
 //    { sort: { createdAt: -1 } }
     );
 //  .fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
