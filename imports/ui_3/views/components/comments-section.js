@@ -19,7 +19,7 @@ import './comments-section.html';
 
 Template.Comments_section.onCreated(function commentsSectionOnCreated() {
   this.autorun(() => {
-    this.subscribe('comments.onTopic', { topicId: this.data._id });
+    this.subscribe('topics.byId', { _id: this.data._id });
   });
 });
 

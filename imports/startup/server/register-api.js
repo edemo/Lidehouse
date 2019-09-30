@@ -21,7 +21,6 @@ import '/imports/api/topics/rooms/publications.js';
 // import '/imports/api/topics/feedbacks/methods.js';
 import '/imports/api/topics/feedbacks/publications.js';
 import '/imports/api/comments/methods.js';
-import '/imports/api/comments/publications.js';
 import '/imports/api/transactions/breakdowns/methods.js';
 import '/imports/api/transactions/breakdowns/publications.js';
 import '/imports/api/transactions/txdefs/methods.js';
