@@ -6,6 +6,7 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { CollectionHooks } from 'meteor/matb33:collection-hooks';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
@@ -93,6 +94,15 @@ export const remove = new ValidatedMethod({
     CollectionHooks.defaultUserId = undefined;
   },
 });
+
+export function closeInactiveTopics() {
+  const monthsAgo = moment().subtract(3, 'months').toDate();
+  const closableTopics = Topics.find({ status: { $ne: 'closed' }, updatedAt: { $lt: monthsAgo } }).fetch()
+    .filter(topic => _.contains(topic.possibleNextStatuses().map(s => s.name), 'closed'));
+  closableTopics.forEach(topic => Topics.methods.statusChange._execute({ userId: topic.creatorId }, // permissionwise the creator is the one closing it
+    { userId: topic.creatorId, topicId: topic._id, status: 'closed' },
+  ));
+}
 
 Topics.methods = Topics.methods || {};
 _.extend(Topics.methods, { insert, update, move, remove });

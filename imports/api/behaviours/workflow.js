@@ -63,12 +63,28 @@ const helpers = {
   },
 };
 
+const opened = {
+  name: 'opened',
+};
+
+const closed = {
+  name: 'closed',
+};
+
+const deleted = {
+  name: 'deleted',
+};
+
+const defaultStatuses = {
+  opened, closed, deleted,
+};
+
 export const defaultWorkflow = {
   statusValues: ['opened', 'closed', 'deleted'],
-  start: [{ name: 'opened' }],
-  opened: { next: [{ name: 'closed' }, { name: 'deleted' }] },
-  closed: { next: [{ name: 'deleted' }] },
-  deleted: { next: [] },
+  start: [opened],
+  opened: { obj: opened, next: [closed, deleted] },
+  closed: { obj: closed, next: [deleted] },
+  deleted: { obj: deleted, next: [] },
 };
 
 function checkStatusStartAllowed(topic, status) {
@@ -100,7 +116,7 @@ const statusChange = new ValidatedMethod({
 
     const topicModifier = {};
     topicModifier.status = event.status;
-    const statusObject = Topics.categories[category].statuses[event.status];
+    const statusObject = Topics.categories[category].statuses ? Topics.categories[category].statuses[event.status] : defaultStatuses[event.status];
     if (statusObject.data) {
       statusObject.data.forEach(key => topicModifier[`${category}.${key}`] = event.data[key]);
     }
