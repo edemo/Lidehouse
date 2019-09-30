@@ -38,12 +38,84 @@ if (Meteor.isServer) {
     });
 
     describe('publications', function () {
+      let forumTopic;
+      let roomTopic;
+      let maintainer;
+      let owner;
+      let randomUser;
+      let communityId;
+
       before(function () {
+        maintainer = Fixture.dummyUsers[0];
+        owner = Fixture.dummyUsers[1];
+        randomUser = Random.id();
+        communityId = Fixture.demoCommunityId;
+        forumTopic = Factory.create('forum', { userId: maintainer, communityId });
+        roomTopic = Factory.create('room', { userId: owner, communityId, participantIds: [owner, randomUser] });
+
+        _.times(3, () => {
+          Factory.create('comment', { topicId: forumTopic._id, userId: maintainer });
+        });
+        _.times(2, () => {
+          Factory.create('comment', { topicId: roomTopic._id, userId: owner });
+        });
       });
 
-      describe('topics.private', function () {
-        it('sends all owned topics', function (done) {
-          done();
+      describe('topics.byId', function () {
+        it('sends all public topics with comments when logged in', function (done) {
+          const collector = new PublicationCollector({ userId: owner });
+          collector.collect(
+            'topics.byId',
+            { _id: forumTopic._id },
+            (collections) => {
+              chai.assert.equal(collections.topics.length, 1);
+              chai.assert.equal(collections.users.length, 1);
+              chai.assert.equal(collections.comments.length, 3);
+              done();
+            }
+          );
+        });
+
+        it('sends all private topics when logged in as a participant', function (done) {
+          const collector = new PublicationCollector({ userId: owner });
+          collector.collect(
+            'topics.byId',
+            { _id: roomTopic._id },
+            (collections) => {
+              chai.assert.equal(collections.topics.length, 1);
+              chai.assert.equal(collections.users.length, 1);
+              chai.assert.equal(collections.comments.length, 2);
+              done();
+            }
+          );
+        });
+
+        it('sends no private topic when not logged in', function (done) {
+          const collector = new PublicationCollector();
+          collector.collect(
+            'topics.byId',
+            { _id: roomTopic._id },
+            (collections) => {
+              chai.assert.isUndefined(collections.topics);
+              chai.assert.isUndefined(collections.users);
+              chai.assert.isUndefined(collections.comments);
+              done();
+            }
+          );
+        });
+
+        it('sends no private topics when logged in as another user', function (done) {
+          const collector = new PublicationCollector({ userId: maintainer });
+          collector.collect(
+            'topics.byId',
+            { _id: roomTopic._id },
+            (collections) => {
+              chai.assert.isUndefined(collections.topics);
+              chai.assert.isUndefined(collections.users);
+              chai.assert.isUndefined(collections.comments);
+              done();
+            }
+          );
         });
       });
     });

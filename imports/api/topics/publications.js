@@ -16,6 +16,7 @@ Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
   }).validate(params);
 
   const { communityId } = params;
+  const user = Meteor.users.findOneOrNull(this.userId);
 
   const selector = {
     communityId,
@@ -27,6 +28,8 @@ Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
   };
 
   const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
+  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
+
   return [
     Topics.find(selector, { fields: publicFields }),
   ];
@@ -38,12 +41,23 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
   }).validate(params);
 
   const { _id } = params;
-
+  const topic = Topics.findOne(_id);
   const publicFields = Topics.publicFields;//.extendForUser(this.userId, communityId);
+  const user = Meteor.users.findOneOrNull(this.userId);
 
+  const selector = {
+    _id,
+    // Filter for 'No participantIds (meaning everyone), or contains userId'
+    $or: [
+      { participantIds: { $exists: false } },
+      { participantIds: this.userId },
+    ],
+  };
+
+  if (!user.hasPermission('topics.inCommunity', topic.communityId)) return this.ready();
   return {
     find() {
-      return Topics.find({ _id }, { fields: publicFields });
+      return Topics.find(selector, { fields: publicFields });
     },
     children: [{
       // Publish the author of the Topic (for flagging status)
@@ -63,4 +77,3 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
     }],
   };
 });
-

@@ -32,6 +32,14 @@ function messageFooterToBottom() {
   }
 }
 
+Template.Room_show.onCreated(function tmplMsgBoxOnCreated() {
+  this.autorun(() => {
+    // this is needed for comments
+    const roomId = FlowRouter.getParam('_rid');
+    this.subscribe('topics.byId', { _id: roomId });
+  });
+});
+
 Template.Room_show.onRendered(function() {
   if ($(window).width() > 768) $('.js-focused').focus();
   messageFooterToBottom();
@@ -68,7 +76,7 @@ Template.Message_history.onCreated(function tmplMsgBoxOnCreated() {
   this.autorun(() => {
     // this is needed for comments
     const roomId = FlowRouter.getParam('_rid');
-    this.subscribe('comments.onTopic', { topicId: roomId });
+    this.subscribe('topics.byId', { _id: roomId });
   });
 });
 
