@@ -20,6 +20,10 @@ Template.Top_navbar.onRendered(function() {
   $(".navbar-static-top").removeClass('navbar-static-top').addClass('navbar-fixed-top');
 });
 
+Template.Top_navbar.onDestroyed(function() {
+  $('body').removeClass('fixed-nav').removeClass('fixed-nav-basic');
+});
+
 Template.Top_navbar.helpers({
   userCommunities() {
     if (!Meteor.user()) { return []; }

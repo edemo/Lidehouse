@@ -7,7 +7,6 @@ import './intro-page.html';
 Template.Intro_page.onRendered(function(){
     
     $('body').addClass('landing-page');
-    $('body').removeClass('fixed-nav').removeClass('fixed-nav-basic');
     $('body').attr('id', 'page-top');
     $('body').scrollspy({
         target: '.navbar-fixed-top',
