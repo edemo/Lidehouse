@@ -50,8 +50,8 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
   const { _id } = params;
   const topic = Topics.findOne(_id);
   const communityId = topic.communityId;
-  const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
   const user = Meteor.users.findOneOrNull(this.userId);
+  const publicFields = Topics.publicFields.extendForUser(user._id, communityId);
 
   const selector = {
     _id,
