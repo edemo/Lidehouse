@@ -10,7 +10,7 @@ import './votings/votings.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
 
-Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
+Meteor.publishComposite('topics.inCommunity', function topicsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
@@ -30,9 +30,16 @@ Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
   const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
   if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
 
-  return [
-    Topics.find(selector, { fields: publicFields }),
-  ];
+  return {
+    find() {
+      return Topics.find(selector, { fields: publicFields });
+    },
+    children: [{
+      find() {
+        return Topics.find(_.extend({}, selector, { category: 'vote', closed: true }));
+      },
+    }],
+  };
 });
 
 Meteor.publishComposite('topics.byId', function topicsById(params) {
@@ -42,7 +49,7 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
 
   const { _id } = params;
   const topic = Topics.findOne(_id);
-  const { communityId } = params;
+  const communityId = topic.communityId;
   const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
   const user = Meteor.users.findOneOrNull(this.userId);
 
@@ -55,7 +62,7 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
     ],
   };
 
-  if (!user.hasPermission('topics.inCommunity', topic.communityId)) return this.ready();
+  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
   return {
     find() {
       return Topics.find(selector, { fields: publicFields });
@@ -64,6 +71,10 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
       // Publish the author of the Topic (for flagging status)
       find(topic) {
         return Meteor.users.find({ _id: topic.userId }, { fields: Meteor.users.publicFields });
+      },
+    }, {
+      find() {
+        return Topics.find(_.extend({}, selector, { category: 'vote', closed: true }));
       },
     }, {
       // Publish all Comments of the Topic
