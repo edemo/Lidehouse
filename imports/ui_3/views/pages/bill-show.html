@@ -1,0 +1,119 @@
+<template name="Bill_show">
+    <!--div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-8">
+            <h2>Invoice</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="/dashboard1">Home</a>
+                </li>
+                <li>
+                    Other Pages
+                </li>
+                <li class="active">
+                    <strong>Invoice</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <div class="title-action">
+                <a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
+                <a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a>
+                <a href="/invoicePrint" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i> Print Invoice </a>
+            </div>
+        </div>
+    </div-->
+    <!--div class="wrapper wrapper-content animated fadeInRight">
+        <div class="ibox-content p-xl"-->
+            <div class="row">
+                <div class="col-sm-6">
+                    <h5>{{_ 'community'}}:</h5>
+                    <address>
+                        {{#let community=doc.community}}
+                        <strong>{{community.name}}</strong><br>
+                        {{community.displayAddress}}<br>
+                        {{/let}}
+                    </address>
+                </div>
+
+                <div class="col-sm-6 text-right">
+                    <h4>{{_ 'schemaBills.serialId.label'}}</h4>
+                    <h4 class="text-navy">{{doc.serialId}}</h4>
+                    <span>{{_ 'schemaBills.partner.label'}}:</span>
+                    <address>
+                        <strong>{{doc.partner}}</strong><br>
+                        <!--{{doc.partnerAddress}}<br>-->
+                    </address>
+                    <p>
+                        <span><strong>{{_ 'schemaBills.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
+                        <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate doc.dueDate}}</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="table-responsive m-t">
+                <table class="table invoice-table">
+                    <thead>
+                        <tr>
+                            <th>{{_ 'schemaBills.lines.$.title.label'}}</th>
+                            <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
+                            <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
+                            <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
+                            <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                            <!--th>{{_ 'schemaBills.lines.$.tax.label'}}</th-->
+                            <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each line in doc.lines}}
+                        <tr>
+                            <td><div><strong>{{line.title}}</strong></div>
+                                <small>{{line.details}}</small>
+                                {{{displayAccount line.account}}}</td>
+                            <td>{{line.uom}}</td>
+                            <td>{{line.unitPrice}}</td>
+                            <td>{{line.quantity}}</td>
+                            <td>{{line.taxPct}}</td>
+                            <td>{{line.amount}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div><!-- /table-responsive -->
+
+            <table class="table invoice-total">
+                <tbody>
+                <tr>
+                    <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
+                    <td>{{doc.amount}}</td>
+                </tr>
+                <tr>
+                    <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
+                    <td>{{doc.tax}}</td>
+                </tr>
+                <tr>
+                    <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
+                    <td>{{doc.amount}}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="text-right" data-id="{{doc._id}}">
+              {{#if (actions.conteer.visible doc._id)}}
+                <button class="btn btn-warning js-conteer"><i class="fa fa-edit"></i> {{_ 'Send to accouting'}}</button>
+              {{/if}}
+              {{#if (actions.registerPayment.visible doc._id)}}
+                <button class="btn btn-primary js-payment"><i class="fa fa-credit-card"></i> {{_ 'Register payment'}}</button>
+              {{/if}}
+              {{#if (actions.edit.visible doc._id)}}
+                <button class="btn btn-warning js-edit"><i class="fa fa-pencil"></i> {{_ 'Bill conteer'}}</button>
+              {{/if}}
+            </div>
+  
+            {{#if doc.note}}
+            <div class="well m-t"><strong>{{_ 'schemaBills.note.label'}}</strong>
+                {{doc.note}}
+            </div>
+            {{/if}}
+        <!--/div>
+    </div-->
+</template>

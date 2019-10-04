@@ -8,6 +8,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { Clock } from '/imports/utils/clock';
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -18,6 +19,8 @@ import '/imports/api/comments/methods.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import '/imports/api/transactions/breakdowns/methods.js';
+import { Bills } from '/imports/api/transactions/bills/bills.js';
+import '/imports/api/transactions/bills/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
@@ -225,7 +228,7 @@ export class CommunityBuilder {
         amount: 275,
         payinType: this.name2code('Owner payin types', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
-      });
+      });/*
       this.insert(Transactions, 'tx', {
         valueDate,
         amount: 275 * parcel.area,
@@ -236,8 +239,24 @@ export class CommunityBuilder {
         debit: [{
           account: this.name2code('Assets', 'Folyószámla'),
         }],
-      });
+      });*/
+      this.payBillsOf(parcel);
     }
+  }
+  payBill(bill) {
+    const payinAccount = '381';
+    this.execute(Bills.methods.registerPayment, {
+      _id: bill._id,
+      payment: { valueDate: Clock.currentTime(), amount: bill.outstanding, account: payinAccount },
+    }, this.getUserWithRole('accountant'));
+  }
+  payBillsOf(parcel) {
+    const unpaidBills = Bills.find({ communityId: this.communityId, category: 'parcel', outstanding: { $gt: 0 }, partner: parcel.ref });
+    unpaidBills.forEach(bill => this.payBill(bill));
+  }
+  everybodyPaysTheirBills() {
+    const unpaidBills = Bills.find({ communityId: this.communityId, category: 'parcel', outstanding: { $gt: 0 } });
+    unpaidBills.forEach(bill => this.payBill(bill));
   }
   insertLoadsOfFakeMembers(parcelCount) {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;

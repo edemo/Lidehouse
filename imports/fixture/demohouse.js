@@ -58,6 +58,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     lot: '4532/8',
     avatar: '/images/demohouse.jpg',
     totalunits: 10000,
+    settings: {
+      accountingMethod: 'accrual',
+    },
   });
 
   const demoBuilder = new CommunityBuilder(demoCommunityId, demoOrTest, lang);
@@ -792,6 +795,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   const parcelBillingIds = [];
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+    title: 'Közös költség előírás',
     projection: 'perArea',
     amount: 275,
     payinType: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
@@ -801,6 +805,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   const parcelsWithNoWaterMeter = Parcels.find({ communityId: demoCommunityId, waterMetered: false });
   parcelsWithNoWaterMeter.forEach((parcel) => {
     parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+      title: 'Hidegvíz előírás',
       projection: 'perHabitant',
       amount: 2500,
       payinType: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
@@ -809,7 +814,8 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
-    projection: 'perArea',
+    title: 'Fűtési díj előírás',
+    projection: 'perVolume',
     amount: 85,
     payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
     localizer: '@A',
@@ -817,13 +823,12 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     const valueDate = new Date(`2017-${mm}-12`);
-    parcelBillingIds.forEach(id => {
-      demoBuilder.execute(ParcelBillings.methods.apply, { id, valueDate });
-    });
+    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, ids: parcelBillingIds, valueDate });
   });
 
   // This is a one-time, extraordinary parcel billing
   demoBuilder.insert(ParcelBillings, '', {
+    title: 'Rendkivüli befizetés előírás',
     projection: 'absolute',
     amount: 75000,
     valueDate: new Date('2017-08-15'),
@@ -833,7 +838,9 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   // === Owner Payins ===
-  function everybodyPaysHisObligations() {
+  demoBuilder.everybodyPaysTheirBills();
+
+/*  function everybodyPaysHisObligations() {
     const obligationAccount = ChartOfAccounts.get(demoCommunityId).findNodeByName('Owner obligations');
     const obligationLeafAccounts = obligationAccount.leafs();
     obligationLeafAccounts.forEach((leafAccount) => {
@@ -860,11 +867,11 @@ export function insertDemoHouse(lang, demoOrTest) {
       });
     });
   }
-
-  everybodyPaysHisObligations();
+*/
 
   // Some unpaid bills (so we can show the parcels that are in debt)
   demoBuilder.insert(ParcelBillings, '', {
+    title: 'Rendkivüli befizetés előírás',
     projection: 'perArea',
     amount: 200,
     valueDate: new Date('2017-12-15'),

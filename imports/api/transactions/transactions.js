@@ -29,12 +29,12 @@ Transactions.entrySchema = new SimpleSchema([
 
 Transactions.baseSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
-  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
+//  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
+//  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   valueDate: { type: Date },
   amount: { type: Number },
-//  billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-//  paymentId: { type: Number, decimal: true, optional: true },
+  billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  paymentId: { type: Number, decimal: true, optional: true },
 //  year: { type: Number, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getFullYear(); },
 //  },

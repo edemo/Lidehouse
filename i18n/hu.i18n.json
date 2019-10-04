@@ -187,6 +187,8 @@
   "confirm": "Jóváhagy?",
   "Loading": "Betöltés folyamatban",
   "period": "Időszak",
+  "conteer": "Könyvelésbe küldés",
+  "registerPayment": "Kifizetés rögzítése",
 
   "join": "Csatlakozás",
   "create": "Létrehozás",
@@ -225,6 +227,8 @@
   "suspended": "Felfüggesztve",
   "finished": "Elvégezve",
   "deleted": "Törölt",
+
+  "Bill conteer": "Számla kontírozás",
 
   "This operation will do the following": "Ezzel a következő műveleteket hajtja végre",
   "creates": "Létrehoz",
@@ -443,6 +447,8 @@
   "perArea": "terület (/m2)",
   "perVolume": "légköbméter (/m3)",
   "perHabitant": "lakók száma (/fő)",
+  "Register payment": "Kifizetés rögzítése",
+  "Send to accouting" : "Könyvelésbe küldés",
   // accounts
   "Chart Of Accounts": "Főkönyvi számlák",
   "Incomes" : "BEVÉTELEK",

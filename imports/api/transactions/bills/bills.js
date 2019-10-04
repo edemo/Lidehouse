@@ -17,14 +17,36 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Communities } from '../../communities/communities';
+import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
 export const Bills = new Mongo.Collection('bills');
 
 Bills.categoryValues = ['in', 'out', 'parcel'];
 
+Bills.connectedTxSchema = new SimpleSchema({
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  txLegId: { type: Number, decimal: true, autoform: { omit: true } },
+});
+
+Bills.lineSchema = new SimpleSchema({
+  title: { type: String },
+  details: { type: String, optional: true },
+  uom: { type: String, optional: true },  // unit of measurment
+  quantity: { type: Number, decimal: true },
+  unitPrice: { type: Number, decimal: true },
+  taxPct: { type: Number, decimal: true, defaultValue: 0 },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  account: { type: String, optional: true, autoform: chooseAccountNode },
+  localizer: { type: String, optional: true },
+});
+
 Bills.paymentSchema = new SimpleSchema({
   valueDate: { type: Date },
   amount: { type: Number },
+  account: { type: String, optional: true },  // the money account paid to/from
+//  tx: { type: Bills.connectedTxSchema, optional: true },    // used if accounting method is 'cash'):
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
 });
@@ -32,19 +54,20 @@ Bills.paymentSchema = new SimpleSchema({
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   category: { type: String, allowedValues: Bills.categoryValues, autoform: { omit: true } },
-  amount: { type: Number, decimal: true },
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   issueDate: { type: Date },
   valueDate: { type: Date },
   dueDate: { type: Date },
   partner: { type: String, optional: true },
-  account: { type: String, optional: true },
-  localizer: { type: String, optional: true },
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
-  payments: { type: Array, defaultValue: [] },
+  lines: { type: Array, defaultValue: [] },
+  'lines.$': { type: Bills.lineSchema },
+  payments: { type: Array, defaultValue: [], autoform: { omit: true } },
   'payments.$': { type: Bills.paymentSchema },
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client can ask to sort on outstanding amount
 //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
+//  tx: { type: Bills.connectedTxSchema, optional: true },    // used if accounting method is 'accrual'):
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
 Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partner'];
@@ -76,6 +99,9 @@ Meteor.startup(function indexBills() {
 });
 
 Bills.helpers({
+  community() {
+    return Communities.findOne(this.communityId);
+  },
   matchingTxSide() {
     if (this.category === 'in') return 'debit';
     else if (this.category === 'out' || this.category === 'parcel') return 'credit';
@@ -85,6 +111,12 @@ Bills.helpers({
   otherTxSide() {
     if (this.matchingTxSide() === 'debit') return 'credit';
     if (this.matchingTxSide() === 'credit') return 'debit';
+    return undefined;
+  },
+  hasConteerData() {
+    let result = true;
+    this.lines.forEach(line => { if (!line.account) result = false; });
+    return result;
   },
   getPayments() {
     return this.payments || [];
@@ -92,28 +124,67 @@ Bills.helpers({
   paymentCount() {
     return this.payments.length;
   },
-  calculateOutstanding() {
-    let paid = 0;
-    if (this.payments) this.payments.forEach(p => paid += p.amount);
-    return this.amount - paid;
-  },
   makeTx() {
+    const self = this;
     const tx = {
       communityId: this.communityId,
-      valueDate: this.valueDate,  // ?? paymentDate for single entry accounting ??
+      // def: 'bill'
+      valueDate: this.valueDate,
       amount: this.amount,
       billId: this._id,
       paymentId: undefined, // it is not a payment
     };
+    function copyLinesInto(txSide) {
+      self.lines.forEach(line => txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer }));
+    }
     if (this.category === 'in') {
-      tx.debit = [{ account: this.account, localizer: this.localizer }];
-      tx.credit = [{ account: '46', billId: this._id }];
+      tx.debit = []; copyLinesInto(tx.debit);
+      tx.credit = [{ account: '46' }];
     } else if (this.category === 'out') {
-      tx.debit = [{ account: '31', billId: this._id }];
-      tx.credit = [{ account: this.account, localizer: this.localizer }];
-    } else {
-      debugAssert(this.category === 'parcel');
-      // ...
+      tx.debit = [{ account: '31' }];
+      tx.credit = []; copyLinesInto(tx.credit);
+    } else if (this.category === 'parcel') {
+      tx.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+      tx.credit = []; copyLinesInto(tx.credit);
+    } else debugAssert(false, 'No such bill category');
+    return tx;
+  },
+  makePaymentTx(payment, index, accountingMethod) {
+    const self = this;
+    const tx = {
+      communityId: this.communityId,
+      // def: 'payment',
+      valueDate: payment.valueDate,
+      amount: payment.amount,
+      billId: this._id,
+      paymentId: index,
+    };
+    const ratio = payment.amount / this.amount;
+    function copyLinesInto(txSide) {
+      self.lines.forEach(line => txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer }));
+    }
+    if (accountingMethod === 'accrual') {
+      if (this.category === 'in') {
+        tx.debit = [{ account: '46' }];
+        tx.credit = [{ account: payment.account }];
+      } else if (this.category === 'out') {
+        tx.debit = [{ account: payment.account }];
+        tx.credit = [{ account: '31' }];
+      } else if (this.category === 'parcel') {
+        tx.debit = [{ account: payment.account }];
+        tx.credit = [{ account: '33'+'' }];
+      } else debugAssert(false, 'No such bill category');
+    } else if (accountingMethod === 'cash') {
+      if (this.category === 'in') {
+        tx.debit = []; copyLinesInto(tx.debit);
+        tx.credit = [{ account: '46' }];
+      } else if (this.category === 'out') {
+        tx.debit = [{ account: '31' }];
+        tx.credit = []; copyLinesInto(tx.credit);
+      } else if (this.category === 'parcel') {
+        tx.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+        tx.credit = []; copyLinesInto(tx.credit);
+      } else debugAssert(false, 'No such bill category');
     }
     return tx;
   },
@@ -122,14 +193,42 @@ Bills.helpers({
   },
 });
 
+Bills.autofillLines = function autofillAmounts(doc) {
+  let totalAmount = 0;
+  let totalTax = 0;
+  if (doc.lines) {
+    doc.lines.forEach(line => {
+      line.amount = line.unitPrice * line.quantity;
+      line.tax = line.amount * line.taxPct;
+      line.amount += line.tax; // =
+      totalAmount += line.amount;
+      totalTax += line.tax;
+    });
+  }
+  doc.amount = totalAmount;
+  doc.tax = totalTax;
+};
+Bills.autofillOutstanding = function autofillAmounts(doc) {
+  let paid = 0;
+  if (doc.payments) doc.payments.forEach(p => paid += p.amount);
+  doc.outstanding = doc.amount - paid;
+};
+
 // --- Before/after actions ---
 if (Meteor.isServer) {
   Bills.before.insert(function (userId, doc) {
-    const tdoc = this.transform();
-    doc.outstanding = tdoc.calculateOutstanding();
+    Bills.autofillLines(doc);
+    Bills.autofillOutstanding(doc);
   });
+
+  Bills.before.update(function (userId, doc, fieldNames, modifier, options) {
+    const newDoc = modifier.$set;
+    if (newDoc.lines) Bills.autofillLines(newDoc);
+    if (newDoc.lines || newDoc.payments) Bills.autofillOutstanding(newDoc);
+  });
+
   Bills.after.update(function (userId, doc, fieldNames, modifier, options) {
-    const tdoc = this.transform();
+//    const tdoc = this.transform();
 //--------------------
 //  Could do this with rusdiff in a before.update
 //    let newDoc = rusdiff.clone(doc);
@@ -137,11 +236,11 @@ if (Meteor.isServer) {
 //    newDoc = Bills._transform(newDoc);
 //    const outstanding = newDoc.calculateOutstanding();
 //--------------------
-    if ((modifier.$set && modifier.$set.payments) || (modifier.$push && modifier.$push.payments)) {
-      if (!modifier.$set || modifier.$set.outstanding === undefined) { // avoid infinite update loop!
-        Bills.update(doc._id, { $set: { outstanding: tdoc.calculateOutstanding() } });
-      }
-    }
+//    if ((modifier.$set && modifier.$set.payments) || (modifier.$push && modifier.$push.payments)) {
+//      if (!modifier.$set || modifier.$set.outstanding === undefined) { // avoid infinite update loop!
+//        Bills.update(doc._id, { $set: { outstanding: tdoc.calculateOutstanding() } });
+//      }
+//    }
   });
 }
 
@@ -157,13 +256,20 @@ Meteor.startup(function attach() {
 
 Factory.define('bill', Bills, {
   communityId: () => Factory.get('community'),
-  partner: faker.random.word(),
-//  account: { type: String, optional: true },
-//  localizer: { type: String, optional: true },
-  amount: faker.random.number(10000),
   issueDate: Clock.currentDate(),
   valueDate: Clock.currentDate(),
   dueDate: Clock.currentDate(),
+  partner: faker.random.word(),
+//  account: { type: String, optional: true },
+//  localizer: { type: String, optional: true },
+  lines: [{
+    title: faker.random.word(),
+    uom: 'piece',
+    quantity: 1,
+    unitPrice: faker.random.number(10000),
+    account: '85',
+    localizer: '@',
+  }],
 });
 
 /*

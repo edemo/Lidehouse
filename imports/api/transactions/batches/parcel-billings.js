@@ -17,11 +17,12 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
 ParcelBillings.projectionValues = ['absolute', 'perArea', 'perVolume', 'perHabitant'];
-ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+//ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  valueDate: { type: Date, optional: true },
+  title: { type: String, max: 100 },
+  valueDate: { type: Date, optional: true },  // supplied for a one-time parcelBilling
   projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
   amount: { type: Number },
   payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
@@ -31,7 +32,8 @@ ParcelBillings.schema = new SimpleSchema({
 });
 
 ParcelBillings.applySchema = new SimpleSchema({
-  id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  ids: { type: [String], regEx: SimpleSchema.RegEx.Id },
   valueDate: { type: Date },
 });
 
@@ -59,8 +61,9 @@ Meteor.startup(function attach() {
 });
 
 Factory.define('parcelBilling', ParcelBillings, {
-  partner: faker.random.word(),
+  title: faker.random.word(),
   projection: 'absolute',
+  partner: faker.random.word(),
   amount: faker.random.number(),
   payinType: '1',
   localizer: '@',

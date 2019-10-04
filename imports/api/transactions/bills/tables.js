@@ -9,6 +9,7 @@ export function billColumns() {
   const columns = [
     { data: 'serial', title: __('schemaBills.serial.label') },
     { data: 'serialId()', title: __('schemaGeneral.serialId.label') },
+    { data: 'partner', title: 'Partner' },
     { data: 'createdAt', title: __('schemaBills.createdAt.label'), render: Render.formatDate },
     { data: 'issueDate', title: __('schemaBills.issueDate.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaBills.valueDate.label'), render: Render.formatDate },
@@ -16,10 +17,8 @@ export function billColumns() {
     { data: 'amount', title: __('schemaBills.amount.label'), render: Render.formatNumber },
     { data: 'outstanding', title: __('schemaBills.outstanding.label') },
     { data: 'paymentDate', title: __('schemaBills.paymentDate.label'), render: Render.formatDate },
-    { data: 'account', title: __('schemaBills.account.label') },
-    { data: 'localizer', title: __('schemaBills.localizer.label') },
-    { data: 'partner', title: 'Partner' },
-    { data: 'ref', title: __('schemaBills.ref.label') },
+//    { data: 'account', title: __('schemaBills.account.label') },
+//    { data: 'localizer', title: __('schemaBills.localizer.label') },
     { data: 'note', title: __('schemaBills.note.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getBillsActionsSmall() }) },
   ];

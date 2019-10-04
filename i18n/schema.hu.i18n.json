@@ -615,6 +615,9 @@
     "serial": {
       "label": "Sorszám"
     },
+    "serialId": {
+      "label": "Számla azonosító"
+    },
     "createdAt": {
       "label": "Rögzítés ideje",
       "placeholder": "(pl. 2017-05-06)"
@@ -635,27 +638,63 @@
       "label": "Kifizetés ideje",
       "placeholder": "(pl. 2017-05-06)"
     },
+    "net": {
+      "label": "Nettó összeg"
+    },
+    "tax": {
+      "label": "ÁFA"
+    },
     "amount": {
-      "label": "Összeg",
+      "label": "ÖSSZEG",
       "placeholder": "(pl. 14560)"
     },
     "outstanding": {
       "label": "Kifizetetlen",
       "placeholder": "(pl. 14560)"
     },
-    "account": {
-      "label": "Költség nem"
-    },
-    "localizer": {
-      "label": "Könyvelési hely"
-    },
-    "ref": {
-      "label": "Referencia azonosító",
-      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
+    "partner": {
+      "label": "Partner",
+      "placeholder": "(pl. Kulcslyuk kft)"
     },
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
+    },
+    "lines" : {
+      "label": "Tételek",
+      "$" : {
+        "title": { 
+          "label": "Megnevezés"
+        },
+        "details": { 
+          "label": "Részletek"
+        },
+        "uom": {
+          "label": "M.e."
+        },
+        "quantity": {
+          "label": "Mennyiség"
+        },
+        "unitPrice": {
+          "label": "Egységár"
+        },
+        "taxPct": {
+          "label": "ÁFA%"
+        },
+        "tax": {
+          "label": "ÁFA"
+        },
+        "amount": {
+          "label": "Összeg"
+        },
+        "account": {
+          "label": "Főkönyvi számla",
+          "short": "Szla"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        }
+      }
     },
     "payments": {
       "label": "Pénzügyi teljesítés",
