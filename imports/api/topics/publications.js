@@ -51,8 +51,10 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
   const topic = Topics.findOne(_id);
   const communityId = topic.communityId;
   const user = Meteor.users.findOneOrNull(this.userId);
-  const publicFields = Topics.publicFields.extendForUser(user._id, communityId);
 
+  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
+
+  const publicFields = Topics.publicFields.extendForUser(user._id, communityId);
   const selector = {
     _id,
     // Filter for 'No participantIds (meaning everyone), or contains userId'
@@ -62,7 +64,6 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
     ],
   };
 
-  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
   return {
     find() {
       return Topics.find(selector, { fields: publicFields });
