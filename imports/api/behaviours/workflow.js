@@ -19,6 +19,7 @@ import { updateMyLastSeen } from '/imports/api/users/methods.js';
 const schema = new SimpleSchema({
   status: { type: String, autoform: { omit: true } }, /* needs to be checked against the workflow rules */
   closed: { type: Boolean, autoform: { omit: true }, autoValue() {
+    if (this.isSet) return this.value;
     const status = this.field('status').value;
     if (!status) return undefined; // don't touch
     if (status === 'closed') return true;

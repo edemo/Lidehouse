@@ -9,10 +9,13 @@ import { PublicationCollector } from 'meteor/johanbrook:publication-collector';
 import { Random } from 'meteor/random';
 import { DDP } from 'meteor/ddp-client';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
+
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
-import { moment } from 'meteor/momentjs:moment';
+import { closeInactiveTopics } from '/imports/api/topics/methods.js';
+import { Clock } from '/imports/utils/clock';
 
 import '/i18n/en.i18n.json';
 
@@ -214,6 +217,39 @@ if (Meteor.isServer) {
           const topic = Topics.findOne(topicId);
           const comment = Comments.findOne({ topicId: topic._id });
           chai.assert.deepEqual(topic._id, comment.topicId);
+          done();
+        });
+      });
+
+      describe('autoClose', function () {
+        before(function () {
+          userId = Fixture.dummyUsers[2];
+        });
+     
+        it('closes old topics and only old ones', function (done) {
+          Clock.setSimulatedTime(moment().subtract(4, 'month').toDate());
+          topicId = Fixture.builder.create('forum', { creatorId: userId });
+          otherTopicId = Fixture.builder.create('vote', { creatorId: Fixture.demoManagerId });
+          const thirdTopicId = Fixture.builder.create('forum', { creatorId: userId });
+          Clock.clear();
+          Fixture.builder.create('comment', { creatorId: userId, topicId: thirdTopicId, text: 'comment' });
+          chai.assert.equal(Topics.find({ closed: true }).count(), 0);
+          closeInactiveTopics();
+          chai.assert.equal(Topics.find({ closed: true }).count(), 2);
+          chai.assert.isTrue(Topics.findOne(topicId).closed);
+          chai.assert.isTrue(Topics.findOne(otherTopicId).closed);
+          chai.assert.isFalse(Topics.findOne(thirdTopicId).closed);
+          done();
+        });
+
+        it('does not close exception categories', function (done) {
+          Clock.setSimulatedTime(moment().subtract(4, 'month').toDate());
+          const ticketId = Fixture.builder.create('ticket', { creatorId: userId });
+          Clock.clear();
+          chai.assert.equal(Topics.find({ closed: true }).count(), 2);
+          closeInactiveTopics();
+          chai.assert.equal(Topics.find({ closed: true }).count(), 2);
+          chai.assert.isFalse(Topics.findOne(ticketId).closed);
           done();
         });
       });

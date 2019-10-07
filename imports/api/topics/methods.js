@@ -12,6 +12,7 @@ import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
@@ -96,12 +97,14 @@ export const remove = new ValidatedMethod({
 });
 
 export function closeInactiveTopics() {
-  const monthsAgo = moment().subtract(3, 'months').toDate();
-  const closableTopics = Topics.find({ status: { $ne: 'closed' }, updatedAt: { $lt: monthsAgo } }).fetch()
-    .filter(topic => _.contains(topic.possibleNextStatuses().map(s => s.name), 'closed'));
-  closableTopics.forEach(topic => Topics.methods.statusChange._execute({ userId: topic.creatorId }, // permissionwise the creator is the one closing it
-    { userId: topic.creatorId, topicId: topic._id, status: 'closed' },
-  ));
+  const archiveTime = moment().subtract(3, 'months').toDate();
+  const exceptCategories = ['ticket'];
+  const closableTopics = Topics.find({ closed: false, category: { $nin: exceptCategories }, updatedAt: { $lt: archiveTime } }).fetch();
+  closableTopics.forEach((topic) => {
+    const community = Communities.findOne(topic.communityId);
+    const localAdminId = community.admin()._id;
+    Topics.methods.update._execute({ userId: localAdminId }, { _id: topic._id, modifier: { $set: { closed: true } } });
+  });
 }
 
 Topics.methods = Topics.methods || {};
