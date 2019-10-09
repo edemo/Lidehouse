@@ -7,6 +7,13 @@ import { remove as removeAgenda } from '/imports/api/agendas/methods.js';
 import '../components/voting-list.html';
 import './agendas.html';
 
+Template.Agendas.onCreated(function boardOnCreated() {
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('topics.list', { communityId, category: 'vote' });
+  });
+});
+
 Template.Agendas.helpers({
     agendas() {
         const communityId = Session.get('activeCommunityId');

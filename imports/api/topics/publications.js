@@ -90,3 +90,53 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
     }],
   };
 });
+
+Meteor.publishComposite('topics.board', function topicsBoard(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+  }).validate(params);
+
+  const { communityId } = params;
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
+
+  const selector = {
+    communityId,
+    closed: false,
+    category: { $in: ['vote', 'forum', 'news'] },
+    // Filter for 'No participantIds (meaning everyone), or contains userId'
+    $or: [
+      { participantIds: { $exists: false } },
+      { participantIds: this.userId },
+    ],
+  };
+
+  const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
+
+  return {
+    find() {
+      return Topics.find(selector, { fields: publicFields });
+    },
+    children: [{
+      find(topic) {
+        return Comments.find({ topicId: topic._id }, { limit: 5, sort: { createdAt: -1 } });
+      },
+    }],
+  };
+});
+
+Meteor.publish('topics.list', function topicsList(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+    category: { type: String, optional: true },
+    closed: { type: Boolean, optional: true },
+  }).validate(params);
+  const { communityId } = params;
+  const user = Meteor.users.findOneOrNull(this.userId);
+
+  if (!user.hasPermission('topics.inCommunity', communityId)) {
+    return this.ready();
+  }
+
+  return Topics.find(params);
+});

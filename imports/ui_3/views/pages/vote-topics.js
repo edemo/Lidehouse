@@ -21,6 +21,7 @@ Template.Vote_topics.viewmodel({
     instance.autorun(() => {
       const communityId = Session.get('activeCommunityId');
       instance.subscribe('agendas.inCommunity', { communityId });
+      instance.subscribe('topics.list', { communityId, category: 'vote' });
     });
   },
   activeClass() {

@@ -50,7 +50,6 @@ Template.Main_layout.onCreated(function() {
   // We subscribe to all topics in the community, so that we have access to the commentCounters
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
-    this.subscribe('topics.inCommunity', { communityId });
     this.subscribe('agendas.inCommunity', { communityId });
   });
 

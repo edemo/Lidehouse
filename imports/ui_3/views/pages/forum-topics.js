@@ -19,6 +19,13 @@ import '../components/voting-list.html';
 import './vote-topics.html';
 import './forum-topics.html';
 
+Template.Forum_topics.onCreated(function boardOnCreated() {
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('topics.list', { communityId, category: 'forum' });
+  });
+});
+
 Template.Forum_topics.helpers({
   forumTopics() {
     const communityId = Session.get('activeCommunityId');
