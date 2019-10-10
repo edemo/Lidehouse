@@ -6,11 +6,13 @@ import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { CollectionHooks } from 'meteor/matb33:collection-hooks';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
 import { crudBatchOps, BatchMethod } from '/imports/api/batch-method.js';
 import { checkExists, checkNotExists, checkPermissions, checkTopicPermissions, checkModifier } from '/imports/api/method-checks.js';
 import '/imports/api/users/users.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from './topics.js';
 // In order for Topics.simpleSchema to be the full schema to validate against, we need all subtype schema
 import './votings/votings.js';
@@ -93,6 +95,17 @@ export const remove = new ValidatedMethod({
     CollectionHooks.defaultUserId = undefined;
   },
 });
+
+export function closeInactiveTopics() {
+  const archiveTime = moment().subtract(3, 'months').toDate();
+  const exceptCategories = ['ticket'];
+  const closableTopics = Topics.find({ closed: false, category: { $nin: exceptCategories }, updatedAt: { $lt: archiveTime } }).fetch();
+  closableTopics.forEach((topic) => {
+    const community = Communities.findOne(topic.communityId);
+    const localAdminId = community.admin()._id;
+    Topics.methods.update._execute({ userId: localAdminId }, { _id: topic._id, modifier: { $set: { closed: true } } });
+  });
+}
 
 Topics.methods = Topics.methods || {};
 _.extend(Topics.methods, { insert, update, move, remove });

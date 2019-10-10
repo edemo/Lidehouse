@@ -13,11 +13,35 @@ import '/imports/api/users/users.js';
 import './right-sidebar.js';
 import './top-navbar.html';
 
+function communityNameAdjust() {
+  const windowWidth = $(window).width();
+  const menuIcon = $('.navbar-header').outerWidth(true);
+  let otherElements = 0;
+  $('.navbar-top-links > li').not(':first').each(function () {
+    otherElements += $(this).outerWidth();
+  });
+  const paddingsandCaret = 40;
+  const maxCommunityName = windowWidth - menuIcon - otherElements - paddingsandCaret;
+  $('.navbar-top-links .width-adjust').css('max-width', maxCommunityName + 'px');
+}
+
 Template.Top_navbar.onRendered(function() {
   // FIXED TOP NAVBAR OPTION
   // Uncomment this if you want to have fixed top navbar
   $('body').addClass('fixed-nav').addClass('fixed-nav-basic');
   $(".navbar-static-top").removeClass('navbar-static-top').addClass('navbar-fixed-top');
+  $(window).on("load resize scroll", function() {
+    communityNameAdjust();    
+  });
+});
+
+Template.Top_navbar.onDestroyed(function() {
+  // FIXED TOP NAVBAR OPTION
+  // Uncomment this if you want to have fixed top navbar
+  $('body').removeClass('fixed-nav').removeClass('fixed-nav-basic');
+  $(window).off("load resize scroll", function() {
+    communityNameAdjust();      
+  });
 });
 
 Template.Top_navbar.helpers({

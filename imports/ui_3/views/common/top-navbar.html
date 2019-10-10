@@ -22,14 +22,14 @@
                 {{#if currentUser}}
                 <li>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="">
-                        <strong class="text-muted text-xs block">
+                        <strong class="text-muted text-xs width-adjust">
                             {{#if activeCommunity}}
                                 {{activeCommunity.name}}
                             {{else}}
                                 {{_ 'No active' }} {{_ 'community'}}
                             {{/if}}
-                            <b class="caret"></b>
                         </strong>
+                        <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu animated fadeInDown m-t-xs">
                         {{#each userCommunities}}
