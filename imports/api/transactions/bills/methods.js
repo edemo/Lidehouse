@@ -128,11 +128,8 @@ export const registerPayment = new ValidatedMethod({
     if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
 //    const result = Bills.update({ _id }, modifier);
     const paymentIndex = doc.payments.length;
-    const result = Bills.update(_id, { $push: { payments: payment } });
-
-    // Hack to force update outstanding value
-    const newDoc = Bills.findOne(_id);
-    Bills.update(_id, { $set: { amount: newDoc.amount, payments: newDoc.payment } });
+   // const result = Bills.update(_id, { $push: { payments: payment } });
+    const result = Bills.update(_id, { $set: { amount: doc.amount, payments: doc.payments.concat(payment) } });
 
     const community = Communities.findOne(doc.communityId);
     const txId = Transactions.insert(doc.makePaymentTx(payment, paymentIndex, community.settings.accountingMethod));

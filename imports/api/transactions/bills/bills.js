@@ -38,6 +38,9 @@ Bills.lineSchema = new SimpleSchema({
   taxPct: { type: Number, decimal: true, defaultValue: 0 },
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  // autoValue() {
+  //  return this.siblingField('quantity').value * this.siblingField('unitPrice').value;
+  //} },
   account: { type: String, optional: true, autoform: chooseAccountNode },
   localizer: { type: String, optional: true },
 });
@@ -54,7 +57,14 @@ Bills.paymentSchema = new SimpleSchema({
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   category: { type: String, allowedValues: Bills.categoryValues, autoform: { omit: true } },
-  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, 
+  /*autoValue() {
+    const lines = this.field('lines');
+    if (!lines) return undefined;
+    const result = 0;
+    lines.forEach(line => result += line.amount)
+    return 
+  } },*/
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   issueDate: { type: Date },
   valueDate: { type: Date },
