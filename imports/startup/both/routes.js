@@ -51,7 +51,7 @@ if (Meteor.isClient) {
 FlowRouter.route('/', {
   name: 'App home',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'app_rootRedirector' });
+    BlazeLayout.render('Blank_layout', { content: 'app_rootRedirector' });
   },
   title() {
     return __('Board');
@@ -64,7 +64,7 @@ FlowRouter.route('/', {
 FlowRouter.route('/intro', {
   name: 'App intro',
   action() {
-    BlazeLayout.render('Intro_page');
+    BlazeLayout.render('Blank_layout', { content: 'Intro_page' });
   },
   title() {
     return __(FlowRouter.current().route.name);
@@ -167,7 +167,7 @@ FlowRouter.route('/room/:_rid', {
     return Room && `${Room.title}`;
   },
 });
-CommunityRelatedRoutes.push('Messages');
+CommunityRelatedRoutes.push('Room show');
 
 FlowRouter.route('/forum', {
   name: 'Forum',
