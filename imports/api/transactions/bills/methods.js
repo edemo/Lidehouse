@@ -113,17 +113,16 @@ export const conteer = new ValidatedMethod({
   },
 });
 
+
 export const registerPayment = new ValidatedMethod({
   name: 'bills.registerPayment',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     payment: { type: Bills.paymentSchema },
-//    modifier: { type: Object, blackbox: true },
   }).validator(),
 
   run({ _id, payment }) {
     const doc = checkExists(Bills, _id);
-//    checkModifier(doc, modifier, ['payments']);
     checkPermissions(this.userId, 'bills.payment', doc.communityId);
     if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
 //    const result = Bills.update({ _id }, modifier);
@@ -134,6 +133,21 @@ export const registerPayment = new ValidatedMethod({
     const community = Communities.findOne(doc.communityId);
     const txId = Transactions.insert(doc.makePaymentTx(payment, paymentIndex, community.settings.accountingMethod));
     return result;
+  },
+});
+
+export const updatePayment = new ValidatedMethod({
+  name: 'bills.updatePayment',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    modifier: { type: Object, blackbox: true },
+  }).validator(),
+
+  run({ _id, modifier }) {
+    const doc = checkExists(Bills, _id);
+    checkModifier(doc, modifier, ['payments']);
+    checkPermissions(this.userId, 'bills.payment', doc.communityId);
+    registerPayment._execute({ userId: this.userId }, { _id, payment: modifier.$set.payments[0] })
   },
 });
 

@@ -706,6 +706,9 @@
         "amount": {
           "label": "Összeg",
           "placeholder": "(pl. 14560)"
+        },
+        "account": {
+          "label": "Pénz számla"
         }
       }
     }

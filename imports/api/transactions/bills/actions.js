@@ -99,18 +99,19 @@ export function allBillsActions() {
       visible(id) {
         if (!currentUserHasPermission('bills.payment')) return false;
         const doc = Bills.findOne(id);
-        return (!!doc.txId);
+        return (!!doc.txId && doc.outstanding > 0);
       },
       run(id) {
-        Session.set('activeBillId', id);
+        //Session.set('activeBillId', id);
         Modal.show('Autoform_edit', {
           id: 'af.bill.registerPayment',
-          //collection: Bills,
-          schema: Bills.paymentSchema, //['payments'],
-          //doc: Bills.findOne(id),
-          type: 'method',
-          meteormethod: 'bills.registerPayment',
-          //singleMethodArgument: true,
+          collection: Bills,
+          fields: ['payments'],
+          doc: Bills.findOne(id),
+          type: 'method-update',
+//          setArrayItems: true,
+          meteormethod: 'bills.updatePayment',
+          singleMethodArgument: true,
         });
       },
     },
@@ -154,7 +155,7 @@ AutoForm.addHooks('af.bill.insert', {
   },
 });
 
-
+/*
 AutoForm.addHooks('af.bill.registerPayment', {
   formToDoc(doc) {
 //    doc.payment = _.extend({}, doc);
@@ -166,4 +167,4 @@ AutoForm.addHooks('af.bill.registerPayment', {
     return newDoc;
   },
 });
-
+*/

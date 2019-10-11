@@ -9,15 +9,11 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Communities } from '../../communities/communities';
+import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
 export const Bills = new Mongo.Collection('bills');
@@ -48,10 +44,10 @@ Bills.lineSchema = new SimpleSchema({
 Bills.paymentSchema = new SimpleSchema({
   valueDate: { type: Date },
   amount: { type: Number },
-  account: { type: String, optional: true },  // the money account paid to/from
+  account: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
 //  tx: { type: Bills.connectedTxSchema, optional: true },    // used if accounting method is 'cash'):
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+//  txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
 });
 
 Bills.schema = new SimpleSchema({
@@ -72,7 +68,7 @@ Bills.schema = new SimpleSchema({
   partner: { type: String, optional: true },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
-  payments: { type: Array, defaultValue: [], autoform: { omit: true } },
+  payments: { type: Array, defaultValue: [] },
   'payments.$': { type: Bills.paymentSchema },
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client can ask to sort on outstanding amount
 //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now

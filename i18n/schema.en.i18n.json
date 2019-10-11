@@ -701,6 +701,9 @@
         "amount": {
           "label": "Amount",
           "placeholder": "(eg. 14560)"
+        },
+        "account": {
+          "label": "Money account"
         }
       }
     }

@@ -96,6 +96,24 @@
                 </tr>
                 </tbody>
             </table>
+  
+            <table class="table invoice-total"> 
+              <tbody>
+              {{#each payment in doc.payments}}
+              <tr>
+                  <td><strong>
+                    {{#if not @index}}{{_ 'schemaBills.payments.label'}}: {{/if}}
+                    {{displayDate payment.valueDate}} :
+                  </strong></td>
+                  <td>{{payment.amount}}</td>
+              </tr>
+              {{/each}}
+              <tr>
+                  <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>
+                  <td>{{doc.outstanding}}</td>
+              </tr>
+              </tbody>
+            </table>
 
             <div class="text-right" data-id="{{doc._id}}">
               {{#if (actions.conteer.visible doc._id)}}
@@ -108,7 +126,7 @@
                 <button class="btn btn-warning js-edit"><i class="fa fa-pencil"></i> {{_ 'Bill conteer'}}</button>
               {{/if}}
             </div>
-  
+
             {{#if doc.note}}
             <div class="well m-t"><strong>{{_ 'schemaBills.note.label'}}</strong>
                 {{doc.note}}
