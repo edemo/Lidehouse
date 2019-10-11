@@ -21,14 +21,16 @@ export const BILLING_DUE_DAYS = 8;
 
 export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
-  validate: ParcelBillings.applySchema.validator(),
+  validate: new SimpleSchema({
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    valueDate: { type: Date },
+  }).validator(),
 
-  run({ communityId, ids, valueDate }) {
+  run({ communityId, valueDate }) {
     checkPermissions(this.userId, 'parcelBillings.apply', communityId);
     const bills = {}; // parcelId => his bill
-    ids.forEach(parcelBillingId => {
-      const parcelBilling = ParcelBillings.findOne(parcelBillingId);
-      if (!parcelBilling || parcelBilling.communityId !== communityId) return;  // should throw error?
+    const activeParcelBillings = ParcelBillings.find({ communityId, active: true });
+    activeParcelBillings.forEach(parcelBilling => {
       const parcels = parcelBilling.parcels();
       parcels.forEach((parcel) => {
         const line = {};
@@ -39,15 +41,15 @@ export const apply = new ValidatedMethod({
             line.uom = '1';
             line.quantity = 1;
             break;
-          case 'perArea':
+          case 'area':
             line.uom = 'm2';
             line.quantity = (parcel.area || 0);
             break;
-          case 'perVolume':
+          case 'volume':
             line.uom = 'm3';
             line.quantity = (parcel.volume || 0);
             break;
-          case 'perHabitant':
+          case 'habitant':
             line.uom = 'p';
             line.quantity = (parcel.habitants || 0);
             break;
@@ -89,34 +91,13 @@ export const revert = new ValidatedMethod({
   },
 });
 
-export const remove = new ValidatedMethod({
-  name: 'parcelBillings.remove',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
-
-  run({ _id }) {
-    const doc = checkExists(ParcelBillings, _id);
-    checkPermissions(this.userId, 'parcelBillings.remove', doc.communityId);
-    return ParcelBillings.remove(_id);
-  },
-});
-
 export const insert = new ValidatedMethod({
   name: 'parcelBillings.insert',
   validate: ParcelBillings.simpleSchema().validator({ clean: true }),
 
   run(doc) {
     checkPermissions(this.userId, 'parcelBillings.insert', doc.communityId);
-    const valueDate = doc.valueDate;
-    delete doc.valueDate;
     const id = ParcelBillings.insert(doc);
-    if (Meteor.isServer) {
-      if (valueDate) { // new parcel billings are automatically applied, if valueDate is given
-        apply._execute({ userId: this.userId }, { communityId: doc.communityId, ids: [id], valueDate });
-        remove._execute({ userId: this.userId }, { _id: id });
-      }
-    }
     return id;
   },
 });
@@ -132,8 +113,20 @@ export const update = new ValidatedMethod({
     const doc = checkExists(ParcelBillings, _id);
 //    checkModifier(doc, modifier, );
     checkPermissions(this.userId, 'parcelBillings.update', doc.communityId);
-
     return ParcelBillings.update({ _id }, { $set: modifier });
+  },
+});
+
+export const remove = new ValidatedMethod({
+  name: 'parcelBillings.remove',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+
+  run({ _id }) {
+    const doc = checkExists(ParcelBillings, _id);
+    checkPermissions(this.userId, 'parcelBillings.remove', doc.communityId);
+    return ParcelBillings.remove(_id);
   },
 });
 

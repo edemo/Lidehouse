@@ -796,7 +796,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
     title: 'Közös költség előírás',
-    projection: 'perArea',
+    projection: 'area',
     amount: 275,
     payinType: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
     localizer: '@',
@@ -806,7 +806,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   parcelsWithNoWaterMeter.forEach((parcel) => {
     parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
       title: 'Hidegvíz előírás',
-      projection: 'perHabitant',
+      projection: 'habitant',
       amount: 2500,
       payinType: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
       localizer: Localizer.parcelRef2code(parcel.ref),
@@ -815,26 +815,29 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
     title: 'Fűtési díj előírás',
-    projection: 'perVolume',
+    projection: 'volume',
     amount: 85,
     payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
     localizer: '@A',
   }));
-
-  ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
-    const valueDate = new Date(`2017-${mm}-12`);
-    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, ids: parcelBillingIds, valueDate });
-  });
 
   // This is a one-time, extraordinary parcel billing
   demoBuilder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
     projection: 'absolute',
     amount: 75000,
-    valueDate: new Date('2017-08-15'),
     payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
     note: __('demo.transactions.note.0'),
+    activeTime: {
+      begin: new Date(`2017-08-01`),
+      end: new Date(`2017-08-31`),
+    },
+  });
+
+  ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
+    const valueDate = new Date(`2017-${mm}-12`);
+    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate });
   });
 
   // === Owner Payins ===
@@ -868,16 +871,19 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 */
-
   // Some unpaid bills (so we can show the parcels that are in debt)
   demoBuilder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
-    projection: 'perArea',
+    projection: 'area',
     amount: 200,
-    valueDate: new Date('2017-12-15'),
     payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
+    activeTime: {
+      begin: new Date('2018-01-01'),
+      end: new Date('2018-01-31'),
+    },
   });
+  demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: new Date('2018-01-12') });
 
   // Unidentified payin
   demoBuilder.insert(Transactions, 'tx', {

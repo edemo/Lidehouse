@@ -6,6 +6,7 @@ import faker from 'faker';
 
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -16,25 +17,18 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
-ParcelBillings.projectionValues = ['absolute', 'perArea', 'perVolume', 'perHabitant'];
+ParcelBillings.projectionValues = ['absolute', 'area', 'volume', 'habitant'];
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   title: { type: String, max: 100 },
-  valueDate: { type: Date, optional: true },  // supplied for a one-time parcelBilling
   projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
   amount: { type: Number },
   payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
   localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
   note: { type: String, max: 100, optional: true },
   appliedAt: { type: [Date], defaultValue: [], autoform: { omit: true } },
-});
-
-ParcelBillings.applySchema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  ids: { type: [String], regEx: SimpleSchema.RegEx.Id },
-  valueDate: { type: Date },
 });
 
 Meteor.startup(function indexParcelBillings() {
@@ -55,6 +49,7 @@ ParcelBillings.helpers({
 
 ParcelBillings.attachSchema(ParcelBillings.schema);
 ParcelBillings.attachBehaviour(Timestamped);
+ParcelBillings.attachBehaviour(ActivePeriod);
 
 Meteor.startup(function attach() {
   ParcelBillings.simpleSchema().i18n('schemaParcelBillings');

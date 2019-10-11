@@ -224,7 +224,7 @@ export class CommunityBuilder {
       const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
       this.insert(ParcelBillings, '', {
         valueDate,
-        projection: 'perArea',
+        projection: 'area',
         amount: 275,
         payinType: this.name2code('Owner payin types', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),

@@ -2,6 +2,7 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
+import { moment } from 'meteor/momentjs:moment';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
@@ -37,19 +38,26 @@ if (Meteor.isServer) {
         chai.assert.isDefined(testParcelBilling);
       });
 
-      it('can apply single one-time billing', function () {
-        const parcelBillingId = Fixture.builder.create('parcelBilling', {
+      it('can apply single billing - doesnt apply old billing', function () {
+        Fixture.builder.create('parcelBilling', {
           title: 'Test area',
-          valueDate: new Date(),
-          projection: 'perArea',
+          projection: 'area',
           amount: 78,
           payinType: '3',
           localizer: '@',
         });
-
-        // One-time billing is removed after applied
-        const testParcelBilling = ParcelBillings.findOne({ title: 'Test area' });
-        chai.assert.isUndefined(testParcelBilling);
+        Fixture.builder.create('parcelBilling', {
+          title: 'Test INACTIVE',
+          projection: 'absolute',
+          amount: 1000,
+          payinType: '4',
+          localizer: '@',
+          activeTime: {
+            begin: moment().subtract(3, 'day').toDate(),
+            end: moment().subtract(1, 'day').toDate(),
+          },
+        });
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
 
         const parcels = Parcels.find({ communityId }).fetch();
         const bills = Bills.find({ communityId }).fetch();
@@ -69,14 +77,14 @@ if (Meteor.isServer) {
       });
 
       it('can apply multiple ones', function () {
-        const parcelBillingId1 = Fixture.builder.create('parcelBilling', {
+        Fixture.builder.create('parcelBilling', {
           title: 'Test volume',
-          projection: 'perVolume',
+          projection: 'volume',
           amount: 56,
           payinType: '2',
           localizer: '@',
         });
-        const parcelBillingId2 = Fixture.builder.create('parcelBilling', {
+        Fixture.builder.create('parcelBilling', {
           title: 'Test absolute',
           projection: 'absolute',
           amount: 1000,
@@ -84,7 +92,7 @@ if (Meteor.isServer) {
           localizer: '@',
         });
 
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, ids: [parcelBillingId1, parcelBillingId2], valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
         const parcels = Parcels.find({ communityId }).fetch();
         const bills = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills.length, parcels.length);
@@ -115,7 +123,7 @@ if (Meteor.isServer) {
       xit('calculates correctly per volume', function () {
         const parcelBillingId = Fixture.builder.create('parcelBilling', {
           valueDate: new Date(),
-          projection: 'perVolume',
+          projection: 'volume',
           amount: 78,
           payinType: '5',
           localizer: '@',
@@ -141,7 +149,7 @@ if (Meteor.isServer) {
         });
         const parcelBillingId = Fixture.builder.create('parcelBilling', {
           valueDate: new Date(),
-          projection: 'perHabitant',
+          projection: 'habitant',
           amount: 155,
           payinType: '6',
           localizer: '@',
@@ -175,7 +183,7 @@ if (Meteor.isServer) {
       it('does not brake when area is missing', function () {
         const parcelBillingId = Fixture.builder.create('parcelBilling', {
           valueDate: new Date(),
-          projection: 'perArea',
+          projection: 'area',
           amount: 78,
           payinType: '4',
           localizer: '@',
@@ -199,7 +207,7 @@ if (Meteor.isServer) {
       it('does not brake when volume is missing', function () {
         const parcelBillingId = Fixture.builder.create('parcelBilling', {
           valueDate: new Date(),
-          projection: 'perVolume',
+          projection: 'volume',
           amount: 78,
           payinType: '4',
           localizer: '@',
@@ -223,7 +231,7 @@ if (Meteor.isServer) {
       it('does not brake when habitants are missing', function () {
         const parcelBillingId = Fixture.builder.create('parcelBilling', {
           valueDate: new Date(),
-          projection: 'perHabitant',
+          projection: 'habitant',
           amount: 140,
           payinType: '1',
           localizer: '@',
