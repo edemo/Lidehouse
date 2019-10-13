@@ -20,7 +20,6 @@ import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 export const Parcels = new Mongo.Collection('parcels');
 
 Parcels.typeValues = ['flat', 'parking', 'storage', 'cellar', 'attic', 'shop', 'other'];
-Parcels.heatingTypeValues = ['centralHeating', 'ownHeating'];
 
 Parcels.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
@@ -56,8 +55,6 @@ Parcels.schema = new SimpleSchema({
   area: { type: Number, decimal: true, optional: true },
   volume: { type: Number, decimal: true, optional: true },
   habitants: { type: Number, optional: true },
-  waterMetered: { type: Boolean, optional: true },
-  heatingType: { type: String, optional: true, allowedValues: Parcels.heatingTypeValues, autoform: autoformOptions(Parcels.heatingTypeValues) },
 });
 
 Parcels.idSet = ['communityId', 'ref'];

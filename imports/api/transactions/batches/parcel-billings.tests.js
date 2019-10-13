@@ -7,7 +7,8 @@ import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Parcels } from '/imports/api/parcels/parcels.js'
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Meters } from '/imports/api/meters/meters.js';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -21,31 +22,18 @@ if (Meteor.isServer) {
 
     describe('api', function () {
       let communityId;
+      let parcels;
       beforeEach(function () {
         Fixture = freshFixture();
         communityId = Fixture.demoCommunityId;
+        parcels = Parcels.find({ communityId }).fetch();
+        Meters.remove({});
         Bills.remove({});
         ParcelBillings.remove({});
         Transactions.remove({});
       });
 
-      it('can insert', function () {
-        Fixture.builder.create('parcelBilling', {
-          title: 'Test billing',
-          localizer: '@',
-        });
-        const testParcelBilling = ParcelBillings.findOne({ title: 'Test billing' });
-        chai.assert.isDefined(testParcelBilling);
-      });
-
-      it('can apply single billing - doesnt apply old billing', function () {
-        Fixture.builder.create('parcelBilling', {
-          title: 'Test area',
-          projection: 'area',
-          amount: 78,
-          payinType: '3',
-          localizer: '@',
-        });
+      it('will not apply inactive parcelBilling', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'Test INACTIVE',
           projection: 'absolute',
@@ -57,9 +45,27 @@ if (Meteor.isServer) {
             end: moment().subtract(1, 'day').toDate(),
           },
         });
+        const testParcelBilling = ParcelBillings.findOne({ title: 'Test INACTIVE' });
+        chai.assert.isDefined(testParcelBilling);
+        chai.assert.isFalse(testParcelBilling.active);
+
         Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
 
-        const parcels = Parcels.find({ communityId }).fetch();
+        const bills = Bills.find({ communityId }).fetch();
+        chai.assert.equal(bills.length, 0);
+      });
+
+      it('can apply single billing', function () {
+        Fixture.builder.create('parcelBilling', {
+          title: 'Test area',
+          projection: 'area',
+          amount: 78,
+          payinType: '3',
+          localizer: '@',
+        });
+
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
+
         const bills = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills.length, parcels.length);
         bills.forEach(bill => {
@@ -76,7 +82,7 @@ if (Meteor.isServer) {
         });
       });
 
-      it('can apply multiple ones', function () {
+      it('can apply multiple projections', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'Test volume',
           projection: 'volume',
@@ -93,7 +99,7 @@ if (Meteor.isServer) {
         });
 
         Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
-        const parcels = Parcels.find({ communityId }).fetch();
+        
         const bills = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills.length, parcels.length);
         bills.forEach(bill => {
@@ -114,8 +120,60 @@ if (Meteor.isServer) {
           chai.assert.equal(line1.quantity, 1);
         });
       });
-    });
 
+      it('can apply consumption based billing', function () {
+        Fixture.builder.create('parcelBilling', {
+          title: 'Test consumption',
+          consumption: 'coldWater',
+          uom: 'm3',
+          unitPrice: '600',
+          projection: 'habitants',
+          amount: 5000,
+          payinType: '3',
+          localizer: '@',
+        });
+        const meteredParcelId = Fixture.dummyParcels[0];
+        const meteredParcel = Parcels.findOne(meteredParcelId);
+        const meterId = Fixture.builder.create('meter', {
+          parcelId: meteredParcelId,
+          identifier: 'CW-01010101',
+          service: 'coldWater',
+        });
+
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
+
+        const bills = Bills.find({ communityId }).fetch();
+        chai.assert.equal(bills.length, parcels.length - 1);
+        bills.forEach(bill => {
+          const ref = bill.partner;
+          chai.assert.isDefined(ref);
+          const parcel = Parcels.findOne({ communityId, ref });
+
+          chai.assert.equal(bill.lines.length, 1);
+          const line = bill.lines[0];
+          chai.assert.equal(line.title, 'Test consumption');
+          chai.assert.equal(line.uom, 'p');
+          chai.assert.equal(line.unitPrice, 5000);
+          chai.assert.equal(line.quantity, parcel.habitants);
+        });
+
+        Bills.remove({});
+
+        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date(), value: 32, approved: false } });
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
+
+        const bills2 = Bills.find({ communityId }).fetch();
+        chai.assert.equal(bills2.length, parcels.length);
+        const bill = Bills.findOne({ partner: meteredParcel.ref });
+        chai.assert.equal(bill.lines.length, 1);
+        const line = bill.lines[0];
+        chai.assert.equal(line.title, 'Test consumption');
+        chai.assert.equal(line.uom, 'm3');
+        chai.assert.equal(line.unitPrice, 600);
+        chai.assert.equal(line.quantity, 32);
+      });
+    });
+/*
     xdescribe('apply', function () {
       before(function () {
       });
@@ -149,7 +207,7 @@ if (Meteor.isServer) {
         });
         const parcelBillingId = Fixture.builder.create('parcelBilling', {
           valueDate: new Date(),
-          projection: 'habitant',
+          projection: 'habitants',
           amount: 155,
           payinType: '6',
           localizer: '@',
@@ -231,7 +289,7 @@ if (Meteor.isServer) {
       it('does not brake when habitants are missing', function () {
         const parcelBillingId = Fixture.builder.create('parcelBilling', {
           valueDate: new Date(),
-          projection: 'habitant',
+          projection: 'habitants',
           amount: 140,
           payinType: '1',
           localizer: '@',
@@ -272,5 +330,6 @@ if (Meteor.isServer) {
       });
 
     });
+  */
   });
 }

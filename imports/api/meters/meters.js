@@ -24,7 +24,17 @@ Meters.serviceValues = ['coldWater', 'hotWater', 'electricity', 'gas', 'heating'
 
 Meters.readingSchema = new SimpleSchema({
   date: { type: Date },
-  reading: { type: Number },
+  value: { type: Number },
+  approved: { type: Boolean, autoform: { omit: true }, defaultValue: false },
+});
+
+Meters.billingTypeValues = ['reading', 'estimate'];
+Meters.billingSchema = new SimpleSchema({
+  date: { type: Date },
+  value: { type: Number },
+  type: { type: String, allowedValues: Meters.billingTypeValues, autoform: autoformOptions(Meters.billingTypeValues) },
+//  readingId: { type: Number },   // pointer // if not present, it is an estimation
+  billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
 Meters.schema = new SimpleSchema({
@@ -32,9 +42,11 @@ Meters.schema = new SimpleSchema({
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   service: { type: String, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
   identifier: { type: String },
-//  approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
+  approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   readings: { type: Array, optional: true },
   'readings.$': { type: Meters.readingSchema },
+  billings: { type: Array, optional: true },
+  'billings.$': { type: Meters.billingSchema },
 });
 
 Meters.idSet = ['communityId', 'identifier'];
@@ -53,6 +65,9 @@ Meters.helpers({
   lastReading() {
     return _.last(this.readings);
   },
+  lastBilling() {
+    return _.last(this.billings);
+  },
 });
 
 Meters.attachSchema(Meters.schema);
@@ -63,8 +78,26 @@ Meteor.startup(function attach() {
   Meters.simpleSchema().i18n('schemaMeters');
 });
 
+if (Meteor.isServer) {
+  Meters.before.insert(function (userId, doc) {
+    if (!doc.readings) {
+      doc.readings = [{
+        date: (doc.activeTime && doc.activeTime.begin) || new Date(),
+        value: 0,
+      }];
+    }
+    if (!doc.billings) {
+      doc.billings = [{
+        date: (doc.activeTime && doc.activeTime.begin) || new Date(),
+        value: 0,
+      }];
+    }
+  });
+}
+
 // --- Factory ---
 
 Factory.define('meter', Meters, {
   communityId: () => Factory.get('community'),
+  identifier: () => faker.random.alphaNumeric(),
 });

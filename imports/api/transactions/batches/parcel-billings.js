@@ -9,6 +9,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Meters } from '/imports/api/meters/meters.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -17,14 +18,20 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
-ParcelBillings.projectionValues = ['absolute', 'area', 'volume', 'habitant'];
+ParcelBillings.projectionValues = ['absolute', 'area', 'volume', 'habitants'];
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   title: { type: String, max: 100 },
-  projection: { type: String, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
-  amount: { type: Number },
+  // if consumption based
+  consumption: { type: String, optional: true, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues) },
+  uom: { type: String, max: 100, optional: true },
+  unitPrice: { type: Number, decimal: true, optional: true },
+  // if projection based
+  projection: { type: String, optional: true, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
+  amount: { type: Number, optional: true },
+  // ---
   payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
   localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
   note: { type: String, max: 100, optional: true },

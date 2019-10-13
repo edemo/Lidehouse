@@ -28,6 +28,7 @@ export const Permissions = [
   { name: 'meters.inCommunity',     roles: ['manager'] },
   { name: 'meters.insert',          roles: ['manager'] },
   { name: 'meters.update',          roles: ['manager'] },
+  { name: 'meters.registerReading', roles: ['manager', 'accountant', 'treasurer', 'owner'] },
   { name: 'meters.remove',          roles: ['manager'] },
   { name: 'meters.upsert',          roles: ['manager'] },
   { name: 'agendas.inCommunity',    roles: everyRole },

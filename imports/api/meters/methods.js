@@ -29,7 +29,7 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['identifier'], true);
     checkPermissions(this.userId, 'meters.update', doc.communityId);
 
-    return Meters.update({ _id }, modifier);
+    return Meters.update(_id, modifier);
   },
 });
 
@@ -46,6 +46,38 @@ export const remove = new ValidatedMethod({
   },
 });
 
+export const registerReading = new ValidatedMethod({
+  name: 'meters.registerReading',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    reading: { type: Meters.readingSchema },
+  }).validator(),
+
+  run({ _id, reading }) {
+    const doc = checkExists(Meters, _id);
+    checkPermissions(this.userId, 'meters.registerReading', doc.communityId);
+    const modifier = { $push: { readings: reading } };
+
+    return Meters.update(_id, modifier);
+  },
+});
+
+export const registerBilling = new ValidatedMethod({
+  name: 'meters.registerBilling',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+    billing: { type: Meters.billingSchema },
+  }).validator(),
+
+  run({ _id, billing }) {
+    const doc = checkExists(Meters, _id);
+    checkPermissions(this.userId, 'parcelBillings.apply', doc.communityId);
+    const modifier = { $push: { billings: billing } };
+
+    return Meters.update(_id, modifier);
+  },
+});
+
 Meters.methods = Meters.methods || {};
-_.extend(Meters.methods, { insert, update, remove });
+_.extend(Meters.methods, { insert, update, remove, registerReading, registerBilling });
 _.extend(Meters.methods, crudBatchOps(Meters));

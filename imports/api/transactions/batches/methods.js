@@ -9,6 +9,7 @@ import { checkExists, checkModifier, checkPermissions } from '/imports/api/metho
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Meters } from '/imports/api/meters/meters.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 //  import { TxDefs } from '/imports/api/transactions/tx-defs.js';
@@ -35,27 +36,41 @@ export const apply = new ValidatedMethod({
       parcels.forEach((parcel) => {
         const line = {};
         line.title = parcelBilling.title;
-        line.unitPrice = parcelBilling.amount;
-        switch (parcelBilling.projection) {
-          case 'absolute':
-            line.uom = '1';
-            line.quantity = 1;
-            break;
-          case 'area':
-            line.uom = 'm2';
-            line.quantity = (parcel.area || 0);
-            break;
-          case 'volume':
-            line.uom = 'm3';
-            line.quantity = (parcel.volume || 0);
-            break;
-          case 'habitant':
-            line.uom = 'p';
-            line.quantity = (parcel.habitants || 0);
-            break;
-          default: debugAssert(false);
+        let activeMeter;
+        if (parcelBilling.consumption) {
+          activeMeter = Meters.findOne({ parcelId: parcel._id, service: parcelBilling.consumption, active: true });
+          if (activeMeter) {
+            line.unitPrice = parcelBilling.unitPrice;
+            line.uom = parcelBilling.uom;
+            // TODO: Estimation if no reading available
+            line.quantity = (activeMeter.lastReading().value - activeMeter.lastBilling().value);
+          }
         }
-//        line.amount = line.quantity * line.unitPrice;
+        if (!activeMeter) {
+          line.unitPrice = parcelBilling.amount;
+          switch (parcelBilling.projection) {
+            case 'absolute':
+              line.uom = '1';
+              line.quantity = 1;
+              break;
+            case 'area':
+              line.uom = 'm2';
+              line.quantity = (parcel.area || 0);
+              break;
+            case 'volume':
+              line.uom = 'm3';
+              line.quantity = (parcel.volume || 0);
+              break;
+            case 'habitants':
+              line.uom = 'p';
+              line.quantity = (parcel.habitants || 0);
+              break;
+            default: debugAssert(false, 'No such projection');
+          }
+        }
+        debugAssert(line.uom && _.isDefined(line.quantity), 'Billing needs consumption or projection.');
+        if (line.quantity === 0) return; // Should not create bill for zero amount
+
         line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
         line.localizer = Localizer.parcelRef2code(parcel.ref);
         
@@ -70,6 +85,19 @@ export const apply = new ValidatedMethod({
           lines: [],
         };
         bills[parcel._id].lines.push(line);
+
+        if (activeMeter) {
+          Meters.methods.registerBilling._execute({ userId: this.userId }, {
+            _id: activeMeter._id,
+            billing: {
+              date: new Date(),
+              value: activeMeter.lastReading().value,
+              type: 'reading',
+  //            readingId
+  //            billId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+            },
+          });
+        }
       });
     });
 

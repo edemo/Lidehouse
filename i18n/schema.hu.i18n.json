@@ -120,9 +120,29 @@
           "label": "Leolvasás időpontja",
           "placeholder": "éééé-hh-nn"
         },
-        "reading": {
+        "value": {
           "label": "Óraállás",
           "placeholder": "(mérőn olvasható érték)"
+        }
+      }
+    },
+    "billings": {
+      "label": "Kiszámlázások",
+      "$": {
+        "date": {
+          "label": "Kiszámlázás időpontja",
+          "placeholder": "éééé-hh-nn"
+        },
+        "type": {
+          "label": "Számlázás típusa"
+        },
+        "value": {
+          "label": "Óraállás",
+          "placeholder": "(mérőn olvasható érték)"
+        },
+        "readingId": {
+          "label": "Leolvasás",
+          "placeholder": "(ha nincs megadva, akkor becslés)"
         }
       }
     },

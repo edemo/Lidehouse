@@ -446,7 +446,7 @@
   "absolute": "abszolút (Ft)",
   "area": "terület (/m2)",
   "volume": "légköbméter (/m3)",
-  "habitant": "lakók száma (/fő)",
+  "habitants": "lakók száma (/fő)",
   "Register payment": "Kifizetés rögzítése",
   "Send to accouting" : "Könyvelésbe küldés",
   // accounts

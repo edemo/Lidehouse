@@ -143,7 +143,7 @@
                         <td>{{>Active_period this}}</td>
                         <td class="contact-type"><i class="fa fa-camera"></i></td>
                         <td>{{displayDate this.lastReading.date}}</td>
-                        <td>{{{displayReading this.lastReading.reading}}}</td>
+                        <td>{{{displayReading this.lastReading.value}}}</td>
                         <td class="text-right">
                             <div class="btn-group">
                                 {{#if userHasPermission 'meters.update' communityId}}

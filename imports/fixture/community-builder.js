@@ -12,6 +12,7 @@ import { Clock } from '/imports/utils/clock';
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import '/imports/api/meters/methods.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -83,7 +84,8 @@ export class CommunityBuilder {
       case 'insert': switch (collName) {
         case 'agendas':
         case 'contracts':
-        case 'parcels': return this.getUserWithRole('manager');
+        case 'parcels':
+        case 'meters': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');
         case 'bills':
         case 'transactions':

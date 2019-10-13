@@ -120,9 +120,29 @@
           "label": "Date of reading",
           "placeholder": "yyyy-mm-dd"
         },
-        "reading": {
+        "value": {
           "label": "Reading value",
           "placeholder": "(value on the meter)"
+        }
+      }
+    },
+    "billings": {
+      "label": "Meter billings",
+      "$": {
+        "date": {
+          "label": "Date of billing",
+          "placeholder": "yyyy-mm-dd"
+        },
+        "type": {
+          "label": "Billing type"
+        },
+        "value": {
+          "label": "Billing value",
+          "placeholder": "(value on the meter)"
+        },
+        "readingId": {
+          "label": "Reading",
+          "placeholder": "(if not given, its an estimate)"
         }
       }
     },

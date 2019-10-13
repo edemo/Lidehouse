@@ -124,12 +124,6 @@ export const HouseTranslation = {
         "label": "Number of habitants",
         "placeholder": "(eg. 3)"
       },
-      "waterMetered": {
-        "label": "Water meter",
-      },
-      "heatingType": {
-        "label": "Heating type",
-      },
       "freeFields": {
         "label": "Free fields",
         "$": {
@@ -271,12 +265,6 @@ export const HouseTranslation = {
       "habitants": {
         "label": "Lakók száma",
         "placeholder": "(pl. 3)"
-      },
-      "waterMetered": {
-        "label": "Vízórás",
-      },
-      "heatingType": {
-        "label": "Fűtés típusa",
       },
       "freeFields": {
         "label": "Kötetlen mezők",
