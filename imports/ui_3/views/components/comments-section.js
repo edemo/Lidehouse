@@ -124,6 +124,8 @@ Template.Comment.events({
       id: 'af.comment.move',
       schema: Comments.moveSchema,
       doc: { _id: instance.data._id },
+      type: 'method',
+      meteormethod: 'comments.move',
     });
   },
   'click .js-delete'(event, instance) {
@@ -151,10 +153,4 @@ Template.Comment.events({
 });
 
 AutoForm.addModalHooks('af.comment.move');
-AutoForm.addHooks('af.comment.move', {
-  onSubmit(doc) {
-    AutoForm.validateForm('af.comment.move');
-    Comments.methods.move.call(doc, handleError);
-    return true;
-  },
-});
+

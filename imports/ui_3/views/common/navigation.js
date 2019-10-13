@@ -6,6 +6,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/users/users.js';
+import '/imports/ui_3/views/components/badge.js';
 
 import './navigation.html';
 

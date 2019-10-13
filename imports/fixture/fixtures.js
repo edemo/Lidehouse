@@ -228,6 +228,7 @@ export function insertUnittestFixture(lang) {
   castVote._execute({ userId: voterships[2].personId }, { topicId: voteTopic0, castedVote: [2] });  // no
   castVote._execute({ userId: voterships[3].personId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
 
+  demoBuilder.execute(Topics.methods.statusChange, { topicId: voteTopic0, status: 'votingFinished' });
   demoBuilder.execute(Topics.methods.statusChange, { topicId: voteTopic0, status: 'closed' });
 
   const voteTopic1 = demoBuilder.create('vote', {

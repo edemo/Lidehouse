@@ -19,7 +19,7 @@ import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/voting-edit.js';
+import { afVoteStatusChangeModal } from '/imports/ui_3/views/modals/voting-edit.js';
 import '/imports/ui_3/views/components/vote-results.js';
 import '../components/select-voters.js';
 import './topic-box.js';
@@ -46,7 +46,7 @@ Template.Topic_vote_body.onRendered(function voteboxOnRendered() {
     const voteSummary = voting.voteSummary;
     if (!voteSummary) return; // Results come down in a different sub, so it might not be there just yet
 
-    if (voting.closed) {
+    if (voting.votingClosed()) {
       const barData = {
         labels: vote.choices.map(c => `${__(c)}`),
         datasets: [{
@@ -104,12 +104,16 @@ Template.Topic_vote_header.events({
       message: 'It will disappear forever',
     });
   },
-  'click .vote .js-status[data-status="closed"]'(event, instance) {
-    const serverTimeNow = new Date(TimeSync.serverTime());
-    const closureDate = moment(this.closesAt).from(serverTimeNow);
-    Modal.confirmAndCall(Topics.methods.statusChange, { topicId: this._id, status: 'closed' }, {
-      action: 'close vote',
-      message: __('The planned date of closure was ') + closureDate,
-    });
+  'click .vote .js-status-change'(event) {
+    const id = this._id;
+    const status = $(event.target).closest('[data-status]').data('status');
+    if (status === 'votingFinished') {
+      const serverTimeNow = new Date(TimeSync.serverTime());
+      const closureDate = moment(this.closesAt).from(serverTimeNow);
+      const message = __('The planned date of closure was ') + closureDate;
+      afVoteStatusChangeModal(id, status, message);
+    } else {
+      afVoteStatusChangeModal(id, status);
+    }
   },
 });

@@ -51,7 +51,10 @@
   "delegate": "meghatalmazott",
   "maintainer": "gondnok",
   "guest": "vendég",
-
+  // ranks
+  "assistant": "asszisztens",
+  "chairman": "elnök",
+  
   "Leaders": "Vezetők",
   "Other roles": "Egyéb tisztségek",
 
@@ -119,7 +122,7 @@
   "contract": "szerződés",
   "contracts": "szerződések",
   "delegation": "meghatalmazás",
-  "ticket": "hibajegy",
+  "ticket": "munkalap",
   "tickets": "hibajegyek",
   "work": "munka",
   "worksheet": "munkalap",
@@ -633,6 +636,7 @@
   "insert vote successful": "Szavazás létrehozva",
   "update vote successful": "Szavazás módosítva",
   "close vote successful": "Szavazás lezárva",
+  "statusChange vote successful": "Szavazás státusza megváltoztatva",
   "update settings successful": "Beállítások módosítva",
   "publish balances successful": "Aktuális egyenlegek publikálva",
   "import data successful": "Adatok importálva",
