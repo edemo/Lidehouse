@@ -145,9 +145,11 @@
                 <div class="ibox-content">
                     <p>
                       <strong>{{_ 'Your voting power'}}:</strong><br>
+                      {{#if Template.subscriptionsReady}}
                       {{currentUser.totalOwnedUnits activeCommunityId}} {{_ 'from own voting units'}}<br>
                       {{currentUser.totalDelegatedToMeUnits activeCommunityId}} {{_ 'from delegated voting units'}}<br>
                       <strong>{{_ 'In total'}}: {{currentUser.totalVotingPower activeCommunityId}}</strong>
+                      {{/if}}
                     </p>
                     {{#if Template.subscriptionsReady}}
                     {{> Chart type='doughnut' data=doughnutData options=doughnutOptions height="250"}}
