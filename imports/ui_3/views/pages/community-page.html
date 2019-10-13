@@ -2,7 +2,7 @@
     {{#let begin=this.activeTime.begin}}
     {{#let end=this.activeTime.end}}
     {{#unless and (not begin) (not end)}}
-        <small>{{displayDate begin}} - {{displayDate end}}</small>
+        <small>{{displayDate begin}} - {{or (displayDate end) (_ 'active')}}</small>
     {{/unless}}    
     {{#if userHasPermission (concat this.permissionCategory '.update') communityId}}
         {{#if and (not begin) (not end)}}
@@ -130,6 +130,72 @@
         </div>
     </div>
     {{/let}}
+</template>
+
+<template name="Meters_table">
+    <div class="full-height-scroll">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <tbody>
+                    {{#each rows}}
+                    <tr data-id="{{_id}}">
+                        <td>{{{displayMeterService this.service}}}</td>
+                        <td>{{>Active_period this}}</td>
+                        <td class="contact-type"><i class="fa fa-camera"></i></td>
+                        <td>{{displayDate this.lastReading.date}}</td>
+                        <td>{{{displayReading this.lastReading.value}}}</td>
+                        <td class="text-right">
+                            <div class="btn-group">
+                                {{#if userHasPermission 'meters.update' communityId}}
+                                <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                {{/if}}
+                                {{#if userHasPermission 'meters.remove' communityId}}
+                                <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                {{/if}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+
+<template name="Meters_box">
+    <div class="ibox">
+        <div class="ibox-content">
+            <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
+            <h2>{{_ 'meters'}}</h2>
+            {{#if userHasPermission 'meters.insert' communityId}}
+            <div class="btn-group pull-right">
+                <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'meter'}}</strong></button>
+                <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+            </div>
+            {{/if}}
+            <p>
+                {{parcelDisplay}} - {{_  "meters" }} <i class="fa fa-tachometer"></i><br>
+            </p>
+            <br>
+            <div class="member-list">
+                {{#if userHasPermission 'meters.update' communityId}}
+                <ul class="nav nav-tabs">
+                    <span class="pull-right small text-muted"></span>
+                    <li class="active"><a data-toggle="tab" href="#meter-tab-1"><i class="fa fa-tachometer"></i> {{_ 'Approved'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#meter-tab-3"><i class="fa fa-archive"></i> {{_ 'Archived'}}</a></li>
+                </ul>
+                {{/if}}
+                <div class="tab-content">
+                    <div id="meter-tab-1" class="tab-pane active">
+                        {{> Meters_table rows=meters}}
+                    </div>
+                    <div id="meter-tab-3" class="tab-pane">
+                        {{> Meters_table rows=(meters 'archived')}}
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <template name="Community_page">
@@ -292,6 +358,14 @@
         </div>
         {{/if}}
 
+        <div id="meters" class="row">
+            <div class="col-md-8">
+            {{#if selectedParcelId}}
+                {{> Meters_box communityId=communityId parcelId=selectedParcelId}}
+            {{/if}}
+            </div>
+        </div>
+
         <div id="occupants" class="row">
             <div class="col-md-8">
             {{#if selectedParcelId}}
@@ -309,6 +383,5 @@
             {{/if}}
             </div>
         </div>
-
     </div>
 </template>

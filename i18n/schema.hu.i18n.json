@@ -1,6 +1,9 @@
 {
   // Would be nicer to use schema scope and subscope it, but then we can't override collections translations separately
   "schemaGeneral": {
+    "serialId": {
+      "label": "Azonosító"
+    },
     "creatorId": {
       "label": "Létrehozta"
     },
@@ -94,6 +97,64 @@
       },
       "newsletter": {
         "label": "Szeretnék feliratkozni az applikációval kapcsolatos hírlevélre"
+      }
+    }
+  },
+  "schemaMeters" : {
+    "service": {
+      "label": "Szolgáltatás",
+      "coldWater": "Hideg víz",
+      "hotWater": "Meleg víz",
+      "electricity": "Áram",
+      "gas": "Gáz",
+      "heating": "Fűtés",
+      "cooling": "Hűtés"
+    },
+    "identifier": {
+      "label": "Gyári azonosító"
+    },
+    "readings": {
+      "label": "Leolvasások",
+      "$": {
+        "date": {
+          "label": "Leolvasás időpontja",
+          "placeholder": "éééé-hh-nn"
+        },
+        "value": {
+          "label": "Óraállás",
+          "placeholder": "(mérőn olvasható érték)"
+        }
+      }
+    },
+    "billings": {
+      "label": "Kiszámlázások",
+      "$": {
+        "date": {
+          "label": "Kiszámlázás időpontja",
+          "placeholder": "éééé-hh-nn"
+        },
+        "type": {
+          "label": "Számlázás típusa"
+        },
+        "value": {
+          "label": "Óraállás",
+          "placeholder": "(mérőn olvasható érték)"
+        },
+        "readingId": {
+          "label": "Leolvasás",
+          "placeholder": "(ha nincs megadva, akkor becslés)"
+        }
+      }
+    },
+    "activeTime": {
+      "label": "Aktív időszak (felszerelés/leszerelés)",
+      "begin": {
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
       }
     }
   },
@@ -564,6 +625,114 @@
       "placeholder": ""
     }
   },
+  "schemaBills": {
+    "category": {
+      "label": "Kategória",
+      "in": "Bejövő számla",
+      "out": "Kimenő számla",
+      "parcel": "Előírás"      
+    },
+    "serial": {
+      "label": "Sorszám"
+    },
+    "serialId": {
+      "label": "Számla azonosító"
+    },
+    "createdAt": {
+      "label": "Rögzítés ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "issueDate": {
+      "label": "Kiállítás ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "valueDate": {
+      "label": "Teljesítés ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "dueDate": {
+      "label": "Fizetési határidő",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "paymentDate": {
+      "label": "Kifizetés ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "net": {
+      "label": "Nettó összeg"
+    },
+    "tax": {
+      "label": "ÁFA"
+    },
+    "amount": {
+      "label": "ÖSSZEG",
+      "placeholder": "(pl. 14560)"
+    },
+    "outstanding": {
+      "label": "Kifizetetlen",
+      "placeholder": "(pl. 14560)"
+    },
+    "partner": {
+      "label": "Partner",
+      "placeholder": "(pl. Kulcslyuk kft)"
+    },
+    "note": {
+      "label": "Megjegyzés",
+      "placeholder": "(pl. közlemény vagy partner azonosító)"
+    },
+    "lines" : {
+      "label": "Tételek",
+      "$" : {
+        "title": { 
+          "label": "Megnevezés"
+        },
+        "details": { 
+          "label": "Részletek"
+        },
+        "uom": {
+          "label": "M.e."
+        },
+        "quantity": {
+          "label": "Mennyiség"
+        },
+        "unitPrice": {
+          "label": "Egységár"
+        },
+        "taxPct": {
+          "label": "ÁFA%"
+        },
+        "tax": {
+          "label": "ÁFA"
+        },
+        "amount": {
+          "label": "Összeg"
+        },
+        "account": {
+          "label": "Főkönyvi számla",
+          "short": "Szla"
+        },
+        "localizer": {
+          "label": "Könyvelési hely"
+        }
+      }
+    },
+    "payments": {
+      "label": "Pénzügyi teljesítés",
+      "$": {
+        "valueDate": {
+          "label": "Teljesítés ideje",
+          "placeholder": "(pl. 2017-05-06)"
+        },
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        },
+        "account": {
+          "label": "Pénz számla"
+        }
+      }
+    }
+  },
   "schemaParcelBillings": {
     "year": {
       "label": "Melyik év",
@@ -593,6 +762,12 @@
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. emlékeztető)"
+    },
+    "appliedAt": {
+      "label": "Kivetések idejei"
+    },
+    "applyCount": {
+      "label": "Kivetések száma"
     }
   },
   "schemaSharedfolders": {

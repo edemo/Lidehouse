@@ -1,0 +1,295 @@
+import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
+import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
+
+import { __ } from '/imports/localization/i18n.js';
+import { Clock } from '/imports/utils/clock.js';
+import { debugAssert } from '/imports/utils/assert.js';
+import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { SerialId } from '/imports/api/behaviours/serial-id.js';
+import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+
+export const Bills = new Mongo.Collection('bills');
+
+Bills.categoryValues = ['in', 'out', 'parcel'];
+
+Bills.connectedTxSchema = new SimpleSchema({
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  txLegId: { type: Number, decimal: true, autoform: { omit: true } },
+});
+
+Bills.lineSchema = new SimpleSchema({
+  title: { type: String },
+  details: { type: String, optional: true },
+  uom: { type: String, optional: true },  // unit of measurment
+  quantity: { type: Number, decimal: true },
+  unitPrice: { type: Number, decimal: true },
+  taxPct: { type: Number, decimal: true, defaultValue: 0 },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  // autoValue() {
+  //  return this.siblingField('quantity').value * this.siblingField('unitPrice').value;
+  //} },
+  account: { type: String, optional: true, autoform: chooseAccountNode },
+  localizer: { type: String, optional: true },
+});
+
+Bills.paymentSchema = new SimpleSchema({
+  valueDate: { type: Date },
+  amount: { type: Number },
+  account: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
+//  tx: { type: Bills.connectedTxSchema, optional: true },    // used if accounting method is 'cash'):
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+//  txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+});
+
+Bills.schema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  category: { type: String, allowedValues: Bills.categoryValues, autoform: { omit: true } },
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, 
+  /*autoValue() {
+    const lines = this.field('lines');
+    if (!lines) return undefined;
+    const result = 0;
+    lines.forEach(line => result += line.amount)
+    return 
+  } },*/
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  issueDate: { type: Date },
+  valueDate: { type: Date },
+  dueDate: { type: Date },
+  partner: { type: String, optional: true },
+  lines: { type: Array, defaultValue: [] },
+  'lines.$': { type: Bills.lineSchema },
+  payments: { type: Array, defaultValue: [] },
+  'payments.$': { type: Bills.paymentSchema },
+  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client can ask to sort on outstanding amount
+//  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
+//  tx: { type: Bills.connectedTxSchema, optional: true },    // used if accounting method is 'accrual'):
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+});
+
+Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partner'];
+
+Bills.reconcileSchema = function reconcileSchema() {
+  const autoformOptions = Meteor.isServer ? {} : {
+    options() {
+      const bills = Bills.find({ communityId: getActiveCommunityId(), outstanding: { $gt: 0 } }).fetch();
+      return bills.map(function option(bill) { return { label: bill.display(), value: bill._id }; });
+    },
+    firstOption: () => __('(Select one)'),
+  };
+  return new SimpleSchema({
+    txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false },
+    txLegId: { type: Number, decimal: true, optional: true },
+    billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false, autoform: autoformOptions },
+    paymentId: { type: Number, decimal: true, optional: true },
+    // if txLegId or paymetId not present, it means, lets create a new one now
+  });
+};
+
+Meteor.startup(function indexBills() {
+  if (Meteor.isClient && MinimongoIndexing) {
+    Bills._collection._ensureIndex('category');
+  } else if (Meteor.isServer) {
+    Bills._ensureIndex({ communityId: 1, category: 1, serial: 1 });
+    Bills._ensureIndex({ communityId: 1, category: 1, outstanding: -1 });
+  }
+});
+
+Bills.helpers({
+  community() {
+    return Communities.findOne(this.communityId);
+  },
+  matchingTxSide() {
+    if (this.category === 'in') return 'debit';
+    else if (this.category === 'out' || this.category === 'parcel') return 'credit';
+    debugAssert(false, 'unknown bill category');
+    return undefined;
+  },
+  otherTxSide() {
+    if (this.matchingTxSide() === 'debit') return 'credit';
+    if (this.matchingTxSide() === 'credit') return 'debit';
+    return undefined;
+  },
+  hasConteerData() {
+    let result = true;
+    this.lines.forEach(line => { if (!line.account) result = false; });
+    return result;
+  },
+  getPayments() {
+    return this.payments || [];
+  },
+  paymentCount() {
+    return this.payments.length;
+  },
+  makeTx() {
+    const self = this;
+    const tx = {
+      communityId: this.communityId,
+      // def: 'bill'
+      valueDate: this.valueDate,
+      amount: this.amount,
+      billId: this._id,
+      paymentId: undefined, // it is not a payment
+    };
+    function copyLinesInto(txSide) {
+      self.lines.forEach(line => txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer }));
+    }
+    if (this.category === 'in') {
+      tx.debit = []; copyLinesInto(tx.debit);
+      tx.credit = [{ account: '46' }];
+    } else if (this.category === 'out') {
+      tx.debit = [{ account: '31' }];
+      tx.credit = []; copyLinesInto(tx.credit);
+    } else if (this.category === 'parcel') {
+      tx.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+      tx.credit = []; copyLinesInto(tx.credit);
+    } else debugAssert(false, 'No such bill category');
+    return tx;
+  },
+  makePaymentTx(payment, index, accountingMethod) {
+    const self = this;
+    const tx = {
+      communityId: this.communityId,
+      // def: 'payment',
+      valueDate: payment.valueDate,
+      amount: payment.amount,
+      billId: this._id,
+      paymentId: index,
+    };
+    const ratio = payment.amount / this.amount;
+    function copyLinesInto(txSide) {
+      self.lines.forEach(line => txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer }));
+    }
+    if (accountingMethod === 'accrual') {
+      if (this.category === 'in') {
+        tx.debit = [{ account: '46' }];
+        tx.credit = [{ account: payment.account }];
+      } else if (this.category === 'out') {
+        tx.debit = [{ account: payment.account }];
+        tx.credit = [{ account: '31' }];
+      } else if (this.category === 'parcel') {
+        tx.debit = [{ account: payment.account }];
+        tx.credit = [{ account: '33'+'' }];
+      } else debugAssert(false, 'No such bill category');
+    } else if (accountingMethod === 'cash') {
+      if (this.category === 'in') {
+        tx.debit = []; copyLinesInto(tx.debit);
+        tx.credit = [{ account: '46' }];
+      } else if (this.category === 'out') {
+        tx.debit = [{ account: '31' }];
+        tx.credit = []; copyLinesInto(tx.credit);
+      } else if (this.category === 'parcel') {
+        tx.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+        tx.credit = []; copyLinesInto(tx.credit);
+      } else debugAssert(false, 'No such bill category');
+    }
+    return tx;
+  },
+  display() {
+    return `${moment(this.valueDate).format('L')} ${this.partner} ${this.amount}`;
+  },
+});
+
+Bills.autofillLines = function autofillAmounts(doc) {
+  let totalAmount = 0;
+  let totalTax = 0;
+  if (doc.lines) {
+    doc.lines.forEach(line => {
+      line.amount = line.unitPrice * line.quantity;
+      line.tax = line.amount * line.taxPct;
+      line.amount += line.tax; // =
+      totalAmount += line.amount;
+      totalTax += line.tax;
+    });
+  }
+  doc.amount = totalAmount;
+  doc.tax = totalTax;
+};
+Bills.autofillOutstanding = function autofillAmounts(doc) {
+  let paid = 0;
+  if (doc.payments) doc.payments.forEach(p => paid += p.amount);
+  doc.outstanding = doc.amount - paid;
+};
+
+// --- Before/after actions ---
+if (Meteor.isServer) {
+  Bills.before.insert(function (userId, doc) {
+    Bills.autofillLines(doc);
+    Bills.autofillOutstanding(doc);
+  });
+
+  Bills.before.update(function (userId, doc, fieldNames, modifier, options) {
+    const newDoc = modifier.$set;
+    if (newDoc.lines) Bills.autofillLines(newDoc);
+    if (newDoc.lines || newDoc.payments) Bills.autofillOutstanding(newDoc);
+  });
+
+  Bills.after.update(function (userId, doc, fieldNames, modifier, options) {
+//    const tdoc = this.transform();
+//--------------------
+//  Could do this with rusdiff in a before.update
+//    let newDoc = rusdiff.clone(doc);
+//    if (modifier) rusdiff.apply(newDoc, modifier);
+//    newDoc = Bills._transform(newDoc);
+//    const outstanding = newDoc.calculateOutstanding();
+//--------------------
+//    if ((modifier.$set && modifier.$set.payments) || (modifier.$push && modifier.$push.payments)) {
+//      if (!modifier.$set || modifier.$set.outstanding === undefined) { // avoid infinite update loop!
+//        Bills.update(doc._id, { $set: { outstanding: tdoc.calculateOutstanding() } });
+//      }
+//    }
+  });
+}
+
+Bills.attachSchema(Bills.schema);
+Bills.attachBehaviour(Timestamped);
+Bills.attachBehaviour(SerialId(Bills, ['category']));
+
+Meteor.startup(function attach() {
+  Bills.simpleSchema().i18n('schemaBills');
+});
+
+// --- Factory ---
+
+Factory.define('bill', Bills, {
+  communityId: () => Factory.get('community'),
+  issueDate: Clock.currentDate(),
+  valueDate: Clock.currentDate(),
+  dueDate: Clock.currentDate(),
+  partner: faker.random.word(),
+//  account: { type: String, optional: true },
+//  localizer: { type: String, optional: true },
+  lines: [{
+    title: faker.random.word(),
+    uom: 'piece',
+    quantity: 1,
+    unitPrice: faker.random.number(10000),
+    account: '85',
+    localizer: '@',
+  }],
+});
+
+/*
+Bills.Payments.schema = new SimpleSchema({
+  amount: { type: Number },
+  valueDate: { type: Date },
+  bills: { type: Array },
+  'bills.$': { type: FulfillmentSchema },
+});
+
+export const BankStatements = new Mongo.Collection('bankStatements');
+
+BankStatements.schema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  payments: { type: [Payments.schema] },
+});
+*/

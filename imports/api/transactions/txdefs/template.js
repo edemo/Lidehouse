@@ -122,8 +122,8 @@ export function defineTxDefTemplates() {
   // Joker
   TxDefs.define({ communityId: null,
     name: 'Accounting operation', // 'Könyvelési művelet',
-    credit: '',
     debit: '',
+    credit: '',
   });
 }
 

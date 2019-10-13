@@ -19,9 +19,11 @@ export const Render = {
   formatNumber: $.fn.dataTable.render.number(' ', ',', 0),  // numeral no good here, it renders a string, so sorting not working correctly on this column afterwards
   // https://datatables.net/manual/data/renderers#Number-helper
   formatDate(cellData, renderType, currentRow) {
+    if (!cellData) return '---';
     return moment(cellData).format('L');
   },
   formatTime(cellData, renderType, currentRow) {
+    if (!cellData) return '---';
     return moment(cellData).format('L LT');
   },
   displayTitle(topicId) {
@@ -54,6 +56,14 @@ export const Render = {
   },
   buttonJoin(cellData, renderType, currentRow) {
     const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-join" title=${__('join')}><i class="fa fa-suitcase"></i></button>`;
+    return html;
+  },
+  buttonLink(cellData, renderType, currentRow) {
+    const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-link" title=${__('link')}><i class="fa fa-external-link"></i></button>`;
+    return html;
+  },
+  buttonApply(cellData, renderType, currentRow) {
+    const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-apply" title=${__('apply')}><i class="fa fa-calendar-plus-o"></i></button>`;
     return html;
   },
   buttonGroup(buttonRenderers) {
