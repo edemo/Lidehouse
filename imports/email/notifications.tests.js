@@ -139,7 +139,7 @@ if (Meteor.isServer) {
       });
 
       it('Doesnt send email when former hidden comment is visible again', function () {
-        flag._execute({ userId: Fixture.demoAdminId }, { coll: 'users', id: ownerWithNotiNever._id }); // unflag above user
+        Meteor.users.methods.flag._execute({ userId: Fixture.demoAdminId }, { id: ownerWithNotiNever._id }); // unflag above user
 
         processNotifications('frequent');
         processNotifications('daily');

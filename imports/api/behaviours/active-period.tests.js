@@ -9,6 +9,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { freshFixture } from '/imports/api/test-utils.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
+import { ActiveTimeMachine } from './active-time-machine';
 
 if (Meteor.isServer) {
 
@@ -141,6 +142,28 @@ if (Meteor.isServer) {
         { _id: testMembershipId, modifier: { $set: { accepted: true } } });
       testMembership = Memberships.findOne(testMembershipId);
       chai.assert.equal(testMembership.active, false);
+
+      done();
+    });
+
+    it('can find things in a past time', function (done) {
+      ActiveTimeMachine.setDestinationTime(moment().subtract(10, 'days').toDate());
+      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId }));
+      chai.assert.isUndefined(Memberships.findOne({ _id: testMembershipId2 }));
+      chai.assert.isUndefined(Memberships.findOne({ _id: testMembershipId3 }));
+      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId4 }));
+
+      ActiveTimeMachine.setDestinationNow();
+      chai.assert.isUndefined(Memberships.findOne({ _id: testMembershipId }));
+      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId2 }));
+      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId3 }));
+      chai.assert.isUndefined(Memberships.findOne({ _id: testMembershipId4 }));
+
+      ActiveTimeMachine.clear();
+      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId }));
+      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId2 }));
+      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId3 }));
+      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId4 }));
 
       done();
     });

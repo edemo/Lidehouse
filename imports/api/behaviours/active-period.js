@@ -3,6 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { checkExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { ActiveTimeMachine } from './active-time-machine';
 
 const TimePeriodSchema = new SimpleSchema({
   begin: { type: Date, optional: true,
@@ -50,7 +51,17 @@ const helpers = {
 };
 
 const methods = {};
-const hooks = {};
+
+const hooks = {
+  before: {
+    find(userId, selector, options) {
+      ActiveTimeMachine.extendSelector(selector);
+    },
+    findOne(userId, selector, options) {
+      ActiveTimeMachine.extendSelector(selector);
+    },
+  },
+};
 
 export const ActivePeriod = {
   schema, helpers, methods, hooks,
