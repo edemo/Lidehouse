@@ -207,14 +207,12 @@ export function insertDemoHouse(lang, demoOrTest) {
       demoBuilder.create('meter', {
         parcelId,
         service: 'coldWater',
-        readings: [],
       });
     }
     if (i <= 10) {
       demoBuilder.create('meter', {
         parcelId,
         service: 'heating',
-        readings: [],
       });
     }
   });
