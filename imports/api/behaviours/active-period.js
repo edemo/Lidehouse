@@ -63,8 +63,14 @@ const hooks = {
   },
 };
 
+const indexes = [
+  { active: 1 },
+  { 'activeTime.begin': 1 },
+  { 'activeTime.end': 1 },
+];
+
 export const ActivePeriod = {
-  schema, helpers, methods, hooks,
+  schema, helpers, methods, hooks, indexes,
 };
 
 ActivePeriod.fields = [
