@@ -44,6 +44,10 @@ Template.Top_navbar.onDestroyed(function() {
   });
 });
 
+Template.Top_navbar.onDestroyed(function() {
+  $('body').removeClass('fixed-nav').removeClass('fixed-nav-basic');
+});
+
 Template.Top_navbar.helpers({
   userCommunities() {
     if (!Meteor.user()) { return []; }
