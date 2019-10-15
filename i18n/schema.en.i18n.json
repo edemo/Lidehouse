@@ -282,6 +282,17 @@
     },
     "topicIds": {
       "label": "Worksheets"
+    },
+    "activeTime": {
+      "label": "Active time (Can leave blank, if no time constraint)",
+      "begin": {
+        "label": "From",
+        "placeholder": "yyyy-mm-dd"
+      },
+      "end": {
+        "label": "Until",
+        "placeholder": "yyyy-mm-dd"
+      }
     }
   },
   "schemaTopics": {
@@ -335,7 +346,7 @@
     "agendaId": {
       "label": "Agenda (of which it is part of)"
     },
-    "createdAt": {
+    "opensAt": {
       "label": "Voting starts at"
     },
     "closesAt": {

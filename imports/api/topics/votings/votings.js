@@ -314,7 +314,7 @@ Votings.statuses = {
 Votings.statusValues = Object.keys(Votings.statuses);
 
 Votings.workflow = {
-  start: [opened],
+  start: [announced, opened],
   announced: { obj: announced, next: [opened, closed] },
   opened: { obj: opened, next: [votingFinished] },
   votingFinished: { obj: votingFinished, next: [closed] },

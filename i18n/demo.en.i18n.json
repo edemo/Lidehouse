@@ -123,19 +123,19 @@
     },
     "topic": {
       "0": {
-        "title": "Problem with the front door",
-        "text": "Someone broke in the front door last week, it cannot be locked ever since",
-        "comment": {
-          "0": "Yes, I've already reported the problem. Earliest they can come fix it is next week."
-        }
-      },
-      "1": {
         "title": "Bank loan for renovation",
         "text": "There is special offer from the bank for a one time loan that can be used for renovation.",
         "comment": {
           "0": "I think it is worth it. Interest is only 6%, repayment period is 10 years.",
           "1": "Well, I'm not sure. We just got out from our last loan. Finally we can make the common cost lower, and now another loan?",
           "2": "I suggest voting on it!"
+        }
+      },
+      "1": {
+        "title": "Problem with the front door",
+        "text": "Someone broke in the front door last week, it cannot be locked ever since",
+        "comment": {
+          "0": "Yes, I've already reported the problem. Earliest they can come fix it is next week."
         }
       },
       "2": {
@@ -183,7 +183,7 @@
       "3": {
         "title": "Bicycle storage",
         "text": ["There is no safe storage for bicyles in the house. It would be advisable to construct a 12-seater storage on the garage level. In case of acceptance we will ask for 3 offers.",
-          "Proposed resolution: The house shall establish a bicycle storage from a maximum gross amount of 200,000 HUF on the garage level. The Manager is responsible for the request of offers and the execution. Deadline: 15/08/2018."]
+          "Proposed resolution: The house shall establish a bicycle storage from a maximum gross amount of 200,000 HUF on the garage level. The Manager is responsible for the request of offers and the execution. Deadline: 3 months from acceptance."]
       },
       "4": {
         "title": "Color of the building walls",
@@ -206,10 +206,10 @@
     },
     "agenda": {
       "0": {
-        "title": "Owners Association Meeting 2017/3."
+        "title": "Extraordinary Owners Association Meeting"
       },
       "1": {
-        "title": "Owners Association Meeting 2018-I."
+        "title": "Owners Association Meeting"
       }
     },
     "contract": {

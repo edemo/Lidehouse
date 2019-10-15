@@ -54,6 +54,7 @@ export function checkTopicPermissions(userId, permissionName, topic) {
   if ((topic.category === 'vote') && (topic.vote.effect === 'poll')) {
     derivedPermissionName = `poll.${permissionName}`;
   }
+  if (topic.category === 'ticket') derivedPermissionName = `${topic.ticket.type}.${permissionName}`;
   debugAssert(Permissions.find(perm => perm.name === derivedPermissionName));
   checkPermissions(userId, derivedPermissionName, topic.communityId, topic);
 }
@@ -83,5 +84,12 @@ export function checkPermissionsToRemoveUploaded(userId, collection, doc) {
   if (!collection.hasPermissionToRemoveUploaded(userId, doc)) {
     throw new Meteor.Error('err_permissionDenied',
       `No permission to perform this activity: ${"Remove"}, userId: ${userId}, communityId: ${doc.communityId}, folderId: ${doc.folderId}`);
+  }
+}
+
+export function checkNeededStatus(status, doc) {
+  if (status !== doc.status) {
+    throw new Meteor.Error('err_permissionDenied',
+      `No permission to perform this activity in this status: ${doc.status}, needed status: ${status}`);
   }
 }

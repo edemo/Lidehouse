@@ -22,7 +22,7 @@ Template.Vote_topics.viewmodel({
   voteTopics() {
     const communityId = Session.get('activeCommunityId');
     const selector = { communityId, category: 'vote' };
-    if (this.activesOnly()) selector.closed = false;
+    if (this.activesOnly()) selector.status = 'opened';
     let topicsList = Topics.find(selector, { sort: { createdAt: -1 } }).fetch();
     if (this.searchText()) {
       topicsList = topicsList.filter(t =>

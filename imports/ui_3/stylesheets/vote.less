@@ -68,15 +68,14 @@
     transition: box-shadow 0.30s ease;    
 }
 
-.btn.btn-pressed,
-.ui-sortable-disabled, .ui-sortable-disabled > li {
+.btn.btn-pressed > img {
+  display: block;
+}
+.ui-sortable-disabled {
+    opacity: 0.4;
     cursor: default;
-    img {
-      display: block;
-    }
     i.fa-sort {
-      //display: none;
-      color: lighten(grey, 25%);
+      opacity: 0.5;
     }
 }
 

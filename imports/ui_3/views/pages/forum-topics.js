@@ -23,7 +23,7 @@ Template.Forum_topics.helpers({
     const communityId = Session.get('activeCommunityId');
     const topics = Topics.find(
       { communityId, category: 'forum' },
-      { sort: { updatedAt: -1 } }
+      { sort: { closed: 1, updatedAt: -1 } }
 //    { sort: { createdAt: -1 } }
     );
 //  .fetch().sort((t1, t2) => t2.likesCount() - t1.likesCount());
@@ -61,7 +61,7 @@ AutoForm.addHooks('af.forumtopic.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.category = 'forum';
-    doc.status = 'opened';
+    doc.status = Topics._transform(doc).startStatus().name;
     if (!doc.title && doc.text) {
       doc.title = (doc.text).substring(0, 25) + '...';
     }

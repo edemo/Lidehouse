@@ -297,6 +297,7 @@
   "Active votings": "Aktív szavazások",
   "Closed votings": "Lezárt szavazások",
   "Actives only": "Aktívak mutatása",
+  "Opened only": "Nyitottak mutatása",
   "Show results": "Eredmények megtekintése",
   "Show attachment": "Előterjesztés megtekintése",
   "The voting has been closed": "A szavazás lezárult",
@@ -325,6 +326,7 @@
   },
   "No amendments were made to this document": "A dokumentumon nem történt módosítás",
   "Vote results become availailable once voting is closed": "A szavazatok azonnal láthatóvá válnak, amint a szavazás lezárul",
+  "Voting has not started yet, please come back": "A szavazás még nem kezdődött el, kérjük látogasson vissza",
 
   // delegations
   "Delegations from me": "Meghatalmazásaim",

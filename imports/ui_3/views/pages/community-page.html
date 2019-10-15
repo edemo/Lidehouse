@@ -26,16 +26,15 @@
                         {{#if equals category 'roleships'}}
                         <td><a href="{{pathFor 'User show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
                         <td><a href="{{pathFor 'User show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
-                        <td><span class="label label-plain">{{_ role}}</span></td>
+                        <td><span class="label label-plain">{{_ role}}</span> 
+                            {{#if rank}}<span class="label label-plain">{{_ rank}}</span>{{/if}}
+                        </td>
                         {{else}}
                         <td><a href="#member" class="client-avatar js-member"><img alt="image" src={{Person.avatar}}></a></td>
                         <td><a href="#member" class="client-link js-member">{{Person.displayName}}</a></td>
                         <td>{{>Active_period this}}</td>
                         {{/if}}
                         {{#if equals category 'roleships'}}
-                        <td><span class="label label-plain">{{_ role}}</span>
-                            {{#if rank}}<span class="label label-plain">{{_ rank}}</span>{{/if}}
-                        </td>
                         <td>
                             {{#if Person.user.profile.publicEmail}}
                             <i class="contact-type fa fa-at"></i>{{Person.user.profile.publicEmail}}

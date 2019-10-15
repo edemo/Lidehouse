@@ -63,6 +63,10 @@ Transactions.idSet = ['communityId', 'ref'];
 
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
+  if (Meteor.isServer) {
+    Transactions._ensureIndex({ 'debit.account': 1 });
+    Transactions._ensureIndex({ 'credit.account': 1 });
+  } 
 });
 
 // A *transaction* is effecting a certain field (in pivot tables) with the *amount* of the transaction,

@@ -2,7 +2,7 @@
     <div class="social-footer comment-section" data-id="{{_id}}">
         {{#if hasMoreEvents}}
         <div class="social-comment">
-            <a href="{{pathFor 'Topic show' _tid=_id}}">{{_ 'View previous comments' hasMoreComments}}</a>
+            <a href="{{pathFor 'Topic show' _tid=_id}}">{{_ 'View previous comments' hasMoreEvents}}</a>
         </div>
         {{/if}}
         {{#each event in eventsOfTopic}}

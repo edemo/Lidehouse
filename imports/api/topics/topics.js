@@ -195,6 +195,7 @@ Meteor.startup(function attach() {
 });
 
 Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'photo'];
+Topics.modifiableFields.push('closed'); // comes from Workflow behaviour
 
 Topics.publicFields = {
   communityId: 1,
@@ -207,6 +208,7 @@ Topics.publicFields = {
   updatedAt: 1,
   creatorId: 1,
   updatorId: 1,
+  opensAt: 1,
   closesAt: 1,
   closed: 1,
   sticky: 1,

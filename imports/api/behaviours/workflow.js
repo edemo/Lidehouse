@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
+import { Clock } from '/imports/utils/clock';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { noUpdate } from '/imports/utils/autoform.js';
@@ -15,12 +17,30 @@ import { updateMyLastSeen } from '/imports/api/users/methods.js';
 const schema = new SimpleSchema({
   status: { type: String, autoform: { omit: true } }, /* needs to be checked against the workflow rules */
   closed: { type: Boolean, autoform: { omit: true }, autoValue() {
+    if (this.isSet) return this.value;
     const status = this.field('status').value;
     if (!status) return undefined; // don't touch
     if (status === 'closed') return true;
     else return false;
   } },
-  closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate) },
+  opensAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate),
+    custom() {
+      const now = Clock.currentTime();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+      if (startOfToday > this.value) return 'notAllowed';
+      return undefined;
+    },
+  },
+  closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate),
+    custom() {
+      const closingDate = this.value;
+      const openingDate = this.field('opensAt').value || Clock.currentTime(); 
+      const dayLater = moment(openingDate).add(1, 'day').toDate()
+      if (moment(Clock.currentTime()).add(1, 'day').toDate() > this.value) return 'notAllowed';
+      if (closingDate <= dayLater) return 'notAllowed';
+      return undefined;
+    },
+  },
 });
 
 const helpers = {
@@ -42,12 +62,28 @@ const helpers = {
   },
 };
 
+const opened = {
+  name: 'opened',
+};
+
+const closed = {
+  name: 'closed',
+};
+
+const deleted = {
+  name: 'deleted',
+};
+
+const defaultStatuses = {
+  opened, closed, deleted,
+};
+
 export const defaultWorkflow = {
   statusValues: ['opened', 'closed', 'deleted'],
-  start: [{ name: 'opened' }],
-  opened: { next: [{ name: 'closed' }, { name: 'deleted' }] },
-  closed: { next: [{ name: 'deleted' }] },
-  deleted: { next: [] },
+  start: [opened],
+  opened: { obj: opened, next: [closed, deleted] },
+  closed: { obj: closed, next: [deleted] },
+  deleted: { obj: deleted, next: [] },
 };
 
 function checkStatusStartAllowed(topic, status) {
@@ -70,7 +106,7 @@ const statusChange = new ValidatedMethod({
     const category = topic.category;
     const workflow = topic.workflow();
     // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic.communityId);
-    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId);
+    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId, topic);
     checkStatusChangeAllowed(topic, event.status);
 
     const onLeave = workflow[topic.status].obj.onLeave;
@@ -78,7 +114,7 @@ const statusChange = new ValidatedMethod({
 
     const topicModifier = {};
     topicModifier.status = event.status;
-    const statusObject = Topics.categories[category].statuses[event.status];
+    const statusObject = Topics.categories[category].statuses ? Topics.categories[category].statuses[event.status] : defaultStatuses[event.status];
     if (statusObject.data) {
       statusObject.data.forEach(key => topicModifier[`${category}.${key}`] = event.data[key]);
     }
@@ -111,7 +147,7 @@ const statusUpdate = new ValidatedMethod({
     if (topic.modifiableFieldsByStatus()) {
       topic.modifiableFieldsByStatus().forEach(key => modifiableFields.push(`${category}.${key}`));
     }
-    checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId);
+    checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId, topic);
     checkModifier(topic, modifier, modifiableFields);
     Topics.update(_id, modifier);
   },
