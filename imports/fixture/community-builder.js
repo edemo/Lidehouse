@@ -24,6 +24,10 @@ import { Bills } from '/imports/api/transactions/bills/bills.js';
 import '/imports/api/transactions/bills/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
+import { Statements, StatementEntries } from '/imports/api/transactions/statements/statements.js';
+import '/imports/api/transactions/statements/methods.js';
+import '/imports/api/transactions/methods.js';
+
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
 import '/imports/api/transactions/batches/methods.js';
 import '/imports/api/topics/votings/votings.js';
@@ -89,6 +93,8 @@ export class CommunityBuilder {
         case 'memberships': return this.getUserWithRole('admin');
         case 'bills':
         case 'transactions':
+        case 'statements':
+        case 'statementEntries':
         case 'parcelBillings':
         case 'breakdowns':
         case 'txDefs': return this.getUserWithRole('accountant');

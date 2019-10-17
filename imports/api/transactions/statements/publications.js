@@ -2,23 +2,23 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { Bankstatements } from './bankstatements.js';
+import { Statements } from './statements.js';
 
-Meteor.publish('bankstatements.byId', function bankstatementsById(params) {
+Meteor.publish('statements.byId', function statementsById(params) {
   new SimpleSchema({
     _id: { type: String },
   }).validate(params);
   const { _id } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  const bs = Bankstatements.findOne(_id);
-  if (!user.hasPermission('bankstatements.inCommunity', bs.communityId)) {
+  const bs = Statements.findOne(_id);
+  if (!user.hasPermission('statements.inCommunity', bs.communityId)) {
     return this.ready();
   }
-  return Bankstatements.find({ _id });
+  return Statements.find({ _id });
 });
 
-Meteor.publish('bankstatements.byAccount', function bankstatementsByAccount(params) {
+Meteor.publish('statements.byAccount', function statementsByAccount(params) {
   new SimpleSchema({
     communityId: { type: String },
     account: { type: String, optional: true },
@@ -28,24 +28,24 @@ Meteor.publish('bankstatements.byAccount', function bankstatementsByAccount(para
   const { communityId, account, localizer, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('bankstatements.inCommunity', communityId)) {
+  if (!user.hasPermission('statements.inCommunity', communityId)) {
 
   const selector = { communityId, account };
   if (end) selector.beginDate = { $lte: end };
   if (begin) selector.endDate = { $gte: begin };
 
-  return Bankstatements.find(selector);
+  return Statements.find(selector);
 });
 
-Meteor.publish('bankstatements.unreconciled', function bankstatementsUnreconciled(params) {
+Meteor.publish('statements.unreconciled', function statementsUnreconciled(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('bankstatements.inCommunity', communityId)) {
+  if (!user.hasPermission('statements.inCommunity', communityId)) {
     return this.ready();
   }
-  return Bankstatements.find({ communityId, reconciled: false });
+  return Statements.find({ communityId, reconciled: false });
 });

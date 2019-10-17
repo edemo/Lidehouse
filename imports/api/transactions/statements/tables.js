@@ -5,7 +5,7 @@ import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 //import { getBillsActionsSmall } from './actions.js';
 
-export function bankstatementEntriesColumns() {
+export function statementEntriesColumns() {
   const columns = [
     { data: 'valueDate', title: __('schemaBills.valueDate.label'), render: Render.formatDate },
     { data: 'partner', title: __('schemaBills.partner.label') },

@@ -20,11 +20,6 @@ export const Bills = new Mongo.Collection('bills');
 
 Bills.categoryValues = ['in', 'out', 'parcel'];
 
-Bills.connectedTxSchema = new SimpleSchema({
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  txLegId: { type: Number, decimal: true, autoform: { omit: true } },
-});
-
 Bills.lineSchema = new SimpleSchema({
   title: { type: String },
   details: { type: String, optional: true },
@@ -45,9 +40,8 @@ Bills.paymentSchema = new SimpleSchema({
   valueDate: { type: Date },
   amount: { type: Number },
   account: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
-//  tx: { type: Bills.connectedTxSchema, optional: true },    // used if accounting method is 'cash'):
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-//  txLegId: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  reconciled: { type: Boolean, defaultValue: false },
 });
 
 Bills.schema = new SimpleSchema({

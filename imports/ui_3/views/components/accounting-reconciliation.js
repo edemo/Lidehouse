@@ -24,8 +24,8 @@ import '/imports/api/transactions/txdefs/methods.js';
 import { transactionColumns } from '/imports/api/transactions/tables.js';
 import { allTransactionsActions } from '/imports/api/transactions/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-import { Bankstatements } from '/imports/api/transactions/bankstatements/bankstatements';
-import { bankstatementEntriesColumns } from '/imports/api/transactions/bankstatements/tables.js';
+import { Statements, StatementEntries } from '/imports/api/transactions/statements/statements';
+import { statementEntriesColumns } from '/imports/api/transactions/statements/tables.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import './accounting-reconciliation.html';
@@ -59,20 +59,18 @@ Template.Accounting_reconciliation.viewmodel({
     });
   },
   ///////////////
-  bankstatementsTableDataFn() {
+  statementEntriesTableDataFn() {
     const self = this;
     const templateInstance = Template.instance();
     return () => {
       if (!templateInstance.subscriptionsReady()) return [];
-      const bankstatements = Bankstatements.find({ communityId: self.communityId(), reconciled: false }).fetch();
-      let entries = [];
-      bankstatements.forEach(bs => entries = entries.concat(bs.entries));
+      const entries = StatementEntries.find({ communityId: self.communityId(), reconciled: false }).fetch();
       return entries;
     };
   },
-  bankstatementsOptionsFn() {
+  statementEntriesOptionsFn() {
     return () => Object.create({
-      columns: bankstatementEntriesColumns(),
+      columns: statementEntriesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       ...DatatablesExportButtons,

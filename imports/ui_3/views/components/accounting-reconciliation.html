@@ -28,16 +28,16 @@
         </div>
     </div>
     {{/if}}
-    {{#if userHasPermission 'bankstatements.inCommunity' (fromSession 'activeCommunityId')}}
+    {{#if userHasPermission 'statements.inCommunity' (fromSession 'activeCommunityId')}}
     <div class="col-md-12">
-        <div class="ibox ibox-dark bankstatements" id='bankstatements'>
+        <div class="ibox ibox-dark statements" id='statements'>
             <div class="ibox-title">
                 <h5>{{_ 'Reconciliation'}}</h5>
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
                 <div>
-                    {{> ReactiveDatatable tableData=bankstatementsTableDataFn options=bankstatementsOptionsFn }}
+                    {{> ReactiveDatatable tableData=statementsTableDataFn options=statementsOptionsFn }}
                 </div>
             </div>
         </div>
