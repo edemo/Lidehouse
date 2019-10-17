@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
+import { moment } from 'meteor/momentjs:moment';
 import { freshFixture, newFixture, logDB } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
@@ -111,62 +112,64 @@ if (Meteor.isServer) {
       });
     });
 
-    xdescribe('bills payments', function () {
-      before(function () {
+    describe('bills payments', function () {
+      let billId;
+      let bill;
+      let bankstatement;
+      const bankAccount = '31';
+
+      beforeEach(function () {
+        billId = FixtureA.builder.create('bill', {
+          category: 'in',
+          lines: [{
+            title: 'The Work',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 300,
+            account: '85',
+            localizer: '@',
+          }],
+        });
+        FixtureA.builder.execute(Bills.methods.conteer, { _id: billId }, FixtureA.builder.getUserWithRole('accountant'));
+        bill = Bills.findOne(billId);
+
+        bankstatement = FixtureA.builder.create('bankstatement', {
+          startDate: moment().subtract(1, 'month').toDate(),
+          endDate: new Date(),
+          startBalance: 0,
+          endBalance: 100,
+          account: bankAccount,
+          entries: [{
+            valueDate: moment().subtract(3, 'week').toDate(),
+            partner: 'CUSTOMER',
+            amount: 100,
+          }, {
+            valueDate: moment().subtract(2, 'week').toDate(),
+            partner: 'SUPPLIER',
+            amount: -1000,
+          }, {
+            valueDate: moment().subtract(1, 'week').toDate(),
+            partner: 'CUSTOMER',
+            amount: 200,
+          }],
+        });
       });
 
       it('Can pay bill manually', function () {
-        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
-        let bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 650);
-        chai.assert.equal(bill.paymentCount(), 0);
-
-        Fixture.builder.execute(Bills.methods.registerPayment, { _id: billId, modifier: { $set: { payments: [{ amount: 650, valueDate: Clock.currentDate() }] } } });
-
+        FixtureA.builder.execute(Bills.methods.registerPayment,
+          { _id: billId, payment: { amount: 100, valueDate: Clock.currentTime(), account: bankAccount } },
+          FixtureA.builder.getUserWithRole('accountant')
+        );
         bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 0);
-        chai.assert.equal(bill.paymentCount(), 1);
 
         // later if the same tx comes in from bank import, no extra payment is created
-        const txId = Fixture.builder.create('tx', { amount: 650, credit: [{ account: '31' }] });
-        let tx = Transactions.findOne(txId);
-        chai.assert.isFalse(tx.reconciled);
-        chai.assert.isFalse(tx.complete);
-
-        Fixture.builder.execute(Transactions.methods.reconcile, { billId, paymentId: 0, txId });
-        bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 0);
-        chai.assert.equal(bill.paymentCount(), 1);
-        tx = Transactions.findOne(txId);
-        chai.assert.isTrue(tx.reconciled);
-        chai.assert.isFalse(tx.complete);
-
-        Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '88', localizer: '@' } } });
-        tx = Transactions.findOne(txId);
-        chai.assert.isTrue(tx.complete);
       });
 
       it('Can pay bill from bank import', function () {
-        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
-        let bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 650);
-        chai.assert.equal(bill.paymentCount(), 0);
-
-        const txId = Fixture.builder.create('tx', { amount: 650, credit: [{ account: '31' }] });
-        let tx = Transactions.findOne(txId);
-        chai.assert.isFalse(tx.reconciled);
-        chai.assert.isFalse(tx.complete);
-
-        Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
-        bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 0);
-        chai.assert.equal(bill.paymentCount(), 1);
-        tx = Transactions.findOne(txId);
-        chai.assert.isTrue(tx.reconciled);
-        chai.assert.isTrue(tx.complete);
       });
     });
 
+/*
     xdescribe('transactions reconcile', function () {
       before(function () {
       });
@@ -275,6 +278,7 @@ if (Meteor.isServer) {
         chai.assert.isFalse(tx2.reconciled);
         chai.assert.isFalse(tx2.complete);
       });
-    });
+    });*/
+
   });
 }

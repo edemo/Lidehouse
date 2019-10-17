@@ -26,6 +26,10 @@ export const Render = {
     if (!cellData) return '---';
     return moment(cellData).format('L LT');
   },
+  checkmarkBoolean(cellData, renderType, currentRow) {
+    const icon = cellData ? 'fa-check' : 'fa-times';
+    return `<i class="fa ${icon}"></i>`;
+  },
   displayTitle(topicId) {
     const title = Topics.findOne(topicId).title;
     const html = `<span class='issue-info'><a data-id=${topicId} class="js-view">${title}</a></span>`;

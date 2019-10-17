@@ -28,4 +28,19 @@
         </div>
     </div>
     {{/if}}
+    {{#if userHasPermission 'bankstatements.inCommunity' (fromSession 'activeCommunityId')}}
+    <div class="col-md-12">
+        <div class="ibox ibox-dark bankstatements" id='bankstatements'>
+            <div class="ibox-title">
+                <h5>{{_ 'Reconciliation'}}</h5>
+                {{>iboxTools}}
+            </div>  
+            <div class="ibox-content">
+                <div>
+                    {{> ReactiveDatatable tableData=bankstatementsTableDataFn options=bankstatementsOptionsFn }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}
 </template>
