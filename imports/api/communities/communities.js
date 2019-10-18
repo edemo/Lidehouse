@@ -36,14 +36,19 @@ export const Communities = new Mongo.Collection('communities');
 
 const defaultAvatar = '/images/defaulthouse.jpg';
 
+Communities.settingsSchema = new SimpleSchema({
+  joinable: { type: Boolean, defaultValue: true },
+  accountingMethod: { type: String, allowedValues: ['cash', 'accrual'], defaultValue: 'cash' },
+});
+
 Communities.schema = new SimpleSchema([
   { name: { type: String, max: 100 } },
   { description: { type: String, max: 1200, optional: true } },
   { avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload } },
   comtype.profileSchema,
-  { totalunits: { type: Number } },
   { management: { type: String, optional: true, autoform: { type: 'textarea' } } },
-  { joinable: { type: Boolean, defaultValue: true } },
+  { totalunits: { type: Number } },
+  { settings: { type: Communities.settingsSchema } },
   // redundant fields:
   { parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } } },
 ]);
@@ -124,4 +129,8 @@ Factory.define('community', Communities, {
   lot: '123456/1234',
   avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
   totalunits: 1000,
+  settings: {
+    joinable: true,
+    accountingMethod: 'cash',
+  },
 });

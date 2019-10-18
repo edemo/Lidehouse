@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
@@ -68,6 +69,56 @@ export const update = new ValidatedMethod({
   },
 });
 
+function checkMatches(tx, txLeg, bill) {
+  const txAmount = txLeg.amount || tx.amount;
+  if (tx.communityId !== bill.communityId || txAmount !== bill.amount) {
+    throw new Meteor.Error('err_sanityCheckFailed', 'Tx does not match Bill');
+  }
+}
+
+export const reconcile = new ValidatedMethod({
+  name: 'transactions.reconcile',
+  validate: Bills.reconcileSchema().validator(),
+
+  run({ txId, txLegId, billId, paymentId }) {
+    const tx = checkExists(Transactions, txId);
+    const bill = checkExists(Bills, billId);
+    checkPermissions(this.userId, 'transactions.reconcile', tx.communityId);
+    const txSide = bill.matchingTxSide();
+    let txLeg;
+    if (txLegId === undefined) { // no txLegId means, lets create a new one now
+      txLegId = tx.getSide(txSide).length;
+      txLeg = {
+        amount: bill.amount,
+        account: bill.account,
+      };
+      Transactions.update(txId, { $push: { [txSide]: txLeg } });
+    } else {
+      txLeg = tx[txSide][txLegId];
+      checkMatches(tx, txLeg, bill);
+    }
+    if (paymentId === undefined) { // no paymentId means, let's create the payment now -- we do not reconcile to original bills, those are auto-reconciled
+      paymentId = bill.paymentCount();
+      const payment = {
+        amount: tx.amount,
+        valueDate: tx.valueDate,
+        txId,
+        txLegId,
+      };
+      Bills.update(billId, { $push: { payments: payment } });
+    }
+    Transactions.update(txId, { $set: {
+      [`${txSide}.${txLegId}.billId`]: billId,
+      [`${txSide}.${txLegId}.paymentId`]: paymentId,
+    } });
+    if (_.every(Transactions.findOne(txId)[txSide], leg => leg.billId)) {
+      Transactions.update(txId, { $set: { reconciled: true } });
+    }
+//    console.log('RECONCILED', Transactions.findOne(txId));
+    return true;
+  },
+});
+
 export const remove = new ValidatedMethod({
   name: 'transactions.remove',
   validate: new SimpleSchema({
@@ -115,5 +166,5 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 });
 
 Transactions.methods = Transactions.methods || {};
-_.extend(Transactions.methods, { insert, update, remove, cloneAccountingTemplates });
+_.extend(Transactions.methods, { insert, update, reconcile, remove, cloneAccountingTemplates });
 _.extend(Transactions.methods, crudBatchOps(Transactions));

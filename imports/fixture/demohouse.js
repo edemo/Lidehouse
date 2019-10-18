@@ -8,6 +8,7 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { defaultRoles } from '/imports/api/permissions/roles.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
@@ -58,6 +59,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     lot: '4532/8',
     avatar: '/images/demohouse.jpg',
     totalunits: 10000,
+    settings: {
+      accountingMethod: 'accrual',
+    },
   });
 
   const demoBuilder = new CommunityBuilder(demoCommunityId, demoOrTest, lang);
@@ -82,8 +86,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 55,
     volume: 176,
     habitants: 2,
-    waterMetered: true,
-    heatingType: 'centralHeating',
   });
   demoParcels[1] = demoBuilder.createParcel({
     units: 427,
@@ -93,8 +95,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 48,
     volume: 153.6,
     habitants: 2,
-    waterMetered: false,
-    heatingType: 'centralHeating',
   });
   demoParcels[2] = demoBuilder.createParcel({
     units: 587,
@@ -104,8 +104,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 66,
     volume: 184.8,
     habitants: 3,
-    waterMetered: true,
-    heatingType: 'centralHeating',
   });
   demoParcels[3] = demoBuilder.createParcel({
     units: 622,
@@ -115,8 +113,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 70,
     volume: 196,
     habitants: 1,
-    waterMetered: true,
-    heatingType: 'centralHeating',
   });
   demoParcels[4] = demoBuilder.createParcel({
     units: 587,
@@ -126,8 +122,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 66,
     volume: 184.8,
     habitants: 3,
-    waterMetered: false,
-    heatingType: 'centralHeating',
   });
   demoParcels[5] = demoBuilder.createParcel({
     units: 622,
@@ -137,8 +131,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 70,
     volume: 196,
     habitants: 4,
-    waterMetered: true,
-    heatingType: 'centralHeating',
   });
   demoParcels[6] = demoBuilder.createParcel({
     units: 587,
@@ -148,8 +140,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 66,
     volume: 184.8,
     habitants: 2,
-    waterMetered: true,
-    heatingType: 'centralHeating',
   });
   demoParcels[7] = demoBuilder.createParcel({
     units: 622,
@@ -159,8 +149,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 70,
     volume: 196,
     habitants: 2,
-    waterMetered: false,
-    heatingType: 'centralHeating',
   });
   demoParcels[8] = demoBuilder.createParcel({
     units: 587,
@@ -170,8 +158,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 66,
     volume: 184.8,
     habitants: 2,
-    waterMetered: true,
-    heatingType: 'centralHeating',
   });
   demoParcels[9] = demoBuilder.createParcel({
     units: 622,
@@ -181,8 +167,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     area: 70,
     volume: 196,
     habitants: 3,
-    waterMetered: true,
-    heatingType: 'centralHeating',
   });
   demoParcels[10] = demoBuilder.createParcel({
     units: 996,
@@ -191,8 +175,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: 'flat',
     area: 112,
     habitants: 5,
-    waterMetered: true,
-    heatingType: 'ownHeating',
   });
   demoParcels[11] = demoBuilder.createParcel({
     units: 444,
@@ -201,8 +183,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: 'cellar',
     area: 50,
     habitants: 1,
-    waterMetered: true,
-    heatingType: 'ownHeating',
   });
   demoParcels[12] = demoBuilder.createParcel({
     units: 613,
@@ -211,8 +191,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: 'cellar',
     area: 69,
     habitants: 1,
-    waterMetered: true,
-    heatingType: 'ownHeating',
   });
   demoParcels[13] = demoBuilder.createParcel({
     units: 196,
@@ -221,8 +199,22 @@ export function insertDemoHouse(lang, demoOrTest) {
     type: 'shop',
     area: 22,
     habitants: 1,
-    waterMetered: false,
-    heatingType: 'ownHeating',
+  });
+
+  // Meters
+  demoParcels.forEach((parcelId, i) => {
+    if (_.contains([0, 2, 3, 5, 6, 8, 9, 10, 11, 12], i)) {
+      demoBuilder.create('meter', {
+        parcelId,
+        service: 'coldWater',
+      });
+    }
+    if (i <= 10) {
+      demoBuilder.create('meter', {
+        parcelId,
+        service: 'heating',
+      });
+    }
   });
 
   // ===== Non-loginable Dummy Users =====
@@ -797,82 +789,73 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // === Parcel Billings ===
 
-  ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
-    const valueDate = new Date(`${lastYear}-${mm}-12`);
+  const parcelBillingIds = [];
 
-    demoBuilder.insert(ParcelBillings, '', {
-      valueDate,
-      projection: 'perArea',
-      amount: 275,
-      payinType: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
-      localizer: '@',
-    });
+  parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+    title: 'Közös költség előírás',
+    projection: 'area',
+    amount: 275,
+    payinType: demoBuilder.name2code('Owner payin types', 'Közös költség előírás'),
+    localizer: '@',
+  }));
 
-    const parcelsWithNoWaterMeter = Parcels.find({ communityId: demoCommunityId, waterMetered: false });
-    parcelsWithNoWaterMeter.forEach((parcel) => {
-      demoBuilder.insert(ParcelBillings, '', {
-        valueDate,
-        projection: 'perHabitant',
-        amount: 2500,
-        payinType: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
-        localizer: Localizer.parcelRef2code(parcel.ref),
-      });
-    });
+  parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+    title: 'Hidegvíz előírás',
+    consumption: 'coldWater',
+    uom: 'm3',
+    unitPrice: 650,
+    projection: 'habitants',
+    amount: 2500,
+    payinType: demoBuilder.name2code('Owner payin types', 'Hidegvíz előírás'),
+    localizer: '@A',
+  }));
 
-    demoBuilder.insert(ParcelBillings, '', {
-      valueDate,
-      projection: 'perArea',
-      amount: 85,
-      payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
-      localizer: '@A',
-    });
-  });
+  parcelBillingIds.push(demoBuilder.insert(ParcelBillings, '', {
+    title: 'Fűtési díj előírás',
+    consumption: 'heating',
+    uom: 'kJ',
+    unitPrice: 120,
+    projection: 'volume',
+    amount: 85,
+    payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
+    localizer: '@A',
+  }));
 
+  // This is a one-time, extraordinary parcel billing
   demoBuilder.insert(ParcelBillings, '', {
+    title: 'Rendkivüli befizetés előírás',
     projection: 'absolute',
     amount: 75000,
-    valueDate: new Date(`${lastYear}-08-15`),
     payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
     note: __('demo.transactions.note.0'),
+    activeTime: {
+      begin: new Date(`${lastYear}-08-01`),
+      end: new Date(`${lastYear}-08-31`),
+    },
+  });
+
+  ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
+    const valueDate = new Date(`2017-${mm}-12`);
+    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate });
   });
 
   // === Owner Payins ===
-  function everybodyPaysHisObligations() {
-    const obligationAccount = ChartOfAccounts.get(demoCommunityId).findNodeByName('Owner obligations');
-    const obligationLeafAccounts = obligationAccount.leafs();
-    obligationLeafAccounts.forEach((leafAccount) => {
-      const txs = Transactions.find({ communityId: demoCommunityId, 'debit.account': leafAccount.code });
-      txs.forEach((tx) => {
-        tx.journalEntries().forEach((entry) => {
-          if (entry.side === 'debit') {
-            demoBuilder.insert(Transactions, 'tx', {
-              valueDate: moment(entry.valueDate).add(_.sample([-2, -1, 0, 1, 2]), 'days').toDate(),
-              amount: entry.amount,
-              credit: [{
-                account: entry.account,
-                localizer: entry.localizer,
-              }],
-              debit: [{
-                account: demoBuilder.name2code('Assets', 'Folyószámla'),
-              }],
-            });
-          }
-        });
-      });
-    });
-  }
-
-  everybodyPaysHisObligations();
+  demoBuilder.everybodyPaysTheirBills();
 
   // Some unpaid bills (so we can show the parcels that are in debt)
   demoBuilder.insert(ParcelBillings, '', {
-    projection: 'perArea',
+    title: 'Rendkivüli befizetés előírás',
+    projection: 'area',
     amount: 200,
-    valueDate: new Date(`${lastYear}-12-15`),
     payinType: demoBuilder.name2code('Owner payin types', 'Rendkivüli befizetés előírás'),
     localizer: '@',
+    activeTime: {
+      begin: new Date(`${lastYear}-12-01`),
+      end: new Date(`${lastYear}-12-31`),
+    },
   });
+  demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: new Date('2018-01-12') });
 
   // Unidentified payin
   demoBuilder.insert(Transactions, 'tx', {

@@ -80,7 +80,7 @@ if (Meteor.isServer) {
           chai.assert.equal(emailData.template, 'Notification_Email');
           chai.assert.equal(emailData.data.userId, user._id);
           chai.assert.equal(emailData.data.communityId, demoCommunity._id);
-          chai.assert.equal(emailData.data.topicsWithEvents.length, count);
+          chai.assert.equal(emailData.data.topicsToDisplay.length, count);
         }
 
         processNotifications('frequent');
@@ -116,15 +116,15 @@ if (Meteor.isServer) {
         const emailData = emailSender.sendHTML.getCall(0).args[0];
         chai.assert.equal(emailData.data.userId, ownerWithNotiFrequent._id);
         chai.assert.equal(emailData.data.communityId, demoCommunity._id);
-        chai.assert.equal(emailData.data.topicsWithEvents[0].topic._id, topicId);
-        chai.assert.equal(emailData.data.topicsWithEvents[0].unseenComments.length, 1);
-        chai.assert.equal(emailData.data.topicsWithEvents[0].unseenComments[0].text, 'Hello');
+        chai.assert.equal(emailData.data.topicsToDisplay[0].topic._id, topicId);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments.length, 1);
+        chai.assert.equal(emailData.data.topicsToDisplay[0].unseenComments[0].text, 'Hello');
         processNotifications('daily');
         sinon.assert.calledThrice(emailSender.sendHTML);
         processNotifications('weekly');
       });
 
-      it('Blanks out hidden comment', function () {
+      xit('Blanks out hidden comment', function () {
         // TODO? its only a UI thing now, so unable to test
       });
 
@@ -132,6 +132,15 @@ if (Meteor.isServer) {
         Meteor.users.methods.flag._execute({ userId: Fixture.demoAdminId }, { id: ownerWithNotiNever._id });
 
         Comments.methods.insert._execute({ userId: ownerWithNotiNever._id }, { userId: ownerWithNotiNever._id, topicId, text: 'Hello again' });
+        processNotifications('frequent');
+        processNotifications('daily');
+        processNotifications('weekly');
+        sinon.assert.notCalled(emailSender.sendHTML);
+      });
+
+      it('Doesnt send email when former hidden comment is visible again', function () {
+        Meteor.users.methods.flag._execute({ userId: Fixture.demoAdminId }, { id: ownerWithNotiNever._id }); // unflag above user
+
         processNotifications('frequent');
         processNotifications('daily');
         processNotifications('weekly');

@@ -8,9 +8,11 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { Clock } from '/imports/utils/clock';
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import '/imports/api/meters/methods.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -18,6 +20,8 @@ import '/imports/api/comments/methods.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import '/imports/api/transactions/breakdowns/methods.js';
+import { Bills } from '/imports/api/transactions/bills/bills.js';
+import '/imports/api/transactions/bills/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
@@ -60,6 +64,9 @@ export class CommunityBuilder {
     this.nextUserIndex %= this.dummyUsers.length;
     return this.dummyUsers[this.nextUserIndex];
   }
+  findSomeoneWhoCanDo(method) {
+    return this.getUserWithRole('admin');
+  }
   autoDetermineCreator(method, params) {
     const split = method.name.split('.');
     const collName = split[0], opName = split[1];
@@ -77,8 +84,10 @@ export class CommunityBuilder {
       case 'insert': switch (collName) {
         case 'agendas':
         case 'contracts':
-        case 'parcels': return this.getUserWithRole('manager');
+        case 'parcels':
+        case 'meters': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');
+        case 'bills':
         case 'transactions':
         case 'parcelBillings':
         case 'breakdowns':
@@ -103,7 +112,7 @@ export class CommunityBuilder {
         } break;
         default: debugAssert(false, `No such collection ${collName}`);
       } break;
-      default: debugAssert(false, `No such operation ${opName}`);
+      default: return this.findSomeoneWhoCanDo(method);
     }
     return undefined; // never gets here
   }
@@ -111,9 +120,9 @@ export class CommunityBuilder {
     const dataExtended = _.extend({ communityId: this.communityId }, data);
     if (name) {
       const doc = Factory.build(name, dataExtended);
-      delete doc._id;
+      delete doc._id; // for some reason Factory builds an _id onto it
       return doc;
-    } 
+    }
     return dataExtended;
   }
   create(name, data) {
@@ -218,11 +227,11 @@ export class CommunityBuilder {
       const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
       this.insert(ParcelBillings, '', {
         valueDate,
-        projection: 'perArea',
+        projection: 'area',
         amount: 275,
         payinType: this.name2code('Owner payin types', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
-      });
+      });/*
       this.insert(Transactions, 'tx', {
         valueDate,
         amount: 275 * parcel.area,
@@ -233,8 +242,24 @@ export class CommunityBuilder {
         debit: [{
           account: this.name2code('Assets', 'Folyószámla'),
         }],
-      });
+      });*/
+      this.payBillsOf(parcel);
     }
+  }
+  payBill(bill) {
+    const payinAccount = '381';
+    this.execute(Bills.methods.registerPayment, {
+      _id: bill._id,
+      payment: { valueDate: Clock.currentTime(), amount: bill.outstanding, account: payinAccount },
+    }, this.getUserWithRole('accountant'));
+  }
+  payBillsOf(parcel) {
+    const unpaidBills = Bills.find({ communityId: this.communityId, category: 'parcel', outstanding: { $gt: 0 }, partner: parcel.ref });
+    unpaidBills.forEach(bill => this.payBill(bill));
+  }
+  everybodyPaysTheirBills() {
+    const unpaidBills = Bills.find({ communityId: this.communityId, category: 'parcel', outstanding: { $gt: 0 } });
+    unpaidBills.forEach(bill => this.payBill(bill));
   }
   insertLoadsOfFakeMembers(parcelCount) {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;

@@ -1,8 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import { CollectionHooks } from 'meteor/matb33:collection-hooks';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { Clock } from '/imports/utils/clock';
@@ -104,7 +102,6 @@ const statusChange = new ValidatedMethod({
   name: 'statusChange',
   validate: Comments.simpleSchema().validator({ clean: true }),
   run(event) {
-    CollectionHooks.defaultUserId = this.userId;
     const topic = checkExists(Topics, event.topicId);
     const category = topic.category;
     const workflow = topic.workflow();
@@ -132,7 +129,6 @@ const statusChange = new ValidatedMethod({
     updateMyLastSeen._execute({ userId: this.userId },
       { topicId: topic._id, lastSeenInfo: { timestamp: newTopic.createdAt } },
     );
-    CollectionHooks.defaultUserId = undefined;
 
     return insertResult;
   },
@@ -145,7 +141,6 @@ const statusUpdate = new ValidatedMethod({
     modifier: { type: Object, blackbox: true },
   }).validator(),
   run({ _id, modifier }) {
-    CollectionHooks.defaultUserId = this.userId;
     const topic = checkExists(Topics, _id);
     const category = topic.category;
     const modifiableFields = [];
@@ -155,7 +150,6 @@ const statusUpdate = new ValidatedMethod({
     checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId, topic);
     checkModifier(topic, modifier, modifiableFields);
     Topics.update(_id, modifier);
-    CollectionHooks.defaultUserId = undefined;
   },
 });
 

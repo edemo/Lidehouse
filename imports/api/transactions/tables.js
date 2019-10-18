@@ -1,7 +1,9 @@
-import { Session } from 'meteor/session';
+import { Template } from 'meteor/templating';
+import { Blaze } from 'meteor/blaze';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import '/imports/ui_3/views/blocks/action-buttons.js';
+import { getTransactionsActionsSmall } from './actions.js';
 import { AccountSpecification } from './account-specification';
 
 Render.journalEntries = function (cellData, renderType, currentRow) {
@@ -12,12 +14,7 @@ Render.journalEntries = function (cellData, renderType, currentRow) {
   return AccountSpecification.fromDoc(entry).display();
 };
 
-export function transactionColumns(permissions) {
-  const buttonRenderers = [];
-  if (permissions.view) buttonRenderers.push(Render.buttonView);
-  if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
-  if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
-
+export function transactionColumns() {
   const columns = [
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
@@ -26,7 +23,7 @@ export function transactionColumns(permissions) {
     { data: 'partner', title: __('Partner') },
     { data: 'ref', title: __('schemaTransactions.ref.label') },
     { data: 'note', title: __('schemaTransactions.note.label') },
-    { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getTransactionsActionsSmall() }) },
   ];
 
   return columns;

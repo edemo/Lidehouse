@@ -10,7 +10,6 @@ export function initializeBuiltinFolders() {
   Sharedfolders.define({ _id: 'community', communityId: null, name: 'Founding documents' });
   Sharedfolders.define({ _id: 'voting', communityId: null, name: 'Voting attachments' });
   Sharedfolders.define({ _id: 'agenda', communityId: null, name: 'Agenda records' });
-  Sharedfolders.define({ _id: 'decision', communityId: null, name: 'Decision logs' });
 }
 
 if (Meteor.isServer) {

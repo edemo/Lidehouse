@@ -65,6 +65,7 @@ export function insertUnittestFixture(lang) {
     door: '02',
     type: 'parking',
     area: 6,
+    habitants: 0,
   });
   dummyParcels[1] = demoBuilder.createParcel({
     units: 10,
@@ -72,6 +73,7 @@ export function insertUnittestFixture(lang) {
     door: '12',
     type: 'flat',
     area: 65,
+    habitants: 1,
   });
   dummyParcels[2] = demoBuilder.createParcel({
     units: 20,
@@ -79,6 +81,7 @@ export function insertUnittestFixture(lang) {
     door: '23',
     type: 'flat',
     area: 142,
+    habitants: 2,
   });
   dummyParcels[3] = demoBuilder.createParcel({
     units: 30,
@@ -86,6 +89,7 @@ export function insertUnittestFixture(lang) {
     door: '34',
     type: 'flat',
     area: 98.4,
+    habitants: 3,
   });
   dummyParcels[4] = demoBuilder.createParcel({
     units: 40,
@@ -93,6 +97,7 @@ export function insertUnittestFixture(lang) {
     door: '45',
     type: 'flat',
     area: 70,
+    habitants: 4,
   });
 
   // ===== Demo owners =====

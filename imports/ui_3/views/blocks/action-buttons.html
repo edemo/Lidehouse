@@ -1,0 +1,13 @@
+<template name="Action_button_small">
+  {{#if action.visible _id}}
+  <button data-id={{_id}} class="btn btn-xs btn-{{or (action.color _id) 'white'}} js-{{action.name}}" title="{{_ action.name}}"><i class="{{action.icon}}"></i></button>
+  {{/if}}
+</template>
+
+<template name="Action_buttons_group_small">
+  <div class="btn-group">
+    {{#each action in actions}}
+      {{>Action_button_small _id=_id action=action}}
+    {{/each}}
+  </div>
+</template>

@@ -4,257 +4,27 @@
 
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
+    <div class="tabs-container">
 
-    {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
-    <div class="col-md-12">
-        <div class="ibox ibox-dark transactions" id='incomplete'>
-            <div class="ibox-title">
-                <h5>{{_ 'Kontírozás'}}</h5>
-                {{>iboxTools}}
-            </div>  
-            <div class="ibox-content">
-                {{#if userHasPermission 'transactions.insert' (fromSession 'activeCommunityId')}}
-                <div class="pull-right">
-                    <a href="" class="btn btn-primary btn-sm js-publish"><i class="fa fa-bullhorn"></i> {{_ 'Publish'}}</a>
-                    <a href="" class="btn btn-white btn-sm js-import-statement"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>
-                    <a href="" class="btn btn-white btn-sm js-import-balances"><i class="fa fa-upload"></i> {{_ 'Upload balances'}}</a>
-                </div>
-                {{/if}}
-                <!---h3>{{_ 'Transactions to complete'}}</h3-->
-                <p>
-                    {{_ 'Itt azokat a tranzakciókat látja, amiknek még nem lett megállapítva mindkét számla oldala.'}}<br>
-                    {{_ 'Szerkesztés segítségével vigye be hozzájuk a hiányzó oldalt!'}}<br>
-                    {{_ 'Ha az egyenlegek megmutatható állapotban vannak, publikálhatja az aktuális állapotot.'}}<br>
-                </p>
-                <br>
-                <div>
-                    {{> ReactiveDatatable tableData=transactionsIncompleteTableDataFn options=transactionsOptionsFn }}
-                </div>
+        <ul class="nav nav-tabs m-b-md" role="tablist">
+            <li class="nav-link active show"><a data-toggle="tab" href="#tab-bills">{{_ 'Bill registry'}}</a></li>
+            <li class="nav-link"><a data-toggle="tab" href="#tab-transactions">{{_ 'Transactions'}}</a></li>
+            <li class="nav-link"><a data-toggle="tab" href="#tab-reconciliation">{{_ 'Reconciliation'}}</a></li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" id="tab-bills" class="tab-pane active">
+                {{> Accounting_bills}}
+            </div>
+            <div role="tabpanel" id="tab-transactions" class="tab-pane">
+                {{> Accounting_transactions}}
+                {{> Accounting_breakdowns}}
+            </div>
+            <div role="tabpanel" id="tab-reconciliation" class="tab-pane">
+                {{> Accounting_reconciliation}}
             </div>
         </div>
+
     </div>
-    {{/if}}
-
-    {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
-    <div class="col-md-12">
-        <div class="ibox ibox-dark transactions" id='transactions'>
-            <div class="ibox-title">
-                <h5>{{_ 'Transactions'}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                {{#if userHasPermission 'transactions.insert' (fromSession 'activeCommunityId')}}
-                <div class="pull-right">
-                    <div class="dropdown">
-                        <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
-                            <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'transaction'}} <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
-                            <li><a href="" class="js-many"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'parcelBilling'}}</a></li>
-                            {{#each def in txDefs}}
-                            <li><a href="" class="js-new" data-id="{{def.name}}"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ def.name}}</a></li>
-                            {{/each}}
-                            <!--li role="separator" class="divider"></li>
-                            <li><a href="" class="js-new-def"> + {{_ 'new'}} {{_ 'tx'}} {{_ 'def'}}</a></li-->
-                        </ul>
-                    </div>
-                    <!--button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcel'}}</strong></button-->
-                </div>
-                {{/if}}
-                <p>
-                    {{_ 'A tranzakciós listát szűrheti típus és dátum alapján.'}}<br>
-                    {{_ 'Figyelem! Ha a szűrés túl tág, a szűrt adathalmaz túl nagy lesz és a letöltés hosszabb időt is igénybe vehet!'}}
-                </p>
-                <div class="row m-t-sm">
-                  <div class="form-group">
-                    <div class="col-sm-4">
-                      <div class="form-group">
-                          <label class="control-label" for="tx-def">{{_ 'schemaTxDefs.name.label'}}</label>
-                          <select id="tx-def" name="tx-def" {{b 'options: txDefOptions, value: txDefSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
-                      </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="control-label" for="debit">{{_ 'schemaTxDefs.debit.label'}}</label>
-                            <select disabled id="debit" name="debit" {{b 'options: debitAccountOptions, value: debitAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="control-label" for="credit">{{_ 'schemaTxDefs.credit.label'}}</label>
-                            <select disabled id="credit" name="credit" {{b 'options: creditAccountOptions, value: creditAccountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
-                        </div>
-                    </div>
-                  </div>
-                </div>
-                <!--div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="control-label" for="customer">{{_ 'Partner'}}</label>
-                            <input type="text" id="customer" name="customer" {{b "value: partnerSelected"}} placeholder="Partner" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="control-label" for="order_id">{{_ 'Reference ID'}}</label>
-                            <input type="text" id="order_id" name="order_id" {{b "value: referenceIdSelected"}} placeholder="Reference ID" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="control-label" for="status">{{_ 'Note'}}</label>
-                            <input type="text" id="status" name="status" value="" placeholder="Search..." class="form-control">
-                        </div>
-                    </div>
-                </div-->
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
-                            <input type="date" id="begin_date" name="begin_date" {{b "value: beginDate"}} class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="control-label" for="end_date">{{_ 'End date'}}</label>
-                            <input type="date" id="end_date" name="end_date" {{b "value: endDate"}} class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="control-label" for="localizer">{{_ 'Localizer'}}</label>
-                            <select id="localizer" name="localizer" {{b 'options: localizerOptions, value: localizerSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
-                        </div>
-                    </div>
-                    <!--div class="col-sm-4">
-                        <div class="form-group">
-                            <label class="control-label" for="amount">{{_ 'Amount'}}</label>
-                            <input type="text" id="amount" name="amount" {{b "value: amount"}} placeholder="Amount" class="form-control">
-                        </div>
-                    </div-->
-                </div>
-                {{> ReactiveDatatable tableData=transactionsTableDataFn options=transactionsOptionsFn }}
-            </div>
-        </div>
-    </div>
-    {{/if}}
-
-    <!--div class="col-md-12">
-        <div class="ibox ibox-dark" id='breakdowns-nestable'>
-            <div class="ibox-title">
-                <h5>{{_ 'Breakdowns'}}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                {{> Nestable_edit}}
-            </div>
-        </div>
-    </div-->
-
-    {{#if userHasPermission 'breakdowns.inCommunity' (fromSession 'activeCommunityId')}}
-    <div class="col-md-12">
-        <div class="ibox ibox-dark" id='coa'>
-            <div class="ibox-title">
-                <h5>{{_ 'Accounting configuration' }}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
-                {{#if and (noBreakdownsDefined (userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId'))) }}
-                <div class="pull-right">
-                    <!--<div class="dropdown">
-                        <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
-                            <i class="fa fa-clone"></i> {{_ 'Import template'}} <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
-                            {{#each template in accountingTemplates}}
-                            <li><a href="" class="js-clone" data-id="{{template.name}}"><i class="fa fa-clone"></i> {{_ 'template.name'}}</a></li>
-                            {{/each}}
-                        </ul>
-                    </div>-->
-                    <a href="" class="btn btn-primary btn-sm js-clone"><i class="fa fa-clone"></i> {{_ 'Import template'}}</a>
-                </div>
-                {{/if}}
-                <p>
-                    {{_ 'A teljes számlatükör könyvelési bontásokból épül fel.'}}<br>
-                    {{_ 'Használhatja a beépített sablonjainkat, vagy létrehozhat teljesen újat is.'}}<br>
-                </p>
-                <br>
-                <ul class="nav nav-tabs m-b-md">
-                    <li class="active"><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of accounts'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-loc">{{_ 'Localizers'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-others">{{_ 'Other breakdowns'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-defs" class="text-capitalize">{{_ 'txDefs'}}</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div id="tab-coa" class="tab-pane breakdowns active">
-                        <div class="table-responsive">
-                            {{> ReactiveDatatable tableData=coaBreakdownsTableDataFn options=breakdownsOptionsFn }}
-                        </div>
-                    </div>
-                    <div id="tab-loc" class="tab-pane breakdowns">
-                        <div class="table-responsive">
-                            {{> ReactiveDatatable tableData=locBreakdownsTableDataFn options=breakdownsOptionsFn }}
-                        </div>
-                    </div>
-                    <div id="tab-others" class="tab-pane breakdowns">
-                        <div class="table-responsive">
-                            {{> ReactiveDatatable tableData=othersBreakdownsTableDataFn options=breakdownsOptionsFn }}
-                        </div>
-                        {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
-                        <div class="row">
-                        <div class="col-xs-12 text-center">
-                            <a href="" class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
-                        </div>
-                        </div>
-                        {{/if}}
-                    </div>
-                    <div id="tab-defs" class="tab-pane txdefs">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                  <tr style="font-weight: bold">
-                                      <td>{{_ 'schemaTxDefs.name.label'}}</td>
-                                      <td>{{_ 'schemaTxDefs.debit.label'}}</td>
-                                      <td>{{_ 'schemaTxDefs.credit.label'}}</td>
-                                      <td></td>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {{#each txDef in txDefs}}
-                                  <tr>
-                                      <td>{{_ txDef.name}}</td>
-                                      <td>{{displayAccount txDef.debit}}</td>
-                                      <td>{{displayAccount txDef.credit}}</td>
-                                      <td class="text-right">
-                                          <div class="btn-group">
-                                              <!--td><button class="btn btn-white btn-xs js-view" data-id="{{entry.txId}}"><i class="fa fa-eye"></i></button></td-->
-                                              {{#if userHasPermission 'breakdowns.update' (fromSession 'activeCommunityId')  }}
-                                              <button class="btn btn-xs btn-white js-edit" data-id={{txDef._id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                                              {{/if}}
-                                              {{#if userHasPermission 'breakdowns.remove' (fromSession 'activeCommunityId')  }}
-                                              <button class="btn btn-xs btn-white js-delete" data-id={{txDef._id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                                              {{/if}}
-                                          </div>
-                                      </td>
-                                  </tr>
-                                  {{/each}}
-                                </tbody>
-                            </table>
-                        </div>
-                        {{#if userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId')}}
-                        <div class="row">
-                            <div class="col-xs-12 text-center">
-                                <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txDef'}}</button>
-                            </div>
-                        </div>
-                        {{/if}}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {{/if}}
-
     </div>
     </div>
 </template>

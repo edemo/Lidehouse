@@ -227,8 +227,12 @@ if (Meteor.isServer) {
         chai.assert.equal(clone.name, 'Root');
         const myRoot = Breakdowns.findOneByName('Root', Fixture.demoCommunityId);
         chai.assert.equal(myRoot.communityId, Fixture.demoCommunityId);
-        delete root._id; delete root.createdAt; delete root.updatedAt; delete root.communityId;
-        delete myRoot._id; delete myRoot.createdAt; delete myRoot.updatedAt; delete myRoot.communityId;
+        function deleteIrrelevantFields(brd) {
+          delete brd._id; delete brd.communityId;
+          delete brd.createdAt; delete brd.updatedAt; delete brd.creatorId; delete brd.updatorId;
+        }
+        deleteIrrelevantFields(root);
+        deleteIrrelevantFields(myRoot);
         chai.assert.deepEqual(root, myRoot);    // YET the same, other than those
 
         // but if we modify it, only our copy changes

@@ -5,7 +5,9 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
+import rusdiff from 'rus-diff';
 
+import { debugAssert } from '/imports/utils/assert.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
@@ -15,89 +17,24 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { PeriodBreakdown } from './breakdowns/breakdowns-utils.js';
 
-export let Transactions;
-export class TransactionsCollection extends Mongo.Collection {
-  insert(doc, callback) {
-    const tdoc = this._transform(doc);
-    const result = super.insert(doc, callback);
-    this._updateBalances(tdoc);
-//    this._checkBalances([tdoc]);
-    return result;
-  }
-  update(selector, modifier, options, callback) {
-    const originalDocs = this.find(selector);
-    originalDocs.forEach((doc) => {
-      this._updateBalances(doc, -1);
-    });
-    const result = super.update(selector, modifier, options, callback);
-    const updatedDocs = this.find(selector);
-    updatedDocs.forEach((doc) => {
-      this._updateBalances(doc, 1);
-    });
-//    this._checkBalances(originalDocs);
-    return result;
-  }
-  remove(selector, callback) {
-    const docs = this.find(selector);
-    docs.forEach((doc) => {
-      this._updateBalances(doc, -1);
-    });
-    const result = super.remove(selector, callback);
-//    this._checkBalances(docs);
-    return result;
-  }
-  _updateBalances(doc, revertSign = 1) {
-//    if (!doc.complete) return;
-    const communityId = doc.communityId;
-    doc.journalEntries().forEach((entry) => {
-      const leafTag = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
-//      const coa = ChartOfAccounts.get(communityId);
-//      coa.parentsOf(entry.account).forEach(account => {
-      const account = entry.account;
-      const localizer = entry.localizer;
-      PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
-        const changeAmount = entry.amount * revertSign;
-        function increaseBalance(selector, side, amount) {
-          const bal = Balances.findOne(selector);
-          const balId = bal ? bal._id : Balances.insert(selector);
-          const incObj = {}; incObj[side] = amount;
-          Balances.update(balId, { $inc: incObj });
-        }
-        increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
-        if (localizer) {
-          increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
-        }
-      });
-    });
-  }
-  _checkBalances(docs) {
-    const affectedAccounts = [];
-    let communityId;
-    docs.forEach((doc) => {
-      doc.journalEntries().forEach((entry) => {
-        affectedAccounts.push(entry.account);
-        communityId = entry.communityId;
-      });
-    });
-    _.uniq(affectedAccounts).forEach((account) => {
-      Balances.checkCorrect({ communityId, account, tag: 'T' });
-    });
-  }
-}
-
-Transactions = new TransactionsCollection('transactions');
+export const Transactions = new Mongo.Collection('transactions');
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
   { amount: { type: Number, optional: true } },
+  // A tx leg can be directly associated with a bill, for its full amount (if a tx is associated to multiple bills, use legs for each association, one leg can belong to one bill)
+  { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
+  { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
 ]);
 
 Transactions.baseSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
-  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
+//  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
+//  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   valueDate: { type: Date },
   amount: { type: Number },
+  billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
+  paymentId: { type: Number, decimal: true, optional: true },
 //  year: { type: Number, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getFullYear(); },
 //  },
@@ -114,18 +51,10 @@ Transactions.noteSchema = {
 
 Transactions.schema = new SimpleSchema([
   _.clone(Transactions.baseSchema), {
-    credit: { type: [Transactions.entrySchema], optional: true },
     debit: { type: [Transactions.entrySchema], optional: true },
-    complete: { type: Boolean, autoform: { omit: true }, autoValue() {
-      let total = 0;
-      const amount = this.field('amount').value;
-      const debits = this.field('debit').value;
-      const credits = this.field('credit').value;
-      if (!debits || !credits) return false;
-      debits.forEach(entry => total += entry.amount || amount);
-      credits.forEach(entry => total -= entry.amount || amount);
-      return total === 0;
-    } },
+    credit: { type: [Transactions.entrySchema], optional: true },
+    complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
+    reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
   },
   _.clone(Transactions.noteSchema),
 ]);
@@ -149,11 +78,23 @@ Meteor.startup(function indexTransactions() {
 // and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
 
 Transactions.helpers({
+  getSide(side) {
+    debugAssert(side === 'debit' || side === 'credit');
+    return this[side] || [];
+  },
   isSolidified() {
     const now = moment(new Date());
     const creationTime = moment(this.createdAt);
     const elapsedHours = now.diff(creationTime, 'hours');
     return (elapsedHours > 24);
+  },
+  calculateComplete() {
+    let total = 0;
+    if (!this.debit || !this.credit) return false;
+    if (!this.debit.length || !this.credit.length) return false;
+    this.debit.forEach((entry) => { if (entry.account) total += entry.amount || this.amount; });
+    this.credit.forEach((entry) => { if (entry.account) total -= entry.amount || this.amount; });
+    return total === 0;
   },
   journalEntries() {
     const entries = [];
@@ -161,8 +102,8 @@ Transactions.helpers({
       this.debit.forEach(l => {
         const txBase = _.clone(this);
         delete txBase._id;
-        delete txBase.credit;
         delete txBase.debit;
+        delete txBase.credit;
         entries.push(_.extend(txBase, l, { side: 'debit' }));
       });
     }
@@ -170,8 +111,8 @@ Transactions.helpers({
       this.credit.forEach(l => {
         const txBase = _.clone(this);
         delete txBase._id;
-        delete txBase.credit;
         delete txBase.debit;
+        delete txBase.credit;
         entries.push(_.extend(txBase, l, { side: 'credit' }));
       });
     }
@@ -181,15 +122,15 @@ Transactions.helpers({
     const tx = _.clone(this);
     delete tx._id;
     tx.amount *= -1;
-    tx.credit.forEach(l => l.amount *= -1);
     tx.debit.forEach(l => l.amount *= -1);
+    tx.credit.forEach(l => l.amount *= -1);
     return tx;
   },
   oppositor() {
     const tx = _.clone(this);
     delete tx._id;
-    tx.credit = this.debit;
     tx.debit = this.credit;
+    tx.credit = this.debit;
     return tx;
   },
 });
@@ -201,6 +142,85 @@ Meteor.startup(function attach() {
   Transactions.simpleSchema().i18n('schemaTransactions');
 });
 
+// --- Before/after actions ---
+
+function checkBalances(docs) {
+  const affectedAccounts = [];
+  let communityId;
+  docs.forEach((doc) => {
+    doc.journalEntries().forEach((entry) => {
+      affectedAccounts.push(entry.account);
+      communityId = entry.communityId;
+    });
+  });
+  _.uniq(affectedAccounts).forEach((account) => {
+    Balances.checkCorrect({ communityId, account, tag: 'T' });
+  });
+}
+
+function updateBalances(doc, revertSign = 1) {
+//    if (!doc.complete) return;
+  doc = Transactions._transform(doc);
+  const communityId = doc.communityId;
+  doc.journalEntries().forEach((entry) => {
+    const leafTag = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
+//      const coa = ChartOfAccounts.get(communityId);
+//      coa.parentsOf(entry.account).forEach(account => {
+    const account = entry.account;
+    const localizer = entry.localizer;
+    PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+      const changeAmount = entry.amount * revertSign;
+      function increaseBalance(selector, side, amount) {
+        const bal = Balances.findOne(selector);
+        const balId = bal ? bal._id : Balances.insert(selector);
+        const incObj = {}; incObj[side] = amount;
+        Balances.update(balId, { $inc: incObj });
+      }
+      increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
+      if (localizer) {
+        increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
+      }
+    });
+  });
+  // checkBalances([doc]);
+}
+
+function autoValueUpdate(doc, modifier, fieldName, autoValue) {
+  let newDoc = rusdiff.clone(doc);
+  if (modifier) rusdiff.apply(newDoc, modifier);
+  newDoc = Transactions._transform(newDoc);
+  modifier.$set = modifier.$set || {};
+  modifier.$set[fieldName] = autoValue(newDoc);
+}
+
+if (Meteor.isServer) {
+  Transactions.before.insert(function (userId, doc) {
+    const tdoc = this.transform();
+    doc.complete = tdoc.calculateComplete();
+  });
+
+  Transactions.after.insert(function (userId, doc) {
+    updateBalances(doc, 1);
+  });
+
+  Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
+    updateBalances(doc, -1);
+    autoValueUpdate(doc, modifier, 'complete', doc => doc.calculateComplete());
+  });
+
+  Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
+    updateBalances(doc, 1);
+  });
+
+  Transactions.after.remove(function (userId, doc) {
+    updateBalances(doc, -1);
+  });
+}
+
+// --- Factory ---
+
 Factory.define('tx', Transactions, {
   valueDate: () => Clock.currentDate(),
+  debit: [],
+  credit: [],
 });

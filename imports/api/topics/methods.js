@@ -4,7 +4,6 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import { CollectionHooks } from 'meteor/matb33:collection-hooks';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
@@ -26,7 +25,6 @@ export const insert = new ValidatedMethod({
   name: 'topics.insert',
   validate: Topics.simpleSchema().validator({ clean: true }),
   run(doc) {
-    CollectionHooks.defaultUserId = this.userId;
     if (doc._id) checkNotExists(Topics, doc._id);
     doc = Topics._transform(doc);
     // readableId(Topics, doc);
@@ -38,7 +36,6 @@ export const insert = new ValidatedMethod({
     };
     updateMyLastSeen._execute({ userId: this.userId },
       { topicId, lastSeenInfo: { timestamp: newTopic.createdAt } });
-    CollectionHooks.defaultUserId = undefined;
     return topicId;
   },
 });
@@ -50,12 +47,10 @@ export const update = new ValidatedMethod({
     modifier: { type: Object, blackbox: true },
   }).validator(),
   run({ _id, modifier }) {
-    CollectionHooks.defaultUserId = this.userId;
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'update', topic);
     checkModifier(topic, modifier, topic.modifiableFields());
     Topics.update(_id, modifier);
-    CollectionHooks.defaultUserId = undefined;
   },
 });
 
@@ -86,13 +81,11 @@ export const remove = new ValidatedMethod({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ _id }) {
-    CollectionHooks.defaultUserId = this.userId;
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'remove', topic);
 
     Topics.remove(_id);
     Comments.remove({ topicId: _id });
-    CollectionHooks.defaultUserId = undefined;
   },
 });
 

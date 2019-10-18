@@ -42,4 +42,12 @@ Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
       collection[when][action](actionFunc);
     });
   });
+
+  if (behaviour.indexes) {
+    Meteor.startup(function ensureIndexes() {
+      behaviour.indexes.forEach((indexDef) => {
+        collection.ensureIndex(indexDef, { sparse: true });
+      });
+    });
+  }
 };

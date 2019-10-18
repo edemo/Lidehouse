@@ -5,6 +5,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Bills } from '/imports/api/transactions/bills/bills.js';
 
 // Import UI pages only on the client!
 // But the route defs need to be available on the server as well, for calculating link paths in emails
@@ -31,9 +32,11 @@ if (Meteor.isClient) {
   import '/imports/ui_3/views/pages/contracts.js';
   import '/imports/ui_3/views/pages/parcels-finances.js';
   import '/imports/ui_3/views/pages/community-finances.js';
+  import '/imports/ui_3/views/pages/inventory-page.js';
   import '/imports/ui_3/views/pages/accounting-page.js';
   import '/imports/ui_3/views/pages/shareddoc-store.js';
   import '/imports/ui_3/views/pages/topic-show.js';
+  import '/imports/ui_3/views/pages/bill-show.js';
 
   import '/imports/ui_3/views/layouts/main.js';
   import '/imports/ui_3/views/layouts/blank.js';
@@ -53,7 +56,7 @@ if (Meteor.isClient) {
 FlowRouter.route('/', {
   name: 'App home',
   action() {
-    BlazeLayout.render('Main_layout', { content: 'app_rootRedirector' });
+    BlazeLayout.render('Blank_layout', { content: 'app_rootRedirector' });
   },
   title() {
     return __('Board');
@@ -66,7 +69,7 @@ FlowRouter.route('/', {
 FlowRouter.route('/intro', {
   name: 'App intro',
   action() {
-    BlazeLayout.render('Intro_page');
+    BlazeLayout.render('Blank_layout', { content: 'Intro_page' });
   },
   title() {
     return __(FlowRouter.current().route.name);
@@ -169,7 +172,7 @@ FlowRouter.route('/room/:_rid', {
     return Room && `${Room.title}`;
   },
 });
-CommunityRelatedRoutes.push('Messages');
+CommunityRelatedRoutes.push('Room show');
 
 FlowRouter.route('/forum', {
   name: 'Forum',
@@ -276,6 +279,17 @@ FlowRouter.route('/community-finances', {
 });
 CommunityRelatedRoutes.push('Community finances');
 
+FlowRouter.route('/inventory', {
+  name: 'Inventory',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Inventory_page' });
+  },
+  title() {
+    return __(FlowRouter.current().route.name);
+  },
+});
+CommunityRelatedRoutes.push('Inventory');
+
 FlowRouter.route('/accounting', {
   name: 'Accounting',
   action() {
@@ -286,6 +300,18 @@ FlowRouter.route('/accounting', {
   },
 });
 CommunityRelatedRoutes.push('Accounting');
+
+FlowRouter.route('/bill/:_bid', {
+  name: 'Bill show',
+  action() {
+    BlazeLayout.render('Main_layout', { content: 'Bill_show' });
+  },
+  title(params) {
+    const bill = Bills.findOne(params._bid);
+    return bill && `${bill.serial}`;
+  },
+});
+CommunityRelatedRoutes.push('Bill show');
 
 FlowRouter.route('/community', {
   name: 'Community page default',

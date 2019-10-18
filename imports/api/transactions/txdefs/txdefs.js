@@ -28,30 +28,30 @@ TxDefs.clone = function clone(name, communityId) {
 TxDefs.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String, max: 100 },
-  credit: { type: String, max: 100, autoform: chooseAccountNode, optional: true },
   debit: { type: String, max: 100, autoform: chooseAccountNode, optional: true },
+  credit: { type: String, max: 100, autoform: chooseAccountNode, optional: true },
 });
 
 TxDefs.helpers({
   schema() {
     const schema = new SimpleSchema([
       _.clone(Transactions.baseSchema), {
-        credit: { type: String, autoform: chooseSubAccount('COA', this.credit) },
         debit: { type: String, autoform: chooseSubAccount('COA', this.debit) },
+        credit: { type: String, autoform: chooseSubAccount('COA', this.credit) },
       }, _.clone(Transactions.noteSchema),
     ]);
     schema.i18n('schemaTransactions');
     return schema;
   },
   transformToTransaction(doc) {
-    doc.credit = [{ account: doc.credit }];
     doc.debit = [{ account: doc.debit }];
+    doc.credit = [{ account: doc.credit }];
   },
   select() {
     const selector = {
       communityId: this.communityId,
-      'credit.account': this.credit,
       'debit.account': this.debit,
+      'credit.account': this.credit,
     };
     const txs = Transactions.find(selector);
     return txs;
