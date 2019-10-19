@@ -26,6 +26,9 @@ import '/imports/api/transactions/bills/methods.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/breakdowns/methods.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import '/imports/api/transactions/parcel-billings/methods.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import '/imports/api/transactions/statement-entries/methods.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -860,15 +863,13 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: new Date('2018-01-12') });
 
   // Unidentified payin
-  demoBuilder.insert(Transactions, 'tx', {
+  demoBuilder.create('statementEntry', {
+    account: demoBuilder.name2code('Assets', 'Folyószámla'),
     valueDate: new Date(`${lastYear}-12-30`),
     amount: 24500,
+    partner: 'Gipsz Jakab',
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
-    debit: [{
-      account: demoBuilder.name2code('Assets', 'Folyószámla'),
-    }],
   });
-
 
 // ===== Transactions =====
 

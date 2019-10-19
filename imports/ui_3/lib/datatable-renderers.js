@@ -28,7 +28,8 @@ export const Render = {
   },
   checkmarkBoolean(cellData, renderType, currentRow) {
     const icon = cellData ? 'fa-check' : 'fa-times';
-    return `<i class="fa ${icon}"></i>`;
+    const color = cellData ? 'primary' : 'danger';
+    return `<i class="fa ${icon} text-${color}"></i>`;
   },
   displayTitle(topicId) {
     const title = Topics.findOne(topicId).title;

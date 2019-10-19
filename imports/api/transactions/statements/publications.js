@@ -29,6 +29,8 @@ Meteor.publish('statements.byAccount', function statementsByAccount(params) {
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('statements.inCommunity', communityId)) {
+    return this.ready();
+  }
 
   const selector = { communityId, account };
   if (end) selector.beginDate = { $lte: end };

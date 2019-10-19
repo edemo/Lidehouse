@@ -22,10 +22,12 @@ export const Payments = new Mongo.Collection('payments');
 
 Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  billId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   valueDate: { type: Date },
   amount: { type: Number },
   account: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
+  // Connect either a bill or a contra account
+  billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  // contraAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '') },  // the contra account if no bill is connected
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
@@ -42,6 +44,9 @@ Meteor.startup(function indexPayments() {
 Payments.helpers({
   community() {
     return Communities.findOne(this.communityId);
+  },
+  isConteered() {
+    return (!!this.txId);
   },
   isReconciled() {
     return (!!this.reconciledId);

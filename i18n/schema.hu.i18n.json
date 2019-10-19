@@ -742,6 +742,9 @@
           "label": "Pénz számla"
         }
       }
+    },
+    "reconciled": {
+      "label": "Egyeztetve"
     }
   },
   "schemaParcelBillings": {

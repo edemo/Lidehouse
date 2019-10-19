@@ -737,6 +737,9 @@
           "label": "Money account"
         }
       }
+    },
+    "reconciled": {
+      "label": "Reconciled"
     }
   },
   "schemaParcelBillings": {

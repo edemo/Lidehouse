@@ -65,7 +65,7 @@ Template.Accounting_reconciliation.viewmodel({
     const templateInstance = Template.instance();
     return () => {
       if (!templateInstance.subscriptionsReady()) return [];
-      const entries = StatementEntries.find({ communityId: self.communityId(), reconciled: false }).fetch();
+      const entries = StatementEntries.find({ communityId: self.communityId() }).fetch();
       return entries;
     };
   },
