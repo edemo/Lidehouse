@@ -88,6 +88,9 @@ Bills.helpers({
     if (this.matchingTxSide() === 'credit') return 'debit';
     return undefined;
   },
+  isConteered() {
+    return !!this.txId;
+  },
   hasConteerData() {
     let result = true;
     this.lines.forEach(line => { if (!line.account) result = false; });
@@ -102,12 +105,12 @@ Bills.helpers({
   makeTx() {
     const self = this;
     const tx = {
+      _id: this._id,
       communityId: this.communityId,
+      type: 'Bills',
       // def: 'bill'
       valueDate: this.valueDate,
       amount: this.amount,
-      billId: this._id,
-      paymentId: undefined, // it is not a payment
     };
     function copyLinesInto(txSide) {
       self.lines.forEach(line => txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer }));

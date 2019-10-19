@@ -52,12 +52,12 @@ Payments.helpers({
   },
   makeTx(accountingMethod) {
     const tx = {
+      _id: this._id,
       communityId: this.communityId,
+      type: 'Payments',
       // def: 'payment',
       valueDate: this.valueDate,
       amount: this.amount,
-      billId: this.billId,
-      paymentId: this._id,
     };
     const bill = Bills.findOne(this.billId);
     const ratio = this.amount / bill.amount;

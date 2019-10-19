@@ -56,7 +56,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 0);
         chai.assert.equal(bill.outstanding, 300);
-        chai.assert.isUndefined(bill.txId);
+        chai.assert.equal(bill.isConteered(), false);
       });
 
       it('Can not conteer without accounts', function () {
@@ -75,10 +75,10 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Bills.methods.update, { _id: billId, modifier: { $set: { 'lines.0.account': '85', 'lines.0.localizer': '@' } } });
         FixtureA.builder.execute(Bills.methods.conteer, { _id: billId });
         bill = Bills.findOne(billId);
-        chai.assert.isDefined(bill.txId);
-        const tx = Transactions.findOne(bill.txId);
+        chai.assert.equal(bill.isConteered(), true);
+        const tx = Transactions.findOne(billId);
         chai.assert.isDefined(tx);
-        chai.assert.equal(tx.billId, billId);
+        chai.assert.equal(tx.type, 'Bills');
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '85', localizer: '@' }]);
         chai.assert.deepEqual(tx.credit, [{ account: '46' }]);
@@ -102,13 +102,13 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.payments.length, 2);
         chai.assert.equal(bill.outstanding, 0);
 
-        const tx1 = Transactions.findOne({ paymentId: paymentId1 });
+        const tx1 = Transactions.findOne(paymentId1);
         chai.assert.isDefined(tx1);
         chai.assert.equal(tx1.amount, 100);
         chai.assert.deepEqual(tx1.debit, [{ account: '46' }]);
         chai.assert.deepEqual(tx1.credit, [{ account: bankAccount }]);
 
-        const tx2 = Transactions.findOne({ paymentId: paymentId2 });
+        const tx2 = Transactions.findOne(paymentId2);
         chai.assert.isDefined(tx2);
         chai.assert.equal(tx2.amount, 200);
         chai.assert.deepEqual(tx2.debit, [{ account: '46' }]);
