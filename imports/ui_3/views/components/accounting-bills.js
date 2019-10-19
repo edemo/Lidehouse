@@ -15,7 +15,7 @@ import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { billColumns } from '/imports/api/transactions/bills/tables.js';
-import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/parcel-billings.js';

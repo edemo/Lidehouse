@@ -10,6 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
@@ -36,14 +37,6 @@ Bills.lineSchema = new SimpleSchema({
   localizer: { type: String, optional: true },
 });
 
-Bills.paymentSchema = new SimpleSchema({
-  valueDate: { type: Date },
-  amount: { type: Number },
-  account: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  reconciled: { type: Boolean, defaultValue: false },
-});
-
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   category: { type: String, allowedValues: Bills.categoryValues, autoform: { omit: true } },
@@ -63,31 +56,13 @@ Bills.schema = new SimpleSchema({
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
   payments: { type: Array, defaultValue: [] },
-  'payments.$': { type: Bills.paymentSchema },
+  'payments.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client can ask to sort on outstanding amount
 //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
-//  tx: { type: Bills.connectedTxSchema, optional: true },    // used if accounting method is 'accrual'):
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
 Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partner'];
-
-Bills.reconcileSchema = function reconcileSchema() {
-  const autoformOptions = Meteor.isServer ? {} : {
-    options() {
-      const bills = Bills.find({ communityId: getActiveCommunityId(), outstanding: { $gt: 0 } }).fetch();
-      return bills.map(function option(bill) { return { label: bill.display(), value: bill._id }; });
-    },
-    firstOption: () => __('(Select one)'),
-  };
-  return new SimpleSchema({
-    txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false },
-    txLegId: { type: Number, decimal: true, optional: true },
-    billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false, autoform: autoformOptions },
-    paymentId: { type: Number, decimal: true, optional: true },
-    // if txLegId or paymetId not present, it means, lets create a new one now
-  });
-};
 
 Meteor.startup(function indexBills() {
   if (Meteor.isClient && MinimongoIndexing) {
@@ -119,7 +94,7 @@ Bills.helpers({
     return result;
   },
   getPayments() {
-    return this.payments || [];
+    return (this.payments || []).map(id => Payments.findOne(id));
   },
   paymentCount() {
     return this.payments.length;
@@ -149,45 +124,6 @@ Bills.helpers({
     } else debugAssert(false, 'No such bill category');
     return tx;
   },
-  makePaymentTx(payment, index, accountingMethod) {
-    const self = this;
-    const tx = {
-      communityId: this.communityId,
-      // def: 'payment',
-      valueDate: payment.valueDate,
-      amount: payment.amount,
-      billId: this._id,
-      paymentId: index,
-    };
-    const ratio = payment.amount / this.amount;
-    function copyLinesInto(txSide) {
-      self.lines.forEach(line => txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer }));
-    }
-    if (accountingMethod === 'accrual') {
-      if (this.category === 'in') {
-        tx.debit = [{ account: '46' }];
-        tx.credit = [{ account: payment.account }];
-      } else if (this.category === 'out') {
-        tx.debit = [{ account: payment.account }];
-        tx.credit = [{ account: '31' }];
-      } else if (this.category === 'parcel') {
-        tx.debit = [{ account: payment.account }];
-        tx.credit = [{ account: '33'+'' }];
-      } else debugAssert(false, 'No such bill category');
-    } else if (accountingMethod === 'cash') {
-      if (this.category === 'in') {
-        tx.debit = []; copyLinesInto(tx.debit);
-        tx.credit = [{ account: '46' }];
-      } else if (this.category === 'out') {
-        tx.debit = [{ account: '31' }];
-        tx.credit = []; copyLinesInto(tx.credit);
-      } else if (this.category === 'parcel') {
-        tx.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
-        tx.credit = []; copyLinesInto(tx.credit);
-      } else debugAssert(false, 'No such bill category');
-    }
-    return tx;
-  },
   display() {
     return `${moment(this.valueDate).format('L')} ${this.partner} ${this.amount}`;
   },
@@ -209,8 +145,9 @@ Bills.autofillLines = function autofillAmounts(doc) {
   doc.tax = totalTax;
 };
 Bills.autofillOutstanding = function autofillAmounts(doc) {
+  const tdoc = Bills._transform(doc);
   let paid = 0;
-  if (doc.payments) doc.payments.forEach(p => paid += p.amount);
+  tdoc.getPayments().forEach(p => paid += p.amount);
   doc.outstanding = doc.amount - paid;
 };
 
@@ -271,19 +208,3 @@ Factory.define('bill', Bills, {
     localizer: '@',
   }],
 });
-
-/*
-Bills.Payments.schema = new SimpleSchema({
-  amount: { type: Number },
-  valueDate: { type: Date },
-  bills: { type: Array },
-  'bills.$': { type: FulfillmentSchema },
-});
-
-export const BankStatements = new Mongo.Collection('bankStatements');
-
-BankStatements.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  payments: { type: [Payments.schema] },
-});
-*/

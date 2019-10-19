@@ -23,7 +23,7 @@ import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-a
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/breakdowns/methods.js';
-import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';

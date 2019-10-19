@@ -57,20 +57,6 @@ export function allTransactionsActions() {
         });
       },
     },
-    reconcile: {
-      name: 'reconcile',
-      icon: 'fa fa-external-link',
-      visible: () => currentUserHasPermission('transactions.reconcile'),
-      run(id) {
-        Session.set('activeTransactionId', id);
-        Modal.show('Autoform_edit', {
-          id: 'af.transaction.reconcile',
-          schema: Bills.reconcileSchema(),
-          type: 'method',
-          meteormethod: 'transactions.reconcile',
-        });
-      },
-    },
     delete: {
       name: 'delete',
       icon: 'fa fa-trash',
@@ -92,7 +78,6 @@ export function getTransactionsActionsSmall() {
   const actions = [
     Transactions.actions.view,
     Transactions.actions.edit,
-    Transactions.actions.reconcile,
     Transactions.actions.delete,
   ];
   return actions;
@@ -100,7 +85,6 @@ export function getTransactionsActionsSmall() {
 
 AutoForm.addModalHooks('af.transaction.insert');
 AutoForm.addModalHooks('af.transaction.update');
-AutoForm.addModalHooks('af.transaction.reconcile');
 
 AutoForm.addHooks('af.transaction.insert', {
   formToDoc(doc) {
@@ -122,12 +106,5 @@ AutoForm.addHooks('af.transaction.insert', {
       afContext.done(null, res);
     });
     return false;
-  },
-});
-
-AutoForm.addHooks('af.transaction.reconcile', {
-  formToDoc(doc) {
-    doc.txId = Session.get('activeTransactionId');
-    return doc;
   },
 });

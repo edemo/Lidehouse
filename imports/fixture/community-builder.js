@@ -28,8 +28,8 @@ import { Statements, StatementEntries } from '/imports/api/transactions/statemen
 import '/imports/api/transactions/statements/methods.js';
 import '/imports/api/transactions/methods.js';
 
-import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
-import '/imports/api/transactions/batches/methods.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import '/imports/api/transactions/parcel-billings/methods.js';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
@@ -92,6 +92,7 @@ export class CommunityBuilder {
         case 'meters': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');
         case 'bills':
+        case 'payments':
         case 'transactions':
         case 'statements':
         case 'statementEntries':

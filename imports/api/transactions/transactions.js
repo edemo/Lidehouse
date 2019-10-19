@@ -34,7 +34,7 @@ Transactions.baseSchema = {
   valueDate: { type: Date },
   amount: { type: Number },
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  paymentId: { type: Number, decimal: true, optional: true },
+  paymentId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
 //  year: { type: Number, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getFullYear(); },
 //  },

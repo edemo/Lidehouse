@@ -20,8 +20,8 @@ import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
-import { insert as insertParcelBilling } from '/imports/api/transactions/batches/methods.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import { insert as insertParcelBilling } from '/imports/api/transactions/parcel-billings/methods.js';
 import { CommunityBuilder } from './community-builder.js';
 import { Clock } from '/imports/utils/clock';
 

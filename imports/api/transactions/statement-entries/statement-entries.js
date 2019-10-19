@@ -15,41 +15,40 @@ import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 
-export const Statements = new Mongo.Collection('statements');
+export const StatementEntries = new Mongo.Collection('statementEntries');
 
-Statements.supportedBanks = ['K&H'];
-
-Statements.schema = new SimpleSchema({
+StatementEntries.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   account: { type: String },
-  bank: { type: String, allowedValues: Statements.supportedBanks, autoform: autoformOptions(Statements.supportedBanks) },
-  startDate: { type: Date },
-  startBalance: { type: Number },
-  endDate: { type: Date },
-  endBalance: { type: Number },
-//  entries: { type: Array },
-//  'entries.$': { type: Statements.entrySchema },
-  reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
+  valueDate: { type: Date },
+  partner: { type: String, max: 50 },
+  note: { type: String, max: 200 },
+  amount: { type: Number },
+  reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  statementId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
-Statements.helpers({
+StatementEntries.helpers({
+  isReconciled() {
+    return (!!this.reconciledId);
+  },
 });
 
 Meteor.startup(function indexStatements() {
-  Statements.ensureIndex({ communityId: 1 });
+  if (Meteor.isServer) {
+    StatementEntries._ensureIndex({ communityId: 1, valueDate: 1 });
+  }
 });
 
-Statements.attachSchema(Statements.schema);
-Statements.attachBehaviour(Timestamped);
+StatementEntries.attachSchema(StatementEntries.schema);
 
 // --- Factory ---
 
-Factory.define('statement', Statements, {
+Factory.define('statementEntry', StatementEntries, {
   communityId: () => Factory.get('community'),
   account: '31',
-  bank: 'K&H',
-  startDate: moment().subtract(1, 'month').toDate(),
-  endDate: new Date(),
-  startBalance: 0,
-  endBalance: 10000,
+  valueDate: new Date(),
+  partner: faker.random.word(),
+  note: faker.random.word(),
+  amount: 10000,
 });

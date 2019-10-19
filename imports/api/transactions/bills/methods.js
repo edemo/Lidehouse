@@ -6,7 +6,8 @@ import { _ } from 'meteor/underscore';
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { extractFieldsFromRef } from '/imports/comtypes/house/parcelref-format.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Bills, PaymentSchema } from './bills.js';
+import { Bills } from './bills.js';
+import { Payments } from '../payments/payments.js';
 import { crudBatchOps } from '../../batch-method.js';
 import { Transactions } from '../transactions.js';
 /*
@@ -60,11 +61,9 @@ export const conteer = new ValidatedMethod({
   name: 'bills.conteer',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-//    paymentId: { type: Number, decimal: true, regEx: SimpleSchema.RegEx.Id },
-//    txLeg: { type: Object, blackbox: true },
   }).validator(),
 
-  run({ _id /*, paymentId, txLeg*/ }) {
+  run({ _id }) {
     const doc = checkExists(Bills, _id);
     checkPermissions(this.userId, 'bills.conteer', doc.communityId);
     if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
@@ -77,77 +76,15 @@ export const conteer = new ValidatedMethod({
       const txId = Transactions.insert(doc.makeTx());
       result = Bills.update(_id, { $set: { txId } });
     }
-
 /*
-    const existingTxId = (paymentId && doc.payments[paymentId].txId) || doc.txId;
-    if (existingTxId) {
-      // Transactions.remove(doc.existingTxId);
-      throw new Meteor.Error('Bill already conteered');
-    }
-
-    const modifier = { $set: {} };
-    if (paymentId) {
-      modifier.$set[`payments.${paymentId}.txId`] = txId;
-      modifier.$set[`payments.${paymentId}.txLegId`] = txLegId;
-    } else {
-      modifier.$set['txId'] = txId;
-      modifier.$set['txLegId'] = txLegId;
-    }
-    const result = Bills.update({ _id }, modifier);
-    createAndBindTx(_id);
-
-    const bill = Bills.findOne(_id);*/
-    doc.getPayments().forEach((payment, i) => {
+    doc.getPayments().forEach((payment) => {
       if (!payment.txId) {
-        const txId = Transactions.insert(doc.makePaymentTx(payment, i, accountingMethod));
+        const txId = Transactions.insert(payment.makeTx(accountingMethod));
         result = Bills.update(_id, { $set: { [`lines.${i}.txId`]: txId } });
-//        const tx = Transactions.findOne(payment.txId);
-//        const side = bill.otherTxSide();
-//        const txSide = tx.getSide(side);
-//        txSide[payment.txLegId].account = bill.account;
-//        txSide[payment.txLegId].localizer = bill.localizer;
-//        Transactions.update(payment.txId, { $set: { [txSide]: txSide } });
       }
     });
+    */
     return result;
-  },
-});
-
-
-export const registerPayment = new ValidatedMethod({
-  name: 'bills.registerPayment',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    payment: { type: Bills.paymentSchema },
-  }).validator(),
-
-  run({ _id, payment }) {
-    const doc = checkExists(Bills, _id);
-    checkPermissions(this.userId, 'bills.payment', doc.communityId);
-    if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-//    const result = Bills.update({ _id }, modifier);
-    const paymentIndex = doc.payments.length;
-   // const result = Bills.update(_id, { $push: { payments: payment } });
-    const result = Bills.update(_id, { $set: { amount: doc.amount, payments: doc.payments.concat(payment) } });
-
-    const community = Communities.findOne(doc.communityId);
-    const txId = Transactions.insert(doc.makePaymentTx(payment, paymentIndex, community.settings.accountingMethod));
-    return result;
-  },
-});
-
-export const updatePayment = new ValidatedMethod({
-  name: 'bills.updatePayment',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    modifier: { type: Object, blackbox: true },
-  }).validator(),
-
-  run({ _id, modifier }) {
-    const doc = checkExists(Bills, _id);
-    checkModifier(doc, modifier, ['payments']);
-    checkPermissions(this.userId, 'bills.payment', doc.communityId);
-    registerPayment._execute({ userId: this.userId }, { _id, payment: modifier.$set.payments[0] })
   },
 });
 
@@ -166,5 +103,5 @@ export const remove = new ValidatedMethod({
 });
 
 Bills.methods = Bills.methods || {};
-_.extend(Bills.methods, { insert, update, conteer, registerPayment, remove });
+_.extend(Bills.methods, { insert, update, conteer, remove });
 _.extend(Bills.methods, crudBatchOps(Bills));
