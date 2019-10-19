@@ -22,6 +22,8 @@ import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import '/imports/api/transactions/breakdowns/methods.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import '/imports/api/transactions/bills/methods.js';
+import { Payments } from '/imports/api/transactions/payments/payments.js';
+import '/imports/api/transactions/payments/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Statements, StatementEntries } from '/imports/api/transactions/statements/statements.js';
@@ -254,11 +256,12 @@ export class CommunityBuilder {
     }
   }
   payBill(bill) {
-    const payinAccount = '381';
-    this.execute(Bills.methods.registerPayment, {
-      _id: bill._id,
-      payment: { valueDate: Clock.currentTime(), amount: bill.outstanding, account: payinAccount },
-    }, this.getUserWithRole('accountant'));
+    this.create('payment', {
+      billId: bill._id,
+      valueDate: Clock.currentTime(),
+      amount: bill.outstanding,
+      account: '381',
+    });
   }
   payBillsOf(parcel) {
     const unpaidBills = Bills.find({ communityId: this.communityId, category: 'parcel', outstanding: { $gt: 0 }, partner: parcel.ref });

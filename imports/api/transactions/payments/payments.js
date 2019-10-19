@@ -103,7 +103,7 @@ Meteor.startup(function attach() {
 
 Factory.define('payment', Payments, {
   communityId: () => Factory.get('community'),
-  billId: () => Factory.get('bill'),
+//  billId: () => Factory.get('bill'),
   valueDate: Clock.currentDate(),
   amount: faker.random.number(1000),
   account: '85',

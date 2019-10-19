@@ -24,7 +24,8 @@ import '/imports/api/transactions/txdefs/methods.js';
 import { transactionColumns } from '/imports/api/transactions/tables.js';
 import { allTransactionsActions } from '/imports/api/transactions/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-import { Statements, StatementEntries } from '/imports/api/transactions/statements/statements';
+import { Statements } from '/imports/api/transactions/statements/statements.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { statementEntriesColumns } from '/imports/api/transactions/statements/tables.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -76,7 +77,6 @@ Template.Accounting_reconciliation.viewmodel({
       ...DatatablesExportButtons,
     });
   },
-
 });
 
 Template.Accounting_reconciliation.events(

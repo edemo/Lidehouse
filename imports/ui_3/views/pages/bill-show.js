@@ -35,6 +35,11 @@ Template.Bill_show.helpers({
   actions() {
     return Bills.actions;
   },
+  getPayments(bill) {
+     const res = bill.getPayments();
+     debugger;
+     return res;
+  },
 });
 
 function runInNewModal(toRun) {

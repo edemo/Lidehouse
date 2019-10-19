@@ -99,7 +99,7 @@
   
             <table class="table invoice-total"> 
               <tbody>
-              {{#each payment in doc.payments}}
+              {{#each payment in (getPayments doc)}}
               <tr>
                   <td><i>
                     {{#if not @index}}{{_ 'schemaBills.payments.label'}} {{/if}}
