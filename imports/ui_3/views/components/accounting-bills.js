@@ -26,12 +26,13 @@ import './accounting-bills.html';
 
 Template.Accounting_bills.viewmodel({
   activeBillCategory: 'in',
-  outstandingOnly: true,
+  unpaidOnly: true,
+  unconteeredOnly: false,
   showParcelBillings: false,
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('parcelBillings.inCommunity', { communityId: this.communityId() });
-      if (this.outstandingOnly()) {
+      if (this.unpaidOnly()) {
         instance.subscribe('bills.outstanding', { communityId: this.communityId() });
       } else {
         instance.subscribe('bills.filtered', { communityId: this.communityId() });
@@ -42,12 +43,13 @@ Template.Accounting_bills.viewmodel({
     return Session.get('activeCommunityId');
   },
   hasFilters() {
-    return (this.outstandingOnly() === false);
+    return (this.unpaidOnly() === false);
   },
   filterSelector() {
     const selector = { communityId: this.communityId() };
     selector.category = this.activeBillCategory();
-    if (this.outstandingOnly()) selector.outstanding = { $gt: 0 };
+    if (this.unpaidOnly()) selector.outstanding = { $gt: 0 };
+    if (this.unconteeredOnly()) selector.txId = { $exists: false };
     return selector;
   },
   myLeadParcels() {

@@ -25,14 +25,15 @@ Meteor.publish('statementEntries.byAccount', function statementsByAccount(params
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },
   }).validate(params);
-  const { communityId, account, localizer, begin, end } = params;
+  const { communityId, account, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('statements.inCommunity', communityId)) {
     return this.ready();
   }
 
-  const selector = { communityId, account };
+  const selector = { communityId };
+  if (account) selector.account = account;
   if (end) selector.beginDate = { $lte: end };
   if (begin) selector.endDate = { $gte: begin };
 

@@ -42,7 +42,7 @@ export const reconcile = new ValidatedMethod({
   name: 'statementEntries.reconcile',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    billId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
     paymentId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   }).validator(),
 

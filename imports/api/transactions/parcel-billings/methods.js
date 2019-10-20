@@ -4,6 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -62,7 +63,7 @@ export const apply = new ValidatedMethod({
               line.quantity = (parcel.volume || 0);
               break;
             case 'habitants':
-              line.uom = 'p';
+              line.uom = __('habitant');
               line.quantity = (parcel.habitants || 0);
               break;
             default: debugAssert(false, 'No such projection');

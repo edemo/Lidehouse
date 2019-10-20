@@ -42,7 +42,7 @@
             </div>
             {{/if}}
             <p>
-                {{_ 'Itt a bejövő/kimenő számlákat és előírásokat látja.'}}<br>
+                {{_ 'Itt a bejövő/kimenő számlákat és albetét előírásokat látja.'}}<br>
             </p>
             <br>
             <div class="filters m-b-md">
@@ -58,8 +58,11 @@
               </div>
               <div class="row">
                 <div class="col-sm-9">
-                  <input type="checkbox" name="allow" id="oustanding-only" {{b "check: outstandingOnly"}}>
-                  <label for="oustanding-only">{{_ 'Outstanding only'}}</label>
+                  <input type="checkbox" name="allow" id="unpaid-only" {{b "check: unpaidOnly"}}>
+                  <label for="unpaid-only">{{_ 'Show only'}} {{_ 'Unpaid'}}</label>
+                  <br>
+                  <input type="checkbox" name="allow" id="unconteered-only" {{b "check: unconteeredOnly"}}>
+                  <label for="unconteered-only">{{_ 'Show only'}} {{_ 'Unconteered'}}</label>
                 </div>
                 <div class="col-sm-3 align">
                   <button type="button" class="js-clear-filter btn btn-default btn-xs {{#unless hasFilters}}disabled{{/unless}}" data-value="cancel">

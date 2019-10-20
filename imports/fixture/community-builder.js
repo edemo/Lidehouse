@@ -26,9 +26,10 @@ import { Payments } from '/imports/api/transactions/payments/payments.js';
 import '/imports/api/transactions/payments/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
-import { Statements, StatementEntries } from '/imports/api/transactions/statements/statements.js';
+import { Statements } from '/imports/api/transactions/statements/statements.js';
 import '/imports/api/transactions/statements/methods.js';
-import '/imports/api/transactions/methods.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import '/imports/api/transactions/statement-entries/methods.js';
 
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import '/imports/api/transactions/parcel-billings/methods.js';
@@ -256,12 +257,23 @@ export class CommunityBuilder {
     }
   }
   payBill(bill) {
-    this.create('payment', {
+    if (bill.hasConteerData() && !bill.isConteered()) {
+      this.execute(Bills.methods.conteer, { _id: bill._id }, this.getUserWithRole('accountant'));
+    }
+/*    const paymentId = this.create('payment', {
       billId: bill._id,
-      valueDate: Clock.currentTime(),
+      valueDate: Clock.currentDate(),
       amount: bill.outstanding,
       account: '381',
+    });*/
+    const entryId = this.create('statementEntry', {
+      account: '381',
+      valueDate: Clock.currentDate(),
+      partner: bill.partner,
+      note: bill.serialId() + ' payment',
+      amount: bill.outstanding,
     });
+    this.execute(StatementEntries.methods.reconcile, { _id: entryId, billId: bill._id }, this.getUserWithRole('accountant'));
   }
   payBillsOf(parcel) {
     const unpaidBills = Bills.find({ communityId: this.communityId, category: 'parcel', outstanding: { $gt: 0 }, partner: parcel.ref });

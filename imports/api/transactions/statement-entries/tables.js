@@ -11,7 +11,7 @@ export function statementEntriesColumns() {
     { data: 'partner', title: __('schemaBills.partner.label') },
     { data: 'amount', title: __('schemaBills.amount.label'), render: Render.formatNumber },
     { data: 'note', title: __('schemaBills.note.label') },
-    { data: 'reconciled', title: __('schemaBills.reconciled.label'), render: Render.checkmarkBoolean },
+    { data: 'reconciledId', title: __('schemaBills.reconciled.label'), render: Render.checkmarkBoolean },
 //    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getBillsActionsSmall() }) },
   ];
 

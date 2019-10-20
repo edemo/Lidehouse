@@ -421,7 +421,6 @@
   "in bills": "Bejövő számlák",
   "out bills": "Kimenő számlák",
   "parcel bills": "Előírások",
-  "Outstanding only": "Csak a rendezetlenek",
   "Reports": "Kimutatások",
   "Reconciliation": "Egyeztetés",
   "Common cost plan": "Előírás minden albetétre",
@@ -454,6 +453,7 @@
   "absolute": "abszolút (Ft)",
   "area": "terület (/m2)",
   "volume": "légköbméter (/m3)",
+  "habitant": "lakó",
   "habitants": "lakók száma (/fő)",
   "Register payment": "Kifizetés rögzítése",
   "Send to accouting" : "Könyvelésbe küldés",
@@ -463,6 +463,7 @@
   "Unreconciled": "Egyeztetetlen",
   "Unconteered": "Könyveletlen",
   "Unpaid": "Rendezetlen",
+  "Show only": "Csak ami",
 
   // accounts
   "Chart Of Accounts": "Főkönyvi számlák",

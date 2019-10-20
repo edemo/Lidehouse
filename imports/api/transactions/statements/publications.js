@@ -32,7 +32,8 @@ Meteor.publish('statements.byAccount', function statementsByAccount(params) {
     return this.ready();
   }
 
-  const selector = { communityId, account };
+  const selector = { communityId };
+  if (account) selector.account = account;
   if (end) selector.beginDate = { $lte: end };
   if (begin) selector.endDate = { $gte: begin };
 

@@ -1,6 +1,24 @@
 <template name="Accounting_reconciliation">
     {{#if userHasPermission 'statements.inCommunity' (fromSession 'activeCommunityId')}}
-        <div class="statements" id='statements'>
+        <div class="statementEntries" id='statementEntries'>
+            {{#if userHasPermission 'statements.update' communityId}}
+            <div class="btn-group pull-right">
+                  <button class="btn btn-primary btn-sm js-new-statement"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'statement'}}</strong></button>
+                  <button class="btn btn-white btn-sm js-upload-statement"><i class="fa fa-upload"></i><strong> {{_ 'Upload statement'}}</strong></button>
+            </div>
+            {{/if}}
+            <p>
+                {{_ 'Itt a bankivonatokat látja, és egyeztetheti azokat.'}}<br>
+            </p>
+            <br>
+            <div class="filters m-b-md">
+              <div class="row">
+                <div class="col-sm-9">
+                  <input type="checkbox" name="allow" id="unreconciled-only" {{b "check: unreconciledOnly"}}>
+                  <label for="unreconciled-only">{{_ 'Show only'}} {{_ 'Unreconciled'}}</label>
+                </div>
+              </div>
+            </div>
             <div>
                 {{> ReactiveDatatable tableData=statementEntriesTableDataFn options=statementEntriesOptionsFn }}
             </div>
