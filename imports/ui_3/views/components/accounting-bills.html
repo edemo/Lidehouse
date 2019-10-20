@@ -13,6 +13,7 @@
     {{/if}}
 
     {{#if userHasPermission 'bills.update' communityId }}
+        <div class="bills">
             {{#if userHasPermission 'bills.update' communityId }}
             <div class="btn-group pull-right">
               {{#if userHasPermission 'bills.insert' communityId}}
@@ -74,5 +75,6 @@
             {{_ 'Loading'}}...
             {{/if}}
             </div>
+        </div>
     {{/if}}
 </template>
