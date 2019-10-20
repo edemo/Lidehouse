@@ -6,7 +6,6 @@ import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { StatementEntries } from './statement-entries.js';
 import './methods.js';
-import { Bills } from './bills/bills.js';
 
 export function allStatementEntriesActions() {
   StatementEntries.actions = StatementEntries.actions || {
@@ -55,12 +54,13 @@ export function allStatementEntriesActions() {
     reconcile: {
       name: 'reconcile',
       icon: 'fa fa-external-link',
-      visible: () => currentUserHasPermission('statements.reconcile'),
+      visible: id => currentUserHasPermission('statements.reconcile') && !StatementEntries.findOne(id).isReconciled(),
       run(id) {
-        Session.set('activePaymentId', id);
+        Session.set('activeStatementEntryId', id);
         Modal.show('Autoform_edit', {
-          id: 'af.statement.reconcile',
-          schema: Bills.reconcileSchema(),
+          title: 'Reconciliation',
+          id: 'af.statementEntry.reconcile',
+          schema: StatementEntries.reconcileSchema,
           type: 'method',
           meteormethod: 'statementEntries.reconcile',
         });
@@ -73,10 +73,10 @@ export function allStatementEntriesActions() {
 export function getStatementEntriesActionsSmall() {
   allStatementEntriesActions();
   const actions = [
-    StatementEntries.actions.view,
-    StatementEntries.actions.edit,
+//    StatementEntries.actions.view,
+//    StatementEntries.actions.edit,
     StatementEntries.actions.reconcile,
-    StatementEntries.actions.delete,
+//    StatementEntries.actions.delete,
   ];
   return actions;
 }
@@ -94,7 +94,7 @@ AutoForm.addHooks('af.statementEntry.insert', {
 
 AutoForm.addHooks('af.statementEntry.reconcile', {
   formToDoc(doc) {
-    doc.reconciledId = Session.get('activeBillId');
+    doc._id = Session.get('activeStatementEntryId');
     return doc;
   },
 });

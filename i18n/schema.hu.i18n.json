@@ -745,6 +745,17 @@
     },
     "reconciled": {
       "label": "Egyeztetve"
+    },
+    "account": {
+      "label": "Pénz számla"
+    }
+  },
+  "schemaReconiliation": {
+    "paymentId": {
+      "label": "Létező (de még egyeztetetlen) kifizetéshez kapcsolás"
+    },
+    "billId": {
+      "label": "Új kifizetés létrehozása egy választott számlához"
     }
   },
   "schemaParcelBillings": {

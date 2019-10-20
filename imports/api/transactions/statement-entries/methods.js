@@ -40,17 +40,14 @@ export const update = new ValidatedMethod({
 
 export const reconcile = new ValidatedMethod({
   name: 'statementEntries.reconcile',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-    billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-    paymentId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
-  }).validator(),
+  validate: StatementEntries.reconcileSchema.validator(),
 
   run({ _id, billId, paymentId }) {
     const entry = checkExists(StatementEntries, _id);
 //    checkModifier(doc, modifier, Statements.modifiableFields);
     checkPermissions(this.userId, 'statements.reconcile', entry.communityId);
     if (_.isUndefined(paymentId)) {
+      if (!billId) throw new Meteor.Error('Need to select either a payment or a bill');
       paymentId = Payments.methods.insert._execute({ userId: this.userId }, {
         communityId: entry.communityId, billId,
         valueDate: entry.valueDate, amount: entry.amount, account: entry.account,

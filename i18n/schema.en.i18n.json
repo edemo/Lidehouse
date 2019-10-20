@@ -740,6 +740,17 @@
     },
     "reconciled": {
       "label": "Reconciled"
+    },
+    "account": {
+      "label": "Money account"
+    }
+  },
+  "schemaReconiliation": {
+    "paymentId": {
+      "label": "Choose already existing but unreconciled Payment"
+    },
+    "billId": {
+      "label": "Choose a bill and create a new Payment to it"
     }
   },
   "schemaParcelBillings": {

@@ -101,7 +101,7 @@ Payments.attachBehaviour(Timestamped);
 Payments.attachBehaviour(SerialId(Payments));
 
 Meteor.startup(function attach() {
-  Payments.simpleSchema().i18n('schemaPayments');
+  Payments.simpleSchema().i18n('schemaBills');
 });
 
 // --- Factory ---
