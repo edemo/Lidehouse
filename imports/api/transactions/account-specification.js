@@ -35,18 +35,5 @@ export class AccountSpecification {
   toCode() {
     return `${this.account || ''}${this.localizer ? '#' + this.localizer : ''}`;
   }
-  display() {
-    if (!this.accountName) {
-      const coa = ChartOfAccounts.get(this.communityId);
-      if (coa) this.accountName = coa.nodeByCode(this.account).name;
-    }
-    let html = '';
-    html += `<span class="label label-default label-xs">${this.account}:${__(this.accountName)}</span> `;
-    if (this.localizer) {
-      const parcelSuffix = Localizer.leafIsParcel(this.localizer) ? ('. ' + __('parcel')) : '';
-      html += `<span class="label label-success label-xs">${__(this.localizer)}${parcelSuffix}</span> `;
-    }
-    return html;
-  }
 }
 

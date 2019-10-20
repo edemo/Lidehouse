@@ -32,7 +32,22 @@ export function displayAccount(account, communityId) {
 export function displayLocalizer(localizer, communityId) {
   if (!localizer) return '';
   const displayText = Localizer.get(communityId).display(localizer);
-  return label(displayText.substring(1), 'success', 'map-marker');
+  const parcelSuffix = Localizer.leafIsParcel(localizer) ? ('. ' + __('parcel')) : '';
+  return label(displayText.substring(1) + parcelSuffix, 'success', 'map-marker');
+}
+
+export function displayAccountSpecification(aspec) {
+  if (!aspec.accountName) {
+    const coa = ChartOfAccounts.get(aspec.communityId);
+    if (coa) aspec.accountName = coa.nodeByCode(aspec.account).name;
+    // not using this cached name any more
+  }
+  let html = '';
+  html += displayAccount(aspec.account, aspec.communityId);
+  if (aspec.localizer) {
+    html += displayLocalizer(aspec.localizer, aspec.communityId);
+  }
+  return html;
 }
 
 export function displayTicketType(name) {

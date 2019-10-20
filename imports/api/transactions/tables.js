@@ -3,6 +3,7 @@ import { Blaze } from 'meteor/blaze';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
+import { displayAccountSpecification } from '/imports/ui_3/helpers/api-display.js';
 import { getTransactionsActionsSmall } from './actions.js';
 import { AccountSpecification } from './account-specification';
 
@@ -11,7 +12,7 @@ Render.journalEntries = function (cellData, renderType, currentRow) {
   if (!entries || !entries.length) return `<span class="label label-danger label-xs">${__('Missing')}</span> `;
   if (entries.length > 1) return `<span class="label label-warning label-xs">${__('Split')}</span> `;
   const entry = entries[0];
-  return AccountSpecification.fromDoc(entry).display();
+  return displayAccountSpecification(AccountSpecification.fromDoc(entry));
 };
 
 export function transactionColumns() {
