@@ -1,7 +1,6 @@
 
 <template name="Accounting_bills">
     {{#if showParcelBillings}}
-    <div class="col-lg-12">
     <div class="ibox ibox-dark">
         <div class="ibox-title">
             <h5>{{_ 'Parcel billings'}}</h5>
@@ -11,18 +10,9 @@
             {{>Parcel_billings}}
         </div>
     </div>
-    </div>
     {{/if}}
 
     {{#if userHasPermission 'bills.update' communityId }}
-    <div class="col-lg-12">
-    <div class="ibox ibox-dark bills">
-        <!--div class="ibox-title">
-            <h5>{{_ 'Parcel balances'}}</h5>
-            {{>iboxTools}}
-        </div-->
-        <div class="ibox-content">
-            <h2 class="text-capitalize">{{_ 'Bill registry'}}</h2>
             {{#if userHasPermission 'bills.update' communityId }}
             <div class="btn-group pull-right">
               {{#if userHasPermission 'bills.insert' communityId}}
@@ -84,8 +74,5 @@
             {{_ 'Loading'}}...
             {{/if}}
             </div>
-        </div>
-    </div>
-    </div>
     {{/if}}
 </template>

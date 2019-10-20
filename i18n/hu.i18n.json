@@ -458,10 +458,11 @@
   "Register payment": "Kifizetés rögzítése",
   "Send to accouting" : "Könyvelésbe küldés",
   "Reconciled": "Egyeztetett",
-  "Conteered": "Könyvelet",
+  "Conteered": "Könyvelt",
+  "Paid": "Rendezett",
   "Unreconciled": "Egyeztetetlen",
   "Unconteered": "Könyveletlen",
-  "Outstanding": "Kifizetetlen",
+  "Unpaid": "Rendezetlen",
 
   // accounts
   "Chart Of Accounts": "Főkönyvi számlák",

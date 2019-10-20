@@ -3,37 +3,48 @@
     {{> Page_heading title=(_ 'Accounting') }}
 
     <div class="wrapper wrapper-content  animated fadeInRight">
-    <div class="row">
+    <div class="ibox">
     <div class="tabs-container">
-
         <ul class="nav nav-tabs m-b-md" role="tablist">
             <li class="nav-link active show"><a data-toggle="tab" href="#tab-bills">
-              {{_ 'Bill registry'}}&nbsp;
+              <h3>{{_ 'Bill registry'}}&nbsp;
               {{> Badge value=countUnreconciledPayments color='danger' title=(concat (_ 'Unreconciled') ' ' (_ 'payments'))}} 
-              {{> Badge value=countOutstandingBills color='warning' title=(concat (_ 'Outstanding') ' ' (_ 'bills'))}} 
-              {{> Badge value=countUnconteeredBills color='info' title=(concat (_ 'Unconteered') ' ' (_ 'bills'))}} 
-            </a></li>
+              {{> Badge value=countUnconteeredBills color='warning' title=(concat (_ 'Unconteered') ' ' (_ 'bills'))}} 
+              {{> Badge value=countOutstandingBills color='info' title=(concat (_ 'Unpaid') ' ' (_ 'bills'))}} 
+            </h3></a></li>
             <li class="nav-link"><a data-toggle="tab" href="#tab-transactions">
-              {{_ 'Transactions'}}
+              <h3>{{_ 'Transactions'}}</h3>
             </a></li>
             <li class="nav-link"><a data-toggle="tab" href="#tab-reconciliation">
-              {{_ 'Reconciliation'}}&nbsp;
+              <h3>{{_ 'Reconciliation'}}&nbsp;
               {{> Badge value=countUnreconciledEntries color='danger' title=(concat (_ 'Unreconciled') ' ' (_ 'statementEntries'))}}
+            </h3></a></li>
+            <li class="nav-link"><a data-toggle="tab" href="#tab-breakdowns">
+              <h3>{{_ 'Accounting configuration'}}</h3>
             </a></li>
         </ul>
         <div class="tab-content">
             <div role="tabpanel" id="tab-bills" class="tab-pane active">
+                <div class="ibox-content">
                 {{> Accounting_bills}}
+                </div>
             </div>
             <div role="tabpanel" id="tab-transactions" class="tab-pane">
+                <div class="ibox-content">
                 {{> Accounting_transactions}}
-                {{> Accounting_breakdowns}}
+                </div>
             </div>
             <div role="tabpanel" id="tab-reconciliation" class="tab-pane">
+                <div class="ibox-content">
                 {{> Accounting_reconciliation}}
+                </div>
+            </div>
+            <div role="tabpanel" id="tab-breakdowns" class="tab-pane">
+                <div class="ibox-content">
+                {{> Accounting_breakdowns}}
+                </div>
             </div>
         </div>
-
     </div>
     </div>
     </div>

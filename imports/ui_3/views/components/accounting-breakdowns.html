@@ -12,13 +12,7 @@
     </div-->
 
     {{#if userHasPermission 'breakdowns.inCommunity' (fromSession 'activeCommunityId')}}
-    <div class="col-md-12">
-        <div class="ibox ibox-dark" id='coa'>
-            <div class="ibox-title">
-                <h5>{{_ 'Accounting configuration' }}</h5>
-                {{>iboxTools}}
-            </div>
-            <div class="ibox-content">
+        <div class="" id='coa'>
                 {{#if and (noBreakdownsDefined (userHasPermission 'breakdowns.insert' (fromSession 'activeCommunityId'))) }}
                 <div class="pull-right">
                     <!--<div class="dropdown">
@@ -102,8 +96,6 @@
                         {{/if}}
                     </div>
                 </div>
-            </div>
         </div>
-    </div>
     {{/if}}
 </template>

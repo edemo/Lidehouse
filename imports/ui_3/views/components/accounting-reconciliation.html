@@ -1,18 +1,10 @@
 <template name="Accounting_reconciliation">
     {{#if userHasPermission 'statements.inCommunity' (fromSession 'activeCommunityId')}}
-    <div class="col-md-12">
-        <div class="ibox ibox-dark statements" id='statements'>
-            <div class="ibox-title">
-                <h5>{{_ 'Reconciliation'}}</h5>
-                {{>iboxTools}}
-            </div>  
-            <div class="ibox-content">
-                <div>
-                    {{> ReactiveDatatable tableData=statementEntriesTableDataFn options=statementEntriesOptionsFn }}
-                </div>
+        <div class="statements" id='statements'>
+            <div>
+                {{> ReactiveDatatable tableData=statementEntriesTableDataFn options=statementEntriesOptionsFn }}
             </div>
         </div>
-    </div>
     {{/if}}
     {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
     <!--div class="col-md-12">
