@@ -773,6 +773,10 @@
     "localizer": {
       "label": "Előírás helye"
     },
+    "title": {
+      "label": "Megnevezés",
+      "placeholder": "(pl. Közös költség)"
+    },
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. emlékeztető)"

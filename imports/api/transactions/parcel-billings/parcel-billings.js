@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
+import { _ } from 'meteor/underscore';
 
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -15,6 +16,7 @@ import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdown
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
+import { __ } from '/imports/localization/i18n.js';
 
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
@@ -38,13 +40,40 @@ ParcelBillings.schema = new SimpleSchema({
   appliedAt: { type: [Date], defaultValue: [], autoform: { omit: true } },
 });
 
+let chooseParcelBilling = {};
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+
+  chooseParcelBilling = {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const activeParcelBillingId = Session.get('activeParcelBillingId')
+      const parcelBillings = activeParcelBillingId
+        ? ParcelBillings.find(activeParcelBillingId)
+        : ParcelBillings.find({ communityId, active: true });
+      const options = parcelBillings.map(function option(pb) {
+        return { label: pb.title, value: pb._id };
+      });
+      const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+      return sortedOptions;
+    },
+  };
+}
+
+ParcelBillings.applySchema = new SimpleSchema({
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  valueDate: { type: Date, autoform: { value: new Date() } },
+  ids: { type: [String], regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
+  localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
+});
+
 Meteor.startup(function indexParcelBillings() {
   ParcelBillings.ensureIndex({ communityId: 1 });
 });
 
 ParcelBillings.helpers({
-  parcels() {
-    const parcelLeafs = Localizer.get(this.communityId).leafsOf(this.localizer);
+  parcels(localizer) {
+    const parcelLeafs = Localizer.get(this.communityId).leafsOf(localizer || this.localizer);
     const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
     return parcels;
   },
