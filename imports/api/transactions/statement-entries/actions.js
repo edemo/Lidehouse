@@ -59,6 +59,7 @@ export function allStatementEntriesActions() {
         Session.set('activeStatementEntryId', id);
         Modal.show('Autoform_edit', {
           title: 'Reconciliation',
+          description: 'Válasszon egyet a 3 lehetséges egyeztetési mód közül. A másik kettő mezőben kérjük ne adjon meg értéket.',
           id: 'af.statementEntry.reconcile',
           schema: StatementEntries.reconcileSchema,
           type: 'method',

@@ -7,6 +7,7 @@ import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/i
 import { crudBatchOps } from '../../batch-method.js';
 import { Bills } from '../bills/bills.js';
 import { Payments } from '../payments/payments.js';
+import { Transactions, oppositeSide } from '../transactions.js';
 import { StatementEntries } from './statement-entries.js';
 
 export const insert = new ValidatedMethod({
@@ -42,21 +43,34 @@ export const reconcile = new ValidatedMethod({
   name: 'statementEntries.reconcile',
   validate: StatementEntries.reconcileSchema.validator(),
 
-  run({ _id, billId, paymentId }) {
+  run({ _id, paymentId, billId, account }) {
     const entry = checkExists(StatementEntries, _id);
 //    checkModifier(doc, modifier, Statements.modifiableFields);
+    if ((paymentId ? 1 : 0) + (billId ? 1 : 0) + (account ? 1 : 0) !== 1)
+      throw new Meteor.Error('Need to select either a payment, a bill or an account');
     checkPermissions(this.userId, 'statements.reconcile', entry.communityId);
-    if (_.isUndefined(paymentId)) {
-      if (!billId) throw new Meteor.Error('Need to select either a payment or a bill');
-      paymentId = Payments.methods.insert._execute({ userId: this.userId }, {
-        communityId: entry.communityId, billId,
-        valueDate: entry.valueDate, amount: entry.amount, account: entry.account,
-      });
+    let reconciledTxId;
+    if (account) {
+      const moneySide = entry.amount > 0 ? 'debit' : 'credit';
+      const otherSide = oppositeSide(moneySide);
+      reconciledTxId = Transactions.insert({
+        communityId: entry.communityId,
+        valueDate: entry.valueDate, amount: Math.abs(entry.amount),
+        [moneySide]: [{ account: entry.account }],
+        [otherSide]: [{ account }],
+        
+    });
+    } else {
+      if (_.isUndefined(paymentId)) {
+        paymentId = Payments.methods.insert._execute({ userId: this.userId }, {
+          communityId: entry.communityId, billId,
+          valueDate: entry.valueDate, amount: entry.amount, account: entry.account,
+        });
+      }
+      Payments.update(paymentId, { $set: { reconciledId: _id } });
+      reconciledTxId = paymentId;
     }
-    Payments.update(paymentId, { $set: { reconciledId: _id } });
-
-    const result = StatementEntries.update(_id, { $set: { reconciledId: paymentId } });
-    return result;
+    return StatementEntries.update(_id, { $set: { reconciledId: reconciledTxId } });
   },
 });
 

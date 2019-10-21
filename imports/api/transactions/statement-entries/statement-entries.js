@@ -9,6 +9,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
+import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
 export const StatementEntries = new Mongo.Collection('statementEntries');
 
@@ -86,6 +87,7 @@ StatementEntries.reconcileSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   paymentId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePayment },
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseBill },
+  account: { type: String, optional: true, autoform: chooseAccountNode },
 });
 
 Meteor.startup(function attach() {

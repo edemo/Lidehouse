@@ -751,6 +751,9 @@
     },
     "billId": {
       "label": "Choose a bill and create a new Payment to it"
+    },
+    "account": {
+      "label": "Income/expense transaction creation"
     }
   },
   "schemaParcelBillings": {

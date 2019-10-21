@@ -10,6 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { oppositeSide } from '/imports/api/transactions/transactions.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -84,9 +85,7 @@ Bills.helpers({
     return undefined;
   },
   otherTxSide() {
-    if (this.matchingTxSide() === 'debit') return 'credit';
-    if (this.matchingTxSide() === 'credit') return 'debit';
-    return undefined;
+    return oppositeSide(this.matchingTxSide());
   },
   isConteered() {
     return !!this.txId;

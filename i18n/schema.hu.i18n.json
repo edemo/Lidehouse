@@ -756,6 +756,9 @@
     },
     "billId": {
       "label": "Új kifizetés létrehozása egy választott számlához"
+    },
+    "account": {
+      "label": "Bevétel/kiadás tranzakció létrehozása"
     }
   },
   "schemaParcelBillings": {

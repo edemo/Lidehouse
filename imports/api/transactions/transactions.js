@@ -66,7 +66,7 @@ Meteor.startup(function indexTransactions() {
   if (Meteor.isServer) {
     Transactions._ensureIndex({ 'debit.account': 1 });
     Transactions._ensureIndex({ 'credit.account': 1 });
-  } 
+  }
 });
 
 // A *transaction* is effecting a certain field (in pivot tables) with the *amount* of the transaction,
@@ -76,6 +76,12 @@ Meteor.startup(function indexTransactions() {
 // The final sign of the impact of this tx, is the multiplication of these 3 signs.
 // Note: in addition the Sign of the breakdown itself (in the schema) will control how we display it, 
 // and in the BIG EQUATION constraint (Assets + Expenses = Equity + Sources + Incomes + Liabilities)
+
+export function oppositeSide(side) {
+  if (side === 'debit') return 'credit';
+  if (side === 'credit') return 'debit';
+  return undefined;
+}
 
 Transactions.helpers({
   getSide(side) {
