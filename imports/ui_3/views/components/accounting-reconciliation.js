@@ -76,6 +76,14 @@ Template.Accounting_reconciliation.viewmodel({
   },
 });
 
-Template.Accounting_reconciliation.events(
-  actionHandlers(allStatementEntriesActions())
-);
+Template.Accounting_reconciliation.events({
+  'click .js-new-statement'(event) {
+    Modal.show('Autoform_edit', {
+      id: 'af.statementEntry.insert',
+      collection: StatementEntries,
+      type: 'method',
+      meteormethod: 'statementEntries.insert',
+    });
+  },
+  ...(actionHandlers(allStatementEntriesActions())),
+});

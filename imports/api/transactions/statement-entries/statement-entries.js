@@ -6,6 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
+import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 
@@ -13,7 +14,7 @@ export const StatementEntries = new Mongo.Collection('statementEntries');
 
 StatementEntries.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  account: { type: String },
+  account: { type: String, autoform: chooseSubAccount('COA', '38') },
   valueDate: { type: Date },
   partner: { type: String, max: 50 },
   note: { type: String, max: 200 },
@@ -36,6 +37,9 @@ Meteor.startup(function indexStatements() {
 
 StatementEntries.attachSchema(StatementEntries.schema);
 
+Meteor.startup(function attach() {
+  StatementEntries.simpleSchema().i18n('schemaBills');
+});
 // --- Factory ---
 
 Factory.define('statementEntry', StatementEntries, {

@@ -214,6 +214,7 @@
   "Data upload in progress": "Adatok feltöltése folyamatban",
   "Import template": "Sablon importálása",
   "Publish": "Publikálás",
+  "reconcile": "Egyeztetés",
 
   "editing data": "adatok szerkesztése",
   "viewing data": "adatok megtekintése",
@@ -671,6 +672,7 @@
   "update settings successful": "Beállítások módosítva",
   "publish balances successful": "Aktuális egyenlegek publikálva",
   "import data successful": "Adatok importálva",
+  "insert statementEntry successful": "Kivonat rögzítésre került",
 
   "was inserted": "rögzítésre került",
   "was updated": "módosításra került",

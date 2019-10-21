@@ -16,7 +16,7 @@ export function allStatementEntriesActions() {
       visible: () => currentUserHasPermission('statements.insert'),
       run(defId) {
         Modal.show('Autoform_edit', {
-          id: 'af.statementEntries.insert',
+          id: 'af.statementEntry.insert',
           collection: StatementEntries,
           type: 'method',
           meteormethod: 'statementEntries.insert',
@@ -29,7 +29,7 @@ export function allStatementEntriesActions() {
       visible: () => currentUserHasPermission('statements.inCommunity'),
       run(id) {
         Modal.show('Autoform_edit', {
-          id: 'af.transaction.view',
+          id: 'af.statementEntry.view',
           collection: StatementEntries,
           doc: StatementEntries.findOne(id),
           type: 'readonly',
@@ -42,7 +42,7 @@ export function allStatementEntriesActions() {
       visible: () => currentUserHasPermission('statements.update'),
       run(id) {
         Modal.show('Autoform_edit', {
-          id: 'af.statement.update',
+          id: 'af.statementEntry.update',
           collection: StatementEntries,
           doc: StatementEntries.findOne(id),
           type: 'method-update',
