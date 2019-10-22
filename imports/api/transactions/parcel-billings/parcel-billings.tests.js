@@ -152,7 +152,7 @@ if (Meteor.isServer) {
           chai.assert.equal(bill.lines.length, 1);
           const line = bill.lines[0];
           chai.assert.equal(line.title, 'Test consumption');
-          chai.assert.equal(line.uom, 'p');
+          chai.assert.equal(line.uom, 'habitant');
           chai.assert.equal(line.unitPrice, 5000);
           chai.assert.equal(line.quantity, parcel.habitants);
         });

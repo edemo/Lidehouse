@@ -41,7 +41,7 @@ Bills.lineSchema = new SimpleSchema({
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   category: { type: String, allowedValues: Bills.categoryValues, autoform: { omit: true } },
-  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, 
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   /*autoValue() {
     const lines = this.field('lines');
     if (!lines) return undefined;

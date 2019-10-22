@@ -32,9 +32,6 @@ export const insert = new ValidatedMethod({
       bill = Bills.findOne(doc.billId);
       Bills.update(doc.billId, { $set: { amount: bill.amount, payments: bill.payments.concat([_id]) } });
     }
-
-    const community = Communities.findOne(doc.communityId);
-    const txId = Transactions.insert(doc.makeTx(community.settings.accountingMethod));
     
     return _id;
   },
@@ -66,20 +63,17 @@ export const conteer = new ValidatedMethod({
 
   run({ _id }) {
     const payment = checkExists(Payments, _id);
+    checkPermissions(this.userId, 'payments.conteer', payment.communityId);
+    if (!payment.billId) throw new Meteor.Error('Bill has to exist first');
     const bill = checkExists(Bills, payment.billId);
-    checkPermissions(this.userId, 'bills.conteer', payment.communityId);
     if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-    let result;
 
     const community = Communities.findOne(payment.communityId);
     const accountingMethod = community.settings.accountingMethod;
-    if (accountingMethod === 'accrual') {
-      if (payment.txId) throw new Meteor.Error('Payment already conteered');
-      const txId = Transactions.insert(payment.makeTx());
-      result = Payments.update(_id, { $set: { txId } });
-    }
 
-    return result;
+    if (payment.txId) throw new Meteor.Error('Payment already conteered');
+    const txId = Transactions.insert(payment.makeTx(accountingMethod));
+    return Payments.update(_id, { $set: { txId } });
   },
 });
 

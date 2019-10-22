@@ -20,8 +20,11 @@ import { StatementEntries } from '../statements/statements';
 
 export const Payments = new Mongo.Collection('payments');
 
+Payments.categoryValues = ['in', 'out', 'parcel'];  // TODO: its duplicate of Bills.categoryValues?
+
 Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  category: { type: String, allowedValues: Payments.categoryValues, autoform: { omit: true } },
   valueDate: { type: Date },
   amount: { type: Number },
   account: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
