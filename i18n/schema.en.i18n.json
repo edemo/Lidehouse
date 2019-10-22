@@ -782,6 +782,10 @@
     "localizer": {
       "label": "Payin location"
     },
+    "title": {
+      "label": "Title",
+      "placeholder": "(eg. Common cost)"
+    },
     "note": {
       "label": "Note",
       "placeholder": "(eg. reminder)"

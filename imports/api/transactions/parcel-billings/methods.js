@@ -23,17 +23,16 @@ export const BILLING_DUE_DAYS = 8;
 
 export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
-  validate: new SimpleSchema({
-    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    valueDate: { type: Date },
-  }).validator(),
+  validate: ParcelBillings.applySchema.validator(),
 
-  run({ communityId, valueDate }) {
+  run({ communityId, valueDate, ids, localizer }) {
     checkPermissions(this.userId, 'parcelBillings.apply', communityId);
     const bills = {}; // parcelId => his bill
-    const activeParcelBillings = ParcelBillings.find({ communityId, active: true });
-    activeParcelBillings.forEach(parcelBilling => {
-      const parcels = parcelBilling.parcels();
+    const activeParcelBillings = ids
+      ? ParcelBillings.find({ communityId, _id: { $in: ids } })
+      : ParcelBillings.find({ communityId, active: true });
+    activeParcelBillings.forEach((parcelBilling) => {
+      const parcels = parcelBilling.parcels(localizer);
       parcels.forEach((parcel) => {
         const line = {};
         line.title = parcelBilling.title;

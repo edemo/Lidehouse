@@ -119,8 +119,7 @@ AutoForm.addHooks('af.parcelBilling.insert', {
 
 AutoForm.addHooks('af.parcelBilling.apply', {
   formToDoc(doc) {
-//    doc.communityId = Session.get('activeCommunityId');
-    doc.id = Session.get('activeParcelBillingId');
+    doc.communityId = Session.get('activeCommunityId');
     return doc;
   },
 });

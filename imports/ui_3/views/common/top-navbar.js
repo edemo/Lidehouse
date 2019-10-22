@@ -14,15 +14,15 @@ import './right-sidebar.js';
 import './top-navbar.html';
 
 function communityNameAdjust() {
-  const windowWidth = $(window).width();
+  const navbarWidth = $('.navbar-fixed-top').width();
   const menuIcon = $('.navbar-header').outerWidth(true);
   let otherElements = 0;
   $('.navbar-top-links > li').not(':first').each(function () {
-    otherElements += $(this).outerWidth();
+    otherElements += $(this).outerWidth(true);
   });
   const paddingsandCaret = 40;
-  const maxCommunityName = windowWidth - menuIcon - otherElements - paddingsandCaret;
-  $('.navbar-top-links .width-adjust').css('max-width', maxCommunityName + 'px');
+  const maxCommunityName = navbarWidth - menuIcon - otherElements - paddingsandCaret;
+  $('#active-community-name').css('max-width', maxCommunityName + 'px');
 }
 
 Template.Top_navbar.onRendered(function() {
@@ -30,7 +30,8 @@ Template.Top_navbar.onRendered(function() {
   // Uncomment this if you want to have fixed top navbar
   $('body').addClass('fixed-nav').addClass('fixed-nav-basic');
   $(".navbar-static-top").removeClass('navbar-static-top').addClass('navbar-fixed-top');
-  $(window).on("load resize scroll", function() {
+  Meteor.setTimeout(communityNameAdjust, 1000);
+  $(window).on("load resize", function() {
     communityNameAdjust();    
   });
 });
@@ -39,7 +40,7 @@ Template.Top_navbar.onDestroyed(function() {
   // FIXED TOP NAVBAR OPTION
   // Uncomment this if you want to have fixed top navbar
   $('body').removeClass('fixed-nav').removeClass('fixed-nav-basic');
-  $(window).off("load resize scroll", function() {
+  $(window).off("load resize", function() {
     communityNameAdjust();      
   });
 });
