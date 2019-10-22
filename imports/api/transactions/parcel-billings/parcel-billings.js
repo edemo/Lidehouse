@@ -12,7 +12,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
@@ -41,6 +41,8 @@ ParcelBillings.schema = new SimpleSchema({
 });
 
 let chooseParcelBilling = {};
+let chooseSubAccountWithDefault = () => { return {}; };
+
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 
@@ -58,13 +60,30 @@ if (Meteor.isClient) {
       return sortedOptions;
     },
   };
+
+  chooseSubAccountWithDefault = function (brk, nodeCode) {
+    return {
+      options() {
+        const communityId = Session.get('activeCommunityId');
+        const breakdown = Breakdowns.findOneByName(brk, communityId);
+        return breakdown.nodeOptionsOf(nodeCode, false);
+      },
+      value: () => {
+        const activeParcelBillingId = Session.get('activeParcelBillingId');
+        const originLocalizer = activeParcelBillingId
+          ? ParcelBillings.findOne(activeParcelBillingId).localizer
+          : '@';
+        return originLocalizer;
+      },
+    };
+  };
 }
 
 ParcelBillings.applySchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   valueDate: { type: Date, autoform: { value: new Date() } },
-  ids: { type: [String], regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
-  localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
+  ids: { type: [String], optional: true, regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
+  localizer: { type: String, autoform: chooseSubAccountWithDefault('Localizer', '@') },
 });
 
 Meteor.startup(function indexParcelBillings() {
