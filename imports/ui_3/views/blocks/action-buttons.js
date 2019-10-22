@@ -23,12 +23,10 @@ Template.Action_button_small.helpers({
 /*
 Template.Action_buttons_group_small.onCreated(function () {
   const actions = this.data.actions;
-  debugger;
   actions.forEach(function (action) {
     Template.Action_buttons_group_small.events({
       [`click .js-${action.name}`](event, instance) {
         const id = $(event.target).closest('[data-id]').data('id');
-        debugger;
         actions[action.name].run(id);
       },
     });

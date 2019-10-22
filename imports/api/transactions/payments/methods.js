@@ -45,7 +45,7 @@ export const update = new ValidatedMethod({
   }).validator(),
 
   run({ _id, modifier }) {
-    const doc = checkExists(Bills, _id);
+    const doc = checkExists(Payments, _id);
 //    checkModifier(doc, modifier, Payments.modifiableFields);
     checkPermissions(this.userId, 'payments.update', doc.communityId);
     if (doc.txId) throw new Meteor.Error('Cannot modify bill, already in accounting');

@@ -69,7 +69,6 @@ export function allPaymentsActions() {
         return (!doc.txId);
       },
       run(id) {
-        debugger;
         Payments.methods.conteer.call({ _id: id }, onSuccess((res) => {
           displayMessage('info', 'Kifizetes konyvelesbe kuldve');
         }));
