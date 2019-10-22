@@ -15,8 +15,11 @@ import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { billColumns } from '/imports/api/transactions/bills/tables.js';
+import { Payments } from '/imports/api/transactions/payments/payments.js';
+import { paymentsColumns } from '/imports/api/transactions/payments/tables.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
+import { allPaymentsActions } from '/imports/api/transactions/payments/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
@@ -26,13 +29,13 @@ import './accounting-bills.html';
 
 Template.Accounting_bills.viewmodel({
   activeBillCategory: 'in',
-  unpaidOnly: true,
+  unreconciledOnly: true,
   unconteeredOnly: false,
   showParcelBillings: false,
   onCreated(instance) {
     instance.autorun(() => {
       instance.subscribe('parcelBillings.inCommunity', { communityId: this.communityId() });
-      if (this.unpaidOnly()) {
+      if (this.unreconciledOnly()) {
         instance.subscribe('bills.outstanding', { communityId: this.communityId() });
       } else {
         instance.subscribe('bills.filtered', { communityId: this.communityId() });
@@ -43,14 +46,7 @@ Template.Accounting_bills.viewmodel({
     return Session.get('activeCommunityId');
   },
   hasFilters() {
-    return (this.unpaidOnly() === false);
-  },
-  filterSelector() {
-    const selector = { communityId: this.communityId() };
-    selector.category = this.activeBillCategory();
-    if (this.unpaidOnly()) selector.outstanding = { $gt: 0 };
-    if (this.unconteeredOnly()) selector.txId = { $exists: false };
-    return selector;
+    return (this.unreconciledOnly() === false);
   },
   myLeadParcels() {
     const communityId = this.communityId();
@@ -81,9 +77,16 @@ Template.Accounting_bills.viewmodel({
   activeClass(billCategory) {
     return (this.activeBillCategory() === billCategory) && 'active';
   },
+  billsFilterSelector() {
+    const selector = { communityId: this.communityId() };
+    selector.category = this.activeBillCategory();
+    if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
+    if (this.unconteeredOnly()) selector.txId = { $exists: false };
+    return selector;
+  },
   billsTableDataFn() {
     const self = this;
-    return () => Bills.find(self.filterSelector()).fetch();
+    return () => Bills.find(self.billsFilterSelector()).fetch();
   },
   billsOptionsFn() {
     return () => Object.create({
@@ -95,11 +98,33 @@ Template.Accounting_bills.viewmodel({
       ...DatatablesExportButtons,
     });
   },
+  paymentsFilterSelector() {
+    const selector = { communityId: this.communityId() };
+    selector.category = this.activeBillCategory();
+    if (this.unreconciledOnly()) selector.reconciledId = { $exists: false };
+    if (this.unconteeredOnly()) selector.txId = { $exists: false };
+    return selector;
+  },
+  paymentsTableDataFn() {
+    const self = this;
+    return () => Payments.find(self.paymentsFilterSelector()).fetch();
+  },
+  paymentsOptionsFn() {
+    return () => Object.create({
+      columns: paymentsColumns(),
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+      pageLength: 25,
+      ...DatatablesExportButtons,
+    });
+  },
 });
 
-Template.Accounting_bills.events(
-  actionHandlers(allBillsActions())
-);
+Template.Accounting_bills.events({
+  ...(actionHandlers(allBillsActions())),
+  ...(actionHandlers(allPaymentsActions())),
+});
 
 Template.Accounting_bills.events({
   'click .js-category-filter'(event, instance) {

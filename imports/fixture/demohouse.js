@@ -914,6 +914,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     if (mm !== '12') {  // Last bill is not yet paid, and not yet sent to accounting
       demoBuilder.execute(Bills.methods.conteer, { _id: billId });
       demoBuilder.create('payment', {
+        category: 'in',
         billId,
         valueDate: new Date(`${lastYear}-${mm}-25`),
         amount: 282600,

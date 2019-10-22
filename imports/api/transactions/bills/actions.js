@@ -142,20 +142,11 @@ export function getBillsActionsSmall() {
 AutoForm.addModalHooks('af.bill.insert');
 AutoForm.addModalHooks('af.bill.update');
 AutoForm.addModalHooks('af.bill.conteer');
-AutoForm.addModalHooks('af.payment.insert');
 
 AutoForm.addHooks('af.bill.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.category = Session.get('activeBillCategory');
-    return doc;
-  },
-});
-
-AutoForm.addHooks('af.payment.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.billId = Session.get('activeBillId');
     return doc;
   },
 });

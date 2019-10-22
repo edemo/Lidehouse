@@ -13,7 +13,7 @@
     {{/if}}
 
     {{#if userHasPermission 'bills.update' communityId }}
-        <div class="bills">
+        <div>
             {{#if userHasPermission 'bills.update' communityId }}
             <div class="btn-group pull-right">
               {{#if userHasPermission 'bills.insert' communityId}}
@@ -58,8 +58,8 @@
               </div>
               <div class="row">
                 <div class="col-sm-9">
-                  <input type="checkbox" name="allow" id="unpaid-only" {{b "check: unpaidOnly"}}>
-                  <label for="unpaid-only">{{_ 'Show only'}} {{_ 'Unpaid'}}</label>
+                  <input type="checkbox" name="allow" id="unpaid-only" {{b "check: unreconciledOnly"}}>
+                  <label for="unpaid-only">{{_ 'Show only'}} {{_ 'Unpaid'}}/{{_ 'Unreconciled'}}</label>
                   <br>
                   <input type="checkbox" name="allow" id="unconteered-only" {{b "check: unconteeredOnly"}}>
                   <label for="unconteered-only">{{_ 'Show only'}} {{_ 'Unconteered'}}</label>
@@ -73,9 +73,16 @@
             </div>
             <div>
             {{#if Template.subscriptionsReady}}
-            {{> ReactiveDatatable tableData=billsTableDataFn options=billsOptionsFn }}
+            <div class="bills">
+                <h2>{{_ 'bills'}}</h2>
+                {{> ReactiveDatatable tableData=billsTableDataFn options=billsOptionsFn }}
+            </div>
+            <div class="payments">
+                <h2>{{_ 'payments'}}</h2>
+                {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+            </div>
             {{else}}
-            {{_ 'Loading'}}...
+                {{_ 'Loading'}}...
             {{/if}}
             </div>
         </div>

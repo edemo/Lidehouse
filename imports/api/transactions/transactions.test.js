@@ -67,7 +67,7 @@ if (Meteor.isServer) {
 
       it('Can not registerPayment without accounts', function () {
         chai.assert.throws(() => {
-          FixtureA.builder.create('payment', { billId, amount: 300, valueDate: Clock.currentTime() });
+          FixtureA.builder.create('payment', { category: 'in', billId, amount: 300, valueDate: Clock.currentTime() });
         }, 'Bill has to be conteered first');
       });
 
@@ -87,7 +87,7 @@ if (Meteor.isServer) {
       it('Can register Payments', function () {
         const bankAccount = '31';
         const paymentId1 = FixtureA.builder.create('payment',
-          { billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
+          { category: 'in', billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
         );
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.amount, 300);
@@ -95,20 +95,27 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 200);
 
         const paymentId2 = FixtureA.builder.create('payment',
-          { billId, amount: 200, valueDate: Clock.currentTime(), account: bankAccount },
+          { category: 'in', billId, amount: 200, valueDate: Clock.currentTime(), account: bankAccount },
         );
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 2);
         chai.assert.equal(bill.outstanding, 0);
 
-        const tx1 = Transactions.findOne(paymentId1);
+        let tx1 = Transactions.findOne(paymentId1);
+        chai.assert.isUndefined(tx1);
+        let tx2 = Transactions.findOne(paymentId2);
+        chai.assert.isUndefined(tx2);
+
+        FixtureA.builder.execute(Payments.methods.conteer, { _id: paymentId1 });
+        tx1 = Transactions.findOne(paymentId1);
         chai.assert.isDefined(tx1);
         chai.assert.equal(tx1.amount, 100);
         chai.assert.deepEqual(tx1.debit, [{ account: '46' }]);
         chai.assert.deepEqual(tx1.credit, [{ account: bankAccount }]);
 
-        const tx2 = Transactions.findOne(paymentId2);
+        FixtureA.builder.execute(Payments.methods.conteer, { _id: paymentId2 });
+        tx2 = Transactions.findOne(paymentId2);
         chai.assert.isDefined(tx2);
         chai.assert.equal(tx2.amount, 200);
         chai.assert.deepEqual(tx2.debit, [{ account: '46' }]);
@@ -171,7 +178,7 @@ if (Meteor.isServer) {
 
       it('Can pay bill manually', function () {
         FixtureA.builder.create('payment',
-          { billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
+          { category: 'in', billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
         );
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.amount, 300);
@@ -180,7 +187,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 200);
 
         // later if the same tx comes in from bank import, no extra payment is created
-        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, billId, paymentId: bill.payments[0] });
+        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, paymentId: bill.payments[0] });
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);

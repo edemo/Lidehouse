@@ -5,21 +5,17 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
-
-import { autoformOptions } from '/imports/utils/autoform.js';
-import { debugAssert } from '/imports/utils/assert.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { __ } from '/imports/localization/i18n.js';
+import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Bills } from '/imports/api/transactions/bills/bills.js';
+import { Payments } from '/imports/api/transactions/payments/payments.js';
+import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
 export const StatementEntries = new Mongo.Collection('statementEntries');
 
 StatementEntries.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  account: { type: String },
+  account: { type: String, autoform: chooseSubAccount('COA', '38') },
   valueDate: { type: Date },
   partner: { type: String, max: 50 },
   note: { type: String, max: 200 },
@@ -42,6 +38,9 @@ Meteor.startup(function indexStatements() {
 
 StatementEntries.attachSchema(StatementEntries.schema);
 
+Meteor.startup(function attach() {
+  StatementEntries.simpleSchema().i18n('schemaBills');
+});
 // --- Factory ---
 
 Factory.define('statementEntry', StatementEntries, {
@@ -51,4 +50,46 @@ Factory.define('statementEntry', StatementEntries, {
   partner: faker.random.word(),
   note: faker.random.word(),
   amount: 10000,
+});
+
+// --- Reconciliation ---
+
+let chooseBill = {};
+let choosePayment = {};
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+
+  chooseBill = {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const bills = Bills.find({ communityId, outstanding: { $gte: 0 } }).fetch();
+      const options = bills.map(function option(bill) {
+        return { label: `${bill.serialId()} ${bill.partner} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
+      });
+      return options;
+    },
+    firstOption: () => __('(Select one)'),
+  };
+  choosePayment = {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const payments = Payments.find({ communityId, reconciledId: { $exists: false } }).fetch();
+      const options = payments.map(function option(payment) {
+        return { label: `${payment.partner} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note}`, value: payment._id };
+      });
+      return options;
+    },
+    firstOption: () => __('(Select one)'),
+  };
+}
+
+StatementEntries.reconcileSchema = new SimpleSchema({
+  _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  paymentId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePayment },
+  billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseBill },
+  account: { type: String, optional: true, autoform: chooseAccountNode },
+});
+
+Meteor.startup(function attach() {
+  StatementEntries.reconcileSchema.i18n('schemaReconiliation');
 });

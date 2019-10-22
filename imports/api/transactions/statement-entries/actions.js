@@ -6,7 +6,6 @@ import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { StatementEntries } from './statement-entries.js';
 import './methods.js';
-import { Bills } from './bills/bills.js';
 
 export function allStatementEntriesActions() {
   StatementEntries.actions = StatementEntries.actions || {
@@ -17,7 +16,7 @@ export function allStatementEntriesActions() {
       visible: () => currentUserHasPermission('statements.insert'),
       run(defId) {
         Modal.show('Autoform_edit', {
-          id: 'af.statementEntries.insert',
+          id: 'af.statementEntry.insert',
           collection: StatementEntries,
           type: 'method',
           meteormethod: 'statementEntries.insert',
@@ -30,7 +29,7 @@ export function allStatementEntriesActions() {
       visible: () => currentUserHasPermission('statements.inCommunity'),
       run(id) {
         Modal.show('Autoform_edit', {
-          id: 'af.transaction.view',
+          id: 'af.statementEntry.view',
           collection: StatementEntries,
           doc: StatementEntries.findOne(id),
           type: 'readonly',
@@ -43,7 +42,7 @@ export function allStatementEntriesActions() {
       visible: () => currentUserHasPermission('statements.update'),
       run(id) {
         Modal.show('Autoform_edit', {
-          id: 'af.statement.update',
+          id: 'af.statementEntry.update',
           collection: StatementEntries,
           doc: StatementEntries.findOne(id),
           type: 'method-update',
@@ -55,12 +54,14 @@ export function allStatementEntriesActions() {
     reconcile: {
       name: 'reconcile',
       icon: 'fa fa-external-link',
-      visible: () => currentUserHasPermission('statements.reconcile'),
+      visible: id => currentUserHasPermission('statements.reconcile') && !StatementEntries.findOne(id).isReconciled(),
       run(id) {
-        Session.set('activePaymentId', id);
+        Session.set('activeStatementEntryId', id);
         Modal.show('Autoform_edit', {
-          id: 'af.statement.reconcile',
-          schema: Bills.reconcileSchema(),
+          title: 'Reconciliation',
+          description: 'Válasszon egyet a 3 lehetséges egyeztetési mód közül. A másik kettő mezőben kérjük ne adjon meg értéket.',
+          id: 'af.statementEntry.reconcile',
+          schema: StatementEntries.reconcileSchema,
           type: 'method',
           meteormethod: 'statementEntries.reconcile',
         });
@@ -73,10 +74,10 @@ export function allStatementEntriesActions() {
 export function getStatementEntriesActionsSmall() {
   allStatementEntriesActions();
   const actions = [
-    StatementEntries.actions.view,
-    StatementEntries.actions.edit,
+//    StatementEntries.actions.view,
+//    StatementEntries.actions.edit,
     StatementEntries.actions.reconcile,
-    StatementEntries.actions.delete,
+//    StatementEntries.actions.delete,
   ];
   return actions;
 }
@@ -94,7 +95,7 @@ AutoForm.addHooks('af.statementEntry.insert', {
 
 AutoForm.addHooks('af.statementEntry.reconcile', {
   formToDoc(doc) {
-    doc.reconciledId = Session.get('activeBillId');
+    doc._id = Session.get('activeStatementEntryId');
     return doc;
   },
 });
