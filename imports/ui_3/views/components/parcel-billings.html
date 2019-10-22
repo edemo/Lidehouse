@@ -1,8 +1,10 @@
 <template name="Parcel_billings">
     <div class="parcelBillings">
-        {{> ReactiveDatatable tableData=tableDataFn options=optionsFn }}
-        <div class="text-right m-t-md">
-        <button class="btn btn-white btn-sm js-apply"><i class="fa fa-calendar-plus-o"><strong> {{_ 'apply all'}}</strong></i></button>
+        <div class="text-right m-b-md">
+            <button class="btn btn-primary btn-sm js-new">
+                <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcelBilling'}} {{_ 'creation'}}</strong>
+            </button>
         </div>
+        {{> ReactiveDatatable tableData=tableDataFn options=optionsFn }}
     </div>
 </template>

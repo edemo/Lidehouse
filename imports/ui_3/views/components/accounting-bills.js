@@ -20,6 +20,7 @@ import { paymentsColumns } from '/imports/api/transactions/payments/tables.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
 import { allPaymentsActions } from '/imports/api/transactions/payments/actions.js';
+import { allParcelBillingActions } from '/imports/api/transactions/parcel-billings/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
@@ -124,6 +125,7 @@ Template.Accounting_bills.viewmodel({
 Template.Accounting_bills.events({
   ...(actionHandlers(allBillsActions())),
   ...(actionHandlers(allPaymentsActions())),
+  ...(actionHandlers(allParcelBillingActions())),
 });
 
 Template.Accounting_bills.events({

@@ -200,6 +200,7 @@
 
   "join": "Csatlakozás",
   "create": "Létrehozás",
+  "creation": "létrehozása",
   "createNew": "Új Létrehozása",
   "createMany": "Új Előírás",
   "report": "Bejelentés",
@@ -448,6 +449,7 @@
   "done": "tény",
   "parcelBilling": "Csoportos albetét előírás",
   "Parcel billings": "Csoportos albetét előírások",
+  "Apply parcel billings": "Előírások kivetése",
   "month": "hó",
   "total": "összesen",
   "allMonths": "Valamennyi hónapra",
