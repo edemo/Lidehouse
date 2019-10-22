@@ -21,9 +21,14 @@ import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Bills } from '/imports/api/transactions/bills/bills.js';
+import '/imports/api/transactions/bills/methods.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/breakdowns/methods.js';
-import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import '/imports/api/transactions/parcel-billings/methods.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import '/imports/api/transactions/statement-entries/methods.js';
 
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -858,15 +863,13 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: new Date('2018-01-12') });
 
   // Unidentified payin
-  demoBuilder.insert(Transactions, 'tx', {
+  demoBuilder.create('statementEntry', {
+    account: demoBuilder.name2code('Assets', 'Folyószámla'),
     valueDate: new Date(`${lastYear}-12-30`),
     amount: 24500,
+    partner: 'Gipsz Jakab',
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
-    debit: [{
-      account: demoBuilder.name2code('Assets', 'Folyószámla'),
-    }],
   });
-
 
 // ===== Transactions =====
 
@@ -888,6 +891,37 @@ export function insertDemoHouse(lang, demoOrTest) {
         account: demoBuilder.name2code(opening[0], opening[1]),
       }],
     });
+  });
+
+  // == Bills
+
+  ['03', '06', '09', '12'].forEach(mm => {
+    const billId = demoBuilder.create('bill', {
+      category: 'in',
+      valueDate: new Date(`${lastYear}-${mm}-20`),
+      // amount: 282600,
+      partner: 'Super-Clean Kft',
+      lines: [{
+        title: 'Épület takarítás',
+        uom: 'hónap',
+        quantity: 3,
+        unitPrice: 94200,
+        account: demoBuilder.name2code('Expenses', 'Takarítás'),
+        localizer: '@',
+      }],
+    });
+
+    if (mm !== '12') {  // Last bill is not yet paid, and not yet sent to accounting
+      demoBuilder.execute(Bills.methods.conteer, { _id: billId });
+      demoBuilder.create('payment', {
+        billId,
+        valueDate: new Date(`${lastYear}-${mm}-25`),
+        amount: 282600,
+        partner: 'Super-Clean Kft',
+        ref: `SC/${lastYear}/${mm}`,
+        account: demoBuilder.name2code('Assets', 'Folyószámla'),
+      });
+    }
   });
 
   // === Incomes ===
@@ -1008,46 +1042,6 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
   }
-
-  // == Bills
-
-  ['03', '06', '09', '12'].forEach(mm => {
-    demoBuilder.insert(Transactions, 'tx', {
-      valueDate: new Date(`${lastYear}-${mm}-20`),
-      amount: 282600,
-      partner: 'Super-Clean Kft',
-      credit: [{
-        account: demoBuilder.name2code('Liabilities', 'Suppliers'),
-      }],
-      debit: [{
-        account: demoBuilder.name2code('Expenses', 'Takarítás'),
-      }],
-    });
-
-    if (mm !== '12') {  // Last bill is paid but not yet processed
-      demoBuilder.insert(Transactions, 'tx', {
-        valueDate: new Date(`${lastYear}-${mm}-25`),
-        amount: 282600,
-        partner: 'Super-Clean Kft',
-        ref: `SC/${lastYear}/${mm}`,
-        credit: [{
-          account: demoBuilder.name2code('Assets', 'Folyószámla'),
-        }],
-        debit: [{
-          account: demoBuilder.name2code('Liabilities', 'Suppliers'),
-        }],
-      });
-    } else {
-      demoBuilder.insert(Transactions, 'tx', {
-        valueDate: new Date(`${lastYear}-${mm}-25`),
-        amount: 282600,
-        ref: `SC/${lastYear}/${mm}`,
-        credit: [{
-          account: demoBuilder.name2code('Assets', 'Folyószámla'),
-        }],
-      });
-    }
-  });
 
   Clock.clear();
 }

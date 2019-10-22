@@ -4,13 +4,14 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
-import { ParcelBillings } from '/imports/api/transactions/batches/parcel-billings.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 //  import { TxDefs } from '/imports/api/transactions/tx-defs.js';
 import { insert as insertTx } from '/imports/api/transactions/methods.js';
@@ -22,17 +23,16 @@ export const BILLING_DUE_DAYS = 8;
 
 export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
-  validate: new SimpleSchema({
-    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
-    valueDate: { type: Date },
-  }).validator(),
+  validate: ParcelBillings.applySchema.validator(),
 
-  run({ communityId, valueDate }) {
+  run({ communityId, valueDate, ids, localizer }) {
     checkPermissions(this.userId, 'parcelBillings.apply', communityId);
     const bills = {}; // parcelId => his bill
-    const activeParcelBillings = ParcelBillings.find({ communityId, active: true });
-    activeParcelBillings.forEach(parcelBilling => {
-      const parcels = parcelBilling.parcels();
+    const activeParcelBillings = ids
+      ? ParcelBillings.find({ communityId, _id: { $in: ids } })
+      : ParcelBillings.find({ communityId, active: true });
+    activeParcelBillings.forEach((parcelBilling) => {
+      const parcels = parcelBilling.parcels(localizer);
       parcels.forEach((parcel) => {
         const line = {};
         line.title = parcelBilling.title;
@@ -62,7 +62,7 @@ export const apply = new ValidatedMethod({
               line.quantity = (parcel.volume || 0);
               break;
             case 'habitants':
-              line.uom = 'p';
+              line.uom = __('habitant');
               line.quantity = (parcel.habitants || 0);
               break;
             default: debugAssert(false, 'No such projection');

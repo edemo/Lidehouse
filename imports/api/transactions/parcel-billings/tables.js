@@ -7,7 +7,7 @@ import { getParcelBillingActionsSmall } from './actions.js';
 
 export function parcelBillingColumns() {
   const columns = [
-    { data: 'note', title: __('schemaParcelBillings.note.label') },
+    { data: 'title', title: __('schemaParcelBillings.title.label') },
     { data: 'payinType', title: __('schemaParcelBillings.payinType.label') },
     { data: 'localizer', title: __('schemaParcelBillings.localizer.label') },
     { data: 'projection', title: __('schemaParcelBillings.projection.label') },

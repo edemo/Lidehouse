@@ -5,8 +5,22 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { Bills } from './bills.js';
+import { Payments } from '../payments/payments.js';
 
-Meteor.publish('bills.byId', function billsById(params) {
+function findBillsWithTheirPayments(selector) {
+  return {
+    find() {
+      return Bills.find(selector);
+    },
+    children: [{
+      find(bill) {
+        return Payments.find({ billId: bill._id });
+      },
+    }],
+  };
+}
+
+Meteor.publishComposite('bills.byId', function billsById(params) {
   new SimpleSchema({
     _id: { type: String },
   }).validate(params);
@@ -17,10 +31,10 @@ Meteor.publish('bills.byId', function billsById(params) {
   if (!user.hasPermission('bills.inCommunity', tx.communityId)) {
     return this.ready();
   }
-  return Bills.find({ _id });
+  return findBillsWithTheirPayments({ _id });
 });
 
-Meteor.publish('bills.filtered', function billsInCommunity(params) {
+Meteor.publishComposite('bills.filtered', function billsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
     partner: { type: String, optional: true },
@@ -38,10 +52,10 @@ Meteor.publish('bills.filtered', function billsInCommunity(params) {
 //  const selector = { communityId, partner, account, localizer };
 //  if (begin || end) selector.valueDate = { $gte: begin, $lt: end };
 
-  return Bills.find({ communityId });
+  return findBillsWithTheirPayments({ communityId });
 });
 
-Meteor.publish('bills.outstanding', function billsIncomplete(params) {
+Meteor.publishComposite('bills.outstanding', function billsIncomplete(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
@@ -51,5 +65,6 @@ Meteor.publish('bills.outstanding', function billsIncomplete(params) {
   if (!user.hasPermission('bills.inCommunity', communityId)) {
     return this.ready();
   }
-  return Bills.find({ communityId, outstanding: { $gt: 0 } }, { $sort: { outsanding: -1 } });
+
+  return findBillsWithTheirPayments({ communityId, outstanding: { $gt: 0 } }, { $sort: { outsanding: -1 } });
 });

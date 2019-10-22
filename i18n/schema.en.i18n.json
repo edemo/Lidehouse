@@ -737,6 +737,9 @@
           "label": "Money account"
         }
       }
+    },
+    "reconciled": {
+      "label": "Reconciled"
     }
   },
   "schemaParcelBillings": {
@@ -764,6 +767,10 @@
     },
     "localizer": {
       "label": "Payin location"
+    },
+    "title": {
+      "label": "Title",
+      "placeholder": "(eg. Common cost)"
     },
     "note": {
       "label": "Note",

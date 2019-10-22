@@ -8,6 +8,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Bills } from './bills.js';
+import { Payments } from '../payments/payments.js';
 import './methods.js';
 
 export function allBillsActions() {
@@ -97,21 +98,17 @@ export function allBillsActions() {
       name: 'registerPayment',
       icon: 'fa fa-credit-card',
       visible(id) {
-        if (!currentUserHasPermission('bills.payment')) return false;
+        if (!currentUserHasPermission('payments.insert')) return false;
         const doc = Bills.findOne(id);
         return (!!doc.txId && doc.outstanding > 0);
       },
       run(id) {
-        //Session.set('activeBillId', id);
+        Session.set('activeBillId', id);
         Modal.show('Autoform_edit', {
-          id: 'af.bill.registerPayment',
-          collection: Bills,
-          fields: ['payments'],
-          doc: Bills.findOne(id),
-          type: 'method-update',
-//          setArrayItems: true,
-          meteormethod: 'bills.updatePayment',
-          singleMethodArgument: true,
+          id: 'af.payment.insert',
+          collection: Payments,
+          type: 'method',
+          meteormethod: 'payments.insert',
         });
       },
     },
@@ -145,7 +142,7 @@ export function getBillsActionsSmall() {
 AutoForm.addModalHooks('af.bill.insert');
 AutoForm.addModalHooks('af.bill.update');
 AutoForm.addModalHooks('af.bill.conteer');
-AutoForm.addModalHooks('af.bill.registerPayment');
+AutoForm.addModalHooks('af.payment.insert');
 
 AutoForm.addHooks('af.bill.insert', {
   formToDoc(doc) {
@@ -155,16 +152,10 @@ AutoForm.addHooks('af.bill.insert', {
   },
 });
 
-/*
-AutoForm.addHooks('af.bill.registerPayment', {
+AutoForm.addHooks('af.payment.insert', {
   formToDoc(doc) {
-//    doc.payment = _.extend({}, doc);
-//    doc._id = Session.get('activeBillId');
-    const newDoc = {
-      _id: Session.get('activeBillId'),
-      payment: doc,
-    };
-    return newDoc;
+    doc.communityId = Session.get('activeCommunityId');
+    doc.billId = Session.get('activeBillId');
+    return doc;
   },
 });
-*/

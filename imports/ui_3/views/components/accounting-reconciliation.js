@@ -24,17 +24,24 @@ import '/imports/api/transactions/txdefs/methods.js';
 import { transactionColumns } from '/imports/api/transactions/tables.js';
 import { allTransactionsActions } from '/imports/api/transactions/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { Statements } from '/imports/api/transactions/statements/statements.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import { statementEntriesColumns } from '/imports/api/transactions/statement-entries/tables.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import './accounting-reconciliation.html';
 
 Template.Accounting_reconciliation.viewmodel({
+  unreconciledOnly: true,
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
-      instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txdefs.inCommunity', { communityId });
-      instance.subscribe('transactions.incomplete', { communityId });
+      instance.subscribe('statements.inCommunity', { communityId });
+      if (this.unreconciledOnly()) {
+        instance.subscribe('statementEntries.unreconciled', { communityId });
+      } else {
+        instance.subscribe('statementEntries.byAccount', { communityId });
+      }
     });
   },
   communityId() {
@@ -51,6 +58,29 @@ Template.Accounting_reconciliation.viewmodel({
   transactionsOptionsFn() {
     return () => Object.create({
       columns: transactionColumns(),
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      ...DatatablesExportButtons,
+    });
+  },
+  ///////////////
+  filterSelector() {
+    const selector = { communityId: this.communityId() };
+    if (this.unreconciledOnly()) selector.reconciledId = { $exists: false };
+    return selector;
+  },
+  statementEntriesTableDataFn() {
+    const self = this;
+    const templateInstance = Template.instance();
+    return () => {
+      if (!templateInstance.subscriptionsReady()) return [];
+      const entries = StatementEntries.find(self.filterSelector()).fetch();
+      return entries;
+    };
+  },
+  statementEntriesOptionsFn() {
+    return () => Object.create({
+      columns: statementEntriesColumns(),
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       ...DatatablesExportButtons,

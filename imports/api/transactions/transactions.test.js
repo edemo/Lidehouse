@@ -1,12 +1,19 @@
 /* eslint-env mocha */
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
+import { moment } from 'meteor/momentjs:moment';
 import { freshFixture, newFixture, logDB } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import '/imports/api/transactions/bills/methods.js';
+import { Payments } from '/imports/api/transactions/payments/payments.js';
+import '/imports/api/transactions/payments/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
+import { Statements } from './statements/statements.js';
+import './statements/methods.js';
+import { StatementEntries } from './statement-entries/statement-entries.js';
+import './statement-entries/methods.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 
@@ -49,29 +56,29 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 0);
         chai.assert.equal(bill.outstanding, 300);
-        chai.assert.isUndefined(bill.txId);
+        chai.assert.equal(bill.isConteered(), false);
       });
 
       it('Can not conteer without accounts', function () {
         chai.assert.throws(() => {
-          FixtureA.builder.execute(Bills.methods.conteer, { _id: billId }, FixtureA.builder.getUserWithRole('accountant'));
+          FixtureA.builder.execute(Bills.methods.conteer, { _id: billId });
         }, 'Bill has to be conteered first');
       });
 
       it('Can not registerPayment without accounts', function () {
         chai.assert.throws(() => {
-          FixtureA.builder.execute(Bills.methods.registerPayment, { _id: billId, payment: { amount: 300, valueDate: Clock.currentTime() } }, FixtureA.builder.getUserWithRole('accountant'));
+          FixtureA.builder.create('payment', { billId, amount: 300, valueDate: Clock.currentTime() });
         }, 'Bill has to be conteered first');
       });
 
       it('Can conteer - creates tx in accountig', function () {
         FixtureA.builder.execute(Bills.methods.update, { _id: billId, modifier: { $set: { 'lines.0.account': '85', 'lines.0.localizer': '@' } } });
-        FixtureA.builder.execute(Bills.methods.conteer, { _id: billId }, FixtureA.builder.getUserWithRole('accountant'));
+        FixtureA.builder.execute(Bills.methods.conteer, { _id: billId });
         bill = Bills.findOne(billId);
-        chai.assert.isDefined(bill.txId);
-        const tx = Transactions.findOne(bill.txId);
+        chai.assert.equal(bill.isConteered(), true);
+        const tx = Transactions.findOne(billId);
         chai.assert.isDefined(tx);
-        chai.assert.equal(tx.billId, billId);
+        chai.assert.equal(tx.type, 'Bills');
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '85', localizer: '@' }]);
         chai.assert.deepEqual(tx.credit, [{ account: '46' }]);
@@ -79,31 +86,29 @@ if (Meteor.isServer) {
 
       it('Can register Payments', function () {
         const bankAccount = '31';
-        FixtureA.builder.execute(Bills.methods.registerPayment,
-          { _id: billId, payment: { amount: 100, valueDate: Clock.currentTime(), account: bankAccount } },
-          FixtureA.builder.getUserWithRole('accountant')
+        const paymentId1 = FixtureA.builder.create('payment',
+          { billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
         );
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.outstanding, 200);
 
-        FixtureA.builder.execute(Bills.methods.registerPayment,
-          { _id: billId, payment: { amount: 200, valueDate: Clock.currentTime(), account: bankAccount } },
-          FixtureA.builder.getUserWithRole('accountant')
+        const paymentId2 = FixtureA.builder.create('payment',
+          { billId, amount: 200, valueDate: Clock.currentTime(), account: bankAccount },
         );
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 2);
         chai.assert.equal(bill.outstanding, 0);
 
-        const tx1 = Transactions.findOne({ billId, paymentId: 0 });
+        const tx1 = Transactions.findOne(paymentId1);
         chai.assert.isDefined(tx1);
         chai.assert.equal(tx1.amount, 100);
         chai.assert.deepEqual(tx1.debit, [{ account: '46' }]);
         chai.assert.deepEqual(tx1.credit, [{ account: bankAccount }]);
 
-        const tx2 = Transactions.findOne({ billId, paymentId: 1 });
+        const tx2 = Transactions.findOne(paymentId2);
         chai.assert.isDefined(tx2);
         chai.assert.equal(tx2.amount, 200);
         chai.assert.deepEqual(tx2.debit, [{ account: '46' }]);
@@ -111,62 +116,94 @@ if (Meteor.isServer) {
       });
     });
 
-    xdescribe('bills payments', function () {
-      before(function () {
+    describe('bills payments', function () {
+      let billId;
+      let bill;
+      let statementId;
+      let entryId1, entryId2, entryId3;
+      let entry1, entry2, entry3;
+      const bankAccount = '31';
+
+      beforeEach(function () {
+        billId = FixtureA.builder.create('bill', {
+          category: 'in',
+          lines: [{
+            title: 'The Work',
+            uom: 'piece',
+            quantity: 1,
+            unitPrice: 300,
+            account: '85',
+            localizer: '@',
+          }],
+        });
+        FixtureA.builder.execute(Bills.methods.conteer, { _id: billId });
+        bill = Bills.findOne(billId);
+
+        statementId = FixtureA.builder.create('statement', {
+          account: bankAccount,
+          startDate: moment().subtract(1, 'month').toDate(),
+          endDate: new Date(),
+          startBalance: 0,
+          endBalance: 100,
+        });
+        entryId1 = FixtureA.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: moment().subtract(3, 'week').toDate(),
+          partner: 'CUSTOMER',
+          amount: 100,
+          statementId,
+        });
+        entryId2 = FixtureA.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: moment().subtract(2, 'week').toDate(),
+          partner: 'SUPPLIER',
+          amount: -1000,
+          statementId,
+        });
+        entryId3 = FixtureA.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: moment().subtract(1, 'week').toDate(),
+          partner: 'CUSTOMER',
+          amount: 200,
+          statementId,
+        });
       });
 
       it('Can pay bill manually', function () {
-        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
-        let bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 650);
-        chai.assert.equal(bill.paymentCount(), 0);
-
-        Fixture.builder.execute(Bills.methods.registerPayment, { _id: billId, modifier: { $set: { payments: [{ amount: 650, valueDate: Clock.currentDate() }] } } });
-
+        FixtureA.builder.create('payment',
+          { billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
+        );
         bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 0);
-        chai.assert.equal(bill.paymentCount(), 1);
+        chai.assert.equal(bill.amount, 300);
+        chai.assert.equal(bill.payments.length, 1);
+        chai.assert.equal(bill.getPayments()[0].isReconciled(), false);
+        chai.assert.equal(bill.outstanding, 200);
 
         // later if the same tx comes in from bank import, no extra payment is created
-        const txId = Fixture.builder.create('tx', { amount: 650, credit: [{ account: '31' }] });
-        let tx = Transactions.findOne(txId);
-        chai.assert.isFalse(tx.reconciled);
-        chai.assert.isFalse(tx.complete);
-
-        Fixture.builder.execute(Transactions.methods.reconcile, { billId, paymentId: 0, txId });
+        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, billId, paymentId: bill.payments[0] });
         bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 0);
-        chai.assert.equal(bill.paymentCount(), 1);
-        tx = Transactions.findOne(txId);
-        chai.assert.isTrue(tx.reconciled);
-        chai.assert.isFalse(tx.complete);
-
-        Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '88', localizer: '@' } } });
-        tx = Transactions.findOne(txId);
-        chai.assert.isTrue(tx.complete);
+        chai.assert.equal(bill.amount, 300);
+        chai.assert.equal(bill.payments.length, 1);
+        chai.assert.equal(bill.getPayments()[0].isReconciled(), true);
+        chai.assert.equal(bill.outstanding, 200);
       });
 
       it('Can pay bill from bank import', function () {
-        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
-        let bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 650);
-        chai.assert.equal(bill.paymentCount(), 0);
+        entry1 = StatementEntries.findOne(entryId1);
+        chai.assert.equal(entry1.isReconciled(), false);
 
-        const txId = Fixture.builder.create('tx', { amount: 650, credit: [{ account: '31' }] });
-        let tx = Transactions.findOne(txId);
-        chai.assert.isFalse(tx.reconciled);
-        chai.assert.isFalse(tx.complete);
-
-        Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
+        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, billId });
+        entry1 = StatementEntries.findOne(entryId1);
+        chai.assert.equal(entry1.isReconciled(), true);
         bill = Bills.findOne(billId);
-        chai.assert.equal(bill.outstanding, 0);
-        chai.assert.equal(bill.paymentCount(), 1);
-        tx = Transactions.findOne(txId);
-        chai.assert.isTrue(tx.reconciled);
-        chai.assert.isTrue(tx.complete);
+        chai.assert.equal(bill.amount, 300);
+        chai.assert.equal(bill.payments.length, 1);
+        chai.assert.equal(bill.getPayments()[0].isReconciled(), true);
+        chai.assert.equal(bill.outstanding, 200);
       });
     });
 
+/*
     xdescribe('transactions reconcile', function () {
       before(function () {
       });
@@ -275,6 +312,7 @@ if (Meteor.isServer) {
         chai.assert.isFalse(tx2.reconciled);
         chai.assert.isFalse(tx2.complete);
       });
-    });
+    });*/
+
   });
 }

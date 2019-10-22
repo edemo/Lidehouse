@@ -99,12 +99,12 @@
   
             <table class="table invoice-total"> 
               <tbody>
-              {{#each payment in doc.payments}}
+              {{#each payment in doc.getPayments}}
               <tr>
-                  <td><strong>
-                    {{#if not @index}}{{_ 'schemaBills.payments.label'}}: {{/if}}
+                  <td><i>
+                    {{#if not @index}}{{_ 'schemaBills.payments.label'}} {{/if}}
                     {{displayDate payment.valueDate}} :
-                  </strong></td>
+                  </i></td>
                   <td>{{payment.amount}}</td>
               </tr>
               {{/each}}

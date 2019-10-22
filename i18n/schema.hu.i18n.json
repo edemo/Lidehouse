@@ -742,6 +742,9 @@
           "label": "Pénz számla"
         }
       }
+    },
+    "reconciled": {
+      "label": "Egyeztetve"
     }
   },
   "schemaParcelBillings": {
@@ -769,6 +772,10 @@
     },
     "localizer": {
       "label": "Előírás helye"
+    },
+    "title": {
+      "label": "Megnevezés",
+      "placeholder": "(pl. Közös költség)"
     },
     "note": {
       "label": "Megjegyzés",

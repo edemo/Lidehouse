@@ -1,6 +1,31 @@
 <template name="Accounting_reconciliation">
+    {{#if userHasPermission 'statements.inCommunity' (fromSession 'activeCommunityId')}}
+        <div class="statementEntries" id='statementEntries'>
+            {{#if userHasPermission 'statements.update' communityId}}
+            <div class="btn-group pull-right">
+                  <button class="btn btn-primary btn-sm js-new-statement"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'statement'}}</strong></button>
+                  <button class="btn btn-white btn-sm js-upload-statement"><i class="fa fa-upload"></i><strong> {{_ 'Upload statement'}}</strong></button>
+            </div>
+            {{/if}}
+            <p>
+                {{_ 'Itt a bankivonatokat látja, és egyeztetheti azokat.'}}<br>
+            </p>
+            <br>
+            <div class="filters m-b-md">
+              <div class="row">
+                <div class="col-sm-9">
+                  <input type="checkbox" name="allow" id="unreconciled-only" {{b "check: unreconciledOnly"}}>
+                  <label for="unreconciled-only">{{_ 'Show only'}} {{_ 'Unreconciled'}}</label>
+                </div>
+              </div>
+            </div>
+            <div>
+                {{> ReactiveDatatable tableData=statementEntriesTableDataFn options=statementEntriesOptionsFn }}
+            </div>
+        </div>
+    {{/if}}
     {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
-    <div class="col-md-12">
+    <!--div class="col-md-12">
         <div class="ibox ibox-dark transactions" id='incomplete'>
             <div class="ibox-title">
                 <h5>{{_ 'Reconciliation'}}</h5>
@@ -14,7 +39,7 @@
                     <a href="" class="btn btn-white btn-sm js-import-balances"><i class="fa fa-upload"></i> {{_ 'Upload balances'}}</a>
                 </div>
                 {{/if}}
-                <!---h3>{{_ 'Transactions to complete'}}</h3-->
+                <h3>{{_ 'Transactions to complete'}}</h3>
                 <p>
                     {{_ 'Itt azokat a tranzakciókat látja, amiknek még nem lett megállapítva mindkét számla oldala.'}}<br>
                     {{_ 'Szerkesztés segítségével vigye be hozzájuk a hiányzó oldalt!'}}<br>
@@ -26,6 +51,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div-->
     {{/if}}
 </template>
