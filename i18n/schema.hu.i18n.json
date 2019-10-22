@@ -762,6 +762,13 @@
     }
   },
   "schemaParcelBillings": {
+    "ids": {
+      "label": "Kivetett előírások"
+    },
+    "valueDate": {
+      "label": "Értéknap",
+      "placeholder": "(pl. 2017-05-06)"
+    },
     "year": {
       "label": "Melyik év",
       "placeholder": "(pl. 2017)"
@@ -770,19 +777,25 @@
       "label": "Melyik hónapjára",
       "placeholder": "(pl. 11)"
     },
-    "projection": {
-      "label": "Vetítési alap"
+    "consumption": {
+      "label": "Mért fogyasztás"
     },
-    "valueDate": {
-      "label": "Értéknap",
-      "placeholder": "(pl. 2017-05-06)"
+    "uom": {
+      "label": "Fogyasztási egység",
+      "placeholder": "(pl. kW)"
+    },
+    "unitPrice": {
+      "label": "Fogyasztási egységár (Ft)"
+    },
+    "projection": {
+      "label": "Vetítési alap (ha nincs mérőóra)"
     },
     "amount": {
-      "label": "Összeg",
+      "label": "Vetítési egységár (Ft)",
       "placeholder": "(pl. 14560)"
     },
     "payinType": {
-      "label": "Előírás típusa"
+      "label": "Előírás könyvelési kódja"
     },
     "localizer": {
       "label": "Előírás helye"
@@ -800,6 +813,17 @@
     },
     "applyCount": {
       "label": "Kivetések száma"
+    },
+    "activeTime": {
+      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
+      "begin": {
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
+      }
     }
   },
   "schemaSharedfolders": {

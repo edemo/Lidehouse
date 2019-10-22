@@ -757,6 +757,13 @@
     }
   },
   "schemaParcelBillings": {
+    "ids": {
+      "label": "Applied billings"
+    },
+    "valueDate": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
     "year": {
       "label": "For which year",
       "placeholder": "(eg. 2017)"
@@ -765,19 +772,25 @@
       "label": "For which month",
       "placeholder": "(eg. 11)"
     },
-    "valueDate": {
-      "label": "Accounting date",
-      "placeholder": "(eg. 2017-05-06)"
+    "consumption": {
+      "label": "Measured consumption"
+    },
+    "uom": {
+      "label": "Unit of consumption",
+      "placeholder": "(eg. kW)"
+    },
+    "unitPrice": {
+      "label": "Unit price of consumption"
     },
     "projection": {
-      "label": "Projection basis"
+      "label": "Projection basis (where no consumption meter)"
     },
     "amount": {
-      "label": "Amount",
+      "label": "Unit price of projection",
       "placeholder": "(eg. 14560)"
     },
     "payinType": {
-      "label": "Payin type"
+      "label": "Payin accounting code"
     },
     "localizer": {
       "label": "Payin location"
@@ -795,6 +808,17 @@
     },
     "applyCount": {
       "label": "Apply count"
+    },
+    "activeTime": {
+      "label": "Active time (Can leave blank, if no time constraint)",
+      "begin": {
+        "label": "From",
+        "placeholder": "yyyy-mm-dd"
+      },
+      "end": {
+        "label": "Until",
+        "placeholder": "yyyy-mm-dd"
+      }
     }
   },
   "schemaSharedfolders": {

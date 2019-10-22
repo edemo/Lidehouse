@@ -27,7 +27,7 @@ ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   title: { type: String, max: 100 },
   // if consumption based
-  consumption: { type: String, optional: true, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues) },
+  consumption: { type: String, optional: true, allowedValues: Meters.serviceValues, autoform: autoformOptions(Meters.serviceValues, 'schemaMeters.service.') },
   uom: { type: String, max: 100, optional: true },
   unitPrice: { type: Number, decimal: true, optional: true },
   // if projection based
@@ -83,7 +83,7 @@ ParcelBillings.applySchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   valueDate: { type: Date, autoform: { value: new Date() } },
   ids: { type: [String], optional: true, regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
-  localizer: { type: String, autoform: chooseSubAccountWithDefault('Localizer', '@') },
+  localizer: { type: String, optional: true, autoform: chooseSubAccountWithDefault('Localizer', '@') },
 });
 
 Meteor.startup(function indexParcelBillings() {
@@ -108,6 +108,7 @@ ParcelBillings.attachBehaviour(ActivePeriod);
 
 Meteor.startup(function attach() {
   ParcelBillings.simpleSchema().i18n('schemaParcelBillings');
+  ParcelBillings.applySchema.i18n('schemaParcelBillings');
 });
 
 Factory.define('parcelBilling', ParcelBillings, {
