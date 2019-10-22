@@ -1,6 +1,6 @@
 
 <template name="Accounting_bills">
-    {{#if showParcelBillings}}
+    {{#if (and (showParcelBillings (equals activeBillCategory 'parcel'))) }}
     <div class="ibox ibox-dark">
         <div class="ibox-title">
             <h5>{{_ 'Parcel billings'}}</h5>
@@ -18,7 +18,7 @@
             <div class="btn-group pull-right {{#if equals activeBillCategory 'parcel'}}parcelBillings{{/if}}">
               {{#if userHasPermission 'bills.insert' communityId}}
                 {{#if equals activeBillCategory 'parcel'}}
-                  <button class="btn btn-primary btn-sm js-apply"><i class="fa fa-calendar-plus-o"><strong> {{_ 'Apply parcel billings'}}</strong></i></button>
+                  <button class="btn btn-primary btn-sm js-apply"><i class="fa fa-calendar-plus-o"></i><strong> {{_ 'Apply parcel billings'}}</strong></button>
                   <!--button class="btn btn-primary btn-sm js-new-parcel"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.category.' activeBillCategory)}}</strong><b class="caret"></b></button-->
                   {{#unless showParcelBillings}}
                   <button class="btn btn-white btn-sm js-edit-defs" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
