@@ -229,7 +229,7 @@ if (Meteor.isServer) {
         chai.assert.equal(myRoot.communityId, Fixture.demoCommunityId);
         function deleteIrrelevantFields(brd) {
           delete brd._id; delete brd.communityId;
-          delete brd.createdAt; delete brd.updatedAt; delete brd.creatorId; delete brd.updatorId;
+          delete brd.createdAt; delete brd.updatedAt; delete brd.creatorId; delete brd.updaterId;
         }
         deleteIrrelevantFields(root);
         deleteIrrelevantFields(myRoot);

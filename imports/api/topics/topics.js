@@ -207,7 +207,7 @@ Topics.publicFields = {
   createdAt: 1,
   updatedAt: 1,
   creatorId: 1,
-  updatorId: 1,
+  updaterId: 1,
   opensAt: 1,
   closesAt: 1,
   closed: 1,

@@ -13,7 +13,7 @@
     "updatedAt": {
       "label": "Utolsó aktivitás"
     },
-    "updatorId": {
+    "updaterId": {
       "label": "Módosította"
     }
   },
