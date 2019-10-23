@@ -132,6 +132,7 @@ Template.Accounting_bills.events({
   'click .js-category-filter'(event, instance) {
     const billCategory = $(event.target).closest('[data-value]').data('value');
     instance.viewmodel.activeBillCategory(billCategory);
+    instance.viewmodel.showParcelBillings(false);
   },
   'click .js-edit-defs'(event, instance) {
     instance.viewmodel.showParcelBillings(true);
