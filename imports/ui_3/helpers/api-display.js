@@ -24,6 +24,10 @@ export function displayReading(value) {
   return label(value, 'info');
 }
 
+export function displayOutstanding(value) {
+  return value == 0 ? value : label(value, 'info');
+}
+
 export function displayAccount(account, communityId) {
   if (!account) return '';
   return label(ChartOfAccounts.get({ communityId }).display(account), 'success', 'tag');

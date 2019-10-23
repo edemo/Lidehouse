@@ -54,6 +54,7 @@ export function allStatementEntriesActions() {
     reconcile: {
       name: 'reconcile',
       icon: 'fa fa-external-link',
+      color: id => 'danger',
       visible: id => currentUserHasPermission('statements.reconcile') && !StatementEntries.findOne(id).isReconciled(),
       run(id) {
         Session.set('activeStatementEntryId', id);

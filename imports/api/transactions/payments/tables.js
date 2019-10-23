@@ -16,6 +16,7 @@ export function paymentsColumns() {
     { data: 'amount', title: __('schemaBills.amount.label'), render: Render.formatNumber },
     { data: 'account', title: __('schemaBills.account.label'), render: displayAccount },
     { data: 'note', title: __('schemaBills.note.label') },
+    { data: 'reconciledId', title: __('schemaBills.reconciled.label'), render: Render.checkmarkBoolean },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getPaymentsActionsSmall() }) },
   ];
 

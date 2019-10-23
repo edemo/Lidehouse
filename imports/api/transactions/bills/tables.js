@@ -3,6 +3,7 @@ import { Blaze } from 'meteor/blaze';
 import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
+import { displayOutstanding } from '/imports/ui_3/helpers/api-display.js';
 import { getBillsActionsSmall } from './actions.js';
 
 export function billColumns() {
@@ -15,7 +16,7 @@ export function billColumns() {
     { data: 'valueDate', title: __('schemaBills.valueDate.label'), render: Render.formatDate },
     { data: 'dueDate', title: __('schemaBills.dueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaBills.amount.label'), render: Render.formatNumber },
-    { data: 'outstanding', title: __('schemaBills.outstanding.label') },
+    { data: 'outstanding', title: __('schemaBills.outstanding.label'), render: displayOutstanding },
     { data: 'paymentDate', title: __('schemaBills.paymentDate.label'), render: Render.formatDate },
 //    { data: 'account', title: __('schemaBills.account.label') },
 //    { data: 'localizer', title: __('schemaBills.localizer.label') },
