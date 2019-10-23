@@ -28,7 +28,11 @@ Migrations.add({
   name: 'Use communityId:null for the shared assets',
   up() {
     function upgrade(collection) {
-      collection.update({ communityId: { $exists: false } }, { $set: { communityId: null } });
+      collection.update(
+        { communityId: { $exists: false } },
+        { $set: { communityId: null } },
+        { multi: true }
+      );
     }
     upgrade(Sharedfolders);
     upgrade(Breakdowns);
@@ -39,7 +43,11 @@ Migrations.add({
   version: 3,
   name: 'Tickets get a type',
   up() {
-    Topics.update({ category: 'ticket', 'ticket.type': { $exists: false } }, { $set: { 'ticket.type': 'issue' } });
+    Topics.update(
+      { category: 'ticket', 'ticket.type': { $exists: false } },
+      { $set: { 'ticket.type': 'issue' } },
+      { multi: true }
+    );
   },
 });
 
@@ -47,18 +55,23 @@ Migrations.add({
   version: 4,
   name: 'Topics all get a status',
   up() {
-    Topics.update({ status: { $exists: false } }, { $set: { status: 'opened' } });
+    Topics.update(
+      { status: { $exists: false } },
+      { $set: { status: 'opened' } },
+      { multi: true }
+    );
   },
 });
 
 Migrations.add({
   version: 5,
-  name: 'Communities get a settings with accountingMethod',
+  name: 'Communities get a settings section and an accountingMethod',
   up() {
-    Communities.update({ settings: { $exists: false } }, { $set: { settings: {
-      joinable: true,
-      accountingMethod: 'accrual',
-    } } });
+    Communities.update(
+      { settings: { $exists: false } },
+      { $set: { settings: { joinable: true, accountingMethod: 'accrual' } } },
+      { multi: true }
+    );
   },
 });
 
