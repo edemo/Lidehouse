@@ -7,6 +7,7 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
+import { autoformOptions } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -35,10 +36,11 @@ if (Meteor.isClient) {
 export const Communities = new Mongo.Collection('communities');
 
 const defaultAvatar = '/images/defaulthouse.jpg';
+Communities.accountingMethods = ['cash', 'accrual'];
 
 Communities.settingsSchema = new SimpleSchema({
   joinable: { type: Boolean, defaultValue: true },
-  accountingMethod: { type: String, allowedValues: ['cash', 'accrual'], defaultValue: 'cash' },
+  accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: autoformOptions(Communities.accountingMethods, 'schemaCommunities.settings.accountingMethod.'), defaultValue: 'accrual' },
 });
 
 Communities.schema = new SimpleSchema([

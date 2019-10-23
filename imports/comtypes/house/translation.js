@@ -67,8 +67,16 @@ export const HouseTranslation = {
         "label": "Contact info of management",
         "placeholder": "(eg. office address, phone, opening hours)"
       },
-      "joinable": {
-        "label": "Accepts join requests"
+      "settings": {
+        "label": "Settings",
+        "joinable": {
+          "label": "Accepts join requests"
+        },
+        "accountingMethod": {
+          "label": "Accounting method",
+          "accrual": "Accrual",
+          "cash": 'Cash'
+        }
       }
     },
     "schemaParcels": {
@@ -209,8 +217,16 @@ export const HouseTranslation = {
         "label": "Közös képviselet elérhetősége",
         "placeholder": "(pl. iroda címe, telefonszáma, nyitvatartása)"
       },
-      "joinable": {
-        "label": "Csatlakozási kérelmeket fogad"
+      "settings": {
+        "label": "Beállítások",
+        "joinable": {
+          "label": "Csatlakozási kérelmeket fogad"
+        },
+        "accountingMethod": {
+          "label": "Könyvelési mód",
+          "accrual": "Kettős könyvitel",
+          "cash": "Egyszeres (pénzforgalmi) könyvitel"
+        }
       }
     },
     "schemaParcels": {
