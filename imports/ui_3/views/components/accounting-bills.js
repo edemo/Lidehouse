@@ -78,6 +78,14 @@ Template.Accounting_bills.viewmodel({
   activeClass(billCategory) {
     return (this.activeBillCategory() === billCategory) && 'active';
   },
+  collectionOf(activeBillCategory) {
+    switch(activeBillCategory) {
+      case 'in':
+      case 'out': return 'bills';
+      case 'parcel': return 'parcelBillings';
+      default: debugAssert(false, 'No such bill category')
+    }
+  },
   billsFilterSelector() {
     const selector = { communityId: this.communityId() };
     selector.category = this.activeBillCategory();

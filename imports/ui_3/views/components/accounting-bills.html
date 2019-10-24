@@ -12,10 +12,10 @@
     </div>
     {{/if}}
 
-    {{#if userHasPermission 'bills.update' communityId }}
+    {{#if userHasPermission 'bills.inCommunity' communityId }}
         <div>
             {{#if userHasPermission 'bills.update' communityId }}
-            <div class="btn-group pull-right {{#if equals activeBillCategory 'parcel'}}parcelBillings{{/if}}">
+            <div class="btn-group pull-right {{collectionOf activeBillCategory}}">
               {{#if userHasPermission 'bills.insert' communityId}}
                 {{#if equals activeBillCategory 'parcel'}}
                   <button class="btn btn-primary btn-sm js-apply"><i class="fa fa-calendar-plus-o"></i><strong> {{_ 'Apply parcel billings'}}</strong></button>
