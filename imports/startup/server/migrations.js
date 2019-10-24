@@ -3,7 +3,6 @@ import { Migrations } from 'meteor/percolate:migrations';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 
@@ -56,8 +55,13 @@ Migrations.add({
   name: 'Topics all get a status',
   up() {
     Topics.update(
-      { status: { $exists: false } },
+      { status: { $exists: false }, closed: false },
       { $set: { status: 'opened' } },
+      { multi: true }
+    );
+    Topics.update(
+      { status: { $exists: false }, closed: true },
+      { $set: { status: 'closed' } },
       { multi: true }
     );
   },
