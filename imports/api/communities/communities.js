@@ -96,22 +96,6 @@ Communities.helpers({
     const voters = this.voterships().map(v => v.user());
     return _.uniq(voters, false, u => u._id);
   },
-  // --- writers ---
-  remove() {
-    const communityId = this._id;
-    Communities.remove(communityId);
-    Parcels.remove({ communityId });
-    Memberships.remove({ communityId });
-    Agendas.remove({ communityId });
-    Topics.remove({ communityId });
-    Comments.remove({ communityId });
-    Delegations.remove({ communityId });
-    Breakdowns.remove({ communityId });
-    TxDefs.remove({ communityId });
-    Transactions.remove({ communityId });
-    Balances.remove({ communityId });
-    ParcelBillings.remove({ communityId });
-  },
 });
 
 Communities.attachSchema(Communities.schema);
@@ -120,6 +104,14 @@ Communities.attachBehaviour(Timestamped);
 Meteor.startup(function attach() {
   Communities.simpleSchema().i18n('schemaCommunities');
 });
+
+if (Meteor.isServer) {
+  Communities.after.remove(function (userId, doc) {
+    Mongo.Collection.getAll().forEach((collection) => {
+      collection.instance.remove({ communityId: doc._id });
+    });
+  });
+}
 
 Factory.define('community', Communities, {
   name: () => faker.random.word() + 'house',

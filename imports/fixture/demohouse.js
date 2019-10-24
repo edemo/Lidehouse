@@ -46,7 +46,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   if (demoHouse) {
     if (Meteor.settings.reset) {
-      demoHouse.remove();
+      Communities.remove(demoHouse._id);
     } else {
 //      Balances.checkAllCorrect();
       return;

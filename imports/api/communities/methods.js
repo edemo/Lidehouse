@@ -53,7 +53,7 @@ export const remove = new ValidatedMethod({
         `Found: {${officers.count()}}`);
     }
     // Once there are no active officers, the community can be purged
-    community.remove();
+    Communities.remove(_id);
   },
 });
 

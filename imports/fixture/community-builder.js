@@ -60,7 +60,7 @@ export class CommunityBuilder {
   }
   getUserWithRole(role) {
     const member = Memberships.findOne({ communityId: this.communityId, role });
-    if (!member) console.log(`No user with role ${role} in the community`);
+    if (!member) throw Error(`No user with role ${role} in the community`);
     return member.personId;
   }
   sameUser() {
