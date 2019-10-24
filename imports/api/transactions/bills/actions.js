@@ -24,7 +24,7 @@ export function allBillsActions() {
         Modal.show('Autoform_edit', {
           id: 'af.bill.insert',
           collection: Bills,
-          omitFields: ['category', 'payments'],
+          omitFields: ['payments'],
           type: 'method',
           meteormethod: 'bills.insert',
         });
@@ -63,6 +63,7 @@ export function allBillsActions() {
         Modal.show('Autoform_edit', {
           id: 'af.bill.update',
           collection: Bills,
+          omitFields: ['payments'],
           doc: Bills.findOne(id),
           type: 'method-update',
           meteormethod: 'bills.update',
