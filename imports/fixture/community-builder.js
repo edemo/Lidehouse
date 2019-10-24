@@ -235,24 +235,11 @@ export class CommunityBuilder {
   generateDemoPayments(parcel) {
     for (let mm = 1; mm < 13; mm++) {
       const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
-      this.insert(ParcelBillings, '', {
+      this.execute(ParcelBillings.methods.apply, {
+        communityId: this.communityId,
         valueDate,
-        projection: 'area',
-        amount: 275,
-        payinType: this.name2code('Owner payin types', 'Közös költség előírás'),
         localizer: Localizer.parcelRef2code(parcel.ref),
-      });/*
-      this.insert(Transactions, 'tx', {
-        valueDate,
-        amount: 275 * parcel.area,
-        credit: [{
-          account: this.name2code('Assets', 'Közös költség előírás'),
-          localizer: Localizer.parcelRef2code(parcel.ref),
-        }],
-        debit: [{
-          account: this.name2code('Assets', 'Folyószámla'),
-        }],
-      });*/
+      });
       this.payBillsOf(parcel);
     }
   }
