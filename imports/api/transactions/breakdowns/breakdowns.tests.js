@@ -1,5 +1,6 @@
 /* eslint-env mocha */
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Breakdowns } from './breakdowns.js';
@@ -228,8 +229,8 @@ if (Meteor.isServer) {
         const myRoot = Breakdowns.findOneByName('Root', Fixture.demoCommunityId);
         chai.assert.equal(myRoot.communityId, Fixture.demoCommunityId);
         function deleteIrrelevantFields(brd) {
-          delete brd._id; delete brd.communityId;
-          delete brd.createdAt; delete brd.updatedAt; delete brd.creatorId; delete brd.updaterId;
+          delete brd.communityId;
+          Mongo.Collection.stripAdministrativeFields(brd);
         }
         deleteIrrelevantFields(root);
         deleteIrrelevantFields(myRoot);

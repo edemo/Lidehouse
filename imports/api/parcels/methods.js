@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
@@ -66,8 +67,7 @@ export const update = new ValidatedMethod({
     try {
       checkCommunityParcelsSanity(doc.communityId);
     } catch (err) {
-      delete doc._id;
-      delete doc.createdAt;
+      Mongo.Collection.stripAdministrativeFields(doc);
       Parcels.update({ _id }, { $set: doc });
       throw err;
     }

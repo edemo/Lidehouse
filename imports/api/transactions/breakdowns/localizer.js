@@ -1,3 +1,4 @@
+import { Mongo } from 'meteor/mongo';
 import { __ } from '/imports/localization/i18n.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -51,9 +52,7 @@ export const Localizer = {
     const parcelBreakdown = Localizer.getParcels(communityId);
     Localizer._addParcel(parcelBreakdown, parcel, lang);
     const id = parcelBreakdown._id;
-    delete parcelBreakdown._id;
-    delete parcelBreakdown.createdAt;
-    delete parcelBreakdown.updatedAt;
+    Mongo.Collection.stripAdministrativeFields(parcelBreakdown);
     Breakdowns.update(id, { $set: parcelBreakdown });
   },
   generateParcels(communityId, lang) {

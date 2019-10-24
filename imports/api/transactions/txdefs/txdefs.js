@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Mongo } from 'meteor/mongo';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
@@ -20,7 +20,7 @@ TxDefs.define = function define(doc) {
 TxDefs.clone = function clone(name, communityId) {
   const doc = TxDefs.findOne({ name, communityId: null });
   if (!doc) return undefined;
-  delete doc._id;
+  Mongo.Collection.stripAdministrativeFields(doc);
   doc.communityId = communityId;
   return TxDefs.insert(doc);
 };

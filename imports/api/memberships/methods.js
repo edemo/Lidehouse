@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Accounts } from 'meteor/accounts-base';
@@ -107,8 +108,7 @@ export const update = new ValidatedMethod({
     try {
       checkParcelMembershipsSanity(doc.parcelId);
     } catch (err) {
-      delete doc._id;
-      delete doc.createdAt;
+      Mongo.Collection.stripAdministrativeFields(doc);
       Memberships.update({ _id }, { $set: doc });
       throw err;
     }

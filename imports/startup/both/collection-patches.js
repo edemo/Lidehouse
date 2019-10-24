@@ -6,6 +6,14 @@ import 'meteor/helfer:minimongo-index';
 
 export const MinimongoIndexing = true;
 
+Mongo.Collection.stripAdministrativeFields = function(doc) {
+  delete doc._id;
+  delete doc.createdAt;
+  delete doc.creatorId;
+  delete doc.updatedAt;
+  delete doc.updaterId;
+};
+
 // With this function you can create the same logical index on the client and server sides
 // https://github.com/helfer/minimongo-index/issues/1
 // This might be a good or a not so good idea, because implementations of indexes are very different technically

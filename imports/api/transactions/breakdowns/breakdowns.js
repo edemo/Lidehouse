@@ -28,7 +28,7 @@ Breakdowns.findOneByName = function findOneByName(name, communityId = getActiveC
 Breakdowns.clone = function clone(name, communityId) {
   const breakdown = Breakdowns.findOne({ name, communityId: null });
   if (!breakdown) return undefined;
-  delete breakdown._id;
+  Mongo.Collection.stripAdministrativeFields(breakdown);
   breakdown.communityId = communityId;
   return Breakdowns.insert(breakdown);
 };
