@@ -67,15 +67,12 @@ export const conteer = new ValidatedMethod({
     const doc = checkExists(Bills, _id);
     checkPermissions(this.userId, 'bills.conteer', doc.communityId);
     if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-    let result;
 
     const community = Communities.findOne(doc.communityId);
     const accountingMethod = community.settings.accountingMethod;
-    if (accountingMethod === 'accrual') {
-      if (doc.txId) throw new Meteor.Error('Bill already conteered');
-      const txId = Transactions.insert(doc.makeTx());
-      result = Bills.update(_id, { $set: { txId } });
-    }
+    if (doc.txId) throw new Meteor.Error('Bill already conteered');
+    const txId = Transactions.insert(doc.makeTx(accountingMethod));
+    return Bills.update(_id, { $set: { txId } });
 /*
     doc.getPayments().forEach((payment) => {
       if (!payment.txId) {
@@ -84,7 +81,6 @@ export const conteer = new ValidatedMethod({
       }
     });
     */
-    return result;
   },
 });
 

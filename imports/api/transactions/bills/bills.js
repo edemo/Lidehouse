@@ -101,7 +101,7 @@ Bills.helpers({
   paymentCount() {
     return this.payments.length;
   },
-  makeTx() {
+  makeTx(accountingMethod) {
     const self = this;
     const tx = {
       _id: this._id,
@@ -114,16 +114,18 @@ Bills.helpers({
     function copyLinesInto(txSide) {
       self.lines.forEach(line => txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer }));
     }
-    if (this.category === 'in') {
-      tx.debit = []; copyLinesInto(tx.debit);
-      tx.credit = [{ account: '46' }];
-    } else if (this.category === 'out') {
-      tx.debit = [{ account: '31' }];
-      tx.credit = []; copyLinesInto(tx.credit);
-    } else if (this.category === 'parcel') {
-      tx.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
-      tx.credit = []; copyLinesInto(tx.credit);
-    } else debugAssert(false, 'No such bill category');
+    if (accountingMethod === 'accrual') {
+      if (this.category === 'in') {
+        tx.debit = []; copyLinesInto(tx.debit);
+        tx.credit = [{ account: '46' }];
+      } else if (this.category === 'out') {
+        tx.debit = [{ account: '31' }];
+        tx.credit = []; copyLinesInto(tx.credit);
+      } else if (this.category === 'parcel') {
+        tx.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+        tx.credit = []; copyLinesInto(tx.credit);
+      } else debugAssert(false, 'No such bill category');
+    } // else we have no accounting to do
     return tx;
   },
   display() {
