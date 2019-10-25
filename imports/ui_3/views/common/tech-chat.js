@@ -17,11 +17,10 @@ function getMyTechSupportRoom() {
 
 Template.Tech_chat.onCreated(function tehcChatOnCreated() {
   this.autorun(() => {
-    /* not needed any more, we subscribe to all comments in main now
     const room = getMyTechSupportRoom();
     if (room) {
-      this.subscribe('comments.onTopic', { topicId: room._id });
-    } */
+      this.subscribe('topics.byId', { _id: room._id });
+    }
   });
 });
 
@@ -108,6 +107,7 @@ Template.Tech_chat.events({
         participantIds: [Meteor.userId(), community.techsupport()._id],
         category: 'room',
         title: 'tech support',
+        text: 'tech support',
       }, onSuccess((res) => {
         roomId = res;
         insertMessage();

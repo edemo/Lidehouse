@@ -17,13 +17,6 @@ import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import './comments-section.html';
 
-Template.Comments_section.onCreated(function commentsSectionOnCreated() {
-  this.autorun(() => {
-    // not needed any more, we subscribe to all comments in main now
-    // this.subscribe('comments.onTopic', { topicId: this.data._id });
-  });
-});
-
 Template.Comments_section.onRendered(function chatboxOnRendered() {
   this.waypoint = new Waypoint({
     element: this.find('.comment-section'),
@@ -65,9 +58,8 @@ Template.Comments_section.viewmodel({
   },
   hasMoreComments() {
     const route = FlowRouter.current().route.name;
-    const comments = Comments.find({ topicId: this._id.value });
-    return (route === 'Board' && comments.count() > RECENT_COMMENT_COUNT)
-      ? comments.count() - RECENT_COMMENT_COUNT
+    return (route === 'Board' && this.commentCounter.value > RECENT_COMMENT_COUNT)
+      ? this.commentCounter.value - RECENT_COMMENT_COUNT
       : 0;
   },
 });

@@ -57,6 +57,7 @@ Template.Community_page.viewmodel({
     function parcelSubscription() {
       const communityId = this.communityId();
       this.templateInstance.subscribe('communities.byId', { _id: communityId });
+      this.templateInstance.subscribe('memberships.inCommunity', { communityId });
       if (this.showAllParcels()) {
         this.templateInstance.subscribe('parcels.inCommunity', { communityId });
       } else {
@@ -161,7 +162,7 @@ Template.Community_page.viewmodel({
     const self = this;
     return () => {
       const communityId = self.communityId();
-      const parcels = Tracker.nonreactive(() => Parcels.find({ communityId }).fetch());
+      const parcels = Parcels.find({ communityId }).fetch();
 //      if (!self.showAllParcels()) {
 //        const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
 //        parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
