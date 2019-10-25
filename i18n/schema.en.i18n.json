@@ -684,8 +684,7 @@
       "placeholder": "(eg. Super Clean Inc)"
     },
     "note": {
-      "label": "Note",
-      "placeholder": "(eg. reason or partner identifier)"
+      "label": "Note"
     },
     "lines" : {
       "label": "Line items",

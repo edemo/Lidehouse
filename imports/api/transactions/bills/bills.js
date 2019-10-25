@@ -56,6 +56,7 @@ Bills.schema = new SimpleSchema({
   partner: { type: String, optional: true },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
+  note: { type: String, optional: true, autoform: { rows: 3 } },
   payments: { type: Array, defaultValue: [] },
   'payments.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client can ask to sort on outstanding amount
