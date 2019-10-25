@@ -24,6 +24,8 @@ Template.Main_layout.onCreated(function() {
   // We run this in autorun, so when a new User logs in, the subscription changes
   this.autorun(() => {
     this.subscribe('memberships.ofUser', { userId: Meteor.userId() });
+    this.subscribe('delegations.toUser', { userId: Meteor.userId() });
+    this.subscribe('delegations.fromUser', { userId: Meteor.userId() });
   });
   // This autorun sets the active community automatically to the first community of the user
   // TODO: active community could be saved somewhere so he gets back where he left off last time
@@ -34,8 +36,22 @@ Template.Main_layout.onCreated(function() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     if (communityId) {
-      this.subscribe('communities.byId', { _id: communityId });
+      this.subscribe('parcels.inCommunity', { communityId });
+      this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('breakdowns.inCommunity', { communityId });
+    }
+  });
+  // We subscribe to all topics in the community, so that we have access to the commentCounters
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('agendas.inCommunity', { communityId });
+  });
+
+  this.autorun(() => {
+    const user = Meteor.userOrNull();
+    const communityId = Session.get('activeCommunityId');
+    if (user.hasPermission('delegations.inCommunity', communityId)) {
+      this.subscribe('delegations.inCommunity', { communityId });
     }
   });
 });

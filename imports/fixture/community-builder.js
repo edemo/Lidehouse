@@ -201,16 +201,16 @@ export class CommunityBuilder {
     this.dummyUsers.push(userId);
     return userId;
   }
-  createFakeUser() {
+  createFakeUser(i) {
     return Accounts.createUser({
       email: `${faker.name.lastName()}_${i}@${this.demoOrTest}.${this.com}`,
       password: 'password',
       language: this.lang,
     });
   }
-  createFakePerson() {
+  createFakePerson(i) {
     return {
-      userId: this.createFakeUser(),
+      userId: this.createFakeUser(i),
       idCard: { type: 'natural', name: faker.name.findName() },
       contact: { phone: faker.phone.phoneNumber() },
     };
@@ -273,19 +273,31 @@ export class CommunityBuilder {
   insertLoadsOfFakeMembers(parcelCount) {
     if (Parcels.find({ communityId: this.communityId }).count() >= parcelCount) return;
 
-    for (let i = 0; i < parcelCount; i++) {
-      const parcelId = this.createParcel({});
-      const parcel = Parcels.finOne(parcelId);
-      this.createMembership(this.createFakePerson(), 'owner', {
-        parcelId,
-        approved: !!(i % 2),
-        accepted: !!(i + 1),
-        ownership: { share: new Fraction(1, 1) },
-      });
+    function randomNumber(min, max) {
+      return Math.floor(Math.random() * (max - min)) + min;
+    }
 
-      Localizer.addParcel(this.communityId, parcel, this.lang);
+    let floors = Math.round((parcelCount / 100) * 4);
+    if (floors < 1) floors = 1;
+    const doors = (parcelCount / floors);
+    let serial = '';
 
-      this.generateDemoPayments(parcel);
+    for (let j = 0; j <= floors; j++) {
+      for (let k = 1; k <= doors; k++) {
+        ++serial;
+        const parcelId = this.createParcel({ floor: j.toString(), door: k.toString(), area: randomNumber(40, 120) });
+        const parcel = Parcels.findOne(parcelId);
+        this.createMembership(this.createFakePerson(serial), 'owner', {
+          parcelId,
+          approved: !!(serial % 2),
+          accepted: !!(serial + 1),
+          ownership: { share: new Fraction(1, 1) },
+        });
+
+        Localizer.addParcel(this.communityId, parcel, this.lang);
+
+        this.generateDemoPayments(parcel);
+      }
     }
   }
   uploadShareddoc(fileSpec) {

@@ -20,6 +20,15 @@ Template.Tickets.viewmodel({
   activesOnly: false,
   filterCreatedBy: null,
   searchText: '',
+  onCreated(instance) {
+    instance.autorun(() => {
+      const communityId = Session.get('activeCommunityId');
+      instance.subscribe('topics.list', { communityId, category: 'ticket' });
+    });
+  },
+  statusColor(value) {
+    return Topics.statusColors[value];
+  },
   urgencyColor(value) {
     return Tickets.urgencyColors[value];
   },

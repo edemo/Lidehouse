@@ -10,12 +10,13 @@ import { Comments } from '/imports/api/comments/comments.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
 
-Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
+Meteor.publishComposite('topics.inCommunity', function topicsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
 
   const { communityId } = params;
+  const user = Meteor.users.findOneOrNull(this.userId);
 
   const selector = {
     communityId,
@@ -26,11 +27,19 @@ Meteor.publish('topics.inCommunity', function topicsInCommunity(params) {
     ],
   };
 
-  const publicFields = Votings.extendPublicFieldsForUser(this.userId, communityId);
-  return [
-    Topics.find(selector, { fields: publicFields }),
-    Topics.find(_.extend({}, selector, { category: 'vote', closed: true })),
-  ];
+  const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
+  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
+
+  return {
+    find() {
+      return Topics.find(selector, { fields: publicFields });
+    },
+    children: [{
+      find() {
+        return Topics.find(_.extend({}, selector, { category: 'vote', closed: true }));
+      },
+    }],
+  };
 });
 
 Meteor.publishComposite('topics.byId', function topicsById(params) {
@@ -39,17 +48,34 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
   }).validate(params);
 
   const { _id } = params;
+  const topic = Topics.findOne(_id);
+  const communityId = topic.communityId;
+  const user = Meteor.users.findOneOrNull(this.userId);
 
-  const publicFields = Topics.publicFields;//.extendForUser(this.userId, communityId);
+  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
+
+  const publicFields = Topics.publicFields.extendForUser(user._id, communityId);
+  const selector = {
+    _id,
+    // Filter for 'No participantIds (meaning everyone), or contains userId'
+    $or: [
+      { participantIds: { $exists: false } },
+      { participantIds: this.userId },
+    ],
+  };
 
   return {
     find() {
-      return Topics.find({ _id }, { fields: publicFields });
+      return Topics.find(selector, { fields: publicFields });
     },
     children: [{
       // Publish the author of the Topic (for flagging status)
       find(topic) {
         return Meteor.users.find({ _id: topic.userId }, { fields: Meteor.users.publicFields });
+      },
+    }, {
+      find() {
+        return Topics.find(_.extend({}, selector, { category: 'vote', closed: true }));
       },
     }, {
       // Publish all Comments of the Topic
@@ -65,3 +91,52 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
   };
 });
 
+Meteor.publishComposite('topics.board', function topicsBoard(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+  }).validate(params);
+
+  const { communityId } = params;
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
+
+  const selector = {
+    communityId,
+    closed: false,
+    category: { $in: ['vote', 'forum', 'news'] },
+    // Filter for 'No participantIds (meaning everyone), or contains userId'
+    $or: [
+      { participantIds: { $exists: false } },
+      { participantIds: this.userId },
+    ],
+  };
+
+  const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
+
+  return {
+    find() {
+      return Topics.find(selector, { fields: publicFields });
+    },
+    children: [{
+      find(topic) {
+        return Comments.find({ topicId: topic._id }, { limit: 5, sort: { createdAt: -1 } });
+      },
+    }],
+  };
+});
+
+Meteor.publish('topics.list', function topicsList(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+    category: { type: String, optional: true },
+    closed: { type: Boolean, optional: true },
+  }).validate(params);
+  const { communityId } = params;
+  const user = Meteor.users.findOneOrNull(this.userId);
+
+  if (!user.hasPermission('topics.inCommunity', communityId)) {
+    return this.ready();
+  }
+
+  return Topics.find(params);
+});

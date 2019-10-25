@@ -24,6 +24,10 @@ import '../components/balance-widget.js';
 import './board.html';
 
 Template.Board.onCreated(function boardOnCreated() {
+  this.autorun(() => {
+    const communityId = Session.get('activeCommunityId');
+    this.subscribe('topics.board', { communityId });
+  });
 });
 
 Template.Board.helpers({

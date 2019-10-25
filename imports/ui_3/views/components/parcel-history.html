@@ -1,0 +1,63 @@
+<template name="Parcel_history">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
+                <input type="date" id="begin_date" name="begin_date" {{b 'value: beginDate'}} class="form-control">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+                <input type="date" id="end_date" name="end_date" {{b 'value: endDate'}} class="form-control">
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label class="control-label" for="parcel">{{_ 'parcel'}}</label>
+                <select id="parcel" name="parcel" {{b 'options: parcelOptions, value: parcelSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+            </div>
+        </div>
+        <!--div class="col-sm-2">
+            <div class="form-group">
+                <label class="control-label" for="status">{{_ 'Status'}}</label>
+                <select name="status" id="status" class="form-control">
+                    <option value="1" selected="">{{_ 'Reconciled'}}</option>
+                    <option value="0">{{_ 'Pending'}}</option>
+                </select>
+            </div>
+        </div-->
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tbody>
+              <tr style="font-weight: bold">
+                  <td>{{_ 'schemaTransactions.valueDate.label'}}</td>
+                  <td>{{_ 'Type'}}</td>
+                  <td>{{_ 'schemaTransactions.note.label'}}</td>
+                  <td>{{_ 'schemaTransactions.amount.label'}}</td>
+                  <!--td></td>
+                  <td></td-->
+                  <td>{{_ 'Balance'}}</td>
+                  <td></td>
+                  <td></td>
+              </tr>
+              {{#each tx in transactions}}
+              <tr>
+                  <td>{{displayDate tx.valueDate}}</td>
+                  <td>{{{tx.type}}}</td>
+                  <td>{{tx.note}}</td>
+                  <td class="{{negativeClass entry}}">{{displayMoney (tx.effectiveAmount sign)}}</td>
+                  <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>
+                  <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
+                  <td><strong>{{displayMoney tx.total}}</strong></td>
+                  <td><button class="btn btn-white btn-xs js-view" data-id="{{tx._id}}"><i class="fa fa-eye"></i></button></td>
+                  <td><a href="" title="{{tx.ref}}"><i class="fa fa-check text-navy"></i></a></td>
+              </tr>
+              {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <p class="text-center">{{_ 'Total change in this period'}}: <strong>{{displayMoney journalEntries.pop.total}}</strong></p>
+</template>

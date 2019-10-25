@@ -25,26 +25,28 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
   new SimpleSchema({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validate(params);
-  if (!Meteor.user()) return this.ready();
+  if (!this.userId) return this.ready();
   const { communityId } = params;
   const permissionRoles = Permissions.find(p => p.name === 'parcels.details').roles;
-  const personId = Meteor.userId();
-  const parcelIds = Memberships.find({ communityId, approved: true, active: true,
-    personId, parcelId: { $exists: true }, role: { $in: permissionRoles } }).map(m => m.parcelId);
-  const ledParcelIds = [];
-  parcelIds.forEach((parcelId) => {
-    Parcels.findOne(parcelId).forEachLed(parcel => ledParcelIds.push(parcel._id));
-  });
-
+  const personId = this.userId;
   return {
     find() {
-      return Parcels.find({ _id: { $in: ledParcelIds } });
+      return Memberships.find({ communityId, approved: true, active: true,
+        personId, parcelId: { $exists: true }, role: { $in: permissionRoles } });
     },
     children: [{
-      // Publish the Meters of the Parcel
-      find(parcel) {
-        return Meters.find({ parcelId: parcel._id });
+      find(membership) {
+        const parcelId = membership.parcelId;
+        return Parcels.find(parcelId);
       },
+      children: [{
+        find(ownParcel) {
+          return Parcels.find({
+            communityId: ownParcel.communityId,
+            $or: [{ ref: ownParcel.ref }, { leadRef: ownParcel.ref }],
+          });
+        },
+      }],
     }],
   };
 });

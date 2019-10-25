@@ -15,7 +15,9 @@ Template.Navigation.onCreated(function() {
     const activeCommunityId = Session.get('activeCommunityId');
     if (activeCommunityId) {
       this.subscribe('communities.byId', { _id: activeCommunityId });
-      // redundant   this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
+      this.subscribe('memberships.inCommunity', { communityId: activeCommunityId });
+      this.subscribe('topics.list', { communityId: activeCommunityId, category: 'vote', closed: false });
+      this.subscribe('topics.list', { communityId: activeCommunityId, category: 'ticket', closed: false });
     }
   });
 });

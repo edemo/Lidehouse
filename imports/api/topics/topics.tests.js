@@ -17,6 +17,8 @@ import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { closeInactiveTopics } from '/imports/api/topics/methods.js';
 import { Clock } from '/imports/utils/clock';
 
+import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
+import { insert as insertDelegation } from '/imports/api/delegations/methods.js';
 import '/i18n/en.i18n.json';
 
 if (Meteor.isServer) {
@@ -43,12 +45,156 @@ if (Meteor.isServer) {
     });
 
     describe('publications', function () {
+      let forumTopic;
+      let roomTopic;
+      let voteTopic;
+      let maintainerId;
+      let ownerId;
+      let benefactorId;
+      let adminId;
+      let accountanId;
+      let randomUserId;
+      let communityId;
+
       before(function () {
+        maintainerId = Fixture.dummyUsers[0];
+        ownerId = Fixture.dummyUsers[1];
+        benefactorId = Fixture.dummyUsers[2];
+        adminId = Fixture.demoAdminId;
+        accountanId = Fixture.dummyUsers[4];
+        randomUserId = Random.id();
+        communityId = Fixture.demoCommunityId;
+        forumTopic = Factory.create('forum', { userId: maintainerId, communityId });
+        roomTopic = Factory.create('room', { userId: ownerId, communityId, participantIds: [ownerId, randomUserId] });
+        voteTopic = Factory.create('vote', { userId: ownerId, communityId });
+        insertDelegation._execute(
+          { userId: ownerId },
+          { sourcePersonId: ownerId, targetPersonId: benefactorId, scope: 'community', scopeObjectId: communityId }
+        );
+        castVote._execute({ userId: benefactorId }, { topicId: voteTopic._id, castedVote: [0] });
+        castVote._execute({ userId: accountanId }, { topicId: voteTopic._id, castedVote: [0] });
+
+
+        _.times(3, () => {
+          Factory.create('comment', { topicId: forumTopic._id, userId: maintainerId });
+        });
+        _.times(2, () => {
+          Factory.create('comment', { topicId: roomTopic._id, userId: ownerId });
+        });
       });
 
-      describe('topics.private', function () {
-        it('sends all owned topics', function (done) {
-          done();
+      describe('topics.byId', function () {
+        it('sends all public topics with comments when logged in', function (done) {
+          const collector = new PublicationCollector({ userId: ownerId });
+          collector.collect(
+            'topics.byId',
+            { _id: forumTopic._id },
+            (collections) => {
+              chai.assert.equal(collections.topics.length, 1);
+              chai.assert.equal(collections.users.length, 1);
+              chai.assert.equal(collections.comments.length, 3);
+              done();
+            }
+          );
+        });
+
+        it('sends all private topics when logged in as a participant', function (done) {
+          const collector = new PublicationCollector({ userId: ownerId });
+          collector.collect(
+            'topics.byId',
+            { _id: roomTopic._id },
+            (collections) => {
+              chai.assert.equal(collections.topics.length, 1);
+              chai.assert.equal(collections.users.length, 1);
+              chai.assert.equal(collections.comments.length, 2);
+              done();
+            }
+          );
+        });
+
+        it('sends no private topic when not logged in', function (done) {
+          const collector = new PublicationCollector();
+          collector.collect(
+            'topics.byId',
+            { _id: roomTopic._id },
+            (collections) => {
+              chai.assert.isUndefined(collections.topics);
+              chai.assert.isUndefined(collections.users);
+              chai.assert.isUndefined(collections.comments);
+              done();
+            }
+          );
+        });
+
+        it('sends no private topics when logged in as another user', function (done) {
+          const collector = new PublicationCollector({ userId: maintainerId });
+          collector.collect(
+            'topics.byId',
+            { _id: roomTopic._id },
+            (collections) => {
+              chai.assert.isUndefined(collections.topics);
+              chai.assert.isUndefined(collections.users);
+              chai.assert.isUndefined(collections.comments);
+              done();
+            }
+          );
+        });
+
+        it('sends voting details to admin, when vote is open', function (done) {
+          const collector = new PublicationCollector({ userId: adminId });
+          collector.collect(
+            'topics.byId',
+            { _id: voteTopic._id },
+            (collections) => {
+              chai.assert.deepEqual(collections.topics[0].voteCasts, { [benefactorId]: [0], [accountanId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerId]: [0], [benefactorId]: [0], [accountanId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerId]: [ownerId, benefactorId], [benefactorId]: [benefactorId], [accountanId]: [accountanId] });
+              done();
+            }
+          );
+        });
+
+        it('doesn\'t sends voting details to owner, when vote is open', function (done) {
+          const collector = new PublicationCollector({ userId: ownerId });
+          collector.collect(
+            'topics.byId',
+            { _id: voteTopic._id },
+            (collections) => {
+              chai.assert.deepEqual(collections.topics[0].voteCasts, {});
+              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerId]: [ownerId, benefactorId] });
+              done();
+            }
+          );
+        });
+
+        it('sends voting details to admin, when vote is closed', function (done) {
+          closeVote._execute({ userId: adminId }, { topicId: voteTopic._id });
+          const collector = new PublicationCollector({ userId: adminId });
+          collector.collect(
+            'topics.byId',
+            { _id: voteTopic._id },
+            (collections) => {
+              chai.assert.deepEqual(collections.topics[0].voteCasts, { [benefactorId]: [0], [accountanId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerId]: [0], [benefactorId]: [0], [accountanId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerId]: [ownerId, benefactorId], [benefactorId]: [benefactorId], [accountanId]: [accountanId] });
+              done();
+            }
+          );
+        });
+
+        it('sends voting details to owner, when vote is closed', function (done) {
+          const collector = new PublicationCollector({ userId: ownerId });
+          collector.collect(
+            'topics.byId',
+            { _id: voteTopic._id },
+            (collections) => {
+              chai.assert.deepEqual(collections.topics[0].voteCasts, { [benefactorId]: [0], [accountanId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerId]: [0], [benefactorId]: [0], [accountanId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerId]: [ownerId, benefactorId], [benefactorId]: [benefactorId], [accountanId]: [accountanId] });
+              done();
+            }
+          );
         });
       });
     });

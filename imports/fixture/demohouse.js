@@ -1044,6 +1044,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 
+  Balances.methods.publish._execute({ userId: demoAccountantId }, { communityId: demoCommunityId });
   Clock.clear();
 }
 

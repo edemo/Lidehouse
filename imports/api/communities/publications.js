@@ -17,6 +17,14 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Attachments } from '/imports/api/attachments/attachments.js';
 import { Communities } from './communities.js';
 
+function visibleFields(userId, communityId) {
+  const user = Meteor.users.findOneOrNull(userId);
+  if (user.hasPermission('communities.details', communityId)) {
+    return {};  // all fields
+  }
+  return Communities.publicFields;
+}
+
 // This publication sends only very basic data about what communities exist on this server
 Meteor.publish('communities.listing', function communitiesListing() {
   return Communities.find({}, { fields: Communities.publicFields });
@@ -24,95 +32,19 @@ Meteor.publish('communities.listing', function communitiesListing() {
 
 // This publication gives detailed data about a specific community
 function communityPublication(userId, _id) {
-  const user = Meteor.users.findOneOrNull(userId);
-  const hasPermission = function (permissionName) {
-    return user.hasPermission(permissionName, _id);
-  };
-
   return {
     find() {
-      const fields = hasPermission('communities.details') ? {} : Communities.publicFields;
-      return Communities.find(_id, { fields });
+      return Communities.find({ _id }, { fields: visibleFields(userId, _id) });
     },
-    // ...Related to Community
     children: [{
-      // Publish the Memberships of the Community
       find(community) {
-        if (hasPermission('memberships.inCommunity')) {
-          const fields = hasPermission('memberships.details') ? {} : Memberships.publicFields;
-          return Memberships.find({ communityId: community._id }, { fields });
-        } // Otherwise, only the active leaders of the community can be seen
         return Memberships.find({ communityId: community._id, active: true, role: { $in: leaderRoles } }, { fields: Memberships.publicFields });
       },
-
-      // ...Related to Memberships
       children: [{
-        // Publish the User of the Membership
         find(membership) {
-          const showFields = _.extend({}, Meteor.users.publicFields);
-          if (hasPermission('memberships.details')) showFields.emails = 1;  // to be able to resend invites
-          return Meteor.users.find({ _id: membership.person.userId }, { fields: showFields });
+          return Meteor.users.find({ _id: membership.person.userId }, { fields: Meteor.users.publicFields });
         },
       }],
-    }, {
-      // Publish the Topics of the Community
-      find(community) {
-        if (hasPermission('topics.inCommunity')) {
-          const selector = {
-            communityId: community._id,
-            // Filter for 'No participantIds (meaning everyone), or contains userId'
-            $or: [
-              { participantIds: { $exists: false } },
-              { participantIds: this.userId },
-            ],
-          };
-          const publicFields = Votings.extendPublicFieldsForUser(this.userId, community._id);
-          return Topics.find(selector, { fields: publicFields });
-//            Topics.find(_.extend({}, selector, { category: 'vote', closed: true })),
-//          ];
-        }
-        return undefined;
-      },
-
-      // ...Related to Topics
-      children: [{
-        // Publish the Comments of the Topic
-        find(topic) {
-          return Comments.find({ topicId: topic._id }, { fields: Comments.publicFields });
-        },
-      }],
-    }, {
-      // Publish the Agendas of the Community
-      find(community) {
-        if (hasPermission('agendas.inCommunity')) {
-          return Agendas.find({ communityId: community._id });
-        }
-        return undefined;
-      },
-    }, {
-      // Publish the Contracts of the Community
-      find(community) {
-        if (hasPermission('contracts.inCommunity')) {
-          return Contracts.find({ communityId: community._id });
-        }
-        return undefined;
-      },
-    }, {
-      // Publish the Breakdowns of the Community
-      find(community) {
-        if (hasPermission('breakdowns.inCommunity')) {
-          return Breakdowns.find({ communityId: community._id });
-        }
-        return undefined;
-      },
-    }, {
-      // Publish the Attachments of the Community
-      find(community) {
-        if (hasPermission('attachments.download')) {
-          return Attachments.find({ communityId: community._id });
-        }
-        return undefined;
-      },
     }],
   };
 }

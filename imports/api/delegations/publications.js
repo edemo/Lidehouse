@@ -15,11 +15,21 @@ Meteor.publish('delegations.inCommunity', function delegationsOfCommunity(params
   return Delegations.find({ communityId });
 });
 
+Meteor.publishComposite('delegations.fromUser', function delegationsFromUser(params) {
+  new SimpleSchema({
+    userId: { type: String },
+  }).validate(params);
+  const { userId } = params;
+
+  if (userId !== this.userId) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `Publication: delegations.fromUser, userId: {${userId}}, this.userId: {${this.userId}}`);
+  }
+
 // Everyone has access to all of his own stuff automatically
-Meteor.publishComposite(null, function delegationsFromUser() {
   return {
     find() {
-      return Delegations.find({ sourcePersonId: this.userId });
+      return Delegations.find({ sourcePersonId: userId });
     },
     // Publish the Target User of the Delegation
     children: [{
@@ -30,10 +40,19 @@ Meteor.publishComposite(null, function delegationsFromUser() {
   };
 });
 
-Meteor.publishComposite(null, function delegationsToUser() {
+Meteor.publishComposite('delegations.toUser', function delegationsToUser(params) {
+  new SimpleSchema({
+    userId: { type: String },
+  }).validate(params);
+  const { userId } = params;
+
+  if (userId !== this.userId) {
+    throw new Meteor.Error('err_permissionDenied', 'No permission to perform this activity',
+      `Publication: delegations.toUser, userId: {${userId}}, this.userId: {${this.userId}}`);
+  }
   return {
     find() {
-      return Delegations.find({ targetPersonId: this.userId });
+      return Delegations.find({ targetPersonId: userId });
     },
     // Publish the Source User of the Delegation
     children: [{
