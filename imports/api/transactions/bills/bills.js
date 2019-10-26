@@ -10,6 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
 import { oppositeSide } from '/imports/api/transactions/transactions.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
@@ -53,7 +54,7 @@ Bills.schema = new SimpleSchema({
   issueDate: { type: Date },
   valueDate: { type: Date },
   dueDate: { type: Date },
-  partner: { type: String, optional: true },
+  partner: { type: String },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
   note: { type: String, optional: true, autoform: { rows: 3 } },
@@ -111,6 +112,7 @@ Bills.helpers({
       // def: 'bill'
       valueDate: this.valueDate,
       amount: this.amount,
+      partner: this.partner,
     };
     function copyLinesInto(txSide) {
       self.lines.forEach(line => txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer }));
@@ -128,6 +130,12 @@ Bills.helpers({
       } else debugAssert(false, 'No such bill category');
     } // else we have no accounting to do
     return tx;
+  },
+  displayPartner() {
+    if (this.category === 'parcel') {
+      return Memberships.findOne(this.partner).display();
+    }
+    return this.partner;
   },
   display() {
     return `${moment(this.valueDate).format('L')} ${this.partner} ${this.amount}`;

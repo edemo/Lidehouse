@@ -151,6 +151,9 @@ Memberships.helpers({
     const votingShare = this.isRepresentor() ? this.parcel().ledShare() : this.parcel().ledShare().multiply(this.ownership.share);
     return votingShare;
   },
+  display() {
+    return `${this.Person().displayName()}, ${this.toString()}`;
+  },
   toString() {
     let result = __(this.role);
     const parcel = this.parcel();

@@ -63,8 +63,9 @@ export const reconcile = new ValidatedMethod({
       if (_.isUndefined(paymentId)) {
         const bill = Bills.findOne(billId);
         paymentId = Payments.methods.insert._execute({ userId: this.userId }, {
-          communityId: entry.communityId, category: bill.category, billId,
+          communityId: entry.communityId,
           valueDate: entry.valueDate, amount: entry.amount, account: entry.account,
+          billId, category: bill.category, partner: bill.partner,
         });
         Payments.methods.conteer._execute({ userId: this.userId }, { _id: paymentId });
       }

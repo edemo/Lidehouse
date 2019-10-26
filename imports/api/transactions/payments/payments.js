@@ -25,8 +25,9 @@ Payments.categoryValues = ['in', 'out', 'parcel'];  // TODO: its duplicate of Bi
 Payments.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   category: { type: String, allowedValues: Payments.categoryValues, autoform: { omit: true } },
-  valueDate: { type: Date },
   amount: { type: Number },
+  valueDate: { type: Date },
+  partner: { type: String, optional: true },
   account: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
   // Connect either a bill or a contra account
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
@@ -66,6 +67,7 @@ Payments.helpers({
       // def: 'payment',
       valueDate: this.valueDate,
       amount: this.amount,
+      partner: this.partner,
     };
     const bill = Bills.findOne(this.billId);
     const ratio = this.amount / bill.amount;

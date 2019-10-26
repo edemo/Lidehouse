@@ -78,7 +78,7 @@ export const apply = new ValidatedMethod({
           communityId: parcelBilling.communityId,
           category: 'parcel',
 //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
-          partner: parcel.ref,
+          partner: parcel.payer()._id,
           valueDate,
           issueDate: moment().toDate(),
           dueDate: moment().add(BILLING_DUE_DAYS, 'days').toDate(),
