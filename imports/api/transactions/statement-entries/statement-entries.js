@@ -64,7 +64,7 @@ if (Meteor.isClient) {
       const communityId = Session.get('activeCommunityId');
       const bills = Bills.find({ communityId, outstanding: { $gte: 0 } }).fetch();
       const options = bills.map(function option(bill) {
-        return { label: `${bill.serialId()} ${bill.partner} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
+        return { label: `${bill.serialId()} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
       });
       return options;
     },
@@ -75,7 +75,7 @@ if (Meteor.isClient) {
       const communityId = Session.get('activeCommunityId');
       const payments = Payments.find({ communityId, reconciledId: { $exists: false } }).fetch();
       const options = payments.map(function option(payment) {
-        return { label: `${payment.partner} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note}`, value: payment._id };
+        return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
       });
       return options;
     },

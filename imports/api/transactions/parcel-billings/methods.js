@@ -70,15 +70,15 @@ export const apply = new ValidatedMethod({
         }
         debugAssert(line.uom && _.isDefined(line.quantity), 'Billing needs consumption or projection.');
         if (line.quantity === 0) return; // Should not create bill for zero amount
-
+        line.amount = line.quantity * line.unitPrice;
         line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
         line.localizer = Localizer.parcelRef2code(parcel.ref);
         
         bills[parcel._id] = bills[parcel._id] || {
           communityId: parcelBilling.communityId,
-          category: 'parcel',
+          relation: 'parcel',
 //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
-          partner: parcel.payer()._id,
+          partnerId: parcel.payer()._id,
           valueDate,
           issueDate: moment().toDate(),
           dueDate: moment().add(BILLING_DUE_DAYS, 'days').toDate(),
@@ -86,6 +86,7 @@ export const apply = new ValidatedMethod({
         };
         bills[parcel._id].lines.push(line);
 
+        Parcels.update(parcel._id, { $inc: { outstanding: line.amount } });
         if (activeMeter) {
           Meters.methods.registerBilling._execute({ userId: this.userId }, {
             _id: activeMeter._id,

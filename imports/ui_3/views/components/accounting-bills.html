@@ -15,15 +15,15 @@
     {{#if userHasPermission 'bills.inCommunity' communityId }}
         <div>
             {{#if userHasPermission 'bills.update' communityId }}
-            <div class="btn-group pull-right {{collectionOf activeBillCategory}}">
+            <div class="btn-group pull-right {{collectionOf activePartnerRelation}}">
               {{#if userHasPermission 'bills.insert' communityId}}
-                {{#if equals activeBillCategory 'parcel'}}
+                {{#if equals activePartnerRelation 'parcel'}}
                   <button class="btn btn-primary btn-sm js-apply"><i class="fa fa-calendar-plus-o"></i><strong> {{_ 'Apply parcel billings'}}</strong></button>
                   {{#unless showParcelBillings}}
                   <button class="btn btn-white btn-sm js-edit-defs" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i><strong> {{_ 'Edit parcel billings'}}</strong></button>
                   {{/unless}}
                 {{else}}
-                  <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.category.' activeBillCategory)}}</strong></button>
+                  <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.relation.' activePartnerRelation)}}</strong></button>
                   <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
                 {{/if}}
               {{/if}}
@@ -37,9 +37,9 @@
               <div class="row">
                 <div class="col-sm-12">
                   <div class="input-group">
-                    <label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.category.label'}}</label><br>
-                    {{#each billCategory in billCategories}}
-                    <button type="button" class="js-category-filter btn btn-xs btn-outline btn-default {{activeClass billCategory}}" data-value="{{billCategory}}">{{_ (concat 'schemaBills.category.' billCategory)}}</button>
+                    <label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.relation.label'}}</label><br>
+                    {{#each partnerRelation in partnerRelations}}
+                    <button type="button" class="js-relation-filter btn btn-xs btn-outline btn-default {{activeClass partnerRelation}}" data-value="{{partnerRelation}}">{{_ (concat 'schemaBills.relation.' partnerRelation)}}</button>
                     {{/each}}
                   </div>
                 </div>
@@ -64,6 +64,7 @@
             <ul class="nav nav-tabs m-b-md">
                 <li class="active"><a data-toggle="tab" href="#tab-bill"><h3>{{_ 'bills'}}</h3></a></li>
                 <li class=""><a data-toggle="tab" href="#tab-payment"><h3>{{_ 'payments'}}</h3></a></li>
+                <li class=""><a data-toggle="tab" href="#tab-partner"><h3>{{_ 'partners'}}</h3></a></li>
             </ul>
             <div class="tab-content">
                 <div id="tab-bill" class="tab-pane bills active">
@@ -74,6 +75,11 @@
                 <div id="tab-payment" class="tab-pane payments">
                     <div class="table-responsive">
                         {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
+                    </div>
+                </div>
+                <div id="tab-partner" class="tab-pane partners">
+                    <div class="table-responsive">
+                        {{> ReactiveDatatable tableData=partnersTableDataFn options=partnersOptionsFn }}
                     </div>
                 </div>
             </div>

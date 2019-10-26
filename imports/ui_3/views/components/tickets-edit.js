@@ -29,7 +29,7 @@ export function afTicketInsertModal(type, contractId) {
     fields.push('moreDates');
   }
   if (contractId) {
-    fields = _.without(fields, 'ticket.contractId', 'ticket.partner');
+    fields = _.without(fields, 'ticket.contractId', 'ticket.partnerId');
   }
 
   Session.set('activeTicketType', type);

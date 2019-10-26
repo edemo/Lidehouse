@@ -5,7 +5,10 @@
     <div class="wrapper wrapper-content animated fadeInUp">
 
         {{#if userHasPermission 'contracts.insert' (fromSession 'activeCommunityId') }}
-            <button class="btn btn-primary btn-sm pull-right m-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
+            <button class="btn btn-primary btn-sm pull-right m-md js-new contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
+        {{/if}}
+        {{#if userHasPermission 'partners.insert' (fromSession 'activeCommunityId') }}
+            <button class="btn btn-primary btn-sm pull-right m-md js-new partners"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'partner'}}</button>
         {{/if}}
 
         {{#each contracts}}
@@ -37,7 +40,7 @@
                       <!--button class="btn btn-primary btn-xs js-add" ><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheets'}}</button-->
                       {{/if}}
                     </span>
-                    <div><span style="font-weight:600">{{_ 'schemaContracts.partner.label'}}:</span> {{this.partner}}</div>
+                    <div><span style="font-weight:600">{{_ 'schemaContracts.partnerId.label'}}:</span> {{this.partner}}</div>
                     <div><span style="font-weight:600">{{_ 'schemaContracts.text.label'}}:</span> {{this.text}}</div>
                     {{#if this.activeTime.begin}}
                     <div><span style="font-weight:600">{{_ 'Begin date'}}:</span> {{displayDate this.activeTime.begin}}</div>

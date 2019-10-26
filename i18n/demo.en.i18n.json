@@ -224,6 +224,13 @@
         "partner": "Lift fix ultra",
         "ticketTitle": "Elevator maintenance",
         "ticketText": "Monthly planned maintenance"
+      },
+      "2": {
+        "title": "building cleaning contract",
+        "text": "Buildings cleaned once a week, halls cleaned daily",
+        "partner": "Super-Clean Inc.",
+        "ticketTitle": "Scheduled cleaning",
+        "ticketText": "Monthly billing according to contract"
       }
     },
     "ticket": {

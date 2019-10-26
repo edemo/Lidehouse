@@ -13,11 +13,14 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Partners } from '/imports/api/transactions/partners/partners.js';
+import { partnersColumns } from '/imports/api/transactions/partners/tables.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { billColumns } from '/imports/api/transactions/bills/tables.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { paymentsColumns } from '/imports/api/transactions/payments/tables.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import { allPartnersActions } from '/imports/api/transactions/partners/actions.js';
 import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
 import { allPaymentsActions } from '/imports/api/transactions/payments/actions.js';
 import { allParcelBillingActions } from '/imports/api/transactions/parcel-billings/actions.js';
@@ -29,7 +32,7 @@ import '/imports/ui_3/views/modals/autoform-edit.js';
 import './accounting-bills.html';
 
 Template.Accounting_bills.viewmodel({
-  activeBillCategory: 'in',
+  activePartnerRelation: 'supplier',
   unreconciledOnly: true,
   unconteeredOnly: false,
   showParcelBillings: false,
@@ -72,23 +75,23 @@ Template.Accounting_bills.viewmodel({
   parcelBillings() {
     return ParcelBillings.find({ communityId: this.communityId() });
   },
-  billCategories() {
-    return Bills.categoryValues;
+  partnerRelations() {
+    return Partners.relationValues;
   },
-  activeClass(billCategory) {
-    return (this.activeBillCategory() === billCategory) && 'active';
+  activeClass(partnerRelation) {
+    return (this.activePartnerRelation() === partnerRelation) && 'active';
   },
-  collectionOf(activeBillCategory) {
-    switch(activeBillCategory) {
-      case 'in':
-      case 'out': return 'bills';
+  collectionOf(activePartnerRelation) {
+    switch(activePartnerRelation) {
+      case 'supplier':
+      case 'customer': return 'bills';
       case 'parcel': return 'parcelBillings';
-      default: debugAssert(false, 'No such bill category')
+      default: debugAssert(false, 'No such bill relation')
     }
   },
   billsFilterSelector() {
     const selector = { communityId: this.communityId() };
-    selector.category = this.activeBillCategory();
+    selector.relation = this.activePartnerRelation();
     if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
     if (this.unconteeredOnly()) selector.txId = { $exists: false };
     return selector;
@@ -109,7 +112,7 @@ Template.Accounting_bills.viewmodel({
   },
   paymentsFilterSelector() {
     const selector = { communityId: this.communityId() };
-    selector.category = this.activeBillCategory();
+    selector.relation = this.activePartnerRelation();
     if (this.unreconciledOnly()) selector.reconciledId = { $exists: false };
     if (this.unconteeredOnly()) selector.txId = { $exists: false };
     return selector;
@@ -128,18 +131,36 @@ Template.Accounting_bills.viewmodel({
       ...DatatablesExportButtons,
     });
   },
+  partnersFilterSelector() {
+    const selector = { communityId: this.communityId() };
+    selector.relation = this.activePartnerRelation() === 'parcel' ? undefined : this.activePartnerRelation();
+    if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
+    return selector;
+  },
+  partnersTableDataFn() {
+    const self = this;
+    return () => Partners.relCollection(this.activePartnerRelation()).find(self.partnersFilterSelector()).fetch();
+  },
+  partnersOptionsFn() {
+    return () => Object.create({
+      columns: partnersColumns(),
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+    });
+  },
 });
 
 Template.Accounting_bills.events({
   ...(actionHandlers(allBillsActions())),
   ...(actionHandlers(allPaymentsActions())),
+  ...(actionHandlers(allPartnersActions())),
   ...(actionHandlers(allParcelBillingActions())),
 });
 
 Template.Accounting_bills.events({
-  'click .js-category-filter'(event, instance) {
-    const billCategory = $(event.target).closest('[data-value]').data('value');
-    instance.viewmodel.activeBillCategory(billCategory);
+  'click .js-relation-filter'(event, instance) {
+    const partnerRelation = $(event.target).closest('[data-value]').data('value');
+    instance.viewmodel.activePartnerRelation(partnerRelation);
     instance.viewmodel.showParcelBillings(false);
   },
   'click .js-edit-defs'(event, instance) {

@@ -12,6 +12,8 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { oppositeSide } from '/imports/api/transactions/transactions.js';
+import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
+import { Partners, choosePartner } from '/imports/api/transactions/partners/partners.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -20,8 +22,6 @@ import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdown
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
 export const Bills = new Mongo.Collection('bills');
-
-Bills.categoryValues = ['in', 'out', 'parcel'];
 
 Bills.lineSchema = new SimpleSchema({
   title: { type: String },
@@ -41,7 +41,7 @@ Bills.lineSchema = new SimpleSchema({
 
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  category: { type: String, allowedValues: Bills.categoryValues, autoform: { omit: true } },
+  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
   amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   /*autoValue() {
     const lines = this.field('lines');
@@ -54,7 +54,8 @@ Bills.schema = new SimpleSchema({
   issueDate: { type: Date },
   valueDate: { type: Date },
   dueDate: { type: Date },
-  partner: { type: String },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
   note: { type: String, optional: true, autoform: { rows: 3 } },
@@ -65,14 +66,14 @@ Bills.schema = new SimpleSchema({
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
-Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partner'];
+Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partnerId'];
 
 Meteor.startup(function indexBills() {
   if (Meteor.isClient && MinimongoIndexing) {
-    Bills._collection._ensureIndex('category');
+    Bills._collection._ensureIndex('relation');
   } else if (Meteor.isServer) {
-    Bills._ensureIndex({ communityId: 1, category: 1, serial: 1 });
-    Bills._ensureIndex({ communityId: 1, category: 1, outstanding: -1 });
+    Bills._ensureIndex({ communityId: 1, relation: 1, serial: 1 });
+    Bills._ensureIndex({ communityId: 1, relation: 1, outstanding: -1 });
   }
 });
 
@@ -80,10 +81,16 @@ Bills.helpers({
   community() {
     return Communities.findOne(this.communityId);
   },
+  partner() {
+    return Partners.relCollection(this.relation).findOne(this.partnerId);
+  },
+  contract() {
+    return Contracts.findOne(this.contractId);
+  },
   matchingTxSide() {
-    if (this.category === 'in') return 'debit';
-    else if (this.category === 'out' || this.category === 'parcel') return 'credit';
-    debugAssert(false, 'unknown bill category');
+    if (this.relation === 'supplier') return 'debit';
+    else if (this.relation === 'customer' || this.relation === 'parcel') return 'credit';
+    debugAssert(false, 'unknown bill relation');
     return undefined;
   },
   otherTxSide() {
@@ -112,33 +119,27 @@ Bills.helpers({
       // def: 'bill'
       valueDate: this.valueDate,
       amount: this.amount,
-      partner: this.partner,
+      partnerId: this.partnerId,
     };
     function copyLinesInto(txSide) {
       self.lines.forEach(line => txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer }));
     }
     if (accountingMethod === 'accrual') {
-      if (this.category === 'in') {
+      if (this.relation === 'supplier') {
         tx.debit = []; copyLinesInto(tx.debit);
         tx.credit = [{ account: '46' }];
-      } else if (this.category === 'out') {
+      } else if (this.relation === 'customer') {
         tx.debit = [{ account: '31' }];
         tx.credit = []; copyLinesInto(tx.credit);
-      } else if (this.category === 'parcel') {
+      } else if (this.relation === 'parcel') {
         tx.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
         tx.credit = []; copyLinesInto(tx.credit);
-      } else debugAssert(false, 'No such bill category');
+      } else debugAssert(false, 'No such bill relation');
     } // else we have no accounting to do
     return tx;
   },
-  displayPartner() {
-    if (this.category === 'parcel') {
-      return Memberships.findOne(this.partner).display();
-    }
-    return this.partner;
-  },
   display() {
-    return `${moment(this.valueDate).format('L')} ${this.partner} ${this.amount}`;
+    return `${moment(this.valueDate).format('L')} ${this.partner()} ${this.amount}`;
   },
 });
 
@@ -171,6 +172,11 @@ if (Meteor.isServer) {
     Bills.autofillOutstanding(doc);
   });
 
+  Bills.after.insert(function (userId, doc) {
+//    const partner = Partners.relCollection(doc.relation).findOne(doc.partnerId);
+    Partners.relCollection(doc.relation).update(doc.partnerId, { $inc: { outstanding: doc.amount } });
+  });
+
   Bills.before.update(function (userId, doc, fieldNames, modifier, options) {
     const newDoc = modifier.$set;
     if (newDoc.lines) Bills.autofillLines(newDoc);
@@ -178,6 +184,11 @@ if (Meteor.isServer) {
   });
 
   Bills.after.update(function (userId, doc, fieldNames, modifier, options) {
+    const oldDoc = this.previous;
+    const newDoc = doc;
+    Partners.relCollection(oldDoc.relation).update(oldDoc.partnerId, { $inc: { outstanding: (-1) * oldDoc.amount } });
+    Partners.relCollection(newDoc.relation).update(newDoc.partnerId, { $inc: { outstanding: newDoc.amount } });
+
 //    const tdoc = this.transform();
 //--------------------
 //  Could do this with rusdiff in a before.update
@@ -196,7 +207,7 @@ if (Meteor.isServer) {
 
 Bills.attachSchema(Bills.schema);
 Bills.attachBehaviour(Timestamped);
-Bills.attachBehaviour(SerialId(Bills, ['category']));
+Bills.attachBehaviour(SerialId(Bills, ['relation']));
 
 Meteor.startup(function attach() {
   Bills.simpleSchema().i18n('schemaBills');
@@ -209,7 +220,7 @@ Factory.define('bill', Bills, {
   issueDate: Clock.currentDate(),
   valueDate: Clock.currentDate(),
   dueDate: Clock.currentDate(),
-  partner: faker.random.word(),
+  partnerId: () => Factory.get('supplier'),
 //  account: { type: String, optional: true },
 //  localizer: { type: String, optional: true },
   lines: [{

@@ -3,6 +3,8 @@ import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { moment } from 'meteor/momentjs:moment';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Partners } from '/imports/api/transactions/partners/partners.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
@@ -69,9 +71,8 @@ if (Meteor.isServer) {
         const bills = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills.length, parcels.length);
         bills.forEach(bill => {
-          const ref = bill.partner;
-          chai.assert.isDefined(ref);
-          const parcel = Parcels.findOne({ communityId, ref });
+          chai.assert.isDefined(bill.partnerId);
+          const parcel = Memberships.findOne(bill.partnerId).parcel();
 
           chai.assert.equal(bill.lines.length, 1);
           const line = bill.lines[0];
@@ -103,9 +104,8 @@ if (Meteor.isServer) {
         const bills = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills.length, parcels.length);
         bills.forEach(bill => {
-          const ref = bill.partner;
-          chai.assert.isDefined(ref);
-          const parcel = Parcels.findOne({ communityId, ref });
+          chai.assert.isDefined(bill.partnerId);
+          const parcel = Memberships.findOne(bill.partnerId).parcel();
 
           chai.assert.equal(bill.lines.length, 2);
           const line0 = bill.lines[0];
@@ -145,9 +145,8 @@ if (Meteor.isServer) {
         const bills = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills.length, parcels.length - 1);
         bills.forEach(bill => {
-          const ref = bill.partner;
-          chai.assert.isDefined(ref);
-          const parcel = Parcels.findOne({ communityId, ref });
+          chai.assert.isDefined(bill.partnerId);
+          const parcel = Memberships.findOne(bill.partnerId).parcel();
 
           chai.assert.equal(bill.lines.length, 1);
           const line = bill.lines[0];
@@ -164,7 +163,7 @@ if (Meteor.isServer) {
 
         const bills2 = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills2.length, parcels.length);
-        const bill = Bills.findOne({ partner: meteredParcel.ref });
+        const bill = Bills.findOne({ partnerId: meteredParcel.payer()._id });
         chai.assert.equal(bill.lines.length, 1);
         const line = bill.lines[0];
         chai.assert.equal(line.title, 'Test consumption');

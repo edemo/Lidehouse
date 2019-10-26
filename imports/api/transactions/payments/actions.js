@@ -19,8 +19,8 @@ export function allPaymentsActions() {
       icon: 'fa fa-plus',
       visible: () => currentUserHasPermission('payments.insert'),
       run(id, event, instance) {
-        const activeBillCategory = instance.viewmodel.activeBillCategory();
-        Session.set('activeBillCategory', activeBillCategory);
+        const activePartnerRelation = instance.viewmodel.activePartnerRelation();
+        Session.set('activePartnerRelation', activePartnerRelation);
         Modal.show('Autoform_edit', {
           id: 'af.bill.insert',
           collection: Payments,
@@ -113,7 +113,7 @@ AutoForm.addHooks('af.payment.insert', {
       doc.category = bill.category;
       doc.billId = billId;
     } else {
-      doc.category = Session.get('activeBillCategory');
+      doc.category = Session.get('activePartnerRelation');
     }
     Session.set('activeBillId', undefined);
     return doc;

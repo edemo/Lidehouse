@@ -277,7 +277,7 @@
       "label": "Decription",
       "placeholder": "(eg. 2012 CXXL. regulation makes it mandatory)"
     },
-    "partner": {
+    "partnerId": {
       "label": "Servicing partner"
     },
     "topicIds": {
@@ -415,7 +415,7 @@
       "localizer": {
         "label": "Location"
       },
-      "partner": {
+      "partnerId": {
         "label": "Servicing partner"
       },
       "chargeType": {
@@ -632,12 +632,24 @@
       "placeholder": ""
     }
   },
+  "schemaPartners": {
+    "relation": {
+      "label": "Partner relation",
+      "supplier": "Supplier",
+      "customer": "Customer",
+      "parcel": "Parcel owner"      
+    },
+    "name": {
+      "label": "Partner name",
+      "placeholder": "(eg. Super-Clean Inc.)"
+    }
+  },
   "schemaBills": {
-    "category": {
-      "label": "Category",
-      "in": "Invoice",
-      "out": "Outbound bill",
-      "parcel": "Parcel bill"      
+    "relation": {
+      "label": "Relation",
+      "Supplier": "Bill",
+      "customer": "Invoice",
+      "parcel": "Contribution"      
     },
     "serial": {
       "label": "Serial"
@@ -679,7 +691,7 @@
       "label": "Outstanding",
       "placeholder": "(eg. 14560)"
     },
-    "partner": {
+    "partnerId": {
       "label": "Partner",
       "placeholder": "(eg. Super Clean Inc)"
     },

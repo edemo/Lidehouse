@@ -65,7 +65,7 @@ export const reconcile = new ValidatedMethod({
         paymentId = Payments.methods.insert._execute({ userId: this.userId }, {
           communityId: entry.communityId,
           valueDate: entry.valueDate, amount: entry.amount, account: entry.account,
-          billId, category: bill.category, partner: bill.partner,
+          billId, relation: bill.relation, partnerId: bill.partnerId,
         });
         Payments.methods.conteer._execute({ userId: this.userId }, { _id: paymentId });
       }

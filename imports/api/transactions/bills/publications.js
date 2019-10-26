@@ -37,19 +37,19 @@ Meteor.publishComposite('bills.byId', function billsById(params) {
 Meteor.publishComposite('bills.filtered', function billsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
-    partner: { type: String, optional: true },
+    partnerId: { type: String, optional: true },
     account: { type: String, optional: true },
     localizer: { type: String, optional: true },
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },
   }).validate(params);
-  const { communityId, partner, account, localizer, begin, end } = params;
+  const { communityId, partnerId, account, localizer, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('bills.inCommunity', communityId)) {
     return this.ready();
   }
-//  const selector = { communityId, partner, account, localizer };
+//  const selector = { communityId, partnerId, account, localizer };
 //  if (begin || end) selector.valueDate = { $gte: begin, $lt: end };
 
   return findBillsWithTheirPayments({ communityId });

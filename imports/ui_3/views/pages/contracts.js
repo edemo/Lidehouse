@@ -5,6 +5,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { $ } from 'meteor/jquery';
 
+import { Partners } from '/imports/api/transactions/partners/partners.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
@@ -18,6 +19,7 @@ Template.Contracts.onCreated(function onCreated() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('contracts.inCommunity', { communityId });
+    this.subscribe('partners.inCommunity', { communityId });
   });
 });
 
@@ -35,7 +37,15 @@ Template.Contracts.helpers({
 });
 
 Template.Contracts.events({
-  'click .js-new'(event) {
+  'click .js-new.partners'(event) {
+    Modal.show('Autoform_edit', {
+      id: 'af.partner.insert',
+      collection: Partners,
+      type: 'method',
+      meteormethod: 'partners.insert',
+    });
+  },
+  'click .js-new.contracts'(event) {
     Modal.show('Autoform_edit', {
       id: 'af.contract.insert',
       collection: Contracts,
@@ -74,6 +84,15 @@ Template.Contracts.events({
 AutoForm.addModalHooks('af.contract.insert');
 AutoForm.addModalHooks('af.contract.update');
 AutoForm.addHooks('af.contract.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('activeCommunityId');
+    return doc;
+  },
+});
+
+AutoForm.addModalHooks('af.partner.insert');
+AutoForm.addModalHooks('af.partner.update');
+AutoForm.addHooks('af.partner.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;

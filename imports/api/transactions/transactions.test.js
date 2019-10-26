@@ -4,6 +4,7 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { moment } from 'meteor/momentjs:moment';
 import { freshFixture, newFixture, logDB } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
+import { Partners } from '/imports/api/transactions/partners/partners.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import '/imports/api/transactions/bills/methods.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
@@ -39,7 +40,7 @@ if (Meteor.isServer) {
       let bill;
       before(function () {
         billId = FixtureA.builder.create('bill', {
-          category: 'in',
+          relation: 'supplier',
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -67,7 +68,7 @@ if (Meteor.isServer) {
 
       it('Can not registerPayment without accounts', function () {
         chai.assert.throws(() => {
-          FixtureA.builder.create('payment', { category: 'in', billId, amount: 300, valueDate: Clock.currentTime() });
+          FixtureA.builder.create('payment', { relation: 'supplier', billId, amount: 300, valueDate: Clock.currentTime() });
         }, 'Bill has to be conteered first');
       });
 
@@ -87,7 +88,7 @@ if (Meteor.isServer) {
       it('Can register Payments', function () {
         const bankAccount = '31';
         const paymentId1 = FixtureA.builder.create('payment',
-          { category: 'in', billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
+          { relation: 'supplier', billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
         );
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.amount, 300);
@@ -95,7 +96,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.outstanding, 200);
 
         const paymentId2 = FixtureA.builder.create('payment',
-          { category: 'in', billId, amount: 200, valueDate: Clock.currentTime(), account: bankAccount },
+          { relation: 'supplier', billId, amount: 200, valueDate: Clock.currentTime(), account: bankAccount },
         );
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.amount, 300);
@@ -133,7 +134,7 @@ if (Meteor.isServer) {
 
       beforeEach(function () {
         billId = FixtureA.builder.create('bill', {
-          category: 'in',
+          relation: 'supplier',
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -178,7 +179,7 @@ if (Meteor.isServer) {
 
       it('Can pay bill manually', function () {
         FixtureA.builder.create('payment',
-          { category: 'in', billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
+          { relation: 'supplier', billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
         );
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.amount, 300);
@@ -216,7 +217,7 @@ if (Meteor.isServer) {
       });
 
       it('Reconcile and Conteer in one step', function () {
-        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
+        const billId = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
         const txId = Fixture.builder.create('tx', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
 
@@ -230,7 +231,7 @@ if (Meteor.isServer) {
       });
 
       it('Conteer first, Reconcile later', function () {
-        const billId = Fixture.builder.create('bill', { category: 'in', amount: 650 });
+        const billId = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
         const txId = Fixture.builder.create('tx', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
 
         Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '38', localizer: '@' } } });
@@ -246,7 +247,7 @@ if (Meteor.isServer) {
       });
 
       it('Reconcile one Bill - multi Payment', function () {
-        const bill1Id = Fixture.builder.create('bill', { category: 'in', amount: 650 });
+        const bill1Id = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
         const tx1Id = Fixture.builder.create('tx', { amount: 100 });
         const tx2Id = Fixture.builder.create('tx', { amount: 200 });
         const tx3Id = Fixture.builder.create('tx', { amount: 350 });
@@ -271,8 +272,8 @@ if (Meteor.isServer) {
       });
 
       it('Reconcile multi Bill - one Payment', function () {
-        const bill1Id = Fixture.builder.create('bill', { category: 'in', amount: 650 });
-        const bill2Id = Fixture.builder.create('bill', { category: 'in', amount: 350 });
+        const bill1Id = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
+        const bill2Id = Fixture.builder.create('bill', { relation: 'supplier', amount: 350 });
         const tx1Id = Fixture.builder.create('tx', { amount: 1000 });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill1Id, txId: tx1Id });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill2Id, txId: tx1Id });
@@ -287,8 +288,8 @@ if (Meteor.isServer) {
       });
 
       it('Reconcile multi Bill - multi Payment ', function () {
-        const bill1Id = Fixture.builder.create('bill', { category: 'out', amount: 650 });
-        const bill2Id = Fixture.builder.create('bill', { category: 'out', amount: 350 });
+        const bill1Id = Fixture.builder.create('bill', { relation: 'customer', amount: 650 });
+        const bill2Id = Fixture.builder.create('bill', { relation: 'customer', amount: 350 });
         const tx1Id = Fixture.builder.create('tx', { amount: 200 });
         const tx2Id = Fixture.builder.create('tx', { amount: 800 });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill1Id, txId: tx1Id, amount: 100 });

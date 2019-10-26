@@ -8,7 +8,7 @@ import { getStatementEntriesActionsSmall } from './actions.js';
 export function statementEntriesColumns() {
   const columns = [
     { data: 'valueDate', title: __('schemaBills.valueDate.label'), render: Render.formatDate },
-    { data: 'partner', title: __('schemaBills.partner.label') },
+    { data: 'partner', title: __('schemaBills.partnerId.label') },
     { data: 'amount', title: __('schemaBills.amount.label'), render: Render.formatNumber },
     { data: 'note', title: __('schemaBills.note.label') },
     { data: 'reconciledId', title: __('schemaBills.reconciled.label'), render: Render.checkmarkBoolean },

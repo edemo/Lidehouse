@@ -225,6 +225,13 @@
         "partner": "Lift fix ultra",
         "ticketTitle": "Lift karbantartás",
         "ticketText": "Havi időszerű karbantartás"
+      },
+      "2": {
+        "title": "Takarítási szerződés",
+        "text": "Épületek heti egyszeri, aula napi takarítása",
+        "partner": "Super-Clean Kft",
+        "ticketTitle": "Épület takarítás",
+        "ticketText": "Havi számlázás szerződés szerint"
       }
     },
     "ticket": {

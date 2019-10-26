@@ -21,7 +21,7 @@ Template.Parcel_history.viewmodel({
 //      console.log('subscribing:', communityId, this.accountSelected(), this.localizerSelected());
       instance.subscribe('transactions.byPartner', {
         communityId,
-        partner: self.parcelSelected(),
+        partnerId: self.parcelSelected(),
         begin: moment(self.beginDate()).toDate(),
         end: moment(self.endDate()).add(1, 'day').toDate(),
       });
@@ -41,7 +41,7 @@ Template.Parcel_history.viewmodel({
   ],
   transactions() {
     const selector = { valueDate: { $gte: moment(this.beginDate()).toDate(), $lt: moment(this.endDate()).add(1, 'day').toDate() } };
-    if (this.parcelSelected()) selector.partner = this.parcelSelected();
+    if (this.parcelSelected()) selector.partnerId = this.parcelSelected();
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
     let total = 0;
     const txsWithRunningTotal = txs.map(tx => {

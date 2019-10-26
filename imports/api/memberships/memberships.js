@@ -57,9 +57,12 @@ Memberships.schema = new SimpleSchema({
     },
   },
   // TODO should be conditional on role === 'owner'
+  // https://stackoverflow.com/questions/28993302/autoform-how-to-dynamically-show-and-add-fields-of-a-sub-schema-depending-on-an
   ownership: { type: OwnershipSchema, optional: true },
   // TODO should be conditional on role === 'benefactor'
   benefactorship: { type: BenefactorshipSchema, optional: true },
+  // redundant fields:
+  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
 });
 
 Memberships.idSet = ['communityId', 'role', 'parcelId', 'person.idCard.name', 'person.contact.email'];

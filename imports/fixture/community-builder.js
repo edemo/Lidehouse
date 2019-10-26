@@ -92,6 +92,7 @@ export class CommunityBuilder {
         case 'agendas':
         case 'contracts':
         case 'parcels':
+        case 'partners':
         case 'meters': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');
         case 'bills':
@@ -232,7 +233,7 @@ export class CommunityBuilder {
     const parcel = Parcels.findOne({ communityId: this.communityId, serial });
     return Localizer.parcelRef2code(parcel.ref);
   }
-  generateDemoPayments(parcel) {
+  generateDemoPayments(parcel, membership) {
     for (let mm = 1; mm < 13; mm++) {
       const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
       this.execute(ParcelBillings.methods.apply, {
@@ -240,7 +241,7 @@ export class CommunityBuilder {
         valueDate,
         localizer: Localizer.parcelRef2code(parcel.ref),
       });
-      this.payBillsOf(parcel);
+      this.payBillsOf(membership);
     }
   }
   payBill(bill) {
@@ -256,18 +257,18 @@ export class CommunityBuilder {
     const entryId = this.create('statementEntry', {
       account: '381',
       valueDate: Clock.currentDate(),
-      partner: bill.partner,
+      partner: bill.partner().toString(),
       note: bill.serialId() + ' payment',
       amount: bill.outstanding,
     });
     this.execute(StatementEntries.methods.reconcile, { _id: entryId, billId: bill._id }, this.getUserWithRole('accountant'));
   }
-  payBillsOf(parcel) {
-    const unpaidBills = Bills.find({ communityId: this.communityId, category: 'parcel', outstanding: { $gt: 0 }, partner: parcel.ref });
+  payBillsOf(membership) {
+    const unpaidBills = Bills.find({ communityId: this.communityId, relation: 'parcel', partnerId: membership._id, outstanding: { $gt: 0 } });
     unpaidBills.forEach(bill => this.payBill(bill));
   }
   everybodyPaysTheirBills() {
-    const unpaidBills = Bills.find({ communityId: this.communityId, category: 'parcel', outstanding: { $gt: 0 } });
+    const unpaidBills = Bills.find({ communityId: this.communityId, relation: 'parcel', outstanding: { $gt: 0 } });
     unpaidBills.forEach(bill => this.payBill(bill));
   }
   insertLoadsOfFakeMembers(parcelCount) {
@@ -287,16 +288,17 @@ export class CommunityBuilder {
         ++serial;
         const parcelId = this.createParcel({ floor: j.toString(), door: k.toString(), area: randomNumber(40, 120) });
         const parcel = Parcels.findOne(parcelId);
-        this.createMembership(this.createFakePerson(serial), 'owner', {
+        const membershipId = this.createMembership(this.createFakePerson(serial), 'owner', {
           parcelId,
           approved: !!(serial % 2),
           accepted: !!(serial + 1),
           ownership: { share: new Fraction(1, 1) },
         });
+        const membership = Memberships.findOne(membershipId);
 
         Localizer.addParcel(this.communityId, parcel, this.lang);
 
-        this.generateDemoPayments(parcel);
+        this.generateDemoPayments(parcel, membership);
       }
     }
   }

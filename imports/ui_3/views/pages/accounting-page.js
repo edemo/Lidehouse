@@ -15,6 +15,8 @@ Template.Accounting_page.viewmodel({
   onCreated(instance) {
     instance.autorun(() => {
       const communityId = this.communityId();
+      instance.subscribe('partners.inCommunity', { communityId });
+      instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('bills.outstanding', { communityId });
       instance.subscribe('payments.unreconciled', { communityId });
       instance.subscribe('statementEntries.unreconciled', { communityId });

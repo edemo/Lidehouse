@@ -25,22 +25,22 @@ Meteor.publish('transactions.byId', function transactionsInCommunity(params) {
 Meteor.publish('transactions.byPartner', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
-    partner: { type: String },
+    partnerId: { type: String },
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },
   }).validate(params);
-  const { communityId, partner, begin, end } = params;
+  const { communityId, partnerId, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', communityId)) {
     // then he can only see his own parcels' transactions
     const ownershipIds = user.ownerships(communityId).map(membership => membership._id);
-    if (!partner || !_.contains(ownershipIds, partner)) {
+    if (!partnerId || !_.contains(ownershipIds, partnerId)) {
       return this.ready();
     }
   }
 
-  const selector = { communityId, partner, valueDate: { $gte: begin, $lt: end } };
+  const selector = { communityId, partnerId, valueDate: { $gte: begin, $lt: end } };
   return Transactions.find(selector);
 });
 

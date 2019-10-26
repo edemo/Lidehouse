@@ -16,6 +16,7 @@ import { JournalEntries } from '/imports/api/transactions/entries.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { PeriodBreakdown } from './breakdowns/breakdowns-utils.js';
+import { Partners, choosePartner } from '/imports/api/transactions/partners/partners.js';
 
 export const Transactions = new Mongo.Collection('transactions');
 
@@ -35,7 +36,7 @@ Transactions.baseSchema = {
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   valueDate: { type: Date },
   amount: { type: Number },
-  partner: { type: String, optional: true },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 //  year: { type: Number, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getFullYear(); },
 //  },
@@ -45,7 +46,6 @@ Transactions.baseSchema = {
 };
 
 Transactions.noteSchema = {
-  partner: { type: String, optional: true },
   ref: { type: String, optional: true },
   note: { type: String, optional: true },
 };

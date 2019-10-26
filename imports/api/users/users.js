@@ -33,6 +33,9 @@ export const nullUser = {
     if (!permission) return false;
     return _.contains(permission.roles, 'null');
   },
+  ownerships(communityId) {
+    return [];
+  },
   ownedParcels(communityId) {
     return [];
   },

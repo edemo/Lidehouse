@@ -5,10 +5,13 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { __ } from '/imports/localization/i18n.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { choosePartner } from '/imports/api/transactions/partners/partners.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Partners } from '../transactions/partners/partners';
 
 export const Contracts = new Mongo.Collection('contracts');
 
@@ -16,10 +19,13 @@ Contracts.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   title: { type: String, max: 100, optional: true },
   text: { type: String, max: 5000, autoform: { rows: 8 } },
-  partner: { type: String, max: 50, optional: true },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
 });
 
 Contracts.helpers({
+  partner() {
+    return Partners.findOne(this.partnerId);
+  },
   worksheets() {
     return Topics.find({ communityId: this.communityId, 'ticket.contractId': this._id }).fetch();
   },
@@ -32,6 +38,23 @@ Contracts.attachBehaviour(ActivePeriod);
 Meteor.startup(function attach() {
   Contracts.simpleSchema().i18n('schemaContracts');
 });
+
+export let chooseContract = {};
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+
+  chooseContract = {
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const contracts = Contracts.find({ communityId });
+      const options = contracts.map(function option(c) {
+        return { label: c.title, value: c._id };
+      });
+      return options;
+    },
+    firstOption: () => __('(Select one)'),
+  };
+}
 
 Factory.define('contract', Contracts, {
   title: () => `Contract with ${faker.random.word()}`,

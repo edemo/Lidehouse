@@ -10,7 +10,7 @@ export function paymentsColumns() {
   const columns = [
     { data: 'serial', title: __('schemaBills.serial.label') },
     { data: 'serialId()', title: __('schemaGeneral.serialId.label') },
-    { data: 'partner', title: 'Partner' },
+    { data: 'partner()', title: 'Partner' },
     { data: 'createdAt', title: __('schemaBills.createdAt.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaBills.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaBills.amount.label'), render: Render.formatNumber },

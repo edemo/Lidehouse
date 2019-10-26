@@ -114,7 +114,6 @@ Meteor.startup(function attach() {
 Factory.define('parcelBilling', ParcelBillings, {
   title: faker.random.word(),
   projection: 'absolute',
-  partner: faker.random.word(),
   amount: faker.random.number(),
   payinType: '1',
   localizer: '@',

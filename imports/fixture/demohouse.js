@@ -613,15 +613,29 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Tickets =====
 
   Clock.starts(3, 'month', 'ago');
+  const partner0 = demoBuilder.create('supplier', {
+    name: __('demo.contract.0.partner'),
+  });
+  const partner1 = demoBuilder.create('supplier', {
+    name: __('demo.contract.1.partner'),
+  });
+  const partner2 = demoBuilder.create('supplier', {
+    name: __('demo.contract.2.partner'),
+  });
   const contract0 = demoBuilder.create('contract', {
     title: __('demo.contract.0.title'),
     text: __('demo.contract.0.text'),
-    partner: __('demo.contract.0.partner'),
+    partnerId: partner0,
   });
   const contract1 = demoBuilder.create('contract', {
     title: __('demo.contract.1.title'),
     text: __('demo.contract.1.text'),
-    partner: __('demo.contract.1.partner'),
+    partnerId: partner1,
+  });
+  const contract2 = demoBuilder.create('contract', {
+    title: __('demo.contract.2.title'),
+    text: __('demo.contract.2.text'),
+    partnerId: partner2,
   });
 
   [1, 2, 3, 4].forEach(m => {
@@ -897,10 +911,11 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['03', '06', '09', '12'].forEach(mm => {
     const billId = demoBuilder.create('bill', {
-      category: 'in',
+      relation: 'supplier',
       valueDate: new Date(`${lastYear}-${mm}-20`),
       // amount: 282600,
-      partner: 'Super-Clean Kft',
+      partnerId: partner2,
+      contractId: contract2,
       lines: [{
         title: 'Épület takarítás',
         uom: 'hónap',
@@ -914,11 +929,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     if (mm !== '12') {  // Last bill is not yet paid, and not yet sent to accounting
       demoBuilder.execute(Bills.methods.conteer, { _id: billId });
       demoBuilder.create('payment', {
-        category: 'in',
+        relation: 'supplier',
         billId,
         valueDate: new Date(`${lastYear}-${mm}-25`),
         amount: 282600,
-        partner: 'Super-Clean Kft',
+        partnerId: partner2,
         ref: `SC/${lastYear}/${mm}`,
         account: demoBuilder.name2code('Assets', 'Folyószámla'),
       });
@@ -1108,10 +1123,11 @@ Meteor.methods({
     });
     const demoUserId = demoBuilder.createDemoUser(demoParcelId);
     const demoParcel = Parcels.findOne(demoParcelId);
-    demoBuilder.createMembership(demoUserId, 'owner', {
+    const demoMembershipId = demoBuilder.createMembership(demoUserId, 'owner', {
       parcelId: demoParcelId,
       ownership: { share: new Fraction(1, 1) },
     });
+    const demoMembership = Memberships.findOne(demoMembershipId);
 
     Localizer.addParcel(demoCommunityId, demoParcel, lang);
 
@@ -1146,7 +1162,7 @@ Meteor.methods({
     Clock.clear();
     // lastSeens were updated in the comments.insert method,
 
-    demoBuilder.generateDemoPayments(demoParcel);
+    demoBuilder.generateDemoPayments(demoParcel, demoMembership);
 
     Meteor.setTimeout(function () {
       purgeDemoUserWithParcel(demoUserId, demoParcelId, demoCommunityId);

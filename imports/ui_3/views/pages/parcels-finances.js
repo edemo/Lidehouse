@@ -98,7 +98,11 @@ Template.Parcels_finances.viewmodel({
   },
   parcelChoices() {
     return Parcels.find().map((parcel) => {
-      return { label: parcel.display(), value: Localizer.parcelRef2code(parcel.ref) };
+      return {
+        label: parcel.display(),
+        value: parcel.payer()._id,
+//        value: Localizer.parcelRef2code(parcel.ref),
+      };
     });
   },
   parcelFinancesTableDataFn() {
@@ -109,7 +113,8 @@ Template.Parcels_finances.viewmodel({
       parcels.forEach(parcel => {
         const parcelRef = parcel.ref;
         const owners = parcel.owners().fetch();
-        const balance = (-1) * Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcelRef), tag: 'T' });
+//        const balance = (-1) * Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcelRef), tag: 'T' });
+        const balance = (-1) * parcel.outstanding;
         dataset.push({ parcelRef, owners, balance });
       });
       return dataset;

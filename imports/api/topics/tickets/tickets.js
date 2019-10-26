@@ -5,12 +5,12 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
 import { Clock } from '/imports/utils/clock.js';
-import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { Contracts } from '/imports/api/contracts/contracts.js';
+import { choosePartner } from '/imports/api/transactions/partners/partners.js';
+import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 // import { readableId } from '/imports/api/readable-id.js';
 
 export const Tickets = {};
@@ -24,28 +24,11 @@ Tickets.urgencyColors = {
 };
 Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 
-let chooseContract = {};
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  chooseContract = {
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const contracts = Contracts.find({ communityId });
-      const options = contracts.map(function option(c) {
-        return { label: c.title, value: c._id };
-      });
-      return options;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-}
-
 Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
-  partner: { type: String, optional: true },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
   chargeType: { type: String, allowedValues: Tickets.chargeTypeValues, autoform: autoformOptions(Tickets.chargeTypeValues, 'schemaTickets.ticket.chargeType.'), optional: true },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract, optional: true },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },
@@ -97,7 +80,7 @@ const confirmed = {
   color: 'info',
   data: [
     'localizer',
-    'partner',
+    'partnerId',
     'chargeType',
     'contractId',
     'expectedCost',
@@ -111,7 +94,7 @@ const scheduled = {
   color: 'info',
   colorCode: '#1FAEB0',
   data: [
-    'partner',
+    'partnerId',
     'chargeType',
     'contractId',
     'expectedStart',

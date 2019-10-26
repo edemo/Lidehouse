@@ -19,8 +19,8 @@ export function allBillsActions() {
       icon: 'fa fa-plus',
       visible: () => currentUserHasPermission('bills.insert'),
       run(id, event, instance) {
-        const activeBillCategory = instance.viewmodel.activeBillCategory();
-        Session.set('activeBillCategory', activeBillCategory);
+        const activePartnerRelation = instance.viewmodel.activePartnerRelation();
+        Session.set('activePartnerRelation', activePartnerRelation);
         Modal.show('Autoform_edit', {
           id: 'af.bill.insert',
           collection: Bills,
@@ -84,7 +84,7 @@ export function allBillsActions() {
 /*        Modal.show('Autoform_edit', {
           id: 'af.bill.conteer',
           collection: Bills,
-          fields: ['partner', 'account', 'localizer'],
+          fields: ['partnerId', 'account', 'localizer'],
           doc: Bills.findOne(id),
           type: 'method-update',
           meteormethod: 'bills.conteer',
@@ -147,7 +147,7 @@ AutoForm.addModalHooks('af.bill.conteer');
 AutoForm.addHooks('af.bill.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
-    doc.category = Session.get('activeBillCategory');
+    doc.relation = Session.get('activePartnerRelation');
     return doc;
   },
 });
