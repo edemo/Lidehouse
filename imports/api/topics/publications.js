@@ -27,7 +27,7 @@ Meteor.publishComposite('topics.inCommunity', function topicsInCommunity(params)
     ],
   };
 
-  const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
+  const publicFields = Votings.extendPublicFieldsForUser(this.userId, communityId);
   if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
 
   return {
@@ -54,7 +54,7 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
 
   if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
 
-  const publicFields = Topics.publicFields.extendForUser(user._id, communityId);
+  const publicFields = Votings.extendPublicFieldsForUser(user._id, communityId);
   const selector = {
     _id,
     // Filter for 'No participantIds (meaning everyone), or contains userId'
@@ -111,7 +111,7 @@ Meteor.publishComposite('topics.board', function topicsBoard(params) {
     ],
   };
 
-  const publicFields = Topics.publicFields.extendForUser(this.userId, communityId);
+  const publicFields = Votings.extendPublicFieldsForUser(this.userId, communityId);
 
   return {
     find() {
