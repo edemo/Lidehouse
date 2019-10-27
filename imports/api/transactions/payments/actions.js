@@ -24,7 +24,6 @@ export function allPaymentsActions() {
         Modal.show('Autoform_edit', {
           id: 'af.bill.insert',
           collection: Payments,
-          omitFields: ['category'],
           type: 'method',
           meteormethod: 'payments.insert',
         });
@@ -110,10 +109,11 @@ AutoForm.addHooks('af.payment.insert', {
     const billId = Session.get('activeBillId');
     if (billId) {
       const bill = Bills.findOne(billId);
-      doc.category = bill.category;
+      doc.relation = bill.relation;
+      doc.partnerId = bill.partnerId;
       doc.billId = billId;
     } else {
-      doc.category = Session.get('activePartnerRelation');
+      doc.relation = Session.get('activePartnerRelation');
     }
     Session.set('activeBillId', undefined);
     return doc;

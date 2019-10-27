@@ -108,6 +108,7 @@ export function allBillsActions() {
         Modal.show('Autoform_edit', {
           id: 'af.payment.insert',
           collection: Payments,
+          omitFields: ['partnerId'],
           type: 'method',
           meteormethod: 'payments.insert',
         });
