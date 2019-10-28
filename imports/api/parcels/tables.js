@@ -46,6 +46,16 @@ Render.buttonMeters = function buttonAssignMeters(cellData, renderType, currentR
   return html;
 };
 
+Render.buttonLeaderships = function buttonAssignLeaderships(cellData, renderType, currentRow) {
+  let html = '';
+  html += `<a href="#leaderships">`;
+  html += `<button data-id=${cellData} title=${__('leaderships')} class="btn btn-white btn-xs js-leaderships">`;
+  html += `<i class="fa fa-history"></i>`;
+  html += `</button>`;
+  html += `</a>`;
+  return html;
+};
+
 Render.joinOccupants = function joinOccupants(occupants) {
   let result = '';
   occupants.forEach((m) => {
@@ -56,26 +66,18 @@ Render.joinOccupants = function joinOccupants(occupants) {
   return result;
 };
 
-function renderLeadRef(cellData, renderType, currentRow) {
-  const leadRef = cellData;
-  const parcel = Parcels.findOne(currentRow._id);
-  const leadParcel = parcel.leadParcel();
-  const mark = !leadParcel ? ' class="bg-danger p-xs"' : '';
-  const html = leadRef ? `<div${mark}>${leadRef}</div>` : '';
-  return html;
-}
-
 export function parcelColumns(permissions) {
   const buttonRenderers = [];
   if (permissions.view) buttonRenderers.push(Render.buttonView);
   if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
   if (permissions.assign) buttonRenderers.push(Render.buttonAssignOccupants);
   if (permissions.assign) buttonRenderers.push(Render.buttonMeters);
+  if (permissions.assign) buttonRenderers.push(Render.buttonLeaderships);
   if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
 
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'leadRef', title: __('schemaParcels.leadRef.label'), render: renderLeadRef },
+    { data: 'leadRef()', title: __('schemaParcels.leadRef.label') },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'lot', title: __('schemaParcels.lot.label') },

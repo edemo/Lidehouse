@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
@@ -48,6 +49,14 @@ const helpers = {
     return (!this.activeTime.begin || this.activeTime.begin <= time)
       && (!this.activeTime.end || this.activeTime.end >= time);
   },
+  getActiveTime() {
+    const result = _.extend({}, this.activeTime);
+    const now = new Date();
+    const epoch = new Date(0);
+    result.begin = result.begin || epoch;
+    result.end = result.end || now;
+    return result;
+  },
 };
 
 const methods = {};
@@ -78,6 +87,16 @@ ActivePeriod.fields = [
   'activeTime.end',
   'active',
 ];
+
+export function sanityCheckOnlyOneActiveAtAllTimes(collection, selector) {
+  const docs = collection.find(selector, { sort: { 'activeTime.begin': 1 } }).fetch();
+  docs.forEach((d, i) => {
+    if (!docs[i + 1]) return;
+    if (d.getActiveTime().end > docs[i + 1].getActiveTime().begin) {
+      throw new Meteor.Error('err_sanityCheckFailed', `Cannot have two documents active at the same time (${d.getActiveTime().end})`);
+    }
+  });
+}
 
 const updateActivePeriod = new ValidatedMethod({
   name: 'updateActivePeriod',

@@ -16,6 +16,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Leaderships } from '../leaderships/leaderships';
 
 export const Parcels = new Mongo.Collection('parcels');
 
@@ -36,7 +37,7 @@ Parcels.schema = new SimpleSchema({
         return undefined; // means leave whats there alone for Updates, Upserts
       },
   */
-  leadRef: { type: String, optional: true },
+  // leadRef: { type: String, optional: true },
   units: { type: Number, optional: true },
   // TODO: move these into the House package
   type: { type: String, optional: true, allowedValues: Parcels.typeValues, autoform: autoformOptions(Parcels.typeValues) },
@@ -71,15 +72,22 @@ Meteor.startup(function indexParcels() {
 
 Parcels.helpers({
   isLed() {
-    return this.leadRef && (this.leadRef !== this.ref);
-  },
-  leadParcel() {
-    if (!this.leadRef || this.leadRef === this.ref) return this;
-    return Tracker.nonreactive(() => Parcels.findOne({ communityId: this.communityId, ref: this.leadRef }));
+    const leadership = Leaderships.findOne({ parcelId: this._id, active: true });
+    if (leadership) return true;
+    return false;
   },
   leadParcelId() {
+    const leadership = Leaderships.findOne({ parcelId: this._id, active: true });
+    const leadParcelId = leadership ? leadership.leadParcelId : this._id;
+    return leadParcelId; // if can't find your lead parcel, lead yourself
+  },
+  leadParcel() {
+    return Parcels.findOne(this.leadParcelId());
+  },
+  leadRef() {
     const leadParcel = this.leadParcel();
-    return leadParcel ? leadParcel._id : this._id; // if can't find your lead parcel, lead yourself
+    if (leadParcel && leadParcel.ref !== this.ref) return leadParcel.ref;
+    return '';
   },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
@@ -119,10 +127,8 @@ Parcels.helpers({
   },
   forEachLed(callback) {
     if (this.isLed()) return;
-    const ledParcels = Parcels.find({
-      communityId: this.communityId,
-      $or: [{ ref: this.ref }, { leadRef: this.ref }],
-    });
+    const ledParcels = Leaderships.find({ communityId: this.communityId, leadParcelId: this._id, active: true }).map(l => l.ledParcel());
+    ledParcels.push(this);
     ledParcels.forEach(parcel => callback(parcel));
   },
   // Voting

@@ -158,6 +158,22 @@
       }
     }
   },
+  "schemaLeaderships" : {
+    "leadRef": {
+      "label": "Lead parcel"
+    },
+    "activeTime": {
+      "label": "Active time",
+      "begin": {
+        "label": "From",
+        "placeholder": "yyyy-mm-dd"
+      },
+      "end": {
+        "label": "Until",
+        "placeholder": "yyyy-mm-dd"
+      }
+    }
+  },
   "schemaMemberships" : {
     "role": {
       "label": "Role"
