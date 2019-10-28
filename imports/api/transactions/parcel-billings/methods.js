@@ -74,6 +74,7 @@ export const apply = new ValidatedMethod({
         line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
         line.localizer = Localizer.parcelRef2code(parcel.ref);
         
+        // Creating the bill - adding entry to the bill
         bills[parcel._id] = bills[parcel._id] || {
           communityId: parcelBilling.communityId,
           relation: 'parcel',
@@ -86,7 +87,10 @@ export const apply = new ValidatedMethod({
         };
         bills[parcel._id].lines.push(line);
 
+        // Updating the otstanding balance of the parcel
         Parcels.update(parcel._id, { $inc: { outstanding: line.amount } });
+
+        // Updating the meter readings
         if (activeMeter) {
           Meters.methods.registerBilling._execute({ userId: this.userId }, {
             _id: activeMeter._id,
