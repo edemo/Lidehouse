@@ -20,6 +20,8 @@ import '/imports/api/comments/methods.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import '/imports/api/transactions/breakdowns/methods.js';
+import { Partners } from '/imports/api/transactions/partners/partners.js';
+import '/imports/api/transactions/partners/methods.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import '/imports/api/transactions/bills/methods.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';

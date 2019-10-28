@@ -133,7 +133,6 @@ if (Meteor.isServer) {
           localizer: '@',
         });
         const meteredParcelId = Fixture.dummyParcels[0];
-        const meteredParcel = Parcels.findOne(meteredParcelId);
         const meterId = Fixture.builder.create('meter', {
           parcelId: meteredParcelId,
           identifier: 'CW-01010101',
@@ -154,6 +153,9 @@ if (Meteor.isServer) {
           chai.assert.equal(line.uom, 'habitant');
           chai.assert.equal(line.unitPrice, 5000);
           chai.assert.equal(line.quantity, parcel.habitants);
+
+          chai.assert.equal(parcel.payer().outstanding, line.amount);
+          chai.assert.equal(parcel.outstanding, line.amount);
         });
 
         Bills.remove({});
@@ -161,6 +163,7 @@ if (Meteor.isServer) {
         Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date(), value: 32, approved: false } });
         Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
 
+        const meteredParcel = Parcels.findOne(meteredParcelId);
         const bills2 = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills2.length, parcels.length);
         const bill = Bills.findOne({ partnerId: meteredParcel.payer()._id });
@@ -170,6 +173,9 @@ if (Meteor.isServer) {
         chai.assert.equal(line.uom, 'm3');
         chai.assert.equal(line.unitPrice, 600);
         chai.assert.equal(line.quantity, 32);
+
+        chai.assert.equal(meteredParcel.payer().outstanding, bill.amount);
+        chai.assert.equal(meteredParcel.outstanding, bill.amount);
       });
     });
 /*
