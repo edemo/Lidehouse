@@ -1,6 +1,7 @@
 /* eslint-disable prefer-arrow-callback */
 
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
@@ -8,7 +9,20 @@ import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-a
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from './transactions.js';
 
-Meteor.publish('transactions.byId', function transactionsInCommunity(params) {
+function findTransactionsWithTypeExtension(selector) {
+  return {
+    find() {
+      return Transactions.find(selector);
+    },
+    children: [{
+      find(tx) {
+        return Mongo.Collection.get(tx.dataType).find(tx._id);
+      },
+    }],
+  };
+}
+
+Meteor.publishComposite('transactions.byId', function transactionsInCommunity(params) {
   new SimpleSchema({
     _id: { type: String },
   }).validate(params);
@@ -19,10 +33,10 @@ Meteor.publish('transactions.byId', function transactionsInCommunity(params) {
   if (!user.hasPermission('transactions.inCommunity', tx.communityId)) {
     return this.ready();
   }
-  return Transactions.find({ _id });
+  return findTransactionsWithTypeExtension({ _id });
 });
 
-Meteor.publish('transactions.byPartner', function transactionsInCommunity(params) {
+Meteor.publishComposite('transactions.byPartner', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
     partnerId: { type: String },
@@ -41,7 +55,7 @@ Meteor.publish('transactions.byPartner', function transactionsInCommunity(params
   }
 
   const selector = { communityId, partnerId, valueDate: { $gte: begin, $lt: end } };
-  return Transactions.find(selector);
+  return findTransactionsWithTypeExtension(selector);
 });
 
 Meteor.publish('transactions.byAccount', function transactionsInCommunity(params) {

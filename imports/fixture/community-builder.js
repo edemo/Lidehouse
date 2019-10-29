@@ -258,7 +258,7 @@ export class CommunityBuilder {
     });*/
     const entryId = this.create('statementEntry', {
       account: '381',
-      valueDate: Clock.currentDate(),
+      valueDate: bill.dueDate,
       partner: bill.partner().toString(),
       note: bill.serialId() + ' payment',
       amount: bill.outstanding,
