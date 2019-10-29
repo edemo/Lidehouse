@@ -30,6 +30,7 @@ import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/components/active-archive-tabs.js';
 import { afCommunityUpdateModal } from '/imports/ui_3/views/components/communities-edit.js';
 import '../common/page-heading.js';
 import '../components/action-buttons.html';
@@ -68,6 +69,16 @@ Template.Meters_box.viewmodel({
     const parcelId = this.templateInstance.data.parcelId;
     const parcel = Parcels.findOne(parcelId);
     return parcel ? parcel.display() : __('unknown');
+  },
+  tableRows() {
+    return {
+      active: {
+        rows: this.meters(),
+      },
+      archive: {
+        rows: this.meters('archived'),
+      },
+    };
   },
 });
 

@@ -178,20 +178,8 @@
             <br>
             <div class="member-list">
                 {{#if userHasPermission 'meters.update' communityId}}
-                <ul class="nav nav-tabs">
-                    <span class="pull-right small text-muted"></span>
-                    <li class="active"><a data-toggle="tab" href="#meter-tab-1"><i class="fa fa-tachometer"></i> {{_ 'Approved'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#meter-tab-3"><i class="fa fa-archive"></i> {{_ 'Archived'}}</a></li>
-                </ul>
+                {{> Active_archive_tabs name='meter' template='Meters_table' content=tableRows icon='fa-tachometer'}}
                 {{/if}}
-                <div class="tab-content">
-                    <div id="meter-tab-1" class="tab-pane active">
-                        {{> Meters_table rows=meters}}
-                    </div>
-                    <div id="meter-tab-3" class="tab-pane">
-                        {{> Meters_table rows=(meters 'archived')}}
-                    </div>    
-                </div>
             </div>
         </div>
     </div>

@@ -12,21 +12,37 @@ import { allParcelBillingActions } from '/imports/api/transactions/parcel-billin
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './parcel-billings.html';
 
+const createTableObject = Object.create({
+  columns: parcelBillingColumns(),
+  tableClasses: 'display',
+  language: datatables_i18n[TAPi18n.getLanguage()],
+  lengthMenu: [[5, 10, 50, -1], [5, 10, 50, __('all')]],
+  pageLength: 10,
+});
+
 Template.Parcel_billings.viewmodel({
   communityId() {
     return Session.get('activeCommunityId');
   },
-  tableDataFn() {
-    return () => ParcelBillings.find().fetch();
-  },
-  optionsFn() {
-    return () => Object.create({
-      columns: parcelBillingColumns(),
-      tableClasses: 'display',
-      language: datatables_i18n[TAPi18n.getLanguage()],
-      lengthMenu: [[5, 10, 50, -1], [5, 10, 50, __('all')]],
-      pageLength: 10,
-    });
+  tabContent() {
+    return {
+      active: {
+        tableData() {
+          return ParcelBillings.find({ active: true }).fetch();
+        },
+        options() {
+          return createTableObject;
+        },
+      },
+      archive: {
+        tableData() {
+          return ParcelBillings.find({ active: false }).fetch();
+        },
+        options() {
+          return createTableObject;
+        },
+      },
+    };
   },
 });
 
