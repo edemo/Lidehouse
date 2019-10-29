@@ -3,6 +3,8 @@ import { Migrations } from 'meteor/percolate:migrations';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Leaderships } from '/imports/api/leaderships/leaderships.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 
@@ -76,6 +78,19 @@ Migrations.add({
       { $set: { settings: { joinable: true, accountingMethod: 'accrual' } } },
       { multi: true }
     );
+  },
+});
+
+Migrations.add({
+  version: 6,
+  name: 'Remove leadRef from parcel, and create leaderships with it',
+  up() {
+    function upgrade() {
+      Parcels.find({ leadRef: { $exists: true } }).forEach((doc) => {
+        Leaderships.insert({ communityId: doc.communityId, parcelId: doc._id, leadRef: doc.leadRef });
+      });
+    }
+    upgrade();
   },
 });
 
