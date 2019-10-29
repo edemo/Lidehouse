@@ -293,6 +293,9 @@ export function insertUnittestFixture(lang) {
 
   // ===== Transactions =====
 
+  const supplier = demoBuilder.create('supplier');
+  const customer = demoBuilder.create('customer');
+
   //
 //  otherBuilder.insertLoadsOfFakeMembers(10);
 
@@ -306,6 +309,8 @@ export function insertUnittestFixture(lang) {
     demoAccountantId,
     dummyUsers,
     dummyParcels,
+    supplier,
+    customer,
     builder: demoBuilder,
   };
 }

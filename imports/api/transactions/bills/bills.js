@@ -42,6 +42,8 @@ Bills.lineSchema = new SimpleSchema({
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
   amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   /*autoValue() {
     const lines = this.field('lines');
@@ -54,8 +56,6 @@ Bills.schema = new SimpleSchema({
   issueDate: { type: Date },
   valueDate: { type: Date },
   dueDate: { type: Date },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
   note: { type: String, optional: true, autoform: { rows: 3 } },

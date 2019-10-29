@@ -41,6 +41,7 @@ if (Meteor.isServer) {
       before(function () {
         billId = FixtureA.builder.create('bill', {
           relation: 'supplier',
+          partnerId: FixtureA.supplier,
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -58,6 +59,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.payments.length, 0);
         chai.assert.equal(bill.outstanding, 300);
         chai.assert.equal(bill.isConteered(), false);
+        chai.assert.equal(bill.partner().outstanding, 300);
       });
 
       it('Can not conteer without accounts', function () {
@@ -94,6 +96,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.outstanding, 200);
+        chai.assert.equal(bill.partner().outstanding, 200);
 
         const paymentId2 = FixtureA.builder.create('payment',
           { relation: 'supplier', billId, amount: 200, valueDate: Clock.currentTime(), account: bankAccount },
@@ -102,6 +105,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 2);
         chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(bill.partner().outstanding, 0);
 
         let tx1 = Transactions.findOne(paymentId1);
         chai.assert.isUndefined(tx1);
@@ -135,6 +139,7 @@ if (Meteor.isServer) {
       beforeEach(function () {
         billId = FixtureA.builder.create('bill', {
           relation: 'supplier',
+          partnerId: FixtureA.supplier,
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -186,6 +191,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.getPayments()[0].isReconciled(), false);
         chai.assert.equal(bill.outstanding, 200);
+        chai.assert.equal(bill.partner().outstanding, 200);
 
         // later if the same tx comes in from bank import, no extra payment is created
         FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, paymentId: bill.payments[0] });
@@ -194,6 +200,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.getPayments()[0].isReconciled(), true);
         chai.assert.equal(bill.outstanding, 200);
+        chai.assert.equal(bill.partner().outstanding, 200);
       });
 
       it('Can pay bill from bank import', function () {
@@ -208,6 +215,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.getPayments()[0].isReconciled(), true);
         chai.assert.equal(bill.outstanding, 200);
+        chai.assert.equal(bill.partner().outstanding, 400);  // prev test billed the same partner!
       });
     });
 
