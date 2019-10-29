@@ -68,7 +68,8 @@
                         <tr>
                             <td><div><strong>{{line.title}}</strong></div>
                                 <small>{{line.details}}</small>
-                                {{{displayAccount line.account}}}</td>
+                                {{{displayAccount line.account activeCommunityId}}}
+                                {{{displayLocalizer line.localizer activeCommunityId}}}</td>
                             <td>{{line.uom}}</td>
                             <td>{{line.unitPrice}}</td>
                             <td>{{line.quantity}}</td>

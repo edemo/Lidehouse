@@ -81,6 +81,11 @@ Parcels.helpers({
     const leadParcel = this.leadParcel();
     return leadParcel ? leadParcel._id : this._id; // if can't find your lead parcel, lead yourself
   },
+  followers() {
+    const result = [];
+    this.forEachLed(p => result.push(p));
+    return result;
+  },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
       + (this.floor ? this.floor + '/' : '')

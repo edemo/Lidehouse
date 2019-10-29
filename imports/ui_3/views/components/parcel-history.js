@@ -65,6 +65,6 @@ Template.Parcel_history.viewmodel({
     const dataType = tx.dataType;
     const typeName = dataType.substring(0, dataType.length - 1);
     const doc = tx.dataDoc();
-    return `${__(typeName)} (${doc.lineCount()} ${__('item')})`;
+    return __(typeName) + (doc.lineCount() ? ` (${doc.lineCount()} ${__('item')})` : '');
   },
 });

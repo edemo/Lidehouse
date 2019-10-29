@@ -855,9 +855,10 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
-    const valueDate = new Date(`${lastYear}-${mm}-12`);
-    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate });
+    Clock.setSimulatedTime(new Date(`${lastYear}-${mm}-12`));
+    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: Clock.currentDate() });
   });
+  Clock.clear();
 
   // === Owner Payins ===
   demoBuilder.everybodyPaysTheirBills();
@@ -884,7 +885,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     partner: 'Gipsz Jakab',
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
   });
-
+  
 // ===== Transactions =====
 
 // === Opening ===

@@ -85,22 +85,13 @@ Template.Parcels_finances.viewmodel({
     });
   },
   myLeadParcels() {
-    const communityId = this.communityId();
+    const communityId = Session.get('activeCommunityId');
     const user = Meteor.user();
     if (!user || !communityId) return [];
-    return user.ownedLeadParcels().map(p => p.ref);
-  },
-  myLeadParcelOptions() {
-    const communityId = Session.get('activeCommunityId');
-    const myOwnerships = Memberships.find({ communityId, active: true, approved: true, personId: Meteor.userId(), role: 'owner' });
-    const myLeadParcelRefs = _.uniq(myOwnerships.map(m => { 
-      const parcel = m.parcel();
-      return (parcel && !parcel.isLed()) ? parcel.ref : null;
-    }));
-    return myLeadParcelRefs.map((ref) => { return { label: ref, value: ref }; });
+    return user.ownedLeadParcels(communityId);
   },
   parcelChoices() {
-    return Parcels.find().map((parcel) => {
+    return this.myLeadParcels().map((parcel) => {
       return {
         label: parcel.display(),
         value: parcel._id,
@@ -118,14 +109,16 @@ Template.Parcels_finances.viewmodel({
     const communityId = Session.get('activeCommunityId');
     return () => {
       const dataset = [];
-      const parcels = Parcels.find({ communityId, approved: true });
+      const parcels = this.myLeadParcels();
       parcels.forEach(parcel => {
-        const parcelId = parcel._id;
-        const parcelRef = parcel.ref;
-        const owners = parcel.owners().fetch();
+        dataset.push({
+          parcelId: parcel._id,
+          parcelRef: parcel.ref,
+          owners: parcel.owners().fetch(),
+          balance: (-1) * parcel.outstanding,
+          followers: parcel.followers().map(p => p.ref),
+        });
 //        const balance = (-1) * Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcelRef), tag: 'T' });
-        const balance = (-1) * parcel.outstanding;
-        dataset.push({ parcelId, parcelRef, owners, balance });
       });
       return dataset;
     };
@@ -135,6 +128,7 @@ Template.Parcels_finances.viewmodel({
       return {
         columns: [
           { data: 'parcelRef', title: __('schemaParcels.ref.label') },
+          { data: 'followers', title: __('follower parcels') },
           { data: 'owners', title: __('owner'), render: Render.joinOccupants },
           { data: 'balance', title: __('Balance'), render: Render.formatNumber },
           { data: 'parcelId', title: __('Action buttons'), render: Render.buttonViewLink },

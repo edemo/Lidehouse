@@ -52,26 +52,6 @@ Template.Accounting_bills.viewmodel({
   hasFilters() {
     return (this.unreconciledOnly() === false);
   },
-  myLeadParcels() {
-    const communityId = this.communityId();
-    const user = Meteor.user();
-    if (!user || !communityId) return [];
-    return user.ownedLeadParcels().map(p => p.ref);
-  },
-  myLeadParcelOptions() {
-    const communityId = Session.get('activeCommunityId');
-    const myOwnerships = Memberships.find({ communityId, active: true, approved: true, personId: Meteor.userId(), role: 'owner' });
-    const myLeadParcelRefs = _.uniq(myOwnerships.map(m => { 
-      const parcel = m.parcel();
-      return (parcel && !parcel.isLed()) ? parcel.ref : null;
-    }));
-    return myLeadParcelRefs.map((ref) => { return { label: ref, value: ref }; });
-  },
-  parcelChoices() {
-    return Parcels.find().map((parcel) => {
-      return { label: parcel.display(), value: Localizer.parcelRef2code(parcel.ref) };
-    });
-  },
   parcelBillings() {
     return ParcelBillings.find({ communityId: this.communityId() });
   },
