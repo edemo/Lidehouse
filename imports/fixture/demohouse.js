@@ -1093,8 +1093,7 @@ function purgeDemoUserWithParcel(userId, parcelId, communityId) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
   // Purge finacial records
-  ParcelBillings.remove({ 'account.Localizer': parcel.ref });
-  Transactions.remove({ 'entries.0.account.Localizer': parcel.ref });
+  // TODO Transactions.remove({ 'entries.0.account.Localizer': parcel.ref });
   Breakdowns.update({ communityId, name: 'Parcels' }, {
     $pull: { children: { name: parcel.ref } },
   });
