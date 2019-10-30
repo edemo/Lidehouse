@@ -80,7 +80,8 @@ Migrations.add({
       Topics.find({}, { sort: { createdAt: -1 } }).forEach((doc) => {
         const selector = { communityId: doc.communityId, category: doc.category };
         const last = Topics.findOne(selector, { sort: { serial: -1 } });
-        const nextSerial = last ? last.serial + 1 : 1;
+        const lastSerial = last ? (last.serial || 0) : 0;
+        const nextSerial = lastSerial + 1;
         Topics.update(doc._id, { $set: { serial: nextSerial } });
       });
     }
