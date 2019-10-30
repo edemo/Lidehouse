@@ -31,7 +31,9 @@ Mongo.Collection.prototype.ensureIndex = function ensureIndex(map, options) {
 
 Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
   const collection = this;
-  collection.attachSchema(behaviour.schema);
+  if (collection.simpleSchema()) {
+    collection.attachSchema(behaviour.schema);
+  }
   collection.helpers(behaviour.helpers);
 
   collection.methods = collection.methods || {};
