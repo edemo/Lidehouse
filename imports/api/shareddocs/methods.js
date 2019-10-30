@@ -40,7 +40,7 @@ export const remove = new ValidatedMethod({
 export function cleanCanceledVoteAttachments() {
   Shareddocs.remove({ topicId: { $exists: true }, $where: 'this.topicId === this.userId' });  // jalik-ufs puts userId as creatorId
   // Using $expr would be faster, but only mongo 3.6 supports it (and currently we are on 3.4)
-  // Shareddocs.remove({ $expr: { $eq: ['$topicId', '$creatorId'] } });
+  // Shareddocs.remove({ $expr: { $eq: ['$topicId', '$userId'] } });
 }
 
 Shareddocs.methods = Shareddocs.methods || {};

@@ -209,7 +209,7 @@ if (Meteor.isServer) {
 
 Bills.attachSchema(Bills.schema);
 Bills.attachBehaviour(Timestamped);
-Bills.attachBehaviour(SerialId(Bills, ['relation']));
+Bills.attachBehaviour(SerialId(['relation']));
 
 Meteor.startup(function attach() {
   Bills.simpleSchema().i18n('schemaBills');
