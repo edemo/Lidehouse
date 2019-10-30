@@ -56,6 +56,9 @@ Migrations.add({
   version: 4,
   name: 'Topics all get a status',
   up() {
+    Topics.find({ category: 'ticket' }).forEach((ticket) => {
+      Topics.update(ticket._id, { $set: { status: ticket.ticket.status } });
+    });
     Topics.update(
       { status: { $exists: false }, closed: false },
       { $set: { status: 'opened' } },
