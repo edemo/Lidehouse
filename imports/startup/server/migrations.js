@@ -74,6 +74,22 @@ Migrations.add({
 
 Migrations.add({
   version: 5,
+  name: 'Topics need serial',
+  up() {
+    function upgrade() {
+      Topics.find({}, { sort: { createdAt: -1 } }).forEach((doc) => {
+        const selector = { communityId: doc.communityId, category: doc.category };
+        const last = Topics.findOne(selector, { sort: { serial: -1 } });
+        const nextSerial = last ? last.serial + 1 : 1;
+        Topics.update(doc._id, { $set: { serial: nextSerial } });
+      });
+    }
+    upgrade();
+  },
+});
+
+Migrations.add({
+  version: 6,
   name: 'Communities get a settings section and an accountingMethod',
   up() {
     Communities.update(
@@ -85,7 +101,7 @@ Migrations.add({
 });
 
 Migrations.add({
-  version: 6,
+  version: 7,
   name: 'Remove leadRef from parcel, and create leaderships with it',
   up() {
     function upgrade() {
