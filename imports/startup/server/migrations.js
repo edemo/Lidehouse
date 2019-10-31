@@ -56,7 +56,8 @@ Migrations.add({
   version: 4,
   name: 'Topics all get a status',
   up() {
-    Topics.find({ category: 'ticket' }).forEach((ticket) => {
+    Topics.find({ category: 'ticket', status: { $exists: false } }).forEach((ticket) => {
+      if (!ticket.ticket.status) throw new Meteor.Error('err_migrationFailed', 'There is no ticket.ticket.status');
       Topics.update(ticket._id, { $set: { status: ticket.ticket.status } });
     });
     Topics.update(
