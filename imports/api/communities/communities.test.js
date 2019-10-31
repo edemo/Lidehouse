@@ -53,7 +53,7 @@ if (Meteor.isServer) {
 
         chai.assert.isUndefined(Communities.findOne(Fixture.demoCommunityId));
         Mongo.Collection.getAll().forEach((collection) => {
-          if (collection._name === 'trash') return;
+          if (collection.name === 'trash') return;
           chai.assert.isUndefined(collection.instance.findOne({ communityId: Fixture.demoCommunityId }));
         });
 
