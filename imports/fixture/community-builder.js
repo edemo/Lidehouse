@@ -236,15 +236,17 @@ export class CommunityBuilder {
     return Localizer.parcelRef2code(parcel.ref);
   }
   generateDemoPayments(parcel, membership) {
+    Clock.starts(1, 'year', 'ago');
     for (let mm = 1; mm < 13; mm++) {
-      const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
       this.execute(ParcelBillings.methods.apply, {
         communityId: this.communityId,
-        valueDate,
+        valueDate: Clock.currentDate(),
         localizer: Localizer.parcelRef2code(parcel.ref),
       });
       this.payBillsOf(membership);
+      Clock.tick(1, 'month');
     }
+    Clock.clear();
   }
   payBill(bill) {
     if (bill.hasConteerData() && !bill.isConteered()) {
@@ -258,7 +260,7 @@ export class CommunityBuilder {
     });*/
     const entryId = this.create('statementEntry', {
       account: '381',
-      valueDate: Clock.currentDate(),
+      valueDate: bill.dueDate,
       partner: bill.partner().toString(),
       note: bill.serialId() + ' payment',
       amount: bill.outstanding,

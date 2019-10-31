@@ -6,7 +6,6 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
-import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
@@ -87,6 +86,9 @@ Bills.helpers({
   contract() {
     return Contracts.findOne(this.contractId);
   },
+  lineCount() {
+    return this.lines.length;
+  },
   matchingTxSide() {
     if (this.relation === 'supplier') return 'debit';
     else if (this.relation === 'customer' || this.relation === 'parcel') return 'credit';
@@ -115,7 +117,7 @@ Bills.helpers({
     const tx = {
       _id: this._id,
       communityId: this.communityId,
-      type: 'Bills',
+      dataType: 'bills',
       // def: 'bill'
       valueDate: this.valueDate,
       amount: this.amount,

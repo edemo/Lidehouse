@@ -31,7 +31,7 @@ Transactions.entrySchema = new SimpleSchema([
 Transactions.baseSchema = {
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },  // We explicitly use the same _id for the Bill and the corresponding Tx
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  type: { type: String, allowedValues: ['Bills', 'Payments'], optional: true, autoform: { omit: true } },
+  dataType: { type: String, allowedValues: ['bills', 'payments'], optional: true, autoform: { omit: true } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   valueDate: { type: Date },
@@ -85,6 +85,10 @@ export function oppositeSide(side) {
 }
 
 Transactions.helpers({
+  dataDoc() {
+    // dataDocs are stored with the same _id, as the tx itself
+    return Mongo.Collection.get(this.dataType).findOne(this._id);
+  },
   getSide(side) {
     debugAssert(side === 'debit' || side === 'credit');
     return this[side] || [];
@@ -124,6 +128,15 @@ Transactions.helpers({
       });
     }
     return entries.map(JournalEntries._transform);
+  },
+  effectiveAmount() {
+    let sign = 0;
+    switch (this.dataType) {
+      case 'bills': sign = -1; break;
+      case 'payments': sign = +1; break;
+      default: debugAssert(false);
+    }
+    return sign * this.amount;
   },
   negator() {
     const tx = _.clone(this);

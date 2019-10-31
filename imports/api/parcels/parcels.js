@@ -89,6 +89,11 @@ Parcels.helpers({
     if (leadParcel && leadParcel.ref !== this.ref) return leadParcel.ref;
     return '';
   },
+  followers() {
+    const result = [];
+    this.forEachLed(p => result.push(p));
+    return result;
+  },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
       + (this.floor ? this.floor + '/' : '')

@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { UploadFS } from 'meteor/jalik:ufs';
 import { _ } from 'meteor/underscore';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 export const Shareddocs = new Mongo.Collection('shareddocs');
 
@@ -12,7 +13,6 @@ Shareddocs.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) {
   if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId, doc);
   else if (doc.folderId === 'voting') return user.hasPermission('poll.insert', doc.communityId, doc);
   else if (doc.folderId === 'agenda') return user.hasPermission('agendas.insert', doc.communityId, doc);
-  else if (doc.folderId === 'decision') return false;
   else return user.hasPermission('shareddocs.upload', doc.communityId, doc);
 };
 
@@ -23,7 +23,6 @@ Shareddocs.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploade
   if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId, doc);
   else if (doc.folderId === 'voting') return user.hasPermission('poll.remove', doc.communityId, doc);
   else if (doc.folderId === 'agenda') return user.hasPermission('agendas.remove', doc.communityId, doc);
-  else if (doc.folderId === 'decision') return false;
   else return user.hasPermission('shareddocs.upload', doc.communityId, doc);
 };
 
@@ -35,6 +34,10 @@ Shareddocs.allow({
     return Shareddocs.hasPermissionToRemoveUploaded(userId, doc);
   },
 });
+
+Shareddocs.attachBehaviour(Timestamped);
+
+//--------------------------------------
 
 Shareddocs.upload = function upload(extraFields) {
   UploadFS.selectFiles(function (file) {
