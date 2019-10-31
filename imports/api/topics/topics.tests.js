@@ -17,7 +17,7 @@ import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { closeInactiveTopics } from '/imports/api/topics/methods.js';
 import { Clock } from '/imports/utils/clock';
 
-import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
+import { castVote } from '/imports/api/topics/votings/methods.js';
 import { insert as insertDelegation } from '/imports/api/delegations/methods.js';
 import '/i18n/en.i18n.json';
 
@@ -169,7 +169,8 @@ if (Meteor.isServer) {
         });
 
         it('sends voting details to admin, when vote is closed', function (done) {
-          closeVote._execute({ userId: adminId }, { topicId: voteTopic._id });
+          Topics.methods.statusChange._execute({ userId: adminId }, { topicId: voteTopic._id, status: 'votingFinished' });
+          Topics.methods.statusChange._execute({ userId: adminId }, { topicId: voteTopic._id, status: 'closed' });
           const collector = new PublicationCollector({ userId: adminId });
           collector.collect(
             'topics.byId',

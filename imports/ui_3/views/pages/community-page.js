@@ -23,7 +23,9 @@ import { remove as removeParcel } from '/imports/api/parcels/methods.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
+import '/imports/api/leaderships/methods.js';
 import { Meters } from '/imports/api/meters/meters.js';
+import { Leaderships } from '/imports/api/leaderships/leaderships.js';
 import '/imports/api/meters/methods.js';
 import '/imports/api/users/users.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
@@ -71,6 +73,20 @@ Template.Meters_box.viewmodel({
   },
 });
 
+Template.Leaderships_box.viewmodel({
+  leaderships(subset) {
+    const parcelId = this.templateInstance.data.parcelId;
+    let selector = { active: true, parcelId };
+    if (subset === 'archived') selector = { parcelId, active: false };
+    return Leaderships.find(selector);
+  },
+  parcelDisplay() {
+    const parcelId = this.templateInstance.data.parcelId;
+    const parcel = Parcels.findOne(parcelId);
+    return parcel ? parcel.display() : __('unknown');
+  },
+});
+
 Template.Community_page.viewmodel({
   showAllParcels: false,
   reactive: false,
@@ -98,6 +114,7 @@ Template.Community_page.viewmodel({
       if (this.showAllParcels()) {
         this.templateInstance.subscribe('parcels.inCommunity', { communityId });
         this.templateInstance.subscribe('meters.inCommunity', { communityId });
+        this.templateInstance.subscribe('leaderships.inCommunity', { communityId });
       } else {
         this.templateInstance.subscribe('parcels.ofSelf', { communityId });
       }
@@ -254,6 +271,10 @@ Template.Community_page.events({
   },
   'click .js-meters'(event, instance) {
 //    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
+    const id = $(event.target).closest('button').data('id');
+    instance.viewmodel.selectedParcelId(id);
+  },
+  'click .js-leaderships'(event, instance) {
     const id = $(event.target).closest('button').data('id');
     instance.viewmodel.selectedParcelId(id);
   },
@@ -502,6 +523,35 @@ Template.Community_page.events({
       message: 'You should rather archive it',
     });
   },
+  // leaderships events
+  'click #leaderships .js-new'(event, instance) {
+    Modal.show('Autoform_edit', {
+      id: 'af.leadership.insert',
+      collection: Leaderships,
+      omitFields: ['parcelId', 'leadParcelId'],
+      type: 'method',
+      meteormethod: 'leaderships.insert',
+    });
+  },
+  'click #leaderships .js-edit'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.show('Autoform_edit', {
+      id: 'af.leadership.update',
+      collection: Leaderships,
+      omitFields: ['parcelId', 'leadParcelId'],
+      doc: Leaderships.findOne(id),
+      type: 'method-update',
+      meteormethod: 'leaderships.update',
+      singleMethodArgument: true,
+    });
+  },
+  'click #leaderships .js-delete'(event) {
+    const id = $(event.target).closest('button').data('id');
+    Modal.confirmAndCall(Leaderships.methods.remove, { _id: id }, {
+      action: 'delete leadership',
+      message: 'You should rather archive it',
+    });
+  },
   // parcel events
   'click .parcels-section .js-import'(event, instance) {
     importCollectionFromFile(Parcels);
@@ -632,5 +682,23 @@ AutoForm.addHooks('af.parcel.insert.unapproved', {
   },
   onSuccess(formType, result) {
     onJoinParcelInsertSuccess(result);
+  },
+});
+
+AutoForm.addModalHooks('af.leadership.insert');
+AutoForm.addModalHooks('af.leadership.update');
+AutoForm.addHooks('af.leadership.insert', {
+  formToDoc(doc) {
+    doc.communityId = Session.get('selectedCommunityId');
+    doc.parcelId = Session.get('selectedParcelId');
+//    doc.approved = true;
+    return doc;
+  },
+});
+AutoForm.addHooks('af.leadership.update', {
+  formToModifier(modifier) {
+    delete modifier.$set.leadParcelId; // not working
+    modifier.$set.communityId = Session.get('selectedCommunityId');
+    return modifier;
   },
 });
