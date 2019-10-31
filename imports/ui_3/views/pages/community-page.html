@@ -178,7 +178,7 @@
             <br>
             <div class="member-list">
                 {{#if userHasPermission 'meters.update' communityId}}
-                {{> Active_archive_tabs name='meter' template='Meters_table' content=tableRows icon='fa-tachometer'}}
+                {{> Active_archive_tabs name='meter' template='Meters_table' icon='fa-tachometer' content=metersContent }}
                 {{/if}}
             </div>
         </div>

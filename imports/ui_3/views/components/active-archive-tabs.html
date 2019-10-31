@@ -6,10 +6,10 @@
     </ul>
     <div class="tab-content">
         <div id="{{concat name '-tab-1'}}" class="tab-pane active">
-            {{> Template.dynamic template=template data=this.content.active}}
+            {{> Template.dynamic template=template data=dataActiveTrue}}
         </div>
         <div id="{{concat name '-tab-2'}}" class="tab-pane">
-            {{> Template.dynamic template=template data=this.content.archive}}        
+            {{> Template.dynamic template=template data=dataActiveFalse}}        
         </div>    
     </div>
 </template>
