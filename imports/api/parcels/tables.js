@@ -5,6 +5,7 @@ import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Leaderships } from '../leaderships/leaderships';
 
 Render.buttonAssignOccupants = function buttonAssignOccupants(cellData, renderType, currentRow) {
   const parcelId = cellData;
@@ -47,6 +48,7 @@ Render.buttonMeters = function buttonAssignMeters(cellData, renderType, currentR
 };
 
 Render.buttonLeaderships = function buttonAssignLeaderships(cellData, renderType, currentRow) {
+  if (!Leaderships.findOne({ parcelId: currentRow._id })) return '';
   let html = '';
   html += `<a href="#leaderships">`;
   html += `<button data-id=${cellData} title=${__('leaderships')} class="btn btn-white btn-xs js-leaderships">`;
@@ -77,7 +79,7 @@ export function parcelColumns(permissions) {
 
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },
-    { data: 'leadRef()', title: __('schemaParcels.leadRef.label') },
+    { data: 'parcelId()', title: __('schemaParcels.leadRef.label'), render: Render.buttonLeadRef },
     { data: 'location()', title: __('schemaParcels.location.label') },
     { data: 'type', title: __('schemaParcels.type.label'), render: Render.translate },
     { data: 'lot', title: __('schemaParcels.lot.label') },

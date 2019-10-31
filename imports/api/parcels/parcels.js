@@ -84,10 +84,8 @@ Parcels.helpers({
   leadParcel() {
     return Parcels.findOne(this.leadParcelId());
   },
-  leadRef() {
-    const leadParcel = this.leadParcel();
-    if (leadParcel && leadParcel.ref !== this.ref) return leadParcel.ref;
-    return '';
+  parcelId() {
+    return this._id;
   },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')

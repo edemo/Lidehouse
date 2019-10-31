@@ -204,7 +204,7 @@
             <h2>{{_ 'leaderships'}}</h2>
             {{#if userHasPermission 'leaderships.insert' communityId}}
             <div class="btn-group pull-right">
-                <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'leadership'}}</strong></button>
+                <button class="btn btn-primary btn-sm js-new-leadership"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'leadership'}}</strong></button>
                 <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
             </div>
             {{/if}}
@@ -435,7 +435,7 @@
 
         <div id="leaderships" class="row">
             <div class="col-md-8">
-            {{#if selectedParcelId}}
+            {{#if (and selectedParcelId (isThereAnyLeadershipFor selectedParcelId))}}
                 {{> Leaderships_box communityId=communityId parcelId=selectedParcelId}}
             {{/if}}
             </div>

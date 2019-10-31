@@ -230,6 +230,9 @@ Template.Community_page.viewmodel({
     const memberId = this.selectedMemberId();
     return Memberships.findOne(memberId);
   },
+  isThereAnyLeadershipFor(id) {
+    return id ? Leaderships.findOne({ parcelId: id }) : false;
+  },
 });
 
 function onJoinParcelInsertSuccess(parcelId) {
@@ -524,6 +527,17 @@ Template.Community_page.events({
     });
   },
   // leaderships events
+  'click .js-new-leadership'(event, instance) {
+    const id = $(event.target).closest('button').data('id');
+    Session.set('selectedParcelId', id);
+    Modal.show('Autoform_edit', {
+      id: 'af.leadership.insert',
+      collection: Leaderships,
+      omitFields: ['parcelId', 'leadParcelId'],
+      type: 'method',
+      meteormethod: 'leaderships.insert',
+    });
+  },
   'click #leaderships .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
       id: 'af.leadership.insert',

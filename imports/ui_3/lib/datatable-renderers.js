@@ -2,9 +2,12 @@ import { moment } from 'meteor/momentjs:moment';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
+import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { $ } from 'meteor/jquery';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Leaderships } from '../../api/leaderships/leaderships';
 
 export const Render = {
   translate(cellData, renderType, currentRow) {
@@ -70,6 +73,15 @@ export const Render = {
   buttonApply(cellData, renderType, currentRow) {
     const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-apply" title=${__('apply')}><i class="fa fa-calendar-plus-o"></i></button>`;
     return html;
+  },
+  buttonLeadRef(cellData) {
+    const leadership = Leaderships.findOne({ parcelId: cellData, active: true });
+    if (leadership) {
+      const leadParcel = Parcels.findOne({ _id: leadership.leadParcelId });
+      return `<strong>${leadParcel.ref}</strong>`;
+    }
+    if (!leadership && currentUserHasPermission('leaderships.insert')) return `<button data-id=${cellData} class="btn btn-primary btn-sm js-new-leadership" title=${__('leadership')}><i class="fa fa-plus"></i></button>`;
+    return '';
   },
   buttonGroup(buttonRenderers) {
     return function groupRenderer(cellData, renderType, currentRow) {
