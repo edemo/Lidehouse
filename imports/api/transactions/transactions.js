@@ -20,6 +20,8 @@ import { Partners, choosePartner } from '/imports/api/transactions/partners/part
 
 export const Transactions = new Mongo.Collection('transactions');
 
+Transactions.categoryValues = ['CustomerBill', 'SupplierBill', 'ParcelBill', 'CustomerPayment', 'SupplierPayment', 'ParcelPayment', 'MoneyTransfer', 'AccountingOp'];
+
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
   { amount: { type: Number, optional: true } },
@@ -32,6 +34,7 @@ Transactions.baseSchema = {
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },  // We explicitly use the same _id for the Bill and the corresponding Tx
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   dataType: { type: String, allowedValues: ['bills', 'payments'], optional: true, autoform: { omit: true } },
+  category: { type: String, allowedValues: Transactions.categoryValues, optional: true, autoform: { omit: true } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   valueDate: { type: Date },
@@ -45,19 +48,22 @@ Transactions.baseSchema = {
 //  },
 };
 
+Transactions.legsSchema = {
+  debit: { type: [Transactions.entrySchema], optional: true },
+  credit: { type: [Transactions.entrySchema], optional: true },
+  complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
+  reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
+};
+
 Transactions.noteSchema = {
   ref: { type: String, optional: true },
   note: { type: String, optional: true },
 };
 
 Transactions.schema = new SimpleSchema([
-  _.clone(Transactions.baseSchema), {
-    debit: { type: [Transactions.entrySchema], optional: true },
-    credit: { type: [Transactions.entrySchema], optional: true },
-    complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
-    reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
-  },
-  _.clone(Transactions.noteSchema),
+  Transactions.baseSchema,
+  Transactions.legsSchema,
+  Transactions.noteSchema,
 ]);
 
 Transactions.idSet = ['communityId', 'ref'];
