@@ -53,13 +53,13 @@ Template.Parcel_history.viewmodel({
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
     let total = 0;
     const txsWithRunningTotal = txs.map(tx => {
-      total += tx.effectiveAmount();
+      total += tx.subjectiveAmount();
       return _.extend(tx, { total });
     });
     return txsWithRunningTotal;
   },
   negativeClass(tx) {
-    return tx.effectiveAmount() < 0 ? 'negative' : '';
+    return tx.subjectiveAmount() < 0 ? 'negative' : '';
   },
   displayDataType(tx) {
     const dataType = tx.dataType;

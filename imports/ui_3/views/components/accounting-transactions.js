@@ -27,6 +27,7 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import './accounting-transactions.html';
+import { PeriodBreakdown } from '../../../api/transactions/breakdowns/breakdowns-utils';
 
 Template.Accounting_transactions.viewmodel({
   txDefSelected: '',

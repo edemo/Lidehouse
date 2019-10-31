@@ -12,6 +12,9 @@
               {{> Badge value=countUnconteeredBills color='warning' title=(concat (_ 'Unconteered') ' ' (_ 'bills'))}} 
               {{> Badge value=countOutstandingBills color='info' title=(concat (_ 'Unpaid') ' ' (_ 'bills'))}} 
             </h3></a></li>
+            <li class="nav-link"><a data-toggle="tab" href="#tab-ledger">
+              <h3>{{_ 'General ledger'}}</h3>
+            </a></li>
             <li class="nav-link"><a data-toggle="tab" href="#tab-transactions">
               <h3>{{_ 'Transactions'}}</h3>
             </a></li>
@@ -27,6 +30,11 @@
             <div role="tabpanel" id="tab-bills" class="tab-pane active">
                 <div class="ibox-content">
                 {{> Accounting_bills}}
+                </div>
+            </div>
+            <div role="tabpanel" id="tab-ledger" class="tab-pane">
+                <div class="ibox-content">
+                {{> Accounting_ledger}}
                 </div>
             </div>
             <div role="tabpanel" id="tab-transactions" class="tab-pane">

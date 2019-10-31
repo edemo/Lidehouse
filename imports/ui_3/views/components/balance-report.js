@@ -34,6 +34,6 @@ Template.Balance_report.helpers({
   },
   displayPeriod(tag) {
     const node = PeriodBreakdown.nodeByCode(tag);
-    return node.label;
+    return node.label || node.name;
   },
 });

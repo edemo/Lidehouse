@@ -1,0 +1,24 @@
+<template name="Accounting_ledger">
+    {{#if not selectedAccount}}
+    {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label" for="period">{{_ 'period'}}</label>
+                    <select id="period" name="period" {{b 'options: periodOptions, value: periodSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                </div>
+            </div>
+        </div>
+        {{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}
+    {{/if}}
+    {{/if}}
+
+    {{#if selectedAccount}}
+    {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
+        <h3>{{_ 'Account history'}}
+        <button type="button" class="btn btn-primary btn-circle js-reset"><i class="fa fa-times"></i></button>
+        </h3>
+        {{>Account_history beginDate=selectedBeginDate endDate=selectedEndDate accountOptions=accountOptions accountSelected=selectedAccount}}
+    {{/if}}
+    {{/if}}
+</template>

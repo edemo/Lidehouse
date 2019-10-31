@@ -50,8 +50,41 @@ const periodTags = {
   digit: 'T', name: 'Total', include: yearTags,
 };
 
+export class Period {
+  constructor(tag) {
+    const split = tag.split('-');
+    this.year = split[1];
+    this.month = split[2];
+    if (this.month && this.month.length === 1) this.month = '0' + this.month;
+  }
+  begin() {
+    if (!this.year) return '1970-01-01';
+    return `${this.year}-${this.month || '01'}-01`;
+  }
+  end() {
+    if (!this.year) return '2020-12-31'; // moment().format('YYYY-MM-DD');
+    return `${this.year}-${this.month || '12'}-27`;
+  }
+}
+
 export const PeriodBreakdown = Breakdowns._transform(periodTags);
-PeriodBreakdown.currentCode = function () {
+PeriodBreakdown.currentMonthTag = function () {
   const now = new Date();
   return `T-${now.getFullYear()}-${now.getMonth() + 1}`;
+};
+PeriodBreakdown.currentYearTag = function () {
+  const now = new Date();
+  return `T-${now.getFullYear()}`;
+};
+PeriodBreakdown.lastYearTag = function () {
+  const now = new Date();
+  return `T-${now.getFullYear() - 1}`;
+};
+PeriodBreakdown.currentYearMonths = function () {
+  const now = new Date();
+  return PeriodBreakdown.fullYearMonths(now.getFullYear());
+};
+
+PeriodBreakdown.fullYearMonths = function (year) {
+  return PeriodBreakdown.leafsOf(`T-${year}`).map(l => l.code);
 };

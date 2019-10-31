@@ -113,7 +113,7 @@ Template.Community_finances.viewmodel({
   community() { return Communities.findOne(this.communityId()); },
   DEMO() { return this.community() && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], this.community().name); },
   startTag: 'T-2017-1',
-  endTag: PeriodBreakdown.currentCode(),
+  endTag: PeriodBreakdown.currentMonthTag(),
   startIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.startTag()); },
   endIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.endTag()); },
   periods() { return PeriodBreakdown.leafs().slice(this.startIndex(), this.endIndex()); },

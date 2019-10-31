@@ -138,7 +138,7 @@ Transactions.helpers({
     }
     return entries.map(JournalEntries._transform);
   },
-  effectiveAmount() {
+  subjectiveAmount() {
     let sign = 0;
     switch (this.dataType) {
       case 'bills': sign = -1; break;
