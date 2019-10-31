@@ -89,6 +89,9 @@ Transactions.helpers({
     // dataDocs are stored with the same _id, as the tx itself
     return Mongo.Collection.get(this.dataType).findOne(this._id);
   },
+  partner() {
+    return Partners.relCollection(this.relation).findOne(this.partnerId);
+  },
   getSide(side) {
     debugAssert(side === 'debit' || side === 'credit');
     return this[side] || [];
