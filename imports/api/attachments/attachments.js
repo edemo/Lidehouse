@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 
 export const Attachments = new Mongo.Collection('attachments');
 
@@ -31,3 +32,5 @@ Attachments.helpers({
     Attachments.remove(this._id);
   },
 });
+
+Attachments.attachBehaviour(Timestamped);

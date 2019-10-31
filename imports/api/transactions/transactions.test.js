@@ -81,7 +81,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.isConteered(), true);
         const tx = Transactions.findOne(billId);
         chai.assert.isDefined(tx);
-        chai.assert.equal(tx.type, 'Bills');
+        chai.assert.equal(tx.dataType, 'bills');
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '85', localizer: '@' }]);
         chai.assert.deepEqual(tx.credit, [{ account: '46' }]);
@@ -115,6 +115,7 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Payments.methods.conteer, { _id: paymentId1 });
         tx1 = Transactions.findOne(paymentId1);
         chai.assert.isDefined(tx1);
+        chai.assert.equal(tx1.dataType, 'payments');
         chai.assert.equal(tx1.amount, 100);
         chai.assert.deepEqual(tx1.debit, [{ account: '46' }]);
         chai.assert.deepEqual(tx1.credit, [{ account: bankAccount }]);
@@ -122,6 +123,7 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Payments.methods.conteer, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isDefined(tx2);
+        chai.assert.equal(tx2.dataType, 'payments');
         chai.assert.equal(tx2.amount, 200);
         chai.assert.deepEqual(tx2.debit, [{ account: '46' }]);
         chai.assert.deepEqual(tx2.credit, [{ account: bankAccount }]);

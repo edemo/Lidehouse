@@ -31,7 +31,9 @@ Mongo.Collection.prototype.ensureIndex = function ensureIndex(map, options) {
 
 Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
   const collection = this;
-  collection.attachSchema(behaviour.schema);
+  if (collection.simpleSchema()) {
+    collection.attachSchema(behaviour.schema);
+  }
   collection.helpers(behaviour.helpers);
 
   collection.methods = collection.methods || {};
@@ -45,7 +47,8 @@ Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
   });
 
   if (Meteor.isClient) return;  // No hooking on the client side
-  _.each(behaviour.hooks, (actions, when) => {
+  const hooks = (typeof behaviour.hooks === 'function') ? behaviour.hooks(collection) : behaviour.hooks;
+  _.each(hooks, (actions, when) => {
     _.each(actions, (actionFunc, action) => {
       collection[when][action](actionFunc);
     });

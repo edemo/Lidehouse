@@ -87,6 +87,11 @@ Parcels.helpers({
   parcelId() {
     return this._id;
   },
+  followers() {
+    const result = [];
+    this.forEachLed(p => result.push(p));
+    return result;
+  },
   location() {  // TODO: move this to the house package
     return (this.building ? this.building + '-' : '')
       + (this.floor ? this.floor + '/' : '')

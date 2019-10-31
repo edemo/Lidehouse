@@ -15,8 +15,8 @@ Meteor.startup(() => {
   closeClosableVotings();
   closeInactiveTopics();
   openScheduledVotings();
-//  later.setInterval(bindEnv(cleanExpiredEmails), dailySchedule);
-  later.setInterval(bindEnv(cleanCanceledVoteAttachments), dailySchedule);
+//  later.setInterval(bindEnv(cleanExpiredEmails), dailySchedule);    - who doesn't accept invite, still gets weekly noti emails
+//  later.setInterval(bindEnv(cleanCanceledVoteAttachments), dailySchedule);    - too dangerous
   later.setInterval(bindEnv(notifyExpiringVotings), dailySchedule);
   later.setInterval(bindEnv(closeClosableVotings), dailySchedule);
   later.setInterval(bindEnv(closeInactiveTopics), dailySchedule);

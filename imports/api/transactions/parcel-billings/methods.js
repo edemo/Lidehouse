@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
+import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -81,8 +82,8 @@ export const apply = new ValidatedMethod({
 //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
           partnerId: parcel.payer()._id,
           valueDate,
-          issueDate: moment().toDate(),
-          dueDate: moment().add(BILLING_DUE_DAYS, 'days').toDate(),
+          issueDate: Clock.currentDate(),
+          dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
           lines: [],
         };
         bills[parcel._id].lines.push(line);
@@ -146,7 +147,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(ParcelBillings, _id);
 //    checkModifier(doc, modifier, );
     checkPermissions(this.userId, 'parcelBillings.update', doc.communityId);
-    return ParcelBillings.update({ _id }, { $set: modifier });
+    return ParcelBillings.update({ _id }, modifier);
   },
 });
 

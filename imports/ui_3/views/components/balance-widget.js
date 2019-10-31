@@ -23,11 +23,12 @@ Template.Balance_widget.viewmodel({
     return user.ownedParcels(communityId);
   },
   balance() {
-    const communityId = Session.get('activeCommunityId');
+//    const communityId = Session.get('activeCommunityId');
     const parcels = this.ownedParcels();
     let result = 0;
     parcels.forEach((parcel) => {
-      result += Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcel.ref), tag: 'T' });
+//      result += Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcel.ref), tag: 'T' });
+      result += parcel.payer().outstanding;
     });
     return (-1) * result;
   },

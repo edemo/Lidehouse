@@ -39,6 +39,9 @@ export const nullUser = {
   ownedParcels(communityId) {
     return [];
   },
+  ownedLeadParcels(communityId) {
+    return [];
+  },
 };
 
 Meteor.userOrNull = function userOrNull() {

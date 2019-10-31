@@ -60,6 +60,10 @@ Payments.helpers({
   partner() {
     return Partners.relCollection(this.relation).findOne(this.partnerId);
   },
+  lineCount() {
+    if (this.billId) return 0;
+    return Bills.findOne(this.billId).lineCount();
+  },
   isConteered() {
     return (!!this.txId);
   },
@@ -74,7 +78,7 @@ Payments.helpers({
     const tx = {
       _id: this._id,
       communityId: this.communityId,
-      type: 'Payments',
+      dataType: 'payments',
       // def: 'payment',
       valueDate: this.valueDate,
       amount: this.amount,
