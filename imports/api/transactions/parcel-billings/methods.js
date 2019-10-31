@@ -147,7 +147,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(ParcelBillings, _id);
 //    checkModifier(doc, modifier, );
     checkPermissions(this.userId, 'parcelBillings.update', doc.communityId);
-    return ParcelBillings.update({ _id }, { $set: modifier });
+    return ParcelBillings.update({ _id }, modifier);
   },
 });
 

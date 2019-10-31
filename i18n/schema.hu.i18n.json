@@ -158,6 +158,22 @@
       }
     }
   },
+  "schemaLeaderships" : {
+    "leadRef": {
+      "label": "Vezető albetét"
+    },
+    "activeTime": {
+      "label": "Aktív időszak",
+      "begin": {
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
+      }
+    }
+  },
   "schemaMemberships" : {
     "role": {
       "label": "Tisztség"
