@@ -127,7 +127,7 @@ Parcels.helpers({
   },
   forEachLed(callback) {
     if (this.isLed()) return;
-    const ledParcels = Leaderships.find({ communityId: this.communityId, leadParcelId: this._id, active: true }).map(l => l.ledParcel());
+    const ledParcels = Leaderships.find({ leadParcelId: this._id, active: true }).map(l => l.ledParcel());
     ledParcels.push(this);
     ledParcels.forEach(parcel => callback(parcel));
   },

@@ -40,6 +40,14 @@ Leaderships.schema = new SimpleSchema({
   },
 });
 
+Meteor.startup(function indexLeaderships() {
+  Leaderships.ensureIndex({ parcelId: 1 });
+  Leaderships.ensureIndex({ leadParcelId: 1 });
+  if (Meteor.isServer) {
+    Leaderships._ensureIndex({ communityId: 1 });
+  }
+});
+
 Leaderships.helpers({
   ledParcel() {
     return Parcels.findOne(this.parcelId);
