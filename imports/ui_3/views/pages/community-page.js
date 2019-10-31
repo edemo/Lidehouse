@@ -75,10 +75,9 @@ Template.Meters_box.viewmodel({
 
 Template.Leaderships_box.viewmodel({
   leaderships(subset) {
-    const communityId = this.templateInstance.data.communityId;
     const parcelId = this.templateInstance.data.parcelId;
-    let selector = { communityId, active: true, parcelId };
-    if (subset === 'archived') selector = { communityId, parcelId, active: false };
+    let selector = { active: true, parcelId };
+    if (subset === 'archived') selector = { parcelId, active: false };
     return Leaderships.find(selector);
   },
   parcelDisplay() {
