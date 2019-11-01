@@ -26,8 +26,8 @@ Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
   { amount: { type: Number, optional: true } },
   // A tx leg can be directly associated with a bill, for its full amount (if a tx is associated to multiple bills, use legs for each association, one leg can belong to one bill)
-  { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
-  { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
+  // { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
+  // { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
 ]);
 
 Transactions.baseSchema = {

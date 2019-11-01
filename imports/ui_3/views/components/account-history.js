@@ -26,7 +26,6 @@ Template.Account_history.viewmodel({
   onCreated(instance) {
     const self = this;
     instance.autorun(() => {
-      console.log( this.subscribeParams());
       instance.subscribe('transactions.byAccount', this.subscribeParams());
 //    const today = moment().format('L');
 //    this.endDate(today);
