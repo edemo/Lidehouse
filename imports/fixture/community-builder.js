@@ -259,7 +259,7 @@ export class CommunityBuilder {
       account: '381',
     });*/
     const entryId = this.create('statementEntry', {
-      account: '381',
+      account: '382',
       valueDate: bill.dueDate,
       partner: bill.partner().toString(),
       note: bill.serialId() + ' payment',

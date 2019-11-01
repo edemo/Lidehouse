@@ -1,13 +1,17 @@
+import { Meteor } from 'meteor/meteor';
+import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { JournalEntries } from '/imports/api/transactions/entries.js';
-//-----
-import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { AccountSpecification } from '/imports/api/transactions/account-specification';
+import { allTransactionsActions } from '/imports/api/transactions/actions.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/modals/autoform-edit.js';
 import './account-history.html';
 
 Template.Account_history.viewmodel({
@@ -22,15 +26,8 @@ Template.Account_history.viewmodel({
   onCreated(instance) {
     const self = this;
     instance.autorun(() => {
-      const communityId = Session.get('activeCommunityId');
-//      console.log('subscribing:', communityId, this.accountSelected(), this.localizerSelected());
-      instance.subscribe('transactions.byAccount', {
-        communityId,
-        account: self.accountSelected(),
-        localizer: self.localizerSelected(),
-        begin: moment(self.beginDate()).toDate(),
-        end: moment(self.endDate()).add(1, 'day').toDate(),
-      });
+      console.log( this.subscribeParams());
+      instance.subscribe('transactions.byAccount', this.subscribeParams());
 //    const today = moment().format('L');
 //    this.endDate(today);
     });
@@ -48,12 +45,19 @@ Template.Account_history.viewmodel({
       });
     },
   ],
+  subscribeParams() {
+    const communityId = Session.get('activeCommunityId');
+    const selector = {
+      communityId,
+      begin: new Date(this.beginDate()),
+      end: new Date(this.endDate()),
+    };
+    if (this.accountSelected()) selector.account = '\\^' + this.accountSelected() + '\\';
+    if (this.localizerSelected()) selector.localizer = '\\^' + this.localizerSelected() + '\\';
+    return selector;
+  },
   journalEntries() {
-//    const accountSpec = new AccountSpecification(this.accountSelected());
-    const selector = { valueDate: { $gte: moment(this.beginDate()).toDate(), $lt: moment(this.endDate()).add(1, 'day').toDate() } };
-    if (this.accountSelected()) selector.account = this.accountSelected();
-    if (this.localizerSelected()) selector.localizer = this.localizerSelected();
-//    console.log('data fetching:', selector);
+    const selector = JournalEntries.makeFilterSelector(this.subscribeParams());
     const entries = JournalEntries.find(selector, { sort: { valueDate: 1 } });
     let total = 0;
     const entriesWithRunningTotal = entries.map(e => {
@@ -65,4 +69,8 @@ Template.Account_history.viewmodel({
   negativeClass(entry) {
     return entry.effectiveAmount(this.sign()) < 0 ? 'negative' : '';
   },
+});
+
+Template.Account_history.events({
+  ...(actionHandlers(allTransactionsActions())),
 });

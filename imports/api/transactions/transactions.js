@@ -253,3 +253,52 @@ Factory.define('tx', Transactions, {
   debit: [],
   credit: [],
 });
+
+// ------------------- Publications utility
+
+function withSubs(code) {
+  return code[0] === '\\' ? new RegExp(code.split('\\')[1]) : code;
+}
+
+function dateFilter(begin, end) {
+  return {
+    $gte: moment(begin).toDate(),
+    $lt: moment(end).add(1, 'day').toDate(),
+  };
+}
+
+Transactions.makeFilterSelector = function makeFilterSelector(params) {
+  const selector = _.clone(params);
+  selector.valueDate = dateFilter(params.begin, params.end);
+  delete selector.begin; delete selector.end;
+  if (params.account) {
+    const account = withSubs(params.account);
+    selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];
+    delete selector.account;
+  }
+  if (params.localizer) {
+    const localizer = withSubs(params.localizer);
+    selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
+    delete selector.localizer;
+  }
+  if (params.creditAccount) {
+    const creditAccount = withSubs(params.creditAccount);
+    selector['credit.account'] = creditAccount;
+    delete selector.creditAccount;
+  }
+  if (params.debitAccount) {
+    const debitAccount = withSubs(params.debitAccount);
+    selector['debit.account'] = debitAccount;
+    delete selector.debitAccount;
+  }
+  return selector;
+};
+
+JournalEntries.makeFilterSelector = function makeFilterSelector(params) {
+  const selector = _.clone(params);
+  selector.valueDate = dateFilter(params.begin, params.end);
+  delete selector.begin; delete selector.end;
+  if (params.account) selector.account = withSubs(params.account);
+  if (params.localizer) selector.localizer = withSubs(params.localizer);
+  return selector;
+};

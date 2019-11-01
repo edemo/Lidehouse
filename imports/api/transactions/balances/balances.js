@@ -44,8 +44,11 @@ Balances.attachBehaviour(Timestamped);
 
 Balances.getTotal = function getTotal(def) {
   Balances.defSchema.validate(def);
+  let result = 0;
 
-  const coa = ChartOfAccounts.get(def.communityId);
+//  This version is slower in gathering sub-accounts first,
+//  but minimongo indexing does not handle sorting, so in fact might be faster after all
+/*  const coa = ChartOfAccounts.get(def.communityId);
   const leafs = coa.leafsOf(def.account);
   if (def.localizer) {
     const loc = Localizer.get(def.communityId);
@@ -53,7 +56,6 @@ Balances.getTotal = function getTotal(def) {
     debugAssert(locNode.isLeaf); // Currently not prepared for upward cascading localizer
     // If you want to know the balance of a whole floor or building, the transaction update has to trace the localizer's parents too
   }
-  let result = 0;
   leafs.forEach(leaf => {
     const balance = Balances.findOne({
       communityId: def.communityId,
@@ -62,7 +64,14 @@ Balances.getTotal = function getTotal(def) {
       tag: def.tag,
     });
     result += balance ? balance.total() : 0;
-  });
+  });*/
+
+  // Aggregating sub-accounts balances with regexp
+  const subdef = _.clone(def);
+  if (def.account) subdef.account = new RegExp('^' + def.account);
+  if (def.localizer) subdef.localizer = new RegExp('^' + def.localizer);
+  Balances.find(subdef).forEach(balance => result += balance.total());
+
   return result;
 };
 

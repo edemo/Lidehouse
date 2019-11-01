@@ -11,12 +11,18 @@
         </thead>
         <tbody>
             {{#each account in breakdown.nodes}}
+            {{#if hasActivity account}}
             <tr class="table-row {{headerLevelClass account}}">
                 <td class="nowrap">{{displayAccount account}}</td>
                 {{#each tag in tags}}
-                    <td class="cell nowrap" data-account="{{account.code}}" data-tag="{{tag}}">{{displayCell (balance account tag)}}</td>
+                    {{#let cellValue=(balance account tag)}}
+                    <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
+                        {{displayCell cellValue}}
+                    </td>
+                    {{/let}}
                 {{/each}} 
             </tr>
+            {{/if}}
             {{/each}}
         </tbody>
     </table>

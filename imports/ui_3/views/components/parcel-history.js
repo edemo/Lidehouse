@@ -17,15 +17,9 @@ Template.Parcel_history.viewmodel({
   parcelSelected: '',
   status: 'Reconciled',
   onCreated(instance) {
-    const self = this;
     instance.autorun(() => {
       if (this.partnerSelected()) {
-        instance.subscribe('transactions.byPartner', {
-          communityId: this.communityId(),
-          partnerId: this.partnerSelected(),
-          begin: moment(self.beginDate()).toDate(),
-          end: moment(self.endDate()).add(1, 'day').toDate(),
-        });
+        instance.subscribe('transactions.byPartner', this.subscribeParams());
       }
     });
   },
@@ -47,9 +41,16 @@ Template.Parcel_history.viewmodel({
     const result = (parcel && parcel.payer()) ? parcel.payer()._id : undefined;
     return result;
   },
+  subscribeParams() {
+    return {
+      communityId: this.communityId(),
+      partnerId: this.partnerSelected(),
+      begin: new Date(this.beginDate()),
+      end: new Date(this.endDate()),
+    };
+  },
   transactions() {
-    const selector = { valueDate: { $gte: moment(this.beginDate()).toDate(), $lt: moment(this.endDate()).add(1, 'day').toDate() } };
-    if (this.partnerSelected()) selector.partnerId = this.partnerSelected();
+    const selector = Transactions.makeFilterSelector(this.subscribeParams());
     const txs = Transactions.find(selector, { sort: { valueDate: 1 } });
     let total = 0;
     const txsWithRunningTotal = txs.map(tx => {

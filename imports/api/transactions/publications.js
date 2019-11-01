@@ -4,6 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
@@ -54,7 +55,7 @@ Meteor.publishComposite('transactions.byPartner', function transactionsInCommuni
     }
   }
 
-  const selector = { communityId, partnerId, valueDate: { $gte: begin, $lt: end } };
+  const selector = Transactions.makeFilterSelector(params);
   return findTransactionsWithTypeExtension(selector);
 });
 
@@ -67,7 +68,6 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
     end: { type: Date, optional: true },
   }).validate(params);
   const { communityId, account, localizer, begin, end } = params;
-
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', communityId)) {
     // then he can only see his own parcels' transactions
@@ -80,10 +80,7 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
     throw new Meteor.Error('invalid subscription');
   }
 
-  const selector = { communityId, valueDate: { $gte: begin, $lt: end } };
-  if (account) selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];
-  if (localizer) selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
-
+  const selector = Transactions.makeFilterSelector(params);
   return Transactions.find(selector);
 });
 
@@ -102,18 +99,7 @@ Meteor.publish('transactions.betweenAccounts', function transactionsInCommunity(
     return this.ready();
   }
 
-  const selector = { communityId, valueDate: { $gte: begin, $lt: end } };
-  const coa = ChartOfAccounts.get(communityId);
-  if (creditAccount) {
-    const creditNode = coa.nodeByCode(creditAccount);
-    const creditLeafs = creditNode.leafs().map(l => l.code);
-    selector['credit.account'] = { $in: creditLeafs };
-  }
-  if (debitAccount) {
-    const debitNode = coa.nodeByCode(debitAccount);
-    const debitLeafs = debitNode.leafs().map(l => l.code);
-    selector['debit.account'] = { $in: debitLeafs };
-  }
+  const selector = Transactions.makeFilterSelector(params);
   return Transactions.find(selector);
 });
 

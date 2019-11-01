@@ -27,7 +27,6 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import './accounting-transactions.html';
-import { PeriodBreakdown } from '../../../api/transactions/breakdowns/breakdowns-utils';
 
 Template.Accounting_transactions.viewmodel({
   txDefSelected: '',
@@ -81,13 +80,7 @@ Template.Accounting_transactions.viewmodel({
       this.debitAccountSelected(txDef.debit);
     },
     function txSubscription() {
-      const communityId = Session.get('activeCommunityId');
-      this.templateInstance.subscribe('transactions.betweenAccounts', { communityId,
-        creditAccount: this.creditAccountSelected(),
-        debitAccount: this.debitAccountSelected(),
-        begin: new Date(this.beginDate()),
-        end: new Date(this.endDate()),
-      });
+      this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());
     },
   ],
   txDefs() {
@@ -101,13 +94,21 @@ Template.Accounting_transactions.viewmodel({
     if (brk) return brk.nodeOptionsOf(accountCode, true);
     return [];
   },
+  subscribeParams() {
+    return {
+      communityId: this.communityId(),
+      creditAccount: '\\^' + this.creditAccountSelected() + '\\',
+      debitAccount: '\\^' + this.debitAccountSelected() + '\\',
+      begin: new Date(this.beginDate()),
+      end: new Date(this.endDate()),
+    };
+  },
   transactionsTableDataFn() {
-    const self = this;
     const templateInstance = Template.instance();
     return () => {
       if (!templateInstance.subscriptionsReady()) return [];
-      return Transactions.find({ communityId: self.communityId(), complete: true }).fetch();
-      // Filtered selector would be needed - but client side selector is slow, and we need everything anyways
+      const selector = Transactions.makeFilterSelector(this.subscribeParams());
+      return Transactions.find(selector).fetch();
     };
   },
   transactionsOptionsFn() {
