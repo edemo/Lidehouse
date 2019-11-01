@@ -90,6 +90,7 @@ Template.registerHelper('displayMeterService', displayMeterService);
 Template.registerHelper('displayReading', displayReading);
 Template.registerHelper('displayAccount', displayAccount);
 Template.registerHelper('displayLocalizer', displayLocalizer);
+Template.registerHelper('displayAccountSpecification', displayAccountSpecification);
 Template.registerHelper('displayStatus', displayStatus);
 Template.registerHelper('displayStatusChange', displayStatusChange);
 Template.registerHelper('displayTicketType', displayTicketType);

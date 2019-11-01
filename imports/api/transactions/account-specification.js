@@ -12,7 +12,7 @@ export const AccountSchema = new SimpleSchema({
 
 export class AccountSpecification {
   constructor(communityId, accountCode, localizerCode) {
-    this.communityId = communityId;
+    this.communityId = communityId || getActiveCommunityId();
     this.account = accountCode;
     this.localizer = localizerCode;
   }
