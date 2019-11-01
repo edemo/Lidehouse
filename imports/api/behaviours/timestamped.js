@@ -21,6 +21,8 @@ Trash.helpers({
   restore() {
     const collectionName = this.collection;
     delete this.collection;
+    this._id = this.id;
+    delete this.id;
     Mongo.Collection.get(collectionName).insert(this);
     // TODO: For this to work, have to add _id field to every schema
   },
@@ -83,10 +85,14 @@ function hooks(collection) {
         if (userId) modifier.$set.updaterId = userId;
         return true;
       },
+    },
+    after: {
       remove(userId, doc) {
         doc.deletedAt = Clock.currentTime();
         if (userId) doc.deleterId = userId;
         doc.collection = collection._name;
+        doc.id = doc._id;
+        delete doc._id;
         Trash.insert(doc);
         return true;
       },
