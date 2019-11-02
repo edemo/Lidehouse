@@ -206,8 +206,6 @@ export function insertDemoHouse(lang, demoOrTest) {
     habitants: 1,
   });
 
-  // Create breakdowns (incl Localizer)
-  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
 
   // Meters
   demoParcels.forEach((parcelId, i) => {
@@ -348,6 +346,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       }, ownershipData);
     });
   }
+
+  // ===== Breakdowns =====
+  // Create breakdowns (incl Localizer)
+  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
 
   // ===== Forum =====
 
