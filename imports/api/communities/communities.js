@@ -5,7 +5,7 @@ import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
-import { debugAssert } from '/imports/utils/assert.js';
+import { debugAssert, releaseAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
@@ -108,6 +108,7 @@ Meteor.startup(function attach() {
 if (Meteor.isServer) {
   Communities.after.remove(function (userId, doc) {
     Mongo.Collection.getAll().forEach((collection) => {
+      releaseAssert(doc._id);
       collection.instance.remove({ communityId: doc._id });
     });
   });

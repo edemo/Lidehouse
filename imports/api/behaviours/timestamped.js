@@ -28,6 +28,13 @@ Trash.helpers({
   },
 });
 
+if (Meteor.isServer) {
+  // Cannot write the Trash. Only with explicit hook avoider calling. Prevents accidents.
+  Trash.before.insert(function () { return false; });
+  Trash.before.update(function () { return false; });
+  Trash.before.remove(function () { return false; });
+}
+
 // The way to add Timestamped to a Schema:
 //
 // Collection.schema = ... the normal schema here without timestamps
@@ -88,12 +95,13 @@ function hooks(collection) {
     },
     after: {
       remove(userId, doc) {
-        doc.deletedAt = Clock.currentTime();
-        if (userId) doc.deleterId = userId;
-        doc.collection = collection._name;
-        doc.id = doc._id;
-        delete doc._id;
-        Trash.insert(doc);
+        const docCopy = _.extend({}, doc);
+        docCopy.deletedAt = Clock.currentTime();
+        if (userId) docCopy.deleterId = userId;
+        docCopy.collection = collection._name;
+        docCopy.id = doc._id;
+        delete docCopy._id;
+        Trash.direct.insert(docCopy);
         return true;
       },
     },
