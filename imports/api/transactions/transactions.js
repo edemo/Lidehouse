@@ -15,7 +15,7 @@ import { AccountSchema } from '/imports/api/transactions/account-specification.j
 import { JournalEntries } from '/imports/api/transactions/entries.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { PeriodBreakdown } from './breakdowns/breakdowns-utils.js';
+import { PeriodBreakdown } from './breakdowns/period.js';
 import { Partners, choosePartner } from '/imports/api/transactions/partners/partners.js';
 
 export const Transactions = new Mongo.Collection('transactions');
@@ -192,7 +192,7 @@ function updateBalances(doc, revertSign = 1) {
   doc = Transactions._transform(doc);
   const communityId = doc.communityId;
   doc.journalEntries().forEach((entry) => {
-    const leafTag = `T-${entry.valueDate.getFullYear()}-${entry.valueDate.getMonth() + 1}`;
+    const leafTag = 'T-' + moment(entry.valueDate).format('YYYY-MM');
 //      const coa = ChartOfAccounts.get(communityId);
 //      coa.parentsOf(entry.account).forEach(account => {
     const account = entry.account;

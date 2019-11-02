@@ -3,7 +3,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
+import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Balances } from './balances.js';
 

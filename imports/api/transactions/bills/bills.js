@@ -25,6 +25,7 @@ export const Bills = new Mongo.Collection('bills');
 Bills.lineSchema = new SimpleSchema({
   title: { type: String },
   details: { type: String, optional: true },
+  period: { type: String, optional: true },
   uom: { type: String, optional: true },  // unit of measurment
   quantity: { type: Number, decimal: true },
   unitPrice: { type: Number, decimal: true },

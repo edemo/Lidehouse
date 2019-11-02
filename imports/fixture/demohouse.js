@@ -862,12 +862,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     Clock.setSimulatedTime(new Date(`${lastYear}-${mm}-12`));
     demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: Clock.currentDate() });
   });
-  Clock.clear();
 
   // === Owner Payins ===
   demoBuilder.everybodyPaysTheirBills();
 
   // Some unpaid bills (so we can show the parcels that are in debt)
+  Clock.setSimulatedTime(new Date(`${lastYear}-12-20`));
   demoBuilder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
     projection: 'area',
@@ -879,7 +879,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       end: new Date(`${lastYear}-12-31`),
     },
   });
-  demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: new Date('2018-01-12') });
+  demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: new Date(`${lastYear}-12-20`) });
 
   // Unidentified payin
   demoBuilder.create('statementEntry', {
@@ -889,7 +889,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     partner: 'Gipsz Jakab',
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
   });
-  
+
+  Clock.clear();
+
 // ===== Transactions =====
 
 // === Opening ===

@@ -4,7 +4,7 @@ import { numeral } from 'meteor/numeral:numeral';
 
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils.js';
+import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
 import './balance-report.html';
 
 Template.Balance_report.onCreated(function onCreated() {

@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/breakdowns-utils';
+import { Period, PeriodBreakdown } from '/imports/api/transactions/breakdowns/period';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import '/imports/ui_3/views/components/account-history.js';
 import './accounting-ledger.html';
@@ -45,7 +45,7 @@ Template.Accounting_ledger.events({
     const accountCode = $(event.target).closest('[data-account]').data('account');
     instance.viewmodel.selectedAccount('' + accountCode);
     const periodTag = $(event.target).closest('[data-tag]').data('tag');
-    const period = new Period(periodTag);
+    const period = Period.fromTag(periodTag);
     instance.viewmodel.selectedBeginDate(period.begin());
     instance.viewmodel.selectedEndDate(period.end());
   },

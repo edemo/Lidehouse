@@ -15,8 +15,8 @@ import { Meters } from '/imports/api/meters/meters.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 //  import { TxDefs } from '/imports/api/transactions/tx-defs.js';
-import { insert as insertTx } from '/imports/api/transactions/methods.js';
-import { Bills } from '../bills/bills';
+import { Bills } from '/imports/api/transactions/bills/bills';
+import { Period } from '/imports/api/transactions/breakdowns/period.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
@@ -32,11 +32,13 @@ export const apply = new ValidatedMethod({
     const activeParcelBillings = ids
       ? ParcelBillings.find({ communityId, _id: { $in: ids } })
       : ParcelBillings.find({ communityId, active: true });
+    const billingPeriod = Period.monthOfDate(valueDate);
     activeParcelBillings.forEach((parcelBilling) => {
       const parcels = parcelBilling.parcels(localizer);
       parcels.forEach((parcel) => {
         const line = {};
         line.title = parcelBilling.title;
+        line.period = billingPeriod.label;
         let activeMeter;
         if (parcelBilling.consumption) {
           activeMeter = Meters.findOne({ parcelId: parcel._id, service: parcelBilling.consumption, active: true });
