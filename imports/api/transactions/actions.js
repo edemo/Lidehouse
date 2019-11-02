@@ -83,6 +83,7 @@ export function getTransactionsActionsSmall() {
   return actions;
 }
 
+AutoForm.addModalHooks('af.transaction.view');
 AutoForm.addModalHooks('af.transaction.insert');
 AutoForm.addModalHooks('af.transaction.update');
 

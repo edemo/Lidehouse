@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive transactions">
         <table class="table table-striped">
             <tbody>
               <tr style="font-weight: bold">
@@ -57,7 +57,7 @@
               {{#each entry in journalEntries}}
               <tr>
                   <td>{{displayDate entry.valueDate}}</td>
-                  <td>{{{entry.contra.display}}}</td>
+                  <td>{{{displayAccountSpecification entry.contra}}}</td>
                   <td>{{entry.note}}</td>
                   <td class="{{negativeClass entry}}">{{displayMoney (entry.effectiveAmount sign)}}</td>
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>

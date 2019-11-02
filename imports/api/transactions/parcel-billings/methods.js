@@ -5,6 +5,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
+import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { checkExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -74,19 +75,23 @@ export const apply = new ValidatedMethod({
         line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
         line.localizer = Localizer.parcelRef2code(parcel.ref);
         
+        // Creating the bill - adding entry to the bill
         bills[parcel._id] = bills[parcel._id] || {
           communityId: parcelBilling.communityId,
           relation: 'parcel',
 //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
           partnerId: parcel.payer()._id,
           valueDate,
-          issueDate: moment().toDate(),
-          dueDate: moment().add(BILLING_DUE_DAYS, 'days').toDate(),
+          issueDate: Clock.currentDate(),
+          dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
           lines: [],
         };
         bills[parcel._id].lines.push(line);
 
+        // Updating the otstanding balance of the parcel
         Parcels.update(parcel._id, { $inc: { outstanding: line.amount } });
+
+        // Updating the meter readings
         if (activeMeter) {
           Meters.methods.registerBilling._execute({ userId: this.userId }, {
             _id: activeMeter._id,

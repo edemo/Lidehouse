@@ -133,8 +133,8 @@
   "partners": "partnerek",
   "bill": "számla",
   "bills": "számlák",
-  "payment": "kifizetés",
-  "payments": "kifizetések",
+  "payment": "számla teljesítés",
+  "payments": " számla teljesítések",
   "statement": "kivonat",
   "statements": "kivonatok",
   "statementEntry": "tétel",
@@ -154,6 +154,7 @@
   "created": "létrehozva",
   "closes": "lezárul",
   "news": "hirdetmény",
+  "item": "tétel",
 
   "topic" : {
     "general": "téma",
@@ -275,6 +276,10 @@
   "Click the button on the right to see all parcels": "Az összes albetét megtekintése a jobb oldali gombbal",
   "meter": "mérőóra",
   "meters": "mérőórák",
+  "leadership": "vezető albetét",
+  "leaderships": "Vezető albetétek",
+  "lead parcel": "vezető albetét",
+  "follower parcels": "kapcsolt albetétek",
 
   // topics
   "The": "A",
@@ -302,6 +307,7 @@
   "votings": "szavazások",
   "status": "státusz",
   "active": "aktív",
+  "Active": "Aktív",
   "closed": "lezárult",
   "Successful voting": "Eredményes szavazás",
   "Unsuccessful voting": "Eredménytelen szavazás",
@@ -428,6 +434,7 @@
   "out bills": "Kimenő számlák",
   "parcel bills": "Előírások",
   "Reports": "Kimutatások",
+  "General ledger": "Naplófőkönyv",
   "Reconciliation": "Egyeztetés",
   "Common cost plan": "Előírás minden albetétre",
   "Balance sheet": "Mérleg",
@@ -513,7 +520,40 @@
   "Costing of inventory": "Készlet költség elszámolás",
   "Incoming  bill costing": "Bejövő számla költségelszámolása",
   "Accounting operation": "Könyvelési művelet",
-  
+
+  "CustomerBill": {
+    "name": "Kimenő számla",
+    "code": "KSZ"
+  },
+  "SupplierBill": {
+    "name": "Bejövő számla",
+    "code": "BSZ"
+  },
+  "ParcelBill": {
+    "name": "Albetét előírás",
+    "code": "AE"
+  },
+  "CustomerPayment": {
+    "name": "Kimenő számla befolyás",
+    "code": "KSZF"
+  },
+  "SupplierPayment": {
+    "name": "Bejövő számla kifizetése",
+    "code": "BSZF"
+  },
+  "ParcelPayment": {
+    "name": "Albetét befizetés",
+    "code": "AEF"
+  },
+  "MoneyTransfer": {
+    "name": "Átvezetés pénz számlák között",
+    "code": "ÁP"
+  },
+  "AccountingOp": {
+    "name": "Könyvelési művelet",
+    "code": "KM"
+  },
+
   // Localizer
   "All locations": "Összes hely",
   "Parcels": "Albetétek",
@@ -627,6 +667,9 @@
   "insert community successful": "Közösség sikeresen létrehozva.",
   "update community successful": "Közösség adatai módosítva",
   "delete community successful": "Közösség törölve",
+  "insert leaderships successful": "Vezető albetét sikeresen létrehozva.",
+  "update leaderships successful": "Vezető albetét adatai módosítva",
+  "delete leadership successful": "Vezető albetét törölve",
   "insert parcel successful": "Albetét rögzítésre került",
   "update parcel successful": "Albetét adatai módosítva",
   "delete parcel successful": "Albetét törölve",
@@ -704,6 +747,7 @@
   "delete breakdown": "törli a könyvelési bontást",
   "delete txDef": "törli a tranzakció típust",
   "delete transaction": "törli a tranzakciót",
+  "delete leadership": "törli a vezető albetétet",
   "enable delegations": "engedélyezi a bejövő meghatalmazásokat",
   "disable delegations": "visszautasítja a bejövő meghatalmazásokat",
   "revoke delegation": "visszavonja a meghatalmazást",

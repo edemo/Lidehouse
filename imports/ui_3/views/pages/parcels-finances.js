@@ -4,6 +4,7 @@ import { _ } from 'meteor/underscore';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
+import { moment } from 'meteor/momentjs:moment';
 
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -11,8 +12,10 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 
+import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -82,40 +85,40 @@ Template.Parcels_finances.viewmodel({
     });
   },
   myLeadParcels() {
-    const communityId = this.communityId();
+    const communityId = Session.get('activeCommunityId');
     const user = Meteor.user();
     if (!user || !communityId) return [];
-    return user.ownedLeadParcels().map(p => p.ref);
-  },
-  myLeadParcelOptions() {
-    const communityId = Session.get('activeCommunityId');
-    const myOwnerships = Memberships.find({ communityId, active: true, approved: true, personId: Meteor.userId(), role: 'owner' });
-    const myLeadParcelRefs = _.uniq(myOwnerships.map(m => { 
-      const parcel = m.parcel();
-      return (parcel && !parcel.isLed()) ? parcel.ref : null;
-    }));
-    return myLeadParcelRefs.map((ref) => { return { label: ref, value: ref }; });
+    return user.ownedLeadParcels(communityId);
   },
   parcelChoices() {
-    return Parcels.find().map((parcel) => {
+    return this.myLeadParcels().map((parcel) => {
       return {
         label: parcel.display(),
-        value: parcel.payer()._id,
+        value: parcel._id,
 //        value: Localizer.parcelRef2code(parcel.ref),
       };
     });
+  },
+  defaultBeginDate() {
+    return moment().subtract(1, 'year').format('YYYY-MM-DD');
+  },
+  defaultEndDate() {
+    return moment().format('YYYY-MM-DD');
   },
   parcelFinancesTableDataFn() {
     const communityId = Session.get('activeCommunityId');
     return () => {
       const dataset = [];
-      const parcels = Parcels.find({ communityId, approved: true });
+      const parcels = this.myLeadParcels();
       parcels.forEach(parcel => {
-        const parcelRef = parcel.ref;
-        const owners = parcel.owners().fetch();
+        dataset.push({
+          parcelId: parcel._id,
+          parcelRef: parcel.ref,
+          owners: parcel.owners().fetch(),
+          balance: (-1) * parcel.outstanding,
+          followers: parcel.followers().map(p => p.ref),
+        });
 //        const balance = (-1) * Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcelRef), tag: 'T' });
-        const balance = (-1) * parcel.outstanding;
-        dataset.push({ parcelRef, owners, balance });
       });
       return dataset;
     };
@@ -125,9 +128,10 @@ Template.Parcels_finances.viewmodel({
       return {
         columns: [
           { data: 'parcelRef', title: __('schemaParcels.ref.label') },
+          { data: 'followers', title: __('follower parcels') },
           { data: 'owners', title: __('owner'), render: Render.joinOccupants },
           { data: 'balance', title: __('Balance'), render: Render.formatNumber },
-          { data: 'parcelRef', title: __('Action buttons'), render: Render.buttonViewLink },
+          { data: 'parcelId', title: __('Action buttons'), render: Render.buttonViewLink },
         ],
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
@@ -188,12 +192,17 @@ Template.Parcels_finances.viewmodel({
 Template.Parcels_finances.events({
   'click #balances .js-view'(event, instance) {
 //    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
-    const parcelRef = $(event.target).closest('button').data('id');
-    const localizerCode = Localizer.parcelRef2code(parcelRef);
-    instance.viewmodel.parcelToView(localizerCode);
+    const parcelId = $(event.target).closest('button').data('id');
+//    const localizerCode = Localizer.parcelRef2code(parcelRef);
+    instance.viewmodel.parcelToView(parcelId);
   },
   'click #balances .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);
+  },
+  'click #parcel-history .js-view'(event, instance) {
+    allBillsActions();
+    const id = $(event.target).closest('button').data('id');
+    Bills.actions.view.run(id);
   },
 });

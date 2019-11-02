@@ -1,9 +1,9 @@
 <template name="Balance_report">
     <div class="table-responsive">
-    <table class="table table-bordered table-condensed">
+    <table class="table table-bordered table-condensed ">
         <thead>
           <tr class="table-row">
-              <td></td>
+              <td><!--strong>{{_ 'Chart Of Accounts'}}</strong--></td>
               {{#each tag in tags}}
               <td><strong>{{displayPeriod tag}}</strong></td>
               {{/each}}
@@ -11,12 +11,18 @@
         </thead>
         <tbody>
             {{#each account in breakdown.nodes}}
+            {{#if hasActivity account}}
             <tr class="table-row {{headerLevelClass account}}">
-                <td>{{displayAccount account}}</td>
+                <td class="nowrap">{{displayAccount account}}</td>
                 {{#each tag in tags}}
-                    <td class="cell">{{displayCell (balance account tag)}}</td>
+                    {{#let cellValue=(balance account tag)}}
+                    <td class="cell nowrap {{negativeClass cellValue}}" data-account="{{account.code}}" data-tag="{{tag}}" style="cursor: pointer">
+                        {{displayCell cellValue}}
+                    </td>
+                    {{/let}}
                 {{/each}} 
             </tr>
+            {{/if}}
             {{/each}}
         </tbody>
     </table>

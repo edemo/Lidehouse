@@ -1,14 +1,29 @@
 /* eslint-disable prefer-arrow-callback */
 
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from './transactions.js';
 
-Meteor.publish('transactions.byId', function transactionsInCommunity(params) {
+function findTransactionsWithTypeExtension(selector) {
+  return {
+    find() {
+      return Transactions.find(selector);
+    },
+    children: [{
+      find(tx) {
+        return Mongo.Collection.get(tx.dataType).find(tx._id);
+      },
+    }],
+  };
+}
+
+Meteor.publishComposite('transactions.byId', function transactionsInCommunity(params) {
   new SimpleSchema({
     _id: { type: String },
   }).validate(params);
@@ -19,10 +34,10 @@ Meteor.publish('transactions.byId', function transactionsInCommunity(params) {
   if (!user.hasPermission('transactions.inCommunity', tx.communityId)) {
     return this.ready();
   }
-  return Transactions.find({ _id });
+  return findTransactionsWithTypeExtension({ _id });
 });
 
-Meteor.publish('transactions.byPartner', function transactionsInCommunity(params) {
+Meteor.publishComposite('transactions.byPartner', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
     partnerId: { type: String },
@@ -40,8 +55,8 @@ Meteor.publish('transactions.byPartner', function transactionsInCommunity(params
     }
   }
 
-  const selector = { communityId, partnerId, valueDate: { $gte: begin, $lt: end } };
-  return Transactions.find(selector);
+  const selector = Transactions.makeFilterSelector(params);
+  return findTransactionsWithTypeExtension(selector);
 });
 
 Meteor.publish('transactions.byAccount', function transactionsInCommunity(params) {
@@ -53,7 +68,6 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
     end: { type: Date, optional: true },
   }).validate(params);
   const { communityId, account, localizer, begin, end } = params;
-
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', communityId)) {
     // then he can only see his own parcels' transactions
@@ -66,10 +80,7 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
     throw new Meteor.Error('invalid subscription');
   }
 
-  const selector = { communityId, valueDate: { $gte: begin, $lt: end } };
-  if (account) selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];
-  if (localizer) selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
-
+  const selector = Transactions.makeFilterSelector(params);
   return Transactions.find(selector);
 });
 
@@ -88,18 +99,7 @@ Meteor.publish('transactions.betweenAccounts', function transactionsInCommunity(
     return this.ready();
   }
 
-  const selector = { communityId, valueDate: { $gte: begin, $lt: end } };
-  const coa = ChartOfAccounts.get(communityId);
-  if (creditAccount) {
-    const creditNode = coa.nodeByCode(creditAccount);
-    const creditLeafs = creditNode.leafs().map(l => l.code);
-    selector['credit.account'] = { $in: creditLeafs };
-  }
-  if (debitAccount) {
-    const debitNode = coa.nodeByCode(debitAccount);
-    const debitLeafs = debitNode.leafs().map(l => l.code);
-    selector['debit.account'] = { $in: debitLeafs };
-  }
+  const selector = Transactions.makeFilterSelector(params);
   return Transactions.find(selector);
 });
 

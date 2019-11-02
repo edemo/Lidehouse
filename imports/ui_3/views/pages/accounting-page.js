@@ -3,9 +3,11 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
 import '/imports/ui_3/views/components/accounting-bills.js';
+import '/imports/ui_3/views/components/accounting-ledger.js';
 import '/imports/ui_3/views/components/accounting-transactions.js';
 import '/imports/ui_3/views/components/accounting-breakdowns.js';
 import '/imports/ui_3/views/components/accounting-reconciliation.js';
+
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries';

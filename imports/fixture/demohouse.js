@@ -206,6 +206,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     habitants: 1,
   });
 
+
   // Meters
   demoParcels.forEach((parcelId, i) => {
     if (_.contains([0, 2, 3, 5, 6, 8, 9, 10, 11, 12], i)) {
@@ -345,6 +346,10 @@ export function insertDemoHouse(lang, demoOrTest) {
       }, ownershipData);
     });
   }
+
+  // ===== Breakdowns =====
+  // Create breakdowns (incl Localizer)
+  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
 
   // ===== Forum =====
 
@@ -804,7 +809,6 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Accounting =====
 
-  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
 
   // === Parcel Billings ===
 
@@ -855,9 +859,10 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
-    const valueDate = new Date(`2017-${mm}-12`);
-    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate });
+    Clock.setSimulatedTime(new Date(`${lastYear}-${mm}-12`));
+    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: Clock.currentDate() });
   });
+  Clock.clear();
 
   // === Owner Payins ===
   demoBuilder.everybodyPaysTheirBills();
@@ -884,7 +889,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     partner: 'Gipsz Jakab',
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
   });
-
+  
 // ===== Transactions =====
 
 // === Opening ===
@@ -1092,8 +1097,7 @@ function purgeDemoUserWithParcel(userId, parcelId, communityId) {
     Communities.update({ _id: communityId }, { $set: { totalunits: (currentTotalunits - 100) } });
   }
   // Purge finacial records
-  ParcelBillings.remove({ 'account.Localizer': parcel.ref });
-  Transactions.remove({ 'entries.0.account.Localizer': parcel.ref });
+  // TODO Transactions.remove({ 'entries.0.account.Localizer': parcel.ref });
   Breakdowns.update({ communityId, name: 'Parcels' }, {
     $pull: { children: { name: parcel.ref } },
   });

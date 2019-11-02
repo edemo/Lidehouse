@@ -41,6 +41,7 @@ if (Meteor.isServer) {
       before(function () {
         billId = FixtureA.builder.create('bill', {
           relation: 'supplier',
+          partnerId: FixtureA.supplier,
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -58,6 +59,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.payments.length, 0);
         chai.assert.equal(bill.outstanding, 300);
         chai.assert.equal(bill.isConteered(), false);
+        chai.assert.equal(bill.partner().outstanding, 300);
       });
 
       it('Can not conteer without accounts', function () {
@@ -79,7 +81,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.isConteered(), true);
         const tx = Transactions.findOne(billId);
         chai.assert.isDefined(tx);
-        chai.assert.equal(tx.type, 'Bills');
+        chai.assert.equal(tx.dataType, 'bills');
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '85', localizer: '@' }]);
         chai.assert.deepEqual(tx.credit, [{ account: '46' }]);
@@ -94,6 +96,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.outstanding, 200);
+        chai.assert.equal(bill.partner().outstanding, 200);
 
         const paymentId2 = FixtureA.builder.create('payment',
           { relation: 'supplier', billId, amount: 200, valueDate: Clock.currentTime(), account: bankAccount },
@@ -102,6 +105,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 2);
         chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(bill.partner().outstanding, 0);
 
         let tx1 = Transactions.findOne(paymentId1);
         chai.assert.isUndefined(tx1);
@@ -111,6 +115,7 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Payments.methods.conteer, { _id: paymentId1 });
         tx1 = Transactions.findOne(paymentId1);
         chai.assert.isDefined(tx1);
+        chai.assert.equal(tx1.dataType, 'payments');
         chai.assert.equal(tx1.amount, 100);
         chai.assert.deepEqual(tx1.debit, [{ account: '46' }]);
         chai.assert.deepEqual(tx1.credit, [{ account: bankAccount }]);
@@ -118,6 +123,7 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Payments.methods.conteer, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isDefined(tx2);
+        chai.assert.equal(tx2.dataType, 'payments');
         chai.assert.equal(tx2.amount, 200);
         chai.assert.deepEqual(tx2.debit, [{ account: '46' }]);
         chai.assert.deepEqual(tx2.credit, [{ account: bankAccount }]);
@@ -135,6 +141,7 @@ if (Meteor.isServer) {
       beforeEach(function () {
         billId = FixtureA.builder.create('bill', {
           relation: 'supplier',
+          partnerId: FixtureA.supplier,
           lines: [{
             title: 'The Work',
             uom: 'piece',
@@ -186,6 +193,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.getPayments()[0].isReconciled(), false);
         chai.assert.equal(bill.outstanding, 200);
+        chai.assert.equal(bill.partner().outstanding, 200);
 
         // later if the same tx comes in from bank import, no extra payment is created
         FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, paymentId: bill.payments[0] });
@@ -194,6 +202,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.getPayments()[0].isReconciled(), true);
         chai.assert.equal(bill.outstanding, 200);
+        chai.assert.equal(bill.partner().outstanding, 200);
       });
 
       it('Can pay bill from bank import', function () {
@@ -208,6 +217,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.getPayments()[0].isReconciled(), true);
         chai.assert.equal(bill.outstanding, 200);
+        chai.assert.equal(bill.partner().outstanding, 400);  // prev test billed the same partner!
       });
     });
 

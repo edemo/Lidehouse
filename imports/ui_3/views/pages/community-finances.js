@@ -4,7 +4,6 @@ import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
 import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
@@ -113,7 +112,7 @@ Template.Community_finances.viewmodel({
   community() { return Communities.findOne(this.communityId()); },
   DEMO() { return this.community() && _.contains(['Test house', 'Teszt ház', 'Demo house', 'Demo ház'], this.community().name); },
   startTag: 'T-2017-1',
-  endTag: PeriodBreakdown.currentCode(),
+  endTag: PeriodBreakdown.currentMonthTag(),
   startIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.startTag()); },
   endIndex() { return PeriodBreakdown.leafs().findIndex(l => l.code === this.endTag()); },
   periods() { return PeriodBreakdown.leafs().slice(this.startIndex(), this.endIndex()); },
@@ -326,15 +325,5 @@ Template.Community_finances.events({
 //    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
     const accountCode = $(event.target).closest('a').data('id');
     instance.viewmodel.accountToView(accountCode);
-  },
-  'click #account-history .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.transaction.view',
-      collection: Transactions,
-      schema: Transactions.inputSchema,
-      doc: Transactions.findOne(id),
-      type: 'readonly',
-    });
   },
 });

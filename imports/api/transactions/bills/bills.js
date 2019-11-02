@@ -6,7 +6,6 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
-import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
@@ -42,6 +41,8 @@ Bills.lineSchema = new SimpleSchema({
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
   amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   /*autoValue() {
     const lines = this.field('lines');
@@ -54,8 +55,6 @@ Bills.schema = new SimpleSchema({
   issueDate: { type: Date },
   valueDate: { type: Date },
   dueDate: { type: Date },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
-  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
   note: { type: String, optional: true, autoform: { rows: 3 } },
@@ -87,6 +86,9 @@ Bills.helpers({
   contract() {
     return Contracts.findOne(this.contractId);
   },
+  lineCount() {
+    return this.lines.length;
+  },
   matchingTxSide() {
     if (this.relation === 'supplier') return 'debit';
     else if (this.relation === 'customer' || this.relation === 'parcel') return 'credit';
@@ -115,7 +117,7 @@ Bills.helpers({
     const tx = {
       _id: this._id,
       communityId: this.communityId,
-      type: 'Bills',
+      dataType: 'bills',
       // def: 'bill'
       valueDate: this.valueDate,
       amount: this.amount,
@@ -207,7 +209,7 @@ if (Meteor.isServer) {
 
 Bills.attachSchema(Bills.schema);
 Bills.attachBehaviour(Timestamped);
-Bills.attachBehaviour(SerialId(Bills, ['relation']));
+Bills.attachBehaviour(SerialId(['relation']));
 
 Meteor.startup(function attach() {
   Bills.simpleSchema().i18n('schemaBills');

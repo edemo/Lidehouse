@@ -20,6 +20,8 @@ import '/imports/api/comments/methods.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import '/imports/api/transactions/breakdowns/methods.js';
+import { Partners } from '/imports/api/transactions/partners/partners.js';
+import '/imports/api/transactions/partners/methods.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import '/imports/api/transactions/bills/methods.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
@@ -234,15 +236,17 @@ export class CommunityBuilder {
     return Localizer.parcelRef2code(parcel.ref);
   }
   generateDemoPayments(parcel, membership) {
+    Clock.starts(1, 'year', 'ago');
     for (let mm = 1; mm < 13; mm++) {
-      const valueDate = new Date('2017-' + mm + '-' + _.sample(['04', '05', '06', '07', '08', '11']));
       this.execute(ParcelBillings.methods.apply, {
         communityId: this.communityId,
-        valueDate,
+        valueDate: Clock.currentDate(),
         localizer: Localizer.parcelRef2code(parcel.ref),
       });
       this.payBillsOf(membership);
+      Clock.tick(1, 'month');
     }
+    Clock.clear();
   }
   payBill(bill) {
     if (bill.hasConteerData() && !bill.isConteered()) {
@@ -255,8 +259,8 @@ export class CommunityBuilder {
       account: '381',
     });*/
     const entryId = this.create('statementEntry', {
-      account: '381',
-      valueDate: Clock.currentDate(),
+      account: '382',
+      valueDate: bill.dueDate,
       partner: bill.partner().toString(),
       note: bill.serialId() + ' payment',
       amount: bill.outstanding,

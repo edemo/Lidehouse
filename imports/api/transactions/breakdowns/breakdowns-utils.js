@@ -1,3 +1,4 @@
+import { moment } from 'meteor/momentjs:moment';
 import { Breakdowns } from './breakdowns.js';
 
 const sideTags = {
@@ -50,8 +51,47 @@ const periodTags = {
   digit: 'T', name: 'Total', include: yearTags,
 };
 
+export class Period {
+  constructor(tag) {
+    const split = tag.split('-');
+    this.year = split[1];
+    this.month = split[2];
+    if (this.month && this.month.length === 1) this.month = '0' + this.month;
+  }
+  begin(format = 'YYYY-MM-DD') {
+    let date;
+    if (!this.year) date = moment(0);
+    else if (!this.month) date = moment([this.year]).startOf('year');
+    else date = moment([this.year, this.month - 1]).startOf('month');
+    return date.format(format);
+  }
+  end(format = 'YYYY-MM-DD') {
+    let date;
+    if (!this.year) date = moment();
+    else if (!this.month) date = moment([this.year]).endOf('year');
+    else date = moment([this.year, this.month - 1]).endOf('month');
+    return date.format(format);
+  }
+}
+
 export const PeriodBreakdown = Breakdowns._transform(periodTags);
-PeriodBreakdown.currentCode = function () {
+PeriodBreakdown.currentMonthTag = function () {
   const now = new Date();
   return `T-${now.getFullYear()}-${now.getMonth() + 1}`;
+};
+PeriodBreakdown.currentYearTag = function () {
+  const now = new Date();
+  return `T-${now.getFullYear()}`;
+};
+PeriodBreakdown.lastYearTag = function () {
+  const now = new Date();
+  return `T-${now.getFullYear() - 1}`;
+};
+PeriodBreakdown.currentYearMonths = function () {
+  const now = new Date();
+  return PeriodBreakdown.fullYearMonths(now.getFullYear());
+};
+
+PeriodBreakdown.fullYearMonths = function (year) {
+  return PeriodBreakdown.leafsOf(`T-${year}`).map(l => l.code);
 };

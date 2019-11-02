@@ -26,15 +26,15 @@ if (Meteor.isServer) {
 
     const collection0 = new Mongo.Collection('with_0_definerField');
     collection0.attachSchema(schema);
-    collection0.attachBehaviour(SerialId(collection0));
+    collection0.attachBehaviour(SerialId());
 
     const collection1 = new Mongo.Collection('with_1_definerField');
     collection1.attachSchema(schema);
-    collection1.attachBehaviour(SerialId(collection1, ['category']));
+    collection1.attachBehaviour(SerialId(['category']));
 
     const collection2 = new Mongo.Collection('with_2_definerField');
     collection2.attachSchema(schema);
-    collection2.attachBehaviour(SerialId(collection2, ['category', 'otherField.color']));
+    collection2.attachBehaviour(SerialId(['category', 'otherField.color']));
     
     const docData1 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'pink' }, communityId: 'no1', serial: 0 };
     const docData2 = { textField: faker.random.word(), category: 'Countable', otherField: { color: 'green' }, communityId: 'no1', serial: 0 };
@@ -143,7 +143,7 @@ if (Meteor.isServer) {
     });
 
     describe('edge cases', function () {
-      it('throws error if no collection1 is given as attribute', function (done) {
+      xit('throws error if no collection1 is given as attribute', function (done) {
         const collection4 = new Mongo.Collection('noCollection');
         collection4.attachSchema(schema);
         chai.assert.throws(() => collection4.attachBehaviour(SerialId()));

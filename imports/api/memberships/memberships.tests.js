@@ -11,6 +11,7 @@ import { Fraction } from 'fractional';
 
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { insert as insertLeadership, update as updateLeadership, remove as removeLeadership } from '/imports/api/leaderships/methods.js';
 import '/imports/api/memberships/methods.js';
 import { everyRole, defaultRoles } from '/imports/api/permissions/roles.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -329,9 +330,12 @@ if (Meteor.isServer) {
       });
 
       it('parcel should have either lead or owners, but not both', function (done) {
+        const userId = Fixture.demoManagerId;
         const leadParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 });
-        const parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '56', leadRef: '45', units: 0 });
-        
+        const parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '56', units: 0 });
+        insertLeadership._execute({ userId }, { communityId: Fixture.demoCommunityId, parcelId, leadRef: '45', activeTime: { begin: new Date() } });
+
+
         Memberships.methods.insert._execute({ userId: Fixture.demoAdminId },
             createMembershipWithShare(leadParcelId, new Fraction(1, 2)));
 

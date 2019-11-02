@@ -15,6 +15,8 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '../partners/partners.js';
 import { Bills } from '../bills/bills.js';
 import { StatementEntries } from '../statements/statements';
@@ -26,7 +28,14 @@ Payments.schema = new SimpleSchema({
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
   amount: { type: Number },
   valueDate: { type: Date },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner,
+    autoValue() {
+      if (this.field('billId').value) {
+        const bill = Bills.findOne(this.field('billId').value);
+        if (bill) return bill.partnerId;
+      } else return undefined;
+    },
+  },
   account: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
   // Connect either a bill or a contra account
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
@@ -51,6 +60,10 @@ Payments.helpers({
   partner() {
     return Partners.relCollection(this.relation).findOne(this.partnerId);
   },
+  lineCount() {
+    if (this.billId) return 0;
+    return Bills.findOne(this.billId).lineCount();
+  },
   isConteered() {
     return (!!this.txId);
   },
@@ -65,7 +78,7 @@ Payments.helpers({
     const tx = {
       _id: this._id,
       communityId: this.communityId,
-      type: 'Payments',
+      dataType: 'payments',
       // def: 'payment',
       valueDate: this.valueDate,
       amount: this.amount,
@@ -105,12 +118,44 @@ Payments.helpers({
 
 Payments.attachSchema(Payments.schema);
 Payments.attachBehaviour(Timestamped);
-Payments.attachBehaviour(SerialId(Payments));
+Payments.attachBehaviour(SerialId());
 
 Meteor.startup(function attach() {
   Payments.simpleSchema().i18n('schemaBills');
 });
 
+// --- Before/after actions ---
+function reduceOutstandings() {
+  const payment = this;
+  if (Meteor.isClient) return; 
+  debugAssert(payment.billId, 'Cannot process a payment without connecting it to a bill first');
+  debugAssert(payment.partnerId, 'Cannot process a payment without a partner');
+  const bill = Bills.findOne(payment.billId);
+  Partners.relCollection(payment.relation).update(payment.partnerId, { $inc: { outstanding: (-1) * payment.amount } });
+  if (payment.relation === 'parcel') {
+    bill.lines.forEach(line => {
+      debugAssert(line.localizer, 'Cannot process a parcel payment without bill localizer fields');
+      const ref = Localizer.code2parcelRef(line.localizer);
+      Parcels.update({ communityId: payment.communityId, ref }, { $inc: { outstanding: (-1) * line.amount } });
+    });
+  }
+}
+
+if (Meteor.isServer) {
+  Payments.before.insert(function (userId, doc) {
+  });
+
+  Payments.after.insert(function (userId, doc) {
+//    const tdoc = this.transform();
+    reduceOutstandings.apply(doc);
+  });
+
+  Payments.before.update(function (userId, doc, fieldNames, modifier, options) {
+  });
+
+  Payments.after.update(function (userId, doc, fieldNames, modifier, options) {
+  });
+}
 // --- Factory ---
 
 Factory.define('payment', Payments, {

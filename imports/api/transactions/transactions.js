@@ -20,18 +20,21 @@ import { Partners, choosePartner } from '/imports/api/transactions/partners/part
 
 export const Transactions = new Mongo.Collection('transactions');
 
+Transactions.categoryValues = ['CustomerBill', 'SupplierBill', 'ParcelBill', 'CustomerPayment', 'SupplierPayment', 'ParcelPayment', 'MoneyTransfer', 'AccountingOp'];
+
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
   { amount: { type: Number, optional: true } },
   // A tx leg can be directly associated with a bill, for its full amount (if a tx is associated to multiple bills, use legs for each association, one leg can belong to one bill)
-  { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
-  { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
+  // { billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true } },
+  // { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
 ]);
 
 Transactions.baseSchema = {
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },  // We explicitly use the same _id for the Bill and the corresponding Tx
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  type: { type: String, allowedValues: ['Bills', 'Payments'], optional: true, autoform: { omit: true } },
+  dataType: { type: String, allowedValues: ['bills', 'payments'], optional: true, autoform: { omit: true } },
+  category: { type: String, allowedValues: Transactions.categoryValues, optional: true, autoform: { omit: true } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   valueDate: { type: Date },
@@ -45,19 +48,22 @@ Transactions.baseSchema = {
 //  },
 };
 
+Transactions.legsSchema = {
+  debit: { type: [Transactions.entrySchema], optional: true },
+  credit: { type: [Transactions.entrySchema], optional: true },
+  complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
+  reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
+};
+
 Transactions.noteSchema = {
   ref: { type: String, optional: true },
   note: { type: String, optional: true },
 };
 
 Transactions.schema = new SimpleSchema([
-  _.clone(Transactions.baseSchema), {
-    debit: { type: [Transactions.entrySchema], optional: true },
-    credit: { type: [Transactions.entrySchema], optional: true },
-    complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
-    reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
-  },
-  _.clone(Transactions.noteSchema),
+  Transactions.baseSchema,
+  Transactions.legsSchema,
+  Transactions.noteSchema,
 ]);
 
 Transactions.idSet = ['communityId', 'ref'];
@@ -85,6 +91,13 @@ export function oppositeSide(side) {
 }
 
 Transactions.helpers({
+  dataDoc() {
+    // dataDocs are stored with the same _id, as the tx itself
+    return Mongo.Collection.get(this.dataType).findOne(this._id);
+  },
+  partner() {
+    return Partners.relCollection(this.relation).findOne(this.partnerId);
+  },
   getSide(side) {
     debugAssert(side === 'debit' || side === 'credit');
     return this[side] || [];
@@ -124,6 +137,15 @@ Transactions.helpers({
       });
     }
     return entries.map(JournalEntries._transform);
+  },
+  subjectiveAmount() {
+    let sign = 0;
+    switch (this.dataType) {
+      case 'bills': sign = -1; break;
+      case 'payments': sign = +1; break;
+      default: debugAssert(false);
+    }
+    return sign * this.amount;
   },
   negator() {
     const tx = _.clone(this);
@@ -231,3 +253,52 @@ Factory.define('tx', Transactions, {
   debit: [],
   credit: [],
 });
+
+// ------------------- Publications utility
+
+function withSubs(code) {
+  return code[0] === '\\' ? new RegExp(code.split('\\')[1]) : code;
+}
+
+function dateFilter(begin, end) {
+  return {
+    $gte: moment(begin).toDate(),
+    $lt: moment(end).add(1, 'day').toDate(),
+  };
+}
+
+Transactions.makeFilterSelector = function makeFilterSelector(params) {
+  const selector = _.clone(params);
+  selector.valueDate = dateFilter(params.begin, params.end);
+  delete selector.begin; delete selector.end;
+  if (params.account) {
+    const account = withSubs(params.account);
+    selector.$or = [{ 'credit.account': account }, { 'debit.account': account }];
+    delete selector.account;
+  }
+  if (params.localizer) {
+    const localizer = withSubs(params.localizer);
+    selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
+    delete selector.localizer;
+  }
+  if (params.creditAccount) {
+    const creditAccount = withSubs(params.creditAccount);
+    selector['credit.account'] = creditAccount;
+    delete selector.creditAccount;
+  }
+  if (params.debitAccount) {
+    const debitAccount = withSubs(params.debitAccount);
+    selector['debit.account'] = debitAccount;
+    delete selector.debitAccount;
+  }
+  return selector;
+};
+
+JournalEntries.makeFilterSelector = function makeFilterSelector(params) {
+  const selector = _.clone(params);
+  selector.valueDate = dateFilter(params.begin, params.end);
+  delete selector.begin; delete selector.end;
+  if (params.account) selector.account = withSubs(params.account);
+  if (params.localizer) selector.localizer = withSubs(params.localizer);
+  return selector;
+};

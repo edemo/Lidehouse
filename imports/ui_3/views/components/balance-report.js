@@ -16,12 +16,17 @@ Template.Balance_report.onCreated(function onCreated() {
 
 Template.Balance_report.helpers({
   balance(account, tag) {
-    const balanceDef = {
+    return Balances.getDisplayTotal({
       communityId: Session.get('activeCommunityId'),
       account: account.code,
       tag,
-    };
-    return Balances.getDisplayTotal(balanceDef);
+    });
+  },
+  hasActivity(account) {
+    return !!Balances.findOne({
+      communityId: Session.get('activeCommunityId'),
+      account: new RegExp('^' + account.code),
+    });
   },
   headerLevelClass(account) {
     return 'header-level' + account.code.length.toString();
@@ -29,11 +34,14 @@ Template.Balance_report.helpers({
   displayAccount(account) {
     return Breakdowns.display(account);
   },
+  negativeClass(number) {
+    return number < 0 && 'negative';
+  },
   displayCell(number) {
     return numeral(number).format('0,0');
   },
   displayPeriod(tag) {
     const node = PeriodBreakdown.nodeByCode(tag);
-    return node.label;
+    return node.label || node.name;
   },
 });
