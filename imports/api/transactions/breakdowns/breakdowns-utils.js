@@ -1,3 +1,4 @@
+import { moment } from 'meteor/momentjs:moment';
 import { Breakdowns } from './breakdowns.js';
 
 const sideTags = {
@@ -57,13 +58,19 @@ export class Period {
     this.month = split[2];
     if (this.month && this.month.length === 1) this.month = '0' + this.month;
   }
-  begin() {
-    if (!this.year) return '1970-01-01';
-    return `${this.year}-${this.month || '01'}-01`;
+  begin(format = 'YYYY-MM-DD') {
+    let date;
+    if (!this.year) date = moment(0);
+    else if (!this.month) date = moment([this.year]).startOf('year');
+    else date = moment([this.year, this.month - 1]).startOf('month');
+    return date.format(format);
   }
-  end() {
-    if (!this.year) return '2020-12-31'; // moment().format('YYYY-MM-DD');
-    return `${this.year}-${this.month || '12'}-27`;
+  end(format = 'YYYY-MM-DD') {
+    let date;
+    if (!this.year) date = moment();
+    else if (!this.month) date = moment([this.year]).endOf('year');
+    else date = moment([this.year, this.month - 1]).endOf('month');
+    return date.format(format);
   }
 }
 
