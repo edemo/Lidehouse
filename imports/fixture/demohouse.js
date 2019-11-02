@@ -206,6 +206,9 @@ export function insertDemoHouse(lang, demoOrTest) {
     habitants: 1,
   });
 
+  // Create breakdowns (incl Localizer)
+  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
+
   // Meters
   demoParcels.forEach((parcelId, i) => {
     if (_.contains([0, 2, 3, 5, 6, 8, 9, 10, 11, 12], i)) {
@@ -804,7 +807,6 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // ===== Accounting =====
 
-  demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
 
   // === Parcel Billings ===
 
