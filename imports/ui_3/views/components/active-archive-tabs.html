@@ -1,0 +1,15 @@
+<template name="Active_archive_tabs">
+    <ul class="nav nav-tabs m-b-md">
+        <span class="pull-right small text-muted"></span>
+        <li class="active"><a data-toggle="tab" href="{{concat '#' name '-tab-1'}}"><i class="fa {{icon}}"></i> {{_ 'Active'}}</a></li>
+        <li class=""><a data-toggle="tab" href="{{concat '#' name '-tab-2'}}"><i class="fa fa-archive"></i> {{_ 'Archived'}}</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="{{concat name '-tab-1'}}" class="tab-pane active">
+            {{> Template.dynamic template=template data=dataActiveTrue}}
+        </div>
+        <div id="{{concat name '-tab-2'}}" class="tab-pane">
+            {{> Template.dynamic template=template data=dataActiveFalse}}        
+        </div>    
+    </div>
+</template>
