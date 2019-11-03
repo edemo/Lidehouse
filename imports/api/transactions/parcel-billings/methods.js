@@ -107,6 +107,7 @@ export const apply = new ValidatedMethod({
           });
         }
       });
+      ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: valueDate } });
     });
 
     _.each(bills, (bill, parcelId) => {

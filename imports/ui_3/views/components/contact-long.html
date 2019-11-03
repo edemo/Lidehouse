@@ -4,7 +4,7 @@
             <img alt="image" class="img-circle" src="{{avatar}}">
             <h3 class="m-b-xs"><strong>{{this.toString}}</strong></h3>
             {{#each this.memberships activeCommunityId}}
-            <div class="font-bold">{{this.toString}}</div>
+            <div class="font-bold">{{this.displayRole}}</div>
             {{/each}}
             <address class="m-t-sm">
                 {{#if profile.bio}}<i>"{{profile.bio}}"</i><br><br>{{/if}}

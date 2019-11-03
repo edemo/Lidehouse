@@ -270,7 +270,7 @@ export function defineBreakdownTemplates() {
 
   Breakdowns.define({ communityId: null,
     digit: '@', name: 'Parcels', children: [   //Albetétek
-      { digit: '', name: 'Main building' },  //Épület, kivettem az "A"-t  a UI "buiding"-et ír ki
+      { digit: '', name: 'Main building' },  //Épület, kivettem az "A"-t  a UI "building"-et ír ki
     ],
   });
 

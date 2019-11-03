@@ -100,6 +100,9 @@ ParcelBillings.helpers({
 //  return Transactions.find({ ref: this._id }).count();
     return this.appliedAt.length;
   },
+  lastAppliedAt() {
+    return _.last(this.appliedAt);
+  },
 });
 
 ParcelBillings.attachSchema(ParcelBillings.schema);

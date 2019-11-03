@@ -46,7 +46,7 @@ export const PeriodBreakdown = Breakdowns._transform(periodTags);
 export class Period {
   constructor(label) {  // label format: '2018-09' or '2019'
     const split = label.split('-');
-    debugAssert(split.length === 2);  // we allow traditional js date to come in, and we drop the day
+//    debugAssert(split.length === 2);  // we allow traditional js date to come in, and we drop the day
     this.year = split[0];
     this.month = split[1];
     this.label = this.year;

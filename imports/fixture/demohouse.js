@@ -868,7 +868,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // Some unpaid bills (so we can show the parcels that are in debt)
   Clock.setSimulatedTime(new Date(`${lastYear}-12-20`));
-  demoBuilder.insert(ParcelBillings, '', {
+  const extraBillingId = demoBuilder.insert(ParcelBillings, '', {
     title: 'Rendkivüli befizetés előírás',
     projection: 'area',
     amount: 200,
@@ -879,7 +879,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       end: new Date(`${lastYear}-12-31`),
     },
   });
-  demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: new Date(`${lastYear}-12-20`) });
+  demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, ids: [extraBillingId], valueDate: new Date(`${lastYear}-12-20`) });
 
   // Unidentified payin
   demoBuilder.create('statementEntry', {

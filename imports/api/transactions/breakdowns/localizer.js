@@ -34,7 +34,7 @@ export const Localizer = {
     };
     let buildingNode = parcelBreakdown.children.find(c => c.digit === parcel.building);
     if (!buildingNode) {
-      buildingNode = { digit: parcel.building, name: `${___('buiding')} ${parcel.building}`, label: ___('buiding'), children: [] };
+      buildingNode = { digit: parcel.building, name: `${___('building')} ${parcel.building}`, label: ___('building'), children: [] };
       parcelBreakdown.children.push(buildingNode);
     }
     let floorNode = buildingNode.children.find(c => c.digit === parcel.floor);
