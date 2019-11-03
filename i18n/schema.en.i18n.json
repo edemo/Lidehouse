@@ -831,7 +831,10 @@
       "placeholder": "(eg. reminder)"
     },
     "appliedAt": {
-      "label": "Apply dates"
+      "label": "Applied at"
+    },
+    "lastAppliedAt": {
+      "label": "Last applied at"
     },
     "applyCount": {
       "label": "Apply count"

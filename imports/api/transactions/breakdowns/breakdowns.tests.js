@@ -5,8 +5,9 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Breakdowns } from './breakdowns.js';
 import { Localizer } from './localizer.js';
+import { PeriodBreakdown } from './period.js';
+import { SideBreakdown } from './tx-side.js';
 import './methods.js';
-import { PeriodBreakdown, SideBreakdown } from './breakdowns-utils';
 
 if (Meteor.isServer) {
   let Fixture;

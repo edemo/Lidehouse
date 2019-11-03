@@ -66,7 +66,7 @@ if (Meteor.isServer) {
           localizer: '@',
         });
 
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
 
         const bills = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills.length, parcels.length);
@@ -77,10 +77,29 @@ if (Meteor.isServer) {
           chai.assert.equal(bill.lines.length, 1);
           const line = bill.lines[0];
           chai.assert.equal(line.title, 'Test area');
+          chai.assert.equal(line.period, '2018-01');
           chai.assert.equal(line.uom, 'm2');
           chai.assert.equal(line.unitPrice, 78);
           chai.assert.equal(line.quantity, parcel.area);
         });
+      });
+
+      it('will not apply for same period twice', function () {
+        Fixture.builder.create('parcelBilling', {
+          title: 'Test area',
+          projection: 'area',
+          amount: 78,
+          payinType: '3',
+          localizer: '@',
+        });
+
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
+        chai.assert.throws(() =>
+          Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-15') }, Fixture.builder.getUserWithRole('accountant')),
+          'err_sanityCheckFailed'
+        );
+        // but can apply for a different period
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-02-10') }, Fixture.builder.getUserWithRole('accountant'));
       });
 
       it('can apply multiple projections', function () {
@@ -99,7 +118,7 @@ if (Meteor.isServer) {
           localizer: '@',
         });
 
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
         
         const bills = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills.length, parcels.length);
@@ -139,7 +158,7 @@ if (Meteor.isServer) {
           service: 'coldWater',
         });
 
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
 
         const bills = Bills.find({ communityId }).fetch();
         chai.assert.equal(bills.length, parcels.length - 1);
@@ -160,8 +179,8 @@ if (Meteor.isServer) {
 
         Bills.remove({});
 
-        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date(), value: 32, approved: false } });
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-02-01'), value: 32, approved: false } });
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-02-12') }, Fixture.builder.getUserWithRole('accountant'));
 
         const meteredParcel = Parcels.findOne(meteredParcelId);
         const bills2 = Bills.find({ communityId }).fetch();

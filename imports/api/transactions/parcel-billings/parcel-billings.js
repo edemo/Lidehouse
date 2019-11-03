@@ -23,6 +23,11 @@ export const ParcelBillings = new Mongo.Collection('parcelBillings');
 ParcelBillings.projectionValues = ['absolute', 'area', 'volume', 'habitants'];
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
+ParcelBillings.appliedAtSchema = new SimpleSchema({
+  valueDate: { type: Date },
+  period: { type: String, max: 7 /* check period format */ },
+});
+
 ParcelBillings.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   title: { type: String, max: 100 },
@@ -37,7 +42,7 @@ ParcelBillings.schema = new SimpleSchema({
   payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
   localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
   note: { type: String, max: 100, optional: true },
-  appliedAt: { type: [Date], defaultValue: [], autoform: { omit: true } },
+  appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
 });
 
 let chooseParcelBilling = {};
@@ -99,6 +104,13 @@ ParcelBillings.helpers({
   applyCount() {
 //  return Transactions.find({ ref: this._id }).count();
     return this.appliedAt.length;
+  },
+  lastAppliedAt() {
+    return _.last(this.appliedAt) || {};
+  },
+  alreadyAppliedAt(period) {
+    const found = this.appliedAt.find(a => a.period === period);
+    return found ? found.valueDate : undefined;
   },
 });
 

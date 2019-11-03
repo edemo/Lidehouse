@@ -836,7 +836,10 @@
       "placeholder": "(pl. emlékeztető)"
     },
     "appliedAt": {
-      "label": "Kivetések idejei"
+      "label": "Kivetések ideje"
+    },
+    "lastAppliedAt": {
+      "label": "Utolsó kivetés ideje"
     },
     "applyCount": {
       "label": "Kivetések száma"

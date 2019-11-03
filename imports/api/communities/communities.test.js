@@ -15,6 +15,7 @@ import { officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import '/imports/api/communities/methods.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Trash } from '/imports/api/behaviours/timestamped.js';
 
 if (Meteor.isServer) {
 
@@ -52,9 +53,11 @@ if (Meteor.isServer) {
         Fixture.builder.execute(Communities.methods.remove, { _id: Fixture.demoCommunityId }, Fixture.builder.getUserWithRole('admin'));
 
         chai.assert.isUndefined(Communities.findOne(Fixture.demoCommunityId));
+        chai.assert.isDefined(Trash.findOne({ collection: 'communities', id: Fixture.demoCommunityId }));
         Mongo.Collection.getAll().forEach((collection) => {
+          const doc = collection.instance.findOne({ communityId: Fixture.demoCommunityId });
           if (collection.name === 'trash') return;
-          chai.assert.isUndefined(collection.instance.findOne({ communityId: Fixture.demoCommunityId }));
+          chai.assert.isUndefined(doc);
         });
 
         done();

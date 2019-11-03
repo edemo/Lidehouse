@@ -154,14 +154,14 @@ Memberships.helpers({
     const votingShare = this.isRepresentor() ? this.parcel().ledShare() : this.parcel().ledShare().multiply(this.ownership.share);
     return votingShare;
   },
-  display() {
-    return `${this.Person().displayName()}, ${this.toString()}`;
-  },
-  toString() {
+  displayRole() {
     let result = __(this.role);
     const parcel = this.parcel();
-    if (parcel) result += (' ' + parcel.toString());
+    if (parcel) result += ` ${parcel.toString()}`;
     return result;
+  },
+  toString() {
+    return `${this.Person().displayName('hu')}, ${this.displayRole()}`;
   },
 });
 

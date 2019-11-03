@@ -114,10 +114,10 @@ if (Meteor.isServer) {
         });
         assertBalance(':12A', undefined, 'T', -1000);
         assertBalance(':12A', undefined, 'T-2017', -1000);
-        assertBalance(':12A', undefined, 'T-2017-1', -1000);
-        assertBalance(':12A', undefined, 'T-2017-2', 0);
-        assertBalance(':12', undefined, 'T-2017-1', -1000);
-        assertBalance(':1', undefined, 'T-2017-1', 0);
+        assertBalance(':12A', undefined, 'T-2017-01', -1000);
+        assertBalance(':12A', undefined, 'T-2017-02', 0);
+        assertBalance(':12', undefined, 'T-2017-01', -1000);
+        assertBalance(':1', undefined, 'T-2017-01', 0);
         assertBalance(':19', undefined, 'T', 1000);
 
         const txId = insertTx({
@@ -128,12 +128,12 @@ if (Meteor.isServer) {
         });
         assertBalance(':12A', undefined, 'T', -3000);
         assertBalance(':12A', undefined, 'T-2017', -3000);
-        assertBalance(':12A', undefined, 'T-2017-1', -1000);
-        assertBalance(':12A', undefined, 'T-2017-2', -2000);
-        assertBalance(':12', undefined, 'T-2017-1', -1000);
-        assertBalance(':12', undefined, 'T-2017-2', -2000);
-        assertBalance(':1', undefined, 'T-2017-1', 0);
-        assertBalance(':1', undefined, 'T-2017-2', 0);
+        assertBalance(':12A', undefined, 'T-2017-01', -1000);
+        assertBalance(':12A', undefined, 'T-2017-02', -2000);
+        assertBalance(':12', undefined, 'T-2017-01', -1000);
+        assertBalance(':12', undefined, 'T-2017-02', -2000);
+        assertBalance(':1', undefined, 'T-2017-01', 0);
+        assertBalance(':1', undefined, 'T-2017-02', 0);
         assertBalance(':1', undefined, 'T-2017', 0);
         assertBalance(':19', undefined, 'T', 3000);
 
@@ -141,10 +141,10 @@ if (Meteor.isServer) {
         // copy of the previous test's end state
         assertBalance(':12A', undefined, 'T', -1000);
         assertBalance(':12A', undefined, 'T-2017', -1000);
-        assertBalance(':12A', undefined, 'T-2017-1', -1000);
-        assertBalance(':12A', undefined, 'T-2017-2', 0);
-        assertBalance(':12', undefined, 'T-2017-1', -1000);
-        assertBalance(':1', undefined, 'T-2017-1', 0);
+        assertBalance(':12A', undefined, 'T-2017-01', -1000);
+        assertBalance(':12A', undefined, 'T-2017-02', 0);
+        assertBalance(':12', undefined, 'T-2017-01', -1000);
+        assertBalance(':1', undefined, 'T-2017-01', 0);
         assertBalance(':19', undefined, 'T', 1000);
 
         done();
@@ -158,7 +158,7 @@ if (Meteor.isServer) {
           debit: [':12C'],
         });
         assertBalance(':12B', '@A101', 'T', -500);
-        assertBalance(':12B', '@A101', 'T-2017-3', -500);
+        assertBalance(':12B', '@A101', 'T-2017-03', -500);
         chai.assert.throws(() =>
           assertBalance(':12B', '@A', 'T', -500) // todo? upward cascading localizer 
         );

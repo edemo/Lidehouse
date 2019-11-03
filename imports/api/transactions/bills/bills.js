@@ -34,6 +34,8 @@ Bills.lineSchema = new SimpleSchema({
   // autoValue() {
   //  return this.siblingField('quantity').value * this.siblingField('unitPrice').value;
   //} },
+  billingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  period: { type: String, optional: true },
   account: { type: String, optional: true, autoform: chooseAccountNode },
   localizer: { type: String, optional: true },
 });

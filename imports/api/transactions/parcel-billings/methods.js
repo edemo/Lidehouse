@@ -15,8 +15,8 @@ import { Meters } from '/imports/api/meters/meters.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 //  import { TxDefs } from '/imports/api/transactions/tx-defs.js';
-import { insert as insertTx } from '/imports/api/transactions/methods.js';
-import { Bills } from '../bills/bills';
+import { Bills } from '/imports/api/transactions/bills/bills';
+import { Period } from '/imports/api/transactions/breakdowns/period.js';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
@@ -32,11 +32,16 @@ export const apply = new ValidatedMethod({
     const activeParcelBillings = ids
       ? ParcelBillings.find({ communityId, _id: { $in: ids } })
       : ParcelBillings.find({ communityId, active: true });
+    const billingPeriod = Period.monthOfDate(valueDate);
     activeParcelBillings.forEach((parcelBilling) => {
+      const alreadyAppliedAt = parcelBilling.alreadyAppliedAt(billingPeriod.label);
+      if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
       const parcels = parcelBilling.parcels(localizer);
       parcels.forEach((parcel) => {
-        const line = {};
-        line.title = parcelBilling.title;
+        const line = {
+          billingId: parcelBilling._id,
+          period: billingPeriod.label,
+        };
         let activeMeter;
         if (parcelBilling.consumption) {
           activeMeter = Meters.findOne({ parcelId: parcel._id, service: parcelBilling.consumption, active: true });
@@ -51,7 +56,7 @@ export const apply = new ValidatedMethod({
           line.unitPrice = parcelBilling.amount;
           switch (parcelBilling.projection) {
             case 'absolute':
-              line.uom = '1';
+              line.uom = 'piece';
               line.quantity = 1;
               break;
             case 'area':
@@ -63,7 +68,7 @@ export const apply = new ValidatedMethod({
               line.quantity = (parcel.volume || 0);
               break;
             case 'habitants':
-              line.uom = __('habitant');
+              line.uom = 'habitant';
               line.quantity = (parcel.habitants || 0);
               break;
             default: debugAssert(false, 'No such projection');
@@ -74,7 +79,8 @@ export const apply = new ValidatedMethod({
         line.amount = line.quantity * line.unitPrice;
         line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
         line.localizer = Localizer.parcelRef2code(parcel.ref);
-        
+        line.title = `${parcelBilling.title}, ${parcel.ref}, ${line.period}`;
+
         // Creating the bill - adding entry to the bill
         bills[parcel._id] = bills[parcel._id] || {
           communityId: parcelBilling.communityId,
@@ -105,6 +111,7 @@ export const apply = new ValidatedMethod({
           });
         }
       });
+      ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { valueDate, period: billingPeriod.label } } });
     });
 
     _.each(bills, (bill, parcelId) => {

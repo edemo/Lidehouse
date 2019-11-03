@@ -68,9 +68,12 @@
                         <tr>
                             <td><div><strong>{{line.title}}</strong></div>
                                 <small>{{line.details}}</small>
-                                {{{displayAccount line.account activeCommunityId}}}
-                                {{{displayLocalizer line.localizer activeCommunityId}}}</td>
-                            <td>{{line.uom}}</td>
+                                {{#if userHasPermission 'bills.conteer' (fromSession 'activeCommunityId')}}
+                                    {{{displayAccount line.account activeCommunityId}}}
+                                    {{{displayLocalizer line.localizer activeCommunityId}}}
+                                {{/if}}
+                            </td>
+                            <td>{{_ line.uom}}</td>
                             <td>{{line.unitPrice}}</td>
                             <td>{{line.quantity}}</td>
                             <td>{{line.taxPct}}</td>

@@ -34,12 +34,12 @@ export const Localizer = {
     };
     let buildingNode = parcelBreakdown.children.find(c => c.digit === parcel.building);
     if (!buildingNode) {
-      buildingNode = { digit: parcel.building, name: `${___('buiding')} ${parcel.building}`, label: ___('buiding'), children: [] };
+      buildingNode = { digit: parcel.building, name: `${___('schemaParcels.building.label')} ${parcel.building}`, label: ___('schemaParcels.building.label'), children: [] };
       parcelBreakdown.children.push(buildingNode);
     }
     let floorNode = buildingNode.children.find(c => c.digit === parcel.floor);
     if (!floorNode) {
-      floorNode = { digit: parcel.floor, name: `${___('floor')} ${parcel.floor}`, label: ___('floor'), children: [] };
+      floorNode = { digit: parcel.floor, name: `${___('schemaParcels.floor.label')} ${parcel.floor}`, label: ___('schemaParcels.floor.label'), children: [] };
       buildingNode.children.push(floorNode);
     }
     let doorNode = floorNode.children.find(c => c.digit === parcel.door);
