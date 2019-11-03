@@ -34,6 +34,8 @@ export const apply = new ValidatedMethod({
       : ParcelBillings.find({ communityId, active: true });
     const billingPeriod = Period.monthOfDate(valueDate);
     activeParcelBillings.forEach((parcelBilling) => {
+      const alreadyAppliedAt = parcelBilling.alreadyAppliedAt(billingPeriod.label);
+      if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
       const parcels = parcelBilling.parcels(localizer);
       parcels.forEach((parcel) => {
         const line = {};
@@ -107,7 +109,7 @@ export const apply = new ValidatedMethod({
           });
         }
       });
-      ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: valueDate } });
+      ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { valueDate, period: billingPeriod.label } } });
     });
 
     _.each(bills, (bill, parcelId) => {
