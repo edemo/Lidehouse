@@ -25,7 +25,6 @@ export const Bills = new Mongo.Collection('bills');
 Bills.lineSchema = new SimpleSchema({
   title: { type: String },
   details: { type: String, optional: true },
-  period: { type: String, optional: true },
   uom: { type: String, optional: true },  // unit of measurment
   quantity: { type: Number, decimal: true },
   unitPrice: { type: Number, decimal: true },
@@ -35,6 +34,8 @@ Bills.lineSchema = new SimpleSchema({
   // autoValue() {
   //  return this.siblingField('quantity').value * this.siblingField('unitPrice').value;
   //} },
+  billingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  period: { type: String, optional: true },
   account: { type: String, optional: true, autoform: chooseAccountNode },
   localizer: { type: String, optional: true },
 });

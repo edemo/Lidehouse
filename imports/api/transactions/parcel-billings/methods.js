@@ -38,9 +38,10 @@ export const apply = new ValidatedMethod({
       if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
       const parcels = parcelBilling.parcels(localizer);
       parcels.forEach((parcel) => {
-        const line = {};
-        line.title = parcelBilling.title;
-        line.period = billingPeriod.label;
+        const line = {
+          billingId: parcelBilling._id,
+          period: billingPeriod.label,
+        };
         let activeMeter;
         if (parcelBilling.consumption) {
           activeMeter = Meters.findOne({ parcelId: parcel._id, service: parcelBilling.consumption, active: true });
@@ -55,7 +56,7 @@ export const apply = new ValidatedMethod({
           line.unitPrice = parcelBilling.amount;
           switch (parcelBilling.projection) {
             case 'absolute':
-              line.uom = '1';
+              line.uom = 'piece';
               line.quantity = 1;
               break;
             case 'area':
@@ -67,7 +68,7 @@ export const apply = new ValidatedMethod({
               line.quantity = (parcel.volume || 0);
               break;
             case 'habitants':
-              line.uom = __('habitant');
+              line.uom = 'habitant';
               line.quantity = (parcel.habitants || 0);
               break;
             default: debugAssert(false, 'No such projection');
@@ -78,7 +79,8 @@ export const apply = new ValidatedMethod({
         line.amount = line.quantity * line.unitPrice;
         line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
         line.localizer = Localizer.parcelRef2code(parcel.ref);
-        
+        line.title = `${parcelBilling.title}, ${parcel.ref}, ${line.period}`;
+
         // Creating the bill - adding entry to the bill
         bills[parcel._id] = bills[parcel._id] || {
           communityId: parcelBilling.communityId,
