@@ -627,35 +627,38 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Tickets =====
 
   Clock.starts(3, 'month', 'ago');
-  const partner0 = demoBuilder.create('supplier', {
+  const supplier0 = demoBuilder.create('supplier', {
     name: __('demo.contract.0.partner'),
-//    bankAccountNumber: '12345678-00000000-00000070',
-//    taxNumber: '123456-0-42',
   });
-  const partner1 = demoBuilder.create('supplier', {
+  const supplier1 = demoBuilder.create('supplier', {
     name: __('demo.contract.1.partner'),
-//    bankAccountNumber: '12345678-00000000-00000071',
-//    taxNumber: '123456-1-42',
   });
-  const partner2 = demoBuilder.create('supplier', {
+  const supplier2 = demoBuilder.create('supplier', {
     name: __('demo.contract.2.partner'),
-//    bankAccountNumber: '12345678-00000000-00000072',
-//    taxNumber: '123456-2-42',
   });
+  const customer0 = demoBuilder.create('customer', {
+    name: __('demo.contract.10.partner'),
+  });
+
   const contract0 = demoBuilder.create('contract', {
     title: __('demo.contract.0.title'),
     text: __('demo.contract.0.text'),
-    partnerId: partner0,
+    partnerId: supplier0,
   });
   const contract1 = demoBuilder.create('contract', {
     title: __('demo.contract.1.title'),
     text: __('demo.contract.1.text'),
-    partnerId: partner1,
+    partnerId: supplier1,
   });
   const contract2 = demoBuilder.create('contract', {
     title: __('demo.contract.2.title'),
     text: __('demo.contract.2.text'),
-    partnerId: partner2,
+    partnerId: supplier2,
+  });
+  const contract10 = demoBuilder.create('contract', {
+    title: __('demo.contract.10.title'),
+    text: __('demo.contract.10.text'),
+    partnerId: customer0,
   });
 
   [1, 2, 3, 4].forEach(m => {
@@ -936,7 +939,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       relation: 'supplier',
       valueDate: new Date(`${lastYear}-${mm}-20`),
       // amount: 282600,
-      partnerId: partner2,
+      partnerId: supplier2,
       contractId: contract2,
       lines: [{
         title: 'Épület takarítás',
@@ -955,11 +958,35 @@ export function insertDemoHouse(lang, demoOrTest) {
         billId,
         valueDate: new Date(`${lastYear}-${mm}-25`),
         amount: 282600,
-        partnerId: partner2,
-        ref: `SC/${lastYear}/${mm}`,
+        partnerId: supplier2,
         account: demoBuilder.name2code('Assets', 'Folyószámla'),
       });
     }
+  });
+
+  // An Invoice, half paid
+  const invoiceId = demoBuilder.create('bill', {
+    relation: 'customer',
+    valueDate: new Date(`${lastYear}-03-15`),
+    partnerId: customer0,
+    contractId: contract10,
+    lines: [{
+      title: 'Reklámfelület bérleti díj',
+      uom: 'year',
+      quantity: 1,
+      unitPrice: 50200,
+      account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
+      localizer: '@',
+    }],
+  });
+  demoBuilder.execute(Bills.methods.conteer, { _id: invoiceId });
+  demoBuilder.create('payment', {
+    relation: 'customer',
+    billId: invoiceId,
+    valueDate: new Date(`${lastYear}-03-25`),
+    amount: 25000,
+    partnerId: customer0,
+    account: demoBuilder.name2code('Assets', 'Folyószámla'),
   });
 
   // === Incomes ===

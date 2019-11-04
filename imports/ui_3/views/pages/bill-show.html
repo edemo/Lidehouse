@@ -1,3 +1,12 @@
+<template name="Bill_partner">
+    <address>
+        <strong>{{partner.name}}</strong><br>
+        {{partner.contact.address}}<br>
+        Bank: {{partner.bankAccountNumber}}<br>
+        {{_ 'schemaPartners.taxNumber.label'}}: {{partner.taxNumber}}<br>
+    </address>
+</template>
+
 <template name="Bill_show">
     <!--div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-8">
@@ -26,28 +35,18 @@
         <div class="ibox-content p-xl"-->
             <div class="row">
                 <div class="col-sm-6">
-                    <h5>{{_ 'community'}}:</h5>
+                    <h5>{{_ 'issuer'}}:</h5>
                     <address>
-                        {{#let community=doc.community}}
-                        <strong>{{community.name}}</strong><br>
-                        {{community.displayAddress}}<br>
-                        Bank: {{community.primaryBankAccount.number}}<br>
-                        {{_ 'schemaPartners.taxNumber.label'}}: {{community.taxNumber}}<br>
-                        {{/let}}
+                        {{>Bill_partner partner=doc.issuer}}
                     </address>
                 </div>
 
                 <div class="col-sm-6 text-right">
                     <h4>{{_ 'schemaBills.serialId.label'}}</h4>
                     <h4 class="text-navy">{{doc.serialId}}</h4>
-                    <span>{{_ 'schemaBills.partnerId.label'}}:</span>
+                    <h5>{{_ 'receiver'}}:</h5>
                     <address>
-                        {{#let partner = doc.partner}}
-                        <strong>{{partner.name}}</strong><br>
-                        <!--{{doc.partnerAddress}}<br>-->
-                        Bank: {{partner.bankAccountNumber}}<br>
-                        {{_ 'schemaPartners.taxNumber.label'}}: {{partner.taxNumber}}<br>
-                        {{/let}}
+                        {{>Bill_partner partner=doc.receiver}}
                     </address>
                     <p>
                         <span><strong>{{_ 'schemaBills.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>

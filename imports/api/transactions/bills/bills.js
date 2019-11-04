@@ -88,6 +88,14 @@ Bills.helpers({
   contract() {
     return Contracts.findOne(this.contractId);
   },
+  issuer() {
+    if (this.relation === 'supplier') return this.partner();
+    return this.community().asPartner();
+  },
+  receiver() {
+    if (this.relation === 'customer' || this.relation === 'parcel') return this.partner();
+    return this.community().asPartner();
+  },
   lineCount() {
     return this.lines.length;
   },

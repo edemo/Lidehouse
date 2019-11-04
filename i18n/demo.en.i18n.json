@@ -241,6 +241,11 @@
         "partner": "Super-Clean Inc.",
         "ticketTitle": "Scheduled cleaning",
         "ticketText": "Monthly billing according to contract"
+      },
+      "10": {
+        "title": "Billboard area rental",
+        "text": "Billboard space rent on building, yearly contract",
+        "partner": "Rent-o-matic Inc"
       }
     },
     "ticket": {

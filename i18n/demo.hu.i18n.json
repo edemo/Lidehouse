@@ -242,6 +242,11 @@
         "partner": "Super-Clean Kft",
         "ticketTitle": "Épület takarítás",
         "ticketText": "Havi számlázás szerződés szerint"
+      },
+      "10": {
+        "title": "Reklám felület bérlet",
+        "text": "Holokzati felület kiadása, éves díj",
+        "partner": "Info terjesztő Kft"
       }
     },
     "ticket": {

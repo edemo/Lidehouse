@@ -92,6 +92,12 @@ Communities.helpers({
     })
     return result || this.bankAccounts[0];
   },
+  asPartner() {
+    const partner = _.clone(this);
+    partner.contact = { address: this.displayAddress() };
+    partner.bankAccountNumber = this.primaryBankAccount().number; 
+    return partner;
+  },
   admin() {
     const adminMembership = Memberships.findOne({ communityId: this._id, active: true, role: 'admin' });
     if (!adminMembership) return undefined;

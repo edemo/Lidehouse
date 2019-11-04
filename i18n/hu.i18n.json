@@ -133,6 +133,7 @@
   "partners": "partnerek",
   "bill": "számla",
   "bills": "számlák",
+  "parcelBill": "díjbekérő",
   "payment": "számla teljesítés",
   "payments": " számla teljesítések",
   "statement": "kivonat",
@@ -463,8 +464,8 @@
   "You have due payments": "Önnek tartozása van",
   "plan": "terv",
   "done": "tény",
-  "parcelBilling": "Csoportos albetét előírás",
-  "Parcel billings": "Csoportos albetét előírások",
+  "parcelBilling": "albetét előírás",
+  "Parcel billings": "Albetét előírások",
   "Apply parcel billings": "Előírások kivetése",
   "Edit parcel billings": "Előírás szerkesztő",
   "month": "hó",
@@ -485,6 +486,8 @@
   "Unconteered": "Könyveletlen",
   "Unpaid": "Rendezetlen",
   "Show only": "Csak ami",
+  "issuer": "kiállító",
+  "receiver": "befogadó",
 
   // accounts
   "Chart Of Accounts": "Főkönyvi számlák",
@@ -562,7 +565,7 @@
 
   // Localizer
   "All locations": "Összes hely",
-  "Parcels": "Albetétek",
+  "Parcels": "Összes albetét",
   "Places": "Elszámolási egységek",
   "Common areas": "Közös tulajdonú helyiségek",
   "Central": "Központi",
