@@ -11,7 +11,9 @@ Package.onUse(function(api) {
   api.addFiles([
   	'theme.datatables.min.js',
     'theme.datatables.min.css',
-    'datatables_i18n.js',
+  	'datatables.select.min.js',
+    'dataTables.select.min.css',
+    'dataTables_i18n.js',
   	'reactive-datatables.js',
   	'reactive-datatable-template.html',
   	'reactive-datatable-template.js',

@@ -251,6 +251,10 @@
   "leaves unchanged": "Helybenhagy",
   " documents": " dokumentumot",
 
+  "Select all": "Mindet kijelöl",
+  "Select none": "Semmit kijelöl",
+  "Action with selected": "Akció a kijelöltekkel",
+  
   // community page
   "representor": "képviselője",
   "Lead parcel": "Vezető albetét",
