@@ -8,7 +8,7 @@ import { extractFieldsFromRef } from '/imports/comtypes/house/parcelref-format.j
 import { Communities } from '/imports/api/communities/communities.js';
 import { Payments } from './payments.js';
 import { Bills } from '../bills/bills.js';
-import { crudBatchOps } from '../../batch-method.js';
+import { crudBatchOps, BatchMethod } from '../../batch-method.js';
 import { Transactions } from '../transactions.js';
 
 
@@ -94,3 +94,4 @@ export const remove = new ValidatedMethod({
 Payments.methods = Payments.methods || {};
 _.extend(Payments.methods, { insert, update, conteer, remove });
 _.extend(Payments.methods, crudBatchOps(Payments));
+Payments.methods.batch.conteer = new BatchMethod(Payments.methods.conteer);

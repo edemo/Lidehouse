@@ -8,7 +8,7 @@ import { extractFieldsFromRef } from '/imports/comtypes/house/parcelref-format.j
 import { Communities } from '/imports/api/communities/communities.js';
 import { Bills } from './bills.js';
 import { Payments } from '../payments/payments.js';
-import { crudBatchOps } from '../../batch-method.js';
+import { crudBatchOps, BatchMethod } from '../../batch-method.js';
 import { Transactions } from '../transactions.js';
 /*
 function createAndBindTx(billId) {
@@ -101,3 +101,4 @@ export const remove = new ValidatedMethod({
 Bills.methods = Bills.methods || {};
 _.extend(Bills.methods, { insert, update, conteer, remove });
 _.extend(Bills.methods, crudBatchOps(Bills));
+Bills.methods.batch.conteer = new BatchMethod(Bills.methods.conteer);
