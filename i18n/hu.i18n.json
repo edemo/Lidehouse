@@ -36,6 +36,7 @@
   "by": "által",
   "(Select one)": "(Válasszon a listából)",
 
+  "Active": "Aktív",
   "Archived": "Archív",
 
   // roles
@@ -677,6 +678,10 @@
   "insert parcel successful": "Albetét rögzítésre került",
   "update parcel successful": "Albetét adatai módosítva",
   "delete parcel successful": "Albetét törölve",
+  "insert meter successful": "Mérőóra rögzítésre került",
+  "update meter successful": "Mérőóra adatai módosítva",
+  "delete meter successful": "Mérőóra törölve",
+
   "insert ownership successful": "Albetét tulajdonosa rögzítve",
   "update ownership successful": "Albetét tulajdonosa módosítva",
   "delete ownership successful": "Albetét tulajdonosa törölve",

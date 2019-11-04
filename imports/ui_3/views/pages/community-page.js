@@ -32,6 +32,7 @@ import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/components/active-archive-tabs.js';
 import { afCommunityUpdateModal } from '/imports/ui_3/views/components/communities-edit.js';
 import '../common/page-heading.js';
 import '../components/action-buttons.html';
@@ -57,19 +58,25 @@ Template.Occupants_box.viewmodel({
   },
 });
 
-Template.Meters_box.viewmodel({
-  meters(subset) {
-    const communityId = this.templateInstance.data.communityId;
-    const parcelId = this.templateInstance.data.parcelId;
-    let selector = { communityId, active: true, parcelId /*, approved: true */};
-//    if (subset === 'unapproved') selector = { communityId, role, parcelId, approved: false };
-    if (subset === 'archived') selector = { communityId, parcelId, active: false };
+Template.Meters_table.viewmodel({
+  rows() {
+    const data = this.templateInstance.data;
+    const selector = _.extend(data.selector, { active: data.active });
     return Meters.find(selector);
   },
+});
+
+Template.Meters_box.viewmodel({
   parcelDisplay() {
     const parcelId = this.templateInstance.data.parcelId;
     const parcel = Parcels.findOne(parcelId);
     return parcel ? parcel.display() : __('unknown');
+  },
+  metersContent() {
+    const communityId = this.templateInstance.data.communityId;
+    const parcelId = this.templateInstance.data.parcelId;
+    const selector = { communityId, parcelId };
+    return { selector };
   },
 });
 
