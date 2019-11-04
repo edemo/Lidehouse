@@ -37,10 +37,18 @@ export const Communities = new Mongo.Collection('communities');
 
 const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
+Communities.bankProtocols = ['auto', 'manual'];
 
 Communities.settingsSchema = new SimpleSchema({
   joinable: { type: Boolean, defaultValue: true },
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: autoformOptions(Communities.accountingMethods, 'schemaCommunities.settings.accountingMethod.'), defaultValue: 'accrual' },
+});
+
+Communities.bankAccountSchema = new SimpleSchema({
+  name: { type: String, max: 100 },
+  number: { type: String, max: 100 },
+  protocol: { type: String, allowedValues: Communities.bankProtocols, autoform: autoformOptions(Communities.bankProtocols, 'schemaCommunities.settings.bankAccounts.protocol.'),  optional: true },
+  primary: { type: Boolean, optional: true },
 });
 
 Communities.schema = new SimpleSchema([
@@ -49,8 +57,10 @@ Communities.schema = new SimpleSchema([
   { avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload } },
   comtype.profileSchema,
   { management: { type: String, optional: true, autoform: { type: 'textarea' } } },
+  { taxNumber: { type: String, max: 50, optional: true } },
   { totalunits: { type: Number } },
   { settings: { type: Communities.settingsSchema } },
+  { bankAccounts: { type: [Communities.bankAccountSchema] } },
   // redundant fields:
   { parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } } },
 ]);
@@ -74,6 +84,13 @@ Communities.helpers({
   },
   displayAddress() {
     return displayAddress(this);
+  },
+  primaryBankAccount() {
+    let result;
+    this.bankAccounts.forEach(bank => {
+      if (bank.primary) { result = bank; return false; }
+    })
+    return result || this.bankAccounts[0];
   },
   admin() {
     const adminMembership = Memberships.findOne({ communityId: this._id, active: true, role: 'admin' });
@@ -121,11 +138,17 @@ Factory.define('community', Communities, {
   city: () => faker.address.city(),
   street: () => faker.address.streetName(),
   number: () => faker.random.number(),
-  lot: '123456/1234',
+  lot: () => faker.finance.account(6) + '/' + faker.finance.account(4),
   avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
+  taxNumber: () => faker.finance.account(6) + '-2-42',
   totalunits: 1000,
   settings: {
     joinable: true,
     accountingMethod: 'cash',
   },
+  bankAccounts: [{
+    name: 'bankszla',
+    number: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+    primary: true,
+  }],
 });

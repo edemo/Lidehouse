@@ -11,8 +11,8 @@ import { Communities, getActiveCommunityId } from '/imports/api/communities/comm
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
-import { Memberships } from '../../memberships/memberships';
-
+import { Memberships } from '/imports/api/memberships/memberships';
+import { ContactSchema } from '/imports/api/users/person.js';
 
 export const Partners = new Mongo.Collection('partners');
 
@@ -21,7 +21,10 @@ Partners.relationValues = ['supplier', 'customer', 'parcel'];
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: autoformOptions(Partners.relationValues, 'schemaPartners.relation.') },
-  name: { type: String },
+  name: { type: String, max: 100, optional: true },
+  bankAccountNumber: { type: String, max: 100, optional: true },
+  taxNumber: { type: String, max: 50, optional: true },
+  contact: { type: ContactSchema, optional: true },
   // redundant fields:
   outstanding: { type: Number, decimal: true, defaultValue: 0, autoform: { omit: true } },
 });
@@ -87,11 +90,25 @@ Meteor.startup(function attach() {
 Factory.define('customer', Partners, {
   communityId: () => Factory.get('community'),
   relation: 'customer',
-  name: faker.random.word(),
+  name: () => faker.random.word(),
+  bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+  taxNumber: () => faker.finance.account(6) + '-2-42',
+  contact: {
+    address: () => faker.address.streetAddress('###'),
+    phone: () => faker.phone.phoneNumberFormat(1),
+    email: () => faker.internet.email(),
+  },
 });
 
 Factory.define('supplier', Partners, {
   communityId: () => Factory.get('community'),
   relation: 'supplier',
-  name: faker.random.word(),
+  name: () => faker.random.word(),
+  bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+  taxNumber: () => faker.finance.account(6) + '-2-42',
+  contact: {
+    address: () => faker.address.streetAddress('###'),
+    phone: () => faker.phone.phoneNumberFormat(1),
+    email: () => faker.internet.email(),
+  },
 });

@@ -63,10 +63,19 @@ export function insertDemoHouse(lang, demoOrTest) {
     number: '86',
     lot: '4532/8',
     avatar: '/images/demohouse.jpg',
+    taxNumber: '128686-1-41',
     totalunits: 10000,
     settings: {
       accountingMethod: 'accrual',
     },
+    bankAccounts: [{
+      name: __('demo.bank.primaryAccount.name'),
+      number: __('demo.bank.primaryAccount.number'),
+      primary: true,
+    }, {
+      name: __('demo.bank.savingsAccount.name'),
+      number: __('demo.bank.savingsAccount.number'),
+    }],
   });
 
   const demoBuilder = new CommunityBuilder(demoCommunityId, demoOrTest, lang);
@@ -620,12 +629,18 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.starts(3, 'month', 'ago');
   const partner0 = demoBuilder.create('supplier', {
     name: __('demo.contract.0.partner'),
+//    bankAccountNumber: '12345678-00000000-00000070',
+//    taxNumber: '123456-0-42',
   });
   const partner1 = demoBuilder.create('supplier', {
     name: __('demo.contract.1.partner'),
+//    bankAccountNumber: '12345678-00000000-00000071',
+//    taxNumber: '123456-1-42',
   });
   const partner2 = demoBuilder.create('supplier', {
     name: __('demo.contract.2.partner'),
+//    bankAccountNumber: '12345678-00000000-00000072',
+//    taxNumber: '123456-2-42',
   });
   const contract0 = demoBuilder.create('contract', {
     title: __('demo.contract.0.title'),

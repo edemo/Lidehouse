@@ -55,10 +55,6 @@ export const HouseTranslation = {
         "label": "Lot number",
         "placeholder": "(eg. 29732/9)"
       },
-      "totalunits": {
-        "label": "Total shares outstanding",
-        "placeholder": "(eg. 10000)"
-      },
       "parcelRefFormat": {
         "label": "Parcel ref format",
         "placeholder": "(eg. F/D means Floor/Door)"
@@ -66,6 +62,14 @@ export const HouseTranslation = {
       "management": {
         "label": "Contact info of management",
         "placeholder": "(eg. office address, phone, opening hours)"
+      },
+      "taxNumber": {
+        "label": "Tax number",
+        "placeholder": "(VAT number to appear on invoices)"
+      },
+      "totalunits": {
+        "label": "Total shares outstanding",
+        "placeholder": "(eg. 10000)"
       },
       "settings": {
         "label": "Settings",
@@ -76,6 +80,27 @@ export const HouseTranslation = {
           "label": "Accounting method",
           "accrual": "Accrual",
           "cash": 'Cash'
+        }
+      },
+      "bankAccounts": {
+        "label": "Bank accounts",
+        "$": {
+          "name": {
+            "label": "Name",
+            "placeholder": "(eg. Savings account)"
+          },
+          "number": {
+            "label": "Bank account number",
+            "placeholder": "(eg 12345678-00000000-00000525)"
+          },
+          "protocol": {
+            "label": "Synchronization protocol (if available)",
+            "auto": "Automatic",
+            "manual": "Manual"
+          },
+          "primary": {
+            "label": "Primary"
+          }
         }
       }
     },
@@ -217,6 +242,10 @@ export const HouseTranslation = {
         "label": "Közös képviselet elérhetősége",
         "placeholder": "(pl. iroda címe, telefonszáma, nyitvatartása)"
       },
+      "taxNumber": {
+        "label": "Adószám",
+        "placeholder": "(ahogy a számlákon megjelenjen)"
+      },
       "settings": {
         "label": "Beállítások",
         "joinable": {
@@ -226,6 +255,27 @@ export const HouseTranslation = {
           "label": "Könyvelési mód",
           "accrual": "Kettős könyvitel",
           "cash": "Egyszeres (pénzforgalmi) könyvitel"
+        }
+      },
+      "bankAccounts": {
+        "label": "Bank számlák",
+        "$": {
+          "name": {
+            "label": "Elnevezése",
+            "placeholder": "(pl. Megtakarítási számla)"
+          },
+          "number": {
+            "label": "Bankszámlaszám",
+            "placeholder": "(pl. 12345678-00000000-00000525)"
+          },
+          "protocol": {
+            "label": "Szinkronizációs protokol a bankkal (ha van)",
+            "auto": "Automatikus",
+            "manual": "Manuális"
+          },
+          "primary": {
+            "label": "Elsődleges"
+          }
         }
       }
     },

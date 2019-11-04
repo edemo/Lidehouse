@@ -7,13 +7,10 @@ import { autoformOptions, chooseUser, noUpdate } from '/imports/utils/autoform.j
 import { __ } from '/imports/localization/i18n.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
-const ContactSchema = new SimpleSchema({
+export const ContactSchema = new SimpleSchema({
   address: { type: String, optional: true },
   phone: { type: String, optional: true },
-  email: {
-    type: String,
-    optional: true,
-    regEx: SimpleSchema.RegEx.Email,
+  email: { type: String, optional: true, regEx: SimpleSchema.RegEx.Email,
     autoValue() {
       if (this.isSet) return (this.value).toLowerCase();
       return undefined;

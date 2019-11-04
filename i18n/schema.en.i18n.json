@@ -658,6 +658,29 @@
     "name": {
       "label": "Partner name",
       "placeholder": "(eg. Super-Clean Inc.)"
+    },
+    "bankAccountNumber": { 
+      "label": "Bank account number",
+      "placeholder": "(eg. 12345678-00000000-00000078)"
+    },
+    "taxNumber": { 
+      "label": "Tax number",
+      "placeholder": "(eg. 123456-2-42)"
+    },
+    "contact": {
+      "label" : "Person's contact",
+      "address": {
+        "label": "Mailing address",
+        "placeholder": "(eg. 62345 Kingston Boulevard, Dallas)"
+      },
+      "phone": {
+        "label": "Phone number",
+        "placeholder": "(pl. +36 30 123 4567)"
+      },
+      "email": {
+        "label": "Email address",
+        "placeholder": "(eg. jsmith45@dmail.com)"
+      }
     }
   },
   "schemaBills": {

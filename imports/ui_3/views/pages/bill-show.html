@@ -31,6 +31,8 @@
                         {{#let community=doc.community}}
                         <strong>{{community.name}}</strong><br>
                         {{community.displayAddress}}<br>
+                        Bank: {{community.primaryBankAccount.number}}<br>
+                        {{_ 'schemaPartners.taxNumber.label'}}: {{community.taxNumber}}<br>
                         {{/let}}
                     </address>
                 </div>
@@ -40,8 +42,12 @@
                     <h4 class="text-navy">{{doc.serialId}}</h4>
                     <span>{{_ 'schemaBills.partnerId.label'}}:</span>
                     <address>
-                        <strong>{{doc.partner}}</strong><br>
+                        {{#let partner = doc.partner}}
+                        <strong>{{partner.name}}</strong><br>
                         <!--{{doc.partnerAddress}}<br>-->
+                        Bank: {{partner.bankAccountNumber}}<br>
+                        {{_ 'schemaPartners.taxNumber.label'}}: {{partner.taxNumber}}<br>
+                        {{/let}}
                     </address>
                     <p>
                         <span><strong>{{_ 'schemaBills.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>

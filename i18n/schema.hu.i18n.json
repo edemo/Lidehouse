@@ -662,6 +662,29 @@
     "name": {
       "label": "Partner neve",
       "placeholder": "(pl Kulcslyuk kft)"
+    },
+    "bankAccountNumber": { 
+      "label": "Bankszámlaszám",
+      "placeholder": "(pl 12345678-00000000-00000078)"
+    },
+    "taxNumber": { 
+      "label": "Adószám",
+      "placeholder": "(pl 123456-2-42)"
+    },
+    "contact": {
+      "label" : "Kapcsolattartási adatok",
+      "address": {
+        "label": "Levelezési cím",
+        "placeholder": "(pl. Bp 1065 Andrássy u 44.)"
+      },
+      "phone": {
+        "label": "Telefonszám",
+        "placeholder": "(pl. +36 30 123 4567)"
+      },
+      "email": {
+        "label": "Email cím",
+        "placeholder": "(pl. tibi45@dmail.com)"
+      }
     }
   },
   "schemaBills": {
