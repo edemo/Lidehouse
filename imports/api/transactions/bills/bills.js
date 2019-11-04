@@ -19,6 +19,7 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
+import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 
 export const Bills = new Mongo.Collection('bills');
 
@@ -26,8 +27,8 @@ Bills.lineSchema = new SimpleSchema({
   title: { type: String },
   details: { type: String, optional: true },
   uom: { type: String, optional: true },  // unit of measurment
-  quantity: { type: Number, decimal: true },
-  unitPrice: { type: Number, decimal: true },
+  quantity: { type: Number },
+  unitPrice: { type: Number },
   taxPct: { type: Number, decimal: true, defaultValue: 0 },
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
@@ -35,9 +36,9 @@ Bills.lineSchema = new SimpleSchema({
   //  return this.siblingField('quantity').value * this.siblingField('unitPrice').value;
   //} },
   billingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  period: { type: String, optional: true },
+  period: { type: String, optional: true, autoform: { omit: true } },
   account: { type: String, optional: true, autoform: chooseAccountNode },
-  localizer: { type: String, optional: true },
+  localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
 });
 
 Bills.schema = new SimpleSchema({

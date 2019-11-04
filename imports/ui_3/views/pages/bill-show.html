@@ -49,6 +49,7 @@
                         {{>Bill_partner partner=doc.receiver}}
                     </address>
                     <p>
+                        <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate doc.issueDate}}</span><br/>
                         <span><strong>{{_ 'schemaBills.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
                         <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate doc.dueDate}}</span>
                     </p>

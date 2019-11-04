@@ -734,29 +734,40 @@
       "label": "Partner",
       "placeholder": "(eg. Super Clean Inc)"
     },
+    "contractId": {
+      "label": "Partner",
+      "placeholder": "(eg. Cleaning contract)"
+    },
     "note": {
-      "label": "Note"
+      "label": "Notes"
     },
     "lines" : {
       "label": "Line items",
       "$" : {
         "title": { 
-          "label": "Title"
+          "label": "Name of product or service",
+          "placeholder": "(eg. Garden chair)"
         },
         "details": { 
-          "label": "Details"
+          "label": "Description",
+          "placeholder": "(if needed)"
         },
         "uom": {
-          "label": "U.o.m."
+          "label": "Unit of measurement",
+          "short": "U.o.m.",
+          "placeholder": "(eg. piece)"
         },
         "quantity": {
-          "label": "Quantity"
+          "label": "Quantity",
+          "placeholder": "(eg. 5)"
         },
         "unitPrice": {
-          "label": "Unit price"
+          "label": "Unit price",
+          "placeholder": "(eg. 15420)"
         },
         "taxPct": {
-          "label": "Tax%"
+          "label": "Tax%",
+          "placeholder": "(eg. 7.5)"
         },
         "tax": {
           "label": "Tax"

@@ -46,7 +46,7 @@ ParcelBillings.schema = new SimpleSchema({
 });
 
 let chooseParcelBilling = {};
-let chooseSubAccountWithDefault = () => { return {}; };
+let chooseSubAccountWithDefault = () => ({});
 
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';

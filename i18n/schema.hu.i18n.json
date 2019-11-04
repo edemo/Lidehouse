@@ -705,7 +705,7 @@
       "placeholder": "(pl. 2017-05-06)"
     },
     "issueDate": {
-      "label": "Kiállítás ideje",
+      "label": "Számla kelte",
       "placeholder": "(pl. 2017-05-06)"
     },
     "valueDate": {
@@ -738,29 +738,40 @@
       "label": "Partner",
       "placeholder": "(pl. Kulcslyuk kft)"
     },
+    "contractId": {
+      "label": "Szerződés",
+      "placeholder": "(pl. Épülettakarítási szerződés)"
+    },
     "note": {
-      "label": "Megjegyzés"
+      "label": "Megjegyzések"
     },
     "lines" : {
       "label": "Tételek",
       "$" : {
         "title": { 
-          "label": "Megnevezés"
+          "label": "Termék vagy szolgáltatás neve",
+          "placeholder": "(pl. Kerti pad)"
         },
         "details": { 
-          "label": "Részletek"
+          "label": "Részletezés",
+          "placeholder": "(amennyiben szükséges)"
         },
         "uom": {
-          "label": "M.e."
+          "label": "Mennyiségi egység",
+          "placeholder": "(pl. db)"
         },
         "quantity": {
-          "label": "Mennyiség"
+          "label": "Mennyiség",
+          "short": "M.e.",
+          "placeholder": "(pl. 5)"
         },
         "unitPrice": {
-          "label": "Egységár"
+          "label": "Egységár",
+          "placeholder": "(pl. 15400)"
         },
         "taxPct": {
-          "label": "ÁFA%"
+          "label": "ÁFA%",
+          "placeholder": "(pl. 27,5)"
         },
         "tax": {
           "label": "ÁFA"
