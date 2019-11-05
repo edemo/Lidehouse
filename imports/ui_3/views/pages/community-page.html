@@ -95,36 +95,17 @@
             </div>
             {{/if}}
             <p>
-                {{_ (concat "Parcel " occupants " list") parcelDisplay}} - <i class="fa fa-user"></i> {{membershipsCount role}}<br>
+                {{_ (concat "Parcel " occupants " list") parcelDisplay}}
+                <br>
                 {{_ "Click person's name to see contact info"}}
             </p>
             <br>
             <div class="member-list">
                 {{#if userHasPermission (concat category '.update') communityId}}
-                <ul class="nav nav-tabs">
-                    <span class="pull-right small text-muted"></span>
-                    <li class="active"><a data-toggle="tab" href="{{concat '#' role 'tab-1'}}"><i class="fa fa-user"></i> {{_ 'Approved'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="{{concat '#' role 'tab-2'}}"><i class="fa fa-user-o"></i> {{_ 'Waiting for approval'}}
-                        {{#let unapprovedCount=(membershipsCount role 'unapproved')}}
-                        {{#if unapprovedCount}}
-                        <span class="label badge badge-danger">{{unapprovedCount}}</span>
-                        {{/if}}
-                        {{/let}}
-                    </a></li>
-                    <li class=""><a data-toggle="tab" href="{{concat '#' role 'tab-3'}}"><i class="fa fa-archive"></i> {{_ 'Archived'}}</a></li>
-                </ul>
+                {{> Active_archive_tabs name=category template='Memberships_table' category=category
+                icon='fa-user' unapprovedTab=true iconUnapproved='fa-user-o' collection='memberships' content=membershipsContent }}
+
                 {{/if}}
-                <div class="tab-content">
-                    <div id="{{concat role 'tab-1'}}" class="tab-pane active">
-                        {{> Memberships_table category=category rows=(memberships role)}}
-                    </div>
-                    <div id="{{concat role 'tab-2'}}" class="tab-pane">
-                        {{> Memberships_table category=category rows=(memberships role 'unapproved')}}
-                    </div>
-                    <div id="{{concat role 'tab-3'}}" class="tab-pane">
-                        {{> Memberships_table category=category rows=(memberships role 'archived')}}
-                    </div>    
-                </div>
             </div>
         </div>
     </div>
@@ -279,7 +260,7 @@
                         <button class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong></button>
                         {{/if}}
                         <p>
-                            {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.count}}<br>
+                            {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.length}}<br>
                             {{_ "Click person's name to see contact info"}}
                         </p>
                         <br>
@@ -326,7 +307,7 @@
                                 {{/each}}
                             </tr>
                             </table>
-                            {{#if community.joinable}}
+                            {{#if community.settings.joinable}}
                                 {{#unless (currentUser.isInCommunity communityId) }}
                                     <br>
                                     <p>{{_ 'joinRequestInstructions'}}</p>

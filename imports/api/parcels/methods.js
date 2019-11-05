@@ -12,6 +12,7 @@ import { Memberships } from '../memberships/memberships.js';
 import { crudBatchOps } from '../batch-method.js';
 
 function checkCommunityParcelsSanity(communityId) {
+  if (Meteor.isClient) return;
   const community = Communities.findOne(communityId);
   const registeredUnits = community.registeredUnits();
   if (registeredUnits > community.totalunits) {

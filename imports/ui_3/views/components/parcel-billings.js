@@ -15,8 +15,8 @@ import './parcel-billings.html';
 
 Template.Parcelbillings_table.viewmodel({
   tableDataFn() {
-    const active = this.templateInstance.data.active;
-    return () => ParcelBillings.find({ active }).fetch();
+    const selector = this.templateInstance.data.selector;
+    return () => ParcelBillings.find(selector).fetch();
   },
   optionsFn() {
     return () => Object.create({

@@ -39,17 +39,19 @@ import '../components/action-buttons.html';
 import '../components/contact-long.js';
 import './community-page.html';
 
-Template.Occupants_box.viewmodel({
-  memberships(role, subset) {
-    const communityId = this.templateInstance.data.communityId;
-    const parcelId = this.templateInstance.data.parcelId;
-    let selector = { communityId, active: true, role, parcelId, approved: true };
-    if (subset === 'unapproved') selector = { communityId, role, parcelId, approved: false };
-    if (subset === 'archived') selector = { communityId, role, parcelId, active: false };
+Template.Memberships_table.viewmodel({
+  rows() {
+    const selector = this.templateInstance.data.selector;
     return Memberships.find(selector);
   },
-  membershipsCount(role, subset) {
-    return this.memberships(role, subset).count();
+});
+
+Template.Occupants_box.viewmodel({
+  membershipsContent() {
+    const data = this.templateInstance.data;
+    const category = this.category;
+    const selector = { communityId: data.communityId, role: data.role, parcelId: data.parcelId };
+    return { selector, category };
   },
   parcelDisplay() {
     const parcelId = this.templateInstance.data.parcelId;
@@ -60,8 +62,7 @@ Template.Occupants_box.viewmodel({
 
 Template.Meters_table.viewmodel({
   rows() {
-    const data = this.templateInstance.data;
-    const selector = _.extend(data.selector, { active: data.active });
+    const selector = this.templateInstance.data.selector;
     return Meters.find(selector);
   },
 });
