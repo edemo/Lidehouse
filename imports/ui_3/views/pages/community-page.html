@@ -102,9 +102,8 @@
             <br>
             <div class="member-list">
                 {{#if userHasPermission (concat category '.update') communityId}}
-                {{> Active_archive_tabs name=category template='Memberships_table' category=category
-                icon='fa-user' unapprovedTab=true iconUnapproved='fa-user-o' collection='memberships' content=membershipsContent }}
-
+                {{> Active_archive_tabs name=category category=category icon='fa-user' iconUnapproved='fa-user-o'
+                    template='Memberships_table' content=membershipsContent }}
                 {{/if}}
             </div>
         </div>
@@ -159,7 +158,8 @@
             <br>
             <div class="member-list">
                 {{#if userHasPermission 'meters.update' communityId}}
-                {{> Active_archive_tabs name='meter' template='Meters_table' icon='fa-tachometer' content=metersContent }}
+                {{> Active_archive_tabs name='meter' icon='fa-tachometer'
+                    template='Meters_table' content=metersContent }}
                 {{/if}}
             </div>
         </div>
@@ -363,29 +363,11 @@
                         <br>
                         {{#if Template.subscriptionsReady}}
                             {{#if userHasPermission 'parcels.update' communityId}}
-                            <ul class="nav nav-tabs m-b-md">
-                                <li class="active"><a data-toggle="tab" href="#tab-p1"><i class="fa fa-building"></i> {{_ 'Approved'}}</a></li>
-                                <li class=""><a data-toggle="tab" href="#tab-p2"><i class="fa fa-building-o"></i> {{_ 'Waiting for approval'}}
-                                    {{#if unapprovedParcels.count}}
-                                    <span class="label badge badge-danger">{{unapprovedParcels.count}}</span>
-                                    {{/if}}
-                                </a></li>
-                            </ul>
+                                {{> Active_archive_tabs name='parcels' tabs='active,unapproved' icon='fa-building' iconUnapproved='fa-building-o'
+                                    template='SimpleReactiveDatatable' content=parcelsTableContent }}
                             {{/if}}
-                            <div class="tab-content">
-                                <div id="tab-p1" class="tab-pane active">
-                                    <div class="table-responsive">
-                                        {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
-                                    </div>
-                                </div>
-                                <div id="tab-p2" class="tab-pane">
-                                    <div class="table-responsive">
-                                        {{> ReactiveDatatable tableData=unapprovedParcelsTableDataFn options=parcelsOptionsFn }}
-                                    </div>
-                                </div>
-                            </div>
                         {{else}}
-                        {{_ 'Loading'}}...
+                            {{_ 'Loading'}}...
                         {{/if}}
                     </div>
                 </div>

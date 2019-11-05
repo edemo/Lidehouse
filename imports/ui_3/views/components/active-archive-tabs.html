@@ -1,8 +1,10 @@
 <template name="Active_archive_tabs">
     <ul class="nav nav-tabs m-b-md">
         <span class="pull-right small text-muted"></span>
+        {{#if hasTab 'active'}}
         <li class="active"><a data-toggle="tab" href="{{concat '#' name '-tab-1'}}"><i class="fa {{icon}}"></i> {{activeOrApproved}}</a></li>
-        {{#if unapprovedTab}}
+        {{/if}}
+        {{#if hasTab 'unapproved'}}
         <li class=""><a data-toggle="tab" href="{{concat '#' name '-tab-2'}}"><i class="fa {{iconUnapproved}}"></i> {{_ 'Waiting for approval'}}
             {{#if count 'unapproved'}}
             <span class="label badge badge-danger">{{count 'unapproved'}}</span>
@@ -10,19 +12,25 @@
             </a> 
         </li> 
         {{/if}}
+        {{#if hasTab 'archived'}}
         <li class=""><a data-toggle="tab" href="{{concat '#' name '-tab-3'}}"><i class="fa fa-archive"></i> {{_ 'Archived'}}</a></li>
+        {{/if}}
     </ul>
     <div class="tab-content">
+        {{#if hasTab 'active'}}
         <div id="{{concat name '-tab-1'}}" class="tab-pane active">
             {{> Template.dynamic template=template data=(extendedData 'active')}}
         </div>
-        {{#if unapprovedTab}}
+        {{/if}}
+        {{#if hasTab 'unapproved'}}
         <div id="{{concat name '-tab-2'}}" class="tab-pane">
             {{> Template.dynamic template=template data=(extendedData 'unapproved')}}        
         </div>  
         {{/if}}
+        {{#if hasTab 'archived'}}
         <div id="{{concat name '-tab-3'}}" class="tab-pane">
             {{> Template.dynamic template=template data=(extendedData 'archived')}}        
         </div>    
+        {{/if}}
     </div>
 </template>

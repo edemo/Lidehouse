@@ -14,22 +14,32 @@ function extendSelector(content, extensionObject) {
 
 Template.Active_archive_tabs.viewmodel({
   activeOrApproved() {
-    if (this.templateInstance.data.unapprovedTab) return __('Approved');
+    if (this.hasTab('unapproved')) return __('Approved');
     return __('Active');
   },
+  hasTab(tabType) {
+    const tabs = this.templateInstance.data.tabs;
+    if (!tabs) return true;
+    const split = tabs.split(',');
+    return _.contains(split, tabType);
+  },
   selectorExtension(tabType) {
+    let extension;
     switch (tabType) {
-      case 'active': return this.templateInstance.data.unapprovedTab ? { approved: true, active: true } : { active: true };
-      case 'unapproved': return { active: true, approved: false };
-      case 'archived': return { active: false };
+      case 'active': extension = { active: true, approved: true }; break;
+      case 'unapproved': extension = { active: true, approved: false }; break;
+      case 'archived': extension = { active: false }; break;
       default: debugAssert(false); return undefined;
     }
+    if (!this.hasTab('unapproved')) delete extension.approved;
+    if (!this.hasTab('archived')) delete extension.active;
+    return extension;
   },
   extendedData(tabType) {
     return extendSelector(this.templateInstance.data.content, this.selectorExtension(tabType));
   },
   count(tabType) {
-    const collection = Mongo.Collection.get(this.templateInstance.data.collection);
+    const collection = Mongo.Collection.get(this.templateInstance.data.content.collection);
     const selector = _.extend({}, this.templateInstance.data.content.selector, this.selectorExtension(tabType));
     return collection.find(selector).count();
   },

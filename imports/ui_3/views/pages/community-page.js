@@ -33,10 +33,11 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/active-archive-tabs.js';
+import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
 import { afCommunityUpdateModal } from '/imports/ui_3/views/components/communities-edit.js';
-import '../common/page-heading.js';
-import '../components/action-buttons.html';
-import '../components/contact-long.js';
+import '/imports/ui_3/views/common/page-heading.js';
+import '/imports/ui_3/views/components/action-buttons.html';
+import '/imports/ui_3/views/components/contact-long.js';
 import './community-page.html';
 
 Template.Memberships_table.viewmodel({
@@ -51,7 +52,7 @@ Template.Occupants_box.viewmodel({
     const data = this.templateInstance.data;
     const category = this.category;
     const selector = { communityId: data.communityId, role: data.role, parcelId: data.parcelId };
-    return { selector, category };
+    return { category, collection: 'memberships', selector };
   },
   parcelDisplay() {
     const parcelId = this.templateInstance.data.parcelId;
@@ -77,7 +78,7 @@ Template.Meters_box.viewmodel({
     const communityId = this.templateInstance.data.communityId;
     const parcelId = this.templateInstance.data.parcelId;
     const selector = { communityId, parcelId };
-    return { selector };
+    return { collection: 'meters', selector };
   },
 });
 
@@ -186,37 +187,31 @@ Template.Community_page.viewmodel({
     });
     return result;
   },
-  parcelsTableDataFn() {
+  parcelsTableContent() {
     const self = this;
-    return () => {
-      const communityId = self.communityId();
-      const parcels = Parcels.find({ communityId }).fetch();
-//      if (!self.showAllParcels()) {
-//        const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId() }).map(m => m.parcelId);
-//        parcels = parcels.filter(p => _.contains(myParcelIds, p._id));
-//      }
-      return parcels;
-    };
-  },
-  parcelsOptionsFn() {
-    const self = this;
-    return () => {
-      const communityId = self.communityId();
-      const permissions = {
-        view: Meteor.userOrNull().hasPermission('parcels.inCommunity', communityId),
-        edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
-        delete: Meteor.userOrNull().hasPermission('parcels.remove', communityId),
-        assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
-      };
-      return {
-        columns: parcelColumns(permissions),
-        createdRow: highlightMyRow,
-        tableClasses: 'display',
-        language: datatables_i18n[TAPi18n.getLanguage()],
-        lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
-        pageLength: 25,
-        ...DatatablesExportButtons,
-      };
+    return {
+      collection: 'parcels',
+      selector: { communityId: self.communityId() },
+      options() {
+        return () => {
+          const communityId = self.communityId();
+          const permissions = {
+            view: Meteor.userOrNull().hasPermission('parcels.inCommunity', communityId),
+            edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
+            delete: Meteor.userOrNull().hasPermission('parcels.remove', communityId),
+            assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
+          };
+          return {
+            columns: parcelColumns(permissions),
+            createdRow: highlightMyRow,
+            tableClasses: 'display',
+            language: datatables_i18n[TAPi18n.getLanguage()],
+            lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+            pageLength: 25,
+            ...DatatablesExportButtons,
+          };
+        };
+      },
     };
   },
   parcels() {
