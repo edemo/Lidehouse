@@ -669,7 +669,8 @@
     },
     "taxNumber": { 
       "label": "Adószám",
-      "placeholder": "(pl 123456-2-42)"
+      "placeholder": "(pl 123456-2-42)",
+      "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
     },
     "contact": {
       "label" : "Kapcsolattartási adatok",
@@ -824,11 +825,12 @@
   },
   "schemaParcelBillings": {
     "ids": {
-      "label": "Kivetett előírások"
+      "label": "Kivetendő előírások"
     },
     "valueDate": {
-      "label": "Értéknap",
-      "placeholder": "(pl. 2017-05-06)"
+      "label": "Kivetési időszak - kivetési nap",
+      "placeholder": "(pl. 2017-05-06)",
+      "help": "Válassza meg a kivetési napot, ami automatikusan meghatározza a kivetési időszakot (ami az az időszak lesz, amiben a kivetési nap benne van)."
     },
     "year": {
       "label": "Melyik év",
@@ -859,7 +861,8 @@
       "label": "Előírás könyvelési kódja"
     },
     "localizer": {
-      "label": "Előírás helye"
+      "label": "Előírás helye",
+      "help": "Az előírás kivetésre kerül egy adott albetétre, ha egy albetétet választ ki, vagy egy adott csoport minden elemére, ha egy csoprtot választ ki."
     },
     "title": {
       "label": "Megnevezés",

@@ -665,7 +665,8 @@
     },
     "taxNumber": { 
       "label": "Tax number",
-      "placeholder": "(eg. 123456-2-42)"
+      "placeholder": "(eg. international VAT number)",
+      "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."
     },
     "contact": {
       "label" : "Person's contact",
@@ -822,8 +823,9 @@
       "label": "Applied billings"
     },
     "valueDate": {
-      "label": "Accounting date",
-      "placeholder": "(eg. 2017-05-06)"
+      "label": "Billing period - billing day",
+      "placeholder": "(eg. 2017-05-06)",
+      "help": "Provide the billing day, which automatically implies the billing period (which is the period that includes the billing day)."
     },
     "year": {
       "label": "For which year",
@@ -854,7 +856,8 @@
       "label": "Payin accounting code"
     },
     "localizer": {
-      "label": "Payin location"
+      "label": "Payin location",
+      "help": "Billing will be applied to an individual parcel if an individual parcel is selected, or to all parcels that are under the selected group if a group is selected."
     },
     "title": {
       "label": "Title",

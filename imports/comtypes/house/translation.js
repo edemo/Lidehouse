@@ -61,11 +61,13 @@ export const HouseTranslation = {
       },
       "management": {
         "label": "Contact info of management",
-        "placeholder": "(eg. office address, phone, opening hours)"
+        "placeholder": "(eg. office address, phone, opening hours)",
+        "help": "You can set some some text here freely and it will be displayed for everybody, not just for the memebers of this community. You can provide contact information here for outsiders."
       },
       "taxNumber": {
         "label": "Tax number",
-        "placeholder": "(VAT number to appear on invoices)"
+        "placeholder": "(eg. international VAT number)",
+        "help": "Not mandatory, but you can set this, if you'd like it to appear on invoices and bills."
       },
       "totalunits": {
         "label": "Total shares outstanding",
@@ -74,10 +76,21 @@ export const HouseTranslation = {
       "settings": {
         "label": "Settings",
         "joinable": {
-          "label": "Accepts join requests"
+          "label": "Accepts join requests",
+          "help": "If you are not providing all parcel owner's data yourself, and you'd like them to be able to join the community, providing their own data, allow this option. Before approving a join request, you can still edit the submitted data.",
+        },
+        "language": {
+          "label": "Language",
+          "help": "The language used in notification emails."
+        },
+        "currency": {
+          "label": "Pénznem",
+          "placeholder": "Ft",
+          "help": "Symbol of the local currency. Will appear next to money amounts."
         },
         "accountingMethod": {
           "label": "Accounting method",
+          "help": "Depending on this, the accounting transactions are generated differently ffrom bills and payments. Never change this setting during the fiscal year.",
           "accrual": "Accrual",
           "cash": 'Cash'
         }
@@ -240,22 +253,35 @@ export const HouseTranslation = {
       },
       "management": {
         "label": "Közös képviselet elérhetősége",
-        "placeholder": "(pl. iroda címe, telefonszáma, nyitvatartása)"
+        "placeholder": "(pl. iroda címe, telefonszáma, nyitvatartása)",
+        "help": "Az itt megadott szabad szöveges információt mindenki láthatja, nem csak a tulajdnosok. Itt adhat meg külsősök számára mindenféle elérhetőségeket."
       },
       "taxNumber": {
         "label": "Adószám",
-        "placeholder": "(ahogy a számlákon megjelenjen)"
+        "placeholder": "(pl. 123456-2-42)",
+        "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
       },
       "settings": {
         "label": "Beállítások",
         "joinable": {
-          "label": "Csatlakozási kérelmeket fogad"
+          "label": "Csatlakozási kérelmeket fogad",
+          "help": "Ha nem ön viszi fel az összes tulajdonosi adatokat, hanem szeretné engedni hogy  a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezze. A csatalkozási kérelemben megadott albetét adatokat ön tudja még módosítani, mielőtt jóváhagyja."
+        },
+        "language": {
+          "label": "Nyelv",
+          "help": "Ezen a nyelven lesznek kiküldve az értesítő levelek"
+        },
+        "currency": {
+          "label": "Pénznem",
+          "placeholder": "Ft",
+          "help": "A helyi valuta jele. A pénzösszegek mellett ez a szimbólum lesz feltüntetve."
         },
         "accountingMethod": {
           "label": "Könyvelési mód",
+          "help": "A könybelési mód határozza meg milyen könyvelési tranzakciók keletkeznek a számlákból és a kifizetésekből. A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
           "accrual": "Kettős könyvitel",
           "cash": "Egyszeres (pénzforgalmi) könyvitel"
-        }
+        },
       },
       "bankAccounts": {
         "label": "Bank számlák",

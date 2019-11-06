@@ -59,7 +59,7 @@ if (Meteor.isClient) {
         ? ParcelBillings.find(activeParcelBillingId)
         : ParcelBillings.find({ communityId, active: true });
       const options = parcelBillings.map(function option(pb) {
-        return { label: pb.title, value: pb._id };
+        return { label: pb.toString(), value: pb._id };
       });
       const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
       return sortedOptions;
@@ -96,6 +96,9 @@ Meteor.startup(function indexParcelBillings() {
 });
 
 ParcelBillings.helpers({
+  community() {
+    return Communities.findOne(this.communityId);
+  },
   parcels(localizer) {
     const parcelLeafs = Localizer.get(this.communityId).leafsOf(localizer || this.localizer);
     const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
@@ -111,6 +114,13 @@ ParcelBillings.helpers({
   alreadyAppliedAt(period) {
     const found = this.appliedAt.find(a => a.period === period);
     return found ? found.valueDate : undefined;
+  },
+  toString() {
+    const currency = this.community().settings.currency;
+    const consumptionPart = this.consumption ? `${this.unitPrice} ${currency}/${__('consumed')} ${this.uom}` : '';
+    const connectionPart = (this.consumption && this.projection) ? ` ${__('or')} ` : '';
+    const projectionPart = this.projection ? `${this.amount} ${currency}/${this.projection})` : '';
+    return `${this.title} (${consumptionPart}${connectionPart}${projectionPart})`;
   },
 });
 

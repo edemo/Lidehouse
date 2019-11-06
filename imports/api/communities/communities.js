@@ -9,6 +9,7 @@ import { debugAssert, releaseAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
+import { availableLanguages } from '/imports/startup/both/language.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -41,6 +42,8 @@ Communities.bankProtocols = ['auto', 'manual'];
 
 Communities.settingsSchema = new SimpleSchema({
   joinable: { type: Boolean, defaultValue: true },
+  language: { type: String, allowedValues: availableLanguages, optional: true, autoform: { firstOption: false } },
+  currency: { type: String, max: 3, defaultValue: 'Ft' },
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: autoformOptions(Communities.accountingMethods, 'schemaCommunities.settings.accountingMethod.'), defaultValue: 'accrual' },
 });
 
@@ -89,7 +92,7 @@ Communities.helpers({
     let result;
     this.bankAccounts.forEach(bank => {
       if (bank.primary) { result = bank; return false; }
-    })
+    });
     return result || this.bankAccounts[0];
   },
   asPartner() {
