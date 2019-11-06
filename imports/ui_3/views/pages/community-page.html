@@ -15,67 +15,106 @@
     {{/let}}
 </template>
 
+<template name="Roleships_table">
+    <div class="full-height-scroll">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <tbody>
+                {{#each row in roleships}}
+                    <tr data-id="{{row._id}}">
+                        <td><a href="{{pathFor 'User show' _id=row.Person.userId}}" class="client-avatar"><img alt="image" src={{row.Person.avatar}}></a></td>
+                        <td><a href="{{pathFor 'User show' _id=row.Person.userId}}" class="client-link">{{row.Person.displayName}}</a></td>
+                        <td><span class="label label-plain">{{_ row.role}}</span> 
+                            {{#if row.rank}}<span class="label label-plain">{{_ rank}}</span>{{/if}}
+                        </td>
+                        <td>
+                            {{#if row.Person.user.profile.publicEmail}}
+                            <i class="contact-type fa fa-at"></i>{{row.Person.user.profile.publicEmail}}
+                            {{/if}}
+                            {{#if (and row.Person.user.profile.publicEmail row.Person.user.profile.phone)}}
+                            <br>
+                            {{/if}}
+                            {{#if row.Person.user.profile.phone}}
+                            <i class="contact-type fa fa-phone"></i>{{row.Person.user.profile.phone}}
+                            {{/if}}
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group">
+                                {{#if userHasPermission 'roleships.update' communityId}}
+                                <button class="btn btn-xs btn-white js-edit" data-id={{row._id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                {{#unless row.accepted}}
+                                <button class="btn btn-xs {{#if row.personId}}btn-info{{else}}btn-warning{{/if}} js-invite" data-id={{row._id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
+                                {{/unless}}
+                                {{/if}}
+                                {{#if userHasPermission 'roleships.remove' communityId}}
+                                <button class="btn btn-xs btn-white js-delete" data-id={{row._id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                {{/if}}
+                            </div>
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+
 <template name="Memberships_table">
     <div class="full-height-scroll">
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <tbody>
-                    {{#let category=this.category}}
-                    {{#each rows}}
-                    <tr data-id="{{_id}}">
-                        {{#if equals category 'roleships'}}
-                        <td><a href="{{pathFor 'User show' _id=Person.userId}}" class="client-avatar"><img alt="image" src={{Person.avatar}}></a></td>
-                        <td><a href="{{pathFor 'User show' _id=Person.userId}}" class="client-link">{{Person.displayName}}</a></td>
-                        <td><span class="label label-plain">{{_ role}}</span> 
-                            {{#if rank}}<span class="label label-plain">{{_ rank}}</span>{{/if}}
-                        </td>
-                        {{else}}
-                        <td><a href="#member" class="client-avatar js-member"><img alt="image" src={{Person.avatar}}></a></td>
-                        <td><a href="#member" class="client-link js-member">{{Person.displayName}}</a></td>
-                        <td>{{>Active_period this}}</td>
-                        {{/if}}
-                        {{#if equals category 'roleships'}}
-                        <td>
-                            {{#if Person.user.profile.publicEmail}}
-                            <i class="contact-type fa fa-at"></i>{{Person.user.profile.publicEmail}}
-                            {{/if}}
-                            {{#if (and Person.user.profile.publicEmail Person.user.profile.phone)}}
-                            <br>
-                            {{/if}}
-                            {{#if Person.user.profile.phone}}
-                            <i class="contact-type fa fa-phone"></i>{{Person.user.profile.phone}}
-                            {{/if}}
-                        </td>
-                        {{else}}
+                    {{#each row in memberships}}
+                    {{#let category=(calculateCategory row)}}
+                    <tr id="{{row.role}}" data-id="{{row._id}}">
+                        <td><a href="#member" class="client-avatar js-member"><img alt="image" src={{row.Person.avatar}}></a></td>
+                        <td><a href="#member" class="client-link js-member">{{row.Person.displayName}}</a></td>
+                        <td>{{>Active_period row}}</td>
                             {{#if equals category 'ownerships'}}
-                            <td class="contact-type"><i class="fa fa-pie-chart"></i></td>
-                            <td>{{ownership.share}}</td>
-                            <td>
-                                {{#if ownership.representor}}
+                            <td class="contact-type nowrap">
+                                <i class="fa fa-pie-chart" title="{{_ 'ownership proportion'}}"></i> {{row.ownership.share}}
+                                {{#if row.ownership.representor}}
                                 <span class="label label-plain"><i class="fa fa-star"></i> {{_ 'representor'}}</span>
                                 {{/if}}
                             </td>
                             {{/if}}
                             {{#if equals category 'benefactorships'}}
-                            <td><span class="label label-plain">{{_ benefactorship.type}}</span></td>
+                            <td><span class="label label-plain">{{_ row.benefactorship.type}}</span></td>
                             {{/if}}
-                        {{/if}}
                         <td class="text-right">
                             <div class="btn-group">
                                 {{#if userHasPermission (concat category '.update') communityId}}
-                                <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                                {{#unless accepted}}
-                                <button class="btn btn-xs {{#if personId}}btn-info{{else}}btn-warning{{/if}} js-invite" data-id={{_id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
+                                <button class="btn btn-xs btn-white js-edit" data-id={{row._id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                {{#unless row.accepted}}
+                                <button class="btn btn-xs {{#if row.personId}}btn-info{{else}}btn-warning{{/if}} js-invite" data-id={{row._id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
                                 {{/unless}}
                                 {{/if}}
                                 {{#if userHasPermission (concat category '.remove') communityId}}
-                                <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                <button class="btn btn-xs btn-white js-delete" data-id={{row._id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                                {{/if}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{/let}}
+                    {{/each}}
+                    {{#each row in leaderships}}
+                    <tr id="leaderships" data-id="{{row._id}}">
+                        <td></td>
+                        <td><button class="js-assign" data-id="{{row.leadParcelId}}"><strong title="{{_ 'leadership'}}">{{row.leadRef}}</strong></button></td>
+                        <td>{{>Active_period row}}</td>
+                        <td></td>
+                        <td class="text-right">
+                            <div class="btn-group">
+                                {{#if userHasPermission 'leaderships.update' communityId}}
+                                <button class="btn btn-xs btn-white js-edit" data-id={{row._id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
+                                {{/if}}
+                                {{#if userHasPermission 'leaderships.remove' communityId}}
+                                <button class="btn btn-xs btn-white js-delete" data-id={{row._id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
                                 {{/if}}
                             </div>
                         </td>
                     </tr>
                     {{/each}}
-                    {{/let}}
                 </tbody>
             </table>
         </div>
@@ -83,52 +122,42 @@
 </template>
 
 <template name="Occupants_box">
-    {{#let occupants=(concat role 's')}}
-    <div id="{{occupants}}" class="ibox">
+    <div class="ibox">
         <div class="ibox-content">
             <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
-            <h2>{{_ occupants}}</h2>
-            {{#if userHasPermission (concat category '.insert') communityId}}
-            <div class="btn-group pull-right">
-                <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ role}}</strong></button>
+            <h2>{{_ 'occupants'}} {{leadershipTitle}}                
+            </h2>
+            {{#if userHasPermission 'benefactorships.insert' communityId}}
+                <div class="dropdown btn-group pull-right">
+                    <button href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
+                        <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'occupants'}}</strong> <b class="caret"></b>
+                    </button>
+                    <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
+                        {{#if userHasPermission 'ownerships.insert' communityId}}
+                        <li><a href="" id="owner-button" class="js-new">{{_ 'new'}} {{_ 'owner'}}</a></li>
+                        {{/if}}
+                        {{#if userHasPermission 'benefactorships.insert' communityId}}
+                        <li><a href="" id="benefactor-button" class="js-new">{{_ 'new'}} {{_ 'benefactor'}}</a></li>
+                        {{/if}}
+                        {{#if userHasPermission 'leaderships.insert' communityId}}
+                        <li><a href="" id="leadership-button" class="js-new">{{_ 'new'}} {{_ 'leadership'}}</a></li>
+                        {{/if}}
+                    </ul>
                 <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
-            </div>
+                </div>  
             {{/if}}
             <p>
-                {{_ (concat "Parcel " occupants " list") parcelDisplay}} - <i class="fa fa-user"></i> {{membershipsCount role}}<br>
+                {{ parcelDisplay}}
+                <br>
                 {{_ "Click person's name to see contact info"}}
             </p>
             <br>
             <div class="member-list">
-                {{#if userHasPermission (concat category '.update') communityId}}
-                <ul class="nav nav-tabs">
-                    <span class="pull-right small text-muted"></span>
-                    <li class="active"><a data-toggle="tab" href="{{concat '#' role 'tab-1'}}"><i class="fa fa-user"></i> {{_ 'Approved'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="{{concat '#' role 'tab-2'}}"><i class="fa fa-user-o"></i> {{_ 'Waiting for approval'}}
-                        {{#let unapprovedCount=(membershipsCount role 'unapproved')}}
-                        {{#if unapprovedCount}}
-                        <span class="label badge badge-danger">{{unapprovedCount}}</span>
-                        {{/if}}
-                        {{/let}}
-                    </a></li>
-                    <li class=""><a data-toggle="tab" href="{{concat '#' role 'tab-3'}}"><i class="fa fa-archive"></i> {{_ 'Archived'}}</a></li>
-                </ul>
-                {{/if}}
-                <div class="tab-content">
-                    <div id="{{concat role 'tab-1'}}" class="tab-pane active">
-                        {{> Memberships_table category=category rows=(memberships role)}}
-                    </div>
-                    <div id="{{concat role 'tab-2'}}" class="tab-pane">
-                        {{> Memberships_table category=category rows=(memberships role 'unapproved')}}
-                    </div>
-                    <div id="{{concat role 'tab-3'}}" class="tab-pane">
-                        {{> Memberships_table category=category rows=(memberships role 'archived')}}
-                    </div>    
-                </div>
+                {{> Active_archive_tabs name=category icon='fa-user' iconUnapproved='fa-user-o'
+                    template='Memberships_table' content=membershipsContent }}
             </div>
         </div>
     </div>
-    {{/let}}
 </template>
 
 <template name="Meters_table">
@@ -178,75 +207,10 @@
             <br>
             <div class="member-list">
                 {{#if userHasPermission 'meters.update' communityId}}
-                {{> Active_archive_tabs name='meter' template='Meters_table' icon='fa-tachometer' content=metersContent }}
+                {{> Active_archive_tabs name='meter' icon='fa-tachometer'
+                    template='Meters_table' content=metersContent }}
                 {{/if}}
             </div>
-        </div>
-    </div>
-</template>
-
-<template name="Leaderships_box">
-    <div class="ibox">
-        <div class="ibox-content">
-            <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
-            <h2>{{_ 'leaderships'}}</h2>
-            {{#if userHasPermission 'leaderships.insert' communityId}}
-            <div class="btn-group pull-right">
-                <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'leadership'}}</strong></button>
-                <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
-            </div>
-            {{/if}}
-            <p>
-                {{parcelDisplay}} - {{_  "leaderships" }} <i class="fa fa-building"></i><br>
-            </p>
-            <br>
-            <div class="member-list">
-                {{#if userHasPermission 'leaderships.update' communityId}}
-                <ul class="nav nav-tabs">
-                    <span class="pull-right small text-muted"></span>
-                    <li class="active"><a data-toggle="tab" href="#leaderships-tab-1"><i class="fa fa-building"></i> {{_ 'Active'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#leaderships-tab-3"><i class="fa fa-archive"></i> {{_ 'Archived'}}</a></li>
-                </ul>
-                {{/if}}
-                <div class="tab-content">
-                    <div id="leaderships-tab-1" class="tab-pane active">
-                        {{> Leaderships_table rows=leaderships}}
-                    </div>
-                    <div id="leaderships-tab-3" class="tab-pane">
-                        {{> Leaderships_table rows=(leaderships 'archived')}}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
-<template name="Leaderships_table">
-    <div class="full-height-scroll">
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <tbody>
-                    {{#each rows}}
-                    <tr data-id="{{_id}}">
-                        <td><strong>{{leadRef}}</strong></td>
-                        <td>{{_  'schemaLeaderships.activeTime.begin.label' }}: {{displayDate activeTime.begin}}</td>
-                        {{#unless active}}
-                        <td>{{_  'schemaLeaderships.activeTime.end.label' }}: {{displayDate activeTime.end}}</td>
-                        {{/unless}}
-                        <td class="text-right">
-                            <div class="btn-group">
-                                {{#if userHasPermission 'leaderships.update' communityId}}
-                                <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                                {{/if}}
-                                {{#if userHasPermission 'leaderships.remove' communityId}}
-                                <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                                {{/if}}
-                            </div>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
         </div>
     </div>
 </template>
@@ -279,7 +243,7 @@
                         <button class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong></button>
                         {{/if}}
                         <p>
-                            {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.count}}<br>
+                            {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.length}}<br>
                             {{_ "Click person's name to see contact info"}}
                         </p>
                         <br>
@@ -290,7 +254,7 @@
                                 </span>
                         </div-->
                         <div class="member-list">
-                            {{> Memberships_table category='roleships' rows=officers}}
+                            {{> Roleships_table roleships=officers}}
                         </div>
                     </div>
                 </div>
@@ -326,7 +290,7 @@
                                 {{/each}}
                             </tr>
                             </table>
-                            {{#if community.joinable}}
+                            {{#if community.settings.joinable}}
                                 {{#unless (currentUser.isInCommunity communityId) }}
                                     <br>
                                     <p>{{_ 'joinRequestInstructions'}}</p>
@@ -382,29 +346,11 @@
                         <br>
                         {{#if Template.subscriptionsReady}}
                             {{#if userHasPermission 'parcels.update' communityId}}
-                            <ul class="nav nav-tabs m-b-md">
-                                <li class="active"><a data-toggle="tab" href="#tab-p1"><i class="fa fa-building"></i> {{_ 'Approved'}}</a></li>
-                                <li class=""><a data-toggle="tab" href="#tab-p2"><i class="fa fa-building-o"></i> {{_ 'Waiting for approval'}}
-                                    {{#if unapprovedParcels.count}}
-                                    <span class="label badge badge-danger">{{unapprovedParcels.count}}</span>
-                                    {{/if}}
-                                </a></li>
-                            </ul>
+                                {{> Active_archive_tabs name='parcels' tabs='active,unapproved' icon='fa-building' iconUnapproved='fa-building-o'
+                                    template='SimpleReactiveDatatable' content=parcelsTableContent }}
                             {{/if}}
-                            <div class="tab-content">
-                                <div id="tab-p1" class="tab-pane active">
-                                    <div class="table-responsive">
-                                        {{> ReactiveDatatable tableData=parcelsTableDataFn options=parcelsOptionsFn }}
-                                    </div>
-                                </div>
-                                <div id="tab-p2" class="tab-pane">
-                                    <div class="table-responsive">
-                                        {{> ReactiveDatatable tableData=unapprovedParcelsTableDataFn options=parcelsOptionsFn }}
-                                    </div>
-                                </div>
-                            </div>
                         {{else}}
-                        {{_ 'Loading'}}...
+                            {{_ 'Loading'}}...
                         {{/if}}
                     </div>
                 </div>
@@ -421,19 +367,10 @@
             </div>
         </div>
 
-        <div id="leaderships" class="row">
-            <div class="col-md-8">
-            {{#if selectedParcelId}}
-                {{> Leaderships_box communityId=communityId parcelId=selectedParcelId}}
-            {{/if}}
-            </div>
-        </div>
-
         <div id="occupants" class="row">
             <div class="col-md-8">
             {{#if selectedParcelId}}
-                {{> Occupants_box communityId=communityId parcelId=selectedParcelId role='owner' category='ownerships'}}
-                {{> Occupants_box communityId=communityId parcelId=selectedParcelId role='benefactor' category='benefactorships'}}
+                {{> Occupants_box communityId=communityId parcelId=selectedParcelId}}
             {{/if}}
             </div>
             <div id="member" class="col-md-4">

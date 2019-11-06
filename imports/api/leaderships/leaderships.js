@@ -34,10 +34,12 @@ Leaderships.schema = new SimpleSchema({
   leadParcelId: { type: String, regEx: SimpleSchema.RegEx.Id,
     autoValue() {
       const leadRef = this.field('leadRef').value;
+      if (!leadRef) return undefined;
       const communityId = this.field('communityId').value;
       return Parcels.findOne({ communityId, ref: leadRef })._id;
     },
   },
+  approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
 
 Meteor.startup(function indexLeaderships() {
@@ -51,6 +53,9 @@ Meteor.startup(function indexLeaderships() {
 Leaderships.helpers({
   ledParcel() {
     return Parcels.findOne(this.parcelId);
+  },
+  permissionCategory() {
+    return 'leaderships';
   },
 });
 

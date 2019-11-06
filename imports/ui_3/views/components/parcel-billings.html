@@ -1,7 +1,3 @@
-<template name="Parcelbillings_table">
-    {{> ReactiveDatatable tableData=tableDataFn options=optionsFn }}
-</template>
-
 <template name="Parcel_billings">
     <div class="parcelBillings">
         <div class="text-right m-b-md">
@@ -9,6 +5,7 @@
                 <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcelBilling'}} {{_ 'creation'}}</strong>
             </button>
         </div>
-        {{> Active_archive_tabs name='parcelbillings' template='Parcelbillings_table' icon='fa-clipboard' content=tableContent }}
+        {{> Active_archive_tabs name='parcelbillings' tabs='active,archived' icon='fa-clipboard'
+            template='SimpleReactiveDatatable' content=tableContent }}
     </div>
 </template>
