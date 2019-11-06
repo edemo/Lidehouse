@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { Mongo } from 'meteor/mongo';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { TAPi18n } from 'meteor/tap:i18n';
@@ -11,30 +12,26 @@ import { parcelBillingColumns } from '/imports/api/transactions/parcel-billings/
 import { allParcelBillingActions } from '/imports/api/transactions/parcel-billings/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/active-archive-tabs.js';
+import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
 import './parcel-billings.html';
-
-Template.Parcelbillings_table.viewmodel({
-  tableDataFn() {
-    const active = this.templateInstance.data.active;
-    return () => ParcelBillings.find({ active }).fetch();
-  },
-  optionsFn() {
-    return () => Object.create({
-      columns: parcelBillingColumns(),
-      tableClasses: 'display',
-      language: datatables_i18n[TAPi18n.getLanguage()],
-      lengthMenu: [[5, 10, 50, -1], [5, 10, 50, __('all')]],
-      pageLength: 10,
-    });
-  },
-});
 
 Template.Parcel_billings.viewmodel({
   communityId() {
     return Session.get('activeCommunityId');
   },
   tableContent() {
-    return {};
+    return {
+      collection: 'parcelBillings',
+      options() {
+        return () => Object.create({
+          columns: parcelBillingColumns(),
+          tableClasses: 'display',
+          language: datatables_i18n[TAPi18n.getLanguage()],
+          lengthMenu: [[5, 10, 50, -1], [5, 10, 50, __('all')]],
+          pageLength: 10,
+        });
+      },
+    };
   },
 });
 

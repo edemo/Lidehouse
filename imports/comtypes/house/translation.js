@@ -197,6 +197,8 @@ export const HouseTranslation = {
     "centralHeating": "Központi fűtés",
     "ownHeating": "Saját fűtés",
 
+    "ownership proportion": "tulajdoni hányad",
+
     "schemaCommunities": {
       "name": {
         "label": "Társasház neve",

@@ -25,6 +25,7 @@ function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
 }
 
 function checkParcelMembershipsSanity(parcelId) {
+  if (Meteor.isClient) return;
   if (!parcelId) return;
   const parcel = Parcels.findOne(parcelId);
   // Parcel cannot be led and have owners at the same time (because led means, the owners are set on the lead parcel)

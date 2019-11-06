@@ -72,7 +72,7 @@ export function parcelColumns(permissions) {
   if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
   if (permissions.assign) buttonRenderers.push(Render.buttonAssignOccupants);
   if (permissions.assign) buttonRenderers.push(Render.buttonMeters);
-  if (permissions.assign) buttonRenderers.push(Render.buttonLeaderships);
+  //if (permissions.assign) buttonRenderers.push(Render.buttonLeaderships);
   if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
 
   return [
