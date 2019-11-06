@@ -96,7 +96,7 @@ if (Meteor.isServer) {
         Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
         chai.assert.throws(() =>
           Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-15') }, Fixture.builder.getUserWithRole('accountant')),
-          'err_sanityCheckFailed'
+          'err_alreadyExists'
         );
         // but can apply for a different period
         Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-02-10') }, Fixture.builder.getUserWithRole('accountant'));
@@ -134,7 +134,7 @@ if (Meteor.isServer) {
           chai.assert.equal(line0.quantity, parcel.volume);
           const line1 = bill.lines[1];
           chai.assert.equal(line1.title, 'Test absolute');
-          chai.assert.equal(line1.uom, '1');
+          chai.assert.equal(line1.uom, 'piece');
           chai.assert.equal(line1.unitPrice, 1000);
           chai.assert.equal(line1.quantity, 1);
         });

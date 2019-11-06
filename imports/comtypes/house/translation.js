@@ -81,7 +81,7 @@ export const HouseTranslation = {
         },
         "language": {
           "label": "Language",
-          "help": "The language used in notification emails."
+          "help": "The official language of the community (Users receive their notifications translated to their own language)."
         },
         "currency": {
           "label": "Pénznem",
@@ -269,7 +269,7 @@ export const HouseTranslation = {
         },
         "language": {
           "label": "Nyelv",
-          "help": "Ezen a nyelven lesznek kiküldve az értesítő levelek"
+          "help": "A közösség hivatalos nyelve. (A felhasználók a számukra küldött értesítőket, a saját nyelvükre lefordítva kapják meg)"
         },
         "currency": {
           "label": "Pénznem",

@@ -49,7 +49,7 @@ Communities.settingsSchema = new SimpleSchema({
 
 Communities.bankAccountSchema = new SimpleSchema({
   name: { type: String, max: 100 },
-  number: { type: String, max: 100 },
+  accountNumber: { type: String, max: 100 },
   protocol: { type: String, allowedValues: Communities.bankProtocols, autoform: autoformOptions(Communities.bankProtocols, 'schemaCommunities.settings.bankAccounts.protocol.'),  optional: true },
   primary: { type: Boolean, optional: true },
 });
@@ -122,6 +122,9 @@ Communities.helpers({
     const voters = this.voterships().map(v => v.user());
     return _.uniq(voters, false, u => u._id);
   },
+  toString() {
+    return this.name;
+  },
 });
 
 Communities.attachSchema(Communities.schema);
@@ -155,9 +158,9 @@ Factory.define('community', Communities, {
     joinable: true,
     accountingMethod: 'cash',
   },
-  bankAccounts: [{
+  bankAccounts: () => [{
     name: 'bankszla',
-    number: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
+    accountNumber: faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
     primary: true,
   }],
 });

@@ -27,8 +27,8 @@ Bills.lineSchema = new SimpleSchema({
   title: { type: String },
   details: { type: String, optional: true },
   uom: { type: String, optional: true },  // unit of measurment
-  quantity: { type: Number },
-  unitPrice: { type: Number },
+  quantity: { type: Number, decimal: true },
+  unitPrice: { type: Number, decimal: true },
   taxPct: { type: Number, decimal: true, defaultValue: 0 },
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
   amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },

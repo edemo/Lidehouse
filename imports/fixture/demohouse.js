@@ -70,11 +70,11 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
     bankAccounts: [{
       name: __('demo.bank.primaryAccount.name'),
-      number: __('demo.bank.primaryAccount.number'),
+      accountNumber: __('demo.bank.primaryAccount.number'),
       primary: true,
     }, {
       name: __('demo.bank.savingsAccount.name'),
-      number: __('demo.bank.savingsAccount.number'),
+      accountNumber: __('demo.bank.savingsAccount.number'),
     }],
   });
 

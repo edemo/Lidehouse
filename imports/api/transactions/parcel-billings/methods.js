@@ -79,7 +79,7 @@ export const apply = new ValidatedMethod({
         line.amount = line.quantity * line.unitPrice;
         line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
         line.localizer = Localizer.parcelRef2code(parcel.ref);
-        line.title = `${parcelBilling.title}, ${parcel.ref}, ${line.period}`;
+        line.title = `${parcelBilling.title}`;
 
         // Creating the bill - adding entry to the bill
         bills[parcel._id] = bills[parcel._id] || {

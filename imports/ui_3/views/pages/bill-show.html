@@ -1,9 +1,13 @@
 <template name="Bill_partner">
     <address>
-        <strong>{{partner.name}}</strong><br>
+        <strong>{{partner.toString}}</strong><br>
         {{partner.contact.address}}<br>
-        Bank: {{partner.bankAccountNumber}}<br>
-        {{_ 'schemaPartners.taxNumber.label'}}: {{partner.taxNumber}}<br>
+        {{#if partner.bankAccountNumber}}
+          Bank: {{partner.bankAccountNumber}}<br>
+        {{/if}}
+        {{#if partner.taxNumber}}
+          {{_ 'schemaPartners.taxNumber.label'}}: {{partner.taxNumber}}<br>
+        {{/if}}
     </address>
 </template>
 
@@ -72,7 +76,7 @@
                     <tbody>
                         {{#each line in doc.lines}}
                         <tr>
-                            <td><div><strong>{{line.title}}</strong></div>
+                            <td><div><strong>{{line.title}} {{code2parcelRef line.localizer}} {{line.period}}</strong></div>
                                 <small>{{line.details}}</small>
                                 {{#if userHasPermission 'bills.conteer' (fromSession 'activeCommunityId')}}
                                     {{{displayAccount line.account activeCommunityId}}}

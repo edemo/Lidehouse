@@ -96,7 +96,11 @@ Migrations.add({
   up() {
     Communities.update(
       { settings: { $exists: false } },
-      { $set: { settings: { joinable: true, accountingMethod: 'accrual' } } },
+      { $set: { settings: {
+        joinable: true,
+        language: 'hu',
+        currency: 'Ft',
+        accountingMethod: 'accrual' } } },
       { multi: true }
     );
   },
