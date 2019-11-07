@@ -46,8 +46,8 @@
                 </div>
 
                 <div class="col-sm-6 text-right">
-                    <h4>{{_ 'schemaBills.serialId.label'}}</h4>
-                    <h4 class="text-navy">{{doc.serialId}}</h4>
+                    <h4>{{_ (concat doc.relation '_bill')}}: <!--</h4> {{_ 'schemaBills.serialId.label'}}</h4-->
+                    <span class="text-navy">{{doc.serialId}}</span></h4>
                     <h5>{{_ 'receiver'}}:</h5>
                     <address>
                         {{>Bill_partner partner=doc.receiver}}

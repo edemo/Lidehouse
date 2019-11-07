@@ -695,7 +695,7 @@
       "label": "Serial"
     },
     "serialId": {
-      "label": "Bill identifier"
+      "label": "identifier"
     },
     "createdAt": {
       "label": "Register date",

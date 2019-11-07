@@ -36,7 +36,10 @@
   },
 
   // finances
-    "Breakdowns": "Accounting breakdowns",
+  "Breakdowns": "Accounting breakdowns",
+  "customer_bill": "invoice",
+  "supplier_bill": "bill",
+  "parcel_bill": "parcel invoice",
 
   // feedback
   "FeedbackPaneCallout": "Tell us your opinion about the app!",

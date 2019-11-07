@@ -413,6 +413,9 @@
   "My own only": "Csak a sajátjaim mutatása",
 
   // finances
+  "customer_bill": "kimenő számla",
+  "supplier_bill": "bejövő számla",
+  "parcel_bill": "díjbekérő",
   "Money accounts total": "Pénzeszközök összesen",
   "Money outstanding": "Befizetetlen előírások",
   "Commitments total": "Kötelezettségek összesen",

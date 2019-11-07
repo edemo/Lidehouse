@@ -44,7 +44,7 @@ export function allBillsActions() {
         });*/
 //        FlowRouter.go('Bill show', { _bid: id });
         Modal.show('Modal', {
-          title: __('bill') + ' ' + doc.serialId(),
+          title: __(doc.relation + '_bill') + ' ' + doc.serialId(),
           body: 'Bill_show',
           bodyContext: { doc },
         });

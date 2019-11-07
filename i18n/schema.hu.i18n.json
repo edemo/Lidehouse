@@ -699,7 +699,7 @@
       "label": "Sorszám"
     },
     "serialId": {
-      "label": "Számla azonosító"
+      "label": "azonosító"
     },
     "createdAt": {
       "label": "Rögzítés ideje",
