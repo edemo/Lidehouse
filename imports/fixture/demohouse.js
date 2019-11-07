@@ -333,6 +333,12 @@ export function insertDemoHouse(lang, demoOrTest) {
     benefactorship: { type: 'rental' },
   });
 
+  demoBuilder.create('leadership', {
+    parcelId: demoParcels[11],
+    leadRef: 'A206',
+    leadParcelId: demoParcels[5],
+  });
+
   // ==== Loginable users with Roles =====
 
   if (demoOrTest === 'test') {
