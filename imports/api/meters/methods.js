@@ -56,6 +56,8 @@ export const registerReading = new ValidatedMethod({
   run({ _id, reading }) {
     const doc = checkExists(Meters, _id);
     checkPermissions(this.userId, 'meters.reading', doc.communityId);
+
+    _.extend(reading, { approved: false });
     const modifier = { $push: { readings: reading } };
 
     return Meters.update(_id, modifier);

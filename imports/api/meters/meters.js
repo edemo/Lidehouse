@@ -1,8 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Fraction } from 'fractional';
-import { Tracker } from 'meteor/tracker';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
@@ -12,11 +10,6 @@ import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.j
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
-import { FreeFields } from '/imports/api/behaviours/free-fields.js';
-import { Communities } from '/imports/api/communities/communities.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 
 export const Meters = new Mongo.Collection('meters');
 
@@ -26,14 +19,13 @@ Meters.readingSchema = new SimpleSchema({
   date: { type: Date },
   value: { type: Number },
   photo: { type: String, optional: true, autoform: fileUpload },
-  approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
+  approved: { type: Boolean, optional: true, autoform: { omit: true }, defaultValue: true },
 });
 
 Meters.unapprovedReadingSchema = new SimpleSchema({
   date: { type: Date, autoValue: () => new Date(), autoform: { value: new Date(), readonly: true } },
   value: { type: Number },
   photo: { type: String, optional: true, autoform: fileUpload },
-  approved: { type: Boolean, autoform: { omit: true }, defaultValue: false },
 });
 
 Meters.billingTypeValues = ['reading', 'estimate'];
