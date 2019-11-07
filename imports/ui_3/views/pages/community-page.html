@@ -99,10 +99,10 @@
                     {{/each}}
                     {{#each row in leaderships}}
                     <tr id="leaderships" data-id="{{row._id}}">
-                        <td></td>
+                        <td class="text-center"> <a class="client-avatar"><i class="fa fa-lg fa-share"></i></a></td>
                         <td><button class="js-assign" data-id="{{row.leadParcelId}}"><strong title="{{_ 'leadership'}}">{{row.leadRef}}</strong></button></td>
                         <td>{{>Active_period row}}</td>
-                        <td></td>
+                        <td><span class="label label-plain">{{_ 'lead parcel'}}</span></td>
                         <td class="text-right">
                             <div class="btn-group">
                                 {{#if userHasPermission 'leaderships.update' communityId}}
@@ -130,7 +130,7 @@
             {{#if userHasPermission 'benefactorships.insert' communityId}}
                 <div class="dropdown btn-group pull-right">
                     <button href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
-                        <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'occupants'}}</strong> <b class="caret"></b>
+                        <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'occupant'}}</strong> <b class="caret"></b>
                     </button>
                     <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
                         {{#if userHasPermission 'ownerships.insert' communityId}}

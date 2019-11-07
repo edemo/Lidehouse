@@ -94,6 +94,7 @@ export class CommunityBuilder {
         case 'agendas':
         case 'contracts':
         case 'parcels':
+        case 'leaderships':
         case 'partners':
         case 'meters': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');

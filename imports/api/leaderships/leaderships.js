@@ -3,6 +3,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -65,4 +66,7 @@ Leaderships.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Leaderships.simpleSchema().i18n('schemaLeaderships');
+});
+
+Factory.define('leadership', Leaderships, {
 });
