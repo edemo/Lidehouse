@@ -147,7 +147,7 @@
                 </div>  
             {{/if}}
             <p>
-                {{ parcelDisplay}}
+                <strong>{{ parcelDisplay}}</strong> - {{_ 'occupants'}}
                 <br>
                 {{_ "Click person's name to see contact info"}}
             </p>
@@ -169,18 +169,13 @@
                     <tr data-id="{{_id}}">
                         <td>{{{displayMeterService this.service}}}</td>
                         <td>{{>Active_period this}}</td>
-                        <td class="contact-type"><i class="fa fa-camera"></i></td>
-                        <td>{{displayDate this.lastReading.date}}</td>
-                        <td>{{{displayReading this.lastReading.value}}}</td>
+                        <td>{{_ 'schemaMeters.lastRead.label'}}:
+                            <small>{{displayDate this.lastReading.date}}</small> 
+                            {{{displayReading this.lastReading.value}}}
+                            {{>Action_buttons_group collection='meters' actions='reading,editReadings' size='sm'}}
+                        </td>
                         <td class="text-right">
-                            <div class="btn-group">
-                                {{#if userHasPermission 'meters.update' communityId}}
-                                <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                                {{/if}}
-                                {{#if userHasPermission 'meters.remove' communityId}}
-                                <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                                {{/if}}
-                            </div>
+                            {{>Action_buttons_group collection='meters' actions='edit,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/each}}
@@ -191,7 +186,7 @@
 </template>
 
 <template name="Meters_box">
-    <div class="ibox">
+    <div class="ibox meters">
         <div class="ibox-content">
             <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
             <h2>{{_ 'meters'}}</h2>
@@ -202,7 +197,7 @@
             </div>
             {{/if}}
             <p>
-                {{parcelDisplay}} - {{_  "meters" }} <i class="fa fa-tachometer"></i><br>
+                <strong>{{parcelDisplay}}</strong> - {{_  'meters' }} <i class="fa fa-tachometer"></i><br>
             </p>
             <br>
             <div class="member-list">

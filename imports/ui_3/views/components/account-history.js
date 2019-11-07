@@ -71,5 +71,5 @@ Template.Account_history.viewmodel({
 });
 
 Template.Account_history.events({
-  ...(actionHandlers(allTransactionsActions())),
+  ...(actionHandlers(Transactions)),
 });

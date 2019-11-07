@@ -123,6 +123,10 @@
         "value": {
           "label": "Óraállás",
           "placeholder": "(mérőn olvasható érték)"
+        },
+        "photo": {
+          "label": "Fénykép (ha csatolni szeretne)",
+          "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
         }
       }
     },
@@ -146,6 +150,12 @@
         }
       }
     },
+    "lastRead": {
+      "label": "Leolvasva"
+    },
+    "lastBilled": {
+      "label": "Számlázva"
+    },
     "activeTime": {
       "label": "Aktív időszak (felszerelés/leszerelés)",
       "begin": {
@@ -155,6 +165,23 @@
       "end": {
         "label": "Időpontig",
         "placeholder": "éééé-hh-nn"
+      }
+    }
+  },
+  "schemaReadings": {
+    "reading": {
+      "label": "Leolvasás",
+      "date": {
+        "label": "Leolvasás időpontja",
+        "placeholder": "éééé-hh-nn"
+      },
+      "value": {
+        "label": "Óraállás",
+        "placeholder": "(mérőn olvasható érték)"
+      },
+      "photo": {
+        "label": "Fénykép (ha csatolni szeretne)",
+        "placeholder": "Link megadása (pl. https://imgbb.com/kep.jpg)"
       }
     }
   },

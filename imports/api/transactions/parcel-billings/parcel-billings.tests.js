@@ -179,7 +179,7 @@ if (Meteor.isServer) {
 
         Bills.remove({});
 
-        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-02-01'), value: 32, approved: false } });
+        Fixture.builder.execute(Meters.methods.reading, { _id: meterId, reading: { date: new Date('2018-02-01'), value: 32, approved: false } });
         Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-02-12') }, Fixture.builder.getUserWithRole('accountant'));
 
         const meteredParcel = Parcels.findOne(meteredParcelId);

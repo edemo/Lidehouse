@@ -85,5 +85,5 @@ Template.Accounting_reconciliation.events({
       meteormethod: 'statementEntries.insert',
     });
   },
-  ...(actionHandlers(allStatementEntriesActions())),
+  ...(actionHandlers(StatementEntries)),
 });

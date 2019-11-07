@@ -8,7 +8,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
@@ -25,6 +25,14 @@ Meters.serviceValues = ['coldWater', 'hotWater', 'electricity', 'gas', 'heating'
 Meters.readingSchema = new SimpleSchema({
   date: { type: Date },
   value: { type: Number },
+  photo: { type: String, optional: true, autoform: fileUpload },
+  approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
+});
+
+Meters.unapprovedReadingSchema = new SimpleSchema({
+  date: { type: Date, autoValue: () => new Date(), autoform: { value: new Date(), readonly: true } },
+  value: { type: Number },
+  photo: { type: String, optional: true, autoform: fileUpload },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: false },
 });
 
@@ -45,7 +53,7 @@ Meters.schema = new SimpleSchema({
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },
   readings: { type: Array, optional: true },
   'readings.$': { type: Meters.readingSchema },
-  billings: { type: Array, optional: true },
+  billings: { type: Array, optional: true, autoform: { omit: true } },
   'billings.$': { type: Meters.billingSchema },
 });
 
@@ -74,8 +82,14 @@ Meters.attachSchema(Meters.schema);
 Meters.attachBehaviour(ActivePeriod);
 Meters.attachBehaviour(Timestamped);
 
+Meters.registerReadingSchema = new SimpleSchema({
+  _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  reading: { type: Meters.unapprovedReadingSchema },
+});
+
 Meteor.startup(function attach() {
   Meters.simpleSchema().i18n('schemaMeters');
+  Meters.registerReadingSchema.i18n('schemaReadings');
 });
 
 if (Meteor.isServer) {

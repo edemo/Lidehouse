@@ -25,6 +25,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/methods.js';
 import '/imports/api/leaderships/methods.js';
 import { Meters } from '/imports/api/meters/meters.js';
+import '/imports/api/meters/actions.js';
 import { Leaderships } from '/imports/api/leaderships/leaderships.js';
 import '/imports/api/meters/methods.js';
 import '/imports/api/users/users.js';
@@ -38,6 +39,7 @@ import { afCommunityUpdateModal } from '/imports/ui_3/views/components/communiti
 import '/imports/ui_3/views/common/page-heading.js';
 import '/imports/ui_3/views/components/action-buttons.html';
 import '/imports/ui_3/views/components/contact-long.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './community-page.html';
 
 Template.Memberships_table.viewmodel({
@@ -476,55 +478,7 @@ Template.Community_page.events({
     });
   },
   // meters events
-  'click #meters .js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.meter.insert',
-      collection: Meters,
-      omitFields: ['readings'],
-      type: 'method',
-      meteormethod: 'meters.insert',
-    });
-  },
-  'click #meters .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.meter.update',
-      collection: Meters,
-      omitFields: ['activeTime'],
-      doc: Meters.findOne(id),
-      type: 'method-update',
-      meteormethod: 'meters.update',
-      singleMethodArgument: true,
-    });
-  },
-  'click  #meters .js-period'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.meter.update',
-      collection: Meters,
-      fields: ['activeTime'],
-      doc: Meters.findOne(id),
-      type: 'method-update',
-      meteormethod: 'meters.updateActivePeriod',
-      singleMethodArgument: true,
-    });
-  },
-  'click #meters .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.meter.view',
-      collection: Meters,
-      doc: Meters.findOne(id),
-      type: 'readonly',
-    });
-  },
-  'click #meters .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(Meters.methods.remove, { _id: id }, {
-      action: 'delete meter',
-      message: 'You should rather archive it',
-    });
-  },
+  ...(actionHandlers(Meters)),
   // leaderships events
   'click #leadership-button.js-new'(event, instance) {
     Modal.show('Autoform_edit', {
@@ -651,23 +605,6 @@ AutoForm.addHooks('af.benefactorship.insert', {
 AutoForm.addHooks('af.benefactorship.update', {
   formToModifier(modifier) {
     modifier.$set.approved = true;
-    return modifier;
-  },
-});
-
-AutoForm.addModalHooks('af.meter.insert');
-AutoForm.addModalHooks('af.meter.update');
-AutoForm.addHooks('af.meter.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
-    doc.parcelId = Session.get('selectedParcelId');
-    //    doc.approved = true;
-    return doc;
-  },
-});
-AutoForm.addHooks('af.meter.update', {
-  formToModifier(modifier) {
-    //    modifier.$set.approved = true;
     return modifier;
   },
 });

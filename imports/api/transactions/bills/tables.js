@@ -4,7 +4,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 import { displayOutstanding } from '/imports/ui_3/helpers/api-display.js';
-import { getBillsActionsSmall } from './actions.js';
+import './actions.js';
 
 export function billColumns() {
   const columns = [
@@ -21,7 +21,7 @@ export function billColumns() {
 //    { data: 'account', title: __('schemaBills.account.label') },
 //    { data: 'localizer', title: __('schemaBills.localizer.label') },
     { data: 'note', title: __('schemaBills.note.label') },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getBillsActionsSmall() }) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group, { _id: cellData, collection: 'bills', actions: '', size: 'sm' }) },
   ];
 
   return columns;

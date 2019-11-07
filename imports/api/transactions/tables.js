@@ -4,8 +4,8 @@ import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 import { displayAccountSpecification } from '/imports/ui_3/helpers/api-display.js';
-import { getTransactionsActionsSmall } from './actions.js';
 import { AccountSpecification } from './account-specification';
+import './actions.js';
 
 Render.journalEntries = function (cellData, renderType, currentRow) {
   const entries = cellData;
@@ -24,7 +24,7 @@ export function transactionColumns() {
     { data: 'partner()', title: __('Partner') },
     { data: 'ref', title: __('schemaTransactions.ref.label') },
     { data: 'note', title: __('schemaTransactions.note.label') },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getTransactionsActionsSmall() }) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group, { _id: cellData, collection: 'transactions', actions: '', size: 'sm' }) },
   ];
 
   return columns;
