@@ -73,7 +73,7 @@ Meters.actions = {
   reading: {
     name: 'reading',
     icon: 'fa fa-camera',
-    visible: () => currentUserHasPermission('meters.reading'),
+    visible: () => currentUserHasPermission('meters.registerReading'),
     run(id) {
       Session.set('selectedMeterId', id);
       Modal.show('Autoform_edit', {
@@ -81,7 +81,7 @@ Meters.actions = {
         collection: Meters,
         schema: Meters.registerReadingSchema,
         type: 'method',
-        meteormethod: 'meters.reading',
+        meteormethod: 'meters.registerReading',
       });
     },
   },

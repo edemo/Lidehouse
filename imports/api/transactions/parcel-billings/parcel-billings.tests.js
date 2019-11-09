@@ -145,7 +145,7 @@ if (Meteor.isServer) {
           title: 'Test consumption',
           consumption: 'coldWater',
           uom: 'm3',
-          unitPrice: '600',
+          unitPrice: 600,
           projection: 'habitants',
           amount: 5000,
           payinType: '3',
@@ -156,6 +156,7 @@ if (Meteor.isServer) {
           parcelId: meteredParcelId,
           identifier: 'CW-01010101',
           service: 'coldWater',
+          activeTime: { begin: new Date('2018-01-01') },
         });
 
         Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
@@ -179,7 +180,7 @@ if (Meteor.isServer) {
 
         Bills.remove({});
 
-        Fixture.builder.execute(Meters.methods.reading, { _id: meterId, reading: { date: new Date('2018-02-01'), value: 32, approved: false } });
+        Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-02-01'), value: 32 } });
         Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-02-12') }, Fixture.builder.getUserWithRole('accountant'));
 
         const meteredParcel = Parcels.findOne(meteredParcelId);
@@ -195,6 +196,100 @@ if (Meteor.isServer) {
 
         chai.assert.equal(meteredParcel.payer().outstanding, bill.amount);
         chai.assert.equal(meteredParcel.outstanding, bill.amount);
+      });
+    });
+
+    describe('consumption calculation', function () {
+//      let parcelBillingId;
+//      let meteredParcelId;
+//      let meterId;
+      let registerReading;
+      let applyParcelBilling;
+      let assertBilledProjection;
+      let assertBilledConsumtion;
+      before(function () {
+        Meters.remove({});
+        Bills.remove({});
+        ParcelBillings.remove({});
+        Transactions.remove({});
+
+        const parcelBillingId = Fixture.builder.create('parcelBilling', {
+          title: 'Test consumption',
+          consumption: 'coldWater',
+          uom: 'm3',
+          unitPrice: 600,
+          projection: 'habitants',
+          amount: 5000,
+          payinType: '3',
+          localizer: '@',
+        });
+        const meteredParcelId = Fixture.dummyParcels[0];
+        const meteredParcel = Parcels.findOne(meteredParcelId);
+        const meterId = Fixture.builder.create('meter', {
+          parcelId: meteredParcelId,
+          identifier: 'CW-01010101',
+          service: 'coldWater',
+          activeTime: { begin: new Date('2018-01-22') },
+        });
+        const communityId = Fixture.demoCommunityId;
+
+        registerReading = function (date, value) {
+          Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date(date), value } });
+        };
+        applyParcelBilling = function (date) {
+          Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date(date) }, Fixture.builder.getUserWithRole('accountant'));
+        };
+        assertBilledProjection = function (date) {
+          const bills = Bills.find({ communityId, 'lines.localizer': '@'+meteredParcel.ref }).fetch();
+          chai.assert.equal(bills.length, 1);
+          const bill = bills[0];
+          chai.assert.equal(moment(bill.valueDate).format('YYYY-MM-DD'), date);
+          chai.assert.equal(bill.lines.length, 1);
+          const line = bill.lines[0];
+          chai.assert.equal(line.unitPrice, 5000);
+        };
+        assertBilledConsumtion = function (date, quantity) {
+          const bills = Bills.find({ communityId, 'lines.localizer': '@'+meteredParcel.ref }).fetch();
+          if (!quantity) {
+            chai.assert.equal(bills.length, 0);
+            return;
+          }
+          chai.assert.equal(bills.length, 1);
+          const bill = bills[0];
+          chai.assert.equal(moment(bill.valueDate).format('YYYY-MM-DD'), date);
+          chai.assert.equal(bill.lines.length, 1);
+          const line = bill.lines[0];
+          chai.assert.equal(line.unitPrice, 600);
+          chai.assert.equal(line.quantity, quantity);
+        };
+      });
+
+      afterEach(function () {
+        Bills.remove({});
+      });
+      
+      it('Can bill for before the meter was installed -> charged by projection', function () {
+        applyParcelBilling('2018-01-12');
+        assertBilledConsumtion('2018-01-12', 0);
+        assertBilledProjection('2018-01-12');
+      });
+
+      it('Can bill a fresh meter -> no charge', function () {
+        applyParcelBilling('2018-02-12');
+        assertBilledConsumtion('2018-02-22', 0);
+      });
+
+      it('Can bill a reading', function () {
+        registerReading('2018-03-01', 10);
+        applyParcelBilling('2018-03-22');
+        assertBilledConsumtion('2018-03-22', 10);
+      });
+
+      it('Cannot accidentally bill for same period twice', function () {
+        chai.assert.throws(() => {
+          applyParcelBilling('2018-03-24');
+        });
+        assertBilledConsumtion('2018-03-24', 0);
       });
     });
 /*

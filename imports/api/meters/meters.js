@@ -4,8 +4,10 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 
-import { debugAssert } from '/imports/utils/assert.js';
+import { Clock } from '/imports/utils/clock.js';
+import { debugAssert, releaseAssert } from '/imports/utils/assert.js';
 import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -68,6 +70,18 @@ Meters.helpers({
   lastBilling() {
     return _.last(this.billings);
   },
+  getEstimate(date = new Date()) {
+    const length = this.readings.length;
+    debugAssert(length >= 1, 'Meters should have at least an initial reading');
+    const lastReading = this.readings[length - 1];
+    if (length === 1) return lastReading.value;
+    const previousReading = this.readings[length - 2];
+    const usageDays = moment(lastReading.date).diff(moment(previousReading.date), 'days');
+    const usage = lastReading.value - previousReading.value;
+    const elapsedDays = moment(date).diff(moment(lastReading.date), 'days');
+    const estimate = (usage / usageDays) * elapsedDays;
+    return estimate;
+  },
 });
 
 Meters.attachSchema(Meters.schema);
@@ -88,13 +102,14 @@ if (Meteor.isServer) {
   Meters.before.insert(function (userId, doc) {
     if (!doc.readings) {
       doc.readings = [{
-        date: (doc.activeTime && doc.activeTime.begin) || new Date(),
+        date: (doc.activeTime && doc.activeTime.begin) || Clock.currentTime(),
         value: 0,
+        approved: doc.approved,
       }];
     }
     if (!doc.billings) {
       doc.billings = [{
-        date: (doc.activeTime && doc.activeTime.begin) || new Date(),
+        date: (doc.activeTime && doc.activeTime.begin) || Clock.currentTime(),
         value: 0,
       }];
     }
