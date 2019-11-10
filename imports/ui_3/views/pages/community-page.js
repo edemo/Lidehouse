@@ -152,7 +152,7 @@ Template.Community_page.viewmodel({
       const communityId = Template.instance().getCommunityId();
       result.push({
         name: 'owner',
-        count: Memberships.find({ communityId, active: true, role: 'owner' }).count(),
+        count: Memberships.findActive({ communityId, role: 'owner' }).count(),
       });
       Parcels.typeValues.forEach(type =>
         result.push({
@@ -164,11 +164,11 @@ Template.Community_page.viewmodel({
     },*/
   leaders() {
     const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: leaderRoles } }, { sort: { createdAt: 1 } }).fetch();
+    return Memberships.findActive({ communityId, role: { $in: leaderRoles } }, { sort: { createdAt: 1 } }).fetch();
   },
   nonLeaders() {
     const communityId = this.communityId();
-    return Memberships.find({ communityId, active: true, role: { $in: nonLeaderRoles } }, { sort: { createdAt: 1 } }).fetch();
+    return Memberships.findActive({ communityId, role: { $in: nonLeaderRoles } }, { sort: { createdAt: 1 } }).fetch();
   },
   officers() {
     const officers = this.leaders().concat(this.nonLeaders());

@@ -92,7 +92,7 @@ export class Person {
     return __('unknownUser');
   }
   activeRoles(communityId) {
-    return _.uniq(Memberships.find({ communityId, approved: true, active: true, personId: this.id() }).fetch().map(m => m.role));
+    return _.uniq(Memberships.findActive({ communityId, approved: true, personId: this.id() }).fetch().map(m => m.role));
   }
   toString() {
     return this.displayName();

@@ -47,7 +47,7 @@ export const remove = new ValidatedMethod({
     const community = checkExists(Communities, _id);
     checkPermissions(this.userId, 'communities.remove', _id);
     // Community cannot be deleted while it has any active officers apart from the admin
-    const officers = Memberships.find({ communityId: _id, active: true, role: { $in: officerRoles } });
+    const officers = Memberships.findActive({ communityId: _id, role: { $in: officerRoles } });
     if (officers.count() > 1) {
       throw new Meteor.Error('err_unableToRemove', 'Community cannot be deleted while it has active officers',
         `Found: {${officers.count()}}`);

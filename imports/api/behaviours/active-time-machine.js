@@ -2,17 +2,12 @@ import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 
-let destinationTime = null;
-
 export const ActiveTimeMachine = {
-  setDestinationNow() {
-    destinationTime = 'NOW';
-  },
-  setDestinationTime(time) {
-    destinationTime = time;
-  },
-  selector(time) {
-    if (time === 'NOW') return { active: true };
+  _destinationTime: null, // null means NOW
+  _restoreTime: undefined,
+  _selector(time) {
+    if (time === undefined) return {};
+    else if (time === null) return { active: true };
     else if (time instanceof Date) {
       return {
         $and: [{
@@ -31,11 +26,23 @@ export const ActiveTimeMachine = {
     debugAssert(false, 'Unsupported destination time');
     return undefined;
   },
-  extendSelector(selector) {
-    if (!destinationTime) return;
-    _.extend(selector, ActiveTimeMachine.selector(destinationTime));
+  selector() {
+    return this._selector(this._destinationTime);
   },
-  clear() {
-    destinationTime = null;
+  runAtTime(time, func) {
+    this._restoreTime = this._destinationTime;
+    this._destinationTime = time;
+    try { func(); }
+//    catch (err) { throw err; }
+    finally {
+      this._destinationTime = this._restoreTime || null;
+      this._restoreTime = undefined;
+    }
+  },
+  runNow(func) {  // this is the default, so no need to call it explicitly
+    this.runAtTime(null, func);
+  },
+  runDisabled(func) {
+    this.runAtTime(undefined, func);
   },
 };

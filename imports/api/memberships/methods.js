@@ -179,7 +179,7 @@ export const remove = new ValidatedMethod({
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     if (doc.role === 'admin') {
-      const admins = Memberships.find({ communityId: doc.communityId, active: true, role: 'admin' });
+      const admins = Memberships.findActive({ communityId: doc.communityId, role: 'admin' });
       if (admins.count() < 2) {
         throw new Meteor.Error('err_unableToRemove', 'Admin cannot be deleted if no other admin is appointed',
         `Found: {${admins.count()}}`);

@@ -72,12 +72,12 @@ Meteor.startup(function indexParcels() {
 
 Parcels.helpers({
   isLed() {
-    const leadership = Leaderships.findOne({ parcelId: this._id, active: true });
+    const leadership = Leaderships.findOneActive({ parcelId: this._id });
     if (leadership) return true;
     return false;
   },
   leadParcelId() {
-    const leadership = Leaderships.findOne({ parcelId: this._id, active: true });
+    const leadership = Leaderships.findOneActive({ parcelId: this._id });
     const leadParcelId = leadership ? leadership.leadParcelId : this._id;
     return leadParcelId; // if can't find your lead parcel, lead yourself
   },
@@ -100,13 +100,13 @@ Parcels.helpers({
       + (this.door ? this.door : '');
   },
   occupants() {
-    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId() });
+    return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId() });
   },
   owners() {
-    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId(), role: 'owner' });
+    return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner' });
   },
   representors() {
-    return Memberships.find({ communityId: this.communityId, active: true, approved: true, parcelId: this.leadParcelId(), role: 'owner', 'ownership.representor': true });
+    return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId(), role: 'owner', 'ownership.representor': true });
   },
   representor() {
     return this.representors().fetch()[0];
@@ -132,7 +132,7 @@ Parcels.helpers({
   },
   forEachLed(callback) {
     if (this.isLed()) return;
-    const ledParcels = Leaderships.find({ leadParcelId: this._id, active: true }).map(l => l.ledParcel());
+    const ledParcels = Leaderships.findActive({ leadParcelId: this._id }).map(l => l.ledParcel());
     ledParcels.push(this);
     ledParcels.forEach(parcel => callback(parcel));
   },
@@ -151,7 +151,7 @@ Parcels.helpers({
   ownedShare() {
     if (this.isLed()) return this.leadParcel().ownedShare();
     let total = new Fraction(0);
-    Memberships.find({ parcelId: this._id, active: true, approved: true, role: 'owner' })
+    Memberships.findActive({ parcelId: this._id, approved: true, role: 'owner' })
       .forEach(p => total = total.add(p.ownership.share));
     return total;
   },

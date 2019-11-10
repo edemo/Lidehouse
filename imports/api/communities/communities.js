@@ -102,7 +102,7 @@ Communities.helpers({
     return partner;
   },
   admin() {
-    const adminMembership = Memberships.findOne({ communityId: this._id, active: true, role: 'admin' });
+    const adminMembership = Memberships.findOneActive({ communityId: this._id, role: 'admin' });
     if (!adminMembership) return undefined;
     const adminId = adminMembership.person.userId;
     return Meteor.users.findOne(adminId);
@@ -111,11 +111,11 @@ Communities.helpers({
     return this.admin(); // TODO: should be the person with do.techsupport permission
   },
   users() {
-    const users = Memberships.find({ communityId: this._id, active: true, 'person.userId': { $exists: true } }).map(m => m.user());
+    const users = Memberships.findActive({ communityId: this._id, 'person.userId': { $exists: true } }).map(m => m.user());
     return _.uniq(users, false, u => u._id);
   },
   voterships() {
-    return Memberships.find({ communityId: this._id, active: true, approved: true, role: 'owner', personId: { $exists: true } })
+    return Memberships.findActive({ communityId: this._id, approved: true, role: 'owner', personId: { $exists: true } })
       .fetch().filter(ownership => !ownership.isRepresentedBySomeoneElse());
   },
   voters() {

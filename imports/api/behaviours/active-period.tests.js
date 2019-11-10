@@ -147,23 +147,31 @@ if (Meteor.isServer) {
     });
 
     it('can find things in a past time', function (done) {
-      ActiveTimeMachine.setDestinationTime(moment().subtract(10, 'days').toDate());
-      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId }));
-      chai.assert.isUndefined(Memberships.findOne({ _id: testMembershipId2 }));
-      chai.assert.isUndefined(Memberships.findOne({ _id: testMembershipId3 }));
-      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId4 }));
+      ActiveTimeMachine.runAtTime(moment().subtract(10, 'days').toDate(), () => {
+        chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId }));
+        chai.assert.isUndefined(Memberships.findOneActive({ _id: testMembershipId2 }));
+        chai.assert.isUndefined(Memberships.findOneActive({ _id: testMembershipId3 }));
+        chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId4 }));
+      });
 
-      ActiveTimeMachine.setDestinationNow();
-      chai.assert.isUndefined(Memberships.findOne({ _id: testMembershipId }));
-      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId2 }));
-      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId3 }));
-      chai.assert.isUndefined(Memberships.findOne({ _id: testMembershipId4 }));
+      // By default everything runs at time NOW
+      chai.assert.isUndefined(Memberships.findOneActive({ _id: testMembershipId }));
+      chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId2 }));
+      chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId3 }));
+      chai.assert.isUndefined(Memberships.findOneActive({ _id: testMembershipId4 }));
 
-      ActiveTimeMachine.clear();
-      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId }));
-      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId2 }));
-      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId3 }));
-      chai.assert.isDefined(Memberships.findOne({ _id: testMembershipId4 }));
+      ActiveTimeMachine.runDisabled(() => {
+        chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId }));
+        chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId2 }));
+        chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId3 }));
+        chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId4 }));
+      });
+
+      // By default everything runs at time NOW
+      chai.assert.isUndefined(Memberships.findOneActive({ _id: testMembershipId }));
+      chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId2 }));
+      chai.assert.isDefined(Memberships.findOneActive({ _id: testMembershipId3 }));
+      chai.assert.isUndefined(Memberships.findOneActive({ _id: testMembershipId4 }));
 
       done();
     });

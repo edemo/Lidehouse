@@ -193,7 +193,7 @@ Meteor.users.helpers({
     return this.fullName(lang) || this.safeUsername();     // or fallback to the username
   },
   displayOfficialName(communityId = getActiveCommunityId(), lang = getCurrentUserLang()) {
-    const membership = Memberships.findOne({ communityId, approved: true, active: true, personId: this._id, 'person.idCard.name': { $exists: true } });
+    const membership = Memberships.findOne({ communityId, approved: true, personId: this._id, 'person.idCard.name': { $exists: true } });
     if (membership) { return membership.Person().displayName(lang)};
     return this.displayProfileName(lang);
   },
@@ -201,7 +201,7 @@ Meteor.users.helpers({
     return this.displayOfficialName();
   },
   personNameMismatch(communityId = getActiveCommunityId()) {
-    const membership = Memberships.findOne({ communityId, approved: true, active: true, personId: this._id, 'person.idCard.name': { $exists: true } });
+    const membership = Memberships.findOne({ communityId, approved: true, personId: this._id, 'person.idCard.name': { $exists: true } });
     const personName = membership ? membership.person.idCard.name : undefined;
     if (!personName || !this.profile) return;
     if (!this.profile.firstName && !this.profile.lastName) return;
@@ -221,10 +221,10 @@ Meteor.users.helpers({
   },
   // Memberships
   memberships(communityId) {
-    return Memberships.find({ communityId, approved: true, active: true, personId: this._id });
+    return Memberships.findActive({ communityId, approved: true, personId: this._id });
   },
   ownerships(communityId) {
-    return Memberships.find({ communityId, approved: true, active: true, role: 'owner', personId: this._id });
+    return Memberships.findActive({ communityId, approved: true, role: 'owner', personId: this._id });
   },
   ownedParcels(communityId) {
     const parcelIds = _.pluck(this.ownerships(communityId).fetch(), 'parcelId');
@@ -236,17 +236,17 @@ Meteor.users.helpers({
     return this.ownedParcels(communityId).filter(p => !p.isLed());
   },
   activeRoles(communityId) {
-    return _.uniq(Memberships.find({ communityId, approved: true, active: true, personId: this._id }).fetch().map(m => m.role));
+    return _.uniq(Memberships.find({ communityId, approved: true, personId: this._id }).fetch().map(m => m.role));
   },
   communities() {
-    const memberships = Memberships.find({ approved: true, active: true, personId: this._id }).fetch();
+    const memberships = Memberships.findActive({ approved: true, personId: this._id }).fetch();
     const communityIds = _.uniq(_.pluck(memberships, 'communityId'));
     const communities = Communities.find({ _id: { $in: communityIds } });
     // console.log(this.safeUsername(), ' is in communities: ', communities.fetch().map(c => c.name));
     return communities;
   },
   isInCommunity(communityId) {
-    return !!Memberships.findOne({ communityId, active: true, approved: true, personId: this._id });
+    return !!Memberships.findOneActive({ communityId, approved: true, personId: this._id });
   },
   isUnapprovedInCommunity(communityId) {
     return !!Memberships.findOne({ communityId, approved: false, personId: this._id });
@@ -254,7 +254,7 @@ Meteor.users.helpers({
   // Voting
   votingUnits(communityId) {
     let sum = 0;
-    Memberships.find({ communityId, active: true, approved: true, role: 'owner', personId: this._id }).forEach(m => (sum += m.votingUnits()));
+    Memberships.findActive({ communityId, approved: true, role: 'owner', personId: this._id }).forEach(m => (sum += m.votingUnits()));
     return sum;
   },
   hasRole(roleName, communityId) {
