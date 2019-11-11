@@ -281,8 +281,8 @@ export const HouseTranslation = {
         "accountingMethod": {
           "label": "Könyvelési mód",
           "help": "A könyvelési mód - egyszeres (pénzforgalmi) vagy kettős - határozza meg mikor jönnek létre könyvelési tranzakciók a számlákból (befogadáskor vagy kifizetéskor). A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
-          "accrual": "Kettős könyvitel",
-          "cash": "Egyszeres (pénzforgalmi) könyvitel"
+          "accrual": "Kettős könyvvitel",
+          "cash": "Egyszeres (pénzforgalmi) könyvvitel"
         },
       },
       "bankAccounts": {
