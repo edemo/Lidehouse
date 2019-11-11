@@ -15,7 +15,7 @@ const MEMBERS_TO_SHOW = 10;
 
 Template.Members_panel.onCreated(function onCreated() {
 //  const communityId = Session.get('activeCommunityId');
-//  const manager = Memberships.findOne({ communityId, active: true, role: 'manager' });
+//  const manager = Memberships.findOneActive({ communityId, role: 'manager' });
 //  if (manager) Session.set('messengerPersonId', manager.person.userId);
 });
 
@@ -27,7 +27,7 @@ Template.Members_panel.viewmodel({
   leaders() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
-    let managers = Memberships.find({ communityId, active: true, role: { $in: leaderRoles }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
+    let managers = Memberships.findActive({ communityId, role: { $in: leaderRoles }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
     managers = _.uniq(managers, false, m => m.person.userId);
     if (personSearch) {
       managers = managers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
@@ -37,7 +37,7 @@ Template.Members_panel.viewmodel({
   members() {
     const communityId = Session.get('activeCommunityId');
     const personSearch = Session.get('messengerPersonSearch');
-    let nonManagers = Memberships.find({ communityId, active: true, role: { $not: { $in: leaderRoles } }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
+    let nonManagers = Memberships.findActive({ communityId, role: { $not: { $in: leaderRoles } }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
     nonManagers = _.uniq(nonManagers, false, m => m.person.userId);
     if (nonManagers.length > MEMBERS_TO_SHOW * 2) this.tooManyMembers(true);
     if (personSearch) {

@@ -57,7 +57,7 @@ if (Meteor.isClient) {
       const activeParcelBillingId = Session.get('activeParcelBillingId')
       const parcelBillings = activeParcelBillingId
         ? ParcelBillings.find(activeParcelBillingId)
-        : ParcelBillings.find({ communityId, active: true });
+        : ParcelBillings.findActive({ communityId });
       const options = parcelBillings.map(function option(pb) {
         return { label: pb.toString(), value: pb._id };
       });

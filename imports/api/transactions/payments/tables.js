@@ -4,7 +4,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { displayAccount } from '/imports/ui_3/helpers/api-display.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
-import { getPaymentsActionsSmall } from './actions.js';
+import './actions.js';
 
 export function paymentsColumns() {
   const columns = [
@@ -17,7 +17,7 @@ export function paymentsColumns() {
     { data: 'account', title: __('schemaBills.account.label'), render: displayAccount },
     { data: 'note', title: __('schemaBills.note.label') },
     { data: 'reconciledId', title: __('schemaBills.reconciled.label'), render: Render.checkmarkBoolean },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getPaymentsActionsSmall() }) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group, { _id: cellData, collection: 'payments', actions: '', size: 'sm' }) },
   ];
 
   return columns;

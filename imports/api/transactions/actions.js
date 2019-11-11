@@ -8,80 +8,68 @@ import { Transactions } from './transactions.js';
 import './methods.js';
 import { Bills } from './bills/bills.js';
 
-export function allTransactionsActions() {
-  Transactions.actions = Transactions.actions || {
-    collection: Transactions,
-    new: {
-      name: 'new',
-      icon: 'fa fa-plus',
-      visible: () => currentUserHasPermission('transactions.insert'),
-      run(defId) {
-        Session.set('activeTxDef', defId);
-        const def = TxDefs.findOne({ name: defId });
-        Modal.show('Autoform_edit', {
-          id: 'af.transaction.insert',
-          collection: Transactions,
-          schema: def.schema(),
-    //      type: 'method',
-    //      meteormethod: 'transactions.insert',
-        });
-      },
+Transactions.actions = {
+  new: {
+    name: 'new',
+    icon: 'fa fa-plus',
+    visible: () => currentUserHasPermission('transactions.insert'),
+    run(defId) {
+      Session.set('activeTxDef', defId);
+      const def = TxDefs.findOne({ name: defId });
+      Modal.show('Autoform_edit', {
+        id: 'af.transaction.insert',
+        collection: Transactions,
+        schema: def.schema(),
+  //      type: 'method',
+  //      meteormethod: 'transactions.insert',
+      });
     },
-    view: {
-      name: 'view',
-      icon: 'fa fa-eye',
-      visible: () => currentUserHasPermission('transactions.inCommunity'),
-      run(id) {
-        Modal.show('Autoform_edit', {
-          id: 'af.transaction.view',
-          collection: Transactions,
-          schema: Transactions.inputSchema,
-          doc: Transactions.findOne(id),
-          type: 'readonly',
-        });
-      },
+  },
+  view: {
+    name: 'view',
+    icon: 'fa fa-eye',
+    visible: () => currentUserHasPermission('transactions.inCommunity'),
+    run(id) {
+      Modal.show('Autoform_edit', {
+        id: 'af.transaction.view',
+        collection: Transactions,
+        schema: Transactions.inputSchema,
+        doc: Transactions.findOne(id),
+        type: 'readonly',
+      });
     },
-    edit: {
-      name: 'edit',
-      icon: 'fa fa-pencil',
-      visible: () => currentUserHasPermission('transactions.update'),
-      run(id) {
-        Modal.show('Autoform_edit', {
-          id: 'af.transaction.update',
-          collection: Transactions,
-    //      schema: newTransactionSchema(),
-          doc: Transactions.findOne(id),
-          type: 'method-update',
-          meteormethod: 'transactions.update',
-          singleMethodArgument: true,
-        });
-      },
+  },
+  edit: {
+    name: 'edit',
+    icon: 'fa fa-pencil',
+    visible: () => currentUserHasPermission('transactions.update'),
+    run(id) {
+      Modal.show('Autoform_edit', {
+        id: 'af.transaction.update',
+        collection: Transactions,
+  //      schema: newTransactionSchema(),
+        doc: Transactions.findOne(id),
+        type: 'method-update',
+        meteormethod: 'transactions.update',
+        singleMethodArgument: true,
+      });
     },
-    delete: {
-      name: 'delete',
-      icon: 'fa fa-trash',
-      visible: () => currentUserHasPermission('transactions.remove'),
-      run(id) {
-        const tx = Transactions.findOne(id);
-        Modal.confirmAndCall(Transactions.methods.remove, { _id: id }, {
-          action: 'delete transaction',
-          message: tx.isSolidified() ? 'Remove not possible after 24 hours' : '',
-        });
-      },
+  },
+  delete: {
+    name: 'delete',
+    icon: 'fa fa-trash',
+    visible: () => currentUserHasPermission('transactions.remove'),
+    run(id) {
+      const tx = Transactions.findOne(id);
+      Modal.confirmAndCall(Transactions.methods.remove, { _id: id }, {
+        action: 'delete transaction',
+        message: tx.isSolidified() ? 'Remove not possible after 24 hours' : '',
+      });
     },
-  };
-  return Transactions.actions;
-}
+  },
+};
 
-export function getTransactionsActionsSmall() {
-  allTransactionsActions();
-  const actions = [
-    Transactions.actions.view,
-    Transactions.actions.edit,
-    Transactions.actions.delete,
-  ];
-  return actions;
-}
+//-------------------------------------------------
 
 AutoForm.addModalHooks('af.transaction.view');
 AutoForm.addModalHooks('af.transaction.insert');

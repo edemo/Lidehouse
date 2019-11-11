@@ -438,7 +438,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 //    topicIds: [voteTopic3, voteTopic4, voteTopic5],
   });
 
-  const ownerships = Memberships.find({ communityId: demoCommunityId, active: true, role: 'owner', 'person.userId': { $exists: true } }).fetch();
+  const ownerships = Memberships.findActive({ communityId: demoCommunityId, role: 'owner', 'person.userId': { $exists: true } }).fetch();
   function castDemoVotes(topicId, votes) {
     votes.forEach((v, index) => {
       if (v) castVote._execute({ userId: ownerships[index].person.userId }, { topicId, castedVote: v });

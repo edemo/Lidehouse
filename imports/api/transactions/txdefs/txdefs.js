@@ -11,7 +11,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
-export const TxDefs = new Mongo.Collection('txdefs');
+export const TxDefs = new Mongo.Collection('txDefs');
 
 TxDefs.define = function define(doc) {
   TxDefs.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });

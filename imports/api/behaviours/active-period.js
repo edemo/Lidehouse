@@ -61,14 +61,22 @@ const helpers = {
 
 const methods = {};
 
-const hooks = {
-  before: {
-    find(userId, selector, options) {
-      ActiveTimeMachine.extendSelector(selector);
-    },
-    findOne(userId, selector, options) {
-      ActiveTimeMachine.extendSelector(selector);
-    },
+const hooks = {};
+// Hooking into find and findOne did not work, because update and remove calls find and so it was not possible to
+// remove non-active docs, only with direct.remove, which then doesn't perform other hooks that might be needed
+
+const staticHelpers = {
+  findActive(selector) {
+    if (!selector.active && !selector.activeTime) {
+      _.extend(selector, ActiveTimeMachine.selector());
+    }
+    return this.find(selector);
+  },
+  findOneActive(selector) {
+    if (!selector.active && !selector.activeTime) {
+      _.extend(selector, ActiveTimeMachine.selector());
+    }
+    return this.findOne(selector);
   },
 };
 
@@ -79,7 +87,7 @@ const indexes = [
 ];
 
 export const ActivePeriod = {
-  schema, helpers, methods, hooks, indexes,
+  schema, helpers, staticHelpers, methods, hooks, indexes,
 };
 
 ActivePeriod.fields = [
@@ -89,12 +97,14 @@ ActivePeriod.fields = [
 ];
 
 export function sanityCheckOnlyOneActiveAtAllTimes(collection, selector) {
-  const docs = collection.find(selector, { sort: { 'activeTime.begin': 1 } }).fetch();
-  docs.forEach((d, i) => {
-    if (!docs[i + 1]) return;
-    if (d.getActiveTime().end > docs[i + 1].getActiveTime().begin) {
-      throw new Meteor.Error('err_sanityCheckFailed', `Cannot have two documents active at the same time (${d.getActiveTime().end})`);
-    }
+  ActiveTimeMachine.runDisabled(() => {
+    const docs = collection.find(selector, { sort: { 'activeTime.begin': 1 } }).fetch();
+    docs.forEach((d, i) => {
+      if (!docs[i + 1]) return;
+      if (d.getActiveTime().end > docs[i + 1].getActiveTime().begin) {
+        throw new Meteor.Error('err_sanityCheckFailed', `Cannot have two documents active at the same time (${d.getActiveTime().end})`);
+      }
+    });
   });
 }
 

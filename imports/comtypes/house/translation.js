@@ -280,9 +280,9 @@ export const HouseTranslation = {
         },
         "accountingMethod": {
           "label": "Könyvelési mód",
-          "help": "A könyvelési mód határozza meg, milyen könyvelési tranzakciók keletkeznek a számlákból és a kifizetésekből. A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
-          "accrual": "Kettős könyvvitel",
-          "cash": "Egyszeres (pénzforgalmi) könyvvitel"
+          "help": "A könyvelési mód - egyszeres (pénzforgalmi) vagy kettős - határozza meg mikor jönnek létre könyvelési tranzakciók a számlákból (befogadáskor vagy kifizetéskor). A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
+          "accrual": "Kettős könyvitel",
+          "cash": "Egyszeres (pénzforgalmi) könyvitel"
         },
       },
       "bankAccounts": {

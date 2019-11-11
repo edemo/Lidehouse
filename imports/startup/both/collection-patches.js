@@ -35,6 +35,11 @@ Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
     collection.attachSchema(behaviour.schema);
   }
   collection.helpers(behaviour.helpers);
+  if (behaviour.staticHelpers) {
+    _.each(behaviour.staticHelpers, function (func, key) {
+      collection[key] = func;
+    });
+  }
 
   collection.methods = collection.methods || {};
   _.forEach(behaviour.methods, (method, key) => {

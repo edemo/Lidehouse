@@ -48,6 +48,18 @@ export function checkPermissions(userId, permissionName, communityId, object) {
   }
 }
 
+export function checkPermissionsWithApprove(userId, permissionName, communityId, object) {
+  const user = Meteor.users.findOne(userId);
+  if (user.hasPermission(permissionName, communityId, object)) {
+    object.approved = true;
+  } else if (user.hasPermission(permissionName + '.unapproved', communityId, object)) {
+    object.approved = false;
+  } else {
+    throw new Meteor.Error('err_permissionDenied',
+      `No permission to perform this activity: ${permissionName}, userId: ${userId}, communityId: ${communityId}, objectId: ${object ? object._id : '-'}`);
+  }
+}
+
 export function checkTopicPermissions(userId, permissionName, topic) {
   // Checks that *user* has *permission* to perform things on given *topic*
   let derivedPermissionName = `${topic.category}.${permissionName}`;

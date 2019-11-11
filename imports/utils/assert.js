@@ -10,9 +10,9 @@ export function debugAssert(expr, msg) {
   }
 }
 
-export function releaseAssert(expr, msg) {
+export function releaseAssert(expr, err, msg) {
   if (!expr) {
     console.log('Release assertion failed:', msg);
-    throw new Meteor.Error('Failed assert', msg, expr);
+    throw new Meteor.Error(err, msg, expr);
   }
 }

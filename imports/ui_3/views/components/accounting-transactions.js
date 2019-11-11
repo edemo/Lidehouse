@@ -46,7 +46,7 @@ Template.Accounting_transactions.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txdefs.inCommunity', { communityId });
+      instance.subscribe('txDefs.inCommunity', { communityId });
       instance.subscribe('transactions.incomplete', { communityId });
       instance.subscribe('bills.outstanding', { communityId });
     });
@@ -85,8 +85,8 @@ Template.Accounting_transactions.viewmodel({
   ],
   txDefs() {
     const communityId = Session.get('activeCommunityId');
-    const txdefs = TxDefs.find({ communityId });
-    return txdefs;
+    const txDefs = TxDefs.find({ communityId });
+    return txDefs;
   },
   optionsOf(accountCode) {
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
@@ -122,5 +122,5 @@ Template.Accounting_transactions.viewmodel({
 });
 
 Template.Accounting_transactions.events(
-  actionHandlers(allTransactionsActions())
+  actionHandlers(Transactions),
 );
