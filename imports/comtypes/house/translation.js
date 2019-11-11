@@ -62,7 +62,7 @@ export const HouseTranslation = {
       "management": {
         "label": "Contact info of management",
         "placeholder": "(eg. office address, phone, opening hours)",
-        "help": "You can set some some text here freely and it will be displayed for everybody, not just for the memebers of this community. You can provide contact information here for outsiders."
+        "help": "You can set some some text here freely and it will be displayed for everybody, not just for the members of this community. You can provide contact information here for outsiders."
       },
       "taxNumber": {
         "label": "Tax number",
@@ -81,16 +81,16 @@ export const HouseTranslation = {
         },
         "language": {
           "label": "Language",
-          "help": "The official language of the community (Users receive their notifications translated to their own language)."
+          "help": "The official language of the community. (Users receive their notifications translated to their own language.)"
         },
         "currency": {
-          "label": "Pénznem",
+          "label": "Currency",
           "placeholder": "Ft",
-          "help": "Symbol of the local currency. Will appear next to money amounts."
+          "help": "Symbol of the local currency. This will appear next to money amounts."
         },
         "accountingMethod": {
           "label": "Accounting method",
-          "help": "Depending on this, the accounting transactions are generated differently ffrom bills and payments. Never change this setting during the fiscal year.",
+          "help": "Depending on this, the accounting transactions are generated differently from bills and payments. Never change this setting during the fiscal year.",
           "accrual": "Accrual",
           "cash": 'Cash'
         }
@@ -256,22 +256,22 @@ export const HouseTranslation = {
       "management": {
         "label": "Közös képviselet elérhetősége",
         "placeholder": "(pl. iroda címe, telefonszáma, nyitvatartása)",
-        "help": "Az itt megadott szabad szöveges információt mindenki láthatja, nem csak a tulajdnosok. Itt adhat meg külsősök számára mindenféle elérhetőségeket."
+        "help": "Az itt megadott szabad szöveges információt mindenki láthatja, nem csak a tulajdonosok. Itt adhat meg külsősök számára elérhetőségeket."
       },
       "taxNumber": {
         "label": "Adószám",
         "placeholder": "(pl. 123456-2-42)",
-        "help": "Nem szükséeges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
+        "help": "Nem szükséges megadni, csak ha szeretné hogy a számlákon fel legyen tüntetve."
       },
       "settings": {
         "label": "Beállítások",
         "joinable": {
           "label": "Csatlakozási kérelmeket fogad",
-          "help": "Ha nem ön viszi fel az összes tulajdonosi adatokat, hanem szeretné engedni hogy  a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezze. A csatalkozási kérelemben megadott albetét adatokat ön tudja még módosítani, mielőtt jóváhagyja."
+          "help": "Ha nem ön viszi fel az összes tulajdonosi adatot, hanem szeretné engedni hogy a tulajdonosok maguktól, adataik megadásával csatlakozzanak, akkor engedélyezze. A csatlakozási kérelemben megadott albetét adatokat ön tudja még módosítani, mielőtt jóváhagyja azokat."
         },
         "language": {
           "label": "Nyelv",
-          "help": "A közösség hivatalos nyelve ez lesz. (Viszont a felhasználók a számukra küldött értesítőket, ettől függetlenül, a saját nyelvükön kapják meg)"
+          "help": "A közösség hivatalos nyelve. (A felhasználók a számukra küldött értesítőket a saját nyelvükre lefordítva kapják meg.)"
         },
         "currency": {
           "label": "Pénznem",
@@ -280,7 +280,7 @@ export const HouseTranslation = {
         },
         "accountingMethod": {
           "label": "Könyvelési mód",
-          "help": "A könyvelési mód lehet egyszeres (pénzforgalmi) vagy kettős. E beállítás határozza meg mikor jönnek létre könyvelési tranzakciók a számlákból (befogadáskor vagy kifizetéskor). A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
+          "help": "A könyvelési mód - egyszeres (pénzforgalmi) vagy kettős - határozza meg mikor jönnek létre könyvelési tranzakciók a számlákból (befogadáskor vagy kifizetéskor). A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
           "accrual": "Kettős könyvitel",
           "cash": "Egyszeres (pénzforgalmi) könyvitel"
         },
