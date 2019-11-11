@@ -271,7 +271,7 @@ export const HouseTranslation = {
         },
         "language": {
           "label": "Nyelv",
-          "help": "A közösség hivatalos nyelve. (A felhasználók a számukra küldött értesítőket, a saját nyelvükre lefordítva kapják meg)"
+          "help": "A közösség hivatalos nyelve ez lesz. (Viszont a felhasználók a számukra küldött értesítőket, ettől függetlenül, a saját nyelvükön kapják meg)"
         },
         "currency": {
           "label": "Pénznem",
@@ -280,7 +280,7 @@ export const HouseTranslation = {
         },
         "accountingMethod": {
           "label": "Könyvelési mód",
-          "help": "A könybelési mód határozza meg milyen könyvelési tranzakciók keletkeznek a számlákból és a kifizetésekből. A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
+          "help": "A könyvelési mód lehet egyszeres (pénzforgalmi) vagy kettős. E beállítás határozza meg mikor jönnek létre könyvelési tranzakciók a számlákból (befogadáskor vagy kifizetéskor). A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
           "accrual": "Kettős könyvitel",
           "cash": "Egyszeres (pénzforgalmi) könyvitel"
         },

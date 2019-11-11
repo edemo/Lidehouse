@@ -857,7 +857,7 @@
     "valueDate": {
       "label": "Kivetési időszak - kivetési nap",
       "placeholder": "(pl. 2017-05-06)",
-      "help": "Válassza meg a kivetési napot, ami automatikusan meghatározza a kivetési időszakot (ami az az időszak lesz, amiben a kivetési nap benne van)."
+      "help": "Válassza meg a kivetési napot. Ez automatikusan meghatározza a kivetési időszakot is (mert a kivetési nap mindig benne van a kivetési időszakban)."
     },
     "year": {
       "label": "Melyik év",

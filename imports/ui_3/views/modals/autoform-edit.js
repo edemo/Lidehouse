@@ -3,6 +3,8 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { Factory } from 'meteor/dburles:factory';
+
 import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -17,7 +19,9 @@ Template.Autoform_edit.onCreated(function () {
 });
 
 Template.Autoform_edit.onRendered(function () {
-  const schemaName = `schema${this.data.id.split('.')[1].capitalize()}s`;
+  const objectName = this.data.id.split('.')[1];
+  const collection = Factory.get(objectName).collection;
+  const schemaName = `schema${collection._name.capitalize()}`;
   initializeHelpIcons(this, schemaName);
 });
 
