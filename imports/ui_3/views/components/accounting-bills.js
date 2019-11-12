@@ -8,9 +8,10 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
 import { debugAssert } from '/imports/utils/assert.js';
-import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+//import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { getBillsActionsSmall } from '/imports/api/transactions/bills/actions.js';
 import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/transactions/partners/partners.js';
@@ -25,6 +26,8 @@ import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
 import { allPaymentsActions } from '/imports/api/transactions/payments/actions.js';
 import { allParcelBillingActions } from '/imports/api/transactions/parcel-billings/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+//import { initializeDatatablesSelectButtons, selectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -36,8 +39,10 @@ Template.Accounting_bills.viewmodel({
   unreconciledOnly: true,
   unconteeredOnly: false,
   showParcelBillings: false,
+  collectionName: 'Bills',
   onCreated(instance) {
     instance.autorun(() => {
+      //initializeDatatablesSelectButtons('Bills');
       instance.subscribe('parcelBillings.inCommunity', { communityId: this.communityId() });
       if (this.unreconciledOnly()) {
         instance.subscribe('bills.outstanding', { communityId: this.communityId() });
@@ -87,7 +92,7 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesSelectButtons(Bills.methods.batch.conteer),
+      ...DatatablesSelectButtons('Bills'),
     });
   },
   paymentsFilterSelector() {
@@ -108,7 +113,7 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesSelectButtons(Payments.methods.batch.conteer),
+      ...DatatablesSelectButtons('Bills'),
     });
   },
   partnersFilterSelector() {
