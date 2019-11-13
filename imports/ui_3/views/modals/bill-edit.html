@@ -1,0 +1,123 @@
+<template name="Bill_partner_edit">
+    <address>
+        {{> afQuickField name="partner.contact.address"}}<br>
+        {{> afQuickField name="partner.bankAccountNumber"}}<br>
+        {{> afQuickField name="partner.taxNumber"}}<br>
+    </address>
+</template>
+
+<template name="Bill_edit">
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">{{title}}</h4>
+        </div>
+
+        {{#autoForm this}}
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h5>{{_ 'issuer'}}:</h5>
+                    <address>
+                    {{#if (equals activePartnerRelation 'supplier')}}
+                        {{> afQuickField name="partnerId"}}
+                    {{else}}
+                        {{>Bill_partner partner=activeCommunity.asPartner}}
+                    {{/if}}
+                    </address>
+                    <p>{{> afQuickField name="contractId"}}</p>
+                </div>
+
+                <div class="col-sm-6 text-right">
+                    <h5>{{_ 'receiver'}}:</h5>
+                    <address>
+                        {{#if (equals activePartnerRelation 'customer')}}
+                            {{> afQuickField name="partnerId"}}
+                        {{else}}
+                            {{>Bill_partner partner=activeCommunity.asPartner}}
+                        {{/if}}
+                    </address>
+
+                    <p>
+                        <span>{{> afQuickField name="issueDate" value=defaultDate template="bootstrap3-inline"}}</span><br/>
+                        <span>{{> afQuickField name="valueDate" value=defaultDate}}</span><br/>
+                        <span>{{> afQuickField name="dueDate" value=defaultDueDate}}</span>
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="table-responsive m-t">
+                <table class="table invoice-table">
+                    <!-- <thead>
+                        <tr >
+                            <th>{{_ 'schemaBills.lines.$.title.label'}}</th>
+                            <th>{{_ 'schemaBills.lines.$.quantity.label'}}</th>
+                            <th>{{_ 'schemaBills.lines.$.uom.label'}}</th>
+                            <th>{{_ 'schemaBills.lines.$.unitPrice.label'}}</th>
+                            <th>{{_ 'schemaBills.lines.$.taxPct.label'}}</th>
+                            <th>{{_ 'schemaBills.lines.$.amount.label'}}</th>
+                        </tr>
+                    </thead> -->
+                    <tbody>
+                        {{#afEachArrayItem name="lines"}}
+                        
+                        <button type="button" class="btn btn-primary autoform-remove-item">
+                            <span class="glyphicon glyphicon-minus"></span>
+                        </button>
+                        <tr class='js-autofill'>
+                            <td>{{> afFormGroup name=this.current.title}}</td>
+                            <td>{{> afFormGroup name=this.current.quantity}}</td>
+                            <td>{{> afFormGroup name=this.current.uom}}</td> 
+                            <td>{{> afFormGroup name=this.current.unitPrice}} </td>
+                            <td>{{> afFormGroup name=this.current.taxPct}} </td>
+                            <td>{{> afFormGroup name=this.current.amount}} </td>                      
+                            <!--td><div><strong> 
+                               line localizer {{> afQuickField name="lines.0.localizer"}} 
+                                line period {{> afQuickField name="lines.0.period"}}
+                                </strong></div>
+                                <small>line details {{> afQuickField name="lines.0.details"}}</small> 
+                            </td>-->
+                        </tr>
+                        {{/afEachArrayItem}}
+                        <button type="button" class="btn btn-primary autoform-add-item" data-autoform-field="lines">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>                  
+                    </tbody>
+                </table>
+            </div>
+
+            <table class="table invoice-total">
+                <tbody>
+                <tr>
+                    <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="well m-t">
+                {{> afQuickField name="note"}}
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{_ "cancel"}}</button>
+            <button type="submit" class="btn btn-primary">{{_ btnOK}}</button>
+        </div>
+        {{/autoForm}}
+           
+      </div>
+    </div>
+  </div>
+
+</template>
