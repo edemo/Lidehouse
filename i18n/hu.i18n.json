@@ -492,6 +492,7 @@
   "Show only": "Csak ami",
   "issuer": "kiállító",
   "receiver": "befogadó",
+  "Insert bill": "Számla rögzítése",
 
   // accounts
   "Chart Of Accounts": "Főkönyvi számlák",

@@ -9,6 +9,8 @@ import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Bills } from './bills.js';
 import { Payments } from '../payments/payments.js';
+import '/imports/ui_3/views/modals/bill-edit.js';
+
 import './methods.js';
 
 export function allBillsActions() {
@@ -21,10 +23,9 @@ export function allBillsActions() {
       run(id, event, instance) {
         const activePartnerRelation = instance.viewmodel.activePartnerRelation();
         Session.set('activePartnerRelation', activePartnerRelation);
-        Modal.show('Autoform_edit', {
+        Modal.show('Bill_edit', {
           id: 'af.bill.insert',
           collection: Bills,
-          omitFields: ['payments'],
           type: 'method',
           meteormethod: 'bills.insert',
         });
@@ -149,6 +150,7 @@ AutoForm.addHooks('af.bill.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.relation = Session.get('activePartnerRelation');
+    Bills.autofillLines(doc);
     return doc;
   },
 });
