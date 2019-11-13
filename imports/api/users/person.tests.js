@@ -54,7 +54,7 @@ if (Meteor.isServer) {
         let membershipId;
         let userId;
         after(function () {
-          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Memberships.remove(membershipId);
           Meteor.users.remove(userId);
         });
 
@@ -149,7 +149,7 @@ if (Meteor.isServer) {
         let membershipId;
         let userId;
         after(function () {
-          Memberships.methods.remove._execute({ userId: Fixture.demoAdminId }, { _id: membershipId });
+          Memberships.remove(membershipId);
           Meteor.users.remove(userId);
         });
         
@@ -183,7 +183,7 @@ if (Meteor.isServer) {
       describe('Scenario B1: manager links person, who will never be a user', function () {
         let membershipId;
         after(function () {
-          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Memberships.remove(membershipId);
         });
 
         it('[1] manager creates identifed person, and links it to the parcel with an ownership', function (done) {
@@ -217,7 +217,7 @@ if (Meteor.isServer) {
         let membershipId;
         let userId, user;
         after(function () {
-          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Memberships.remove(membershipId);
           Meteor.users.remove(userId);
         });
 
@@ -377,7 +377,7 @@ if (Meteor.isServer) {
           chai.assert.equal(membership.Person().id(), alreadyUserId);
           chai.assert.equal(membership.Person().primaryEmail(), alreadyUser.getPrimaryEmail());
 
-          Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
+          Memberships.remove(membershipId);
           done();
         });
       });

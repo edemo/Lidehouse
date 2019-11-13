@@ -16,13 +16,11 @@ export const insert = new ValidatedMethod({
   run(doc) {
     checkPermissions(this.userId, 'leaderships.insert', doc.communityId);
 
-    const _id = Leaderships.insert(doc);
-    try {
-      sanityCheckOnlyOneActiveAtAllTimes(Leaderships, { parcelId: doc.parcelId });
-    } catch (err) {
-      Leaderships.remove(_id);
-      throw err;
-    }
+    const LeadershipsStage = Leaderships.Stage();
+    const _id = LeadershipsStage.insert(doc);
+    sanityCheckOnlyOneActiveAtAllTimes(LeadershipsStage, { parcelId: doc.parcelId });
+    LeadershipsStage.commit();
+
     return _id;
   },
 });
@@ -37,16 +35,13 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Leaderships, _id);
     checkModifier(doc, modifier, ['communityId'], true);
-    // Try the operation, and if it produces an insane state, revert it
-    const result = Leaderships.update({ _id }, modifier);
-    try {
-      const newDoc = Leaderships.findOne(_id);
-      sanityCheckOnlyOneActiveAtAllTimes(Leaderships, { parcelId: newDoc.parcelId });
-    } catch (err) {
-      Mongo.Collection.stripAdministrativeFields(doc);
-      Leaderships.update({ _id }, { $set: doc });
-      throw err;
-    }
+
+    const LeadershipsStage = Leaderships.Stage();
+    const result = LeadershipsStage.update(_id, modifier);
+    const newDoc = LeadershipsStage.findOne(_id);
+    sanityCheckOnlyOneActiveAtAllTimes(LeadershipsStage, { parcelId: newDoc.parcelId });
+    LeadershipsStage.commit();
+
     return result;
   },
 });

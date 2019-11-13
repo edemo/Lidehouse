@@ -97,15 +97,22 @@ ActivePeriod.fields = [
 ];
 
 export function sanityCheckOnlyOneActiveAtAllTimes(collection, selector) {
-  ActiveTimeMachine.runDisabled(() => {
-    const docs = collection.find(selector, { sort: { 'activeTime.begin': 1 } }).fetch();
-    docs.forEach((d, i) => {
-      if (!docs[i + 1]) return;
-      if (d.getActiveTime().end > docs[i + 1].getActiveTime().begin) {
-        throw new Meteor.Error('err_sanityCheckFailed', `Cannot have two documents active at the same time (${d.getActiveTime().end})`);
-      }
-    });
+  let docs = collection.find(selector, { sort: { 'activeTime.begin': 1 } }).fetch();
+  docs = _.sortBy(docs, d => d.activeTime && d.activeTime.begin); // a second sort is needed, because CollectionStage can break the sort
+  docs.forEach((doc, i) => {
+    if (!docs[i + 1]) return;
+    if (doc.getActiveTime().end > docs[i + 1].getActiveTime().begin) {
+      throw new Meteor.Error('err_sanityCheckFailed', `Cannot have two documents active at the same time (${doc.getActiveTime().end})`, docs.map(d => d.activeTime));
+    }
   });
+}
+
+export function sanityCheckAtLeastOneActive(collection, selector) {
+  const actives = collection.findActive(selector);
+  if (actives.count() === 0) {
+    throw new Meteor.Error('err_unableToRemove', 'The last one cannot be deleted',
+    `Found: {${actives.count()}}`);
+  }
 }
 
 const updateActivePeriod = new ValidatedMethod({

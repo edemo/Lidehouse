@@ -13,7 +13,7 @@ import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { insert as insertLeadership, update as updateLeadership, remove as removeLeadership } from '/imports/api/leaderships/methods.js';
 import '/imports/api/memberships/methods.js';
-import { everyRole, defaultRoles } from '/imports/api/permissions/roles.js';
+import { everyRole, exceptAdmin, defaultRoles } from '/imports/api/permissions/roles.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 
 if (Meteor.isServer) {
@@ -163,7 +163,7 @@ if (Meteor.isServer) {
 
     describe('permissions', function () {
       let testMembershipId;
-      const randomRole = _.sample(everyRole);
+      const randomRole = _.sample(exceptAdmin);
       const createMembership = function (newrole) {
         const newMembership = {
           communityId: Fixture.demoCommunityId,
@@ -329,7 +329,7 @@ if (Meteor.isServer) {
         done();
       });
 
-      it('parcel should have either lead or owners, but not both', function (done) {
+      xit('parcel should have either lead or owners, but not both', function (done) {
         const userId = Fixture.demoManagerId;
         const leadParcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '45', units: 0 });
         const parcelId = Parcels.insert({ communityId: Fixture.demoCommunityId, ref: '56', units: 0 });

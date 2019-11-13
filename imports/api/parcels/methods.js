@@ -11,10 +11,11 @@ import { Parcels } from './parcels.js';
 import { Memberships } from '../memberships/memberships.js';
 import { crudBatchOps } from '../batch-method.js';
 
-function checkCommunityParcelsSanity(communityId) {
+function checkCommunityParcelsSanity(communityId, parcels) {
   if (Meteor.isClient) return;
   const community = Communities.findOne(communityId);
-  const registeredUnits = community.registeredUnits();
+  let registeredUnits = 0;
+  parcels.find({ communityId }).forEach(p => registeredUnits += p.units);
   if (registeredUnits > community.totalunits) {
     throw new Meteor.Error('err_sanityCheckFailed', 'Registered units cannot exceed totalunits of community',
     `Registered units: ${registeredUnits}, Total units: ${community.totalunits}`);
@@ -38,14 +39,11 @@ export const insert = new ValidatedMethod({
       checkPermissions(this.userId, 'parcels.insert', doc.communityId);
     }
 
-    // Try the operation, and if it produces an insane state, revert it
-    const _id = Parcels.insert(doc);
-    try {
-      checkCommunityParcelsSanity(doc.communityId);
-    } catch (err) {
-      Parcels.remove(_id);
-      throw err;
-    }
+    const ParcelsStage = Parcels.Stage();
+    const _id = ParcelsStage.insert(doc);
+    checkCommunityParcelsSanity(doc.communityId, ParcelsStage);
+    ParcelsStage.commit();
+
     return _id;
   },
 });
@@ -63,15 +61,11 @@ export const update = new ValidatedMethod({
     checkNotExists(Parcels, { _id: { $ne: doc._id }, communityId: doc.communityId, ref: modifier.$set.ref });
     checkPermissions(this.userId, 'parcels.update', doc.communityId);
 
-    // Try the operation, and if it produces an insane state, revert it
-    const result = Parcels.update({ _id }, modifier);
-    try {
-      checkCommunityParcelsSanity(doc.communityId);
-    } catch (err) {
-      Mongo.Collection.stripAdministrativeFields(doc);
-      Parcels.update({ _id }, { $set: doc });
-      throw err;
-    }
+    const ParcelsStage = Parcels.Stage();
+    const result = ParcelsStage.update({ _id }, modifier);
+    checkCommunityParcelsSanity(doc.communityId, ParcelsStage);
+    ParcelsStage.commit();
+
     return result;
   },
 });
