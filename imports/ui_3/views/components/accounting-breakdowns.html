@@ -62,7 +62,7 @@
                         </div>
                         {{/if}}
                     </div>
-                    <div id="tab-defs" class="tab-pane txdefs">
+                    <div id="tab-defs" class="tab-pane txDefs">
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
@@ -80,7 +80,7 @@
                                       <td>{{{displayAccount txDef.debit}}}</td>
                                       <td>{{{displayAccount txDef.credit}}}</td>
                                       <td class="text-right">
-                                          {{> Action_buttons_group_small _id=txDef._id actions=txDefsActions}}
+                                          {{> Action_buttons_group _id=txDef._id collection='txDefs' actions='' size='sm'}}
                                       </td>
                                   </tr>
                                   {{/each}}

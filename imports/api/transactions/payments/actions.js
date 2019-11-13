@@ -11,93 +11,80 @@ import { Payments } from '../payments/payments.js';
 import { Bills } from '../bills/bills.js';
 import './methods.js';
 
-export function allPaymentsActions() {
-  Payments.actions = Payments.actions || {
-    collection: Payments,
-    new: {
-      name: 'new',
-      icon: 'fa fa-plus',
-      visible: () => currentUserHasPermission('payments.insert'),
-      run(id, event, instance) {
-        const activePartnerRelation = instance.viewmodel.activePartnerRelation();
-        Session.set('activePartnerRelation', activePartnerRelation);
-        Modal.show('Autoform_edit', {
-          id: 'af.bill.insert',
-          collection: Payments,
-          type: 'method',
-          meteormethod: 'payments.insert',
-        });
-      },
+Payments.actions = {
+  new: {
+    name: 'new',
+    icon: 'fa fa-plus',
+    visible: () => currentUserHasPermission('payments.insert'),
+    run(id, event, instance) {
+      const activePartnerRelation = instance.viewmodel.activePartnerRelation();
+      Session.set('activePartnerRelation', activePartnerRelation);
+      Modal.show('Autoform_edit', {
+        id: 'af.bill.insert',
+        collection: Payments,
+        type: 'method',
+        meteormethod: 'payments.insert',
+      });
     },
-    view: {
-      name: 'view',
-      icon: 'fa fa-eye',
-      visible: () => currentUserHasPermission('payments.inCommunity'),
-      run(id) {
-        const doc = Payments.findOne(id);
-        // TODO
-      },
+  },
+  view: {
+    name: 'view',
+    icon: 'fa fa-eye',
+    visible: () => currentUserHasPermission('payments.inCommunity'),
+    run(id) {
+      const doc = Payments.findOne(id);
+      // TODO
     },
-    edit: {
-      name: 'edit',
-      icon: 'fa fa-pencil',
-      visible(id) {
-        if (!currentUserHasPermission('bills.update')) return false;
-        const doc = Payments.findOne(id);
-        if (doc.txId) return false; // already in accounting
-        return true;
-      },
-      run(id) {
-        Modal.show('Autoform_edit', {
-          id: 'af.payment.update',
-          collection: Payments,
-          doc: Payments.findOne(id),
-          type: 'method-update',
-          meteormethod: 'payments.update',
-          singleMethodArgument: true,
-        });
-      },
+  },
+  edit: {
+    name: 'edit',
+    icon: 'fa fa-pencil',
+    visible(id) {
+      if (!currentUserHasPermission('bills.update')) return false;
+      const doc = Payments.findOne(id);
+      if (doc.txId) return false; // already in accounting
+      return true;
     },
-    conteer: {
-      name: 'conteer',
-      icon: 'fa fa-edit',
-      color: _id => (!(Payments.findOne(_id).txId) ? 'warning' : undefined),
-      visible(id) {
-        if (!currentUserHasPermission('payments.conteer')) return false;
-        const doc = Payments.findOne(id);
-        return (!doc.txId);
-      },
-      run(id) {
-        Payments.methods.conteer.call({ _id: id }, onSuccess((res) => {
-          displayMessage('info', 'Kifizetes konyvelesbe kuldve');
-        }));
-      },
+    run(id) {
+      Modal.show('Autoform_edit', {
+        id: 'af.payment.update',
+        collection: Payments,
+        doc: Payments.findOne(id),
+        type: 'method-update',
+        meteormethod: 'payments.update',
+        singleMethodArgument: true,
+      });
     },
-    delete: {
-      name: 'delete',
-      icon: 'fa fa-trash',
-      visible: () => currentUserHasPermission('payments.remove'),
-      run(id) {
-        Modal.confirmAndCall(Payments.methods.remove, { _id: id }, {
-          action: 'delete bill',
-          message: 'It will disappear forever',
-        });
-      },
+  },
+  conteer: {
+    name: 'conteer',
+    icon: 'fa fa-edit',
+    color: _id => (!(Payments.findOne(_id).txId) ? 'warning' : undefined),
+    visible(id) {
+      if (!currentUserHasPermission('payments.conteer')) return false;
+      const doc = Payments.findOne(id);
+      return (!doc.txId);
     },
-  };
-  return Payments.actions;
-}
+    run(id) {
+      Payments.methods.conteer.call({ _id: id }, onSuccess((res) => {
+        displayMessage('info', 'Kifizetes konyvelesbe kuldve');
+      }));
+    },
+  },
+  delete: {
+    name: 'delete',
+    icon: 'fa fa-trash',
+    visible: () => currentUserHasPermission('payments.remove'),
+    run(id) {
+      Modal.confirmAndCall(Payments.methods.remove, { _id: id }, {
+        action: 'delete bill',
+        message: 'It will disappear forever',
+      });
+    },
+  },
+};
 
-export function getPaymentsActionsSmall() {
-  allPaymentsActions();
-  const actions = [
-//    Payments.actions.view,
-    Payments.actions.edit,
-    Payments.actions.conteer,
-    Payments.actions.delete,
-  ];
-  return actions;
-}
+//--------------------------------------------------
 
 AutoForm.addModalHooks('af.payment.insert');
 AutoForm.addModalHooks('af.payment.update');

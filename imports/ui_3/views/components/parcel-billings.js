@@ -36,5 +36,5 @@ Template.Parcel_billings.viewmodel({
 });
 
 Template.Parcel_billings.events(
-  actionHandlers(allParcelBillingActions())
+  actionHandlers(ParcelBillings)
 );

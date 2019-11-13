@@ -18,8 +18,8 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import { allBreakdownsActions } from '/imports/api/transactions/breakdowns/actions.js';
-import { allTxDefsActions, getTxDefsActionsSmall } from '/imports/api/transactions/txdefs/actions.js';
+import '/imports/api/transactions/breakdowns/actions.js';
+import '/imports/api/transactions/txdefs/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/api/transactions/txdefs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -31,7 +31,7 @@ Template.Accounting_breakdowns.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txdefs.inCommunity', { communityId });
+      instance.subscribe('txDefs.inCommunity', { communityId });
     });
   },
   communityId() {
@@ -43,8 +43,8 @@ Template.Accounting_breakdowns.viewmodel({
   },
   txDefs() {
     const communityId = Session.get('activeCommunityId');
-    const txdefs = TxDefs.find({ communityId });
-    return txdefs;
+    const txDefs = TxDefs.find({ communityId });
+    return txDefs;
   },
   breakdownsTableDataFn(tab) {
     const templateInstance = Template.instance();
@@ -79,17 +79,14 @@ Template.Accounting_breakdowns.viewmodel({
     if (brk) return brk.nodeOptionsOf(accountCode, true);
     return [];
   },
-  txDefsActions() {
-    return getTxDefsActionsSmall();
-  },
 });
 
 Template.Accounting_breakdowns.events(
-  actionHandlers(allBreakdownsActions())
+  actionHandlers(Breakdowns)
 );
 
 Template.Accounting_breakdowns.events(
-  actionHandlers(allTxDefsActions())
+  actionHandlers(TxDefs)
 );
 
 Template.Accounting_breakdowns.events({

@@ -17,6 +17,7 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 //  import { TxDefs } from '/imports/api/transactions/tx-defs.js';
 import { Bills } from '/imports/api/transactions/bills/bills';
 import { Period } from '/imports/api/transactions/breakdowns/period.js';
+import { ActiveTimeMachine } from '../../behaviours/active-time-machine';
 
 export const BILLING_DAY_OF_THE_MONTH = 10;
 export const BILLING_MONTH_OF_THE_YEAR = 3;
@@ -28,94 +29,96 @@ export const apply = new ValidatedMethod({
 
   run({ communityId, valueDate, ids, localizer }) {
     checkPermissions(this.userId, 'parcelBillings.apply', communityId);
-    const bills = {}; // parcelId => his bill
-    const activeParcelBillings = ids
-      ? ParcelBillings.find({ communityId, _id: { $in: ids } })
-      : ParcelBillings.find({ communityId, active: true });
-    const billingPeriod = Period.monthOfDate(valueDate);
-    activeParcelBillings.forEach((parcelBilling) => {
-      const alreadyAppliedAt = parcelBilling.alreadyAppliedAt(billingPeriod.label);
-      if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
-      const parcels = parcelBilling.parcels(localizer);
-      parcels.forEach((parcel) => {
-        const line = {
-          billingId: parcelBilling._id,
-          period: billingPeriod.label,
-        };
-        let activeMeter;
-        if (parcelBilling.consumption) {
-          activeMeter = Meters.findOne({ parcelId: parcel._id, service: parcelBilling.consumption, active: true });
+    ActiveTimeMachine.runAtTime(valueDate, () => {
+      const bills = {}; // parcelId => his bill
+      const activeParcelBillings = ids
+        ? ParcelBillings.findActive({ communityId, _id: { $in: ids } })
+        : ParcelBillings.findActive({ communityId });
+      const billingPeriod = Period.monthOfDate(valueDate);
+      activeParcelBillings.forEach((parcelBilling) => {
+        const alreadyAppliedAt = parcelBilling.alreadyAppliedAt(billingPeriod.label);
+        if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
+        const parcels = parcelBilling.parcels(localizer);
+        parcels.forEach((parcel) => {
+          const line = {
+            billingId: parcelBilling._id,
+            period: billingPeriod.label,
+          };
+          let activeMeter;
+          if (parcelBilling.consumption) {
+            activeMeter = Meters.findOneActive({ parcelId: parcel._id, service: parcelBilling.consumption });
+            if (activeMeter) {
+              line.unitPrice = parcelBilling.unitPrice;
+              line.uom = parcelBilling.uom;
+              // TODO: Estimation if no reading available
+              line.quantity = (activeMeter.lastReading().value - activeMeter.lastBilling().value);
+            }
+          }
+          if (!activeMeter) {
+            line.unitPrice = parcelBilling.amount;
+            switch (parcelBilling.projection) {
+              case 'absolute':
+                line.uom = 'piece';
+                line.quantity = 1;
+                break;
+              case 'area':
+                line.uom = 'm2';
+                line.quantity = (parcel.area || 0);
+                break;
+              case 'volume':
+                line.uom = 'm3';
+                line.quantity = (parcel.volume || 0);
+                break;
+              case 'habitants':
+                line.uom = 'habitant';
+                line.quantity = (parcel.habitants || 0);
+                break;
+              default: debugAssert(false, 'No such projection');
+            }
+          }
+          debugAssert(line.uom && _.isDefined(line.quantity), 'Billing needs consumption or projection.');
+          if (line.quantity === 0) return; // Should not create bill for zero amount
+          line.amount = line.quantity * line.unitPrice;
+          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+          line.localizer = Localizer.parcelRef2code(parcel.ref);
+          line.title = `${parcelBilling.title}`;
+
+          // Creating the bill - adding entry to the bill
+          bills[parcel._id] = bills[parcel._id] || {
+            communityId: parcelBilling.communityId,
+            relation: 'parcel',
+  //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
+            partnerId: parcel.payer()._id,
+            valueDate,
+            issueDate: Clock.currentDate(),
+            dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
+            lines: [],
+          };
+          bills[parcel._id].lines.push(line);
+
+          // Updating the otstanding balance of the parcel
+          Parcels.update(parcel._id, { $inc: { outstanding: line.amount } });
+
+          // Updating the meter readings
           if (activeMeter) {
-            line.unitPrice = parcelBilling.unitPrice;
-            line.uom = parcelBilling.uom;
-            // TODO: Estimation if no reading available
-            line.quantity = (activeMeter.lastReading().value - activeMeter.lastBilling().value);
+            Meters.methods.registerBilling._execute({ userId: this.userId }, {
+              _id: activeMeter._id,
+              billing: {
+                date: new Date(),
+                value: activeMeter.lastReading().value,
+                type: 'reading',
+    //            readingId
+    //            billId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+              },
+            });
           }
-        }
-        if (!activeMeter) {
-          line.unitPrice = parcelBilling.amount;
-          switch (parcelBilling.projection) {
-            case 'absolute':
-              line.uom = 'piece';
-              line.quantity = 1;
-              break;
-            case 'area':
-              line.uom = 'm2';
-              line.quantity = (parcel.area || 0);
-              break;
-            case 'volume':
-              line.uom = 'm3';
-              line.quantity = (parcel.volume || 0);
-              break;
-            case 'habitants':
-              line.uom = 'habitant';
-              line.quantity = (parcel.habitants || 0);
-              break;
-            default: debugAssert(false, 'No such projection');
-          }
-        }
-        debugAssert(line.uom && _.isDefined(line.quantity), 'Billing needs consumption or projection.');
-        if (line.quantity === 0) return; // Should not create bill for zero amount
-        line.amount = line.quantity * line.unitPrice;
-        line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
-        line.localizer = Localizer.parcelRef2code(parcel.ref);
-        line.title = `${parcelBilling.title}`;
-
-        // Creating the bill - adding entry to the bill
-        bills[parcel._id] = bills[parcel._id] || {
-          communityId: parcelBilling.communityId,
-          relation: 'parcel',
-//          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
-          partnerId: parcel.payer()._id,
-          valueDate,
-          issueDate: Clock.currentDate(),
-          dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
-          lines: [],
-        };
-        bills[parcel._id].lines.push(line);
-
-        // Updating the otstanding balance of the parcel
-        Parcels.update(parcel._id, { $inc: { outstanding: line.amount } });
-
-        // Updating the meter readings
-        if (activeMeter) {
-          Meters.methods.registerBilling._execute({ userId: this.userId }, {
-            _id: activeMeter._id,
-            billing: {
-              date: new Date(),
-              value: activeMeter.lastReading().value,
-              type: 'reading',
-  //            readingId
-  //            billId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-            },
-          });
-        }
+        });
+        ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { valueDate, period: billingPeriod.label } } });
       });
-      ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { valueDate, period: billingPeriod.label } } });
-    });
 
-    _.each(bills, (bill, parcelId) => {
-      Bills.methods.insert._execute({ userId: this.userId }, bill);
+      _.each(bills, (bill, parcelId) => {
+        Bills.methods.insert._execute({ userId: this.userId }, bill);
+      });
     });
   },
 });

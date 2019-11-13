@@ -13,134 +13,120 @@ import '/imports/ui_3/views/modals/bill-edit.js';
 
 import './methods.js';
 
-export function allBillsActions() {
-  Bills.actions = Bills.actions || {
-    collection: Bills,
-    new: {
-      name: 'new',
-      icon: 'fa fa-plus',
-      visible: () => currentUserHasPermission('bills.insert'),
-      run(id, event, instance) {
-        const activePartnerRelation = instance.viewmodel.activePartnerRelation();
-        Session.set('activePartnerRelation', activePartnerRelation);
-        Modal.show('Bill_edit', {
-          id: 'af.bill.insert',
-          collection: Bills,
-          type: 'method',
-          meteormethod: 'bills.insert',
-        });
-      },
+Bills.actions = {
+  new: {
+    name: 'new',
+    icon: 'fa fa-plus',
+    visible: () => currentUserHasPermission('bills.insert'),
+    run(id, event, instance) {
+      const activePartnerRelation = instance.viewmodel.activePartnerRelation();
+      Session.set('activePartnerRelation', activePartnerRelation);
+      Modal.show('Bill_edit', {
+        id: 'af.bill.insert',
+        collection: Bills,
+        type: 'method',
+        meteormethod: 'bills.insert',
+      });
     },
-    view: {
-      name: 'view',
-      icon: 'fa fa-eye',
-      visible: () => currentUserHasPermission('bills.inCommunity'),
-      run(id) {
-        const doc = Bills.findOne(id);
+  },
+  view: {
+    name: 'view',
+    icon: 'fa fa-eye',
+    visible: () => currentUserHasPermission('bills.inCommunity'),
+    run(id) {
+      const doc = Bills.findOne(id);
 /*        Modal.show('Autoform_edit', {
-          id: 'af.bill.view',
-          collection: Bills,
-          doc,
-          type: 'readonly',
-        });*/
+        id: 'af.bill.view',
+        collection: Bills,
+        doc,
+        type: 'readonly',
+      });*/
 //        FlowRouter.go('Bill show', { _bid: id });
-        Modal.show('Modal', {
-          title: __(doc.relation + '_bill') + ' ' + doc.serialId(),
-          body: 'Bill_show',
-          bodyContext: { doc },
-        });
-      },
+      Modal.show('Modal', {
+        title: __(doc.relation + '_bill') + ' ' + doc.serialId(),
+        body: 'Bill_show',
+        bodyContext: { doc },
+      });
     },
-    edit: {
-      name: 'edit',
-      icon: 'fa fa-pencil',
-      visible(id) {
-        if (!currentUserHasPermission('bills.update')) return false;
-        const doc = Bills.findOne(id);
-        if (doc.txId) return false; // already in accounting
-        return true;
-      },
-      run(id) {
-        Modal.show('Autoform_edit', {
-          id: 'af.bill.update',
-          collection: Bills,
-          omitFields: ['payments'],
-          doc: Bills.findOne(id),
-          type: 'method-update',
-          meteormethod: 'bills.update',
-          singleMethodArgument: true,
-        });
-      },
+  },
+  edit: {
+    name: 'edit',
+    icon: 'fa fa-pencil',
+    visible(id) {
+      if (!currentUserHasPermission('bills.update')) return false;
+      const doc = Bills.findOne(id);
+      if (doc.txId) return false; // already in accounting
+      return true;
     },
-    conteer: {
-      name: 'conteer',
-      icon: 'fa fa-edit',
-      color: _id => (!(Bills.findOne(_id).txId) ? 'warning' : undefined),
-      visible(id) {
-        if (!currentUserHasPermission('bills.conteer')) return false;
-        const doc = Bills.findOne(id);
-        return (doc.hasConteerData() && !doc.txId);
-      },
-      run(id) {
+    run(id) {
+      Modal.show('Autoform_edit', {
+        id: 'af.bill.update',
+        collection: Bills,
+        omitFields: ['payments'],
+        doc: Bills.findOne(id),
+        type: 'method-update',
+        meteormethod: 'bills.update',
+        singleMethodArgument: true,
+      });
+    },
+  },
+  conteer: {
+    name: 'conteer',
+    icon: 'fa fa-edit',
+    color: _id => (!(Bills.findOne(_id).txId) ? 'warning' : undefined),
+    visible(id) {
+      if (!currentUserHasPermission('bills.conteer')) return false;
+      const doc = Bills.findOne(id);
+      return (doc.hasConteerData() && !doc.txId);
+    },
+    run(id) {
 /*        Modal.show('Autoform_edit', {
-          id: 'af.bill.conteer',
-          collection: Bills,
-          fields: ['partnerId', 'account', 'localizer'],
-          doc: Bills.findOne(id),
-          type: 'method-update',
-          meteormethod: 'bills.conteer',
-          singleMethodArgument: true,
-        });*/
-        Bills.methods.conteer.call({ _id: id }, onSuccess((res) => {
-          displayMessage('info', 'Szamla konyvelesbe kuldve');
-        }));
-      },
+        id: 'af.bill.conteer',
+        collection: Bills,
+        fields: ['partnerId', 'account', 'localizer'],
+        doc: Bills.findOne(id),
+        type: 'method-update',
+        meteormethod: 'bills.conteer',
+        singleMethodArgument: true,
+      });*/
+      Bills.methods.conteer.call({ _id: id }, onSuccess((res) => {
+        displayMessage('info', 'Szamla konyvelesbe kuldve');
+      }));
     },
-    registerPayment: {
-      name: 'registerPayment',
-      icon: 'fa fa-credit-card',
-      visible(id) {
-        if (!currentUserHasPermission('payments.insert')) return false;
-        const doc = Bills.findOne(id);
-        return (!!doc.txId && doc.outstanding > 0);
-      },
-      run(id) {
-        Session.set('activeBillId', id);
-        Modal.show('Autoform_edit', {
-          id: 'af.payment.insert',
-          collection: Payments,
-          omitFields: ['partnerId'],
-          type: 'method',
-          meteormethod: 'payments.insert',
-        });
-      },
+  },
+  registerPayment: {
+    name: 'registerPayment',
+    icon: 'fa fa-credit-card',
+    visible(id) {
+      if (!currentUserHasPermission('payments.insert')) return false;
+      const doc = Bills.findOne(id);
+      return (!!doc.txId && doc.outstanding > 0);
     },
-    delete: {
-      name: 'delete',
-      icon: 'fa fa-trash',
-      visible: () => currentUserHasPermission('bills.remove'),
-      run(id) {
-        Modal.confirmAndCall(Bills.methods.remove, { _id: id }, {
-          action: 'delete bill',
-          message: 'It will disappear forever',
-        });
-      },
+    run(id) {
+      Session.set('activeBillId', id);
+      Modal.show('Autoform_edit', {
+        id: 'af.payment.insert',
+        collection: Payments,
+        omitFields: ['partnerId'],
+        type: 'method',
+        meteormethod: 'payments.insert',
+      });
     },
-  };
-  return Bills.actions;
-}
+  },
+  delete: {
+    name: 'delete',
+    icon: 'fa fa-trash',
+    visible: () => currentUserHasPermission('bills.remove'),
+    run(id) {
+      Modal.confirmAndCall(Bills.methods.remove, { _id: id }, {
+        action: 'delete bill',
+        message: 'It will disappear forever',
+      });
+    },
+  },
+};
 
-export function getBillsActionsSmall() {
-  allBillsActions();
-  const actions = [
-    Bills.actions.view,
-    Bills.actions.edit,
-    Bills.actions.conteer,
-    Bills.actions.registerPayment,
-    Bills.actions.delete,
-  ];
-  return actions;
-}
+//------------------------------------------
 
 AutoForm.addModalHooks('af.bill.insert');
 AutoForm.addModalHooks('af.bill.update');

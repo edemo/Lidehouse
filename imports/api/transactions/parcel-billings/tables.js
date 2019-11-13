@@ -5,7 +5,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { displayLocalizer } from '/imports/ui_3/helpers/api-display.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
-import { getParcelBillingActionsSmall } from './actions.js';
+import './actions.js';
 
 export function parcelBillingColumns() {
   const communityId = Session.get('activeCommunityId');
@@ -20,7 +20,7 @@ export function parcelBillingColumns() {
     { data: 'amount', title: __('schemaParcelBillings.amount.label') },
     { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'lastAppliedAt().valueDate', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group_small, { _id: cellData, actions: getParcelBillingActionsSmall() }) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group, { _id: cellData, collection: 'parcelBillings', actions: '', size: 'sm' }) },
   ];
 
   return columns;

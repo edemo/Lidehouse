@@ -31,7 +31,7 @@ Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {
   const personId = this.userId;
   return {
     find() {
-      return Memberships.find({ communityId, approved: true, active: true,
+      return Memberships.findActive({ communityId, approved: true,
         personId, parcelId: { $exists: true }, role: { $in: permissionRoles } });
     },
     children: [{

@@ -131,10 +131,10 @@ Template.Accounting_bills.viewmodel({
 });
 
 Template.Accounting_bills.events({
-  ...(actionHandlers(allBillsActions())),
-  ...(actionHandlers(allPaymentsActions())),
-  ...(actionHandlers(allPartnersActions())),
-  ...(actionHandlers(allParcelBillingActions())),
+  ...(actionHandlers(Bills)),
+  ...(actionHandlers(Payments)),
+  ...(actionHandlers(Partners)),
+  ...(actionHandlers(ParcelBillings)),
 });
 
 Template.Accounting_bills.events({

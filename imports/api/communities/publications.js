@@ -38,7 +38,7 @@ function communityPublication(userId, _id) {
     },
     children: [{
       find(community) {
-        return Memberships.find({ communityId: community._id, active: true, role: { $in: leaderRoles } }, { fields: Memberships.publicFields });
+        return Memberships.findActive({ communityId: community._id, role: { $in: leaderRoles } }, { fields: Memberships.publicFields });
       },
       children: [{
         find(membership) {
