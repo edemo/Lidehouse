@@ -59,10 +59,9 @@ Bills.actions = {
       return true;
     },
     run(id) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Bill_edit', {
         id: 'af.bill.update',
         collection: Bills,
-        omitFields: ['payments'],
         doc: Bills.findOne(id),
         type: 'method-update',
         meteormethod: 'bills.update',
