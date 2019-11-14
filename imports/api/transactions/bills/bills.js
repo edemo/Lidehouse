@@ -23,7 +23,7 @@ import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/locali
 
 export const Bills = new Mongo.Collection('bills');
 
-Bills.lineSchema = new SimpleSchema({
+const lineSchema = {
   title: { type: String },
   details: { type: String, optional: true },
   uom: { type: String, optional: true },  // unit of measurment
@@ -39,7 +39,9 @@ Bills.lineSchema = new SimpleSchema({
   period: { type: String, optional: true, autoform: { omit: true } },
   account: { type: String, optional: true, autoform: chooseAccountNode },
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
-});
+};
+_.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
+Bills.lineSchema = new SimpleSchema(lineSchema);
 
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
