@@ -26,6 +26,7 @@ Bills.actions = {
         collection: Bills,
         type: 'method',
         meteormethod: 'bills.insert',
+        validation: 'blur',
       });
     },
   },

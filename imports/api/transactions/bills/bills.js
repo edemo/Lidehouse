@@ -30,8 +30,8 @@ const lineSchema = {
   quantity: { type: Number, decimal: true },
   unitPrice: { type: Number, decimal: true },
   taxPct: { type: Number, decimal: true, defaultValue: 0 },
-  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
-  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   // autoValue() {
   //  return this.siblingField('quantity').value * this.siblingField('unitPrice').value;
   //} },
@@ -48,7 +48,7 @@ Bills.schema = new SimpleSchema({
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
-  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   /*autoValue() {
     const lines = this.field('lines');
     if (!lines) return undefined;
@@ -56,7 +56,7 @@ Bills.schema = new SimpleSchema({
     lines.forEach(line => result += line.amount)
     return 
   } },*/
-  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   issueDate: { type: Date },
   valueDate: { type: Date },
   dueDate: { type: Date },
@@ -164,7 +164,7 @@ Bills.autofillLines = function autofillAmounts(doc) {
   if (doc.lines) {
     doc.lines.forEach(line => {
       line.amount = line.unitPrice * line.quantity;
-      line.tax = line.amount * line.taxPct;
+      line.tax = (line.amount * line.taxPct) / 100;
       line.amount += line.tax; // =
       totalAmount += line.amount;
       totalTax += line.tax;

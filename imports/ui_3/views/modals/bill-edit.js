@@ -52,6 +52,29 @@ Template.Bill_edit.helpers({
   defaultDueDate() {
     return moment().add(30, 'day').toDate();
   },
+  lineTotal(afLine) {
+    function getLineField(fieldName) {
+      return AutoForm.getFieldValue(afLine.name + '.' + fieldName);
+    }
+    let amount = getLineField('unitPrice') * getLineField('quantity');
+    const tax = (amount * getLineField('taxPct')) / 100;
+    amount += tax;
+    return amount;
+  },
+  billTotal(which) {
+    let net = 0;
+    let tax = 0;
+    let gross = 0;
+    AutoForm.getFieldValue('lines').forEach(line => {
+      let lineAmount = line.unitPrice * line.quantity;
+      const lineTax = (lineAmount * line.taxPct) / 100;
+      net += lineAmount;
+      tax += lineTax;
+      lineAmount += lineTax;
+      gross += lineAmount;
+    });
+    return { net, tax, gross }[which];
+  },
 });
 
 Template.Bill_edit.events({
