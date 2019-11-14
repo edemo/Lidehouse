@@ -23,11 +23,11 @@
                     <address>
                     {{#if (equals activePartnerRelation 'supplier')}}
                         {{> afQuickField name="partnerId"}}
+                        {{> afQuickField name="contractId"}}
                     {{else}}
                         {{>Bill_partner partner=activeCommunity.asPartner}}
                     {{/if}}
                     </address>
-                    <p>{{> afQuickField name="contractId"}}</p>
                 </div>
 
                 <div class="col-sm-6 text-right">
@@ -35,14 +35,15 @@
                     <address>
                         {{#if (equals activePartnerRelation 'customer')}}
                             {{> afQuickField name="partnerId"}}
+                            {{> afQuickField name="contractId"}}
                         {{else}}
                             {{>Bill_partner partner=activeCommunity.asPartner}}
                         {{/if}}
                     </address>
 
                     <p>
-                        <span>{{> afQuickField name="issueDate" value=defaultDate template="bootstrap3-inline"}}</span><br/>
-                        <span>{{> afQuickField name="valueDate" value=defaultDate}}</span><br/>
+                        <span>{{> afQuickField name="issueDate" value=defaultDate template="bootstrap3-inline"}}</span>
+                        <span>{{> afQuickField name="valueDate" value=defaultDate}}</span>
                         <span>{{> afQuickField name="dueDate" value=defaultDueDate}}</span>
                     </p>
 
