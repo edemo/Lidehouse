@@ -77,14 +77,14 @@
                                   <i class="fa fa-trash"></i>
                               </button>
                             </td>                       
-                    
-                            <!--td><div><strong> 
-                               line localizer {{> afQuickField name="lines.0.localizer"}} 
-                                line period {{> afQuickField name="lines.0.period"}}
-                                </strong></div>
-                                <small>line details {{> afQuickField name="lines.0.details"}}</small> 
-                            </td>-->
                         </tr>
+                        {{#if userHasPermission 'bills.conteer' (fromSession 'activeCommunityId')}}
+                        <tr>
+                              <td>{{> afFormGroup name=this.current.account}}</td>
+                              <td>{{> afFormGroup name=this.current.localizer}}</td>
+                        </tr>
+                        {{/if}}
+
                         {{/afEachArrayItem}}
                         <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="lines">
                             <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}
