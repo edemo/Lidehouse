@@ -41,21 +41,21 @@
                 <div class="col-sm-6">
                     <h5>{{_ 'issuer'}}:</h5>
                     <address>
-                        {{>Bill_partner partner=doc.issuer}}
+                        {{>Bill_partner partner=docVm.issuer}}
                     </address>
                 </div>
 
                 <div class="col-sm-6 text-right">
-                    <h4>{{_ (concat doc.relation '_bill')}}: <!--</h4> {{_ 'schemaBills.serialId.label'}}</h4-->
-                    <span class="text-navy">{{doc.serialId}}</span></h4>
+                    <h4>{{_ (concat docVm.relation '_bill')}}: <!--</h4> {{_ 'schemaBills.serialId.label'}}</h4-->
+                    <span class="text-navy">{{docVm.serialId}}</span></h4>
                     <h5>{{_ 'receiver'}}:</h5>
                     <address>
-                        {{>Bill_partner partner=doc.receiver}}
+                        {{>Bill_partner partner=docVm.receiver}}
                     </address>
                     <p>
-                        <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate doc.issueDate}}</span><br/>
-                        <span><strong>{{_ 'schemaBills.valueDate.label'}}:</strong> {{displayDate doc.valueDate}}</span><br/>
-                        <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate doc.dueDate}}</span>
+                        <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate docVm.issueDate}}</span><br/>
+                        <span><strong>{{_ 'schemaBills.valueDate.label'}}:</strong> {{displayDate docVm.valueDate}}</span><br/>
+                        <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate docVm.dueDate}}</span>
                     </p>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{#each line in doc.lines}}
+                        {{#each line in docVm.lines}}
                         <tr>
                             <td><div><strong>{{line.title}} {{code2parcelRef line.localizer}} {{line.period}}</strong></div>
                                 <small>{{line.details}}</small>
@@ -98,22 +98,22 @@
                 <tbody>
                 <tr>
                     <td><strong>{{_ 'schemaBills.net.label'}} :</strong></td>
-                    <td>{{doc.amount}}</td>
+                    <td>{{docVm.amount}}</td>
                 </tr>
                 <tr>
                     <td><strong>{{_ 'schemaBills.tax.label'}} :</strong></td>
-                    <td>{{doc.tax}}</td>
+                    <td>{{docVm.tax}}</td>
                 </tr>
                 <tr>
                     <td><strong>{{_ 'schemaBills.amount.label'}} :</strong></td>
-                    <td>{{doc.amount}}</td>
+                    <td>{{docVm.amount}}</td>
                 </tr>
                 </tbody>
             </table>
   
             <table class="table invoice-total"> 
               <tbody>
-              {{#each payment in doc.getPayments}}
+              {{#each payment in docVm.getPayments}}
               <tr>
                   <td><i>
                     {{#if not @index}}{{_ 'schemaBills.payments.label'}} {{/if}}
@@ -124,26 +124,26 @@
               {{/each}}
               <tr>
                   <td><strong>{{_ 'schemaBills.outstanding.label'}} :</strong></td>
-                  <td>{{doc.outstanding}}</td>
+                  <td>{{docVm.outstanding}}</td>
               </tr>
               </tbody>
             </table>
 
-            <div class="text-right" data-id="{{doc._id}}">
-              {{#if (actions.conteer.visible doc._id)}}
+            <div class="text-right" data-id="{{docVm._id}}">
+              {{#if (actions.conteer.visible docVm._id)}}
                 <button class="btn btn-warning js-conteer"><i class="fa fa-edit"></i> {{_ 'Send to accouting'}}</button>
               {{/if}}
-              {{#if (actions.registerPayment.visible doc._id)}}
+              {{#if (actions.registerPayment.visible docVm._id)}}
                 <button class="btn btn-primary js-payment"><i class="fa fa-credit-card"></i> {{_ 'Register payment'}}</button>
               {{/if}}
-              {{#if (actions.edit.visible doc._id)}}
+              {{#if (actions.edit.visible docVm._id)}}
                 <button class="btn btn-warning js-edit"><i class="fa fa-pencil"></i> {{_ 'Bill conteer'}}</button>
               {{/if}}
             </div>
 
-            {{#if doc.note}}
+            {{#if docVm.note}}
             <div class="well m-t"><strong>{{_ 'schemaBills.note.label'}}</strong>
-                {{doc.note}}
+                {{docVm.note}}
             </div>
             {{/if}}
         <!--/div>
