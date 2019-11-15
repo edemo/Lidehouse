@@ -4,8 +4,10 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Accounts } from 'meteor/accounts-base';
 import { Random } from 'meteor/random';
+import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
 
+import { sanityCheckAtLeastOneActive } from '/imports/api/behaviours/active-period.js';
 import { permissionCategoryOf } from '/imports/api/permissions/roles.js';
 import { Log } from '/imports/utils/log.js';
 import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
@@ -24,23 +26,20 @@ function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
   }
 }
 
-function checkParcelMembershipsSanity(parcelId) {
+function checkParcelMembershipsSanity(parcelId, memberships) {
   if (Meteor.isClient) return;
   if (!parcelId) return;
   const parcel = Parcels.findOne(parcelId);
-  // Parcel cannot be led and have owners at the same time (because led means, the owners are set on the lead parcel)
-  if (parcel.isLed() && parcel.owners().count() > 0) {
-    throw new Meteor.Error('err_sanityCheckFailed', 'Parcel cannot have lead and owners at the same time',
-      `for parcel ${parcel._id}`);
-  }
   // Parcel can have only one representor
-  const representorsCount = parcel.representors().count();
+  const representorsCount = memberships.find({ communityId: parcel.communityId, active: true, approved: true, parcelId, role: 'owner', 'ownership.representor': true }).length;
   if (representorsCount > 1) {
     throw new Meteor.Error('err_sanityCheckFailed', 'Parcel can have only one representor',
       `Trying to set ${representorsCount} for parcel ${parcel._id}`);
   }
   // Ownership share cannot exceed 1
-  const ownedShare = parcel.ownedShare();
+  let ownedShare = new Fraction(0);
+  memberships.find({ parcelId, active: true, approved: true, role: 'owner' })
+    .forEach(p => ownedShare = ownedShare.add(p.ownership.share));
   if (ownedShare.numerator > ownedShare.denominator) {
     throw new Meteor.Error('err_sanityCheckFailed', 'Ownership share cannot exceed 1',
       `New total shares would become: ${ownedShare}, for parcel ${parcel._id}`);
@@ -80,14 +79,11 @@ export const insert = new ValidatedMethod({
       }
     }
 
-    // Try the operation, and if it produces an insane state, revert it
-    const _id = Memberships.insert(doc);
-    try {
-      checkParcelMembershipsSanity(doc.parcelId);
-    } catch (err) {
-      Memberships.remove(_id);
-      throw err;
-    }
+    const MembershipsStage = Memberships.Stage();
+    const _id = MembershipsStage.insert(doc);
+    checkParcelMembershipsSanity(doc.parcelId, MembershipsStage);
+    MembershipsStage.commit();
+
     return _id;
   },
 });
@@ -104,15 +100,11 @@ export const update = new ValidatedMethod({
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
     checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));  // userId not allowed to change!
 
-    // Try the operation, and if it produces an insane state, revert it
-    const result = Memberships.update({ _id }, modifier);
-    try {
-      checkParcelMembershipsSanity(doc.parcelId);
-    } catch (err) {
-      Mongo.Collection.stripAdministrativeFields(doc);
-      Memberships.update({ _id }, { $set: doc });
-      throw err;
-    }
+    const MembershipsStage = Memberships.Stage();
+    const result = MembershipsStage.update({ _id }, modifier);
+    checkParcelMembershipsSanity(doc.parcelId, MembershipsStage);
+    MembershipsStage.commit();
+
     return result;
   },
 });
@@ -178,14 +170,17 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
+    const MembershipsStage = Memberships.Stage();
+    const result = MembershipsStage.remove(_id);
     if (doc.role === 'admin') {
-      const admins = Memberships.findActive({ communityId: doc.communityId, role: 'admin' });
-      if (admins.count() < 2) {
-        throw new Meteor.Error('err_unableToRemove', 'Admin cannot be deleted if no other admin is appointed',
-        `Found: {${admins.count()}}`);
+      try {
+        sanityCheckAtLeastOneActive(MembershipsStage, { communityId: doc.communityId, role: 'admin' });
+      } catch (err) {
+        throw new Meteor.Error('err_unableToRemove', 'Admin cannot be deleted if no other admin is appointed');
       }
     }
-    Memberships.remove(_id);
+    MembershipsStage.commit();
+    return result;
   },
 });
 

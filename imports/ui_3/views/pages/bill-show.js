@@ -12,20 +12,21 @@ import '/imports/api/transactions/bills/actions.js';
 
 import './bill-show.html';
 
-Template.Bill_show.onCreated(function billShowOnCreated() {
-//  const billId = FlowRouter.getParam('_bid');
-//  this.subscribe('bills.byId', { _id: billId });
-});
-
-Template.Bill_show.helpers({
-  bill() {
-    return Bills.findOne(FlowRouter.getParam('_bid'));
+Template.Bill_show.viewmodel({
+  docVm: {},
+  onCreated(instance) {
+  //  const billId = FlowRouter.getParam('_bid');
+  //  this.subscribe('bills.byId', { _id: billId });
+    this.docVm(instance.data.doc);
   },
+//  bill() {
+//    return Bills.findOne(FlowRouter.getParam('_bid'));
+//  },
   pageTitle() {
     return __('bill');
   },
   smallTitle() {
-    return this.title;
+    return this.templateInstance.data.title;
   },
   pageCrumbs() {
     return [{

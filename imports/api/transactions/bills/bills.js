@@ -23,15 +23,15 @@ import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/locali
 
 export const Bills = new Mongo.Collection('bills');
 
-Bills.lineSchema = new SimpleSchema({
+const lineSchema = {
   title: { type: String },
   details: { type: String, optional: true },
   uom: { type: String, optional: true },  // unit of measurment
   quantity: { type: Number, decimal: true },
   unitPrice: { type: Number, decimal: true },
   taxPct: { type: Number, decimal: true, defaultValue: 0 },
-  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
-  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   // autoValue() {
   //  return this.siblingField('quantity').value * this.siblingField('unitPrice').value;
   //} },
@@ -39,14 +39,16 @@ Bills.lineSchema = new SimpleSchema({
   period: { type: String, optional: true, autoform: { omit: true } },
   account: { type: String, optional: true, autoform: chooseAccountNode },
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
-});
+};
+_.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
+Bills.lineSchema = new SimpleSchema(lineSchema);
 
 Bills.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
-  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   /*autoValue() {
     const lines = this.field('lines');
     if (!lines) return undefined;
@@ -54,7 +56,7 @@ Bills.schema = new SimpleSchema({
     lines.forEach(line => result += line.amount)
     return 
   } },*/
-  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   issueDate: { type: Date },
   valueDate: { type: Date },
   dueDate: { type: Date },
@@ -162,7 +164,7 @@ Bills.autofillLines = function autofillAmounts(doc) {
   if (doc.lines) {
     doc.lines.forEach(line => {
       line.amount = line.unitPrice * line.quantity;
-      line.tax = line.amount * line.taxPct;
+      line.tax = (line.amount * line.taxPct) / 100;
       line.amount += line.tax; // =
       totalAmount += line.amount;
       totalTax += line.tax;

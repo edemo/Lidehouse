@@ -31,6 +31,7 @@ export const votingRoles = ['owner', 'delegate'];
 export const everyRole = defaultRoles.map(r => r.name);
 export const everyBody = ['null']; // Even the not-logged-in user
 export const exceptGuest = _.without(everyRole, 'guest');
+export const exceptAdmin = _.without(everyRole, 'admin');
 export const nobody = [];
 
 export function permissionCategoryOf(role) {
