@@ -2,8 +2,6 @@ import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { getBillsActionsSmall } from '/imports/api/transactions/bills/actions.js';
-import { Bills } from '/imports/api/transactions/bills/bills';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 export const DatatablesExportButtons = {
@@ -27,8 +25,8 @@ export const DatatablesExportButtons = {
 };
 
 function getMultiActionsByCollection(collection) {
-  if (collection === 'Bills') return { collection: Bills, actions: getBillsActionsSmall().filter(action => action.multi === true) };
-  return { collection: '', actions: [] };
+  if (collection) return Object.values(collection.actions).filter(action => action.multi === true);
+  return [];
 }
 
 function singleButton(collection, action) {
@@ -47,16 +45,14 @@ function singleButton(collection, action) {
     init(dt, node, config) {
       if (dt.rows({ selected: true }).indexes().length === 0) dt.button('.buttons-collection').disable();
       dt.on('select.dt.DT deselect.dt.DT', function () {
-        // only the code inside this scope will rerun
-        const rows = dt.rows({ selected: true }).data();
-        const ids = [];
-        rows.each((doc) => { ids.push(doc._id); });
-        const visible = _.every(ids, function (id) { return action.visible(id); });
+        const selectedDocs = dt.rows({ selected: true }).data();
+        const selectedIds = _.pluck(selectedDocs, '_id');
+        const visible = _.every(selectedIds, function (id) { return action.visible(id); });
         if (visible) {
           dt.button('.buttons-collection').enable();
           node.show();
         }
-        if (!visible || ids.length === 0) {
+        if (!visible || selectedIds.length === 0) {
           dt.button('.buttons-collection').disable();
           node.hide();
         }
@@ -81,7 +77,7 @@ function multipleButtons(collection, actions) {
 
 export function DatatablesSelectButtons(collection) {
   const multiActionsByCollection = getMultiActionsByCollection(collection);
-  const dropDownItems = multipleButtons(multiActionsByCollection.collection, multiActionsByCollection.actions);
+  const dropDownItems = multipleButtons(collection, multiActionsByCollection);
   const buttons = {
     dom: '<"html5buttons"B>lTfgitp',
     select: {

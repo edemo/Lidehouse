@@ -92,7 +92,7 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesSelectButtons('Bills'),
+      ...DatatablesSelectButtons(Bills),
     });
   },
   paymentsFilterSelector() {
@@ -113,7 +113,7 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesSelectButtons('Bills'),
+      ...DatatablesSelectButtons(Bills),
     });
   },
   partnersFilterSelector() {

@@ -119,7 +119,7 @@ Bills.actions = {
     },
   },
   remove: {
-    name: 'delete',
+    name: 'remove',
     icon: 'fa fa-trash',
     multi: true,
     visible: () => currentUserHasPermission('bills.remove'),
