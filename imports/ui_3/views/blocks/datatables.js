@@ -24,22 +24,14 @@ export const DatatablesExportButtons = {
   ],
 };
 
-function getMultiActionsByCollection(collection) {
-  if (collection) return Object.values(collection.actions).filter(action => action.multi === true);
-  return [];
-}
-
-function singleButton(collection, action) {
+function batchActionButton(batchAction) {
   const button = {
     extend: 'selected',
-    text: () => __(action.name),
+    text: () => __(batchAction.name()),
     action(e, dt, node, config) {
       const selectedDocs = dt.rows({ selected: true }).data();
       const selectedIds = _.pluck(selectedDocs, '_id');
-      Modal.confirmAndCall(collection.methods.batch[action.name], { args: selectedIds.map(_id => ({ _id })) }, {
-        action: collection.methods.batch[action.name].name,
-        message: __('This operation will be performed on many documents', selectedDocs.length),
-      });
+      batchAction.run(selectedIds);
       dt.rows().deselect();
     },
     init(dt, node, config) {
@@ -47,7 +39,7 @@ function singleButton(collection, action) {
       dt.on('select.dt.DT deselect.dt.DT', function () {
         const selectedDocs = dt.rows({ selected: true }).data();
         const selectedIds = _.pluck(selectedDocs, '_id');
-        const visible = _.every(selectedIds, function (id) { return action.visible(id); });
+        const visible = batchAction.visible(selectedIds);
         if (visible) {
           dt.button('.buttons-collection').enable();
           node.show();
@@ -62,22 +54,22 @@ function singleButton(collection, action) {
   return button;
 }
 
-function multipleButtons(collection, actions) {
+function batchActionButtonsGroup(batchActions) {
   const buttons = [];
-  if (collection && actions.length > 0) {
-    actions.forEach((action) => {
-      const button = singleButton(collection, action);
+  if (batchActions.length > 0) {
+    batchActions.forEach((batchAction) => {
+      const button = batchActionButton(batchAction);
       if (button) buttons.push(button);
     });
   } else {
-    buttons.push({ text: 'There is no actions' });
+    buttons.push({ text: 'There are no actions' });
   }
   return buttons;
 }
 
 export function DatatablesSelectButtons(collection) {
-  const multiActionsByCollection = getMultiActionsByCollection(collection);
-  const dropDownItems = multipleButtons(collection, multiActionsByCollection);
+  const batchActions = collection ? Object.values(collection.batchActions) : [];
+  const dropDownItems = batchActionButtonsGroup(batchActions);
   const buttons = {
     dom: '<"html5buttons"B>lTfgitp',
     select: {

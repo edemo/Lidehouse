@@ -7,6 +7,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { BatchAction } from '/imports/api/batch-action.js';
 import { Bills } from './bills.js';
 import { Payments } from '../payments/payments.js';
 import '/imports/ui_3/views/modals/bill-edit.js';
@@ -17,7 +18,6 @@ Bills.actions = {
   new: {
     name: 'new',
     icon: 'fa fa-plus',
-    multi: false,
     visible: () => currentUserHasPermission('bills.insert'),
     run(id, event, instance) {
       const activePartnerRelation = instance.viewmodel.activePartnerRelation();
@@ -34,7 +34,6 @@ Bills.actions = {
   view: {
     name: 'view',
     icon: 'fa fa-eye',
-    multi: false,
     visible: () => currentUserHasPermission('bills.inCommunity'),
     run(id) {
       const doc = Bills.findOne(id);
@@ -55,7 +54,6 @@ Bills.actions = {
   edit: {
     name: 'edit',
     icon: 'fa fa-pencil',
-    multi: false,
     visible(id) {
       if (!currentUserHasPermission('bills.update')) return false;
       const doc = Bills.findOne(id);
@@ -76,7 +74,6 @@ Bills.actions = {
   conteer: {
     name: 'conteer',
     icon: 'fa fa-edit',
-    multi: true,
     color: _id => (!(Bills.findOne(_id).txId) ? 'warning' : undefined),
     visible(id) {
       if (!currentUserHasPermission('bills.conteer')) return false;
@@ -101,7 +98,6 @@ Bills.actions = {
   registerPayment: {
     name: 'registerPayment',
     icon: 'fa fa-credit-card',
-    multi: false,
     visible(id) {
       if (!currentUserHasPermission('payments.insert')) return false;
       const doc = Bills.findOne(id);
@@ -118,10 +114,9 @@ Bills.actions = {
       });
     },
   },
-  remove: {
-    name: 'remove',
+  delete: {
+    name: 'delete',
     icon: 'fa fa-trash',
-    multi: true,
     visible: () => currentUserHasPermission('bills.remove'),
     run(id) {
       Modal.confirmAndCall(Bills.methods.remove, { _id: id }, {
@@ -130,6 +125,11 @@ Bills.actions = {
       });
     },
   },
+};
+
+Bills.batchActions = {
+  conteer: new BatchAction(Bills.actions.conteer, Bills.methods.batch.conteer),
+  delete: new BatchAction(Bills.actions.delete, Bills.methods.batch.remove),
 };
 
 //------------------------------------------
