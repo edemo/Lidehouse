@@ -87,7 +87,10 @@ Payments.helpers({
     const bill = Bills.findOne(this.billId);
     const ratio = this.amount / bill.amount;
     function copyLinesInto(txSide) {
-      bill.lines.forEach(line => txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer }));
+      bill.lines.forEach(line => {
+        if (!line) return; // can be null, when a line is deleted from the array
+        txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer });
+      });
     }
     if (accountingMethod === 'accrual') {
       if (bill.relation === 'supplier') {
@@ -134,6 +137,7 @@ function reduceOutstandings() {
   Partners.relCollection(payment.relation).update(payment.partnerId, { $inc: { outstanding: (-1) * payment.amount } });
   if (payment.relation === 'parcel') {
     bill.lines.forEach(line => {
+      if (!line) return; // can be null, when a line is deleted from the array
       debugAssert(line.localizer, 'Cannot process a parcel payment without bill localizer fields');
       const ref = Localizer.code2parcelRef(line.localizer);
       Parcels.update({ communityId: payment.communityId, ref }, { $inc: { outstanding: (-1) * line.amount } });

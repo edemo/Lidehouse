@@ -116,7 +116,7 @@ Bills.helpers({
   },
   hasConteerData() {
     let result = true;
-    this.lines.forEach(line => { if (!line.account) result = false; });
+    this.lines.forEach(line => { if (line && !line.account) result = false; });
     return result;
   },
   getPayments() {
@@ -137,7 +137,10 @@ Bills.helpers({
       partnerId: this.partnerId,
     };
     function copyLinesInto(txSide) {
-      self.lines.forEach(line => txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer }));
+      self.lines.forEach(line => {
+        if (!line) return; // can be null, when a line is deleted from the array
+        txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer });
+      });
     }
     if (accountingMethod === 'accrual') {
       if (this.relation === 'supplier') {
@@ -163,6 +166,7 @@ Bills.autofillLines = function autofillAmounts(doc) {
   let totalTax = 0;
   if (doc.lines) {
     doc.lines.forEach(line => {
+      if (!line) return; // can be null, when a line is deleted from the array
       line.amount = line.unitPrice * line.quantity;
       line.tax = (line.amount * line.taxPct) / 100;
       line.amount += line.tax; // =

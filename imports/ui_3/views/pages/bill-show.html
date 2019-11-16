@@ -75,6 +75,7 @@
                     </thead>
                     <tbody>
                         {{#each line in docVm.lines}}
+                        {{#if line}}
                         <tr>
                             <td><div><strong>{{line.title}} {{code2parcelRef line.localizer}} {{line.period}}</strong></div>
                                 <small>{{line.details}}</small>
@@ -89,6 +90,7 @@
                             <td>{{line.taxPct}}</td>
                             <td>{{line.amount}}</td>
                         </tr>
+                        {{/if}}
                         {{/each}}
                     </tbody>
                 </table>
