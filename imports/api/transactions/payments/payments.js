@@ -10,6 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
@@ -75,11 +76,12 @@ Payments.helpers({
     return StatementEntries.findOne(this.reconciledId);
   },
   makeTx(accountingMethod) {
+    const communityId = this.communityId;
+    const cat = TxCats.findOne({ communityId, dataType: 'payments', 'data.relation': this.relation });
     const tx = {
       _id: this._id,
-      communityId: this.communityId,
-      dataType: 'payments',
-      // def: 'payment',
+      communityId,
+      catId: cat._id,
       valueDate: this.valueDate,
       amount: this.amount,
       partnerId: this.partnerId,

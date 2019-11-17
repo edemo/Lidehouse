@@ -10,6 +10,7 @@ import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { oppositeSide } from '/imports/api/transactions/transactions.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Partners, choosePartner } from '/imports/api/transactions/partners/partners.js';
@@ -127,11 +128,12 @@ Bills.helpers({
   },
   makeTx(accountingMethod) {
     const self = this;
+    const communityId = this.communityId;
+    const cat = TxCats.findOne({ communityId, dataType: 'bills', 'data.relation': this.relation });
     const tx = {
       _id: this._id,
-      communityId: this.communityId,
-      dataType: 'bills',
-      // def: 'bill'
+      communityId,
+      catId: cat._id,
       valueDate: this.valueDate,
       amount: this.amount,
       partnerId: this.partnerId,

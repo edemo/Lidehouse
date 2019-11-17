@@ -2,18 +2,18 @@
 
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { TxDefs } from './txdefs.js';
+import { TxCats } from './tx-cats.js';
 
-Meteor.publish('txDefs.inCommunity', function txDefsInCommunity(params) {
+Meteor.publish('txCats.inCommunity', function txCatsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('txDefs.inCommunity', communityId)) {
+  if (!user.hasPermission('txCats.inCommunity', communityId)) {
     return this.ready();
   }
 
-  return TxDefs.find({ communityId: { $in: [communityId, null] } });
+  return TxCats.find({ communityId: { $in: [communityId, null] } });
 });

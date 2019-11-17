@@ -17,6 +17,7 @@ import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { PeriodBreakdown } from './breakdowns/period.js';
 import { Partners, choosePartner } from '/imports/api/transactions/partners/partners.js';
+import { TxCats } from './tx-cats/tx-cats.js';
 
 export const Transactions = new Mongo.Collection('transactions');
 
@@ -33,8 +34,7 @@ Transactions.entrySchema = new SimpleSchema([
 Transactions.baseSchema = {
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },  // We explicitly use the same _id for the Bill and the corresponding Tx
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  dataType: { type: String, allowedValues: ['bills', 'payments'], optional: true, autoform: { omit: true } },
-  category: { type: String, allowedValues: Transactions.categoryValues, optional: true, autoform: { omit: true } },
+  catId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
   valueDate: { type: Date },
@@ -91,12 +91,19 @@ export function oppositeSide(side) {
 }
 
 Transactions.helpers({
+  category() {
+    this.txCat = this.txCat || TxCats.findOne(this.catId);
+    return this.txCat;
+  },
+  dataType() {
+    return this.category().dataType;
+  },
   dataDoc() {
     // dataDocs are stored with the same _id, as the tx itself
-    return Mongo.Collection.get(this.dataType).findOne(this._id);
+    return Mongo.Collection.get(this.dataType()).findOne(this._id);
   },
   partner() {
-    return Partners.relCollection(this.relation).findOne(this.partnerId);
+    return Partners.relCollection(this.category().relation).findOne(this.partnerId);
   },
   getSide(side) {
     debugAssert(side === 'debit' || side === 'credit');

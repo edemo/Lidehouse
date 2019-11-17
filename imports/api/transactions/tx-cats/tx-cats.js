@@ -11,28 +11,30 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
-export const TxDefs = new Mongo.Collection('txDefs');
+export const TxCats = new Mongo.Collection('txCats');
 
-TxDefs.define = function define(doc) {
-  TxDefs.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
+TxCats.define = function define(doc) {
+  TxCats.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
 };
 
-TxDefs.clone = function clone(name, communityId) {
-  const doc = TxDefs.findOne({ name, communityId: null });
+TxCats.clone = function clone(name, communityId) {
+  const doc = TxCats.findOne({ name, communityId: null });
   if (!doc) return undefined;
   Mongo.Collection.stripAdministrativeFields(doc);
   doc.communityId = communityId;
-  return TxDefs.insert(doc);
+  return TxCats.insert(doc);
 };
 
-TxDefs.schema = new SimpleSchema({
+TxCats.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String, max: 100 },
+  dataType: { type: String, max: 100, optional: true }, // Name of the colection
+  data: { type: Object, blackbox: true, optional: true }, // Default data values
   debit: { type: String, max: 100, autoform: chooseAccountNode, optional: true },
   credit: { type: String, max: 100, autoform: chooseAccountNode, optional: true },
 });
 
-TxDefs.helpers({
+TxCats.helpers({
   schema() {
     const schema = new SimpleSchema([
       _.clone(Transactions.baseSchema), {
@@ -42,6 +44,10 @@ TxDefs.helpers({
     ]);
     schema.i18n('schemaTransactions');
     return schema;
+  },
+  isSimpleTx() {  // simple tx does not need any additional data to create (apart from D/C accounts)
+    const isSimple = !(this.dataType === 'bills' || this.dataType === 'payments');
+    return isSimple;
   },
   transformToTransaction(doc) {
     doc.debit = [{ account: doc.debit }];
@@ -61,9 +67,9 @@ TxDefs.helpers({
   },
 });
 
-TxDefs.attachSchema(TxDefs.schema);
-TxDefs.attachBehaviour(Timestamped);
+TxCats.attachSchema(TxCats.schema);
+TxCats.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
-  TxDefs.simpleSchema().i18n('schemaTxDefs');
+  TxCats.simpleSchema().i18n('schemaTxCats');
 });

@@ -87,12 +87,13 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
 Meteor.publish('transactions.betweenAccounts', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
+    catId: { type: String },
     creditAccount: { type: String, optional: true },
     debitAccount: { type: String, optional: true },
     begin: { type: Date, optional: true },
     end: { type: Date, optional: true },
   }).validate(params);
-  const { communityId, creditAccount, debitAccount, begin, end } = params;
+  const { communityId, catId, creditAccount, debitAccount, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', communityId)) {

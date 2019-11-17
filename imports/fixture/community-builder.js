@@ -105,7 +105,7 @@ export class CommunityBuilder {
         case 'statementEntries':
         case 'parcelBillings':
         case 'breakdowns':
-        case 'txDefs': return this.getUserWithRole('accountant');
+        case 'txCats': return this.getUserWithRole('accountant');
         case 'comments': return this.nextUser();
         case 'topics': switch (params.category) {
           case 'vote': switch (params.vote.effect) {

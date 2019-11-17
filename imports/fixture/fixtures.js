@@ -17,7 +17,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
@@ -28,7 +28,7 @@ import { Clock } from '/imports/utils/clock';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
-import '/imports/api/transactions/txdefs/methods.js';
+import '/imports/api/transactions/tx-cats/methods.js';
 
 
 export function insertUnittestFixture(lang) {

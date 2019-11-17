@@ -5,6 +5,7 @@ import { Template } from 'meteor/templating';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -31,7 +32,9 @@ Template.Autoform_edit.helpers({
     const split = this.id.split('.'); // AutoFormId convention is 'af.object.action'
     let objectName = split[1];
     let actionName = split[2];
-    if (objectName === 'transaction' && actionName === 'insert') objectName = Session.get('activeTxDef');
+    if (objectName === 'transaction' && actionName === 'insert') {
+      objectName = TxCats.findOne(Session.get('activeTxCatId')).name;
+    }
     if (actionName === 'statusChange') {
       objectName = 'statusChange';
       actionName = 'insert';

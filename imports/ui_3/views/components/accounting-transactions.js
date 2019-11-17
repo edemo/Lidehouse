@@ -19,8 +19,8 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/balances/methods.js';
-import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
-import '/imports/api/transactions/txdefs/methods.js';
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import '/imports/api/transactions/tx-cats/methods.js';
 import { transactionColumns } from '/imports/api/transactions/tables.js';
 import { allTransactionsActions } from '/imports/api/transactions/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
@@ -29,8 +29,8 @@ import '/imports/ui_3/views/modals/autoform-edit.js';
 import './accounting-transactions.html';
 
 Template.Accounting_transactions.viewmodel({
-  txDefSelected: '',
-  txDefOptions: [],
+  txCatSelected: '',
+  txCatOptions: [],
   creditAccountSelected: '',
   creditAccountOptions: [],
   debitAccountSelected: '',
@@ -46,7 +46,7 @@ Template.Accounting_transactions.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txDefs.inCommunity', { communityId });
+      instance.subscribe('txCats.inCommunity', { communityId });
       instance.subscribe('transactions.incomplete', { communityId });
       instance.subscribe('bills.outstanding', { communityId });
     });
@@ -55,13 +55,13 @@ Template.Accounting_transactions.viewmodel({
     return Session.get('activeCommunityId');
   },
   autorun: [
-    function setTxDefOptions() {
+    function setTxCatOptions() {
       const communityId = Session.get('activeCommunityId');
-      this.txDefOptions(TxDefs.find({ communityId }).map(function (t) {
-        return { value: t.name, label: __(t.name) };
+      this.txCatOptions(TxCats.find({ communityId }).map(function (cat) {
+        return { value: cat._id, label: __(cat.name) };
       }));
-      if (!this.txDefSelected() && this.txDefOptions() && this.txDefOptions().length > 0) {
-        this.txDefSelected(this.txDefOptions()[0].value);
+      if (!this.txCatSelected() && this.txCatOptions() && this.txCatOptions().length > 0) {
+        this.txCatSelected(this.txCatOptions()[0].value);
       }
     },
     function setFilterAccountOptions() {
@@ -74,19 +74,19 @@ Template.Accounting_transactions.viewmodel({
       }
     },
     function autoSelectFilterAccounts() {
-      const txDef = TxDefs.findOne({ name: this.txDefSelected() });
-      if (!txDef) return;
-      this.creditAccountSelected(txDef.credit);
-      this.debitAccountSelected(txDef.debit);
+      const txCat = TxCats.findOne(this.txCatSelected());
+      if (!txCat) return;
+      this.creditAccountSelected(txCat.credit);
+      this.debitAccountSelected(txCat.debit);
     },
     function txSubscription() {
       this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());
     },
   ],
-  txDefs() {
+  txCats() {
     const communityId = Session.get('activeCommunityId');
-    const txDefs = TxDefs.find({ communityId });
-    return txDefs;
+    const txCats = TxCats.find({ communityId }).fetch().filter(c => c.isSimpleTx());
+    return txCats;
   },
   optionsOf(accountCode) {
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
@@ -97,6 +97,7 @@ Template.Accounting_transactions.viewmodel({
   subscribeParams() {
     return {
       communityId: this.communityId(),
+      catId: this.txCatSelected(),
       creditAccount: '\\^' + this.creditAccountSelected() + '\\',
       debitAccount: '\\^' + this.debitAccountSelected() + '\\',
       begin: new Date(this.beginDate()),

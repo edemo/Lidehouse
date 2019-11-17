@@ -7,7 +7,7 @@ import { chai } from 'meteor/practicalmeteor:chai';
 import { initializePermissions } from '/imports/api/permissions/config.js';
 import { insertUnittestFixture } from '/imports/fixture/fixtures.js';
 import { defineBreakdownTemplates } from '/imports/api/transactions/breakdowns/template.js';
-import { defineTxDefTemplates } from '/imports/api/transactions/txdefs/template.js';
+import { defineTxCatTemplates } from '/imports/api/transactions/tx-cats/template.js';
 import { initializeBuiltinFolders } from '/imports/api/shareddocs/sharedfolders/builtin.js';
 
 chai.config.truncateThreshold = Infinity;
@@ -22,7 +22,7 @@ export function logDB() {
 function initializeDatabase() {
   initializePermissions();
   defineBreakdownTemplates();
-  defineTxDefTemplates();
+  defineTxCatTemplates();
   initializeBuiltinFolders();
 }
 

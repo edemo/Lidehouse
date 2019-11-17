@@ -648,7 +648,7 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
-    // Following lines are for the different txDefs
+    // Following lines are for the different txCats
     "account": {
       "label": "Számla"
     },
@@ -665,7 +665,7 @@
       "label": "Könyvelési hely (ha van megadandó)"
     }
   },
-  "schemaTxDefs": {
+  "schemaTxCats": {
     "name": {
       "label": "Tranzakció típus neve",
       "placeholder": ""
