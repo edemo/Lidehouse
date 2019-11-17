@@ -65,6 +65,7 @@
                     </thead>
                     <tbody>
                         {{#afEachArrayItem name="lines"}}
+                        <!--{{#if notNullLine this}}-->
                         <tr class='js-autofill'>
                             <td>{{> afFormGroup name=this.current.title}}</td>
                             <td>{{> afFormGroup name=this.current.quantity}}</td>
@@ -84,8 +85,8 @@
                               <td>{{> afFormGroup name=this.current.account}}</td>
                               <td>{{> afFormGroup name=this.current.localizer}}</td>
                         </tr>
+                        <!--{{/if}}-->
                         {{/if}}
-
                         {{/afEachArrayItem}}
                         <button type="button" class="btn btn-info autoform-add-item" data-autoform-field="lines">
                             <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'item'}}

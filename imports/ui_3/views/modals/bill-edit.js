@@ -52,6 +52,13 @@ Template.Bill_edit.helpers({
   defaultDueDate() {
     return moment().add(30, 'day').toDate();
   },
+  notNullLine(afLine) {
+    // Not the right place to find out if line is null (got removed earlier)
+    // Should be dealt with within autoform iterator
+    const index = afLine.name.split('.')[1];
+//    console.log(AutoForm.getFieldValue('lines')[index]);
+    return AutoForm.getFieldValue('lines')[index];
+  },
   lineTotal(afLine) {
     function getLineField(fieldName) {
       return AutoForm.getFieldValue(afLine.name + '.' + fieldName);
@@ -66,6 +73,7 @@ Template.Bill_edit.helpers({
     let tax = 0;
     let gross = 0;
     AutoForm.getFieldValue('lines').forEach(line => {
+      if (!line) return;
       let lineAmount = line.unitPrice * line.quantity;
       const lineTax = (lineAmount * line.taxPct) / 100;
       net += lineAmount;
