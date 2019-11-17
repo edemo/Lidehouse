@@ -71,8 +71,8 @@ Template.Accounting_transactions.viewmodel({
       if (!txCat || !coa || !loc) return;
       this.creditAccountOptions(coa.nodeOptionsOf(txCat.credit));
       this.debitAccountOptions(coa.nodeOptionsOf(txCat.debit));
-      this.creditAccountSelected(txCat.credit);
-      this.debitAccountSelected(txCat.debit);
+      this.creditAccountSelected(txCat.credit[0]);
+      this.debitAccountSelected(txCat.debit[0]);
       this.localizerOptions(loc.nodeOptions());
     },
     function txSubscription() {

@@ -28,10 +28,10 @@ TxCats.clone = function clone(name, communityId) {
 TxCats.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String, max: 100 },
-  dataType: { type: String, max: 100, optional: true }, // Name of the colection
-  data: { type: Object, blackbox: true, optional: true }, // Default data values
-  debit: { type: String, max: 100, autoform: chooseAccountNode, optional: true },
-  credit: { type: String, max: 100, autoform: chooseAccountNode, optional: true },
+  dataType: { type: String, max: 100, optional: true, autoform: { omit: true } }, // Name of the colection
+  data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // Default data values
+  debit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
+  credit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
 });
 
 TxCats.helpers({

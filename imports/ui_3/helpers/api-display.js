@@ -33,6 +33,11 @@ export function displayAccount(account, communityId) {
   return label(ChartOfAccounts.get({ communityId }).display(account), 'success', 'tag');
 }
 
+export function displayAccountSet(accounts, communityId) {
+  if (!accounts) return '';
+  return accounts.map(account => displayAccount(account, communityId)).join('/');
+}
+
 export function displayLocalizer(localizer, communityId) {
   if (!localizer) return '';
   const displayText = Localizer.get(communityId).display(localizer);
@@ -89,6 +94,7 @@ export function displayChargeType(name) {
 Template.registerHelper('displayMeterService', displayMeterService);
 Template.registerHelper('displayReading', displayReading);
 Template.registerHelper('displayAccount', displayAccount);
+Template.registerHelper('displayAccountSet', displayAccountSet);
 Template.registerHelper('displayLocalizer', displayLocalizer);
 Template.registerHelper('displayAccountSpecification', displayAccountSpecification);
 Template.registerHelper('displayStatus', displayStatus);

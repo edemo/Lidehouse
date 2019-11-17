@@ -277,10 +277,13 @@ Breakdowns.helpers({
     });
   },
   nodeOptionsOf(code, leafsOnly) {
-    const nodes = this.nodesOf(code, leafsOnly);
-    return nodes.map(function option(node) {
-      return { label: Breakdowns.display(node), value: node.code };
-    });
+    const nodeCodes = (code instanceof Array) ? code : [code];
+    const self = this;
+    return nodeCodes.map(nodeCode =>
+      self.nodesOf(nodeCode, leafsOnly).map(node =>
+        ({ label: Breakdowns.display(node), value: node.code })
+      )
+    ).flat(1);
   },
   display(code) {
     const node = this.nodeByCode(code);

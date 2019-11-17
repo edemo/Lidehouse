@@ -37,7 +37,7 @@
                     <li class="active"><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of accounts'}}</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-loc">{{_ 'Localizers'}}</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-others">{{_ 'Other breakdowns'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-defs" class="text-capitalize">{{_ 'txCats'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-cats" class="text-capitalize">{{_ 'txCats'}}</a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="tab-coa" class="tab-pane breakdowns active">
@@ -62,7 +62,7 @@
                         </div>
                         {{/if}}
                     </div>
-                    <div id="tab-defs" class="tab-pane txCats">
+                    <div id="tab-cats" class="tab-pane txCats">
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
@@ -77,8 +77,8 @@
                                   {{#each txCat in txCats}}
                                   <tr>
                                       <td>{{_ txCat.name}}</td>
-                                      <td>{{{displayAccount txCat.debit}}}</td>
-                                      <td>{{{displayAccount txCat.credit}}}</td>
+                                      <td>{{{displayAccountSet txCat.debit}}}</td>
+                                      <td>{{{displayAccountSet txCat.credit}}}</td>
                                       <td class="text-right">
                                           {{> Action_buttons_group _id=txCat._id collection='txCats' actions='' size='sm'}}
                                       </td>
