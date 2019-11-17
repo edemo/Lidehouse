@@ -65,19 +65,15 @@ Template.Accounting_transactions.viewmodel({
       }
     },
     function setFilterAccountOptions() {
+      const txCat = TxCats.findOne(this.txCatSelected());
       const coa = ChartOfAccounts.get();
       const loc = Localizer.get();
-      if (coa && loc) {
-        this.creditAccountOptions(coa.nodeOptions());
-        this.debitAccountOptions(coa.nodeOptions());
-        this.localizerOptions(loc.nodeOptions());
-      }
-    },
-    function autoSelectFilterAccounts() {
-      const txCat = TxCats.findOne(this.txCatSelected());
-      if (!txCat) return;
+      if (!txCat || !coa || !loc) return;
+      this.creditAccountOptions(coa.nodeOptionsOf(txCat.credit));
+      this.debitAccountOptions(coa.nodeOptionsOf(txCat.debit));
       this.creditAccountSelected(txCat.credit);
       this.debitAccountSelected(txCat.debit);
+      this.localizerOptions(loc.nodeOptions());
     },
     function txSubscription() {
       this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());
