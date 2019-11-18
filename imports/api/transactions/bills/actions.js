@@ -24,6 +24,11 @@ function setSessionVars(instance) {
   Session.set('activeTxCatId', txCat);
 }
 
+function clearSessionVars() {
+  Session.set('activePartnerRelation');
+  Session.set('activeTxCatId');
+}
+
 Bills.actions = {
   new: {
     name: 'new',
@@ -156,4 +161,9 @@ AutoForm.addHooks('af.bill.insert', {
     Bills.autofillLines(doc);
     return doc;
   },
+  after: { 'method': clearSessionVars },
+});
+
+AutoForm.addHooks('af.bill.update', {
+  after: { 'method-update': clearSessionVars },
 });

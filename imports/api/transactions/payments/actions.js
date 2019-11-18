@@ -8,6 +8,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Payments } from '../payments/payments.js';
+import { TxCats } from '../tx-cats/tx-cats.js';
 import { Bills } from '../bills/bills.js';
 import './methods.js';
 
@@ -17,6 +18,11 @@ function setSessionVars(instance) {
   Session.set('activePartnerRelation', activePartnerRelation);
   const txCat = TxCats.findOne({ communityId, dataType: 'payments', 'data.relation': activePartnerRelation });
   Session.set('activeTxCatId', txCat);
+}
+
+function clearSessionVars() {
+  Session.set('activePartnerRelation');
+  Session.set('activeTxCatId');
 }
 
 Payments.actions = {
@@ -113,4 +119,9 @@ AutoForm.addHooks('af.payment.insert', {
     Session.set('activeBillId', undefined);
     return doc;
   },
+  after: { 'method': clearSessionVars },
+});
+
+AutoForm.addHooks('af.payment.update', {
+  after: { 'method-update': clearSessionVars },
 });

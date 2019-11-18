@@ -59,7 +59,8 @@ if (Meteor.isClient) {
   choosePartner = {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const partners = Partners.find({ communityId });
+      const relation = Session.get('activePartnerRelation');
+      const partners = Partners.find({ communityId, relation });
       const options = partners.map(function option(c) {
         return { label: c.name, value: c._id };
       });
