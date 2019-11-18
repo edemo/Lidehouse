@@ -61,7 +61,7 @@ Template.Bill_edit.helpers({
   },
   lineTotal(afLine) {
     function getLineField(fieldName) {
-      return AutoForm.getFieldValue(afLine.name + '.' + fieldName);
+      return AutoForm.getFieldValue(afLine.name + '.' + fieldName) || 0;
     }
     let amount = getLineField('unitPrice') * getLineField('quantity');
     const tax = (amount * getLineField('taxPct')) / 100;
@@ -72,7 +72,7 @@ Template.Bill_edit.helpers({
     let net = 0;
     let tax = 0;
     let gross = 0;
-    AutoForm.getFieldValue('lines').forEach(line => {
+    (AutoForm.getFieldValue('lines') || []).forEach(line => {
       if (!line) return;
       let lineAmount = line.unitPrice * line.quantity;
       const lineTax = (lineAmount * line.taxPct) / 100;

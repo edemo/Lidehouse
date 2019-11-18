@@ -77,7 +77,14 @@
                         {{#each line in docVm.lines}}
                         {{#if line}}
                         <tr>
-                            <td><div><strong>{{line.title}} {{code2parcelRef line.localizer}} {{line.period}}</strong></div>
+                            <td>
+                                <div>
+                                <strong>
+                                    {{line.title}} 
+                                    {{#if line.localizer}}{{code2parcelRef line.localizer}}{{/if}} 
+                                    {{#if line.period}}{{line.period}}{{/if}}
+                                </strong>
+                                </div>
                                 <small>{{line.details}}</small>
                                 {{#if userHasPermission 'bills.conteer' (fromSession 'activeCommunityId')}}
                                     {{{displayAccount line.account activeCommunityId}}}

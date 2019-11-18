@@ -20,6 +20,7 @@ export const Localizer = {
     return '@' + ref;
   },
   code2parcelRef(code) {
+    if (!code) return undefined;
     return code.substring(1);
   },
   leafIsParcel(leaf) {
