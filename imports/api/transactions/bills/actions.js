@@ -5,13 +5,22 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '/imports/ui_3/views/modals/bill-edit.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Bills } from './bills.js';
 import { Payments } from '../payments/payments.js';
-import '/imports/ui_3/views/modals/bill-edit.js';
+import { TxCats } from '../tx-cats/tx-cats.js';
 
 import './methods.js';
+
+function setSessionVars(instance) {
+  const communityId = Session.get('activeCommunityId');
+  const activePartnerRelation = instance.viewmodel.activePartnerRelation();
+  Session.set('activePartnerRelation', activePartnerRelation);
+  const txCat = TxCats.findOne({ communityId, dataType: 'bills', 'data.relation': activePartnerRelation });
+  Session.set('activeTxCatId', txCat);
+}
 
 Bills.actions = {
   new: {
@@ -19,8 +28,7 @@ Bills.actions = {
     icon: 'fa fa-plus',
     visible: () => currentUserHasPermission('bills.insert'),
     run(id, event, instance) {
-      const activePartnerRelation = instance.viewmodel.activePartnerRelation();
-      Session.set('activePartnerRelation', activePartnerRelation);
+      setSessionVars(instance);
       Modal.show('Bill_edit', {
         id: 'af.bill.insert',
         collection: Bills,
@@ -59,7 +67,8 @@ Bills.actions = {
       if (doc.txId) return false; // already in accounting
       return true;
     },
-    run(id) {
+    run(id, event, instance) {
+      setSessionVars(instance);
       Modal.show('Bill_edit', {
         id: 'af.bill.update',
         collection: Bills,

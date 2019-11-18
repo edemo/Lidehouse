@@ -11,14 +11,21 @@ import { Payments } from '../payments/payments.js';
 import { Bills } from '../bills/bills.js';
 import './methods.js';
 
+function setSessionVars(instance) {
+  const communityId = Session.get('activeCommunityId');
+  const activePartnerRelation = instance.viewmodel.activePartnerRelation();
+  Session.set('activePartnerRelation', activePartnerRelation);
+  const txCat = TxCats.findOne({ communityId, dataType: 'payments', 'data.relation': activePartnerRelation });
+  Session.set('activeTxCatId', txCat);
+}
+
 Payments.actions = {
   new: {
     name: 'new',
     icon: 'fa fa-plus',
     visible: () => currentUserHasPermission('payments.insert'),
     run(id, event, instance) {
-      const activePartnerRelation = instance.viewmodel.activePartnerRelation();
-      Session.set('activePartnerRelation', activePartnerRelation);
+      setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.bill.insert',
         collection: Payments,
@@ -45,7 +52,8 @@ Payments.actions = {
       if (doc.txId) return false; // already in accounting
       return true;
     },
-    run(id) {
+    run(id, event, instance) {
+      setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.update',
         collection: Payments,

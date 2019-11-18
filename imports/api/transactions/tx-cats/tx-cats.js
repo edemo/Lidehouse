@@ -49,6 +49,13 @@ TxCats.helpers({
     const isSimple = !(this.dataType === 'bills' || this.dataType === 'payments');
     return isSimple;
   },
+  conteerSide() {
+    debugAssert(this.dataType === 'bills', 'Func only available for bills');
+    const relation = this.data.relation;
+    if (relation === 'supplier') return 'debit';
+    if (relation === 'customer' || relation === 'parcel') return 'credit';
+    return undefined;
+  },
   transformToTransaction(doc) {
     doc.debit = [{ account: doc.debit }];
     doc.credit = [{ account: doc.credit }];
