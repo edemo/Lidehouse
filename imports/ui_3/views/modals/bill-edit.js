@@ -30,9 +30,8 @@ Template.Bill_edit.helpers({
     return Session.get('activePartnerRelation');
   },
   title() {
-    if (this.title) return this.title;
     const actionName = Template.Bill_edit.actionFromId();
-    const relation = Session.get('activePartnerRelation');
+    const relation = this.doc ? this.doc.relation : Session.get('activePartnerRelation');
     const billType = __(`schemaBills.relation.${relation}`);
     if (actionName === 'insert') return __('new') + ' ' + __(billType);
     else if (actionName === 'update') return __(billType) + ' ' + __('editing data');
@@ -64,9 +63,9 @@ Template.Bill_edit.helpers({
       return AutoForm.getFieldValue(afLine.name + '.' + fieldName);
     }
     let amount = getLineField('unitPrice') * getLineField('quantity');
-    const tax = (amount * getLineField('taxPct')) / 100;
+    const tax = (amount * getLineField('taxPct') || 0) / 100;
     amount += tax;
-    return amount;
+    return amount || 0;
   },
   billTotal(which) {
     let net = 0;
@@ -74,8 +73,8 @@ Template.Bill_edit.helpers({
     let gross = 0;
     AutoForm.getFieldValue('lines').forEach(line => {
       if (!line) return;
-      let lineAmount = line.unitPrice * line.quantity;
-      const lineTax = (lineAmount * line.taxPct) / 100;
+      let lineAmount = line.unitPrice * line.quantity || 0;
+      const lineTax = (lineAmount * line.taxPct || 0) / 100;
       net += lineAmount;
       tax += lineTax;
       lineAmount += lineTax;
