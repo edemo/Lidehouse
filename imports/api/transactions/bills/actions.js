@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -136,6 +137,7 @@ AutoForm.addHooks('af.bill.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.relation = Session.get('activePartnerRelation');
+    doc.lines = _.without(doc.lines, undefined);
     Bills.autofillLines(doc);
     return doc;
   },
