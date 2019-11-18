@@ -8,6 +8,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { BatchAction } from '/imports/api/batch-action.js';
 import { Bills } from './bills.js';
 import { Payments } from '../payments/payments.js';
 import '/imports/ui_3/views/modals/bill-edit.js';
@@ -125,6 +126,11 @@ Bills.actions = {
       });
     },
   },
+};
+
+Bills.batchActions = {
+  conteer: new BatchAction(Bills.actions.conteer, Bills.methods.batch.conteer),
+  delete: new BatchAction(Bills.actions.delete, Bills.methods.batch.remove),
 };
 
 //------------------------------------------

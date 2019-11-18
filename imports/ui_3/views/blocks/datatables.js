@@ -2,9 +2,7 @@ import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-// import { handleError } from '/imports/ui_3/lib/errors.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/confirmation.js';
 
 export const DatatablesExportButtons = {
   // coming from the theme:
@@ -26,19 +24,57 @@ export const DatatablesExportButtons = {
   ],
 };
 
-export const DatatablesSelectButtons = function(batchMethod) {
-  return {
+function batchActionButton(batchAction) {
+  const button = {
+    extend: 'selected',
+    text: () => __(batchAction.name()),
+    action(e, dt, node, config) {
+      const selectedDocs = dt.rows({ selected: true }).data();
+      const selectedIds = _.pluck(selectedDocs, '_id');
+      batchAction.run(selectedIds);
+      dt.rows().deselect();
+    },
+    init(dt, node, config) {
+      if (dt.rows({ selected: true }).indexes().length === 0) dt.button('.buttons-collection').disable();
+      dt.on('select.dt.DT deselect.dt.DT', function () {
+        const selectedDocs = dt.rows({ selected: true }).data();
+        const selectedIds = _.pluck(selectedDocs, '_id');
+        const visible = batchAction.visible(selectedIds);
+        if (visible) {
+          dt.button('.buttons-collection').enable();
+          node.show();
+        }
+        if (!visible || selectedIds.length === 0) {
+          dt.button('.buttons-collection').disable();
+          node.hide();
+        }
+      });
+    },
+  };
+  return button;
+}
+
+function batchActionButtonsGroup(batchActions) {
+  const buttons = [];
+  if (batchActions.length > 0) {
+    batchActions.forEach((batchAction) => {
+      const button = batchActionButton(batchAction);
+      if (button) buttons.push(button);
+    });
+  } else {
+    buttons.push({ text: 'There are no actions' });
+  }
+  return buttons;
+}
+
+export function DatatablesSelectButtons(collection) {
+  const batchActions = collection ? Object.values(collection.batchActions) : [];
+  const dropDownItems = batchActionButtonsGroup(batchActions);
+  const buttons = {
     dom: '<"html5buttons"B>lTfgitp',
-  //  select: true,
     select: {
       style: 'multi',
-  //    selector: 'td:first-child',
     },
-  //  columnDefs: [{
-  //    targets: 0,
-  //    className: 'select-checkbox',
-  //    orderable: false,
-  //  }],
     buttons: [
       { extend: 'selectAll',
         text: () => __('Select all'),
@@ -46,18 +82,13 @@ export const DatatablesSelectButtons = function(batchMethod) {
       { extend: 'selectNone',
         text: () => __('Select none'),
       },
-      { extend: 'selected',
+      { extend: 'collection',
         text: () => __('Action with selected'),
-        action(e, dt, button, config) {
-          const selectedDocs = dt.rows({ selected: true }).data();
-          const selectedIds = _.pluck(selectedDocs, '_id');
-          // alert(selectedDocs.length + ' row(s) selected');
-          Modal.confirmAndCall(batchMethod, { args: selectedIds.map(_id => ({ _id })) }, {
-            action: batchMethod.name,
-            message: __('This operation will be performed on many documents', selectedDocs.length),
-          });
-        },
+        autoClose: true,
+        buttons: dropDownItems,
       },
     ],
   };
-};
+  return buttons;
+}
+

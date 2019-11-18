@@ -30,6 +30,7 @@ Template.Bill_edit.helpers({
     return Session.get('activePartnerRelation');
   },
   title() {
+    if (this.title) return this.title;
     const actionName = Template.Bill_edit.actionFromId();
     const relation = this.doc ? this.doc.relation : Session.get('activePartnerRelation');
     const billType = __(`schemaBills.relation.${relation}`);

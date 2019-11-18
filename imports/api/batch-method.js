@@ -131,7 +131,7 @@ export function crudBatchOps(collection) {
     batch: {
 //      insert: new BatchMethod(collection.methods.insert),
       update: new BatchMethod(collection.methods.update),
-//      remove: new BatchMethod(collection.methods.remove),
+      remove: new BatchMethod(collection.methods.remove),
       upsert: new BatchMethod(upsert),
       test: new BatchTester(collection),
     },
