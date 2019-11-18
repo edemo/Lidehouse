@@ -104,7 +104,7 @@ export const Permissions = [
   { name: 'balances.insert',        roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'balances.upsert',        roles: ['manager'] },
   { name: 'balances.publish',       roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'txDefs.inCommunity',     roles: exceptGuest },
+  { name: 'txCats.inCommunity',     roles: exceptGuest },
   { name: 'transactions.inCommunity',roles: ['manager', 'accountant', 'treasurer', 'overseer'] },
   { name: 'transactions.insert',    roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'transactions.update',    roles: ['manager', 'accountant', 'treasurer'] },

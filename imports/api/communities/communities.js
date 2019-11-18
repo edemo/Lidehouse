@@ -19,7 +19,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';

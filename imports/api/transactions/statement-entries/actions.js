@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { TxDefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { StatementEntries } from './statement-entries.js';
 import './methods.js';
@@ -12,7 +12,7 @@ StatementEntries.actions = {
     name: 'new',
     icon: 'fa fa-plus',
     visible: () => currentUserHasPermission('statements.insert'),
-    run(defId) {
+    run(id) {
       Modal.show('Autoform_edit', {
         id: 'af.statementEntry.insert',
         collection: StatementEntries,

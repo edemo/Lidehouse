@@ -644,7 +644,7 @@
       "label": "Note",
       "placeholder": "(eg. reason or partner identifier)"
     },
-    // Following lines are for the different txDefs
+    // Following lines are for the different txCats
     "account": {
       "label": "Account"
     },
@@ -661,7 +661,7 @@
       "label": "Accounting location (when applicable)"
     }
   },
-  "schemaTxDefs": {
+  "schemaTxCats": {
     "name": {
       "label": "Transaction type name",
       "placeholder": ""
@@ -714,7 +714,7 @@
   "schemaBills": {
     "relation": {
       "label": "Relation",
-      "Supplier": "Bill",
+      "supplier": "Bill",
       "customer": "Invoice",
       "parcel": "Contribution"      
     },

@@ -10,6 +10,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
@@ -75,11 +76,12 @@ Payments.helpers({
     return StatementEntries.findOne(this.reconciledId);
   },
   makeTx(accountingMethod) {
+    const communityId = this.communityId;
+    const cat = TxCats.findOne({ communityId, dataType: 'payments', 'data.relation': this.relation });
     const tx = {
       _id: this._id,
-      communityId: this.communityId,
-      dataType: 'payments',
-      // def: 'payment',
+      communityId,
+      catId: cat._id,
       valueDate: this.valueDate,
       amount: this.amount,
       partnerId: this.partnerId,
@@ -87,7 +89,10 @@ Payments.helpers({
     const bill = Bills.findOne(this.billId);
     const ratio = this.amount / bill.amount;
     function copyLinesInto(txSide) {
-      bill.lines.forEach(line => txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer }));
+      bill.lines.forEach(line => {
+        if (!line) return; // can be null, when a line is deleted from the array
+        txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer });
+      });
     }
     if (accountingMethod === 'accrual') {
       if (bill.relation === 'supplier') {
@@ -134,6 +139,7 @@ function reduceOutstandings() {
   Partners.relCollection(payment.relation).update(payment.partnerId, { $inc: { outstanding: (-1) * payment.amount } });
   if (payment.relation === 'parcel') {
     bill.lines.forEach(line => {
+      if (!line) return; // can be null, when a line is deleted from the array
       debugAssert(line.localizer, 'Cannot process a parcel payment without bill localizer fields');
       const ref = Localizer.code2parcelRef(line.localizer);
       Parcels.update({ communityId: payment.communityId, ref }, { $inc: { outstanding: (-1) * line.amount } });

@@ -14,7 +14,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-//  import { TxDefs } from '/imports/api/transactions/tx-defs.js';
+//  import { TxCats } from '/imports/api/transactions/tx-cats.js';
 import { Bills } from '/imports/api/transactions/bills/bills';
 import { Period } from '/imports/api/transactions/breakdowns/period.js';
 import { ActiveTimeMachine } from '../../behaviours/active-time-machine';

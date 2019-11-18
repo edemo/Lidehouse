@@ -32,7 +32,7 @@ Template.Bill_edit.helpers({
   title() {
     if (this.title) return this.title;
     const actionName = Template.Bill_edit.actionFromId();
-    const relation = Session.get('activePartnerRelation');
+    const relation = this.doc ? this.doc.relation : Session.get('activePartnerRelation');
     const billType = __(`schemaBills.relation.${relation}`);
     if (actionName === 'insert') return __('new') + ' ' + __(billType);
     else if (actionName === 'update') return __(billType) + ' ' + __('editing data');
@@ -52,22 +52,30 @@ Template.Bill_edit.helpers({
   defaultDueDate() {
     return moment().add(30, 'day').toDate();
   },
+  notNullLine(afLine) {
+    // Not the right place to find out if line is null (got removed earlier)
+    // Should be dealt with within autoform iterator
+    const index = afLine.name.split('.')[1];
+//    console.log(AutoForm.getFieldValue('lines')[index]);
+    return AutoForm.getFieldValue('lines')[index];
+  },
   lineTotal(afLine) {
     function getLineField(fieldName) {
-      return AutoForm.getFieldValue(afLine.name + '.' + fieldName);
+      return AutoForm.getFieldValue(afLine.name + '.' + fieldName) || 0;
     }
     let amount = getLineField('unitPrice') * getLineField('quantity');
-    const tax = (amount * getLineField('taxPct')) / 100;
+    const tax = (amount * getLineField('taxPct') || 0) / 100;
     amount += tax;
-    return amount;
+    return amount || 0;
   },
   billTotal(which) {
     let net = 0;
     let tax = 0;
     let gross = 0;
-    AutoForm.getFieldValue('lines').forEach(line => {
-      let lineAmount = line.unitPrice * line.quantity;
-      const lineTax = (lineAmount * line.taxPct) / 100;
+    (AutoForm.getFieldValue('lines') || []).forEach(line => {
+      if (!line) return;
+      let lineAmount = line.unitPrice * line.quantity || 0;
+      const lineTax = (lineAmount * line.taxPct || 0) / 100;
       net += lineAmount;
       tax += lineTax;
       lineAmount += lineTax;

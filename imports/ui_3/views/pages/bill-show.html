@@ -14,7 +14,7 @@
 <template name="Bill_show">
     <!--div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-8">
-            <h2>Invoice</h2>
+            <h2>Customer bill</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="/dashboard1">Home</a>
@@ -23,7 +23,7 @@
                     Other Pages
                 </li>
                 <li class="active">
-                    <strong>Invoice</strong>
+                    <strong>Customer bill</strong>
                 </li>
             </ol>
         </div>
@@ -31,7 +31,7 @@
             <div class="title-action">
                 <a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
                 <a href="#" class="btn btn-white"><i class="fa fa-check "></i> Save </a>
-                <a href="/invoicePrint" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i> Print Invoice </a>
+                <a href="/invoicePrint" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i> Print Customer bill </a>
             </div>
         </div>
     </div-->
@@ -75,8 +75,16 @@
                     </thead>
                     <tbody>
                         {{#each line in docVm.lines}}
+                        {{#if line}}
                         <tr>
-                            <td><div><strong>{{line.title}} {{code2parcelRef line.localizer}} {{line.period}}</strong></div>
+                            <td>
+                                <div>
+                                <strong>
+                                    {{line.title}} 
+                                    {{#if line.localizer}}{{code2parcelRef line.localizer}}{{/if}} 
+                                    {{#if line.period}}{{line.period}}{{/if}}
+                                </strong>
+                                </div>
                                 <small>{{line.details}}</small>
                                 {{#if userHasPermission 'bills.conteer' (fromSession 'activeCommunityId')}}
                                     {{{displayAccount line.account activeCommunityId}}}
@@ -89,6 +97,7 @@
                             <td>{{line.taxPct}}</td>
                             <td>{{line.amount}}</td>
                         </tr>
+                        {{/if}}
                         {{/each}}
                     </tbody>
                 </table>
