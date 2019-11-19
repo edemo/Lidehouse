@@ -256,7 +256,7 @@
   " documents": " dokumentumot",
 
   "Select all": "Mindet kijelöl",
-  "Select none": "Semmit kijelöl",
+  "Select none": "Semmit nem jelöl",
   "Action with selected": "Akció a kijelöltekkel",
   "This operation will be performed on many documents": "Amennyiben jóváhagyja, a műveletet <strong>%s kijelölt dokumentumon</strong> egyszerre fogja végrehajtani",
   

@@ -2,7 +2,6 @@ import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 export const DatatablesExportButtons = {
   // coming from the theme:
@@ -27,7 +26,7 @@ export const DatatablesExportButtons = {
 function batchActionButton(batchAction) {
   const button = {
     extend: 'selected',
-    text: () => __(batchAction.name()),
+    text: () => `<i class="${batchAction.icon()}"></i> <span class="text-capitalize">${__(batchAction.name())}</span>`,
     action(e, dt, node, config) {
       const selectedDocs = dt.rows({ selected: true }).data();
       const selectedIds = _.pluck(selectedDocs, '_id');
@@ -69,7 +68,7 @@ function batchActionButtonsGroup(batchActions) {
 
 export function DatatablesSelectButtons(collection) {
   const batchActions = collection ? Object.values(collection.batchActions) : [];
-  const dropDownItems = batchActionButtonsGroup(batchActions);
+  const batchActionButtons = batchActionButtonsGroup(batchActions);
   const buttons = {
     dom: '<"html5buttons"B>lTfgitp',
     select: {
@@ -85,7 +84,7 @@ export function DatatablesSelectButtons(collection) {
       { extend: 'collection',
         text: () => __('Action with selected'),
         autoClose: true,
-        buttons: dropDownItems,
+        buttons: batchActionButtons,
       },
     ],
   };
