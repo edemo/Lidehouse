@@ -255,7 +255,7 @@ if (Meteor.isServer) {
 
 // --- Factory ---
 
-Factory.define('tx', Transactions, {
+Factory.define('transaction', Transactions, {
   valueDate: () => Clock.currentDate(),
   debit: [],
   credit: [],

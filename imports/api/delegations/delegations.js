@@ -109,3 +109,10 @@ Delegations.attachBehaviour(Timestamped);
 Meteor.startup(function attach() {
   Delegations.simpleSchema().i18n('schemaDelegations');
 });
+
+Factory.define('delegation', Delegations, {
+  communityId: () => Factory.get('community'),
+  sourcePersonId: Factory.get('user'),
+  scope: 'community',
+  scopeObjectId: () => Factory.get('community'),
+});

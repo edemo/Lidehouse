@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -300,4 +301,7 @@ Breakdowns.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Breakdowns.simpleSchema().i18n('schemaBreakdowns');
+});
+
+Factory.define('breakdown', Breakdowns, {
 });

@@ -228,7 +228,7 @@ if (Meteor.isServer) {
 
       it('Reconcile and Conteer in one step', function () {
         const billId = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
-        const txId = Fixture.builder.create('tx', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
+        const txId = Fixture.builder.create('transaction', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
 
         const bill = Bills.findOne(billId);
@@ -242,7 +242,7 @@ if (Meteor.isServer) {
 
       it('Conteer first, Reconcile later', function () {
         const billId = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
-        const txId = Fixture.builder.create('tx', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
+        const txId = Fixture.builder.create('transaction', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
 
         Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '38', localizer: '@' } } });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
@@ -258,9 +258,9 @@ if (Meteor.isServer) {
 
       it('Reconcile one Bill - multi Payment', function () {
         const bill1Id = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
-        const tx1Id = Fixture.builder.create('tx', { amount: 100 });
-        const tx2Id = Fixture.builder.create('tx', { amount: 200 });
-        const tx3Id = Fixture.builder.create('tx', { amount: 350 });
+        const tx1Id = Fixture.builder.create('transaction', { amount: 100 });
+        const tx2Id = Fixture.builder.create('transaction', { amount: 200 });
+        const tx3Id = Fixture.builder.create('transaction', { amount: 350 });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill1Id, txId: tx1Id });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill1Id, txId: tx2Id });
 
@@ -284,7 +284,7 @@ if (Meteor.isServer) {
       it('Reconcile multi Bill - one Payment', function () {
         const bill1Id = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
         const bill2Id = Fixture.builder.create('bill', { relation: 'supplier', amount: 350 });
-        const tx1Id = Fixture.builder.create('tx', { amount: 1000 });
+        const tx1Id = Fixture.builder.create('transaction', { amount: 1000 });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill1Id, txId: tx1Id });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill2Id, txId: tx1Id });
 
@@ -300,8 +300,8 @@ if (Meteor.isServer) {
       it('Reconcile multi Bill - multi Payment ', function () {
         const bill1Id = Fixture.builder.create('bill', { relation: 'customer', amount: 650 });
         const bill2Id = Fixture.builder.create('bill', { relation: 'customer', amount: 350 });
-        const tx1Id = Fixture.builder.create('tx', { amount: 200 });
-        const tx2Id = Fixture.builder.create('tx', { amount: 800 });
+        const tx1Id = Fixture.builder.create('transaction', { amount: 200 });
+        const tx2Id = Fixture.builder.create('transaction', { amount: 800 });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill1Id, txId: tx1Id, amount: 100 });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId: bill2Id, txId: tx1Id, amount: 100 });
 

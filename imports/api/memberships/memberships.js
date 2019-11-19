@@ -197,3 +197,27 @@ Factory.define('membership', Memberships, {
   userId: () => Factory.get('user'),
   role: 'guest',
 });
+
+Factory.define('roleship', Memberships, {
+  communityId: () => Factory.get('community'),
+  userId: () => Factory.get('user'),
+  role: 'manager',
+});
+
+Factory.define('ownership', Memberships, {
+  communityId: () => Factory.get('community'),
+  userId: () => Factory.get('user'),
+  role: 'owner',
+});
+
+Factory.define('benefactorship', Memberships, {
+  communityId: () => Factory.get('community'),
+  userId: () => Factory.get('user'),
+  role: 'benefactor',
+});
+
+Factory.define('delegate', Memberships, {
+  communityId: () => Factory.get('community'),
+  userId: () => Factory.get('user'),
+  role: 'delegate',
+});

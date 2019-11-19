@@ -20,7 +20,7 @@ Payments.actions = {
       const activePartnerRelation = instance.viewmodel.activePartnerRelation();
       Session.set('activePartnerRelation', activePartnerRelation);
       Modal.show('Autoform_edit', {
-        id: 'af.bill.insert',
+        id: 'af.payment.insert',
         collection: Payments,
         type: 'method',
         meteormethod: 'payments.insert',
