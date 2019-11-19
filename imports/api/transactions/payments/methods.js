@@ -55,15 +55,15 @@ export const update = new ValidatedMethod({
   },
 });
 
-export const conteer = new ValidatedMethod({
-  name: 'payments.conteer',
+export const post = new ValidatedMethod({
+  name: 'payments.post',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
 
   run({ _id }) {
     const payment = checkExists(Payments, _id);
-    checkPermissions(this.userId, 'payments.conteer', payment.communityId);
+    checkPermissions(this.userId, 'payments.post', payment.communityId);
     if (!payment.billId) throw new Meteor.Error('Bill has to exist first');
     const bill = checkExists(Bills, payment.billId);
     if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
@@ -92,6 +92,6 @@ export const remove = new ValidatedMethod({
 });
 
 Payments.methods = Payments.methods || {};
-_.extend(Payments.methods, { insert, update, conteer, remove });
+_.extend(Payments.methods, { insert, update, post, remove });
 _.extend(Payments.methods, crudBatchOps(Payments));
-Payments.methods.batch.conteer = new BatchMethod(Payments.methods.conteer);
+Payments.methods.batch.post = new BatchMethod(Payments.methods.post);

@@ -251,7 +251,7 @@ export class CommunityBuilder {
   }
   payBill(bill) {
     if (bill.hasConteerData() && !bill.isConteered()) {
-      this.execute(Bills.methods.conteer, { _id: bill._id }, this.getUserWithRole('accountant'));
+      this.execute(Bills.methods.post, { _id: bill._id }, this.getUserWithRole('accountant'));
     }
 /*    const paymentId = this.create('payment', {
       billId: bill._id,

@@ -80,7 +80,7 @@
                               </button>
                             </td>                       
                         </tr>
-                        {{#if userHasPermission 'bills.conteer' (fromSession 'activeCommunityId')}}
+                        {{#if userHasPermission 'bills.post' (fromSession 'activeCommunityId')}}
                         <tr>
                               <td>{{> afFormGroup name=this.current.account}}</td>
                               <td>{{> afFormGroup name=this.current.localizer}}</td>

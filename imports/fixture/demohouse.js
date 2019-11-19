@@ -958,7 +958,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     if (mm !== '12') {  // Last bill is not yet paid, and not yet sent to accounting
-      demoBuilder.execute(Bills.methods.conteer, { _id: billId });
+      demoBuilder.execute(Bills.methods.post, { _id: billId });
       demoBuilder.create('payment', {
         relation: 'supplier',
         billId,
@@ -985,7 +985,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       localizer: '@',
     }],
   });
-  demoBuilder.execute(Bills.methods.conteer, { _id: invoiceId });
+  demoBuilder.execute(Bills.methods.post, { _id: invoiceId });
   demoBuilder.create('payment', {
     relation: 'customer',
     billId: invoiceId,

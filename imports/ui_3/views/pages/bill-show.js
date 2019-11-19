@@ -52,9 +52,9 @@ Template.Bill_show.events({
     const id = $(event.target).closest('[data-id]').data('id');
     runInNewModal(() => Bills.actions.edit.run(id));
   },
-  'click .js-conteer'(event, instance) {
+  'click .js-post'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
-    runInNewModal(() => Bills.actions.conteer.run(id));
+    runInNewModal(() => Bills.actions.post.run(id));
   },
   'click .js-payment'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');

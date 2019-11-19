@@ -51,13 +51,7 @@ Bills.actions = {
     visible: () => currentUserHasPermission('bills.inCommunity'),
     run(id) {
       const doc = Bills.findOne(id);
-/*        Modal.show('Autoform_edit', {
-        id: 'af.bill.view',
-        collection: Bills,
-        doc,
-        type: 'readonly',
-      });*/
-//        FlowRouter.go('Bill show', { _bid: id });
+//    FlowRouter.go('Bill show', { _bid: id });
       Modal.show('Modal', {
         title: __(doc.relation + '_bill') + ' ' + doc.serialId(),
         body: 'Bill_show',
@@ -86,26 +80,17 @@ Bills.actions = {
       });
     },
   },
-  conteer: {
-    name: 'conteer',
-    icon: 'fa fa-edit',
+  post: {
+    name: 'post',
+    icon: 'fa fa-check-square-o',
     color: _id => (!(Bills.findOne(_id).txId) ? 'warning' : undefined),
     visible(id) {
-      if (!currentUserHasPermission('bills.conteer')) return false;
+      if (!currentUserHasPermission('bills.post')) return false;
       const doc = Bills.findOne(id);
       return (doc.hasConteerData() && !doc.txId);
     },
     run(id) {
-/*        Modal.show('Autoform_edit', {
-        id: 'af.bill.conteer',
-        collection: Bills,
-        fields: ['partnerId', 'account', 'localizer'],
-        doc: Bills.findOne(id),
-        type: 'method-update',
-        meteormethod: 'bills.conteer',
-        singleMethodArgument: true,
-      });*/
-      Bills.methods.conteer.call({ _id: id }, onSuccess((res) => {
+      Bills.methods.post.call({ _id: id }, onSuccess((res) => {
         displayMessage('info', 'Szamla konyvelesbe kuldve');
       }));
     },
@@ -143,7 +128,7 @@ Bills.actions = {
 };
 
 Bills.batchActions = {
-  conteer: new BatchAction(Bills.actions.conteer, Bills.methods.batch.conteer),
+  post: new BatchAction(Bills.actions.post, Bills.methods.batch.post),
   delete: new BatchAction(Bills.actions.delete, Bills.methods.batch.remove),
 };
 
@@ -151,7 +136,7 @@ Bills.batchActions = {
 
 AutoForm.addModalHooks('af.bill.insert');
 AutoForm.addModalHooks('af.bill.update');
-AutoForm.addModalHooks('af.bill.conteer');
+AutoForm.addModalHooks('af.bill.post');
 
 AutoForm.addHooks('af.bill.insert', {
   formToDoc(doc) {

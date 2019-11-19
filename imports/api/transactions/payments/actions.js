@@ -70,17 +70,17 @@ Payments.actions = {
       });
     },
   },
-  conteer: {
-    name: 'conteer',
-    icon: 'fa fa-edit',
+  post: {
+    name: 'post',
+    icon: 'fa fa-check-square-o',
     color: _id => (!(Payments.findOne(_id).txId) ? 'warning' : undefined),
     visible(id) {
-      if (!currentUserHasPermission('payments.conteer')) return false;
+      if (!currentUserHasPermission('payments.post')) return false;
       const doc = Payments.findOne(id);
       return (!doc.txId);
     },
     run(id) {
-      Payments.methods.conteer.call({ _id: id }, onSuccess((res) => {
+      Payments.methods.post.call({ _id: id }, onSuccess((res) => {
         displayMessage('info', 'Kifizetes konyvelesbe kuldve');
       }));
     },
@@ -102,7 +102,7 @@ Payments.actions = {
 
 AutoForm.addModalHooks('af.payment.insert');
 AutoForm.addModalHooks('af.payment.update');
-AutoForm.addModalHooks('af.payment.conteer');
+AutoForm.addModalHooks('af.payment.post');
 
 AutoForm.addHooks('af.payment.insert', {
   formToDoc(doc) {
