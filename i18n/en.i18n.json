@@ -103,9 +103,9 @@
   "Content hidden by": "Content hidden by __hider__",
   "View previous comments": "View %s previous comments",
   
-  "insert forumtopic successful": "insert forum topic successful",
-  "update forumtopic successful": "update forum topic successful",
-  "forumtopic": "forum topic",
+  "insert forum successful": "insert forum topic successful",
+  "update forum successful": "update forum topic successful",
+  "forum": "forum topic",
 
   "statusChange ticket successful": "change ticket's status successful",
   "statusChange vote successful": "change vote's status successful",
