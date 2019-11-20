@@ -8,6 +8,7 @@ import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '/imports/ui_3/views/modals/multi-modal-handler.js';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';

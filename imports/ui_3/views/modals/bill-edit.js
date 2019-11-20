@@ -5,11 +5,14 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { moment } from 'meteor/momentjs:moment';
 import { Clock } from '/imports/utils/clock';
+import { Partners } from '/imports/api/transactions/partners/partners.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import '/imports/api/transactions/bills/actions.js';
+import '/imports/ui_3/views/modals/multi-modal-handler.js';
 
 import './bill-edit.html';
 
@@ -21,9 +24,6 @@ Template.Bill_edit.actionFromId = function () {
   const actionName = split[2];
   return actionName;
 };
-
-Template.Bill_edit.onCreated(function billEditOnCreated() {
-});
 
 Template.Bill_edit.helpers({
   activePartnerRelation() {
@@ -85,5 +85,6 @@ Template.Bill_edit.helpers({
   },
 });
 
-Template.Bill_edit.events({
-});
+Template.Bill_edit.events(
+  actionHandlers(Partners)
+);
