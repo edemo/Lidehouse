@@ -57,8 +57,8 @@ AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
       Modal.hide();
       const split = afId.split('.'); // AutoFormId convention is 'af.object.action'
       const objectName = split[1];
-      const actionName = split[2];
-      displayMessage('success', actionName + ' ' + objectName + ' ' + 'successful');
+      const actionNameDone = 'actionDone_' + split[2];
+      displayMessage('success', __(objectName) + ' ' + __(actionNameDone));
     },
   });
 };

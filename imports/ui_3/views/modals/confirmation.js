@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { __ } from '/imports/localization/i18n.js';
 
 import './confirmation.html';
 
@@ -13,6 +14,8 @@ Template.Confirmation.events({
 });
 
 Modal.confirmAndCall = function ModalConfirmAndCall(func, params, options) {
+  const split = options.action.split(' ');
+  const translatedDoneMessage = __(split[1]) + ' ' + __(`actionDone_${split[0]}`);
   Modal.show('Confirmation', {
     action: options.action,
     body: (options.message || ''),
@@ -23,7 +26,7 @@ Modal.confirmAndCall = function ModalConfirmAndCall(func, params, options) {
           displayError(err);
         } else {
           Modal.hide();
-          displayMessage('success', options.notification || `${options.action} successful`);
+          displayMessage('success', options.notification || translatedDoneMessage);
         }
       });
     },

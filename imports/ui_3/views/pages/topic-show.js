@@ -28,7 +28,7 @@ Template.Topic_show.helpers({
     return topic;
   },
   pageTitle() {
-    return __('topic.' + this.category) + ' ' + __('details');
+    return __('topic_' + this.category) + ' ' + __('details');
   },
   smallTitle() {
     return this.title;
