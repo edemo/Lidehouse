@@ -26,7 +26,7 @@ export const DatatablesExportButtons = {
 function batchActionButton(batchAction) {
   const button = {
     extend: 'selected',
-    text: () => `<i class="${batchAction.icon()}"></i> <span class="text-capitalize">${__(batchAction.name())}</span>`,
+    text: () => `<i class="${batchAction.icon()} text-capitalize"></i> ${__(batchAction.name()).capitalize()}`,
     action(e, dt, node, config) {
       const selectedDocs = dt.rows({ selected: true }).data();
       const selectedIds = _.pluck(selectedDocs, '_id');

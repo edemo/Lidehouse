@@ -6,6 +6,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { moment } from 'meteor/momentjs:moment';
 import { Clock } from '/imports/utils/clock';
 import { Partners } from '/imports/api/transactions/partners/partners.js';
+import '/imports/api/transactions/partners/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 
 import { __ } from '/imports/localization/i18n.js';
