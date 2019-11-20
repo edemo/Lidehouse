@@ -40,6 +40,7 @@ Template.Topic_vote_body.onCreated(function voteboxOnCreated() {
 Template.Topic_vote_body.onRendered(function voteboxOnRendered() {
   const topicId = this.data._id;
   const vote = this.data.vote;
+  this.chart = null;
   // Filling the chart with data
   this.autorun(() => {
     const voting = Topics.findOne(topicId);
@@ -71,7 +72,8 @@ Template.Topic_vote_body.onRendered(function voteboxOnRendered() {
       };
       const elem = document.getElementById('chart-' + voting._id).getContext('2d');
       const chartType = (vote.type === 'preferential' || vote.type === 'multiChoose') ? 'bar' : 'doughnut';
-      new Chart(elem, { type: chartType, data: chartData, options: chartOptions });
+      if (this.chart) { this.chart.destroy(); }
+      this.chart = new Chart(elem, { type: chartType, data: chartData, options: chartOptions });
     }
   });
 });
