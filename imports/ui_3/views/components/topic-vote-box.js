@@ -37,51 +37,50 @@ Template.Topic_vote_body.onCreated(function voteboxOnCreated() {
   });
 });
 
-Template.Topic_vote_body.onRendered(function voteboxOnRendered() {
-  const topicId = this.data._id;
-  const vote = this.data.vote;
-  // Filling the chart with data
-  this.autorun(() => {
-    const voting = Topics.findOne(topicId);
-    const voteSummary = voting.voteSummary;
-    if (!voteSummary) return; // Results come down in a different sub, so it might not be there just yet
-
-    if (voting.votingClosed()) {
-      const barData = {
-        labels: vote.choices.map(c => `${__(c)}`),
-        datasets: [{
-          label: __('Support'),
-          data: vote.choices.map((c, i) => voteSummary[i]),
-          backgroundColor: choiceColors[2],
-          borderWidth: 2,
-        }],
-      };
-      const voteSummaryDisplay = voting.voteSummaryDisplay();
-      const doughnutData = {
-        labels: voteSummaryDisplay.map(s => `${__(s.choice)}`), // .concat(__('Not voted')),
-        datasets: [{
-          data: voteSummaryDisplay.map((s, i) => s.votingUnits), // .concat(voting.notVotedUnits()),
-          backgroundColor: voteSummaryDisplay.map((s, i) => choiceColors[i]), // .concat(notVotedColor),
-        }],
-      };
-      const chartData = (vote.type === 'preferential' || vote.type === 'multiChoose') ? barData : doughnutData;
-      const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-      };
-      const elem = document.getElementById('chart-' + voting._id).getContext('2d');
-      const chartType = (vote.type === 'preferential' || vote.type === 'multiChoose') ? 'bar' : 'doughnut';
-      new Chart(elem, { type: chartType, data: chartData, options: chartOptions });
-    }
-  });
-});
-
 Template.Topic_vote_body.helpers({
   comments() {
     return Comments.find({ topicId: this._id }, { sort: { createdAt: 1 } });
   },
   attachments() {
     return Shareddocs.find({ topicId: this._id });
+  },
+  chartType() {
+    const vote = this.vote;
+    const chartType = (vote.type === 'preferential' || vote.type === 'multiChoose') ? 'bar' : 'doughnut';
+    return chartType;
+  },
+  chartData() {
+    const vote = this.vote;
+    const topicId = this._id;
+    const voting = Topics.findOne(topicId);
+    const voteSummary = voting.voteSummary;
+    if (!voteSummary) return; // Results come down in a different sub, so it might not be there just yet
+    const voteSummaryDisplay = voting.voteSummaryDisplay();
+    const doughnutData = {
+      labels: voteSummaryDisplay.map(s => `${__(s.choice)}`), // .concat(__('Not voted')),
+      datasets: [{
+        data: voteSummaryDisplay.map((s, i) => s.votingUnits), // .concat(voting.notVotedUnits()),
+        backgroundColor: voteSummaryDisplay.map((s, i) => choiceColors[i]), // .concat(notVotedColor),
+      }],
+    };
+    const barData = {
+      labels: vote.choices.map(c => `${__(c)}`),
+      datasets: [{
+        label: __('Support'),
+        data: vote.choices.map((c, i) => voteSummary[i]),
+        backgroundColor: choiceColors[2],
+        borderWidth: 2,
+      }],
+    };
+    const chartData = (vote.type === 'preferential' || vote.type === 'multiChoose') ? barData : doughnutData;
+    return chartData;
+  },
+  chartOptions() {
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+    };
+    return chartOptions;
   },
 });
 
