@@ -5,10 +5,8 @@
     {{#if isFieldArray}}
       {{> afArrayField}}
     {{else}}
-      {{#if relation}}
-        <div class="{{relation}}">
-          <button type="button" class="btn btn-xs btn-default pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
-        </div>
+      {{#if relation}} <!--### droka extension ###-->
+        <button type="button" class="btn btn-xs btn-default pull-right js-new {{relation}}"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ relation}}</button>
       {{/if}}
       {{#if isHiddenInput}}
         {{! if input type is defined as hidden, we don't render a form group}}

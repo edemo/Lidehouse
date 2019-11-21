@@ -7,7 +7,7 @@ import './action-buttons.html';
 export function actionHandlers(collection) {
   const eventHandlers = {};
   _.each(collection.actions, (action, name) => {
-    eventHandlers[`click .${collection._name} .js-${name}`] = function (event, instance) {
+    eventHandlers[`click .js-${name}.${collection._name},.${collection._name} .js-${name}`] = function (event, instance) {
       const id = $(event.target).closest('[data-id]').data('id');
       action.run(id, event, instance);
     };

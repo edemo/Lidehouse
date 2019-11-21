@@ -39,7 +39,7 @@
                   <div class="input-group">
                     <label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.relation.label'}}</label><br>
                     {{#each partnerRelation in partnerRelations}}
-                    <button type="button" class="js-relation-filter btn btn-xs btn-outline btn-default {{activeClass partnerRelation}}" data-value="{{partnerRelation}}">{{_ (concat 'schemaBills.relation.' partnerRelation)}}</button>
+                    <button type="button" class="btn btn-xs btn-outline btn-default js-relation-filter {{activeClass partnerRelation}}" data-value="{{partnerRelation}}">{{_ (concat 'schemaBills.relation.' partnerRelation)}}</button>
                     {{/each}}
                   </div>
                 </div>
