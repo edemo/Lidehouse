@@ -64,6 +64,7 @@ if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 
   choosePartner = {
+    relation: 'partners',
     value() {
       return Session.get('modalResult-af.partner.insert');
 //      const topModal = _.last(Session.get('openModals'));

@@ -341,6 +341,7 @@ AutoForm.getFormValues = function autoFormGetFormValues(formId, template, ss, ge
     // We do this to the insertDoc, but we don't want to do it earlier to the
     // doc, because that would cause the update modifier to have $sets for
     // the wrong array indexes.
+    //### droka removal ###//
 //    AutoForm.Utility.compactArrays(insertDoc);
 
     ss.clean(insertDoc, {

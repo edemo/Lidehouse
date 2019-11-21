@@ -19,11 +19,10 @@
         {{#autoForm this}}
         <div class="modal-body">
             <div class="row">
-                <div class="col-sm-6 col-md-4 partners">
+                <div class="col-sm-6 col-md-4">
                     <h5>{{_ 'issuer'}}:</h5>
                     <address>
                         {{#if (equals activePartnerRelation 'supplier')}}
-                            <button type="button" class="btn btn-xs btn-default pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'partner'}}</button>
                             {{> afQuickField name="partnerId"}}
                             {{> afQuickField name="contractId"}}
                         {{else}}
@@ -32,11 +31,10 @@
                     </address>
                 </div>
 
-                <div class="col-sm-6 col-md-4 col-md-offset-4 partners">
+                <div class="col-sm-6 col-md-4 col-md-offset-4">
                     <h5>{{_ 'receiver'}}:</h5>
                     <address>
                         {{#if (equals activePartnerRelation 'customer')}}
-                            <button type="button" class="btn btn-xs btn-default pull-right js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'partner'}}</button>
                             {{> afQuickField name="partnerId"}}
                             {{> afQuickField name="contractId"}}
                         {{else}}

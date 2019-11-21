@@ -1,20 +1,13 @@
-import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { moment } from 'meteor/momentjs:moment';
 import { Clock } from '/imports/utils/clock';
-import { Partners } from '/imports/api/transactions/partners/partners.js';
-import '/imports/api/transactions/partners/actions.js';
-import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-
 import { __ } from '/imports/localization/i18n.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import '/imports/api/transactions/bills/actions.js';
 import '/imports/ui_3/views/modals/multi-modal-handler.js';
-
+// The autoform needs to see these, to handle new events on it
+import '/imports/api/transactions/partners/actions.js';
+import '/imports/api/contracts/actions.js';
 import './bill-edit.html';
 
 
@@ -85,7 +78,3 @@ Template.Bill_edit.helpers({
     return { net, tax, gross }[which];
   },
 });
-
-Template.Bill_edit.events(
-  actionHandlers(Partners)
-);

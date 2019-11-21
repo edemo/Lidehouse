@@ -44,6 +44,10 @@ if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 
   chooseContract = {
+    relation: 'contracts',
+    value() {
+      return Session.get('modalResult-af.contract.insert');
+    },
     options() {
       const communityId = Session.get('activeCommunityId');
       const contracts = Contracts.find({ communityId });
