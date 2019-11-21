@@ -27,7 +27,7 @@ Contracts.helpers({
     return Partners.findOne(this.partnerId);
   },
   worksheets() {
-    return Topics.find({ communityId: this.communityId, 'ticket.contractId': this._id }).fetch();
+    return Topics.find({ communityId: this.communityId, 'ticket.contractId': this._id });
   },
 });
 
