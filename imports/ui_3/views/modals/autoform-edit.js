@@ -56,6 +56,7 @@ AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
     },
     onSuccess(formType, result) {
       Modal.hide(this.template.parent());
+      Session.set('modalResult-' + afId, result);
       const split = afId.split('.'); // AutoFormId convention is 'af.object.action'
       const objectName = split[1];
       const actionName = split[2];

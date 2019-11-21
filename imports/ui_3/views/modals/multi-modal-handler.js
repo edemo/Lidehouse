@@ -22,6 +22,8 @@ Template.Multi_modal_handler.onDestroyed(function () {
   openedModals.forEach((modalId) => {
     if (modalId === dataId) openedModals = _.without(openedModals, modalId);
   });
+//  const topModal = modalStack.pop();
+//  debugAssert(topModal.id = dataId);
   if (openedModals.length > 0) $('body').addClass('modal-open');
   Session.set('openedModals', openedModals);
   Modal.hide();
