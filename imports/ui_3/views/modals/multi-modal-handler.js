@@ -3,6 +3,7 @@ import { $ } from 'meteor/jquery';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
 import { Template } from 'meteor/templating';
+import { debugAssert } from '/imports/utils/assert.js';
 
 import './multi-modal-handler.html';
 
@@ -22,10 +23,10 @@ Template.Multi_modal_handler.onDestroyed(function () {
   openedModals.forEach((modalId) => {
     if (modalId === dataId) openedModals = _.without(openedModals, modalId);
   });
-//  const topModal = modalStack.pop();
-//  debugAssert(topModal.id = dataId);
+//  Should be enough to pop - but now somehow we have multiple instances of the opened modals
+//  const topModal = openedModals.pop();
+//  debugAssert(topModal === dataId);
   if (openedModals.length > 0) $('body').addClass('modal-open');
   Session.set('openedModals', openedModals);
   Modal.hide();
 });
-
