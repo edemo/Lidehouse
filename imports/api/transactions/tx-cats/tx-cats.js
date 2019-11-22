@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { Factory } from 'meteor/dburles:factory';
 
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
@@ -79,4 +80,7 @@ TxCats.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   TxCats.simpleSchema().i18n('schemaTxCats');
+});
+
+Factory.define('txCat', TxCats, {
 });

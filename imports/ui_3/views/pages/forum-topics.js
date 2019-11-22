@@ -41,7 +41,7 @@ Template.Forum_topics.helpers({
 Template.Forum_topics.events({
   'click .js-new'(event, instance) {
     Modal.show('Autoform_edit', {
-      id: 'af.forumtopic.insert',
+      id: 'af.forum.insert',
       collection: Topics,
       schema: Topics.schema,
       omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky'],
@@ -63,8 +63,8 @@ Template.Forum_topics.events({
   },
 });
 
-AutoForm.addModalHooks('af.forumtopic.insert');
-AutoForm.addHooks('af.forumtopic.insert', {
+AutoForm.addModalHooks('af.forum.insert');
+AutoForm.addHooks('af.forum.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     doc.category = 'forum';
