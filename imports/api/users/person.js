@@ -100,6 +100,7 @@ export class Person {
 }
 
 export let choosePerson = {};
+export let chooseDelegate = {};
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 
@@ -115,5 +116,15 @@ if (Meteor.isClient) {
       return sortedOptions;
     },
     firstOption: () => __('(Select one)'),
+  };
+
+  chooseDelegate = {
+    relation: 'delegate',
+    value() {
+      const newDelegateId = Session.get('modalResult-af.delegate.insert');
+      if (newDelegateId) return Memberships.findOne(newDelegateId).personId;
+      return undefined;
+    },
+    ...choosePerson,
   };
 }

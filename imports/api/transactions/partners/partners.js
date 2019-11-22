@@ -28,7 +28,7 @@ if (Meteor.isClient) {
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   relation: { type: String, allowedValues: Partners.relationValues, autoform: chooseRelation },
-  name: { type: String, max: 100, optional: true },
+  name: { type: String, max: 100 },
   bankAccountNumber: { type: String, max: 100, optional: true },
   taxNumber: { type: String, max: 50, optional: true },
   contact: { type: ContactSchema, optional: true },
@@ -64,7 +64,7 @@ if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 
   choosePartner = {
-    relation: 'partners',
+    relation: 'partner',
     value() {
       return Session.get('modalResult-af.partner.insert');
 //      const topModal = _.last(Session.get('openModals'));
@@ -102,6 +102,9 @@ Meteor.startup(function attach() {
 });
 
 // --- Factory ---
+
+Factory.define('partner', Partners, {
+});
 
 Factory.define('customer', Partners, {
   communityId: () => Factory.get('community'),

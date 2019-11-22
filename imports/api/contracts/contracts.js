@@ -44,7 +44,7 @@ if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 
   chooseContract = {
-    relation: 'contracts',
+    relation: 'contract',
     value() {
       return Session.get('modalResult-af.contract.insert');
     },

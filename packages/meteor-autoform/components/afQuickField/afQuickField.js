@@ -42,7 +42,8 @@ Template.afQuickField.events({
   //### droka extension ###//
   'click .js-new'(event, instance) {
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
-    var relation = c.atts.relation;
-    Mongo.Collection.get(relation).actions.new.run();
+    var entity = c.atts.relation;
+    var collection = Factory.get(entity).collection;
+    collection.actions.new.run(entity, event, instance);
   },
 })

@@ -11,6 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import '/imports/api/memberships/actions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { delegationColumns } from '/imports/api/delegations/tables.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
@@ -153,15 +154,8 @@ Template.Delegations.events({
       message,
     });
   },
-  'click .js-new-person'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.delegate.insert',
-      collection: Memberships,
-      fields: ['person', 'activeTime'],
-      omitFields: ['person.userId'],
-      type: 'method',
-      meteormethod: 'memberships.insert',
-    });
+  'click .js-new delegate'(event, instance) {
+    Memberships.action.new.run('delegate', event, instance);
   },
 });
 
@@ -182,14 +176,3 @@ AutoForm.addHooks('af.delegation.insert', {
     displayError(error);
   },
 }, true);
-
-AutoForm.addModalHooks('af.delegate.insert');
-AutoForm.addModalHooks('af.delegate.update');
-AutoForm.addHooks('af.delegate.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.approved = true;
-    doc.role = 'delegate';
-    return doc;
-  },
-});
