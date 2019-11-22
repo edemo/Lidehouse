@@ -6,6 +6,7 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 
+import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
@@ -18,11 +19,28 @@ import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { SerialId } from '/imports/api/behaviours/serial-id.js';
+import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 
 export const Bills = new Mongo.Collection('bills');
+
+let chooseBillAccount = {}; // on server side, we can't import Session or AutoForm (client side packages)
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+
+  chooseBillAccount = {
+    options() {
+      const txCatId = Session.get('activeTxCatId');
+      const txCat = TxCats.findOne(txCatId);
+      const coa = ChartOfAccounts.get();
+      if (!coa || !txCat) return [];
+      const nodeCodes = txCat[txCat.conteerSide()];
+      return coa.nodeOptionsOf(nodeCodes, /*leafsOnly*/ false);
+    },
+    firstOption: () => __('Conteer'),
+  };
+}
 
 const lineSchema = {
   title: { type: String },
@@ -38,7 +56,7 @@ const lineSchema = {
   //} },
   billingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   period: { type: String, optional: true, autoform: { omit: true } },
-  account: { type: String, optional: true, autoform: chooseAccountNode },
+  account: { type: String, optional: true, autoform: chooseBillAccount },
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));

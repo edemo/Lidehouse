@@ -51,6 +51,9 @@ Template.Accounting_bills.viewmodel({
       }
     });
   },
+  autorun() {
+    Session.set('activePartnerRelation', this.activePartnerRelation());
+  },
   communityId() {
     return Session.get('activeCommunityId');
   },

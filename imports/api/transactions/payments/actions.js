@@ -8,8 +8,22 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Payments } from '../payments/payments.js';
+import { TxCats } from '../tx-cats/tx-cats.js';
 import { Bills } from '../bills/bills.js';
 import './methods.js';
+
+function setSessionVars(instance) {
+  const communityId = Session.get('activeCommunityId');
+  const activePartnerRelation = instance.viewmodel.activePartnerRelation();
+  Session.set('activePartnerRelation', activePartnerRelation);
+  const txCat = TxCats.findOne({ communityId, dataType: 'payments', 'data.relation': activePartnerRelation });
+  Session.set('activeTxCatId', txCat);
+}
+
+function clearSessionVars() {
+  Session.set('activePartnerRelation');
+  Session.set('activeTxCatId');
+}
 
 Payments.actions = {
   new: {
@@ -17,8 +31,7 @@ Payments.actions = {
     icon: 'fa fa-plus',
     visible: () => currentUserHasPermission('payments.insert'),
     run(id, event, instance) {
-      const activePartnerRelation = instance.viewmodel.activePartnerRelation();
-      Session.set('activePartnerRelation', activePartnerRelation);
+      setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.insert',
         collection: Payments,
@@ -45,7 +58,8 @@ Payments.actions = {
       if (doc.txId) return false; // already in accounting
       return true;
     },
-    run(id) {
+    run(id, event, instance) {
+      setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.update',
         collection: Payments,
@@ -56,17 +70,17 @@ Payments.actions = {
       });
     },
   },
-  conteer: {
-    name: 'conteer',
-    icon: 'fa fa-edit',
+  post: {
+    name: 'post',
+    icon: 'fa fa-check-square-o',
     color: _id => (!(Payments.findOne(_id).txId) ? 'warning' : undefined),
     visible(id) {
-      if (!currentUserHasPermission('payments.conteer')) return false;
+      if (!currentUserHasPermission('payments.post')) return false;
       const doc = Payments.findOne(id);
       return (!doc.txId);
     },
     run(id) {
-      Payments.methods.conteer.call({ _id: id }, onSuccess((res) => {
+      Payments.methods.post.call({ _id: id }, onSuccess((res) => {
         displayMessage('info', 'Kifizetes konyvelesbe kuldve');
       }));
     },
@@ -88,7 +102,7 @@ Payments.actions = {
 
 AutoForm.addModalHooks('af.payment.insert');
 AutoForm.addModalHooks('af.payment.update');
-AutoForm.addModalHooks('af.payment.conteer');
+AutoForm.addModalHooks('af.payment.post');
 
 AutoForm.addHooks('af.payment.insert', {
   formToDoc(doc) {
@@ -105,4 +119,9 @@ AutoForm.addHooks('af.payment.insert', {
     Session.set('activeBillId', undefined);
     return doc;
   },
+  after: { 'method': clearSessionVars },
+});
+
+AutoForm.addHooks('af.payment.update', {
+  after: { 'method-update': clearSessionVars },
 });

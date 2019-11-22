@@ -62,9 +62,9 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.partner().outstanding, 300);
       });
 
-      it('Can not conteer without accounts', function () {
+      it('Can not post without accounts', function () {
         chai.assert.throws(() => {
-          FixtureA.builder.execute(Bills.methods.conteer, { _id: billId });
+          FixtureA.builder.execute(Bills.methods.post, { _id: billId });
         }, 'Bill has to be conteered first');
       });
 
@@ -74,9 +74,9 @@ if (Meteor.isServer) {
         }, 'Bill has to be conteered first');
       });
 
-      it('Can conteer - creates tx in accountig', function () {
+      it('Can post - creates tx in accountig', function () {
         FixtureA.builder.execute(Bills.methods.update, { _id: billId, modifier: { $set: { 'lines.0.account': '85', 'lines.0.localizer': '@' } } });
-        FixtureA.builder.execute(Bills.methods.conteer, { _id: billId });
+        FixtureA.builder.execute(Bills.methods.post, { _id: billId });
         bill = Bills.findOne(billId);
         chai.assert.equal(bill.isConteered(), true);
         const tx = Transactions.findOne(billId);
@@ -112,7 +112,7 @@ if (Meteor.isServer) {
         let tx2 = Transactions.findOne(paymentId2);
         chai.assert.isUndefined(tx2);
 
-        FixtureA.builder.execute(Payments.methods.conteer, { _id: paymentId1 });
+        FixtureA.builder.execute(Payments.methods.post, { _id: paymentId1 });
         tx1 = Transactions.findOne(paymentId1);
         chai.assert.isDefined(tx1);
         chai.assert.equal(tx1.category().dataType, 'payments');
@@ -120,7 +120,7 @@ if (Meteor.isServer) {
         chai.assert.deepEqual(tx1.debit, [{ account: '46' }]);
         chai.assert.deepEqual(tx1.credit, [{ account: bankAccount }]);
 
-        FixtureA.builder.execute(Payments.methods.conteer, { _id: paymentId2 });
+        FixtureA.builder.execute(Payments.methods.post, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isDefined(tx2);
         chai.assert.equal(tx2.category().dataType, 'payments');
@@ -151,7 +151,7 @@ if (Meteor.isServer) {
             localizer: '@',
           }],
         });
-        FixtureA.builder.execute(Bills.methods.conteer, { _id: billId });
+        FixtureA.builder.execute(Bills.methods.post, { _id: billId });
         bill = Bills.findOne(billId);
 
         statementId = FixtureA.builder.create('statement', {
@@ -244,7 +244,7 @@ if (Meteor.isServer) {
         const billId = Fixture.builder.create('bill', { relation: 'supplier', amount: 650 });
         const txId = Fixture.builder.create('transaction', { amount: 650, debit: [{ account: '38', localizer: '@' }] });
 
-        Fixture.builder.execute(Bills.methods.conteer, { _id: billId, modifier: { $set: { account: '38', localizer: '@' } } });
+        Fixture.builder.execute(Bills.methods.post, { _id: billId, modifier: { $set: { account: '38', localizer: '@' } } });
         Fixture.builder.execute(Transactions.methods.reconcile, { billId, txId });
 
         const bill = Bills.findOne(billId);

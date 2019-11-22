@@ -5,11 +5,16 @@
     <div class="wrapper wrapper-content animated fadeInUp">
 
         {{#if userHasPermission 'contracts.insert' (fromSession 'activeCommunityId') }}
-            <button class="btn btn-primary btn-sm pull-right m-md js-new contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
+          <button class="btn btn-primary btn-sm pull-right m-md js-new contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
         {{/if}}
         {{#if userHasPermission 'partners.insert' (fromSession 'activeCommunityId') }}
-            <button class="btn btn-primary btn-sm pull-right m-md js-new partners"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'partner'}}</button>
+          <button class="btn btn-primary btn-sm pull-right m-md js-new partners"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'partner'}}</button>
         {{/if}}
+        <div class="input-group">
+          {{#each partnerRelation in partnerRelations}}
+          <button type="button" class="btn btn-sm btn-outline btn-default js-relation-filter {{activeClass partnerRelation}}" data-value="{{partnerRelation}}">{{_ (concat 'schemaPartners.relation.' partnerRelation)}}</button>
+          {{/each}}
+        </div>
 
         {{#each contracts}}
         <div class="ibox collapsed">
@@ -23,10 +28,10 @@
                 {{>iboxTools}}
             </div>
             <div class="ibox-content">
-                <div class="contract-details">
+                <div class="contracts">
                     <span class="pull-right">
                       {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')}}
-                      <div class="dropdown btn-group pull-right">
+                      <div class="dropdown btn-group pull-right worksheets">
                           <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
                               <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheets'}} <b class="caret"></b>
                           </button>

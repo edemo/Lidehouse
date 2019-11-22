@@ -86,7 +86,7 @@
                                 </strong>
                                 </div>
                                 <small>{{line.details}}</small>
-                                {{#if userHasPermission 'bills.conteer' (fromSession 'activeCommunityId')}}
+                                {{#if userHasPermission 'bills.post' (fromSession 'activeCommunityId')}}
                                     {{{displayAccount line.account activeCommunityId}}}
                                     {{{displayLocalizer line.localizer activeCommunityId}}}
                                 {{/if}}
@@ -139,14 +139,14 @@
             </table>
 
             <div class="text-right" data-id="{{docVm._id}}">
-              {{#if (actions.conteer.visible docVm._id)}}
-                <button class="btn btn-warning js-conteer"><i class="fa fa-edit"></i> {{_ 'Send to accouting'}}</button>
+              {{#if (actions.edit.visible docVm._id)}}
+                <button class="btn btn-warning js-edit"><i class="fa fa-edit"></i> {{_ 'Bill conteer'}}</button>
+              {{/if}}
+              {{#if (actions.post.visible docVm._id)}}
+                <button class="btn btn-warning js-post"><i class="fa fa-check-square-o"></i> {{_ 'Send to accouting'}}</button>
               {{/if}}
               {{#if (actions.registerPayment.visible docVm._id)}}
                 <button class="btn btn-primary js-payment"><i class="fa fa-credit-card"></i> {{_ 'Register payment'}}</button>
-              {{/if}}
-              {{#if (actions.edit.visible docVm._id)}}
-                <button class="btn btn-warning js-edit"><i class="fa fa-pencil"></i> {{_ 'Bill conteer'}}</button>
               {{/if}}
             </div>
 

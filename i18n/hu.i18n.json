@@ -201,7 +201,7 @@
   "confirm": "Jóváhagy?",
   "Loading": "Betöltés folyamatban",
   "period": "Időszak",
-  "conteer": "Könyvelésbe küldés",
+  "post": "Könyvelésbe küldés",
   "apply": "kivetés",
   "registerPayment": "Kifizetés rögzítése",
   "reading": "leolvasás",
@@ -246,6 +246,7 @@
   "finished": "Elvégezve",
   "deleted": "Törölt",
 
+  "Conteer": "Kontírozás",
   "Bill conteer": "Számla kontírozás",
 
   "This operation will do the following": "Ezzel a következő műveleteket hajtja végre",
@@ -256,7 +257,7 @@
   " documents": " dokumentumot",
 
   "Select all": "Mindet kijelöl",
-  "Select none": "Semmit kijelöl",
+  "Select none": "Semmit nem jelöl",
   "Action with selected": "Akció a kijelöltekkel",
   "This operation will be performed on many documents": "Amennyiben jóváhagyja, a műveletet <strong>%s kijelölt dokumentumon</strong> egyszerre fogja végrehajtani",
   

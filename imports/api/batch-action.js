@@ -10,6 +10,9 @@ export class BatchAction {
   name() {
     return this.action.name;
   }
+  icon() {
+    return this.action.icon;
+  }
   visible(ids) {
     const self = this;
     return _.every(ids, function (id) { return self.action.visible(id); });

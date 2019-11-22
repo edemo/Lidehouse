@@ -27,7 +27,7 @@ Contracts.helpers({
     return Partners.findOne(this.partnerId);
   },
   worksheets() {
-    return Topics.find({ communityId: this.communityId, 'ticket.contractId': this._id }).fetch();
+    return Topics.find({ communityId: this.communityId, 'ticket.contractId': this._id });
   },
 });
 
@@ -44,6 +44,10 @@ if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 
   chooseContract = {
+    relation: 'contracts',
+    value() {
+      return Session.get('modalResult-af.contract.insert');
+    },
     options() {
       const communityId = Session.get('activeCommunityId');
       const contracts = Contracts.find({ communityId });

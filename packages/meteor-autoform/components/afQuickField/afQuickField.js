@@ -30,5 +30,19 @@ Template.afQuickField.helpers({
     }
 
     return false;
-  }
+  },
+  //### droka extension ###//
+  relation: function relation() {
+    var c = AutoForm.Utility.getComponentContext(this, "afQuickField");
+    return c.atts.relation;
+  },
 });
+
+Template.afQuickField.events({
+  //### droka extension ###//
+  'click .js-new'(event, instance) {
+    var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
+    var relation = c.atts.relation;
+    Mongo.Collection.get(relation).actions.new.run();
+  },
+})

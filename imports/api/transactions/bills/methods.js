@@ -57,15 +57,15 @@ export const update = new ValidatedMethod({
   },
 });
 
-export const conteer = new ValidatedMethod({
-  name: 'bills.conteer',
+export const post = new ValidatedMethod({
+  name: 'bills.post',
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
 
   run({ _id }) {
     const doc = checkExists(Bills, _id);
-    checkPermissions(this.userId, 'bills.conteer', doc.communityId);
+    checkPermissions(this.userId, 'bills.post', doc.communityId);
     if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
 
     const community = Communities.findOne(doc.communityId);
@@ -99,6 +99,6 @@ export const remove = new ValidatedMethod({
 });
 
 Bills.methods = Bills.methods || {};
-_.extend(Bills.methods, { insert, update, conteer, remove });
+_.extend(Bills.methods, { insert, update, post, remove });
 _.extend(Bills.methods, crudBatchOps(Bills));
-Bills.methods.batch.conteer = new BatchMethod(Bills.methods.conteer);
+Bills.methods.batch.post = new BatchMethod(Bills.methods.post);

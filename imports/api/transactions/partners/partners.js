@@ -18,9 +18,16 @@ export const Partners = new Mongo.Collection('partners');
 
 Partners.relationValues = ['supplier', 'customer', 'parcel'];
 
+let chooseRelation = {};
+if (Meteor.isClient) {
+  import { Session } from 'meteor/session';
+
+  chooseRelation = _.extend({ value: () => Session.get('activePartnerRelation') }, autoformOptions(Partners.relationValues, 'schemaPartners.relation.'));
+}
+
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: autoformOptions(Partners.relationValues, 'schemaPartners.relation.') },
+  relation: { type: String, allowedValues: Partners.relationValues, autoform: chooseRelation },
   name: { type: String, max: 100, optional: true },
   bankAccountNumber: { type: String, max: 100, optional: true },
   taxNumber: { type: String, max: 50, optional: true },
@@ -57,9 +64,18 @@ if (Meteor.isClient) {
   import { Session } from 'meteor/session';
 
   choosePartner = {
+    relation: 'partners',
+    value() {
+      return Session.get('modalResult-af.partner.insert');
+//      const topModal = _.last(Session.get('openModals'));
+//      if (topModal && topModal.resultId === 'af.partner.insert') {
+//        return topModal.result;
+//      }
+    },
     options() {
       const communityId = Session.get('activeCommunityId');
-      const partners = Partners.find({ communityId });
+      const relation = Session.get('activePartnerRelation');
+      const partners = Partners.find({ communityId, relation });
       const options = partners.map(function option(c) {
         return { label: c.name, value: c._id };
       });

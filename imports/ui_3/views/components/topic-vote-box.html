@@ -89,9 +89,9 @@
                 {{#each sum in this.voteSummaryDisplay}}
                 <div>{{_ sum.choice}}: {{sum.votingUnits}} ({{displayPercent sum.percentOfVotes}})</div>
                 {{/each}}
-                <div>
-                  <canvas id="{{concat 'chart-' this._id}}" height="200"></canvas>
-                </div>
+                {{#if Template.subscriptionsReady}}
+                  {{> Chart type=chartType data=chartData options=chartOptions height="200"}}
+                {{/if}}
               </div>
             </div>
           {{/unless}}

@@ -6,43 +6,43 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { Partners } from '../partners/partners.js';
+import { Contracts } from './contracts.js';
 import './methods.js';
 
-Partners.actions = {
+Contracts.actions = {
   new: {
     name: 'new',
     icon: 'fa fa-plus',
-    visible: () => currentUserHasPermission('partners.insert'),
+    visible: () => currentUserHasPermission('contracts.insert'),
     run(id, event, instance) {
       Modal.show('Autoform_edit', {
-        id: 'af.partner.insert',
-        collection: Partners,
+        id: 'af.contract.insert',
+        collection: Contracts,
         type: 'method',
-        meteormethod: 'partners.insert',
+        meteormethod: 'contracts.insert',
       });
     },
   },
   view: {
     name: 'view',
     icon: 'fa fa-eye',
-    visible: () => currentUserHasPermission('partners.inCommunity'),
+    visible: () => currentUserHasPermission('contracts.inCommunity'),
     run(id) {
-      const doc = Partners.findOne(id);
+      const doc = Contracts.findOne(id);
       // TODO
     },
   },
   edit: {
     name: 'edit',
     icon: 'fa fa-pencil',
-    visible: () => currentUserHasPermission('partners.update'),
+    visible: () => currentUserHasPermission('contracts.update'),
     run(id) {
       Modal.show('Autoform_edit', {
-        id: 'af.partner.update',
-        collection: Partners,
-        doc: Partners.findOne(id),
+        id: 'af.contract.update',
+        collection: Contracts,
+        doc: Contracts.findOne(id),
         type: 'method-update',
-        meteormethod: 'partners.update',
+        meteormethod: 'contracts.update',
         singleMethodArgument: true,
       });
     },
@@ -50,10 +50,10 @@ Partners.actions = {
   delete: {
     name: 'delete',
     icon: 'fa fa-trash',
-    visible: () => currentUserHasPermission('partners.remove'),
+    visible: () => currentUserHasPermission('contracts.remove'),
     run(id) {
-      Modal.confirmAndCall(Partners.methods.remove, { _id: id }, {
-        action: 'delete partner',
+      Modal.confirmAndCall(Contracts.methods.remove, { _id: id }, {
+        action: 'delete contract',
         message: 'It will disappear forever',
       });
     },
@@ -62,10 +62,10 @@ Partners.actions = {
 
 //-------------------------------------------------------
 
-AutoForm.addModalHooks('af.partner.insert');
-AutoForm.addModalHooks('af.partner.update');
+AutoForm.addModalHooks('af.contract.insert');
+AutoForm.addModalHooks('af.contract.update');
 
-AutoForm.addHooks('af.partner.insert', {
+AutoForm.addHooks('af.contract.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;
