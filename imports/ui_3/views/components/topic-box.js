@@ -28,7 +28,7 @@ Template.Topic_edit_menu.events({
   'click .forum .js-edit'(event, instance) {
     const id = this._id;
     Modal.show('Autoform_edit', {
-      id: 'af.forumtopic.update',
+      id: 'af.forum.update',
       collection: Topics,
       schema: Topics.schema,
       omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky'],
@@ -52,4 +52,4 @@ Template.Topic_reactions.events({
   },
 });
 
-AutoForm.addModalHooks('af.forumtopic.update');
+AutoForm.addModalHooks('af.forum.update');

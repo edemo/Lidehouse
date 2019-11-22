@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { Factory } from 'meteor/dburles:factory';
+import faker from 'faker';
 
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -27,4 +29,9 @@ Sharedfolders.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Sharedfolders.simpleSchema().i18n('schemaSharedfolders');
+});
+
+Factory.define('sharedfolder', Sharedfolders, {
+  communityId: () => Factory.get('community'),
+  name: () => faker.random.word(),
 });

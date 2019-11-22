@@ -131,3 +131,6 @@ Factory.define('supplier', Partners, {
     email: () => faker.internet.email(),
   },
 });
+
+Factory.define('partner', Partners, {
+});

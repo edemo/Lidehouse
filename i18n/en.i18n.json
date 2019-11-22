@@ -1,14 +1,12 @@
 {
-  "topic" : {
-    "general": "topic",
-    "forum": "forum topic",
-    "vote": "voting",
-    "news": "news post",
-    "ticket": "error ticket",
-    "room": "room",
-    "feedback": "feedback"
-  },
-
+  "topic_general": "topic",
+  "topic_forum": "forum topic",
+  "topic_vote": "voting",
+  "topic_news": "news post",
+  "topic_ticket": "error ticket",
+  "topic_room": "room",
+  "topic_feedback": "feedback",
+  
   // buttons etc.
   "confirm": "Are you sure?",
   "inviteSend": "Send invitation",
@@ -103,12 +101,7 @@
   "Content hidden by": "Content hidden by __hider__",
   "View previous comments": "View %s previous comments",
   
-  "insert forumtopic successful": "insert forum topic successful",
-  "update forumtopic successful": "update forum topic successful",
-  "forumtopic": "forum topic",
-
-  "statusChange ticket successful": "change ticket's status successful",
-  "statusChange vote successful": "change vote's status successful",
+  "forum": "forum topic",
 
   // delegations
   "delegationsFromMeInstructions": "Here you can set up delegations. So someone else can use your vote in your name.",
@@ -136,6 +129,19 @@
   "Vote casted": "Vote casted succesfully",
   "You should rather archive it" : "You should rather edit the active period, and set an end date, so the data is still searchable. DElete it only if it was created by mistake!",
   "pageNotFoundMessage": "The %s you are looking for cannot be found. This could be because it has been deleted since. Or you might not have the necessary permissions to view it.",
+
+  "actionDone_insert": "inserted",
+  "actionDone_update": "updated",
+  "actionDone_delete": "deleted",
+  "actionDone_statusChange": "status changed",
+  "actionDone_invite": "invited",
+  "actionDone_enable": "enabled",
+  "actionDone_disable": "disabled",
+  "actionDone_revoke": "revoked",
+  "actionDone_refuse": "refused",
+  "actionDone_move": "moved",
+  "actionDone_import": "imported",
+  "actionDone_post": "posted",
 
   "Connecting user": "Connecting user with email '%s'. This person will receive an enrollment email if he/she does not yet have a user account in the system.",
   "delete user": "delete your account permanently",

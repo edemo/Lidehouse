@@ -87,6 +87,6 @@ AutoForm.addHooks('af.user.update', {
     displayError(error);
   },
   onSuccess(formType, result) {
-    displayMessage('success', 'update user successful');
+    displayMessage('success', 'user data updated');
   },
 });

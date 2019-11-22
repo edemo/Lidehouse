@@ -198,7 +198,13 @@ Factory.define('membership', Memberships, {
   role: 'guest',
 });
 
-Factory.define('owner', Memberships, {
+Factory.define('roleship', Memberships, {
+  communityId: () => Factory.get('community'),
+  userId: () => Factory.get('user'),
+  role: 'manager',
+});
+
+Factory.define('ownership', Memberships, {
   communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
   role: 'owner',
@@ -207,7 +213,7 @@ Factory.define('owner', Memberships, {
   },
 });
 
-Factory.define('benefactor', Memberships, {
+Factory.define('benefactorship', Memberships, {
   communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
   role: 'benefactor',
