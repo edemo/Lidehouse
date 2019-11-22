@@ -19,13 +19,13 @@ Template.Multi_modal_handler.onCreated(function () {
 
 Template.Multi_modal_handler.onDestroyed(function () {
   const dataId = this.parent().data.id;
-  let openedModals = Session.get('openedModals');
-  openedModals.forEach((modalId) => {
-    if (modalId === dataId) openedModals = _.without(openedModals, modalId);
-  });
-//  Should be enough to pop - but now somehow we have multiple instances of the opened modals
-//  const topModal = openedModals.pop();
-//  debugAssert(topModal === dataId);
+  const openedModals = Session.get('openedModals');
+  //  openedModals.forEach((modalId) => {
+  //    if (modalId === dataId) openedModals = _.without(openedModals, modalId);
+  //  });
+  // Should be enough to pop
+  const topModal = openedModals.pop();
+  debugAssert((!topModal && !dataId) || topModal === dataId);
   if (openedModals.length > 0) $('body').addClass('modal-open');
   Session.set('openedModals', openedModals);
   Modal.hide();
