@@ -1,15 +1,21 @@
 <template name="Action_button">
   {{#if action.visible _id}}
-  <button data-id={{_id}} class="btn btn-xs btn-{{or (action.color _id) 'white'}} js-{{action.name}}" title="{{#unless large}}{{_ action.name}}{{/unless}}">
-    <i class="{{action.icon}}"></i>{{#if large}} {{_ action.name}}{{/if}}
-  </button>
+    <button data-id="{{_id}}" class="btn btn-xs btn-{{or (action.color _id) 'white'}} js-{{action.name}}" title="{{#unless large}}{{_ action.name}}{{/unless}}">
+      <i class="{{action.icon _id}}"></i>{{#if large}} {{_ action.name}}{{/if}}
+    </button>
   {{/if}}
 </template>
 
 <template name="Action_buttons_group">
   <div class="btn-group">
     {{#each action in _actions}}
-      {{>Action_button _id=_id action=action size=size}}
+      {{#if action.href}}
+      <a href="{{action.href}}">
+        {{>Action_button _id=_id doc=doc action=action size=size}}
+      </a>
+      {{else}}
+        {{>Action_button _id=_id doc=doc action=action size=size}}
+      {{/if}}
     {{/each}}
   </div>
 </template>

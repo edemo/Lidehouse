@@ -30,7 +30,7 @@ function clearSessionVars() {
 Bills.actions = {
   new: {
     name: 'new',
-    icon: 'fa fa-plus',
+    icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('bills.insert'),
     run(id, event, instance) {
       setSessionVars(instance);
@@ -45,7 +45,7 @@ Bills.actions = {
   },
   view: {
     name: 'view',
-    icon: 'fa fa-eye',
+    icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('bills.inCommunity'),
     run(id) {
       const doc = Bills.findOne(id);
@@ -59,7 +59,7 @@ Bills.actions = {
   },
   edit: {
     name: 'edit',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible(id) {
       if (!currentUserHasPermission('bills.update')) return false;
       const doc = Bills.findOne(id);
@@ -80,7 +80,7 @@ Bills.actions = {
   },
   post: {
     name: 'post',
-    icon: 'fa fa-check-square-o',
+    icon: () => 'fa fa-check-square-o',
     color: _id => (!(Bills.findOne(_id).txId) ? 'warning' : undefined),
     visible(id) {
       if (!currentUserHasPermission('bills.post')) return false;
@@ -95,7 +95,7 @@ Bills.actions = {
   },
   registerPayment: {
     name: 'registerPayment',
-    icon: 'fa fa-credit-card',
+    icon: () => 'fa fa-credit-card',
     visible(id) {
       if (!currentUserHasPermission('payments.insert')) return false;
       const doc = Bills.findOne(id);
@@ -114,7 +114,7 @@ Bills.actions = {
   },
   delete: {
     name: 'delete',
-    icon: 'fa fa-trash',
+    icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('bills.remove'),
     run(id) {
       Modal.confirmAndCall(Bills.methods.remove, { _id: id }, {

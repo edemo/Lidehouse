@@ -292,12 +292,12 @@ const announced = {
 
 const opened = {
   name: 'opened',
-  icon: 'fa-file-text-o',
+  icon: () => 'fa-file-text-o',
 };
 
 const votingFinished = {
   name: 'votingFinished',
-  icon: 'fa-legal',
+  icon: () => 'fa-legal',
   onEnter(event, topic) {
     topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
    // Topics.update(topic._id, { $set: { closesAt: new Date() } });
@@ -306,7 +306,7 @@ const votingFinished = {
 
 const closed = {
   name: 'closed',
-  icon: 'fa-times-circle-o',
+  icon: () => 'fa-times-circle-o',
 };
 
 Votings.statuses = {

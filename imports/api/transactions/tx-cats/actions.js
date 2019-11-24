@@ -9,7 +9,7 @@ import './methods.js';
 TxCats.actions = {
   new: {
     name: 'new',
-    icon: 'fa fa-plus',
+    icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('breakdowns.insert'),
     run() {
       Modal.show('Autoform_edit', {
@@ -22,7 +22,7 @@ TxCats.actions = {
   },
   edit: {
     name: 'edit',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -37,7 +37,7 @@ TxCats.actions = {
   },
   delete: {
     name: 'delete',
-    icon: 'fa fa-trash',
+    icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('breakdowns.remove'),
     run(id) {
       Modal.confirmAndCall(TxCats.methods.remove, { _id: id }, {

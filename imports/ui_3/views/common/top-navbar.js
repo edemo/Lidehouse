@@ -6,8 +6,8 @@ import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
 import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { afCommunityInsertModal } from '/imports/ui_3/views/components/communities-edit.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import '/imports/api/communities/actions.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/users/users.js';
 import './right-sidebar.js';
@@ -125,7 +125,7 @@ Template.Top_navbar.events({
     displayMessage('success', `${newCommunity.name} ${__('selected')}`);
   },
   'click .js-create-community'() {
-    afCommunityInsertModal();
+    Communities.actions.create.run();
   },
   'click .js-logout'() {
     Meteor.logout(function onLogout(err) {

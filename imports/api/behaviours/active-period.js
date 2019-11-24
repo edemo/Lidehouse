@@ -126,9 +126,10 @@ const updateActivePeriod = new ValidatedMethod({
     const collection = Mongo.Collection.get(collectionName);
     const doc = checkExists(collection, _id);
     const userId = this.userId;
+    const entity = doc.entityName ? doc.entityName() : collectionName;
 
     if (doc.communityId) {   // TODO: figure out which permission needed
-      checkPermissions(userId, `${"ownerships"}.update`, doc.communityId, doc);
+      checkPermissions(userId, `${entity}.update`, doc.communityId, doc);
     }
     checkModifier(doc, modifier, ActivePeriod.fields);
 

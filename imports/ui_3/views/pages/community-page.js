@@ -7,7 +7,6 @@ import { _ } from 'meteor/underscore';
 
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { AccountsTemplates } from 'meteor/useraccounts:core';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { Fraction } from 'fractional';
@@ -17,25 +16,19 @@ import { __ } from '/imports/localization/i18n.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { leaderRoles, nonLeaderRoles, officerRoles } from '/imports/api/permissions/roles.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { remove as removeCommunity } from '/imports/api/communities/methods.js';
+import '/imports/api/communities/actions.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { remove as removeParcel } from '/imports/api/parcels/methods.js';
+import '/imports/api/parcels/actions.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import '/imports/api/memberships/methods.js';
-import '/imports/api/leaderships/methods.js';
+import '/imports/api/memberships/actions.js';
+import { Leaderships } from '/imports/api/leaderships/leaderships.js';
+import '/imports/api/leaderships/actions.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import '/imports/api/meters/actions.js';
-import { Leaderships } from '/imports/api/leaderships/leaderships.js';
-import '/imports/api/meters/methods.js';
 import '/imports/api/users/users.js';
-import { importCollectionFromFile } from '/imports/utils/import.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/components/active-archive-tabs.js';
 import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
-import { afCommunityUpdateModal } from '/imports/ui_3/views/components/communities-edit.js';
 import '/imports/ui_3/views/common/page-heading.js';
 import '/imports/ui_3/views/components/action-buttons.html';
 import '/imports/ui_3/views/components/contact-long.js';
@@ -46,10 +39,6 @@ Template.Memberships_table.viewmodel({
   memberships() {
     const selector = this.templateInstance.data.selector;
     return Memberships.find(selector, { sort: { role: -1 } });
-  },
-  calculateCategory(membership) {
-    if (membership.ownership) return 'ownerships';
-    if (membership.benefactorship) return 'benefactorships';
   },
   leaderships() {
     const selector = this.templateInstance.data.selector;
@@ -194,15 +183,8 @@ Template.Community_page.viewmodel({
       selector: { communityId: self.communityId() },
       options() {
         return () => {
-          const communityId = self.communityId();
-          const permissions = {
-            view: Meteor.userOrNull().hasPermission('parcels.inCommunity', communityId),
-            edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
-            delete: Meteor.userOrNull().hasPermission('parcels.remove', communityId),
-            assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
-          };
           return {
-            columns: parcelColumns(permissions),
+            columns: parcelColumns(),
             createdRow: highlightMyRow,
             tableClasses: 'display',
             language: datatables_i18n[TAPi18n.getLanguage()],
@@ -235,421 +217,24 @@ Template.Community_page.viewmodel({
   },
 });
 
-function onJoinParcelInsertSuccess(parcelId) {
-  const communityId = FlowRouter.current().params._cid;
-  const communityName = Communities.findOne(communityId).name;
-  Memberships.methods.insert.call({
-    person: { userId: Meteor.userId() },
-    communityId,
-    approved: false,  // any user can submit not-yet-approved memberships
-    role: 'owner',
-    parcelId,
-    ownership: {
-      share: new Fraction(1),
-    },
-  }, (err, res) => {
-    if (err) displayError(err);
-    else displayMessage('success', 'Join request submitted', communityName);
-    Meteor.setTimeout(() => Modal.show('Modal', {
-      title: __('Join request submitted', communityName),
-      text: __('Join request notification'),
-      btnOK: 'ok',
-      //      btnClose: 'cancel',
-      onOK() { FlowRouter.go('App home'); },
-      //      onClose() { removeMembership.call({ _id: res }); }, -- has no permission to do it, right now
-    }), 3000);
-  });
-}
-
 Template.Community_page.events({
-  'click .js-member'(event, instance) {
+  'click .js-select-member'(event, instance) {
     //    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
-    const id = $(event.target).closest('tr').data('id');
+    const id = $(event.target).closest('[data-id]').data('id');
     instance.viewmodel.selectedMemberId(id);
   },
-  'click .js-assign'(event, instance) {
+  'click .js-select-parcel'(event, instance) {
     //    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
-    const id = $(event.target).closest('button').data('id');
+    const id = $(event.target).closest('[data-id]').data('id');
     instance.viewmodel.selectedParcelId(id);
   },
-  'click .js-meters'(event, instance) {
-    //    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
-    const id = $(event.target).closest('button').data('id');
-    instance.viewmodel.selectedParcelId(id);
-  },
-  'click .js-leaderships'(event, instance) {
-    const id = $(event.target).closest('button').data('id');
-    instance.viewmodel.selectedParcelId(id);
-  },
-  'click .js-invite'(event, instance) {
-    const _id = $(event.target).closest('button').data('id');
-    const membership = Memberships.findOne(_id);
-    Modal.confirmAndCall(Memberships.methods.linkUser, { _id }, {
-      action: 'invite user',
-      message: __('Connecting user', membership.Person().primaryEmail() || __('undefined')),
-    });
-  },
-  // community events
-  'click .community-section .js-edit, .management-section .js-edit'() {
-    afCommunityUpdateModal();
-  },
-  'click .community-section .js-delete'() {
-    const communityId = FlowRouter.current().params._cid;
-    Modal.confirmAndCall(removeCommunity, { _id: communityId }, {
-      message: 'It will disappear forever',
-      action: 'delete community',
-    });
-  },
-  'click .community-section .js-join'(event) {
-    AccountsTemplates.forceLogin(() => {
-      Modal.show('Autoform_edit', {
-        title: 'pleaseSupplyParcelData',
-        id: 'af.parcel.insert.unapproved',
-        collection: Parcels,
-        //        omitFields: ['serial'],
-        type: 'method',
-        meteormethod: 'parcels.insert',
-      });
-
-      /*    This can be used for immediate (no questions asked) joining - with a fixed ownership share
-            const communityId = FlowRouter.current().params._cid;
-            const maxSerial = Math.max.apply(Math, _.pluck(Parcels.find().fetch(), 'serial')) || 0;
-            Meteor.call('parcels.insert',
-              { communityId, approved: false, serial: maxSerial + 1, units: 300, type: 'flat' },
-              (error, result) => { onJoinParcelInsertSuccess(result); },
-            );
-      */
-    });
-  },
-  // roleship events
-  'click .roles-section .js-new'() {
-    Modal.show('Autoform_edit', {
-      id: 'af.roleship.insert',
-      collection: Memberships,
-      fields: ['role', 'person'],
-      type: 'method',
-      meteormethod: 'memberships.insert',
-    });
-  },
-  'click .roles-section .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.roleship.update',
-      collection: Memberships,
-      fields: ['person'],
-      doc: Memberships.findOne(id),
-      type: 'method-update',
-      meteormethod: 'memberships.update',
-      singleMethodArgument: true,
-    });
-  },
-  'click .roles-section .js-period'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.roleship.update',
-      collection: Memberships,
-      fields: ['activeTime'],
-      doc: Memberships.findOne(id),
-      type: 'method-update',
-      meteormethod: 'memberships.updateActivePeriod',
-      singleMethodArgument: true,
-    });
-  },
-  'click .roles-section .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.roleship.view',
-      collection: Memberships,
-      fields: ['role', 'person', 'activeTime'],
-      doc: Memberships.findOne(id),
-      type: 'readonly',
-    });
-  },
-  'click .roles-section .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
-      action: 'delete roleship',
-      message: 'You should rather archive it',
-    });
-  },
-  // Owner/benefactor events
-  'click #owner .js-import, #benefactor .js-import'(event, instance) {
-    importCollectionFromFile(Memberships);
-  },
-  'click #owner-button.js-new'(event, instance) {
-    // event.preventDefault();
-    Modal.show('Autoform_edit', {
-      id: 'af.ownership.insert',
-      collection: Memberships,
-      fields: ['person', 'ownership', 'activeTime'],
-      type: 'method',
-      meteormethod: 'memberships.insert',
-    });
-  },
-  'click #owner .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.ownership.update',
-      collection: Memberships,
-      fields: ['person', 'ownership'],
-      doc: Memberships.findOne(id),
-      type: 'method-update',
-      meteormethod: 'memberships.update',
-      singleMethodArgument: true,
-    });
-  },
-  'click  #owner .js-period'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.ownership.update',
-      collection: Memberships,
-      fields: ['activeTime'],
-      doc: Memberships.findOne(id),
-      type: 'method-update',
-      meteormethod: 'memberships.updateActivePeriod',
-      singleMethodArgument: true,
-    });
-  },
-  'click #owner .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.ownership.view',
-      collection: Memberships,
-      fields: ['person', 'ownership', 'activeTime'],
-      doc: Memberships.findOne(id),
-      type: 'readonly',
-    });
-  },
-  'click #owner .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
-      action: 'delete ownership',
-      message: 'You should rather archive it',
-    });
-  },
-  'click #benefactor-button.js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.benefactorship.insert',
-      collection: Memberships,
-      fields: ['person', 'benefactorship', 'activeTime'],
-      type: 'method',
-      meteormethod: 'memberships.insert',
-    });
-  },
-  'click #benefactor .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.benefactorship.update',
-      collection: Memberships,
-      fields: ['person', 'benefactorship'],
-      doc: Memberships.findOne(id),
-      type: 'method-update',
-      meteormethod: 'memberships.update',
-      singleMethodArgument: true,
-    });
-  },
-  'click #benefactor .js-period'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.benefactorship.update',
-      collection: Memberships,
-      fields: ['activeTime'],
-      doc: Memberships.findOne(id),
-      type: 'method-update',
-      meteormethod: 'memberships.updateActivePeriod',
-      singleMethodArgument: true,
-    });
-  },
-  'click #benefactor .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.benefactorship.view',
-      collection: Memberships,
-      fields: ['person', 'benefactorship', 'activeTime'],
-      doc: Memberships.findOne(id),
-      type: 'readonly',
-    });
-  },
-  'click #benefactor .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
-      action: 'delete benefactorship',
-      message: 'You should rather archive it',
-    });
-  },
-  // meters events
-  ...(actionHandlers(Meters)),
-  // leaderships events
-  'click #leadership-button.js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.leadership.insert',
-      collection: Leaderships,
-      omitFields: ['parcelId', 'leadParcelId'],
-      type: 'method',
-      meteormethod: 'leaderships.insert',
-    });
-  },
-  'click #leaderships .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.leadership.update',
-      collection: Leaderships,
-      omitFields: ['parcelId', 'leadParcelId'],
-      doc: Leaderships.findOne(id),
-      type: 'method-update',
-      meteormethod: 'leaderships.update',
-      singleMethodArgument: true,
-    });
-  },
-  'click #leaderships .js-period'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.leadership.update',
-      collection: Leaderships,
-      fields: ['activeTime'],
-      doc: Leaderships.findOne(id),
-      type: 'method-update',
-      meteormethod: 'leaderships.updateActivePeriod',
-      singleMethodArgument: true,
-    });
-  },
-  'click #leaderships .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(Leaderships.methods.remove, { _id: id }, {
-      action: 'delete leadership',
-      message: 'You should rather archive it',
-    });
-  },
-  // parcel events
-  'click .parcels-section .js-import'(event, instance) {
-    importCollectionFromFile(Parcels);
-  },
-  'click .parcels-section .js-show-all'(event, instance) {
+  'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);
   },
-  'click .parcels-section .js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.parcel.insert',
-      collection: Parcels,
-      type: 'method',
-      meteormethod: 'parcels.insert',
-    });
-  },
-  'click .parcels-section .js-edit'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.parcel.update',
-      collection: Parcels,
-      doc: Parcels.findOne(id),
-      type: 'method-update',
-      meteormethod: 'parcels.update',
-      singleMethodArgument: true,
-    });
-  },
-  'click .parcels-section .js-view'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.parcel.view',
-      collection: Parcels,
-      doc: Parcels.findOne(id),
-      type: 'readonly',
-    });
-  },
-  'click .parcels-section .js-delete'(event) {
-    const id = $(event.target).closest('button').data('id');
-    Modal.confirmAndCall(removeParcel, { _id: id }, {
-      action: 'delete parcel',
-      message: 'You should rather archive it',
-    });
-  },
-});
-
-AutoForm.addModalHooks('af.roleship.insert');
-AutoForm.addModalHooks('af.roleship.update');
-AutoForm.addHooks('af.roleship.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
-    return doc;
-  },
-});
-
-AutoForm.addModalHooks('af.ownership.insert');
-AutoForm.addModalHooks('af.ownership.update');
-AutoForm.addHooks('af.ownership.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
-    doc.parcelId = Session.get('selectedParcelId');
-    doc.approved = true;
-    doc.role = 'owner';
-    return doc;
-  },
-});
-AutoForm.addHooks('af.ownership.update', {
-  formToModifier(modifier) {
-    modifier.$set.approved = true;
-    return modifier;
-  },
-});
-AutoForm.addModalHooks('af.benefactorship.insert');
-AutoForm.addModalHooks('af.benefactorship.update');
-AutoForm.addHooks('af.benefactorship.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
-    doc.parcelId = Session.get('selectedParcelId');
-    doc.approved = true;
-    doc.role = 'benefactor';
-    return doc;
-  },
-});
-AutoForm.addHooks('af.benefactorship.update', {
-  formToModifier(modifier) {
-    modifier.$set.approved = true;
-    return modifier;
-  },
-});
-
-AutoForm.addModalHooks('af.parcel.insert');
-AutoForm.addModalHooks('af.parcel.update');
-AutoForm.addHooks('af.parcel.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
-    return doc;
-  },
-});
-AutoForm.addHooks('af.parcel.update', {
-  formToModifier(modifier) {
-    modifier.$set.approved = true;
-    return modifier;
-  },
-});
-
-AutoForm.addModalHooks('af.parcel.insert.unapproved');
-AutoForm.addHooks('af.parcel.insert.unapproved', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
-    doc.approved = false;
-    return doc;
-  },
-  onSuccess(formType, result) {
-    onJoinParcelInsertSuccess(result);
-  },
-});
-
-AutoForm.addModalHooks('af.leadership.insert');
-AutoForm.addModalHooks('af.leadership.update');
-AutoForm.addHooks('af.leadership.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
-    doc.parcelId = Session.get('selectedParcelId');
-    //    doc.approved = true;
-    return doc;
-  },
-});
-AutoForm.addHooks('af.leadership.update', {
-  formToModifier(modifier) {
-    delete modifier.$set.leadParcelId; // not working
-    modifier.$set.communityId = Session.get('selectedCommunityId');
-    return modifier;
-  },
+  ...(actionHandlers(Communities)),
+  ...(actionHandlers(Parcels)),
+  ...(actionHandlers(Memberships)),
+  ...(actionHandlers(Leaderships)),
+  ...(actionHandlers(Meters)),
 });

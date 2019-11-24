@@ -12,7 +12,7 @@ import './methods.js';
 Contracts.actions = {
   new: {
     name: 'new',
-    icon: 'fa fa-plus',
+    icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('contracts.insert'),
     run(id, event, instance) {
       Modal.show('Autoform_edit', {
@@ -25,7 +25,7 @@ Contracts.actions = {
   },
   view: {
     name: 'view',
-    icon: 'fa fa-eye',
+    icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('contracts.inCommunity'),
     run(id) {
       const doc = Contracts.findOne(id);
@@ -34,7 +34,7 @@ Contracts.actions = {
   },
   edit: {
     name: 'edit',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('contracts.update'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -49,7 +49,7 @@ Contracts.actions = {
   },
   delete: {
     name: 'delete',
-    icon: 'fa fa-trash',
+    icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('contracts.remove'),
     run(id) {
       Modal.confirmAndCall(Contracts.methods.remove, { _id: id }, {

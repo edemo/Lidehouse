@@ -55,7 +55,7 @@ Leaderships.helpers({
   ledParcel() {
     return Parcels.findOne(this.parcelId);
   },
-  permissionCategory() {
+  entitiyName() {
     return 'leaderships';
   },
 });

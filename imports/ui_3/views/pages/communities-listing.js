@@ -1,20 +1,11 @@
 /* globals $ */
-import { Meteor } from 'meteor/meteor';
-import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import { FlowRouter } from 'meteor/kadira:flow-router';
 import { TAPi18n } from 'meteor/tap:i18n';
-import { Fraction } from 'fractional';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
-import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { communityColumns } from '/imports/api/communities/tables.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { AutoForm } from 'meteor/aldeed:autoform';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/autoform-edit.js';
-import { afCommunityInsertModal } from '/imports/ui_3/views/components/communities-edit.js';
+import '/imports/api/communities/actions.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './communities-listing.html';
 
 Template.Communities_listing.onCreated(function onCreated() {
@@ -43,17 +34,6 @@ Template.Communities_listing.helpers({
   },
 });
 
-Template.Communities_listing.events({
-  'click .js-new'() {
-    Modal.show('Autoform_edit', {
-      id: 'af.roleship.insert',
-      collection: Memberships,
-      omitFields: ['parcelId', 'ownership', 'benefactorship', 'person.idCard'],
-      type: 'method',
-      meteormethod: 'memberships.insert',
-    });
-  },
-  'click .js-create'() {
-    afCommunityInsertModal();
-  },
-});
+Template.Communities_listing.events(
+  actionHandlers(Communities)
+);

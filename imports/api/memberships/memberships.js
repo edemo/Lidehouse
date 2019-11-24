@@ -10,7 +10,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { officerRoles, everyRole, Roles, ranks, permissionCategoryOf } from '/imports/api/permissions/roles.js';
+import { officerRoles, everyRole, Roles, ranks } from '/imports/api/permissions/roles.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -88,7 +88,17 @@ Meteor.startup(function indexMemberships() {
 // A megadott email címmel még nincs regisztrált felhasználó a rendszerben.
 // Küldjünk egy meghívót a címre?
 
+export function entityOf(role) {
+  if (role === 'owner') return 'ownership';
+  if (role === 'benefactor') return 'benefactorship';
+  if (role === 'delegate') return 'delegate';
+  return 'roleship';
+}
+
 Memberships.helpers({
+  entityName() {
+    return entityOf(this.role);
+  },
   hasPerson() {
     return !!(this.person);
   },
@@ -115,9 +125,6 @@ Memberships.helpers({
     const community = this.community();
     if (!community) return undefined;
     return community.totalunits;
-  },
-  permissionCategory() {
-    return permissionCategoryOf(this.role);
   },
   isOwnership() {
     if (this.role === 'owner') return true;

@@ -7,8 +7,6 @@ import { PublicationCollector } from 'meteor/johanbrook:publication-collector';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { Random } from 'meteor/random';
 import { _ } from 'meteor/underscore';
-import { moment } from 'meteor/momentjs:moment';
-import { Fraction } from 'fractional';
 
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';

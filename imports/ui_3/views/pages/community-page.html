@@ -4,7 +4,7 @@
     {{#unless and (not begin) (not end)}}
         <small>{{displayDate begin}} - {{or (displayDate end) (_ 'active')}}</small>
     {{/unless}}    
-    {{#if userHasPermission (concat this.permissionCategory '.update') communityId}}
+    {{#if userHasPermission (concat this.entityName '.update') communityId}}
         {{#if and (not begin) (not end)}}
         <button class="btn btn-xs btn-white js-period" data-id={{_id}}><i class="fa fa-history"></i> {{_ 'period'}}</button>
         {{else}}
@@ -39,17 +39,7 @@
                             {{/if}}
                         </td>
                         <td class="text-right">
-                            <div class="btn-group">
-                                {{#if userHasPermission 'roleships.update' communityId}}
-                                <button class="btn btn-xs btn-white js-edit" data-id={{row._id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                                {{#unless row.accepted}}
-                                <button class="btn btn-xs {{#if row.personId}}btn-info{{else}}btn-warning{{/if}} js-invite" data-id={{row._id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
-                                {{/unless}}
-                                {{/if}}
-                                {{#if userHasPermission 'roleships.remove' communityId}}
-                                <button class="btn btn-xs btn-white js-delete" data-id={{row._id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                                {{/if}}
-                            </div>
+                            {{>Action_buttons_group collection='memberships' _id=row._id actions='edit,invite,delete' size='lg'}}
                         </td>
                     </tr>
                 {{/each}}
@@ -65,12 +55,12 @@
             <table class="table table-striped table-hover">
                 <tbody>
                     {{#each row in memberships}}
-                    {{#let category=(calculateCategory row)}}
-                    <tr id="{{row.role}}" data-id="{{row._id}}">
-                        <td><a href="#member" class="client-avatar js-member"><img alt="image" src={{row.Person.avatar}}></a></td>
-                        <td><a href="#member" class="client-link js-member">{{row.Person.displayName}}</a></td>
+                    {{#let entity=row.entityName}}
+                    <tr class="{{entity}}" data-id="{{row._id}}">
+                        <td><a href="#member" class="client-avatar js-select-member"><img alt="image" src={{row.Person.avatar}}></a></td>
+                        <td><a href="#member" class="client-link js-select-member">{{row.Person.displayName}}</a></td>
                         <td>{{>Active_period row}}</td>
-                            {{#if equals category 'ownerships'}}
+                            {{#if equals entity 'ownership'}}
                             <td class="contact-type nowrap">
                                 <i class="fa fa-pie-chart" title="{{_ 'ownership proportion'}}"></i> {{row.ownership.share}}
                                 {{#if row.ownership.representor}}
@@ -78,21 +68,11 @@
                                 {{/if}}
                             </td>
                             {{/if}}
-                            {{#if equals category 'benefactorships'}}
+                            {{#if equals entity 'benefactorship'}}
                             <td><span class="label label-plain">{{_ row.benefactorship.type}}</span></td>
                             {{/if}}
                         <td class="text-right">
-                            <div class="btn-group">
-                                {{#if userHasPermission (concat category '.update') communityId}}
-                                <button class="btn btn-xs btn-white js-edit" data-id={{row._id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                                {{#unless row.accepted}}
-                                <button class="btn btn-xs {{#if row.personId}}btn-info{{else}}btn-warning{{/if}} js-invite" data-id={{row._id}}><i class="fa fa-user"></i> {{_ 'invite'}}</button>
-                                {{/unless}}
-                                {{/if}}
-                                {{#if userHasPermission (concat category '.remove') communityId}}
-                                <button class="btn btn-xs btn-white js-delete" data-id={{row._id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                                {{/if}}
-                            </div>
+                            {{>Action_buttons_group collection='memberships' _id=row._id actions='edit,invite,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/let}}
@@ -100,18 +80,11 @@
                     {{#each row in leaderships}}
                     <tr id="leaderships" data-id="{{row._id}}">
                         <td class="text-center"> <a class="client-avatar"><i class="fa fa-lg fa-share"></i></a></td>
-                        <td><button class="js-assign" data-id="{{row.leadParcelId}}"><strong title="{{_ 'leadership'}}">{{row.leadRef}}</strong></button></td>
+                        <td><button class="js-select-parcel" data-id="{{row.leadParcelId}}"><strong title="{{_ 'leadership'}}">{{row.leadRef}}</strong></button></td>
                         <td>{{>Active_period row}}</td>
                         <td><span class="label label-plain">{{_ 'lead parcel'}}</span></td>
                         <td class="text-right">
-                            <div class="btn-group">
-                                {{#if userHasPermission 'leaderships.update' communityId}}
-                                <button class="btn btn-xs btn-white js-edit" data-id={{row._id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                                {{/if}}
-                                {{#if userHasPermission 'leaderships.remove' communityId}}
-                                <button class="btn btn-xs btn-white js-delete" data-id={{row._id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                                {{/if}}
-                            </div>
+                            {{>Action_buttons_group collection='leaderships' _id=row._id actions='edit,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/each}}
@@ -127,23 +100,23 @@
             <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
             <h2>{{_ 'occupants'}} {{leadershipTitle}}                
             </h2>
-            {{#if userHasPermission 'benefactorships.insert' communityId}}
+            {{#if userHasPermission 'benefactorship.insert' communityId}}
                 <div class="dropdown btn-group pull-right">
                     <button href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
                         <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'occupant'}}</strong> <b class="caret"></b>
                     </button>
                     <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
-                        {{#if userHasPermission 'ownerships.insert' communityId}}
-                        <li><a href="" id="owner-button" class="js-new">{{_ 'new'}} {{_ 'owner'}}</a></li>
+                        {{#if userHasPermission 'ownership.insert' communityId}}
+                        <li><a href="" class="js-new ownership">{{_ 'new'}} {{_ 'owner'}}</a></li>
                         {{/if}}
-                        {{#if userHasPermission 'benefactorships.insert' communityId}}
-                        <li><a href="" id="benefactor-button" class="js-new">{{_ 'new'}} {{_ 'benefactor'}}</a></li>
+                        {{#if userHasPermission 'benefactorship.insert' communityId}}
+                        <li><a href="" class="js-new benefactorship">{{_ 'new'}} {{_ 'benefactor'}}</a></li>
                         {{/if}}
                         {{#if userHasPermission 'leaderships.insert' communityId}}
-                        <li><a href="" id="leadership-button" class="js-new">{{_ 'new'}} {{_ 'leadership'}}</a></li>
+                        <li><a href="" class="js-new leaderships">{{_ 'new'}} {{_ 'leadership'}}</a></li>
                         {{/if}}
                     </ul>
-                <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+                <button class="btn btn-white btn-sm js-import ownership" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
                 </div>  
             {{/if}}
             <p>
@@ -153,7 +126,7 @@
             </p>
             <br>
             <div class="member-list">
-                {{> Active_archive_tabs name=category icon='fa-user' iconUnapproved='fa-user-o'
+                {{> Active_archive_tabs name=(concat entity 's') icon='fa-user' iconUnapproved='fa-user-o'
                     template='Memberships_table' content=membershipsContent }}
             </div>
         </div>
@@ -219,7 +192,7 @@
         <div class="row">
             <div class="col-md-8">
                 {{#if community.management}}
-                <div class="ibox community-section">
+                <div class="ibox communities data-id={{communityId}}">
                     <div class="ibox-content">
                         {{#if userHasPermission 'communities.update' communityId}}
                         <!--span class="text-muted small pull-right">{{_ 'Modifiable at Building Data edit'}}</span-->
@@ -230,11 +203,11 @@
                     </div>
                 </div>
                 {{/if}}
-                <div class="ibox roles-section">
+                <div class="ibox roleship">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
                         <h2>{{_ 'officers'}}</h2>
-                        {{#if userHasPermission 'roleships.insert' communityId}}
+                        {{#if userHasPermission 'roleship.insert' communityId}}
                         <button class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong></button>
                         {{/if}}
                         <p>
@@ -255,7 +228,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="ibox community-section float-e-margins">
+                <div class="ibox float-e-margins communities" data-id={{communityId}}>
                     <div class="ibox-title">
                         <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
                         {{#if userHasPermission 'communities.update' communityId}}
@@ -316,7 +289,7 @@
         {{#if userHasPermission 'memberships.inCommunity' communityId}}
         <div class="row">
             <div class="col-lg-12">
-                <div class="ibox parcels-section">
+                <div class="ibox parcels">
                     <div class="ibox-content">
                         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
                         <h2 class="text-capitalize">{{_ "parcels"}}</h2>

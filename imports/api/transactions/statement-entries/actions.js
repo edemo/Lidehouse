@@ -10,7 +10,7 @@ import './methods.js';
 StatementEntries.actions = {
   new: {
     name: 'new',
-    icon: 'fa fa-plus',
+    icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('statements.insert'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -23,7 +23,7 @@ StatementEntries.actions = {
   },
   view: {
     name: 'view',
-    icon: 'fa fa-eye',
+    icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('statements.inCommunity'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -36,7 +36,7 @@ StatementEntries.actions = {
   },
   edit: {
     name: 'edit',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('statements.update'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -51,7 +51,7 @@ StatementEntries.actions = {
   },
   reconcile: {
     name: 'reconcile',
-    icon: 'fa fa-external-link',
+    icon: () => 'fa fa-external-link',
     color: id => 'danger',
     visible: id => currentUserHasPermission('statements.reconcile') && !StatementEntries.findOne(id).isReconciled(),
     run(id) {

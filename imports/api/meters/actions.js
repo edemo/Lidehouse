@@ -13,7 +13,7 @@ import './methods.js';
 Meters.actions = {
   new: {
     name: 'new',
-    icon: 'fa fa-plus',
+    icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('meters.insert'),
     run(id, event, instance) {
       Modal.show('Autoform_edit', {
@@ -27,7 +27,7 @@ Meters.actions = {
   },
   view: {
     name: 'view',
-    icon: 'fa fa-eye',
+    icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('meters.inCommunity'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -40,7 +40,7 @@ Meters.actions = {
   },
   edit: {
     name: 'edit',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -56,7 +56,7 @@ Meters.actions = {
   },
   editReadings: {
     name: 'editReadings',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -72,7 +72,7 @@ Meters.actions = {
   },
   reading: {
     name: 'reading',
-    icon: 'fa fa-camera',
+    icon: () => 'fa fa-camera',
     visible: () => currentUserHasPermission('meters.registerReading'),
     run(id) {
       Session.set('selectedMeterId', id);
@@ -87,7 +87,7 @@ Meters.actions = {
   },
   period: {
     name: 'period',
-    icon: 'fa fa-history',
+    icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('meters.update'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -103,7 +103,7 @@ Meters.actions = {
   },
   delete: {
     name: 'delete',
-    icon: 'fa fa-trash',
+    icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('meters.remove'),
     run(id) {
       Modal.confirmAndCall(Meters.methods.remove, { _id: id }, {

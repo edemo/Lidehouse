@@ -9,7 +9,7 @@ import './methods.js';
 ParcelBillings.actions = {
   new: {
     name: 'new',
-    icon: 'fa fa-plus',
+    icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('parcelBillings.insert'),
     run() {
       Modal.show('Autoform_edit', {
@@ -22,7 +22,7 @@ ParcelBillings.actions = {
   },
   view: {
     name: 'view',
-    icon: 'fa fa-eye',
+    icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('parcelBillings.inCommunity'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -35,7 +35,7 @@ ParcelBillings.actions = {
   },
   edit: {
     name: 'edit',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('parcelBillings.update'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -50,7 +50,7 @@ ParcelBillings.actions = {
   },
   apply: {
     name: 'apply',
-    icon: 'fa fa-calendar-plus-o',
+    icon: () => 'fa fa-calendar-plus-o',
     visible: () => currentUserHasPermission('parcelBillings.apply'),
     run(id) {
       Session.set('activeParcelBillingId', id);
@@ -65,7 +65,7 @@ ParcelBillings.actions = {
   },/*
   revert: {
     name: 'revert',
-    icon: 'fa fa-calendar-times-o',
+    icon: () => 'fa fa-calendar-times-o',
     visible: () => currentUserHasPermission('parcelBillings.revert'),
     run(id) {
       Session.set('activeParcelBillingId', id);
@@ -80,7 +80,7 @@ ParcelBillings.actions = {
   },*/
   delete: {
     name: 'delete',
-    icon: 'fa fa-trash',
+    icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('parcelBillings.remove'),
     run(id) {
       Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: id }, {

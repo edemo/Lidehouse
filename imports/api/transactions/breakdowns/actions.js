@@ -11,7 +11,7 @@ import './methods.js';
 Breakdowns.actions = {
   new: {
     name: 'new',
-    icon: 'fa fa-plus',
+    icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('breakdowns.insert'),
     run() {
       Modal.show('Autoform_edit', {
@@ -25,7 +25,7 @@ Breakdowns.actions = {
   },
   view: {
     name: 'view',
-    icon: 'fa fa-eye',
+    icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('breakdowns.inCommunity'),
     run(id) {
       const breakdown = Breakdowns.findOne(id);
@@ -47,7 +47,7 @@ Breakdowns.actions = {
   },
   edit: {
     name: 'edit',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -83,7 +83,7 @@ Breakdowns.actions = {
   },
   delete: {
     name: 'delete',
-    icon: 'fa fa-trash',
+    icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('breakdowns.remove'),
     run(id) {
       Modal.confirmAndCall(Breakdowns.remove, { _id: id }, {

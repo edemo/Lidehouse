@@ -34,12 +34,6 @@ export const exceptGuest = _.without(everyRole, 'guest');
 export const exceptAdmin = _.without(everyRole, 'admin');
 export const nobody = [];
 
-export function permissionCategoryOf(role) {
-  if (role === 'owner') return 'ownerships';
-  if (role === 'benefactor') return 'benefactorships';
-  return 'roleships';
-}
-
 // =====================================
 
 export const Roles = new Mongo.Collection('roles');

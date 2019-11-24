@@ -8,18 +8,17 @@ import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
 
 import { sanityCheckAtLeastOneActive } from '/imports/api/behaviours/active-period.js';
-import { permissionCategoryOf } from '/imports/api/permissions/roles.js';
 import { Log } from '/imports/utils/log.js';
 import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Memberships } from './memberships.js';
+import { Memberships, entityOf } from './memberships.js';
 
 function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
   // Checks that *user* has permission to add new member in given *community*  
   const user = Meteor.users.findOne(userId);
   if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?)
-  const permissionName = permissionCategoryOf(roleOfNewMember) + '.update';
+  const permissionName = entityOf(roleOfNewMember) + '.update';
   if (!user.hasPermission(permissionName, communityId)) {
     throw new Meteor.Error('err_permissionDenied',
       `No permission to add membership, roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);

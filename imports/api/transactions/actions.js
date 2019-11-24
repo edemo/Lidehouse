@@ -11,7 +11,7 @@ import { Bills } from './bills/bills.js';
 Transactions.actions = {
   new: {
     name: 'new',
-    icon: 'fa fa-plus',
+    icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('transactions.insert'),
     run(catId) {
       Session.set('activeTxCatId', catId);
@@ -27,7 +27,7 @@ Transactions.actions = {
   },
   view: {
     name: 'view',
-    icon: 'fa fa-eye',
+    icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('transactions.inCommunity'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -41,7 +41,7 @@ Transactions.actions = {
   },
   edit: {
     name: 'edit',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('transactions.update'),
     run(id) {
       Modal.show('Autoform_edit', {
@@ -57,7 +57,7 @@ Transactions.actions = {
   },
   delete: {
     name: 'delete',
-    icon: 'fa fa-trash',
+    icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('transactions.remove'),
     run(id) {
       const tx = Transactions.findOne(id);

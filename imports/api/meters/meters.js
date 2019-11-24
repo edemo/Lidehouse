@@ -61,7 +61,7 @@ Meteor.startup(function indexParcels() {
 });
 
 Meters.helpers({
-  permissionCategory() {
+  entityName() {
     return 'meters';
   },
   lastReading() {

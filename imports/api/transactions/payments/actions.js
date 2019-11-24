@@ -28,7 +28,7 @@ function clearSessionVars() {
 Payments.actions = {
   new: {
     name: 'new',
-    icon: 'fa fa-plus',
+    icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('payments.insert'),
     run(id, event, instance) {
       setSessionVars(instance);
@@ -42,7 +42,7 @@ Payments.actions = {
   },
   view: {
     name: 'view',
-    icon: 'fa fa-eye',
+    icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('payments.inCommunity'),
     run(id) {
       const doc = Payments.findOne(id);
@@ -51,7 +51,7 @@ Payments.actions = {
   },
   edit: {
     name: 'edit',
-    icon: 'fa fa-pencil',
+    icon: () => 'fa fa-pencil',
     visible(id) {
       if (!currentUserHasPermission('bills.update')) return false;
       const doc = Payments.findOne(id);
@@ -72,7 +72,7 @@ Payments.actions = {
   },
   post: {
     name: 'post',
-    icon: 'fa fa-check-square-o',
+    icon: () => 'fa fa-check-square-o',
     color: _id => (!(Payments.findOne(_id).txId) ? 'warning' : undefined),
     visible(id) {
       if (!currentUserHasPermission('payments.post')) return false;
@@ -87,7 +87,7 @@ Payments.actions = {
   },
   delete: {
     name: 'delete',
-    icon: 'fa fa-trash',
+    icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('payments.remove'),
     run(id) {
       Modal.confirmAndCall(Payments.methods.remove, { _id: id }, {
