@@ -6,16 +6,6 @@ import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
-Render.joinOccupants = function joinOccupants(occupants) {
-  let result = '';
-  occupants.forEach((m) => {
-    const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
-    const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
-    result += `${m.Person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
-  });
-  return result;
-};
-
 export function parcelColumns() {
   return [
     { data: 'ref', title: __('schemaParcels.ref.label') },

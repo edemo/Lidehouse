@@ -27,44 +27,6 @@ import '../components/balance-widget.js';
 import '../components/balance-report.js';
 import './parcels-finances.html';
 
-/*  this.autorun(() => {
-    const communityId = Session.get('activeCommunityId');
-    const myParcelIds = Memberships.find({ communityId, personId: Meteor.userId(), role: 'owner' }).map(m => m.parcel().serial.toString());
-    // const allParcelIds = Communities.find(communityId).parcels().map(p => p.serial.toString());
-    // $('select#localizer').val(myParcelIds[0] || 'Localizer');
-    this.getActiveLocalizer = function () {
-      return $('select#localizer').val();
-    };
-    this.getActiveParcelFilter = function () {
-      const activeLocalizer = this.getActiveLocalizer();
-      const localizerPac = Breakdowns.findOne({ communityId, name: 'Localizer' });
-      const filter = { $in: localizerPac.leafsOf(activeLocalizer) };
-      return filter;
-    };
-  }); */
-
-/*
-export function Columns(permissions) {
-  const buttonRenderers = [];
-  if (permissions.view) buttonRenderers.push(Render.buttonView);
-  if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
-  if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
-
-  const columns = [
-    { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
-    { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
-    { data: 'credit', title: __('schemaTransactions.credit.label'), render: Render.journalEntries },
-    { data: 'debit', title: __('schemaTransactions.debit.label'), render: Render.journalEntries },
-//    { data: 'placeAccounts()', title: __('Konyveles hely'), render: Render.breakdowns },
-    { data: 'ref', title: __('schemaTransactions.ref.label') },
-    { data: 'note', title: __('schemaTransactions.note.label') },
-    { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
-  ];
-
-  return columns;
-}
-*/
-
 Template.Parcels_finances.viewmodel({
   showAllParcels: false,
   parcelToView: '',

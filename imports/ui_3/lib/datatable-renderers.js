@@ -55,22 +55,6 @@ export const Render = {
     const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-delete" title=${__('delete')}><i class="fa fa-trash"></i></button>`;
     return html;
   },
-  buttonRemove(cellData, renderType, currentRow) {
-    const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-remove" title=${__('remove')}><i class="fa fa-times"></i></button>`;
-    return html;
-  },
-  buttonJoin(cellData, renderType, currentRow) {
-    const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-join" title=${__('join')}><i class="fa fa-suitcase"></i></button>`;
-    return html;
-  },
-  buttonLink(cellData, renderType, currentRow) {
-    const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-link" title=${__('link')}><i class="fa fa-external-link"></i></button>`;
-    return html;
-  },
-  buttonApply(cellData, renderType, currentRow) {
-    const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-apply" title=${__('apply')}><i class="fa fa-calendar-plus-o"></i></button>`;
-    return html;
-  },
   buttonGroup(buttonRenderers) {
     return function groupRenderer(cellData, renderType, currentRow) {
       let html = '<div class="btn-group">';
@@ -103,14 +87,13 @@ export const Render = {
     const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-status-update" title=${__('statusUpdate')}><i class="fa fa-edit"></i></button>`;
     return html;
   },
-};
-
-Render.joinOccupants = function joinOccupants(occupants) {
-  let result = '';
-  occupants.forEach((m) => {
-    const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
-    const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
-    result += `${m.Person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
-  });
-  return result;
+  joinOccupants(occupants) {
+    let result = '';
+    occupants.forEach((m) => {
+      const repBadge = m.isRepresentor() ? `<i class="fa fa-star" title=${__('representor')}></i>` : '';
+      const occupancyDetail = m.ownership ? '(' + m.ownership.share.toStringLong() + ')' : '';
+      result += `${m.Person().displayName()} ${occupancyDetail} ${repBadge}<br>`;
+    });
+    return result;
+  },
 };

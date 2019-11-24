@@ -13,7 +13,6 @@ function linkToCommunityPage(cellData, renderType, currentRow) {
 export function communityColumns() {
   return [
     { data: '_id', render: linkToCommunityPage, title: __('name') },
-//    { data: '_id', render: Render.buttonJoin },
     { data: 'city', title: __('schemaCommunities.city.label') },
     { data: 'zip', title: __('schemaCommunities.zip.label') },
     { data: 'street', title: __('schemaCommunities.street.label') },
