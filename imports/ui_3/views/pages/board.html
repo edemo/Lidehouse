@@ -60,9 +60,8 @@
                       <strong>{{title}}</strong>
                       <div>{{#markdown}}{{text}}{{/markdown}}</div>
                       {{#if currentUser.hasPermission 'news.update' activeCommunityId}}
-                      <div class="btn-group pull-right m-t-sm">
-                        <button class="btn btn-white btn-xs text-capitalize js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                        <button class="btn btn-white btn-xs text-capitalize js-remove"><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+                      <div class="pull-right m-t-sm">
+                        {{>Action_buttons_group collection='topics' _id=_id actions='edit,delete' size='lg'}}
                       </div>
                       {{/if}}
                   </div>
@@ -83,9 +82,8 @@
       <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
       {{#markdown}}{{text}}{{/markdown}}  
       {{#if currentUser.hasPermission 'news.update' activeCommunityId}}
-      <div class="btn-group pull-right m-t-sm">
-        <button class="btn btn-white btn-xs text-capitalize js-edit"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-        <button class="btn btn-white btn-xs text-capitalize js-remove"><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
+      <div class="pull-right m-t-sm">
+        {{>Action_buttons_group collection='topics' _id=_id actions='edit,delete' size='lg'}}
       </div>
       {{/if}}
     </div>

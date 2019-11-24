@@ -32,7 +32,7 @@ Bills.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('bills.insert'),
-    run(id, event, instance) {
+    run(name, data, event, instance) {
       setSessionVars(instance);
       Modal.show('Bill_edit', {
         id: 'af.bill.insert',

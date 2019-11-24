@@ -14,7 +14,7 @@ Partners.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('partners.insert'),
-    run(id, event, instance) {
+    run() {
       Modal.show('Autoform_edit', {
         id: 'af.partner.insert',
         collection: Partners,

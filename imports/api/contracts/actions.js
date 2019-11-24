@@ -14,7 +14,7 @@ Contracts.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('contracts.insert'),
-    run(id, event, instance) {
+    run() {
       Modal.show('Autoform_edit', {
         id: 'af.contract.insert',
         collection: Contracts,

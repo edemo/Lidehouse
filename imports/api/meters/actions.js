@@ -15,7 +15,7 @@ Meters.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('meters.insert'),
-    run(id, event, instance) {
+    run() {
       Modal.show('Autoform_edit', {
         id: 'af.meter.insert',
         collection: Meters,

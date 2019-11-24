@@ -5,6 +5,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '/imports/ui_3/views/modals/autoform-edit.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
@@ -17,7 +18,7 @@ Parcels.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('parcels.insert'),
-    run(id, event, instance) {
+    run() {
       Modal.show('Autoform_edit', {
         id: 'af.parcel.insert',
         collection: Parcels,
@@ -68,7 +69,7 @@ Parcels.actions = {
       return colorClass;
     },
     visible: () => currentUserHasPermission('memberships.inCommunity'),
-    href: '#occupants',
+    href: () => '#occupants',
     run(id, event, instance) {
       instance.viewmodel.selectedParcelId(id);
     },
@@ -77,7 +78,7 @@ Parcels.actions = {
     name: 'meters',
     icon: () => 'fa fa-tachometer',
     visible: () => currentUserHasPermission('meters.inCommunity'),
-    href: '#meters',
+    href: () => '#meters',
     run(id, event, instance) {
       instance.viewmodel.selectedParcelId(id);
     },

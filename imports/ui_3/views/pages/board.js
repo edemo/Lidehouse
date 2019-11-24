@@ -3,20 +3,16 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import { AutoForm } from 'meteor/aldeed:autoform';
 import { $ } from 'meteor/jquery';
 
-import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 
 import { Topics } from '/imports/api/topics/topics.js';
-import { remove as removeTopic } from '/imports/api/topics/methods.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/modal.js';
-import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/api/topics/methods.js';
+import '/imports/api/topics/actions.js';
 import '/imports/ui_3/views/components/collapse-section.js';
 import '/imports/ui_3/views/components/new-forum-topic.js';
+import '../blocks/action-buttons.js';
 import '../components/topic-box.js';
 import '../components/topic-vote-box.js';
 import '../components/comments-section.js';
@@ -51,43 +47,14 @@ Template.News.helpers({
 
 Template.News.events({
   'click .js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.news.insert',
-      collection: Topics,
-      schema: Topics.schema,
-      omitFields: ['userId', 'category', 'agendaId'],
-      type: 'method',
-      meteormethod: 'topics.insert',
-    });
+    Topics.actions.new.run('news');
   },
   'click .js-edit'(event, instance) {
-    const id = $(event.target).closest('div.news-elem').data('id');
-    Modal.show('Autoform_edit', {
-      id: 'af.news.update',
-      collection: Topics,
-      schema: Topics.schema,
-      doc: Topics.findOne(id),
-      omitFields: ['userId', 'category', 'agendaId'],
-      type: 'method-update',
-      meteormethod: 'topics.update',
-      singleMethodArgument: true,
-    });
+    const id = $(event.target).closest('[data-id]').data('id');
+    Topics.actions.edit.run(id);
   },
-  'click .js-remove'(event, instance) {
-    const id = $(event.target).closest('div.news-elem').data('id');
-    Modal.confirmAndCall(removeTopic, { _id: id }, {
-      action: 'delete news',
-    });
-  },
-});
-
-AutoForm.addModalHooks('af.news.insert');
-AutoForm.addModalHooks('af.news.update');
-AutoForm.addHooks('af.news.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.category = 'news';
-    doc.status = 'opened';
-    return doc;
+  'click .js-delete'(event, instance) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    Topics.actions.delete.run(id);
   },
 });

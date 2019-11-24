@@ -12,7 +12,7 @@ StatementEntries.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('statements.insert'),
-    run(id) {
+    run() {
       Modal.show('Autoform_edit', {
         id: 'af.statementEntry.insert',
         collection: StatementEntries,

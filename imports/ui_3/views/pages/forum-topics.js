@@ -7,15 +7,10 @@ import { $ } from 'meteor/jquery';
 
 import { handleError } from '/imports/ui_3/lib/errors';
 import { Topics } from '/imports/api/topics/topics.js';
+import '/imports/api/topics/actions.js';
 //import '/imports/ui_3/stylesheets/animatecss/animate.css';
 import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-edit.js';
-import '/imports/ui_3/views/modals/voting-edit.js';
-import '/imports/ui_3/views/components/new-forum-topic.js';
 import '../common/page-heading.js';
-import '../components/topic-vote-box.js';
-import '../components/voting-list.html';
-import './vote-topics.html';
 import './forum-topics.html';
 
 Template.Forum_topics.viewmodel({
@@ -49,14 +44,7 @@ Template.Forum_topics.viewmodel({
 
 Template.Forum_topics.events({
   'click .js-new'(event, instance) {
-    Modal.show('Autoform_edit', {
-      id: 'af.forum.insert',
-      collection: Topics,
-      schema: Topics.schema,
-      omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky'],
-      type: 'method',
-      meteormethod: 'topics.insert',
-    });
+    Topics.actions.new.run('forum');
   },
   'click .js-like'(event) {
     const id = $(event.target).closest('div.vote-item').data('id');
@@ -73,18 +61,5 @@ Template.Forum_topics.events({
   'click .js-filter'(event, instance) {
     const group = $(event.target).closest('[data-value]').data('value');
     instance.viewmodel.activeGroup(group);
-  },
-});
-
-AutoForm.addModalHooks('af.forum.insert');
-AutoForm.addHooks('af.forum.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    doc.category = 'forum';
-    doc.status = Topics._transform(doc).startStatus().name;
-    if (!doc.title && doc.text) {
-      doc.title = (doc.text).substring(0, 25) + '...';
-    }
-    return doc;
   },
 });

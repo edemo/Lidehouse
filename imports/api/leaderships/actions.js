@@ -1,16 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Fraction } from 'fractional';
-import { AccountsTemplates } from 'meteor/useraccounts:core';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '/imports/ui_3/views/modals/autoform-edit.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Leaderships } from './leaderships.js';
 import './methods.js';
 
@@ -19,7 +15,7 @@ Leaderships.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('leaderships.insert'),
-    run(id, event, instance) {
+    run() {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.insert',
         collection: Leaderships,

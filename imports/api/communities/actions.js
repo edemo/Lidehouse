@@ -7,6 +7,7 @@ import { AccountsTemplates } from 'meteor/useraccounts:core';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import '/imports/ui_3/views/modals/autoform-edit.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';

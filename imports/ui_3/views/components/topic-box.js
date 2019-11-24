@@ -9,9 +9,7 @@ import { handleError } from '/imports/ui_3/lib/errors.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/methods.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/modal.js';
-import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/api/topics/actions.js';
 import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import '/imports/ui_3/views/components/comments-section.js';
@@ -27,22 +25,11 @@ Template.Topic_edit_menu.events({
   },
   'click .forum .js-edit'(event, instance) {
     const id = this._id;
-    Modal.show('Autoform_edit', {
-      id: 'af.forum.update',
-      collection: Topics,
-      schema: Topics.schema,
-      omitFields: ['communityId', 'userId', 'category', 'agendaId', 'sticky'],
-      doc: Topics.findOne(id),
-      type: 'method-update',
-      meteormethod: 'topics.update',
-      singleMethodArgument: true,
-    });
+    Topics.actions.edit.run(id, event, instance);
   },
   'click .forum .js-delete'(event, instance) {
-    Modal.confirmAndCall(Topics.methods.remove, { _id: this._id }, {
-      action: 'delete topic',
-      message: 'It will disappear forever',
-    });
+    const id = this._id;
+    Topics.actions.delete.run(id, event, instance);
   },
 });
 
@@ -51,5 +38,3 @@ Template.Topic_reactions.events({
     Topics.methods.like.call({ id: this._id }, handleError);
   },
 });
-
-AutoForm.addModalHooks('af.forum.update');

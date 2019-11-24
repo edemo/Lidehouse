@@ -1,6 +1,6 @@
 <template name="Action_button">
   {{#if action.visible _id}}
-    <button data-id="{{_id}}" class="btn btn-xs btn-{{or (action.color _id) 'white'}} js-{{action.name}}" title="{{#unless large}}{{_ action.name}}{{/unless}}">
+    <button data-id="{{_id}}" class="btn btn-xs btn-{{or (action.color _id) 'white'}} text-capitalize js-{{action.name}}" title="{{#unless large}}{{_ action.name}}{{/unless}}">
       <i class="{{action.icon _id}}"></i>{{#if large}} {{_ action.name}}{{/if}}
     </button>
   {{/if}}
@@ -9,7 +9,7 @@
 <template name="Action_buttons_group">
   <div class="btn-group">
     {{#each action in _actions}}
-      {{#if action.href}}
+      {{#if action.href _id}}
       <a href="{{action.href}}">
         {{>Action_button _id=_id doc=doc action=action size=size}}
       </a>

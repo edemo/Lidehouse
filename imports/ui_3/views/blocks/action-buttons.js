@@ -14,12 +14,12 @@ export function actionHandlers(collection) {
         if (collection.entities) {
           _.each(collection.entities, (entity, entityName) => {
             eventHandlers[`click .js-${actionName}.${entityName},.${entityName} .js-${actionName}`] = function (event, instance) {
-              action.run(entityName, event, instance);
+              action.run(entityName, {}, event, instance);
             };
           });
         } else {
           eventHandlers[`click .js-${actionName}.${collectionName},.${collectionName} .js-${actionName}`] = function (event, instance) {
-            action.run(collectionName, event, instance);
+            action.run(collectionName, {}, event, instance);
           };
         }
         break;
@@ -52,6 +52,7 @@ Template.Action_button.events({
 
 Template.Action_button.helpers({
   visible() {
+    debugger;
     return this.action.visible(this._id);
   },
   large() {
@@ -70,6 +71,7 @@ Template.Action_buttons_group.helpers({
       ? this.actions.split(',').map(a => collection.actions[a])
 //      : _.map(collection.actions, (action, name) => action);
       : _.values(_.omit(collection.actions, 'new', 'import'));
+    debugger;
     return actions;
   },
 });

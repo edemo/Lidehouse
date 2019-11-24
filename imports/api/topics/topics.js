@@ -60,6 +60,9 @@ Meteor.startup(function indexTopics() {
 });
 
 Topics.helpers({
+  entityName() {
+    return this.category;
+  },
   community() {
     return Communities.findOne(this.communityId);
   },

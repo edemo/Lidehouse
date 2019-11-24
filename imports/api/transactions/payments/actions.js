@@ -30,7 +30,7 @@ Payments.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('payments.insert'),
-    run(id, event, instance) {
+    run(name, data, event, instance) {
       setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.insert',

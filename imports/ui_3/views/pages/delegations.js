@@ -10,12 +10,12 @@ import { __ } from '/imports/localization/i18n.js';
 
 import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import '/imports/api/memberships/actions.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
+import '/imports/api/delegations/actions.js';
 import { delegationColumns } from '/imports/api/delegations/tables.js';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { remove as removeDelegation, allow as allowDelegations } from '/imports/api/delegations/methods.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
@@ -99,38 +99,8 @@ Template.Delegations.helpers({
   },
 });
 
-export function insertDelegationForm(doc) {
-  const communityId = Session.get('activeCommunityId');
-  const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
-  Modal.show('Autoform_edit', {
-    id: 'af.delegation.insert',
-    collection: Delegations,
-    omitFields,
-    doc,
-    type: 'method',
-    meteormethod: 'delegations.insert',
-  });
-}
-
 Template.Delegations.events({
-  'click .js-new'(event, instance) {
-    insertDelegationForm();
-  },
-  'click .js-edit'(event) {
-    const id = $(event.target).closest('.js-edit').data('id');
-    const delegation = Delegations.findOne(id);
-    const communityId = Session.get('activeCommunityId');
-    const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
-    Modal.show('Autoform_edit', {
-      id: 'af.delegation.update',
-      collection: Delegations,
-      omitFields,
-      doc: delegation,
-      type: 'method-update',
-      meteormethod: 'delegations.update',
-      singleMethodArgument: true,
-    });
-  },
+  ...(actionHandlers(Delegations)),
   'click .delegations-from .js-delete'(event) {
     const id = $(event.target).closest('.js-delete').data('id');
     Modal.confirmAndCall(removeDelegation, { _id: id }, {
@@ -154,25 +124,4 @@ Template.Delegations.events({
       message,
     });
   },
-  'click .js-new delegate'(event, instance) {
-    Memberships.action.new.run('delegate', event, instance);
-  },
 });
-
-AutoForm.addModalHooks('af.delegation.insert');
-AutoForm.addModalHooks('af.delegation.update');
-AutoForm.addHooks('af.delegation.insert', {
-  formToDoc(doc) {
-    if (!doc.sourcePersonId) doc.sourcePersonId = Meteor.userId();
-    return doc;
-  },
-});
-AutoForm.addHooks('af.delegation.insert', {
-  onError(formType, error) {
-    if (error.error === 'err_otherPartyNotAllowed') {
-      displayMessage('warning', 'Other party not allowed this activity');
-      return;
-    }
-    displayError(error);
-  },
-}, true);

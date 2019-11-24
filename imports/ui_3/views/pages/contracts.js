@@ -54,8 +54,8 @@ Template.Contracts.events({
   ...(actionHandlers(Contracts)),
   'click .worksheets .js-add'(event) {
     const type = $(event.target).closest('a').data('type');
-    const id = $(event.target).data('id');
-    afTicketInsertModal(type, id);
+    const contractId = $(event.target).data('id');
+    afTicketInsertModal(type, contractId);
   },
   'click .worksheets .js-import'(event, instance) {
     importCollectionFromFile(Topics); // TODO Make it Ticket specific

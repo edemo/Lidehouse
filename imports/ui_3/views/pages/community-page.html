@@ -145,10 +145,10 @@
                         <td>{{_ 'schemaMeters.lastRead.label'}}:
                             <small>{{displayDate this.lastReading.date}}</small> 
                             {{{displayReading this.lastReading.value}}}
-                            {{>Action_buttons_group collection='meters' actions='reading,editReadings' size='sm'}}
+                            {{>Action_buttons_group collection='meters' _id=_id actions='reading,editReadings' size='sm'}}
                         </td>
                         <td class="text-right">
-                            {{>Action_buttons_group collection='meters' actions='edit,delete' size='lg'}}
+                            {{>Action_buttons_group collection='meters' _id=_id actions='edit,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/each}}
