@@ -52,7 +52,6 @@ Template.Action_button.events({
 
 Template.Action_button.helpers({
   visible() {
-    debugger;
     return this.action.visible(this._id);
   },
   large() {
@@ -71,7 +70,6 @@ Template.Action_buttons_group.helpers({
       ? this.actions.split(',').map(a => collection.actions[a])
 //      : _.map(collection.actions, (action, name) => action);
       : _.values(_.omit(collection.actions, 'new', 'import'));
-    debugger;
     return actions;
   },
 });
