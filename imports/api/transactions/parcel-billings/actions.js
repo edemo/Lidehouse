@@ -60,7 +60,7 @@ ParcelBillings.actions = {
       Session.set('activeParcelBillingId', id);
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.apply',
-        description: `${__('schemaParcelBillings.lastAppliedAt.label')} ${moment(billing.lastAppliedAt().valueDate).format('L')}`,
+        description: `${__('schemaParcelBillings.lastAppliedAt.label')} > ${moment(billing.lastAppliedAt().valueDate).format('L')}`,
         schema: ParcelBillings.applySchema,
         type: 'method',
         meteormethod: 'parcelBillings.apply',

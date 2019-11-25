@@ -55,7 +55,7 @@ export const apply = new ValidatedMethod({
             }
           }
           if (!activeMeter) {
-            line.unitPrice = parcelBilling.amount;
+            line.unitPrice = parcelBilling.projectedPrice;
             switch (parcelBilling.projection) {
               case 'absolute':
                 line.uom = 'piece';
