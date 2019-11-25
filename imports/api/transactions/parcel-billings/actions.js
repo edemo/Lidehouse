@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { moment } from 'meteor/momentjs:moment';
+import { __ } from '/imports/localization/i18n.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { ParcelBillings } from './parcel-billings.js';
 import './methods.js';
@@ -53,11 +55,13 @@ ParcelBillings.actions = {
     icon: 'fa fa-calendar-plus-o',
     visible: () => currentUserHasPermission('parcelBillings.apply'),
     run(id) {
+      const communityId = Session.get('activeCommunityId');
+      const billing = id ? ParcelBillings.findOne(id) : ParcelBillings.findOne({ communityId, active: true });
       Session.set('activeParcelBillingId', id);
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.apply',
+        description: `${__('schemaParcelBillings.lastAppliedAt.label')} ${moment(billing.lastAppliedAt().valueDate).format('L')}`,
         schema: ParcelBillings.applySchema,
-        omitFields: ['id'],
         type: 'method',
         meteormethod: 'parcelBillings.apply',
       });

@@ -85,7 +85,7 @@ if (Meteor.isServer) {
         });
       });
 
-      it('will not apply for same period twice', function () {
+      xit('will not apply for same period twice', function () {
         Fixture.builder.create('parcelBilling', {
           title: 'Test area',
           projection: 'area',
