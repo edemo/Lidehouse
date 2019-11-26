@@ -314,6 +314,7 @@
                         <br>
                         {{#if Template.subscriptionsReady}}
                             {{#if userHasPermission 'parcels.update' communityId}}
+                                <!--{{> tabular table=TabularTables.Parcels class="table table-striped table-bordered table-condensed"}}-->
                                 {{> Active_archive_tabs name='parcels' tabs='active,unapproved' icon='fa-building' iconUnapproved='fa-building-o'
                                     template='SimpleReactiveDatatable' content=parcelsTableContent }}
                             {{/if}}

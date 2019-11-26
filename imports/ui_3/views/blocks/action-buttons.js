@@ -42,20 +42,23 @@ export function actionHandlers(collection) {
   return eventHandlers;
 }
 
-Template.Action_button.events({
-  'click .btn'(event, instance) {
-//    debugger;
-//    const id = $(event.target).closest('[data-id]').data('id');
-//    this.action.run(id, event, instance);
-  },
-});
-
 Template.Action_button.helpers({
   visible() {
     return this.action.visible(this._id);
   },
   large() {
     return this.size === 'lg';
+  },
+});
+
+Template.Action_button.events({
+  // This cannot be used, because Blaze.toHTML does not add the event handlers, only Blaze.render would do that
+  // but Blaze.render needs the parent node, and we dont have that, so we are unable to render a template into a jquery cell.
+  'click .btn-NOT-USED'(event, instance) {
+    if (this.action.name === 'new') {
+      const entityName = this.doc ? this.doc.entityName() : this.collection;
+      this.action.run(entityName, this.data, event, instance);
+    } else this.action.run(this.doc, event, instance);
   },
 });
 
