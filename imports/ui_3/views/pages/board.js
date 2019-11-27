@@ -10,9 +10,9 @@ import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/methods.js';
 import '/imports/api/topics/actions.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/collapse-section.js';
 import '/imports/ui_3/views/components/new-forum-topic.js';
-import '../blocks/action-buttons.js';
 import '../components/topic-box.js';
 import '../components/topic-vote-box.js';
 import '../components/comments-section.js';
@@ -45,16 +45,6 @@ Template.News.helpers({
   },
 });
 
-Template.News.events({
-  'click .js-new'(event, instance) {
-    Topics.actions.new.run('news');
-  },
-  'click .js-edit'(event, instance) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    Topics.actions.edit.run(id);
-  },
-  'click .js-delete'(event, instance) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    Topics.actions.delete.run(id);
-  },
-});
+Template.News.events(
+  actionHandlers(Topics)
+);

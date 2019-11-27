@@ -13,9 +13,9 @@ Transactions.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('transactions.insert'),
-    run(catId) {
-      Session.set('activeTxCatId', catId);
-      const cat = TxCats.findOne(catId);
+    run(data) {
+      Session.set('activeTxCatId', data.catId);
+      const cat = TxCats.findOne(data.catId);
       Modal.show('Autoform_edit', {
         id: 'af.transaction.insert',
         collection: Transactions,
@@ -29,12 +29,12 @@ Transactions.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('transactions.inCommunity'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.transaction.view',
         collection: Transactions,
         schema: Transactions.inputSchema,
-        doc: Transactions.findOne(id),
+        doc: Transactions.findOne(data._id),
         type: 'readonly',
       });
     },
@@ -43,12 +43,12 @@ Transactions.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('transactions.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.transaction.update',
         collection: Transactions,
   //      schema: newTransactionSchema(),
-        doc: Transactions.findOne(id),
+        doc: Transactions.findOne(data._id),
         type: 'method-update',
         meteormethod: 'transactions.update',
         singleMethodArgument: true,
@@ -59,8 +59,8 @@ Transactions.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('transactions.remove'),
-    run(id) {
-      const tx = Transactions.findOne(id);
+    run(data) {
+      const tx = Transactions.findOne(data._id);
       Modal.confirmAndCall(Transactions.methods.remove, { _id: id }, {
         action: 'delete transaction',
         message: tx.isSolidified() ? 'Remove not possible after 24 hours' : '',

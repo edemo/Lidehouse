@@ -13,16 +13,18 @@ import { __ } from '/imports/localization/i18n.js';
 import { currentUserLanguage } from '/imports/startup/client/language.js';
 import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import '/imports/api/topics/actions.js';
+import '/imports/api/topics/tickets/actions.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { ticketColumns } from '/imports/api/topics/tickets/tables.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
-import { TicketEventHandlers, afTicketUpdateModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/modals/autoform-edit.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import '/imports/ui_3/views/components/new-ticket.js';
+import { contextMenu } from '/imports/ui_3/views/components/context-menu';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './worksheets.html';
-import { contextMenu } from '../components/context-menu';
 
 Template.Worksheets.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
@@ -218,7 +220,8 @@ Template.Worksheets.viewmodel({
   },
 });
 
-Template.Worksheets.events({ ...TicketEventHandlers,
+Template.Worksheets.events({ 
+  ...(actionHandlers(Topics)),
   'click .js-mode'(event, instance) {
     const oldVal = instance.viewmodel.calendarView();
     instance.viewmodel.calendarView(!oldVal);

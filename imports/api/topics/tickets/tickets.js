@@ -196,6 +196,9 @@ Tickets.workflows = {
 };
 
 Topics.categoryHelpers('ticket', {
+/*   entityName() {
+    return this.ticket.type;
+  }, */
   contract() {
     return Contracts.findOne(this._id);
   },

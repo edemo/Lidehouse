@@ -11,19 +11,21 @@ import { TimeSync } from 'meteor/mizzao:timesync';
 import { Chart } from '/client/plugins/chartJs/Chart.min.js';
 import { __ } from '/imports/localization/i18n.js';
 
-import { onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import '/imports/api/topics/actions.js';
 import { Votings } from '/imports/api/topics/votings/votings.js';
+import '/imports/api/topics/votings/methods.js';
+import '/imports/api/topics/votings/actions.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
 import { remove as removeTopic } from '/imports/api/topics/methods.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { afVoteStatusChangeModal } from '/imports/ui_3/views/modals/voting-edit.js';
+import '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/vote-results.js';
-import '../components/select-voters.js';
-import './topic-box.js';
-import './vote-cast-panel.js';
+import '/imports/ui_3/views/components/select-voters.js';
+import '/imports/ui_3/views/components/topic-box.js';
+import '/imports/ui_3/views/components/vote-cast-panel.js';
 import './topic-vote-box.html';
 
 const choiceColors = ['#a3e1d4', '#ed5565', '#b5b8cf', '#9CC3DA', '#f8ac59']; // colors taken from the theme
@@ -81,38 +83,5 @@ Template.Topic_vote_body.helpers({
       maintainAspectRatio: false,
     };
     return chartOptions;
-  },
-});
-
-Template.Topic_vote_header.events({
-  'click .vote .js-edit'(event) {
-    const voting = Topics.findOne(this._id);
-    Modal.show('Voting_edit', {
-      id: 'af.vote.update',
-      collection: Topics,
-      schema: Votings.schema,
-      type: 'method-update',
-      meteormethod: 'topics.update',
-      singleMethodArgument: true,
-      doc: voting,
-    });
-  },
-  'click .vote .js-delete'(event) {
-    Modal.confirmAndCall(removeTopic, { _id: this._id }, {
-      action: 'delete topic',
-      message: 'It will disappear forever',
-    });
-  },
-  'click .vote .js-status-change'(event) {
-    const id = this._id;
-    const status = $(event.target).closest('[data-status]').data('status');
-    if (status === 'votingFinished') {
-      const serverTimeNow = new Date(TimeSync.serverTime());
-      const closureDate = moment(this.closesAt).from(serverTimeNow);
-      const message = __('The planned date of closure was ') + closureDate;
-      afVoteStatusChangeModal(id, status, message);
-    } else {
-      afVoteStatusChangeModal(id, status);
-    }
   },
 });

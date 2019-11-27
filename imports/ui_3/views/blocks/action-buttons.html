@@ -1,7 +1,7 @@
 <template name="Action_button">
-  {{#if action.visible _id}}
-    <button data-id="{{_id}}" class="btn btn-xs btn-{{or (action.color _id) 'white'}} text-capitalize js-{{action.name}}" title="{{#unless large}}{{_ action.name}}{{/unless}}">
-      <i class="{{action.icon _id}}"></i>{{#if large}} {{_ action.name}}{{/if}}
+  {{#if action.visible data}}
+    <button {{data}} class="btn btn-xs btn-{{or (action.color data) 'white'}} text-capitalize js-{{action.name}}" title="{{#unless large}}{{_ title}}{{/unless}}">
+      <i class="{{action.icon data}}"></i>{{#if large}} {{_ title}}{{/if}}
     </button>
   {{/if}}
 </template>
@@ -9,13 +9,49 @@
 <template name="Action_buttons_group">
   <div class="btn-group">
     {{#each action in _actions}}
-      {{#if action.href _id}}
+      {{#if action.href data}}
       <a href="{{action.href}}">
-        {{>Action_button _id=_id doc=doc action=action size=size}}
+        {{>Action_button data=data doc=doc action=action size=size}}
       </a>
       {{else}}
-        {{>Action_button _id=_id doc=doc action=action size=size}}
+        {{>Action_button data=data doc=doc action=action size=size}}
       {{/if}}
     {{/each}}
   </div>
+</template>
+
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
+<template name="Action_listitem">
+  {{#if action.visible data}}
+    <li><a class="text-capitalize js-{{action.name}}" href="">
+      <i class="{{action.icon data}}"></i> {{_ title}}
+    </a></li>
+  {{/if}}
+</template>
+
+<template name="Action_listitems_status_change">
+    {{#each status in data.possibleNextStatuses}}
+        {{>Action_listitem data=(dataWithNewStatus status) action=action}}
+    {{/each}}
+</template>
+
+<template name="Action_buttons_dropdown">
+    <div class="dropdown js-menu {{doc.entitiyName}}"> 
+        <button class="btn btn-xs btn-white dropdown-toggle drop-unfoll" type="button" id="drop_{{doc._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{#if large}}{{_ 'Actions'}} {{/if}}<i class="glyphicon glyphicon-option-horizontal"></i>
+        </button>
+        <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{doc._id}}">
+        {{#each action in _actions}}
+            {{#if (equals action.name 'statusChange')}}
+                {{>Action_listitems_status_change data=doc action=action}}
+            {{else}}
+                {{>Action_listitem data=doc action=action}}
+            {{/if}}
+            {{#if needsDividerAfter action}}
+              <li role="separator" class="divider"></li>
+            {{/if}}
+        {{/each}}
+        </ul>
+    </div>
 </template>

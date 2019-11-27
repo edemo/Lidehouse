@@ -29,11 +29,11 @@ Leaderships.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('leaderships.inCommunity'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.view',
         collection: Leaderships,
-        doc: Leaderships.findOne(id),
+        doc: Leaderships.findOne(data._id),
         type: 'readonly',
       });
     },
@@ -42,12 +42,12 @@ Leaderships.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('leaderships.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.update',
         collection: Leaderships,
         omitFields: ['parcelId', 'leadParcelId'],
-        doc: Leaderships.findOne(id),
+        doc: Leaderships.findOne(data._id),
         type: 'method-update',
         meteormethod: 'leaderships.update',
         singleMethodArgument: true,
@@ -58,12 +58,12 @@ Leaderships.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('leaderships.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.update',
         collection: Leaderships,
         fields: ['activeTime'],
-        doc: Leaderships.findOne(id),
+        doc: Leaderships.findOne(data._id),
         type: 'method-update',
         meteormethod: 'leaderships.updateActivePeriod',
         singleMethodArgument: true,
@@ -74,8 +74,8 @@ Leaderships.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('leaderships.remove'),
-    run(id) {
-      Modal.confirmAndCall(Leaderships.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Leaderships.methods.remove, { _id: data._id }, {
         action: 'delete leadership',
         message: 'You should rather archive it',
       });

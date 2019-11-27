@@ -1,7 +1,6 @@
 import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
 import { Meteor } from 'meteor/meteor';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Tracker } from 'meteor/tracker';
 import { Template } from 'meteor/templating';
@@ -22,7 +21,6 @@ import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import '/imports/ui_3/views/components/shareddoc-display.js';
 import './voting-edit.html';
-
 
 export let votingEditInstance;
 
@@ -135,79 +133,5 @@ Template.Voting_edit.events({
       folderId: 'voting',
       topicId,
     });
-  },
-});
-
-function voteStatusChangeSchema(statusName) {
-  debugAssert(statusName);
-  const schema = new SimpleSchema([Comments.schema,
-    { status: { type: String, autoform: fixedStatusValue(statusName), autoValue() { return statusName; } } },
-  ]);
-  schema.i18n('schemaTickets');
-  return schema;
-}
-
-export function afVoteStatusChangeModal(topicId, newStatusName, message) {
-  Session.set('activeTopicId', topicId);
-  Session.set('newStatusName', newStatusName);
-  let description = '';
-  if (message) description = message;
-  Modal.show('Autoform_edit', {
-    id: 'af.vote.statusChange',
-    description,
-    schema: voteStatusChangeSchema(newStatusName),
-    omitFields: ['topicId', 'userId', 'data', 'communityId'],
-    type: 'method',
-    meteormethod: 'topics.statusChange',
-    btnOK: 'Change status',
-  });
-}
-
-AutoForm.addModalHooks('af.vote.insert');
-AutoForm.addHooks('af.vote.insert', {
-  formToDoc(doc) {
-    Tracker.nonreactive(() => {   // AutoForm will run the formToDoc each time any field on the form, like the vote.type is simply queried (maybe so that if its a calculated field, it gets calculated)
-      doc.createdAt = Clock.currentTime();
-      doc.communityId = Session.get('activeCommunityId');
-      doc.category = 'vote';
-      doc.status = Votings.workflow.start[0].name;
-      doc.vote = doc.vote || {};
-      doc.vote.choices = votingEditInstance.choices.get();
-      doc.closesAt = new Date(doc.closesAt.getFullYear(), doc.closesAt.getMonth(), doc.closesAt.getDate(), 23, 59, 59);
-    });
-    return doc;
-  },
-  onSuccess(formType, result) {
-    const uploadIds = Shareddocs.find({ topicId: Meteor.userId() }).fetch().map(d => d._id);
-    uploadIds.forEach(id => Shareddocs.update(id, { $set: { topicId: result } }));
-  },
-});
-
-AutoForm.addModalHooks('af.vote.update');
-AutoForm.addHooks('af.vote.update', {
-  docToForm(doc, ss) {
-    votingEditInstance.choices.set(doc.vote.choices);
-    return doc;
-  },
-  formToModifier(modifier) {
-    delete modifier.$set.createdAt;
-    delete modifier.$set.closesAt;
-    modifier.$set['vote.choices'] = votingEditInstance.choices.get();
-    return modifier;
-  },
-});
-
-AutoForm.addModalHooks('af.vote.statusChange');
-AutoForm.addHooks('af.vote.statusChange', {
-  formToDoc(doc) {
-    const newStatusName = Session.get('newStatusName');
-    doc.topicId = Session.get('activeTopicId');
-    doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
-    doc.status = newStatusName;
-    return doc;
-  },
-  onSuccess(formType, result) {
-    Session.set('activeTopicId');  // clear it
-    Session.set('newStatusName');  // clear it
   },
 });

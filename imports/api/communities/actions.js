@@ -33,11 +33,11 @@ Communities.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('communities.inCommunity'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.community.view',
         collection: Communities,
-        doc: Communities.findOne(id),
+        doc: Communities.findOne(data._id),
         type: 'readonly',
       });
     },
@@ -46,11 +46,11 @@ Communities.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('communities.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.community.update',
         collection: Communities,
-        doc: Communities.findOne(id),
+        doc: Communities.findOne(data._id),
         type: 'method-update',
         meteormethod: 'communities.update',
         singleMethodArgument: true,
@@ -61,12 +61,12 @@ Communities.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('communities.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.community.update',
         collection: Communities,
         fields: ['activeTime'],
-        doc: Communities.findOne(id),
+        doc: Communities.findOne(data._id),
         type: 'method-update',
         meteormethod: 'communities.updateActivePeriod',
         singleMethodArgument: true,
@@ -76,8 +76,8 @@ Communities.actions = {
   join: {
     name: 'join',
     icon: () => 'fa fa-suitcase',
-    visible: (id) => Communities.findOne(id).settings.joinable,
-    run(id) {
+    visible: (data) => Communities.findOne(data._id).settings.joinable,
+    run() {
       AccountsTemplates.forceLogin(() => {
         Modal.show('Autoform_edit', {
           title: 'pleaseSupplyParcelData',
@@ -103,8 +103,8 @@ Communities.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('communities.remove'),
-    run(id) {
-      Modal.confirmAndCall(Communities.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Communities.methods.remove, { _id: data._id }, {
         action: 'delete community',
         message: 'You should rather archive it',
       });

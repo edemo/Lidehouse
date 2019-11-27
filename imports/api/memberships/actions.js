@@ -16,11 +16,11 @@ Memberships.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (entityName) => currentUserHasPermission(`${entityName}.insert`),
-    run(entityName) {
-      const entity = Memberships.entities[entityName];
+    visible: (data) => currentUserHasPermission(`${data.entity}.insert`),
+    run(data) {
+      const entity = Memberships.entities[data.entity];
       Modal.show('Autoform_edit', {
-        id: `af.${entityName}.insert`,
+        id: `af.${data.entity}.insert`,
         collection: Memberships,
         fields: entity.inputFields.concat('activeTime'),
         omitFields: entity.omitFields,
@@ -39,8 +39,8 @@ Memberships.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('memberships.inCommunity'),
-    run(id, event, instance) {
-      const doc = Memberships.findOne(id);
+    run(data, event, instance) {
+      const doc = Memberships.findOne(data._id);
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.view`,
@@ -55,12 +55,12 @@ Memberships.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible(id) {
-      const doc = Memberships.findOne(id);
+    visible(data) {
+      const doc = Memberships.findOne(data._id);
       return currentUserHasPermission(`${doc.entityName()}.update`);
     },
-    run(id, event, instance) {
-      const doc = Memberships.findOne(id);
+    run(data, event, instance) {
+      const doc = Memberships.findOne(data._id);
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.update`,
@@ -77,12 +77,12 @@ Memberships.actions = {
   period: {
     name: 'period',
     icon: () => 'fa fa-history',
-    visible(id) {
-      const doc = Memberships.findOne(id);
+    visible(data) {
+      const doc = Memberships.findOne(data._id);
       return currentUserHasPermission(`${doc.entityName()}.update`);
     },
-    run(id, event, instance) {
-      const doc = Memberships.findOne(id);
+    run(data, event, instance) {
+      const doc = Memberships.findOne(data._id);
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.update`,
         collection: Memberships,
@@ -97,17 +97,17 @@ Memberships.actions = {
   invite: {
     name: 'invite',
     icon: () => 'fa fa-user-plus',
-    color(id) {
-      const doc = Memberships.findOne(id);
+    color(data) {
+      const doc = Memberships.findOne(data._id);
       return doc.personId ? 'info' : 'warning';
     },
-    visible(id) {
-      const doc = Memberships.findOne(id);
+    visible(data) {
+      const doc = Memberships.findOne(data._id);
       return currentUserHasPermission(`${doc.entityName()}.update`) && !doc.accepted;
     },
-    run(id, event, instance) {
-      const doc = Memberships.findOne(id);
-      Modal.confirmAndCall(Memberships.methods.linkUser, { _id: id }, {
+    run(data, event, instance) {
+      const doc = Memberships.findOne(data._id);
+      Modal.confirmAndCall(Memberships.methods.linkUser, { _id: data._id }, {
         action: 'invite user',
         message: __('Connecting user', doc.Person().primaryEmail() || __('undefined')),
       });
@@ -116,13 +116,13 @@ Memberships.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible(id) {
-      const doc = Memberships.findOne(id);
+    visible(data) {
+      const doc = Memberships.findOne(data._id);
       return currentUserHasPermission(`${doc.entityName()}.remove`);
     },
-    run(id, event, instance) {
+    run(data, event, instance) {
       const doc = Memberships.findOne(id);
-      Modal.confirmAndCall(Memberships.methods.remove, { _id: id }, {
+      Modal.confirmAndCall(Memberships.methods.remove, { _id: data._id }, {
         action: `delete ${doc.entityName()}`,
         message: 'You should rather archive it',
       });

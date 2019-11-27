@@ -29,11 +29,11 @@ Meters.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('meters.inCommunity'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.view',
         collection: Meters,
-        doc: Meters.findOne(id),
+        doc: Meters.findOne(data._id),
         type: 'readonly',
       });
     },
@@ -42,12 +42,12 @@ Meters.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.update',
         collection: Meters,
         omitFields: ['readings', 'activeTime'],
-        doc: Meters.findOne(id),
+        doc: Meters.findOne(data._id),
         type: 'method-update',
         meteormethod: 'meters.update',
         singleMethodArgument: true,
@@ -58,12 +58,12 @@ Meters.actions = {
     name: 'editReadings',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.update',
         collection: Meters,
         fields: ['readings'],
-        doc: Meters.findOne(id),
+        doc: Meters.findOne(data._id),
         type: 'method-update',
         meteormethod: 'meters.update',
         singleMethodArgument: true,
@@ -74,8 +74,8 @@ Meters.actions = {
     name: 'reading',
     icon: () => 'fa fa-camera',
     visible: () => currentUserHasPermission('meters.registerReading'),
-    run(id) {
-      Session.set('selectedMeterId', id);
+    run(data) {
+      Session.set('selectedMeterId', data._id);
       Modal.show('Autoform_edit', {
         id: 'af.meter.reading',
         collection: Meters,
@@ -89,12 +89,12 @@ Meters.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('meters.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.update',
         collection: Meters,
         fields: ['activeTime'],
-        doc: Meters.findOne(id),
+        doc: Meters.findOne(data._id),
         type: 'method-update',
         meteormethod: 'meters.updateActivePeriod',
         singleMethodArgument: true,
@@ -105,8 +105,8 @@ Meters.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('meters.remove'),
-    run(id) {
-      Modal.confirmAndCall(Meters.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Meters.methods.remove, { _id: data._id }, {
         action: 'delete meter',
         message: 'You should rather archive it',
       });

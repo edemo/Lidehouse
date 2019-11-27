@@ -21,29 +21,7 @@
                     {{displayTime createdAt}}
                 </td>
                 <td class="text-right">
-                    <div class="btn-group">
-                        {{#if userHasPermission 'ticket.statusChange' (fromSession 'activeCommunityId')  }}
-                        <div class="dropdown pull-left">
-                            <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white">
-                                <i class="fa fa-cogs"></i> {{_ 'statusChange'}} <b class="caret"></b>
-                            </a>
-                            <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
-                                {{#each status in (this.possibleNextStatuses)}}
-                                <li><a href="" class="js-status-change" data-id="{{this._id}}" data-status="{{status.name}}">{{_ (concat 'schemaTopics.status.' status.name)}}</a></li>
-                                {{/each}}
-                            </ul>
-                        </div>
-                        {{/if}}
-                        {{#if userHasPermission 'ticket.statusChange' (fromSession 'activeCommunityId')  }}
-                        <button class="btn btn-xs btn-white js-status-update" data-id="{{_id}}"><i class="fa fa-edit"></i> {{_ 'statusUpdate'}}</button>
-                        {{/if}}
-                        {{#if userHasPermission 'ticket.update' (fromSession 'activeCommunityId')  }}
-                        <button class="btn btn-xs btn-white js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                        {{/if}}
-                        {{#if userHasPermission 'ticket.remove' (fromSession 'activeCommunityId')  }}
-                        <button class="btn btn-xs btn-white js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                        {{/if}}
-                    </div>
+                    {{>Action_buttons_dropdown collection='topics' doc=this actions='statusUpdate,statusChange,edit,delete' size='lg'}}
                 </td>
             </tr>
             {{/each}}

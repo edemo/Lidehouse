@@ -15,7 +15,7 @@ Delegations.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('delegations.insert'),
-    run(name, data) {
+    run(data) {
       const communityId = Session.get('activeCommunityId');
       const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
       Modal.show('Autoform_edit', {
@@ -32,11 +32,11 @@ Delegations.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('delegations.inCommunity'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.delegation.view',
         collection: Delegations,
-        doc: Delegations.findOne(id),
+        doc: Delegations.findOne(data._id),
         type: 'readonly',
       });
     },
@@ -45,8 +45,8 @@ Delegations.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('delegations.update'),
-    run(id) {
-      const delegation = Delegations.findOne(id);
+    run(data) {
+      const delegation = Delegations.findOne(data._id);
       const communityId = Session.get('activeCommunityId');
       const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
       Modal.show('Autoform_edit', {
@@ -64,8 +64,8 @@ Delegations.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('delegations.remove'),
-    run(id) {
-      Modal.confirmAndCall(Delegations.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Delegations.methods.remove, { _id: data._id }, {
         action: 'delete delegation',
         message: 'This will not delete topics',
       });

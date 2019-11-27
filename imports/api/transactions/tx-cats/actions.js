@@ -24,11 +24,11 @@ TxCats.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.txCat.update',
         collection: TxCats,
-        doc: TxCats.findOne(id),
+        doc: TxCats.findOne(data._id),
         type: 'method-update',
         meteormethod: 'txCats.update',
         singleMethodArgument: true,
@@ -39,8 +39,8 @@ TxCats.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('breakdowns.remove'),
-    run(id) {
-      Modal.confirmAndCall(TxCats.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(TxCats.methods.remove, { _id: data._id }, {
         action: 'delete txCat',
       });
     },

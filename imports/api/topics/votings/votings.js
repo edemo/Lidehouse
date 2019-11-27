@@ -6,12 +6,13 @@ import { Fraction } from 'fractional';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
+import { TimeSync } from 'meteor/mizzao:timesync';
 
+import { __ } from '/imports/localization/i18n.js';
 import { getCurrentUserLang } from '/imports/api/users/users.js';
 import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -292,12 +293,19 @@ const announced = {
 
 const opened = {
   name: 'opened',
-  icon: () => 'fa-file-text-o',
+  icon: 'fa fa-file-text-o',
 };
 
 const votingFinished = {
   name: 'votingFinished',
-  icon: () => 'fa-legal',
+  label: 'close voting',
+  icon: 'fa fa-legal',
+  message(data) {
+    const serverTimeNow = new Date(TimeSync.serverTime());
+    const closureDate = moment(data.closesAt).from(serverTimeNow);
+    const message = __('The planned date of closure was ') + closureDate;
+    return message;
+  },
   onEnter(event, topic) {
     topic.voteEvaluate(true); // writes results out into voteResults and voteSummary
    // Topics.update(topic._id, { $set: { closesAt: new Date() } });
@@ -306,7 +314,7 @@ const votingFinished = {
 
 const closed = {
   name: 'closed',
-  icon: () => 'fa-times-circle-o',
+  icon: 'fa fa-times-circle-o',
 };
 
 Votings.statuses = {

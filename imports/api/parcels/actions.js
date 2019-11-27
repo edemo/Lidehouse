@@ -31,37 +31,37 @@ Parcels.actions = {
     name: 'import',
     icon: () => 'fa fa-upload',
     visible: () => currentUserHasPermission('parcels.upsert'),
-    run: (id, event, instance) => importCollectionFromFile(Parcels),
+    run: (data, event, instance) => importCollectionFromFile(Parcels),
   },
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('parcels.inCommunity'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.parcel.view',
         collection: Parcels,
-        doc: Parcels.findOne(id),
+        doc: Parcels.findOne(data._id),
         type: 'readonly',
       });
     },
   },
   occupants: {
     name: 'occupants',
-    icon: (id) => Parcels.findOne(id).isLed() ? 'fa fa-user-o' : 'fa fa-user',
-    color: (id) => {
+    icon: (data) => Parcels.findOne(data._id).isLed() ? 'fa fa-user-o' : 'fa fa-user',
+    color: (data) => {
       let colorClass = '';
-      if (Memberships.findOneActive({ id, approved: false })) colorClass = 'text-danger';
+      if (Memberships.findOneActive({ _id: data._id, approved: false })) colorClass = 'text-danger';
       else {
-        const representor = Memberships.findOneActive({ id, 'ownership.representor': true });
+        const representor = Memberships.findOneActive({ _id: data._id, 'ownership.representor': true });
         if (representor) {
           if (!representor.accepted) {
             if (!representor.personId) colorClass = 'text-warning';
             else colorClass = 'text-info';
           }
         } else {  // no representor
-          if (Memberships.findOneActive({ id, accepted: false })) {
-            if (Memberships.findOneActive({ id, personId: { $exists: false } })) colorClass = 'text-warning';
+          if (Memberships.findOneActive({ _id: data._id, accepted: false })) {
+            if (Memberships.findOneActive({ _id: data._id, personId: { $exists: false } })) colorClass = 'text-warning';
             else colorClass = 'text-info';
           }
         }
@@ -70,8 +70,8 @@ Parcels.actions = {
     },
     visible: () => currentUserHasPermission('memberships.inCommunity'),
     href: () => '#occupants',
-    run(id, event, instance) {
-      instance.viewmodel.selectedParcelId(id);
+    run(data, event, instance) {
+      instance.viewmodel.selectedParcelId(data._id);
     },
   },
   meters: {
@@ -79,19 +79,19 @@ Parcels.actions = {
     icon: () => 'fa fa-tachometer',
     visible: () => currentUserHasPermission('meters.inCommunity'),
     href: () => '#meters',
-    run(id, event, instance) {
-      instance.viewmodel.selectedParcelId(id);
+    run(data, event, instance) {
+      instance.viewmodel.selectedParcelId(data._id);
     },
   },
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('parcels.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.parcel.update',
         collection: Parcels,
-        doc: Parcels.findOne(id),
+        doc: Parcels.findOne(data._id),
         type: 'method-update',
         meteormethod: 'parcels.update',
         singleMethodArgument: true,
@@ -102,12 +102,12 @@ Parcels.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('parcels.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.parcel.update',
         collection: Parcels,
         fields: ['activeTime'],
-        doc: Parcels.findOne(id),
+        doc: Parcels.findOne(data._id),
         type: 'method-update',
         meteormethod: 'parcels.updateActivePeriod',
         singleMethodArgument: true,
@@ -118,8 +118,8 @@ Parcels.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('parcels.remove'),
-    run(id) {
-      Modal.confirmAndCall(Parcels.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Parcels.methods.remove, { _id: data._id }, {
         action: 'delete parcel',
         message: 'You should rather archive it',
       });

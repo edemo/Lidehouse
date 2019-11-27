@@ -30,7 +30,7 @@ Payments.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('payments.insert'),
-    run(name, data, event, instance) {
+    run(data, event, instance) {
       setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.insert',
@@ -44,26 +44,26 @@ Payments.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('payments.inCommunity'),
-    run(id) {
-      const doc = Payments.findOne(id);
+    run(data) {
+      const doc = Payments.findOne(data._id);
       // TODO
     },
   },
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible(id) {
+    visible(data) {
       if (!currentUserHasPermission('bills.update')) return false;
-      const doc = Payments.findOne(id);
+      const doc = Payments.findOne(data._id);
       if (doc.txId) return false; // already in accounting
       return true;
     },
-    run(id, event, instance) {
+    run(data, event, instance) {
       setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.update',
         collection: Payments,
-        doc: Payments.findOne(id),
+        doc: Payments.findOne(data._id),
         type: 'method-update',
         meteormethod: 'payments.update',
         singleMethodArgument: true,
@@ -73,14 +73,14 @@ Payments.actions = {
   post: {
     name: 'post',
     icon: () => 'fa fa-check-square-o',
-    color: _id => (!(Payments.findOne(_id).txId) ? 'warning' : undefined),
-    visible(id) {
+    color: data => (!(Payments.findOne(data._id).txId) ? 'warning' : undefined),
+    visible(data) {
       if (!currentUserHasPermission('payments.post')) return false;
-      const doc = Payments.findOne(id);
+      const doc = Payments.findOne(data._id);
       return (!doc.txId);
     },
-    run(id) {
-      Payments.methods.post.call({ _id: id }, onSuccess((res) => {
+    run(data) {
+      Payments.methods.post.call({ _id: data._id }, onSuccess((res) => {
         displayMessage('info', 'Kifizetes konyvelesbe kuldve');
       }));
     },
@@ -89,8 +89,8 @@ Payments.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('payments.remove'),
-    run(id) {
-      Modal.confirmAndCall(Payments.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Payments.methods.remove, { _id: data._id }, {
         action: 'delete bill',
         message: 'It will disappear forever',
       });

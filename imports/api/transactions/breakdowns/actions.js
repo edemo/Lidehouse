@@ -27,8 +27,8 @@ Breakdowns.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('breakdowns.inCommunity'),
-    run(id) {
-      const breakdown = Breakdowns.findOne(id);
+    run(data) {
+      const breakdown = Breakdowns.findOne(data._id);
       const modalContext = {
         title: 'View Breakdown',
         body: 'Nestable_edit',
@@ -36,11 +36,11 @@ Breakdowns.actions = {
       };
       Modal.show('Modal', modalContext);
     },
-    run_autoForm(id) {
+    run_autoForm(data) {
       Modal.show('Autoform_edit', {
         id: 'af.breakdown.view',
         collection: Breakdowns,
-        doc: Breakdowns.findOne(id),
+        doc: Breakdowns.findOne(data._id),
         type: 'readonly',
       });
     },
@@ -49,18 +49,18 @@ Breakdowns.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.breakdown.update',
         collection: Breakdowns,
-        doc: Breakdowns.findOne(id),
+        doc: Breakdowns.findOne(data._id),
         type: 'method-update',
         meteormethod: 'breakdowns.update',
         singleMethodArgument: true,
       });
     },
-    run_nestable(id) {
-      const breakdown = Breakdowns.findOne(id);
+    run_nestable(data) {
+      const breakdown = Breakdowns.findOne(data._id);
       const modalContext = {
         title: 'Edit Breakdown',
         body: 'Nestable_edit',
@@ -73,7 +73,7 @@ Breakdowns.actions = {
           // assert json.length === 1
           // assert json[0].name === breakdown.name
           // assert locked elements are still there 
-          Breakdowns.update(id, { $set: { children: json[0].children } },
+          Breakdowns.update(data._id, { $set: { children: json[0].children } },
             onSuccess(res => displayMessage('success', 'Breakdown saved'))
           );
         },
@@ -85,8 +85,8 @@ Breakdowns.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('breakdowns.remove'),
-    run(id) {
-      Modal.confirmAndCall(Breakdowns.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Breakdowns.remove, { _id: data._id }, {
         action: 'delete breakdown',
       });
     },

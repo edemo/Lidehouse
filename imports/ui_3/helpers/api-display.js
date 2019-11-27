@@ -39,8 +39,9 @@ export function displayAccountSet(accounts, communityId) {
 }
 
 export function displayLocalizer(localizer, communityId) {
-  if (!localizer) return '';
-  const displayText = Localizer.get(communityId).display(localizer);
+  const loc = Localizer.get(communityId);
+  if (!localizer || !loc) return '';
+  const displayText = loc.display(localizer);
   const parcelSuffix = Localizer.leafIsParcel(localizer) ? ('. ' + __('parcel')) : '';
   return label(displayText.substring(1) + parcelSuffix, 'success', 'map-marker');
 }
@@ -74,12 +75,6 @@ export function displayStatus(name) {
   return label(__('schemaTopics.status.' + name), color);
 }
 
-export function displayStatusChange(status) {
-  const icon = `<i class="fa ${status.icon || 'fa-cogs'}"></i>`;
-  const statusName = __('schemaTopics.status.' + status.name);
-  return `${icon} ${__('Change status to', statusName)}`;
-}
-
 export function displayUrgency(name) {
   if (!name) return '';
   const color = Tickets.urgencyColors[name];
@@ -98,7 +93,6 @@ Template.registerHelper('displayAccountSet', displayAccountSet);
 Template.registerHelper('displayLocalizer', displayLocalizer);
 Template.registerHelper('displayAccountSpecification', displayAccountSpecification);
 Template.registerHelper('displayStatus', displayStatus);
-Template.registerHelper('displayStatusChange', displayStatusChange);
 Template.registerHelper('displayTicketType', displayTicketType);
 Template.registerHelper('displayUrgency', displayUrgency);
 Template.registerHelper('displayChargeType', displayChargeType);

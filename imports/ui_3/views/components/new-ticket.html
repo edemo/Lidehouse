@@ -1,8 +1,8 @@
 <template name="New_Ticket">
-    <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
+    <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs topics">
         {{#each type in ticketTypes}}
             {{#if userHasPermission (concat type '.insert') (fromSession 'activeCommunityId')  }}
-            <li><a href="" class="js-new" data-type="{{type}}">{{_ (concat 'schemaTickets.ticket.type.' type)}}</a></li>
+            <li><a href="" class="js-new" data-entity="{{type}}">{{_ (concat 'schemaTickets.ticket.type.' type)}}</a></li>
             {{/if}}
         {{/each}}
     </ul>

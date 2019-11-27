@@ -32,7 +32,7 @@ Bills.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('bills.insert'),
-    run(name, data, event, instance) {
+    run(data, event, instance) {
       setSessionVars(instance);
       Modal.show('Bill_edit', {
         id: 'af.bill.insert',
@@ -47,8 +47,8 @@ Bills.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('bills.inCommunity'),
-    run(id) {
-      const doc = Bills.findOne(id);
+    run(data) {
+      const doc = Bills.findOne(data._id);
 //    FlowRouter.go('Bill show', { _bid: id });
       Modal.show('Modal', {
         title: __(doc.relation + '_bill') + ' ' + doc.serialId(),
@@ -60,18 +60,18 @@ Bills.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible(id) {
+    visible(data) {
       if (!currentUserHasPermission('bills.update')) return false;
-      const doc = Bills.findOne(id);
+      const doc = Bills.findOne(data._id);
       if (doc.txId) return false; // already in accounting
       return true;
     },
-    run(id, event, instance) {
+    run(data, event, instance) {
       setSessionVars(instance);
       Modal.show('Bill_edit', {
         id: 'af.bill.update',
         collection: Bills,
-        doc: Bills.findOne(id),
+        doc: Bills.findOne(data._id),
         type: 'method-update',
         meteormethod: 'bills.update',
         singleMethodArgument: true,
@@ -81,14 +81,14 @@ Bills.actions = {
   post: {
     name: 'post',
     icon: () => 'fa fa-check-square-o',
-    color: _id => (!(Bills.findOne(_id).txId) ? 'warning' : undefined),
-    visible(id) {
+    color: data => (!(Bills.findOne(data._id).txId) ? 'warning' : undefined),
+    visible(data) {
       if (!currentUserHasPermission('bills.post')) return false;
-      const doc = Bills.findOne(id);
+      const doc = Bills.findOne(data._id);
       return (doc.hasConteerData() && !doc.txId);
     },
-    run(id) {
-      Bills.methods.post.call({ _id: id }, onSuccess((res) => {
+    run(data) {
+      Bills.methods.post.call({ _id: data._id }, onSuccess((res) => {
         displayMessage('info', 'Szamla konyvelesbe kuldve');
       }));
     },
@@ -96,13 +96,13 @@ Bills.actions = {
   registerPayment: {
     name: 'registerPayment',
     icon: () => 'fa fa-credit-card',
-    visible(id) {
+    visible(data) {
       if (!currentUserHasPermission('payments.insert')) return false;
-      const doc = Bills.findOne(id);
+      const doc = Bills.findOne(data._id);
       return (!!doc.txId && doc.outstanding > 0);
     },
-    run(id) {
-      Session.set('activeBillId', id);
+    run(data) {
+      Session.set('activeBillId', data._id);
       Modal.show('Autoform_edit', {
         id: 'af.payment.insert',
         collection: Payments,
@@ -116,8 +116,8 @@ Bills.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('bills.remove'),
-    run(id) {
-      Modal.confirmAndCall(Bills.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Bills.methods.remove, { _id: data._id }, {
         action: 'delete bill',
         message: 'It will disappear forever',
       });

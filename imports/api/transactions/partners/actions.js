@@ -27,8 +27,8 @@ Partners.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('partners.inCommunity'),
-    run(id) {
-      const doc = Partners.findOne(id);
+    run(data) {
+      const doc = Partners.findOne(data._id);
       // TODO
     },
   },
@@ -36,11 +36,11 @@ Partners.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('partners.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.partner.update',
         collection: Partners,
-        doc: Partners.findOne(id),
+        doc: Partners.findOne(data._id),
         type: 'method-update',
         meteormethod: 'partners.update',
         singleMethodArgument: true,
@@ -51,8 +51,8 @@ Partners.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('partners.remove'),
-    run(id) {
-      Modal.confirmAndCall(Partners.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Partners.methods.remove, { _id: data._id }, {
         action: 'delete partner',
         message: 'It will disappear forever',
       });

@@ -19,14 +19,14 @@ export const Comments = new Mongo.Collection('comments');
 Comments.typeValues = ['statusChangeTo', 'pointAt'];
 
 Comments.schema = {
-  topicId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   type: { type: String, optional: true, allowedValues: Comments.typeValues, autoform: { omit: true } },
   status: { type: String, optional: true, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
   data: { type: Object, blackbox: true, optional: true },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id,
+  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true },
     autoValue() {
       const topicId = this.field('topicId').value;
       if (!this.isSet && topicId) {

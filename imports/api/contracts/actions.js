@@ -27,8 +27,8 @@ Contracts.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('contracts.inCommunity'),
-    run(id) {
-      const doc = Contracts.findOne(id);
+    run(data) {
+      const doc = Contracts.findOne(data._id);
       // TODO
     },
   },
@@ -36,11 +36,11 @@ Contracts.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('contracts.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.contract.update',
         collection: Contracts,
-        doc: Contracts.findOne(id),
+        doc: Contracts.findOne(data._id),
         type: 'method-update',
         meteormethod: 'contracts.update',
         singleMethodArgument: true,
@@ -51,8 +51,8 @@ Contracts.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('contracts.remove'),
-    run(id) {
-      Modal.confirmAndCall(Contracts.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(Contracts.methods.remove, { _id: data._id }, {
         action: 'delete contract',
         message: 'It will disappear forever',
       });

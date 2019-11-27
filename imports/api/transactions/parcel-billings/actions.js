@@ -24,11 +24,11 @@ ParcelBillings.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('parcelBillings.inCommunity'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.view',
         collection: ParcelBillings,
-        doc: ParcelBillings.findOne(id),
+        doc: ParcelBillings.findOne(data._id),
         type: 'readonly',
       });
     },
@@ -37,11 +37,11 @@ ParcelBillings.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('parcelBillings.update'),
-    run(id) {
+    run(data) {
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.update',
         collection: ParcelBillings,
-        doc: ParcelBillings.findOne(id),
+        doc: ParcelBillings.findOne(data._id),
         type: 'method-update',
         meteormethod: 'parcelBillings.update',
         singleMethodArgument: true,
@@ -52,12 +52,12 @@ ParcelBillings.actions = {
     name: 'apply',
     icon: () => 'fa fa-calendar-plus-o',
     visible: () => currentUserHasPermission('parcelBillings.apply'),
-    run(id) {
-      Session.set('activeParcelBillingId', id);
+    run(data) {
+      Session.set('activeParcelBillingId', data._id);
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.apply',
         schema: ParcelBillings.applySchema,
-        omitFields: ['id'],
+        omitFields: ['ids'],
         type: 'method',
         meteormethod: 'parcelBillings.apply',
       });
@@ -67,12 +67,12 @@ ParcelBillings.actions = {
     name: 'revert',
     icon: () => 'fa fa-calendar-times-o',
     visible: () => currentUserHasPermission('parcelBillings.revert'),
-    run(id) {
-      Session.set('activeParcelBillingId', id);
+    run(data) {
+      Session.set('activeParcelBillingId', data._id);
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.apply',
         schema: ParcelBillings.applySchema,
-        omitFields: ['id'],
+        omitFields: ['ids'],
         type: 'method',
         meteormethod: 'parcelBillings.revert',
       });
@@ -82,8 +82,8 @@ ParcelBillings.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('parcelBillings.remove'),
-    run(id) {
-      Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: id }, {
+    run(data) {
+      Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: data._id }, {
         action: 'delete parcelBilling',
         message: 'It will disappear forever',
       });

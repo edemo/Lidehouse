@@ -1,14 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { AutoForm } from 'meteor/aldeed:autoform';
 import { $ } from 'meteor/jquery';
 
 import { handleError } from '/imports/ui_3/lib/errors';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/actions.js';
-//import '/imports/ui_3/stylesheets/animatecss/animate.css';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
+// import '/imports/ui_3/stylesheets/animatecss/animate.css';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '../common/page-heading.js';
 import './forum-topics.html';
@@ -43,20 +42,10 @@ Template.Forum_topics.viewmodel({
 });
 
 Template.Forum_topics.events({
-  'click .js-new'(event, instance) {
-    Topics.actions.new.run('forum');
-  },
+  ...(actionHandlers(Topics)),
   'click .js-like'(event) {
     const id = $(event.target).closest('div.vote-item').data('id');
     Topics.methods.like.call({ id }, handleError);
-  },
-  'click .js-show' (event) {
-    $('.new-topic').toggleClass("hidden");
-    $('.js-show').toggleClass("m-b");
-  },
-  'click .js-send' (event) {
-    $('.new-topic').toggleClass("hidden");
-    $('.js-show').toggleClass("m-b");
   },
   'click .js-filter'(event, instance) {
     const group = $(event.target).closest('[data-value]').data('value');
