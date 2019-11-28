@@ -27,8 +27,7 @@ Contracts.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('contracts.inCommunity'),
-    run(data) {
-      const doc = Contracts.findOne(data._id);
+    run(data, doc) {
       // TODO
     },
   },
@@ -36,11 +35,11 @@ Contracts.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('contracts.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.contract.update',
         collection: Contracts,
-        doc: Contracts.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'contracts.update',
         singleMethodArgument: true,

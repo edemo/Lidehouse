@@ -139,15 +139,9 @@
             </table>
 
             <div class="text-right" data-id="{{docVm._id}}">
-              {{#if (actions.edit.visible docVm._id)}}
-                <button class="btn btn-warning js-edit"><i class="fa fa-edit"></i> {{_ 'Bill conteer'}}</button>
-              {{/if}}
-              {{#if (actions.post.visible docVm._id)}}
-                <button class="btn btn-warning js-post"><i class="fa fa-check-square-o"></i> {{_ 'Send to accouting'}}</button>
-              {{/if}}
-              {{#if (actions.registerPayment.visible docVm._id)}}
-                <button class="btn btn-primary js-payment"><i class="fa fa-credit-card"></i> {{_ 'Register payment'}}</button>
-              {{/if}}
+              {{>Action_button doc=docVm action=Bills.actions.edit size='xl'}}
+              {{>Action_button doc=docVm action=Bills.actions.post size='xl'}}
+              {{>Action_button doc=docVm action=Bills.actions.registerPayment size='xl'}}
             </div>
 
             {{#if docVm.note}}

@@ -31,37 +31,37 @@ Parcels.actions = {
     name: 'import',
     icon: () => 'fa fa-upload',
     visible: () => currentUserHasPermission('parcels.upsert'),
-    run: (data, event, instance) => importCollectionFromFile(Parcels),
+    run: () => importCollectionFromFile(Parcels),
   },
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('parcels.inCommunity'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.parcel.view',
         collection: Parcels,
-        doc: Parcels.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
   },
   occupants: {
     name: 'occupants',
-    icon: (data) => Parcels.findOne(data._id).isLed() ? 'fa fa-user-o' : 'fa fa-user',
-    color: (data) => {
+    icon: (data, doc) => (doc && doc.isLed() ? 'fa fa-user-o' : 'fa fa-user'),
+    color: (data, doc) => {
       let colorClass = '';
-      if (Memberships.findOneActive({ _id: data._id, approved: false })) colorClass = 'text-danger';
+      if (Memberships.findOneActive({ parcelId: data._id, approved: false })) colorClass = 'text-danger';
       else {
-        const representor = Memberships.findOneActive({ _id: data._id, 'ownership.representor': true });
+        const representor = Memberships.findOneActive({ parcelId: data._id, 'ownership.representor': true });
         if (representor) {
           if (!representor.accepted) {
             if (!representor.personId) colorClass = 'text-warning';
             else colorClass = 'text-info';
           }
         } else {  // no representor
-          if (Memberships.findOneActive({ _id: data._id, accepted: false })) {
-            if (Memberships.findOneActive({ _id: data._id, personId: { $exists: false } })) colorClass = 'text-warning';
+          if (Memberships.findOneActive({ parcelId: data._id, accepted: false })) {
+            if (Memberships.findOneActive({ parcelId: data._id, personId: { $exists: false } })) colorClass = 'text-warning';
             else colorClass = 'text-info';
           }
         }
@@ -70,7 +70,7 @@ Parcels.actions = {
     },
     visible: () => currentUserHasPermission('memberships.inCommunity'),
     href: () => '#occupants',
-    run(data, event, instance) {
+    run(data, doc, event, instance) {
       instance.viewmodel.selectedParcelId(data._id);
     },
   },
@@ -79,7 +79,7 @@ Parcels.actions = {
     icon: () => 'fa fa-tachometer',
     visible: () => currentUserHasPermission('meters.inCommunity'),
     href: () => '#meters',
-    run(data, event, instance) {
+    run(data, doc, event, instance) {
       instance.viewmodel.selectedParcelId(data._id);
     },
   },
@@ -87,11 +87,11 @@ Parcels.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('parcels.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.parcel.update',
         collection: Parcels,
-        doc: Parcels.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'parcels.update',
         singleMethodArgument: true,
@@ -102,12 +102,12 @@ Parcels.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('parcels.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.parcel.update',
         collection: Parcels,
         fields: ['activeTime'],
-        doc: Parcels.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'parcels.updateActivePeriod',
         singleMethodArgument: true,

@@ -28,11 +28,11 @@ Agendas.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('agendas.inCommunity'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.agenda.view',
         collection: Agendas,
-        doc: Agendas.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
@@ -41,11 +41,11 @@ Agendas.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('agendas.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.agenda.update',
         collection: Agendas,
-        doc: Agendas.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'agendas.update',
         singleMethodArgument: true,

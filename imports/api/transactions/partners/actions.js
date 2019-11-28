@@ -27,8 +27,7 @@ Partners.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('partners.inCommunity'),
-    run(data) {
-      const doc = Partners.findOne(data._id);
+    run(data, doc) {
       // TODO
     },
   },
@@ -36,11 +35,11 @@ Partners.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('partners.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.partner.update',
         collection: Partners,
-        doc: Partners.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'partners.update',
         singleMethodArgument: true,

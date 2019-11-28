@@ -29,11 +29,11 @@ Leaderships.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('leaderships.inCommunity'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.view',
         collection: Leaderships,
-        doc: Leaderships.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
@@ -42,12 +42,12 @@ Leaderships.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('leaderships.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.update',
         collection: Leaderships,
         omitFields: ['parcelId', 'leadParcelId'],
-        doc: Leaderships.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'leaderships.update',
         singleMethodArgument: true,
@@ -58,12 +58,12 @@ Leaderships.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('leaderships.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.update',
         collection: Leaderships,
         fields: ['activeTime'],
-        doc: Leaderships.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'leaderships.updateActivePeriod',
         singleMethodArgument: true,

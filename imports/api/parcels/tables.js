@@ -23,7 +23,7 @@ export function parcelColumns() {
     { data: 'share()', title: __('schemaParcels.units.label') },
     { data: 'occupants()', title: __('occupants'), render: Render.joinOccupants },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { _id: cellData, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }),
+      { options: { id: cellData }, collection: 'parcels', actions: 'view,edit,occupants,meters,delete', size: 'sm' }),
     },
   ];
 }

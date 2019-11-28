@@ -39,8 +39,7 @@ Memberships.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('memberships.inCommunity'),
-    run(data, event, instance) {
-      const doc = Memberships.findOne(data._id);
+    run(data, doc, event, instance) {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.view`,
@@ -55,12 +54,8 @@ Memberships.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible(data) {
-      const doc = Memberships.findOne(data._id);
-      return currentUserHasPermission(`${doc.entityName()}.update`);
-    },
-    run(data, event, instance) {
-      const doc = Memberships.findOne(data._id);
+    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
+    run(data, doc, event, instance) {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.update`,
@@ -77,12 +72,8 @@ Memberships.actions = {
   period: {
     name: 'period',
     icon: () => 'fa fa-history',
-    visible(data) {
-      const doc = Memberships.findOne(data._id);
-      return currentUserHasPermission(`${doc.entityName()}.update`);
-    },
-    run(data, event, instance) {
-      const doc = Memberships.findOne(data._id);
+    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
+    run(data, doc, event, instance) {
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.update`,
         collection: Memberships,
@@ -97,16 +88,9 @@ Memberships.actions = {
   invite: {
     name: 'invite',
     icon: () => 'fa fa-user-plus',
-    color(data) {
-      const doc = Memberships.findOne(data._id);
-      return doc.personId ? 'info' : 'warning';
-    },
-    visible(data) {
-      const doc = Memberships.findOne(data._id);
-      return currentUserHasPermission(`${doc.entityName()}.update`) && !doc.accepted;
-    },
-    run(data, event, instance) {
-      const doc = Memberships.findOne(data._id);
+    color: (data, doc) => (doc && doc.personId ? 'info' : 'warning'),
+    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`) && !doc.accepted,
+    run(data, doc, event, instance) {
       Modal.confirmAndCall(Memberships.methods.linkUser, { _id: data._id }, {
         action: 'invite user',
         message: __('Connecting user', doc.Person().primaryEmail() || __('undefined')),
@@ -116,12 +100,8 @@ Memberships.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible(data) {
-      const doc = Memberships.findOne(data._id);
-      return currentUserHasPermission(`${doc.entityName()}.remove`);
-    },
-    run(data, event, instance) {
-      const doc = Memberships.findOne(id);
+    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`),
+    run(data, doc, event, instance) {
       Modal.confirmAndCall(Memberships.methods.remove, { _id: data._id }, {
         action: `delete ${doc.entityName()}`,
         message: 'You should rather archive it',

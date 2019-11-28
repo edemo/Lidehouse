@@ -39,7 +39,7 @@
                             {{/if}}
                         </td>
                         <td class="text-right">
-                            {{>Action_buttons_group collection='memberships' _id=row._id actions='edit,invite,delete' size='lg'}}
+                            {{>Action_buttons_group collection='memberships' doc=row actions='edit,invite,delete' size='lg'}}
                         </td>
                     </tr>
                 {{/each}}
@@ -72,7 +72,7 @@
                             <td><span class="label label-plain">{{_ row.benefactorship.type}}</span></td>
                             {{/if}}
                         <td class="text-right">
-                            {{>Action_buttons_group collection='memberships' _id=row._id actions='edit,invite,delete' size='lg'}}
+                            {{>Action_buttons_group collection='memberships' doc=row actions='edit,invite,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/let}}
@@ -84,7 +84,7 @@
                         <td>{{>Active_period row}}</td>
                         <td><span class="label label-plain">{{_ 'lead parcel'}}</span></td>
                         <td class="text-right">
-                            {{>Action_buttons_group collection='leaderships' _id=row._id actions='edit,delete' size='lg'}}
+                            {{>Action_buttons_group collection='leaderships' doc=row actions='edit,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/each}}
@@ -145,10 +145,10 @@
                         <td>{{_ 'schemaMeters.lastRead.label'}}:
                             <small>{{displayDate this.lastReading.date}}</small> 
                             {{{displayReading this.lastReading.value}}}
-                            {{>Action_buttons_group collection='meters' _id=_id actions='reading,editReadings' size='sm'}}
+                            {{>Action_buttons_group collection='meters' doc=this actions='reading,editReadings' size='sm'}}
                         </td>
                         <td class="text-right">
-                            {{>Action_buttons_group collection='meters' _id=_id actions='edit,delete' size='lg'}}
+                            {{>Action_buttons_group collection='meters' doc=this actions='edit,delete' size='lg'}}
                         </td>
                     </tr>
                     {{/each}}

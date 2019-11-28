@@ -30,7 +30,7 @@ Payments.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('payments.insert'),
-    run(data, event, instance) {
+    run(data, doc, event, instance) {
       setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.insert',
@@ -44,26 +44,24 @@ Payments.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('payments.inCommunity'),
-    run(data) {
-      const doc = Payments.findOne(data._id);
+    run(data, doc) {
       // TODO
     },
   },
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible(data) {
+    visible(data, doc) {
       if (!currentUserHasPermission('bills.update')) return false;
-      const doc = Payments.findOne(data._id);
-      if (doc.txId) return false; // already in accounting
+      if (!doc || doc.txId) return false; // already in accounting
       return true;
     },
-    run(data, event, instance) {
+    run(data, doc, event, instance) {
       setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.update',
         collection: Payments,
-        doc: Payments.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'payments.update',
         singleMethodArgument: true,
@@ -73,11 +71,11 @@ Payments.actions = {
   post: {
     name: 'post',
     icon: () => 'fa fa-check-square-o',
-    color: data => (!(Payments.findOne(data._id).txId) ? 'warning' : undefined),
-    visible(data) {
+    color: (data, doc) => (!(doc.txId) ? 'warning' : undefined),
+    visible(data, doc) {
       if (!currentUserHasPermission('payments.post')) return false;
-      const doc = Payments.findOne(data._id);
-      return (!doc.txId);
+      if (!doc || doc.txId) return false;
+      return true;
     },
     run(data) {
       Payments.methods.post.call({ _id: data._id }, onSuccess((res) => {

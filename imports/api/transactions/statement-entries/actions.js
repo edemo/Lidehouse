@@ -25,11 +25,11 @@ StatementEntries.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('statements.inCommunity'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.statementEntry.view',
         collection: StatementEntries,
-        doc: StatementEntries.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
@@ -38,11 +38,11 @@ StatementEntries.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('statements.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.statementEntry.update',
         collection: StatementEntries,
-        doc: StatementEntries.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'statements.update',
         singleMethodArgument: true,
@@ -53,8 +53,12 @@ StatementEntries.actions = {
     name: 'reconcile',
     icon: () => 'fa fa-external-link',
     color: (data) => 'danger',
-    visible: (data) => currentUserHasPermission('statements.reconcile') && !StatementEntries.findOne(data._id).isReconciled(),
-    run(data) {
+    visible(data, doc) {
+      if (!currentUserHasPermission('statements.reconcile')) return false;
+      if (!doc || doc.isReconciled()) return false;
+      return true;
+    },
+    run(data, doc) {
       Session.set('activeStatementEntryId', data._id);
       Modal.show('Autoform_edit', {
         title: 'Reconciliation',

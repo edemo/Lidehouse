@@ -24,11 +24,11 @@ TxCats.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.txCat.update',
         collection: TxCats,
-        doc: TxCats.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'txCats.update',
         singleMethodArgument: true,

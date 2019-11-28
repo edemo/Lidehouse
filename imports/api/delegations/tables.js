@@ -11,7 +11,7 @@ export function delegationColumns() {
     { data: 'scope', title: __('schemaDelegations.scope.label'), render: Render.translateWithScope('schemaDelegations.scope') },
     { data: 'scopeObject()', title: __('schemaDelegations.scopeObjectId.label'), render: Delegations.renderScopeObject },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { _id: cellData, collection: 'delegations', actions: 'edit,delete', size: 'sm' }),
+      { options: { id: cellData }, collection: 'delegations', actions: 'edit,delete', size: 'sm' }),
     },
   ];
 }

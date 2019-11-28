@@ -24,11 +24,11 @@ ParcelBillings.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('parcelBillings.inCommunity'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.view',
         collection: ParcelBillings,
-        doc: ParcelBillings.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
@@ -37,11 +37,11 @@ ParcelBillings.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('parcelBillings.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.update',
         collection: ParcelBillings,
-        doc: ParcelBillings.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'parcelBillings.update',
         singleMethodArgument: true,

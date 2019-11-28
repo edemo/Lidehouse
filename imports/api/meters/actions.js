@@ -29,11 +29,11 @@ Meters.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('meters.inCommunity'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.view',
         collection: Meters,
-        doc: Meters.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
@@ -42,12 +42,12 @@ Meters.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.update',
         collection: Meters,
         omitFields: ['readings', 'activeTime'],
-        doc: Meters.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'meters.update',
         singleMethodArgument: true,
@@ -58,12 +58,12 @@ Meters.actions = {
     name: 'editReadings',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.update',
         collection: Meters,
         fields: ['readings'],
-        doc: Meters.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'meters.update',
         singleMethodArgument: true,
@@ -74,7 +74,7 @@ Meters.actions = {
     name: 'reading',
     icon: () => 'fa fa-camera',
     visible: () => currentUserHasPermission('meters.registerReading'),
-    run(data) {
+    run(data, doc) {
       Session.set('selectedMeterId', data._id);
       Modal.show('Autoform_edit', {
         id: 'af.meter.reading',
@@ -89,12 +89,12 @@ Meters.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('meters.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.update',
         collection: Meters,
         fields: ['activeTime'],
-        doc: Meters.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'meters.updateActivePeriod',
         singleMethodArgument: true,

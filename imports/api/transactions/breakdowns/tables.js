@@ -22,6 +22,8 @@ export function breakdownColumns() {
     { data: 'name', /*title: __('schemaBreakdowns.name.label'),*/ render: Render.translate },
 //    { data: 'type', title: __('schemaBreakdowns.type.label'), render: Render.translate },
     { data: 'nodeNames()', /*title: __('schemaBreakdowns.children.$.children.$.children.label'),*/ render: displayNames },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group, { _id: cellData, collection: 'breakdowns', actions: '', size: 'sm' }) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
+      { options: { id: cellData }, collection: 'breakdowns', actions: '', size: 'sm' }),
+    },
   ];
 }

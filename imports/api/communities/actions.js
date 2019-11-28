@@ -33,11 +33,11 @@ Communities.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('communities.inCommunity'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.community.view',
         collection: Communities,
-        doc: Communities.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
@@ -46,11 +46,11 @@ Communities.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('communities.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.community.update',
         collection: Communities,
-        doc: Communities.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'communities.update',
         singleMethodArgument: true,
@@ -61,12 +61,12 @@ Communities.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('communities.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.community.update',
         collection: Communities,
         fields: ['activeTime'],
-        doc: Communities.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'communities.updateActivePeriod',
         singleMethodArgument: true,
@@ -76,7 +76,7 @@ Communities.actions = {
   join: {
     name: 'join',
     icon: () => 'fa fa-suitcase',
-    visible: (data) => Communities.findOne(data._id).settings.joinable,
+    visible: (data, doc) => doc.settings.joinable,
     run() {
       AccountsTemplates.forceLogin(() => {
         Modal.show('Autoform_edit', {

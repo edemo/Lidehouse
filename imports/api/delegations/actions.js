@@ -32,11 +32,11 @@ Delegations.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('delegations.inCommunity'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.delegation.view',
         collection: Delegations,
-        doc: Delegations.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
@@ -45,15 +45,14 @@ Delegations.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('delegations.update'),
-    run(data) {
-      const delegation = Delegations.findOne(data._id);
+    run(data, doc) {
       const communityId = Session.get('activeCommunityId');
       const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
       Modal.show('Autoform_edit', {
         id: 'af.delegation.update',
         collection: Delegations,
         omitFields,
-        doc: delegation,
+        doc,
         type: 'method-update',
         meteormethod: 'delegations.update',
         singleMethodArgument: true,

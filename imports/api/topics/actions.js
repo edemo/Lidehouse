@@ -44,7 +44,7 @@ Topics.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: data => currentUserHasPermission(`${data.entity}.insert`),
+    visible: (data) => currentUserHasPermission(`${data.entity}.insert`),
     run(data) {
       const entity = Topics.entities[data.entity];
       Modal.show(entity.form, {
@@ -64,18 +64,13 @@ Topics.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('topics.inCommunity'),
     href: (data) => `pathFor 'Topic show' _tid=${data._id}`,
-    run(data, event, instance) {},
+    run(data, doc, event, instance) {},
   },
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible(data) {
-      if (!data || !data._id) return false;
-      const doc = Topics.findOne(data._id);
-      return doc && currentUserHasPermission(`${doc.entityName()}.update`);
-    },
-    run(data, event, instance) {
-      const doc = Topics.findOne(data._id);
+    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
+    run(data, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
       Modal.show(entity.form, {
         id: `af.${doc.entityName()}.update`,
@@ -93,13 +88,8 @@ Topics.actions = {
   statusUpdate: {
     name: 'statusUpdate',
     icon: () => 'fa fa-edit',
-    visible(data) {
-      if (!data || !data._id) return false;
-      const doc = Topics.findOne(data._id);
-      return doc && doc.statusObject().data && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${doc.status}.enter`);
-    },
-    run(data, event, instance) {
-      const doc = Topics.findOne(data._id);
+    visible: (data, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${doc.status}.enter`),
+    run(data, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.statusUpdate`,
@@ -117,22 +107,18 @@ Topics.actions = {
   statusChange: {
     name: 'statusChange',
     label(data) {
-      const newStatus = data.newStatus;
       const statusName = __('schemaTopics.status.' + data.newStatus.name);
-      return newStatus.label || __('Change status to', statusName);
+      return data.newStatus.label || __('Change status to', statusName);
     },
     icon(data) {
       const newStatus = data.newStatus;
       return newStatus.icon || 'fa fa-cogs';
     },
-    visible(data) {
-      if (!data || !data._id) return false;
-      const doc = Topics.findOne(data._id);
-      return doc && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${data.status}.enter`);
+    visible(data, doc) {
+      return doc && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${data.newStatus.name}.enter`);
     },
-    run(data, event, instance) {
+    run(data, doc, event, instance) {
       const newStatus = data.newStatus;
-      const doc = Topics.findOne(data._id);
       const entity = Topics.entities[doc.entityName()];
       Session.set('activeTopicId', data._id);
       Session.set('newStatusName', newStatus.name);
@@ -149,76 +135,56 @@ Topics.actions = {
   },
   like: {
     name: 'like',
-    label(data) {
-      const doc = Topics.findOne(data._id);
-      return doc.isLikedBy(Meteor.userId()) ? 'Not important' : 'Important';
+    label(data, doc) {
+      return doc && doc.isLikedBy(Meteor.userId()) ? 'Not important' : 'Important';
     },
-    icon(data) {
-      const doc = Topics.findOne(data._id);
-      return doc.isLikedBy(Meteor.userId()) ? 'fa fa-hand-o-down' : 'fa fa-hand-o-up';
+    icon(data, doc) {
+      return doc && doc.isLikedBy(Meteor.userId()) ? 'fa fa-hand-o-down' : 'fa fa-hand-o-up';
     },
-    visible(data) {
-      if (!data || !data._id) return false;
-      const doc = Topics.findOne(data._id);
-      return doc.category !== 'vote';
+    visible(data, doc) {
+      return doc && doc.category !== 'vote';
     },
-    run(data, event, instance) {
+    run(data, doc, event, instance) {
       Topics.methods.like.call({ id: data._id }, handleError);
     },
   },
   mute: {
     name: 'mute',
-    label(data) {
-      const doc = Topics.findOne(data._id);
-      return doc.isFlaggedBy(Meteor.userId()) ? 'Unblock content' : 'Block content';
+    label(data, doc) {
+      return doc && doc.isFlaggedBy(Meteor.userId()) ? 'Unblock content' : 'Block content';
     },
-    icon(data) {
-      const doc = Topics.findOne(data._id);
-      return doc.isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
+    icon(data, doc) {
+      return doc && doc.isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
     },
-    visible(data) {
-      if (!data || !data._id) return false;
-      const doc = Topics.findOne(data._id);
-      return doc.category !== 'vote';
+    visible(data, doc) {
+      return doc && doc.category !== 'vote';
     },
-    run(data, event, instance) {
+    run(data, doc, event, instance) {
       Topics.methods.flag.call({ id: data._id }, handleError);
     },
   },
   block: {
     name: 'block',
-    label(data) {
-      const doc = Topics.findOne(data._id);
-      const creator = doc.creator();
+    label(data, doc) {
+      const creator = doc && doc.creator();
       if (!creator) return '';
       return doc.creator().isFlaggedBy(Meteor.userId()) ? __('Unblock content from', doc.creator()) : __('Block content from', doc.creator());
     },
-    icon(data) {
-      const doc = Topics.findOne(data._id);
-      const creator = doc.creator();
+    icon(data, doc) {
+      const creator = doc && doc.creator();
       if (!creator) return '';
       return doc.creator().isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
     },
-    visible(data) {
-      if (!data || !data._id) return false;
-      const doc = Topics.findOne(data._id);
-      return doc.category !== 'vote';
-    },
-    run(data, event, instance) {
-      const doc = Topics.findOne(data._id);
+    visible: (data, doc) => doc && doc.category !== 'vote',
+    run(data, doc, event, instance) {
       Meteor.users.methods.flag.call({ id: doc.creatorId }, handleError);
     },
   },
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible(data) {
-      if (!data || !data._id) return false;
-      const doc = Topics.findOne(data._id);
-      return doc && currentUserHasPermission(`${doc.entityName()}.remove`);
-    },
-    run(data, event, instance) {
-      const doc = Topics.findOne(data._id);
+    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`),
+    run(data, doc, event, instance) {
       Modal.confirmAndCall(Topics.methods.remove, { _id: data._id }, {
         action: `delete ${doc.entityName()}`,
         message: 'It will disappear forever',

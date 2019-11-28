@@ -27,20 +27,19 @@ Breakdowns.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('breakdowns.inCommunity'),
-    run(data) {
-      const breakdown = Breakdowns.findOne(data._id);
+    run(data, doc) {
       const modalContext = {
         title: 'View Breakdown',
         body: 'Nestable_edit',
-        bodyContext: { json: breakdown, disabled: true },
+        bodyContext: { json: doc, disabled: true },
       };
       Modal.show('Modal', modalContext);
     },
-    run_autoForm(data) {
+    run_autoForm(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.breakdown.view',
         collection: Breakdowns,
-        doc: Breakdowns.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
@@ -49,22 +48,21 @@ Breakdowns.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
-    run(data) {
+    run(data, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.breakdown.update',
         collection: Breakdowns,
-        doc: Breakdowns.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'breakdowns.update',
         singleMethodArgument: true,
       });
     },
-    run_nestable(data) {
-      const breakdown = Breakdowns.findOne(data._id);
+    run_nestable(data, doc) {
       const modalContext = {
         title: 'Edit Breakdown',
         body: 'Nestable_edit',
-        bodyContext: { json: breakdown },
+        bodyContext: { json: doc },
         btnClose: 'cancel',
         btnOK: 'save',
         onOK() {

@@ -21,7 +21,9 @@ export function billColumns() {
 //    { data: 'account', title: __('schemaBills.account.label') },
 //    { data: 'localizer', title: __('schemaBills.localizer.label') },
     { data: 'note', title: __('schemaBills.note.label') },
-    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group, { _id: cellData, collection: 'bills', actions: '', size: 'sm' }) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
+      { options: { id: cellData }, collection: 'bills', actions: '', size: 'sm' }),
+    },
   ];
 
   return columns;

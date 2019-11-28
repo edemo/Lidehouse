@@ -1,17 +1,12 @@
 import { Session } from 'meteor/session';
 import { __ } from '/imports/localization/i18n.js';
+import { Template } from 'meteor/templating';
+import { Blaze } from 'meteor/blaze';
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { displayLocalizer, displayTicketType, displayStatus } from '/imports/ui_3/helpers/api-display.js';
 
-export function ticketColumns(permissions) {
+export function ticketColumns() {
   const communityId = Session.get('activeCommunityId');
-  const buttonRenderers = [];
-  if (permissions.view) buttonRenderers.push(Render.buttonView);
-  if (permissions.edit) buttonRenderers.push(Render.buttonEdit);
-  if (permissions.statusChange) buttonRenderers.push(Render.buttonStatusChange);
-  if (permissions.statusUpdate) buttonRenderers.push(Render.buttonStatusUpdate);
-  if (permissions.delete) buttonRenderers.push(Render.buttonDelete);
-
   return [
     { data: 'serialId()', title: __('schemaTickets.id.label') },
     { data: 'status', title: __('schemaTopics.status.label'), render: displayStatus },
@@ -20,6 +15,8 @@ export function ticketColumns(permissions) {
     { data: 'creator()', title: __('reportedBy') },
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
     { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: displayTicketType },
-    { data: '_id', title: __('Action buttons'), render: Render.buttonGroup(buttonRenderers) },
+    { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
+      { options: { id: cellData }, collection: 'topics', actions: '', size: 'sm' }),
+    },
   ];
 }
