@@ -13,9 +13,9 @@ Transactions.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('transactions.insert'),
-    run(data) {
-      Session.set('activeTxCatId', data.catId);
-      const cat = TxCats.findOne(data.catId);
+    run(options) {
+      Session.set('activeTxCatId', options.catId);
+      const cat = TxCats.findOne(options.catId);
       Modal.show('Autoform_edit', {
         id: 'af.transaction.insert',
         collection: Transactions,
@@ -29,12 +29,12 @@ Transactions.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('transactions.inCommunity'),
-    run(data) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.transaction.view',
         collection: Transactions,
         schema: Transactions.inputSchema,
-        doc: Transactions.findOne(data._id),
+        doc,
         type: 'readonly',
       });
     },
@@ -43,12 +43,12 @@ Transactions.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('transactions.update'),
-    run(data) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.transaction.update',
         collection: Transactions,
   //      schema: newTransactionSchema(),
-        doc: Transactions.findOne(data._id),
+        doc,
         type: 'method-update',
         meteormethod: 'transactions.update',
         singleMethodArgument: true,
@@ -59,11 +59,10 @@ Transactions.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('transactions.remove'),
-    run(data) {
-      const tx = Transactions.findOne(data._id);
-      Modal.confirmAndCall(Transactions.methods.remove, { _id: id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
         action: 'delete transaction',
-        message: tx.isSolidified() ? 'Remove not possible after 24 hours' : '',
+        message: doc.isSolidified() ? 'Remove not possible after 24 hours' : '',
       });
     },
   },

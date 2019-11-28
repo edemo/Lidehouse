@@ -33,7 +33,7 @@ Communities.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('communities.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.community.view',
         collection: Communities,
@@ -46,7 +46,7 @@ Communities.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('communities.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.community.update',
         collection: Communities,
@@ -61,7 +61,7 @@ Communities.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('communities.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.community.update',
         collection: Communities,
@@ -76,7 +76,7 @@ Communities.actions = {
   join: {
     name: 'join',
     icon: () => 'fa fa-suitcase',
-    visible: (data, doc) => doc.settings.joinable,
+    visible: (options, doc) => doc.settings.joinable,
     run() {
       AccountsTemplates.forceLogin(() => {
         Modal.show('Autoform_edit', {
@@ -103,8 +103,8 @@ Communities.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('communities.remove'),
-    run(data) {
-      Modal.confirmAndCall(Communities.methods.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(Communities.methods.remove, { _id: doc._id }, {
         action: 'delete community',
         message: 'You should rather archive it',
       });

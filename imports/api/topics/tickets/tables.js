@@ -16,7 +16,7 @@ export function ticketColumns() {
     { data: 'createdAt', title: __('reportedAt'), render: Render.formatTime },
     { data: 'ticket.type', title: __('schemaTickets.ticket.type.label'), render: displayTicketType },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { options: { id: cellData }, collection: 'topics', actions: '', size: 'sm' }),
+      { doc: cellData, collection: 'topics', actions: '', size: 'sm' }),
     },
   ];
 }

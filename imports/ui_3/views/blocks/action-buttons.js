@@ -37,12 +37,12 @@ Template.Action_button.viewmodel({
       default: return 'xs';
     }
   },
-  doc() {
+  document() {
     const instanceData = this.templateInstance.data;
-    if (!instanceData.doc) {
+    if (typeof instanceData.doc !== 'object') {
+      debugAssert(typeof instanceData.doc === 'string');
       const collection = Mongo.Collection.get(instanceData.collection);
-      debugAssert(instanceData.options.id);
-      instanceData.doc = collection.findOne(instanceData.options.id);
+      instanceData.doc = collection.findOne(instanceData.doc);
     }
     return instanceData.doc;
   },
@@ -51,6 +51,8 @@ Template.Action_button.viewmodel({
     _.forEach(this.templateInstance.data.options, (value, key) => {
       obj[`data-${key}`] = value;
     });
+    const instanceData = this.templateInstance.data;
+    obj['data-id'] = (typeof instanceData.doc === 'object') ? instanceData.doc._id : instanceData.doc;
     return obj;
   },
 });
@@ -72,11 +74,6 @@ Template.Action_buttons_group.viewmodel({
       : _.values(_.omit(collection.actions, 'new', 'import'));
     return actions;
   },
-  options() {
-    return this.templateInstance.data.options || {
-      id: this.templateInstance.data.doc && this.templateInstance.data.doc._id,
-    };
-  },
 });
 
 //-------------------------------------------------------------
@@ -90,12 +87,11 @@ Template.Action_listitem.viewmodel({
   long() {
     return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
   },
-  doc() {
+  document() {
     const instanceData = this.templateInstance.data;
-    if (!instanceData.doc) {
+    if (typeof instanceData.doc === 'string') {
       const collection = Mongo.Collection.get(instanceData.collection);
-      debugAssert(instanceData.options.id);
-      instanceData.doc = collection.findOne(instanceData.options.id);
+      instanceData.doc = collection.findOne(instanceData.doc);
     }
     return instanceData.doc;
   },
@@ -124,11 +120,6 @@ Template.Action_buttons_dropdown.viewmodel({
   },
   large() {
     return this.templateInstance.data.size === 'lg';
-  },
-  options() {
-    return this.templateInstance.data.options || {
-      id: this.templateInstance.data.doc && this.templateInstance.data.doc._id,
-    };
   },
   needsDividerAfter(action) {
     switch (action.name) {

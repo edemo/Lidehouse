@@ -23,7 +23,7 @@ export function breakdownColumns() {
 //    { data: 'type', title: __('schemaBreakdowns.type.label'), render: Render.translate },
     { data: 'nodeNames()', /*title: __('schemaBreakdowns.children.$.children.$.children.label'),*/ render: displayNames },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { options: { id: cellData }, collection: 'breakdowns', actions: '', size: 'sm' }),
+      { doc: cellData, collection: 'breakdowns', actions: '', size: 'sm' }),
     },
   ];
 }

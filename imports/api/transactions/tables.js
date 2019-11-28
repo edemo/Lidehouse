@@ -25,7 +25,7 @@ export function transactionColumns() {
     { data: 'ref', title: __('schemaTransactions.ref.label') },
     { data: 'note', title: __('schemaTransactions.note.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { options: { id: cellData }, collection: 'transactions', actions: '', size: 'sm' }),
+      { doc: cellData, collection: 'transactions', actions: '', size: 'sm' }),
     },
   ];
 

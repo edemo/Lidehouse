@@ -21,7 +21,7 @@ export function parcelBillingColumns() {
     { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'lastAppliedAt().valueDate', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { options: { id: cellData }, collection: 'parcelBillings', actions: '', size: 'sm' }),
+      { doc: cellData, collection: 'parcelBillings', actions: '', size: 'sm' }),
     },
   ];
 

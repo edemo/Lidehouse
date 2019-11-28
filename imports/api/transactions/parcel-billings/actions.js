@@ -24,7 +24,7 @@ ParcelBillings.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('parcelBillings.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.view',
         collection: ParcelBillings,
@@ -37,7 +37,7 @@ ParcelBillings.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('parcelBillings.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.update',
         collection: ParcelBillings,
@@ -52,8 +52,8 @@ ParcelBillings.actions = {
     name: 'apply',
     icon: () => 'fa fa-calendar-plus-o',
     visible: () => currentUserHasPermission('parcelBillings.apply'),
-    run(data) {
-      Session.set('activeParcelBillingId', data._id);
+    run(options, doc) {
+      Session.set('activeParcelBillingId', doc._id);
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.apply',
         schema: ParcelBillings.applySchema,
@@ -67,8 +67,8 @@ ParcelBillings.actions = {
     name: 'revert',
     icon: () => 'fa fa-calendar-times-o',
     visible: () => currentUserHasPermission('parcelBillings.revert'),
-    run(data) {
-      Session.set('activeParcelBillingId', data._id);
+    run(options) {
+      Session.set('activeParcelBillingId', doc._id);
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.apply',
         schema: ParcelBillings.applySchema,
@@ -82,8 +82,8 @@ ParcelBillings.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('parcelBillings.remove'),
-    run(data) {
-      Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: doc._id }, {
         action: 'delete parcelBilling',
         message: 'It will disappear forever',
       });

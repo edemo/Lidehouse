@@ -19,7 +19,7 @@ import './methods.js';
 function setSessionVars(instance) {
   const communityId = Session.get('activeCommunityId');
   const activePartnerRelation = instance.viewmodel.activePartnerRelation();
-  const txCat = TxCats.findOne({ communityId, dataType: 'bills', 'data.relation': activePartnerRelation });
+  const txCat = TxCats.findOne({ communityId, dataType: 'bills', 'options.relation': activePartnerRelation });
   Session.set('activeTxCatId', txCat);
 }
 
@@ -32,7 +32,7 @@ Bills.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('bills.insert'),
-    run(data, doc, event, instance) {
+    run(options, doc, event, instance) {
       setSessionVars(instance);
       Modal.show('Bill_edit', {
         id: 'af.bill.insert',
@@ -47,7 +47,7 @@ Bills.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('bills.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
 //    FlowRouter.go('Bill show', { _bid: id });
       Modal.show('Modal', {
         title: __(doc.relation + '_bill') + ' ' + doc.serialId(),
@@ -59,12 +59,12 @@ Bills.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible(data, doc) {
+    visible(options, doc) {
       if (!currentUserHasPermission('bills.update')) return false;
       if (!doc || doc.txId) return false; // already in accounting
       return true;
     },
-    run(data, doc, event, instance) {
+    run(options, doc, event, instance) {
       setSessionVars(instance);
       Modal.show('Bill_edit', {
         id: 'af.bill.update',
@@ -79,13 +79,13 @@ Bills.actions = {
   post: {
     name: 'post',
     icon: () => 'fa fa-check-square-o',
-    color: (data, doc) => (doc && !(doc.txId) ? 'warning' : undefined),
-    visible(data, doc) {
+    color: (options, doc) => (doc && !(doc.txId) ? 'warning' : undefined),
+    visible(options, doc) {
       if (!currentUserHasPermission('bills.post')) return false;
       return (doc && doc.hasConteerData() && !doc.txId);
     },
-    run(data, doc) {
-      Bills.methods.post.call({ _id: data._id }, onSuccess((res) => {
+    run(options, doc) {
+      Bills.methods.post.call({ _id: doc._id }, onSuccess((res) => {
         displayMessage('info', 'Szamla konyvelesbe kuldve');
       }));
     },
@@ -93,12 +93,12 @@ Bills.actions = {
   registerPayment: {
     name: 'registerPayment',
     icon: () => 'fa fa-credit-card',
-    visible(data, doc) {
+    visible(options, doc) {
       if (!currentUserHasPermission('payments.insert')) return false;
       return (doc && doc.txId && doc.outstanding > 0);
     },
-    run(data, doc) {
-      Session.set('activeBillId', data._id);
+    run(options, doc) {
+      Session.set('activeBillId', doc._id);
       Modal.show('Autoform_edit', {
         id: 'af.payment.insert',
         collection: Payments,
@@ -112,8 +112,8 @@ Bills.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('bills.remove'),
-    run(data) {
-      Modal.confirmAndCall(Bills.methods.remove, { _id: data._id }, {
+    run(options) {
+      Modal.confirmAndCall(Bills.methods.remove, { _id: doc._id }, {
         action: 'delete bill',
         message: 'It will disappear forever',
       });

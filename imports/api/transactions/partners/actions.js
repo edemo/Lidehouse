@@ -27,7 +27,7 @@ Partners.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('partners.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
       // TODO
     },
   },
@@ -35,7 +35,7 @@ Partners.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('partners.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.partner.update',
         collection: Partners,
@@ -50,8 +50,8 @@ Partners.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('partners.remove'),
-    run(data) {
-      Modal.confirmAndCall(Partners.methods.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(Partners.methods.remove, { _id: doc._id }, {
         action: 'delete partner',
         message: 'It will disappear forever',
       });

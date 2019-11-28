@@ -16,7 +16,7 @@ function setSessionVars(instance) {
   const communityId = Session.get('activeCommunityId');
   const activePartnerRelation = instance.viewmodel.activePartnerRelation();
   Session.set('activePartnerRelation', activePartnerRelation);
-  const txCat = TxCats.findOne({ communityId, dataType: 'payments', 'data.relation': activePartnerRelation });
+  const txCat = TxCats.findOne({ communityId, dataType: 'payments', 'options.relation': activePartnerRelation });
   Session.set('activeTxCatId', txCat);
 }
 
@@ -30,7 +30,7 @@ Payments.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('payments.insert'),
-    run(data, doc, event, instance) {
+    run(options, doc, event, instance) {
       setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.insert',
@@ -44,19 +44,19 @@ Payments.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('payments.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
       // TODO
     },
   },
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible(data, doc) {
+    visible(options, doc) {
       if (!currentUserHasPermission('bills.update')) return false;
       if (!doc || doc.txId) return false; // already in accounting
       return true;
     },
-    run(data, doc, event, instance) {
+    run(options, doc, event, instance) {
       setSessionVars(instance);
       Modal.show('Autoform_edit', {
         id: 'af.payment.update',
@@ -71,14 +71,14 @@ Payments.actions = {
   post: {
     name: 'post',
     icon: () => 'fa fa-check-square-o',
-    color: (data, doc) => (!(doc.txId) ? 'warning' : undefined),
-    visible(data, doc) {
+    color: (options, doc) => (!(doc.txId) ? 'warning' : undefined),
+    visible(options, doc) {
       if (!currentUserHasPermission('payments.post')) return false;
       if (!doc || doc.txId) return false;
       return true;
     },
-    run(data) {
-      Payments.methods.post.call({ _id: data._id }, onSuccess((res) => {
+    run(options, doc) {
+      Payments.methods.post.call({ _id: doc._id }, onSuccess((res) => {
         displayMessage('info', 'Kifizetes konyvelesbe kuldve');
       }));
     },
@@ -87,8 +87,8 @@ Payments.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('payments.remove'),
-    run(data) {
-      Modal.confirmAndCall(Payments.methods.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(Payments.methods.remove, { _id: doc._id }, {
         action: 'delete bill',
         message: 'It will disappear forever',
       });

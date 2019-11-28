@@ -27,7 +27,7 @@ Contracts.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('contracts.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
       // TODO
     },
   },
@@ -35,7 +35,7 @@ Contracts.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('contracts.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.contract.update',
         collection: Contracts,
@@ -50,8 +50,8 @@ Contracts.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('contracts.remove'),
-    run(data) {
-      Modal.confirmAndCall(Contracts.methods.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(Contracts.methods.remove, { _id: doc._id }, {
         action: 'delete contract',
         message: 'It will disappear forever',
       });

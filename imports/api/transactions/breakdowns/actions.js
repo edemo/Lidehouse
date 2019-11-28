@@ -27,7 +27,7 @@ Breakdowns.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('breakdowns.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
       const modalContext = {
         title: 'View Breakdown',
         body: 'Nestable_edit',
@@ -35,7 +35,7 @@ Breakdowns.actions = {
       };
       Modal.show('Modal', modalContext);
     },
-    run_autoForm(data, doc) {
+    run_autoForm(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.breakdown.view',
         collection: Breakdowns,
@@ -48,7 +48,7 @@ Breakdowns.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.breakdown.update',
         collection: Breakdowns,
@@ -58,7 +58,7 @@ Breakdowns.actions = {
         singleMethodArgument: true,
       });
     },
-    run_nestable(data, doc) {
+    run_nestable(options, doc) {
       const modalContext = {
         title: 'Edit Breakdown',
         body: 'Nestable_edit',
@@ -71,7 +71,7 @@ Breakdowns.actions = {
           // assert json.length === 1
           // assert json[0].name === breakdown.name
           // assert locked elements are still there 
-          Breakdowns.update(data._id, { $set: { children: json[0].children } },
+          Breakdowns.update(doc._id, { $set: { children: json[0].children } },
             onSuccess(res => displayMessage('success', 'Breakdown saved'))
           );
         },
@@ -83,8 +83,8 @@ Breakdowns.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('breakdowns.remove'),
-    run(data) {
-      Modal.confirmAndCall(Breakdowns.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(Breakdowns.remove, { _id: doc._id }, {
         action: 'delete breakdown',
       });
     },

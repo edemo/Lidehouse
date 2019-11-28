@@ -9,7 +9,7 @@ export function partnersColumns() {
     { data: 'toString()', title: __('schemaBills.partnerId.label') },
     { data: 'outstanding', title: __('schemaBills.outstanding.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { options: { id: cellData }, collection: 'partners', actions: '', size: 'sm' }),
+      { doc: cellData, collection: 'partners', actions: '', size: 'sm' }),
     },
   ];
 

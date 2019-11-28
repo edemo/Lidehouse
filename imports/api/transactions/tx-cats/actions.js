@@ -24,7 +24,7 @@ TxCats.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.txCat.update',
         collection: TxCats,
@@ -39,8 +39,8 @@ TxCats.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('breakdowns.remove'),
-    run(data) {
-      Modal.confirmAndCall(TxCats.methods.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(TxCats.methods.remove, { _id: doc._id }, {
         action: 'delete txCat',
       });
     },

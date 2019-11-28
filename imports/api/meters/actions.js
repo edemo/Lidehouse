@@ -29,7 +29,7 @@ Meters.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('meters.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.view',
         collection: Meters,
@@ -42,7 +42,7 @@ Meters.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.update',
         collection: Meters,
@@ -58,7 +58,7 @@ Meters.actions = {
     name: 'editReadings',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.update',
         collection: Meters,
@@ -74,8 +74,8 @@ Meters.actions = {
     name: 'reading',
     icon: () => 'fa fa-camera',
     visible: () => currentUserHasPermission('meters.registerReading'),
-    run(data, doc) {
-      Session.set('selectedMeterId', data._id);
+    run(options, doc) {
+      Session.set('selectedMeterId', doc._id);
       Modal.show('Autoform_edit', {
         id: 'af.meter.reading',
         collection: Meters,
@@ -89,7 +89,7 @@ Meters.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('meters.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.meter.update',
         collection: Meters,
@@ -105,8 +105,8 @@ Meters.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('meters.remove'),
-    run(data) {
-      Modal.confirmAndCall(Meters.methods.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(Meters.methods.remove, { _id: doc._id }, {
         action: 'delete meter',
         message: 'You should rather archive it',
       });

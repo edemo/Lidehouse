@@ -29,7 +29,7 @@ Leaderships.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('leaderships.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.view',
         collection: Leaderships,
@@ -42,7 +42,7 @@ Leaderships.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('leaderships.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.update',
         collection: Leaderships,
@@ -58,7 +58,7 @@ Leaderships.actions = {
     name: 'period',
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('leaderships.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.leadership.update',
         collection: Leaderships,
@@ -74,8 +74,8 @@ Leaderships.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('leaderships.remove'),
-    run(data) {
-      Modal.confirmAndCall(Leaderships.methods.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(Leaderships.methods.remove, { _id: doc._id }, {
         action: 'delete leadership',
         message: 'You should rather archive it',
       });

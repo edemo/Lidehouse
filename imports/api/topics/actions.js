@@ -44,18 +44,18 @@ Topics.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (data) => currentUserHasPermission(`${data.entity}.insert`),
-    run(data) {
-      const entity = Topics.entities[data.entity];
+    visible: (options) => currentUserHasPermission(`${options.entity}.insert`),
+    run(options) {
+      const entity = Topics.entities[options.entity];
       Modal.show(entity.form, {
-        id: `af.${data.entity}.insert`,
+        id: `af.${options.entity}.insert`,
         collection: Topics,
         schema: entity.schema,
         fields: entity.inputFields,
         omitFields: entity.omitFields,
         type: 'method',
         meteormethod: 'topics.insert',
-        btnOK: `Create ${data.entity}`,
+        btnOK: `Create ${options.entity}`,
       });
     },
   },
@@ -63,20 +63,20 @@ Topics.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('topics.inCommunity'),
-    href: (data) => `pathFor 'Topic show' _tid=${data._id}`,
-    run(data, doc, event, instance) {},
+    href: (options, doc) => `pathFor 'Topic show' _tid=${doc._id}`,
+    run(options, doc, event, instance) {},
   },
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
-    run(data, doc, event, instance) {
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
+    run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
       Modal.show(entity.form, {
         id: `af.${doc.entityName()}.update`,
         collection: Topics,
         schema: entity.schema,
-        fields: doc.modifiableFields(),
+        fields: _.intersection(entity.inputFields, doc.modifiableFields()),
         omitFields: entity.omitFields,
         doc,
         type: 'method-update',
@@ -88,8 +88,8 @@ Topics.actions = {
   statusUpdate: {
     name: 'statusUpdate',
     icon: () => 'fa fa-edit',
-    visible: (data, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${doc.status}.enter`),
-    run(data, doc, event, instance) {
+    visible: (options, doc) => doc && doc.statusObject().options && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${doc.status}.enter`),
+    run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.statusUpdate`,
@@ -106,27 +106,27 @@ Topics.actions = {
   },
   statusChange: {
     name: 'statusChange',
-    label(data) {
-      const statusName = __('schemaTopics.status.' + data.newStatus.name);
-      return data.newStatus.label || __('Change status to', statusName);
+    label(options) {
+      const statusName = __('schemaTopics.status.' + options.newStatus.name);
+      return options.newStatus.label || __('Change status to', statusName);
     },
-    icon(data) {
-      const newStatus = data.newStatus;
+    icon(options) {
+      const newStatus = options.newStatus;
       return newStatus.icon || 'fa fa-cogs';
     },
-    visible(data, doc) {
-      return doc && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${data.newStatus.name}.enter`);
+    visible(options, doc) {
+      return doc && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${options.newStatus.name}.enter`);
     },
-    run(data, doc, event, instance) {
-      const newStatus = data.newStatus;
+    run(options, doc, event, instance) {
+      const newStatus = options.newStatus;
       const entity = Topics.entities[doc.entityName()];
-      Session.set('activeTopicId', data._id);
+      Session.set('activeTopicId', doc._id);
       Session.set('newStatusName', newStatus.name);
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.statusChange`,
-        description: newStatus.message && newStatus.message(data),
+        description: newStatus.message && newStatus.message(options),
         schema: statusChangeSchema(doc, newStatus.name),
-        omitFields: ['data'],
+        omitFields: ['options'],
         type: 'method',
         meteormethod: 'topics.statusChange',
         btnOK: 'Change status',
@@ -135,57 +135,57 @@ Topics.actions = {
   },
   like: {
     name: 'like',
-    label(data, doc) {
+    label(options, doc) {
       return doc && doc.isLikedBy(Meteor.userId()) ? 'Not important' : 'Important';
     },
-    icon(data, doc) {
+    icon(options, doc) {
       return doc && doc.isLikedBy(Meteor.userId()) ? 'fa fa-hand-o-down' : 'fa fa-hand-o-up';
     },
-    visible(data, doc) {
+    visible(options, doc) {
       return doc && doc.category !== 'vote';
     },
-    run(data, doc, event, instance) {
-      Topics.methods.like.call({ id: data._id }, handleError);
+    run(options, doc, event, instance) {
+      Topics.methods.like.call({ id: doc._id }, handleError);
     },
   },
   mute: {
     name: 'mute',
-    label(data, doc) {
+    label(options, doc) {
       return doc && doc.isFlaggedBy(Meteor.userId()) ? 'Unblock content' : 'Block content';
     },
-    icon(data, doc) {
+    icon(options, doc) {
       return doc && doc.isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
     },
-    visible(data, doc) {
+    visible(options, doc) {
       return doc && doc.category !== 'vote';
     },
-    run(data, doc, event, instance) {
-      Topics.methods.flag.call({ id: data._id }, handleError);
+    run(options, doc, event, instance) {
+      Topics.methods.flag.call({ id: doc._id }, handleError);
     },
   },
   block: {
     name: 'block',
-    label(data, doc) {
+    label(options, doc) {
       const creator = doc && doc.creator();
       if (!creator) return '';
       return doc.creator().isFlaggedBy(Meteor.userId()) ? __('Unblock content from', doc.creator()) : __('Block content from', doc.creator());
     },
-    icon(data, doc) {
+    icon(options, doc) {
       const creator = doc && doc.creator();
       if (!creator) return '';
       return doc.creator().isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
     },
-    visible: (data, doc) => doc && doc.category !== 'vote',
-    run(data, doc, event, instance) {
+    visible: (options, doc) => doc && doc.category !== 'vote',
+    run(options, doc, event, instance) {
       Meteor.users.methods.flag.call({ id: doc.creatorId }, handleError);
     },
   },
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`),
-    run(data, doc, event, instance) {
-      Modal.confirmAndCall(Topics.methods.remove, { _id: data._id }, {
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`),
+    run(options, doc, event, instance) {
+      Modal.confirmAndCall(Topics.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,
         message: 'It will disappear forever',
       });

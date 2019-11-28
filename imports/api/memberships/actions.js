@@ -16,11 +16,11 @@ Memberships.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (data) => currentUserHasPermission(`${data.entity}.insert`),
-    run(data) {
-      const entity = Memberships.entities[data.entity];
+    visible: (options) => currentUserHasPermission(`${options.entity}.insert`),
+    run(options) {
+      const entity = Memberships.entities[options.entity];
       Modal.show('Autoform_edit', {
-        id: `af.${data.entity}.insert`,
+        id: `af.${options.entity}.insert`,
         collection: Memberships,
         fields: entity.inputFields.concat('activeTime'),
         omitFields: entity.omitFields,
@@ -39,7 +39,7 @@ Memberships.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('memberships.inCommunity'),
-    run(data, doc, event, instance) {
+    run(options, doc, event, instance) {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.view`,
@@ -54,8 +54,8 @@ Memberships.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
-    run(data, doc, event, instance) {
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
+    run(options, doc, event, instance) {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.update`,
@@ -72,8 +72,8 @@ Memberships.actions = {
   period: {
     name: 'period',
     icon: () => 'fa fa-history',
-    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
-    run(data, doc, event, instance) {
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
+    run(options, doc, event, instance) {
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.update`,
         collection: Memberships,
@@ -88,10 +88,10 @@ Memberships.actions = {
   invite: {
     name: 'invite',
     icon: () => 'fa fa-user-plus',
-    color: (data, doc) => (doc && doc.personId ? 'info' : 'warning'),
-    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`) && !doc.accepted,
-    run(data, doc, event, instance) {
-      Modal.confirmAndCall(Memberships.methods.linkUser, { _id: data._id }, {
+    color: (options, doc) => (doc && doc.personId ? 'info' : 'warning'),
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`) && !doc.accepted,
+    run(options, doc, event, instance) {
+      Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {
         action: 'invite user',
         message: __('Connecting user', doc.Person().primaryEmail() || __('undefined')),
       });
@@ -100,9 +100,9 @@ Memberships.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: (data, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`),
-    run(data, doc, event, instance) {
-      Modal.confirmAndCall(Memberships.methods.remove, { _id: data._id }, {
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`),
+    run(options, doc, event, instance) {
+      Modal.confirmAndCall(Memberships.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,
         message: 'You should rather archive it',
       });

@@ -10,7 +10,7 @@ export function contractColumns() {
     { data: 'title', title: __('schemaAgendas.title.label') },
     { data: 'topics()', title: __('schemaAgendas.topicIds.label'), render: cellData => _.pluck(cellData, 'title') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { options: { id: cellData }, collection: 'contracts', actions: '', size: 'sm' }),
+      { doc: cellData, collection: 'contracts', actions: '', size: 'sm' }),
     },
   ];
 }

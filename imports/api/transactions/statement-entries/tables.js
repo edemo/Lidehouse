@@ -13,7 +13,7 @@ export function statementEntriesColumns() {
     { data: 'note', title: __('schemaBills.note.label') },
     { data: 'reconciledId', title: __('schemaBills.reconciled.label'), render: Render.checkmarkBoolean },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { options: { id: cellData }, collection: 'statementEntries', actions: 'reconcile', size: 'sm' }),
+      { doc: cellData, collection: 'statementEntries', actions: 'reconcile', size: 'sm' }),
     },
   ];
 

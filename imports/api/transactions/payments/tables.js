@@ -18,7 +18,7 @@ export function paymentsColumns() {
     { data: 'note', title: __('schemaBills.note.label') },
     { data: 'reconciledId', title: __('schemaBills.reconciled.label'), render: Render.checkmarkBoolean },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { options: { id: cellData }, collection: 'payments', actions: '', size: 'sm' }),
+      { doc: cellData, collection: 'payments', actions: '', size: 'sm' }),
     },
   ];
 

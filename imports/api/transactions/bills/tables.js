@@ -22,7 +22,7 @@ export function billColumns() {
 //    { data: 'localizer', title: __('schemaBills.localizer.label') },
     { data: 'note', title: __('schemaBills.note.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { options: { id: cellData }, collection: 'bills', actions: '', size: 'sm' }),
+      { doc: cellData, collection: 'bills', actions: '', size: 'sm' }),
     },
   ];
 

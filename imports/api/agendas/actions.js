@@ -28,7 +28,7 @@ Agendas.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('agendas.inCommunity'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.agenda.view',
         collection: Agendas,
@@ -41,7 +41,7 @@ Agendas.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('agendas.update'),
-    run(data, doc) {
+    run(options, doc) {
       Modal.show('Autoform_edit', {
         id: 'af.agenda.update',
         collection: Agendas,
@@ -56,8 +56,8 @@ Agendas.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('agendas.remove'),
-    run(data) {
-      Modal.confirmAndCall(Agendas.methods.remove, { _id: data._id }, {
+    run(options, doc) {
+      Modal.confirmAndCall(Agendas.methods.remove, { _id: doc._id }, {
         action: 'delete agenda',
         message: 'This will not delete topics',
       });
