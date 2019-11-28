@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -6,6 +7,12 @@ import { Template } from 'meteor/templating';
 import { debugAssert } from '/imports/utils/assert.js';
 
 import './multi-modal-handler.html';
+
+// This is how we did it, before multi modals
+export function runInNewModal(toRun) {
+  Meteor.setTimeout(toRun, 1000);
+  Modal.hide();
+}
 
 Modal.allowMultiple = true;
 

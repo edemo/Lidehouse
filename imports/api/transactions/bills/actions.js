@@ -112,7 +112,7 @@ Bills.actions = {
     name: 'delete',
     icon: () => 'fa fa-trash',
     visible: () => currentUserHasPermission('bills.remove'),
-    run(options) {
+    run(options, doc) {
       Modal.confirmAndCall(Bills.methods.remove, { _id: doc._id }, {
         action: 'delete bill',
         message: 'It will disappear forever',

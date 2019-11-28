@@ -13,11 +13,14 @@ import '/imports/api/transactions/bills/actions.js';
 import './bill-show.html';
 
 Template.Bill_show.viewmodel({
-  docVm: {},
+  docVm: undefined,
   onCreated(instance) {
   //  const billId = FlowRouter.getParam('_bid');
   //  this.subscribe('bills.byId', { _id: billId });
-    this.docVm(instance.data.doc);
+  //  this.docVm(instance.data.doc);
+  },
+  autorun() {
+    this.docVm(Bills.findOne(this.templateInstance.data.doc._id));
   },
 //  bill() {
 //    return Bills.findOne(FlowRouter.getParam('_bid'));
@@ -39,25 +42,5 @@ Template.Bill_show.viewmodel({
   },
   code2parcelRef(code) {
     return Localizer.code2parcelRef(code);
-  },
-});
-
-function runInNewModal(toRun) {
-  Meteor.setTimeout(toRun, 1000);
-  Modal.hide();
-}
-
-Template.Bill_show.events({
-  'click .js-edit'(event, instance) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    runInNewModal(() => Bills.actions.edit.run(id));
-  },
-  'click .js-post'(event, instance) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    runInNewModal(() => Bills.actions.post.run(id));
-  },
-  'click .js-payment'(event, instance) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    runInNewModal(() => Bills.actions.registerPayment.run(id));
   },
 });

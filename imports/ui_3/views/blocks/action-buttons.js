@@ -39,8 +39,7 @@ Template.Action_button.viewmodel({
   },
   document() {
     const instanceData = this.templateInstance.data;
-    if (typeof instanceData.doc !== 'object') {
-      debugAssert(typeof instanceData.doc === 'string');
+    if (typeof instanceData.doc === 'string') {
       const collection = Mongo.Collection.get(instanceData.collection);
       instanceData.doc = collection.findOne(instanceData.doc);
     }
