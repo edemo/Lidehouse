@@ -34,7 +34,7 @@ Template.Contracts.viewmodel({
     return ['supplier', 'customer'];
   },
   activeClass(partnerRelation) {
-    return (this.activePartnerRelation() === partnerRelation) && 'active';
+    return (this.activePartnerRelation() === partnerRelation) && 'btn-primary active';
   },
   contracts() {
     const communityId = Session.get('activeCommunityId');
@@ -63,6 +63,5 @@ Template.Contracts.events({
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');
     instance.viewmodel.activePartnerRelation(partnerRelation);
-    Session.set('activePartnerRelation', partnerRelation);
   },
 });

@@ -4,6 +4,11 @@
     {{> Page_heading title=(_ 'Forum') }}
 
     <div class="wrapper wrapper-content animated fadeInUp">
+        <div class="btn-group">
+          {{#each group in groups}}
+          <button type="button" class="btn {{activeClass group}} js-filter" data-value="{{group}}">{{_ group}}</button>
+          {{/each}}
+        </div>
         <div>
             <div class="text-right">
                 <button class="btn btn-primary btn-sm m-b js-new"><i class="fa fa-plus"></i> {{_ 'Start new topic'}}</button>

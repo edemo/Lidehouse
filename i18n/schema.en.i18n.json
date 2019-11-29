@@ -875,7 +875,7 @@
     "projection": {
       "label": "Projection basis (where no consumption meter)"
     },
-    "amount": {
+    "projectedPrice": {
       "label": "Unit price of projection",
       "placeholder": "(eg. 14560)"
     },

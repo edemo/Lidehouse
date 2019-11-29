@@ -7,12 +7,9 @@
         {{#if userHasPermission 'contracts.insert' (fromSession 'activeCommunityId') }}
           <button class="btn btn-primary btn-sm pull-right m-md js-new contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
         {{/if}}
-        {{#if userHasPermission 'partners.insert' (fromSession 'activeCommunityId') }}
-          <button class="btn btn-primary btn-sm pull-right m-md js-new partners"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'partner'}}</button>
-        {{/if}}
-        <div class="input-group">
+        <div class="btn-group">
           {{#each partnerRelation in partnerRelations}}
-          <button type="button" class="btn btn-sm btn-outline btn-default js-relation-filter {{activeClass partnerRelation}}" data-value="{{partnerRelation}}">{{_ (concat 'schemaPartners.relation.' partnerRelation)}}</button>
+          <button type="button" class="btn {{activeClass partnerRelation}} js-relation-filter" data-value="{{partnerRelation}}">{{_ (concat 'schemaPartners.relation.' partnerRelation)}}{{_ 's'}}</button>
           {{/each}}
         </div>
 

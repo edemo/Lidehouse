@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
@@ -62,11 +63,15 @@ Partners.relCollection = function relCollection(relation) {
 export let choosePartner = {};
 if (Meteor.isClient) {
   import { Session } from 'meteor/session';
+  import { Tracker } from 'meteor/tracker';
+  import { ModalStack } from '/imports/ui_3/views/modals/multi-modal-handler.js';
 
   choosePartner = {
     relation: 'partner',
     value() {
-      return Session.get('modalResult-af.partner.insert');
+      const selfId = AutoForm.getFormId();
+      return ModalStack.readResult(selfId, 'af.partner.insert');
+      // return Session.get('modalResult-af.partner.insert');
 //      const topModal = _.last(Session.get('openModals'));
 //      if (topModal && topModal.resultId === 'af.partner.insert') {
 //        return topModal.result;
