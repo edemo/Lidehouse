@@ -17,10 +17,6 @@ Meteor.startup(function attach() {
   ticketSchemaWithMoreDates.i18n('schemaTickets');
 });
 
-export function ticketPrototype(type) {
-  return Topics._transform({ category: 'ticket', text: '-', ticket: { type } });
-}
-
 Topics.entities.ticket = {
   form: 'Autoform_edit',
   schema: Tickets.schema,
@@ -30,20 +26,28 @@ Topics.entities.ticket = {
   },
 };
 
+// Ptototypes used for their virtual functions
+const Issue = Topics._transform({ category: 'ticket', text: '-', ticket: { type: 'issue' } });
+const Maintenance = Topics._transform({ category: 'ticket', text: '-', ticket: { type: 'maintenance' } });
+const Upgrade = Topics._transform({ category: 'ticket', text: '-', ticket: { type: 'upgrade' } });
+
 Topics.entities.issue = {
   form: Topics.entities.ticket.form,
   schema: Tickets.schema,
+  inputFields: Issue.modifiableFields().concat(Issue.startFields()),
   implicitFields: _.extend({ 'ticket.type': 'issue' }, Topics.entities.ticket.implicitFields),
 };
 
 Topics.entities.maintenance = {
   form: Topics.entities.ticket.form,
   schema: ticketSchemaWithMoreDates,
+  inputFields: Maintenance.modifiableFields().concat(Maintenance.startFields()),
   implicitFields: _.extend({ 'ticket.type': 'maintenance' }, Topics.entities.ticket.implicitFields),
 };
 
 Topics.entities.upgrade = {
   form: Topics.entities.ticket.form,
   schema: Tickets.schema,
+  inputFields: Upgrade.modifiableFields().concat(Upgrade.startFields()),
   implicitFields: _.extend({ 'ticket.type': 'upgrade' }, Topics.entities.ticket.implicitFields),
 };

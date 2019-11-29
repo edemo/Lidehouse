@@ -117,8 +117,8 @@ Template.Action_buttons_dropdown.viewmodel({
       : _.values(_.omit(collection.actions, 'new', 'import', 'view', 'like'));
     return actions;
   },
-  large() {
-    return this.templateInstance.data.size === 'lg';
+  long() {
+    return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
   },
   needsDividerAfter(action) {
     switch (action.name) {

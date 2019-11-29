@@ -431,7 +431,8 @@
       "placeholder": "(eg. Elevator not working)"
     },
     "text": {
-      "label": "Remarks"
+      "label": "Remarks",
+      "placeholder": "Remarks..."
     },
     "photo": {
       "label": "Photo (if applicable)",

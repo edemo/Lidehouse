@@ -29,8 +29,8 @@ Tickets.extensionRawSchema = {
   urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
-  chargeType: { type: String, allowedValues: Tickets.chargeTypeValues, autoform: autoformOptions(Tickets.chargeTypeValues, 'schemaTickets.ticket.chargeType.'), optional: true },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract, optional: true },
+  chargeType: { type: String, allowedValues: Tickets.chargeTypeValues, autoform: autoformOptions(Tickets.chargeTypeValues, 'schemaTickets.ticket.chargeType.'), optional: true },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },
 
   expectedCost: { type: Number, decimal: true, optional: true },
@@ -220,14 +220,38 @@ Topics.categoryHelpers('ticket', {
 
 Topics.categories.ticket = Tickets;
 
-Factory.define('ticket', Topics, {
+Factory.define('issue', Topics, {
   category: 'ticket',
   serial: 0,
-  title: () => 'New ticket on ' + faker.random.word(),
+  title: () => 'New issue on ' + faker.random.word(),
   text: () => faker.lorem.paragraph(),
   status: 'reported',
   ticket: {
     type: 'issue',
+    urgency: 'normal',
+  },
+});
+
+Factory.define('maintenance', Topics, {
+  category: 'ticket',
+  serial: 0,
+  title: () => 'New maintenance on ' + faker.random.word(),
+  text: () => faker.lorem.paragraph(),
+  status: 'scheduled',
+  ticket: {
+    type: 'maintenance',
+    urgency: 'normal',
+  },
+});
+
+Factory.define('upgrade', Topics, {
+  category: 'ticket',
+  serial: 0,
+  title: () => 'New upgrade on ' + faker.random.word(),
+  text: () => faker.lorem.paragraph(),
+  status: 'scheduled',
+  ticket: {
+    type: 'upgrade',
     urgency: 'normal',
   },
 });

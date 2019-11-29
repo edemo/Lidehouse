@@ -15,8 +15,6 @@ import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Votings } from '/imports/api/topics/votings/votings.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import { fixedStatusValue } from '/imports/ui_3/views/components/tickets-edit.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import '/imports/ui_3/views/components/shareddoc-display.js';

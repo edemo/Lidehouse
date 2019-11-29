@@ -14,7 +14,6 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { afTicketInsertModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import '/imports/ui_3/views/components/ticket-list.js';
 import './contracts.html';
 
@@ -55,10 +54,14 @@ Template.Contracts.events({
   'click .worksheets .js-add'(event) {
     const type = $(event.target).closest('a').data('type');
     const contractId = $(event.target).data('id');
-    afTicketInsertModal(type, contractId);
+    const partnerId = Contracts.findOne(contractId).partnerId;
+    Topics.actions.new.run({ entity: type, 'ticket.contractId': contractId, 'ticket.partnerId': partnerId });
   },
   'click .worksheets .js-import'(event, instance) {
-    importCollectionFromFile(Topics); // TODO Make it Ticket specific
+    const type = $(event.target).closest('a').data('type');
+    const contractId = $(event.target).data('id');
+    const partnerId = Contracts.findOne(contractId).partnerId;
+    Topics.actions.import.run({ entity: type, contractId, partnerId }); // TODO Make it Ticket specific
   },
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');

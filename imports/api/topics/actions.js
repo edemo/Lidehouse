@@ -31,7 +31,6 @@ function statusChangeSchema(doc, statusName) {
   const dataSchema = statusObject.data ? new SimpleSchema(
     statusObject.data.map(function (dataField) { return { [dataField]: /*TODO*/Tickets.extensionRawSchema[dataField] }; })
   ) : undefined;
-
   const schema = new SimpleSchema([Comments.schema,
     { status: { type: String, autoform: fixedStatusValue(statusName), autoValue() { return statusName; } } },
     statusObject.data ? { [doc.entityName()]: { type: dataSchema, optional: true } } : {},
@@ -53,6 +52,7 @@ Topics.actions = {
         schema: entity.schema,
         fields: entity.inputFields,
         omitFields: entity.omitFields,
+        doc: options,
         type: 'method',
         meteormethod: 'topics.insert',
         btnOK: `Create ${options.entity}`,
@@ -88,7 +88,7 @@ Topics.actions = {
   statusUpdate: {
     name: 'statusUpdate',
     icon: () => 'fa fa-edit',
-    visible: (options, doc) => doc && doc.statusObject().options && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${doc.status}.enter`),
+    visible: (options, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${doc.status}.enter`),
     run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_edit', {

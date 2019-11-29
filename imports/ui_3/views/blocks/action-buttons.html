@@ -33,7 +33,7 @@
 <template name="Action_buttons_dropdown">
     <div class="dropdown js-menu {{doc.entitiyName}}"> 
         <button class="btn btn-xs btn-white dropdown-toggle drop-unfoll" type="button" id="drop_{{options._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {{#if long}}{{_ 'Actions'}} {{/if}}<i class="glyphicon glyphicon-option-horizontal"></i>
+        {{#if long}}{{_ 'Action buttons'}} {{/if}}<i class="glyphicon glyphicon-option-horizontal"></i>
         </button>
         <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{options._id}}">
         {{#each action in _actions}}

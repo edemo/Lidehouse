@@ -435,7 +435,8 @@
       "placeholder": "(pl. Elromlott a lift)"
     },
     "text": {
-      "label": "Megjegyzések"
+      "label": "Megjegyzések",
+      "placeholder": "Hozzáfűznivaló..."
     },
     "photo": {
       "label": "Fénykép (ha csatolni szeretne)",

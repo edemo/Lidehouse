@@ -23,9 +23,9 @@ AutoForm.addModalHooks('af.ticket.insert');
 AutoForm.addHooks('af.ticket.insert', {
   formToDoc(doc) {
     if (!doc.ticket) doc.ticket = {};
-    doc.ticket.type = Session.get('activeTicketType');
+//    doc.ticket.type = Session.get('activeTicketType');
     doc.status = Tickets.workflows[doc.ticket.type].start[0].name;
-    doc.ticket.contractId = Session.get('activeContractId');
+//    doc.ticket.contractId = Session.get('activeContractId');
     doc.moreDates = doc.moreDates || [];
     return doc;
   },
@@ -60,8 +60,8 @@ AutoForm.addHooks('af.ticket.insert', {
     return false;
   },
   onSuccess(formType, result) {
-    Session.set('activeTicketType');  // clear it
-    Session.set('activeContractId');  // clear it
+//    Session.set('activeTicketType');  // clear it
+//    Session.set('activeContractId');  // clear it
   },
 });
 

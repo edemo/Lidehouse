@@ -6,7 +6,6 @@ import { __ } from '/imports/localization/i18n.js';
 import { $ } from 'meteor/jquery';
 
 import { handleError } from '/imports/ui_3/lib/errors.js';
-import { afTicketUpdateModal, afTicketStatusChangeModal } from '/imports/ui_3/views/components/tickets-edit.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/actions.js';
 import '/imports/api/topics/tickets/actions.js';
