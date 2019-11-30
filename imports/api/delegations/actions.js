@@ -44,7 +44,10 @@ Delegations.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('delegations.update'),
+    visible: (options, doc) => {
+      if (Meteor.userId() === doc.sourcePersonId || Meteor.userId() === doc.targetPersonId) return true;
+      return currentUserHasPermission('delegations.remove');
+    },
     run(options, doc) {
       const communityId = Session.get('activeCommunityId');
       const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
@@ -62,11 +65,16 @@ Delegations.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('delegations.remove'),
+    visible: (options, doc) => {
+      if (Meteor.userId() === doc.sourcePersonId || Meteor.userId() === doc.targetPersonId) return true;
+      return currentUserHasPermission('delegations.remove');
+    },
     run(options, doc) {
+      let action = 'delete delegation';
+      if (doc.targetPersonId === Meteor.userId()) action = 'refuse delegation';
+      if (doc.sourcePersonId === Meteor.userId()) action = 'revoke delegation';
       Modal.confirmAndCall(Delegations.methods.remove, { _id: doc._id }, {
-        action: 'delete delegation',
-        message: 'This will not delete topics',
+        action,
       });
     },
   },
@@ -81,8 +89,6 @@ AutoForm.addHooks('af.delegation.insert', {
     if (!doc.sourcePersonId) doc.sourcePersonId = Meteor.userId();
     return doc;
   },
-});
-AutoForm.addHooks('af.delegation.insert', {
   onError(formType, error) {
     if (error.error === 'err_otherPartyNotAllowed') {
       displayMessage('warning', 'Other party not allowed this activity');

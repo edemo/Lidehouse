@@ -51,15 +51,9 @@ Template.Delegation_list.helpers({
   },
 });
 
-Template.Delegations.helpers({
+Template.Delegations_for_others.helpers({
   delegations() {
     return Delegations.find();
-  },
-  delegationsFromMe() {
-    return Delegations.find({ sourcePersonId: Meteor.userId() });
-  },
-  delegationsToMe() {
-    return Delegations.find({ targetPersonId: Meteor.userId() });
   },
   delegationsDataFn() {
     return () => {
@@ -74,6 +68,18 @@ Template.Delegations.helpers({
         language: datatables_i18n[TAPi18n.getLanguage()],
       };
     };
+  },
+});
+
+Template.Delegations.helpers({
+  delegations() {
+    return Delegations.find();
+  },
+  delegationsFromMe() {
+    return Delegations.find({ sourcePersonId: Meteor.userId() });
+  },
+  delegationsToMe() {
+    return Delegations.find({ targetPersonId: Meteor.userId() });
   },
   doughnutData() {
     const user = Meteor.user();
@@ -99,19 +105,14 @@ Template.Delegations.helpers({
   },
 });
 
-Template.Delegations.events({
+Template.Delegations_for_others.events({
   ...(actionHandlers(Delegations)),
-  'click .delegations-from .js-delete'(event) {
-    const id = $(event.target).closest('.js-delete').data('id');
-    Modal.confirmAndCall(removeDelegation, { _id: id }, {
-      action: 'revoke delegation',
-    });
-  },
-  'click .delegations-to .js-delete'(event) {
-    const id = $(event.target).closest('.js-delete').data('id');
-    Modal.confirmAndCall(removeDelegation, { _id: id }, {
-      action: 'refuse delegation',
-    });
+});
+
+Template.Delegations.events({
+  'click .js-new'(event) {
+    const id = $(event.target).closest('[data-id]').data('id');
+    Delegations.actions.new.run({ sourcePersonId: Meteor.userId() });
   },
   'click #allow'(event) {
     event.preventDefault();

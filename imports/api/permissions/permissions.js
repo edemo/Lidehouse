@@ -95,6 +95,7 @@ export const Permissions = [
   { name: 'flag.forOthers',         roles: ['moderator'] },
   { name: 'delegations.inCommunity',roles: ['manager'] },
   { name: 'delegations.forOthers',  roles: ['manager'] },
+  { name: 'delegations.insert',     roles: exceptGuest },
   { name: 'delegations.update',     roles: nobody, allowAuthor: true },
   { name: 'delegations.remove',     roles: nobody, allowAuthor: true },
   { name: 'finances.view',          roles: exceptGuest },

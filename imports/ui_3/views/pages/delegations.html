@@ -41,44 +41,45 @@
     </div>
 </template>
 
-<template name="Delegations">
+<template name="Delegations_for_others">
+    <div class="ibox delegations-from">
+        <div class="ibox-title">
+            <h5>{{_ 'Delegations'}} </h5>
+            <!--<div class="ibox-tools">-->
+                {{>iboxTools}}
+            <!--</div>-->
+        </div>
+        <div class="ibox-content scrollbar-horizontal">
+            <form>
+                <input type="checkbox" name="allow" id="allow">
+                <label for="allow">{{_ 'allowDelegationsToMe'}}</label>
+            </form>
+            {{#if Template.subscriptionsReady}}
+            <p>
+              {{_ 'A házban lévő összes aktív meghatalmazás listája'}}<br>
+            </p>
+            <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
+            {{#if delegations.count}}
+                <br>
+                {{> ReactiveDatatable tableData=delegationsDataFn options=delegationsOptionsFn}}
+            {{else}}
+            <div class="text-center m-t-lg">
+                <small>{{_ 'No delegations'}}</small>
+            </div>
+            {{/if}}
+            {{/if}}
+        </div>
+    </div>    
+</template>
 
+<template name="Delegations">
     <!-- Page heading -->
     {{> Page_heading title=(_ 'Delegations')}}
-
     <div class="wrapper wrapper-content animated fadeInRight">
-
         <div class="row delegations">
             <div class="col-lg-8"> 
             {{#if userHasPermission 'delegations.forOthers' (fromSession 'activeCommunityId') }}
-                <div class="ibox delegations-from">
-                    <div class="ibox-title">
-                        <h5>{{_ 'Delegations'}} </h5>
-                        <!--<div class="ibox-tools">-->
-                            {{>iboxTools}}
-                        <!--</div>-->
-                    </div>
-                    <div class="ibox-content scrollbar-horizontal">
-                        <form>
-                            <input type="checkbox" name="allow" id="allow">
-                            <label for="allow">{{_ 'allowDelegationsToMe'}}</label>
-                        </form>
-                        {{#if Template.subscriptionsReady}}
-                        <p>
-                          {{_ 'A házban lévő összes aktív meghatalmazás listája'}}<br>
-                        </p>
-                        <a href="" class="btn btn-primary btn-sm m-b-md js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'delegation'}}</a>
-                        {{#if delegations.count}}
-                            <br>
-                            {{> ReactiveDatatable tableData=delegationsDataFn options=delegationsOptionsFn}}
-                        {{else}}
-                        <div class="text-center m-t-lg">
-                            <small>{{_ 'No delegations'}}</small>
-                        </div>
-                        {{/if}}
-                        {{/if}}
-                    </div>
-                </div>    
+                {{>Delegations_for_others}}
             {{else}}
                 <div class="ibox delegations-from">
                     <div class="ibox-title">
@@ -155,9 +156,6 @@
                 </div>
             </div>
             </div>
-
         </div>
- 
     </div>
-
 </template>
