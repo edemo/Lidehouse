@@ -32,8 +32,7 @@
                     <a href="">{{displayScopeObject scopeObject}}</a>
                 </td>
                 <td class="project-actions">
-                    <a href="" class="btn btn-white btn-sm js-edit" data-id="{{_id}}" title={{_ 'edit'}}><i class="fa fa-pencil text-capitalize"></i></a>
-                    <a href="" class="btn btn-white btn-sm js-delete" data-id="{{_id}}" title={{_ 'delete'}}><i class="fa fa-times text-capitalize"></i></a>
+                    {{>Action_buttons_group collection='delegations' actions='edit,delete' doc=this size='lg'}}
                 </td>
             </tr>
             {{/each}}
