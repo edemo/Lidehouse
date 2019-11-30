@@ -18,12 +18,50 @@ export function actionHandlers(collection) {
       const doc = id ? collection.findOne(id) : undefined;
       const entity = $(event.target).closest('[data-entity]').data('entity');
       const status = $(event.target).closest('[data-status]').data('status');
-      const options = { id, entity, status };
+      const options = {
+        entity: entity && collection.entities[entity],
+        status: doc && status && doc.statusObject(status),
+      };
       action.run(options, doc, event, instance);
     };
   });
   return eventHandlers;
 }
+
+function buttonData2HtmlObj(instanceData) {
+  const obj = {};
+  obj['data-id'] = (typeof instanceData.doc === 'object') ? instanceData.doc._id : instanceData.doc;
+  obj['data-status'] = instanceData.options && instanceData.options.status && instanceData.options.status.name;
+  obj['data-entity'] = instanceData.options && instanceData.options.entity && instanceData.options.entity.name;
+  // TODO should copy all data-* atts over in one generic call
+  //  _.forEach(instanceData.options, (value, key) => {
+  //    obj[`data-${key}`] = value;
+  //  });
+  return obj;
+}
+
+function fetchDoc(instanceData) {
+  if (typeof instanceData.doc === 'string') {
+    const collection = Mongo.Collection.get(instanceData.collection);
+    instanceData.doc = collection.findOne(instanceData.doc);
+  }
+  return instanceData.doc;
+}
+
+function fetchOptions(instanceData) {
+  if (!instanceData.options) return {};
+  if (typeof instanceData.options.status === 'string') {
+    const collection = Mongo.Collection.get(instanceData.collection);
+    instanceData.options.status = collection.statuses[instanceData.options.status];
+  }
+  if (typeof instanceData.options.entity === 'string') {
+    const collection = Mongo.Collection.get(instanceData.collection);
+    instanceData.options.entity = collection.entities[instanceData.options.entity];
+  }
+  return instanceData.options;
+}
+
+//---------------------------------------------------------------------------
 
 Template.Action_button.viewmodel({
   title() {
@@ -40,23 +78,14 @@ Template.Action_button.viewmodel({
       default: return 'xs';
     }
   },
-  document() {
-    const instanceData = this.templateInstance.data;
-    if (typeof instanceData.doc === 'string') {
-      const collection = Mongo.Collection.get(instanceData.collection);
-      instanceData.doc = collection.findOne(instanceData.doc);
-    }
-    return instanceData.doc;
+  getOptions() {
+    return fetchOptions(this.templateInstance.data);
+  },
+  getDoc() {
+    return fetchDoc(this.templateInstance.data);
   },
   dataObject() {
-    const obj = {};
-    _.forEach(this.templateInstance.data.options, (value, key) => {
-      obj[`data-${key}`] = value;
-    });
-    const instanceData = this.templateInstance.data;
-    obj['data-id'] = (typeof instanceData.doc === 'object') ? instanceData.doc._id : instanceData.doc;
-    console.log("???", obj);
-    return obj;
+    return buttonData2HtmlObj(this.templateInstance.data);
   },
 });
 
@@ -65,23 +94,17 @@ Template.Action_button_status_change.viewmodel({
     return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
   },
   optionsWithNewStatus(status) {
-    return _.extend({}, this.templateInstance.data.options, { newStatus: status });
+    return _.extend({}, this.templateInstance.data.options, { status });
   },
-  document() {
-    const instanceData = this.templateInstance.data;
-    if (typeof instanceData.doc === 'string') {
-      const collection = Mongo.Collection.get(instanceData.collection);
-      instanceData.doc = collection.findOne(instanceData.doc);
-    }
-    return instanceData.doc;
+  getDoc() {
+    return fetchDoc(this.templateInstance.data);
   },
 });
 
 Template.Action_button.events({
-  // This cannot be used, because Blaze.toHTML does not add the event handlers, only Blaze.render would do that
-  // but Blaze.render needs the parent node, and we dont have that, so we are unable to render a template into a jquery cell.
+  // This can be used most of the time to handle the click event - except when we are unable to render a proper template (like into a jquery cell).
   'click .btn'(event, instance) {
-    instance.data.action.run(instance.data.options, instance.viewmodel.doc(), event, instance);
+    instance.data.action.run(instance.viewmodel.getOptions(), instance.viewmodel.getDoc(), event, instance);
   },
 });
 
@@ -107,35 +130,26 @@ Template.Action_listitem.viewmodel({
   long() {
     return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
   },
-  document() {
-    const instanceData = this.templateInstance.data;
-    if (typeof instanceData.doc === 'string') {
-      const collection = Mongo.Collection.get(instanceData.collection);
-      instanceData.doc = collection.findOne(instanceData.doc);
-    }
-    return instanceData.doc;
+  getOptions() {
+    return fetchOptions(this.templateInstance.data);
+  },
+  getDoc() {
+    return fetchDoc(this.templateInstance.data);
   },
   dataObject() {
-    const obj = {};
-    _.forEach(this.templateInstance.data.options, (value, key) => {
-      obj[`data-${key}`] = value;
-    });
-    const instanceData = this.templateInstance.data;
-    obj['data-id'] = (typeof instanceData.doc === 'object') ? instanceData.doc._id : instanceData.doc;
-    console.log("!!!", obj);
-    return obj;
+    return buttonData2HtmlObj(this.templateInstance.data);
   },
 });
 
 Template.Action_listitem.events({
   'click li'(event, instance) {
-    instance.data.action.run(instance.data.options, instance.viewmodel.doc(), event, instance);
+    instance.data.action.run(instance.viewmodel.getOptions(), instance.viewmodel.getDoc(), event, instance);
   },
 });
 
 Template.Action_listitems_status_change.viewmodel({
   optionsWithNewStatus(status) {
-    return _.extend({}, this.templateInstance.data.options, { newStatus: status });
+    return _.extend({}, this.templateInstance.data.options, { status });
   },
 });
 
@@ -158,17 +172,3 @@ Template.Action_buttons_dropdown.viewmodel({
     }
   },
 });
-
-/*
-Template.Action_buttons_group_small.onCreated(function () {
-  const actions = this.data.actions;
-  actions.forEach(function (action) {
-    Template.Action_buttons_group_small.events({
-      [`click .js-${action.name}`](event, instance) {
-        const id = $(event.target).closest('[data-id]').data('id');
-        actions[action.name].run(id);
-      },
-    });
-  });
-});
-*/

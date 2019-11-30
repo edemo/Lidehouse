@@ -1,7 +1,7 @@
 <template name="Action_button">
-  {{#if action.visible options document}}
-    <a {{dataObject}} href="{{action.href options document}}" class="btn btn-{{btnSize}} btn-{{or (action.color options document) 'white'}} text-capitalize js-{{action.name}}" title="{{#unless long}}{{_ title}}{{/unless}}">
-      <i class="{{action.icon options document}}"></i>{{#if long}} {{_ title}}{{/if}}
+  {{#if action.visible getOptions getDoc}}
+    <a {{dataObject}} href="{{action.href getOptions getDoc}}" class="btn btn-{{btnSize}} btn-{{or (action.color getOptions getDoc) 'white'}} text-capitalize js-{{action.name}}" title="{{#unless long}}{{_ title}}{{/unless}}">
+      <i class="{{action.icon getOptions getDoc}}"></i>{{#if long}} {{_ title}}{{/if}}
     </a>
   {{/if}}
 </template>
@@ -13,7 +13,7 @@
           <b class="caret"></b>
         </a>
         <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs">
-        {{#each status in document.possibleNextStatuses}}
+        {{#each status in getDoc.possibleNextStatuses}}
             {{>Action_listitem options=(optionsWithNewStatus status) doc=doc collection=collection action=action}}
         {{/each}}
         </ul>
@@ -35,10 +35,10 @@
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 
 <template name="Action_listitem">
-  {{#if action.visible options document}}
+  {{#if action.visible getOptions getDoc}}
     <li>
-    <a {{dataObject}} class="text-capitalize js-{{action.name}}" href="{{action.href options document}}">
-        <i class="{{action.icon options document}}"></i> {{_ title}}
+    <a {{dataObject}} class="text-capitalize js-{{action.name}}" href="{{action.href getOptions getDoc}}">
+        <i class="{{action.icon getOptions getDoc}}"></i> {{_ title}}
     </a>
     </li>
   {{/if}}
@@ -51,11 +51,11 @@
 </template>
 
 <template name="Action_buttons_dropdown">
-    <div class="dropdown js-menu {{doc.entitiyName}}"> 
-        <button class="btn btn-xs btn-white dropdown-toggle drop-unfoll" type="button" id="drop_{{options._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div class="dropdown js-menu {{getDoc.entitiyName}}"> 
+        <button class="btn btn-xs btn-white dropdown-toggle drop-unfoll" type="button" id="drop_{{getDoc._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {{#if long}}{{_ 'Action buttons'}} {{/if}}<i class="glyphicon glyphicon-option-horizontal"></i>
         </button>
-        <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{options._id}}">
+        <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{getDoc._id}}">
         {{#each action in _actions}}
             {{#if (equals action.name 'statusChange')}}
                 {{>Action_listitems_status_change options=options doc=doc collection=collection action=action}}

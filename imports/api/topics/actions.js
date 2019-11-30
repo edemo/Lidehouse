@@ -39,7 +39,7 @@ function statusChangeSchema(doc, statusName) {
   ) : undefined;
   const schema = new SimpleSchema([Comments.schema,
     { status: { type: String, autoform: fixedStatusValue(statusName), autoValue() { return statusName; } } },
-    statusObject.data ? { [doc.entityName()]: { type: dataSchema, optional: true } } : {},
+    statusObject.data ? { [doc.category]: { type: dataSchema, optional: true } } : {},
   ]);
   schema.i18n('schemaTickets');/*TODO*/
   return schema;
@@ -49,21 +49,20 @@ Topics.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (options) => currentUserHasPermission(`${options.entity}.insert`),
+    visible: (options) => currentUserHasPermission(`${options.entity.name}.insert`),
     run(options) {
-      const entity = Topics.entities[options.entity];
-      Session.update('activeAutoform', 'ticketType', options.entity);
+      Session.update('activeAutoform', 'ticketType', options.entity.name);
       Session.update('activeAutoform', 'contractId', options.contractId);
-      Modal.show(entity.form, {
-        id: `af.${options.entity}.insert`,
+      Modal.show(options.entity.form, {
+        id: `af.${options.entity.name}.insert`,
         collection: Topics,
-        schema: entity.schema,
-        fields: entity.inputFields,
-        omitFields: entity.omitFields,
+        schema: options.entity.schema,
+        fields: options.entity.inputFields,
+        omitFields: options.entity.omitFields,
         doc: options,
         type: 'method',
         meteormethod: 'topics.insert',
-        btnOK: `Create ${options.entity}`,
+        btnOK: `Create ${options.entity.name}`,
       });
     },
   },
@@ -115,21 +114,22 @@ Topics.actions = {
   statusChange: {
     name: 'statusChange',
     label(options) {
-      const statusName = __('schemaTopics.status.' + options.newStatus.name);
-      return options.newStatus.label || __('Change status to', statusName);
+      const newStatus = options.status;
+      const newStatusName = __('schemaTopics.status.' + newStatus.name);
+      return newStatus.label || __('Change status to', newStatusName);
     },
     icon(options) {
-      const newStatus = options.newStatus;
+      const newStatus = options.status;
       return newStatus.icon || 'fa fa-cogs';
     },
     visible(options, doc) {
-      return doc && currentUserHasPermission(`${doc.category}.statusChangeTo.${options.newStatus.name}.enter`);
+      return doc && currentUserHasPermission(`${doc.category}.statusChangeTo.${options.status.name}.enter`);
     },
     run(options, doc, event, instance) {
-      const newStatus = options.newStatus;
+      const newStatus = options.status;
       const entity = Topics.entities[doc.entityName()];
       Session.update('activeAutoform', 'topicId', doc._id);
-      Session.update('activeAutoform', 'newStatusName', newStatus.name);
+      Session.update('activeAutoform', 'status', newStatus.name);
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.statusChange`,
         description: newStatus.message && newStatus.message(options, doc),
@@ -228,10 +228,10 @@ _.each(Topics.entities, (entity, entityName) => {
   AutoForm.addHooks(`af.${entityName}.statusChange`, {
     formToDoc(doc) {
       doc.topicId = Session.get('activeAutoform').topicId;
-      doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
-      doc.status = Session.get('activeAutoform').newStatusName;
-      doc.data = doc[entityName] || {};
-      delete doc[entityName];
+      doc.type = 'statusChangeTo'; // `statusChangeTo.${status}`;
+      doc.status = Session.get('activeAutoform').status;
+      doc.data = doc[doc.category] || {};
+      delete doc[doc.category];
       return doc;
     },
     onSuccess(formType, result) {
