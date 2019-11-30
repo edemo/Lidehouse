@@ -54,11 +54,14 @@ Tickets.extensionRawSchema = {
 };
 
 Tickets.extensionSchema = new SimpleSchema(Tickets.extensionRawSchema);
-Topics.attachSchema({ ticket: { type: Tickets.extensionSchema, optional: true } });
 Tickets.schema = new SimpleSchema([
   Topics.schema,
   { ticket: { type: Tickets.extensionSchema, optional: true } },
 ]);
+Topics.attachSchema(
+  Tickets.schema,
+//  { selector: { category: 'ticket' } },
+);
 Meteor.startup(function attach() {
   Tickets.schema.i18n('schemaTickets');   // translation is different from schemaTopics
 });
@@ -196,9 +199,9 @@ Tickets.workflows = {
 };
 
 Topics.categoryHelpers('ticket', {
-/*   entityName() {
+  entityName() {
     return this.ticket.type;
-  }, */
+  },
   contract() {
     return Contracts.findOne(this._id);
   },
@@ -213,6 +216,9 @@ Topics.categoryHelpers('ticket', {
   },
   modifiableFields() {
     return ['title', 'text', 'photo'].concat(this.startFields());
+  },
+  inputFields() {
+    return this.modifiableFields().concat(this.startFields());
   },
 });
 

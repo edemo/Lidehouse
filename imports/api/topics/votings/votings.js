@@ -253,8 +253,11 @@ Topics.categoryHelpers('vote', {
   },
 });
 
-Topics.attachSchema(Votings.extensionSchema);   // TODO: should be conditional on category === 'vote'
 Votings.schema = new SimpleSchema([Topics.schema, Votings.extensionSchema]);
+Topics.attachSchema(
+  Votings.schema,
+//  { selector: { category: 'vote' } },
+);
 Meteor.startup(function attach() {
   Votings.schema.i18n('schemaVotings');
 });
@@ -300,9 +303,9 @@ const votingFinished = {
   name: 'votingFinished',
   label: 'close voting',
   icon: 'fa fa-legal',
-  message(data) {
+  message(options, doc) {
     const serverTimeNow = new Date(TimeSync.serverTime());
-    const closureDate = moment(data.closesAt).from(serverTimeNow);
+    const closureDate = moment(doc.closesAt).from(serverTimeNow);
     const message = __('The planned date of closure was ') + closureDate;
     return message;
   },

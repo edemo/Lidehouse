@@ -18,6 +18,12 @@ import '/imports/api/users/users.js';
 import './entities.js';
 import './methods.js';
 
+Session.update = function update(sessionVarName, key, value) {
+  const sessionVar = Session.get(sessionVarName) || {};
+  sessionVar[key] = value;
+  Session.set(sessionVarName, sessionVar);
+};
+
 function fixedStatusValue(value) {
   return {
     options() { return [{ label: __('schemaTopics.status.' + value), value }]; },
@@ -46,6 +52,8 @@ Topics.actions = {
     visible: (options) => currentUserHasPermission(`${options.entity}.insert`),
     run(options) {
       const entity = Topics.entities[options.entity];
+      Session.update('activeAutoform', 'ticketType', options.entity);
+      Session.update('activeAutoform', 'contractId', options.contractId);
       Modal.show(entity.form, {
         id: `af.${options.entity}.insert`,
         collection: Topics,
@@ -88,7 +96,7 @@ Topics.actions = {
   statusUpdate: {
     name: 'statusUpdate',
     icon: () => 'fa fa-edit',
-    visible: (options, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${doc.status}.enter`),
+    visible: (options, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.category}.statusChangeTo.${doc.status}.enter`),
     run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_edit', {
@@ -115,16 +123,16 @@ Topics.actions = {
       return newStatus.icon || 'fa fa-cogs';
     },
     visible(options, doc) {
-      return doc && currentUserHasPermission(`${doc.entityName()}.statusChangeTo.${options.newStatus.name}.enter`);
+      return doc && currentUserHasPermission(`${doc.category}.statusChangeTo.${options.newStatus.name}.enter`);
     },
     run(options, doc, event, instance) {
       const newStatus = options.newStatus;
       const entity = Topics.entities[doc.entityName()];
-      Session.set('activeTopicId', doc._id);
-      Session.set('newStatusName', newStatus.name);
+      Session.update('activeAutoform', 'topicId', doc._id);
+      Session.update('activeAutoform', 'newStatusName', newStatus.name);
       Modal.show('Autoform_edit', {
         id: `af.${doc.entityName()}.statusChange`,
-        description: newStatus.message && newStatus.message(options),
+        description: newStatus.message && newStatus.message(options, doc),
         schema: statusChangeSchema(doc, newStatus.name),
         omitFields: ['options'],
         type: 'method',
@@ -211,6 +219,23 @@ _.each(Topics.entities, (entity, entityName) => {
         doc.title = (doc.text).substring(0, 25) + '...';
       }
       return doc;
+    },
+    onSuccess(formType, result) {
+      Session.set('activeAutoform');  // clear it
+    },
+  });
+
+  AutoForm.addHooks(`af.${entityName}.statusChange`, {
+    formToDoc(doc) {
+      doc.topicId = Session.get('activeAutoform').topicId;
+      doc.type = 'statusChangeTo'; // `statusChangeTo.${newStatusName}`;
+      doc.status = Session.get('activeAutoform').newStatusName;
+      doc.data = doc[entityName] || {};
+      delete doc[entityName];
+      return doc;
+    },
+    onSuccess(formType, result) {
+      Session.set('activeAutoform');  // clear it
     },
   });
 });

@@ -6,10 +6,28 @@
   {{/if}}
 </template>
 
+<template name="Action_button_status_change">
+    <div class="dropdown pull-left">
+        <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white" title="{{#unless long}}{{_ 'statusChange'}}{{/unless}}">
+          <i class="fa fa-cogs"></i> 
+          <b class="caret"></b>
+        </a>
+        <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs">
+        {{#each status in document.possibleNextStatuses}}
+            {{>Action_listitem options=(optionsWithNewStatus status) doc=doc collection=collection action=action}}
+        {{/each}}
+        </ul>
+    </div>
+</template>
+
 <template name="Action_buttons_group">
   <div class="btn-group">
     {{#each action in _actions}}
-      {{>Action_button options=options doc=doc collection=collection action=action size=size}}
+        {{#if (equals action.name 'statusChange')}}
+            {{>Action_button_status_change options=options doc=doc collection=collection action=action size=size}}
+        {{else}}
+            {{>Action_button options=options doc=doc collection=collection action=action size=size}}
+        {{/if}}
     {{/each}}
   </div>
 </template>
@@ -18,9 +36,11 @@
 
 <template name="Action_listitem">
   {{#if action.visible options document}}
-    <li><a class="text-capitalize js-{{action.name}}" href="{{action.href options document}}">
-      <i class="{{action.icon options document}}"></i> {{_ title}}
-    </a></li>
+    <li>
+    <a {{dataObject}} class="text-capitalize js-{{action.name}}" href="{{action.href options document}}">
+        <i class="{{action.icon options document}}"></i> {{_ title}}
+    </a>
+    </li>
   {{/if}}
 </template>
 

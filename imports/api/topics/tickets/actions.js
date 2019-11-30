@@ -19,19 +19,10 @@ import '/imports/ui_3/views/modals/confirmation.js';
 
 import './entities.js';
 
-AutoForm.addModalHooks('af.ticket.insert');
-AutoForm.addHooks('af.ticket.insert', {
-  formToDoc(doc) {
-    if (!doc.ticket) doc.ticket = {};
-//    doc.ticket.type = Session.get('activeTicketType');
-    doc.status = Tickets.workflows[doc.ticket.type].start[0].name;
-//    doc.ticket.contractId = Session.get('activeContractId');
-    doc.moreDates = doc.moreDates || [];
-    return doc;
-  },
+AutoForm.addHooks('af.maintenance.insert', {
   onSubmit(doc) {
     AutoForm.validateForm('af.ticket.insert');
-    const moreDates = doc.moreDates;
+    const moreDates = doc.moreDates || [];
     delete doc.moreDates;
     const afContext = this;
     const results = [];
@@ -58,25 +49,5 @@ AutoForm.addHooks('af.ticket.insert', {
       insert(doc);
     });
     return false;
-  },
-  onSuccess(formType, result) {
-//    Session.set('activeTicketType');  // clear it
-//    Session.set('activeContractId');  // clear it
-  },
-});
-
-AutoForm.addModalHooks('af.ticket.statusChange');
-AutoForm.addHooks('af.ticket.statusChange', {
-  formToDoc(doc) {
-    const newStatusName = Session.get('newStatusName');
-    doc.topicId = Session.get('activeTopicId');
-    doc.status = newStatusName;
-    doc.data = doc.ticket || {};
-    delete doc.ticket;
-    return doc;
-  },
-  onSuccess(formType, result) {
-    Session.set('activeTopicId');  // clear it
-    Session.set('newStatusName');  // clear it
   },
 });

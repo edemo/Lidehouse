@@ -5,6 +5,9 @@ import { _ } from 'meteor/underscore';
 import { debugAssert } from '/imports/utils/assert.js';
 import './action-buttons.html';
 
+// Apply these event handlers to your template, if the buttons are not created as Action_button templates,
+// hence they don't have their event handlers yet
+// (like buttons in datatables, where the buttons are not templates, just simple html)
 export function actionHandlers(collection) {
   const collectionName = collection._name;
   const eventHandlers = {};
@@ -52,7 +55,25 @@ Template.Action_button.viewmodel({
     });
     const instanceData = this.templateInstance.data;
     obj['data-id'] = (typeof instanceData.doc === 'object') ? instanceData.doc._id : instanceData.doc;
+    console.log("???", obj);
     return obj;
+  },
+});
+
+Template.Action_button_status_change.viewmodel({
+  long() {
+    return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
+  },
+  optionsWithNewStatus(status) {
+    return _.extend({}, this.templateInstance.data.options, { newStatus: status });
+  },
+  document() {
+    const instanceData = this.templateInstance.data;
+    if (typeof instanceData.doc === 'string') {
+      const collection = Mongo.Collection.get(instanceData.collection);
+      instanceData.doc = collection.findOne(instanceData.doc);
+    }
+    return instanceData.doc;
   },
 });
 
@@ -93,6 +114,16 @@ Template.Action_listitem.viewmodel({
       instanceData.doc = collection.findOne(instanceData.doc);
     }
     return instanceData.doc;
+  },
+  dataObject() {
+    const obj = {};
+    _.forEach(this.templateInstance.data.options, (value, key) => {
+      obj[`data-${key}`] = value;
+    });
+    const instanceData = this.templateInstance.data;
+    obj['data-id'] = (typeof instanceData.doc === 'object') ? instanceData.doc._id : instanceData.doc;
+    console.log("!!!", obj);
+    return obj;
   },
 });
 

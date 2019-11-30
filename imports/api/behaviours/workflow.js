@@ -53,7 +53,7 @@ const helpers = {
   },
   startStatus() {
     const startStatuses = this.possibleStartStatuses();
-    debugAssert(startStatuses.length === 1);
+    debugAssert(startStatuses.length >= 1);
     return startStatuses[0];
   },
   possibleNextStatuses() {
