@@ -531,8 +531,10 @@
   },
   "schemaComments": {
     "text": {
-      "label": "Szöveg",
-      "placeholder": "Arra gondoltam hogy..."
+//      "label": "Szöveg",
+//      "placeholder": "Arra gondoltam hogy..."
+      "label": "Megjegyzések",
+      "placeholder": "Azért váltok állapotot mert..."
     },
     "destinationId": {
       "label": "Áthelyezés ehhez a témához:"

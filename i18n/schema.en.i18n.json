@@ -527,8 +527,10 @@
   },
   "schemaComments": {
     "text": {
-      "label": "Text",
-      "placeholder": "My comment here..."
+//      "label": "Text",
+//      "placeholder": "My comment here..."
+      "label": "Notes",
+      "placeholder": "The reason for changing the state is..."
     },
     "destinationId": {
       "label": "Move this over to:"

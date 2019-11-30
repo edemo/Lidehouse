@@ -176,12 +176,12 @@ Topics.actions = {
     label(options, doc) {
       const creator = doc && doc.creator();
       if (!creator) return '';
-      return doc.creator().isFlaggedBy(Meteor.userId()) ? __('Unblock content from', doc.creator()) : __('Block content from', doc.creator());
+      return doc.creator().isFlaggedBy(Meteor.userId()) ? __('Unblock content from', doc.creator().toString()) : __('Block content from', doc.creator().toString());
     },
     icon(options, doc) {
       const creator = doc && doc.creator();
       if (!creator) return '';
-      return doc.creator().isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
+      return doc.creator().isFlaggedBy(Meteor.userId()) ? 'fa fa-check fa-user' : 'fa fa-ban fa-user-o';
     },
     visible: (options, doc) => doc && doc.category !== 'vote',
     run(options, doc, event, instance) {

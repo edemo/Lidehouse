@@ -35,6 +35,8 @@ Template.Parcel_billings.viewmodel({
   },
 });
 
+/*
 Template.Parcel_billings.events(
-  actionHandlers(ParcelBillings)
+//  actionHandlers(ParcelBillings) -- already has handlers in accounting-bills.js
 );
+*/

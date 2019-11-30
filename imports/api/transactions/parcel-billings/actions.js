@@ -53,11 +53,10 @@ ParcelBillings.actions = {
     icon: () => 'fa fa-calendar-plus-o',
     visible: () => currentUserHasPermission('parcelBillings.apply'),
     run(options, doc) {
-      Session.set('activeParcelBillingId', doc._id);
+      Session.set('activeParcelBillingId', doc && doc._id);
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.apply',
         schema: ParcelBillings.applySchema,
-        omitFields: ['ids'],
         type: 'method',
         meteormethod: 'parcelBillings.apply',
       });
@@ -68,11 +67,10 @@ ParcelBillings.actions = {
     icon: () => 'fa fa-calendar-times-o',
     visible: () => currentUserHasPermission('parcelBillings.revert'),
     run(options) {
-      Session.set('activeParcelBillingId', doc._id);
+      Session.set('activeParcelBillingId', doc && doc._id);
       Modal.show('Autoform_edit', {
         id: 'af.parcelBilling.apply',
         schema: ParcelBillings.applySchema,
-        omitFields: ['ids'],
         type: 'method',
         meteormethod: 'parcelBillings.revert',
       });
