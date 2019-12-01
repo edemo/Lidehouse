@@ -33,7 +33,7 @@ function fixedStatusValue(value) {
 }
 function statusChangeSchema(doc, statusName) {
   debugAssert(statusName);
-  const statusObject = doc.statusObject();
+  const statusObject = doc.statusObject(statusName);
   const dataSchema = statusObject.data ? new SimpleSchema(
     statusObject.data.map(function (dataField) { return { [dataField]: /*TODO*/Tickets.extensionRawSchema[dataField] }; })
   ) : undefined;
