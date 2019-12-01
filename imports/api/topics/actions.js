@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Session } from 'meteor/session';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
@@ -70,7 +71,7 @@ Topics.actions = {
     name: 'view',
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('topics.inCommunity'),
-    href: (options, doc) => `pathFor 'Topic show' _tid=${doc._id}`,
+    href: (options, doc) => FlowRouter.path('Topic show', { _tid: doc._id }),
     run(options, doc, event, instance) {},
   },
   edit: {

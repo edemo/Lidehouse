@@ -16,7 +16,7 @@ function setSessionVars(instance) {
   const communityId = Session.get('activeCommunityId');
   const activePartnerRelation = instance.viewmodel.activePartnerRelation();
   Session.set('activePartnerRelation', activePartnerRelation);
-  const txCat = TxCats.findOne({ communityId, dataType: 'payments', 'options.relation': activePartnerRelation });
+  const txCat = TxCats.findOne({ communityId, dataType: 'payments', 'data.relation': activePartnerRelation });
   Session.set('activeTxCatId', txCat);
 }
 
@@ -45,7 +45,12 @@ Payments.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('payments.inCommunity'),
     run(options, doc) {
-      // TODO
+      Modal.show('Autoform_edit', {
+        id: 'af.payment.view',
+        collection: Payments,
+        doc,
+        type: 'readonly',
+      });
     },
   },
   edit: {

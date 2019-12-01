@@ -28,7 +28,12 @@ Contracts.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('contracts.inCommunity'),
     run(options, doc) {
-      // TODO
+      Modal.show('Autoform_edit', {
+        id: 'af.contract.view',
+        collection: Contracts,
+        doc,
+        type: 'readonly',
+      });
     },
   },
   edit: {

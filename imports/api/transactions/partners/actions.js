@@ -28,7 +28,12 @@ Partners.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('partners.inCommunity'),
     run(options, doc) {
-      // TODO
+      Modal.show('Autoform_edit', {
+        id: 'af.partner.view',
+        collection: Partners,
+        doc,
+        type: 'readonly',
+      });
     },
   },
   edit: {
