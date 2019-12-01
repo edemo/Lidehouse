@@ -1,6 +1,6 @@
 <template name="Modal">
-  <div class="modal fade {{#if size}}modal-{{size}}{{/if}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog {{#if size}}modal-{{size}}{{/if}}" role="document">
       <div class="modal-content">
         {{> Multi_modal_handler}}
         <div class="modal-header">
