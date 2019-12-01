@@ -17,11 +17,7 @@ export const Tickets = {};
 
 Tickets.typeValues = ['issue', 'upgrade', 'maintenance'];
 Tickets.urgencyValues = ['high', 'normal', 'low'];
-Tickets.urgencyColors = {
-  high: 'danger',
-  normal: 'warning',
-  low: 'primary',
-};
+Tickets.urgencyColors = { high: 'danger', normal: 'warning', low: 'primary' };
 Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 
 Tickets.extensionRawSchema = {
@@ -234,7 +230,7 @@ Factory.define('issue', Topics, {
   status: 'reported',
   ticket: {
     type: 'issue',
-    urgency: 'normal',
+    urgency: 'high',
   },
 });
 
@@ -258,7 +254,7 @@ Factory.define('upgrade', Topics, {
   status: 'scheduled',
   ticket: {
     type: 'upgrade',
-    urgency: 'normal',
+    urgency: 'low',
   },
 });
 

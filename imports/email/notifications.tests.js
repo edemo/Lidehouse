@@ -69,7 +69,7 @@ if (Meteor.isServer) {
           text: 'This is the new topic',
         });
         ticketId = Topics.methods.insert._execute({ userId: demoManager._id },
-          Fixture.builder.build('ticket', { creatorId: demoManager._id })
+          Fixture.builder.build('issue', { creatorId: demoManager._id })
         );
       });
 

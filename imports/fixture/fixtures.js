@@ -268,7 +268,7 @@ export function insertUnittestFixture(lang) {
   // ===== Tickets =====
 
   ['0', '1', '2'].forEach((topicNo) => {
-    const topicId = demoBuilder.create('ticket', {});
+    const topicId = demoBuilder.create('issue', {});
   });
 
   // ===== Rooms =====

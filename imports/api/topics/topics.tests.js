@@ -328,7 +328,7 @@ if (Meteor.isServer) {
           Comments.remove({});
 
           // Create a ticket
-          topicId = Fixture.builder.create('ticket', { creatorId: managerId });
+          topicId = Fixture.builder.create('issue', { creatorId: managerId });
         });
 
         it('doesn\'t let you change the status if you don\'t have the right permission', function (done) {
@@ -391,7 +391,7 @@ if (Meteor.isServer) {
 
         it('does not close exception categories', function (done) {
           Clock.setSimulatedTime(moment().subtract(4, 'month').toDate());
-          const ticketId = Fixture.builder.create('ticket', { creatorId: userId });
+          const ticketId = Fixture.builder.create('issue', { creatorId: userId });
           Clock.clear();
           chai.assert.equal(Topics.find({ closed: true }).count(), 2);
           closeInactiveTopics();
