@@ -17,6 +17,8 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { __ } from '/imports/localization/i18n.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
 export const ParcelBillings = new Mongo.Collection('parcelBillings');
 
 ParcelBillings.projectionValues = ['absolute', 'area', 'volume', 'habitants'];
@@ -44,42 +46,35 @@ ParcelBillings.schema = new SimpleSchema({
   appliedAt: { type: [ParcelBillings.appliedAtSchema], defaultValue: [], autoform: { omit: true } },
 });
 
-let chooseParcelBilling = {};
-let chooseSubAccountWithDefault = () => ({});
+const chooseParcelBilling = {
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const activeParcelBillingId = Session.get('activeParcelBillingId')
+    const parcelBillings = activeParcelBillingId
+      ? ParcelBillings.find(activeParcelBillingId)
+      : ParcelBillings.findActive({ communityId });
+    const options = parcelBillings.map(function option(pb) {
+      return { label: pb.toString(), value: pb._id };
+    });
+    const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+    return sortedOptions;
+  },
+};
 
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  chooseParcelBilling = {
+function chooseSubAccountWithDefault(brk, nodeCode) {
+  return {
     options() {
       const communityId = Session.get('activeCommunityId');
-      const activeParcelBillingId = Session.get('activeParcelBillingId')
-      const parcelBillings = activeParcelBillingId
-        ? ParcelBillings.find(activeParcelBillingId)
-        : ParcelBillings.findActive({ communityId });
-      const options = parcelBillings.map(function option(pb) {
-        return { label: pb.toString(), value: pb._id };
-      });
-      const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
-      return sortedOptions;
+      const breakdown = Breakdowns.findOneByName(brk, communityId);
+      return breakdown.nodeOptionsOf(nodeCode, false);
     },
-  };
-
-  chooseSubAccountWithDefault = function (brk, nodeCode) {
-    return {
-      options() {
-        const communityId = Session.get('activeCommunityId');
-        const breakdown = Breakdowns.findOneByName(brk, communityId);
-        return breakdown.nodeOptionsOf(nodeCode, false);
-      },
-      value: () => {
-        const activeParcelBillingId = Session.get('activeParcelBillingId');
-        const originLocalizer = activeParcelBillingId
-          ? ParcelBillings.findOne(activeParcelBillingId).localizer
-          : '@';
-        return originLocalizer;
-      },
-    };
+    value: () => {
+      const activeParcelBillingId = Session.get('activeParcelBillingId');
+      const originLocalizer = activeParcelBillingId
+        ? ParcelBillings.findOne(activeParcelBillingId).localizer
+        : '@';
+      return originLocalizer;
+    },
   };
 }
 

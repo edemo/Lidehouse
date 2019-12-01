@@ -5,6 +5,8 @@ import { __ } from '/imports/localization/i18n.js';
 import { Attachments } from '/imports/api/attachments/attachments.js';
 import { AttachmentsStore } from '/imports/api//attachments/attachments-store.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
 export const autoformOptions = function autoformOptions(values, i18Path = '') {
   return {
     options() {
@@ -29,12 +31,8 @@ export const chooseUser = {
 
 export const noUpdate = {
   disabled() {
-    if (Meteor.isClient) {
-      import { Session } from 'meteor/session';
-      const afType = Session.get('autoformType');
-      return afType === 'update' || afType === 'method-update';
-    }
-    return false;
+    const afType = Session.get('autoformType');
+    return afType === 'update' || afType === 'method-update';
   },
 };
 

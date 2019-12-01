@@ -7,6 +7,8 @@ import { autoformOptions, chooseUser, noUpdate } from '/imports/utils/autoform.j
 import { __ } from '/imports/localization/i18n.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
 export const ContactSchema = new SimpleSchema({
   address: { type: String, optional: true },
   phone: { type: String, optional: true },
@@ -99,32 +101,26 @@ export class Person {
   }
 }
 
-export let choosePerson = {};
-export let chooseDelegate = {};
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
+export const choosePerson = {
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    let memberships = Memberships.find({ communityId }).fetch().filter(m => m.personId);
+    memberships = _.uniq(memberships, false, m => m.personId);
+    const options = memberships.map(function option(m) {
+      return { label: (m.Person().displayName() + ', ' + m.Person().activeRoles(communityId).map(role => __(role)).join(', ')), value: m.personId };
+    });
+    const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
+    return sortedOptions;
+  },
+  firstOption: () => __('(Select one)'),
+};
 
-  choosePerson = {
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      let memberships = Memberships.find({ communityId }).fetch().filter(m => m.personId);
-      memberships = _.uniq(memberships, false, m => m.personId);
-      const options = memberships.map(function option(m) {
-        return { label: (m.Person().displayName() + ', ' + m.Person().activeRoles(communityId).map(role => __(role)).join(', ')), value: m.personId };
-      });
-      const sortedOptions = _.sortBy(options, o => o.label.toLowerCase());
-      return sortedOptions;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-
-  chooseDelegate = {
-    relation: 'delegate',
-    value() {
-      const newDelegateId = Session.get('modalResult-af.delegate.insert');
-      if (newDelegateId) return Memberships.findOne(newDelegateId).personId;
-      return undefined;
-    },
-    ...choosePerson,
-  };
-}
+export const chooseDelegate = {
+  relation: 'delegate',
+  value() {
+    const newDelegateId = Session.get('modalResult-af.delegate.insert');
+    if (newDelegateId) return Memberships.findOne(newDelegateId).personId;
+    return undefined;
+  },
+  ...choosePerson,
+};

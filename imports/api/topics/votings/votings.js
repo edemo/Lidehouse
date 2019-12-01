@@ -12,7 +12,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { getCurrentUserLang } from '/imports/api/users/users.js';
 import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Communities } from '/imports/api/communities/communities.js';
+import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
@@ -43,17 +43,10 @@ Votings.voteTypes = {
 };
 Votings.voteTypeValues = Object.keys(Votings.voteTypes);
 
-let currentUsersPossibleEffectValues = () => Votings.voteEffectValues;
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  currentUsersPossibleEffectValues = function () {
-    const user = Meteor.user();
-    if (!user.hasPermission('vote.insert', Session.get('activeCommunityId'))) {
-      return ['poll'];
-    }
-    return Votings.voteEffectValues;
-  };
+function currentUsersPossibleEffectValues() {
+  const user = Meteor.user();
+  if (!user.hasPermission('vote.insert', getActiveCommunityId())) return ['poll'];
+  return Votings.voteEffectValues;
 }
 
 Votings.voteSchema = new SimpleSchema({

@@ -14,16 +14,16 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 import { Memberships } from '/imports/api/memberships/memberships';
 import { ContactSchema } from '/imports/api/users/person.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
 export const Partners = new Mongo.Collection('partners');
 
 Partners.relationValues = ['supplier', 'customer', 'parcel'];
 
-let chooseRelation = {};
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  chooseRelation = _.extend({ value: () => Session.get('activePartnerRelation') }, autoformOptions(Partners.relationValues, 'schemaPartners.relation.'));
-}
+const chooseRelation = _.extend(
+  { value: () => Session.get('activePartnerRelation') },
+  autoformOptions(Partners.relationValues, 'schemaPartners.relation.')
+);
 
 Partners.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
@@ -59,31 +59,26 @@ Partners.relCollection = function relCollection(relation) {
   return Partners;
 };
 
-export let choosePartner = {};
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  choosePartner = {
-    relation: 'partner',
-    value() {
-      return Session.get('modalResult-af.partner.insert');
+export const choosePartner = {
+  relation: 'partner',
+  value() {
+    return Session.get('modalResult-af.partner.insert');
 //      const topModal = _.last(Session.get('openModals'));
 //      if (topModal && topModal.resultId === 'af.partner.insert') {
 //        return topModal.result;
 //      }
-    },
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const relation = Session.get('activePartnerRelation');
-      const partners = Partners.find({ communityId, relation });
-      const options = partners.map(function option(c) {
-        return { label: c.name, value: c._id };
-      });
-      return options;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-}
+  },
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const relation = Session.get('activePartnerRelation');
+    const partners = Partners.find({ communityId, relation });
+    const options = partners.map(function option(c) {
+      return { label: c.name, value: c._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
 
 Partners.helpers({
   community() {

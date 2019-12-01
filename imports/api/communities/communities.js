@@ -7,31 +7,18 @@ import { _ } from 'meteor/underscore';
 
 import { debugAssert, releaseAssert } from '/imports/utils/assert.js';
 import { comtype } from '/imports/comtypes/comtype.js';
-import { autoformOptions } from '/imports/utils/autoform.js';
+import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
 import { displayAddress } from '/imports/localization/localization.js';
 import { availableLanguages } from '/imports/startup/both/language.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
-import { Topics } from '/imports/api/topics/topics.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import { Delegations } from '/imports/api/delegations/delegations.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import { fileUpload } from '/imports/utils/autoform.js';
 
-export let getActiveCommunityId = () => {
-  debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"');
-};
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
-  getActiveCommunityId = function () { return Session.get('activeCommunityId'); };
+export function getActiveCommunityId() {
+  if (!Meteor.isClient) debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"');
+  return Session.get('activeCommunityId');
 }
 
 export const Communities = new Mongo.Collection('communities');

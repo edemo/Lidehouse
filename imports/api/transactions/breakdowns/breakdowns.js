@@ -10,6 +10,8 @@ import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
 function deepCopy(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
@@ -41,31 +43,24 @@ Breakdowns.name2code = function name2code(breakdownName, nodeName, communityId) 
   return node.code;
 };
 
-export let chooseBreakdown = {};
-export let chooseSubAccount = function () { return {}; };
+export const chooseBreakdown = {
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    return Breakdowns.find({ communityId }).map(function option(breakdown) {
+      return { label: breakdown.name, value: breakdown.name };
+    });
+  },
+  firstOption: () => __('(Select one)'),
+};
 
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  chooseBreakdown = {
+export function chooseSubAccount(brk, nodeCode, leafsOnly = true) {
+  return {
     options() {
       const communityId = Session.get('activeCommunityId');
-      return Breakdowns.find({ communityId }).map(function option(breakdown) {
-        return { label: breakdown.name, value: breakdown.name };
-      });
+      const breakdown = Breakdowns.findOneByName(brk, communityId);
+      return breakdown.nodeOptionsOf(nodeCode, leafsOnly);
     },
-    firstOption: () => __('(Select one)'),
-  };
-
-  chooseSubAccount = function (brk, nodeCode, leafsOnly = true) {
-    return {
-      options() {
-        const communityId = Session.get('activeCommunityId');
-        const breakdown = Breakdowns.findOneByName(brk, communityId);
-        return breakdown.nodeOptionsOf(nodeCode, leafsOnly);
-      },
-      firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
-    };
+    firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
   };
 }
 

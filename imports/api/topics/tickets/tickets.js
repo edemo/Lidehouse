@@ -13,6 +13,8 @@ import { choosePartner } from '/imports/api/transactions/partners/partners.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 // import { readableId } from '/imports/api/readable-id.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
 export const Tickets = {};
 
 Tickets.typeValues = ['issue', 'upgrade', 'maintenance'];
@@ -30,14 +32,7 @@ Tickets.extensionRawSchema = {
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },
 
   expectedCost: { type: Number, decimal: true, optional: true },
-  expectedStart: { type: Date, optional: true, autoform: { defaultValue() {
-    if (Meteor.isClient) {
-      import { Session } from 'meteor/session';
-
-      return Session.get('expectedStart');
-    }
-    return undefined;
-  } } },
+  expectedStart: { type: Date, optional: true, autoform: { defaultValue: () => Session.get('expectedStart') } },
   expectedFinish: { type: Date, optional: true },
   expectedContinue: { type: Date, optional: true },
   waitingFor: { type: String, optional: true },
@@ -260,6 +255,7 @@ Factory.define('upgrade', Topics, {
 
 Factory.define('ticketStatusChange', Comments, {
   text: () => faker.lorem.paragraph(),
+  status: 'scheduled',
   data: {
     localizer: 'At the basement',
     expectedCost: 5000,

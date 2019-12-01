@@ -10,23 +10,20 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
 export const Leaderships = new Mongo.Collection('leaderships');
 
-let chooseLeadRef = {};
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  chooseLeadRef = {
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const options = Parcels.find({ communityId }).fetch().map(function option(p) {
-        return { label: p.ref, value: p.ref };
-      });
-      return options;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-}
+const chooseLeadRef = {
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const options = Parcels.find({ communityId }).fetch().map(function option(p) {
+      return { label: p.ref, value: p.ref };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
 
 Leaderships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },

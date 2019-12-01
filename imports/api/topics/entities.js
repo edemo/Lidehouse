@@ -6,8 +6,6 @@ import { Topics } from './topics.js';
 import { Votings } from './votings/votings.js';
 import { Tickets } from './tickets/tickets.js';
 
-// const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
-
 export const ticketSchemaWithMoreDates = new SimpleSchema([
   Tickets.schema, {
     moreDates: { type: [Date], optional: true },

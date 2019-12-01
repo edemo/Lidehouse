@@ -11,6 +11,8 @@ import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
 export const StatementEntries = new Mongo.Collection('statementEntries');
 
 StatementEntries.schema = new SimpleSchema({
@@ -54,34 +56,29 @@ Factory.define('statementEntry', StatementEntries, {
 
 // --- Reconciliation ---
 
-let chooseBill = {};
-let choosePayment = {};
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
+const chooseBill = {
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const bills = Bills.find({ communityId, outstanding: { $gte: 0 } }).fetch();
+    const options = bills.map(function option(bill) {
+      return { label: `${bill.serialId()} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
 
-  chooseBill = {
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const bills = Bills.find({ communityId, outstanding: { $gte: 0 } }).fetch();
-      const options = bills.map(function option(bill) {
-        return { label: `${bill.serialId()} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
-      });
-      return options;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-  choosePayment = {
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const payments = Payments.find({ communityId, reconciledId: { $exists: false } }).fetch();
-      const options = payments.map(function option(payment) {
-        return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
-      });
-      return options;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-}
+const choosePayment = {
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const payments = Payments.find({ communityId, reconciledId: { $exists: false } }).fetch();
+    const options = payments.map(function option(payment) {
+      return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
 
 StatementEntries.reconcileSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },

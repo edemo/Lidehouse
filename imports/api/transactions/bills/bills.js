@@ -23,24 +23,21 @@ import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/br
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+
 export const Bills = new Mongo.Collection('bills');
 
-let chooseBillAccount = {}; // on server side, we can't import Session or AutoForm (client side packages)
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  chooseBillAccount = {
-    options() {
-      const txCatId = Session.get('activeTxCatId');
-      const txCat = TxCats.findOne(txCatId);
-      const coa = ChartOfAccounts.get();
-      if (!coa || !txCat) return [];
-      const nodeCodes = txCat[txCat.conteerSide()];
-      return coa.nodeOptionsOf(nodeCodes, /*leafsOnly*/ false);
-    },
-    firstOption: () => __('Conteer'),
-  };
-}
+const chooseBillAccount = {
+  options() {
+    const txCatId = Session.get('activeTxCatId');
+    const txCat = TxCats.findOne(txCatId);
+    const coa = ChartOfAccounts.get();
+    if (!coa || !txCat) return [];
+    const nodeCodes = txCat[txCat.conteerSide()];
+    return coa.nodeOptionsOf(nodeCodes, /*leafsOnly*/ false);
+  },
+  firstOption: () => __('Conteer'),
+};
 
 const lineSchema = {
   title: { type: String },

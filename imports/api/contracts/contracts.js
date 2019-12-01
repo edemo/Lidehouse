@@ -7,11 +7,11 @@ import faker from 'faker';
 
 import { __ } from '/imports/localization/i18n.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { choosePartner } from '/imports/api/transactions/partners/partners.js';
+import { Partners, choosePartner } from '/imports/api/transactions/partners/partners.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Partners } from '../transactions/partners/partners';
+
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
 export const Contracts = new Mongo.Collection('contracts');
 
@@ -39,26 +39,21 @@ Meteor.startup(function attach() {
   Contracts.simpleSchema().i18n('schemaContracts');
 });
 
-export let chooseContract = {};
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-
-  chooseContract = {
-    relation: 'contract',
-    value() {
-      return Session.get('modalResult-af.contract.insert');
-    },
-    options() {
-      const communityId = Session.get('activeCommunityId');
-      const contracts = Contracts.find({ communityId });
-      const options = contracts.map(function option(c) {
-        return { label: c.title, value: c._id };
-      });
-      return options;
-    },
-    firstOption: () => __('(Select one)'),
-  };
-}
+export const chooseContract = {
+  relation: 'contract',
+  value() {
+    return Session.get('modalResult-af.contract.insert');
+  },
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const contracts = Contracts.find({ communityId });
+    const options = contracts.map(function option(c) {
+      return { label: c.title, value: c._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
 
 Factory.define('contract', Contracts, {
   title: () => `Contract with ${faker.random.word()}`,

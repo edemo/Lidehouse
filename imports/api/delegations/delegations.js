@@ -9,40 +9,36 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
-import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Person, choosePerson, chooseDelegate } from '/imports/api/users/person.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
+const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
+const AutoForm = (Meteor.isClient) ? require('meteor/aldeed:autoform').AutoForm : { getFieldValue: () => undefined };
+
 export const Delegations = new Mongo.Collection('delegations');
 
 Delegations.scopeValues = ['community', 'agenda', 'topic'];
 
-let chooseScopeObject = {}; // on server side, we can't import Session or AutoForm (client side packages)
-if (Meteor.isClient) {
-  import { Session } from 'meteor/session';
-  import { AutoForm } from 'meteor/aldeed:autoform';
-
-  chooseScopeObject = {
-    options() {
-      const user = Meteor.user();
-      const scope = AutoForm.getFieldValue('scope', 'af.delegation.insert')
-                || AutoForm.getFieldValue('scope', 'af.delegation.update');
-      if (!scope) return [{ label: __('schemaDelegations.scopeObjectId.placeholder'), value: 'none' }];
-      let scopeSet;
-      if (scope === 'community') scopeSet = user.communities();
-      else {
-        const communityId = Session.get('activeCommunityId');
-        if (scope === 'agenda') scopeSet = Agendas.find({ communityId });
-        if (scope === 'topic') scopeSet = Topics.find({ communityId, category: 'vote', closed: false });
-      }
-      return scopeSet.map(function (o) { return { label: o.name || o.title, value: o._id }; });
-    },
-    firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
-  };
-}
+const chooseScopeObject = {
+  options() {
+    const user = Meteor.user();
+    const scope = AutoForm.getFieldValue('scope', 'af.delegation.insert')
+              || AutoForm.getFieldValue('scope', 'af.delegation.update');
+    if (!scope) return [{ label: __('schemaDelegations.scopeObjectId.placeholder'), value: 'none' }];
+    let scopeSet;
+    if (scope === 'community') scopeSet = user.communities();
+    else {
+      const communityId = Session.get('activeCommunityId');
+      if (scope === 'agenda') scopeSet = Agendas.find({ communityId });
+      if (scope === 'topic') scopeSet = Topics.find({ communityId, category: 'vote', closed: false });
+    }
+    return scopeSet.map(function (o) { return { label: o.name || o.title, value: o._id }; });
+  },
+  firstOption: false, // https://stackoverflow.com/questions/32179619/how-to-remove-autoform-dropdown-list-select-one-field
+};
 
 function communityIdAutoValue() {
   if (this.isSet || this.operator) return undefined;
