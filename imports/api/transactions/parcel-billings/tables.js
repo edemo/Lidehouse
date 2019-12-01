@@ -17,7 +17,7 @@ export function parcelBillingColumns() {
     { data: 'uom', title: __('schemaParcelBillings.uom.label') },
     { data: 'unitPrice', title: __('schemaParcelBillings.unitPrice.label') },
     { data: 'projection', title: __('schemaParcelBillings.projection.label'), render: Render.translate },
-    { data: 'amount', title: __('schemaParcelBillings.amount.label') },
+    { data: 'projectedPrice', title: __('schemaParcelBillings.projectedPrice.label') },
     { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'lastAppliedAt().valueDate', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,

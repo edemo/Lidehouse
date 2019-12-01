@@ -38,7 +38,7 @@ ParcelBillings.schema = new SimpleSchema({
   unitPrice: { type: Number, decimal: true, optional: true },
   // if projection based
   projection: { type: String, optional: true, allowedValues: ParcelBillings.projectionValues, autoform: autoformOptions(ParcelBillings.projectionValues) },
-  amount: { type: Number, optional: true },
+  projectedPrice: { type: Number, optional: true },
   // ---
   payinType: { type: String, autoform: chooseSubAccount('Owner payin types', '', true) },
   localizer: { type: String, autoform: chooseSubAccount('Localizer', '@', false) },
@@ -98,6 +98,15 @@ ParcelBillings.helpers({
     const parcels = parcelLeafs.map(l => Parcels.findOne({ communityId: this.communityId, ref: Localizer.code2parcelRef(l.code) }));
     return parcels;
   },
+  projectedUom() {
+    switch (this.projection) {
+      case 'absolute': return '-';
+      case 'area': return 'm2';
+      case 'volume': return 'm3';
+      case 'habitants': return 'person';
+      default: debugAssert(false); return undefined;
+    }
+  },
   applyCount() {
 //  return Transactions.find({ ref: this._id }).count();
     return this.appliedAt.length;
@@ -113,7 +122,7 @@ ParcelBillings.helpers({
     const currency = this.community().settings.currency;
     const consumptionPart = this.consumption ? `${this.unitPrice} ${currency}/${__('consumed')} ${this.uom}` : '';
     const connectionPart = (this.consumption && this.projection) ? ` ${__('or')} ` : '';
-    const projectionPart = this.projection ? `${this.amount} ${currency}/${this.projection})` : '';
+    const projectionPart = this.projection ? `${this.projectedPrice} ${currency}/${this.projectedUom()})` : '';
     return `${this.title} (${consumptionPart}${connectionPart}${projectionPart})`;
   },
 });
@@ -130,7 +139,7 @@ Meteor.startup(function attach() {
 Factory.define('parcelBilling', ParcelBillings, {
   title: faker.random.word(),
   projection: 'absolute',
-  amount: faker.random.number(),
+  projectedPrice: faker.random.number(),
   payinType: '1',
   localizer: '@',
   note: faker.random.word(),

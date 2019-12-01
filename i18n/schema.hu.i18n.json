@@ -883,7 +883,7 @@
     "projection": {
       "label": "Vetítési alap (ha nincs mérőóra)"
     },
-    "amount": {
+    "projectedPrice": {
       "label": "Vetítési egységár (Ft)",
       "placeholder": "(pl. 14560)"
     },
