@@ -29,21 +29,19 @@ function batchActionButton(batchAction) {
     text: () => `<i class="${batchAction.icon()} text-capitalize"></i> ${__(batchAction.name()).capitalize()}`,
     action(e, dt, node, config) {
       const selectedDocs = dt.rows({ selected: true }).data();
-      const selectedIds = _.pluck(selectedDocs, '_id');
-      batchAction.run(selectedIds);
+      batchAction.run(selectedDocs);
       dt.rows().deselect();
     },
     init(dt, node, config) {
       if (dt.rows({ selected: true }).indexes().length === 0) dt.button('.buttons-collection').disable();
       dt.on('select.dt.DT deselect.dt.DT', function () {
         const selectedDocs = dt.rows({ selected: true }).data();
-        const selectedIds = _.pluck(selectedDocs, '_id');
-        const visible = batchAction.visible(selectedIds);
+        const visible = batchAction.visible(selectedDocs);
         if (visible) {
           dt.button('.buttons-collection').enable();
           node.show();
         }
-        if (!visible || selectedIds.length === 0) {
+        if (!visible || selectedDocs.length === 0) {
           dt.button('.buttons-collection').disable();
           node.hide();
         }
