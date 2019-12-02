@@ -153,7 +153,7 @@
             </p>
             <br>
             <div class="member-list">
-                {{> Active_archive_tabs name=category icon='fa-user' iconUnapproved='fa-user-o'
+                {{> Active_archive_tabs name='ownerships' icon='fa-user' iconUnapproved='fa-user-o'
                     template='Memberships_table' content=membershipsContent }}
             </div>
         </div>
@@ -202,7 +202,7 @@
             <br>
             <div class="member-list">
                 {{#if userHasPermission 'meters.update' communityId}}
-                {{> Active_archive_tabs name='meter' icon='fa-tachometer'
+                {{> Active_archive_tabs name='meters' icon='fa-tachometer'
                     template='Meters_table' content=metersContent }}
                 {{/if}}
             </div>
@@ -340,10 +340,8 @@
                         </p>
                         <br>
                         {{#if Template.subscriptionsReady}}
-                            {{#if userHasPermission 'parcels.update' communityId}}
                                 {{> Active_archive_tabs name='parcels' tabs='active,unapproved' icon='fa-building' iconUnapproved='fa-building-o'
                                     template='SimpleReactiveDatatable' content=parcelsTableContent }}
-                            {{/if}}
                         {{else}}
                             {{_ 'Loading'}}...
                         {{/if}}
