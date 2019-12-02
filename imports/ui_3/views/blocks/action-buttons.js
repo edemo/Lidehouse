@@ -66,7 +66,7 @@ function fetchOptions(instanceData) {
 Template.Action_button.viewmodel({
   title() {
     const action = this.templateInstance.data.action;
-    if (action.label) return action.label(this.templateInstance.data.options);
+    if (action.label) return action.label(this.templateInstance.data.options, this.getDoc());
     return action.name;
   },
   long() {
@@ -124,7 +124,7 @@ Template.Action_buttons_group.viewmodel({
 Template.Action_listitem.viewmodel({
   title() {
     const action = this.templateInstance.data.action;
-    if (action.label) return action.label(this.templateInstance.data.options);
+    if (action.label) return action.label(this.templateInstance.data.options, this.getDoc());
     return action.name;
   },
   long() {

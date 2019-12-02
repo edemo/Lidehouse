@@ -175,6 +175,7 @@
 
   // commands
   "important": "Fontos",
+  "unimportant": "Nem fontos",
   "view": "megtekintés",
   "update": "módosítás",
   "edit": "szerkesztés",

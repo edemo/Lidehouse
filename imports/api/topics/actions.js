@@ -153,7 +153,7 @@ Topics.actions = {
   like: {
     name: 'like',
     label(options, doc) {
-      return doc && doc.isLikedBy(Meteor.userId()) ? 'Not important' : 'Important';
+      return doc && doc.isLikedBy(Meteor.userId()) ? 'unimportant' : 'important';
     },
     icon(options, doc) {
       return doc && doc.isLikedBy(Meteor.userId()) ? 'fa fa-hand-o-down' : 'fa fa-hand-o-up';
