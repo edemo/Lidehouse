@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
@@ -59,26 +60,33 @@ Partners.relCollection = function relCollection(relation) {
   return Partners;
 };
 
-export const choosePartner = {
-  relation: 'partner',
-  value() {
-    return Session.get('modalResult-af.partner.insert');
-//      const topModal = _.last(Session.get('openModals'));
-//      if (topModal && topModal.resultId === 'af.partner.insert') {
-//        return topModal.result;
-//      }
-  },
-  options() {
-    const communityId = Session.get('activeCommunityId');
-    const relation = Session.get('activePartnerRelation');
-    const partners = Partners.find({ communityId, relation });
-    const options = partners.map(function option(c) {
-      return { label: c.name, value: c._id };
-    });
-    return options;
-  },
-  firstOption: () => __('(Select one)'),
-};
+export let choosePartner = {};
+if (Meteor.isClient) {
+  import { ModalStack } from '/imports/ui_3/views/modals/multi-modal-handler.js';
+
+  choosePartner = {
+    relation: 'partner',
+    value() {
+      const selfId = AutoForm.getFormId();
+      return ModalStack.readResult(selfId, 'af.partner.insert');
+      // return Session.get('modalResult-af.partner.insert');
+  //      const topModal = _.last(Session.get('openModals'));
+  //      if (topModal && topModal.resultId === 'af.partner.insert') {
+  //        return topModal.result;
+  //      }
+    },
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const relation = Session.get('activePartnerRelation');
+      const partners = Partners.find({ communityId, relation });
+      const options = partners.map(function option(c) {
+        return { label: c.name, value: c._id };
+      });
+      return options;
+    },
+    firstOption: () => __('(Select one)'),
+  };
+}
 
 Partners.helpers({
   community() {

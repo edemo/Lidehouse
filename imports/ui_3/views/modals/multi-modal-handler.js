@@ -16,24 +16,46 @@ export function runInNewModal(toRun) {
 
 Modal.allowMultiple = true;
 
+// [{ id:'', result: { id1: result1, id2: result2 } }]
+
+export const ModalStack = {
+  push(dataId) {
+    if (!Session.get('modalStack')) Session.set('modalStack', []);
+    const modalStack = Session.get('modalStack');
+    modalStack.push({ id: dataId, result: {} });
+    Session.set('modalStack', modalStack);
+  },
+  pop(dataId) {
+    const modalStack = Session.get('modalStack');
+    const topModal = modalStack.pop();
+    debugAssert((!topModal.id && !dataId) || topModal.id === dataId);
+    if (modalStack.length > 0) $('body').addClass('modal-open');
+    Session.set('modalStack', modalStack);
+    // Modal.hide();
+  },
+  active() {
+    const modalStack = Session.get('modalStack');
+    return _.last(modalStack);
+  },
+  recordResult(afId, result) {
+    const modalStack = Session.get('modalStack');
+    modalStack[modalStack.length - 2].result[afId] = result;
+    Session.set('modalStack', modalStack);
+  },
+  readResult(ownId, afId) {
+    const modalStack = Session.get('modalStack');
+    let ownModal = {};
+    ownModal = _.find(modalStack, modal => (modal.id === ownId));
+    return ownModal.result[afId];
+  },
+};
+
 Template.Multi_modal_handler.onCreated(function () {
-  if (!Session.get('openedModals')) Session.set('openedModals', []);
-  const openedModals = Session.get('openedModals');
   const dataId = this.parent().data.id;
-  openedModals.push(dataId);
-  Session.set('openedModals', openedModals);
+  ModalStack.push(dataId);
 });
 
 Template.Multi_modal_handler.onDestroyed(function () {
   const dataId = this.parent().data.id;
-  const openedModals = Session.get('openedModals');
-  //  openedModals.forEach((modalId) => {
-  //    if (modalId === dataId) openedModals = _.without(openedModals, modalId);
-  //  });
-  // Should be enough to pop
-  const topModal = openedModals.pop();
-  debugAssert((!topModal && !dataId) || topModal === dataId);
-  if (openedModals.length > 0) $('body').addClass('modal-open');
-  Session.set('openedModals', openedModals);
-  Modal.hide();
+  ModalStack.pop(dataId);
 });
