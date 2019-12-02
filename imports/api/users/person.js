@@ -111,6 +111,7 @@ if (Meteor.isClient) {
     options() {
       const communityId = Session.get('activeCommunityId');
       let memberships = Memberships.find({ communityId }).fetch().filter(m => m.personId);
+                                                // TODO: this throws out the delagates without personId
       memberships = _.uniq(memberships, false, m => m.personId);
       const options = memberships.map(function option(m) {
         return { label: (m.Person().displayName() + ', ' + m.Person().activeRoles(communityId).map(role => __(role)).join(', ')), value: m.personId };
