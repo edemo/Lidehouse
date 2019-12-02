@@ -114,7 +114,7 @@ Template.Action_buttons_group.viewmodel({
     const actions = this.templateInstance.data.actions
       ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
 //      : _.map(collection.actions, (action, name) => action);
-      : _.values(_.omit(collection.actions, 'new', 'import'));
+      : _.values(_.omit(collection.actions, 'new', 'import', 'like', 'mute', 'block'));
     return actions;
   },
 });
