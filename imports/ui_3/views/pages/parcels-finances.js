@@ -5,6 +5,7 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { moment } from 'meteor/momentjs:moment';
+import { $ } from 'meteor/jquery';
 
 import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -13,9 +14,9 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
-import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Payments } from '/imports/api/transactions/payments/payments.js';
 
-import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
+import '/imports/api/transactions/bills/actions.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -163,8 +164,8 @@ Template.Parcels_finances.events({
     instance.viewmodel.showAllParcels(!oldVal);
   },
   'click #parcel-history .js-view'(event, instance) {
-    allBillsActions();
     const id = $(event.target).closest('button').data('id');
-    Bills.actions.view.run(id);
+    const doc = Bills.findOne(id) || Bills.findOne(Payments.findOne(id).billId);
+    Bills.actions.view.run({}, doc);
   },
 });

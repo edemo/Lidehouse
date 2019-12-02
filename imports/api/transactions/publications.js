@@ -17,7 +17,7 @@ function findTransactionsWithTypeExtension(selector) {
     },
     children: [{
       find(tx) {
-        return Mongo.Collection.get(tx.dataType).find(tx._id);
+        return Mongo.Collection.get(tx.dataType()).find(tx._id);
       },
     }],
   };
