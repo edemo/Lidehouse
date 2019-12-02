@@ -5,9 +5,9 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import '/imports/ui_3/views/modals/multi-modal-handler.js';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
+import { afId2details } from '/imports/ui_3/views/modals/autoform-edit.js';
 import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -31,20 +31,13 @@ function getTopicId() {
   return topicId;
 }
 
-Template.Voting_edit.actionFromId = function () {
-  const instance = Template.instance();
-  const split = autoformDataContext().id.split('.'); // AutoFormId convention is 'af.object.action'
-  const objectName = split[1];
-  const actionName = split[2];
-  return actionName;
-};
-
 Template.Voting_edit.onCreated(function () {
   const instance = Template.instance();
   instance.choices = new ReactiveVar([]);
   votingEditInstance = instance;
+  const actionName = afId2details(autoformDataContext().id).action;
   this.autorun(() => {
-    const currentVoteType = AutoForm.getFieldValue('vote.type', `af.vote.${Template.Voting_edit.actionFromId()}`);
+    const currentVoteType = AutoForm.getFieldValue('vote.type', `af.vote.${actionName}`);
     const newChoices = currentVoteType && Votings.voteTypes[currentVoteType].fixedChoices;
     if (newChoices) instance.choices.set(newChoices);
   });
@@ -97,7 +90,7 @@ Template.Voting_edit.events({
     Template.instance().choices.set(currentChoices);
   },
   'keyup .js-enter-choice'(event) {
-    if (event.keyCode == 13 ) {
+    if (event.keyCode == 13) {
       let currentChoices = Template.instance().choices.get();
       const newChoice = $('.editing input')[0].value;
       currentChoices = currentChoices.concat(newChoice);
