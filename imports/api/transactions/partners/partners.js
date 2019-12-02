@@ -63,17 +63,12 @@ Partners.relCollection = function relCollection(relation) {
 export let choosePartner = {};
 if (Meteor.isClient) {
   import { ModalStack } from '/imports/ui_3/views/modals/multi-modal-handler.js';
-
+  
   choosePartner = {
     relation: 'partner',
     value() {
       const selfId = AutoForm.getFormId();
       return ModalStack.readResult(selfId, 'af.partner.insert');
-      // return Session.get('modalResult-af.partner.insert');
-  //      const topModal = _.last(Session.get('openModals'));
-  //      if (topModal && topModal.resultId === 'af.partner.insert') {
-  //        return topModal.result;
-  //      }
     },
     options() {
       const communityId = Session.get('activeCommunityId');

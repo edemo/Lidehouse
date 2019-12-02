@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
@@ -39,21 +40,27 @@ Meteor.startup(function attach() {
   Contracts.simpleSchema().i18n('schemaContracts');
 });
 
-export const chooseContract = {
-  relation: 'contract',
-  value() {
-    return Session.get('modalResult-af.contract.insert');
-  },
-  options() {
-    const communityId = Session.get('activeCommunityId');
-    const contracts = Contracts.find({ communityId });
-    const options = contracts.map(function option(c) {
-      return { label: c.title, value: c._id };
-    });
-    return options;
-  },
-  firstOption: () => __('(Select one)'),
-};
+export let chooseContract = {};
+if (Meteor.isClient) {
+  import { ModalStack } from '/imports/ui_3/views/modals/multi-modal-handler.js';
+
+  chooseContract = {
+    relation: 'contract',
+    value() {
+      const selfId = AutoForm.getFormId();
+      return ModalStack.readResult(selfId, 'af.contract.insert');
+    },
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const contracts = Contracts.find({ communityId });
+      const options = contracts.map(function option(c) {
+        return { label: c.title, value: c._id };
+      });
+      return options;
+    },
+    firstOption: () => __('(Select one)'),
+  };
+}
 
 Factory.define('contract', Contracts, {
   title: () => `Contract with ${faker.random.word()}`,
