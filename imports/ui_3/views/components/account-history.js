@@ -11,7 +11,7 @@ import { allTransactionsActions } from '/imports/api/transactions/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import './account-history.html';
 
 Template.Account_history.viewmodel({

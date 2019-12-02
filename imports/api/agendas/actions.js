@@ -4,7 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Agendas } from './agendas.js';
@@ -16,7 +16,7 @@ Agendas.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('agendas.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.agenda.insert',
         collection: Agendas,
         type: 'method',
@@ -29,7 +29,7 @@ Agendas.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('agendas.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.agenda.view',
         collection: Agendas,
         doc,
@@ -42,7 +42,7 @@ Agendas.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('agendas.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.agenda.update',
         collection: Agendas,
         doc,

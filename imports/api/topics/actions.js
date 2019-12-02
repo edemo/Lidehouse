@@ -54,7 +54,7 @@ Topics.actions = {
     run(options) {
       Session.update('activeAutoform', 'ticketType', options.entity.name);
       Session.update('activeAutoform', 'contractId', options.contractId);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         body: options.entity.form,
         // --- autoform ---
         id: `af.${options.entity.name}.insert`,
@@ -84,7 +84,7 @@ Topics.actions = {
     visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
     run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         body: entity.form,
         // --- autoform ---
         id: `af.${doc.entityName()}.update`,
@@ -107,7 +107,7 @@ Topics.actions = {
     visible: (options, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.category}.statusChangeTo.${doc.status}.enter`),
     run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.statusUpdate`,
         collection: Topics,
         schema: entity.schema,
@@ -139,7 +139,7 @@ Topics.actions = {
       const entity = Topics.entities[doc.entityName()];
       Session.update('activeAutoform', 'topicId', doc._id);
       Session.update('activeAutoform', 'status', newStatus.name);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.statusChange`,
         description: newStatus.message && newStatus.message(options, doc),
         schema: statusChangeSchema(doc, newStatus.name),

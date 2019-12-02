@@ -17,7 +17,7 @@ import { StatementEntries } from '/imports/api/transactions/statement-entries/st
 import { statementEntriesColumns } from '/imports/api/transactions/statement-entries/tables.js';
 import { allStatementEntriesActions } from '/imports/api/transactions/statement-entries/actions.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-reconciliation.html';
 
 Template.Accounting_reconciliation.viewmodel({
@@ -78,7 +78,7 @@ Template.Accounting_reconciliation.viewmodel({
 
 Template.Accounting_reconciliation.events({
   'click .js-new-statement'(event) {
-    Modal.show('Autoform_edit', {
+    Modal.show('Autoform_modal', {
       id: 'af.statementEntry.insert',
       collection: StatementEntries,
       type: 'method',

@@ -12,7 +12,7 @@ TxCats.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('breakdowns.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.txCat.insert',
         collection: TxCats,
         type: 'method',
@@ -25,7 +25,7 @@ TxCats.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.txCat.update',
         collection: TxCats,
         doc,

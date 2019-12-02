@@ -3,7 +3,7 @@ import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -19,7 +19,7 @@ Memberships.actions = {
     visible: (options) => currentUserHasPermission(`${options.entity}.insert`),
     run(options) {
       const entity = Memberships.entities[options.entity];
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: `af.${options.entity}.insert`,
         collection: Memberships,
         fields: entity.inputFields.concat('activeTime'),
@@ -41,7 +41,7 @@ Memberships.actions = {
     visible: () => currentUserHasPermission('memberships.inCommunity'),
     run(options, doc, event, instance) {
       const entity = Memberships.entities[doc.entityName()];
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.view`,
         collection: Memberships,
         fields: entity.inputFields.concat('activeTime'),
@@ -57,7 +57,7 @@ Memberships.actions = {
     visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
     run(options, doc, event, instance) {
       const entity = Memberships.entities[doc.entityName()];
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.update`,
         collection: Memberships,
         fields: entity.modifiableFields,
@@ -74,7 +74,7 @@ Memberships.actions = {
     icon: () => 'fa fa-history',
     visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
     run(options, doc, event, instance) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.update`,
         collection: Memberships,
         fields: ['activeTime'],

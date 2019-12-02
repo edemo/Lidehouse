@@ -11,9 +11,9 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import '/imports/ui_3/views/modals/multi-modal-handler.js';
-import './autoform-edit.html';
+import './autoform-modal.html';
 
-// How to instantiate an Autoform_edit window: Modal.show('Autoform_edit', afOptions)
+// How to instantiate an Autoform_modal window: Modal.show('Autoform_modal', afOptions)
 // Make sure afOptions you omitFields if it is auto filled in an Autoform.hook
 
 export function afId2details(id) {
@@ -28,18 +28,18 @@ export function details2afId(details) {
   return `af.${details.object}.${details.action}`;
 }
 
-Template.Autoform_edit.onCreated(function () {
+Template.Autoform_modal.onCreated(function () {
   Session.set('autoformType', this.data.type);
 });
 
-Template.Autoform_edit.onRendered(function () {
+Template.Autoform_modal.onRendered(function () {
   const id = afId2details(this.data.id);
   const collection = Factory.get(id.object).collection;
   const schemaName = `schema${collection._name.capitalize()}`;
   initializeHelpIcons(this, schemaName);
 });
 
-Template.Autoform_edit.helpers({
+Template.Autoform_modal.helpers({
   title() {
     if (this.title) return this.title;
     const id = afId2details(this.id);

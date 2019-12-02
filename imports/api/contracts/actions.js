@@ -15,7 +15,7 @@ Contracts.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('contracts.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.contract.insert',
         collection: Contracts,
         type: 'method',
@@ -28,7 +28,7 @@ Contracts.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('contracts.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.contract.view',
         collection: Contracts,
         doc,
@@ -41,7 +41,7 @@ Contracts.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('contracts.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.contract.update',
         collection: Contracts,
         doc,

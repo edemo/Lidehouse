@@ -7,7 +7,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
-import { afId2details } from '/imports/ui_3/views/modals/autoform-edit.js';
+import { afId2details } from '/imports/ui_3/views/modals/autoform-modal.js';
 import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { Clock } from '/imports/utils/clock';
 import { debugAssert } from '/imports/utils/assert.js';

@@ -35,7 +35,7 @@ Bills.actions = {
     run(options, doc, event, instance) {
       setSessionVars(instance);
       const relation = Session.get('activePartnerRelation');
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         title: __('new') + ' ' + __(`schemaBills.relation.${relation}`),
         body: 'Bill_edit',
         id: 'af.bill.insert',
@@ -71,7 +71,7 @@ Bills.actions = {
     },
     run(options, doc, event, instance) {
       setSessionVars(instance);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         title: __(doc.relation + '_bill') + ' ' + __('editing data'),
         body: 'Bill_edit',
         id: 'af.bill.update',
@@ -107,7 +107,7 @@ Bills.actions = {
     },
     run(options, doc) {
       Session.set('activeBillId', doc._id);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.payment.insert',
         collection: Payments,
         omitFields: ['partnerId'],

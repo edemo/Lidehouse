@@ -5,7 +5,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { __ } from '/imports/localization/i18n.js';
 
 export function showWelcomeModal() {
-  Modal.show('Autoform_edit', {
+  Modal.show('Autoform_modal', {
     id: 'af.settings.update',
     title: __('welcome'),
     description: __('welcomeMessage'),

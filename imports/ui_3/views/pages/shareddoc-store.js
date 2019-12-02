@@ -75,7 +75,7 @@ Template.Shareddoc_store.events({
     Template.instance().activeFolderId.set(_id);
   },
   'click .js-new'(event) {
-    Modal.show('Autoform_edit', {
+    Modal.show('Autoform_modal', {
       id: 'af.sharedfolder.insert',
       collection: Sharedfolders,
       type: 'method',
@@ -85,7 +85,7 @@ Template.Shareddoc_store.events({
   'click .js-edit'(event) {
     const a = event.target.closest('a');
     const _id = $(a).data('id');
-    Modal.show('Autoform_edit', {
+    Modal.show('Autoform_modal', {
       id: 'af.sharedfolder.update',
       collection: Sharedfolders,
       doc: Sharedfolders.findOne(_id),

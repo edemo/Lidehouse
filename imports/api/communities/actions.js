@@ -7,7 +7,7 @@ import { AccountsTemplates } from 'meteor/useraccounts:core';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -21,7 +21,7 @@ Communities.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('communities.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.community.insert',
         collection: Communities,
         type: 'method',
@@ -34,7 +34,7 @@ Communities.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('communities.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.community.view',
         collection: Communities,
         doc,
@@ -47,7 +47,7 @@ Communities.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('communities.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.community.update',
         collection: Communities,
         doc,
@@ -62,7 +62,7 @@ Communities.actions = {
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('communities.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.community.update',
         collection: Communities,
         fields: ['activeTime'],
@@ -79,7 +79,7 @@ Communities.actions = {
     visible: (options, doc) => doc.settings.joinable,
     run() {
       AccountsTemplates.forceLogin(() => {
-        Modal.show('Autoform_edit', {
+        Modal.show('Autoform_modal', {
           title: 'pleaseSupplyParcelData',
           id: 'af.parcel.insert.unapproved',
           collection: Parcels,

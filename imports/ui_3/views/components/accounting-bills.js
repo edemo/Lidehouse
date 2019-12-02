@@ -31,7 +31,7 @@ import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.j
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-bills.html';
 
 Template.Accounting_bills.viewmodel({

@@ -15,7 +15,7 @@ Partners.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('partners.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.partner.insert',
         collection: Partners,
         type: 'method',
@@ -28,7 +28,7 @@ Partners.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('partners.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.partner.view',
         collection: Partners,
         doc,
@@ -41,7 +41,7 @@ Partners.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('partners.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.partner.update',
         collection: Partners,
         doc,

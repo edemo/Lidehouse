@@ -18,7 +18,7 @@ import { remove as removeDelegation, allow as allowDelegations } from '/imports/
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import '/imports/ui_3/views/blocks/chart.js';
 
 import './delegations.html';

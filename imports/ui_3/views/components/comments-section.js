@@ -112,7 +112,7 @@ Template.Comment.events({
     instance.viewmodel.editing(true);
   },
   'click .js-move'(event, instance) {
-    Modal.show('Autoform_edit', {
+    Modal.show('Autoform_modal', {
       id: 'af.comment.move',
       schema: Comments.moveSchema,
       doc: { _id: instance.data._id },

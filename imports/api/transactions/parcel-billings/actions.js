@@ -14,7 +14,7 @@ ParcelBillings.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('parcelBillings.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.insert',
         collection: ParcelBillings,
         type: 'method',
@@ -27,7 +27,7 @@ ParcelBillings.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('parcelBillings.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.view',
         collection: ParcelBillings,
         doc,
@@ -40,7 +40,7 @@ ParcelBillings.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('parcelBillings.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.update',
         collection: ParcelBillings,
         doc,
@@ -58,7 +58,7 @@ ParcelBillings.actions = {
       const communityId = Session.get('activeCommunityId');
       const billing = doc || ParcelBillings.findOne({ communityId, active: true });
       Session.set('activeParcelBillingId', doc && doc._id);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.apply',
         description: `${__('schemaParcelBillings.lastAppliedAt.label')} > ${moment(billing.lastAppliedAt().valueDate).format('L')}`,
         schema: ParcelBillings.applySchema,
@@ -73,7 +73,7 @@ ParcelBillings.actions = {
     visible: () => currentUserHasPermission('parcelBillings.revert'),
     run(options) {
       Session.set('activeParcelBillingId', doc && doc._id);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.apply',
         schema: ParcelBillings.applySchema,
         type: 'method',

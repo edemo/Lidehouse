@@ -14,7 +14,7 @@ Breakdowns.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('breakdowns.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.breakdown.insert',
         collection: Breakdowns,
         type: 'insert',
@@ -36,7 +36,7 @@ Breakdowns.actions = {
       Modal.show('Modal', modalContext);
     },
     run_autoForm(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.breakdown.view',
         collection: Breakdowns,
         doc,
@@ -49,7 +49,7 @@ Breakdowns.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('breakdowns.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.breakdown.update',
         collection: Breakdowns,
         doc,

@@ -14,7 +14,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 
 import './entities.js';

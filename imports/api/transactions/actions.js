@@ -15,7 +15,7 @@ Transactions.actions = {
     run(options) {
       Session.set('activeTxCatId', options.entity);
       const cat = TxCats.findOne(options.entity);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.transaction.insert',
         collection: Transactions,
         schema: cat.schema(),
@@ -29,7 +29,7 @@ Transactions.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('transactions.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.transaction.view',
         collection: Transactions,
         schema: Transactions.inputSchema,
@@ -43,7 +43,7 @@ Transactions.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('transactions.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.transaction.update',
         collection: Transactions,
   //      schema: newTransactionSchema(),

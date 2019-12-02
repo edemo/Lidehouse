@@ -5,7 +5,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
@@ -19,7 +19,7 @@ Parcels.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('parcels.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.parcel.insert',
         collection: Parcels,
         type: 'method',
@@ -38,7 +38,7 @@ Parcels.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('parcels.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.parcel.view',
         collection: Parcels,
         doc,
@@ -88,7 +88,7 @@ Parcels.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('parcels.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.parcel.update',
         collection: Parcels,
         doc,
@@ -103,7 +103,7 @@ Parcels.actions = {
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('parcels.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.parcel.update',
         collection: Parcels,
         fields: ['activeTime'],

@@ -19,7 +19,7 @@ import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/components/custom-table.js';
 import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/parcel-history.js';
 import '../common/ibox-tools.js';

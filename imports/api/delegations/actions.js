@@ -4,7 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/autoform-edit.js';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Delegations } from './delegations.js';
@@ -18,7 +18,7 @@ Delegations.actions = {
     run(options) {
       const communityId = Session.get('activeCommunityId');
       const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.delegation.insert',
         collection: Delegations,
         omitFields,
@@ -33,7 +33,7 @@ Delegations.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('delegations.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.delegation.view',
         collection: Delegations,
         doc,
@@ -51,7 +51,7 @@ Delegations.actions = {
     run(options, doc) {
       const communityId = Session.get('activeCommunityId');
       const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.delegation.update',
         collection: Delegations,
         omitFields,

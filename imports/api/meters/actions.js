@@ -16,7 +16,7 @@ Meters.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('meters.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.meter.insert',
         collection: Meters,
         omitFields: ['readings'],
@@ -30,7 +30,7 @@ Meters.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('meters.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.meter.view',
         collection: Meters,
         doc,
@@ -43,7 +43,7 @@ Meters.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.meter.update',
         collection: Meters,
         omitFields: ['readings', 'activeTime'],
@@ -59,7 +59,7 @@ Meters.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('meters.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.meter.update',
         collection: Meters,
         fields: ['readings'],
@@ -76,7 +76,7 @@ Meters.actions = {
     visible: () => currentUserHasPermission('meters.registerReading'),
     run(options, doc) {
       Session.set('selectedMeterId', doc._id);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.meter.reading',
         collection: Meters,
         schema: Meters.registerReadingSchema,
@@ -90,7 +90,7 @@ Meters.actions = {
     icon: () => 'fa fa-history',
     visible: () => currentUserHasPermission('meters.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.meter.update',
         collection: Meters,
         fields: ['activeTime'],

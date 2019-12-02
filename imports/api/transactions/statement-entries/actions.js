@@ -13,7 +13,7 @@ StatementEntries.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('statements.insert'),
     run() {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.statementEntry.insert',
         collection: StatementEntries,
         type: 'method',
@@ -26,7 +26,7 @@ StatementEntries.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('statements.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.statementEntry.view',
         collection: StatementEntries,
         doc,
@@ -39,7 +39,7 @@ StatementEntries.actions = {
     icon: () => 'fa fa-pencil',
     visible: () => currentUserHasPermission('statements.update'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.statementEntry.update',
         collection: StatementEntries,
         doc,
@@ -60,7 +60,7 @@ StatementEntries.actions = {
     },
     run(options, doc) {
       Session.set('activeStatementEntryId', doc._id);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         title: 'Reconciliation',
         description: 'Válasszon egyet a 3 lehetséges egyeztetési mód közül. A másik kettő mezőben kérjük ne adjon meg értéket.',
         id: 'af.statementEntry.reconcile',

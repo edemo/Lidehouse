@@ -32,7 +32,7 @@ Payments.actions = {
     visible: () => currentUserHasPermission('payments.insert'),
     run(options, doc, event, instance) {
       setSessionVars(instance);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.payment.insert',
         collection: Payments,
         type: 'method',
@@ -45,7 +45,7 @@ Payments.actions = {
     icon: () => 'fa fa-eye',
     visible: () => currentUserHasPermission('payments.inCommunity'),
     run(options, doc) {
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.payment.view',
         collection: Payments,
         doc,
@@ -63,7 +63,7 @@ Payments.actions = {
     },
     run(options, doc, event, instance) {
       setSessionVars(instance);
-      Modal.show('Autoform_edit', {
+      Modal.show('Autoform_modal', {
         id: 'af.payment.update',
         collection: Payments,
         doc,
