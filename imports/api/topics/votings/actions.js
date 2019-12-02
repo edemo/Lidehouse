@@ -26,10 +26,6 @@ AutoForm.addHooks('af.vote.insert', {
 });
 
 AutoForm.addHooks('af.vote.update', {
-  docToForm(doc, ss) {
-    votingEditInstance.choices.set(doc.vote.choices);
-    return doc;
-  },
   formToModifier(modifier) {
     delete modifier.$set.createdAt;
     delete modifier.$set.closesAt;

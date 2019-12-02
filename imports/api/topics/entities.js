@@ -23,7 +23,6 @@ const UpgradeProto = Topics._transform({ category: 'ticket', text: '-', ticket: 
 Topics.entities = {
   news: {
     name: 'news',
-    form: 'Autoform_edit',
     inputFields: ['title', 'text', 'photo', 'sticky'],
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
@@ -32,7 +31,6 @@ Topics.entities = {
   },
   forum: {
     name: 'forum',
-    form: 'Autoform_edit',
     inputFields: ['title', 'text', 'photo'],
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
@@ -51,7 +49,6 @@ Topics.entities = {
   // tickets
   issue: {
     name: 'issue',
-    form: 'Autoform_edit',
     schema: Tickets.schema,
     inputFields: IssueProto.inputFields(),
     implicitFields: {
@@ -65,7 +62,6 @@ Topics.entities = {
   },
   maintenance: {
     name: 'maintenance',
-    form: 'Autoform_edit',
     schema: ticketSchemaWithMoreDates,
     inputFields: MaintenanceProto.inputFields(),
     implicitFields: {
@@ -79,7 +75,6 @@ Topics.entities = {
   },
   upgrade: {
     name: 'upgrade',
-    form: 'Autoform_edit',
     schema: Tickets.schema,
     inputFields: UpgradeProto.inputFields(),
     implicitFields: {

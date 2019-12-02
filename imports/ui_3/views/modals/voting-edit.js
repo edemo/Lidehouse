@@ -2,11 +2,9 @@ import { $ } from 'meteor/jquery';
 import { moment } from 'meteor/momentjs:moment';
 import { Meteor } from 'meteor/meteor';
 import { ReactiveVar } from 'meteor/reactive-var';
-import { Tracker } from 'meteor/tracker';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/multi-modal-handler.js';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
@@ -22,23 +20,26 @@ import './voting-edit.html';
 
 export let votingEditInstance;
 
-function getTopicId(afData) {
-  const topicId = afData.doc
-    ? afData.doc._id
+// TODO: We need to access the autoform data context. Is there a better way than a fixed parent number?
+function autoformDataContext() { return Template.parentData(4); }
+
+function getTopicId() {
+  const doc = autoformDataContext().doc;
+  const topicId = (doc && doc._id)
+    ? doc._id
     : Meteor.userId();  // temporary placeholder until we have the topicId (we replace in onSuccess)
   return topicId;
 }
 
 Template.Voting_edit.actionFromId = function () {
   const instance = Template.instance();
-  const split = instance.data.id.split('.'); // AutoFormId convention is 'af.object.action'
+  const split = autoformDataContext().id.split('.'); // AutoFormId convention is 'af.object.action'
   const objectName = split[1];
   const actionName = split[2];
   return actionName;
 };
 
 Template.Voting_edit.onCreated(function () {
-  Session.set('autoformType', this.data.type);
   const instance = Template.instance();
   instance.choices = new ReactiveVar([]);
   votingEditInstance = instance;
@@ -49,31 +50,19 @@ Template.Voting_edit.onCreated(function () {
   });
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
-    const topicId = getTopicId(Template.instance().data);
+    const topicId = getTopicId();
     this.subscribe('shareddocs.ofTopic', { communityId, topicId });
   });
 });
 
 Template.Voting_edit.onRendered(function () {
+  const instance = Template.instance();
+  const doc = autoformDataContext().doc;
+  if (doc && doc.vote) instance.choices.set(doc.vote.choices);
   initializeHelpIcons(this, 'schemaVotings');
 });
 
 Template.Voting_edit.helpers({
-  title() {
-    if (this.title) return this.title;
-    const actionName = Template.Voting_edit.actionFromId();
-    if (actionName === 'insert') return __('new') + ' ' + __('topic_vote');
-    else if (actionName === 'update') return __('topic_vote') + ' ' + __('editing data');
-    else if (actionName === 'view') return __('topic_vote') + ' ' + __('viewing data');
-    else return 'data';
-  },
-  btnOK() {
-    const actionName = Template.Voting_edit.actionFromId();
-    if (actionName === 'insert') return 'Launch voting';
-    else if (actionName === 'update') return 'save';
-    else if (actionName === 'view') return 'OK';
-    else return '';
-  },
   // Default values for insert autoForm: https://github.com/aldeed/meteor-autoform/issues/210
   defaultOpenDate() {
     return Clock.currentTime();
@@ -91,7 +80,7 @@ Template.Voting_edit.helpers({
     return instance.choices.get();
   },
   attachments() {
-    const topicId = getTopicId(this);
+    const topicId = getTopicId();
     return Shareddocs.find({ topicId });
   },
   updateForm() {
@@ -108,12 +97,12 @@ Template.Voting_edit.events({
     Template.instance().choices.set(currentChoices);
   },
   'keyup .js-enter-choice'(event) {
-    if (event.keyCode == 13 ){
+    if (event.keyCode == 13 ) {
       let currentChoices = Template.instance().choices.get();
       const newChoice = $('.editing input')[0].value;
       currentChoices = currentChoices.concat(newChoice);
       Template.instance().choices.set(currentChoices);
-      $('.js-enter-choice').val("");
+      $('.js-enter-choice').val('');
       $('.editing')[0].classList.toggle('hidden');
       $('.js-add-choice')[0].classList.toggle('hidden');
     }
@@ -125,7 +114,7 @@ Template.Voting_edit.events({
     $('.js-enter-choice').focus();
   },
   'click .js-upload'(event) {
-    const topicId = getTopicId(Template.instance().data);
+    const topicId = getTopicId();
     Shareddocs.upload({
       communityId: Session.get('activeCommunityId'),
       folderId: 'voting',

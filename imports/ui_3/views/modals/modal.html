@@ -8,9 +8,18 @@
           <h4 class="modal-title" id="myModalLabel">{{_ title}}</h4>
         </div>
         <div class="modal-body">
+          {{#if description}}
+            <div class="panel panel-default">
+            <div class="panel-body bg-warning">
+              {{_ description}}
+            </div>
+            </div>
+          {{/if}}
           {{#if body}}
-          {{> Template.dynamic template=body data=bodyContext}}
-          {{else}} {{{text}}} {{/if}}
+            {{> Template.dynamic template=body data=bodyContext}}
+          {{else}}
+            {{{text}}}
+          {{/if}}
         </div>
         <div class="modal-footer">
           {{#if btnClose}}

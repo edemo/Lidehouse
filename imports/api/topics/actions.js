@@ -54,7 +54,9 @@ Topics.actions = {
     run(options) {
       Session.update('activeAutoform', 'ticketType', options.entity.name);
       Session.update('activeAutoform', 'contractId', options.contractId);
-      Modal.show(options.entity.form, {
+      Modal.show('Autoform_edit', {
+        body: options.entity.form,
+        // --- autoform ---
         id: `af.${options.entity.name}.insert`,
         collection: Topics,
         schema: options.entity.schema,
@@ -63,6 +65,8 @@ Topics.actions = {
         doc: options,
         type: 'method',
         meteormethod: 'topics.insert',
+        // --- --- --- ---
+        size: 'lg',
         btnOK: `Create ${options.entity.name}`,
       });
     },
@@ -80,7 +84,9 @@ Topics.actions = {
     visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
     run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
-      Modal.show(entity.form, {
+      Modal.show('Autoform_edit', {
+        body: entity.form,
+        // --- autoform ---
         id: `af.${doc.entityName()}.update`,
         collection: Topics,
         schema: entity.schema,
@@ -90,6 +96,8 @@ Topics.actions = {
         type: 'method-update',
         meteormethod: 'topics.update',
         singleMethodArgument: true,
+        // --- --- --- ---
+        size: 'lg',
       });
     },
   },

@@ -1,33 +1,37 @@
 <template name="Autoform_edit">
   <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog {{#if size}}modal-{{size}}{{/if}}" role="document">
       <div class="modal-content">
         {{> Multi_modal_handler}}
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">{{_ title}}</h4>
-          </div>
-          {{! Needed autoform context comes from the outer modal creator: id=, collection=, schema=, doc=, type=, meteormethod=, singleMethodArgument=true, template=}}
-          {{#autoForm}}
-          <div class="modal-body">
-            {{#if ../description}}
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">{{_ title}}</h4>
+        </div>
+        {{! Needed autoform context comes from the outer modal creator: id=, collection=, schema=, doc=, type=, meteormethod=, singleMethodArgument=true, template=}}
+        {{#autoForm}}
+        <div class="modal-body">
+          {{#if ../description}}
             <div class="panel panel-default">
             <div class="panel-body bg-warning">
               {{_ ../description}}
             </div>
             </div>
-            {{/if}}
+          {{/if}}
+          {{#if ../body}}
+            {{> Template.dynamic template=../body data=../bodyContext}}
+          {{else}}
             {{> afQuickFields}}
-          </div>
-          <div class="modal-footer">
-            {{#unless (equals ../type 'readonly')}}
+          {{/if}}
+        </div>
+        <div class="modal-footer">
+          {{#unless (equals ../type 'readonly')}}
             <div>
-              <button type="button" class="btn btn-default" data-dismiss="modal">{{_ "cancel"}}</button>
-              <button type="submit" class="btn btn-primary">{{_ "save"}}</button>
+              <button id="btn-close" type="button" class="btn btn-default" data-dismiss="modal">{{_ (or btnClose 'cancel')}}</button>
+              <button id="btn-ok" type="submit" class="btn btn-primary">{{_ (or btnOK 'save')}}</button>
             </div>
-            {{/unless}}
-          </div>
-          {{/autoForm}}
+          {{/unless}}
+        </div>
+        {{/autoForm}}
       </div>
     </div>
   </div>

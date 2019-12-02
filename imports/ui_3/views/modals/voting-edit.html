@@ -1,105 +1,83 @@
 <template name="Voting_edit">
-    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content page-vote">
-            {{> Multi_modal_handler}}
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">{{_ title}}</h4>
+    <div class="row">
+    <div class="col-xs-12 left-padded text-center">
+        <br>
+    </div>
+    </div>
+    <div class="row">
+    <form>
+        <div class="col-xs-12 col-md-6 col-lg-6">
+            {{> afQuickField name="title"}}
+            {{> afQuickField name="text"}}
+            {{> afQuickField name="agendaId" options=agendaOptions firstOption=(_ '(Select one)') }}
+            <div class="left-padded">
+                <label>{{_ "Attachments"}}</label>
             </div>
-            {{! Needed autoform context comes from the outer modal creator: id=, collection=, schema=, doc=, type=, meteormethod=, singleMethodArgument=true, template=}}
-            {{#autoForm this}}
-            <div class="modal-body">
-                <div class="row">
-                <div class="col-xs-12 left-padded text-center">
-                    <br>
+            <div class="form-group">
+                <ul class="file-list list-unstyled">
+                    {{#each doc in attachments}}
+                        <li>
+                        {{> Shareddoc_inline doc}}
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div>
+                <div class="col-xs-12 text-center">
+                <button type="button" name="upload" class="btn btn-info js-upload" >
+                  <i class="fa fa-upload"></i> {{_ 'Upload file'}}</button>
                 </div>
-                </div>
-                <div class="row">
-                <form>
-                <div class="col-xs-12 col-md-6 col-lg-6">
-                    {{> afQuickField name="title"}}
-                    {{> afQuickField name="text"}}
-                    {{> afQuickField name="agendaId" options=agendaOptions firstOption=(_ '(Select one)') }}
-                    <div class="left-padded">
-                        <label>{{_ "Attachments"}}</label>
-                    </div>
-                    <div class="form-group">
-                        <ul class="file-list list-unstyled">
-                            {{#each doc in attachments}}
-                                <li>
-                                {{> Shareddoc_inline doc}}
-                                </li>
-                            {{/each}}
-                        </ul>
-                    </div>
-                    <div>
-                        <div class="col-xs-12 text-center">
-                        <button type="button" name="upload" class="btn btn-info js-upload" >
-                          <i class="fa fa-upload"></i> {{_ 'Upload file'}}</button>
-                        </div>
-                    </div>
-                </div>
-        
-                <!-- right side -->
-                <div class="col-xs-12 col-md-6 col-lg-6">
-                    {{> afQuickField name="vote.procedure"}}
-                    {{> afQuickField name="vote.effect"}}
-                    {{> afQuickField name="vote.type"}}
-                    <div class="form-group">
-                        <label>{{_ 'schemaVotings.vote.choices.label'}}</label>
-                        {{> Help_icon title=(_ 'schemaVotings.vote.choices.help')}}
-                        <ul class="file-list list-unstyled">
-                            {{#each choice in choices}}
-                            <li class="{{#if updateForm}}grey-background{{/if}}" >
-                                <div class="row">
-                                <div class="col-xs-10">{{_ choice}}</div>
-                                <div class="col-xs-2 text-right">
-                                    {{#unless updateForm}}
-                                    <i class="text-right glyphicon glyphicon-remove js-remove-choice" data-index="{{@index}}" data-choice={{choice}} aria-hidden="true"></i>
-                                    {{/unless}}
-                                </div>
-                                </div>
-                            </li>
-                            {{/each}}
-                        </ul>
-                    </div>
-                    <div class="row choice editing hidden">
-                        <div class="col-xs-12 choice-rect">
-                        <input type="text" class="form-control js-enter-choice" name="new-choice" placeholder="pl. Nem szeretnék, de jó ötlet">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-12 text-center">
-                        <button type="button" class="btn btn-info js-add-choice {{#if updateForm}}disabled{{/if}}">
-                          <i class="fa fa-plus"></i> {{_ "new"}} {{_ "choice"}}</button>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
 
-                <div class="row">
-                <div class="col-xs-12 left-padded text-center">
-                    <br>
-                </div>
-                </div>
-                <div class="row">
-                <div class="col-xs-12 form-inline vote-dates text-center">
-                    {{> afQuickField name="opensAt" value=defaultOpenDate }}  
-                    {{> afQuickField name="closesAt" value=defaultCloseDate }}
-                </div>
-                </div>
-                </form>
+        <!-- right side -->
+        <div class="col-xs-12 col-md-6 col-lg-6">
+            {{> afQuickField name="vote.procedure"}}
+            {{> afQuickField name="vote.effect"}}
+            {{> afQuickField name="vote.type"}}
+            <div class="form-group">
+                <label>{{_ 'schemaVotings.vote.choices.label'}}</label>
+                {{> Help_icon title=(_ 'schemaVotings.vote.choices.help')}}
+                <ul class="file-list list-unstyled">
+                    {{#each choice in choices}}
+                    <li class="{{#if updateForm}}grey-background{{/if}}" >
+                        <div class="row">
+                        <div class="col-xs-10">{{_ choice}}</div>
+                        <div class="col-xs-2 text-right">
+                            {{#unless updateForm}}
+                            <i class="text-right glyphicon glyphicon-remove js-remove-choice" data-index="{{@index}}" data-choice={{choice}} aria-hidden="true"></i>
+                            {{/unless}}
+                        </div>
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="row choice editing hidden">
+                <div class="col-xs-12 choice-rect">
+                <input type="text" class="form-control js-enter-choice" name="new-choice" placeholder="pl. Nem szeretnék, de jó ötlet">
                 </div>
             </div>
-            <div class="modal-footer">
-                <div>
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{_ "cancel"}}</button>
-                <button type="submit" class="btn btn-primary">{{_ btnOK}}</button>
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                <button type="button" class="btn btn-info js-add-choice {{#if updateForm}}disabled{{/if}}">
+                  <i class="fa fa-plus"></i> {{_ "new"}} {{_ "choice"}}</button>
                 </div>
             </div>
-            {{/autoForm}}
+        </div>
+
+        <div class="row">
+        <div class="col-xs-12 left-padded text-center">
+            <br>
         </div>
         </div>
+        <div class="row">
+        <div class="col-xs-12 form-inline vote-dates text-center">
+            {{> afQuickField name="opensAt" value=defaultOpenDate }}  
+            {{> afQuickField name="closesAt" value=defaultCloseDate }}
+        </div>
+        </div>
+    </form>
     </div>
 </template>
       

@@ -34,12 +34,17 @@ Bills.actions = {
     visible: () => currentUserHasPermission('bills.insert'),
     run(options, doc, event, instance) {
       setSessionVars(instance);
-      Modal.show('Bill_edit', {
+      const relation = Session.get('activePartnerRelation');
+      Modal.show('Autoform_edit', {
+        title: __('new') + ' ' + __(`schemaBills.relation.${relation}`),
+        body: 'Bill_edit',
         id: 'af.bill.insert',
         collection: Bills,
         type: 'method',
         meteormethod: 'bills.insert',
         validation: 'blur',
+        size: 'lg',
+        btnOK: 'Insert bill',
       });
     },
   },
@@ -66,13 +71,16 @@ Bills.actions = {
     },
     run(options, doc, event, instance) {
       setSessionVars(instance);
-      Modal.show('Bill_edit', {
+      Modal.show('Autoform_edit', {
+        title: __(doc.relation + '_bill') + ' ' + __('editing data'),
+        body: 'Bill_edit',
         id: 'af.bill.update',
         collection: Bills,
         doc,
         type: 'method-update',
         meteormethod: 'bills.update',
         singleMethodArgument: true,
+        size: 'lg',
       });
     },
   },

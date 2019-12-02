@@ -6,7 +6,6 @@ import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Transactions } from './transactions.js';
 import './methods.js';
-import { Bills } from './bills/bills.js';
 
 Transactions.actions = {
   new: {
@@ -14,8 +13,8 @@ Transactions.actions = {
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('transactions.insert'),
     run(options) {
-      Session.set('activeTxCatId', options.catId);
-      const cat = TxCats.findOne(options.catId);
+      Session.set('activeTxCatId', options.entity);
+      const cat = TxCats.findOne(options.entity);
       Modal.show('Autoform_edit', {
         id: 'af.transaction.insert',
         collection: Transactions,
