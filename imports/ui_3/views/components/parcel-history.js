@@ -20,6 +20,7 @@ Template.Parcel_history.viewmodel({
     instance.autorun(() => {
       if (this.partnerSelected()) {
         instance.subscribe('transactions.byPartner', this.subscribeParams());
+        instance.subscribe('txCats.inCommunity', { communityId: this.communityId() });
       }
     });
   },
@@ -63,7 +64,7 @@ Template.Parcel_history.viewmodel({
     return tx.subjectiveAmount() < 0 ? 'negative' : '';
   },
   displayDataType(tx) {
-    const dataType = tx.dataType;
+    const dataType = tx.dataType();
     const typeName = dataType.substring(0, dataType.length - 1);
     const doc = tx.dataDoc();
     return __(typeName) + (doc.lineCount() ? ` (${doc.lineCount()} ${__('item')})` : '');

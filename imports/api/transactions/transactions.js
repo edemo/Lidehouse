@@ -96,7 +96,7 @@ Transactions.helpers({
     return this.txCat;
   },
   dataType() {
-    return this.category().dataType;
+    return this.category() && this.category().dataType;
   },
   dataDoc() {
     // dataDocs are stored with the same _id, as the tx itself
@@ -147,7 +147,7 @@ Transactions.helpers({
   },
   subjectiveAmount() {
     let sign = 0;
-    switch (this.dataType) {
+    switch (this.dataType()) {
       case 'bills': sign = -1; break;
       case 'payments': sign = +1; break;
       default: debugAssert(false);
