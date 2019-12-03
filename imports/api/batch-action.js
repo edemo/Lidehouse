@@ -16,10 +16,10 @@ export class BatchAction {
   }
   visible(docs) {
     const self = this;
-    return _.every(docs, function (doc) { return self.action.visible(this.options, doc); });
+    return _.every(docs, doc => self.action.visible(self.options, doc));
   }
   run(docs) {
-    Modal.confirmAndCall(this.method, { args: docs.map(doc => ({ _id: doc._id, ...this.options })) }, {
+    Modal.confirmAndCall(this.method, { args: _.map(docs, doc => ({ _id: doc._id, ...this.options })) }, {
       action: this.action.name,
       message: __('This operation will be performed on many documents', docs.length),
     });

@@ -55,7 +55,7 @@ Template.Contracts.events({
     const type = $(event.target).closest('a').data('type');
     const contractId = $(event.target).data('id');
     const partnerId = Contracts.findOne(contractId).partnerId;
-    Topics.actions.new.run({ entity: type, 'ticket.contractId': contractId, 'ticket.partnerId': partnerId });
+    Topics.actions.new.run({ entity: type }, { 'ticket.contractId': contractId, 'ticket.partnerId': partnerId });
   },
   'click .worksheets .js-import'(event, instance) {
     const type = $(event.target).closest('a').data('type');

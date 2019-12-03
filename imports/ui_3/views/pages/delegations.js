@@ -111,8 +111,7 @@ Template.Delegations_for_others.events({
 
 Template.Delegations.events({
   'click .js-new'(event) {
-    const id = $(event.target).closest('[data-id]').data('id');
-    Delegations.actions.new.run({ sourcePersonId: Meteor.userId() });
+    Delegations.actions.new.run({}, { sourcePersonId: Meteor.userId() });
   },
   'click #allow'(event) {
     event.preventDefault();
