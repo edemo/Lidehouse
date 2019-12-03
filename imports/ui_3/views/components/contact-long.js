@@ -12,7 +12,7 @@ Template.Contact_long.events({
     Rooms.goToRoom('private chat', instance.data._id);
   },
   'click .js-delegate'(event, instance) {
-    Delegations.actions.new.run('delegations', { targetPersonId: instance.data._id });
+    Delegations.actions.new.run({}, { targetPersonId: instance.data._id });
   },
   'click .js-block'(event, instance) {
     Meteor.users.methods.flag.call({ id: instance.data._id },

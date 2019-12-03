@@ -51,7 +51,7 @@ Topics.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: (options) => currentUserHasPermission(`${options.entity.name}.insert`),
-    run(options) {
+    run(options, doc) {
       Session.update('activeAutoform', 'ticketType', options.entity.name);
       Session.update('activeAutoform', 'contractId', options.contractId);
       Modal.show('Autoform_modal', {
@@ -62,7 +62,7 @@ Topics.actions = {
         schema: options.entity.schema,
         fields: options.entity.inputFields,
         omitFields: options.entity.omitFields,
-        doc: options,
+        doc,
         type: 'method',
         meteormethod: 'topics.insert',
         // --- --- --- ---

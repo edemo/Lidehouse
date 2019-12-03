@@ -15,14 +15,14 @@ Delegations.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: () => currentUserHasPermission('delegations.insert'),
-    run(options) {
+    run(options, doc) {
       const communityId = Session.get('activeCommunityId');
       const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
       Modal.show('Autoform_modal', {
         id: 'af.delegation.insert',
         collection: Delegations,
         omitFields,
-        doc: options,
+        doc,
         type: 'method',
         meteormethod: 'delegations.insert',
       });
