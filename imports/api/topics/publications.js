@@ -90,11 +90,17 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
         },
       }, {
         find(comment) {
-          return Contracts.find({ _id: comment.data.contractId });
+          if (comment.data) {
+            return Contracts.find({ _id: comment.data.contractId });
+          }
+          return this.ready();
         },
       }, {
         find(comment) {
-          return Partners.find({ _id: comment.data.partnertId });
+          if (comment.data) {
+            return Partners.find({ _id: comment.data.partnertId });
+          }
+          return this.ready();
         },
       }],
     }],
