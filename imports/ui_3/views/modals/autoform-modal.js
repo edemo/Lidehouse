@@ -67,7 +67,6 @@ AutoForm.addModalHooks = function AutoFormAddModalHooks(afId) {
     onSuccess(formType, result) {
       ModalStack.recordResult(afId, result);
       Modal.hide(this.template.parent());
-      Session.set('modalResult-' + afId, result);
       const id = afId2details(afId);
       const actionNameDone = 'actionDone_' + id.action;
       displayMessage('success', __(id.object) + ' ' + __(actionNameDone));

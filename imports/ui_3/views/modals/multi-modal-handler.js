@@ -39,6 +39,7 @@ export const ModalStack = {
   },
   recordResult(afId, result) {
     const modalStack = Session.get('modalStack');
+    if (modalStack.length <= 1) return;   // If this was the bottomest modal, no need to pass on the result, we can clean up
     modalStack[modalStack.length - 2].result[afId] = result;
     Session.set('modalStack', modalStack);
   },

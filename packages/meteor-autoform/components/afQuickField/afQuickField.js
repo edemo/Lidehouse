@@ -44,6 +44,6 @@ Template.afQuickField.events({
     var c = AutoForm.Utility.getComponentContext(instance.data, "afQuickField");
     var entity = c.atts.relation;
     var collection = Factory.get(entity).collection;
-    collection.actions.new.run(entity, event, instance);
+    collection.actions.new.run({ entity }, event, instance);
   },
 })

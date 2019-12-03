@@ -36,7 +36,7 @@ Memberships.entities = {
     inputFields: ['person'],
     omitFields: ['person.userId'],
     implicitFields: {
-      communityId: () => Session.get('selectedCommunityId'),
+      communityId: () => Session.get('activeCommunityId'),
       role: 'delegate',
       approved: true,
     },
