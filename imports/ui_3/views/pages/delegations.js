@@ -46,7 +46,7 @@ Template.Delegation_list.helpers({
 
 Template.Delegations_for_others.helpers({
   checked() {
-    return Meteor.user().settings.delegatee;
+    return Meteor.user() && Meteor.user().settings.delegatee;
   },
   delegations() {
     return Delegations.find();
@@ -68,6 +68,9 @@ Template.Delegations_for_others.helpers({
 });
 
 Template.Delegations.helpers({
+  checked() {
+    return Meteor.user() && Meteor.user().settings.delegatee;
+  },
   delegations() {
     return Delegations.find();
   },
