@@ -5,8 +5,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { $ } from 'meteor/jquery';
 
-import { Partners } from '/imports/api/transactions/partners/partners.js';
-import '/imports/api/transactions/partners/actions.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import '/imports/api/partners/actions.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 import '/imports/api/contracts/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';

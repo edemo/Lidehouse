@@ -18,7 +18,7 @@ import './methods.js';
 
 function setSessionVars(instance) {
   const communityId = Session.get('activeCommunityId');
-  const activePartnerRelation = instance.viewmodel.activePartnerRelation();
+  const activePartnerRelation = Session.get('activePartnerRelation');
   const txCat = TxCats.findOne({ communityId, dataType: 'bills', 'data.relation': activePartnerRelation });
   Session.set('activeTxCatId', txCat);
 }

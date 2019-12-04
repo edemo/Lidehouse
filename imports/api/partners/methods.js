@@ -4,8 +4,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
+import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Partners } from './partners.js';
-import { crudBatchOps } from '../../batch-method.js';
 
 
 export const insert = new ValidatedMethod({

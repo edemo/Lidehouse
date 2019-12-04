@@ -26,8 +26,8 @@
         <div class="modal-footer">
           {{#unless (equals ../type 'readonly')}}
             <div>
-              <button id="btn-close" type="button" class="btn btn-default" data-dismiss="modal">{{_ (or btnClose 'cancel')}}</button>
-              <button id="btn-ok" type="submit" class="btn btn-primary">{{_ (or btnOK 'save')}}</button>
+              <button id="btn-close" type="button" class="btn btn-default" data-dismiss="modal">{{_ (or ../btnClose 'cancel')}}</button>
+              <button id="btn-ok" type="submit" class="btn btn-primary">{{_ (or ../btnOK 'save')}}</button>
             </div>
           {{/unless}}
         </div>

@@ -66,7 +66,7 @@ Topics.actions = {
         type: 'method',
         meteormethod: 'topics.insert',
         // --- --- --- ---
-        size: 'lg',
+        size: options.entity.form ? 'lg' : 'md',
         btnOK: `Create ${options.entity.name}`,
       });
     },
@@ -97,7 +97,7 @@ Topics.actions = {
         meteormethod: 'topics.update',
         singleMethodArgument: true,
         // --- --- --- ---
-        size: 'lg',
+        size: options.entity.form ? 'lg' : 'md',
       });
     },
   },

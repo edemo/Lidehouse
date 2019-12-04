@@ -4,7 +4,6 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { moment } from 'meteor/momentjs:moment';
 import { freshFixture, newFixture, logDB } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
-import { Partners } from '/imports/api/transactions/partners/partners.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import '/imports/api/transactions/bills/methods.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';

@@ -7,7 +7,7 @@
         {{#if userHasPermission 'contracts.insert' (fromSession 'activeCommunityId') }}
           <button class="btn btn-primary btn-sm pull-right m-md js-new contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
         {{/if}}
-        <div class="btn-group">
+        <div class="btn-group m-b-md">
           {{#each partnerRelation in partnerRelations}}
           <button type="button" class="btn {{activeClass partnerRelation}} js-relation-filter" data-value="{{partnerRelation}}">{{_ (concat 'schemaPartners.relation.' partnerRelation)}}{{_ 's'}}</button>
           {{/each}}

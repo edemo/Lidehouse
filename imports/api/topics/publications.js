@@ -8,7 +8,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
-import { Partners } from '/imports/api/transactions/partners/partners.js';
+import { Partners } from '/imports/api/partners/partners.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
 
