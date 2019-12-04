@@ -11,7 +11,7 @@ StatementEntries.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('statements.insert'),
+    visible: (options, doc) => currentUserHasPermission('statements.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.insert',
@@ -24,7 +24,7 @@ StatementEntries.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('statements.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('statements.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.view',
@@ -54,7 +54,8 @@ StatementEntries.actions = {
     icon: () => 'fa fa-external-link',
     color: (options) => 'danger',
     visible(options, doc) {
-      if (!currentUserHasPermission('statements.reconcile')) return false;
+      const communityId = Session.get('activeCommunityId');
+      if (!currentUserHasPermission('statements.reconcile', communityId, doc)) return false;
       if (!doc || doc.isReconciled()) return false;
       return true;
     },

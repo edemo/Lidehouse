@@ -11,7 +11,7 @@ Transactions.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('transactions.insert'),
+    visible: (options, doc) => currentUserHasPermission('transactions.insert', doc),
     run(options) {
       Session.set('activeTxCatId', options.entity);
       const cat = TxCats.findOne(options.entity);
@@ -27,7 +27,7 @@ Transactions.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('transactions.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('transactions.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.transaction.view',
@@ -41,7 +41,7 @@ Transactions.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('transactions.update'),
+    visible: (options, doc) => currentUserHasPermission('transactions.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.transaction.update',
@@ -57,7 +57,7 @@ Transactions.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('transactions.remove'),
+    visible: (options, doc) => currentUserHasPermission('transactions.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Transactions.methods.remove, { _id: doc._id }, {
         action: 'delete transaction',

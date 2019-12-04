@@ -12,7 +12,7 @@ Breakdowns.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('breakdowns.insert'),
+    visible: (options, doc) => currentUserHasPermission('breakdowns.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.breakdown.insert',
@@ -26,7 +26,7 @@ Breakdowns.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('breakdowns.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('breakdowns.inCommunity', doc),
     run(options, doc) {
       const modalContext = {
         title: 'View Breakdown',
@@ -47,7 +47,7 @@ Breakdowns.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('breakdowns.update'),
+    visible: (options, doc) => currentUserHasPermission('breakdowns.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.breakdown.update',
@@ -82,7 +82,7 @@ Breakdowns.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('breakdowns.remove'),
+    visible: (options, doc) => currentUserHasPermission('breakdowns.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Breakdowns.remove, { _id: doc._id }, {
         action: 'delete breakdown',

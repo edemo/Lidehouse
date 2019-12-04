@@ -14,7 +14,7 @@ Delegations.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('delegations.insert'),
+    visible: (options, doc) => currentUserHasPermission('delegations.insert', doc),
     run(options, doc) {
       const communityId = Session.get('activeCommunityId');
       const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
@@ -31,7 +31,7 @@ Delegations.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('delegations.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('delegations.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.delegation.view',
@@ -46,7 +46,7 @@ Delegations.actions = {
     icon: () => 'fa fa-pencil',
     visible: (options, doc) => {
       if (Meteor.userId() === doc.sourcePersonId || Meteor.userId() === doc.targetPersonId) return true;
-      return currentUserHasPermission('delegations.remove');
+      return currentUserHasPermission('delegations.remove', doc);
     },
     run(options, doc) {
       const communityId = Session.get('activeCommunityId');
@@ -67,7 +67,7 @@ Delegations.actions = {
     icon: () => 'fa fa-trash',
     visible: (options, doc) => {
       if (Meteor.userId() === doc.sourcePersonId || Meteor.userId() === doc.targetPersonId) return true;
-      return currentUserHasPermission('delegations.remove');
+      return currentUserHasPermission('delegations.remove', doc);
     },
     run(options, doc) {
       let action = 'delete delegation';

@@ -31,7 +31,7 @@ Bills.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('bills.insert'),
+    visible: (options, doc) => currentUserHasPermission('bills.insert', doc),
     run(options, doc, event, instance) {
       setSessionVars(instance);
       const relation = Session.get('activePartnerRelation');
@@ -51,7 +51,7 @@ Bills.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('bills.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('bills.inCommunity', doc),
     run(options, doc) {
 //    FlowRouter.go('Bill show', { _bid: id });
       Modal.show('Modal', {
@@ -65,7 +65,7 @@ Bills.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible(options, doc) {
-      if (!currentUserHasPermission('bills.update')) return false;
+      if (!currentUserHasPermission('bills.update', doc)) return false;
       if (!doc || doc.txId) return false; // already in accounting
       return true;
     },
@@ -89,7 +89,7 @@ Bills.actions = {
     icon: () => 'fa fa-check-square-o',
     color: (options, doc) => (doc && !(doc.txId) ? 'warning' : undefined),
     visible(options, doc) {
-      if (!currentUserHasPermission('bills.post')) return false;
+      if (!currentUserHasPermission('bills.post', doc)) return false;
       return (doc && doc.hasConteerData() && !doc.txId);
     },
     run(options, doc) {
@@ -102,7 +102,7 @@ Bills.actions = {
     name: 'registerPayment',
     icon: () => 'fa fa-credit-card',
     visible(options, doc) {
-      if (!currentUserHasPermission('payments.insert')) return false;
+      if (!currentUserHasPermission('payments.insert', doc)) return false;
       return (doc && doc.txId && doc.outstanding > 0);
     },
     run(options, doc) {
@@ -119,7 +119,7 @@ Bills.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('bills.remove'),
+    visible: (options, doc) => currentUserHasPermission('bills.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Bills.methods.remove, { _id: doc._id }, {
         action: 'delete bill',

@@ -14,7 +14,7 @@ Meters.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('meters.insert'),
+    visible: (options, doc) => currentUserHasPermission('meters.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.meter.insert',
@@ -28,7 +28,7 @@ Meters.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('meters.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('meters.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.meter.view',
@@ -41,7 +41,7 @@ Meters.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('meters.update'),
+    visible: (options, doc) => currentUserHasPermission('meters.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.meter.update',
@@ -57,7 +57,7 @@ Meters.actions = {
   editReadings: {
     name: 'editReadings',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('meters.update'),
+    visible: (options, doc) => currentUserHasPermission('meters.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.meter.update',
@@ -73,7 +73,7 @@ Meters.actions = {
   reading: {
     name: 'reading',
     icon: () => 'fa fa-camera',
-    visible: () => currentUserHasPermission('meters.registerReading'),
+    visible: (options, doc) => currentUserHasPermission('meters.registerReading', doc),
     run(options, doc) {
       Session.set('selectedMeterId', doc._id);
       Modal.show('Autoform_modal', {
@@ -88,7 +88,7 @@ Meters.actions = {
   period: {
     name: 'period',
     icon: () => 'fa fa-history',
-    visible: () => currentUserHasPermission('meters.update'),
+    visible: (options, doc) => currentUserHasPermission('meters.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.meter.update',
@@ -104,7 +104,7 @@ Meters.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('meters.remove'),
+    visible: (options, doc) => currentUserHasPermission('meters.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Meters.methods.remove, { _id: doc._id }, {
         action: 'delete meter',

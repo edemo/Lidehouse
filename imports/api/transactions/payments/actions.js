@@ -27,7 +27,7 @@ Payments.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('payments.insert'),
+    visible: (options, doc) => currentUserHasPermission('payments.insert', doc),
     run(options, doc, event, instance) {
       setSessionVars(instance);
       Modal.show('Autoform_modal', {
@@ -41,7 +41,7 @@ Payments.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('payments.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('payments.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.payment.view',
@@ -55,7 +55,7 @@ Payments.actions = {
     name: 'edit',
     icon: () => 'fa fa-pencil',
     visible(options, doc) {
-      if (!currentUserHasPermission('bills.update')) return false;
+      if (!currentUserHasPermission('bills.update', doc)) return false;
       if (!doc || doc.txId) return false; // already in accounting
       return true;
     },
@@ -76,7 +76,7 @@ Payments.actions = {
     icon: () => 'fa fa-check-square-o',
     color: (options, doc) => (!(doc.txId) ? 'warning' : undefined),
     visible(options, doc) {
-      if (!currentUserHasPermission('payments.post')) return false;
+      if (!currentUserHasPermission('payments.post', doc)) return false;
       if (!doc || doc.txId) return false;
       return true;
     },
@@ -89,7 +89,7 @@ Payments.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('payments.remove'),
+    visible: (options, doc) => currentUserHasPermission('payments.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Payments.methods.remove, { _id: doc._id }, {
         action: 'delete bill',
