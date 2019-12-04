@@ -21,6 +21,7 @@
   // topics
   "Do show content": "I want to see it now",
   "Change status to": "Change status to %s",
+  "Create forum": "Start topic",
   
   // voting
   "Proxy voting" : "Voting in the name of others",
@@ -118,7 +119,7 @@
 
   // tickets
   "Please dont report twice": "To help our maintanance staff, please report errors only after checking that they don't already appear on the list of recently reported tickets.",
-  "New ticket": "Report a new problem",
+  "New issue": "Report a new problem",
 
   // account
   "Localizer": "Accounting location",
