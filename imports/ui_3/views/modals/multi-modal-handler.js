@@ -27,13 +27,12 @@ Session.update = function update(sessionVarName, key, value) {
 // Set up peppelg:bootstrap-3-modal to allow multiple modals
 Modal.allowMultiple = true;
 
+Meteor.startup(() => Session.set('modalContext', {}));  // init to empty
+
 // ModalStack data structure:
 // [{ id:'af.object.action', result: { id1: result1, id2: result2 } }]
 
 export const ModalStack = {
-  constructor() {
-    Session.set('modalContext', {});  // init to empty
-  },
   push(dataId) {
     if (!Session.get('modalStack')) Session.set('modalStack', []);
     const modalStack = Session.get('modalStack');

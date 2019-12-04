@@ -128,7 +128,6 @@ Topics.actions = {
     },
     run(options, doc, event, instance) {
       const newStatus = options.status;
-      const entity = Topics.entities[doc.entityName()];
       Session.update('modalContext', 'topicId', doc._id);
       Session.update('modalContext', 'status', newStatus.name);
       Modal.show('Autoform_modal', {

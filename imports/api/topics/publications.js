@@ -88,21 +88,21 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
         find(comment) {
           return Meteor.users.find({ _id: comment.userId }, { fields: Meteor.users.publicFields });
         },
-      }, {
-        find(comment) {
-          if (comment.data) {
-            return Contracts.find({ _id: comment.data.contractId });
-          }
-          return this.ready();
-        },
-      }, {
-        find(comment) {
-          if (comment.data) {
-            return Partners.find({ _id: comment.data.partnertId });
-          }
-          return this.ready();
-        },
       }],
+    }, {
+      find(topic) {
+        if (topic.ticket && topic.ticket.contractId) {
+          return Contracts.find({ _id: topic.ticket.contractId });
+        }
+        return this.ready();
+      },
+    }, {
+      find(topic) {
+        if (topic.ticket && topic.ticket.contractId) {
+          return Partners.find({ _id: topic.ticket.contractId });
+        }
+        return this.ready();
+      },
     }],
   };
 });
