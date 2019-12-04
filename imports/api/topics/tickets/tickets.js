@@ -32,7 +32,7 @@ Tickets.extensionRawSchema = {
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true /* TODO: Select from tx list */ },
 
   expectedCost: { type: Number, decimal: true, optional: true },
-  expectedStart: { type: Date, optional: true, autoform: { defaultValue: () => Session.get('expectedStart') } },
+  expectedStart: { type: Date, optional: true, autoform: { defaultValue: () => Session.get('modalContext').expectedStart } },
   expectedFinish: { type: Date, optional: true },
   expectedContinue: { type: Date, optional: true },
   waitingFor: { type: String, optional: true },

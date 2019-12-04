@@ -65,14 +65,15 @@ Topics.entities = {
   maintenance: {
     name: 'maintenance',
     schema: ticketSchemaWithMoreDates,
-    inputFields: MaintenanceProto.inputFields(),
+    inputFields: MaintenanceProto.inputFields().concat(['moreDates']),
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
       category: 'ticket',
       ticket: () => ({
         type: 'maintenance',
-        contractId: (Session.get('modalContext')).contractId,
-        partnerId: (Session.get('modalContext')).partnerId,
+        contractId: Session.get('modalContext').contractId,
+        partnerId: Session.get('modalContext').partnerId,
+        expectedStart: Session.get('modalContext').expectedStart,
       }),
     },
   },
