@@ -11,10 +11,10 @@ import { Contracts } from '/imports/api/contracts/contracts.js';
 import '/imports/api/contracts/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import '/imports/api/topics/actions.js';
 import { Tickets } from '/imports/api/topics/tickets/tickets.js';
-import { importCollectionFromFile } from '/imports/utils/import.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/components/ticket-list.js';
+import '/imports/ui_3/views/components/new-ticket.js';
 import './contracts.html';
 
 Template.Contracts.viewmodel({
@@ -51,17 +51,16 @@ Template.Contracts.viewmodel({
 Template.Contracts.events({
   ...(actionHandlers(Partners)),
   ...(actionHandlers(Contracts)),
-  'click .worksheets .js-add'(event) {
-    const type = $(event.target).closest('a').data('type');
-    const contractId = $(event.target).data('id');
+  'click .topics .js-new, .topics .js-import'(event) {
+    const entityName = $(event.target).closest('[data-entity]').data('entity');
+    const entity = Topics.entities[entityName];
+    const contractId = $(event.target).closest('[data-id]').data('id');
     const partnerId = Contracts.findOne(contractId).partnerId;
-    Topics.actions.new.run({ entity: type }, { 'ticket.contractId': contractId, 'ticket.partnerId': partnerId });
-  },
-  'click .worksheets .js-import'(event, instance) {
-    const type = $(event.target).closest('a').data('type');
-    const contractId = $(event.target).data('id');
-    const partnerId = Contracts.findOne(contractId).partnerId;
-    Topics.actions.import.run({ entity: type, contractId, partnerId }); // TODO Make it Ticket specific
+    Session.update('modalContext', 'contractId', contractId);
+    Session.update('modalContext', 'partnerId', partnerId);
+    Session.update('modalContext', 'omitFields', ['ticket.contractId', 'ticket.partnerId']);
+    debugger;
+    Topics.actions.new.run({ entity });
   },
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');

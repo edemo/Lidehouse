@@ -14,11 +14,26 @@ export function runInNewModal(toRun) {
   Modal.hide();
 }
 
+// For storing multiple key-values within a single session var 
+// (BEWARE infinite reactive update loops -> Never call it from within an autorun!!!)
+Session.update = function update(sessionVarName, key, value) {
+  const sessionVar = Session.get(sessionVarName) || {};
+  sessionVar[key] = value;
+  Session.set(sessionVarName, sessionVar);
+};
+
+// --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+// Set up peppelg:bootstrap-3-modal to allow multiple modals
 Modal.allowMultiple = true;
 
-// [{ id:'', result: { id1: result1, id2: result2 } }]
+// ModalStack data structure:
+// [{ id:'af.object.action', result: { id1: result1, id2: result2 } }]
 
 export const ModalStack = {
+  constructor() {
+    Session.set('modalContext', {});  // init to empty
+  },
   push(dataId) {
     if (!Session.get('modalStack')) Session.set('modalStack', []);
     const modalStack = Session.get('modalStack');
@@ -29,9 +44,10 @@ export const ModalStack = {
     const modalStack = Session.get('modalStack');
     const topModal = modalStack.pop();
     debugAssert((!topModal.id && !dataId) || topModal.id === dataId);
-    if (modalStack.length > 0) $('body').addClass('modal-open');
     Session.set('modalStack', modalStack);
-    // Modal.hide();
+    if (modalStack.length > 0) $('body').addClass('modal-open');
+    else Session.set('modalContext', {}); // clean context up after last modal
+    // Modal.hide();  // not necessary
   },
   active() {
     const modalStack = Session.get('modalStack');
