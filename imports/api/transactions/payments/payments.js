@@ -18,7 +18,7 @@ import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdown
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Partners, choosePartner } from '../partners/partners.js';
+import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Bills } from '../bills/bills.js';
 import { StatementEntries } from '../statements/statements';
 

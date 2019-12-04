@@ -16,7 +16,7 @@ import { JournalEntries } from '/imports/api/transactions/entries.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { PeriodBreakdown } from './breakdowns/period.js';
-import { Partners, choosePartner } from '/imports/api/transactions/partners/partners.js';
+import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { TxCats } from './tx-cats/tx-cats.js';
 
 export const Transactions = new Mongo.Collection('transactions');

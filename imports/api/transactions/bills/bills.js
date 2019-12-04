@@ -14,7 +14,7 @@ import { Memberships } from '/imports/api/memberships/memberships.js';
 import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { oppositeSide } from '/imports/api/transactions/transactions.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
-import { Partners, choosePartner } from '/imports/api/transactions/partners/partners.js';
+import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';

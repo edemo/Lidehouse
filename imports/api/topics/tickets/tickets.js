@@ -9,7 +9,7 @@ import { autoformOptions } from '/imports/utils/autoform.js';
 import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { choosePartner } from '/imports/api/transactions/partners/partners.js';
+import { choosePartner } from '/imports/api/partners/partners.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 // import { readableId } from '/imports/api/readable-id.js';
 
