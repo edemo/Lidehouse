@@ -35,13 +35,6 @@ Template.Delegations.onCreated(function onCreated() {
   });
 });
 
-Template.Delegations.onRendered(function onRendered() {
-  const allowCheckbox = this.find('#allow');
-  this.autorun(() => {
-    if (Meteor.user()) allowCheckbox.checked = Meteor.user().settings.delegatee;
-  });
-});
-
 Template.Delegation_list.helpers({
   displayScope(scope) {
     return Render.translateWithScope('schemaDelegations.scope')(scope);
@@ -52,6 +45,9 @@ Template.Delegation_list.helpers({
 });
 
 Template.Delegations_for_others.helpers({
+  checked() {
+    return Meteor.user().settings.delegatee;
+  },
   delegations() {
     return Delegations.find();
   },
