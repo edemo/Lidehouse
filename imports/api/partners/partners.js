@@ -62,7 +62,7 @@ Partners.relCollection = function relCollection(relation) {
 
 export let choosePartner = {};
 if (Meteor.isClient) {
-  import { ModalStack } from '/imports/ui_3/views/modals/multi-modal-handler.js';
+  import { ModalStack } from '/imports/ui_3/views/modals/modal-guard.js';
   
   choosePartner = {
     relation: 'partner',

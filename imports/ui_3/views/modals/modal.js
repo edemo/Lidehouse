@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
-import '/imports/ui_3/views/modals/multi-modal-handler.js';
+import '/imports/ui_3/views/modals/modal-guard.js';
 import './modal.html';
 
 Template.Modal.events({

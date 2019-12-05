@@ -3,10 +3,7 @@ import { Session } from 'meteor/session';
 import { $ } from 'meteor/jquery';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { _ } from 'meteor/underscore';
-import { Template } from 'meteor/templating';
 import { debugAssert } from '/imports/utils/assert.js';
-
-import './multi-modal-handler.html';
 
 // This is how we did it, before multi modals
 export function runInNewModal(toRun) {
@@ -65,13 +62,3 @@ export const ModalStack = {
     return ownModal.result[afId];
   },
 };
-
-Template.Multi_modal_handler.onCreated(function () {
-  const dataId = this.parent().data.id;
-  ModalStack.push(dataId);
-});
-
-Template.Multi_modal_handler.onDestroyed(function () {
-  const dataId = this.parent().data.id;
-  ModalStack.pop(dataId);
-});
