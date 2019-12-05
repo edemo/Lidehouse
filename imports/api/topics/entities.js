@@ -54,27 +54,22 @@ Topics.entities = {
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
       category: 'ticket',
-      ticket: () => ({
-        type: 'issue',
+      'ticket.type': 'issue',
         // TODO: if modalContext has contract, here we could launch this issue in scheduled state
-        // contractId: Session.get('modalContext').contractId,
-        // partnerId: Session.get('modalContext').partnerId,
-      }),
     },
   },
   maintenance: {
     name: 'maintenance',
     schema: ticketSchemaWithMoreDates,
+    formType: 'normal',
     inputFields: MaintenanceProto.inputFields().concat(['moreDates']),
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
       category: 'ticket',
-      ticket: () => ({
-        type: 'maintenance',
-        contractId: Session.get('modalContext').contractId,
-        partnerId: Session.get('modalContext').partnerId,
-        expectedStart: Session.get('modalContext').expectedStart,
-      }),
+      'ticket.type': 'maintenance',
+      'ticket.contractId': () => Session.get('modalContext').contractId,
+      'ticket.partnerId': () => Session.get('modalContext').partnerId,
+      'ticket.expectedStart': () => Session.get('modalContext').expectedStart,
     },
   },
   upgrade: {
@@ -84,12 +79,8 @@ Topics.entities = {
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
       category: 'ticket',
-      ticket: () => ({
-        type: 'upgrade',
+      'ticket.type': 'upgrade',
         // TODO: if modalContext has contract, here we could launch this issue in scheduled state
-        // contractId: Session.get('modalContext').contractId,
-        // partnerId: Session.get('modalContext').partnerId,
-      }),
     },
   },
 };

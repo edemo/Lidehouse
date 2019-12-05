@@ -2,19 +2,32 @@
 import { _ } from 'meteor/underscore';
 
 // https://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key
-Object.byString = function (obj, str) {
+Object.getByString = function (object, string) {
+  let obj = object;
+  let str = string;
   str = str.replace(/\[(\w+)\]/g, '.$1'); // cobjnvert indexes to properties
   str = str.replace(/^\./, '');           // strip keyFragments leading dot
   const keyFragments = str.split('.');
   for (let i = 0, n = keyFragments.length; i < n; ++i) {
     const key = keyFragments[i];
-    if (key in obj) {
-      obj = obj[key];
-    } else {
-      return;
-    }
+    if (key in obj) obj = obj[key];
+    else return;
   }
   return obj;
+};
+
+Object.setByString = function (object, string, value) {
+  let obj = object;
+  let str = string;
+  str = str.replace(/\[(\w+)\]/g, '.$1'); // cobjnvert indexes to properties
+  str = str.replace(/^\./, '');           // strip keyFragments leading dot
+  const keyFragments = str.split('.');
+  for (let i = 0, n = keyFragments.length; i < n; ++i) {
+    const key = keyFragments[i];
+    if (i === n - 1) obj[key] = value;
+    else if (key in obj) obj = obj[key];
+    else return;
+  }
 };
 
 String.prototype.forEachChar = function forEachChar(func) {

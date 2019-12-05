@@ -19,8 +19,8 @@ export const Revisioned = function (revisionedFields) {
           for (let i = 0; i < revisionedFields.length; i++) {
             const field = revisionedFields[i];
             if (modifier.$set && modifier.$set[field]) {
-              if (!_.isEqual(Object.byString(doc, field), modifier.$set[field])) {
-                changes.push({ time: Clock.currentTime(), field, oldValue: Object.byString(doc, field) });
+              if (!_.isEqual(Object.getByString(doc, field), modifier.$set[field])) {
+                changes.push({ time: Clock.currentTime(), field, oldValue: Object.getByString(doc, field) });
               }
             }
           }

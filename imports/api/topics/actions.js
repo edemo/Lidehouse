@@ -55,7 +55,7 @@ Topics.actions = {
         fields: options.entity.inputFields,
         omitFields: (options.entity.omitFields || []).concat(Session.get('modalContext').omitFields),
         doc,
-        type: 'method',
+        type: options.entity.formType || 'method',
         meteormethod: 'topics.insert',
         // --- --- --- ---
         size: options.entity.form ? 'lg' : 'md',
@@ -212,7 +212,7 @@ _.each(Topics.entities, (entity, entityName) => {
   AutoForm.addHooks(`af.${entityName}.insert`, {
     formToDoc(doc) {
       _.each(entity.implicitFields, (value, key) => {
-        doc[key] = (typeof value === 'function') ? value() : value;
+        Object.setByString(doc, key, (typeof value === 'function') ? value() : value);
       });
       doc.status = Topics._transform(doc).startStatus().name;
       if (!doc.title && doc.text) {

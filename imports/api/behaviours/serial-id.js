@@ -34,7 +34,7 @@ export function SerialId(definerFields = []) {
         insert(userId, doc) {
           const selector = { communityId: doc.communityId };
           definerFields.forEach((field) => {
-            selector[field] = Object.byString(doc, field) || { $exists: false };
+            selector[field] = Object.getByString(doc, field) || { $exists: false };
           });
           const last = collection.findOne(selector, { sort: { serial: -1 } });
           const nextSerial = last ? last.serial + 1 : 1;

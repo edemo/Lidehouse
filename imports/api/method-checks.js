@@ -77,8 +77,8 @@ export function checkModifier(object, modifier, modifiableFields, exclude = fals
   let modifiedFields = Object.keys(modifier.$set);
   modifiedFields = _.without(modifiedFields, 'updatedAt');
   modifiedFields.forEach((mf) => {
-    if ((exclude && _.contains(modifiableFields, mf) && !_.isEqual(Object.byString(object, mf), modifier.$set[mf]))
-      || (!exclude && !_.contains(modifiableFields, mf) && !_.isEqual(Object.byString(object, mf), modifier.$set[mf]))) {
+    if ((exclude && _.contains(modifiableFields, mf) && !_.isEqual(Object.getByString(object, mf), modifier.$set[mf]))
+      || (!exclude && !_.contains(modifiableFields, mf) && !_.isEqual(Object.getByString(object, mf), modifier.$set[mf]))) {
       throw new Meteor.Error('err_permissionDenied',
         `Field is not modifiable, Field: ${mf}\n Modifier: ${JSON.stringify(modifier)}\n Object: ${JSON.stringify(object)}`);
     }
