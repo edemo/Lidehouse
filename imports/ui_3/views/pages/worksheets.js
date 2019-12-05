@@ -34,7 +34,7 @@ Template.Worksheets.onCreated(function onCreated() {
 });
 
 Template.Worksheets.onDestroyed(function onDestroyed() {
-  Session.set('expectedStart', undefined);
+  Session.update('modalContext', 'expectedStart', undefined);
 });
 
 Template.Worksheets.viewmodel({
@@ -92,7 +92,7 @@ Template.Worksheets.viewmodel({
         contextMenu.show(event, 'Topic_edit_menu_content', eventObject._id)
       },
       dayClick(date, jsEvent, view) {
-        Session.set('expectedStart', date.toDate());
+        Session.update('modalContext', 'expectedStart', date.toDate());
         event.stopPropagation();
         contextMenu.show(event, 'New_Ticket');
       },

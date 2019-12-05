@@ -6,7 +6,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { Partners } from '../partners/partners.js';
+import { Partners } from './partners.js';
 import './methods.js';
 
 Partners.actions = {

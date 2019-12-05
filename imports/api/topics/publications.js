@@ -8,7 +8,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Votings } from '/imports/api/topics/votings/votings.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
-import { Partners } from '/imports/api/transactions/partners/partners.js';
+import { Partners } from '/imports/api/partners/partners.js';
 
 // TODO: If you pass in a function instead of an object of params, it passes validation
 
@@ -88,15 +88,21 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
         find(comment) {
           return Meteor.users.find({ _id: comment.userId }, { fields: Meteor.users.publicFields });
         },
-      }, {
-        find(comment) {
-          return Contracts.find({ _id: comment.data.contractId });
-        },
-      }, {
-        find(comment) {
-          return Partners.find({ _id: comment.data.partnertId });
-        },
       }],
+    }, {
+      find(topic) {
+        if (topic.ticket && topic.ticket.contractId) {
+          return Contracts.find({ _id: topic.ticket.contractId });
+        }
+        return this.ready();
+      },
+    }, {
+      find(topic) {
+        if (topic.ticket && topic.ticket.contractId) {
+          return Partners.find({ _id: topic.ticket.contractId });
+        }
+        return this.ready();
+      },
     }],
   };
 });

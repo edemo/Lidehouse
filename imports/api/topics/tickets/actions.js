@@ -21,7 +21,7 @@ import './entities.js';
 
 AutoForm.addHooks('af.maintenance.insert', {
   onSubmit(doc) {
-    AutoForm.validateForm('af.ticket.insert');
+    AutoForm.validateForm('af.maintenance.insert');
     const moreDates = doc.moreDates || [];
     delete doc.moreDates;
     const afContext = this;

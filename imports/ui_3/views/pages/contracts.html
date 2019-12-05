@@ -7,7 +7,7 @@
         {{#if userHasPermission 'contracts.insert' (fromSession 'activeCommunityId') }}
           <button class="btn btn-primary btn-sm pull-right m-md js-new contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
         {{/if}}
-        <div class="btn-group">
+        <div class="btn-group m-b-md">
           {{#each partnerRelation in partnerRelations}}
           <button type="button" class="btn {{activeClass partnerRelation}} js-relation-filter" data-value="{{partnerRelation}}">{{_ (concat 'schemaPartners.relation.' partnerRelation)}}{{_ 's'}}</button>
           {{/each}}
@@ -24,24 +24,19 @@
                 {{/if}}
                 {{>iboxTools}}
             </div>
-            <div class="ibox-content">
+            <div class="ibox-content" data-id={{this._id}}>
+                {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')}}
+                <span class="pull-righ">
+                  <div class="dropdown btn-group pull-right">
+                      <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
+                          <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheets'}} <b class="caret"></b>
+                      </button>
+                      {{> New_Ticket }}
+                      <button class="btn btn-white btn-xs js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+                  </div>
+                </span>
+                {{/if}}
                 <div class="contracts">
-                    <span class="pull-right">
-                      {{#if userHasPermission 'ticket.insert' (fromSession 'activeCommunityId')}}
-                      <div class="dropdown btn-group pull-right worksheets">
-                          <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
-                              <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheets'}} <b class="caret"></b>
-                          </button>
-                          <ul class="slim-menu dropdown-menu animated fadeInDown m-t-xs">
-                              {{#each type in ticketTypes}}
-                              <li><a href="" class="js-add" data-id={{this._id}} data-type="{{type}}">{{_ (concat 'schemaTickets.ticket.type.' type)}}</a></li>
-                              {{/each}}
-                          </ul>
-                          <button class="btn btn-white btn-xs js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
-                      </div>
-                      <!--button class="btn btn-primary btn-xs js-add" ><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheets'}}</button-->
-                      {{/if}}
-                    </span>
                     <div><span style="font-weight:600">{{_ 'schemaContracts.partnerId.label'}}:</span> {{this.partner}}</div>
                     <div><span style="font-weight:600">{{_ 'schemaContracts.text.label'}}:</span> {{this.text}}</div>
                     {{#if this.activeTime.begin}}
@@ -50,13 +45,8 @@
                     {{#if this.activeTime.end}}
                     <div><span style="font-weight:600">{{_ 'End date'}}:</span> {{displayDate this.activeTime.end}}</div>
                     {{/if}}
-                    <div class="btn-group m-t-sm m-b-sm">
-                      {{#if userHasPermission 'contracts.update' (fromSession 'activeCommunityId')}}
-                      <button class="btn btn-white btn-xs js-edit" data-id={{_id}}><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
-                      {{/if}}
-                      {{#if userHasPermission 'contracts.remove' (fromSession 'activeCommunityId')}}
-                      <button class="btn btn-white btn-xs js-delete" data-id={{_id}}><i class="fa fa-trash"></i> {{_ 'delete'}}</button>
-                      {{/if}}
+                    <div class="m-t-sm m-b-sm">
+                      {{>Action_buttons_group collection='contracts' actions='edit,delete' doc=this._id size='lg'}}
                     </div>
                 </div>
                 {{>Ticket_list tickets=this.worksheets}}

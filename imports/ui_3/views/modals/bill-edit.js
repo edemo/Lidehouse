@@ -6,7 +6,7 @@ import { Clock } from '/imports/utils/clock';
 import { __ } from '/imports/localization/i18n.js';
 import '/imports/ui_3/views/modals/multi-modal-handler.js';
 // The autoform needs to see these, to handle new events on it
-import '/imports/api/transactions/partners/actions.js';
+import '/imports/api/partners/actions.js';
 import '/imports/api/contracts/actions.js';
 import './bill-edit.html';
 

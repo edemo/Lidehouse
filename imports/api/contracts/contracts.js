@@ -9,7 +9,7 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { Partners, choosePartner } from '/imports/api/transactions/partners/partners.js';
+import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Topics } from '/imports/api/topics/topics.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };

@@ -19,12 +19,6 @@ import '/imports/api/users/users.js';
 import './entities.js';
 import './methods.js';
 
-Session.update = function update(sessionVarName, key, value) {
-  const sessionVar = Session.get(sessionVarName) || {};
-  sessionVar[key] = value;
-  Session.set(sessionVarName, sessionVar);
-};
-
 function fixedStatusValue(value) {
   return {
     options() { return [{ label: __('schemaTopics.status.' + value), value }]; },
@@ -52,8 +46,6 @@ Topics.actions = {
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission(`${options.entity.name}.insert`, doc),
     run(options, doc) {
-      Session.update('activeAutoform', 'ticketType', options.entity.name);
-      Session.update('activeAutoform', 'contractId', options.contractId);
       Modal.show('Autoform_modal', {
         body: options.entity.form,
         // --- autoform ---
@@ -61,12 +53,12 @@ Topics.actions = {
         collection: Topics,
         schema: options.entity.schema,
         fields: options.entity.inputFields,
-        omitFields: options.entity.omitFields,
+        omitFields: (options.entity.omitFields || []).concat(Session.get('modalContext').omitFields),
         doc,
         type: 'method',
         meteormethod: 'topics.insert',
         // --- --- --- ---
-        size: 'lg',
+        size: options.entity.form ? 'lg' : 'md',
         btnOK: `Create ${options.entity.name}`,
       });
     },
@@ -97,7 +89,7 @@ Topics.actions = {
         meteormethod: 'topics.update',
         singleMethodArgument: true,
         // --- --- --- ---
-        size: 'lg',
+        size: entity.form ? 'lg' : 'md',
       });
     },
   },
@@ -136,9 +128,8 @@ Topics.actions = {
     },
     run(options, doc, event, instance) {
       const newStatus = options.status;
-      const entity = Topics.entities[doc.entityName()];
-      Session.update('activeAutoform', 'topicId', doc._id);
-      Session.update('activeAutoform', 'status', newStatus.name);
+      Session.update('modalContext', 'topicId', doc._id);
+      Session.update('modalContext', 'status', newStatus.name);
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.statusChange`,
         description: newStatus.message && newStatus.message(options, doc),
@@ -230,21 +221,20 @@ _.each(Topics.entities, (entity, entityName) => {
       return doc;
     },
     onSuccess(formType, result) {
-      Session.set('activeAutoform');  // clear it
     },
   });
 
   AutoForm.addHooks(`af.${entityName}.statusChange`, {
     formToDoc(doc) {
-      doc.topicId = Session.get('activeAutoform').topicId;
+      doc.topicId = Session.get('modalContext').topicId;
       doc.type = 'statusChangeTo'; // `statusChangeTo.${status}`;
-      doc.status = Session.get('activeAutoform').status;
+      doc.status = Session.get('modalContext').status;
       doc.data = doc[doc.category] || {};
       delete doc[doc.category];
       return doc;
     },
     onSuccess(formType, result) {
-      Session.set('activeAutoform');  // clear it
+      Session.set('modalContext');  // clear it
     },
   });
 });
