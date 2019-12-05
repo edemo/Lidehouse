@@ -9,6 +9,6 @@ export function currentUserHasPermission(permissionName, object, communityId) {
   return user.hasPermission(permissionName, communityId, object);
 }
 
-Template.registerHelper('userHasPermission', function userHasPermission(permissionName, communityId, object) {
-  return currentUserHasPermission(permissionName, object, communityId);
+Template.registerHelper('userHasPermission', function userHasPermission(permissionName, object) {
+  return currentUserHasPermission(permissionName, object);
 });

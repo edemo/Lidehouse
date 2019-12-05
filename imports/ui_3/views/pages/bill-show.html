@@ -86,7 +86,7 @@
                                 </strong>
                                 </div>
                                 <small>{{line.details}}</small>
-                                {{#if userHasPermission 'bills.post' (fromSession 'activeCommunityId')}}
+                                {{#if userHasPermission 'bills.post'}}
                                     {{{displayAccount line.account activeCommunityId}}}
                                     {{{displayLocalizer line.localizer activeCommunityId}}}
                                 {{/if}}

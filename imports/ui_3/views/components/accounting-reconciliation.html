@@ -24,7 +24,7 @@
             </div>
         </div>
     {{/if}}
-    {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
+    {{#if userHasPermission 'transactions.inCommunity'}}
     <!--div class="col-md-12">
         <div class="ibox ibox-dark transactions" id='incomplete'>
             <div class="ibox-title">
@@ -32,7 +32,7 @@
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
-                {{#if userHasPermission 'transactions.insert' (fromSession 'activeCommunityId')}}
+                {{#if userHasPermission 'transactions.insert'}}
                 <div class="pull-right">
                     <a href="" class="btn btn-primary btn-sm js-publish"><i class="fa fa-bullhorn"></i> {{_ 'Publish'}}</a>
                     <a href="" class="btn btn-white btn-sm js-import-statement"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>

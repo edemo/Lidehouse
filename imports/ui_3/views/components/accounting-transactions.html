@@ -1,7 +1,7 @@
 <template name="Accounting_transactions">
-    {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
+    {{#if userHasPermission 'transactions.inCommunity'}}
         <div class="transactions" id='transactions'>
-                {{#if userHasPermission 'transactions.insert' (fromSession 'activeCommunityId')}}
+                {{#if userHasPermission 'transactions.insert'}}
                 <div class="pull-right">
                     <div class="dropdown">
                         <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">

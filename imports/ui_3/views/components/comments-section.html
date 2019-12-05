@@ -59,13 +59,13 @@
             </a> -
             <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
             <div class="btn-group">
-                {{#if userHasPermission 'comment.update' (fromSession 'activeCommunityId') this}}
+                {{#if userHasPermission 'comment.update' this}}
                 <button class="btn btn-white btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
                 {{/if}}
-                {{#if userHasPermission 'comment.move' (fromSession 'activeCommunityId') this}}
+                {{#if userHasPermission 'comment.move' this}}
                 <button class="btn btn-white btn-xs js-move" title="{{_ 'move'}}"><i class="fa fa-arrow-right"></i></button>
                 {{/if}}
-                {{#if userHasPermission 'comment.remove' (fromSession 'activeCommunityId') this}}
+                {{#if userHasPermission 'comment.remove' this}}
                 <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
                 {{/if}}
                 {{#if this.isFlaggedBy currentUser._id}}
