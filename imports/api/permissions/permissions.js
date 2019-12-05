@@ -28,7 +28,7 @@ export const Permissions = [
   { name: 'parcels.update',         roles: ['manager'] },
   { name: 'parcels.remove',         roles: ['manager'] },
   { name: 'parcels.upsert',         roles: ['manager'] },
-  { name: 'meters.inCommunity',     roles: ['manager'] },
+  { name: 'meters.inCommunity',     roles: ['manager', 'owner'] },
   { name: 'meters.insert',          roles: ['manager'] },
   { name: 'meters.insert.unapproved', roles: ['owner'] },
   { name: 'meters.update',          roles: ['manager'] },
