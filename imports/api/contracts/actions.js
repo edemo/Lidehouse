@@ -13,7 +13,7 @@ Contracts.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('contracts.insert'),
+    visible: (options, doc) => currentUserHasPermission('contracts.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.contract.insert',
@@ -26,7 +26,7 @@ Contracts.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('contracts.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('contracts.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.contract.view',
@@ -39,7 +39,7 @@ Contracts.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('contracts.update'),
+    visible: (options, doc) => currentUserHasPermission('contracts.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.contract.update',
@@ -54,7 +54,7 @@ Contracts.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('contracts.remove'),
+    visible: (options, doc) => currentUserHasPermission('contracts.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Contracts.methods.remove, { _id: doc._id }, {
         action: 'delete contract',

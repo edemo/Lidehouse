@@ -19,7 +19,7 @@ Communities.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('communities.insert'),
+    visible: (options, doc) => currentUserHasPermission('communities.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.community.insert',
@@ -32,7 +32,7 @@ Communities.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('communities.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('communities.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.community.view',
@@ -45,7 +45,7 @@ Communities.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('communities.update'),
+    visible: (options, doc) => currentUserHasPermission('communities.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.community.update',
@@ -60,7 +60,7 @@ Communities.actions = {
   period: {
     name: 'period',
     icon: () => 'fa fa-history',
-    visible: () => currentUserHasPermission('communities.update'),
+    visible: (options, doc) => currentUserHasPermission('communities.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.community.update',
@@ -102,7 +102,7 @@ Communities.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('communities.remove'),
+    visible: (options, doc) => currentUserHasPermission('communities.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Communities.methods.remove, { _id: doc._id }, {
         action: 'delete community',

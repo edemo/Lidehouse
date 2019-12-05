@@ -14,7 +14,7 @@ Agendas.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('agendas.insert'),
+    visible: (options, doc) => currentUserHasPermission('agendas.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.insert',
@@ -27,7 +27,7 @@ Agendas.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('agendas.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('agendas.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.view',
@@ -40,7 +40,7 @@ Agendas.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('agendas.update'),
+    visible: (options, doc) => currentUserHasPermission('agendas.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.agenda.update',
@@ -55,7 +55,7 @@ Agendas.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('agendas.remove'),
+    visible: (options, doc) => currentUserHasPermission('agendas.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Agendas.methods.remove, { _id: doc._id }, {
         action: 'delete agenda',

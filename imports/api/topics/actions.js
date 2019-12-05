@@ -44,7 +44,7 @@ Topics.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (options) => currentUserHasPermission(`${options.entity.name}.insert`),
+    visible: (options, doc) => currentUserHasPermission(`${options.entity.name}.insert`, doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         body: options.entity.form,
@@ -66,14 +66,14 @@ Topics.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('topics.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('topics.inCommunity', doc),
     href: (options, doc) => FlowRouter.path('Topic show', { _tid: doc._id }),
     run(options, doc, event, instance) {},
   },
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc),
     run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -96,7 +96,7 @@ Topics.actions = {
   statusUpdate: {
     name: 'statusUpdate',
     icon: () => 'fa fa-edit',
-    visible: (options, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.category}.statusChangeTo.${doc.status}.enter`),
+    visible: (options, doc) => doc && doc.statusObject().data && currentUserHasPermission(`${doc.category}.statusChangeTo.${doc.status}.enter`, doc),
     run(options, doc, event, instance) {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -124,7 +124,7 @@ Topics.actions = {
       return newStatus.icon || 'fa fa-cogs';
     },
     visible(options, doc) {
-      return doc && currentUserHasPermission(`${doc.category}.statusChangeTo.${options.status.name}.enter`);
+      return doc && currentUserHasPermission(`${doc.category}.statusChangeTo.${options.status.name}.enter`, doc);
     },
     run(options, doc, event, instance) {
       const newStatus = options.status;
@@ -191,7 +191,7 @@ Topics.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`),
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`, doc),
     run(options, doc, event, instance) {
       Modal.confirmAndCall(Topics.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,

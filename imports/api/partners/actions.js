@@ -13,7 +13,7 @@ Partners.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('partners.insert'),
+    visible: (options, doc) => currentUserHasPermission('partners.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.partner.insert',
@@ -26,7 +26,7 @@ Partners.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('partners.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('partners.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.partner.view',
@@ -39,7 +39,7 @@ Partners.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('partners.update'),
+    visible: (options, doc) => currentUserHasPermission('partners.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.partner.update',
@@ -54,7 +54,7 @@ Partners.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('partners.remove'),
+    visible: (options, doc) => currentUserHasPermission('partners.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Partners.methods.remove, { _id: doc._id }, {
         action: 'delete partner',

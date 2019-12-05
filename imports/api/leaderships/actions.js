@@ -14,7 +14,7 @@ Leaderships.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('leaderships.insert'),
+    visible: (options, doc) => currentUserHasPermission('leaderships.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.leadership.insert',
@@ -28,7 +28,7 @@ Leaderships.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('leaderships.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('leaderships.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.leadership.view',
@@ -41,7 +41,7 @@ Leaderships.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('leaderships.update'),
+    visible: (options, doc) => currentUserHasPermission('leaderships.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.leadership.update',
@@ -57,7 +57,7 @@ Leaderships.actions = {
   period: {
     name: 'period',
     icon: () => 'fa fa-history',
-    visible: () => currentUserHasPermission('leaderships.update'),
+    visible: (options, doc) => currentUserHasPermission('leaderships.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.leadership.update',
@@ -73,7 +73,7 @@ Leaderships.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('leaderships.remove'),
+    visible: (options, doc) => currentUserHasPermission('leaderships.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Leaderships.methods.remove, { _id: doc._id }, {
         action: 'delete leadership',

@@ -16,7 +16,7 @@ Memberships.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (options) => currentUserHasPermission(`${options.entity}.insert`),
+    visible: (options, doc) => currentUserHasPermission(`${options.entity}.insert`, doc),
     run(options) {
       const entity = Memberships.entities[options.entity];
       Modal.show('Autoform_modal', {
@@ -32,13 +32,13 @@ Memberships.actions = {
   import: {
     name: 'import',
     icon: () => 'fa fa-upload',
-    visible: () => currentUserHasPermission('memberships.upsert'),
+    visible: (options, doc) => currentUserHasPermission('memberships.upsert', doc),
     run: () => importCollectionFromFile(Memberships),
   },
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('memberships.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('memberships.inCommunity', doc),
     run(options, doc, event, instance) {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -54,7 +54,7 @@ Memberships.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc),
     run(options, doc, event, instance) {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
@@ -72,7 +72,7 @@ Memberships.actions = {
   period: {
     name: 'period',
     icon: () => 'fa fa-history',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`),
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc),
     run(options, doc, event, instance) {
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.update`,
@@ -89,7 +89,7 @@ Memberships.actions = {
     name: 'invite',
     icon: () => 'fa fa-user-plus',
     color: (options, doc) => (doc && doc.personId ? 'info' : 'warning'),
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`) && !doc.accepted,
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,
     run(options, doc, event, instance) {
       Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {
         action: 'invite user',
@@ -100,7 +100,7 @@ Memberships.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`),
+    visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.remove`, doc),
     run(options, doc, event, instance) {
       Modal.confirmAndCall(Memberships.methods.remove, { _id: doc._id }, {
         action: `delete ${doc.entityName()}`,

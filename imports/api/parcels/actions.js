@@ -17,7 +17,7 @@ Parcels.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('parcels.insert'),
+    visible: (options, doc) => currentUserHasPermission('parcels.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.parcel.insert',
@@ -30,13 +30,13 @@ Parcels.actions = {
   import: {
     name: 'import',
     icon: () => 'fa fa-upload',
-    visible: () => currentUserHasPermission('parcels.upsert'),
+    visible: (options, doc) => currentUserHasPermission('parcels.upsert', doc),
     run: () => importCollectionFromFile(Parcels),
   },
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('parcels.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('parcels.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.parcel.view',
@@ -68,7 +68,7 @@ Parcels.actions = {
       }
       return colorClass;
     },
-    visible: () => currentUserHasPermission('memberships.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('memberships.inCommunity', doc),
     href: () => '#occupants',
     run(options, doc, event, instance) {
       instance.viewmodel.selectedParcelId(doc._id);
@@ -77,7 +77,7 @@ Parcels.actions = {
   meters: {
     name: 'meters',
     icon: () => 'fa fa-tachometer',
-    visible: () => currentUserHasPermission('meters.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('meters.inCommunity', doc),
     href: () => '#meters',
     run(options, doc, event, instance) {
       instance.viewmodel.selectedParcelId(doc._id);
@@ -86,7 +86,7 @@ Parcels.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('parcels.update'),
+    visible: (options, doc) => currentUserHasPermission('parcels.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.parcel.update',
@@ -101,7 +101,7 @@ Parcels.actions = {
   period: {
     name: 'period',
     icon: () => 'fa fa-history',
-    visible: () => currentUserHasPermission('parcels.update'),
+    visible: (options, doc) => currentUserHasPermission('parcels.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.parcel.update',
@@ -117,7 +117,7 @@ Parcels.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('parcels.remove'),
+    visible: (options, doc) => currentUserHasPermission('parcels.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(Parcels.methods.remove, { _id: doc._id }, {
         action: 'delete parcel',

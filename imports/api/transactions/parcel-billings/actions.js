@@ -12,7 +12,7 @@ ParcelBillings.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: () => currentUserHasPermission('parcelBillings.insert'),
+    visible: (options, doc) => currentUserHasPermission('parcelBillings.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.insert',
@@ -25,7 +25,7 @@ ParcelBillings.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: () => currentUserHasPermission('parcelBillings.inCommunity'),
+    visible: (options, doc) => currentUserHasPermission('parcelBillings.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.view',
@@ -38,7 +38,7 @@ ParcelBillings.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('parcelBillings.update'),
+    visible: (options, doc) => currentUserHasPermission('parcelBillings.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.parcelBilling.update',
@@ -53,7 +53,7 @@ ParcelBillings.actions = {
   apply: {
     name: 'apply',
     icon: () => 'fa fa-calendar-plus-o',
-    visible: () => currentUserHasPermission('parcelBillings.apply'),
+    visible: (options, doc) => currentUserHasPermission('parcelBillings.apply', doc),
     run(options, doc) {
       const communityId = Session.get('activeCommunityId');
       const billing = doc || ParcelBillings.findOne({ communityId, active: true });
@@ -70,7 +70,7 @@ ParcelBillings.actions = {
   revert: {
     name: 'revert',
     icon: () => 'fa fa-calendar-times-o',
-    visible: () => currentUserHasPermission('parcelBillings.revert'),
+    visible: (options, doc) => currentUserHasPermission('parcelBillings.revert', doc),
     run(options) {
       Session.set('activeParcelBillingId', doc && doc._id);
       Modal.show('Autoform_modal', {
@@ -84,7 +84,7 @@ ParcelBillings.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: () => currentUserHasPermission('parcelBillings.remove'),
+    visible: (options, doc) => currentUserHasPermission('parcelBillings.remove', doc),
     run(options, doc) {
       Modal.confirmAndCall(ParcelBillings.methods.remove, { _id: doc._id }, {
         action: 'delete parcelBilling',
