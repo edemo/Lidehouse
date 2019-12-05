@@ -5,7 +5,7 @@ import { Template } from 'meteor/templating';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/multi-modal-handler.js';
+import '/imports/ui_3/views/modals/modal-guard.js';
 
 import './confirmation.html';
 

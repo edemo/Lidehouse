@@ -9,7 +9,7 @@ import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { initializeHelpIcons } from '/imports/ui_3/views/blocks/help-icon.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { ModalStack } from '/imports/ui_3/views/modals/multi-modal-handler.js';
+import { ModalStack } from '/imports/ui_3/views/modals/modal-guard.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import './autoform-modal.html';
 

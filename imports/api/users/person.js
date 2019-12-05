@@ -105,7 +105,7 @@ export class Person {
 export let choosePerson = {};
 export let chooseDelegate = {};
 if (Meteor.isClient) {
-  import { ModalStack } from '/imports/ui_3/views/modals/multi-modal-handler.js';
+  import { ModalStack } from '/imports/ui_3/views/modals/modal-guard.js';
 
   choosePerson = {
     options() {

@@ -88,6 +88,7 @@ Template.Worksheets.viewmodel({
         right: 'month,agendaWeek,agendaDay',
       },
       eventClick(eventObject, jsEvent) {
+        debugger;
         event.stopPropagation();
         contextMenu.show(event, 'Topic_edit_menu_content', eventObject._id)
       },

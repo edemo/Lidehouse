@@ -4,7 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { moment } from 'meteor/momentjs:moment';
 import { Clock } from '/imports/utils/clock';
 import { __ } from '/imports/localization/i18n.js';
-import '/imports/ui_3/views/modals/multi-modal-handler.js';
+import '/imports/ui_3/views/modals/modal-guard.js';
 // The autoform needs to see these, to handle new events on it
 import '/imports/api/partners/actions.js';
 import '/imports/api/contracts/actions.js';
