@@ -90,13 +90,15 @@ export const remove = new ValidatedMethod({
 });
 
 export function closeInactiveTopics() {
-  const archiveTime = moment().subtract(3, 'months').toDate();
   const exceptCategories = ['ticket'];
-  const closableTopics = Topics.find({ closed: false, category: { $nin: exceptCategories }, updatedAt: { $lt: archiveTime } }).fetch();
-  closableTopics.forEach((topic) => {
-    const community = Communities.findOne(topic.communityId);
+  Communities.find({}).forEach(community => {
     const localAdminId = community.admin()._id;
-    Topics.methods.update._execute({ userId: localAdminId }, { _id: topic._id, modifier: { $set: { closed: true } } });
+    const topicAgeDays = community.settings.topicAgeDays;
+    const archiveTime = moment().subtract(topicAgeDays, 'days').toDate();
+    const closableTopics = Topics.find({ communityId: community._id, category: { $nin: exceptCategories }, closed: false, updatedAt: { $lt: archiveTime } });
+    closableTopics.forEach((topic) => {
+      Topics.methods.update._execute({ userId: localAdminId }, { _id: topic._id, modifier: { $set: { closed: true } } });
+    });
   });
 }
 

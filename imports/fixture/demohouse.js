@@ -69,6 +69,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     totalunits: 10000,
     settings: {
       accountingMethod: 'accrual',
+      topicAgeDays: 365,
     },
     bankAccounts: [{
       name: __('demo.bank.primaryAccount.name'),
