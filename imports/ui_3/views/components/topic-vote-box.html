@@ -72,7 +72,7 @@
         <div class="col-xs-12 m-b-sm">
           {{#unless votingClosed}}   
           <!-- voting buttons -->
-            {{#if userHasPermission 'vote.cast' this.communityId this}}
+            {{#if userHasPermission 'vote.cast' this}}
             {{> Vote_cast_panel this}}
             {{/if}}
           {{else}}

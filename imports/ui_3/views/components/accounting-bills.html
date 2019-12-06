@@ -12,11 +12,11 @@
     </div>
     {{/if}}
 
-    {{#if userHasPermission 'bills.inCommunity' communityId }}
+    {{#if userHasPermission 'bills.inCommunity'}}
         <div>
-            {{#if userHasPermission 'bills.update' communityId }}
+            {{#if userHasPermission 'bills.update'}}
             <div class="btn-group pull-right {{collectionOf activePartnerRelation}}">
-              {{#if userHasPermission 'bills.insert' communityId}}
+              {{#if userHasPermission 'bills.insert'}}
                 {{#if equals activePartnerRelation 'parcel'}}
                   <button class="btn btn-primary btn-sm js-apply"><i class="fa fa-calendar-plus-o"></i><strong> {{_ 'Apply parcel billings'}}</strong></button>
                   {{#unless showParcelBillings}}
@@ -67,18 +67,18 @@
                 <li class=""><a data-toggle="tab" href="#tab-partner"><h3>{{_ 'partners'}}</h3></a></li>
             </ul>
             <div class="tab-content">
-                <div id="tab-bill" class="tab-pane bills active">
-                    <div class="table-responsive">
+                <div id="tab-bill" class="tab-pane active">
+                    <div class="table-responsive bills">
                         {{> ReactiveDatatable tableData=billsTableDataFn options=billsOptionsFn }}
                     </div>
                 </div>
-                <div id="tab-payment" class="tab-pane payments">
-                    <div class="table-responsive">
+                <div id="tab-payment" class="tab-pane">
+                    <div class="table-responsive payments">
                         {{> ReactiveDatatable tableData=paymentsTableDataFn options=paymentsOptionsFn }}
                     </div>
                 </div>
-                <div id="tab-partner" class="tab-pane partners">
-                    <div class="table-responsive">
+                <div id="tab-partner" class="tab-pane">
+                    <div class="table-responsive partners">
                         {{> ReactiveDatatable tableData=partnersTableDataFn options=partnersOptionsFn }}
                     </div>
                 </div>

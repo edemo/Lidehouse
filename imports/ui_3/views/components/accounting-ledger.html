@@ -14,7 +14,7 @@
     {{/if}}
 
     {{#if selectedAccount}}
-    {{#if userHasPermission 'transactions.inCommunity' (fromSession 'activeCommunityId')}}
+    {{#if userHasPermission 'transactions.inCommunity'}}
         <h3>{{_ 'Account history'}}
         <button type="button" class="btn btn-primary btn-circle js-reset"><i class="fa fa-times"></i></button>
         </h3>
