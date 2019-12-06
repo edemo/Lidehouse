@@ -10,6 +10,7 @@ import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors
 import { Payments } from '../payments/payments.js';
 import { TxCats } from '../tx-cats/tx-cats.js';
 import { Bills } from '../bills/bills.js';
+import { BatchAction } from '/imports/api/batch-action.js';
 import './methods.js';
 
 function setSessionVars(instance) {
@@ -97,6 +98,11 @@ Payments.actions = {
       });
     },
   },
+};
+
+Payments.batchActions = {
+  post: new BatchAction(Payments.actions.post, Payments.methods.batch.post),
+  delete: new BatchAction(Payments.actions.delete, Payments.methods.batch.remove),
 };
 
 //--------------------------------------------------
