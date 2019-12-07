@@ -83,6 +83,10 @@ export const HouseTranslation = {
           "label": "Language",
           "help": "The official language of the community. (Users receive their notifications translated to their own language.)"
         },
+        "topicAgeDays": {
+          "label": "Topic ageing days",
+          "help": "Topics get automatically closed after this many days of inactivity."
+        },
         "currency": {
           "label": "Currency",
           "placeholder": "Ft",
@@ -272,6 +276,10 @@ export const HouseTranslation = {
         "language": {
           "label": "Nyelv",
           "help": "A közösség hivatalos nyelve. (A felhasználók a számukra küldött értesítőket a saját nyelvükre lefordítva kapják meg.)"
+        },
+        "topicAgeDays": {
+          "label": "Témák elöregedése napokban",
+          "help": "A témák automatikusan lezárulnak ennyi nap inaktivitás után."
         },
         "currency": {
           "label": "Pénznem",
