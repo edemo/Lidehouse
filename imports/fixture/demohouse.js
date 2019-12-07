@@ -452,7 +452,6 @@ export function insertDemoHouse(lang, demoOrTest) {
   const voteTopicManager = demoBuilder.insert(Topics, 'vote', {
     title: __('demo.vote.manager.title'),
     text: __('demo.vote.manager.text'),
-    agendaId: agenda1,
     status: 'opened',
     closesAt: moment(demoTopicDates[0]).subtract(1, 'months').toDate(),
     vote: {
