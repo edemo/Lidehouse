@@ -5,6 +5,7 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 
 Memberships.entities = {
   roleship: {
+    name: 'roleship',
     inputFields: ['role', 'person'],
     modifiableFields: ['person'],
     implicitFields: {
@@ -13,6 +14,7 @@ Memberships.entities = {
     },
   },
   ownership: {
+    name: 'ownership',
     inputFields: ['person', 'ownership'],
     modifiableFields: ['person', 'ownership'],
     implicitFields: {
@@ -23,6 +25,7 @@ Memberships.entities = {
     },
   },
   benefactorship: {
+    name: 'benefactorship',
     inputFields: ['person', 'benefactorship'],
     modifiableFields: ['person', 'benefactorship'],
     implicitFields: {
@@ -33,6 +36,7 @@ Memberships.entities = {
     },
   },
   delegate: {
+    name: 'delegate',
     inputFields: ['person'],
     omitFields: ['person.userId'],
     implicitFields: {

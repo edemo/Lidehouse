@@ -46,20 +46,21 @@ Topics.actions = {
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission(`${options.entity.name}.insert`, doc),
     run(options, doc) {
+      const entity = options.entity;
       Modal.show('Autoform_modal', {
         body: options.entity.form,
         // --- autoform ---
-        id: `af.${options.entity.name}.insert`,
+        id: `af.${entity.name}.insert`,
         collection: Topics,
-        schema: options.entity.schema,
-        fields: options.entity.inputFields,
-        omitFields: (options.entity.omitFields || []).concat(Session.get('modalContext').omitFields),
+        schema: entity.schema,
+        fields: entity.inputFields,
+        omitFields: (entity.omitFields || []).concat(Session.get('modalContext').omitFields),
         doc,
-        type: options.entity.formType || 'method',
+        type: entity.formType || 'method',
         meteormethod: 'topics.insert',
         // --- --- --- ---
-        size: options.entity.form ? 'lg' : 'md',
-        btnOK: `Create ${options.entity.name}`,
+        size: entity.form ? 'lg' : 'md',
+        btnOK: `Create ${entity.name}`,
       });
     },
   },

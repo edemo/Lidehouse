@@ -107,10 +107,10 @@
                     </button>
                     <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
                         {{#if userHasPermission 'ownership.insert'}}
-                        <li><a href="" class="js-new ownership">{{_ 'new'}} {{_ 'owner'}}</a></li>
+                        <li><a href="" class="js-new memberships" data-entity="ownership">{{_ 'new'}} {{_ 'owner'}}</a></li>
                         {{/if}}
                         {{#if userHasPermission 'benefactorship.insert'}}
-                        <li><a href="" class="js-new benefactorship">{{_ 'new'}} {{_ 'benefactor'}}</a></li>
+                        <li><a href="" class="js-new memberships" data-entity="benefactorship">{{_ 'new'}} {{_ 'benefactor'}}</a></li>
                         {{/if}}
                         {{#if userHasPermission 'leaderships.insert'}}
                         <li><a href="" class="js-new leaderships">{{_ 'new'}} {{_ 'leadership'}}</a></li>
