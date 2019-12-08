@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
+import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { noUpdate } from '/imports/utils/autoform.js';
 
@@ -21,7 +22,7 @@ export function SerialId(definerFields = []) {
     serialId() {
       let preKey = '';
       definerFields.forEach((field) => {
-        preKey += this[field].charAt(0).toUpperCase() + '/';
+        preKey += __(Object.getByString(this, field).substr(0, 3).toUpperCase()) + '/';
       });
       debugAssert(this.serial);
       return `${preKey}${this.serial}/${this.createdAt.getFullYear()}`;
