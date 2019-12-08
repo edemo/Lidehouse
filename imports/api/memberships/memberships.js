@@ -200,19 +200,16 @@ Memberships.modifiableFields = [
 ].concat(PersonSchema.modifiableFields);
 
 Factory.define('membership', Memberships, {
-  communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
   role: 'guest',
 });
 
 Factory.define('roleship', Memberships, {
-  communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
   role: 'manager',
 });
 
 Factory.define('ownership', Memberships, {
-  communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
   role: 'owner',
   ownership: {
@@ -221,7 +218,6 @@ Factory.define('ownership', Memberships, {
 });
 
 Factory.define('benefactorship', Memberships, {
-  communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
   role: 'benefactor',
   benefactorship: {
@@ -230,7 +226,6 @@ Factory.define('benefactorship', Memberships, {
 });
 
 Factory.define('delegate', Memberships, {
-  communityId: () => Factory.get('community'),
   userId: () => Factory.get('user'),
   role: 'delegate',
 });

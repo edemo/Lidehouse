@@ -195,7 +195,6 @@ if (Meteor.isServer) {
 // --- Factory ---
 
 Factory.define('parcel', Parcels, {
-  communityId: () => Factory.get('community'),
   // serial
   // ref
   // leadRef

@@ -23,9 +23,7 @@ import '/imports/api/transactions/breakdowns/methods.js';
 import { Partners } from '/imports/api/partners/partners.js';
 import '/imports/api/partners/methods.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
-import '/imports/api/transactions/bills/methods.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
-import '/imports/api/transactions/payments/methods.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Statements } from '/imports/api/transactions/statements/statements.js';
@@ -241,7 +239,7 @@ export class CommunityBuilder {
     for (let mm = 1; mm < 13; mm++) {
       this.execute(ParcelBillings.methods.apply, {
         communityId: this.communityId,
-        valueDate: Clock.currentDate(),
+        date: Clock.currentDate(),
         localizer: Localizer.parcelRef2code(parcel.ref),
       });
       this.payBillsOf(membership);
@@ -250,14 +248,14 @@ export class CommunityBuilder {
     Clock.clear();
   }
   payBill(bill) {
-    if (bill.hasConteerData() && !bill.isConteered()) {
-      this.execute(Bills.methods.post, { _id: bill._id }, this.getUserWithRole('accountant'));
+    if (bill.hasConteerData() && !bill.isPosted()) {
+      this.execute(Transactions.methods.post, { _id: bill._id }, this.getUserWithRole('accountant'));
     }
 /*    const paymentId = this.create('payment', {
       billId: bill._id,
       valueDate: Clock.currentDate(),
       amount: bill.outstanding,
-      account: '381',
+      payAccount: '381',
     });*/
     const entryId = this.create('statementEntry', {
       account: '382',
@@ -269,11 +267,11 @@ export class CommunityBuilder {
     this.execute(StatementEntries.methods.reconcile, { _id: entryId, billId: bill._id }, this.getUserWithRole('accountant'));
   }
   payBillsOf(membership) {
-    const unpaidBills = Bills.find({ communityId: this.communityId, relation: 'parcel', partnerId: membership._id, outstanding: { $gt: 0 } });
+    const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'parcel', partnerId: membership._id, outstanding: { $gt: 0 } });
     unpaidBills.forEach(bill => this.payBill(bill));
   }
   everybodyPaysTheirBills() {
-    const unpaidBills = Bills.find({ communityId: this.communityId, relation: 'parcel', outstanding: { $gt: 0 } });
+    const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'parcel', outstanding: { $gt: 0 } });
     unpaidBills.forEach(bill => this.payBill(bill));
   }
   insertLoadsOfFakeMembers(parcelCount) {

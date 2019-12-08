@@ -6,9 +6,9 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/api/transactions/actions.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import '/imports/api/transactions/bills/actions.js';
 
 import './bill-show.html';
 
@@ -20,10 +20,10 @@ Template.Bill_show.viewmodel({
   //  this.docVm(instance.data.doc);
   },
   autorun() {
-    this.docVm(Bills.findOne(this.templateInstance.data.doc._id));
+    this.docVm(Transactions.findOne(this.templateInstance.data.doc._id));
   },
 //  bill() {
-//    return Bills.findOne(FlowRouter.getParam('_bid'));
+//    return Transactions.findOne(FlowRouter.getParam('_bid'));
 //  },
   pageTitle() {
     return __('bill');
@@ -38,7 +38,7 @@ Template.Bill_show.viewmodel({
     }];
   },
   actions() {
-    return Bills.actions;
+    return Transactions.actions;
   },
   code2parcelRef(code) {
     return Localizer.code2parcelRef(code);

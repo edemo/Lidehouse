@@ -25,8 +25,8 @@ ParcelBillings.projectionValues = ['absolute', 'area', 'volume', 'habitants'];
 //ParcelBillings.monthValues = ['allMonths', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
 
 ParcelBillings.appliedAtSchema = new SimpleSchema({
-  valueDate: { type: Date },
-  period: { type: String, max: 7 /* check period format */ },
+  date: { type: Date },
+  period: { type: String, max: 7 /* TODO: check period format */ },
 });
 
 ParcelBillings.schema = new SimpleSchema({
@@ -80,7 +80,7 @@ function chooseSubAccountWithDefault(brk, nodeCode) {
 
 ParcelBillings.applySchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  valueDate: { type: Date, autoform: { value: new Date() } },
+  date: { type: Date, autoform: { value: new Date() } },
   ids: { type: [String], optional: true, regEx: SimpleSchema.RegEx.Id, autoform: _.extend({ type: 'select-checkbox', checked: true }, chooseParcelBilling) },
   localizer: { type: String, optional: true, autoform: chooseSubAccountWithDefault('Localizer', '@') },
 });

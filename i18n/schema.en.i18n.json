@@ -603,11 +603,36 @@
       "label": "Amount",
       "placeholder": "(eg. 14560)"
     },
+    "serial": {
+      "label": "Serial"
+    },
+    "serialId": {
+      "label": "identifier"
+    },
+    "createdAt": {
+      "label": "Register date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "postedAt": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "partnerId": {
+      "label": "Partner",
+      "placeholder": "(eg. Super Clean Inc)"
+    },
+    "contractId": {
+      "label": "Partner",
+      "placeholder": "(eg. Cleaning contract)"
+    },
     "sourceId": {
       "label": "Source transaction id"
     },
     "batchId": {
       "label": "Batch id"
+    },
+    "reconciled": {
+      "label": "Reconciled"
     },
     "debit": {
       "label": "Debit",
@@ -721,21 +746,11 @@
       "customer": "Invoice",
       "parcel": "Contribution"      
     },
-    "serial": {
-      "label": "Serial"
-    },
-    "serialId": {
-      "label": "identifier"
-    },
-    "createdAt": {
-      "label": "Register date",
-      "placeholder": "(eg. 2017-05-06)"
-    },
     "issueDate": {
       "label": "Issue date",
       "placeholder": "(eg. 2017-05-06)"
     },
-    "valueDate": {
+    "deliveryDate": {
       "label": "Delivery date",
       "placeholder": "(eg. 2017-05-06)"
     },
@@ -760,14 +775,6 @@
     "outstanding": {
       "label": "Outstanding",
       "placeholder": "(eg. 14560)"
-    },
-    "partnerId": {
-      "label": "Partner",
-      "placeholder": "(eg. Super Clean Inc)"
-    },
-    "contractId": {
-      "label": "Partner",
-      "placeholder": "(eg. Cleaning contract)"
     },
     "note": {
       "label": "Notes"
@@ -829,11 +836,10 @@
           "label": "Money account"
         }
       }
-    },
-    "reconciled": {
-      "label": "Reconciled"
-    },
-    "account": {
+    }
+  },
+  "schemaPayments": {
+    "payAccount": {
       "label": "Money account"
     }
   },
@@ -852,7 +858,7 @@
     "ids": {
       "label": "Applied billings"
     },
-    "valueDate": {
+    "date": {
       "label": "Billing period - billing day",
       "placeholder": "(eg. 2017-05-06)",
       "help": "Provide the billing day, which automatically implies the billing period (which is the period that includes the billing day)."

@@ -1,26 +1,48 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { BatchAction } from '/imports/api/batch-action.js';
+import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { Transactions } from './transactions.js';
 import './methods.js';
+
+function setModalContext(category) {
+  const communityId = Session.get('activeCommunityId');
+  const activePartnerRelation = Session.get('activePartnerRelation');
+  if (category === 'bill' || category === 'payment') {
+    const txCat = TxCats.findOne({ communityId, category, 'data.relation': activePartnerRelation });
+    Session.update('modalContext', 'txCatId', txCat._id);
+  }
+}
 
 Transactions.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('transactions.insert', doc),
-    run(options) {
-      Session.set('activeTxCatId', options.entity);
-      const cat = TxCats.findOne(options.entity);
+    run(options, doc) {
+      const entity = options.entity;
+      setModalContext(entity.name);
       Modal.show('Autoform_modal', {
-        id: 'af.transaction.insert',
+        body: entity.editForm,
+        bodyContext: { doc },
+        // --- --- --- ---
+        id: `af.${entity.name}.insert`,
         collection: Transactions,
-        schema: cat.schema(),
-  //      type: 'method',
-  //      meteormethod: 'transactions.insert',
+        schema: Transactions.simpleSchema(),
+        fields: entity.fields,
+        omitFields: entity.omitFields,
+        doc,
+        type: 'method',
+        meteormethod: 'transactions.insert',
+        // --- --- --- ---
+        size: entity.editForm ? 'lg' : 'md',
+        validation: entity.editForm ? 'blur' : undefined,
+//        btnOK: `Insert ${entity.name}`,
       });
     },
   },
@@ -29,29 +51,82 @@ Transactions.actions = {
     icon: () => 'fa fa-eye',
     visible: (options, doc) => currentUserHasPermission('transactions.inCommunity', doc),
     run(options, doc) {
+      const entity = Transactions.entities[doc.entityName()];
+      setModalContext(entity.name);
       Modal.show('Autoform_modal', {
-        id: 'af.transaction.view',
+        body: entity.viewForm,
+        bodyContext: { doc },
+        // --- --- --- ---
+        id: `af.${entity.name}.view`,
         collection: Transactions,
-        schema: Transactions.inputSchema,
+        schema: Transactions.simpleSchema(),
+        fields: entity.fields,
+        omitFields: entity.omitFields,
         doc,
         type: 'readonly',
+        // --- --- --- ---
+        size: entity.viewForm ? 'lg' : 'md',
       });
     },
   },
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('transactions.update', doc),
+    visible(options, doc) {
+      if (!doc || doc.isPosted()) return false;
+      return currentUserHasPermission('transactions.update', doc);
+    },
     run(options, doc) {
+      const entity = Transactions.entities[doc.entityName()];
+      setModalContext(entity.name);
       Modal.show('Autoform_modal', {
-        id: 'af.transaction.update',
+        body: entity.editForm,
+        bodyContext: { doc },
+        // --- --- --- ---
+        id: `af.${entity.name}.update`,
         collection: Transactions,
-  //      schema: newTransactionSchema(),
+        schema: Transactions.simpleSchema(),
+        fields: entity.fields,
+        omitFields: entity.omitFields,
         doc,
         type: 'method-update',
         meteormethod: 'transactions.update',
         singleMethodArgument: true,
+        // --- --- --- ---
+        size: entity.editForm ? 'lg' : 'md',
+        validation: entity.editForm ? 'blur' : undefined,
       });
+    },
+  },
+  post: {
+    name: 'post',
+    icon: () => 'fa fa-check-square-o',
+    color: (options, doc) => ((doc && !doc.isPosted()) ? 'warning' : undefined),
+    visible(options, doc) {
+      if (!doc) return false;
+      if (doc.isPosted()) return false;
+      if (doc.category === 'bill' && !doc.hasConteerData()) return false;
+      return currentUserHasPermission('transactions.post', doc);
+    },
+    run(options, doc) {
+      Transactions.methods.post.call({ _id: doc._id }, onSuccess((res) => {
+        displayMessage('info', 'Szamla konyvelesbe kuldve');
+      }));
+    },
+  },
+  registerPayment: {
+    name: 'registerPayment',
+    icon: () => 'fa fa-credit-card',
+    visible(options, doc) {
+      if (!doc) return false;
+      if (!doc.isPosted()) return false;
+      if (doc.category !== 'bill' || !doc.outstanding) return false;
+      return currentUserHasPermission('transactions.insert', doc);
+    },
+    run(options, doc) {
+      Session.update('modalContext', 'billId', doc._id);
+      const paymentOptions = _.extend({}, options, { entity: Transactions.entities.payment });
+      Transactions.actions.new.run(paymentOptions, doc);
     },
   },
   delete: {
@@ -67,11 +142,17 @@ Transactions.actions = {
   },
 };
 
+Transactions.batchActions = {
+  post: new BatchAction(Transactions.actions.post, Transactions.methods.batch.post),
+  delete: new BatchAction(Transactions.actions.delete, Transactions.methods.batch.remove),
+};
+
 //-------------------------------------------------
 
 AutoForm.addModalHooks('af.transaction.view');
 AutoForm.addModalHooks('af.transaction.insert');
 AutoForm.addModalHooks('af.transaction.update');
+AutoForm.addModalHooks('af.transaction.post');
 
 AutoForm.addHooks('af.transaction.insert', {
   formToDoc(doc) {
@@ -80,7 +161,7 @@ AutoForm.addHooks('af.transaction.insert', {
   },
   onSubmit(doc) {
     AutoForm.validateForm('af.transaction.insert');
-    const catId = Session.get('activeTxCatId');
+    const catId = Session.get('modalContext').txCatId;
     const cat = TxCats.findOne(catId);
     doc.catId = catId;
     cat.transformToTransaction(doc);

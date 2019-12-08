@@ -45,7 +45,6 @@ Statements.attachBehaviour(Timestamped);
 // --- Factory ---
 
 Factory.define('statement', Statements, {
-  communityId: () => Factory.get('community'),
   account: '31',
   bank: 'K&H',
   startDate: moment().subtract(1, 'month').toDate(),

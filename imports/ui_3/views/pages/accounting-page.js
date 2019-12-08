@@ -8,8 +8,7 @@ import '/imports/ui_3/views/components/accounting-transactions.js';
 import '/imports/ui_3/views/components/accounting-breakdowns.js';
 import '/imports/ui_3/views/components/accounting-reconciliation.js';
 
-import { Bills } from '/imports/api/transactions/bills/bills.js';
-import { Payments } from '/imports/api/transactions/payments/payments.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries';
 import './accounting-page.html';
 
@@ -20,24 +19,24 @@ Template.Accounting_page.viewmodel({
       instance.subscribe('partners.inCommunity', { communityId });
       instance.subscribe('contracts.inCommunity', { communityId });
       instance.subscribe('bills.outstanding', { communityId });
-      instance.subscribe('payments.unreconciled', { communityId });
+      instance.subscribe('transactions.unreconciled', { communityId });
       instance.subscribe('statementEntries.unreconciled', { communityId });
     });
   },
   communityId() {
     return Session.get('activeCommunityId');
   },
-  countUnconteeredBills() {
+  countUnpostedTxs() {
     const communityId = this.communityId();
-    return Bills.find({ communityId, txId: { $exists: false } }).count();
+    return Transactions.find({ communityId, complete: false }).count();
   },
-  countUnreconciledPayments() {
+  countUnreconciledTxs() {
     const communityId = this.communityId();
-    return Payments.find({ communityId, reconciledId: { $exists: false } }).count();
+    return Transactions.find({ communityId, category: 'payment', reconciledId: { $exists: false } }).count();
   },
   countOutstandingBills() {
     const communityId = this.communityId();
-    return Bills.find({ communityId, outstanding: { $gt: 0 } }).count();
+    return Transactions.find({ communityId, outstanding: { $gt: 0 } }).count();
   },
   countUnreconciledEntries() {
     const communityId = this.communityId();

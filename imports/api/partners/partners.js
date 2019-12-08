@@ -62,7 +62,7 @@ Partners.relCollection = function relCollection(relation) {
 
 export let choosePartner = {};
 if (Meteor.isClient) {
-  import { ModalStack } from '/imports/ui_3/views/modals/modal-guard.js';
+  import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
   
   choosePartner = {
     relation: 'partner',
@@ -105,7 +105,6 @@ Factory.define('partner', Partners, {
 });
 
 Factory.define('customer', Partners, {
-  communityId: () => Factory.get('community'),
   relation: 'customer',
   name: () => faker.random.word(),
   bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
@@ -118,7 +117,6 @@ Factory.define('customer', Partners, {
 });
 
 Factory.define('supplier', Partners, {
-  communityId: () => Factory.get('community'),
   relation: 'supplier',
   name: () => faker.random.word(),
   bankAccountNumber: () => faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),

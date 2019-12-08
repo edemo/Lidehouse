@@ -8,20 +8,25 @@ import faker from 'faker';
 import rusdiff from 'rus-diff';
 
 import { debugAssert } from '/imports/utils/assert.js';
+import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Clock } from '/imports/utils/clock.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
+import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { AccountSchema } from '/imports/api/transactions/account-specification.js';
 import { JournalEntries } from '/imports/api/transactions/entries.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { PeriodBreakdown } from './breakdowns/period.js';
+import { PeriodBreakdown } from '/imports/api/transactions/breakdowns/period.js';
+import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
-import { TxCats } from './tx-cats/tx-cats.js';
+import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { StatementEntries } from '/imports/api/transactions/statements/statements.js';
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['CustomerBill', 'SupplierBill', 'ParcelBill', 'CustomerPayment', 'SupplierPayment', 'ParcelPayment', 'MoneyTransfer', 'AccountingOp'];
+Transactions.categoryValues = ['bill', 'payment', 'transfer', 'op', 'custom'];
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
@@ -32,20 +37,37 @@ Transactions.entrySchema = new SimpleSchema([
 ]);
 
 Transactions.baseSchema = {
-  _id: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },  // We explicitly use the same _id for the Bill and the corresponding Tx
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  category: { type: String, allowedValues: Transactions.categoryValues, defaultValue: 'op', autoform: { omit: true } },
+  relation: { type: String, allowedValues: Partners.relationValues, optional: true, autoform: { omit: true } },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
+/*  autoValue() {
+      if (this.field('billId').value) {
+        const bill = Transactions.findOne(this.field('billId').value);
+        if (bill) return bill.partnerId;
+      } else return undefined;
+    },
+  },*/
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
+  valueDate: { type: Date },
+  amount: { type: Number, decimal: true, optional: true },
+  // for payments
+//  amount: { type: Number, decimal: true, optional: false },
+  // for bills:
+//  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+
   catId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
-  valueDate: { type: Date },
-  amount: { type: Number },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 //  year: { type: Number, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getFullYear(); },
 //  },
 //  month: { type: String, optional: true, autoform: { omit: true },
 //    autoValue() { return this.field('valueDate').value.getMonth() + 1; },
 //  },
+  postedAt: { type: Date, optional: true, autoform: { omit: true } },
+  reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 };
 
 Transactions.legsSchema = {
@@ -57,7 +79,7 @@ Transactions.legsSchema = {
 
 Transactions.noteSchema = {
   ref: { type: String, optional: true },
-  note: { type: String, optional: true },
+  note: { type: String, optional: true, autoform: { rows: 3 } },
 };
 
 Transactions.schema = new SimpleSchema([
@@ -70,7 +92,12 @@ Transactions.idSet = ['communityId', 'ref'];
 
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
-  if (Meteor.isServer) {
+  Transactions.ensureIndex({ reconciledId: 1 });
+  Transactions.ensureIndex({ billId: 1 });
+  if (Meteor.isClient && MinimongoIndexing) {
+    Transactions._collection._ensureIndex('relation');
+  } else if (Meteor.isServer) {
+    Transactions._ensureIndex({ communityId: 1, relation: 1, serial: 1 });
     Transactions._ensureIndex({ 'debit.account': 1 });
     Transactions._ensureIndex({ 'credit.account': 1 });
   }
@@ -91,23 +118,31 @@ export function oppositeSide(side) {
 }
 
 Transactions.helpers({
-  category() {
-    this.txCat = this.txCat || TxCats.findOne(this.catId);
-    return this.txCat;
-  },
-  dataType() {
-    return this.category() && this.category().dataType;
-  },
-  dataDoc() {
-    // dataDocs are stored with the same _id, as the tx itself
-    return Mongo.Collection.get(this.dataType()).findOne(this._id);
+  community() {
+    return Communities.findOne(this.communityId);
   },
   partner() {
-    return Partners.relCollection(this.category().relation).findOne(this.partnerId);
+    return Partners.relCollection(this.relation).findOne(this.partnerId);
+  },
+  contract() {
+    return Contracts.findOne(this.contractId);
+  },
+  entityName() {
+    return this.category;
   },
   getSide(side) {
     debugAssert(side === 'debit' || side === 'credit');
     return this[side] || [];
+  },
+  isPosted() {
+    return !!(this.debit && this.credit); // calculateComplete()
+  },
+  isReconciled() {
+    return (!!this.reconciledId);
+  },
+  reconciledEntry() {
+    if (!this.reconciledId) return undefined;
+    return StatementEntries.findOne(this.reconciledId);
   },
   isSolidified() {
     const now = moment(new Date());
@@ -147,9 +182,9 @@ Transactions.helpers({
   },
   subjectiveAmount() {
     let sign = 0;
-    switch (this.dataType()) {
-      case 'bills': sign = -1; break;
-      case 'payments': sign = +1; break;
+    switch (this.category) {
+      case 'bill': sign = -1; break;
+      case 'payment': sign = +1; break;
       default: debugAssert(false);
     }
     return sign * this.amount;
@@ -169,9 +204,38 @@ Transactions.helpers({
     tx.credit = this.debit;
     return tx;
   },
+  updateBalances(directionSign = 1) {
+  //    if (!doc.complete) return;
+    const communityId = this.communityId;
+    this.journalEntries().forEach((entry) => {
+      const leafTag = 'T-' + moment(entry.valueDate).format('YYYY-MM');
+  //      const coa = ChartOfAccounts.get(communityId);
+  //      coa.parentsOf(entry.account).forEach(account => {
+      const account = entry.account;
+      const localizer = entry.localizer;
+      PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
+        const changeAmount = entry.amount * directionSign;
+        function increaseBalance(selector, side, amount) {
+          const bal = Balances.findOne(selector);
+          const balId = bal ? bal._id : Balances.insert(selector);
+          const incObj = {}; incObj[side] = amount;
+          Balances.update(balId, { $inc: incObj });
+        }
+        increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
+        if (localizer) {
+          increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
+        }
+      });
+    });
+    // checkBalances([doc]);
+  },
+  updateOutstandings() {
+    // NOP -- will be overwritten in the categories
+  },
 });
 
 Transactions.attachSchema(Transactions.schema);
+Transactions.attachBehaviour(SerialId(['category', 'relation']));
 Transactions.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
@@ -194,32 +258,7 @@ function checkBalances(docs) {
   });
 }
 
-function updateBalances(doc, revertSign = 1) {
-//    if (!doc.complete) return;
-  doc = Transactions._transform(doc);
-  const communityId = doc.communityId;
-  doc.journalEntries().forEach((entry) => {
-    const leafTag = 'T-' + moment(entry.valueDate).format('YYYY-MM');
-//      const coa = ChartOfAccounts.get(communityId);
-//      coa.parentsOf(entry.account).forEach(account => {
-    const account = entry.account;
-    const localizer = entry.localizer;
-    PeriodBreakdown.parentsOf(leafTag).forEach((tag) => {
-      const changeAmount = entry.amount * revertSign;
-      function increaseBalance(selector, side, amount) {
-        const bal = Balances.findOne(selector);
-        const balId = bal ? bal._id : Balances.insert(selector);
-        const incObj = {}; incObj[side] = amount;
-        Balances.update(balId, { $inc: incObj });
-      }
-      increaseBalance({ communityId, account, tag }, entry.side, changeAmount);
-      if (localizer) {
-        increaseBalance({ communityId, account, localizer, tag }, entry.side, changeAmount);
-      }
-    });
-  });
-  // checkBalances([doc]);
-}
+// --- Before/after actions ---
 
 function autoValueUpdate(doc, modifier, fieldName, autoValue) {
   let newDoc = rusdiff.clone(doc);
@@ -232,26 +271,66 @@ function autoValueUpdate(doc, modifier, fieldName, autoValue) {
 if (Meteor.isServer) {
   Transactions.before.insert(function (userId, doc) {
     const tdoc = this.transform();
-    doc.complete = tdoc.calculateComplete();
+    tdoc.complete = tdoc.calculateComplete();
+    if (tdoc.category === 'bill') {
+      tdoc.autofillLines();
+      tdoc.autofillOutstanding();
+    }
+    _.extend(doc, tdoc);
   });
 
   Transactions.after.insert(function (userId, doc) {
-    updateBalances(doc, 1);
+    const tdoc = this.transform();
+    tdoc.updateBalances(+1);
+    if (tdoc.category === 'payment') {
+      tdoc.registerOnBill();
+    }
+    tdoc.updateOutstandings(+1);
   });
 
   Transactions.before.update(function (userId, doc, fieldNames, modifier, options) {
-    updateBalances(doc, -1);
-    autoValueUpdate(doc, modifier, 'complete', doc => doc.calculateComplete());
+    const tdoc = this.transform();
+    tdoc.updateBalances(-1);
+    autoValueUpdate(tdoc, modifier, 'complete', d => d.calculateComplete());
+    if (tdoc.category === 'bill') {
+      const newDoc = Transactions._transform(_.extend({ category: 'bill' }, modifier.$set));
+      if (newDoc.lines) newDoc.autofillLines();
+      if (newDoc.lines || newDoc.payments) newDoc.autofillOutstanding();
+      _.extend(modifier, { $set: newDoc });
+    }
   });
 
   Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
-    updateBalances(doc, 1);
+    const tdoc = this.transform();
+    tdoc.updateBalances(1);
+    const oldDoc = Transactions._transform(this.previous);
+    const newDoc = Transactions._transform(doc);
+    oldDoc.updateOutstandings(-1);
+    newDoc.updateOutstandings(1);
   });
 
   Transactions.after.remove(function (userId, doc) {
-    updateBalances(doc, -1);
+    const tdoc = this.transform();
+    tdoc.updateBalances(-1);
+    tdoc.updateOutstandings(-1);
   });
 }
+
+//  Transactions.after.update(function (userId, doc, fieldNames, modifier, options) {
+
+//    const tdoc = this.transform();
+//--------------------
+//  Could do this with rusdiff in a before.update
+//    let newDoc = rusdiff.clone(doc);
+//    if (modifier) rusdiff.apply(newDoc, modifier);
+//    newDoc = Transactions._transform(newDoc);
+//    const outstanding = newDoc.calculateOutstanding();
+//--------------------
+//    if ((modifier.$set && modifier.$set.payments) || (modifier.$push && modifier.$push.payments)) {
+//      if (!modifier.$set || modifier.$set.outstanding === undefined) { // avoid infinite update loop!
+//        Transactions.update(doc._id, { $set: { outstanding: tdoc.calculateOutstanding() } });
+//      }
+//    }
 
 // --- Factory ---
 

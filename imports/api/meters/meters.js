@@ -119,6 +119,5 @@ if (Meteor.isServer) {
 // --- Factory ---
 
 Factory.define('meter', Meters, {
-  communityId: () => Factory.get('community'),
   identifier: () => faker.random.alphaNumeric(),
 });

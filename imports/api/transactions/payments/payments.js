@@ -19,74 +19,27 @@ import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
+import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 import { Bills } from '../bills/bills.js';
-import { StatementEntries } from '../statements/statements';
 
-export const Payments = new Mongo.Collection('payments');
+export const Payments = {};
 
-Payments.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
-  amount: { type: Number },
-  valueDate: { type: Date },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner,
-    autoValue() {
-      if (this.field('billId').value) {
-        const bill = Bills.findOne(this.field('billId').value);
-        if (bill) return bill.partnerId;
-      } else return undefined;
-    },
-  },
-  account: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
+Payments.extensionSchema = new SimpleSchema({
+  payAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
   // Connect either a bill or a contra account
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   // contraAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '') },  // the contra account if no bill is connected
-  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
-Meteor.startup(function indexPayments() {
-  Payments.ensureIndex({ billId: 1 });
-  Payments.ensureIndex({ txId: 1 });
-  Payments.ensureIndex({ reconciledId: 1 });
-  if (Meteor.isServer) {
-    Payments._ensureIndex({ communityId: 1, valueDate: 1 });
-  }
-});
-
-Payments.helpers({
-  community() {
-    return Communities.findOne(this.communityId);
-  },
-  partner() {
-    return Partners.relCollection(this.relation).findOne(this.partnerId);
-  },
+Transactions.categoryHelpers('payment', {
   lineCount() {
     if (this.billId) return 0;
-    return Bills.findOne(this.billId).lineCount();
+    return Transactions.findOne(this.billId).lineCount();
   },
-  isConteered() {
-    return (!!this.txId);
-  },
-  isReconciled() {
-    return (!!this.reconciledId);
-  },
-  reconciledEntry() {
-    if (!this.reconciledId) return undefined;
-    return StatementEntries.findOne(this.reconciledId);
-  },
-  makeTx(accountingMethod) {
-    const communityId = this.communityId;
-    const cat = TxCats.findOne({ communityId, dataType: 'payments', 'data.relation': this.relation });
-    const tx = {
-      _id: this._id,
-      communityId,
-      catId: cat._id,
-      valueDate: this.valueDate,
-      amount: this.amount,
-      partnerId: this.partnerId,
-    };
-    const bill = Bills.findOne(this.billId);
+  post(accountingMethod) {
+//    const communityId = this.communityId;
+//    const cat = TxCats.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
+    const bill = Transactions.findOne(this.billId);
     const ratio = this.amount / bill.amount;
     function copyLinesInto(txSide) {
       bill.lines.forEach(line => {
@@ -96,94 +49,66 @@ Payments.helpers({
     }
     if (accountingMethod === 'accrual') {
       if (bill.relation === 'supplier') {
-        tx.debit = [{ account: '46' }];
-        tx.credit = [{ account: this.account }];
+        this.debit = [{ account: '46' }];
+        this.credit = [{ account: this.payAccount }];
       } else if (bill.relation === 'customer') {
-        tx.debit = [{ account: this.account }];
-        tx.credit = [{ account: '31' }];
+        this.debit = [{ account: this.payAccount }];
+        this.credit = [{ account: '31' }];
       } else if (bill.relation === 'parcel') {
-        tx.debit = [{ account: this.account }];
-        tx.credit = [{ account: '33'+'' }];
+        this.debit = [{ account: this.payAccount }];
+        this.credit = [{ account: '33'+'' }];
       } else debugAssert(false, 'No such bill relation');
     } else if (accountingMethod === 'cash') {
       if (bill.relation === 'supplier') {
-        tx.debit = []; copyLinesInto(tx.debit);
-        tx.credit = [{ account: '46' }];
+        this.debit = []; copyLinesInto(this.debit);
+        this.credit = [{ account: '46' }];
       } else if (bill.relation === 'customer') {
-        tx.debit = [{ account: '31' }];
-        tx.credit = []; copyLinesInto(tx.credit);
+        this.debit = [{ account: '31' }];
+        this.credit = []; copyLinesInto(this.credit);
       } else if (bill.relation === 'parcel') {
-        tx.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
-        tx.credit = []; copyLinesInto(tx.credit);
+        this.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+        this.credit = []; copyLinesInto(this.credit);
       } else debugAssert(false, 'No such bill relation');
     }
-    return tx;
+    return { debit: this.debit, credit: this.credit };
+  },
+  registerOnBill() {
+    debugAssert(this.billId, 'Cannot process a payment without connecting it to a bill first');
+    const bill = Transactions.findOne(this.billId);
+    Transactions.update(this.billId, { $set: { amount: bill.amount /* triggers outstanding calc */, payments: bill.payments.concat([this._id]) } });
+  },
+  updateOutstandings(sign) {
+    if (Meteor.isClient) return;
+    debugAssert(this.billId, 'Cannot process a payment without connecting it to a bill first');
+    debugAssert(this.partnerId, 'Cannot process a payment without a partner');
+    const bill = Transactions.findOne(this.billId);
+    Partners.relCollection(this.relation).update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    if (this.relation === 'parcel') {
+      bill.lines.forEach(line => {
+        if (!line) return; // can be null, when a line is deleted from the array
+        debugAssert(line.localizer, 'Cannot process a parcel payment without bill localizer fields');
+        const ref = Localizer.code2parcelRef(line.localizer);
+        Parcels.update({ communityId: this.communityId, ref }, { $inc: { outstanding: (-1) * sign * line.amount } });
+      });
+    }
   },
 });
 
-Payments.attachSchema(Payments.schema);
-Payments.attachBehaviour(Timestamped);
-Payments.attachBehaviour(SerialId());
+Payments.schema = new SimpleSchema([Transactions.schema, Payments.extensionSchema]);
+Transactions.attachSchema(Payments.schema,
+//  { selector: { category: 'payment' } },
+);
 
 Meteor.startup(function attach() {
-  Payments.simpleSchema().i18n('schemaBills');
+  Transactions.simpleSchema().i18n('schemaPayments');
 });
 
-// --- Before/after actions ---
-function reduceOutstandings() {
-  const payment = this;
-  if (Meteor.isClient) return; 
-  debugAssert(payment.billId, 'Cannot process a payment without connecting it to a bill first');
-  debugAssert(payment.partnerId, 'Cannot process a payment without a partner');
-  const bill = Bills.findOne(payment.billId);
-  Partners.relCollection(payment.relation).update(payment.partnerId, { $inc: { outstanding: (-1) * payment.amount } });
-  if (payment.relation === 'parcel') {
-    bill.lines.forEach(line => {
-      if (!line) return; // can be null, when a line is deleted from the array
-      debugAssert(line.localizer, 'Cannot process a parcel payment without bill localizer fields');
-      const ref = Localizer.code2parcelRef(line.localizer);
-      Parcels.update({ communityId: payment.communityId, ref }, { $inc: { outstanding: (-1) * line.amount } });
-    });
-  }
-}
-
-if (Meteor.isServer) {
-  Payments.before.insert(function (userId, doc) {
-  });
-
-  Payments.after.insert(function (userId, doc) {
-//    const tdoc = this.transform();
-    reduceOutstandings.apply(doc);
-  });
-
-  Payments.before.update(function (userId, doc, fieldNames, modifier, options) {
-  });
-
-  Payments.after.update(function (userId, doc, fieldNames, modifier, options) {
-  });
-}
 // --- Factory ---
 
-Factory.define('payment', Payments, {
-  communityId: () => Factory.get('community'),
+Factory.define('payment', Transactions, {
+  category: 'payment',
 //  billId: () => Factory.get('bill'),
   valueDate: Clock.currentDate(),
-  amount: faker.random.number(1000),
-  account: '85',
+  amount: () => faker.random.number(1000),
+  payAccount: '85',
 });
-
-/*
-Bills.Payments.schema = new SimpleSchema({
-  amount: { type: Number },
-  valueDate: { type: Date },
-  bills: { type: Array },
-  'bills.$': { type: FulfillmentSchema },
-});
-
-export const BankStatements = new Mongo.Collection('bankStatements');
-
-BankStatements.schema = new SimpleSchema({
-  communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  payments: { type: [Payments.schema] },
-});
-*/

@@ -11,7 +11,7 @@ export function defineTxCatTemplates() {
 
   TxCats.define({ communityId: null,
     name: 'Supplier bill', // 'Bejövő számla',
-    dataType: 'bills',
+    category: 'bill',
     data: { relation: 'supplier' },
     debit: ['5', '8'],
     credit: ['46'],
@@ -20,7 +20,7 @@ export function defineTxCatTemplates() {
   // Inventory accounting
   TxCats.define({ communityId: null,
     name: 'Recording inventory', // 'Készletrevétel',
-    dataType: 'bills',
+    category: 'bill',
     data: { relation: 'supplier' },
     debit: ['2'],
     credit: ['46'],
@@ -37,7 +37,7 @@ export function defineTxCatTemplates() {
 
   TxCats.define({ communityId: null,
     name: 'Supplier payment', // 'Bejövő számla kifizetése',
-    dataType: 'payments',
+    category: 'payment',
     data: { relation: 'supplier' },
     debit: ['46'],
     credit: ['38'],
@@ -47,7 +47,7 @@ export function defineTxCatTemplates() {
 
   TxCats.define({ communityId: null,
     name: 'Customer bill', // 'Kimenő számla',
-    dataType: 'bills',
+    category: 'bill',
     data: { relation: 'customer' },
     debit: ['31'],
     credit: ['91'],
@@ -55,7 +55,7 @@ export function defineTxCatTemplates() {
 
   TxCats.define({ communityId: null,
     name: 'Customer payment', // 'Kimenő számla befolyás',
-    dataType: 'payments',
+    category: 'payment',
     data: { relation: 'customer' },
     debit: ['38'],
     credit: ['31'],
@@ -65,7 +65,7 @@ export function defineTxCatTemplates() {
 
   TxCats.define({ communityId: null,
     name: 'Parcel bill', // 'Albetét előírás',
-    dataType: 'bills',
+    category: 'bill',
     data: { relation: 'parcel' },
     debit: ['33'],
     credit: ['95'],
@@ -73,7 +73,7 @@ export function defineTxCatTemplates() {
 
   TxCats.define({ communityId: null,
     name: 'Parcel payment', // 'Albetét befizetés',
-    dataType: 'payments',
+    category: 'payment',
     data: { relation: 'parcel' },
     debit: ['38'],
     credit: ['33'],
@@ -83,7 +83,7 @@ export function defineTxCatTemplates() {
   // Befolyás
   TxCats.define({ communityId: null,
     name: 'Non identified payment', // 'Nem azonosított befolyás',
-    dataType: 'payments',
+    category: 'payment',
     debit: ['38'],
     credit: ['43'],
   });

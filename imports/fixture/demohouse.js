@@ -23,7 +23,6 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
-import '/imports/api/transactions/bills/methods.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/balances/methods.js';
 import '/imports/api/transactions/breakdowns/methods.js';
@@ -866,7 +865,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     uom: 'kJ',
     unitPrice: 120,
     projection: 'volume',
-    projectedPrice: 85,
+    projectedPrice: 75,
     payinType: demoBuilder.name2code('Owner payin types', 'Fűtési díj előírás'),
     localizer: '@A',
   }));
@@ -887,7 +886,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'].forEach(mm => {
     Clock.setSimulatedTime(new Date(`${lastYear}-${mm}-12`));
-    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, valueDate: Clock.currentDate() });
+    demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, date: Clock.currentDate() });
   });
 
   // === Owner Payins ===
@@ -906,7 +905,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       end: new Date(`${lastYear}-12-31`),
     },
   });
-  demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, ids: [extraBillingId], valueDate: new Date(`${lastYear}-12-20`) });
+  demoBuilder.execute(ParcelBillings.methods.apply, { communityId: demoCommunityId, ids: [extraBillingId], date: new Date(`${lastYear}-12-20`) });
 
   // Unidentified payin
   demoBuilder.create('statementEntry', {
@@ -961,14 +960,14 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
 
     if (mm !== '12') {  // Last bill is not yet paid, and not yet sent to accounting
-      demoBuilder.execute(Bills.methods.post, { _id: billId });
+      demoBuilder.execute(Transactions.methods.post, { _id: billId });
       demoBuilder.create('payment', {
         relation: 'supplier',
         billId,
         valueDate: new Date(`${lastYear}-${mm}-25`),
         amount: 282600,
         partnerId: supplier2,
-        account: demoBuilder.name2code('Assets', 'Folyószámla'),
+        payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
       });
     }
   });
@@ -988,14 +987,14 @@ export function insertDemoHouse(lang, demoOrTest) {
       localizer: '@',
     }],
   });
-  demoBuilder.execute(Bills.methods.post, { _id: invoiceId });
+  demoBuilder.execute(Transactions.methods.post, { _id: invoiceId });
   demoBuilder.create('payment', {
     relation: 'customer',
     billId: invoiceId,
     valueDate: new Date(`${lastYear}-03-25`),
     amount: 25000,
     partnerId: customer0,
-    account: demoBuilder.name2code('Assets', 'Folyószámla'),
+    payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
   });
 
   // === Incomes ===

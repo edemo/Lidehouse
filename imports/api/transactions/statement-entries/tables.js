@@ -7,11 +7,11 @@ import './actions.js';
 
 export function statementEntriesColumns() {
   const columns = [
-    { data: 'valueDate', title: __('schemaBills.valueDate.label'), render: Render.formatDate },
-    { data: 'partner', title: __('schemaBills.partnerId.label') },
-    { data: 'amount', title: __('schemaBills.amount.label'), render: Render.formatNumber },
-    { data: 'note', title: __('schemaBills.note.label') },
-    { data: 'reconciledId', title: __('schemaBills.reconciled.label'), render: Render.checkmarkBoolean },
+    { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
+    { data: 'partner', title: __('schemaTransactions.partnerId.label') },
+    { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
+    { data: 'note', title: __('schemaTransactions.note.label') },
+    { data: 'reconciledId', title: __('schemaTransactions.reconciled.label'), render: Render.checkmarkBoolean },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'statementEntries', actions: 'reconcile', size: 'sm' }),
     },

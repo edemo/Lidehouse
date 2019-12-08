@@ -4,17 +4,16 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { Bills } from './bills.js';
-import { Payments } from '../payments/payments.js';
+import { Transactions } from '../transactions.js';
 
 function findBillsWithTheirPayments(selector) {
   return {
     find() {
-      return Bills.find(selector);
+      return Transactions.find(_.extend({ category: 'bill' }, selector));
     },
     children: [{
       find(bill) {
-        return Payments.find({ billId: bill._id });
+        return Transactions.find({ billId: bill._id });
       },
     }],
   };
@@ -27,8 +26,8 @@ Meteor.publishComposite('bills.byId', function billsById(params) {
   const { _id } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  const tx = Bills.findOne(_id);
-  if (!user.hasPermission('bills.inCommunity', tx.communityId)) {
+  const tx = Transactions.findOne(_id);
+  if (!user.hasPermission('transactions.inCommunity', tx.communityId)) {
     return this.ready();
   }
   return findBillsWithTheirPayments({ _id });
@@ -46,7 +45,7 @@ Meteor.publishComposite('bills.filtered', function billsInCommunity(params) {
   const { communityId, partnerId, account, localizer, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('bills.inCommunity', communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', communityId)) {
     return this.ready();
   }
 //  const selector = { communityId, partnerId, account, localizer };
@@ -62,7 +61,7 @@ Meteor.publishComposite('bills.outstanding', function billsIncomplete(params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('bills.inCommunity', communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', communityId)) {
     return this.ready();
   }
 

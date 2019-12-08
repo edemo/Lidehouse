@@ -8,8 +8,8 @@
         <ul class="nav nav-tabs m-b-md" role="tablist">
             <li class="nav-link active show"><a data-toggle="tab" href="#tab-bills">
               <h3>{{_ 'Bill registry'}}&nbsp;
-              {{> Badge value=countUnreconciledPayments color='danger' title=(concat (_ 'Unreconciled') ' ' (_ 'payments'))}} 
-              {{> Badge value=countUnconteeredBills color='warning' title=(concat (_ 'Unconteered') ' ' (_ 'bills'))}} 
+              {{> Badge value=countUnreconciledTxs color='danger' title=(_ 'Unreconciled')}} 
+              {{> Badge value=countUnpostedTxs color='warning' title=(_ 'Unposted')}} 
               {{> Badge value=countOutstandingBills color='info' title=(concat (_ 'Unpaid') ' ' (_ 'bills'))}} 
             </h3></a></li>
             <li class="nav-link"><a data-toggle="tab" href="#tab-ledger">

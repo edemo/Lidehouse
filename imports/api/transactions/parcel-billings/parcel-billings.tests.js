@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { moment } from 'meteor/momentjs:moment';
+import { Clock } from '/imports/utils/clock.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -10,6 +11,12 @@ import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
+
+// TODO: import chai-datetime.js -- preferably through npm
+// https://www.chaijs.com/plugins/chai-datetime/
+chai.assert.equalDate = function equalDate(d1, d2) {
+  return chai.assert.equal(moment(d1).format('L'), moment(d2).format('L'));
+};
 
 if (Meteor.isServer) {
   let Fixture;
@@ -29,7 +36,6 @@ if (Meteor.isServer) {
         communityId = Fixture.demoCommunityId;
         parcels = Parcels.find({ communityId }).fetch();
         Meters.remove({});
-        Bills.remove({});
         ParcelBillings.remove({});
         Transactions.remove({});
       });
@@ -50,9 +56,9 @@ if (Meteor.isServer) {
         chai.assert.isDefined(testParcelBilling);
         chai.assert.isFalse(testParcelBilling.active);
 
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date() }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date() }, Fixture.builder.getUserWithRole('accountant'));
 
-        const bills = Bills.find({ communityId }).fetch();
+        const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills.length, 0);
       });
 
@@ -65,9 +71,9 @@ if (Meteor.isServer) {
           localizer: '@',
         });
 
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
 
-        const bills = Bills.find({ communityId }).fetch();
+        const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills.length, parcels.length);
         bills.forEach(bill => {
           chai.assert.isDefined(bill.partnerId);
@@ -93,13 +99,13 @@ if (Meteor.isServer) {
           localizer: '@',
         });
 
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
         chai.assert.throws(() =>
-          Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-15') }, Fixture.builder.getUserWithRole('accountant')),
+          Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date('2018-01-15') }, Fixture.builder.getUserWithRole('accountant')),
           'err_alreadyExists'
         );
         // but can apply for a different period
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-02-10') }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date('2018-02-10') }, Fixture.builder.getUserWithRole('accountant'));
       });
 
       it('can apply multiple projections', function () {
@@ -118,9 +124,9 @@ if (Meteor.isServer) {
           localizer: '@',
         });
 
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
         
-        const bills = Bills.find({ communityId }).fetch();
+        const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills.length, parcels.length);
         bills.forEach(bill => {
           chai.assert.isDefined(bill.partnerId);
@@ -161,9 +167,9 @@ if (Meteor.isServer) {
           activeTime: { begin: new Date('2018-01-01') },
         });
 
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date('2018-01-12') }, Fixture.builder.getUserWithRole('accountant'));
 
-        const bills = Bills.find({ communityId }).fetch();
+        const bills = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills.length, parcels.length - 1);
         bills.forEach(bill => {
           chai.assert.isDefined(bill.partnerId);
@@ -180,15 +186,15 @@ if (Meteor.isServer) {
           chai.assert.equal(parcel.outstanding, line.amount);
         });
 
-        Bills.remove({});
+        Transactions.remove({});
 
         Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date('2018-02-01'), value: 32 } });
-        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date('2018-02-12') }, Fixture.builder.getUserWithRole('accountant'));
+        Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date('2018-02-12') }, Fixture.builder.getUserWithRole('accountant'));
 
         const meteredParcel = Parcels.findOne(meteredParcelId);
-        const bills2 = Bills.find({ communityId }).fetch();
+        const bills2 = Transactions.find({ communityId, category: 'bill' }).fetch();
         chai.assert.equal(bills2.length, parcels.length);
-        const bill = Bills.findOne({ partnerId: meteredParcel.payer()._id });
+        const bill = Transactions.findOne({ category: 'bill', partnerId: meteredParcel.payer()._id });
         chai.assert.equal(bill.lines.length, 1);
         const line = bill.lines[0];
         chai.assert.equal(line.title, 'Test consumption');
@@ -210,7 +216,6 @@ if (Meteor.isServer) {
       let assertBilled;
       before(function () {
         Meters.remove({});
-        Bills.remove({});
         ParcelBillings.remove({});
         Transactions.remove({});
 
@@ -238,16 +243,17 @@ if (Meteor.isServer) {
           Fixture.builder.execute(Meters.methods.registerReading, { _id: meterId, reading: { date: new Date(date), value } });
         };
         applyParcelBilling = function (date) {
-          Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, valueDate: new Date(date) }, Fixture.builder.getUserWithRole('accountant'));
+          Fixture.builder.execute(ParcelBillings.methods.apply, { communityId, date: new Date(date) }, Fixture.builder.getUserWithRole('accountant'));
         };
         assertBilled = function (date, projOrCons, quantity) {
-          const bills = Bills.find({ communityId, 'lines.localizer': '@'+meteredParcel.ref }).fetch();
+          const bills = Transactions.find({ communityId, category: 'bill', 'lines.localizer': '@'+meteredParcel.ref }).fetch();
           if (!quantity) {
             chai.assert.equal(bills.length, 0);
           } else {
             chai.assert.equal(bills.length, 1);
             const bill = bills[0];
-            chai.assert.equal(moment(bill.valueDate).format('YYYY-MM-DD'), date);
+            chai.assert.equalDate(bill.deliveryDate, new Date(date));
+            chai.assert.equalDate(bill.issueDate, Clock.currentDate());
             chai.assert.equal(bill.lines.length, 1);
             const line = bill.lines[0];
             if (projOrCons === 'consumption') chai.assert.equal(line.unitPrice, 600);
@@ -258,7 +264,7 @@ if (Meteor.isServer) {
       });
 
       afterEach(function () {
-        Bills.remove({});
+        Transactions.remove({});
       });
 
       it('Can bill for before the meter was installed -> charged by projection', function () {

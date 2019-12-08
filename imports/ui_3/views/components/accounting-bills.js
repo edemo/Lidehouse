@@ -8,26 +8,20 @@ import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
 import { debugAssert } from '/imports/utils/assert.js';
-//import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { getBillsActionsSmall } from '/imports/api/transactions/bills/actions.js';
 import { Session } from 'meteor/session';
-import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners } from '/imports/api/partners/partners.js';
+import '/imports/api/partners/actions.js';
 import { partnersColumns } from '/imports/api/partners/tables.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import '/imports/api/transactions/actions.js';
 import { billColumns } from '/imports/api/transactions/bills/tables.js';
-import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { paymentsColumns } from '/imports/api/transactions/payments/tables.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import { allPartnersActions } from '/imports/api/partners/actions.js';
-import { allBillsActions } from '/imports/api/transactions/bills/actions.js';
-import { allPaymentsActions } from '/imports/api/transactions/payments/actions.js';
-import { allParcelBillingActions } from '/imports/api/transactions/parcel-billings/actions.js';
+import '/imports/api/transactions/parcel-billings/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
-//import { initializeDatatablesSelectButtons, selectButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import '/imports/ui_3/views/modals/bill-edit.js';
+import '/imports/ui_3/views/pages/bill-show.js';
 import '/imports/ui_3/views/components/parcel-billings.js';
 import '/imports/ui_3/views/components/select-voters.js';
 import '/imports/ui_3/views/modals/confirmation.js';
@@ -37,7 +31,7 @@ import './accounting-bills.html';
 Template.Accounting_bills.viewmodel({
   activePartnerRelation: 'supplier',
   unreconciledOnly: true,
-  unconteeredOnly: false,
+  unpostedOnly: false,
 //  showParcelBillings: false,
   collectionName: 'Bills',
   onCreated(instance) {
@@ -78,15 +72,15 @@ Template.Accounting_bills.viewmodel({
     }
   },
   billsFilterSelector() {
-    const selector = { communityId: this.communityId() };
+    const selector = { communityId: this.communityId(), category: 'bill' };
     selector.relation = this.activePartnerRelation();
     if (this.unreconciledOnly()) selector.outstanding = { $gt: 0 };
-    if (this.unconteeredOnly()) selector.txId = { $exists: false };
+    if (this.unpostedOnly()) selector.complete = false;
     return selector;
   },
   billsTableDataFn() {
     const self = this;
-    return () => Bills.find(self.billsFilterSelector()).fetch();
+    return () => Transactions.find(self.billsFilterSelector()).fetch();
   },
   billsOptionsFn() {
     return () => Object.create({
@@ -95,19 +89,19 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesSelectButtons(Bills),
+      ...DatatablesSelectButtons(Transactions),
     });
   },
   paymentsFilterSelector() {
-    const selector = { communityId: this.communityId() };
+    const selector = { communityId: this.communityId(), category: 'payment' };
     selector.relation = this.activePartnerRelation();
     if (this.unreconciledOnly()) selector.reconciledId = { $exists: false };
-    if (this.unconteeredOnly()) selector.txId = { $exists: false };
+    if (this.unpostedOnly()) selector.complete = false;
     return selector;
   },
   paymentsTableDataFn() {
     const self = this;
-    return () => Payments.find(self.paymentsFilterSelector()).fetch();
+    return () => Transactions.find(self.paymentsFilterSelector()).fetch();
   },
   paymentsOptionsFn() {
     return () => Object.create({
@@ -116,7 +110,7 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
       lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
       pageLength: 25,
-      ...DatatablesSelectButtons(Bills),
+      ...DatatablesSelectButtons(Transactions),
     });
   },
   partnersFilterSelector() {
@@ -139,8 +133,7 @@ Template.Accounting_bills.viewmodel({
 });
 
 Template.Accounting_bills.events({
-  ...(actionHandlers(Bills)),
-  ...(actionHandlers(Payments)),
+  ...(actionHandlers(Transactions)),
   ...(actionHandlers(Partners)),
 //  ...(actionHandlers(ParcelBillings)),
 });

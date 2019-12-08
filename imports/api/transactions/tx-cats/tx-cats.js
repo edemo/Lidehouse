@@ -29,7 +29,7 @@ TxCats.clone = function clone(name, communityId) {
 TxCats.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String, max: 100 },
-  dataType: { type: String, max: 100, optional: true, autoform: { omit: true } }, // Name of the colection
+  category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
   data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } }, // Default data values
   debit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
   credit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
@@ -47,11 +47,11 @@ TxCats.helpers({
     return schema;
   },
   isSimpleTx() {  // simple tx does not need any additional data to create (apart from D/C accounts)
-    const isSimple = !(this.dataType === 'bills' || this.dataType === 'payments');
+    const isSimple = !(this.category === 'bill' || this.category === 'payment');
     return isSimple;
   },
   conteerSide() {
-    debugAssert(this.dataType === 'bills', 'Func only available for bills');
+    debugAssert(this.category === 'bill', 'Func only available for bills');
     const relation = this.data.relation;
     if (relation === 'supplier') return 'debit';
     if (relation === 'customer' || relation === 'parcel') return 'credit';
