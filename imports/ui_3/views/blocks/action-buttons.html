@@ -66,6 +66,8 @@
             {{#if needsDividerAfter action}}
               <li role="separator" class="divider"></li>
             {{/if}}
+        {{else}}
+            <span class="text-muted">{{_ 'No actions available'}}</span>
         {{/each}}
         </ul>
     </div>
