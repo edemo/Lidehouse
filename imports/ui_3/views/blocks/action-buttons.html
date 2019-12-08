@@ -51,7 +51,8 @@
 </template>
 
 <template name="Action_buttons_dropdown">
-    <div class="dropdown js-menu {{getDoc.entitiyName}}"> 
+  <div id="container-dd-{{getDoc._id}}"> 
+    <div class="dropdown js-menu {{getDoc.entitiyName}}" id="dd-{{getDoc._id}}"> 
         <button class="btn btn-xs btn-white dropdown-toggle drop-unfoll" type="button" id="drop_{{getDoc._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {{#if long}}{{_ 'Action buttons'}} {{/if}}<i class="glyphicon glyphicon-option-horizontal"></i>
         </button>
@@ -68,4 +69,5 @@
         {{/each}}
         </ul>
     </div>
+  </div>
 </template>
