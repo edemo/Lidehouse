@@ -22,9 +22,10 @@ Comments.schema = {
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
   category: { type: String, optional: true, allowedValues: Comments.categoryValues, autoform: { omit: true } },
-  status: { type: String, optional: true, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
-  data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } },
+  // for statusChange only:
+  status: { type: String, optional: true, autoform: { omit: true } },
+  dataUpdate: { type: Object, blackbox: true, optional: true, autoform: { omit: true } },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true },
     autoValue() {

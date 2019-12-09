@@ -59,7 +59,7 @@
                         </span><br>
                         {{/let}}
                         {{#if (equals comment.topic.category 'ticket')}}
-                            {{#each dataEntry in entriesOf comment.data}}
+                            {{#each dataEntry in entriesOf comment.dataUpdate}}
                             <span>
                             {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
                             {{displayValue dataEntry.[1]}} 

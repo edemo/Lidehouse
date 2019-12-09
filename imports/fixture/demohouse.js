@@ -687,9 +687,9 @@ export function insertDemoHouse(lang, demoOrTest) {
       },
     });
     if (m <= 2) {
-      demoBuilder.execute(statusChange, { topicId: ticket, status: 'progressing', data: {} });
+      demoBuilder.execute(statusChange, { topicId: ticket, status: 'progressing', dataUpdate: {} });
       demoBuilder.execute(statusChange, { topicId: ticket, status: 'finished',
-        data: {
+        dataUpdate: {
           actualStart: maintainanceDate.toDate(),
           actualFinish: maintainanceDate.toDate(),
         },
@@ -711,7 +711,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tickSome('minutes');
   demoBuilder.execute(statusChange, { topicId: ticket0, status: 'confirmed',
     text: __('demo.ticket.0.comment.0'),
-    data: {
+    dataUpdate: {
       localizer: demoBuilder.name2code('Localizer', 'Lift'),
       chargeType: 'lumpsum',
       contractId: contract1,
@@ -722,7 +722,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tick(6, 'days');
   demoBuilder.execute(statusChange, { topicId: ticket0, status: 'progressing',
     text: __('demo.ticket.0.comment.1'),
-    data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
+    dataUpdate: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
 
   Clock.starts(3, 'weeks', 'ago');
@@ -738,7 +738,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tickSome('minutes');
   demoBuilder.execute(statusChange, { topicId: ticket1, status: 'confirmed',
     text: __('demo.ticket.1.comment.0'),
-    data: {
+    dataUpdate: {
       localizer: '@A409',
       chargeType: 'insurance',
       expectedStart: Clock.date(3, 'days', 'ahead'),
@@ -748,13 +748,13 @@ export function insertDemoHouse(lang, demoOrTest) {
   const actualStart1 = Clock.tick(2, 'days');
   demoBuilder.execute(statusChange, { topicId: ticket1, status: 'progressing',
     text: __('demo.ticket.1.comment.1'),
-    data: { expectedFinish: Clock.date(3, 'days', 'ahead') },
+    dataUpdate: { expectedFinish: Clock.date(3, 'days', 'ahead') },
   });
   Clock.tickSome('minutes');
   const actualFinish1 = Clock.tick(2, 'days');
   demoBuilder.execute(statusChange, { topicId: ticket1, status: 'finished',
     text: __('demo.ticket.1.comment.2'),
-    data: {
+    dataUpdate: {
       actualStart: actualStart1,
       actualFinish: actualFinish1,
     },
@@ -762,7 +762,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tick(2, 'days');
   demoBuilder.execute(statusChange, { topicId: ticket1, status: 'closed',
     text: __('demo.ticket.1.comment.3'),
-    data: {},
+    dataUpdate: {},
   });
 
   Clock.starts(2, 'weeks', 'ago');
@@ -794,7 +794,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tickSome('hours');
   demoBuilder.execute(statusChange, { topicId: ticket3, status: 'confirmed',
     text: __('demo.ticket.3.comment.0'),
-    data: {
+    dataUpdate: {
       localizer: demoBuilder.name2code('Localizer', 'Lépcsőház'),
       chargeType: 'oneoff',
       contractId: contract0,
@@ -806,7 +806,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   const actualStart3 = Clock.tick(1, 'week');
   demoBuilder.execute(statusChange, { topicId: ticket3, status: 'progressing',
     text: __('demo.ticket.3.comment.1'),
-    data: {
+    dataUpdate: {
       expectedFinish: Clock.date(10, 'day', 'ahead'),
     },
   });
@@ -814,7 +814,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   const actualFinish3 = Clock.tick(8, 'day');
   demoBuilder.execute(statusChange, { topicId: ticket3, status: 'finished',
     text: __('demo.ticket.3.comment.2'),
-    data: {
+    dataUpdate: {
       actualCost: 8500,
       actualStart: actualStart3,
       actualFinish: actualFinish3,
@@ -828,7 +828,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   Clock.tickSome('minutes');
   demoBuilder.execute(statusChange, { topicId: ticket3, status: 'closed',
     text: __('demo.ticket.3.comment.4'),
-    data: {},
+    dataUpdate: {},
   });
 
   Clock.clear();

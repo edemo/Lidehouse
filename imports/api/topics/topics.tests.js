@@ -334,29 +334,29 @@ if (Meteor.isServer) {
         it('doesn\'t let you change the status if you don\'t have the right permission', function (done) {
           chai.assert.throws(() => {
             Fixture.builder.execute(Topics.methods.statusChange, {
-              topicId, status: 'confirmed', data: {} }, userId);  // user is just owner
+              topicId, status: 'confirmed', dataUpdate: {} }, userId);  // user is just owner
           }, 'err_permissionDenied');
           done();
         });
 
         it('doesn\'t let you change the status outside the workflow', function (done) {
           chai.assert.throws(() => {
-            const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
+            const dataUpdate = { expectedFinish: moment().add(1, 'weeks').toDate() };
             Fixture.builder.execute(Topics.methods.statusChange, {
-              topicId, status: 'finished', data });
+              topicId, status: 'finished', dataUpdate });
           }, 'err_permissionDenied');
           done();
         });
 
         it('let you change the status inside the workflow', function (done) {
-          const data = {
+          const dataUpdate = {
             localizer: 'At the basement',
             expectedCost: 5000,
             expectedStart: moment().toDate(),
             expectedFinish: moment().add(1, 'weeks').toDate(),
           };
           Fixture.builder.execute(Topics.methods.statusChange, {
-            topicId, status: 'confirmed', data });
+            topicId, status: 'confirmed', dataUpdate });
           done();
         });
 

@@ -191,9 +191,9 @@ if (Meteor.isServer) {
       });
 
       it('Emails about new statusChange event', function () {
-        const data = { expectedFinish: moment().add(1, 'weeks').toDate() };
+        const dataUpdate = { expectedFinish: moment().add(1, 'weeks').toDate() };
         Topics.methods.statusChange._execute({ userId: demoManager._id }, 
-          { topicId: ticketId, status: 'confirmed', data });
+          { topicId: ticketId, status: 'confirmed', dataUpdate });
         processNotifications('daily');
         sinon.assert.calledTwice(emailSender.sendHTML);
       });

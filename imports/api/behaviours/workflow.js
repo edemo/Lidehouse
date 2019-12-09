@@ -116,7 +116,7 @@ const statusChange = new ValidatedMethod({
     topicModifier.status = event.status;
     const statusObject = Topics.categories[category].statuses ? Topics.categories[category].statuses[event.status] : defaultStatuses[event.status];
     if (statusObject.data) {
-      statusObject.data.forEach(key => topicModifier[`${category}.${key}`] = event.data[key]);
+      statusObject.data.forEach(key => topicModifier[`${category}.${key}`] = event.dataUpdate[key]);
     }
     const updateResult = Topics.update(event.topicId, { $set: topicModifier });
 
