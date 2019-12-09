@@ -13,8 +13,7 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
-import { Payments } from '/imports/api/transactions/payments/payments.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 
 import '/imports/api/transactions/bills/actions.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
@@ -165,7 +164,7 @@ Template.Parcels_finances.events({
   },
   'click #parcel-history .js-view'(event, instance) {
     const id = $(event.target).closest('button').data('id');
-    const doc = Bills.findOne(id) || Bills.findOne(Payments.findOne(id).billId);
-    Bills.actions.view.run({}, doc);
+    const doc = Transactions.findOne(id);
+    Transactions.actions.view.run({}, doc);
   },
 });

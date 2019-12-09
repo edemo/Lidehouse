@@ -18,9 +18,9 @@ Memberships.actions = {
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission(`${options.entity}.insert`, doc),
     run(options) {
-      const entity = Memberships.entities[options.entity];
+      const entity = options.entity;
       Modal.show('Autoform_modal', {
-        id: `af.${options.entity}.insert`,
+        id: `af.${entity.name}.insert`,
         collection: Memberships,
         fields: entity.inputFields.concat('activeTime'),
         omitFields: entity.omitFields,

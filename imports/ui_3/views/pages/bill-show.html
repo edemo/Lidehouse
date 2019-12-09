@@ -54,7 +54,7 @@
                     </address>
                     <p>
                         <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate docVm.issueDate}}</span><br/>
-                        <span><strong>{{_ 'schemaBills.valueDate.label'}}:</strong> {{displayDate docVm.valueDate}}</span><br/>
+                        <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate docVm.deliveryDate}}</span><br/>
                         <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate docVm.dueDate}}</span>
                     </p>
                 </div>
@@ -86,7 +86,7 @@
                                 </strong>
                                 </div>
                                 <small>{{line.details}}</small>
-                                {{#if userHasPermission 'bills.post'}}
+                                {{#if userHasPermission 'transactions.post'}}
                                     {{{displayAccount line.account activeCommunityId}}}
                                     {{{displayLocalizer line.localizer activeCommunityId}}}
                                 {{/if}}

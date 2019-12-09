@@ -21,6 +21,10 @@
         </div>
 
         <div class="col-sm-6 col-md-4 col-md-offset-4">
+            {{#if doc}}
+                <h4>{{_ (concat activePartnerRelation '_bill')}}:
+                <span class="text-navy">{{doc.serialId}}</span></h4>
+            {{/if}}
             <h5>{{_ 'receiver'}}:</h5>
             <address>
                 {{#if (equals activePartnerRelation 'customer')}}
@@ -33,7 +37,7 @@
 
             <p>
                 <span>{{> afQuickField name="issueDate" value=defaultDate template="bootstrap3-inline"}}</span>
-                <span>{{> afQuickField name="valueDate" value=defaultDate}}</span>
+                <span>{{> afQuickField name="deliveryDate" value=defaultDate}}</span>
                 <span>{{> afQuickField name="dueDate" value=defaultDueDate}}</span>
             </p>
 
@@ -70,7 +74,7 @@
                       </button>
                     </td>                       
                 </tr>
-                {{#if userHasPermission 'bills.post' (fromSession 'activeCommunityId')}}
+                {{#if userHasPermission 'transactions.post'}}
                 <tr>
                       <td>{{> afFormGroup name=this.current.account}}</td>
                       <td>{{> afFormGroup name=this.current.localizer}}</td>

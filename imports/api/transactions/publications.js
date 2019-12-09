@@ -1,7 +1,6 @@
 /* eslint-disable prefer-arrow-callback */
 
 import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
@@ -10,34 +9,7 @@ import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-a
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from './transactions.js';
 
-function findTransactionsWithTypeExtension(selector) {
-  return {
-    find() {
-      return Transactions.find(selector);
-    },
-    children: [{
-      find(tx) {
-        return Mongo.Collection.get(tx.dataType()).find(tx._id);
-      },
-    }],
-  };
-}
-
-Meteor.publishComposite('transactions.byId', function transactionsInCommunity(params) {
-  new SimpleSchema({
-    _id: { type: String },
-  }).validate(params);
-  const { _id } = params;
-
-  const user = Meteor.users.findOneOrNull(this.userId);
-  const tx = Transactions.findOne(_id);
-  if (!user.hasPermission('transactions.inCommunity', tx.communityId)) {
-    return this.ready();
-  }
-  return findTransactionsWithTypeExtension({ _id });
-});
-
-Meteor.publishComposite('transactions.byPartner', function transactionsInCommunity(params) {
+Meteor.publish('transactions.byPartner', function transactionsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
     partnerId: { type: String },
@@ -49,14 +21,16 @@ Meteor.publishComposite('transactions.byPartner', function transactionsInCommuni
   const user = Meteor.users.findOneOrNull(this.userId);
   if (!user.hasPermission('transactions.inCommunity', communityId)) {
     // then he can only see his own parcels' transactions
-    const ownershipIds = user.ownerships(communityId).map(membership => membership._id);
+    const ownershipIds = _.pluck(user.ownerships(communityId).fetch(), '_id');
     if (!partnerId || !_.contains(ownershipIds, partnerId)) {
+      console.log("NOT sending anything", partnerId, ownershipIds);
       return this.ready();
     }
   }
 
   const selector = Transactions.makeFilterSelector(params);
-  return findTransactionsWithTypeExtension(selector);
+      console.log("Sending ", selector);
+  return Transactions.find(selector);
 });
 
 Meteor.publish('transactions.byAccount', function transactionsInCommunity(params) {
@@ -115,4 +89,17 @@ Meteor.publish('transactions.incomplete', function transactionsInCommunity(param
     return this.ready();
   }
   return Transactions.find({ communityId, complete: false }, { limit: 100 });
+});
+
+Meteor.publish('transactions.unreconciled', function paymentsUnreconciled(params) {
+  new SimpleSchema({
+    communityId: { type: String },
+  }).validate(params);
+  const { communityId } = params;
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('transactions.inCommunity', communityId)) {
+    return this.ready();
+  }
+  return Transactions.find({ communityId, reconciledId: { $exists: false } });
 });

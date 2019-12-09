@@ -32,6 +32,5 @@ Meteor.startup(function attach() {
 });
 
 Factory.define('sharedfolder', Sharedfolders, {
-  communityId: () => Factory.get('community'),
   name: () => faker.random.word(),
 });

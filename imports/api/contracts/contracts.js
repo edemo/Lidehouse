@@ -42,7 +42,7 @@ Meteor.startup(function attach() {
 
 export let chooseContract = {};
 if (Meteor.isClient) {
-  import { ModalStack } from '/imports/ui_3/views/modals/modal-guard.js';
+  import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 
   chooseContract = {
     relation: 'contract',

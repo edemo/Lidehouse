@@ -30,6 +30,7 @@ Communities.bankProtocols = ['auto', 'manual'];
 Communities.settingsSchema = new SimpleSchema({
   joinable: { type: Boolean, defaultValue: true },
   language: { type: String, allowedValues: availableLanguages, optional: true, autoform: { firstOption: false } },
+  topicAgeDays: { type: Number, decimal: true, defaultValue: 90 },
   currency: { type: String, max: 3, defaultValue: 'Ft' },
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: autoformOptions(Communities.accountingMethods, 'schemaCommunities.settings.accountingMethod.'), defaultValue: 'accrual' },
 });

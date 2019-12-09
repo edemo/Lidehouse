@@ -5,15 +5,17 @@ import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
 import '/imports/ui_3/views/blocks/action-buttons.js';
 import { displayOutstanding } from '/imports/ui_3/helpers/api-display.js';
 import './actions.js';
+import { Transactions } from '../transactions.js';
+import '../entities.js';
 
 export function billColumns() {
   const columns = [
-    { data: 'serial', title: __('schemaBills.serial.label') },
+    { data: 'serial', title: __('schemaTransactions.serial.label') },
     { data: 'serialId()', title: __('schemaGeneral.serialId.label') },
     { data: 'partner()', title: 'Partner' },
-    { data: 'createdAt', title: __('schemaBills.createdAt.label'), render: Render.formatDate },
+    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'issueDate', title: __('schemaBills.issueDate.label'), render: Render.formatDate },
-    { data: 'valueDate', title: __('schemaBills.valueDate.label'), render: Render.formatDate },
+    { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'dueDate', title: __('schemaBills.dueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaBills.amount.label'), render: Render.formatNumber },
     { data: 'outstanding', title: __('schemaBills.outstanding.label'), render: displayOutstanding },
@@ -22,7 +24,7 @@ export function billColumns() {
 //    { data: 'localizer', title: __('schemaBills.localizer.label') },
     { data: 'note', title: __('schemaBills.note.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
-      { doc: cellData, collection: 'bills', actions: '', size: 'sm' }),
+      { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.bill }, actions: '', size: 'sm' }),
     },
   ];
 

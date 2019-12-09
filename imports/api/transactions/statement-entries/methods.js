@@ -61,15 +61,15 @@ export const reconcile = new ValidatedMethod({
       });
     } else {
       if (_.isUndefined(paymentId)) {
-        const bill = Bills.findOne(billId);
-        paymentId = Payments.methods.insert._execute({ userId: this.userId }, {
-          communityId: entry.communityId,
-          valueDate: entry.valueDate, amount: entry.amount, account: entry.account,
+        const bill = Transactions.findOne(billId);
+        paymentId = Transactions.methods.insert._execute({ userId: this.userId }, {
+          communityId: entry.communityId, category: 'payment',
+          valueDate: entry.valueDate, amount: entry.amount, payAccount: entry.account,
           billId, relation: bill.relation, partnerId: bill.partnerId,
         });
-        Payments.methods.post._execute({ userId: this.userId }, { _id: paymentId });
+        Transactions.methods.post._execute({ userId: this.userId }, { _id: paymentId });
       }
-      Payments.update(paymentId, { $set: { reconciledId: _id } });
+      Transactions.update(paymentId, { $set: { reconciledId: _id } });
       reconciledTxId = paymentId;
     }
     return StatementEntries.update(_id, { $set: { reconciledId: reconciledTxId } });

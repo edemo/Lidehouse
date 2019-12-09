@@ -37,7 +37,7 @@ StatementEntries.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: () => currentUserHasPermission('statements.update'),
+    visible: (options, doc) => currentUserHasPermission('statements.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.update',
@@ -52,12 +52,10 @@ StatementEntries.actions = {
   reconcile: {
     name: 'reconcile',
     icon: () => 'fa fa-external-link',
-    color: (options) => 'danger',
+    color: () => 'danger',
     visible(options, doc) {
-      const communityId = Session.get('activeCommunityId');
-      if (!currentUserHasPermission('statements.reconcile', communityId, doc)) return false;
       if (!doc || doc.isReconciled()) return false;
-      return true;
+      return currentUserHasPermission('statements.reconcile', doc);
     },
     run(options, doc) {
       Session.set('activeStatementEntryId', doc._id);

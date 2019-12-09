@@ -46,7 +46,7 @@
               {{#each tx in transactions}}
               <tr>
                   <td>{{displayDate tx.valueDate}}</td>
-                  <td>{{displayDataType tx}}</td>
+                  <td>{{displayTx tx}}</td>
                   <td>{{tx.note}}</td>
                   <td class="{{negativeClass tx}}">{{displayMoney tx.subjectiveAmount}}</td>
                   <!--td>{{#if equals entry.side 'from'}} ({{entry.amount}}) {{else}} - {{/if}}</td>

@@ -499,7 +499,7 @@
   "Conteered": "Könyvelt",
   "Paid": "Rendezett",
   "Unreconciled": "Egyeztetetlen",
-  "Unconteered": "Könyveletlen",
+  "Unposted": "Könyveletlen",
   "Unpaid": "Rendezetlen",
   "Show only": "Csak ami",
   "issuer": "kiállító",

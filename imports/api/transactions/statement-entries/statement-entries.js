@@ -7,7 +7,7 @@ import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
@@ -46,7 +46,6 @@ Meteor.startup(function attach() {
 // --- Factory ---
 
 Factory.define('statementEntry', StatementEntries, {
-  communityId: () => Factory.get('community'),
   account: '31',
   valueDate: new Date(),
   partner: faker.random.word(),
@@ -59,7 +58,7 @@ Factory.define('statementEntry', StatementEntries, {
 const chooseBill = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const bills = Bills.find({ communityId, outstanding: { $gte: 0 } }).fetch();
+    const bills = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
     const options = bills.map(function option(bill) {
       return { label: `${bill.serialId()} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
     });
@@ -71,7 +70,7 @@ const chooseBill = {
 const choosePayment = {
   options() {
     const communityId = Session.get('activeCommunityId');
-    const payments = Payments.find({ communityId, reconciledId: { $exists: false } }).fetch();
+    const payments = Transactions.find({ communityId, category: 'payment', reconciledId: { $exists: false } });
     const options = payments.map(function option(payment) {
       return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
     });

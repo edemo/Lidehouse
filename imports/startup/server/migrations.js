@@ -99,6 +99,7 @@ Migrations.add({
       { $set: { settings: {
         joinable: true,
         language: 'hu',
+        topicAgeDays: 365,
         currency: 'Ft',
         accountingMethod: 'accrual' } } },
       { multi: true }

@@ -27,14 +27,14 @@ export const apply = new ValidatedMethod({
   name: 'parcelBillings.apply',
   validate: ParcelBillings.applySchema.validator(),
 
-  run({ communityId, valueDate, ids, localizer }) {
+  run({ communityId, date, ids, localizer }) {
     checkPermissions(this.userId, 'parcelBillings.apply', communityId);
-    ActiveTimeMachine.runAtTime(valueDate, () => {
+    ActiveTimeMachine.runAtTime(date, () => {
       const bills = {}; // parcelId => his bill
       const activeParcelBillings = ids
         ? ParcelBillings.findActive({ communityId, _id: { $in: ids } })
         : ParcelBillings.findActive({ communityId });
-      const billingPeriod = Period.monthOfDate(valueDate);
+      const billingPeriod = Period.monthOfDate(date);
       activeParcelBillings.forEach((parcelBilling) => {
 //        const alreadyAppliedAt = parcelBilling.alreadyAppliedAt(billingPeriod.label);
 //        if (alreadyAppliedAt) throw new Meteor.Error('err_alreadyExists', `${parcelBilling.title} ${billingPeriod.label}`);
@@ -86,18 +86,17 @@ export const apply = new ValidatedMethod({
           // Creating the bill - adding entry to the bill
           bills[parcel._id] = bills[parcel._id] || {
             communityId: parcelBilling.communityId,
+            category: 'bill',
             relation: 'parcel',
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
             partnerId: parcel.payer()._id,
-            valueDate,
+            valueDate: Clock.currentDate(),
             issueDate: Clock.currentDate(),
+            deliveryDate: date,
             dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
             lines: [],
           };
           bills[parcel._id].lines.push(line);
-
-          // Updating the otstanding balance of the parcel
-          Parcels.update(parcel._id, { $inc: { outstanding: line.amount } });
 
           // Updating the meter readings
           if (activeMeter) {
@@ -113,11 +112,11 @@ export const apply = new ValidatedMethod({
             });
           }
         });
-        ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { valueDate, period: billingPeriod.label } } });
+        ParcelBillings.update(parcelBilling._id, { $push: { appliedAt: { date, period: billingPeriod.label } } });
       });
 
       _.each(bills, (bill, parcelId) => {
-        Bills.methods.insert._execute({ userId: this.userId }, bill);
+        Transactions.methods.insert._execute({ userId: this.userId }, bill);
       });
     });
   },

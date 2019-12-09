@@ -107,7 +107,6 @@ Meteor.startup(function attach() {
 });
 
 Factory.define('delegation', Delegations, {
-  communityId: () => Factory.get('community'),
   sourcePersonId: () => Factory.get('user'),
   scope: 'community',
   scopeObjectId: () => Factory.get('community'),

@@ -112,6 +112,7 @@ export const Permissions = [
   { name: 'transactions.inCommunity',roles: ['manager', 'accountant', 'treasurer', 'overseer'] },
   { name: 'transactions.insert',    roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'transactions.update',    roles: ['manager', 'accountant', 'treasurer'] },
+  { name: 'transactions.post',      roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'transactions.reconcile', roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'transactions.remove',    roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'transactions.upsert',    roles: ['manager'] },
@@ -120,18 +121,6 @@ export const Permissions = [
   { name: 'partners.update',        roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'partners.remove',        roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'partners.upsert',        roles: ['manager'] },
-  { name: 'bills.inCommunity',      roles: ['manager', 'accountant', 'treasurer', 'overseer'] },
-  { name: 'bills.insert',           roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'bills.update',           roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'bills.post',          roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'bills.remove',           roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'bills.upsert',           roles: ['manager'] },
-  { name: 'payments.inCommunity',   roles: ['manager', 'accountant', 'treasurer', 'overseer'] },
-  { name: 'payments.insert',        roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'payments.update',        roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'payments.post',       roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'payments.remove',        roles: ['manager', 'accountant', 'treasurer'] },
-  { name: 'payments.upsert',        roles: ['manager'] },
   { name: 'parcelBillings.inCommunity', roles: ['manager', 'accountant', 'treasurer', 'overseer'] },
   { name: 'parcelBillings.insert',  roles: ['manager', 'accountant'] },
   { name: 'parcelBillings.update',  roles: ['manager', 'accountant'] },
@@ -203,7 +192,6 @@ export const Permissions = [
   { name: 'feedback.statusChangeTo.deleted.enter',    roles: ['manager'] },
   { name: 'feedback.statusChangeTo.deleted.leave',    roles: nobody },
 ];
-
 
 // The board member has now exactly the same permissions as the manager
 Permissions.forEach((perm) => {

@@ -607,11 +607,36 @@
       "label": "Összeg",
       "placeholder": "(pl. 14560)"
     },
+    "serial": {
+      "label": "Sorszám"
+    },
+    "serialId": {
+      "label": "azonosító"
+    },
+    "createdAt": {
+      "label": "Rögzítés ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "postedAt": {
+      "label": "Könyvelés ideje",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "partnerId": {
+      "label": "Partner",
+      "placeholder": "(pl. Kulcslyuk kft)"
+    },
+    "contractId": {
+      "label": "Szerződés",
+      "placeholder": "(pl. Épülettakarítási szerződés)"
+    },
     "sourceId": {
       "label": "Forrás tranzakció azonosítója"
     },
     "batchId": {
       "label": "Batch azonosító"
+    },
+    "reconciled": {
+      "label": "Egyeztetve"
     },
     "debit": {
       "label": "Tartozik",
@@ -650,22 +675,6 @@
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
-    },
-    // Following lines are for the different txCats
-    "account": {
-      "label": "Számla"
-    },
-    "incomeAccount": {
-      "label": "Bevétel nem"
-    },
-    "expenseAccount": {
-      "label": "Kiadás nem"
-    },
-    "moneyAccount": {
-      "label": "Pénz számla"
-    },
-    "localizer": {
-      "label": "Könyvelési hely (ha van megadandó)"
     }
   },
   "schemaTxCats": {
@@ -725,21 +734,11 @@
       "customer": "Kimenő számla",
       "parcel": "Előírás"      
     },
-    "serial": {
-      "label": "Sorszám"
-    },
-    "serialId": {
-      "label": "azonosító"
-    },
-    "createdAt": {
-      "label": "Rögzítés ideje",
-      "placeholder": "(pl. 2017-05-06)"
-    },
     "issueDate": {
       "label": "Számla kelte",
       "placeholder": "(pl. 2017-05-06)"
     },
-    "valueDate": {
+    "deliveryDate": {
       "label": "Teljesítés ideje",
       "placeholder": "(pl. 2017-05-06)"
     },
@@ -764,14 +763,6 @@
     "outstanding": {
       "label": "Kifizetetlen",
       "placeholder": "(pl. 14560)"
-    },
-    "partnerId": {
-      "label": "Partner",
-      "placeholder": "(pl. Kulcslyuk kft)"
-    },
-    "contractId": {
-      "label": "Szerződés",
-      "placeholder": "(pl. Épülettakarítási szerződés)"
     },
     "note": {
       "label": "Megjegyzések"
@@ -834,11 +825,10 @@
           "label": "Pénz számla"
         }
       }
-    },
-    "reconciled": {
-      "label": "Egyeztetve"
-    },
-    "account": {
+    }
+  },
+  "schemaPayments": {
+    "payAccount": {
       "label": "Pénz számla"
     }
   },
@@ -857,7 +847,7 @@
     "ids": {
       "label": "Kivetendő előírások"
     },
-    "valueDate": {
+    "date": {
       "label": "Kivetési időszak - kivetési nap",
       "placeholder": "(pl. 2017-05-06)",
       "help": "Válassza meg a kivetési napot. Ez automatikusan meghatározza a kivetési időszakot is (mert a kivetési nap mindig benne van a kivetési időszakban)."

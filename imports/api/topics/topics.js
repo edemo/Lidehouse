@@ -184,7 +184,7 @@ Topics.attachBehaviour(Revisioned(['text', 'title']));
 Topics.attachBehaviour(Likeable);
 Topics.attachBehaviour(Flagable);
 Topics.attachBehaviour(Workflow());
-Topics.attachBehaviour(SerialId(['category']));
+Topics.attachBehaviour(SerialId(['category', 'ticket.type']));
 Topics.schema = new SimpleSchema(Topics.simpleSchema());
 
 

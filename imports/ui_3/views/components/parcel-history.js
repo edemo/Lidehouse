@@ -17,6 +17,7 @@ Template.Parcel_history.viewmodel({
   parcelSelected: '',
   status: 'Reconciled',
   onCreated(instance) {
+    Session.set('activePartnerRelation', 'parcel');
     instance.autorun(() => {
       if (this.partnerSelected()) {
         instance.subscribe('transactions.byPartner', this.subscribeParams());
@@ -45,7 +46,7 @@ Template.Parcel_history.viewmodel({
   subscribeParams() {
     return {
       communityId: this.communityId(),
-      partnerId: this.partnerSelected(),
+      partnerId: this.partnerSelected() || null,
       begin: new Date(this.beginDate()),
       end: new Date(this.endDate()),
     };
@@ -63,10 +64,7 @@ Template.Parcel_history.viewmodel({
   negativeClass(tx) {
     return tx.subjectiveAmount() < 0 ? 'negative' : '';
   },
-  displayDataType(tx) {
-    const dataType = tx.dataType();
-    const typeName = dataType.substring(0, dataType.length - 1);
-    const doc = tx.dataDoc();
-    return __(typeName) + (doc.lineCount() ? ` (${doc.lineCount()} ${__('item')})` : '');
+  displayTx(tx) {
+    return __(tx.category) + (tx.lineCount() ? ` (${tx.lineCount()} ${__('item')})` : '');
   },
 });

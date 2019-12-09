@@ -5,7 +5,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { __ } from '/imports/localization/i18n.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
 
 // Import UI pages only on the client!
 // But the route defs need to be available on the server as well, for calculating link paths in emails
@@ -307,7 +307,7 @@ FlowRouter.route('/bill/:_bid', {
     BlazeLayout.render('Main_layout', { content: 'Bill_show' });
   },
   title(params) {
-    const bill = Bills.findOne(params._bid);
+    const bill = Transactions.findOne(params._bid);
     return bill && `${bill.serial}`;
   },
 });
