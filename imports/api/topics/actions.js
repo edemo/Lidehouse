@@ -236,10 +236,11 @@ _.each(Topics.entities, (entity, entityName) => {
   AutoForm.addHooks(`af.${entityName}.statusChange`, {
     formToDoc(doc) {
       doc.topicId = Session.get('modalContext').topicId;
-      doc.type = 'statusChangeTo'; // `statusChangeTo.${status}`;
+      doc.category = 'statusChangeTo'; // `statusChangeTo.${status}`;
       doc.status = Session.get('modalContext').status;
-      doc.dataUpdate = doc[doc.category] || {};
-      delete doc[doc.category];
+      //  const topic = Topics.findOne(doc.topicId);
+      doc.dataUpdate = doc['ticket'] || {}; // can use topic.category instrad of ticket, if other than tickets have data too
+      delete doc['ticket'];
       return doc;
     },
   });
