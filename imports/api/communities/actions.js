@@ -1,17 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Fraction } from 'fractional';
 import { AccountsTemplates } from 'meteor/useraccounts:core';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Communities } from './communities.js';
 import './methods.js';
 
@@ -113,31 +109,6 @@ Communities.actions = {
 };
 
 //-----------------------------------------------
-
-export function onJoinParcelInsertSuccess() {
-  const communityId = FlowRouter.current().params._cid;
-  const communityName = Communities.findOne(communityId).name;
-  Memberships.methods.insert.call({
-    person: { userId: Meteor.userId() },
-    communityId,
-    approved: false,  // any user can submit not-yet-approved memberships
-    role: 'owner',
-    ownership: {
-      share: new Fraction(1),
-    },
-  }, (err, res) => {
-    if (err) displayError(err);
-    else displayMessage('success', 'Join request submitted', communityName);
-    Meteor.setTimeout(() => Modal.show('Modal', {
-      title: __('Join request submitted', communityName),
-      text: __('Join request notification'),
-      btnOK: 'ok',
-      //      btnClose: 'cancel',
-      onOK() { FlowRouter.go('App home'); },
-      //      onClose() { removeMembership.call({ _id: res }); }, -- has no permission to do it, right now
-    }), 3000);
-  });
-}
 
 AutoForm.addModalHooks('af.community.insert');
 AutoForm.addModalHooks('af.community.update');
