@@ -238,12 +238,9 @@ _.each(Topics.entities, (entity, entityName) => {
       doc.topicId = Session.get('modalContext').topicId;
       doc.type = 'statusChangeTo'; // `statusChangeTo.${status}`;
       doc.status = Session.get('modalContext').status;
-      doc.data = doc[doc.category] || {};
+      doc.dataUpdate = doc[doc.category] || {};
       delete doc[doc.category];
       return doc;
-    },
-    onSuccess(formType, result) {
-      Session.set('modalContext');  // clear it
     },
   });
 });
