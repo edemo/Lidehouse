@@ -16,12 +16,12 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 export const Comments = new Mongo.Collection('comments');
 
-Comments.typeValues = ['statusChangeTo', 'pointAt'];
+Comments.categoryValues = ['statusChangeTo', 'pointAt'];
 
 Comments.schema = {
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
-  type: { type: String, optional: true, allowedValues: Comments.typeValues, autoform: { omit: true } },
+  category: { type: String, optional: true, allowedValues: Comments.categoryValues, autoform: { omit: true } },
   status: { type: String, optional: true, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
   data: { type: Object, blackbox: true, optional: true, autoform: { omit: true } },
@@ -58,6 +58,9 @@ Comments.helpers({
   community() {
     return this.topic().community();
   },
+  entityName() {
+    return this.category || 'comment';
+  },
   editableBy(userId) {
     return this.userId === userId;
   },
@@ -65,9 +68,6 @@ Comments.helpers({
     const author = this.creator();
     if (this.creatorId === userId) return undefined;
     return this.flaggedBy(userId, this.communityId) || (author && author.flaggedBy(userId, this.communityId));
-  },
-  getType() {
-    return this.type || 'comment';
   },
 });
 

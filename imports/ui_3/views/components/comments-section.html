@@ -32,10 +32,10 @@
             <a href="{{pathFor 'User show' _id=this.creatorId}}">
                 {{creator}}
             </a>
-            {{#if (equals getType "comment")}}
+            {{#if (equals entityName "comment")}}
                 {{> Comment this}}
             {{/if}}
-            {{#if (includes getType "statusChangeTo")}}
+            {{#if (includes entityName "statusChangeTo")}}
                 {{> StatusChange this}}
             {{/if}}
         </div>
@@ -58,22 +58,7 @@
                 {{_ 'important'}}! ({{this.likesCount}})
             </a> -
             <small class="text-muted" title="{{displayTime createdAt}}">{{displayTimeFrom createdAt}}</small>
-            <div class="btn-group">
-                {{#if userHasPermission 'comment.update' this}}
-                <button class="btn btn-white btn-xs js-edit" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i></button>
-                {{/if}}
-                {{#if userHasPermission 'comment.move' this}}
-                <button class="btn btn-white btn-xs js-move" title="{{_ 'move'}}"><i class="fa fa-arrow-right"></i></button>
-                {{/if}}
-                {{#if userHasPermission 'comment.remove' this}}
-                <button class="btn btn-white btn-xs js-delete" title="{{_ 'delete'}}"><i class="fa fa-trash"></i></button>
-                {{/if}}
-                {{#if this.isFlaggedBy currentUser._id}}
-                <button class="btn btn-white btn-xs js-flag" title="{{_ 'Unblock content'}}"><i class="fa fa-check"></i></button>
-                {{else}}
-                <button class="btn btn-white btn-xs js-flag" title="{{_ 'Block content'}}"><i class="fa fa-ban"></i></button>
-                {{/if}}
-            </div>
+            {{>Action_buttons_group doc=this collection='comments' actions='edit,move,delete,mute' size='sm'}}
         {{/hideable}}
     {{/if}}
 </template>

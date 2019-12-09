@@ -151,7 +151,9 @@ Topics.actions = {
       return doc && doc.isLikedBy(Meteor.userId()) ? 'fa fa-hand-o-down' : 'fa fa-hand-o-up';
     },
     visible(options, doc) {
-      return doc && doc.category !== 'vote';
+      if (!doc && doc.category === 'vote') return false;
+      if (doc.creatorId === Meteor.userId()) return false;
+      return currentUserHasPermission('like.toggle', doc);
     },
     run(options, doc, event, instance) {
       Topics.methods.like.call({ id: doc._id }, handleError);
@@ -166,7 +168,9 @@ Topics.actions = {
       return doc && doc.isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
     },
     visible(options, doc) {
-      return doc && doc.category !== 'vote';
+      if (!doc && doc.category === 'vote') return false;
+      if (doc.creatorId === Meteor.userId()) return false;
+      return currentUserHasPermission('flag.toggle', doc);
     },
     run(options, doc, event, instance) {
       Topics.methods.flag.call({ id: doc._id }, handleError);
@@ -184,7 +188,11 @@ Topics.actions = {
       if (!creator) return '';
       return doc.creator().isFlaggedBy(Meteor.userId()) ? 'fa fa-check fa-user' : 'fa fa-ban fa-user-o';
     },
-    visible: (options, doc) => doc && doc.category !== 'vote',
+    visible(options, doc) {
+      if (!doc && doc.category === 'vote') return false;
+      if (doc.creatorId === Meteor.userId()) return false;
+      return currentUserHasPermission('flag.toggle', doc);
+    },
     run(options, doc, event, instance) {
       Meteor.users.methods.flag.call({ id: doc.creatorId }, handleError);
     },
