@@ -125,7 +125,8 @@
     },
     "admin": {
       "firstName": "Patrick",
-      "lastName": "Shepherd"
+      "lastName": "Shepherd",
+      "bio": "I'm a software engineer. Feel free to ask me about how the system works. I believe this platform will help us exchange information and share ideas."
     },
     "maintainer": {
       "firstName": "Shane",
