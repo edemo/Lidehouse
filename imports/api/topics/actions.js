@@ -229,7 +229,12 @@ _.each(Topics.entities, (entity, entityName) => {
       }
       return doc;
     },
-    onSuccess(formType, result) {
+  });
+
+  AutoForm.addHooks(`af.${entityName}.update`, {
+    formToDoc(doc) {
+      debugger;
+      return doc;
     },
   });
 

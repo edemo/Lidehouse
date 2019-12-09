@@ -94,14 +94,12 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
         if (topic.ticket && topic.ticket.contractId) {
           return Contracts.find({ _id: topic.ticket.contractId });
         }
-        return this.ready();
       },
     }, {
       find(topic) {
-        if (topic.ticket && topic.ticket.contractId) {
-          return Partners.find({ _id: topic.ticket.contractId });
+        if (topic.ticket && topic.ticket.partnerId) {
+          return Partners.find({ _id: topic.ticket.partnerId });
         }
-        return this.ready();
       },
     }],
   };
