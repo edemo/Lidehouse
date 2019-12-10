@@ -25,8 +25,10 @@ Object.setByString = function (object, string, value) {
   for (let i = 0, n = keyFragments.length; i < n; ++i) {
     const key = keyFragments[i];
     if (i === n - 1) obj[key] = value;
-    else if (key in obj) obj = obj[key];
-    else return;
+    else {
+      if (!(key in obj)) obj[key] = {};
+      obj = obj[key];
+    }
   }
 };
 

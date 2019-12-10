@@ -23,16 +23,9 @@ Tickets.urgencyValues = ['high', 'normal', 'low'];
 Tickets.urgencyColors = { high: 'danger', normal: 'warning', low: 'primary' };
 Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 
-const urgencyOptions = {
-  options() {
-    return Tickets.urgencyValues.map(function option(t) { return { label: __('schemaTickets.ticket.urgency.' + t), value: t }; });
-  },
-  firstOption: false,
-};
-
 Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
-  urgency: { type: String, defaultValue: 'low', allowedValues: Tickets.urgencyValues, autoform: urgencyOptions },
+  urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.') },
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract, optional: true },
