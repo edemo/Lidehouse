@@ -7,6 +7,6 @@ const schema = new SimpleSchema({
   'freeFields.$.value': { type: String, max: 25 },
 });
 
-export const FreeFields = {
+export const FreeFields = { name: 'FreeFields',
   schema, helpers: {}, methods: {}, hooks: {},
 };

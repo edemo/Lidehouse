@@ -46,7 +46,9 @@ export function SerialId(definerFields = []) {
     };
   }
 
-  return { schema, indexes, helpers, methods: {}, hooks };
+  return { name: 'SerialId',
+    schema, indexes, helpers, methods: {}, hooks,
+  };
 }
 
 /*

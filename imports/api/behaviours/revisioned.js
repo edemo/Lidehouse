@@ -11,7 +11,7 @@ const schema = new SimpleSchema({
 const helpers = {};
 
 export const Revisioned = function (revisionedFields) {
-  return {
+  return { name: 'Revisioned',
     schema, helpers, methods: {}, hooks: {
       before: {
         update(userId, doc, fieldNames, modifier, options) {

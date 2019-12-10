@@ -46,6 +46,6 @@ const like = new ValidatedMethod({
   },
 });
 
-export const Likeable = {
+export const Likeable = { name: 'Likeable',
   schema, helpers, methods: { like }, hooks: {},
 };

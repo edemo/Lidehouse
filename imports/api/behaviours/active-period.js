@@ -86,7 +86,7 @@ const indexes = [
   { 'activeTime.end': 1 },
 ];
 
-export const ActivePeriod = {
+export const ActivePeriod = { name: 'ActivePeriod',
   schema, helpers, staticHelpers, methods, hooks, indexes,
 };
 

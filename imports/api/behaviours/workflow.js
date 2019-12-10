@@ -112,7 +112,7 @@ const statusChange = new ValidatedMethod({
     const onLeave = workflow[topic.status].obj.onLeave;
     if (onLeave) onLeave(event, topic);
 
-    const topicModifier = {};
+    const topicModifier = { category: topic.category };
     topicModifier.status = event.status;
     const statusObject = Topics.categories[category].statuses ? Topics.categories[category].statuses[event.status] : defaultStatuses[event.status];
     if (statusObject.data) {
@@ -168,7 +168,7 @@ export function Workflow(workflow = defaultWorkflow) {
     },
   });
 
-  return {
+  return { name: 'Workflow',
     schema, helpers, methods: { statusChange, statusUpdate }, hooks,
   };
 }
