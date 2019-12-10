@@ -52,7 +52,7 @@ TxCats.helpers({
   },
   conteerSide() {
     debugAssert(this.category === 'bill', 'Func only available for bills');
-    const relation = this.data.relation;
+    const relation = this.relation;
     if (relation === 'supplier') return 'debit';
     if (relation === 'customer' || relation === 'parcel') return 'credit';
     return undefined;

@@ -117,14 +117,15 @@
       "firstNames": ["Aladár", "Boris", "Cecília", "Dávid", "Ede", "Ferenc", "Gabi", "Hedvig", "István", "Jolán", "Klára", "Lajos", "Margit", "Nándor", "Olivér", "Péter", "Róza", "Sarolta", "Tivadar", "Zsuzsanna"]
     },
     "manager": {
-        "firstName": "Levente",
-        "lastName": "Király",
-        "bio": "Társasház kezelés terén több mint 15 éves tapasztalattal rendelkezem.",
-        "message": "Mint a Demo ház közös képviselője, szeretettel üdvözlöm honline rendszerünkben!"
+      "firstName": "Levente",
+      "lastName": "Király",
+      "bio": "Társasház kezelés terén több mint 15 éves tapasztalattal rendelkezem.",
+      "message": "Mint a Demo ház közös képviselője, szeretettel üdvözlöm honline rendszerünkben!"
     },
     "admin": {
       "firstName": "Patrik",
-      "lastName": "Juhász"
+      "lastName": "Juhász",
+      "bio": "Informatikus vagyok. Azért hoztam létre házunkat a honline rendszerben, hogy hatékonyabban tudjunk informáciükat cserélni, ötletelni. Ha bárkinek kérdése van a rendszerrel kapcsolatban, kérdezzen nyugodtan."
     },
     "maintainer": {
       "firstName": "Zsigmond",

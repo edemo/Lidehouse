@@ -17,7 +17,7 @@ import { Comments } from '/imports/api/comments/comments.js';
     const topicModifier = {};
     if (topic.category === 'ticket') {
       Object.keys(event.ticket).forEach(key => topicModifier[`ticket.${key}`] = event.ticket[key]);
-      event.data = event.ticket; delete event.ticket;
+      event.dataUpdate = event.ticket; delete event.ticket;
     }
     topicModifier.status = event.status;
     const result = Topics.update(event.topicId, { $set: topicModifier });

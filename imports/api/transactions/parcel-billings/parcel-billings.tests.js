@@ -13,6 +13,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 
 // TODO: import chai-datetime.js -- preferably through npm
+// and use equalDate here
 // https://www.chaijs.com/plugins/chai-datetime/
 chai.assert.equalDate = function equalDate(d1, d2) {
   return chai.assert.equal(moment(d1).format('L'), moment(d2).format('L'));

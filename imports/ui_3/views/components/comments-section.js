@@ -3,15 +3,12 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { $ } from 'meteor/jquery';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { AutoForm } from 'meteor/aldeed:autoform';
 
-import { Topics } from '/imports/api/topics/topics.js';
 import { __ } from '/imports/localization/i18n.js';
 import { displayMessage, onSuccess, handleError } from '/imports/ui_3/lib/errors.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import '/imports/api/comments/methods.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/api/comments/actions.js';
 import '/imports/ui_3/views/blocks/hideable.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import './comments-section.html';
@@ -98,33 +95,10 @@ Template.Comment.viewmodel({
 });
 
 Template.Comment.events({
-  'click .js-like'(event) {
-    event.preventDefault();
-    Comments.methods.like.call({ id: this._id }, handleError);
-  },
-  'click .js-flag'(event) {
-    event.preventDefault();
-    Comments.methods.flag.call({ id: this._id }, handleError);
-  },
   'click .js-edit'(event, instance) {
     const element = $(event.target).closest('.media-body');
     Meteor.setTimeout(() => element.find('textarea')[0].focus(), 100);
     instance.viewmodel.editing(true);
-  },
-  'click .js-move'(event, instance) {
-    Modal.show('Autoform_modal', {
-      id: 'af.comment.move',
-      schema: Comments.moveSchema,
-      doc: { _id: instance.data._id },
-      type: 'method',
-      meteormethod: 'comments.move',
-    });
-  },
-  'click .js-delete'(event, instance) {
-    Modal.confirmAndCall(Comments.methods.remove, { _id: this._id }, {
-      action: 'delete comment',
-      message: 'It will disappear forever',
-    });
   },
   'click .js-save'(event, instance) {
     const text = $(event.target).closest('.media-body').find('textarea')[0].value;
@@ -143,6 +117,4 @@ Template.Comment.events({
     }
   },
 });
-
-AutoForm.addModalHooks('af.comment.move');
 
