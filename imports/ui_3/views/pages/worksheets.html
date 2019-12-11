@@ -91,9 +91,7 @@
         {{#if calendarView}}
         <div>
           {{> ReactiveFullcalendar options=calendarOptions }}
-          {{#let ctx=contextMenu_ctx}}
-          {{> contextMenu template=ctx.template visible=ctx.visible doc=ctx.doc }}
-          {{/let}}
+          {{> ContextMenu contextMenu_ctx }}
         </div>
         {{else}}
         <div class="no-padding table-responsive">

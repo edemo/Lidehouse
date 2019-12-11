@@ -22,7 +22,7 @@ import '/imports/ui_3/views/modals/autoform-modal.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/chopped.js';
 import '/imports/ui_3/views/components/new-ticket.js';
-import { contextMenu } from '/imports/ui_3/views/components/context-menu';
+import { ContextMenu } from '/imports/ui_3/views/components/context-menu';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './worksheets.html';
 
@@ -51,7 +51,7 @@ Template.Worksheets.viewmodel({
   onCreated() {
     this.communityId(this.templateInstance.getCommunityId());
     this.setDefaultFilter();
-    contextMenu.initialize('Worksheets', Topics);
+    ContextMenu.initialize('Worksheets', Topics, this);
   },
   setDefaultFilter() {
     this.searchText('');
@@ -88,14 +88,23 @@ Template.Worksheets.viewmodel({
         right: 'month,agendaWeek,agendaDay',
       },
       eventClick(eventObject, jsEvent) {
-        debugger;
         event.stopPropagation();
-        contextMenu.show(event, 'Topic_edit_menu_content', eventObject._id)
+        const contextObj = {
+          template: 'Action_buttons_dropdown_list',
+          actions: 'statusUpdate,statusChange,edit,delete',
+          collection: 'topics',
+          options: {},
+          id: eventObject._id,
+        };
+        ContextMenu.show(event, contextObj, viewmodel);
       },
       dayClick(date, jsEvent, view) {
         Session.update('modalContext', 'expectedStart', date.toDate());
         event.stopPropagation();
-        contextMenu.show(event, 'New_Ticket');
+        const contextObj = {
+          template: 'New_Ticket',
+        };
+        ContextMenu.show(event, contextObj, viewmodel );
       },
       eventResizeStop(eventObject, jsEvent, ui, view) {
         viewmodel.addEventsToUpdate(eventObject);
