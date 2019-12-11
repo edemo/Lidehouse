@@ -150,7 +150,7 @@ const statusUpdate = new ValidatedMethod({
     }
     checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId, topic);
     checkModifier(topic, modifier, modifiableFields);
-    Topics.update(_id, modifier);
+    Topics.update(_id, modifier, { selector: { category } });
   },
 });
 
