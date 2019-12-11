@@ -10,7 +10,7 @@ import { Factory } from 'meteor/dburles:factory';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { officerRoles, everyRole, Roles, ranks } from '/imports/api/permissions/roles.js';
+import { officerRoles, everyRole, nonOccupantRoles, Roles, ranks } from '/imports/api/permissions/roles.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
@@ -21,24 +21,9 @@ import { Person, PersonSchema } from '/imports/api/users/person.js';
 
 export const Memberships = new Mongo.Collection('memberships');
 
-// Parcels can be jointly owned, with each owner having a fractional *share* of it
-// each frectional owner can vote with his own fraction,
-// or if there is a single *representor*, he can cast votes for the whole parcel.
-
-const OwnershipSchema = new SimpleSchema({
-  share: { type: Fraction },
-  representor: { type: Boolean, optional: true },
-});
-
-const benefactorTypeValues = ['rental', 'favor', 'right'];
-const BenefactorshipSchema = new SimpleSchema({
-  type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues) },
-});
-
 // Memberships are the Ownerships, Benefactorships and Roleships in a single collection
-Memberships.schema = new SimpleSchema({
+Memberships.baseSchema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true },
   approved: { type: Boolean, autoform: { omit: true }, defaultValue: true },  // manager approved this membership
   accepted: { type: Boolean, autoform: { omit: true }, defaultValue: false },  // person accepted this membership
   role: { type: String, allowedValues() { return everyRole; },
@@ -56,14 +41,34 @@ Memberships.schema = new SimpleSchema({
       return this.field('person.userId').value || this.field('person.idCard.identifier').value || undefined;
     },
   },
-  // TODO should be conditional on role === 'owner'
-  // https://stackoverflow.com/questions/28993302/autoform-how-to-dynamically-show-and-add-fields-of-a-sub-schema-depending-on-an
-  ownership: { type: OwnershipSchema, optional: true },
-  // TODO should be conditional on role === 'benefactor'
-  benefactorship: { type: BenefactorshipSchema, optional: true },
-  // redundant fields:
   outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
 });
+
+// Parcels can be jointly owned, with each owner having a fractional *share* of it
+// each frectional owner can vote with his own fraction,
+// or if there is a single *representor*, he can cast votes for the whole parcel.
+
+const OwnershipSchema = new SimpleSchema({
+  share: { type: Fraction },
+  representor: { type: Boolean, optional: true },
+});
+
+const benefactorTypeValues = ['rental', 'favor', 'right'];
+const BenefactorshipSchema = new SimpleSchema({
+  type: { type: String, allowedValues: benefactorTypeValues, autoform: autoformOptions(benefactorTypeValues) },
+});
+
+const Ownerships = {};
+Ownerships.schema = new SimpleSchema({
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  ownership: { type: OwnershipSchema },
+});
+
+const Benefactorships = {};
+Benefactorships.schema = new SimpleSchema({
+  parcelId: { type: String, regEx: SimpleSchema.RegEx.Id },
+  benefactorship: { type: BenefactorshipSchema } },
+);
 
 Memberships.idSet = ['communityId', 'role', 'parcelId', 'person.idCard.name', 'person.contact.email'];
 
@@ -172,15 +177,24 @@ Memberships.helpers({
   },
 });
 
-Memberships.attachSchema(Memberships.schema);
+Memberships.attachBaseSchema(Memberships.baseSchema);
 Memberships.attachBehaviour(ActivePeriod);
 Memberships.attachBehaviour(Timestamped);
+
+Memberships.attachVariantSchema(Ownerships.schema, { selector: { role: 'owner' } });
+Memberships.attachVariantSchema(Benefactorships.schema, { selector: { role: 'benefactor' } });
+// Memberships.attachVariantSchema(undefined, { selector: { role: { $nin: ['owner', 'benefactor'] } } });
+nonOccupantRoles.forEach(role =>
+  Memberships.attachVariantSchema(undefined, { selector: { role } })
+);
 
 // TODO: Would be much nicer to put the translation directly on the OwnershipSchema,
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
 // and that happens earlier than TAPi18n extra comtype transaltions get added.
 Meteor.startup(function attach() {
-  Memberships.simpleSchema().i18n('schemaMemberships');
+  nonOccupantRoles.forEach(role =>
+    Memberships.simpleSchema({ role }).i18n('schemaMemberships')
+  );
 });
 
 Memberships.publicFields = {

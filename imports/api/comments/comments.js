@@ -16,16 +16,13 @@ import { Topics } from '/imports/api/topics/topics.js';
 
 export const Comments = new Mongo.Collection('comments');
 
-Comments.categoryValues = ['statusChangeTo', 'pointAt'];
+Comments.categoryValues = ['comment', 'statusChangeTo', 'pointAt'];
 
-Comments.schema = {
+Comments.schema = new SimpleSchema({
   topicId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   userId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // deprecated for creatorId
-  category: { type: String, optional: true, allowedValues: Comments.categoryValues, autoform: { omit: true } },
+  category: { type: String, defaultValue: 'comment', allowedValues: Comments.categoryValues, autoform: { omit: true } },
   text: { type: String, max: 5000, optional: true, autoform: { rows: 8 } },
-  // for statusChange only:
-  status: { type: String, optional: true, autoform: { omit: true } },
-  dataUpdate: { type: Object, blackbox: true, optional: true, autoform: { omit: true } },
   // For sharding purposes, lets have a communityId in every kind of document. even if its deducible
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true },
     autoValue() {
@@ -37,7 +34,14 @@ Comments.schema = {
       return undefined; // means leave whats there alone for Updates, Upserts
     },
   },
-};
+});
+
+const StatusChanges = {};
+StatusChanges.extensionSchema = new SimpleSchema({
+  // for statusChange only:
+  status: { type: String, optional: true, autoform: { omit: true } },
+  dataUpdate: { type: Object, blackbox: true, optional: true, autoform: { omit: true } },
+});
 
 Meteor.startup(function indexComments() {
   if (Meteor.isClient && MinimongoIndexing) {
@@ -47,10 +51,13 @@ Meteor.startup(function indexComments() {
   }
 });
 
-Comments.attachSchema(Comments.schema);
+Comments.attachBaseSchema(Comments.schema);
 Comments.attachBehaviour(Timestamped);
 Comments.attachBehaviour(Likeable);
 Comments.attachBehaviour(Flagable);
+
+Comments.attachVariantSchema(undefined, { selector: { category: 'comment' } });
+Comments.attachVariantSchema(StatusChanges.extensionSchema, { selector: { category: 'statusChangeTo' } });
 
 Comments.helpers({
   topic() {
@@ -60,7 +67,7 @@ Comments.helpers({
     return this.topic().community();
   },
   entityName() {
-    return this.category || 'comment';
+    return this.category;
   },
   editableBy(userId) {
     return this.userId === userId;
@@ -98,7 +105,8 @@ Comments.moveSchema = new SimpleSchema({
 });
 
 Meteor.startup(function attach() {
-  Comments.simpleSchema().i18n('schemaComments');
+  Comments.simpleSchema({ category: 'comment' }).i18n('schemaComments');
+  Comments.simpleSchema({ category: 'statusChangeTo' }).i18n('schemaComments');
   Comments.moveSchema.i18n('schemaComments');
 });
 

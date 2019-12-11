@@ -23,7 +23,7 @@ import { autoOpen } from './votings/methods.js';
 
 export const insert = new ValidatedMethod({
   name: 'topics.insert',
-  validate: Topics.simpleSchema().validator({ clean: true }),
+  validate: doc => Topics.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
     if (doc._id) checkNotExists(Topics, doc._id);
     doc = Topics._transform(doc);
@@ -50,7 +50,7 @@ export const update = new ValidatedMethod({
     const topic = checkExists(Topics, _id);
     checkTopicPermissions(this.userId, 'update', topic);
     checkModifier(topic, modifier, topic.modifiableFields());
-    Topics.update(_id, modifier);
+    Topics.update(_id, modifier, { selector: { category: topic.category } });
   },
 });
 
@@ -105,7 +105,9 @@ export function closeInactiveTopics() {
 Topics.methods = Topics.methods || {};
 _.extend(Topics.methods, { insert, update, move, remove });
 _.extend(Topics.methods, crudBatchOps(Topics));
-Topics.methods.batch.statusUpdate = new BatchMethod(Topics.methods.statusUpdate);
+Meteor.startup(() => { // statusUpdate is a behaviour method -- not ready yet
+  Topics.methods.batch.statusUpdate = new BatchMethod(Topics.methods.statusUpdate);
+});
 
 // ----- RATE LIMITING --------
 

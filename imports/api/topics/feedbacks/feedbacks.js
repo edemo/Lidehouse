@@ -5,25 +5,20 @@ import { _ } from 'meteor/underscore';
 
 import { Topics } from '../topics.js';
 
-const typeValues = ['opinion', 'bug', 'feature'];
+const Feedbacks = {};
+Feedbacks.typeValues = ['opinion', 'bug', 'feature'];
 
-const feedbacksExtensionSchema = new SimpleSchema({
-  type: { type: String, allowedValues: typeValues, autoform: autoformOptions(typeValues) },
+Feedbacks.extensionSchema = new SimpleSchema({
+  type: { type: String, allowedValues: Feedbacks.typeValues, autoform: autoformOptions(Feedbacks.typeValues) },
   rating: { type: Number, optional: true, allowedValues: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1] },
 });
 
-Topics.helpers({
-});
-
-Topics.attachSchema({ feedback: { type: feedbacksExtensionSchema, optional: true } });
-
-_.extend(Topics.publicFields, { feedback: 1 });
-
-export const feedbacksSchema = new SimpleSchema([
-  { feedback: { type: feedbacksExtensionSchema, optional: true } },
-  Topics.schema,
-]);
+Feedbacks.schema = () => Topics.simpleSchema({ category: 'feedback' });
+Topics.attachVariantSchema(
+  new SimpleSchema({ feedback: { type: Feedbacks.extensionSchema } }),
+  { selector: { category: 'feedback' } },
+);
 
 Meteor.startup(function attach() {
-  feedbacksSchema.i18n('schemaFeedback');   // translation is different from schemaTopics
+  Feedbacks.schema().i18n('schemaFeedbacks');
 });

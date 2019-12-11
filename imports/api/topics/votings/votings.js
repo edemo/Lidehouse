@@ -199,9 +199,9 @@ Topics.categoryHelpers('vote', {
       getVoteResult(ownerId);
     });
 
-    Topics.update(this._id, { $set: { voteParticipation } });
+    Topics.update(this._id, { $set: { voteParticipation } }, { selector: { category: 'vote' } });
 //    if (!revealResults) return;
-    Topics.update(this._id, { $set: { voteCastsIndirect, votePaths, voteResults, voteSummary } });
+    Topics.update(this._id, { $set: { voteCastsIndirect, votePaths, voteResults, voteSummary } }, { selector: { category: 'vote' } });
   },
   voteResultsDisplay() {
     const topic = this;
@@ -246,13 +246,10 @@ Topics.categoryHelpers('vote', {
   },
 });
 
-Votings.schema = new SimpleSchema([Topics.schema, Votings.extensionSchema]);
-Topics.attachSchema(
-  Votings.schema,
-//  { selector: { category: 'vote' } },
-);
+Topics.attachVariantSchema(Votings.extensionSchema, { selector: { category: 'vote' } });
+
 Meteor.startup(function attach() {
-  Votings.schema.i18n('schemaVotings');
+  Topics.simpleSchema({ category: 'vote' }).i18n('schemaVotings');
 });
 
 Votings.publicExtensionFields = {

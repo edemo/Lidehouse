@@ -350,7 +350,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       const parcelId = Parcels.findOne({ communityId: demoCommunityId, serial: 7 })._id;
       let ownershipData;
       if (role.name === 'owner') {
-        Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
+        Memberships.update({ parcelId }, { $set: { role: 'owner', ownership: { share: new Fraction(1, 2), representor: false } } });
         ownershipData = { parcelId, ownership: { share: new Fraction(1, 2), representor: true } };
       } else if (role.name === 'benefactor') {
         ownershipData = { parcelId, benefactorship: { type: 'rental' } };

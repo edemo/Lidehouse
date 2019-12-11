@@ -115,7 +115,7 @@ if (Meteor.isServer) {
 
       // it('selects first owner as representor when not specified', function (done) {
       it('selects no representor when not specified', function (done) {
-        Memberships.update(ownership2Id, { $set: { 'ownership.representor': false } });
+        Memberships.update(ownership2Id, { $set: { 'ownership.representor': false } }, { selector: { role: 'owner' } });
 
         const parcel = Parcels.findOne(parcelId);
         // chai.assert.equal(parcel.representor()._id, ownership1Id);

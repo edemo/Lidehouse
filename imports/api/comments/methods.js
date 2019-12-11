@@ -11,7 +11,7 @@ import { updateMyLastSeen } from '/imports/api/users/methods.js';
 
 export const insert = new ValidatedMethod({
   name: 'comments.insert',
-  validate: Comments.simpleSchema().validator({ clean: true }),
+  validate: doc => Comments.simpleSchema(doc).validator({ clean: true })(doc),
 
   run(doc) {
     doc = Comments._transform(doc);
@@ -39,7 +39,7 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['text']);     // only the text can be modified
     checkPermissions(this.userId, `${doc.entityName()}.update`, topic.communityId, doc);
 
-    Comments.update(_id, modifier);
+    Comments.update(_id, modifier, { selector: { category: doc.category } });
   },
 });
 

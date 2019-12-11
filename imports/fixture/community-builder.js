@@ -223,9 +223,7 @@ export class CommunityBuilder {
     else if (typeof personSpec === 'string') person = { userId: personSpec };
     else if (typeof personSpec === 'object') person = personSpec;
     else debugAssert(false);
-    const mId = Memberships.insert({ communityId: this.communityId, person, accepted: true, role });
-    if (membershipData) Memberships.update(mId, { $set: membershipData });
-    return mId;
+    return Memberships.insert({ communityId: this.communityId, person, accepted: true, role, ...membershipData });
   }
   name2code(breakdownName, nodeName) {
     return Breakdowns.name2code(breakdownName, nodeName, this.communityId);

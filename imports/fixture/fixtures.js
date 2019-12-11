@@ -191,8 +191,8 @@ export function insertUnittestFixture(lang) {
   });
 
   // Give them some parcels in the other community, so to make tests more realistic with more than 1 community
-  otherBuilder.createMembership(dummyUsers[1], 'owner');
-  otherBuilder.createMembership(dummyUsers[2], 'benefactor');
+//  otherBuilder.createMembership(dummyUsers[1], 'owner');
+//  otherBuilder.createMembership(dummyUsers[2], 'benefactor');
   otherBuilder.createMembership(dummyUsers[3], 'admin');
   otherBuilder.createMembership(dummyUsers[4], 'accountant');
   otherBuilder.createMembership(dummyUsers[5], 'manager');

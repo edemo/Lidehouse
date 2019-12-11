@@ -178,23 +178,23 @@ Topics.topicsWithUnseenEvents = function topicsWithUnseenEvents(userId, communit
   .sort((t1, t2) => Topics.categoryValues.indexOf(t2.topic.category) - Topics.categoryValues.indexOf(t1.topic.category));
 };
 
-Topics.attachSchema(Topics.baseSchema);
+Topics.attachBaseSchema(Topics.baseSchema);
 Topics.attachBehaviour(Timestamped);
 Topics.attachBehaviour(Revisioned(['text', 'title']));
 Topics.attachBehaviour(Likeable);
 Topics.attachBehaviour(Flagable);
 Topics.attachBehaviour(Workflow());
 Topics.attachBehaviour(SerialId(['category', 'ticket.type']));
-Topics.schema = new SimpleSchema(Topics.simpleSchema());
 
-
-// Topics.schema is just the core schema, shared by all.
-// Topics.simpleSchema() is the full schema containg timestamps plus all optional additions for the subtypes.
-// Topics.schema.i18n('schemaTopics'); // sub-type of Topics will define their own translations
+Topics.attachVariantSchema(undefined, { selector: { category: 'room' } });
+Topics.attachVariantSchema(undefined, { selector: { category: 'forum' } });
+Topics.attachVariantSchema(undefined, { selector: { category: 'news' } });
 
 Meteor.startup(function attach() {
-  Topics.simpleSchema().i18n('schemaTopics');
-  Topics.schema.i18n('schemaTopics');
+  Topics.categoryValues.forEach(category =>
+    Topics.simpleSchema({ category }).i18n('schemaTopics')
+  );
+//  Topics.schema.i18n('schemaTopics');
 });
 
 Topics.modifiableFields = ['title', 'text', 'sticky', 'agendaId', 'photo'];

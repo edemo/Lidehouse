@@ -2,7 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
+import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import 'meteor/helfer:minimongo-index';
+import { debugAssert } from '/imports/utils/assert.js';
 
 export const MinimongoIndexing = true;
 
@@ -29,17 +31,60 @@ Mongo.Collection.prototype.ensureIndex = function ensureIndex(map, options) {
   }
 };
 
-Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
+/*
+const collection2attachSchema = Mongo.Collection.prototype.attachSchema;
+Mongo.Collection.prototype.attachSchema = function attachSchema(schema, options) {
   const collection = this;
-  if (collection.simpleSchema()) {
-    collection.attachSchema(behaviour.schema);
+  debugAssert(!collection._baseSchemas);
+  return collection2attachSchema(schema, options);
+};
+*/
+
+Mongo.Collection.prototype.attachBaseSchema = function attachBaseSchema(schema, options) {
+  debugAssert(!options);
+  const collection = this;
+  // collection2 treats !options.selector as you don't want variant schemas at all
+  // but we do, and we want this schema part to be a common part among them
+//  collection._baseSchemas = collection._baseSchemas || [];
+//  collection._baseSchemas.push(schema);
+  collection._baseSchema = new SimpleSchema([collection._baseSchema || {}, schema]);
+};
+
+Mongo.Collection.prototype.attachVariantSchema = function attachVariantSchema(schema, options) {
+  debugAssert(options.selector);
+  const collection = this;
+  collection.attachSchema(collection._baseSchema, options);
+  collection.attachSchema(schema, options);
+  collection._behaviours.forEach(behaviour => collection._applyBehaviour(behaviour, options));
+};
+
+Mongo.Collection.prototype.attachBehaviour = function attachBehaviour(behaviour) {
+  const collection = this;
+  if (collection.simpleSchema()) collection._applyBehaviour(behaviour);
+  else {
+    collection._behaviours = collection._behaviours || [];
+    collection._behaviours.push(behaviour);
   }
+  collection._baseSchema = new SimpleSchema([collection._baseSchema || {}, behaviour.schema]);
+};
+
+Mongo.Collection.prototype._applyBehaviour = function _applyBehaviour(behaviour, schemaOptions) {
+  const collection = this;
+//  console.log('_applyBehaviour', behaviour, schemaOptions);
+  collection.attachSchema(behaviour.schema, schemaOptions);
+
+  collection._behaviourMethodsApplied = collection._behaviourMethodsApplied || {};
+  if (collection._behaviourMethodsApplied[behaviour.name]) return;
+  collection._behaviourMethodsApplied[behaviour.name] = true;
+
   collection.helpers(behaviour.helpers);
   if (behaviour.staticHelpers) {
     _.each(behaviour.staticHelpers, function (func, key) {
       collection[key] = func;
     });
   }
+
+//  console.log('_applyBehaviour methods!');
 
   collection.methods = collection.methods || {};
   _.forEach(behaviour.methods, (method, key) => {
@@ -50,6 +95,7 @@ Mongo.Collection.prototype.attachBehaviour = function attach(behaviour) {
     });
     _.extend(collection.methods, { [key]: methodCopy });
   });
+//  console.log(collection.methods);
 
   if (Meteor.isClient) return;  // No hooking on the client side
   const hooks = (typeof behaviour.hooks === 'function') ? behaviour.hooks(collection) : behaviour.hooks;

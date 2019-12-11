@@ -39,14 +39,14 @@ class CollectionStage {
 //    console.log('insert', this._toString());
     return _id;
   }
-  update(selector, modifier) {
+  update(selector, modifier, options) {
     const collectionVersions = this._collection.find(selector);
     collectionVersions.forEach(doc => {
       if (!this._fresh.findOne(doc._id)) this._fresh.insert(doc);
     });
-    const freshResult = this._fresh.update(selector, modifier);
+    const freshResult = this._fresh.update(selector, modifier, options);
 
-    this._operations.push({ operation: this._collection.update, params: [selector, modifier] });
+    this._operations.push({ operation: this._collection.update, params: [selector, modifier, options] });
 //    console.log('update', this._toString());
     return freshResult;
   }

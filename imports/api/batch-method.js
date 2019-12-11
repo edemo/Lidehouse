@@ -67,8 +67,8 @@ export class BatchTester extends ValidatedMethod {
 
         const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
         args.forEach((doc, i) => {
-          collection.simpleSchema().clean(doc);
-          collection.simpleSchema().validate(doc);
+          collection.simpleSchema(doc).clean(doc);
+          collection.simpleSchema(doc).validate(doc);
           const selector = {};
           collection.idSet.forEach((field) => {
             if (doc[field]) selector[field] = doc[field];
@@ -95,7 +95,7 @@ export class UpsertMethod extends ValidatedMethod {
     const upsertName = collection._name + '.upsert';
     const options = {
       name: upsertName,
-      validate: collection.simpleSchema().validator({ clean: true }),
+      validate: doc => collection.simpleSchema(doc).validator({ clean: true })(doc),
       run(doc) {
 //        console.log('Upserting:', doc);
         const communityId = doc.communityId;

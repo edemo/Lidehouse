@@ -49,7 +49,7 @@ export const castVote = new ValidatedMethod({
       }
     }
 */
-    const res = Topics.update(topicId, topicModifier);
+    const res = Topics.update(topicId, topicModifier, { selector: { category: 'vote' } });
     debugAssert(res === 1); // should not continue if it was not successful
 
     if (Meteor.isServer) {

@@ -22,17 +22,18 @@ export const ranks = [
 ];
 
 // Groupings just to ease configuration
-export const occupantRoles = ['owner', 'benefactor'];
-export const leaderRoles = ['admin', 'manager', 'board'];
-export const nonLeaderRoles = ['moderator', 'accountant', 'treasurer', 'overseer', 'maintainer'];
-export const officerRoles = _.union(leaderRoles, nonLeaderRoles);
-export const autoAssignedRoles = ['delegate', 'guest'];
-export const votingRoles = ['owner', 'delegate'];
 export const everyRole = defaultRoles.map(r => r.name);
 export const everyBody = ['null']; // Even the not-logged-in user
 export const exceptGuest = _.without(everyRole, 'guest');
 export const exceptAdmin = _.without(everyRole, 'admin');
 export const nobody = [];
+export const occupantRoles = ['owner', 'benefactor'];
+export const nonOccupantRoles = _.without(everyRole, occupantRoles);
+export const leaderRoles = ['admin', 'manager', 'board'];
+export const nonLeaderRoles = ['moderator', 'accountant', 'treasurer', 'overseer', 'maintainer'];
+export const officerRoles = _.union(leaderRoles, nonLeaderRoles);
+export const autoAssignedRoles = ['delegate', 'guest'];
+export const votingRoles = ['owner', 'delegate'];
 
 // =====================================
 

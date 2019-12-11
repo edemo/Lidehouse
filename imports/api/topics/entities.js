@@ -7,7 +7,7 @@ import { Votings } from './votings/votings.js';
 import { Tickets } from './tickets/tickets.js';
 
 export const ticketSchemaWithMoreDates = new SimpleSchema([
-  Tickets.schema, {
+  Topics.simpleSchema({ category: 'ticket' }), {
     moreDates: { type: [Date], optional: true },
   },
 ]);
@@ -23,6 +23,7 @@ const UpgradeProto = Topics._transform({ category: 'ticket', text: '-', ticket: 
 Topics.entities = {
   news: {
     name: 'news',
+    schema: Topics.simpleSchema({ category: 'news' }),
     inputFields: ['title', 'text', 'photo', 'sticky'],
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
@@ -31,6 +32,7 @@ Topics.entities = {
   },
   forum: {
     name: 'forum',
+    schema: Topics.simpleSchema({ category: 'forum' }),
     inputFields: ['title', 'text', 'photo'],
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
@@ -39,8 +41,8 @@ Topics.entities = {
   },
   vote: {
     name: 'vote',
+    schema: Topics.simpleSchema({ category: 'vote' }),
     form: 'Voting_edit',
-    schema: Votings.schema,
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
       category: 'vote',
@@ -49,7 +51,7 @@ Topics.entities = {
   // tickets
   issue: {
     name: 'issue',
-    schema: Tickets.schema,
+    schema: Topics.simpleSchema({ category: 'ticket' }),
     inputFields: IssueProto.inputFields(),
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),
@@ -74,7 +76,7 @@ Topics.entities = {
   },
   upgrade: {
     name: 'upgrade',
-    schema: Tickets.schema,
+    schema: Topics.simpleSchema({ category: 'ticket' }),
     inputFields: UpgradeProto.inputFields(),
     implicitFields: {
       communityId: () => Session.get('activeCommunityId'),

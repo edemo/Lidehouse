@@ -32,7 +32,8 @@ function statusChangeSchema(doc, statusName) {
   const dataSchema = statusObject.data ? new SimpleSchema(
     statusObject.data.map(function (dataField) { return { [dataField]: /*TODO*/Tickets.extensionRawSchema[dataField] }; })
   ) : undefined;
-  const schema = new SimpleSchema([Comments.schema,
+  const schema = new SimpleSchema([
+    Comments.simpleSchema({ category: 'statusChangeTo' }),
     { status: { type: String, autoform: fixedStatusValue(statusName), autoValue() { return statusName; } } },
     statusObject.data ? { [doc.category]: { type: dataSchema, optional: true } } : {},
   ]);
@@ -51,7 +52,6 @@ Topics.actions = {
         body: options.entity.form,
         // --- autoform ---
         id: `af.${entity.name}.insert`,
-        collection: Topics,
         schema: entity.schema,
         fields: entity.inputFields,
         omitFields: (entity.omitFields || []).concat(Session.get('modalContext').omitFields),
@@ -81,7 +81,6 @@ Topics.actions = {
         body: entity.form,
         // --- autoform ---
         id: `af.${doc.entityName()}.update`,
-        collection: Topics,
         schema: entity.schema,
         fields: _.intersection(entity.inputFields, doc.modifiableFields()),
         omitFields: entity.omitFields,
@@ -102,7 +101,6 @@ Topics.actions = {
       const entity = Topics.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.statusUpdate`,
-        collection: Topics,
         schema: entity.schema,
         fields: doc.statusFields(),
         omitFields: entity.omitFields,

@@ -100,8 +100,9 @@ function checkStatusChangeAllowed(topic, statusTo) {
 
 const statusChange = new ValidatedMethod({
   name: 'statusChange',
-  validate: Comments.simpleSchema().validator({ clean: true }),
+  validate: doc => Comments.simpleSchema({ category: 'statusChangeTo' }).validator({ clean: true })(doc),
   run(event) {
+    _.extend(event, { category: 'statusChangeTo' });
     const topic = checkExists(Topics, event.topicId);
     const category = topic.category;
     const workflow = topic.workflow();
@@ -120,7 +121,7 @@ const statusChange = new ValidatedMethod({
     }
     const updateResult = Topics.update(event.topicId, { $set: topicModifier });
 
-    const insertResult = Comments.insert({ category: 'statusChangeTo', ...event });
+    const insertResult = Comments.insert(event);
 
     const newTopic = Topics.findOne(event.topicId);
     const onEnter = workflow[event.status].obj.onEnter;
