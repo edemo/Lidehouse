@@ -76,8 +76,7 @@ Memberships.actions = {
     visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc),
     run(options, doc, event, instance) {
       Modal.show('Autoform_modal', {
-        id: `af.${doc.entityName()}.update`,
-        collection: Memberships,
+        id: 'af.membership.period',
         schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
@@ -112,6 +111,8 @@ Memberships.actions = {
 };
 
 //-------------------------------------------------------
+
+AutoForm.addModalHooks('af.membership.period');
 
 _.each(Memberships.entities, (entity, entityName) => {
   AutoForm.addModalHooks(`af.${entityName}.insert`);
