@@ -208,7 +208,9 @@
                         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
                         <h2>{{_ 'officers'}}</h2>
                         {{#if userHasPermission 'roleship.insert'}}
-                        <button class="btn btn-primary btn-sm pull-right js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong></button>
+                        <button class="btn btn-primary btn-sm pull-right js-new memberships" data-entity="roleship">
+                            <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong>
+                        </button>
                         {{/if}}
                         <p>
                             {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.length}}<br>

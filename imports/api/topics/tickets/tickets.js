@@ -4,6 +4,7 @@ import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 
+import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 import { chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
@@ -24,7 +25,7 @@ Tickets.chargeTypeValues = ['oneoff', 'lumpsum', 'warranty', 'insurance'];
 
 Tickets.extensionRawSchema = {
   type: { type: String, allowedValues: Tickets.typeValues, autoform: autoformOptions(Tickets.typeValues, 'schemaTickets.ticket.type.') },
-  urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.'), optional: true },
+  urgency: { type: String, allowedValues: Tickets.urgencyValues, autoform: autoformOptions(Tickets.urgencyValues, 'schemaTickets.ticket.urgency.') },
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
   partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
   contractId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseContract, optional: true },

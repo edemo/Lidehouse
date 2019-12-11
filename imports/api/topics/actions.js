@@ -229,13 +229,6 @@ _.each(Topics.entities, (entity, entityName) => {
     },
   });
 
-  AutoForm.addHooks(`af.${entityName}.update`, {
-    formToDoc(doc) {
-      debugger;
-      return doc;
-    },
-  });
-
   AutoForm.addHooks(`af.${entityName}.statusChange`, {
     formToDoc(doc) {
       doc.topicId = Session.get('modalContext').topicId;
