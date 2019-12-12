@@ -21,6 +21,8 @@ Template.Tickets.viewmodel({
     instance.autorun(() => {
       const communityId = Session.get('activeCommunityId');
       instance.subscribe('topics.list', { communityId, category: 'ticket' });
+      instance.subscribe('contracts.inCommunity', { communityId });
+      instance.subscribe('partners.inCommunity', { communityId });
     });
   },
   statusColor(value) {
