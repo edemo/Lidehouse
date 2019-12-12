@@ -42,8 +42,7 @@ function runPositingRules(context, doc) {
 
 export const insert = new ValidatedMethod({
   name: 'transactions.insert',
-  validate: Transactions.simpleSchema().validator({ clean: true }),
-
+  validate: doc => Transactions.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
     checkPermissions(this.userId, 'transactions.insert', doc.communityId);
     if (doc.category === 'payment' && doc.billId) {
@@ -66,7 +65,6 @@ export const update = new ValidatedMethod({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
     modifier: { type: Object, blackbox: true },
   }).validator(),
-
   run({ _id, modifier }) {
     const doc = checkExists(Transactions, _id);
     checkModifier(doc, modifier, ['communityId'], true);
@@ -74,7 +72,7 @@ export const update = new ValidatedMethod({
     if (doc.isSolidified() && doc.complete) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after 24 hours');
     }
-    Transactions.update({ _id }, modifier);
+    Transactions.update({ _id }, modifier, { selector: { category: doc.category } });
   },
 });
 
@@ -90,7 +88,6 @@ export const post = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.post', doc.communityId);
@@ -115,7 +112,6 @@ export const remove = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
     checkPermissions(this.userId, 'transactions.remove', doc.communityId);
@@ -134,7 +130,6 @@ export const cloneAccountingTemplates = new ValidatedMethod({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
 //    name: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-
   run({ communityId /*, name*/ }) {
     checkPermissions(this.userId, 'breakdowns.insert', communityId);
     const user = Meteor.users.findOne(this.userId);

@@ -24,12 +24,12 @@ import { Bills } from '../bills/bills.js';
 
 export const Payments = {};
 
-Payments.extensionSchema = new SimpleSchema({
+Payments.extensionSchema = new SimpleSchema([Transactions.partnerSchema, {
   payAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
   // Connect either a bill or a contra account
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   // contraAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '') },  // the contra account if no bill is connected
-});
+}]);
 
 Transactions.categoryHelpers('payment', {
   lineCount() {
@@ -94,13 +94,10 @@ Transactions.categoryHelpers('payment', {
   },
 });
 
-Payments.schema = new SimpleSchema([Transactions.schema, Payments.extensionSchema]);
-Transactions.attachSchema(Payments.schema,
-//  { selector: { category: 'payment' } },
-);
+Transactions.attachVariantSchema(Payments.extensionSchema, { selector: { category: 'payment' } });
 
 Meteor.startup(function attach() {
-  Transactions.simpleSchema().i18n('schemaPayments');
+  Transactions.simpleSchema({ category: 'payment' }).i18n('schemaPayments');
 });
 
 // --- Factory ---

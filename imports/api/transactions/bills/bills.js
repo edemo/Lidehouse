@@ -55,17 +55,21 @@ const lineSchema = {
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
 Bills.lineSchema = new SimpleSchema(lineSchema);
 
-Bills.extensionSchema = new SimpleSchema({
-  issueDate: { type: Date, optional: true },
-  deliveryDate: { type: Date, optional: true },
-  dueDate: { type: Date, optional: true },
+Bills.extensionSchema = new SimpleSchema([Transactions.partnerSchema, {
+  // amount overrides non-optional value of transactions, with optional & calculated value
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  issueDate: { type: Date },
+  deliveryDate: { type: Date },
+  dueDate: { type: Date },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
   payments: { type: Array, defaultValue: [] },
   'payments.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client can ask to sort on outstanding amount
+  // cached value, so client can ask to sort on outstanding amount:
+  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
 //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
-});
+}]);
 
 Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partnerId'];
 
@@ -172,13 +176,10 @@ Transactions.categoryHelpers('bill', {
   },
 });
 
-Bills.schema = new SimpleSchema([Transactions.schema, Bills.extensionSchema]);
-Transactions.attachSchema(Bills.schema,
-//  { selector: { category: 'bill' } },
-);
+Transactions.attachVariantSchema(Bills.extensionSchema, { selector: { category: 'bill' } });
 
 Meteor.startup(function attach() {
-  Transactions.simpleSchema().i18n('schemaBills');
+  Transactions.simpleSchema({ category: 'bill' }).i18n('schemaBills');
 });
 
 // --- Factory ---
