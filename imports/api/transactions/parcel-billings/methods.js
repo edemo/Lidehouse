@@ -83,20 +83,21 @@ export const apply = new ValidatedMethod({
           line.localizer = Localizer.parcelRef2code(parcel.ref);
           line.title = `${parcelBilling.title}`;
 
-          // Creating the bill - adding entry to the bill
-          bills[parcel._id] = bills[parcel._id] || {
+          // Creating the bill - adding line to the bill
+          const leadParcelId = parcel.leadParcelId();
+          bills[leadParcelId] = bills[leadParcelId] || {
             communityId: parcelBilling.communityId,
             category: 'bill',
             relation: 'parcel',
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
-            partnerId: parcel.payer()._id,
+            partnerId: parcel.leadParcel().payer()._id,
             valueDate: Clock.currentDate(),
             issueDate: Clock.currentDate(),
             deliveryDate: date,
             dueDate: moment(Clock.currentDate()).add(BILLING_DUE_DAYS, 'days').toDate(),
             lines: [],
           };
-          bills[parcel._id].lines.push(line);
+          bills[leadParcelId].lines.push(line);
 
           // Updating the meter readings
           if (activeMeter) {
