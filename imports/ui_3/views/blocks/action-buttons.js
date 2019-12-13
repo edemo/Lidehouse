@@ -2,7 +2,7 @@ import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
-import { debugAssert } from '/imports/utils/assert.js';
+import './menu-overflow-guard.js';
 import './action-buttons.html';
 
 // Apply these event handlers to your template, if the buttons are not created as Action_button templates,
@@ -153,22 +153,6 @@ Template.Action_listitems_status_change.viewmodel({
   },
 });
 
-Template.Action_buttons_dropdown.onRendered(function() {
-  if ($('.dropdown').parents('.table-responsive').length > 0) {
-    $('.dropdown').on('show.bs.dropdown', function () {
-      const thisDropdown = $(this);
-      $('body').append(thisDropdown.addClass('body-appended')
-        .css({ position: "absolute", left: thisDropdown.offset().left, top: thisDropdown.offset().top }));
-    });
-    $('.dropdown').on('hidden.bs.dropdown', function () {
-      const thisDropdown = $(this);
-      const originalParent = '#container-' + this.id;
-      $(originalParent).append(thisDropdown.removeClass('body-appended')
-        .css({ position: "relative", left: "auto", top: "auto" }));
-    });
-  }
-});
-
 Template.Action_buttons_dropdown.viewmodel({
   _actions() {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
@@ -190,10 +174,6 @@ Template.Action_buttons_dropdown.viewmodel({
   getDoc() {
     return fetchDoc(this.templateInstance.data);
   },
-});
-
-Template.Action_buttons_dropdown.onDestroyed(function() {
-  $('.dropdown.body-appended').remove();
 });
 
 Template.Action_buttons_dropdown_list.viewmodel({
