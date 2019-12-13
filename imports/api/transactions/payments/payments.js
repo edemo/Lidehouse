@@ -1,26 +1,17 @@
 import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
-import { moment } from 'meteor/momentjs:moment';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Communities, getActiveCommunityId } from '/imports/api/communities/communities.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
-import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
-import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { SerialId } from '/imports/api/behaviours/serial-id.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
-import { Bills } from '../bills/bills.js';
 
 export const Payments = {};
 
@@ -75,7 +66,10 @@ Transactions.categoryHelpers('payment', {
   registerOnBill() {
     debugAssert(this.billId, 'Cannot process a payment without connecting it to a bill first');
     const bill = Transactions.findOne(this.billId);
-    Transactions.update(this.billId, { $set: { amount: bill.amount /* triggers outstanding calc */, payments: bill.payments.concat([this._id]) } });
+    return Transactions.update(this.billId,
+      { $set: { amount: bill.amount /* triggers outstanding calc */, payments: bill.payments.concat([this._id]) } },
+      { selector: { category: 'bill' } },
+    );
   },
   updateOutstandings(sign) {
     if (Meteor.isClient) return;
@@ -105,6 +99,9 @@ Meteor.startup(function attach() {
 Factory.define('payment', Transactions, {
   category: 'payment',
 //  billId: () => Factory.get('bill'),
+  relation: 'supplier',
+  partnerId: () => Factory.get('supplier'),
+  contractId: () => Factory.get('contract'),
   valueDate: Clock.currentDate(),
   amount: () => faker.random.number(1000),
   payAccount: '85',

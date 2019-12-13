@@ -24,7 +24,7 @@ if (Meteor.isServer) {
   let parcelId;
 
   describe('person', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     before(function () {
       sinon.stub(Email);          // Mocking the Email sending
       Fixture = freshFixture();

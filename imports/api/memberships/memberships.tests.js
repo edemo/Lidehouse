@@ -23,7 +23,7 @@ if (Meteor.isServer) {
   let Fixture;
 
   describe('memberships', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
     });

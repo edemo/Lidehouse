@@ -45,12 +45,15 @@ export const insert = new ValidatedMethod({
   validate: doc => Transactions.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
     checkPermissions(this.userId, 'transactions.insert', doc.communityId);
-    if (doc.category === 'payment' && doc.billId) {
-      const bill = Transactions.findOne(doc.billId);
-      if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-      doc.relation = doc.relation || bill.relation;
-      doc.partnerId = doc.partnerId || bill.partnerId;
-      doc.contractId = doc.contractId || bill.contractId;
+    if (doc.category === 'payment') {
+      if (doc.billId) {
+        const bill = Transactions.findOne(doc.billId);
+        if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+        doc.relation = bill.relation;
+        doc.partnerId = bill.partnerId;
+        doc.contractId = bill.contractId;
+      }
+//      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
     }
 
     const id = Transactions.insert(doc);

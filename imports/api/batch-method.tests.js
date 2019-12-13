@@ -2,16 +2,9 @@
 /* eslint-disable func-names, prefer-arrow-callback, padded-blocks, one-var, one-var-declaration-per-line */
 
 import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
-
 import { freshFixture } from '/imports/api/test-utils.js';
-import { BatchMethod } from './batch-method.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Tickets } from '/imports/api/topics/tickets/tickets.js';
-import { Factory } from 'meteor/dburles:factory';
 
 if (Meteor.isServer) {
 
@@ -21,7 +14,7 @@ if (Meteor.isServer) {
   let header;
 
   describe('batch-method', function () {
-    this.timeout(5000);
+    this.timeout(15000);
 /*
     const collection = new Mongo.Collection('batchables');
     const insertMethod = new ValidatedMethod({
@@ -41,7 +34,7 @@ if (Meteor.isServer) {
         Topics.remove({});
         communityId = Fixture.demoCommunityId;
         userId = Fixture.demoAdminId;
-        header = { communityId, userId, category: 'ticket', status: 'reported', ticket: { type: 'issue' } };
+        header = { communityId, userId, category: 'ticket', status: 'reported', ticket: { type: 'issue', urgency: 'normal' } };
       });
 
       it('inserts single', function (done) {
@@ -150,7 +143,7 @@ if (Meteor.isServer) {
         Topics.remove({});
         communityId = Fixture.demoCommunityId;
         userId = Fixture.demoAdminId;
-        header = { communityId, userId, category: 'ticket', status: 'reported', ticket: { type: 'issue' } };
+        header = { communityId, userId, category: 'ticket', status: 'reported', ticket: { type: 'issue', urgency: 'normal' } };
       });
 
       it('when inerting multiple, and one has error, the rest is inserted', function (done) {

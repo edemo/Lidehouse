@@ -10,7 +10,7 @@ import { SideBreakdown } from '/imports/api/transactions/breakdowns/tx-side.js';
 
 if (Meteor.isServer) {
   xdescribe('table reports', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     let JournalEntries;
     before(function () {
       JournalEntries = new Mongo.Collection('entries');

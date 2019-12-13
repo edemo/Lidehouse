@@ -12,32 +12,20 @@ import { Clock } from '/imports/utils/clock';
 import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import '/imports/api/meters/methods.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Topics } from '/imports/api/topics/topics.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import '/imports/api/comments/methods.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import '/imports/api/transactions/breakdowns/methods.js';
-import { Partners } from '/imports/api/partners/partners.js';
-import '/imports/api/partners/methods.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
-import { Payments } from '/imports/api/transactions/payments/payments.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import '/imports/api/transactions/methods.js';
-import { Statements } from '/imports/api/transactions/statements/statements.js';
-import '/imports/api/transactions/statements/methods.js';
-import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
-import '/imports/api/transactions/statement-entries/methods.js';
-
-import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import '/imports/api/transactions/parcel-billings/methods.js';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Bills } from '/imports/api/transactions/bills/bills.js'; // factory needed
+import { Payments } from '/imports/api/transactions/payments/payments.js'; // factory needed
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import '/imports/startup/server/register-api';  // brings all methods
 import { runWithFakeUserId, uploadFileSimulation } from './demo-upload';
-
 
 export class CommunityBuilder {
   constructor(communityId, demoOrTest, lang) {
@@ -96,8 +84,6 @@ export class CommunityBuilder {
         case 'partners':
         case 'meters': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');
-        case 'bills':
-        case 'payments':
         case 'transactions':
         case 'statements':
         case 'statementEntries':

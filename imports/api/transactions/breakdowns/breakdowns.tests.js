@@ -14,7 +14,7 @@ if (Meteor.isServer) {
   let breakdown;
 
   describe('breakdowns', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
     });

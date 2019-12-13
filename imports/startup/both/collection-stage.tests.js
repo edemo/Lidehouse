@@ -10,7 +10,7 @@ import './collection-stage.js';
 
 if (Meteor.isServer) {
   describe('collection-stage', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     let Whatevers;
     let Stage;
 

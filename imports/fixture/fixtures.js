@@ -4,32 +4,14 @@ import { moment } from 'meteor/momentjs:moment';
 import { Fraction } from 'fractional';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
-import { debugAssert } from '/imports/utils/assert.js';
 
-import { Accounts } from 'meteor/accounts-base';
+import { debugAssert } from '/imports/utils/assert.js';
+import { Clock } from '/imports/utils/clock';
 import { Communities } from '/imports/api/communities/communities.js';
-import { update as updateCommunity } from '/imports/api/communities/methods.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
-import { defaultRoles } from '/imports/api/permissions/roles.js';
-import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { castVote, closeVote } from '/imports/api/topics/votings/methods.js';
-import { Comments } from '/imports/api/comments/comments.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
-import { insert as insertParcelBilling } from '/imports/api/transactions/parcel-billings/methods.js';
 import { CommunityBuilder } from './community-builder.js';
-import { Clock } from '/imports/utils/clock';
-
-import '/imports/api/topics/votings/votings.js';
-import '/imports/api/topics/tickets/tickets.js';
-import '/imports/api/topics/rooms/rooms.js';
-import '/imports/api/transactions/tx-cats/methods.js';
-
 
 export function insertUnittestFixture(lang) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };

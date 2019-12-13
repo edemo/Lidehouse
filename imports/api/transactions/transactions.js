@@ -26,7 +26,7 @@ import { StatementEntries } from '/imports/api/transactions/statements/statement
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'transfer', 'op', 'custom'];
+Transactions.categoryValues = ['bill', 'payment', 'movement', 'transfer', 'opening', 'void'];
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
@@ -38,7 +38,7 @@ Transactions.entrySchema = new SimpleSchema([
 
 Transactions.coreSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  category: { type: String, allowedValues: Transactions.categoryValues, defaultValue: 'op', autoform: { omit: true } },
+  category: { type: String, allowedValues: Transactions.categoryValues, autoform: { omit: true } },
   valueDate: { type: Date },
   amount: { type: Number, decimal: true },
   catId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
@@ -235,14 +235,19 @@ Transactions.attachBaseSchema(Transactions.baseSchema);
 Transactions.attachBehaviour(SerialId(['category', 'relation']));
 Transactions.attachBehaviour(Timestamped);
 
-Transactions.attachVariantSchema(undefined, { selector: { category: 'op' } });
+const movementSchema = new SimpleSchema({
+  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
+});
+Transactions.attachVariantSchema(movementSchema, { selector: { category: 'movement' } });
 Transactions.attachVariantSchema(undefined, { selector: { category: 'transfer' } });
-Transactions.attachVariantSchema(undefined, { selector: { category: 'custom' } });
+Transactions.attachVariantSchema(undefined, { selector: { category: 'opening' } });
+Transactions.attachVariantSchema(undefined, { selector: { category: 'void' } });
 
 Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'op' }).i18n('schemaTransactions');
+  Transactions.simpleSchema({ category: 'movement' }).i18n('schemaTransactions');
   Transactions.simpleSchema({ category: 'transfer' }).i18n('schemaTransactions');
-  Transactions.simpleSchema({ category: 'custom' }).i18n('schemaTransactions');
+  Transactions.simpleSchema({ category: 'opening' }).i18n('schemaTransactions');
+  Transactions.simpleSchema({ category: 'void' }).i18n('schemaTransactions');
 });
 
 // --- Before/after actions ---
@@ -339,6 +344,29 @@ if (Meteor.isServer) {
 
 Factory.define('transaction', Transactions, {
   valueDate: () => Clock.currentDate(),
+  debit: [],
+  credit: [],
+});
+
+Factory.define('opening', Transactions, {
+  valueDate: () => Clock.currentDate(),
+  category: 'opening',
+  debit: [],
+  credit: [],
+});
+
+Factory.define('income', Transactions, {
+  valueDate: () => Clock.currentDate(),
+  category: 'movement',
+  relation: 'customer',
+  debit: [],
+  credit: [],
+});
+
+Factory.define('expense', Transactions, {
+  valueDate: () => Clock.currentDate(),
+  category: 'movement',
+  relation: 'supplier',
   debit: [],
   credit: [],
 });

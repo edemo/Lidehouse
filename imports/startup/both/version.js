@@ -6,8 +6,7 @@ const version = new Date();
 export const getVersion = new ValidatedMethod({
   name: 'version.get',
   validate: new SimpleSchema({}).validator(),
-
-  run(params) {
+  run() {
     return version;
   },
 });

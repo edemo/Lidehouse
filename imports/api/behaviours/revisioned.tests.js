@@ -10,7 +10,7 @@ import { Revisioned } from './revisioned.js';
 if (Meteor.isServer) {
 
   describe('revision', function () {
-    this.timeout(5000);
+    this.timeout(15000);
 
     const schema = new SimpleSchema({
       textField: { type: String, optional: true },

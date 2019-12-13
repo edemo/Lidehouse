@@ -3,7 +3,6 @@ import { _ } from 'meteor/underscore';
 
 import { Permissions } from '/imports/api/permissions/permissions.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import '/imports/api/users/users.js';
 
 export function checkConstraint(predicate, errorMessage) {
   if (!predicate) {
@@ -41,7 +40,7 @@ export function checkNotExists(collection, predicate) {
 
 export function checkPermissions(userId, permissionName, communityId, object) {
   // Checks that *user* has *permission* in given *community* to perform things on given *object*
-  const user = Meteor.users.findOne(userId);
+  const user = Meteor.users.findOneOrNull(userId);
   if (!user.hasPermission(permissionName, communityId, object)) {
     throw new Meteor.Error('err_permissionDenied',
       `No permission to perform this activity: ${permissionName}, userId: ${userId}, communityId: ${communityId}, objectId: ${object ? object._id : '-'}`);
@@ -49,7 +48,7 @@ export function checkPermissions(userId, permissionName, communityId, object) {
 }
 
 export function checkPermissionsWithApprove(userId, permissionName, communityId, object) {
-  const user = Meteor.users.findOne(userId);
+  const user = Meteor.users.findOneOrNull(userId);
   if (user.hasPermission(permissionName, communityId, object)) {
     object.approved = true;
   } else if (user.hasPermission(permissionName + '.unapproved', communityId, object)) {

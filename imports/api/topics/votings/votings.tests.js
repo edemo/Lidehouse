@@ -3,23 +3,18 @@
 
 import { Meteor } from 'meteor/meteor';
 import { PublicationCollector } from 'meteor/johanbrook:publication-collector';
-import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Fraction } from 'fractional';
 import { moment } from 'meteor/momentjs:moment';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { Random } from 'meteor/random';
 import { _ } from 'meteor/underscore';
-import '/imports/api/users/users.js';
-import { Communities } from '/imports/api/communities/communities.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
+import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/votings/votings.js';
-import '/imports/api/topics/methods.js';
 import { castVote } from '/imports/api/topics/votings/methods.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { insert as insertAgenda } from '/imports/api/agendas/methods.js';
-import { insert as insertDelegation, remove as removeDelegation } from '/imports/api/delegations/methods.js';
+import { Delegations } from '/imports/api/delegations/delegations.js';
 
 if (Meteor.isServer) {
   let Fixture;
@@ -110,7 +105,7 @@ if (Meteor.isServer) {
       let agendaId;
 
       before(function () {
-        agendaId = insertAgenda._execute({ userId: Fixture.demoManagerId }, {
+        agendaId = Agendas.methods.insert._execute({ userId: Fixture.demoManagerId }, {
           communityId: Fixture.demoCommunityId,
           title: 'Test Agenda',
         });
@@ -266,7 +261,7 @@ if (Meteor.isServer) {
 
       it('evaluates well on indirect votes', function (done) {
         // New delegation 4 => 3 (delegatee has not voted yet)
-        const delegationId = insertDelegation._execute(
+        const delegationId = Delegations.methods.insert._execute(
           { userId: Fixture.dummyUsers[4] },
           { sourcePersonId: Fixture.dummyUsers[4], targetPersonId: Fixture.dummyUsers[3], scope: 'community', scopeObjectId: Fixture.demoCommunityId }
         );
@@ -289,7 +284,7 @@ if (Meteor.isServer) {
         assertsAfterIndirectVote();
 
         // Delegation revoked
-        removeDelegation._execute({ userId: Fixture.dummyUsers[4] }, { _id: delegationId });
+        Delegations.methods.remove._execute({ userId: Fixture.dummyUsers[4] }, { _id: delegationId });
         // TODO it doesnt come into effect until SOME vote is cast
         castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [0] });
 
@@ -301,7 +296,7 @@ if (Meteor.isServer) {
       it('evaluates well on different delegation scopes', function (done) {
         let delegationId;
         function insertDelegation3To4(scope, scopeObjectId) {
-          delegationId = insertDelegation._execute(
+          delegationId = Delegations.methods.insert._execute(
             { userId: Fixture.dummyUsers[4] },
             { sourcePersonId: Fixture.dummyUsers[4], targetPersonId: Fixture.dummyUsers[3], scope, scopeObjectId }
           );
@@ -309,7 +304,7 @@ if (Meteor.isServer) {
           castVote._execute({ userId: Fixture.dummyUsers[1] }, { topicId: votingId, castedVote: [1] });
         }
         function revokeDelegation3To4(scope, scopeObjectId) {
-          removeDelegation._execute(
+          Delegations.methods.remove._execute(
             { userId: Fixture.dummyUsers[4] }, { _id: delegationId }
           );
           // TODO it doesnt come into effect until SOME vote is cast

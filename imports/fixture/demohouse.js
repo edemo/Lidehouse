@@ -925,7 +925,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     ['Assets', 'Megtakarítási számla', 120000],
   ];
   openings.forEach((opening) => {
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('opening', {
       valueDate: new Date(`${lastYear}-01-01`),
       amount: opening[2],
       credit: [{
@@ -996,7 +996,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // === Incomes ===
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-06-01`),
     amount: 3500,
     credit: [{
@@ -1009,7 +1009,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('income', {
       valueDate: new Date(`${lastYear}-${mm}-01`),
       amount: 400,
       credit: [{
@@ -1022,7 +1022,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   });
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-09-15`),
     amount: 500000,
     credit: [{
@@ -1035,7 +1035,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.1'),
   });
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-05-10`),
     amount: 55000,
     credit: [{
@@ -1048,7 +1048,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.2'),
   });
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-10-15`),
     amount: 500000,
     credit: [{
@@ -1061,7 +1061,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.3'),
   });
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-07-21`),
     amount: 2300000,
     credit: [{
@@ -1076,7 +1076,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // == Expenses
 
   for (let mm = 1; mm < 13; mm++) {
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       amount: 80000 + Math.floor(Math.random() * 50000),
       credit: [{
@@ -1088,7 +1088,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
 
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       amount: 98500,
       credit: [{
@@ -1100,7 +1100,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
 
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '07', '08', '10'])}`),
       amount: 150000 + Math.floor(Math.random() * 50000),
       credit: [{
