@@ -134,10 +134,10 @@ if (Meteor.isServer) {
 Factory.define('community', Communities, {
   name: () => faker.random.word() + 'house',
   description: () => faker.lorem.sentence(),
-  zip: () => faker.random.number({ min: 1000, max: 2000 }),
+  zip: () => faker.random.number({ min: 1000, max: 2000 }).toString(),
   city: () => faker.address.city(),
   street: () => faker.address.streetName(),
-  number: () => faker.random.number(),
+  number: () => faker.random.number().toString(),
   lot: () => faker.finance.account(6) + '/' + faker.finance.account(4),
   avatar: 'http://4narchitects.hu/wp-content/uploads/2016/07/LEPKE-1000x480.jpg',
   taxNumber: () => faker.finance.account(6) + '-2-42',

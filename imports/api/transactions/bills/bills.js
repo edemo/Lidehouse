@@ -9,10 +9,8 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
-import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
@@ -55,17 +53,21 @@ const lineSchema = {
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
 Bills.lineSchema = new SimpleSchema(lineSchema);
 
-Bills.extensionSchema = new SimpleSchema({
-  issueDate: { type: Date, optional: true },
-  deliveryDate: { type: Date, optional: true },
-  dueDate: { type: Date, optional: true },
+Bills.extensionSchema = new SimpleSchema([Transactions.partnerSchema, {
+  // amount overrides non-optional value of transactions, with optional & calculated value
+  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
+  issueDate: { type: Date },
+  deliveryDate: { type: Date },
+  dueDate: { type: Date },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
   payments: { type: Array, defaultValue: [] },
   'payments.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value, so client can ask to sort on outstanding amount
+  // cached value, so client can ask to sort on outstanding amount:
+  outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
 //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
-});
+}]);
 
 Bills.modifiableFields = ['amount', 'issueDate', 'valueDate', 'dueDate', 'partnerId'];
 
@@ -157,7 +159,7 @@ Transactions.categoryHelpers('bill', {
   updateOutstandings(directionSign) {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a bill without a partner');
-    Partners.relCollection(this.relation).update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
+    Partners.relCollection(this.relation).update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } }, { selector: { role: 'owner' } });
     if (this.relation === 'parcel') {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
@@ -172,13 +174,10 @@ Transactions.categoryHelpers('bill', {
   },
 });
 
-Bills.schema = new SimpleSchema([Transactions.schema, Bills.extensionSchema]);
-Transactions.attachSchema(Bills.schema,
-//  { selector: { category: 'bill' } },
-);
+Transactions.attachVariantSchema(Bills.extensionSchema, { selector: { category: 'bill' } });
 
 Meteor.startup(function attach() {
-  Transactions.simpleSchema().i18n('schemaBills');
+  Transactions.simpleSchema({ category: 'bill' }).i18n('schemaBills');
 });
 
 // --- Factory ---

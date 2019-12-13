@@ -26,7 +26,7 @@ import { StatementEntries } from '/imports/api/transactions/statements/statement
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'transfer', 'op', 'custom'];
+Transactions.categoryValues = ['bill', 'payment', 'movement', 'transfer', 'opening', 'void'];
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
@@ -36,27 +36,11 @@ Transactions.entrySchema = new SimpleSchema([
   // { paymentId: { type: Number, decimal: true, optional: true } }, // index in the bill payments array
 ]);
 
-Transactions.baseSchema = {
+Transactions.coreSchema = {
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  category: { type: String, allowedValues: Transactions.categoryValues, defaultValue: 'op', autoform: { omit: true } },
-  relation: { type: String, allowedValues: Partners.relationValues, optional: true, autoform: { omit: true } },
-  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePartner },
-/*  autoValue() {
-      if (this.field('billId').value) {
-        const bill = Transactions.findOne(this.field('billId').value);
-        if (bill) return bill.partnerId;
-      } else return undefined;
-    },
-  },*/
-  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
+  category: { type: String, allowedValues: Transactions.categoryValues, autoform: { omit: true } },
   valueDate: { type: Date },
-  amount: { type: Number, decimal: true, optional: true },
-  // for payments
-//  amount: { type: Number, decimal: true, optional: false },
-  // for bills:
-//  amount: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
-  tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
-
+  amount: { type: Number, decimal: true },
   catId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
@@ -68,6 +52,19 @@ Transactions.baseSchema = {
 //  },
   postedAt: { type: Date, optional: true, autoform: { omit: true } },
   reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+};
+
+Transactions.partnerSchema = {
+  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
+  partnerId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePartner },
+/*  autoValue() {
+      if (this.field('billId').value) {
+        const bill = Transactions.findOne(this.field('billId').value);
+        if (bill) return bill.partnerId;
+      } else return undefined;
+    },
+  },*/
+  contractId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseContract },
 };
 
 Transactions.legsSchema = {
@@ -82,8 +79,8 @@ Transactions.noteSchema = {
   note: { type: String, optional: true, autoform: { rows: 3 } },
 };
 
-Transactions.schema = new SimpleSchema([
-  Transactions.baseSchema,
+Transactions.baseSchema = new SimpleSchema([
+  Transactions.coreSchema,
   Transactions.legsSchema,
   Transactions.noteSchema,
 ]);
@@ -234,12 +231,23 @@ Transactions.helpers({
   },
 });
 
-Transactions.attachSchema(Transactions.schema);
+Transactions.attachBaseSchema(Transactions.baseSchema);
 Transactions.attachBehaviour(SerialId(['category', 'relation']));
 Transactions.attachBehaviour(Timestamped);
 
+const movementSchema = new SimpleSchema({
+  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
+});
+Transactions.attachVariantSchema(movementSchema, { selector: { category: 'movement' } });
+Transactions.attachVariantSchema(undefined, { selector: { category: 'transfer' } });
+Transactions.attachVariantSchema(undefined, { selector: { category: 'opening' } });
+Transactions.attachVariantSchema(undefined, { selector: { category: 'void' } });
+
 Meteor.startup(function attach() {
-  Transactions.simpleSchema().i18n('schemaTransactions');
+  Transactions.simpleSchema({ category: 'movement' }).i18n('schemaTransactions');
+  Transactions.simpleSchema({ category: 'transfer' }).i18n('schemaTransactions');
+  Transactions.simpleSchema({ category: 'opening' }).i18n('schemaTransactions');
+  Transactions.simpleSchema({ category: 'void' }).i18n('schemaTransactions');
 });
 
 // --- Before/after actions ---
@@ -336,6 +344,29 @@ if (Meteor.isServer) {
 
 Factory.define('transaction', Transactions, {
   valueDate: () => Clock.currentDate(),
+  debit: [],
+  credit: [],
+});
+
+Factory.define('opening', Transactions, {
+  valueDate: () => Clock.currentDate(),
+  category: 'opening',
+  debit: [],
+  credit: [],
+});
+
+Factory.define('income', Transactions, {
+  valueDate: () => Clock.currentDate(),
+  category: 'movement',
+  relation: 'customer',
+  debit: [],
+  credit: [],
+});
+
+Factory.define('expense', Transactions, {
+  valueDate: () => Clock.currentDate(),
+  category: 'movement',
+  relation: 'supplier',
   debit: [],
   credit: [],
 });

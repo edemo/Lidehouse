@@ -8,6 +8,7 @@ import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Memberships } from './memberships';
 import './entities.js';
 import './methods.js';
@@ -21,7 +22,7 @@ Memberships.actions = {
       const entity = options.entity;
       Modal.show('Autoform_modal', {
         id: `af.${entity.name}.insert`,
-        collection: Memberships,
+        schema: entity.schema,
         fields: entity.inputFields.concat('activeTime'),
         omitFields: entity.omitFields,
         type: 'method',
@@ -43,7 +44,7 @@ Memberships.actions = {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.view`,
-        collection: Memberships,
+        schema: entity.schema,
         fields: entity.inputFields.concat('activeTime'),
         omitFields: entity.omitFields,
         doc,
@@ -59,7 +60,7 @@ Memberships.actions = {
       const entity = Memberships.entities[doc.entityName()];
       Modal.show('Autoform_modal', {
         id: `af.${doc.entityName()}.update`,
-        collection: Memberships,
+        schema: entity.schema,
         fields: entity.modifiableFields,
         omitFields: entity.omitFields,
         doc,
@@ -75,9 +76,8 @@ Memberships.actions = {
     visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc),
     run(options, doc, event, instance) {
       Modal.show('Autoform_modal', {
-        id: `af.${doc.entityName()}.update`,
-        collection: Memberships,
-        fields: ['activeTime'],
+        id: 'af.membership.period',
+        schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
         meteormethod: 'memberships.updateActivePeriod',
@@ -111,6 +111,8 @@ Memberships.actions = {
 };
 
 //-------------------------------------------------------
+
+AutoForm.addModalHooks('af.membership.period');
 
 _.each(Memberships.entities, (entity, entityName) => {
   AutoForm.addModalHooks(`af.${entityName}.insert`);

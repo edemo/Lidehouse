@@ -125,7 +125,7 @@
     "admin": {
       "firstName": "Patrik",
       "lastName": "Juhász",
-      "bio": "Informatikus vagyok. Azért hoztam létre házunkat a honline rendszerben, hogy hatékonyabban tudjunk információkat cserélni, ötletelni. Ha bárkinek kérdése van a rendszerrel kapcsolatban, kérdezzen nyugodtan."
+      "bio": "Ebben a házban lakom már 8 éve. Informatikusként dolgozom, hobbim a búvárkodás. Azért hoztam létre házunkat a honline rendszerben, hogy hatékonyabban tudjunk információkat cserélni, ötletelni."
     },
     "maintainer": {
       "firstName": "Zsigmond",
@@ -173,18 +173,18 @@
       }
     },
     "vote": {
-      "0": {
+      "loan": {
         "title": "Fundamenta hitel felvétele",
         "text": ["A homlokzat tatarozását egy éven belül el kell kezdeni és egyéb felújítási munkálatok is akadnak a házban. A szükséges összeg nem áll rendelkezésünkre, a közös költség irreális megemelése helyett célszerű hitelt felvenni.",
            "Határozati javaslat: A ház vegye fel az 5 millió forintos Fundamenta hitelt 10 évre 6%-os kamattal."]
       },
-      "1": {
+      "parking": {
         "title": "Vendégparkoló",
         "text": ["A ház előtti vendégparkolót nem csak a ház vendégei használják, célszerű lenne valamilyen módon korlátozni annak használatát.",
           "Határozati javaslat: A ház két vendégparkolójában kerüljön felállításra teleszkópos parkolóőr, az eszközök és a telepítés költsége összesen 46.200.- Forint. Minden tulajdonostárs kap hozzá kulcsot."]
 
       },
-      "2": {
+      "cleaning": {
         "title": "Téli takarítás",
         "text": "A tél beálltával egyre több a lucsok a lépcsőházban. Javaslom, hogy ebben az időszakban a lépcsőház takarítás rendszeressége legyen heti kettő.",
         "choice": {
@@ -192,12 +192,12 @@
           "1": "Nem értek egyet"
         }
       },
-      "3": {
+      "bicycleStorage": {
         "title": "Kerékpártároló létesítése",
         "text": ["A házban megoldatlan a kerékpárok biztonságos tárolása. Célszerű lenne a garázsszinten rendelkezésre álló közös tulajdonú területen kialakítani egy 12 férőhelyes tárolót. A javaslat elfogadása esetén három árajánlatot kérjünk be.",
           "Határozati javaslat: Létesítsen a ház kerékpártárolót maximum bruttó 200.000 Ft-ból a garázsszinten. Az ajánlatok bekéréséért és a végrehajtásért a Közös képviselő a felelős. Határidő: elfogadástól számított 3 hónap."]
       },
-      "4": {
+      "wallColor": {
         "title": "Lépcsőház színéről",
         "text": "Milyen színűre fessük a lépcsőház homlokzatát az augusztusi felújítás során.",
         "choice": {
@@ -211,7 +211,7 @@
           "1": "Jajj csak szürke NE legyen. Akkor költözöm"
         }
       },
-      "5": {
+      "manager": {
         "title": "Közös képviselő leváltása",
         "text": "Kerüljön kiírásra írásos szavazás vagy tartsunk rendkívüli közgyűlést ebből a célból. Kérjük azokat, akik egyetértenek a közös képviselő leváltásával, támogassák ezt a javaslatot. Amennyiben a tulajdoni hányadok legalább 10%-a támogatja ezt a javaslatot, akkor a jelenlegi közös képviselőnek kötelező ebben a kérdésben szavazást kiírni. Amennyiben erre nem kerül sor ezen szavazás sikeres lezárását követő 30 napon belül, akkor a Számvizsgáló Bizottságnak kell ugyanezt megtennie."
       }

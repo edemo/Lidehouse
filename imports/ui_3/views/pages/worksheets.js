@@ -28,9 +28,12 @@ import './worksheets.html';
 
 Template.Worksheets.onCreated(function onCreated() {
   this.getCommunityId = () => FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
-  this.autorun(() =>
-    this.subscribe('communities.byId', { _id: this.getCommunityId() })
-  );
+  const communityId = this.getCommunityId();
+  this.autorun(() => {
+    this.subscribe('communities.byId', { _id: communityId });
+    this.subscribe('contracts.inCommunity', { communityId });
+    this.subscribe('partners.inCommunity', { communityId });
+  });
 });
 
 Template.Worksheets.onDestroyed(function onDestroyed() {

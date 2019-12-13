@@ -126,7 +126,7 @@
     "admin": {
       "firstName": "Patrick",
       "lastName": "Shepherd",
-      "bio": "I'm a software engineer. Feel free to ask me about how the system works. I believe this platform will help us exchange information and share ideas."
+      "bio": "I've been living in this house for more than 8 years. I work as an IT specialist, my hobby is diving. I believe this platform will help us exchange information and share ideas."
     },
     "maintainer": {
       "firstName": "Shane",
@@ -174,16 +174,16 @@
       }
     },
     "vote": {
-      "0": {
+      "loan": {
         "title": "Bank loan for renovation",
         "text": "We shall take a $100,000 special loan from the bank at 6% interest, repaying through the next 10 years."
       },
-      "1": {
+      "parking": {
         "title": "Guest parking lots",
         "text": ["The parking lots for the guests of the house are used by other people, we should limit its use.",
          "Proposed resolution: Let's establish telescopic parking guards in the two guest parking lots of the house, total cost is 46,200.- HUF. Each owner will get a key."]
       },
-      "2": {
+      "cleaning": {
         "title": "Cleaning in winter",
         "text": "As winter is here, the staircase is getting more dirty. I suggest increasing the regularity of the cleaning of the staircase to twice a week.",
         "choice": {
@@ -191,12 +191,12 @@
           "1": "I don't agree"
         }
       },
-      "3": {
+      "bicycleStorage": {
         "title": "Bicycle storage",
         "text": ["There is no safe storage for bicyles in the house. It would be advisable to construct a 12-seater storage on the garage level. In case of acceptance we will ask for 3 offers.",
           "Proposed resolution: The house shall establish a bicycle storage from a maximum gross amount of 200,000 HUF on the garage level. The Manager is responsible for the request of offers and the execution. Deadline: 3 months from acceptance."]
       },
-      "4": {
+      "wallColor": {
         "title": "Color of the building walls",
         "text": "What color should we paint the building's walls during the renovation in August.",
         "choice": {
@@ -210,7 +210,7 @@
           "1": "OMG If you choose grey, I'm moving out!"
         }
       },
-      "5": {
+      "manager": {
         "title": "Replacement of Manager",
         "text": "Let's have a vote in writing or hold an extraordinary meeting for this purpose. Those who agree to replace the manager, please support this proposal. If at least 10% of the ownership ratios support this proposal the current manager is obliged to open a vote on this issue. If he fail to do this within 30 days of the successful completion of this vote, the Audit Board shall do the same."
       }

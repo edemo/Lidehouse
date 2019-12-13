@@ -5,7 +5,7 @@ import { compareNames } from '/imports/utils/compare-names.js';
 
 if (Meteor.isServer) {
   describe('compare names', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     const nameTwopiece = { firstName: 'János', lastName: 'Kőrösi' };
     const name = { name: 'Kőrösi János' };
     const nameTwopieceCopy = { firstName: 'János', lastName: 'Kőrösi' };

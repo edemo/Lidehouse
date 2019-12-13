@@ -49,8 +49,7 @@ function checkParcelMembershipsSanity(parcelId, memberships) {
 
 export const insert = new ValidatedMethod({
   name: 'memberships.insert',
-  validate: Memberships.simpleSchema().validator({ clean: true }),
-
+  validate: doc => Memberships.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
     if (!doc.approved) {
       // Users can submit non-approved membership requests, just for themselves
@@ -100,7 +99,7 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, Memberships.modifiableFields.concat('approved'));  // userId not allowed to change!
 
     const MembershipsStage = Memberships.Stage();
-    const result = MembershipsStage.update({ _id }, modifier);
+    const result = MembershipsStage.update({ _id }, modifier, { selector: doc });
     checkParcelMembershipsSanity(doc.parcelId, MembershipsStage);
     MembershipsStage.commit();
 
@@ -113,7 +112,6 @@ export const linkUser = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
@@ -145,17 +143,16 @@ export const linkUser = new ValidatedMethod({
 
     // TODO: We should ask for acceptance, not auto-accept it like now
     const accepted = user.emails[0].verified; // if not verified, auto-acceptance will happen when he verifies
-    Memberships.update(doc._id, { $set: { 'person.userId': user._id, accepted } });
+    Memberships.update(doc._id, { $set: { 'person.userId': user._id, accepted } }, { selector: { role: doc.role } });
   },
 });
 
 export const accept = new ValidatedMethod({
   name: 'memberships.accept',
   validate: null,
-
   run() {
-    Memberships.find({ personId: this.userId }).forEach((membership) => {
-      Memberships.update(membership._id, { $set: { accepted: true } });
+    Memberships.find({ personId: this.userId }).forEach((doc) => {
+      Memberships.update(doc._id, { $set: { accepted: true } }, { selector: { role: doc.role } });
     });
   },
 });
@@ -165,7 +162,6 @@ export const remove = new ValidatedMethod({
   validate: new SimpleSchema({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);

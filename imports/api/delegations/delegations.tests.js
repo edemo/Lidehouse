@@ -23,7 +23,7 @@ if (Meteor.isServer) {
   };
 
   describe('delegations', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
 //      createDelegation(Fixture.dummyUsers[0], Fixture.dummyUsers[1]);

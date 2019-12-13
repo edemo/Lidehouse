@@ -12,7 +12,7 @@ import { SerialId } from './serial-id.js';
 if (Meteor.isServer) {
 
   describe('SerialId behaviour', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     after(function () {
       resetDatabase();
     });

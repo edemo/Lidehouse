@@ -41,7 +41,7 @@
     <a class="text-primary" href="{{pathFor 'Topic show' _tid=_id}}">
         <strong class="vote-title margin-bottom" data-id="{{_id}}">{{title}}</strong>
     </a>
-    {{#markdown}}{{text}}{{/markdown}}
+    <div class="text-dark">{{#markdown}}{{text}}{{/markdown}}</div>
     {{#if photo}}<img src="{{photo}}" class="img-embed">{{/if}}
 </template>
 

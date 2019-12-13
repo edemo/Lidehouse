@@ -11,7 +11,7 @@ if (Meteor.isServer) {
   let Fixture;
 
   describe('balances', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     before(function () {
       Fixture = freshFixture();
     });
@@ -78,6 +78,7 @@ if (Meteor.isServer) {
         insertTx = function (params) {
           return Transactions.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
             communityId: Fixture.demoCommunityId,
+            category: 'void',
             valueDate: params.valueDate,
             amount: params.amount,
             credit: [{

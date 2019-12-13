@@ -4,6 +4,9 @@ import { Mongo } from 'meteor/mongo';
 import { resetDatabase } from 'meteor/xolvio:cleaner';
 import { chai } from 'meteor/practicalmeteor:chai';
 
+import '/imports/startup/both/index.js';
+import '/imports/startup/server/validated-method.js'; // only this one needed from startup/server
+
 import { initializePermissions } from '/imports/api/permissions/config.js';
 import { insertUnittestFixture } from '/imports/fixture/fixtures.js';
 import { defineBreakdownTemplates } from '/imports/api/transactions/breakdowns/template.js';

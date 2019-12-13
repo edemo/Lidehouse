@@ -46,16 +46,13 @@ Tickets.extensionRawSchema = {
 };
 
 Tickets.extensionSchema = new SimpleSchema(Tickets.extensionRawSchema);
-Tickets.schema = new SimpleSchema([
-  Topics.schema,
-  { ticket: { type: Tickets.extensionSchema, optional: true } },
-]);
-Topics.attachSchema(
-  Tickets.schema,
-//  { selector: { category: 'ticket' } },
+Topics.attachVariantSchema(
+  new SimpleSchema({ ticket: { type: Tickets.extensionSchema } }),
+  { selector: { category: 'ticket' } },
 );
+
 Meteor.startup(function attach() {
-  Tickets.schema.i18n('schemaTickets');   // translation is different from schemaTopics
+  Topics.simpleSchema({ category: 'ticket' }).i18n('schemaTickets');   // translation is different from schemaTopics
 });
 
 Tickets.publicExtensionFields = { ticket: 1 };

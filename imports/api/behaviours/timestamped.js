@@ -108,6 +108,6 @@ function hooks(collection) {
   };
 }
 
-export const Timestamped = {
+export const Timestamped = { name: 'Timestamped',
   schema, helpers, methods: {}, hooks,
 };

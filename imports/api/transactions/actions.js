@@ -32,8 +32,7 @@ Transactions.actions = {
         bodyContext: { doc },
         // --- --- --- ---
         id: `af.${entity.name}.insert`,
-        collection: Transactions,
-        schema: Transactions.simpleSchema(),
+        schema: Transactions.simpleSchema({ category: entity.name }),
         fields: entity.fields,
         omitFields: entity.omitFields,
         doc,
@@ -58,8 +57,7 @@ Transactions.actions = {
         bodyContext: { doc },
         // --- --- --- ---
         id: `af.${entity.name}.view`,
-        collection: Transactions,
-        schema: Transactions.simpleSchema(),
+        schema: Transactions.simpleSchema({ category: entity.name }),
         fields: entity.fields,
         omitFields: entity.omitFields,
         doc,
@@ -84,8 +82,7 @@ Transactions.actions = {
         bodyContext: { doc },
         // --- --- --- ---
         id: `af.${entity.name}.update`,
-        collection: Transactions,
-        schema: Transactions.simpleSchema(),
+        schema: Transactions.simpleSchema({ category: entity.name }),
         fields: entity.fields,
         omitFields: entity.omitFields,
         doc,

@@ -100,8 +100,9 @@ function checkStatusChangeAllowed(topic, statusTo) {
 
 const statusChange = new ValidatedMethod({
   name: 'statusChange',
-  validate: Comments.simpleSchema().validator({ clean: true }),
+  validate: doc => Comments.simpleSchema({ category: 'statusChangeTo' }).validator({ clean: true })(doc),
   run(event) {
+    _.extend(event, { category: 'statusChangeTo' });
     const topic = checkExists(Topics, event.topicId);
     const category = topic.category;
     const workflow = topic.workflow();
@@ -112,7 +113,7 @@ const statusChange = new ValidatedMethod({
     const onLeave = workflow[topic.status].obj.onLeave;
     if (onLeave) onLeave(event, topic);
 
-    const topicModifier = {};
+    const topicModifier = { category: topic.category };
     topicModifier.status = event.status;
     const statusObject = Topics.categories[category].statuses ? Topics.categories[category].statuses[event.status] : defaultStatuses[event.status];
     if (statusObject.data) {
@@ -120,7 +121,7 @@ const statusChange = new ValidatedMethod({
     }
     const updateResult = Topics.update(event.topicId, { $set: topicModifier });
 
-    const insertResult = Comments.insert({ category: 'statusChangeTo', ...event });
+    const insertResult = Comments.insert(event);
 
     const newTopic = Topics.findOne(event.topicId);
     const onEnter = workflow[event.status].obj.onEnter;
@@ -149,7 +150,7 @@ const statusUpdate = new ValidatedMethod({
     }
     checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId, topic);
     checkModifier(topic, modifier, modifiableFields);
-    Topics.update(_id, modifier);
+    Topics.update(_id, modifier, { selector: { category } });
   },
 });
 
@@ -168,7 +169,7 @@ export function Workflow(workflow = defaultWorkflow) {
     },
   });
 
-  return {
+  return { name: 'Workflow',
     schema, helpers, methods: { statusChange, statusUpdate }, hooks,
   };
 }

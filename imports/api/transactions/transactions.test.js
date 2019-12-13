@@ -2,27 +2,19 @@
 import { Meteor } from 'meteor/meteor';
 import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { moment } from 'meteor/momentjs:moment';
-import { freshFixture, newFixture, logDB } from '/imports/api/test-utils.js';
+import { freshFixture } from '/imports/api/test-utils.js';
 import { Clock } from '/imports/utils/clock.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js';
-import { Payments } from '/imports/api/transactions/payments/payments.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import '/imports/api/transactions/methods.js';
-import { Statements } from './statements/statements.js';
-import './statements/methods.js';
-import { StatementEntries } from './statement-entries/statement-entries.js';
-import './statement-entries/methods.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Statements } from '/imports/api/transactions/statements/statements.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import { Communities } from '/imports/api/communities/communities.js';
 
-import '/imports/startup/server/validated-method.js';   // TODO Where to put this? - in a common place
-import { Communities } from '../communities/communities';
 
 if (Meteor.isServer) {
   let FixtureA; //, FixtureC;
 
   describe('transactions', function () {
-    this.timeout(5000);
+    this.timeout(15000);
     before(function () {
 //      FixtureC = freshFixture('Cash accounting house');
       FixtureA = freshFixture();
@@ -67,7 +59,7 @@ if (Meteor.isServer) {
 
       it('Can not registerPayment without accounts', function () {
         chai.assert.throws(() => {
-          FixtureA.builder.create('payment', { relation: 'supplier', billId, amount: 300, valueDate: Clock.currentTime() });
+          FixtureA.builder.create('payment', { billId, amount: 300, valueDate: Clock.currentTime() });
         }, 'Bill has to be conteered first');
       });
 
@@ -86,18 +78,14 @@ if (Meteor.isServer) {
 
       it('Can register Payments', function () {
         const bankAccount = '31';
-        const paymentId1 = FixtureA.builder.create('payment',
-          { relation: 'supplier', billId, amount: 100, valueDate: Clock.currentTime(), payAccount: bankAccount },
-        );
+        const paymentId1 = FixtureA.builder.create('payment', { billId, amount: 100, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.outstanding, 200);
         chai.assert.equal(bill.partner().outstanding, 200);
 
-        const paymentId2 = FixtureA.builder.create('payment',
-          { relation: 'supplier', billId, amount: 200, valueDate: Clock.currentTime(), payAccount: bankAccount },
-        );
+        const paymentId2 = FixtureA.builder.create('payment', { billId, amount: 200, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 2);
@@ -186,9 +174,7 @@ if (Meteor.isServer) {
       });
 
       it('Can pay bill manually', function () {
-        FixtureA.builder.create('payment',
-          { relation: 'supplier', billId, amount: 100, valueDate: Clock.currentTime(), account: bankAccount },
-        );
+        FixtureA.builder.create('payment', { billId, amount: 100, valueDate: Clock.currentTime(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);

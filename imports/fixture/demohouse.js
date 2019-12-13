@@ -350,7 +350,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       const parcelId = Parcels.findOne({ communityId: demoCommunityId, serial: 7 })._id;
       let ownershipData;
       if (role.name === 'owner') {
-        Memberships.update({ parcelId }, { $set: { ownership: { share: new Fraction(1, 2), representor: false } } });
+        Memberships.update({ parcelId }, { $set: { role: 'owner', ownership: { share: new Fraction(1, 2), representor: false } } });
         ownershipData = { parcelId, ownership: { share: new Fraction(1, 2), representor: true } };
       } else if (role.name === 'benefactor') {
         ownershipData = { parcelId, benefactorship: { type: 'rental' } };
@@ -433,11 +433,11 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   const agenda0 = demoBuilder.create('agenda', {
     title: `${__('demo.agenda.0.title')} ${lastYear}-III.`,
-//    topicIds: [voteTopic0, voteTopic1],
+//    topicIds: [voteTopicLoan, voteTopicParking],
   });
   const agenda1 = demoBuilder.create('agenda', {
     title: `${__('demo.agenda.1.title')} ${thisYear}-I.`,
-//    topicIds: [voteTopic3, voteTopic4, voteTopic5],
+//    topicIds: [voteTopicBike, voteTopicWallColor, voteTopicManager],
   });
 
   const ownerships = Memberships.findActive({ communityId: demoCommunityId, role: 'owner', 'person.userId': { $exists: true } }).fetch();
@@ -447,10 +447,28 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   }
 
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).subtract(2, 'months').toDate());
+  const voteTopicManager = demoBuilder.insert(Topics, 'vote', {
+    title: __('demo.vote.manager.title'),
+    text: __('demo.vote.manager.text'),
+    status: 'opened',
+    closesAt: moment(demoTopicDates[0]).subtract(1, 'months').toDate(),
+    vote: {
+      procedure: 'online',
+      effect: 'poll',
+      type: 'petition',
+    },
+  });
+  castDemoVotes(voteTopicManager, [[0], null, [0], [0], [0], [0], [0]]);
+  Clock.setSimulatedTime(moment(demoTopicDates[0]).subtract(1, 'months').toDate());
+  demoBuilder.execute(statusChange, { topicId: voteTopicManager, status: 'votingFinished' });
+  demoBuilder.execute(statusChange, { topicId: voteTopicManager, status: 'closed' });
+  Clock.clear();
+
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(2, 'weeks').toDate());
-  const voteTopic0 = demoBuilder.insert(Topics, 'vote', {
-    title: __('demo.vote.0.title'),
-    text: __('demo.vote.0.text'),
+  const voteTopicLoan = demoBuilder.insert(Topics, 'vote', {
+    title: __('demo.vote.loan.title'),
+    text: __('demo.vote.loan.text'),
     agendaId: agenda0,
     status: 'opened',
     closesAt: moment(demoTopicDates[0]).add(6, 'weeks').toDate(),  // its past close date
@@ -461,16 +479,16 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  castDemoVotes(voteTopic0, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1], [0], [0], [0]]);
+  castDemoVotes(voteTopicLoan, [[1], [0], [2], [0], [0], [0], [2], [0], [0], [1], [0], [0], [0]]);
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(6, 'weeks').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'votingFinished' });
-  demoBuilder.execute(statusChange, { topicId: voteTopic0, status: 'closed' });
+  demoBuilder.execute(statusChange, { topicId: voteTopicLoan, status: 'votingFinished' });
+  demoBuilder.execute(statusChange, { topicId: voteTopicLoan, status: 'closed' });
   Clock.clear();
   
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(142, 'hours').toDate());
-  const voteTopic1 = demoBuilder.insert(Topics, 'vote', {
-    title: __('demo.vote.1.title'),
-    text: __('demo.vote.1.text'),
+  const voteTopicParking = demoBuilder.insert(Topics, 'vote', {
+    title: __('demo.vote.parking.title'),
+    text: __('demo.vote.parking.text'),
     agendaId: agenda0,
     status: 'opened',
     closesAt: moment(demoTopicDates[0]).add(6, 'weeks').toDate(),
@@ -481,39 +499,64 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  castDemoVotes(voteTopic1, [[0], [0], [0], [0], [0], [0], [0], [0], [0], [1], [0], [0]]);
+  castDemoVotes(voteTopicParking, [[0], [0], [0], [0], [0], [0], [0], [0], [1], [0], [0]]);
   Clock.setSimulatedTime(moment(demoTopicDates[0]).add(6, 'weeks').toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'votingFinished' });
-  demoBuilder.execute(statusChange, { topicId: voteTopic1, status: 'closed' });
+  demoBuilder.execute(statusChange, { topicId: voteTopicParking, status: 'votingFinished' });
+  demoBuilder.execute(statusChange, { topicId: voteTopicParking, status: 'closed' });
   Clock.clear();
 
-  Clock.setSimulatedTime(moment(`${lastYear}-12-14 13:42`).toDate());
-  const voteTopic2 = demoBuilder.insert(Topics, 'vote', {
-    title: __('demo.vote.2.title'),
-    text: __('demo.vote.2.text'),
+  Clock.starts(3, 'weeks', 'ago');
+  const voteTopicWallColor = demoBuilder.insert(Topics, 'vote', {
+    title: __('demo.vote.wallColor.title'),
+    text: __('demo.vote.wallColor.text'),
+    agendaId: agenda1,
     status: 'opened',
-    closesAt: moment(`${lastYear}-12-30 23:59`).toDate(),
+    closesAt: moment().add(2, 'month').toDate(),
+    vote: {
+      type: 'preferential',
+      procedure: 'online',
+      effect: 'poll',
+      choices: [
+        __('demo.vote.wallColor.choice.0'),
+        __('demo.vote.wallColor.choice.1'),
+        __('demo.vote.wallColor.choice.2'),
+        __('demo.vote.wallColor.choice.3'),
+      ],
+    },
+  });
+
+  castDemoVotes(voteTopicWallColor, [null, [0, 1, 2, 3], null, [1, 2, 3, 0], null, [2, 3, 0, 1], null, [1, 0, 2, 3], null, [1, 2, 3, 0], null, [1, 2, 0, 3]]);
+  ['0', '1'].forEach((commentNo) => {
+    Clock.setSimulatedTime(moment().subtract(3, 'days').add(commentNo + 2, 'minutes').toDate());
+    demoBuilder.insert(Comments, 'comment', {
+      topicId: voteTopicWallColor,
+      text: __(`demo.vote.wallColor.comment.${commentNo}`),
+    });
+  });
+  Clock.clear();
+  
+  Clock.starts(10, 'days', 'ago');
+  const voteTopicCleaning = demoBuilder.insert(Topics, 'vote', {
+    title: __('demo.vote.cleaning.title'),
+    text: __('demo.vote.cleaning.text'),
+    status: 'opened',
+    closesAt: moment().add(1, 'months').toDate(),
     vote: {
       procedure: 'online',
       effect: 'poll',
       type: 'choose',
       choices: [
-        __('demo.vote.2.choice.0'),
-        __('demo.vote.2.choice.1'),
+        __('demo.vote.cleaning.choice.0'),
+        __('demo.vote.cleaning.choice.1'),
       ],
     },
   });
+  // No one voted on this yet
 
-  castDemoVotes(voteTopic2, [null, null, null, null, null, null, null, [0], [0], [0], [0], [0]]);
-  Clock.setSimulatedTime(moment(`${lastYear}-12-30 23:59`).toDate());
-  demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'votingFinished' });
-  demoBuilder.execute(statusChange, { topicId: voteTopic2, status: 'closed' });
-  Clock.clear();
-
-  Clock.starts(3, 'weeks', 'ago');
-  const voteTopic3 = demoBuilder.insert(Topics, 'vote', {
-    title: __('demo.vote.3.title'),
-    text: __('demo.vote.3.text'),
+  Clock.starts(1, 'weeks', 'ago');
+  const voteTopicBike = demoBuilder.insert(Topics, 'vote', {
+    title: __('demo.vote.bicycleStorage.title'),
+    text: __('demo.vote.bicycleStorage.text'),
     agendaId: agenda1,
     status: 'opened',
     closesAt: moment().add(2, 'month').toDate(),
@@ -524,53 +567,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     },
   });
 
-  // No one voted on this yet
-
-  Clock.starts(1, 'weeks', 'ago');
-  const voteTopic4 = demoBuilder.insert(Topics, 'vote', {
-    title: __('demo.vote.4.title'),
-    text: __('demo.vote.4.text'),
-    agendaId: agenda1,
-    status: 'opened',
-    closesAt: moment().add(2, 'month').toDate(),
-    vote: {
-      type: 'preferential',
-      procedure: 'online',
-      effect: 'poll',
-      choices: [
-        __('demo.vote.4.choice.0'),
-        __('demo.vote.4.choice.1'),
-        __('demo.vote.4.choice.2'),
-        __('demo.vote.4.choice.3'),
-      ],
-    },
-  });
-
-  castDemoVotes(voteTopic4, [null, [0, 1, 2, 3], null, [1, 2, 3, 0], null, [2, 3, 0, 1], null, [1, 0, 2, 3], null, [1, 2, 3, 0], null, [1, 2, 0, 3]]);
-  ['0', '1'].forEach((commentNo) => {
-    Clock.setSimulatedTime(moment().subtract(3, 'days').add(commentNo + 2, 'minutes').toDate());
-    demoBuilder.insert(Comments, 'comment', {
-      topicId: voteTopic4,
-      text: __(`demo.vote.4.comment.${commentNo}`),
-    });
-  });
-  Clock.clear();
-
-  Clock.starts(3, 'days', 'ago');
-  const voteTopic5 = demoBuilder.insert(Topics, 'vote', {
-    title: __('demo.vote.5.title'),
-    text: __('demo.vote.5.text'),
-    agendaId: agenda1,
-    status: 'opened',
-    closesAt: moment().add(2, 'month').toDate(),
-    vote: {
-      procedure: 'online',
-      effect: 'poll',
-      type: 'petition',
-    },
-  });
-
-  castDemoVotes(voteTopic5, [[0], [0]]);
+  castDemoVotes(voteTopicBike, [[0], [0], [0], [0], [1], [0], [0], [0]]);
   Clock.clear();
 
   // ===== Shareddocs =====
@@ -928,7 +925,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     ['Assets', 'Megtakarítási számla', 120000],
   ];
   openings.forEach((opening) => {
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('opening', {
       valueDate: new Date(`${lastYear}-01-01`),
       amount: opening[2],
       credit: [{
@@ -999,7 +996,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   // === Incomes ===
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-06-01`),
     amount: 3500,
     credit: [{
@@ -1012,7 +1009,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   });
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('income', {
       valueDate: new Date(`${lastYear}-${mm}-01`),
       amount: 400,
       credit: [{
@@ -1025,7 +1022,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     });
   });
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-09-15`),
     amount: 500000,
     credit: [{
@@ -1038,7 +1035,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.1'),
   });
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-05-10`),
     amount: 55000,
     credit: [{
@@ -1051,7 +1048,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.2'),
   });
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-10-15`),
     amount: 500000,
     credit: [{
@@ -1064,7 +1061,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     note: __('demo.transactions.note.3'),
   });
 
-  demoBuilder.insert(Transactions, 'transaction', {
+  demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-07-21`),
     amount: 2300000,
     credit: [{
@@ -1079,7 +1076,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   // == Expenses
 
   for (let mm = 1; mm < 13; mm++) {
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       amount: 80000 + Math.floor(Math.random() * 50000),
       credit: [{
@@ -1091,7 +1088,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
 
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
       amount: 98500,
       credit: [{
@@ -1103,7 +1100,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       }],
     });
 
-    demoBuilder.insert(Transactions, 'transaction', {
+    demoBuilder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '07', '08', '10'])}`),
       amount: 150000 + Math.floor(Math.random() * 50000),
       credit: [{
