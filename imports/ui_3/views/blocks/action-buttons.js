@@ -153,29 +153,6 @@ Template.Action_listitems_status_change.viewmodel({
   },
 });
 
-Template.Action_buttons_dropdown.viewmodel({
-  _actions() {
-    const collection = Mongo.Collection.get(this.templateInstance.data.collection);
-    const actions = this.templateInstance.data.actions
-      ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
-//      : _.map(collection.actions, (action, name) => action);
-      : _.values(_.omit(collection.actions, 'new', 'import', 'view', 'like'));
-    return actions;
-  },
-  long() {
-    return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
-  },
-  needsDividerAfter(action) {
-    switch (action.name) {
-      case 'statusChange': return true;
-      default: return false;
-    }
-  },
-  getDoc() {
-    return fetchDoc(this.templateInstance.data);
-  },
-});
-
 Template.Action_buttons_dropdown_list.viewmodel({
   _actions() {
     const collection = Mongo.Collection.get(this.templateInstance.data.collection);
@@ -185,13 +162,19 @@ Template.Action_buttons_dropdown_list.viewmodel({
       : _.values(_.omit(collection.actions, 'new', 'import', 'view', 'like'));
     return actions;
   },
-  long() {
-    return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
-  },
   needsDividerAfter(action) {
     switch (action.name) {
       case 'statusChange': return true;
       default: return false;
     }
+  },
+});
+
+Template.Action_buttons_dropdown.viewmodel({
+  long() {
+    return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
+  },
+  getDoc() {
+    return fetchDoc(this.templateInstance.data);
   },
 });

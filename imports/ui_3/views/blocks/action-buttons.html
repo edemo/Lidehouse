@@ -50,31 +50,6 @@
     {{/each}}
 </template>
 
-<template name="Action_buttons_dropdown">
-  {{> Menu_overflow_guard}}
-  <div id="container-dd-{{getDoc._id}}"> 
-    <div class="dropdown js-menu {{getDoc.entitiyName}}" id="dd-{{getDoc._id}}"> 
-        <button class="btn btn-xs btn-white dropdown-toggle drop-unfoll" type="button" id="drop_{{getDoc._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {{#if long}}{{_ 'Action buttons'}} {{/if}}<i class="glyphicon glyphicon-option-horizontal"></i>
-        </button>
-        <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{getDoc._id}}">
-        {{#each action in _actions}}
-            {{#if (equals action.name 'statusChange')}}
-                {{>Action_listitems_status_change options=options doc=doc collection=collection action=action}}
-            {{else}}
-                {{>Action_listitem options=options doc=doc collection=collection action=action}}
-            {{/if}}
-            {{#if needsDividerAfter action}}
-              <li role="separator" class="divider"></li>
-            {{/if}}
-        {{else}}
-            <span class="text-muted">{{_ 'No actions available'}}</span>
-        {{/each}}
-        </ul>
-    </div>
-  </div>
-</template>
-
 <template name="Action_buttons_dropdown_list">
   <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{getDoc._id}}">
     {{#each action in _actions}}
@@ -90,4 +65,16 @@
         <span class="text-muted">{{_ 'No actions available'}}</span>
     {{/each}}
     </ul>
+</template>
+
+<template name="Action_buttons_dropdown">
+  {{>Menu_overflow_guard}}
+  <div id="container-dd-{{getDoc._id}}"> 
+    <div class="dropdown js-menu {{getDoc.entitiyName}}" id="dd-{{getDoc._id}}"> 
+        <button class="btn btn-xs btn-white dropdown-toggle drop-unfoll" type="button" id="drop_{{getDoc._id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{#if long}}{{_ 'Action buttons'}} {{/if}}<i class="glyphicon glyphicon-option-horizontal"></i>
+        </button>
+        {{>Action_buttons_dropdown_list}}
+    </div>
+  </div>
 </template>
