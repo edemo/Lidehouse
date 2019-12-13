@@ -195,3 +195,23 @@ Template.Action_buttons_dropdown.viewmodel({
 Template.Action_buttons_dropdown.onDestroyed(function() {
   $('.dropdown.body-appended').remove();
 });
+
+Template.Action_buttons_dropdown_list.viewmodel({
+  _actions() {
+    const collection = Mongo.Collection.get(this.templateInstance.data.collection);
+    const actions = this.templateInstance.data.actions
+      ? this.templateInstance.data.actions.split(',').map(a => collection.actions[a])
+//      : _.map(collection.actions, (action, name) => action);
+      : _.values(_.omit(collection.actions, 'new', 'import', 'view', 'like'));
+    return actions;
+  },
+  long() {
+    return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
+  },
+  needsDividerAfter(action) {
+    switch (action.name) {
+      case 'statusChange': return true;
+      default: return false;
+    }
+  },
+});
