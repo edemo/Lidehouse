@@ -36,7 +36,6 @@ Template.Main_layout.onCreated(function() {
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     if (communityId) {
-      this.subscribe('parcels.inCommunity', { communityId });
       this.subscribe('memberships.inCommunity', { communityId });
       this.subscribe('breakdowns.inCommunity', { communityId });
     }

@@ -35,6 +35,7 @@ Template.Parcels_finances.viewmodel({
     instance.autorun(() => {
       const communityId = Session.get('activeCommunityId');
       instance.subscribe('breakdowns.inCommunity', { communityId });
+      instance.subscribe('leaderships.inCommunity', { communityId });
       if (Meteor.userOrNull().hasPermission('balances.ofLocalizers')) {
         if (self.showAllParcels()) {
           instance.subscribe('balances.ofLocalizers', { communityId });
@@ -53,7 +54,10 @@ Template.Parcels_finances.viewmodel({
     return user.ownedLeadParcels(communityId);
   },
   parcelChoices() {
-    return this.myLeadParcels().map((parcel) => {
+    const communityId = Session.get('activeCommunityId');
+    const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers') ?
+        Parcels.find({ communityId, approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
+    return parcels.map((parcel) => {
       return {
         label: parcel.display(),
         value: parcel._id,
@@ -71,7 +75,8 @@ Template.Parcels_finances.viewmodel({
     const communityId = Session.get('activeCommunityId');
     return () => {
       const dataset = [];
-      const parcels = this.myLeadParcels();
+      const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers') ?
+        Parcels.find({ communityId, approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
       parcels.forEach(parcel => {
         dataset.push({
           parcelId: parcel._id,
