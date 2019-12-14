@@ -53,18 +53,18 @@ Parcels.actions = {
     icon: (options, doc) => (doc && doc.isLed() ? 'fa fa-user-o' : 'fa fa-user'),
     color: (options, doc) => {
       let colorClass = '';
-      if (Memberships.findOneActive({ parcelId: doc._id, approved: false })) colorClass = 'text-danger';
+      if (Memberships.findOneActive({ parcelId: doc._id, approved: false })) colorClass = 'danger';
       else {
         const representor = Memberships.findOneActive({ parcelId: doc._id, 'ownership.representor': true });
         if (representor) {
           if (!representor.accepted) {
-            if (!representor.personId) colorClass = 'text-warning';
-            else colorClass = 'text-info';
+            if (!representor.personId) colorClass = 'warning';
+            else colorClass = 'info';
           }
         } else {  // no representor
           if (Memberships.findOneActive({ parcelId: doc._id, accepted: false })) {
-            if (Memberships.findOneActive({ parcelId: doc._id, personId: { $exists: false } })) colorClass = 'text-warning';
-            else colorClass = 'text-info';
+            if (Memberships.findOneActive({ parcelId: doc._id, personId: { $exists: false } })) colorClass = 'warning';
+            else colorClass = 'info';
           }
         }
       }
