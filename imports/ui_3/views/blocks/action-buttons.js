@@ -142,8 +142,11 @@ Template.Action_listitem.viewmodel({
 });
 
 Template.Action_listitem.events({
-  'click li'(event, instance) {
+  'click li.enabled'(event, instance) {
     instance.data.action.run(instance.viewmodel.getOptions(), instance.viewmodel.getDoc(), event, instance);
+  },
+  'click li:not(.enabled)'(event, instance) {
+    event.stopPropagation();
   },
 });
 

@@ -35,13 +35,15 @@
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 
 <template name="Action_listitem">
-  {{#if action.visible getOptions getDoc}}
-    <li>
-    <a {{dataObject}} class="text-capitalize js-{{action.name}}" href="{{action.href getOptions getDoc}}">
-        <i class="{{action.icon getOptions getDoc}}"></i> {{_ title}}
-    </a>
+  {{#let enabled=(and (action.visible getOptions getDoc) 'enabled')}}
+    <li class={{enabled}}>
+        <a {{dataObject}} href="{{action.href getOptions getDoc}}" class="text-capitalize js-{{action.name}}">
+        <span class="{{#unless enabled}}text-disabled{{/unless}}">
+            <i class="{{action.icon getOptions getDoc}}"></i> {{_ title}}
+        </span>
+        </a>
     </li>
-  {{/if}}
+  {{/let}}
 </template>
 
 <template name="Action_listitems_status_change">
