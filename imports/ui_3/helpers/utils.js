@@ -70,7 +70,7 @@ Template.registerHelper('displayDate', function displayDate(time) {
 Template.registerHelper('displayTimeFrom', function displayTimeFrom(time) {
     // momentjs is not reactive, but TymeSync call makes this reactive
     const serverTimeNow = new Date(TimeSync.serverTime());
-    return moment(time).from(serverTimeNow);
+    return time ? moment(time).from(serverTimeNow) : __('never');
 });
 
 // Takes any number of arguments and returns them concatenated.

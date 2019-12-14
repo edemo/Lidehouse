@@ -30,10 +30,9 @@
         </div>
     </div-->
 
-    {{#if userHasPermission 'balances.ofAccounts'}}
-    <div class="col-lg-12">
-        {{> Balance_widget}}
-    </div>
+    {{#if userHasPermission 'parcels.details'}}
+    <div class="col-sm-6">{{> Balance_widget}}</div>
+    <div class="col-sm-6">{{> Meters_widget}}</div>
     {{/if}}
 
     {{#if userHasPermission 'balances.ofAccounts'}}

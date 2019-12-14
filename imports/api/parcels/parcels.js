@@ -13,10 +13,9 @@ import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { FreeFields } from '/imports/api/behaviours/free-fields.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Leaderships } from '../leaderships/leaderships';
+import { Leaderships } from '/imports/api/leaderships/leaderships';
 
 export const Parcels = new Mongo.Collection('parcels');
 
@@ -98,6 +97,9 @@ Parcels.helpers({
     return (this.building ? this.building + '-' : '')
       + (this.floor ? this.floor + '/' : '')
       + (this.door ? this.door : '');
+  },
+  meters() {
+    return Meters.find({ communityId: this.communityId, parcelId: this._id });
   },
   occupants() {
     return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId() });
