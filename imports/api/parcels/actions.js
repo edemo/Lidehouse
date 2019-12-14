@@ -71,18 +71,36 @@ Parcels.actions = {
       return colorClass;
     },
     visible: (options, doc) => currentUserHasPermission('memberships.inCommunity', doc),
-    href: () => '#occupants',
+//    href: () => '#occupants',
     run(options, doc, event, instance) {
-      instance.viewmodel.selectedParcelId(doc._id);
+//      instance.viewmodel.selectedParcelId(doc._id);
+      Modal.show('Modal', {
+        title: `${doc ? doc.display() : __('unknown')} - ${__('occupants')}`,
+        body: 'Occupants_box',
+        bodyContext: {
+          communityId: doc.communityId,
+          parcelId: doc._id,
+        },
+        size: currentUserHasPermission('memberships.details', doc) ? 'lg' : 'md',
+      });
     },
   },
   meters: {
     name: 'meters',
     icon: () => 'fa fa-tachometer',
     visible: (options, doc) => currentUserHasPermission('meters.inCommunity', doc),
-    href: () => '#meters',
+//    href: () => '#meters',
     run(options, doc, event, instance) {
-      instance.viewmodel.selectedParcelId(doc._id);
+//      instance.viewmodel.selectedParcelId(doc._id);
+      Modal.show('Modal', {
+        title: `${doc ? doc.display() : __('unknown')} - ${__('meters')}`,
+        body: 'Meters_box',
+        bodyContext: {
+          communityId: doc.communityId,
+          parcelId: doc._id,
+        },
+        size: currentUserHasPermission('meters.update', doc) ? 'lg' : 'md',
+      });
     },
   },
   edit: {

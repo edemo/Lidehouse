@@ -49,16 +49,40 @@
     </div>
 </template>
 
-<template name="Memberships_table">
-    <div class="full-height-scroll memberships">
+<template name='Roleships_box'>
+    <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
+    <h2>{{_ 'officers'}}</h2>
+    {{#if userHasPermission 'roleship.insert'}}
+    <button class="btn btn-primary btn-sm pull-right js-new memberships" data-entity="roleship">
+        <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong>
+    </button>
+    {{/if}}
+    <p>
+        {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.length}}<br>
+        {{_ "Click person's name to see contact info"}}
+    </p>
+    <br>
+    <!--div class="input-group">
+        <input type="text" placeholder="Search client " class="input form-control">
+            <span class="input-group-btn">
+                    <button type="button" class="btn btn btn-primary"> <i class="fa fa-search"></i> Search</button>
+            </span>
+    </div-->
+    <div class="member-list">
+        {{> Roleships_table roleships=officers}}
+    </div>
+</template>
+
+<template name="Occupants_table">
+    <div class="full-height-scroll">
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <tbody>
                     {{#each row in memberships}}
                     {{#let entity=row.entityName}}
                     <tr class="{{entity}}" data-id="{{row._id}}">
-                        <td><a href="#member" class="client-avatar js-select-member"><img alt="image" src={{row.Person.avatar}}></a></td>
-                        <td><a href="#member" class="client-link js-select-member">{{row.Person.displayName}}</a></td>
+                        <td><a href="" class="client-avatar js-member"><img alt="image" src={{row.Person.avatar}}></a></td>
+                        <td><a href="" class="client-link js-member">{{row.Person.displayName}}</a></td>
                         <td>{{>Active_period row}}</td>
                             {{#if equals entity 'ownership'}}
                             <td class="contact-type nowrap">
@@ -80,7 +104,7 @@
                     {{#each row in leaderships}}
                     <tr id="leaderships" data-id="{{row._id}}">
                         <td class="text-center"> <a class="client-avatar"><i class="fa fa-lg fa-share"></i></a></td>
-                        <td><button class="js-select-parcel" data-id="{{row.leadParcelId}}"><strong title="{{_ 'leadership'}}">{{row.leadRef}}</strong></button></td>
+                        <td><button class="js-occupants parcels" data-id="{{row.leadParcelId}}"><strong title="{{_ 'leadership'}}">{{row.leadRef}}</strong></button></td>
                         <td>{{>Active_period row}}</td>
                         <td><span class="label label-plain">{{_ 'lead parcel'}}</span></td>
                         <td class="text-right">
@@ -95,40 +119,37 @@
 </template>
 
 <template name="Occupants_box">
-    <div class="ibox">
-        <div class="ibox-content">
-            <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
-            <h2>{{_ 'occupants'}} {{leadershipTitle}}                
-            </h2>
-            {{#if userHasPermission 'benefactorship.insert'}}
-                <div class="dropdown btn-group pull-right">
-                    <button href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
-                        <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'occupant'}}</strong> <b class="caret"></b>
-                    </button>
-                    <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
-                        {{#if userHasPermission 'ownership.insert'}}
-                        <li><a href="" class="js-new memberships" data-entity="ownership">{{_ 'new'}} {{_ 'owner'}}</a></li>
-                        {{/if}}
-                        {{#if userHasPermission 'benefactorship.insert'}}
-                        <li><a href="" class="js-new memberships" data-entity="benefactorship">{{_ 'new'}} {{_ 'benefactor'}}</a></li>
-                        {{/if}}
-                        {{#if userHasPermission 'leaderships.insert'}}
-                        <li><a href="" class="js-new leaderships">{{_ 'new'}} {{_ 'leadership'}}</a></li>
-                        {{/if}}
-                    </ul>
-                <button class="btn btn-white btn-sm js-import ownership" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
-                </div>  
-            {{/if}}
-            <p>
-                <strong>{{ parcelDisplay}}</strong> - {{_ 'occupants'}}
-                <br>
-                {{_ "Click person's name to see contact info"}}
-            </p>
-            <br>
-            <div class="member-list">
-                {{> Active_archive_tabs name='ownership' icon='fa-user' iconUnapproved='fa-user-o'
-                    template='Memberships_table' content=membershipsContent }}
-            </div>
+    <div class="memberships">
+        <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
+        <h2>{{_ 'occupants'}} {{leadershipTitle}}                
+        </h2>
+        {{#if userHasPermission 'benefactorship.insert'}}
+            <div class="dropdown btn-group pull-right">
+                {{>Menu_overflow_guard}}
+                <button href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
+                    <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'occupant'}}</strong> <b class="caret"></b>
+                </button>
+                <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
+                    {{#if userHasPermission 'ownership.insert'}}
+                    <li><a href="" class="js-new memberships" data-entity="ownership">{{_ 'new'}} {{_ 'owner'}}</a></li>
+                    {{/if}}
+                    {{#if userHasPermission 'benefactorship.insert'}}
+                    <li><a href="" class="js-new memberships" data-entity="benefactorship">{{_ 'new'}} {{_ 'benefactor'}}</a></li>
+                    {{/if}}
+                    {{#if userHasPermission 'leaderships.insert'}}
+                    <li><a href="" class="js-new leaderships">{{_ 'new'}} {{_ 'leadership'}}</a></li>
+                    {{/if}}
+                </ul>
+            <button class="btn btn-white btn-sm js-import ownership" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+            </div>  
+        {{/if}}
+        <p>
+            {{_ "Click person's name to see contact info"}}
+        </p>
+        <br>
+        <div class="member-list">
+            {{> Active_archive_tabs name='ownership' icon='fa-user' iconUnapproved='fa-user-o'
+                template='Occupants_table' content=membershipsContent }}
         </div>
     </div>
 </template>
@@ -159,27 +180,57 @@
 </template>
 
 <template name="Meters_box">
-    <div class="ibox meters">
-        <div class="ibox-content">
-            <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
-            <h2>{{_ 'meters'}}</h2>
-            {{#if userHasPermission 'meters.insert'}}
-            <div class="btn-group pull-right">
-                <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'meter'}}</strong></button>
-                <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
-            </div>
-            {{/if}}
-            <p>
-                <strong>{{parcelDisplay}}</strong> - {{_  'meters' }} <i class="fa fa-tachometer"></i><br>
-            </p>
-            <br>
-            <div class="member-list">
-                {{#if userHasPermission 'meters.update'}}
-                {{> Active_archive_tabs name='meters' icon='fa-tachometer'
-                    template='Meters_table' content=metersContent }}
-                {{/if}}
-            </div>
+    <div class="meters">
+        <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
+        <h2>{{_ 'meters'}}</h2>
+        {{#if userHasPermission 'meters.insert'}}
+        <div class="btn-group pull-right">
+            <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'meter'}}</strong></button>
+            <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
         </div>
+        {{/if}}
+        <p>
+          Új óraállás bejelentése a fényképezőgép ikonnal (fotó feltöltése nem kötelező)
+        </p>
+        <br>
+        <div class="member-list">
+            {{#if userHasPermission 'meters.update'}}
+            {{> Active_archive_tabs name='meters' icon='fa-tachometer'
+                template='Meters_table' content=metersContent }}
+            {{/if}}
+        </div>
+    </div>
+</template>
+
+<template name='Parcels_box'>
+    <div class="parcels">
+        <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
+        <h2 class="text-capitalize">{{_ "parcels"}}</h2>
+        <div class="btn-group pull-right">
+            {{#unless showAllParcels}}
+            <button class="btn btn-primary btn-sm js-show-all"><strong> {{_ 'Show all parcels'}}</strong></button>
+            {{/unless}}
+            {{#if userHasPermission 'parcels.insert'}}
+            <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcel'}}</strong></button>
+            <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+            {{/if}}
+        </div>
+        <p>
+            {{#if showAllParcels}}
+            {{_ 'List of parcels'}} - <i class="fa fa-building"></i> {{parcels.count}} {{> Help_icon title=(_ 'Number of parcels in the house')}}<br>
+            {{_ 'Click the little person buttons to see the occupants'}}
+            {{else}}
+            {{_ 'The list currently shows your own parcels'}} - <i class="fa fa-building"></i> {{parcels.count}}<br>
+            {{_ 'Click the button on the right to see all parcels'}}                            
+            {{/if}}
+        </p>
+        <br>
+        {{#if Template.subscriptionsReady}}
+            {{> Active_archive_tabs name='parcels' tabs='active,unapproved' icon='fa-building' iconUnapproved='fa-building-o'
+                template='SimpleReactiveDatatable' content=parcelsTableContent }}
+        {{else}}
+            {{_ 'Loading'}}...
+        {{/if}}
     </div>
 </template>
 
@@ -203,29 +254,9 @@
                     </div>
                 </div>
                 {{/if}}
-                <div class="ibox roleship">
+                <div class="ibox">
                     <div class="ibox-content">
-                        <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
-                        <h2>{{_ 'officers'}}</h2>
-                        {{#if userHasPermission 'roleship.insert'}}
-                        <button class="btn btn-primary btn-sm pull-right js-new memberships" data-entity="roleship">
-                            <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong>
-                        </button>
-                        {{/if}}
-                        <p>
-                            {{_ 'List of officers'}} - <i class="fa fa-user"></i> {{officers.length}}<br>
-                            {{_ "Click person's name to see contact info"}}
-                        </p>
-                        <br>
-                        <!--div class="input-group">
-                            <input type="text" placeholder="Search client " class="input form-control">
-                                <span class="input-group-btn">
-                                        <button type="button" class="btn btn btn-primary"> <i class="fa fa-search"></i> Search</button>
-                                </span>
-                        </div-->
-                        <div class="member-list">
-                            {{> Roleships_table roleships=officers}}
-                        </div>
+                        {{> Roleships_box communityId=communityId}}
                     </div>
                 </div>
             </div>
@@ -290,66 +321,15 @@
         {{#if userHasPermission 'parcels.inCommunity'}}
         {{#if userHasPermission 'memberships.inCommunity'}}
         <div class="row">
-            <div class="col-lg-12">
-                <div class="ibox parcels">
-                    <div class="ibox-content">
-                        <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
-                        <h2 class="text-capitalize">{{_ "parcels"}}</h2>
-                        <div class="btn-group pull-right">
-                            {{#unless showAllParcels}}
-                            <button class="btn btn-primary btn-sm js-show-all"><strong> {{_ 'Show all parcels'}}</strong></button>
-                            {{/unless}}
-                            {{#if userHasPermission 'parcels.insert'}}
-                            <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcel'}}</strong></button>
-                            <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
-                            {{/if}}
-                        </div>
-                        <p>
-                            {{#if showAllParcels}}
-                            {{_ 'List of parcels'}} - <i class="fa fa-building"></i> {{parcels.count}} {{> Help_icon title=(_ 'Number of parcels in the house')}}<br>
-                            {{_ 'Click the little person buttons to see the occupants'}}
-                            {{else}}
-                            {{_ 'The list currently shows your own parcels'}} - <i class="fa fa-building"></i> {{parcels.count}}<br>
-                            {{_ 'Click the button on the right to see all parcels'}}                            
-                            {{/if}}
-                        </p>
-                        <br>
-                        {{#if Template.subscriptionsReady}}
-                            {{> Active_archive_tabs name='parcels' tabs='active,unapproved' icon='fa-building' iconUnapproved='fa-building-o'
-                                template='SimpleReactiveDatatable' content=parcelsTableContent }}
-                        {{else}}
-                            {{_ 'Loading'}}...
-                        {{/if}}
-                    </div>
-                </div>
+        <div class="col-lg-12">
+            <div class="ibox parcels">
+            <div class="ibox-content">
+                {{>Parcels_box communityId=communityId}}
             </div>
+            </div>
+        </div>
         </div>
         {{/if}}
         {{/if}}
-
-        <div id="meters" class="row">
-            <div class="col-md-8">
-            {{#if selectedParcelId}}
-                {{> Meters_box communityId=communityId parcelId=selectedParcelId}}
-            {{/if}}
-            </div>
-        </div>
-
-        <div id="occupants" class="row">
-            <div class="col-md-8">
-            {{#if selectedParcelId}}
-                {{> Occupants_box communityId=communityId parcelId=selectedParcelId}}
-            {{/if}}
-            </div>
-            <div id="member" class="col-md-4">
-            {{#if selectedMemberId}}
-                <div class="ibox contact-cards">
-                    <div class="ibox-content">
-                        {{> Contact_long selectedMember.Person.user}}
-                    </div>
-                </div>
-            {{/if}}
-            </div>
-        </div>
     </div>
 </template>
