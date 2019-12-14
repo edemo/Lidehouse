@@ -18,7 +18,7 @@ Template.Meters_widget.viewmodel({
     if (!user || !communityId) return [];
     return user.ownedParcels(communityId);
   },
-  lastreadingDate() {
+  lastReadingDate() {
     const meters = this.ownedParcels().fetch()[0].meters().fetch();
     const meter = meters[0];
     return meter ? meter.lastReading().date : undefined;
