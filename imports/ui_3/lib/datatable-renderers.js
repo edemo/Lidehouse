@@ -34,17 +34,6 @@ export const Render = {
     const html = `<span class='issue-info'><a data-id=${topicId} class="js-view">${title}</a></span>`;
     return html;
   },
-  buttonView(cellData, renderType, currentRow) {
-    const html = `<button data-id=${cellData} class="btn btn-white btn-xs js-view" title=${__('view')}><i class="fa fa-eye"></i></button>`;
-    return html;
-  },
-  buttonViewLink(cellData, renderType, currentRow) {
-    let html = '';
-    html += `<a href="#view-target">`;
-    html += `<button data-id=${cellData} class="btn btn-white btn-xs js-view" title=${__('view')}><i class="fa fa-eye"></i></button>`;
-    html += `</a>`;
-    return html;
-  },
   joinOccupants(occupants) {
     let result = '';
     occupants.forEach((m) => {

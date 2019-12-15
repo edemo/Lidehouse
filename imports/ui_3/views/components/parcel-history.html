@@ -1,4 +1,5 @@
 <template name="Parcel_history">
+    <div class="transactions">
     <div class="row">
         <div class="col-sm-3">
             <div class="form-group">
@@ -60,4 +61,5 @@
         </table>
     </div>
     <p class="text-center">{{_ 'Total change in this period'}}: <strong>{{displayMoney journalEntries.pop.total}}</strong></p>
+    </div>
 </template>

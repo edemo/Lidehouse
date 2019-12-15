@@ -23,13 +23,11 @@ Meteor.publish('transactions.byPartner', function transactionsInCommunity(params
     // then he can only see his own parcels' transactions
     const ownershipIds = _.pluck(user.ownerships(communityId).fetch(), '_id');
     if (!partnerId || !_.contains(ownershipIds, partnerId)) {
-      console.log("NOT sending anything", partnerId, ownershipIds);
       return this.ready();
     }
   }
 
   const selector = Transactions.makeFilterSelector(params);
-      console.log("Sending ", selector);
   return Transactions.find(selector);
 });
 

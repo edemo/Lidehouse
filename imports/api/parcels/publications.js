@@ -17,8 +17,23 @@ Meteor.publish('parcels.inCommunity', function parcelsOfCommunity(params) {
   if (!user.hasPermission('parcels.inCommunity', communityId)) {
     return this.ready();
   }
-  
-  return Parcels.find({ communityId });
+
+  return Parcels.find({ communityId }, { fields: { outstanding: 0 } });
+});
+
+Meteor.publish('parcels.outstanding', function parcelsOutstanding(params) {
+  new SimpleSchema({
+    communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
+    limit: { type: Number, decimal: true, optional: true },
+  }).validate(params);
+  const { communityId, limit } = params;
+
+  const user = Meteor.users.findOneOrNull(this.userId);
+  if (!user.hasPermission('bills.outstanding', communityId)) {
+    return this.ready();
+  }
+
+  return Parcels.find({ communityId }, { sort: { outstanding: -1 }, limit });
 });
 
 Meteor.publishComposite('parcels.ofSelf', function parcelsOfSelf(params) {

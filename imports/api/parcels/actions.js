@@ -103,6 +103,15 @@ Parcels.actions = {
       });
     },
   },
+  finances: {
+    name: 'finances',
+    icon: () => 'fa fa-money',
+    visible: (options, doc) => currentUserHasPermission('parcels.inCommunity', doc),
+    href: () => '#view-target',
+    run(options, doc, event, instance) {
+      instance.viewmodel.parcelToView(doc._id);
+    },
+  },
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',

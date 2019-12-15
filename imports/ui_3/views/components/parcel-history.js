@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
+import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
 import { Meteor } from 'meteor/meteor';
@@ -66,5 +67,13 @@ Template.Parcel_history.viewmodel({
   },
   displayTx(tx) {
     return __(tx.category) + (tx.lineCount() ? ` (${tx.lineCount()} ${__('item')})` : '');
+  },
+});
+
+Template.Parcel_history.events({
+  'click .transactions .js-view'(event, instance) {
+    const id = $(event.target).closest('button').data('id');
+    const doc = Transactions.findOne(id);
+    Transactions.actions.view.run({}, doc);
   },
 });

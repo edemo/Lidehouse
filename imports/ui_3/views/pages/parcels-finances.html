@@ -35,14 +35,14 @@
     <div class="col-sm-6">{{> Meters_widget}}</div>
     {{/if}}
 
-    {{#if userHasPermission 'balances.ofAccounts'}}
+    {{#if userHasPermission 'parcels.finances'}}
     <div class="col-lg-12">
-    <div class="ibox ibox-dark" id="balances">
+    <div class="ibox ibox-dark">
         <!--div class="ibox-title">
             <h5>{{_ 'Parcel balances'}}</h5>
             {{>iboxTools}}
         </div-->
-        <div class="ibox-content">
+        <div class="ibox-content parcels">
             <span class="text-muted small pull-right">{{_ "Owner can see their own parcel's data - Manager can see everyone's"}}</span>
             <h2 class="text-capitalize">{{_ 'Parcel balances'}}</h2>
             {{#if userHasPermission 'balances.ofLocalizers'}}
@@ -88,9 +88,9 @@
     </div>
     </div-->
 
-    {{#if userHasPermission 'balances.ofAccounts'}}
+    {{#if userHasPermission 'parcels.finances'}}
     <div class="col-md-12" id='view-target'>
-    <div class="ibox ibox-dark" id='parcel-history'>
+    <div class="ibox ibox-dark" >
         <div class="ibox-title">
             <h5>{{_ 'Parcel history'}}</h5>
             {{>iboxTools}}

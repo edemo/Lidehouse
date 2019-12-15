@@ -5,27 +5,19 @@ import { TAPi18n } from 'meteor/tap:i18n';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 import { moment } from 'meteor/momentjs:moment';
-import { $ } from 'meteor/jquery';
 
-import { Render } from '/imports/ui_3/lib/datatable-renderers.js';
-import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { Session } from 'meteor/session';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { parcelFinancesColumns } from '/imports/api/parcels/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-
-import '/imports/api/transactions/bills/actions.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import '/imports/ui_3/views/components/custom-table.js';
-import '/imports/ui_3/views/modals/confirmation.js';
-import '/imports/ui_3/views/modals/autoform-modal.js';
+import '/imports/api/transactions/actions.js';
+import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/parcel-history.js';
-import '../common/ibox-tools.js';
-import '../components/balance-widget.js';
-import '../components/meters-widget.js';
-import '../components/balance-report.js';
+import '/imports/ui_3/views/common/ibox-tools.js';
+import '/imports/ui_3/views/components/balance-widget.js';
+import '/imports/ui_3/views/components/meters-widget.js';
+import '/imports/ui_3/views/components/balance-report.js';
 import './parcels-finances.html';
 
 Template.Parcels_finances.viewmodel({
@@ -37,15 +29,15 @@ Template.Parcels_finances.viewmodel({
       const communityId = Session.get('activeCommunityId');
       instance.subscribe('breakdowns.inCommunity', { communityId });
       instance.subscribe('leaderships.inCommunity', { communityId });
-      if (Meteor.userOrNull().hasPermission('balances.ofLocalizers')) {
+      if (Meteor.userOrNull().hasPermission('bills.outstanding')) {
         if (self.showAllParcels()) {
-          instance.subscribe('balances.ofLocalizers', { communityId });
+          instance.subscribe('parcels.outstanding', { communityId });
         } else {
-          instance.subscribe('balances.ofLocalizers', { communityId, limit: 10 });
+          instance.subscribe('parcels.outstanding', { communityId, limit: 10 });
         }
       } else {
-        instance.subscribe('balances.ofSelf', { communityId });
-      } 
+        instance.subscribe('parcels.ofSelf', { communityId });
+      }
     });
   },
   myLeadParcels() {
@@ -74,36 +66,14 @@ Template.Parcels_finances.viewmodel({
   },
   parcelFinancesTableDataFn() {
     const communityId = Session.get('activeCommunityId');
-    return () => {
-      const dataset = [];
-      const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers') ?
-        Parcels.find({ communityId, approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
-      parcels.forEach(parcel => {
-        dataset.push({
-          parcelId: parcel._id,
-          parcelRef: parcel.ref,
-          owners: parcel.owners().fetch(),
-          balance: (-1) * parcel.outstanding,
-          followers: parcel.followers().map(p => p.ref),
-        });
-//        const balance = (-1) * Balances.getTotal({ communityId, account: '33', localizer: Localizer.parcelRef2code(parcelRef), tag: 'T' });
-      });
-      return dataset;
-    };
+    return () => Parcels.find({ communityId }).fetch();
   },
   parcelFinancesOptionsFn() {
-    return () => {
-      return {
-        columns: [
-          { data: 'parcelRef', title: __('schemaParcels.ref.label') },
-          { data: 'followers', title: __('follower parcels') },
-          { data: 'owners', title: __('owner'), render: Render.joinOccupants },
-          { data: 'balance', title: __('Balance'), render: Render.formatNumber },
-          { data: 'parcelId', title: __('Action buttons'), render: Render.buttonViewLink },
-        ],
-        language: datatables_i18n[TAPi18n.getLanguage()],
-      };
-    };
+    return () => ({
+      columns: parcelFinancesColumns(),
+      order: [[4, 'desc']],
+      language: datatables_i18n[TAPi18n.getLanguage()],
+    });
   },
 /*  parcelsTableDataFn() {
     const self = this;
@@ -158,19 +128,9 @@ Template.Parcels_finances.viewmodel({
 });
 
 Template.Parcels_finances.events({
-  'click #balances .js-view'(event, instance) {
-//    event.preventDefault(); // the <a> functionality destroys the instance.data!!!
-    const parcelId = $(event.target).closest('button').data('id');
-//    const localizerCode = Localizer.parcelRef2code(parcelRef);
-    instance.viewmodel.parcelToView(parcelId);
-  },
-  'click #balances .js-show-all'(event, instance) {
+  ...(actionHandlers(Parcels)),
+  'click .parcels .js-show-all'(event, instance) {
     const oldVal = instance.viewmodel.showAllParcels();
     instance.viewmodel.showAllParcels(!oldVal);
-  },
-  'click #parcel-history .js-view'(event, instance) {
-    const id = $(event.target).closest('button').data('id');
-    const doc = Transactions.findOne(id);
-    Transactions.actions.view.run({}, doc);
   },
 });
