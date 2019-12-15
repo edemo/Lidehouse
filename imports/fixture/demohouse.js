@@ -1184,6 +1184,16 @@ Meteor.methods({
     });
     const demoMembership = Memberships.findOne(demoMembershipId);
 
+    Clock.starts(4, 'months', 'ago');
+    const waterMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'coldWater' });
+    const heatingMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'heating' });
+    Clock.tick(3, 'weeks');
+    demoBuilder.execute(Meters.methods.registerReading, { _id: waterMeterId,
+      reading: { date: Clock.currentTime(), value: 255 } });
+    demoBuilder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
+      reading: { date: Clock.currentTime(), value: 133 } });
+    Clock.clear();
+
     Localizer.addParcel(demoCommunityId, demoParcel, lang);
 
     const demoManagerId = demoBuilder.getUserWithRole('manager');
@@ -1202,13 +1212,13 @@ Meteor.methods({
       userId: demoUserId,
       participantIds: [demoUserId, chatPartnerId],
     });
-    Clock.setSimulatedTime(moment().subtract(6, 'hours').toDate());
+    Clock.starts(6, 'hours', 'ago');
     demoBuilder.insert(Comments, 'comment', {
       topicId: demoUserMessageRoom2,
       creatorId: demoUserId,
       text: __('demo.messages.0'),
     });
-    Clock.setSimulatedTime(moment().subtract(3, 'hours').toDate());
+    Clock.starts(3, 'hours', 'ago');
     demoBuilder.insert(Comments, 'comment', {
       topicId: demoUserMessageRoom2,
       creatorId: chatPartnerId,
