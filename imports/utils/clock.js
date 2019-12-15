@@ -27,14 +27,13 @@ export const Clock = {
   // WARNING: Calling these methods will make everyone see a modified Time.
   // Dont forget to call clear() after you are done!!!
   setSimulatedTime(time) {
-    simulatedTime = time;
+    simulatedTime = time || new Date();
   },
   starts(...args) {
     debugAssert(args.length === 3 && args[2] === 'ago');
     Clock.setSimulatedTime(moment().subtract(args[0], args[1]).toDate());
   },
   tick(...args) {
-    debugAssert(args.length === 2);
     const newTime = moment(simulatedTime).add(...args).toDate();
     Clock.setSimulatedTime(newTime);
     return newTime;

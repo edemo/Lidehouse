@@ -50,7 +50,7 @@ export function insertDemoHouse(lang, demoOrTest) {
       Communities.remove(demoHouse._id);
     } else {
 //      Balances.checkAllCorrect();
-      return;
+      return demoHouse._id;
     }
   }
 
@@ -1115,6 +1115,8 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   Balances.methods.publish._execute({ userId: demoAccountantId }, { communityId: demoCommunityId });
   Clock.clear();
+
+  return demoCommunityId;
 }
 
 // ----------------------------------------------------------------
@@ -1226,7 +1228,7 @@ Meteor.methods({
   },
 });
 
-export function purgeExpiringDemoUsers(lang, demoOrTest = 'demo') {
+export function scheduePurgeExpiringDemoUsers(lang, demoOrTest = 'demo') {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const community = Communities.findOne({ name: __(`${demoOrTest}.house`) });
   if (!community) return;
