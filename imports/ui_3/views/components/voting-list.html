@@ -42,12 +42,7 @@
                     </div>
                 </td>
                 <td class="project-actions">
-                    <div class="btn-group">
-                        <a href="{{pathFor 'Topic show' _tid=_id}}" class="btn btn-white btn-xs"><i class="fa fa-eye" title="{{_ 'view'}}"></i></a>
-                        <!--{{#if userHasPermission 'vote.update' this}}
-                        <a href="" class="btn btn-white btn-xs"><i class="fa fa-pencil"></i>{{_ 'edit'}} </a>
-                        {{/if}}-->
-                    </div>
+                    {{>Action_buttons_group doc=this collection='topics' actions='view,edit,delete' size='sm' }}
                 </td>
             </tr>
             {{/each}}
