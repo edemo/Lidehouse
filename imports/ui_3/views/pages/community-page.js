@@ -37,16 +37,22 @@ import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './community-page.html';
 
 Template.Roleships_box.viewmodel({
+  community() {
+    return this.templateInstance.data.community();
+  },
+  communityId() {
+    return this.templateInstance.data.communityId();
+  },
   autorun() {
-    const communityId = this.templateInstance.data.communityId;
+    const communityId = this.communityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
   },
   leaders() {
-    const communityId = this.templateInstance.data.communityId;
+    const communityId = this.communityId();
     return Memberships.findActive({ communityId, role: { $in: leaderRoles } }, { sort: { createdAt: 1 } }).fetch();
   },
   nonLeaders() {
-    const communityId = this.templateInstance.data.communityId;
+    const communityId = this.communityId();
     return Memberships.findActive({ communityId, role: { $in: nonLeaderRoles } }, { sort: { createdAt: 1 } }).fetch();
   },
   officers() {
@@ -93,10 +99,6 @@ Template.Meters_table.viewmodel({
 });
 
 Template.Meters_box.viewmodel({
-  autorun() {
-    const communityId = this.templateInstance.data.communityId;
-      this.templateInstance.subscribe('meters.inCommunity', { communityId });
-  },
   parcelDisplay() {
     const parcelId = this.templateInstance.data.parcelId;
     const parcel = Parcels.findOne(parcelId);
@@ -113,8 +115,10 @@ Template.Meters_box.viewmodel({
 Template.Parcels_box.viewmodel({
   showAllParcels: false,
   community() {
-    const communityId = this.templateInstance.data.communityId;
-    return Communities.findOne(communityId);
+    return this.templateInstance.data.community();
+  },
+  communityId() {
+    return this.templateInstance.data.communityId();
   },
   onCreated() {
     const user = Meteor.user();
@@ -125,9 +129,10 @@ Template.Parcels_box.viewmodel({
     this.showAllParcels(!!showAllParcelsDefault);
   },
   autorun() {
-    const communityId = this.templateInstance.data.communityId;
+    const communityId = this.communityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
     this.templateInstance.subscribe('leaderships.inCommunity', { communityId });
+    this.templateInstance.subscribe('meters.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
     } else {
@@ -145,7 +150,7 @@ Template.Parcels_box.viewmodel({
   },
   parcelsTableContent() {
     const self = this;
-    const communityId = this.templateInstance.data.communityId;
+    const communityId = this.communityId();
     return {
       collection: 'parcels',
       selector: { communityId },
@@ -165,17 +170,17 @@ Template.Parcels_box.viewmodel({
     };
   },
   parcels() {
-    const communityId = this.templateInstance.data.communityId;
+    const communityId = this.communityId();
     return Parcels.find({ communityId, approved: true });
   },
   unapprovedParcels() {
-    const communityId = this.templateInstance.data.communityId;
+    const communityId = this.communityId();
     return Parcels.find({ communityId, approved: false });
   },
   unapprovedParcelsTableDataFn() {
     const self = this;
     return () => {
-      const communityId = self.templateInstance.data.communityId;
+      const communityId = self.communityId();
       return Parcels.find({ communityId, approved: false }).fetch();
     };
   },
@@ -203,6 +208,13 @@ Template.Community_page.viewmodel({
   },
   community() {
     return Communities.findOne(this.communityId());
+  },
+  communityAsArg() {
+    const self = this;
+    return {
+      communityId: () => self.communityId(),
+      community: () => self.community(),
+    }
   },
   communities() {
     return Communities;

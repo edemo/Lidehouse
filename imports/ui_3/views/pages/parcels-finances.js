@@ -24,6 +24,7 @@ import '/imports/ui_3/views/components/account-history.js';
 import '/imports/ui_3/views/components/parcel-history.js';
 import '../common/ibox-tools.js';
 import '../components/balance-widget.js';
+import '../components/meters-widget.js';
 import '../components/balance-report.js';
 import './parcels-finances.html';
 
