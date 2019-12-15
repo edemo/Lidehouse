@@ -52,7 +52,7 @@ Leaderships.helpers({
   ledParcel() {
     return Parcels.findOne(this.parcelId);
   },
-  entitiyName() {
+  entityName() {
     return 'leaderships';
   },
 });
