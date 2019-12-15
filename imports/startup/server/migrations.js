@@ -120,6 +120,20 @@ Migrations.add({
   },
 });
 
+Migrations.add({
+  version: 8,
+  name: 'Comments category is now required field',
+  up() {
+    function upgrade() {
+      Comments.update(
+        { category: { $exists: false } },
+        { $set: { category: 'comment' } },
+        { multi: true }
+      );
+    }
+    upgrade();
+  },
+});
 
 Meteor.startup(() => {
   Migrations.unlock();
