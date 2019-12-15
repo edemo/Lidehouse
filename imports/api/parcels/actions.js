@@ -71,9 +71,7 @@ Parcels.actions = {
       return colorClass;
     },
     visible: (options, doc) => currentUserHasPermission('memberships.inCommunity', doc),
-//    href: () => '#occupants',
     run(options, doc, event, instance) {
-//      instance.viewmodel.selectedParcelId(doc._id);
       Modal.show('Modal', {
         title: `${doc ? doc.display() : __('unknown')} - ${__('occupants')}`,
         body: 'Occupants_box',
@@ -88,10 +86,10 @@ Parcels.actions = {
   meters: {
     name: 'meters',
     icon: () => 'fa fa-tachometer',
-    visible: (options, doc) => currentUserHasPermission('meters.inCommunity', doc),
-//    href: () => '#meters',
+    visible: (options, doc) => {
+      return currentUserHasPermission('meters.insert', doc) || currentUserHasPermission('meters.insert.unapproved', doc);
+    },
     run(options, doc, event, instance) {
-//      instance.viewmodel.selectedParcelId(doc._id);
       Modal.show('Modal', {
         title: `${doc ? doc.display() : __('unknown')} - ${__('meters')}`,
         body: 'Meters_box',
