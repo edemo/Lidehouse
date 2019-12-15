@@ -7,6 +7,7 @@ import { Fraction } from 'fractional';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
+import { getVisibleCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
@@ -186,7 +187,7 @@ AutoForm.addModalHooks('af.parcel.insert');
 AutoForm.addModalHooks('af.parcel.update');
 AutoForm.addHooks('af.parcel.insert', {
   formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
+    doc.communityId = getVisibleCommunityId();
     return doc;
   },
 });
@@ -200,7 +201,7 @@ AutoForm.addHooks('af.parcel.update', {
 AutoForm.addModalHooks('af.parcel.insert.unapproved');
 AutoForm.addHooks('af.parcel.insert.unapproved', {
   formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
+    doc.communityId = getVisibleCommunityId();
     doc.approved = false;
     return doc;
   },

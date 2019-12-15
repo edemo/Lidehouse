@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { getVisibleCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Memberships } from './memberships';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
@@ -10,7 +11,7 @@ Memberships.entities = {
     inputFields: ['role', 'person'],
     modifiableFields: ['person'],
     implicitFields: {
-      communityId: () => Session.get('selectedCommunityId'),
+      communityId: getVisibleCommunityId,
       approved: true,
     },
   },
@@ -20,7 +21,7 @@ Memberships.entities = {
     inputFields: ['person', 'ownership'],
     modifiableFields: ['person', 'ownership'],
     implicitFields: {
-      communityId: () => Session.get('selectedCommunityId'),
+      communityId: getVisibleCommunityId,
       parcelId: () => Session.get('selectedParcelId'),
       role: 'owner',
       approved: true,
@@ -32,7 +33,7 @@ Memberships.entities = {
     inputFields: ['person', 'benefactorship'],
     modifiableFields: ['person', 'benefactorship'],
     implicitFields: {
-      communityId: () => Session.get('selectedCommunityId'),
+      communityId: getVisibleCommunityId,
       parcelId: () => Session.get('selectedParcelId'),
       role: 'benefactor',
       approved: true,
@@ -44,7 +45,7 @@ Memberships.entities = {
     inputFields: ['person'],
     omitFields: ['person.userId'],
     implicitFields: {
-      communityId: () => Session.get('activeCommunityId'),
+      communityId: getVisibleCommunityId,
       role: 'delegate',
       approved: true,
     },

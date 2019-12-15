@@ -2,9 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import { __ } from '/imports/localization/i18n.js';
-import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { getVisibleCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { Meters } from './meters.js';
@@ -121,7 +122,7 @@ AutoForm.addModalHooks('af.meter.update');
 AutoForm.addModalHooks('af.meter.reading');
 AutoForm.addHooks('af.meter.insert', {
   formToDoc(doc) {
-    doc.communityId = Session.get('selectedCommunityId');
+    doc.communityId = getVisibleCommunityId();
     doc.parcelId = Session.get('selectedParcelId');
     //    doc.approved = true;
     return doc;

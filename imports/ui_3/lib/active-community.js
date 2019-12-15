@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
+import { FlowRouter } from 'meteor/kadira:flow-router';
+import { Communities } from '../../api/communities/communities';
 
 export function autosetActiveCommunity() {
   const activeCommunityId = Session.get('activeCommunityId');
@@ -11,4 +13,17 @@ export function autosetActiveCommunity() {
       Session.set('activeCommunityId', activeCommunity._id);
     }
   }
+}
+
+export function getVisibleCommunityId() {
+  console.log('communityId');
+  console.log('FLOW', FlowRouter.getParam('_cid'));
+  console.log('SESSION', Session.get('activeCommunityId'));
+  
+  return FlowRouter.getParam('_cid') || Session.get('activeCommunityId');
+}
+
+export function getVisibleCommunity() {
+  const id = getVisibleCommunityId();
+  return Communities.findOne(id);
 }
