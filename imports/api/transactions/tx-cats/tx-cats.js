@@ -4,7 +4,6 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { Factory } from 'meteor/dburles:factory';
 
-import { getActiveCommunityId } from '/imports/api/communities/communities.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';

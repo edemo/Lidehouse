@@ -14,13 +14,6 @@ import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
-const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
-
-export function getActiveCommunityId() {
-  if (!Meteor.isClient) debugAssert(false, 'On the server you need to supply the communityId, because there is no "activeCommunity"');
-  return Session.get('activeCommunityId');
-}
-
 export const Communities = new Mongo.Collection('communities');
 
 const defaultAvatar = '/images/defaulthouse.jpg';

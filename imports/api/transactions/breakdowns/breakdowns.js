@@ -8,7 +8,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 

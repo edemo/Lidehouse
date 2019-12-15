@@ -1,13 +1,13 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
-import { getVisibleCommunityId } from '/imports/ui_3/lib/active-community.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 export function currentUserHasPermission(permissionName, object, communityId) {
   const user = Meteor.userOrNull();
-  const relevantCommunityId = communityId || getVisibleCommunityId();
+  const relevantCommunityId = communityId || getActiveCommunityId();
   if (relevantCommunityId === undefined) return false;
-  return user.hasPermission(permissionName, communityId, object);
+  return user.hasPermission(permissionName, relevantCommunityId, object);
 }
 
 Template.registerHelper('userHasPermission', function userHasPermission(permissionName, object) {

@@ -1,6 +1,6 @@
 import { __ } from '/imports/localization/i18n.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 // Helpers form manipulating with the Localizer
 export const ChartOfAccounts = {

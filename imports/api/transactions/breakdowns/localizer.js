@@ -3,7 +3,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { getActiveCommunityId } from '/imports/api/communities/communities.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
 // Helpers form manipulating with the Localizer
 export const Localizer = {
