@@ -28,6 +28,7 @@ import '/imports/api/leaderships/actions.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import '/imports/api/meters/actions.js';
 import '/imports/api/users/users.js';
+import '/imports/api/users/actions.js';
 import '/imports/ui_3/views/components/active-archive-tabs.js';
 import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
 import '/imports/ui_3/views/common/page-heading.js';
@@ -233,11 +234,7 @@ Template.Occupants_box.events({
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);
-    Modal.show('Modal', {
-      title: 'User data page',
-      body: 'Contact_long',
-      bodyContext: membership.Person().user(),
-    })
+    Meteor.users.actions.view.run({}, membership.Person().user());
   },
 });
 
