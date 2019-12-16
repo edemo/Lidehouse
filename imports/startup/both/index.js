@@ -1,4 +1,5 @@
 import './collection-patches.js';
+import './simpleschema-patches.js';
 import './collection-stage.js';
 import './debug.js';
 import './fractional.js';
