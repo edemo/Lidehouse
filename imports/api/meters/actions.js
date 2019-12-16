@@ -123,7 +123,7 @@ AutoForm.addModalHooks('af.meter.reading');
 AutoForm.addHooks('af.meter.insert', {
   formToDoc(doc) {
     doc.communityId = getActiveCommunityId();
-    doc.parcelId = Session.get('selectedParcelId');
+    doc.parcelId = Session.get('modalContext').parcelId;
     //    doc.approved = true;
     return doc;
   },
