@@ -13,12 +13,7 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 export const ContactSchema = new SimpleSchema({
   address: { type: String, optional: true },
   phone: { type: String, optional: true },
-  email: { type: String, optional: true, regEx: SimpleSchema.RegEx.Email,
-    autoValue() {
-      if (this.isSet) return (this.value).toLowerCase();
-      return undefined;
-    },
-  },
+  email: _.extend({ optional: true }, SimpleSchema.Types.Email),
 });
 
 const idCardTypeValues = ['natural', 'legal'];
