@@ -8,11 +8,11 @@ import './action-buttons.html';
 // Apply these event handlers to your template, if the buttons are not created as Action_button templates,
 // hence they don't have their event handlers yet
 // (like buttons in datatables, where the buttons are not templates, just simple html)
-export function actionHandlers(collection) {
-  const collectionName = collection._name;
+export function actionHandlers(collection, actionNames) {
+  const actions = actionNames ? actionNames.split(',').map(a => collection.actions[a]) : collection.actions;
   const eventHandlers = {};
-  _.each(collection.actions, (action, actionName) => {
-    eventHandlers[`click .js-${actionName}.${collectionName},.${collectionName} .js-${actionName}`] = function (event, instance) {
+  _.each(actions, (action) => {
+    eventHandlers[`click .js-${action.name}.${collection._name},.${collection._name} .js-${action.name}`] = function (event, instance) {
       // TODO should copy all data-* atts over in one generic call
       const id = $(event.target).closest('[data-id]').data('id');
       const doc = id ? collection.findOne(id) : undefined;
