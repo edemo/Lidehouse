@@ -69,7 +69,7 @@
         </div>
       </div>
     </div>
-    <div class="ibox topics">
+    <div class="ibox">
       <div class="ibox-title"> 
         <h3>{{_ 'worksheets'}}</h3>
         <div class="btn-group m-l-md">
@@ -94,7 +94,7 @@
           {{> ContextMenu contextMenu_ctx }}
         </div>
         {{else}}
-        <div class="no-padding table-responsive">
+        <div class="no-padding table-responsive topics">
           {{> ReactiveDatatable tableData=ticketsDataFn options=ticketsOptionsFn }}
         </div>
         {{/if}}
