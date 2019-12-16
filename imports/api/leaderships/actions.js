@@ -91,7 +91,7 @@ AutoForm.addModalHooks('af.leadership.update');
 AutoForm.addHooks('af.leadership.insert', {
   formToDoc(doc) {
     doc.communityId = getActiveCommunityId();
-    doc.parcelId = Session.get('selectedParcelId');
+    doc.parcelId = Session.get('modalContext').parcelId;
     //    doc.approved = true;
     return doc;
   },

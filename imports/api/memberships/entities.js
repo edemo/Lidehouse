@@ -22,7 +22,7 @@ Memberships.entities = {
     modifiableFields: ['person', 'ownership'],
     implicitFields: {
       communityId: getActiveCommunityId,
-      parcelId: () => Session.get('selectedParcelId'),
+      parcelId: () => Session.get('modalContext').parcelId,
       role: 'owner',
       approved: true,
     },
@@ -34,7 +34,7 @@ Memberships.entities = {
     modifiableFields: ['person', 'benefactorship'],
     implicitFields: {
       communityId: getActiveCommunityId,
-      parcelId: () => Session.get('selectedParcelId'),
+      parcelId: () => Session.get('modalContext').parcelId,
       role: 'benefactor',
       approved: true,
     },

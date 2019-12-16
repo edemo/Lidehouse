@@ -80,7 +80,7 @@
                 <tbody>
                     {{#each row in memberships}}
                     {{#let entity=row.entityName}}
-                    <tr class="{{entity}}" data-id="{{row._id}}">
+                    <tr class="memberships" data-id="{{row._id}}">
                         <td><a href="" class="client-avatar js-member"><img alt="image" src={{row.Person.avatar}}></a></td>
                         <td><a href="" class="client-link js-member">{{row.Person.displayName}}</a></td>
                         <td>{{>Active_period row}}</td>
@@ -102,7 +102,7 @@
                     {{/let}}
                     {{/each}}
                     {{#each row in leaderships}}
-                    <tr id="leaderships" data-id="{{row._id}}">
+                    <tr class="leaderships" data-id="{{row._id}}">
                         <td class="text-center"> <a class="client-avatar"><i class="fa fa-lg fa-share"></i></a></td>
                         <td><button class="js-occupants parcels" data-id="{{row.leadParcelId}}"><strong title="{{_ 'leadership'}}">{{row.leadRef}}</strong></button></td>
                         <td>{{>Active_period row}}</td>
@@ -119,7 +119,7 @@
 </template>
 
 <template name="Occupants_box">
-    <div class="memberships">
+    <div>
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
         <h2>{{_ 'occupants'}} {{leadershipTitle}}                
         </h2>

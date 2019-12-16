@@ -228,8 +228,8 @@ Template.Roleships_box.events({
 });
 
 Template.Occupants_box.events({
-  ...(actionHandlers(Memberships)),
-  ...(actionHandlers(Leaderships)),
+  //...(actionHandlers(Memberships)),
+  //...(actionHandlers(Leaderships)),
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);
@@ -242,7 +242,7 @@ Template.Occupants_box.events({
 });
 
 Template.Meters_box.events({
-  ...(actionHandlers(Meters)),
+  //...(actionHandlers(Meters)),
 });
 
 Template.Parcels_box.events({
