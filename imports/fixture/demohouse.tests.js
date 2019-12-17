@@ -3,7 +3,7 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { TAPi18n } from 'meteor/tap:i18n';
 import '/i18n/demo.en.i18n.json';
 import { Clock } from '/imports/utils/clock.js';
-import { insertDemoHouse, insertLoginableUsersWithRoles, insertLoadsOfFakeMembers, DEMO_LIFETIME, schedulePurgeExpiringDemoUsers } from '/imports/fixture/demohouse.js';
+import { insertDemoHouse, insertLoginableUsersWithRoles, insertLoadsOfFakeMembers, schedulePurgeExpiringDemoUsers } from '/imports/fixture/demohouse.js';
 
 if (Meteor.isServer) {
 
@@ -26,8 +26,7 @@ if (Meteor.isServer) {
       });
 
       it('purges expiring demouser', function (done) {
-        const demoLifetime = (-1) * DEMO_LIFETIME;
-        schedulePurgeExpiringDemoUsers('en', 'demo', demoLifetime);
+        schedulePurgeExpiringDemoUsers('en', 'demo', 0);
         Meteor.setTimeout(function () {
           chai.assert.isUndefined(Meteor.users.findOne({ 'emails.0.address': demoUserEmail }));
           done();

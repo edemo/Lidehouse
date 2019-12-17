@@ -1120,7 +1120,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 }
 
 // ----------------------------------------------------------------
-export const DEMO_LIFETIME = moment.duration(2, 'hours').asMilliseconds();
+const DEMO_LIFETIME = moment.duration(2, 'hours').asMilliseconds();
 
 function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `purgeDemoUserWithParcel parameter not defined ${userId} ${parcelId} ${communityId}`);
