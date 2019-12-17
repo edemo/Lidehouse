@@ -1120,7 +1120,7 @@ export function insertDemoHouse(lang, demoOrTest) {
 }
 
 // ----------------------------------------------------------------
-const DEMO_LIFETIME = moment.duration(2, 'hours').asMilliseconds();
+export const DEMO_LIFETIME = moment.duration(2, 'hours').asMilliseconds();
 
 function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `purgeDemoUserWithParcel parameter not defined ${userId} ${parcelId} ${communityId}`);
@@ -1238,7 +1238,7 @@ Meteor.methods({
   },
 });
 
-export function scheduePurgeExpiringDemoUsers(lang, demoOrTest = 'demo') {
+export function schedulePurgeExpiringDemoUsers(lang, demoOrTest = 'demo', demoLifetime = DEMO_LIFETIME) {
   const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
   const community = Communities.findOne({ name: __(`${demoOrTest}.house`) });
   if (!community) return;
@@ -1248,7 +1248,7 @@ export function scheduePurgeExpiringDemoUsers(lang, demoOrTest = 'demo') {
   demoBuilder.demoUsersList().forEach((user) => {
     const parcelId = demoBuilder.parcelIdOfDemoUser(user);
     const currentTime = moment().valueOf();
-    let timeUntilDelete = moment(user.createdAt).add(DEMO_LIFETIME).subtract(currentTime).valueOf();
+    let timeUntilDelete = moment(user.createdAt).add(demoLifetime).subtract(currentTime).valueOf();
     if (timeUntilDelete < 0) timeUntilDelete = 0;
     Meteor.setTimeout(() => purgeDemoUserWithParcel(user._id, parcelId, communityId),
       timeUntilDelete);

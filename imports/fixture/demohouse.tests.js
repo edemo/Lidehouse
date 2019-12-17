@@ -3,7 +3,7 @@ import { chai, assert } from 'meteor/practicalmeteor:chai';
 import { TAPi18n } from 'meteor/tap:i18n';
 import '/i18n/demo.en.i18n.json';
 import { Clock } from '/imports/utils/clock.js';
-import { insertDemoHouse, insertLoginableUsersWithRoles, insertLoadsOfFakeMembers, DEMO_LIFETIME, scheduePurgeExpiringDemoUsers } from '/imports/fixture/demohouse.js';
+import { insertDemoHouse, insertLoginableUsersWithRoles, insertLoadsOfFakeMembers, DEMO_LIFETIME, schedulePurgeExpiringDemoUsers } from '/imports/fixture/demohouse.js';
 
 if (Meteor.isServer) {
 
@@ -18,7 +18,6 @@ if (Meteor.isServer) {
 
     describe('demouser', function () {
       it('can create demouser', function (done) {
-        Clock.setSimulatedTime();
         demoUserEmail = Meteor.call('createDemoUserWithParcel', 'en');
         chai.assert.isDefined(demoUserEmail);
         const demoUser = Meteor.users.findOne({ 'emails.0.address': demoUserEmail });
@@ -27,10 +26,12 @@ if (Meteor.isServer) {
       });
 
       it('purges expiring demouser', function (done) {
-        Clock.tick(DEMO_LIFETIME); Clock.tick(1, 'day');
-        scheduePurgeExpiringDemoUsers('en', 'demo');
-        //chai.assert.isUndefined(Meteor.users.findOne({ 'emails.0.address': demoUserEmail }));
-        done();
+        const demoLifetime = (-1) * DEMO_LIFETIME;
+        schedulePurgeExpiringDemoUsers('en', 'demo', demoLifetime);
+        Meteor.setTimeout(function () {
+          chai.assert.isUndefined(Meteor.users.findOne({ 'emails.0.address': demoUserEmail }));
+          done();
+        }, 1000);
       });
     });
   });
