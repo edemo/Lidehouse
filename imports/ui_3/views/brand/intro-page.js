@@ -1,5 +1,7 @@
 /* globals window WOW */
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import { $ } from 'meteor/jquery';
 import './intro-page.html';
 
@@ -65,6 +67,11 @@ Template.Intro_page.onDestroyed(function() {
 Template.Intro_page.helpers({
   currentYear() {
     return (new Date()).getFullYear();
+  },
+  demoUrl() {
+    const _lang = 'hu';
+    if (Meteor.settings.public.enableDemo) return FlowRouter.path('Demo login', { _lang });
+    else return 'https://demo.honline.hu/demo/' + _lang;
   },
 });
 

@@ -11,11 +11,11 @@ Meteor.startup(() => {
   }
   const languages = TAPi18n.getLanguages();
   Object.keys(languages).forEach((lang) => {
-    if (Meteor.settings.enableDemo) {
+    if (Meteor.settings.public.enableDemo) {
       insertDemoHouse(lang, 'demo');
       schedulePurgeExpiringDemoUsers(lang, 'demo');
     }
-    if (Meteor.settings.enableTest) {
+    if (Meteor.settings.public.enableTest) {
       insertDemoHouse(lang, 'test');
     }
   });
