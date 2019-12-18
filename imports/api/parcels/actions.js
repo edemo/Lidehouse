@@ -4,6 +4,7 @@ import { AutoForm } from 'meteor/aldeed:autoform';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Fraction } from 'fractional';
 
+import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/autoform-modal.js';
@@ -88,9 +89,9 @@ Parcels.actions = {
   meters: {
     name: 'meters',
     icon: () => 'fa fa-tachometer',
-    visible: (options, doc) => {
-      return currentUserHasPermission('meters.insert', doc) || currentUserHasPermission('meters.insert.unapproved', doc);
-    },
+    color: (options, doc) => doc && doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
+    visible: (options, doc) =>
+      currentUserHasPermission('meters.insert', doc) || currentUserHasPermission('meters.insert.unapproved', doc),
     run(options, doc, event, instance) {
       Session.update('modalContext', 'parcelId', doc._id);
       Modal.show('Modal', {

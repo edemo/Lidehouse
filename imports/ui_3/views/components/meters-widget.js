@@ -2,9 +2,6 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
-import { moment } from 'meteor/momentjs:moment';
-import { __ } from '/imports/localization/i18n.js';
-
 import './meters-widget.html';
 
 Template.Meters_widget.viewmodel({
@@ -18,16 +15,17 @@ Template.Meters_widget.viewmodel({
     if (!user || !communityId) return [];
     return user.ownedParcels(communityId);
   },
+  oldestReadMeter() {
+    const meter = this.ownedParcels().map(p => p.oldestReadMeter()).sort(m => m.lastReading().date)[0];
+    return meter;
+  },
   lastReadingDate() {
-    const meters = this.ownedParcels().fetch()[0].meters().fetch();
-    const meter = meters[0];
+    const meter = this.oldestReadMeter();
     return meter ? meter.lastReading().date : undefined;
   },
-  colorClass(date) {
-    if (!date) return 'bg-danger';
-    const elapsedDays = moment().diff(moment(date), 'days');
-    if (elapsedDays > 90) return 'bg-warning';
-    return 'navy-bg';
+  colorClass() {
+    const color = this.oldestReadMeter().lastReadingColor();
+    return color ? 'bg-' + color : 'navy-bg';
   },
   icon() {
     return 'fa fa-tachometer';

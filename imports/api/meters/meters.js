@@ -70,6 +70,13 @@ Meters.helpers({
   lastBilling() {
     return _.last(this.billings);
   },
+  lastReadingColor() {
+    const lastReadingDate = this.lastReading().date;
+    if (!lastReadingDate) return 'danger';
+    const elapsedDays = moment().diff(moment(lastReadingDate), 'days');
+    if (elapsedDays > 90) return 'warning';
+    return '';
+  },
   getEstimate(date = new Date()) {
     const length = this.readings.length;
     debugAssert(length >= 1, 'Meters should have at least an initial reading');

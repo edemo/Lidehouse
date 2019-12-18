@@ -193,7 +193,7 @@
         </p>
         <br>
         <div class="member-list">
-            {{#if userHasPermission 'meters.update'}}
+            {{#if or (userHasPermission 'meters.inCommunity') (userHasPermission 'parcels.details')}}
             {{> Active_archive_tabs name='meters' icon='fa-tachometer'
                 template='Meters_table' content=metersContent }}
             {{/if}}
