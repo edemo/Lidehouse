@@ -8,6 +8,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
 import { Meters } from './meters.js';
 import './methods.js';
 
@@ -71,15 +72,14 @@ Meters.actions = {
       });
     },
   },
-  reading: {
-    name: 'reading',
+  registerReading: {
+    name: 'registerReading',
     icon: () => 'fa fa-camera',
     visible: (options, doc) => currentUserHasPermission('meters.registerReading', doc),
     run(options, doc) {
-      Session.set('selectedMeterId', doc._id);
+      Session.update('modalContext', 'meterId', doc._id);
       Modal.show('Autoform_modal', {
-        id: 'af.meter.reading',
-        collection: Meters,
+        id: 'af.meter.registerReading',
         schema: Meters.registerReadingSchema,
         type: 'method',
         meteormethod: 'meters.registerReading',
@@ -93,8 +93,7 @@ Meters.actions = {
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.meter.update',
-        collection: Meters,
-        fields: ['activeTime'],
+        schema: ActivePeriod.schema,
         doc,
         type: 'method-update',
         meteormethod: 'meters.updateActivePeriod',
@@ -119,7 +118,7 @@ Meters.actions = {
 
 AutoForm.addModalHooks('af.meter.insert');
 AutoForm.addModalHooks('af.meter.update');
-AutoForm.addModalHooks('af.meter.reading');
+AutoForm.addModalHooks('af.meter.registerReading');
 AutoForm.addHooks('af.meter.insert', {
   formToDoc(doc) {
     doc.communityId = getActiveCommunityId();
@@ -134,9 +133,9 @@ AutoForm.addHooks('af.meter.update', {
     return modifier;
   },
 });
-AutoForm.addHooks('af.meter.reading', {
+AutoForm.addHooks('af.meter.registerReading', {
   formToDoc(doc) {
-    doc._id = Session.get('selectedMeterId');
+    doc._id = Session.get('modalContext').meterId;
     return doc;
   },
 });

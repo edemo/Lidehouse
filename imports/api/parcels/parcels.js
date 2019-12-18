@@ -5,6 +5,7 @@ import { Fraction } from 'fractional';
 import { Tracker } from 'meteor/tracker';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
+import { _ } from 'meteor/underscore';
 
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
@@ -102,7 +103,7 @@ Parcels.helpers({
     return Meters.find({ communityId: this.communityId, parcelId: this._id });
   },
   oldestReadMeter() {
-    return this.meters().fetch().sort(m => m.lastReading().date)[0];
+    return _.last(this.meters().fetch().sort(m => m.lastReading().date));
   },
   occupants() {
     return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId() });
