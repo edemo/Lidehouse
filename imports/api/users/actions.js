@@ -29,7 +29,7 @@ Meteor.users.actions = {
     icon: () => 'fa fa-envelope',
     visible: () => true,
     run(options, doc) {
-      $('.modal').modal('hide');
+      Modal.hideAll();
       Rooms.goToRoom('private chat', doc._id);
     },
   },
@@ -39,7 +39,7 @@ Meteor.users.actions = {
     visible: () => true,
     href: () => FlowRouter.path('Delegations'),
     run(options, doc) {
-      $('.modal').modal('hide');
+      Modal.hideAll();
       Delegations.actions.new.run({}, { targetPersonId: doc._id });
     },
   },

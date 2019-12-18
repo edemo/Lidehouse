@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { AutoForm } from 'meteor/aldeed:autoform';
+import '/imports/ui_3/views/modals/autoform-modal.js';
 
 import { __ } from '/imports/localization/i18n.js';
 
@@ -11,7 +12,7 @@ export function showWelcomeModal() {
     description: __('welcomeMessage'),
     collection: Meteor.users,
     omitFields: ['username', 'emails', 'profile', 'avatar'],
-    doc: Meteor.user(), 
+    doc: Meteor.user(),
     type: 'method-update',
     meteormethod: 'user.update',
     singleMethodArgument: true,
