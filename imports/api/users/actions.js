@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
 import { handleError } from '/imports/ui_3/lib/errors.js';
@@ -28,7 +29,7 @@ Meteor.users.actions = {
     icon: () => 'fa fa-envelope',
     visible: () => true,
     run(options, doc) {
-      Modal.hide();// TODO hideAll
+      $('.modal').modal('hide');
       Rooms.goToRoom('private chat', doc._id);
     },
   },
@@ -38,7 +39,7 @@ Meteor.users.actions = {
     visible: () => true,
     href: () => FlowRouter.path('Delegations'),
     run(options, doc) {
-      Modal.hide();// TODO hideAll
+      $('.modal').modal('hide');
       Delegations.actions.new.run({}, { targetPersonId: doc._id });
     },
   },
