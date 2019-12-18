@@ -75,6 +75,7 @@ Meters.actions = {
   registerReading: {
     name: 'registerReading',
     icon: () => 'fa fa-camera',
+    color: (options, doc) => doc && doc.lastReadingColor(),
     visible: (options, doc) => currentUserHasPermission('meters.registerReading', doc),
     run(options, doc) {
       Session.update('modalContext', 'meterId', doc._id);

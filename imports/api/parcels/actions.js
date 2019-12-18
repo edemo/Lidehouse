@@ -91,7 +91,7 @@ Parcels.actions = {
     icon: () => 'fa fa-tachometer',
     color: (options, doc) => doc && doc.oldestReadMeter() && doc.oldestReadMeter().lastReadingColor(),
     visible: (options, doc) =>
-      currentUserHasPermission('meters.insert', doc) || currentUserHasPermission('meters.insert.unapproved', doc),
+      currentUserHasPermission('meters.insert', doc) || currentUserHasPermission('parcels.details', doc),
     run(options, doc, event, instance) {
       Session.update('modalContext', 'parcelId', doc._id);
       Modal.show('Modal', {
