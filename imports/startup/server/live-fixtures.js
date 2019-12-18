@@ -5,7 +5,7 @@ import { insertDemoHouse, insertLoginableUsersWithRoles, insertLoadsOfFakeMember
 
 // if the database is empty on server start, create some sample data.
 Meteor.startup(() => {
-  if (Meteor.settings.reset) {
+  if (Meteor.settings.resetDemo) {
     console.log('Purging all demo users...');
     Meteor.users.remove({ 'emails.0.address': { $regex: /demo|test/ } });
   }

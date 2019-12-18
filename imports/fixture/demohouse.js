@@ -46,7 +46,7 @@ export function insertDemoHouse(lang, demoOrTest) {
   const demoHouse = Communities.findOne({ name: demoHouseName });
 
   if (demoHouse) {
-    if (Meteor.settings.reset) {
+    if (Meteor.settings.resetDemo) {
       Communities.remove(demoHouse._id);
     } else {
 //      Balances.checkAllCorrect();
