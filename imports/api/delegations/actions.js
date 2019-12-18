@@ -96,4 +96,7 @@ AutoForm.addHooks('af.delegation.insert', {
     }
     displayError(error);
   },
+  onSuccess() {
+    Modal.hideAll();
+  },
 }, true);
