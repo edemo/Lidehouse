@@ -32,7 +32,7 @@
             {{creator}}
         </a>                  
         <small class="text-muted" title="{{_ 'memberships'}}">
-            {{join (translateArray (creator.activeRoles activeCommunityId))}}
+            {{join (translateArray (creator.activeRoles activeCommunityId null))}}
         </small>
     </div>
 </template>
