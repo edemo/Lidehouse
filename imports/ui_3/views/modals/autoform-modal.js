@@ -11,6 +11,7 @@ import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
+import { modalZIndexHandler } from '/imports/startup/client/modal-patches.js';
 import './autoform-modal.html';
 
 // How to instantiate an Autoform_modal window: Modal.show('Autoform_modal', afOptions)
@@ -33,6 +34,7 @@ Template.Autoform_modal.onCreated(function () {
 });
 
 Template.Autoform_modal.onRendered(function () {
+  modalZIndexHandler();
   const id = afId2details(this.data.id);
   const collection = Factory.get(id.object).collection;
   const schemaName = `schema${collection._name.capitalize()}`;

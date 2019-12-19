@@ -5,9 +5,14 @@ import { Template } from 'meteor/templating';
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { __ } from '/imports/localization/i18n.js';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
+import { modalZIndexHandler } from '/imports/startup/client/modal-patches.js';
 import '/imports/ui_3/views/modals/modal-guard.js';
 
 import './confirmation.html';
+
+Template.Confirmation.onRendered(function () {
+  modalZIndexHandler();
+});
 
 Template.Confirmation.events({
   'click #btn-ok'(event, instance) {
