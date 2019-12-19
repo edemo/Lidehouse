@@ -36,7 +36,7 @@ export const insert = new ValidatedMethod({
     if (!doc.approved) {
       // Nothing to check. Things will be checked when it gets approved by community admin/manager.
     } else {
-      checkPermissions(this.userId, 'parcels.insert', doc.communityId);
+      checkPermissions(this.userId, 'parcels.insert', doc);
     }
 
     const ParcelsStage = Parcels.Stage();
@@ -59,7 +59,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Parcels, _id);
     checkModifier(doc, modifier, ['communityId'], true);
     checkNotExists(Parcels, { _id: { $ne: doc._id }, communityId: doc.communityId, ref: modifier.$set.ref });
-    checkPermissions(this.userId, 'parcels.update', doc.communityId);
+    checkPermissions(this.userId, 'parcels.update', doc);
 
     const ParcelsStage = Parcels.Stage();
     const result = ParcelsStage.update({ _id }, modifier);
@@ -78,7 +78,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Parcels, _id);
-    checkPermissions(this.userId, 'parcels.remove', doc.communityId);
+    checkPermissions(this.userId, 'parcels.remove', doc);
     const activeOwners = Memberships.findActive({ parcelId: _id, role: 'owner' });
     if (activeOwners.count() > 0) {
       throw new Meteor.Error('err_unableToRemove', 'Parcel cannot be deleted while it has active owners',

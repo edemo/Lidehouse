@@ -10,20 +10,20 @@ export const Shareddocs = new Mongo.Collection('shareddocs');
 Shareddocs.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
-  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId, doc);
-  else if (doc.folderId === 'voting') return user.hasPermission('poll.insert', doc.communityId, doc);
-  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.insert', doc.communityId, doc);
-  else return user.hasPermission('shareddocs.upload', doc.communityId, doc);
+  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc);
+  else if (doc.folderId === 'voting') return user.hasPermission('poll.insert', doc);
+  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.insert', doc);
+  else return user.hasPermission('shareddocs.upload', doc);
 };
 
 Shareddocs.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploaded(userId, doc) {
   if (Meteor.isServer) return true;
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
-  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc.communityId, doc);
-  else if (doc.folderId === 'voting') return user.hasPermission('poll.remove', doc.communityId, doc);
-  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.remove', doc.communityId, doc);
-  else return user.hasPermission('shareddocs.upload', doc.communityId, doc);
+  if (doc.folderId === 'community' || doc.folderId === 'main') return user.hasPermission('shareddocs.upload', doc);
+  else if (doc.folderId === 'voting') return user.hasPermission('poll.remove', doc);
+  else if (doc.folderId === 'agenda') return user.hasPermission('agendas.remove', doc);
+  else return user.hasPermission('shareddocs.upload', doc);
 };
 
 // Can be manipulated only through the ShareddocStore interface

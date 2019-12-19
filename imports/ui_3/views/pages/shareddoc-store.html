@@ -15,7 +15,7 @@
                                 <a href="" class="file-control" data-ext="{{this}}">.{{this}}</a>
                             {{/each}}
                             <div class="hr-line-dashed"></div>
-                            <button name="upload" class="btn btn-primary btn-block {{#unless userHasPermission 'shareddocs.upload'}}disabled{{/unless}}">
+                            <button name="upload" class="btn btn-primary btn-block {{#unless currentUserHasPermission 'shareddocs.upload'}}disabled{{/unless}}">
                                 <i class="fa fa-upload"></i>
                                 {{_ 'Upload file'}}
                             </button>
@@ -33,7 +33,7 @@
                                 <li>
                                     <a href="" data-id={{_id}} class="{{#if (isActive _id)}}text-bold{{/if}}">
                                         <span class="js-select"><i class="fa {{#if (isActive _id)}}fa-folder-open-o fa-lg{{else}}fa-folder-o{{/if}}"></i> {{_ name}}</span>
-                                        {{#if userHasPermission 'shareddocs.upload'}}
+                                        {{#if currentUserHasPermission 'shareddocs.upload'}}
                                             {{#if (isActive _id)}}
                                                 <i class="fa fa-trash pull-right js-delete"></i>
                                                 <i class="fa fa-pencil pull-right js-edit"></i>
@@ -49,13 +49,13 @@
                                 <li><a href="">Home</a></li>
                                 <li><a href="">Holidays</a></li>
                             </ul-->
-                            {{#if userHasPermission 'shareddocs.upload'}}
+                            {{#if currentUserHasPermission 'shareddocs.upload'}}
                             <button name="newdir" class="btn btn-default btn-xs js-new">
                                 <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'sharedfolder'}}
                             </button>
                             {{/if}}
                             <div class="hr-line-dashed"></div>
-                            <button name="upload" class="btn btn-primary btn-block {{#unless userHasPermission 'shareddocs.upload'}}disabled{{/unless}}" title={{_ 'No permission to upload'}}>
+                            <button name="upload" class="btn btn-primary btn-block {{#unless currentUserHasPermission 'shareddocs.upload'}}disabled{{/unless}}" title={{_ 'No permission to upload'}}>
                                 <i class="fa fa-upload"></i>
                                 {{_ 'Upload file'}}
                             </button>

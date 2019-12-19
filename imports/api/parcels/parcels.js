@@ -103,7 +103,7 @@ Parcels.helpers({
     return Meters.find({ communityId: this.communityId, parcelId: this._id });
   },
   oldestReadMeter() {
-    return _.last(this.meters().fetch().sort(m => m.lastReading().date));
+    return _.last(this.meters().fetch().sort(m => m.lastReading().date.getTime()));
   },
   occupants() {
     return Memberships.findActive({ communityId: this.communityId, approved: true, parcelId: this.leadParcelId() });

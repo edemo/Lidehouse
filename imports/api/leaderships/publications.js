@@ -12,7 +12,7 @@ Meteor.publish('leaderships.inCommunity', function leadershipsInCommunity(params
   const { communityId } = params;
   const user = Meteor.users.findOne(this.userId);
 
-  if (!user || !user.hasPermission('leaderships.inCommunity', communityId)) {
+  if (!user || !user.hasPermission('leaderships.inCommunity', { communityId })) {
     return this.ready();
   }
 

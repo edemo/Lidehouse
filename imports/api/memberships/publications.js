@@ -45,8 +45,8 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
 
   return {
     find() {
-      if (user.hasPermission('memberships.inCommunity', communityId)) {
-        const fields = user.hasPermission('memberships.details', communityId) ? {} : Memberships.publicFields;
+      if (user.hasPermission('memberships.inCommunity', { communityId })) {
+        const fields = user.hasPermission('memberships.details', { communityId }) ? {} : Memberships.publicFields;
         return Memberships.find({ communityId }, { fields });
       } // Otherwise, only the active leaders of the community can be seen
       return Memberships.findActive({ communityId, role: { $in: leaderRoles } }, { fields: Memberships.publicFields });
@@ -56,7 +56,7 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
       // Publish the User of the Membership
       find(membership) {
         const showFields = _.extend({}, Meteor.users.publicFields);
-        if (user.hasPermission('memberships.details', communityId)) showFields.emails = 1;  // to be able to resend invites
+        if (user.hasPermission('memberships.details', membership)) showFields.emails = 1;  // to be able to resend invites
         return Meteor.users.find({ _id: membership.person.userId }, { fields: showFields });
       },
     }],

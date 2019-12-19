@@ -14,7 +14,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     doc = Statements._transform(doc);
-    checkPermissions(this.userId, 'statements.insert', doc.communityId);
+    checkPermissions(this.userId, 'statements.insert', doc);
     const _id = Statements.insert(doc);
     return _id;
   },
@@ -30,7 +30,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Statements, _id);
 //    checkModifier(doc, modifier, Statements.modifiableFields);
-    checkPermissions(this.userId, 'statements.update', doc.communityId);
+    checkPermissions(this.userId, 'statements.update', doc);
 
     const result = Statements.update({ _id }, modifier);
     return result;
@@ -46,7 +46,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Statements, _id);
-    checkPermissions(this.userId, 'statements.remove', doc.communityId);
+    checkPermissions(this.userId, 'statements.remove', doc);
 
     return Statements.remove(_id);
   },

@@ -16,7 +16,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     doc = StatementEntries._transform(doc);
-    checkPermissions(this.userId, 'statements.insert', doc.communityId);
+    checkPermissions(this.userId, 'statements.insert', doc);
     const _id = StatementEntries.insert(doc);
     return _id;
   },
@@ -32,7 +32,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(StatementEntries, _id);
 //    checkModifier(doc, modifier, Statements.modifiableFields);
-    checkPermissions(this.userId, 'statements.update', doc.communityId);
+    checkPermissions(this.userId, 'statements.update', doc);
 
     const result = StatementEntries.update({ _id }, modifier);
     return result;
@@ -48,7 +48,7 @@ export const reconcile = new ValidatedMethod({
 //    checkModifier(doc, modifier, Statements.modifiableFields);
     if ((paymentId ? 1 : 0) + (billId ? 1 : 0) + (account ? 1 : 0) !== 1)
       throw new Meteor.Error('Need to select either a payment, a bill or an account');
-    checkPermissions(this.userId, 'statements.reconcile', entry.communityId);
+    checkPermissions(this.userId, 'statements.reconcile', entry);
     let reconciledTxId;
     if (account) {
       const moneySide = entry.amount > 0 ? 'debit' : 'credit';
@@ -84,7 +84,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(StatementEntries, _id);
-    checkPermissions(this.userId, 'statements.remove', doc.communityId);
+    checkPermissions(this.userId, 'statements.remove', doc);
 
     return StatementEntries.remove(_id);
   },

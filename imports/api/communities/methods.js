@@ -33,7 +33,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Communities, _id);
     // checkModifier(doc, modifier, ['lot'], true);     // all fields are modifiable except lot
-    checkPermissions(this.userId, 'communities.update', _id);
+    checkPermissions(this.userId, 'communities.update', doc);
     Communities.update({ _id }, modifier);
   },
 });
@@ -44,8 +44,8 @@ export const remove = new ValidatedMethod({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ _id }) {
-    const community = checkExists(Communities, _id);
-    checkPermissions(this.userId, 'communities.remove', _id);
+    const doc = checkExists(Communities, _id);
+    checkPermissions(this.userId, 'communities.remove', doc);
     // Community cannot be deleted while it has any active officers apart from the admin
     const officers = Memberships.findActive({ communityId: _id, role: { $in: officerRoles } });
     if (officers.count() > 1) {

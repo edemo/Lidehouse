@@ -1,5 +1,5 @@
 <template name="Active_archive_tabs">
-    {{#if userHasPermission (concat name '.update')}}
+    {{#if currentUserHasPermission (concat name '.update')}}
     <ul class="nav nav-tabs m-b-md">
         <span class="pull-right small text-muted"></span>
         {{#if hasTab 'active'}}

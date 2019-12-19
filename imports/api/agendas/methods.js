@@ -13,7 +13,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkNotExists(Agendas, { communityId: doc.communityId, title: doc.title });
-    checkPermissions(this.userId, 'agendas.insert', doc.communityId);
+    checkPermissions(this.userId, 'agendas.insert', doc);
 
     return Agendas.insert(doc);
   },
@@ -29,7 +29,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Agendas, _id);
     checkModifier(doc, modifier, ['title']);
-    checkPermissions(this.userId, 'agendas.update', doc.communityId);
+    checkPermissions(this.userId, 'agendas.update', doc);
 
     Agendas.update({ _id }, modifier);
   },
@@ -43,7 +43,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Agendas, _id);
-    checkPermissions(this.userId, 'agendas.remove', doc.communityId);
+    checkPermissions(this.userId, 'agendas.remove', doc);
     const votings = Topics.find({ agendaId: _id });
     if (votings.count() > 0) {
       throw new Meteor.Error('err_unableToRemove', 'Agenda cannot be deleted while it contains topics', `Found: {${votings.count()}}`);

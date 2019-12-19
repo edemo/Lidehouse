@@ -78,7 +78,7 @@
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row delegations">
             <div class="col-lg-8"> 
-            {{#if userHasPermission 'delegations.forOthers'}}
+            {{#if currentUserHasPermission 'delegations.forOthers'}}
                 {{>Delegations_for_others}}
             {{else}}
                 <div class="ibox delegations-from">

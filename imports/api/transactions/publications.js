@@ -19,7 +19,7 @@ Meteor.publish('transactions.byPartner', function transactionsInCommunity(params
   const { communityId, partnerId, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     // then he can only see his own parcels' transactions
     const ownershipIds = _.pluck(user.ownerships(communityId).fetch(), '_id');
     if (!partnerId || !_.contains(ownershipIds, partnerId)) {
@@ -41,7 +41,7 @@ Meteor.publish('transactions.byAccount', function transactionsInCommunity(params
   }).validate(params);
   const { communityId, account, localizer, begin, end } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     // then he can only see his own parcels' transactions
     const parcelCodes = user.ownedParcels(communityId).map(p => Localizer.parcelRef2code(p.ref));
     if (!localizer || !_.contains(parcelCodes, localizer)) {
@@ -68,7 +68,7 @@ Meteor.publish('transactions.betweenAccounts', function transactionsInCommunity(
   const { communityId, catId, creditAccount, debitAccount, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
   }
 
@@ -83,7 +83,7 @@ Meteor.publish('transactions.incomplete', function transactionsInCommunity(param
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
   }
   return Transactions.find({ communityId, complete: false }, { limit: 100 });
@@ -96,7 +96,7 @@ Meteor.publish('transactions.unreconciled', function paymentsUnreconciled(params
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
   }
   return Transactions.find({ communityId, reconciledId: { $exists: false } });

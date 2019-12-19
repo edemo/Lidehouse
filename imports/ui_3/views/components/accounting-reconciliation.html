@@ -1,7 +1,7 @@
 <template name="Accounting_reconciliation">
-    {{#if userHasPermission 'statements.inCommunity' (fromSession 'activeCommunityId')}}
+    {{#if currentUserHasPermission 'statements.inCommunity' (fromSession 'activeCommunityId')}}
         <div class="statementEntries" id='statementEntries'>
-            {{#if userHasPermission 'statements.update' communityId}}
+            {{#if currentUserHasPermission 'statements.update' communityId}}
             <div class="btn-group pull-right">
                   <button class="btn btn-primary btn-sm js-new-statement"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'statement'}}</strong></button>
                   <button class="btn btn-white btn-sm js-upload-statement"><i class="fa fa-upload"></i><strong> {{_ 'Upload statement'}}</strong></button>
@@ -24,7 +24,7 @@
             </div>
         </div>
     {{/if}}
-    {{#if userHasPermission 'transactions.inCommunity'}}
+    {{#if currentUserHasPermission 'transactions.inCommunity'}}
     <!--div class="col-md-12">
         <div class="ibox ibox-dark transactions" id='incomplete'>
             <div class="ibox-title">
@@ -32,7 +32,7 @@
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
-                {{#if userHasPermission 'transactions.insert'}}
+                {{#if currentUserHasPermission 'transactions.insert'}}
                 <div class="pull-right">
                     <a href="" class="btn btn-primary btn-sm js-publish"><i class="fa fa-bullhorn"></i> {{_ 'Publish'}}</a>
                     <a href="" class="btn btn-white btn-sm js-import-statement"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>

@@ -12,7 +12,7 @@ export const insert = new ValidatedMethod({
   validate: Meters.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkPermissionsWithApprove(this.userId, 'meters.insert', doc.communityId, doc);
+    checkPermissionsWithApprove(this.userId, 'meters.insert', doc);
     return Meters.insert(doc);
   },
 });
@@ -27,7 +27,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Meters, _id);
     checkModifier(doc, modifier, ['identifier', 'billings'], true);
-    checkPermissions(this.userId, 'meters.update', doc.communityId);
+    checkPermissions(this.userId, 'meters.update', doc);
 
     return Meters.update(_id, modifier);
   },
@@ -43,7 +43,7 @@ export const updateReadings = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Meters, _id);
     checkModifier(doc, modifier, ['readings']);
-    checkPermissions(this.userId, 'meters.update', doc.communityId);
+    checkPermissions(this.userId, 'meters.update', doc);
 
     return Meters.update(_id, modifier);
   },
@@ -55,7 +55,7 @@ export const registerReading = new ValidatedMethod({
 
   run({ _id, reading }) {
     const doc = checkExists(Meters, _id);
-    checkPermissions(this.userId, 'meters.registerReading', doc.communityId);
+    checkPermissions(this.userId, 'meters.registerReading', doc);
 
     const lastReading = doc.lastReading();
     if (lastReading && reading.date < lastReading.date) {
@@ -78,7 +78,7 @@ export const estimateReading = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Meters, _id);
-    checkPermissions(this.userId, 'meters.reading', doc.communityId);
+    checkPermissions(this.userId, 'meters.reading', doc);
 
     const estimate = doc.getEstimate();
     _.extend(estimate, { approved: false });
@@ -98,7 +98,7 @@ export const registerBilling = new ValidatedMethod({
 
   run({ _id, billing }) {
     const doc = checkExists(Meters, _id);
-    checkPermissions(this.userId, 'parcelBillings.apply', doc.communityId);
+    checkPermissions(this.userId, 'parcelBillings.apply', doc);
     const modifier = { $push: { billings: billing } };
 
     return Meters.update(_id, modifier);
@@ -113,7 +113,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Meters, _id);
-    checkPermissions(this.userId, 'meters.remove', doc.communityId);
+    checkPermissions(this.userId, 'meters.remove', doc);
     Meters.remove(_id);
   },
 });

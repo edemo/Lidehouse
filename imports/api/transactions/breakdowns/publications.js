@@ -11,7 +11,7 @@ Meteor.publish('breakdowns.inCommunity', function breakdownsInCommunity(params) 
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('breakdowns.inCommunity', communityId)) {
+  if (!user.hasPermission('breakdowns.inCommunity', { communityId })) {
     return this.ready();
   }
 

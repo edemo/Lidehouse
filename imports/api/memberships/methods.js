@@ -19,7 +19,7 @@ function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
   const user = Meteor.users.findOne(userId);
   if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?)
   const permissionName = entityOf(roleOfNewMember) + '.update';
-  if (!user.hasPermission(permissionName, communityId)) {
+  if (!user.hasPermission(permissionName, { communityId })) {
     throw new Meteor.Error('err_permissionDenied',
       `No permission to add membership, roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
   }

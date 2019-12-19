@@ -4,7 +4,7 @@
 
     <div class="wrapper wrapper-content animated fadeInUp">
 
-        {{#if userHasPermission 'contracts.insert'}}
+        {{#if currentUserHasPermission 'contracts.insert'}}
           <button class="btn btn-primary btn-sm pull-right m-md js-new contracts"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'contract'}}</button>
         {{/if}}
         <div class="btn-group m-b-md">
@@ -25,7 +25,7 @@
                 {{>iboxTools}}
             </div>
             <div class="ibox-content" data-id={{this._id}}>
-                {{#if userHasPermission 'ticket.insert'}}
+                {{#if currentUserHasPermission 'ticket.insert'}}
                 <span class="pull-righ">
                   <div class="dropdown btn-group pull-right">
                       <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">

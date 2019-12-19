@@ -62,7 +62,7 @@ export const move = new ValidatedMethod({
   }).validator(),
   run({ _id, destinationId }) {
     const doc = checkExists(Topics, _id);
-    checkPermissions(this.userId, 'comments.move', doc.communityId, doc);
+    checkPermissions(this.userId, 'comments.move', doc);
     Comments.insert({
       _id,
       topicId: destinationId,

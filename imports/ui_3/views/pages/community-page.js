@@ -115,7 +115,7 @@ Template.Parcels_box.viewmodel({
     const user = Meteor.user();
     const community = getActiveCommunity();
     const showAllParcelsDefault = (
-      (user && user.hasPermission('parcels.insert', community._id))
+      (user && user.hasPermission('parcels.insert', { communityId: community._id }))
       || (community && community.parcels.flat <= 25)
     );
     this.showAllParcels(!!showAllParcelsDefault);
@@ -124,7 +124,6 @@ Template.Parcels_box.viewmodel({
     const communityId = getActiveCommunityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
     this.templateInstance.subscribe('leaderships.inCommunity', { communityId });
-    this.templateInstance.subscribe('meters.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
     } else {

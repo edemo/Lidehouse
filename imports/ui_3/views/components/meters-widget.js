@@ -7,7 +7,7 @@ import './meters-widget.html';
 Template.Meters_widget.viewmodel({
   autorun() {
     const communityId = Session.get('activeCommunityId');
-    this.templateInstance.subscribe('meters.inCommunity', { communityId });
+    this.templateInstance.subscribe('parcels.ofSelf', { communityId });
   },
   ownedParcels() {
     const user = Meteor.user();

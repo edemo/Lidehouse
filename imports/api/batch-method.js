@@ -20,7 +20,7 @@ export class BatchMethod extends ValidatedMethod {
       run({ args }) {
 //        console.log("running batch with", args.length, ":", args[0]);
         const userId = this.userId;
-//        checkPermissions(userId, method.name, communityId);  // Whoever has perm for the method, can do it in batch as well
+//        checkPermissions(userId, method.name, { communityId });  // Whoever has perm for the method, can do it in batch as well
         if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
         const results = [];
         const errors = [];
@@ -62,7 +62,7 @@ export class BatchTester extends ValidatedMethod {
       name: batchTesterName,
       validate: batchOperationSchema.validator({ clean: true }),
       run({ args }) {
-        checkPermissions(this.userId, batchUpsertName, args[0].communityId);
+        checkPermissions(this.userId, batchUpsertName, { communityId: args[0].communityId });
         if (Meteor.isClient) return; // Batch methods are not simulated on the client, just executed on the server
 
         const neededOperations = { insert: [], update: [], remove: [], noChange: [] };
@@ -100,7 +100,7 @@ export class UpsertMethod extends ValidatedMethod {
 //        console.log('Upserting:', doc);
         const communityId = doc.communityId;
         const userId = this.userId;
-        checkPermissions(userId, upsertName, communityId);
+        checkPermissions(userId, upsertName, { communityId });
         if (Meteor.isClient) return null; // Upsert methods are not simulated on the client, just executed on the server
 
         const selector = {};

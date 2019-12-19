@@ -19,7 +19,7 @@
     <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
 
-    {{#if userHasPermission 'balances.ofAccounts'}}
+    {{#if currentUserHasPermission 'balances.ofAccounts'}}
     <div class="col-md-12">
         <div class="ibox float-e-margins" id="moneyBalances">
             <div class="ibox-content">
@@ -62,7 +62,7 @@
     </div>
     {{/if}}
 
-    {{#if userHasPermission 'balances.ofAccounts'}}
+    {{#if currentUserHasPermission 'balances.ofAccounts'}}
     <div class="col-md-12">
         <div class="ibox float-e-margins" id="moneyBalances">
             <div class="ibox-content">
@@ -100,7 +100,7 @@
     </div>
     {{/if}}
 
-    {{#if userHasPermission 'balances.ofAccounts'}}
+    {{#if currentUserHasPermission 'balances.ofAccounts'}}
     <div class="col-md-12">
         <div class="ibox float-e-margins" id="commitmentBalances">
             <div class="ibox-content">
@@ -134,7 +134,7 @@
     </div>
     {{/if}}
 
-    {{#if userHasPermission 'balances.ofLocalizers'}}
+    {{#if currentUserHasPermission 'balances.ofLocalizers'}}
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='account-history'>
             <div class="ibox-title">
@@ -148,7 +148,7 @@
     </div>
     {{/if}}
 
-    {{#if userHasPermission 'balances.ofLocalizers'}}
+    {{#if currentUserHasPermission 'balances.ofLocalizers'}}
     <!--div class="col-md-12">
         <div class="ibox ibox-dark" id='balances-report'>
             <div class="ibox-title">
@@ -177,7 +177,7 @@
     {{/if}}
 
     {{#if this.DEMO}}
-    {{#if userHasPermission 'balances.ofAccounts'}}
+    {{#if currentUserHasPermission 'balances.ofAccounts'}}
     <div class="col-md-12">
         <div class="ibox ibox-dark" id='incomes-expenses-history'>
             <div class="ibox-title">

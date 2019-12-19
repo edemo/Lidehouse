@@ -27,7 +27,7 @@ Meteor.publishComposite('bills.byId', function billsById(params) {
 
   const user = Meteor.users.findOneOrNull(this.userId);
   const tx = Transactions.findOne(_id);
-  if (!user.hasPermission('transactions.inCommunity', tx.communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', tx)) {
     return this.ready();
   }
   return findBillsWithTheirPayments({ _id });
@@ -45,7 +45,7 @@ Meteor.publishComposite('bills.filtered', function billsInCommunity(params) {
   const { communityId, partnerId, account, localizer, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
   }
 //  const selector = { communityId, partnerId, account, localizer };
@@ -61,7 +61,7 @@ Meteor.publishComposite('bills.outstanding', function billsIncomplete(params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('transactions.inCommunity', communityId)) {
+  if (!user.hasPermission('transactions.inCommunity', { communityId })) {
     return this.ready();
   }
 

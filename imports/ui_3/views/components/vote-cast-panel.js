@@ -21,7 +21,7 @@ import { createEnvelope } from './envelope.js';
 
 function castVoteBasedOnPermission(topicId, castedVote, callback) {
   const communityId = Session.get('activeCommunityId');
-  if (Meteor.user().hasPermission('vote.castForOthers', communityId)) {
+  if (Meteor.user().hasPermission('vote.castForOthers', { communityId })) {
     const modalContext = {
       title: 'Proxy voting',
       body: 'Select_voters',

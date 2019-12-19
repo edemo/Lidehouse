@@ -24,7 +24,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     if (this.userId !== doc.sourcePersonId) {
       // Normal user can only delegate his own votes, but special permission allows for others' as well
-      checkPermissions(this.userId, 'delegations.forOthers', doc.communityId);
+      checkPermissions(this.userId, 'delegations.forOthers', doc);
     }
     checkTargetUserAllowsDelegatingTo(doc.targetPersonId, doc);
     const delegationId = Delegations.insert(doc);
@@ -51,7 +51,7 @@ export const update = new ValidatedMethod({
     checkModifier(doc, modifier, ['targetPersonId', 'scope', 'scopeObjectId']);
     if (this.userId !== doc.sourcePersonId) {
       // Normal user can only delegate his own votes, but special permission allows for others' as well
-      checkPermissions(this.userId, 'delegations.forOthers', doc.communityId);
+      checkPermissions(this.userId, 'delegations.forOthers', doc);
     }
     checkTargetUserAllowsDelegatingTo(modifier.$set.targetPersonId, doc);
 
@@ -79,7 +79,7 @@ export const remove = new ValidatedMethod({
     const doc = checkExists(Delegations, _id);
     if (this.userId !== doc.sourcePersonId && this.userId !== doc.targetPersonId) {
       // User can only remove delegations that delegetes from him, or delegates to him, unless special permissions
-      checkPermissions(this.userId, 'delegations.forOthers', doc.communityId);
+      checkPermissions(this.userId, 'delegations.forOthers', doc);
     }
 
     Delegations.remove(_id);

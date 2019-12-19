@@ -11,7 +11,7 @@ Meteor.publish('txCats.inCommunity', function txCatsInCommunity(params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('txCats.inCommunity', communityId)) {
+  if (!user.hasPermission('txCats.inCommunity', { communityId })) {
     return this.ready();
   }
 

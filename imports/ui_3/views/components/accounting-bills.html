@@ -12,11 +12,11 @@
     </div>
     {{/if}}
 
-    {{#if userHasPermission 'transactions.inCommunity'}}
+    {{#if currentUserHasPermission 'transactions.inCommunity'}}
         <div>
-            {{#if userHasPermission 'transactions.update'}}
+            {{#if currentUserHasPermission 'transactions.update'}}
             <div class="btn-group pull-right {{collectionOf activePartnerRelation}}">
-              {{#if userHasPermission 'transactions.insert'}}
+              {{#if currentUserHasPermission 'transactions.insert'}}
                 {{#if equals activePartnerRelation 'parcel'}}
                   <button class="btn btn-primary btn-sm js-apply"><i class="fa fa-calendar-plus-o"></i><strong> {{_ 'Apply parcel billings'}}</strong></button>
                   {{#unless showParcelBillings}}

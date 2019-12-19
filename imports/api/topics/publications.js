@@ -30,7 +30,7 @@ Meteor.publishComposite('topics.inCommunity', function topicsInCommunity(params)
   };
 
   const publicFields = Votings.extendPublicFieldsForUser(this.userId, communityId);
-  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
+  if (!user.hasPermission('topics.inCommunity', { communityId })) return this.ready();
 
   return {
     find() {
@@ -54,7 +54,7 @@ Meteor.publishComposite('topics.byId', function topicsById(params) {
   const communityId = topic.communityId;
   const user = Meteor.users.findOneOrNull(this.userId);
 
-  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
+  if (!user.hasPermission('topics.inCommunity', { communityId })) return this.ready();
 
   const publicFields = Votings.extendPublicFieldsForUser(user._id, communityId);
   const selector = {
@@ -112,7 +112,7 @@ Meteor.publishComposite('topics.board', function topicsBoard(params) {
 
   const { communityId } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('topics.inCommunity', communityId)) return this.ready();
+  if (!user.hasPermission('topics.inCommunity', { communityId })) return this.ready();
 
   const selector = {
     communityId,
@@ -148,7 +148,7 @@ Meteor.publish('topics.list', function topicsList(params) {
   const { communityId } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
 
-  if (!user.hasPermission('topics.inCommunity', communityId)) {
+  if (!user.hasPermission('topics.inCommunity', { communityId })) {
     return this.ready();
   }
 

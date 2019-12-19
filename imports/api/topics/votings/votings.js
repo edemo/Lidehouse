@@ -46,7 +46,7 @@ Votings.voteTypeValues = Object.keys(Votings.voteTypes);
 
 function currentUsersPossibleEffectValues() {
   const user = Meteor.user();
-  if (!user.hasPermission('vote.insert', getActiveCommunityId())) return ['poll'];
+  if (!user.hasPermission('vote.insert')) return ['poll'];
   return Votings.voteEffectValues;
 }
 
@@ -262,7 +262,7 @@ Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) 
   // User cannot see other user's votes, but need to see his own votes (during active voting)
   // Soution: Use 2 subsrciptions, one on the live votings, one on the closed, and the public fields are different for the two
   const user = Meteor.users.findOne(userId);
-  if (user.hasPermission('vote.peek', communityId)) {
+  if (user.hasPermission('vote.peek', { communityId })) {
     return _.extend({}, Topics.publicFields, {
       voteCasts: 1,
       voteCastsIndirect: 1,

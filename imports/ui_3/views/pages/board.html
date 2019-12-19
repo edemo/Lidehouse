@@ -48,7 +48,7 @@
       </div-->
       <div class="ibox-content">
           <div class="feed-activity-list">
-              {{#if currentUser.hasPermission 'news.insert' (fromSession 'activeCommunityId')}}
+              {{#if currentUserHasPermission 'news.insert'}}
               <div class="feed-element">
                   <button class="btn btn-primary btn-sm pull-right js-new topics" data-entity="news"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'topic_news'}}</button>
               </div>
@@ -59,7 +59,7 @@
                       <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
                       <strong>{{title}}</strong>
                       <div>{{#markdown}}{{text}}{{/markdown}}</div>
-                      {{#if currentUser.hasPermission 'news.update' activeCommunityId}}
+                      {{#if currentUserHasPermission 'news.update'}}
                       <div class="pull-right m-t-sm">
                         {{>Action_buttons_group collection='topics' doc=this actions='edit,delete' size='lg'}}
                       </div>
@@ -81,7 +81,7 @@
       <strong>{{title}}</strong>
       <small class="pull-right text-navy" title={{displayTime createdAt}}>{{displayTimeFrom createdAt}}</small>
       {{#markdown}}{{text}}{{/markdown}}  
-      {{#if currentUser.hasPermission 'news.update' activeCommunityId}}
+      {{#if currentUserHasPermission 'news.update'}}
       <div class="pull-right m-t-sm">
         {{>Action_buttons_group collection='topics' doc=this actions='edit,delete' size='lg'}}
       </div>

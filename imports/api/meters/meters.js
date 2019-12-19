@@ -12,6 +12,7 @@ import { autoformOptions, fileUpload, noUpdate } from '/imports/utils/autoform.j
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { ActivePeriod } from '/imports/api/behaviours/active-period.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
 
 export const Meters = new Mongo.Collection('meters');
 
@@ -54,13 +55,15 @@ Meters.schema = new SimpleSchema({
 Meters.idSet = ['communityId', 'identifier'];
 
 Meteor.startup(function indexParcels() {
-  Meters.ensureIndex({ communityId: 1, parcelId: 1 });
-  if (Meteor.isServer) {
-//    Meters._ensureIndex({ identifier: 1 });
-  }
+  Meters.ensureIndex({ communityId: 1 });
+  Meters.ensureIndex({ parcelId: 1 });
+  Meters.ensureIndex({ identifier: 1 });
 });
 
 Meters.helpers({
+  parcel() {
+    return Parcels.findOne(this.parcelId);
+  },
   entityName() {
     return 'meters';
   },

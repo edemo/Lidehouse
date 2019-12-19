@@ -4,7 +4,7 @@
     {{#unless and (not begin) (not end)}}
         <small>{{displayDate begin}} - {{or (displayDate end) (_ 'active')}}</small>
     {{/unless}}    
-    {{#if userHasPermission (concat this.entityName '.update') }}
+    {{#if currentUserHasPermission (concat this.entityName '.update') }}
         {{#if and (not begin) (not end)}}
         <button class="btn btn-xs btn-white js-period" data-id={{_id}}><i class="fa fa-history"></i> {{_ 'period'}}</button>
         {{else}}
@@ -52,7 +52,7 @@
 <template name='Roleships_box'>
     <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'admin'}} {{_ 'role'}}</span>
     <h2>{{_ 'officers'}}</h2>
-    {{#if userHasPermission 'roleship.insert'}}
+    {{#if currentUserHasPermission 'roleship.insert'}}
     <button class="btn btn-primary btn-sm pull-right js-new memberships" data-entity="roleship">
         <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'officer'}}</strong>
     </button>
@@ -123,19 +123,19 @@
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
         <h2>{{_ 'occupants'}} {{leadershipTitle}}                
         </h2>
-        {{#if userHasPermission 'benefactorship.insert'}}
+        {{#if currentUserHasPermission 'benefactorship.insert'}}
             <div class="dropdown btn-group pull-right">
                 <button href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
                     <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'occupant'}}</strong> <b class="caret"></b>
                 </button>
                 <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
-                    {{#if userHasPermission 'ownership.insert'}}
+                    {{#if currentUserHasPermission 'ownership.insert'}}
                     <li><a href="" class="js-new memberships" data-entity="ownership">{{_ 'new'}} {{_ 'owner'}}</a></li>
                     {{/if}}
-                    {{#if userHasPermission 'benefactorship.insert'}}
+                    {{#if currentUserHasPermission 'benefactorship.insert'}}
                     <li><a href="" class="js-new memberships" data-entity="benefactorship">{{_ 'new'}} {{_ 'benefactor'}}</a></li>
                     {{/if}}
-                    {{#if userHasPermission 'leaderships.insert'}}
+                    {{#if currentUserHasPermission 'leaderships.insert'}}
                     <li><a href="" class="js-new leaderships">{{_ 'new'}} {{_ 'leadership'}}</a></li>
                     {{/if}}
                 </ul>
@@ -182,7 +182,7 @@
     <div class="meters">
         <span class="text-muted small pull-right">{{_ 'Modifiable by'}}: {{_ 'manager'}} {{_ 'role'}}</span>
         <h2>{{_ 'meters'}}</h2>
-        {{#if or (userHasPermission 'meters.insert') (userHasPermission 'parcels.details')}}
+        {{#if or (currentUserHasPermission 'meters.insert') (currentUserHasPermission 'parcels.details')}}
         <div class="btn-group pull-right">
             <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'meter'}}</strong></button>
             <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
@@ -193,10 +193,8 @@
         </p>
         <br>
         <div class="member-list">
-            {{#if or (userHasPermission 'meters.inCommunity') (userHasPermission 'parcels.details')}}
             {{> Active_archive_tabs name='meters' icon='fa-tachometer'
                 template='Meters_table' content=metersContent }}
-            {{/if}}
         </div>
     </div>
 </template>
@@ -209,7 +207,7 @@
             {{#unless showAllParcels}}
             <button class="btn btn-primary btn-sm js-show-all"><strong> {{_ 'Show all parcels'}}</strong></button>
             {{/unless}}
-            {{#if userHasPermission 'parcels.insert'}}
+            {{#if currentUserHasPermission 'parcels.insert'}}
             <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'parcel'}}</strong></button>
             <button class="btn btn-white btn-sm js-import" title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
             {{/if}}
@@ -244,7 +242,7 @@
                 {{#if community.management}}
                 <div class="ibox communities data-id={{communityId}}">
                     <div class="ibox-content">
-                        {{#if userHasPermission 'communities.update'}}
+                        {{#if currentUserHasPermission 'communities.update'}}
                         <!--span class="text-muted small pull-right">{{_ 'Modifiable at Building Data edit'}}</span-->
                         <button class="btn-white btn btn-xs js-edit pull-right"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                         {{/if}}
@@ -263,7 +261,7 @@
                 <div class="ibox float-e-margins communities" data-id={{communityId}}>
                     <div class="ibox-title">
                         <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
-                        {{#if userHasPermission 'communities.update'}}
+                        {{#if currentUserHasPermission 'communities.update'}}
                           <button class="btn-white btn btn-xs js-edit pull-right"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                         {{/if}}
                     </div>
@@ -307,7 +305,7 @@
                                     {{/if}}
                                 {{/unless}}
                             {{/if}}
-                            {{#if userHasPermission 'communities.remove'}}
+                            {{#if currentUserHasPermission 'communities.remove'}}
                             <br>
                               <button class="btn btn-danger btn-block btn-outline js-delete"><!--i class="fa fa-trash"></i--> {{_ 'Delete community'}}</button>
                             {{/if}}
@@ -317,8 +315,8 @@
             </div>
         </div>
         
-        {{#if userHasPermission 'parcels.inCommunity'}}
-        {{#if userHasPermission 'memberships.inCommunity'}}
+        {{#if currentUserHasPermission 'parcels.inCommunity'}}
+        {{#if currentUserHasPermission 'memberships.inCommunity'}}
         <div class="row">
         <div class="col-lg-12">
             <div class="ibox parcels">

@@ -12,7 +12,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkNotExists(Sharedfolders, { communityId: doc.communityId, name: doc.name });
-    checkPermissions(this.userId, 'shareddocs.upload', doc.communityId);
+    checkPermissions(this.userId, 'shareddocs.upload', doc);
 
     return Sharedfolders.insert(doc);
   },
@@ -29,7 +29,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Sharedfolders, _id);
     checkModifier(doc, modifier, ['name']);
     checkNotExists(Sharedfolders, { _id: { $ne: doc._id }, communityId: doc.communityId, name: modifier.$set.name });
-    checkPermissions(this.userId, 'shareddocs.upload', doc.communityId);
+    checkPermissions(this.userId, 'shareddocs.upload', doc);
 
     Sharedfolders.update({ _id }, modifier);
   },
@@ -43,7 +43,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Sharedfolders, _id);
-    checkPermissions(this.userId, 'shareddocs.upload', doc.communityId);
+    checkPermissions(this.userId, 'shareddocs.upload', doc);
 
     Shareddocs.remove({ communityId: doc.communityId, folderId: _id });
     Sharedfolders.remove(_id);

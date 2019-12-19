@@ -44,7 +44,7 @@ export const insert = new ValidatedMethod({
   name: 'transactions.insert',
   validate: doc => Transactions.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
-    checkPermissions(this.userId, 'transactions.insert', doc.communityId);
+    checkPermissions(this.userId, 'transactions.insert', doc);
     if (doc.category === 'payment') {
       if (doc.billId) {
         const bill = Transactions.findOne(doc.billId);
@@ -71,7 +71,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Transactions, _id);
     checkModifier(doc, modifier, ['communityId'], true);
-    checkPermissions(this.userId, 'transactions.update', doc.communityId);
+    checkPermissions(this.userId, 'transactions.update', doc);
     if (doc.isSolidified() && doc.complete) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after 24 hours');
     }
@@ -93,7 +93,7 @@ export const post = new ValidatedMethod({
   }).validator(),
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
-    checkPermissions(this.userId, 'transactions.post', doc.communityId);
+    checkPermissions(this.userId, 'transactions.post', doc);
     if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
     if (doc.category === 'bill') {
       if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
@@ -117,7 +117,7 @@ export const remove = new ValidatedMethod({
   }).validator(),
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
-    checkPermissions(this.userId, 'transactions.remove', doc.communityId);
+    checkPermissions(this.userId, 'transactions.remove', doc);
     if (doc.isSolidified() && doc.complete) {
       // Not possible to delete tx after 24 hours, but possible to negate it with another tx
       Transactions.insert(doc.negator());
@@ -134,7 +134,7 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 //    name: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ communityId /*, name*/ }) {
-    checkPermissions(this.userId, 'breakdowns.insert', communityId);
+    checkPermissions(this.userId, 'breakdowns.insert', { communityId });
     const user = Meteor.users.findOne(this.userId);
     const breakdownsToClone = Breakdowns.find({ communityId: null }).map(brd => brd.name);
     breakdownsToClone.forEach((breakdownName) => {

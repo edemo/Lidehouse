@@ -76,7 +76,7 @@
           <button type="button" class="btn btn-xs btn-white js-mode {{#if (not calendarView)}}active{{/if}}"><i class="fa fa-list"></i></button>
           <button type="button" class="btn btn-xs btn-white js-mode {{#if calendarView}}active{{/if}}" ><i class="fa fa-calendar"></i></button>
         </div>
-        {{#if userHasPermission 'ticket.insert'}}
+        {{#if currentUserHasPermission 'ticket.insert'}}
           <div class="dropdown btn-group pull-right">
               <button href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-primary">
                   <i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'worksheet'}} <b class="caret"></b>

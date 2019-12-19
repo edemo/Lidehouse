@@ -18,7 +18,7 @@ Meteor.publish('users.inCommunitybyId', function userInCommunitybyId(params) {
   const { _id } = params;
   const communityId = _id;
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('memberships.inCommunity', communityId )) {
+  if (!user.hasPermission('memberships.inCommunity', { communityId })) {
     this.ready(); 
     return; 
   }

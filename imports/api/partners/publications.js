@@ -13,7 +13,7 @@ Meteor.publish('partners.inCommunity', function partnersInCommunity(params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('partners.inCommunity', communityId)) {
+  if (!user.hasPermission('partners.inCommunity', { communityId })) {
     return this.ready();
   }
   return Partners.find({ communityId });

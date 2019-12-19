@@ -14,7 +14,7 @@ export const insert = new ValidatedMethod({
   validate: Leaderships.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkPermissions(this.userId, 'leaderships.insert', doc.communityId);
+    checkPermissions(this.userId, 'leaderships.insert', doc);
 
     const LeadershipsStage = Leaderships.Stage();
     const _id = LeadershipsStage.insert(doc);
@@ -54,7 +54,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Leaderships, _id);
-    checkPermissions(this.userId, 'leaderships.remove', doc.communityId);
+    checkPermissions(this.userId, 'leaderships.remove', doc);
     Leaderships.remove(_id);
   },
 });

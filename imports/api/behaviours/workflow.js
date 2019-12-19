@@ -106,8 +106,8 @@ const statusChange = new ValidatedMethod({
     const topic = checkExists(Topics, event.topicId);
     const category = topic.category;
     const workflow = topic.workflow();
-    // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic.communityId);
-    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId, topic);
+    // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic);
+    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic, topic);
     checkStatusChangeAllowed(topic, event.status);
 
     const onLeave = workflow[topic.status].obj.onLeave;
@@ -148,7 +148,7 @@ const statusUpdate = new ValidatedMethod({
     if (topic.modifiableFieldsByStatus()) {
       topic.modifiableFieldsByStatus().forEach(key => modifiableFields.push(`${category}.${key}`));
     }
-    checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId, topic);
+    checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic);
     checkModifier(topic, modifier, modifiableFields);
     Topics.update(_id, modifier, { selector: { category } });
   },

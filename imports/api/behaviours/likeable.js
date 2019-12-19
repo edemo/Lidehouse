@@ -34,11 +34,11 @@ const like = new ValidatedMethod({
   run({ id }) {
     const collectionName = this.name.split('.')[0];
     const collection = Mongo.Collection.get(collectionName);
-    const object = checkExists(collection, id);
+    const doc = checkExists(collection, id);
     const userId = this.userId;
 
-    if (object.communityId) { // A user for example does not have a community()
-      checkPermissions(userId, 'like.toggle', object.communityId, object);
+    if (doc.communityId) { // A user for example does not have a community()
+      checkPermissions(userId, 'like.toggle', doc);
     }
 
     // toggle Like status of this user

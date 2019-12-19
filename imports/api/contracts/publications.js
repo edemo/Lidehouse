@@ -10,7 +10,7 @@ Meteor.publish('contracts.inCommunity', function contractsInCommunity(params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('contracts.inCommunity', communityId)) {
+  if (!user.hasPermission('contracts.inCommunity', { communityId })) {
     return this.ready();
   }
 

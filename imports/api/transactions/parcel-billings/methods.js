@@ -28,7 +28,7 @@ export const apply = new ValidatedMethod({
   validate: ParcelBillings.applySchema.validator(),
 
   run({ communityId, date, ids, localizer }) {
-    checkPermissions(this.userId, 'parcelBillings.apply', communityId);
+    checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
     ActiveTimeMachine.runAtTime(date, () => {
       const bills = {}; // parcelId => his bill
       const activeParcelBillings = ids
@@ -140,7 +140,7 @@ export const insert = new ValidatedMethod({
   validate: ParcelBillings.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkPermissions(this.userId, 'parcelBillings.insert', doc.communityId);
+    checkPermissions(this.userId, 'parcelBillings.insert', doc);
     const id = ParcelBillings.insert(doc);
     return id;
   },
@@ -156,7 +156,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(ParcelBillings, _id);
 //    checkModifier(doc, modifier, );
-    checkPermissions(this.userId, 'parcelBillings.update', doc.communityId);
+    checkPermissions(this.userId, 'parcelBillings.update', doc);
     return ParcelBillings.update({ _id }, modifier);
   },
 });
@@ -169,7 +169,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(ParcelBillings, _id);
-    checkPermissions(this.userId, 'parcelBillings.remove', doc.communityId);
+    checkPermissions(this.userId, 'parcelBillings.remove', doc);
     return ParcelBillings.remove(_id);
   },
 });

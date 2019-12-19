@@ -29,7 +29,7 @@ Meteor.publish('shareddocs.ofTopic', function (params) {
   const topic = Topics.findOne(topicId);
   const user = Meteor.users.findOneOrNull(this.userId);
   if (topic) {  // A topic might not be found, while topic is being created, but attachments need to be already disalyed on the insert autoform
-    if ((topic.communityId !== communityId) || !user.hasPermission('shareddocs.download', communityId)) {
+    if ((topic.communityId !== communityId) || !user.hasPermission('shareddocs.download', { communityId })) {
       this.ready();
       return;
     }

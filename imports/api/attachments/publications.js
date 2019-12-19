@@ -11,7 +11,7 @@ Meteor.publish('attachments.ofCommunity', function (params) {
   }).validate(params);
   const { communityId } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('attachments.download', communityId)) {
+  if (!user.hasPermission('attachments.download', { communityId })) {
     this.ready();
     return undefined;
   }

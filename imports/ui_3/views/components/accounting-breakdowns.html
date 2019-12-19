@@ -11,9 +11,9 @@
         </div>
     </div-->
 
-    {{#if userHasPermission 'breakdowns.inCommunity'}}
+    {{#if currentUserHasPermission 'breakdowns.inCommunity'}}
         <div class="" id='coa'>
-                {{#if and (noBreakdownsDefined (userHasPermission 'breakdowns.insert')) }}
+                {{#if and (noBreakdownsDefined (currentUserHasPermission 'breakdowns.insert')) }}
                 <div class="pull-right">
                     <!--<div class="dropdown">
                         <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
@@ -54,7 +54,7 @@
                         <div class="table-responsive">
                             {{> ReactiveDatatable tableData=othersBreakdownsTableDataFn options=breakdownsOptionsFn }}
                         </div>
-                        {{#if userHasPermission 'breakdowns.insert'}}
+                        {{#if currentUserHasPermission 'breakdowns.insert'}}
                         <div class="row">
                         <div class="col-xs-12 text-center">
                             <a href="" class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
@@ -87,7 +87,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        {{#if userHasPermission 'breakdowns.insert'}}
+                        {{#if currentUserHasPermission 'breakdowns.insert'}}
                         <div class="row">
                             <div class="col-xs-12 text-center">
                                 <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txCat'}}</button>

@@ -74,7 +74,7 @@
                       </button>
                     </td>                       
                 </tr>
-                {{#if userHasPermission 'transactions.post'}}
+                {{#if currentUserHasPermission 'transactions.post'}}
                 <tr>
                       <td>{{> afFormGroup name=this.current.account}}</td>
                       <td>{{> afFormGroup name=this.current.localizer}}</td>

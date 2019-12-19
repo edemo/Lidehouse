@@ -24,9 +24,9 @@ export const castVote = new ValidatedMethod({
     checkNeededStatus('opened', topic);
     let _voters = voters;
     if (_voters) {
-      checkPermissions(this.userId, 'vote.castForOthers', topic.communityId, topic);
+      checkPermissions(this.userId, 'vote.castForOthers', topic);
     } else {
-      checkPermissions(this.userId, 'vote.cast', topic.communityId, topic);
+      checkPermissions(this.userId, 'vote.cast', topic);
       _voters = [this.userId];
     }
 
