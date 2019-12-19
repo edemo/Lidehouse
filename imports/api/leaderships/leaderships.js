@@ -63,6 +63,7 @@ Leaderships.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
   Leaderships.simpleSchema().i18n('schemaLeaderships');
+  Leaderships.simpleSchema().i18n('schemaActivePeriod');
 });
 
 Factory.define('leadership', Leaderships, {

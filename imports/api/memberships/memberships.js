@@ -192,9 +192,10 @@ nonOccupantRoles.forEach(role =>
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
 // and that happens earlier than TAPi18n extra comtype transaltions get added.
 Meteor.startup(function attach() {
-  nonOccupantRoles.forEach(role =>
-    Memberships.simpleSchema({ role }).i18n('schemaMemberships')
-  );
+  nonOccupantRoles.forEach((role) => {
+    Memberships.simpleSchema({ role }).i18n('schemaMemberships');
+    Memberships.simpleSchema({ role }).i18n('schemaActivePeriod');
+  });
 });
 
 Memberships.publicFields = {

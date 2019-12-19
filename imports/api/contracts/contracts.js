@@ -38,6 +38,7 @@ Contracts.attachBehaviour(ActivePeriod);
 
 Meteor.startup(function attach() {
   Contracts.simpleSchema().i18n('schemaContracts');
+  Contracts.simpleSchema().i18n('schemaActivePeriod');
 });
 
 export let chooseContract = {};

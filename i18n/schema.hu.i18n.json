@@ -17,6 +17,19 @@
       "label": "Módosította"
     }
   },
+  "schemaActivePeriod": {
+    "activeTime": {
+      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
+      "begin": {
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
+      }
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Regisztrált e-mail cím",
@@ -157,13 +170,13 @@
       "label": "Számlázva"
     },
     "activeTime": {
-      "label": "Aktív időszak (felszerelés/leszerelés)",
+      "label": "Aktív időszak",
       "begin": {
-        "label": "Időponttól",
+        "label": "Felszerelés ideje",
         "placeholder": "éééé-hh-nn"
       },
       "end": {
-        "label": "Időpontig",
+        "label": "Leszerelés ideje",
         "placeholder": "éééé-hh-nn"
       }
     }
@@ -188,17 +201,6 @@
   "schemaLeaderships" : {
     "leadRef": {
       "label": "Vezető albetét"
-    },
-    "activeTime": {
-      "label": "Aktív időszak",
-      "begin": {
-        "label": "Időponttól",
-        "placeholder": "éééé-hh-nn"
-      },
-      "end": {
-        "label": "Időpontig",
-        "placeholder": "éééé-hh-nn"
-      }
     }
   },
   "schemaMemberships" : {
@@ -268,17 +270,6 @@
       "type": {
         "label": "Típus"
       }
-    },
-    "activeTime": {
-      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
-      "begin": {
-        "label": "Időponttól",
-        "placeholder": "éééé-hh-nn"
-      },
-      "end": {
-        "label": "Időpontig",
-        "placeholder": "éééé-hh-nn"
-      }
     }
   },
   "schemaDelegations": {
@@ -325,17 +316,6 @@
     },
     "topicIds": {
       "label": "Munkalapok"
-    },
-    "activeTime": {
-      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
-      "begin": {
-        "label": "Időponttól",
-        "placeholder": "éééé-hh-nn"
-      },
-      "end": {
-        "label": "Időpontig",
-        "placeholder": "éééé-hh-nn"
-      }
     }
   },
   "schemaTopics": {

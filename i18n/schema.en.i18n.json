@@ -17,6 +17,19 @@
       "label": "Last activity by"
     }
   },
+  "schemaActivePeriod": {
+    "activeTime": {
+      "label": "Active time (Can leave blank, if no time constraint)",
+      "begin": {
+        "label": "From",
+        "placeholder": "yyyy-mm-dd"
+      },
+      "end": {
+        "label": "Until",
+        "placeholder": "yyyy-mm-dd"
+      }
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Registered e-mail address",
@@ -157,13 +170,13 @@
       "label": "Last billed"
     },
     "activeTime": {
-      "label": "Active time (install/uninstall)",
+      "label": "Active time period",
       "begin": {
-        "label": "From",
+        "label": "Installation",
         "placeholder": "yyyy-mm-dd"
       },
       "end": {
-        "label": "Until",
+        "label": "Uninstallation",
         "placeholder": "yyyy-mm-dd"
       }
     }
@@ -188,17 +201,6 @@
   "schemaLeaderships": {
     "leadRef": {
       "label": "Lead parcel"
-    },
-    "activeTime": {
-      "label": "Active time",
-      "begin": {
-        "label": "From",
-        "placeholder": "yyyy-mm-dd"
-      },
-      "end": {
-        "label": "Until",
-        "placeholder": "yyyy-mm-dd"
-      }
     }
   },
   "schemaMemberships" : {
@@ -268,17 +270,6 @@
       "type": {
         "label": "Type"
       }
-    },
-    "activeTime": {
-      "label": "Active time (Can leave blank, if no time constraint)",
-      "begin": {
-        "label": "From",
-        "placeholder": "yyyy-mm-dd"
-      },
-      "end": {
-        "label": "Until",
-        "placeholder": "yyyy-mm-dd"
-      }
     }
   },
   "schemaDelegations": {
@@ -325,17 +316,6 @@
     },
     "topicIds": {
       "label": "Worksheets"
-    },
-    "activeTime": {
-      "label": "Active time (Can leave blank, if no time constraint)",
-      "begin": {
-        "label": "From",
-        "placeholder": "yyyy-mm-dd"
-      },
-      "end": {
-        "label": "Until",
-        "placeholder": "yyyy-mm-dd"
-      }
     }
   },
   "schemaTopics": {

@@ -94,7 +94,8 @@ Meters.actions = {
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.meter.update',
-        schema: ActivePeriod.schema,
+        collection: Meters,
+        fields: ['activeTime'],
         doc,
         type: 'method-update',
         meteormethod: 'meters.updateActivePeriod',

@@ -43,6 +43,7 @@ const schema = new SimpleSchema({
     },
   },
 });
+Meteor.startup(() => schema.i18n('schemaActivePeriod'));
 
 const helpers = {
   wasActiveAt(time) {

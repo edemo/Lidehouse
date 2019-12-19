@@ -34,6 +34,7 @@ import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
 import '/imports/ui_3/views/common/page-heading.js';
 import '/imports/ui_3/views/components/action-buttons.html';
 import '/imports/ui_3/views/components/contact-long.js';
+import '/imports/ui_3/views/blocks/active-period.js';
 import '/imports/ui_3/views/blocks/menu-overflow-guard.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './community-page.html';
@@ -228,8 +229,8 @@ Template.Roleships_box.events({
 });
 
 Template.Occupants_box.events({
-  ...(actionHandlers(Memberships, 'new')),
-  ...(actionHandlers(Leaderships, 'new')),
+  ...(actionHandlers(Memberships, 'new,period')),
+  ...(actionHandlers(Leaderships, 'new,period')),
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);
@@ -238,7 +239,7 @@ Template.Occupants_box.events({
 });
 
 Template.Meters_box.events({
-  ...(actionHandlers(Meters, 'new')),
+  ...(actionHandlers(Meters, 'new,period')),
 });
 
 Template.Parcels_box.events({
