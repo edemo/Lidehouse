@@ -231,6 +231,7 @@ Template.Roleships_box.events({
 Template.Occupants_box.events({
   ...(actionHandlers(Memberships, 'new,period')),
   ...(actionHandlers(Leaderships, 'new,period')),
+  ...(actionHandlers(Parcels, 'occupants')),
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);
