@@ -49,8 +49,8 @@ Template.Contracts.viewmodel({
 });
 
 Template.Contracts.events({
-  ...(actionHandlers(Partners)),
-  ...(actionHandlers(Contracts)),
+  ...(actionHandlers(Partners,'new')),
+  ...(actionHandlers(Contracts, 'new')),
   'click .topics .js-new, .topics .js-import'(event) {
     const entityName = $(event.target).closest('[data-entity]').data('entity');
     const entity = Topics.entities[entityName];
