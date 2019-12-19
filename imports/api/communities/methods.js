@@ -74,7 +74,6 @@ export const remove = new ValidatedMethod({
     }
     // Once there are no active officers, the community can be purged
     Meters.remove({ communityId });
-    Parcels.remove({ communityId });
     Memberships.remove({ communityId });
     Leaderships.remove({ communityId });
     Comments.remove({ communityId });
@@ -88,6 +87,7 @@ export const remove = new ValidatedMethod({
     StatementEntries.remove({ communityId });
     TxCats.remove({ communityId });
     Breakdowns.remove({ communityId });
+    Parcels.remove({ communityId });
     Partners.remove({ communityId });
     Contracts.remove({ communityId });
     Attachments.remove({ communityId });
