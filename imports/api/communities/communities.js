@@ -117,10 +117,7 @@ Meteor.startup(function attach() {
 
 if (Meteor.isServer) {
   Communities.after.remove(function (userId, doc) {
-    Mongo.Collection.getAll().forEach((collection) => {
-      releaseAssert(doc._id, 'err_notExists', 'No _id on doc');
-      collection.instance.remove({ communityId: doc._id });
-    });
+    // cascading clean was moved to the method
   });
 }
 
