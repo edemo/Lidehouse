@@ -11,7 +11,7 @@ Meteor.publish('shareddocs.ofCommunity', function (params) {
   }).validate(params);
   const { communityId } = params;
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('shareddocs.download', communityId)) {
+  if (!user.hasPermission('shareddocs.download', { communityId })) {
     this.ready();
     return;
   }

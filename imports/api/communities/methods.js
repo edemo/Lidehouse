@@ -81,13 +81,13 @@ export const remove = new ValidatedMethod({
     Topics.remove({ communityId });
     Agendas.remove({ communityId });
     Delegations.remove({ communityId });
-    Breakdowns.remove({ communityId });
-    TxCats.remove({ communityId });
     Transactions.remove({ communityId });
     ParcelBillings.remove({ communityId });
     Balances.remove({ communityId });
     Statements.remove({ communityId });
     StatementEntries.remove({ communityId });
+    TxCats.remove({ communityId });
+    Breakdowns.remove({ communityId });
     Partners.remove({ communityId });
     Contracts.remove({ communityId });
     Attachments.remove({ communityId });
