@@ -1,6 +1,6 @@
 <template name="Accounting_ledger">
     {{#if not selectedAccount}}
-    {{#if currentUserHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
+    {{#if currentUserHasPermission 'balances.ofAccounts'}}
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">

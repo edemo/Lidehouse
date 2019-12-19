@@ -1,7 +1,7 @@
 <template name="Accounting_reconciliation">
-    {{#if currentUserHasPermission 'statements.inCommunity' (fromSession 'activeCommunityId')}}
+    {{#if currentUserHasPermission 'statements.inCommunity'}}
         <div class="statementEntries" id='statementEntries'>
-            {{#if currentUserHasPermission 'statements.update' communityId}}
+            {{#if currentUserHasPermission 'statements.update'}}
             <div class="btn-group pull-right">
                   <button class="btn btn-primary btn-sm js-new-statement"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'statement'}}</strong></button>
                   <button class="btn btn-white btn-sm js-upload-statement"><i class="fa fa-upload"></i><strong> {{_ 'Upload statement'}}</strong></button>
