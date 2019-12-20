@@ -20,8 +20,7 @@ import '/imports/api/topics/rooms/rooms.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js'; // factory needed
-import { Payments } from '/imports/api/transactions/payments/payments.js'; // factory needed
+import '/imports/api/transactions/categories';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import '/imports/startup/server/register-api';  // brings all methods

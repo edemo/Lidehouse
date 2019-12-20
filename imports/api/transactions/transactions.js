@@ -27,7 +27,7 @@ import { StatementEntries } from '/imports/api/transactions/statements/statement
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'movement', 'transfer', 'opening', 'void'];
+Transactions.categoryValues = ['bill', 'payment', 'receipt', 'transfer', 'opening', 'freeTx'];
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
@@ -124,6 +124,9 @@ Transactions.helpers({
   },
   contract() {
     return Contracts.findOne(this.contractId);
+  },
+  txCat() {
+    TxCats.findOne(this.catId);
   },
   entityName() {
     return this.category;
@@ -236,19 +239,10 @@ Transactions.attachBaseSchema(Transactions.baseSchema);
 Transactions.attachBehaviour(SerialId(['category', 'relation']));
 Transactions.attachBehaviour(Timestamped);
 
-const movementSchema = new SimpleSchema({
-  relation: { type: String, allowedValues: Partners.relationValues, autoform: { omit: true } },
-});
-Transactions.attachVariantSchema(movementSchema, { selector: { category: 'movement' } });
-Transactions.attachVariantSchema(undefined, { selector: { category: 'transfer' } });
-Transactions.attachVariantSchema(undefined, { selector: { category: 'opening' } });
-Transactions.attachVariantSchema(undefined, { selector: { category: 'void' } });
+Transactions.attachVariantSchema(undefined, { selector: { category: 'freeTx' } });
 
 Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'movement' }).i18n('schemaTransactions');
-  Transactions.simpleSchema({ category: 'transfer' }).i18n('schemaTransactions');
-  Transactions.simpleSchema({ category: 'opening' }).i18n('schemaTransactions');
-  Transactions.simpleSchema({ category: 'void' }).i18n('schemaTransactions');
+  Transactions.simpleSchema({ category: 'freeTx' }).i18n('schemaTransactions');
 });
 
 // --- Before/after actions ---
@@ -349,25 +343,9 @@ Factory.define('transaction', Transactions, {
   credit: [],
 });
 
-Factory.define('opening', Transactions, {
+Factory.define('freeTx', Transactions, {
   valueDate: () => Clock.currentDate(),
-  category: 'opening',
-  debit: [],
-  credit: [],
-});
-
-Factory.define('income', Transactions, {
-  valueDate: () => Clock.currentDate(),
-  category: 'movement',
-  relation: 'customer',
-  debit: [],
-  credit: [],
-});
-
-Factory.define('expense', Transactions, {
-  valueDate: () => Clock.currentDate(),
-  category: 'movement',
-  relation: 'supplier',
+  category: 'freeTx',
   debit: [],
   credit: [],
 });

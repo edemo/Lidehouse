@@ -653,16 +653,16 @@
       "placeholder": "(eg. reason or partner identifier)"
     },
     // Following lines are for the different txCats
+    "fromAccount": {
+      "label": "Moving from"
+    },
+    "toAccount": {
+      "label": "Moving to"
+    },
     "account": {
       "label": "Account"
     },
-    "incomeAccount": {
-      "label": "Income account"
-    },
-    "expenseAccount": {
-      "label": "Expense account"
-    },
-    "moneyAccount": {
+    "payAccount": {
       "label": "Money account"
     },
     "localizer": {
@@ -816,11 +816,6 @@
           "label": "Money account"
         }
       }
-    }
-  },
-  "schemaPayments": {
-    "payAccount": {
-      "label": "Money account"
     }
   },
   "schemaReconiliation": {

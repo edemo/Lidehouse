@@ -655,6 +655,22 @@
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
+    },
+    // Following lines are for the different txCats
+    "fromAccount": {
+      "label": "Átvezetés innen"
+    },
+    "toAccount": {
+      "label": "Átvezetés ide"
+    },
+    "account": {
+      "label": "Számla"
+    },
+    "payAccount": {
+      "label": "Pénz számla"
+    },
+    "localizer": {
+      "label": "Könyvelési hely (amennyiben megadható)"
     }
   },
   "schemaTxCats": {
@@ -805,11 +821,6 @@
           "label": "Pénz számla"
         }
       }
-    }
-  },
-  "schemaPayments": {
-    "payAccount": {
-      "label": "Pénz számla"
     }
   },
   "schemaReconiliation": {

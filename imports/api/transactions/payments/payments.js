@@ -13,9 +13,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 
-export const Payments = {};
-
-Payments.extensionSchema = new SimpleSchema([Transactions.partnerSchema, {
+const paymentSchema = new SimpleSchema([Transactions.partnerSchema, {
   payAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
   // Connect either a bill or a contra account
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
@@ -88,10 +86,10 @@ Transactions.categoryHelpers('payment', {
   },
 });
 
-Transactions.attachVariantSchema(Payments.extensionSchema, { selector: { category: 'payment' } });
+Transactions.attachVariantSchema(paymentSchema, { selector: { category: 'payment' } });
 
 Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'payment' }).i18n('schemaPayments');
+  Transactions.simpleSchema({ category: 'transfer' }).i18n('schemaTransactions');
 });
 
 // --- Factory ---

@@ -3,20 +3,29 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { BatchAction } from '/imports/api/batch-action.js';
+
+import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { BatchAction } from '/imports/api/batch-action.js';
 import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
 import { Transactions } from './transactions.js';
+import './entities.js';
 import './methods.js';
 
-function setModalContext(category) {
+function txCatFromEntity(entity) {
+  const category = entity.name;
+  debugAssert(category === 'bill' || category === 'payment');
   const communityId = Session.get('activeCommunityId');
   const activePartnerRelation = Session.get('activePartnerRelation');
-  if (category === 'bill' || category === 'payment') {
-    const txCat = TxCats.findOne({ communityId, category, 'data.relation': activePartnerRelation });
-    Session.update('modalContext', 'txCatId', txCat._id);
-  }
+  const txCat = TxCats.findOne({ communityId, category, 'data.relation': activePartnerRelation });
+  return txCat;
+}
+
+function fillMissingOptionParams(options) {
+  if (options.entity) options.txCat = txCatFromEntity(options.entity);
+  else if (options.txCat) options.entity = Transactions.entities[options.txCat.category];
+  else debugAssert(false, 'Either entity or txCat needs to come in the options');
 }
 
 Transactions.actions = {
@@ -25,8 +34,9 @@ Transactions.actions = {
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('transactions.insert', doc),
     run(options, doc) {
+      fillMissingOptionParams(options);
+      Session.update('modalContext', 'txCatId', options.txCat._id);
       const entity = options.entity;
-      setModalContext(entity.name);
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -51,7 +61,7 @@ Transactions.actions = {
     visible: (options, doc) => currentUserHasPermission('transactions.inCommunity', doc),
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-      setModalContext(entity.name);
+//      Session.update('modalContext', 'txCatId', doc.txCat()._id);
       Modal.show('Autoform_modal', {
         body: entity.viewForm,
         bodyContext: { doc },
@@ -76,7 +86,7 @@ Transactions.actions = {
     },
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-      setModalContext(entity.name);
+//      Session.update('modalContext', 'txCatId', doc.txCat()._id);
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },

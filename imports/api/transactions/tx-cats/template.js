@@ -16,7 +16,7 @@ export function defineTxCatTemplates() {
     debit: ['5', '8'],
     credit: ['46'],
   });
-
+/*
   // Inventory accounting
   TxCats.define({ communityId: null,
     name: 'Recording inventory', // 'Készletrevétel',
@@ -28,11 +28,12 @@ export function defineTxCatTemplates() {
 
   TxCats.define({ communityId: null,
     name: 'Costing of inventory', // 'Készlet költség elszámolás',
+    category: 'free',
     debit: ['5'],
     credit: ['2'],
   });
   // end of inventory accounting
-
+*/
   // Supplier payment -  Bejövő számla kifizetése
 
   TxCats.define({ communityId: null,
@@ -78,7 +79,7 @@ export function defineTxCatTemplates() {
     debit: ['38'],
     credit: ['33'],
   });
-
+/*
   // Nem azonosított bevételek kezelése 
   // Befolyás
   TxCats.define({ communityId: null,
@@ -93,22 +94,25 @@ export function defineTxCatTemplates() {
     debit: ['43'],
     credit: ['3'],
   });
-
-  //Pénzműveletek
+*/
+  // Pénzműveletek
   TxCats.define({ communityId: null,
     name: 'Money transfer', // 'Átvezetés pénz számlák között',
+    category: 'transfer',
     debit: ['38'],
     credit: ['38'],
   });
   // Készpénz felvétel bankszámláról
   TxCats.define({ communityId: null,
     name: 'Cash withdraw', // 'Készpénz felvétel',
+    category: 'transfer',
     debit: ['381'],
     credit: ['382'],
   });
   // Készpénz befizetés bankszámlára pénztárból
   TxCats.define({ communityId: null,
     name: 'Cash deposit', // 'Készpénz befizetés',
+    category: 'transfer',
     debit: ['382'],
     credit: ['381'],
   });
@@ -117,12 +121,14 @@ export function defineTxCatTemplates() {
 
   TxCats.define({ communityId: null,
     name: 'Income', // 'Bevétel',
+    category: 'receipt',
     debit: ['38'],
     credit: ['9'],
   });
 
   TxCats.define({ communityId: null,
     name: 'Expense', // 'Kiadás',
+    category: 'receipt',
     debit: ['8'],
     credit: ['38'],
   });
@@ -130,6 +136,7 @@ export function defineTxCatTemplates() {
   // Joker
   TxCats.define({ communityId: null,
     name: 'Accounting operation', // 'Könyvelési művelet',
+    category: 'freeTx',
     debit: [''],
     credit: [''],
   });
