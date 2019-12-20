@@ -47,9 +47,9 @@ export class CommunityBuilder {
     return Communities.findOne(this.communityId);
   }
   getUserWithRole(role) {
-    const member = Memberships.findOne({ communityId: this.communityId, role });
+    const member = Memberships.findOne({ communityId: this.communityId, role, 'person.userId': { $exists: true } });
     if (!member) throw Error(`No user with role ${role} in the community`);
-    return member.personId;
+    return member.person.userId;
   }
   sameUser() {
     return this.dummyUsers[this.nextUserIndex];
