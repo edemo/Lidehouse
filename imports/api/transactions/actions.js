@@ -13,17 +13,16 @@ import { Transactions } from './transactions.js';
 import './entities.js';
 import './methods.js';
 
-function txCatFromEntity(entity) {
+function txCatFromEntity(entity, instance) {
   const category = entity.name;
-  debugAssert(category === 'bill' || category === 'payment');
   const communityId = Session.get('activeCommunityId');
-  const activePartnerRelation = Session.get('activePartnerRelation');
-  const txCat = TxCats.findOne({ communityId, category, 'data.relation': activePartnerRelation });
+  const partnerRelation = instance.viewmodel.activePartnerRelation();
+  const txCat = TxCats.findOne({ communityId, category, 'data.relation': partnerRelation });
   return txCat;
 }
 
-function fillMissingOptionParams(options) {
-  if (options.entity) options.txCat = txCatFromEntity(options.entity);
+function fillMissingOptionParams(options, instance) {
+  if (options.entity) options.txCat = txCatFromEntity(options.entity, instance);
   else if (options.txCat) options.entity = Transactions.entities[options.txCat.category];
   else debugAssert(false, 'Either entity or txCat needs to come in the options');
 }
@@ -33,9 +32,9 @@ Transactions.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('transactions.insert', doc),
-    run(options, doc) {
-      fillMissingOptionParams(options);
-      Session.update('modalContext', 'txCatId', options.txCat._id);
+    run(options, doc, event, instance) {
+      fillMissingOptionParams(options, instance);
+      Session.update('modalContext', 'txCat', options.txCat);
       const entity = options.entity;
       Modal.show('Autoform_modal', {
         body: entity.editForm,
@@ -61,7 +60,7 @@ Transactions.actions = {
     visible: (options, doc) => currentUserHasPermission('transactions.inCommunity', doc),
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-//      Session.update('modalContext', 'txCatId', doc.txCat()._id);
+      Session.update('modalContext', 'txCat', doc.txCat());
       Modal.show('Autoform_modal', {
         body: entity.viewForm,
         bodyContext: { doc },
@@ -86,7 +85,7 @@ Transactions.actions = {
     },
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-//      Session.update('modalContext', 'txCatId', doc.txCat()._id);
+      Session.update('modalContext', 'txCat', doc.txCat());
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -156,31 +155,33 @@ Transactions.batchActions = {
 
 //-------------------------------------------------
 
-AutoForm.addModalHooks('af.transaction.view');
-AutoForm.addModalHooks('af.transaction.insert');
-AutoForm.addModalHooks('af.transaction.update');
-AutoForm.addModalHooks('af.transaction.post');
+Transactions.categoryValues.forEach(category => {
+  AutoForm.addModalHooks(`af.${category}.view`);
+  AutoForm.addModalHooks(`af.${category}.insert`);
+  AutoForm.addModalHooks(`af.${category}.update`);
 
-AutoForm.addHooks('af.transaction.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-  onSubmit(doc) {
-    AutoForm.validateForm('af.transaction.insert');
-    const catId = Session.get('modalContext').txCatId;
-    const cat = TxCats.findOne(catId);
-    doc.catId = catId;
-    cat.transformToTransaction(doc);
-    const self = this;
-    Transactions.methods.insert.call(doc, function handler(err, res) {
-      if (err) {
-//        displayError(err);
-        self.done(err);
-        return;
+  AutoForm.addHooks(`af.${category}.insert`, {
+    formToDoc(doc) {
+      doc.communityId = Session.get('activeCommunityId');
+      doc.category = category;
+      const txCat = Session.get('modalContext').txCat;
+      doc.relation = txCat.data.relation;
+      doc.catId = txCat._id;
+      if (category === 'bill') {
+        doc.valueDate = doc.deliveryDate;
+        doc.lines = _.without(doc.lines, undefined);
+      } else if (category === 'receipt') {
+        doc.lines = _.without(doc.lines, undefined);
+      } else if (category === 'payment') {
+        const billId = Session.get('modalContext').billId;
+        if (billId) {
+          const bill = Transactions.findOne(billId);
+          doc.relation = bill.relation;
+          doc.partnerId = bill.partnerId;
+          doc.billId = billId;
+        }
       }
-      self.done(null, res);
-    });
-    return false;
-  },
+      return doc;
+    },
+  });
 });

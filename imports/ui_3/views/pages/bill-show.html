@@ -46,16 +46,20 @@
                 </div>
 
                 <div class="col-sm-6 text-right">
-                    <h4>{{_ (concat docVm.relation '_bill')}}: <!--</h4> {{_ 'schemaBills.serialId.label'}}</h4-->
+                    <h4>{{_ (concat docVm.relation '_' docVm.category)}}: <!--</h4> {{_ 'schemaBills.serialId.label'}}</h4-->
                     <span class="text-navy">{{docVm.serialId}}</span></h4>
                     <h5>{{_ 'receiver'}}:</h5>
                     <address>
                         {{>Bill_partner partner=docVm.receiver}}
                     </address>
                     <p>
-                        <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate docVm.issueDate}}</span><br/>
-                        <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate docVm.deliveryDate}}</span><br/>
-                        <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate docVm.dueDate}}</span>
+                        {{#if isBill}}
+                            <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate docVm.issueDate}}</span><br/>
+                            <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate docVm.deliveryDate}}</span><br/>
+                            <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate docVm.dueDate}}</span>
+                        {{else}}
+                            <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate docVm.valueDate}}</span><br/>
+                        {{/if}}
                     </p>
                 </div>
             </div>
@@ -120,6 +124,7 @@
                 </tbody>
             </table>
   
+            {{#if isBill}}
             <table class="table invoice-total"> 
               <tbody>
               {{#each payment in docVm.getPayments}}
@@ -137,6 +142,7 @@
               </tr>
               </tbody>
             </table>
+            {{/if}}
 
             <div class="text-right" data-id="{{docVm._id}}">
               {{>Action_button doc=docVm action=actions.edit size='xl'}}

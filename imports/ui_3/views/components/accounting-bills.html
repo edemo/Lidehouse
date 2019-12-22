@@ -23,8 +23,17 @@
                   <button class="btn btn-white btn-sm js-edit-defs" title="{{_ 'edit'}}"><i class="fa fa-pencil"></i><strong> {{_ 'Edit parcel billings'}}</strong></button>
                   {{/unless}}
                 {{else}}
-                  <button class="btn btn-primary btn-sm js-new transactions" data-entity='bill'><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.relation.' activePartnerRelation)}}</strong></button>
-                  <button class="btn btn-white btn-sm js-import transactions"  data-entity='bill' title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button>
+                  <!--button class="btn btn-primary btn-sm js-new transactions" data-entity='bill'><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.relation.' activePartnerRelation)}}</strong></button-->
+                  <!--button class="btn btn-white btn-sm js-import transactions"  data-entity='bill' title="{{_ 'upload'}}"><i class="fa fa-upload"></i></button-->
+                  <div class="dropdown transactions">
+                      <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
+                          <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.relation.' activePartnerRelation)}}</strong> <b class="caret"></b>
+                      </a>
+                      <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
+                          <li><a href="" class="js-new" data-entity="bill"> {{_ 'new'}} {{_ (concat activePartnerRelation '_bill')}}</a></li>
+                          <li><a href="" class="js-new" data-entity="receipt"> {{_ 'new'}} {{_ (concat activePartnerRelation '_receipt')}}</a></li>
+                      </ul>
+                  </div>
                 {{/if}}
               {{/if}}
             </div>
@@ -65,6 +74,7 @@
                 <li class="active"><a data-toggle="tab" href="#tab-bill"><h3>{{_ 'bills'}}</h3></a></li>
                 <li class=""><a data-toggle="tab" href="#tab-payment"><h3>{{_ 'payments'}}</h3></a></li>
                 <li class=""><a data-toggle="tab" href="#tab-partner"><h3>{{_ 'partners'}}</h3></a></li>
+                <li class=""><a data-toggle="tab" href="#tab-receipt"><h3>{{_ 'receipts'}}</h3></a></li>
             </ul>
             <div class="tab-content">
                 <div id="tab-bill" class="tab-pane active">
@@ -80,6 +90,11 @@
                 <div id="tab-partner" class="tab-pane">
                     <div class="table-responsive partners">
                         {{> ReactiveDatatable tableData=partnersTableDataFn options=partnersOptionsFn }}
+                    </div>
+                </div>
+                <div id="tab-receipt" class="tab-pane">
+                    <div class="table-responsive transactions">
+                        {{> ReactiveDatatable tableData=receiptsTableDataFn options=receiptsOptionsFn }}
                     </div>
                 </div>
             </div>

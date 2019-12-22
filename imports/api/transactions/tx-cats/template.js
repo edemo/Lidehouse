@@ -122,6 +122,7 @@ export function defineTxCatTemplates() {
   TxCats.define({ communityId: null,
     name: 'Income', // 'Bevétel',
     category: 'receipt',
+    data: { relation: 'customer' },
     debit: ['38'],
     credit: ['9'],
   });
@@ -129,8 +130,16 @@ export function defineTxCatTemplates() {
   TxCats.define({ communityId: null,
     name: 'Expense', // 'Kiadás',
     category: 'receipt',
+    data: { relation: 'supplier' },
     debit: ['8'],
     credit: ['38'],
+  });
+
+  TxCats.define({ communityId: null,
+    name: 'Opening',
+    category: 'opening',
+    debit: [''],
+    credit: ['0'],
   });
 
   // Joker

@@ -9,7 +9,14 @@ import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdown
 import { Transactions } from '/imports/api/transactions/transactions.js';
 
 const openingSchema = new SimpleSchema({
-  account: { type: String, optional: true, autoform: chooseSubAccount('COA', '') }, 
+  account: { type: String, autoform: chooseSubAccount('COA', '') },
+});
+
+Transactions.categoryHelpers('opening', {
+  post() {
+    this.debit = [{ account: this.account }];
+    this.credit = [{ account: '0' }];
+  },
 });
 
 Transactions.attachVariantSchema(openingSchema, { selector: { category: 'opening' } });

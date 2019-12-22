@@ -598,12 +598,14 @@
       "placeholder": "(eg. 2017-05-06)"
     },
     "partnerId": {
-      "label": "Partner",
-      "placeholder": "(eg. Super Clean Inc)"
+      "label": "Partner"
     },
     "contractId": {
+      "label": "Contract"
+    },
+    "partnerTxt": {
       "label": "Partner",
-      "placeholder": "(eg. Cleaning contract)"
+      "placeholder": "(eg. Super Clean Inc)"
     },
     "sourceId": {
       "label": "Source transaction id"

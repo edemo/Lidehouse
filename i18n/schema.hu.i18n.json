@@ -602,12 +602,14 @@
       "placeholder": "(pl. 2017-05-06)"
     },
     "partnerId": {
-      "label": "Partner",
-      "placeholder": "(pl. Kulcslyuk kft)"
+      "label": "Partner"
     },
     "contractId": {
-      "label": "Szerződés",
-      "placeholder": "(pl. Épülettakarítási szerződés)"
+      "label": "Szerződés"
+    },
+    "partnerTxt": {
+      "label": "Partner",
+      "placeholder": "(pl. Kulcslyuk kft)"
     },
     "sourceId": {
       "label": "Forrás tranzakció azonosítója"

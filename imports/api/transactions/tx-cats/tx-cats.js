@@ -46,12 +46,11 @@ TxCats.helpers({
     return schema;
   },
   isSimpleTx() {  // simple tx does not need any additional data to create (apart from D/C accounts)
-    const isSimple = !(this.category === 'bill' || this.category === 'payment');
+    const isSimple = !(this.category === 'bill' || this.category === 'payment' || this.category === 'receipt');
     return isSimple;
   },
   conteerSide() {
-    debugAssert(this.category === 'bill', 'Func only available for bills');
-    const relation = this.relation;
+    const relation = this.data.relation;
     if (relation === 'supplier') return 'debit';
     if (relation === 'customer' || relation === 'parcel') return 'credit';
     return undefined;

@@ -78,7 +78,7 @@ if (Meteor.isServer) {
         insertTx = function (params) {
           return Transactions.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
             communityId: Fixture.demoCommunityId,
-            category: 'void',
+            category: 'freeTx',
             valueDate: params.valueDate,
             amount: params.amount,
             credit: [{

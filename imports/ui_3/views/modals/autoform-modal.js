@@ -43,12 +43,9 @@ Template.Autoform_modal.helpers({
   title() {
     if (this.title) return this.title;
     const id = afId2details(this.id);
-    if (id.object === 'bill') {
-      const relation = Session.get('activePartnerRelation');
-      id.object = relation + '_bill';
-    }
-    if (id.object === 'transaction' && id.action === 'insert') {
-      id.object = TxCats.findOne(Session.get('modalContext').txCatId).name;
+    if (id.object === 'bill' || id.object === 'receipt') {
+      const relation = Session.get('modalContext').txCat.data.relation;
+      id.object = relation + '_' + id.object;
     }
     if (id.action === 'statusChange') {
       id.object = 'statusChange';

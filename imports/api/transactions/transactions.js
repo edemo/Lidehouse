@@ -42,7 +42,7 @@ Transactions.coreSchema = {
   category: { type: String, allowedValues: Transactions.categoryValues, autoform: { omit: true } },
   valueDate: { type: Date },
   amount: { type: Number, decimal: true },
-  catId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+  catId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
 //  year: { type: Number, optional: true, autoform: { omit: true },
@@ -120,13 +120,15 @@ Transactions.helpers({
     return Communities.findOne(this.communityId);
   },
   partner() {
-    return Partners.relCollection(this.relation).findOne(this.partnerId);
+    if (this.partnerId) return Partners.relCollection(this.relation).findOne(this.partnerId);
+    return this.partnerTxt;
   },
   contract() {
     return Contracts.findOne(this.contractId);
   },
   txCat() {
-    TxCats.findOne(this.catId);
+    if (this.catId) return TxCats.findOne(this.catId);
+    return undefined;
   },
   entityName() {
     return this.category;
@@ -233,6 +235,47 @@ Transactions.helpers({
   updateOutstandings() {
     // NOP -- will be overwritten in the categories
   },
+  // bill/receipt helpers
+  issuer() {
+    if (this.relation === 'supplier') return this.partner();
+    return this.community().asPartner();
+  },
+  receiver() {
+    if (this.relation === 'customer' || this.relation === 'parcel') return this.partner();
+    return this.community().asPartner();
+  },
+  lineCount() {
+    return this.lines.length;
+  },
+  matchingTxSide() {
+    if (this.relation === 'supplier') return 'debit';
+    else if (this.relation === 'customer' || this.relation === 'parcel') return 'credit';
+    debugAssert(false, 'unknown relation');
+    return undefined;
+  },
+  otherTxSide() {
+    return oppositeSide(this.matchingTxSide());
+  },
+  hasConteerData() {
+    let result = true;
+    this.lines.forEach(line => { if (line && !line.account) result = false; });
+    return result;
+  },
+  autofillLines() {
+    if (!this.lines || !this.lines.length) return;
+    let totalAmount = 0;
+    let totalTax = 0;
+    this.lines.forEach(line => {
+      if (!line) return; // can be null, when a line is deleted from the array
+      line.amount = line.unitPrice * line.quantity;
+      line.tax = (line.amount * line.taxPct) / 100;
+      line.amount += line.tax; // =
+      totalAmount += line.amount;
+      totalTax += line.tax;
+    });
+    this.amount = totalAmount;
+    this.tax = totalTax;
+  },
 });
 
 Transactions.attachBaseSchema(Transactions.baseSchema);
@@ -275,19 +318,15 @@ if (Meteor.isServer) {
   Transactions.before.insert(function (userId, doc) {
     const tdoc = this.transform();
     tdoc.complete = tdoc.calculateComplete();
-    if (tdoc.category === 'bill') {
-      tdoc.autofillLines();
-      tdoc.autofillOutstanding();
-    }
+    tdoc.autofillLines();
+    if (tdoc.category === 'bill') tdoc.autofillOutstanding();
     _.extend(doc, tdoc);
   });
 
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
     tdoc.updateBalances(+1);
-    if (tdoc.category === 'payment') {
-      tdoc.registerOnBill();
-    }
+    if (tdoc.category === 'payment') tdoc.registerOnBill();
     tdoc.updateOutstandings(+1);
   });
 
@@ -295,10 +334,10 @@ if (Meteor.isServer) {
     const tdoc = this.transform();
     tdoc.updateBalances(-1);
     autoValueUpdate(tdoc, modifier, 'complete', d => d.calculateComplete());
-    if (tdoc.category === 'bill') {
-      const newDoc = Transactions._transform(_.extend({ category: 'bill' }, modifier.$set));
+    if (tdoc.category === 'bill' || tdoc.category === 'receipt') {
+      const newDoc = Transactions._transform(_.extend({ category: tdoc.category }, modifier.$set));
       if (newDoc.lines) newDoc.autofillLines();
-      if (newDoc.lines || newDoc.payments) newDoc.autofillOutstanding();
+      if ((newDoc.lines || newDoc.payments) && tdoc.category === 'bill') newDoc.autofillOutstanding();
       _.extend(modifier, { $set: newDoc });
     }
   });

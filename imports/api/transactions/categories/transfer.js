@@ -13,6 +13,13 @@ const transferSchema = new SimpleSchema({
   toAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
 });
 
+Transactions.categoryHelpers('transfer', {
+  post() {
+    this.debit = [{ account: this.toAccount }];
+    this.credit = [{ account: this.fromAccount }];
+  },
+});
+
 Transactions.attachVariantSchema(transferSchema, { selector: { category: 'transfer' } });
 
 Meteor.startup(function attach() {
