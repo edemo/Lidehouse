@@ -22,7 +22,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { StatementEntries } from '/imports/api/transactions/statements/statements.js';
 
 export const Transactions = new Mongo.Collection('transactions');
@@ -126,8 +126,8 @@ Transactions.helpers({
   contract() {
     return Contracts.findOne(this.contractId);
   },
-  txCat() {
-    if (this.catId) return TxCats.findOne(this.catId);
+  txDef() {
+    if (this.catId) return TxDefs.findOne(this.catId);
     return undefined;
   },
   entityName() {

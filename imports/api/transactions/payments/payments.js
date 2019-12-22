@@ -27,7 +27,7 @@ Transactions.categoryHelpers('payment', {
   },
   post(accountingMethod) {
 //    const communityId = this.communityId;
-//    const cat = TxCats.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
+//    const cat = TxDefs.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
     const bill = Transactions.findOne(this.billId);
     const ratio = this.amount / bill.amount;
     function copyLinesInto(txSide) {

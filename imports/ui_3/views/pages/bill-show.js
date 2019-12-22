@@ -44,9 +44,9 @@ Template.Bill_show.viewmodel({
     return Localizer.code2parcelRef(code);
   },
   partnerRelation() {
-    return Session.get('modalContext').txCat.data.relation;
+    return Session.get('modalContext').txDef.data.relation;
   },
   isBill() {
-    return Session.get('modalContext').txCat.category === 'bill';
+    return Session.get('modalContext').txDef.category === 'bill';
   },
 });

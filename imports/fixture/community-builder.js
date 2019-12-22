@@ -21,7 +21,7 @@ import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/categories';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import '/imports/startup/server/register-api';  // brings all methods
@@ -89,7 +89,7 @@ export class CommunityBuilder {
         case 'statementEntries':
         case 'parcelBillings':
         case 'breakdowns':
-        case 'txCats': return this.getUserWithRole('accountant');
+        case 'txDefs': return this.getUserWithRole('accountant');
         case 'comments': return this.nextUser();
         case 'topics': switch (params.category) {
           case 'vote': switch (params.vote.effect) {
@@ -127,7 +127,7 @@ export class CommunityBuilder {
     const doc = this.build(name, data);
     const collection = Factory.get(name).collection;
     if (collection._name === 'transactions') {
-      doc.catId = TxCats.findOne({ category: doc.category, 'data.relation': doc.relation })._id;
+      doc.catId = TxDefs.findOne({ category: doc.category, 'data.relation': doc.relation })._id;
     }
     return this.execute(collection.methods.insert, doc);
   }

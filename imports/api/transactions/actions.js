@@ -8,23 +8,23 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { BatchAction } from '/imports/api/batch-action.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { Transactions } from './transactions.js';
 import './entities.js';
 import './methods.js';
 
-function txCatFromEntity(entity, instance) {
+function txDefFromEntity(entity, instance) {
   const category = entity.name;
   const communityId = Session.get('activeCommunityId');
   const partnerRelation = instance.viewmodel.activePartnerRelation();
-  const txCat = TxCats.findOne({ communityId, category, 'data.relation': partnerRelation });
-  return txCat;
+  const txDef = TxDefs.findOne({ communityId, category, 'data.relation': partnerRelation });
+  return txDef;
 }
 
 function fillMissingOptionParams(options, instance) {
-  if (options.entity) options.txCat = txCatFromEntity(options.entity, instance);
-  else if (options.txCat) options.entity = Transactions.entities[options.txCat.category];
-  else debugAssert(false, 'Either entity or txCat needs to come in the options');
+  if (options.entity) options.txDef = txDefFromEntity(options.entity, instance);
+  else if (options.txDef) options.entity = Transactions.entities[options.txDef.category];
+  else debugAssert(false, 'Either entity or txDef needs to come in the options');
 }
 
 Transactions.actions = {
@@ -34,7 +34,7 @@ Transactions.actions = {
     visible: (options, doc) => currentUserHasPermission('transactions.insert', doc),
     run(options, doc, event, instance) {
       fillMissingOptionParams(options, instance);
-      Session.update('modalContext', 'txCat', options.txCat);
+      Session.update('modalContext', 'txDef', options.txDef);
       const entity = options.entity;
       Modal.show('Autoform_modal', {
         body: entity.editForm,
@@ -60,7 +60,7 @@ Transactions.actions = {
     visible: (options, doc) => currentUserHasPermission('transactions.inCommunity', doc),
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-      Session.update('modalContext', 'txCat', doc.txCat());
+      Session.update('modalContext', 'txDef', doc.txDef());
       Modal.show('Autoform_modal', {
         body: entity.viewForm,
         bodyContext: { doc },
@@ -85,7 +85,7 @@ Transactions.actions = {
     },
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-      Session.update('modalContext', 'txCat', doc.txCat());
+      Session.update('modalContext', 'txDef', doc.txDef());
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -164,9 +164,9 @@ Transactions.categoryValues.forEach(category => {
     formToDoc(doc) {
       doc.communityId = Session.get('activeCommunityId');
       doc.category = category;
-      const txCat = Session.get('modalContext').txCat;
-      doc.relation = txCat.data.relation;
-      doc.catId = txCat._id;
+      const txDef = Session.get('modalContext').txDef;
+      doc.relation = txDef.data.relation;
+      doc.catId = txDef._id;
       if (category === 'bill') {
         doc.valueDate = doc.deliveryDate;
         doc.lines = _.without(doc.lines, undefined);

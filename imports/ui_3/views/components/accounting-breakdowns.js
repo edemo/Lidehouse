@@ -17,11 +17,11 @@ import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-a
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import '/imports/api/transactions/breakdowns/actions.js';
-import '/imports/api/transactions/tx-cats/actions.js';
+import '/imports/api/transactions/tx-defs/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-import '/imports/api/transactions/tx-cats/methods.js';
+import '/imports/api/transactions/tx-defs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-breakdowns.html';
@@ -31,7 +31,7 @@ Template.Accounting_breakdowns.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txCats.inCommunity', { communityId });
+      instance.subscribe('txDefs.inCommunity', { communityId });
     });
   },
   communityId() {
@@ -41,10 +41,10 @@ Template.Accounting_breakdowns.viewmodel({
     const communityId = Session.get('activeCommunityId');
     return Breakdowns.find({ communityId }).count() === 0;
   },
-  txCats() {
+  txDefs() {
     const communityId = Session.get('activeCommunityId');
-    const txCats = TxCats.find({ communityId });
-    return txCats;
+    const txDefs = TxDefs.find({ communityId });
+    return txDefs;
   },
   breakdownsTableDataFn(tab) {
     const templateInstance = Template.instance();
@@ -86,7 +86,7 @@ Template.Accounting_breakdowns.events(
 );
 
 Template.Accounting_breakdowns.events(
-  actionHandlers(TxCats)
+  actionHandlers(TxDefs)
 );
 
 Template.Accounting_breakdowns.events({

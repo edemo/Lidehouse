@@ -1,15 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 // import { Breakdowns } from './breakdowns.js';
-import { TxCats } from './tx-cats.js';
+import { TxDefs } from './tx-defs.js';
 
   // Double entry accounting
 
-export function defineTxCatTemplates() {
+export function defineTxDefTemplates() {
 
   // Bill accounting -Számla kollaudálás
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Supplier bill', // 'Bejövő számla',
     category: 'bill',
     data: { relation: 'supplier' },
@@ -18,7 +18,7 @@ export function defineTxCatTemplates() {
   });
 /*
   // Inventory accounting
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Recording inventory', // 'Készletrevétel',
     category: 'bill',
     data: { relation: 'supplier' },
@@ -26,7 +26,7 @@ export function defineTxCatTemplates() {
     credit: ['46'],
   });
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Costing of inventory', // 'Készlet költség elszámolás',
     category: 'free',
     debit: ['5'],
@@ -36,7 +36,7 @@ export function defineTxCatTemplates() {
 */
   // Supplier payment -  Bejövő számla kifizetése
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Supplier payment', // 'Bejövő számla kifizetése',
     category: 'payment',
     data: { relation: 'supplier' },
@@ -46,7 +46,7 @@ export function defineTxCatTemplates() {
 
   // Számlázás vevőknek
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Customer bill', // 'Kimenő számla',
     category: 'bill',
     data: { relation: 'customer' },
@@ -54,7 +54,7 @@ export function defineTxCatTemplates() {
     credit: ['91'],
   });
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Customer payment', // 'Kimenő számla befolyás',
     category: 'payment',
     data: { relation: 'customer' },
@@ -64,7 +64,7 @@ export function defineTxCatTemplates() {
 
   // Albetét előírás és befizetések
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Parcel bill', // 'Albetét előírás',
     category: 'bill',
     data: { relation: 'parcel' },
@@ -72,7 +72,7 @@ export function defineTxCatTemplates() {
     credit: ['95'],
   });
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Parcel payment', // 'Albetét befizetés',
     category: 'payment',
     data: { relation: 'parcel' },
@@ -82,35 +82,35 @@ export function defineTxCatTemplates() {
 /*
   // Nem azonosított bevételek kezelése 
   // Befolyás
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Non identified payment', // 'Nem azonosított befolyás',
     category: 'payment',
     debit: ['38'],
     credit: ['43'],
   });
   // Azonosítás - Identification
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Identification', // 'Azonosítás',
     debit: ['43'],
     credit: ['3'],
   });
 */
   // Pénzműveletek
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Money transfer', // 'Átvezetés pénz számlák között',
     category: 'transfer',
     debit: ['38'],
     credit: ['38'],
   });
   // Készpénz felvétel bankszámláról
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Cash withdraw', // 'Készpénz felvétel',
     category: 'transfer',
     debit: ['381'],
     credit: ['382'],
   });
   // Készpénz befizetés bankszámlára pénztárból
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Cash deposit', // 'Készpénz befizetés',
     category: 'transfer',
     debit: ['382'],
@@ -119,7 +119,7 @@ export function defineTxCatTemplates() {
 
 // Single entry accouting
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Income', // 'Bevétel',
     category: 'receipt',
     data: { relation: 'customer' },
@@ -127,7 +127,7 @@ export function defineTxCatTemplates() {
     credit: ['9'],
   });
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Expense', // 'Kiadás',
     category: 'receipt',
     data: { relation: 'supplier' },
@@ -135,7 +135,7 @@ export function defineTxCatTemplates() {
     credit: ['38'],
   });
 
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Opening',
     category: 'opening',
     debit: [''],
@@ -143,7 +143,7 @@ export function defineTxCatTemplates() {
   });
 
   // Joker
-  TxCats.define({ communityId: null,
+  TxDefs.define({ communityId: null,
     name: 'Accounting operation', // 'Könyvelési művelet',
     category: 'freeTx',
     debit: [''],
@@ -152,5 +152,5 @@ export function defineTxCatTemplates() {
 }
 
 if (Meteor.isServer) {
-  Meteor.startup(defineTxCatTemplates);
+  Meteor.startup(defineTxDefTemplates);
 }

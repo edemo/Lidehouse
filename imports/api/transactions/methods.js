@@ -10,11 +10,11 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import '/imports/api/transactions/breakdowns/methods.js';
-import '/imports/api/transactions/tx-cats/methods.js';
+import '/imports/api/transactions/tx-defs/methods.js';
 
 /*
 function runPositingRules(context, doc) {
@@ -143,11 +143,11 @@ export const cloneAccountingTemplates = new ValidatedMethod({
         { name: breakdownName, communityId },
       );
     });
-    const txCatsToClone = TxCats.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
-    txCatsToClone.forEach((txCatName) => {
-      TxCats.methods.clone._execute(
+    const txDefsToClone = TxDefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
+    txDefsToClone.forEach((txDefName) => {
+      TxDefs.methods.clone._execute(
         { userId: this.userId },
-        { name: txCatName, communityId },
+        { name: txDefName, communityId },
       );
     });
     Localizer.generateParcels(communityId, user.settings.language);

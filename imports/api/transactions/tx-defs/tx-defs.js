@@ -11,21 +11,21 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
-export const TxCats = new Mongo.Collection('txCats');
+export const TxDefs = new Mongo.Collection('txDefs');
 
-TxCats.define = function define(doc) {
-  TxCats.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
+TxDefs.define = function define(doc) {
+  TxDefs.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
 };
 
-TxCats.clone = function clone(name, communityId) {
-  const doc = TxCats.findOne({ name, communityId: null });
+TxDefs.clone = function clone(name, communityId) {
+  const doc = TxDefs.findOne({ name, communityId: null });
   if (!doc) return undefined;
   Mongo.Collection.stripAdministrativeFields(doc);
   doc.communityId = communityId;
-  return TxCats.insert(doc);
+  return TxDefs.insert(doc);
 };
 
-TxCats.schema = new SimpleSchema({
+TxDefs.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String, max: 100 },
   category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
@@ -34,7 +34,7 @@ TxCats.schema = new SimpleSchema({
   credit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
 });
 
-TxCats.helpers({
+TxDefs.helpers({
   schema() {
     const schema = new SimpleSchema([
       _.clone(Transactions.baseSchema), {
@@ -73,12 +73,12 @@ TxCats.helpers({
   },
 });
 
-TxCats.attachSchema(TxCats.schema);
-TxCats.attachBehaviour(Timestamped);
+TxDefs.attachSchema(TxDefs.schema);
+TxDefs.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
-  TxCats.simpleSchema().i18n('schemaTxCats');
+  TxDefs.simpleSchema().i18n('schemaTxDefs');
 });
 
-Factory.define('txCat', TxCats, {
+Factory.define('txDef', TxDefs, {
 });

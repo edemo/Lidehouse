@@ -14,7 +14,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { Bills } from '/imports/api/transactions/bills/bills';
 import { Period } from '/imports/api/transactions/breakdowns/period.js';
 import { ActiveTimeMachine } from '../../behaviours/active-time-machine';
@@ -89,7 +89,7 @@ export const apply = new ValidatedMethod({
             communityId: parcelBilling.communityId,
             category: 'bill',
             relation: 'parcel',
-            catId: TxCats.findOne({ communityId, category: 'bill', 'data.relation': 'parcel' })._id,
+            catId: TxDefs.findOne({ communityId, category: 'bill', 'data.relation': 'parcel' })._id,
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
             partnerId: parcel.leadParcel().payer()._id,
             valueDate: Clock.currentDate(),
