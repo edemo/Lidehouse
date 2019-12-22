@@ -65,7 +65,7 @@ export const reconcile = new ValidatedMethod({
         const bill = Transactions.findOne(billId);
         paymentId = Transactions.methods.insert._execute({ userId: this.userId }, {
           communityId: entry.communityId, category: 'payment',
-          catId: TxDefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': bill.reation })._id,
+          defId: TxDefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': bill.reation })._id,
           valueDate: entry.valueDate, amount: entry.amount, payAccount: entry.account,
           billId, relation: bill.relation, partnerId: bill.partnerId,
         });

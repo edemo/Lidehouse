@@ -94,7 +94,7 @@ Template.Accounting_transactions.viewmodel({
   subscribeParams() {
     return {
       communityId: this.communityId(),
-      catId: this.txDefSelected(),
+      defId: this.txDefSelected(),
       creditAccount: '\\^' + this.creditAccountSelected() + '\\',
       debitAccount: '\\^' + this.debitAccountSelected() + '\\',
       begin: new Date(this.beginDate()),

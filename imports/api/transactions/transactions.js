@@ -42,7 +42,7 @@ Transactions.coreSchema = {
   category: { type: String, allowedValues: Transactions.categoryValues, autoform: { omit: true } },
   valueDate: { type: Date },
   amount: { type: Number, decimal: true },
-  catId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
+  defId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
 //  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // originating transaction (by posting rule)
 //  batchId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } }, // if its part of a Batch
 //  year: { type: Number, optional: true, autoform: { omit: true },
@@ -127,7 +127,7 @@ Transactions.helpers({
     return Contracts.findOne(this.contractId);
   },
   txDef() {
-    if (this.catId) return TxDefs.findOne(this.catId);
+    if (this.defId) return TxDefs.findOne(this.defId);
     return undefined;
   },
   entityName() {

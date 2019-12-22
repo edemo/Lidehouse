@@ -89,7 +89,7 @@ export const apply = new ValidatedMethod({
             communityId: parcelBilling.communityId,
             category: 'bill',
             relation: 'parcel',
-            catId: TxDefs.findOne({ communityId, category: 'bill', 'data.relation': 'parcel' })._id,
+            defId: TxDefs.findOne({ communityId, category: 'bill', 'data.relation': 'parcel' })._id,
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
             partnerId: parcel.leadParcel().payer()._id,
             valueDate: Clock.currentDate(),

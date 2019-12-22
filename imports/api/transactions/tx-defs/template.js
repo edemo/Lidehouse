@@ -102,21 +102,22 @@ export function defineTxDefTemplates() {
     debit: ['38'],
     credit: ['38'],
   });
+  /*
   // Készpénz felvétel bankszámláról
   TxDefs.define({ communityId: null,
     name: 'Cash withdraw', // 'Készpénz felvétel',
     category: 'transfer',
     debit: ['381'],
-    credit: ['382'],
+    credit: ['38'],
   });
   // Készpénz befizetés bankszámlára pénztárból
   TxDefs.define({ communityId: null,
     name: 'Cash deposit', // 'Készpénz befizetés',
     category: 'transfer',
-    debit: ['382'],
+    debit: ['38'],
     credit: ['381'],
   });
-
+*/
 // Single entry accouting
 
   TxDefs.define({ communityId: null,

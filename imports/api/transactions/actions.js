@@ -165,8 +165,8 @@ Transactions.categoryValues.forEach(category => {
       doc.communityId = Session.get('activeCommunityId');
       doc.category = category;
       const txDef = Session.get('modalContext').txDef;
-      doc.relation = txDef.data.relation;
-      doc.catId = txDef._id;
+      doc.defId = txDef._id;
+      _.each(txDef.data, (value, key) => doc[key] = value);
       if (category === 'bill') {
         doc.valueDate = doc.deliveryDate;
         doc.lines = _.without(doc.lines, undefined);

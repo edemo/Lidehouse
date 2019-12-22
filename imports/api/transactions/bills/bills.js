@@ -21,7 +21,7 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 
 export const Bills = {};
 
-const chooseBillAccount = {
+export const chooseConteerAccount = {
   options() {
     const txDefId = Session.get('modalContext').txDef._id;
     const txDef = TxDefs.findOne(txDefId);
@@ -47,7 +47,7 @@ const lineSchema = {
   //} },
   billingId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   period: { type: String, optional: true, autoform: { omit: true } },
-  account: { type: String, optional: true, autoform: chooseBillAccount },
+  account: { type: String, optional: true, autoform: chooseConteerAccount },
   localizer: { type: String, optional: true, autoform: chooseLocalizerNode },
 };
 _.each(lineSchema, val => val.autoform = _.extend({}, val.autoform, { afFormGroup: { label: false } }));
