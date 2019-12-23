@@ -13,16 +13,16 @@ import { Transactions } from './transactions.js';
 import './entities.js';
 import './methods.js';
 
-function txDefFromEntity(entity, instance) {
-  const category = entity.name;
+function txDefFromEntity(options, doc, event, instance) {
+  const category = options.entity.name;
   const communityId = Session.get('activeCommunityId');
-  const partnerRelation = instance.viewmodel.activePartnerRelation();
+  const partnerRelation = (doc && doc.relation) || instance.viewmodel.activePartnerRelation();
   const txDef = TxDefs.findOne({ communityId, category, 'data.relation': partnerRelation });
   return txDef;
 }
 
-function fillMissingOptionParams(options, instance) {
-  if (options.entity) options.txDef = txDefFromEntity(options.entity, instance);
+function fillMissingOptionParams(options, doc, event, instance) {
+  if (options.entity) options.txDef = txDefFromEntity(options, doc, event, instance);
   else if (options.txDef) options.entity = Transactions.entities[options.txDef.category];
   else debugAssert(false, 'Either entity or txDef needs to come in the options');
 }
@@ -33,7 +33,7 @@ Transactions.actions = {
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('transactions.insert', doc),
     run(options, doc, event, instance) {
-      fillMissingOptionParams(options, instance);
+      fillMissingOptionParams(options, doc, event, instance);
       Session.update('modalContext', 'txDef', options.txDef);
       const entity = options.entity;
       Modal.show('Autoform_modal', {
