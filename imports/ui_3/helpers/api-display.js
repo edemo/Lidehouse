@@ -9,10 +9,16 @@ import { Tickets } from '/imports/api/topics/tickets/tickets.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Contracts } from '/imports/api/contracts/contracts.js';
 
-function label(value, color, icon) {
+export function label(value, color, icon) {
   if (value === undefined) return undefined;
   const iconBadge = icon ? `<i class="fa fa-${icon}"></i> ` : '';
   return `<span class="label label-${color} label-xs">${iconBadge}${value}</span>`;
+}
+
+export function checkmarkBoolean(bool) {
+  const icon = bool ? 'fa-check' : 'fa-times';
+  const color = bool ? 'navy' : 'danger';
+  return `<i class="fa ${icon} text-${color}"></i>`;
 }
 
 export function displayMeterService(name) {
@@ -86,6 +92,7 @@ export function displayChargeType(name) {
   return label(__('schemaTickets.ticket.chargeType.' + name), 'default');
 }
 
+Template.registerHelper('checkmarkBoolean', checkmarkBoolean);
 Template.registerHelper('displayMeterService', displayMeterService);
 Template.registerHelper('displayReading', displayReading);
 Template.registerHelper('displayAccount', displayAccount);

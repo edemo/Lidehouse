@@ -54,7 +54,7 @@
                   <td>{{#if equals entry.side 'to'}} {{entry.amount}} {{else}} - {{/if}}</td-->
                   <td><strong>{{displayMoney tx.total}}</strong></td>
                   <td><button class="btn btn-white btn-xs js-view" data-id="{{tx._id}}"><i class="fa fa-eye"></i></button></td>
-                  <td><a href="" title="{{tx.ref}}"><i class="fa fa-check text-navy"></i></a></td>
+                  <td>{{{checkmarkBoolean entry.transaction.reconciledId}}}</td>
               </tr>
               {{/each}}
             </tbody>
