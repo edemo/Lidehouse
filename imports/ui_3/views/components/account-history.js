@@ -33,15 +33,12 @@ Template.Account_history.viewmodel({
   },
   autorun: [
     function defaultOptionSelect() {
-      const instance = this.templateInstance;
-      instance.autorun(() => {
-        if (this.accountOptions().length && !this.accountSelected()) {
-          this.accountSelected(this.accountOptions()[0].value);
-        }
-        if (this.localizerOptions().length && !this.localizerSelected()) {
-          this.localizerSelected(this.localizerOptions()[0].value);
-        }
-      });
+      if (this.accountOptions().length && !this.accountSelected()) {
+        this.accountSelected(this.accountOptions()[0].value);
+      }
+      if (this.localizerOptions().length && !this.localizerSelected()) {
+        this.localizerSelected(this.localizerOptions()[0].value);
+      }
     },
   ],
   subscribeParams() {

@@ -12,7 +12,8 @@ StatementEntries.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('statements.insert', doc),
-    run() {
+    run(options, doc, event, instance) {
+      Session.update('modalContext', 'account', instance.viewmodel.accountSelected());
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.insert',
         collection: StatementEntries,
@@ -78,6 +79,10 @@ AutoForm.addModalHooks('af.statementEntry.update');
 AutoForm.addModalHooks('af.statementEntry.reconcile');
 
 AutoForm.addHooks('af.statementEntry.insert', {
+  docToForm(doc) {
+    doc.account = Session.get('modalContext').account;
+    return doc;
+  },
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;
