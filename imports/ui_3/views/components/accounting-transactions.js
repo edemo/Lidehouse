@@ -72,8 +72,8 @@ Template.Accounting_transactions.viewmodel({
       if (!txDef || !coa || !loc) return;
       this.creditAccountOptions(coa.nodeOptionsOf(txDef.credit));
       this.debitAccountOptions(coa.nodeOptionsOf(txDef.debit));
-      this.creditAccountSelected(txDef.credit[0]);
-      this.debitAccountSelected(txDef.debit[0]);
+      this.creditAccountSelected(txDef.credit[0] || '');
+      this.debitAccountSelected(txDef.debit[0] || '');
       this.localizerOptions(loc.nodeOptions());
     },
     function txSubscription() {
