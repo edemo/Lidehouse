@@ -25,7 +25,7 @@ Transactions.categoryHelpers('payment', {
     if (this.billId) return 0;
     return Transactions.findOne(this.billId).lineCount();
   },
-  post(accountingMethod) {
+  makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
 //    const cat = TxDefs.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
     const bill = Transactions.findOne(this.billId);

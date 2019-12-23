@@ -14,7 +14,7 @@ const transferSchema = new SimpleSchema({
 });
 
 Transactions.categoryHelpers('transfer', {
-  post() {
+  makeJournalEntries() {
     this.debit = [{ account: this.toAccount }];
     this.credit = [{ account: this.fromAccount }];
     return { debit: this.debit, credit: this.credit };

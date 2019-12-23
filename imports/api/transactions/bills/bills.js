@@ -91,7 +91,7 @@ Transactions.categoryHelpers('bill', {
   paymentCount() {
     return this.payments.length;
   },
-  post(accountingMethod) {
+  makeJournalEntries(accountingMethod) {
     const self = this;
 //    const communityId = this.communityId;
 //    const cat = TxDefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });

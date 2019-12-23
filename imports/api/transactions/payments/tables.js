@@ -16,7 +16,7 @@ export function paymentsColumns() {
     { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
     { data: 'valueDate', title: __('schemaTransactions.valueDate.label'), render: Render.formatDate },
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
-    { data: 'payAccount', title: __('schemaPayments.payAccount.label'), render: displayAccount },
+    { data: 'payAccount', title: __('schemaTransactions.payAccount.label'), render: displayAccount },
     { data: 'note', title: __('schemaTransactions.note.label') },
     { data: 'reconciledId', title: __('schemaTransactions.reconciled.label'), render: Render.checkmarkBoolean },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,

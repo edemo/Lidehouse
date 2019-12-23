@@ -59,7 +59,7 @@ export const post = new ValidatedMethod({
 
     const community = Communities.findOne(doc.communityId);
     const accountingMethod = community.settings.accountingMethod;
-    const updateData = doc.post(accountingMethod);
+    const updateData = doc.makeJournalEntries(accountingMethod);
     return Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
   },
 });

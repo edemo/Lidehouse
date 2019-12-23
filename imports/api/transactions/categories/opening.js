@@ -14,7 +14,7 @@ const openingSchema = new SimpleSchema({
 });
 
 Transactions.categoryHelpers('opening', {
-  post() {
+  makeJournalEntries() {
     this.debit = [{ account: this.account }];
     this.credit = [{ account: '0' }];
     return { debit: this.debit, credit: this.credit };

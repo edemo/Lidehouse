@@ -19,13 +19,14 @@ const receiptSchema = new SimpleSchema({
   tax: { type: Number, decimal: true, optional: true, autoform: { omit: true, readonly: true } },
   lines: { type: Array, defaultValue: [] },
   'lines.$': { type: Bills.lineSchema },
-  payAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
+  payAccount: { type: String, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
 });
 
 Transactions.categoryHelpers('receipt', {
-  post() {
+  makeJournalEntries() {
+    const self = this;
     function copyLinesInto(txSide) {
-      this.lines.forEach(line => {
+      self.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
         txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer });
       });
