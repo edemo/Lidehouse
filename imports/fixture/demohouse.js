@@ -241,6 +241,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     switch (userNo) {
       case 2: demoBuilder.createMembership(dummyUserId, 'maintainer'); break;
       case 3: demoBuilder.createMembership(dummyUserId, 'accountant'); break;
+      case 5: demoBuilder.createMembership(dummyUserId, 'treasurer'); break;
       case 4:
       case 10:
       case 16: demoBuilder.createMembership(dummyUserId, 'overseer'); break;

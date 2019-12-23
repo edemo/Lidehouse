@@ -17,6 +17,7 @@ Transactions.categoryHelpers('opening', {
   post() {
     this.debit = [{ account: this.account }];
     this.credit = [{ account: '0' }];
+    return { debit: this.debit, credit: this.credit };
   },
 });
 

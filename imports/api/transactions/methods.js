@@ -40,6 +40,30 @@ function runPositingRules(context, doc) {
 }
 */
 
+export const post = new ValidatedMethod({
+  name: 'transactions.post',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const doc = checkExists(Transactions, _id);
+    checkPermissions(this.userId, 'transactions.post', doc);
+    if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
+    if (doc.category === 'bill') {
+      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+    } else if (doc.category === 'payment') {
+      if (!doc.billId) throw new Meteor.Error('Bill has to exist first');
+      const bill = checkExists(Transactions, doc.billId);
+      if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+    }
+
+    const community = Communities.findOne(doc.communityId);
+    const accountingMethod = community.settings.accountingMethod;
+    const updateData = doc.post(accountingMethod);
+    return Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
+  },
+});
+
 export const insert = new ValidatedMethod({
   name: 'transactions.insert',
   validate: doc => Transactions.simpleSchema(doc).validator({ clean: true })(doc),
@@ -48,17 +72,19 @@ export const insert = new ValidatedMethod({
     if (doc.category === 'payment') {
       if (doc.billId) {
         const bill = Transactions.findOne(doc.billId);
+//      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
         if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
         doc.relation = bill.relation;
         doc.partnerId = bill.partnerId;
         doc.contractId = bill.contractId;
       }
-//      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
     }
 
-    const id = Transactions.insert(doc);
+    const _id = Transactions.insert(doc);
+    doc = Transactions._transform(doc);
+    if (doc.txDef().isAutoPosting()) post._execute({ userId: this.userId }, { _id });
 //    runPositingRules(this, doc);
-    return id;
+    return _id;
   },
 });
 
@@ -85,30 +111,6 @@ function checkMatches(tx, txLeg, bill) {
     throw new Meteor.Error('err_sanityCheckFailed', 'Tx does not match Bill');
   }
 }
-
-export const post = new ValidatedMethod({
-  name: 'transactions.post',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
-  run({ _id }) {
-    const doc = checkExists(Transactions, _id);
-    checkPermissions(this.userId, 'transactions.post', doc);
-    if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
-    if (doc.category === 'bill') {
-      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-    } else if (doc.category === 'payment') {
-      if (!doc.billId) throw new Meteor.Error('Bill has to exist first');
-      const bill = checkExists(Transactions, doc.billId);
-      if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-    }
-
-    const community = Communities.findOne(doc.communityId);
-    const accountingMethod = community.settings.accountingMethod;
-    const updateData = doc.post(accountingMethod);
-    return Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
-  },
-});
 
 export const remove = new ValidatedMethod({
   name: 'transactions.remove',

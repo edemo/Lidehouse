@@ -17,6 +17,7 @@ Transactions.categoryHelpers('transfer', {
   post() {
     this.debit = [{ account: this.toAccount }];
     this.credit = [{ account: this.fromAccount }];
+    return { debit: this.debit, credit: this.credit };
   },
 });
 

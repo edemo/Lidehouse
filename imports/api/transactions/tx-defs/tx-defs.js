@@ -45,9 +45,11 @@ TxDefs.helpers({
     schema.i18n('schemaTransactions');
     return schema;
   },
-  isSimpleTx() {  // simple tx does not need any additional data to create (apart from D/C accounts)
-    const isSimple = !(this.category === 'bill' || this.category === 'payment' || this.category === 'receipt');
-    return isSimple;
+  isAutoPosting() {
+    return !_.contains(['bill', 'payment', 'receipt', 'freeTx'], this.category);
+  },
+  isAccountantTx() {
+    return !_.contains(['bill', 'payment', 'receipt'], this.category);
   },
   conteerSide() {
     const relation = this.data.relation;

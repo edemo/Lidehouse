@@ -82,7 +82,7 @@ Template.Accounting_transactions.viewmodel({
   ],
   txDefs() {
     const communityId = Session.get('activeCommunityId');
-    const txDefs = TxDefs.find({ communityId }).fetch().filter(c => c.isSimpleTx());
+    const txDefs = TxDefs.find({ communityId }).fetch().filter(c => c.isAccountantTx());
     return txDefs;
   },
   optionsOf(accountCode) {

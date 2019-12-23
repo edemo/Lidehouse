@@ -138,7 +138,7 @@ Transactions.helpers({
     return this[side] || [];
   },
   isPosted() {
-    return !!(this.debit && this.credit); // calculateComplete()
+    return !!(this.debit && this.credit && this.complete); // calculateComplete()
   },
   isReconciled() {
     return (!!this.reconciledId);

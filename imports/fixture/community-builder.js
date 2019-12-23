@@ -84,12 +84,12 @@ export class CommunityBuilder {
         case 'partners':
         case 'meters': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');
-        case 'transactions':
         case 'statements':
         case 'statementEntries':
         case 'parcelBillings':
         case 'breakdowns':
         case 'txDefs': return this.getUserWithRole('accountant');
+        case 'transactions': return (params.category === 'bill' || params.category === 'receipt') ? this.getUserWithRole('treasurer') : this.getUserWithRole('accountant');
         case 'comments': return this.nextUser();
         case 'topics': switch (params.category) {
           case 'vote': switch (params.vote.effect) {
