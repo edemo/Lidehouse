@@ -16,7 +16,7 @@ Template.Bill_show.viewmodel({
   docVm: undefined,
   onCreated(instance) {
   //  const billId = FlowRouter.getParam('_bid');
-  //  this.subscribe('bills.byId', { _id: billId });
+    instance.subscribe('bills.byId', { _id: this.templateInstance.data.doc._id });
   //  this.docVm(instance.data.doc);
   },
   autorun() {

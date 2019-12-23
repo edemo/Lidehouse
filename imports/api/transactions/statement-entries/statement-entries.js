@@ -41,7 +41,7 @@ Meteor.startup(function indexStatements() {
 StatementEntries.attachSchema(StatementEntries.schema);
 
 Meteor.startup(function attach() {
-  StatementEntries.simpleSchema().i18n('schemaBills');
+  StatementEntries.simpleSchema().i18n('schemaTransactions');
 });
 // --- Factory ---
 

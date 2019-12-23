@@ -39,7 +39,7 @@ import '/imports/api/transactions/tx-defs/publications.js';
 import '/imports/api/transactions/balances/methods.js';
 import '/imports/api/transactions/balances/publications.js';
 // import '/imports/api/transactions/bills/methods.js';
-// import '/imports/api/transactions/bills/publications.js';
+import '/imports/api/transactions/bills/publications.js';
 // import '/imports/api/transactions/payments/methods.js';
 // import '/imports/api/transactions/payments/publications.js';
 import '/imports/api/transactions/parcel-billings/methods.js';
