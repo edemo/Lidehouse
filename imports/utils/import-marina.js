@@ -3,6 +3,24 @@ import { $ } from 'meteor/jquery';
 import { Fraction } from 'fractional';
 import { flatten } from 'flat';
 import { moment } from 'meteor/momentjs:moment';
+import { getActiveCommunityId, getActiveCommunity } from '/imports/ui_3/lib/active-community.js';
+
+function flattenBankAccountNumber(bankAccountNumber) {
+  return bankAccountNumber.trim().split('-').join();
+}
+
+export const Import = {
+  findAccountByNumber(BAN) {
+    return { account: '382' };
+    const flattenedBAN = flattenBankAccountNumber(BAN);
+    const community = getActiveCommunity();
+    const bankAccounts = community.bankAccounts;
+    return bankAccounts.find(ba => flattenBankAccountNumber(ba.accountNumber) === flattenedBAN);
+  },
+  findPartner(partnerText) {
+    return partnerText;
+  },
+};
 
 // Problem of dealing with dates as js Date objects:
 // https://stackoverflow.com/questions/2698725/comparing-date-part-only-without-comparing-time-in-javascript
@@ -91,6 +109,25 @@ export const MarinaTransformers = {
         tag,
         debit: fundamentaBalance,
       });
+    });
+    return tjsons;
+  },
+
+  statementEntries(jsons, options) {
+    const tjsons = [];
+    jsons.forEach((json) => {
+      const tjson = {
+        ref: json['Tranzakció azonosító '],
+        account: Import.findAccountByNumber(json['Könyvelési számla']).account,
+        valueDate: json['Könyvelés dátuma'],
+        amount: json['Összeg'],
+        partner: Import.findPartner(json['Partner elnevezése']),
+        note: json['Közlemény'],
+        statementId: options.source,
+//        reconciledId
+      };
+      if (options.keepOriginals) tjson.original = json;
+      tjsons.push(tjson);
     });
     return tjsons;
   },

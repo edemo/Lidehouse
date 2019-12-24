@@ -40,6 +40,7 @@ export function receiptColumns() {
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.receipt }, actions: '', size: 'sm' }),
     },
+    { data: 'reconciledId', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
   ];
 
   return columns;

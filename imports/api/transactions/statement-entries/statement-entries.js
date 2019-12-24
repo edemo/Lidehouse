@@ -18,12 +18,25 @@ export const StatementEntries = new Mongo.Collection('statementEntries');
 StatementEntries.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   account: { type: String, autoform: chooseSubAccount('COA', '38') },
+  ref: { type: String, max: 50 }, // external (uniq) ref id provided by the bank
   valueDate: { type: Date },
-  partner: { type: String, max: 50 },
-  note: { type: String, max: 200 },
   amount: { type: Number },
+  partner: { type: String, max: 50, optional: true },
+  note: { type: String, max: 200, optional: true },
+  statementId: { type: String, /* regEx: SimpleSchema.RegEx.Id, */ optional: true, autoform: { omit: true } },
+  original: { type: Object, optional: true, blackbox: true },
   reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
-  statementId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
+});
+
+StatementEntries.idSet = ['communityId', 'ref'];
+
+Meteor.startup(function indexTransactions() {
+  Transactions.ensureIndex({ extId: 1 });
+  Transactions.ensureIndex({ reconciledId: 1 });
+//  if (Meteor.isClient && MinimongoIndexing) {
+  if (Meteor.isServer) {
+    StatementEntries._ensureIndex({ communityId: 1, valueDate: 1 });
+  }
 });
 
 StatementEntries.helpers({
@@ -33,9 +46,6 @@ StatementEntries.helpers({
 });
 
 Meteor.startup(function indexStatements() {
-  if (Meteor.isServer) {
-    StatementEntries._ensureIndex({ communityId: 1, valueDate: 1 });
-  }
 });
 
 StatementEntries.attachSchema(StatementEntries.schema);

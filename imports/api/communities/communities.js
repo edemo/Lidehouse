@@ -28,10 +28,21 @@ Communities.settingsSchema = new SimpleSchema({
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: autoformOptions(Communities.accountingMethods, 'schemaCommunities.settings.accountingMethod.'), defaultValue: 'accrual' },
 });
 
+Communities.cashAccountSchema = new SimpleSchema({
+  name: { type: String, max: 100 },
+  primary: { type: Boolean, optional: true },
+});
+
+Communities.defaultCashAccounts = [{
+  name: 'Cash register',
+  account: '381',
+  primary: true,
+}];
+
 Communities.bankAccountSchema = new SimpleSchema({
   name: { type: String, max: 100 },
   accountNumber: { type: String, max: 100 },
-  protocol: { type: String, allowedValues: Communities.bankProtocols, autoform: autoformOptions(Communities.bankProtocols, 'schemaCommunities.settings.bankAccounts.protocol.'),  optional: true },
+  protocol: { type: String, optional: true, allowedValues: Communities.bankProtocols, autoform: autoformOptions(Communities.bankProtocols, 'schemaCommunities.settings.bankAccounts.protocol.') },
   primary: { type: Boolean, optional: true },
 });
 
@@ -44,6 +55,7 @@ Communities.schema = new SimpleSchema([
   { taxNumber: { type: String, max: 50, optional: true } },
   { totalunits: { type: Number } },
   { settings: { type: Communities.settingsSchema } },
+  { cashAccounts: { type: [Communities.cashAccountSchema], autoform: { value: Communities.defaultCashAccounts } } },
   { bankAccounts: { type: [Communities.bankAccountSchema] } },
   // redundant fields:
   { parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } } },

@@ -18,10 +18,10 @@ export function paymentsColumns() {
     { data: 'amount', title: __('schemaTransactions.amount.label'), render: Render.formatNumber },
     { data: 'payAccount', title: __('schemaTransactions.payAccount.label'), render: displayAccount },
     { data: 'note', title: __('schemaTransactions.note.label') },
-    { data: 'reconciledId', title: __('schemaTransactions.reconciled.label'), render: Render.checkmarkBoolean },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'transactions', options: { entity: Transactions.entities.payment }, actions: '', size: 'sm' }),
     },
+    { data: 'reconciledId', /*title: __('schemaTransactions.reconciled.label'),*/ render: Render.checkmarkBoolean },
   ];
 
   return columns;

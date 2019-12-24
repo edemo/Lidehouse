@@ -1,17 +1,5 @@
 <template name="Account_history">
     <div class="row">
-        <div class="col-sm-3">
-            <div class="form-group">
-                <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
-                <input type="date" id="begin_date" name="begin_date" {{b 'value: beginDate'}} class="form-control">
-            </div>
-        </div>
-        <div class="col-sm-3">
-            <div class="form-group">
-                <label class="control-label" for="end_date">{{_ 'End date'}}</label>
-                <input type="date" id="end_date" name="end_date" {{b 'value: endDate'}} class="form-control">
-            </div>
-        </div>
         {{#if (or accountOptions accountSelected)}}
         <div class="col-sm-4">
             <div class="form-group">
@@ -29,6 +17,18 @@
             </div>
         </div>
         {{/if}}
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
+                <input type="date" id="begin_date" name="begin_date" {{b 'value: beginDate'}} class="form-control">
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+                <input type="date" id="end_date" name="end_date" {{b 'value: endDate'}} class="form-control">
+            </div>
+        </div>
         <div class="col-sm-2">
             <div class="form-group">
                 <label class="control-label" for="status">{{_ 'Status'}}</label>

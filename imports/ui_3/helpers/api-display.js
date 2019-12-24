@@ -18,7 +18,8 @@ export function label(value, color, icon) {
 export function checkmarkBoolean(bool) {
   const icon = bool ? 'fa-check' : 'fa-times';
   const color = bool ? 'navy' : 'danger';
-  return `<i class="fa ${icon} text-${color}"></i>`;
+  const title = bool ? 'Reconciled' : 'Unreconciled';
+  return `<i class="fa ${icon} text-${color}" title="${__(title)}"></i>`;
 }
 
 export function displayMeterService(name) {

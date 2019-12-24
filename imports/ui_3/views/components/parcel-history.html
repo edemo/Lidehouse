@@ -1,6 +1,12 @@
 <template name="Parcel_history">
     <div class="transactions">
     <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label class="control-label" for="parcel">{{_ 'parcel'}}</label>
+                <select id="parcel" name="parcel" {{b 'options: parcelOptions, value: parcelSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+            </div>
+        </div>
         <div class="col-sm-3">
             <div class="form-group">
                 <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
@@ -11,12 +17,6 @@
             <div class="form-group">
                 <label class="control-label" for="end_date">{{_ 'End date'}}</label>
                 <input type="date" id="end_date" name="end_date" {{b 'value: endDate'}} class="form-control">
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label class="control-label" for="parcel">{{_ 'parcel'}}</label>
-                <select id="parcel" name="parcel" {{b 'options: parcelOptions, value: parcelSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
             </div>
         </div>
         <!--div class="col-sm-2">

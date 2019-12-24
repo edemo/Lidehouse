@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { importCollectionFromFile } from '/imports/utils/import.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { StatementEntries } from './statement-entries.js';
 import './methods.js';
@@ -17,10 +18,17 @@ StatementEntries.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.insert',
         collection: StatementEntries,
+        omitFields: ['original'],
         type: 'method',
         meteormethod: 'statementEntries.insert',
       });
     },
+  },
+  import: {
+    name: 'import',
+    icon: () => 'fa fa-upload',
+    visible: (options, doc) => currentUserHasPermission('statements.upsert', doc),
+    run: () => importCollectionFromFile(StatementEntries, { keepOriginals: true }),
   },
   view: {
     name: 'view',
@@ -43,6 +51,7 @@ StatementEntries.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.update',
         collection: StatementEntries,
+        omitFields: ['original'],
         doc,
         type: 'method-update',
         meteormethod: 'statements.update',

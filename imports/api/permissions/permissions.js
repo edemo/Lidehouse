@@ -134,6 +134,8 @@ export const Permissions = [
   { name: 'statements.update',      roles: ['manager', 'accountant'] },
   { name: 'statements.reconcile',   roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'statements.remove',      roles: ['manager', 'accountant'] },
+  { name: 'statements.upsert',      roles: ['manager', 'accountant', 'treasurer'] },
+  { name: 'statementEntries.upsert',roles: ['manager', 'accountant', 'treasurer'] },
   { name: 'shareddocs.upload',      roles: ['manager'] },
   { name: 'shareddocs.download',    roles: exceptGuest },
   { name: 'attachments.upload',     roles: exceptGuest },
