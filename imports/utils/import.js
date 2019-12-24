@@ -10,6 +10,7 @@ import { XLSX } from 'meteor/huaming:js-xlsx';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
 import '/imports/ui_3/views/modals/confirmation.js';
+import '/imports/ui_3/views/blocks/readmore.js';
 import { __ } from '/imports/localization/i18n.js';
 import { debugAssert } from '/imports/utils/assert.js';
 import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
@@ -78,6 +79,8 @@ export function importCollectionFromFile(collection, options) {
             __('modifies') + ' ' + neededOps.update.length + __(' documents') + ',<br>' +
             __('deletes') + ' ' + neededOps.remove.length + __(' documents') + ',<br>' +
             __('leaves unchanged') + ' ' + neededOps.noChange.length + __(' documents'),
+          body: 'Readmore',
+          bodyContext: JSON.stringify(neededOps, null, 2),
         });
       });
     };
