@@ -24,7 +24,7 @@ StatementEntries.schema = new SimpleSchema({
   partner: { type: String, max: 50, optional: true },
   note: { type: String, max: 200, optional: true },
   statementId: { type: String, /* regEx: SimpleSchema.RegEx.Id, */ optional: true, autoform: { omit: true } },
-  original: { type: Object, optional: true, blackbox: true },
+  original: { type: Object, optional: true, blackbox: true, autoform: { type: 'textarea', rows: 12 } },
   reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 

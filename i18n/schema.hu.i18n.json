@@ -658,6 +658,9 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
+    "original": {
+      "label": "Eredeti adatok"
+    },
     // Following lines are for the different txDefs
     "fromAccount": {
       "label": "Átvezetés innen"

@@ -654,6 +654,9 @@
       "label": "Note",
       "placeholder": "(eg. reason or partner identifier)"
     },
+    "original": {
+      "label": "Original data"
+    },
     // Following lines are for the different txDefs
     "fromAccount": {
       "label": "Moving from"

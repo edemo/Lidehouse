@@ -98,6 +98,21 @@ AutoForm.addHooks('af.statementEntry.insert', {
   },
 });
 
+AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.insert', 'af.statementEntry.update'], {
+  formToDoc(doc) {
+    doc.original = JSON.parse(doc.original);
+    return doc;
+  },
+  docToForm(doc) {
+    doc.original = JSON.stringify(doc.original, null, 2);
+    return doc;
+  },
+  formToModifier(modifier) {
+    modifier.$set.original = JSON.parse(modifier.$set.original);
+    return modifier;
+  },
+});
+
 AutoForm.addHooks('af.statementEntry.reconcile', {
   formToDoc(doc) {
     doc._id = Session.get('activeStatementEntryId');
