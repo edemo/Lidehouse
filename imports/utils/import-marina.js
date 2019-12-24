@@ -118,6 +118,7 @@ export const MarinaTransformers = {
     jsons.forEach((json) => {
       const tjson = {
         ref: json['Tranzakció azonosító '],
+        refType: json['Típus'],
         account: Import.findAccountByNumber(json['Könyvelési számla']).account,
         valueDate: json['Könyvelés dátuma'],
         amount: json['Összeg'],

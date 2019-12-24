@@ -646,16 +646,8 @@
         }
       }
     },
-    "ref": {
-      "label": "Reference id",
-      "placeholder": "(eg. transaction no. from bank statement)"
-    },
     "note": {
-      "label": "Note",
-      "placeholder": "(eg. reason or partner identifier)"
-    },
-    "original": {
-      "label": "Original data"
+      "label": "Note"
     },
     // Following lines are for the different txDefs
     "fromAccount": {
@@ -672,6 +664,32 @@
     },
     "localizer": {
       "label": "Accounting location (when applicable)"
+    }
+  },
+  "schemaStatementEntries": {
+    "valueDate": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Amount",
+      "placeholder": "(eg. 14560)"
+    },
+    "account": {
+      "label": "Account"
+    },
+    "ref": {
+      "label": "Reference id",
+      "placeholder": "(eg. transaction no. from bank statement)"
+    },
+    "refType": {
+      "label": "Reference type"
+    },
+    "note": {
+      "label": "Note"
+    },
+    "original": {
+      "label": "Original data"
     }
   },
   "schemaTxDefs": {

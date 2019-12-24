@@ -9,7 +9,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { datatables_i18n } from 'meteor/ephemer:reactive-datatables';
 import { __ } from '/imports/localization/i18n.js';
 
-import { DatatablesExportButtons } from '/imports/ui_3/views/blocks/datatables.js';
+import { DatatablesExportButtons, DatatablesSelectButtons } from '/imports/ui_3/views/blocks/datatables.js';
 import { onSuccess, handleError, displayMessage, displayError } from '/imports/ui_3/lib/errors.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
@@ -89,6 +89,7 @@ Template.Accounting_reconciliation.viewmodel({
       tableClasses: 'display',
       language: datatables_i18n[TAPi18n.getLanguage()],
       ...DatatablesExportButtons,
+      ...DatatablesSelectButtons(StatementEntries),
     });
   },
 });

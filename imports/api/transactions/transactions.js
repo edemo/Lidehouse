@@ -76,7 +76,7 @@ Transactions.legsSchema = {
 };
 
 Transactions.noteSchema = {
-  ref: { type: String, optional: true },
+//  ref: { type: String, optional: true },
   note: { type: String, optional: true, autoform: { rows: 3 } },
 };
 

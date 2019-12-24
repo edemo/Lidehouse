@@ -2,7 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+
+import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { StatementEntries } from './statement-entries.js';
@@ -79,6 +80,20 @@ StatementEntries.actions = {
       });
     },
   },
+  delete: {
+    name: 'delete',
+    icon: () => 'fa fa-trash',
+    visible: (options, doc) => currentUserHasPermission('transactions.remove', doc),
+    run(options, doc) {
+      Modal.confirmAndCall(StatementEntries.methods.remove, { _id: doc._id }, {
+        action: 'delete statementEntry',
+      });
+    },
+  },
+};
+
+StatementEntries.batchActions = {
+  delete: new BatchAction(StatementEntries.actions.delete, StatementEntries.methods.batch.remove),
 };
 
 //--------------------------------------------------------

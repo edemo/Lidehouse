@@ -19,6 +19,7 @@ StatementEntries.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   account: { type: String, autoform: chooseSubAccount('COA', '38') },
   ref: { type: String, max: 50 }, // external (uniq) ref id provided by the bank
+  refType: { type: String, max: 50, optional: true }, // type info to the ref
   valueDate: { type: Date },
   amount: { type: Number },
   partner: { type: String, max: 50, optional: true },
@@ -28,7 +29,7 @@ StatementEntries.schema = new SimpleSchema({
   reconciledId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
 });
 
-StatementEntries.idSet = ['communityId', 'ref'];
+StatementEntries.idSet = ['communityId', 'ref', 'refType'];
 
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ extId: 1 });
@@ -51,7 +52,7 @@ Meteor.startup(function indexStatements() {
 StatementEntries.attachSchema(StatementEntries.schema);
 
 Meteor.startup(function attach() {
-  StatementEntries.simpleSchema().i18n('schemaTransactions');
+  StatementEntries.simpleSchema().i18n('schemaStatementEntries');
 });
 // --- Factory ---
 

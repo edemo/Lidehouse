@@ -650,16 +650,9 @@
         }
       }
     },
-    "ref": {
-      "label": "Referencia azonosító",
-      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
-    },
     "note": {
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
-    },
-    "original": {
-      "label": "Eredeti adatok"
     },
     // Following lines are for the different txDefs
     "fromAccount": {
@@ -676,6 +669,32 @@
     },
     "localizer": {
       "label": "Könyvelési hely (amennyiben megadható)"
+    }
+  },
+  "schemaStatementEntries": {
+    "valueDate": {
+      "label": "Könyvelési nap",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Összeg",
+      "placeholder": "(pl. 14560)"
+    },
+    "account": {
+      "label": "Számla"
+    },
+    "ref": {
+      "label": "Referencia azonosító",
+      "placeholder": "(pl. tranzakciós szám bankkivonatról)"
+    },
+    "refType": {
+      "label": "Referencia típus"
+    },
+    "note": {
+      "label": "Közlemény"
+    },
+    "original": {
+      "label": "Eredeti adatok"
     }
   },
   "schemaTxDefs": {
