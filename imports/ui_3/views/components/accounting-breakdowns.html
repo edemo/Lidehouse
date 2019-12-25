@@ -39,18 +39,13 @@
                 {{/if}}
                 <br>
                 <ul class="nav nav-tabs m-b-md">
-                    <li class="active"><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of accounts'}}</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-moneys" class="text-capitalize">{{_ 'moneyAccounts'}}</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-loc">{{_ 'Localizers'}}</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-others">{{_ 'Other breakdowns'}}</a></li>
+                    <li class="active"><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of accounts'}}</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-defs" class="text-capitalize">{{_ 'txDefs'}}</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div id="tab-coa" class="tab-pane breakdowns active">
-                        <div class="table-responsive">
-                            {{> ReactiveDatatable tableData=coaBreakdownsTableDataFn options=breakdownsOptionsFn }}
-                        </div>
-                    </div>
                     <div id="tab-moneys" class="tab-pane moneyAccounts">
                         <div class="table-responsive">
                             <table class="table table-striped">
@@ -107,6 +102,11 @@
                         </div>
                         </div>
                         {{/if}}
+                    </div>
+                    <div id="tab-coa" class="tab-pane active breakdowns">
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=coaBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                        </div>
                     </div>
                     <div id="tab-defs" class="tab-pane txDefs">
                         <div class="table-responsive">

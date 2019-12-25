@@ -124,8 +124,8 @@ Template.Top_navbar.events({
     Session.set('activeCommunityId', newCommunityId);
     displayMessage('success', `${newCommunity.name} ${__('selected')}`);
   },
-  'click .js-create-community'() {
-    Communities.actions.create.run();
+  'click .js-new.community'() {
+    Communities.actions.new.run();
   },
   'click .js-logout'() {
     Meteor.logout(function onLogout(err) {
