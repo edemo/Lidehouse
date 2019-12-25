@@ -1,5 +1,7 @@
 import '/imports/api/communities/methods.js';
 import '/imports/api/communities/publications.js';
+import '/imports/api/money-accounts/methods.js';
+import '/imports/api/money-accounts/publications.js';
 import '/imports/api/parcels/methods.js';
 import '/imports/api/parcels/publications.js';
 //import '/imports/api/parcels/tables.js';

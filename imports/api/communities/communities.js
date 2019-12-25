@@ -13,12 +13,12 @@ import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { MoneyAccounts } from '/imports/api/money-accounts/money-accounts.js';
 
 export const Communities = new Mongo.Collection('communities');
 
 const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
-Communities.bankProtocols = ['auto', 'manual'];
 
 Communities.settingsSchema = new SimpleSchema({
   joinable: { type: Boolean, defaultValue: true },
@@ -28,38 +28,18 @@ Communities.settingsSchema = new SimpleSchema({
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: autoformOptions(Communities.accountingMethods, 'schemaCommunities.settings.accountingMethod.'), defaultValue: 'accrual' },
 });
 
-Communities.cashAccountSchema = new SimpleSchema({
+Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
-  primary: { type: Boolean, optional: true },
-});
-
-Communities.defaultCashAccounts = [{
-  name: 'Cash register',
-  account: '381',
-  primary: true,
-}];
-
-Communities.bankAccountSchema = new SimpleSchema({
-  name: { type: String, max: 100 },
-  accountNumber: { type: String, max: 100 },
-  protocol: { type: String, optional: true, allowedValues: Communities.bankProtocols, autoform: autoformOptions(Communities.bankProtocols, 'schemaCommunities.settings.bankAccounts.protocol.') },
-  primary: { type: Boolean, optional: true },
-});
-
-Communities.schema = new SimpleSchema([
-  { name: { type: String, max: 100 } },
-  { description: { type: String, max: 1200, optional: true } },
-  { avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload } },
-  comtype.profileSchema,
-  { management: { type: String, optional: true, autoform: { type: 'textarea' } } },
-  { taxNumber: { type: String, max: 50, optional: true } },
-  { totalunits: { type: Number } },
-  { settings: { type: Communities.settingsSchema } },
-  { cashAccounts: { type: [Communities.cashAccountSchema], autoform: { value: Communities.defaultCashAccounts } } },
-  { bankAccounts: { type: [Communities.bankAccountSchema] } },
+  description: { type: String, max: 1200, optional: true },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
+}, comtype.profileSchema, {
+  management: { type: String, optional: true, autoform: { type: 'textarea' } },
+  taxNumber: { type: String, max: 50, optional: true },
+  totalunits: { type: Number },
+  settings: { type: Communities.settingsSchema },
   // redundant fields:
-  { parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } } },
-]);
+  parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
+}]);
 
 Meteor.startup(function indexCommunities() {
   if (Meteor.isServer) {
@@ -81,18 +61,20 @@ Communities.helpers({
   displayAddress() {
     return displayAddress(this);
   },
-  primaryBankAccount() {
-    let result;
-    this.bankAccounts.forEach(bank => {
-      if (bank.primary) { result = bank; return false; }
-    });
-    return result || this.bankAccounts[0];
-  },
   asPartner() {
     const partner = _.clone(this);
     partner.contact = { address: this.displayAddress() };
     partner.bankAccountNumber = this.primaryBankAccount().number; 
     return partner;
+  },
+  moneyAccounts() {
+    return MoneyAccounts.find({ communityId: this.communityId });
+  },
+  primaryBankAccount() {
+    return MoneyAccounts.findOne({ communityId: this.communityId, category: 'bank', primary: true });
+  },
+  primaryCashAccount() {
+    return MoneyAccounts.findOne({ communityId: this.communityId, category: 'cash', primary: true });
   },
   admin() {
     const adminMembership = Memberships.findOneActive({ communityId: this._id, role: 'admin' });

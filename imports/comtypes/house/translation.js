@@ -98,27 +98,6 @@ export const HouseTranslation = {
           "accrual": "Accrual",
           "cash": 'Cash'
         }
-      },
-      "bankAccounts": {
-        "label": "Bank accounts",
-        "$": {
-          "name": {
-            "label": "Name",
-            "placeholder": "(eg. Savings account)"
-          },
-          "number": {
-            "label": "Bank account number",
-            "placeholder": "(eg 12345678-00000000-00000525)"
-          },
-          "protocol": {
-            "label": "Synchronization protocol (if available)",
-            "auto": "Automatic",
-            "manual": "Manual"
-          },
-          "primary": {
-            "label": "Primary"
-          }
-        }
       }
     },
     "schemaParcels": {
@@ -291,27 +270,6 @@ export const HouseTranslation = {
           "help": "A könyvelési mód - egyszeres (pénzforgalmi) vagy kettős - határozza meg mikor jönnek létre könyvelési tranzakciók a számlákból (befogadáskor vagy kifizetéskor). A könyvelési módot év közben semmiképpen nem szabad megváltoztatni.",
           "accrual": "Kettős könyvvitel",
           "cash": "Egyszeres (pénzforgalmi) könyvvitel"
-        },
-      },
-      "bankAccounts": {
-        "label": "Bank számlák",
-        "$": {
-          "name": {
-            "label": "Elnevezése",
-            "placeholder": "(pl. Megtakarítási számla)"
-          },
-          "number": {
-            "label": "Bankszámlaszám",
-            "placeholder": "(pl. 12345678-00000000-00000525)"
-          },
-          "protocol": {
-            "label": "Szinkronizációs protokol a bankkal (ha van)",
-            "auto": "Automatikus",
-            "manual": "Manuális"
-          },
-          "primary": {
-            "label": "Elsődleges"
-          }
         }
       }
     },
