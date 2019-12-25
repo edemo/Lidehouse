@@ -678,6 +678,9 @@
     "account": {
       "label": "Account"
     },
+    "partner": {
+      "label": "Partner"
+    },
     "ref": {
       "label": "Reference id",
       "placeholder": "(eg. transaction no. from bank statement)"
