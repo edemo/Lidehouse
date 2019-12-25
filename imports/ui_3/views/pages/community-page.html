@@ -225,7 +225,7 @@
                 {{#if community.management}}
                 <div class="ibox communities data-id={{communityId}}">
                     <div class="ibox-content">
-                        {{#if currentUserHasPermission 'communities.update'}}
+                        {{#if currentUserHasPermission 'communities.update' community}}
                         <!--span class="text-muted small pull-right">{{_ 'Modifiable at Building Data edit'}}</span-->
                         <button class="btn-white btn btn-xs js-edit pull-right"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                         {{/if}}
@@ -244,7 +244,7 @@
                 <div class="ibox float-e-margins communities" data-id={{communityId}}>
                     <div class="ibox-title">
                         <h5 class="text-capitalize">{{_ 'community'}} {{_ 'data'}}</h5>
-                        {{#if currentUserHasPermission 'communities.update'}}
+                        {{#if currentUserHasPermission 'communities.update' community}}
                           <button class="btn-white btn btn-xs js-edit pull-right"><i class="fa fa-pencil"></i> {{_ 'edit'}}</button>
                         {{/if}}
                     </div>
