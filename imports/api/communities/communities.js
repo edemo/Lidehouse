@@ -130,9 +130,4 @@ Factory.define('community', Communities, {
     joinable: true,
     accountingMethod: 'cash',
   },
-  bankAccounts: () => [{
-    name: 'bankszla',
-    accountNumber: faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
-    primary: true,
-  }],
 });

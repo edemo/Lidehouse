@@ -73,12 +73,14 @@ Factory.define('moneyAccount', MoneyAccounts, {
 
 Factory.define('cashAccount', MoneyAccounts, {
   name: () => 'penzszla' + faker.random.word(),
+  category: 'cash',
   digit: '1',
   primary: true,
 });
 
 Factory.define('bankAccount', MoneyAccounts, {
   name: () => 'bankszla' + faker.random.word(),
+  category: 'bank',
   digit: '2',
   primary: true,
   ban: faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),

@@ -70,14 +70,6 @@ export function insertDemoHouse(lang, demoOrTest) {
       accountingMethod: 'accrual',
       topicAgeDays: 365,
     },
-    bankAccounts: [{
-      name: __('demo.bank.primaryAccount.name'),
-      accountNumber: __('demo.bank.primaryAccount.number'),
-      primary: true,
-    }, {
-      name: __('demo.bank.savingsAccount.name'),
-      accountNumber: __('demo.bank.savingsAccount.number'),
-    }],
   });
 
   const demoBuilder = new CommunityBuilder(demoCommunityId, demoOrTest, lang);
@@ -368,6 +360,25 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Breakdowns =====
   // Create breakdowns (incl Localizer)
   demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
+
+  demoBuilder.create('cashAccount', {
+    digit: '1',
+    name: __('Cash register'),
+    primary: true,
+  });
+  demoBuilder.create('bankAccount', {
+    digit: '2',
+    name: __('demo.bank.primaryAccount.name'),
+    ban: __('demo.bank.primaryAccount.number'),
+    sync: 'manual',
+    primary: true,
+  });
+  demoBuilder.create('bankAccount', {
+    digit: '3',
+    name: __('demo.bank.savingsAccount.name'),
+    ban: __('demo.bank.savingsAccount.number'),
+    sync: 'manual',
+  });
 
   // ===== Forum =====
 
