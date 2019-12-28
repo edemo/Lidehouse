@@ -68,13 +68,17 @@ Communities.helpers({
     return partner;
   },
   moneyAccounts() {
-    return MoneyAccounts.find({ communityId: this.communityId });
+    return MoneyAccounts.find({ communityId: this._id });
   },
   primaryBankAccount() {
-    return MoneyAccounts.findOne({ communityId: this.communityId, category: 'bank', primary: true });
+    const bankAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'bank', primary: true });
+    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
+    return bankAccount;
   },
   primaryCashAccount() {
-    return MoneyAccounts.findOne({ communityId: this.communityId, category: 'cash', primary: true });
+    const cashAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'cash', primary: true });
+    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
+    return cashAccount;
   },
   admin() {
     const adminMembership = Memberships.findOneActive({ communityId: this._id, role: 'admin' });
