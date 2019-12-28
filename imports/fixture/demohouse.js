@@ -328,7 +328,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     benefactorship: { type: 'rental' },
   });
 
-  demoBuilder.create('leadership', {
+  demoBuilder.create('parcelship', {
     parcelId: demoParcels[11],
     leadRef: 'A206',
     leadParcelId: demoParcels[5],

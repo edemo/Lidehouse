@@ -16,7 +16,7 @@ import { FreeFields } from '/imports/api/behaviours/free-fields.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Leaderships } from '/imports/api/leaderships/leaderships';
+import { Parcelships } from '/imports/api/parcelships/parcelships';
 
 export const Parcels = new Mongo.Collection('parcels');
 
@@ -72,13 +72,13 @@ Meteor.startup(function indexParcels() {
 
 Parcels.helpers({
   isLed() {
-    const leadership = Leaderships.findOneActive({ parcelId: this._id });
-    if (leadership) return true;
+    const parcelship = Parcelships.findOneActive({ parcelId: this._id });
+    if (parcelship) return true;
     return false;
   },
   leadParcelId() {
-    const leadership = Leaderships.findOneActive({ parcelId: this._id });
-    const leadParcelId = leadership ? leadership.leadParcelId : this._id;
+    const parcelship = Parcelships.findOneActive({ parcelId: this._id });
+    const leadParcelId = parcelship ? parcelship.leadParcelId : this._id;
     return leadParcelId; // if can't find your lead parcel, lead yourself
   },
   leadParcel() {
@@ -138,7 +138,7 @@ Parcels.helpers({
   },
   forEachLed(callback) {
     if (this.isLed()) return;
-    const ledParcels = Leaderships.findActive({ leadParcelId: this._id }).map(l => l.ledParcel());
+    const ledParcels = Parcelships.findActive({ leadParcelId: this._id }).map(l => l.ledParcel());
     ledParcels.push(this);
     ledParcels.forEach(parcel => callback(parcel));
   },

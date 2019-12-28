@@ -230,7 +230,7 @@
       }
     }
   },
-  "schemaLeaderships" : {
+  "schemaParcelships" : {
     "leadRef": {
       "label": "Vezető albetét"
     }

@@ -8,7 +8,7 @@ import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModi
 import { Meters } from '/imports/api/meters/meters.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Leaderships } from '/imports/api/leaderships/leaderships.js';
+import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
@@ -75,7 +75,7 @@ export const remove = new ValidatedMethod({
     // Once there are no active officers, the community can be purged
     Meters.remove({ communityId });
     Memberships.remove({ communityId });
-    Leaderships.remove({ communityId });
+    Parcelships.remove({ communityId });
     Comments.remove({ communityId });
     Topics.remove({ communityId });
     Agendas.remove({ communityId });

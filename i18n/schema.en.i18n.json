@@ -229,7 +229,7 @@
       }
     }
   },
-  "schemaLeaderships": {
+  "schemaParcelships": {
     "leadRef": {
       "label": "Lead parcel"
     }

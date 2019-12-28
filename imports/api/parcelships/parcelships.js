@@ -12,7 +12,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
-export const Leaderships = new Mongo.Collection('leaderships');
+export const Parcelships = new Mongo.Collection('parcelships');
 
 const chooseLeadRef = {
   options() {
@@ -25,7 +25,7 @@ const chooseLeadRef = {
   firstOption: () => __('(Select one)'),
 };
 
-Leaderships.schema = new SimpleSchema({
+Parcelships.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   parcelId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: false },
   leadRef: { type: String, optional: false, autoform: chooseLeadRef },
@@ -40,31 +40,31 @@ Leaderships.schema = new SimpleSchema({
   approved: { type: Boolean, defaultValue: true, autoform: { omit: true } },
 });
 
-Meteor.startup(function indexLeaderships() {
-  Leaderships.ensureIndex({ parcelId: 1 });
-  Leaderships.ensureIndex({ leadParcelId: 1 });
+Meteor.startup(function indexParcelships() {
+  Parcelships.ensureIndex({ parcelId: 1 });
+  Parcelships.ensureIndex({ leadParcelId: 1 });
   if (Meteor.isServer) {
-    Leaderships._ensureIndex({ communityId: 1 });
+    Parcelships._ensureIndex({ communityId: 1 });
   }
 });
 
-Leaderships.helpers({
+Parcelships.helpers({
   ledParcel() {
     return Parcels.findOne(this.parcelId);
   },
   entityName() {
-    return 'leaderships';
+    return 'parcelships';
   },
 });
 
-Leaderships.attachSchema(Leaderships.schema);
-Leaderships.attachBehaviour(ActivePeriod);
-Leaderships.attachBehaviour(Timestamped);
+Parcelships.attachSchema(Parcelships.schema);
+Parcelships.attachBehaviour(ActivePeriod);
+Parcelships.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
-  Leaderships.simpleSchema().i18n('schemaLeaderships');
-  Leaderships.simpleSchema().i18n('schemaActivePeriod');
+  Parcelships.simpleSchema().i18n('schemaParcelships');
+  Parcelships.simpleSchema().i18n('schemaActivePeriod');
 });
 
-Factory.define('leadership', Leaderships, {
+Factory.define('parcelship', Parcelships, {
 });

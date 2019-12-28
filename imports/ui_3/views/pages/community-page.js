@@ -23,8 +23,8 @@ import '/imports/api/parcels/actions.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/actions.js';
-import { Leaderships } from '/imports/api/leaderships/leaderships.js';
-import '/imports/api/leaderships/actions.js';
+import { Parcelships } from '/imports/api/parcelships/parcelships.js';
+import '/imports/api/parcelships/actions.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import '/imports/api/meters/actions.js';
 import '/imports/api/users/users.js';
@@ -64,9 +64,9 @@ Template.Occupants_table.viewmodel({
     const selector = this.templateInstance.data.selector;
     return Memberships.find(selector, { sort: { role: -1 } });
   },
-  leaderships() {
+  parcelships() {
     const selector = this.templateInstance.data.selector;
-    return Leaderships.find(selector);
+    return Parcelships.find(selector);
   },
 });
 
@@ -82,10 +82,10 @@ Template.Occupants_box.viewmodel({
     const parcel = Parcels.findOne(parcelId);
     return parcel ? parcel.display() : __('unknown');
   },
-  leadershipTitle() {
+  parcelshipTitle() {
     const parcelId = this.templateInstance.data.parcelId;
-    const leadership = Leaderships.findOne({ parcelId });
-    return leadership ? ` - ${__('leadership')}` : '';
+    const parcelship = Parcelships.findOne({ parcelId });
+    return parcelship ? ` - ${__('parcelship')}` : '';
   },
 });
 
@@ -124,7 +124,7 @@ Template.Parcels_box.viewmodel({
   autorun() {
     const communityId = getActiveCommunityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
-    this.templateInstance.subscribe('leaderships.inCommunity', { communityId });
+    this.templateInstance.subscribe('parcelships.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
     } else {
@@ -230,7 +230,7 @@ Template.Roleships_box.events({
 
 Template.Occupants_box.events({
   ...(actionHandlers(Memberships, 'new,period')),
-  ...(actionHandlers(Leaderships, 'new,period')),
+  ...(actionHandlers(Parcelships, 'new,period')),
   ...(actionHandlers(Parcels, 'occupants')),
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');

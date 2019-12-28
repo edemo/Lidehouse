@@ -8,32 +8,32 @@ import '/imports/ui_3/views/modals/autoform-modal.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { handleError, onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { Leaderships } from './leaderships.js';
+import { Parcelships } from './parcelships.js';
 import './methods.js';
 
-Leaderships.actions = {
+Parcelships.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
-    visible: (options, doc) => currentUserHasPermission('leaderships.insert', doc),
+    visible: (options, doc) => currentUserHasPermission('parcelships.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.leadership.insert',
-        collection: Leaderships,
+        id: 'af.parcelship.insert',
+        collection: Parcelships,
         omitFields: ['parcelId', 'leadParcelId'],
         type: 'method',
-        meteormethod: 'leaderships.insert',
+        meteormethod: 'parcelships.insert',
       });
     },
   },
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('leaderships.inCommunity', doc),
+    visible: (options, doc) => currentUserHasPermission('parcelships.inCommunity', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
-        id: 'af.leadership.view',
-        collection: Leaderships,
+        id: 'af.parcelship.view',
+        collection: Parcelships,
         doc,
         type: 'readonly',
       });
@@ -42,15 +42,15 @@ Leaderships.actions = {
   edit: {
     name: 'edit',
     icon: () => 'fa fa-pencil',
-    visible: (options, doc) => currentUserHasPermission('leaderships.update', doc),
+    visible: (options, doc) => currentUserHasPermission('parcelships.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
-        id: 'af.leadership.update',
-        collection: Leaderships,
+        id: 'af.parcelship.update',
+        collection: Parcelships,
         omitFields: ['parcelId', 'leadParcelId'],
         doc,
         type: 'method-update',
-        meteormethod: 'leaderships.update',
+        meteormethod: 'parcelships.update',
         singleMethodArgument: true,
       });
     },
@@ -58,15 +58,15 @@ Leaderships.actions = {
   period: {
     name: 'period',
     icon: () => 'fa fa-history',
-    visible: (options, doc) => currentUserHasPermission('leaderships.update', doc),
+    visible: (options, doc) => currentUserHasPermission('parcelships.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
-        id: 'af.leadership.update',
-        collection: Leaderships,
+        id: 'af.parcelship.update',
+        collection: Parcelships,
         fields: ['activeTime'],
         doc,
         type: 'method-update',
-        meteormethod: 'leaderships.updateActivePeriod',
+        meteormethod: 'parcelships.updateActivePeriod',
         singleMethodArgument: true,
       });
     },
@@ -74,10 +74,10 @@ Leaderships.actions = {
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
-    visible: (options, doc) => currentUserHasPermission('leaderships.remove', doc),
+    visible: (options, doc) => currentUserHasPermission('parcelships.remove', doc),
     run(options, doc) {
-      Modal.confirmAndCall(Leaderships.methods.remove, { _id: doc._id }, {
-        action: 'delete leadership',
+      Modal.confirmAndCall(Parcelships.methods.remove, { _id: doc._id }, {
+        action: 'delete parcelship',
         message: 'You should rather archive it',
       });
     },
@@ -86,9 +86,9 @@ Leaderships.actions = {
 
 //-----------------------------------------------
 
-AutoForm.addModalHooks('af.leadership.insert');
-AutoForm.addModalHooks('af.leadership.update');
-AutoForm.addHooks('af.leadership.insert', {
+AutoForm.addModalHooks('af.parcelship.insert');
+AutoForm.addModalHooks('af.parcelship.update');
+AutoForm.addHooks('af.parcelship.insert', {
   formToDoc(doc) {
     doc.communityId = getActiveCommunityId();
     doc.parcelId = Session.get('modalContext').parcelId;
@@ -96,7 +96,7 @@ AutoForm.addHooks('af.leadership.insert', {
     return doc;
   },
 });
-AutoForm.addHooks('af.leadership.update', {
+AutoForm.addHooks('af.parcelship.update', {
   formToModifier(modifier) {
     delete modifier.$set.leadParcelId; // not working
     modifier.$set.communityId = getActiveCommunityId();

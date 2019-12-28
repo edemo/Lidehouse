@@ -4,7 +4,7 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Leaderships } from '/imports/api/leaderships/leaderships.js';
+import { Parcelships } from '/imports/api/parcelships/parcelships.js';
 import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 
@@ -109,11 +109,11 @@ Migrations.add({
 
 Migrations.add({
   version: 7,
-  name: 'Remove leadRef from parcel, and create leaderships with it',
+  name: 'Remove leadRef from parcel, and create parcelships with it',
   up() {
     function upgrade() {
       Parcels.find({ leadRef: { $exists: true } }).forEach((doc) => {
-        Leaderships.insert({ communityId: doc.communityId, parcelId: doc._id, leadRef: doc.leadRef });
+        Parcelships.insert({ communityId: doc.communityId, parcelId: doc._id, leadRef: doc.leadRef });
       });
     }
     upgrade();
