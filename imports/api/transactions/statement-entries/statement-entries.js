@@ -31,9 +31,9 @@ StatementEntries.schema = new SimpleSchema({
 
 StatementEntries.idSet = ['communityId', 'ref', 'refType'];
 
-Meteor.startup(function indexTransactions() {
-  Transactions.ensureIndex({ ref: 1 });
-  Transactions.ensureIndex({ reconciledId: 1 });
+Meteor.startup(function indexStatementEntries() {
+  StatementEntries.ensureIndex({ ref: 1 });
+  StatementEntries.ensureIndex({ reconciledId: 1 });
 //  if (Meteor.isClient && MinimongoIndexing) {
   if (Meteor.isServer) {
     StatementEntries._ensureIndex({ communityId: 1, valueDate: 1 });

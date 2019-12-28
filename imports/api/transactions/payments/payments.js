@@ -89,7 +89,7 @@ Transactions.categoryHelpers('payment', {
 Transactions.attachVariantSchema(paymentSchema, { selector: { category: 'payment' } });
 
 Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'transfer' }).i18n('schemaTransactions');
+  Transactions.simpleSchema({ category: 'payment' }).i18n('schemaTransactions');
 });
 
 // --- Factory ---
