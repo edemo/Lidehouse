@@ -30,6 +30,38 @@
       }
     }
   },
+  "schemaMoneyAccounts": {
+    "category": {
+      "label": "Típus",
+      "bank": "Bank",
+      "cash": "Pénztár"
+    },
+    "name": {
+      "label": "Elnevezése",
+      "placeholder": "(pl. Megtakarítási számla)"
+    },
+    "digit": {
+      "label": "Sorszám",
+      "placeholder": "(pl. 2)",
+      "help": "Egyedinek kell lennie. Ezzel a sorszámmal jelenik meg a főkönyvi számlák között. (Például ha a Pénz számlák a 38-as főkönyvi számlaszámon vannak, és ön 2-es sorszámot ad ennek a pénzszámlának, akkor e pénzszámla a 382-es főkönyvi számon lesz könyvelve.)"
+    },
+    "ban": {
+      "label": "Bankszámlaszám",
+      "placeholder": "(pl. 12345678-00000000-00000525)"
+    },
+    "sync": {
+      "label": "Bankkivonatok feltöltése",
+      "none": "Nincs",
+      "manual": "Manuális",
+      "auto": "Automatikus"
+    },
+    "protocol": {
+      "label": "Bank protokol (ha van kivonat feltöltés)"
+    },
+    "primary": {
+      "label": "Elsődleges"
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Regisztrált e-mail cím",
@@ -682,6 +714,9 @@
     },
     "account": {
       "label": "Számla"
+    },
+    "partner": {
+      "label": "Partner"
     },
     "ref": {
       "label": "Referencia azonosító",

@@ -30,6 +30,37 @@
       }
     }
   },
+  "schemaMoneyAccounts": {
+    "category": {
+      "label": "Account type",
+      "bank": "Bank",
+      "cash": "Cash"
+    },
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Savings account)"
+    },
+    "digit": {
+      "label": "Accounting code",
+      "placeholder": "(pl. 2)"
+    },
+    "ban": {
+      "label": "Bank account number",
+      "placeholder": "(eg 12345678-00000000-00000525)"
+    },
+    "sync": {
+      "label": "Bank statement uploading",
+      "none": "None",
+      "manual": "Manual",
+      "auto": "Automatic"
+    },
+    "protocol": {
+      "label": "Bank protocol (if uploading)"
+    },
+    "primary": {
+      "label": "Primary"
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Registered e-mail address",
@@ -677,6 +708,9 @@
     },
     "account": {
       "label": "Account"
+    },
+    "partner": {
+      "label": "Partner"
     },
     "ref": {
       "label": "Reference id",

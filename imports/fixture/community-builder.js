@@ -87,6 +87,7 @@ export class CommunityBuilder {
         case 'statements':
         case 'statementEntries':
         case 'parcelBillings':
+        case 'moneyAccounts':
         case 'breakdowns':
         case 'txDefs': return this.getUserWithRole('accountant');
         case 'transactions': return (params.category === 'bill' || params.category === 'receipt') ? this.getUserWithRole('treasurer') : this.getUserWithRole('accountant');

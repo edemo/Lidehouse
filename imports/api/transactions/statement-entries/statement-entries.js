@@ -32,7 +32,7 @@ StatementEntries.schema = new SimpleSchema({
 StatementEntries.idSet = ['communityId', 'ref', 'refType'];
 
 Meteor.startup(function indexTransactions() {
-  Transactions.ensureIndex({ extId: 1 });
+  Transactions.ensureIndex({ ref: 1 });
   Transactions.ensureIndex({ reconciledId: 1 });
 //  if (Meteor.isClient && MinimongoIndexing) {
   if (Meteor.isServer) {
@@ -58,9 +58,10 @@ Meteor.startup(function attach() {
 
 Factory.define('statementEntry', StatementEntries, {
   account: '31',
-  valueDate: new Date(),
-  partner: faker.random.word(),
-  note: faker.random.word(),
+  valueDate: () => new Date(),
+  partner: () => faker.random.word(),
+  ref: () => faker.random.uuid(),
+  note: () => faker.random.word(),
   amount: 10000,
 });
 

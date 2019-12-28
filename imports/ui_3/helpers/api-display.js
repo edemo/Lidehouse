@@ -15,6 +15,10 @@ export function label(value, color, icon) {
   return `<span class="label label-${color} label-xs">${iconBadge}${value}</span>`;
 }
 
+export function checkBoolean(bool) {
+  return bool ? '<i class="fa fa-check text-navy"></i>' : '';
+}
+
 export function checkmarkBoolean(bool) {
   const icon = bool ? 'fa-check' : 'fa-times';
   const color = bool ? 'navy' : 'danger';
@@ -93,6 +97,7 @@ export function displayChargeType(name) {
   return label(__('schemaTickets.ticket.chargeType.' + name), 'default');
 }
 
+Template.registerHelper('checkBoolean', checkBoolean);
 Template.registerHelper('checkmarkBoolean', checkmarkBoolean);
 Template.registerHelper('displayMeterService', displayMeterService);
 Template.registerHelper('displayReading', displayReading);
