@@ -6,13 +6,8 @@ import faker from 'faker';
 import { _ } from 'meteor/underscore';
 
 import { debugAssert, releaseAssert } from '/imports/utils/assert.js';
-import { comtype } from '/imports/comtypes/comtype.js';
 import { autoformOptions, fileUpload } from '/imports/utils/autoform.js';
-import { displayAddress } from '/imports/localization/localization.js';
-import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
-import { Parcels } from '/imports/api/parcels/parcels.js';
-import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export const MoneyAccounts = new Mongo.Collection('moneyAccounts');
 

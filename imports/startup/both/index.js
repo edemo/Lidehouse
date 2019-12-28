@@ -1,3 +1,5 @@
+import './comtype-language-extensions.js';
+
 // monkey patches
 import './simpleschema-patches.js';
 import './collection-patches.js';
