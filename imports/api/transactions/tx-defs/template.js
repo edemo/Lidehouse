@@ -44,6 +44,14 @@ export function defineTxDefTemplates() {
     credit: ['38'],
   });
 
+  TxDefs.define({ communityId: null,
+    name: 'Supplier bill remission', // 'Bejövő számla elengedés',
+    category: 'payment',
+    data: { relation: 'supplier' },
+    debit: ['46'],
+    credit: ['5', '8'],
+  });
+
   // Számlázás vevőknek
 
   TxDefs.define({ communityId: null,
@@ -51,7 +59,7 @@ export function defineTxDefTemplates() {
     category: 'bill',
     data: { relation: 'customer' },
     debit: ['31'],
-    credit: ['91'],
+    credit: ['9'],
   });
 
   TxDefs.define({ communityId: null,
@@ -59,6 +67,14 @@ export function defineTxDefTemplates() {
     category: 'payment',
     data: { relation: 'customer' },
     debit: ['38'],
+    credit: ['31'],
+  });
+
+  TxDefs.define({ communityId: null,
+    name: 'Customer bill remission', // 'Kimenő számla elengedés',
+    category: 'payment',
+    data: { relation: 'customer' },
+    debit: ['9'],
     credit: ['31'],
   });
 
@@ -79,6 +95,27 @@ export function defineTxDefTemplates() {
     debit: ['38'],
     credit: ['33'],
   });
+
+  TxDefs.define({ communityId: null,
+    name: 'Parcel bill remission', // 'Albetét előírás elengedés',
+    category: 'payment',
+    data: { relation: 'parcel' },
+    debit: ['95'],
+    credit: ['33'],
+  });
+
+  // Barter
+
+  TxDefs.define({ communityId: null,
+    name: 'Barter', // 'Albetét előírás elengedés',
+    category: 'barter',
+//    data: { relation: 'parcel' },
+    debit: ['46'],
+    credit: ['31', '33'],
+  });
+
+
+
 /*
   // Nem azonosított bevételek kezelése 
   // Befolyás
@@ -142,6 +179,9 @@ export function defineTxDefTemplates() {
     debit: [''],
     credit: ['0'],
   });
+
+// Extra specials
+
 
   // Joker
   TxDefs.define({ communityId: null,

@@ -687,6 +687,12 @@
       "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
     // Following lines are for the different txDefs
+    "supplierBillId": {
+      "label": "Bejövő számla, amit beszámítunk"
+    },
+    "customerBillId": {
+      "label": "Kimenő számla, amibe beszámítunk"
+    },
     "fromAccount": {
       "label": "Átvezetés innen"
     },

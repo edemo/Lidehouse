@@ -7,7 +7,7 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
@@ -38,24 +38,24 @@ Transactions.categoryHelpers('payment', {
     }
     if (accountingMethod === 'accrual') {
       if (bill.relation === 'supplier') {
-        this.debit = [{ account: '46' }];
+        this.debit = [{ account: Breakdowns.name2code('Liabilities', 'Suppliers', this.communityId) }];
         this.credit = [{ account: this.payAccount }];
       } else if (bill.relation === 'customer') {
         this.debit = [{ account: this.payAccount }];
-        this.credit = [{ account: '31' }];
+        this.credit = [{ account: Breakdowns.name2code('Assets', 'Customers', this.communityId) }];
       } else if (bill.relation === 'parcel') {
         this.debit = [{ account: this.payAccount }];
-        this.credit = [{ account: '33'+'' }];
+        this.credit = [{ account: Breakdowns.name2code('Assets', 'Owner obligations', this.communityId) }];
       } else debugAssert(false, 'No such bill relation');
     } else if (accountingMethod === 'cash') {
       if (bill.relation === 'supplier') {
         this.debit = []; copyLinesInto(this.debit);
-        this.credit = [{ account: '46' }];
+        this.credit = [{ account: Breakdowns.name2code('Liabilities', 'Suppliers', this.communityId) }];
       } else if (bill.relation === 'customer') {
-        this.debit = [{ account: '31' }];
+        this.debit = [{ account: Breakdowns.name2code('Assets', 'Customers', this.communityId) }];
         this.credit = []; copyLinesInto(this.credit);
       } else if (bill.relation === 'parcel') {
-        this.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+        this.debit = [{ account: Breakdowns.name2code('Assets', 'Owner obligations', this.communityId) }];  //  + parcelBilling.payinType;
         this.credit = []; copyLinesInto(this.credit);
       } else debugAssert(false, 'No such bill relation');
     }

@@ -67,7 +67,7 @@ Factory.define('statementEntry', StatementEntries, {
 
 // --- Reconciliation ---
 
-const chooseBill = {
+export const chooseBill = {
   options() {
     const communityId = Session.get('activeCommunityId');
     const bills = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
@@ -79,7 +79,7 @@ const chooseBill = {
   firstOption: () => __('(Select one)'),
 };
 
-const choosePayment = {
+export const choosePayment = {
   options() {
     const communityId = Session.get('activeCommunityId');
     const payments = Transactions.find({ communityId, category: 'payment', reconciledId: { $exists: false } });

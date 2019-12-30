@@ -130,10 +130,11 @@
               <tbody>
               {{#each payment in docVm.getPayments}}
               <tr>
-                  <td><i>
-                    {{#if not @index}}{{_ 'schemaBills.payments.label'}} {{/if}}
-                    {{displayDate payment.valueDate}} :
-                  </i></td>
+                  <td>
+                    {{#if not @index}}{{_ 'schemaBills.payments.label'}}: {{/if}}
+                    {{displayDate payment.valueDate}}
+                    {{>Action_buttons_group collection='transactions' doc=payment actions='view' size='sm'}}
+                  </td>
                   <td>{{payment.amount}}</td>
               </tr>
               {{/each}}

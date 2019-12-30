@@ -95,8 +95,8 @@ Template.Accounting_transactions.viewmodel({
     return {
       communityId: this.communityId(),
       defId: this.txDefSelected(),
-      creditAccount: '\\^' + this.creditAccountSelected() + '\\',
       debitAccount: '\\^' + this.debitAccountSelected() + '\\',
+      creditAccount: '\\^' + this.creditAccountSelected() + '\\',
       begin: new Date(this.beginDate()),
       end: new Date(this.endDate()),
     };

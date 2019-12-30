@@ -12,6 +12,7 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
@@ -105,12 +106,12 @@ Transactions.categoryHelpers('bill', {
     if (accountingMethod === 'accrual') {
       if (this.relation === 'supplier') {
         this.debit = []; copyLinesInto(this.debit);
-        this.credit = [{ account: '46' }];
+        this.credit = [{ account: Breakdowns.name2code('Liabilities', 'Suppliers', this.communityId) }];
       } else if (this.relation === 'customer') {
-        this.debit = [{ account: '31' }];
+        this.debit = [{ account: Breakdowns.name2code('Assets', 'Customers', this.communityId) }];
         this.credit = []; copyLinesInto(this.credit);
       } else if (this.relation === 'parcel') {
-        this.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+        this.debit = [{ account: Breakdowns.name2code('Assets', 'Owner obligations', this.communityId) }];  // + parcelBilling.payinType;
         this.credit = []; copyLinesInto(this.credit);
       } else debugAssert(false, 'No such bill relation');
     } // else we have no accounting to do

@@ -79,7 +79,8 @@ export const apply = new ValidatedMethod({
           debugAssert(line.uom && _.isDefined(line.quantity), 'Billing needs consumption or projection.');
           if (line.quantity === 0) return; // Should not create bill for zero amount
           line.amount = line.quantity * line.unitPrice;
-          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+//          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+          line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.payinType;
           line.localizer = Localizer.parcelRef2code(parcel.ref);
           line.title = `${parcelBilling.title}`;
 

@@ -78,6 +78,12 @@ export const insert = new ValidatedMethod({
         doc.partnerId = bill.partnerId;
         doc.contractId = bill.contractId;
       }
+    } else if (doc.category === 'barter') {
+      const supplierBill = doc.supplierBill();
+      const customerBill = doc.customerBill();
+      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bartered bill has to be conteered first');
+      if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
+      if (customerBill.relation !== 'customer' || customerBill.relation !== 'parcel') throw new Meteor.Error('Customer bill is not from a customer/owner');
     }
 
     const _id = Transactions.insert(doc);

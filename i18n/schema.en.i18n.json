@@ -681,6 +681,12 @@
       "label": "Note"
     },
     // Following lines are for the different txDefs
+    "supplierBillId": {
+      "label": "Supplier bill being bartered"
+    },
+    "customerBillId": {
+      "label": "Customer bill being bartered"
+    },
     "fromAccount": {
       "label": "Moving from"
     },

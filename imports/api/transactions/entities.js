@@ -13,6 +13,10 @@ Transactions.entities = {
     name: 'payment',
     fields: ['amount', 'valueDate', 'payAccount'],
   },
+  barter: {
+    name: 'barter',
+    omitFields: ['debit', 'credit'],
+  },
   receipt: {
     name: 'receipt',
     viewForm: 'Bill_show',

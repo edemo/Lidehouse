@@ -416,15 +416,15 @@ Transactions.makeFilterSelector = function makeFilterSelector(params) {
     selector.$or = [{ 'credit.localizer': localizer }, { 'debit.localizer': localizer }];
     delete selector.localizer;
   }
-  if (params.creditAccount) {
-    const creditAccount = withSubs(params.creditAccount);
-    selector['credit.account'] = creditAccount;
-    delete selector.creditAccount;
-  }
   if (params.debitAccount) {
     const debitAccount = withSubs(params.debitAccount);
     selector['debit.account'] = debitAccount;
     delete selector.debitAccount;
+  }
+  if (params.creditAccount) {
+    const creditAccount = withSubs(params.creditAccount);
+    selector['credit.account'] = creditAccount;
+    delete selector.creditAccount;
   }
   return selector;
 };
