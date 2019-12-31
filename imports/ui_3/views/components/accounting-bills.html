@@ -1,17 +1,5 @@
 
 <template name="Accounting_bills">
-    {{#if showParcelBillings }}
-    <div class="ibox ibox-dark">
-        <div class="ibox-title">
-            <h5>{{_ 'Parcel billings'}}</h5>
-            {{>iboxTools}}
-        </div>
-        <div class="ibox-content">
-            {{>Parcel_billings}}
-        </div>
-    </div>
-    {{/if}}
-
     {{#if currentUserHasPermission 'transactions.inCommunity'}}
         <div>
             {{#if currentUserHasPermission 'transactions.update'}}

@@ -32,7 +32,6 @@ Template.Accounting_bills.viewmodel({
   activePartnerRelation: 'supplier',
   unreconciledOnly: true,
   unpostedOnly: false,
-//  showParcelBillings: false,
   collectionName: 'Bills',
   onCreated(instance) {
     instance.autorun(() => {
@@ -162,13 +161,11 @@ Template.Accounting_bills.events({
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');
     instance.viewmodel.activePartnerRelation(partnerRelation);
-//    instance.viewmodel.showParcelBillings(false);
   },
   'click .js-apply'(event, instance) {
     ParcelBillings.actions.apply.run();
   },
   'click .js-edit-defs'(event, instance) {
-//    instance.viewmodel.showParcelBillings(true);
     const modalContext = {
       title: 'Parcel billings',
       body: 'Parcel_billings',
