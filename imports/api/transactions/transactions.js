@@ -27,7 +27,7 @@ import { StatementEntries } from '/imports/api/transactions/statements/statement
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'receipt', 'transfer', 'opening', 'freeTx'];
+Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
@@ -137,8 +137,27 @@ Transactions.helpers({
     debugAssert(side === 'debit' || side === 'credit');
     return this[side] || [];
   },
+  relationAccount() {
+    switch (this.relation) {
+      case ('supplier'): return Breakdowns.name2code('Liabilities', 'Suppliers', this.communityId);
+      case ('customer'): return Breakdowns.name2code('Assets', 'Customers', this.communityId);
+      case ('parcel'): return Breakdowns.name2code('Assets', 'Owner obligations', this.communityId);
+      default: debugAssert(false, 'No such relation ' + this.relation); return undefined;
+    }
+  },
+  conteerSide() {
+    if (this.relation === 'supplier') return 'debit';
+    else if (this.relation === 'customer' || this.relation === 'parcel') return 'credit';
+    debugAssert(false, 'No such relation ' + this.relation); return undefined;
+  },
+  relationSide() {
+    if (this.relation === 'supplier') return 'credit';
+    else if (this.relation === 'customer' || this.relation === 'parcel') return 'debit';
+    debugAssert(false, 'No such relation ' + this.relation); return undefined;
+  },
   isPosted() {
-    return !!(this.debit && this.credit && this.complete); // calculateComplete()
+//    return !!(this.debit && this.credit && this.complete); // calculateComplete()
+    return !!(this.postedAt);
   },
   isReconciled() {
     return (!!this.reconciledId);

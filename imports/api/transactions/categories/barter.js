@@ -39,8 +39,8 @@ Transactions.categoryHelpers('barter', {
       });
     }
     if (accountingMethod === 'accrual') {
-      this.debit = [{ account: supplierBill.credit[0].account }];
-      this.credit = [{ account: customerBill.debit[0].account }];
+      this.debit = [{ account: supplierBill.relationAccount() }];
+      this.credit = [{ account: customerBill.relationAccount() }];
     } else if (accountingMethod === 'cash') {
       copyLinesInto(this.debit, supplierBill);
       copyLinesInto(this.credit, customerBill);
@@ -63,11 +63,11 @@ Transactions.categoryHelpers('barter', {
   updateOutstandings(sign) {
     if (Meteor.isClient) return;
     debugAssert(this.supplierBillId && this.customerBillId, 'Cannot process a barter without connecting it to a bills first');
-    const supplierBill = Transactions.findOne(this.supplierBillId);
-    const customerBill = Transactions.findOne(this.customerBillId);
-    debugAssert(this.supplierBill.partnerId && this.customerBill.partnerId, 'Cannot process a barter without partners');
-    Partners.relCollection(supplierBill.relation).update(this.supplierBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
-    Partners.relCollection(customerBill.relation).update(this.customerBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    const supplierBill = this.supplierBill();
+    const customerBill = this.customerBill();
+    debugAssert(supplierBill.partnerId && customerBill.partnerId, 'Cannot process a barter without partners');
+    Partners.relCollection(supplierBill.relation).update(supplierBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    Partners.relCollection(customerBill.relation).update(customerBill.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
     if (customerBill.relation === 'parcel') {
       customerBill.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array

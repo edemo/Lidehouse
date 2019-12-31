@@ -104,16 +104,8 @@ Transactions.categoryHelpers('bill', {
       });
     }
     if (accountingMethod === 'accrual') {
-      if (this.relation === 'supplier') {
-        this.debit = []; copyLinesInto(this.debit);
-        this.credit = [{ account: Breakdowns.name2code('Liabilities', 'Suppliers', this.communityId) }];
-      } else if (this.relation === 'customer') {
-        this.debit = [{ account: Breakdowns.name2code('Assets', 'Customers', this.communityId) }];
-        this.credit = []; copyLinesInto(this.credit);
-      } else if (this.relation === 'parcel') {
-        this.debit = [{ account: Breakdowns.name2code('Assets', 'Owner obligations', this.communityId) }];  // + parcelBilling.payinType;
-        this.credit = []; copyLinesInto(this.credit);
-      } else debugAssert(false, 'No such bill relation');
+      this[this.conteerSide()] = []; copyLinesInto(this[this.conteerSide()]);
+      this[this.relationSide()] = [{ account: this.relationAccount() }];
     } // else we have no accounting to do
     return { debit: this.debit, credit: this.credit };
   },

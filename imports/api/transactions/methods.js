@@ -68,6 +68,7 @@ export const insert = new ValidatedMethod({
   name: 'transactions.insert',
   validate: doc => Transactions.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
+    doc = Transactions._transform(doc);
     checkPermissions(this.userId, 'transactions.insert', doc);
     if (doc.category === 'payment') {
       if (doc.billId) {
@@ -83,11 +84,10 @@ export const insert = new ValidatedMethod({
       const customerBill = doc.customerBill();
       if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bartered bill has to be conteered first');
       if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
-      if (customerBill.relation !== 'customer' || customerBill.relation !== 'parcel') throw new Meteor.Error('Customer bill is not from a customer/owner');
+      if (customerBill.relation !== 'customer' && customerBill.relation !== 'parcel') throw new Meteor.Error('Customer bill is not from a customer/owner');
     }
 
     const _id = Transactions.insert(doc);
-    doc = Transactions._transform(doc);
     if (doc.txDef().isAutoPosting()) post._execute({ userId: this.userId }, { _id });
 //    runPositingRules(this, doc);
     return _id;

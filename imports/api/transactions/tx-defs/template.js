@@ -13,7 +13,7 @@ export function defineTxDefTemplates() {
     name: 'Supplier bill', // 'Bejövő számla',
     category: 'bill',
     data: { relation: 'supplier' },
-    debit: ['5', '8'],
+    debit: ['8', '5'],
     credit: ['46'],
   });
 /*
@@ -49,7 +49,7 @@ export function defineTxDefTemplates() {
     category: 'payment',
     data: { relation: 'supplier' },
     debit: ['46'],
-    credit: ['5', '8'],
+    credit: ['8', '5'],
   });
 
   // Számlázás vevőknek
@@ -103,18 +103,6 @@ export function defineTxDefTemplates() {
     debit: ['95'],
     credit: ['33'],
   });
-
-  // Barter
-
-  TxDefs.define({ communityId: null,
-    name: 'Barter', // 'Albetét előírás elengedés',
-    category: 'barter',
-//    data: { relation: 'parcel' },
-    debit: ['46'],
-    credit: ['31', '33'],
-  });
-
-
 
 /*
   // Nem azonosított bevételek kezelése 
@@ -173,15 +161,24 @@ export function defineTxDefTemplates() {
     credit: ['38'],
   });
 
+  // Barter
+
+  TxDefs.define({ communityId: null,
+    name: 'Barter', // 'Albetét előírás elengedés',
+    category: 'barter',
+//    data: { relation: 'parcel' },
+    debit: ['46'],
+    credit: ['31', '33'],
+//    debit: ['9'],
+//    credit: ['8', '5'],
+  });
+
   TxDefs.define({ communityId: null,
     name: 'Opening',
     category: 'opening',
     debit: [''],
     credit: ['0'],
   });
-
-// Extra specials
-
 
   // Joker
   TxDefs.define({ communityId: null,

@@ -14,7 +14,7 @@ import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 
 const paymentSchema = new SimpleSchema([Transactions.partnerSchema, {
-  payAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
+  payAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from -- if $exists: false, means this is a remission
   // Connect either a bill or a contra account
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   // contraAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '') },  // the contra account if no bill is connected
@@ -37,27 +37,11 @@ Transactions.categoryHelpers('payment', {
       });
     }
     if (accountingMethod === 'accrual') {
-      if (bill.relation === 'supplier') {
-        this.debit = [{ account: Breakdowns.name2code('Liabilities', 'Suppliers', this.communityId) }];
-        this.credit = [{ account: this.payAccount }];
-      } else if (bill.relation === 'customer') {
-        this.debit = [{ account: this.payAccount }];
-        this.credit = [{ account: Breakdowns.name2code('Assets', 'Customers', this.communityId) }];
-      } else if (bill.relation === 'parcel') {
-        this.debit = [{ account: this.payAccount }];
-        this.credit = [{ account: Breakdowns.name2code('Assets', 'Owner obligations', this.communityId) }];
-      } else debugAssert(false, 'No such bill relation');
+      this[bill.conteerSide()] = [{ account: bill.relationAccount() }];
+      this[bill.relationSide()] = [{ account: this.payAccount }];
     } else if (accountingMethod === 'cash') {
-      if (bill.relation === 'supplier') {
-        this.debit = []; copyLinesInto(this.debit);
-        this.credit = [{ account: Breakdowns.name2code('Liabilities', 'Suppliers', this.communityId) }];
-      } else if (bill.relation === 'customer') {
-        this.debit = [{ account: Breakdowns.name2code('Assets', 'Customers', this.communityId) }];
-        this.credit = []; copyLinesInto(this.credit);
-      } else if (bill.relation === 'parcel') {
-        this.debit = [{ account: Breakdowns.name2code('Assets', 'Owner obligations', this.communityId) }];  //  + parcelBilling.payinType;
-        this.credit = []; copyLinesInto(this.credit);
-      } else debugAssert(false, 'No such bill relation');
+      this[bill.conteerSide()] = []; copyLinesInto(this.bill.conteerSide());
+      this[bill.relationSide()] = [{ account: this.payAccount }];
     }
     return { debit: this.debit, credit: this.credit };
   },

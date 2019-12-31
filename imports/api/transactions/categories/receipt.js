@@ -31,13 +31,8 @@ Transactions.categoryHelpers('receipt', {
         txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer });
       });
     }
-    if (this.relation === 'supplier') {
-      this.debit = []; copyLinesInto(this.debit);
-      this.credit = [{ account: this.payAccount }];
-    } else if (this.relation === 'customer') {
-      this.debit = [{ account: this.payAccount }];
-      this.credit = []; copyLinesInto(this.credit);
-    } else debugAssert(false, 'No such receipt relation');
+    this[this.conteerSide()] = []; copyLinesInto(this[this.conteerSide()]);
+    this[this.relationSide()] = [{ account: this.payAccount }];
 
     return { debit: this.debit, credit: this.credit };
   },
