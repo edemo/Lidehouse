@@ -29,7 +29,7 @@ export function defineBreakdownTemplates() {
   Breakdowns.define({ communityId: null,  // 3-AS SZÁMLAOSZTÁLY KÉSZ  TODO angol neveket átírni
     digit: '3', name: 'Assets', locked: true, sign: +1,  //KÖVETELÉSEK
     children: [
-      { digit: '1', name: 'VEVŐK',
+      { digit: '1', name: 'Customers',
         children: [
         ],
       },
@@ -330,3 +330,9 @@ export function defineBreakdownTemplates() {
 if (Meteor.isServer) {
   Meteor.startup(defineBreakdownTemplates);
 }
+
+/*
+export const ACCOUNTS_PAYABLE = '46';
+export const ACCOUNTS_RECEIVABLE = '31';
+export const ACCOUNTS_RECEIVABLE_FROM_PARCELS = '33';
+*/

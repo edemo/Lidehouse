@@ -9,7 +9,7 @@ import { _ } from 'meteor/underscore';
 
 import { sanityCheckAtLeastOneActive } from '/imports/api/behaviours/active-period.js';
 import { Log } from '/imports/utils/log.js';
-import { checkExists, checkNotExists, checkModifier } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkModifier, checkNoOutstanding } from '/imports/api/method-checks.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships, entityOf } from './memberships.js';
@@ -19,7 +19,7 @@ function checkAddMemberPermissions(userId, communityId, roleOfNewMember) {
   const user = Meteor.users.findOne(userId);
   if (roleOfNewMember === 'guest') return;  // TODO: who can join as guest? or only in Demo house?)
   const permissionName = entityOf(roleOfNewMember) + '.update';
-  if (!user.hasPermission(permissionName, communityId)) {
+  if (!user.hasPermission(permissionName, { communityId })) {
     throw new Meteor.Error('err_permissionDenied',
       `No permission to add membership, roleOfNewMember: ${roleOfNewMember}, userId: ${userId}, communityId: ${communityId}`);
   }
@@ -165,6 +165,7 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Memberships, _id);
     checkAddMemberPermissions(this.userId, doc.communityId, doc.role);
+    checkNoOutstanding(doc);
     const MembershipsStage = Memberships.Stage();
     const result = MembershipsStage.remove(_id);
     if (doc.role === 'admin') {

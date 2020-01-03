@@ -2,9 +2,9 @@
 
 import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-import { Leaderships } from './leaderships.js';
+import { Parcelships } from './parcelships.js';
 
-Meteor.publish('leaderships.inCommunity', function leadershipsInCommunity(params) {
+Meteor.publish('parcelships.inCommunity', function parcelshipsInCommunity(params) {
   new SimpleSchema({
     communityId: { type: String },
   }).validate(params);
@@ -12,9 +12,9 @@ Meteor.publish('leaderships.inCommunity', function leadershipsInCommunity(params
   const { communityId } = params;
   const user = Meteor.users.findOne(this.userId);
 
-  if (!user || !user.hasPermission('leaderships.inCommunity', communityId)) {
+  if (!user || !user.hasPermission('parcelships.inCommunity', { communityId })) {
     return this.ready();
   }
 
-  return Leaderships.find({ communityId });
+  return Parcelships.find({ communityId });
 });

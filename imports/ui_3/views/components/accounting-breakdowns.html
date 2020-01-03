@@ -11,9 +11,9 @@
         </div>
     </div-->
 
-    {{#if userHasPermission 'breakdowns.inCommunity'}}
+    {{#if currentUserHasPermission 'breakdowns.inCommunity'}}
         <div class="" id='coa'>
-                {{#if and (noBreakdownsDefined (userHasPermission 'breakdowns.insert')) }}
+                {{#if and (noBreakdownsDefined (currentUserHasPermission 'breakdowns.insert')) }}
                 <div class="pull-right">
                     <!--<div class="dropdown">
                         <a href="" data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle">
@@ -27,23 +27,64 @@
                     </div>-->
                     <a href="" class="btn btn-primary btn-sm js-clone"><i class="fa fa-clone"></i> {{_ 'Import template'}}</a>
                 </div>
-                {{/if}}
                 <p>
-                    {{_ 'A teljes számlatükör könyvelési bontásokból épül fel.'}}<br>
-                    {{_ 'Használhatja a beépített sablonjainkat, vagy létrehozhat teljesen újat is.'}}<br>
+                    {{_ 'A számlatükör jelenleg üres.'}}<br>
+                    {{_ 'Importálja a beépített sablonunkat, a jobb oldali zöld gomb segítségével.'}}<br>
                 </p>
+                {{else}}
+                <p>
+                    {{_ 'A teljes számlarend több könyvelési bontásból épül fel.'}}<br>
+                    {{_ 'Ezek külön-külön szerkeszthetők.'}}<br>
+                </p>
+                {{/if}}
                 <br>
                 <ul class="nav nav-tabs m-b-md">
-                    <li class="active"><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of accounts'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-moneys" class="text-capitalize">{{_ 'moneyAccounts'}}</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-loc">{{_ 'Localizers'}}</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-others">{{_ 'Other breakdowns'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-cats" class="text-capitalize">{{_ 'txCats'}}</a></li>
+                    <li class="active"><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of accounts'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-defs" class="text-capitalize">{{_ 'txDefs'}}</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div id="tab-coa" class="tab-pane breakdowns active">
+                    <div id="tab-moneys" class="tab-pane moneyAccounts">
                         <div class="table-responsive">
-                            {{> ReactiveDatatable tableData=coaBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                            <table class="table table-striped">
+                                <thead>
+                                  <tr style="font-weight: bold">
+                                      <td>{{_ 'schemaMoneyAccounts.digit.label'}}</td>
+                                      <td>{{_ 'schemaMoneyAccounts.name.label'}}</td>
+                                      <td>{{_ 'schemaMoneyAccounts.category.label'}}</td>
+                                      <td>{{_ 'schemaMoneyAccounts.ban.label'}}</td>
+                                      <td>{{_ 'schemaMoneyAccounts.sync.label'}}</td>
+                                      <td>{{_ 'schemaMoneyAccounts.primary.label'}}</td>
+                                      <td></td>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {{#each moneyAccount in moneyAccounts}}
+                                  <tr>
+                                      <td>{{moneyAccount.digit}}</td>
+                                      <td>{{moneyAccount.name}}</td>
+                                      <td>{{_ (concat 'schemaMoneyAccounts.category.' moneyAccount.category)}}</td>
+                                      <td>{{moneyAccount.ban}}</td>
+                                      <td>{{_ (concat 'schemaMoneyAccounts.sync.' (or moneyAccount.sync 'none'))}}</td>
+                                      <td>{{{checkBoolean moneyAccount.primary}}}</td>
+                                      <td class="text-right">
+                                          {{> Action_buttons_group doc=moneyAccount collection='moneyAccounts' actions='' size='sm'}}
+                                      </td>
+                                  </tr>
+                                  {{/each}}
+                                </tbody>
+                            </table>
                         </div>
+                        {{#if currentUserHasPermission 'moneyAccounts.insert'}}
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                <button class="btn btn-primary js-new" data-entity="bankAccount"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'bankAccount'}}</button>
+                                <button class="btn btn-primary js-new" data-entity="cashAccount"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'cashAccount'}}</button>
+                            </div>
+                        </div>
+                        {{/if}}
                     </div>
                     <div id="tab-loc" class="tab-pane breakdowns">
                         <div class="table-responsive">
@@ -54,7 +95,7 @@
                         <div class="table-responsive">
                             {{> ReactiveDatatable tableData=othersBreakdownsTableDataFn options=breakdownsOptionsFn }}
                         </div>
-                        {{#if userHasPermission 'breakdowns.insert'}}
+                        {{#if currentUserHasPermission 'breakdowns.insert'}}
                         <div class="row">
                         <div class="col-xs-12 text-center">
                             <a href="" class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'breakdown'}}</a>
@@ -62,35 +103,40 @@
                         </div>
                         {{/if}}
                     </div>
-                    <div id="tab-cats" class="tab-pane txCats">
+                    <div id="tab-coa" class="tab-pane active breakdowns">
+                        <div class="table-responsive">
+                            {{> ReactiveDatatable tableData=coaBreakdownsTableDataFn options=breakdownsOptionsFn }}
+                        </div>
+                    </div>
+                    <div id="tab-defs" class="tab-pane txDefs">
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                   <tr style="font-weight: bold">
-                                      <td>{{_ 'schemaTxCats.name.label'}}</td>
-                                      <td>{{_ 'schemaTxCats.debit.label'}}</td>
-                                      <td>{{_ 'schemaTxCats.credit.label'}}</td>
+                                      <td>{{_ 'schemaTxDefs.name.label'}}</td>
+                                      <td>{{_ 'schemaTxDefs.debit.label'}}</td>
+                                      <td>{{_ 'schemaTxDefs.credit.label'}}</td>
                                       <td></td>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {{#each txCat in txCats}}
+                                  {{#each txDef in txDefs}}
                                   <tr>
-                                      <td>{{_ txCat.name}}</td>
-                                      <td>{{{displayAccountSet txCat.debit}}}</td>
-                                      <td>{{{displayAccountSet txCat.credit}}}</td>
+                                      <td>{{_ txDef.name}}</td>
+                                      <td>{{{displayAccountSet txDef.debit}}}</td>
+                                      <td>{{{displayAccountSet txDef.credit}}}</td>
                                       <td class="text-right">
-                                          {{> Action_buttons_group doc=txCat collection='txCats' actions='' size='sm'}}
+                                          {{> Action_buttons_group doc=txDef collection='txDefs' actions='' size='sm'}}
                                       </td>
                                   </tr>
                                   {{/each}}
                                 </tbody>
                             </table>
                         </div>
-                        {{#if userHasPermission 'breakdowns.insert'}}
+                        {{#if currentUserHasPermission 'breakdowns.insert'}}
                         <div class="row">
                             <div class="col-xs-12 text-center">
-                                <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txCat'}}</button>
+                                <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txDef'}}</button>
                             </div>
                         </div>
                         {{/if}}

@@ -14,7 +14,7 @@ import '/imports/api/partners/actions.js';
 import { partnersColumns } from '/imports/api/partners/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
-import { billColumns } from '/imports/api/transactions/bills/tables.js';
+import { billColumns, receiptColumns } from '/imports/api/transactions/bills/tables.js';
 import { paymentsColumns } from '/imports/api/transactions/payments/tables.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import '/imports/api/transactions/parcel-billings/actions.js';
@@ -32,7 +32,6 @@ Template.Accounting_bills.viewmodel({
   activePartnerRelation: 'supplier',
   unreconciledOnly: true,
   unpostedOnly: false,
-//  showParcelBillings: false,
   collectionName: 'Bills',
   onCreated(instance) {
     instance.autorun(() => {
@@ -130,6 +129,26 @@ Template.Accounting_bills.viewmodel({
       language: datatables_i18n[TAPi18n.getLanguage()],
     });
   },
+  receiptsFilterSelector() {
+    const selector = { communityId: this.communityId(), category: 'receipt' };
+    selector.relation = this.activePartnerRelation();
+    if (this.unpostedOnly()) selector.complete = false;
+    return selector;
+  },
+  receiptsTableDataFn() {
+    const self = this;
+    return () => Transactions.find(self.receiptsFilterSelector()).fetch();
+  },
+  receiptsOptionsFn() {
+    return () => Object.create({
+      columns: receiptColumns(),
+      tableClasses: 'display',
+      language: datatables_i18n[TAPi18n.getLanguage()],
+      lengthMenu: [[25, 100, 250, -1], [25, 100, 250, __('all')]],
+      pageLength: 25,
+      ...DatatablesSelectButtons(Transactions),
+    });
+  },
 });
 
 Template.Accounting_bills.events({
@@ -142,13 +161,11 @@ Template.Accounting_bills.events({
   'click .js-relation-filter'(event, instance) {
     const partnerRelation = $(event.target).closest('[data-value]').data('value');
     instance.viewmodel.activePartnerRelation(partnerRelation);
-//    instance.viewmodel.showParcelBillings(false);
   },
   'click .js-apply'(event, instance) {
     ParcelBillings.actions.apply.run();
   },
   'click .js-edit-defs'(event, instance) {
-//    instance.viewmodel.showParcelBillings(true);
     const modalContext = {
       title: 'Parcel billings',
       body: 'Parcel_billings',

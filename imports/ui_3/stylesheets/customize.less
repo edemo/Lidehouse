@@ -32,8 +32,8 @@
     }
 }
 
-.dropup, .dropdown {
-    z-index: 1000;
+.dropdown-menu {
+    z-index: 3000 !important;   // needs to be above all modals
 }
 // in order to fit in bigger avatar img to top-navbar
 #user-menu-dropdown {
@@ -59,6 +59,10 @@
     padding: 0;
 }
 
+.more-text {
+    display: none;
+}
+
 // intro-page
 .landing-page {
     // carousel images
@@ -81,9 +85,6 @@
     section p, ul {
         color:  #919191; // @text-color;
        // font-size: 13px;
-    }
-    .more-text {
-        display: none;
     }
     .read-more {
         padding: 1px 5px;

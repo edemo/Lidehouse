@@ -11,8 +11,11 @@ import '/imports/api/contracts/actions.js';
 import './bill-edit.html';
 
 Template.Bill_edit.helpers({
-  activePartnerRelation() {
-    return Session.get('activePartnerRelation');
+  partnerRelation() {
+    return Session.get('modalContext').txDef.data.relation;
+  },
+  isBill() {
+    return Session.get('modalContext').txDef.category === 'bill';
   },
   defaultDate() {
     return Clock.currentTime();

@@ -11,21 +11,21 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
-export const TxCats = new Mongo.Collection('txCats');
+export const TxDefs = new Mongo.Collection('txDefs');
 
-TxCats.define = function define(doc) {
-  TxCats.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
+TxDefs.define = function define(doc) {
+  TxDefs.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
 };
 
-TxCats.clone = function clone(name, communityId) {
-  const doc = TxCats.findOne({ name, communityId: null });
+TxDefs.clone = function clone(name, communityId) {
+  const doc = TxDefs.findOne({ name, communityId: null });
   if (!doc) return undefined;
   Mongo.Collection.stripAdministrativeFields(doc);
   doc.communityId = communityId;
-  return TxCats.insert(doc);
+  return TxDefs.insert(doc);
 };
 
-TxCats.schema = new SimpleSchema({
+TxDefs.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String, max: 100 },
   category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
@@ -34,7 +34,7 @@ TxCats.schema = new SimpleSchema({
   credit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
 });
 
-TxCats.helpers({
+TxDefs.helpers({
   schema() {
     const schema = new SimpleSchema([
       _.clone(Transactions.baseSchema), {
@@ -45,13 +45,14 @@ TxCats.helpers({
     schema.i18n('schemaTransactions');
     return schema;
   },
-  isSimpleTx() {  // simple tx does not need any additional data to create (apart from D/C accounts)
-    const isSimple = !(this.category === 'bill' || this.category === 'payment');
-    return isSimple;
+  isAutoPosting() {
+    return !_.contains(['bill', 'payment', 'receipt', 'freeTx'], this.category);
+  },
+  isAccountantTx() {
+    return !_.contains(['bill', 'payment', 'receipt'], this.category);
   },
   conteerSide() {
-    debugAssert(this.category === 'bill', 'Func only available for bills');
-    const relation = this.relation;
+    const relation = this.data.relation;
     if (relation === 'supplier') return 'debit';
     if (relation === 'customer' || relation === 'parcel') return 'credit';
     return undefined;
@@ -74,12 +75,12 @@ TxCats.helpers({
   },
 });
 
-TxCats.attachSchema(TxCats.schema);
-TxCats.attachBehaviour(Timestamped);
+TxDefs.attachSchema(TxDefs.schema);
+TxDefs.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
-  TxCats.simpleSchema().i18n('schemaTxCats');
+  TxDefs.simpleSchema().i18n('schemaTxDefs');
 });
 
-Factory.define('txCat', TxCats, {
+Factory.define('txDef', TxDefs, {
 });

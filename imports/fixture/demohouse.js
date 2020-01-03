@@ -70,14 +70,6 @@ export function insertDemoHouse(lang, demoOrTest) {
       accountingMethod: 'accrual',
       topicAgeDays: 365,
     },
-    bankAccounts: [{
-      name: __('demo.bank.primaryAccount.name'),
-      accountNumber: __('demo.bank.primaryAccount.number'),
-      primary: true,
-    }, {
-      name: __('demo.bank.savingsAccount.name'),
-      accountNumber: __('demo.bank.savingsAccount.number'),
-    }],
   });
 
   const demoBuilder = new CommunityBuilder(demoCommunityId, demoOrTest, lang);
@@ -241,6 +233,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     switch (userNo) {
       case 2: demoBuilder.createMembership(dummyUserId, 'maintainer'); break;
       case 3: demoBuilder.createMembership(dummyUserId, 'accountant'); break;
+      case 5: demoBuilder.createMembership(dummyUserId, 'treasurer'); break;
       case 4:
       case 10:
       case 16: demoBuilder.createMembership(dummyUserId, 'overseer'); break;
@@ -335,7 +328,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     benefactorship: { type: 'rental' },
   });
 
-  demoBuilder.create('leadership', {
+  demoBuilder.create('parcelship', {
     parcelId: demoParcels[11],
     leadRef: 'A206',
     leadParcelId: demoParcels[5],
@@ -367,6 +360,25 @@ export function insertDemoHouse(lang, demoOrTest) {
   // ===== Breakdowns =====
   // Create breakdowns (incl Localizer)
   demoBuilder.execute(Transactions.methods.cloneAccountingTemplates, { communityId: demoCommunityId }, demoAccountantId);
+
+  demoBuilder.create('cashAccount', {
+    digit: '1',
+    name: __('Cash register'),
+    primary: true,
+  });
+  demoBuilder.create('bankAccount', {
+    digit: '2',
+    name: __('demo.bank.primaryAccount.name'),
+    ban: __('demo.bank.primaryAccount.number'),
+    sync: 'manual',
+    primary: true,
+  });
+  demoBuilder.create('bankAccount', {
+    digit: '3',
+    name: __('demo.bank.savingsAccount.name'),
+    ban: __('demo.bank.savingsAccount.number'),
+    sync: 'manual',
+  });
 
   // ===== Forum =====
 
@@ -928,12 +940,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     demoBuilder.create('opening', {
       valueDate: new Date(`${lastYear}-01-01`),
       amount: opening[2],
-      credit: [{
-        account: demoBuilder.name2code('COA', 'Opening'),
-      }],
-      debit: [{
-        account: demoBuilder.name2code(opening[0], opening[1]),
-      }],
+      account: demoBuilder.name2code(opening[0], opening[1]),
     });
   });
 
@@ -998,78 +1005,84 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-06-01`),
-    amount: 3500,
-    credit: [{
+    lines: [{
+      title: 'Forgatási bérleti díj',
+      uom: 'db',
+      quantity: 1,
+      unitPrice: 35000,
       account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
       localizer: demoBuilder.name2code('Localizer', 'Central'),
     }],
-    debit: [{
-      account: demoBuilder.name2code('Assets', 'Folyószámla'),
-    }],
+    payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
   });
 
   ['02', '04', '06', '08', '10', '12'].forEach(mm => {
     demoBuilder.create('income', {
       valueDate: new Date(`${lastYear}-${mm}-01`),
-      amount: 400,
-      credit: [{
+      lines: [{
+        title: 'Banki kamat',
+        uom: 'hó',
+        quantity: 1,
+        unitPrice: 400,
         account: demoBuilder.name2code('Incomes', 'Hitelintézettől kapott kamatok'),
         localizer: demoBuilder.name2code('Localizer', 'Central'),
       }],
-      debit: [{
-        account: demoBuilder.name2code('Assets', 'Folyószámla'),
-      }],
+      payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
     });
   });
 
   demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-09-15`),
-    amount: 500000,
-    credit: [{
+    lines: [{
+      title: 'Állami támogatás tetőfelújításra',
+      uom: 'db',
+      quantity: 1,
+      unitPrice: 500000,
       account: demoBuilder.name2code('Incomes', 'Támogatások'),
       localizer: demoBuilder.name2code('Localizer', 'Central'),
     }],
-    debit: [{
-      account: demoBuilder.name2code('Assets', 'Folyószámla'),
-    }],
+    payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
     note: __('demo.transactions.note.1'),
   });
 
   demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-05-10`),
-    amount: 55000,
-    credit: [{
+    lines: [{
+      title: 'Antenna hely bérleti díj',
+      uom: 'év',
+      quantity: 1,
+      unitPrice: 55000,
       account: demoBuilder.name2code('Incomes', 'Bérleti díj bevételek'),
       localizer: demoBuilder.name2code('Localizer', 'Central'),
     }],
-    debit: [{
-      account: demoBuilder.name2code('Assets', 'Folyószámla'),
-    }],
+    payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
     note: __('demo.transactions.note.2'),
   });
 
   demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-10-15`),
-    amount: 500000,
-    credit: [{
+    lines: [{
+      title: '???',
+      uom: '?',
+      quantity: 1,
+      unitPrice: 500000,
       account: demoBuilder.name2code('Incomes', 'Különféle egyéb bevételek'),
       localizer: demoBuilder.name2code('Localizer', 'Central'),
     }],
-    debit: [{
-      account: demoBuilder.name2code('Assets', 'Folyószámla'),
-    }],
+    payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
     note: __('demo.transactions.note.3'),
   });
 
   demoBuilder.create('income', {
     valueDate: new Date(`${lastYear}-07-21`),
-    amount: 2300000,
-    credit: [{
+    lines: [{
+      title: 'Banki hitel',
+      uom: 'db',
+      quantity: 1,
+      unitPrice: 2300000,
       account: demoBuilder.name2code('Liabilities', 'Hosszú lejáratú bank hitel'),
     }],
-    debit: [{
-      account: demoBuilder.name2code('Assets', 'Megtakarítási számla'),
-    }],
+    payAccount: demoBuilder.name2code('Assets', 'Megtakarítási számla'),
     note: __('demo.transactions.note.4'),
   });
 
@@ -1078,38 +1091,41 @@ export function insertDemoHouse(lang, demoOrTest) {
   for (let mm = 1; mm < 13; mm++) {
     demoBuilder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
-      amount: 80000 + Math.floor(Math.random() * 50000),
-      credit: [{
-        account: demoBuilder.name2code('Assets', 'Folyószámla'),
-      }],
-      debit: [{
+      lines: [{
+        title: 'Víz fogyasztás',
+        uom: 'm3',
+        quantity: 100 + Math.floor(Math.random() * 70),
+        unitPrice: 800,
         account: demoBuilder.name2code('Expenses', 'Víz díj'),
         localizer: demoBuilder.name2code('Localizer', 'Central'),
       }],
+      payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
     });
 
     demoBuilder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '08', '10'])}`),
-      amount: 98500,
-      credit: [{
-        account: demoBuilder.name2code('Assets', 'Folyószámla'),
-      }],
-      debit: [{
+      lines: [{
+        title: 'Csatorna díj',
+        uom: 'hó',
+        quantity: 1,
+        unitPrice: 98500,
         account: demoBuilder.name2code('Expenses', 'Csatorna díjak'),
         localizer: demoBuilder.name2code('Localizer', 'Central'),
       }],
+      payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
     });
 
     demoBuilder.create('expense', {
       valueDate: new Date(`${lastYear}-${mm}-${_.sample(['03', '04', '05', '06', '07', '08', '10'])}`),
-      amount: 150000 + Math.floor(Math.random() * 50000),
-      credit: [{
-        account: demoBuilder.name2code('Assets', 'Folyószámla'),
-      }],
-      debit: [{
+      lines: [{
+        title: 'Áram fogyasztás',
+        uom: 'mért',
+        quantity: 1,
+        unitPrice: 150000 + Math.floor(Math.random() * 50000),
         account: demoBuilder.name2code('Expenses', 'Áram díj'),
         localizer: demoBuilder.name2code('Localizer', 'Central'),
       }],
+      payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
     });
   }
 

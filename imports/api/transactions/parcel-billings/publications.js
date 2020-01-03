@@ -13,7 +13,7 @@ Meteor.publish('parcelBillings.inCommunity', function parcelBillingsInCommunity(
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('parcelBillings.inCommunity', communityId)) {
+  if (!user.hasPermission('parcelBillings.inCommunity', { communityId })) {
     return this.ready();
   }
 

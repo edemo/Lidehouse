@@ -19,18 +19,19 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/balances/methods.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
-import '/imports/api/transactions/tx-cats/methods.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import '/imports/api/transactions/tx-defs/methods.js';
 import { transactionColumns } from '/imports/api/transactions/tables.js';
-import { allTransactionsActions } from '/imports/api/transactions/actions.js';
+import '/imports/api/transactions/actions.js';
+import '/imports/api/transactions/categories';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-transactions.html';
 
 Template.Accounting_transactions.viewmodel({
-  txCatSelected: '',
-  txCatOptions: [],
+  txDefSelected: '',
+  txDefOptions: [],
   creditAccountSelected: '',
   creditAccountOptions: [],
   debitAccountSelected: '',
@@ -46,7 +47,7 @@ Template.Accounting_transactions.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txCats.inCommunity', { communityId });
+      instance.subscribe('txDefs.inCommunity', { communityId });
       instance.subscribe('transactions.incomplete', { communityId });
       instance.subscribe('bills.outstanding', { communityId });
     });
@@ -55,34 +56,34 @@ Template.Accounting_transactions.viewmodel({
     return Session.get('activeCommunityId');
   },
   autorun: [
-    function setTxCatOptions() {
+    function setTxDefOptions() {
       const communityId = Session.get('activeCommunityId');
-      this.txCatOptions(TxCats.find({ communityId }).map(function (cat) {
+      this.txDefOptions(TxDefs.find({ communityId }).map(function (cat) {
         return { value: cat._id, label: __(cat.name) };
       }));
-      if (!this.txCatSelected() && this.txCatOptions() && this.txCatOptions().length > 0) {
-        this.txCatSelected(this.txCatOptions()[0].value);
+      if (!this.txDefSelected() && this.txDefOptions() && this.txDefOptions().length > 0) {
+        this.txDefSelected(this.txDefOptions()[0].value);
       }
     },
     function setFilterAccountOptions() {
-      const txCat = TxCats.findOne(this.txCatSelected());
+      const txDef = TxDefs.findOne(this.txDefSelected());
       const coa = ChartOfAccounts.get();
       const loc = Localizer.get();
-      if (!txCat || !coa || !loc) return;
-      this.creditAccountOptions(coa.nodeOptionsOf(txCat.credit));
-      this.debitAccountOptions(coa.nodeOptionsOf(txCat.debit));
-      this.creditAccountSelected(txCat.credit[0]);
-      this.debitAccountSelected(txCat.debit[0]);
+      if (!txDef || !coa || !loc) return;
+      this.creditAccountOptions(coa.nodeOptionsOf(txDef.credit));
+      this.debitAccountOptions(coa.nodeOptionsOf(txDef.debit));
+      this.creditAccountSelected(txDef.credit[0] || '');
+      this.debitAccountSelected(txDef.debit[0] || '');
       this.localizerOptions(loc.nodeOptions());
     },
     function txSubscription() {
       this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());
     },
   ],
-  txCats() {
+  txDefs() {
     const communityId = Session.get('activeCommunityId');
-    const txCats = TxCats.find({ communityId }).fetch().filter(c => c.isSimpleTx());
-    return txCats;
+    const txDefs = TxDefs.find({ communityId }).fetch().filter(c => c.isAccountantTx());
+    return txDefs;
   },
   optionsOf(accountCode) {
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
@@ -93,9 +94,9 @@ Template.Accounting_transactions.viewmodel({
   subscribeParams() {
     return {
       communityId: this.communityId(),
-      catId: this.txCatSelected(),
-      creditAccount: '\\^' + this.creditAccountSelected() + '\\',
+      defId: this.txDefSelected(),
       debitAccount: '\\^' + this.debitAccountSelected() + '\\',
+      creditAccount: '\\^' + this.creditAccountSelected() + '\\',
       begin: new Date(this.beginDate()),
       end: new Date(this.endDate()),
     };

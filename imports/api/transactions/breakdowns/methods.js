@@ -11,7 +11,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkNotExists(Breakdowns, { communityId: doc.communityId, name: doc.name });
-    checkPermissions(this.userId, 'breakdowns.insert', doc.communityId);
+    checkPermissions(this.userId, 'breakdowns.insert', doc);
 
     return Breakdowns.insert(doc);
   },
@@ -28,7 +28,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Breakdowns, _id);
     // checkModifier(doc, modifier, ['name'], true); - can you change the name? it is referenced by that by other breakdowns
     checkNotExists(Breakdowns, { _id: { $ne: doc._id }, communityId: doc.communityId, name: modifier.$set.name });
-    checkPermissions(this.userId, 'breakdowns.update', doc.communityId);
+    checkPermissions(this.userId, 'breakdowns.update', doc);
 
     Breakdowns.update({ _id }, modifier);
   },
@@ -44,7 +44,7 @@ export const clone = new ValidatedMethod({
   run({ name, communityId }) {
     const doc = checkExists(Breakdowns, { communityId: null, name });
     checkNotExists(Breakdowns, { communityId, name });
-    checkPermissions(this.userId, 'breakdowns.update', communityId);
+    checkPermissions(this.userId, 'breakdowns.update', { communityId });
 
     return Breakdowns.clone(name, communityId);
   },
@@ -58,7 +58,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Breakdowns, _id);
-    checkPermissions(this.userId, 'breakdowns.remove', doc.communityId);
+    checkPermissions(this.userId, 'breakdowns.remove', doc);
 
     Breakdowns.remove(_id);
   },

@@ -3,6 +3,7 @@ import { numeral } from 'meteor/numeral:numeral';
 import { __ } from '/imports/localization/i18n.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { $ } from 'meteor/jquery';
+import { checkmarkBoolean } from '/imports/ui_3/helpers/api-display.js';
 
 export const Render = {
   translate(cellData, renderType, currentRow) {
@@ -25,9 +26,7 @@ export const Render = {
     return moment(cellData).format('L LT');
   },
   checkmarkBoolean(cellData, renderType, currentRow) {
-    const icon = cellData ? 'fa-check' : 'fa-times';
-    const color = cellData ? 'primary' : 'danger';
-    return `<i class="fa ${icon} text-${color}"></i>`;
+    return checkmarkBoolean(cellData);
   },
   displayTitle(topicId) {
     const title = Topics.findOne(topicId).title;

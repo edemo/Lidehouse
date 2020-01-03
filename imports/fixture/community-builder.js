@@ -20,8 +20,8 @@ import '/imports/api/topics/rooms/rooms.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Bills } from '/imports/api/transactions/bills/bills.js'; // factory needed
-import { Payments } from '/imports/api/transactions/payments/payments.js'; // factory needed
+import '/imports/api/transactions/categories';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import '/imports/startup/server/register-api';  // brings all methods
@@ -47,9 +47,9 @@ export class CommunityBuilder {
     return Communities.findOne(this.communityId);
   }
   getUserWithRole(role) {
-    const member = Memberships.findOne({ communityId: this.communityId, role });
+    const member = Memberships.findOne({ communityId: this.communityId, role, 'person.userId': { $exists: true } });
     if (!member) throw Error(`No user with role ${role} in the community`);
-    return member.personId;
+    return member.person.userId;
   }
   sameUser() {
     return this.dummyUsers[this.nextUserIndex];
@@ -80,16 +80,17 @@ export class CommunityBuilder {
         case 'agendas':
         case 'contracts':
         case 'parcels':
-        case 'leaderships':
+        case 'parcelships':
         case 'partners':
         case 'meters': return this.getUserWithRole('manager');
         case 'memberships': return this.getUserWithRole('admin');
-        case 'transactions':
         case 'statements':
         case 'statementEntries':
         case 'parcelBillings':
+        case 'moneyAccounts':
         case 'breakdowns':
-        case 'txCats': return this.getUserWithRole('accountant');
+        case 'txDefs': return this.getUserWithRole('accountant');
+        case 'transactions': return (params.category === 'bill' || params.category === 'receipt') ? this.getUserWithRole('treasurer') : this.getUserWithRole('accountant');
         case 'comments': return this.nextUser();
         case 'topics': switch (params.category) {
           case 'vote': switch (params.vote.effect) {
@@ -126,6 +127,9 @@ export class CommunityBuilder {
   create(name, data) {
     const doc = this.build(name, data);
     const collection = Factory.get(name).collection;
+    if (collection._name === 'transactions') {
+      doc.defId = TxDefs.findOne({ communityId: this.communityId, category: doc.category, 'data.relation': doc.relation })._id;
+    }
     return this.execute(collection.methods.insert, doc);
   }
   execute(method, params, executorId) {

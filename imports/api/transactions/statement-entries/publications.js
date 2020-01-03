@@ -12,7 +12,7 @@ Meteor.publish('statementEntries.byId', function statementsById(params) {
 
   const user = Meteor.users.findOneOrNull(this.userId);
   const bs = Statements.findOne(_id);
-  if (!user.hasPermission('statements.inCommunity', bs.communityId)) {
+  if (!user.hasPermission('statements.inCommunity', bs)) {
     return this.ready();
   }
   return StatementEntries.find({ _id });
@@ -28,7 +28,7 @@ Meteor.publish('statementEntries.byAccount', function statementsByAccount(params
   const { communityId, account, begin, end } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('statements.inCommunity', communityId)) {
+  if (!user.hasPermission('statements.inCommunity', { communityId })) {
     return this.ready();
   }
 
@@ -47,7 +47,7 @@ Meteor.publish('statementEntries.unreconciled', function statementsUnreconciled(
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('statements.inCommunity', communityId)) {
+  if (!user.hasPermission('statements.inCommunity', { communityId })) {
     return this.ready();
   }
   return StatementEntries.find({ communityId, reconciledId: { $exists: false } });

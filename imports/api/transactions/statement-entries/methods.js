@@ -8,6 +8,7 @@ import { crudBatchOps } from '../../batch-method.js';
 import { Bills } from '../bills/bills.js';
 import { Payments } from '../payments/payments.js';
 import { Transactions, oppositeSide } from '../transactions.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { StatementEntries } from './statement-entries.js';
 
 export const insert = new ValidatedMethod({
@@ -16,7 +17,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     doc = StatementEntries._transform(doc);
-    checkPermissions(this.userId, 'statements.insert', doc.communityId);
+    checkPermissions(this.userId, 'statements.insert', doc);
     const _id = StatementEntries.insert(doc);
     return _id;
   },
@@ -32,7 +33,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(StatementEntries, _id);
 //    checkModifier(doc, modifier, Statements.modifiableFields);
-    checkPermissions(this.userId, 'statements.update', doc.communityId);
+    checkPermissions(this.userId, 'statements.update', doc);
 
     const result = StatementEntries.update({ _id }, modifier);
     return result;
@@ -48,7 +49,7 @@ export const reconcile = new ValidatedMethod({
 //    checkModifier(doc, modifier, Statements.modifiableFields);
     if ((paymentId ? 1 : 0) + (billId ? 1 : 0) + (account ? 1 : 0) !== 1)
       throw new Meteor.Error('Need to select either a payment, a bill or an account');
-    checkPermissions(this.userId, 'statements.reconcile', entry.communityId);
+    checkPermissions(this.userId, 'statements.reconcile', entry);
     let reconciledTxId;
     if (account) {
       const moneySide = entry.amount > 0 ? 'debit' : 'credit';
@@ -62,11 +63,13 @@ export const reconcile = new ValidatedMethod({
     } else {
       if (_.isUndefined(paymentId)) {
         const bill = Transactions.findOne(billId);
-        paymentId = Transactions.methods.insert._execute({ userId: this.userId }, {
+        const payment = {
           communityId: entry.communityId, category: 'payment',
+          defId: TxDefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': bill.relation })._id,
           valueDate: entry.valueDate, amount: entry.amount, payAccount: entry.account,
           billId, relation: bill.relation, partnerId: bill.partnerId,
-        });
+        };
+        paymentId = Transactions.methods.insert._execute({ userId: this.userId }, payment);
         Transactions.methods.post._execute({ userId: this.userId }, { _id: paymentId });
       }
       Transactions.update(paymentId, { $set: { reconciledId: _id } });
@@ -84,7 +87,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(StatementEntries, _id);
-    checkPermissions(this.userId, 'statements.remove', doc.communityId);
+    checkPermissions(this.userId, 'statements.remove', doc);
 
     return StatementEntries.remove(_id);
   },

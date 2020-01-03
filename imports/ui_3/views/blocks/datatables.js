@@ -80,7 +80,7 @@ export function DatatablesSelectButtons(collection) {
         text: () => __('Select none'),
       },
       { extend: 'collection',
-        text: () => __('Action with selected'),
+        text: () => __('Action with selected') + ' <b class="caret"></b>',
         autoClose: true,
         buttons: batchActionButtons,
       },

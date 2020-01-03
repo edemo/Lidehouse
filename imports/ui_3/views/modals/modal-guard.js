@@ -1,7 +1,15 @@
 import { Template } from 'meteor/templating';
+import { $ } from 'meteor/jquery';
 import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
-import { modalZIndexHandler } from '/imports/startup/client/modal-patches.js';
 import './modal-guard.html';
+
+function modalZIndexHandler() {
+  const zIndexPlus = $('.modal').length * 20;
+  const firstModalZIndex = Number($('.modal').first().css('z-index'));
+  const firstModalBackDropZIndex = Number($('.modal-backdrop.in').first().css('z-index'));
+  $('.modal').last().css('z-index', firstModalZIndex + zIndexPlus);
+  $('.modal-backdrop.in').last().css('z-index', firstModalBackDropZIndex + zIndexPlus);
+}
 
 Template.Modal_guard.onCreated(function () {
   const dataId = this.parent().data.id;

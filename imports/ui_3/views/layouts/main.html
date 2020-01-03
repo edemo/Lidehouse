@@ -17,7 +17,7 @@
             <!-- End Page wrapper-->
             
             <div>
-                {{#unless userHasPermission 'do.techsupport' (fromSession 'activeCommunityId')}}
+                {{#unless currentUserHasPermission 'do.techsupport'}}
                 {{> Tech_chat}}
                 {{/unless}}
             </div>

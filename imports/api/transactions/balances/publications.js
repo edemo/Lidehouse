@@ -15,7 +15,7 @@ Meteor.publish('balances.ofAccounts', function balancesOfAccounts(params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('balances.ofAccounts', communityId)) {
+  if (!user.hasPermission('balances.ofAccounts', { communityId })) {
     return this.ready();
   }
 
@@ -32,7 +32,7 @@ Meteor.publishComposite('balances.ofLocalizers', function balancesOfLocalizers(p
   const { communityId, limit } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('balances.ofLocalizers', communityId)) {
+  if (!user.hasPermission('balances.ofLocalizers', { communityId })) {
     return this.ready();
   }
 

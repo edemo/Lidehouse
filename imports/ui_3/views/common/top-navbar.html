@@ -37,7 +37,7 @@
                         {{/each}}
                         <li role="separator" class="divider"></li>
                         <li><a href="{{pathFor 'Communities list'}}"> + {{_ 'Join a community'}} </a></li>
-                        <li><a class="js-create-community" href=""> + {{_ 'Create a community'}} </a></li>
+                        <li><a class="js-new community" href=""> + {{_ 'Create a community'}} </a></li>
                     </ul>
                 </li>
                 <li>
@@ -83,7 +83,7 @@
                         {{/if}}  
                     </a>                    
                 </li>
-                {{#if userHasPermission 'do.techsupport'}}
+                {{#if currentUserHasPermission 'do.techsupport'}}
                 <li>
                     <a id="techsupport" class="right-sidebar-toggle count-info" href="">
                         <i class="fa fa-lg fa-question-circle"></i>  

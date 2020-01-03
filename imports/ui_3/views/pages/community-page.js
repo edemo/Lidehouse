@@ -23,8 +23,8 @@ import '/imports/api/parcels/actions.js';
 import { parcelColumns, highlightMyRow } from '/imports/api/parcels/tables.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 import '/imports/api/memberships/actions.js';
-import { Leaderships } from '/imports/api/leaderships/leaderships.js';
-import '/imports/api/leaderships/actions.js';
+import { Parcelships } from '/imports/api/parcelships/parcelships.js';
+import '/imports/api/parcelships/actions.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import '/imports/api/meters/actions.js';
 import '/imports/api/users/users.js';
@@ -34,6 +34,7 @@ import '/imports/ui_3/views/blocks/simple-reactive-datatable.js';
 import '/imports/ui_3/views/common/page-heading.js';
 import '/imports/ui_3/views/components/action-buttons.html';
 import '/imports/ui_3/views/components/contact-long.js';
+import '/imports/ui_3/views/blocks/active-period.js';
 import '/imports/ui_3/views/blocks/menu-overflow-guard.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
 import './community-page.html';
@@ -63,9 +64,9 @@ Template.Occupants_table.viewmodel({
     const selector = this.templateInstance.data.selector;
     return Memberships.find(selector, { sort: { role: -1 } });
   },
-  leaderships() {
+  parcelships() {
     const selector = this.templateInstance.data.selector;
-    return Leaderships.find(selector);
+    return Parcelships.find(selector);
   },
 });
 
@@ -81,10 +82,10 @@ Template.Occupants_box.viewmodel({
     const parcel = Parcels.findOne(parcelId);
     return parcel ? parcel.display() : __('unknown');
   },
-  leadershipTitle() {
+  parcelshipTitle() {
     const parcelId = this.templateInstance.data.parcelId;
-    const leadership = Leaderships.findOne({ parcelId });
-    return leadership ? ` - ${__('leadership')}` : '';
+    const parcelship = Parcelships.findOne({ parcelId });
+    return parcelship ? ` - ${__('parcelship')}` : '';
   },
 });
 
@@ -115,7 +116,7 @@ Template.Parcels_box.viewmodel({
     const user = Meteor.user();
     const community = getActiveCommunity();
     const showAllParcelsDefault = (
-      (user && user.hasPermission('parcels.insert', community._id))
+      (user && user.hasPermission('parcels.insert', { communityId: community._id }))
       || (community && community.parcels.flat <= 25)
     );
     this.showAllParcels(!!showAllParcelsDefault);
@@ -123,8 +124,7 @@ Template.Parcels_box.viewmodel({
   autorun() {
     const communityId = getActiveCommunityId();
     this.templateInstance.subscribe('memberships.inCommunity', { communityId });
-    this.templateInstance.subscribe('leaderships.inCommunity', { communityId });
-    this.templateInstance.subscribe('meters.inCommunity', { communityId });
+    this.templateInstance.subscribe('parcelships.inCommunity', { communityId });
     if (this.showAllParcels()) {
       this.templateInstance.subscribe('parcels.inCommunity', { communityId });
     } else {
@@ -229,8 +229,9 @@ Template.Roleships_box.events({
 });
 
 Template.Occupants_box.events({
-  ...(actionHandlers(Memberships, 'new')),
-  ...(actionHandlers(Leaderships, 'new')),
+  ...(actionHandlers(Memberships, 'new,period')),
+  ...(actionHandlers(Parcelships, 'new,period')),
+  ...(actionHandlers(Parcels, 'occupants')),
   'click .js-member'(event, instance) {
     const id = $(event.target).closest('[data-id]').data('id');
     const membership = Memberships.findOne(id);
@@ -239,7 +240,7 @@ Template.Occupants_box.events({
 });
 
 Template.Meters_box.events({
-  ...(actionHandlers(Meters, 'new')),
+  ...(actionHandlers(Meters, 'new,period')),
 });
 
 Template.Parcels_box.events({

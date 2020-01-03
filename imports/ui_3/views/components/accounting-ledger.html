@@ -1,20 +1,22 @@
 <template name="Accounting_ledger">
     {{#if not selectedAccount}}
-    {{#if userHasPermission 'balances.ofAccounts' (fromSession 'activeCommunityId')}}
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label class="control-label" for="period">{{_ 'period'}}</label>
-                    <select id="period" name="period" {{b 'options: periodOptions, value: periodSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
-                </div>
-            </div>
+    {{#if currentUserHasPermission 'balances.ofAccounts'}}
+     <div class="row">
+        <p class="col-sm-9">
+            {{_ 'Válasszon időszakot, amire a naplófőkönyvet megtekinti.'}}<br>
+            {{_ 'Az egyes cellákra kattintva, az ahhoz az értékhez tartozó számlatörténetet tekintehti meg.'}}<br>
+        </p>
+        <div class="col-sm-3 form-group">
+            <label class="control-label" for="period">{{_ 'period'}}</label>
+            <select id="period" name="period" {{b 'options: periodOptions, value: periodSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
         </div>
-        {{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}
+    </div>
+    {{> Balance_report breakdown=(breakdown 'COA') tags=yearMonthTags }}
     {{/if}}
     {{/if}}
 
     {{#if selectedAccount}}
-    {{#if userHasPermission 'transactions.inCommunity'}}
+    {{#if currentUserHasPermission 'transactions.inCommunity'}}
         <h3>{{_ 'Account history'}}
         <button type="button" class="btn btn-primary btn-circle js-reset"><i class="fa fa-times"></i></button>
         </h3>

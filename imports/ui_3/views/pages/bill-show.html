@@ -46,16 +46,21 @@
                 </div>
 
                 <div class="col-sm-6 text-right">
-                    <h4>{{_ (concat docVm.relation '_bill')}}: <!--</h4> {{_ 'schemaBills.serialId.label'}}</h4-->
+                    <h4>{{_ (concat docVm.relation '_' docVm.category)}}: <!--</h4> {{_ 'schemaBills.serialId.label'}}</h4-->
                     <span class="text-navy">{{docVm.serialId}}</span></h4>
                     <h5>{{_ 'receiver'}}:</h5>
                     <address>
                         {{>Bill_partner partner=docVm.receiver}}
                     </address>
                     <p>
-                        <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate docVm.issueDate}}</span><br/>
-                        <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate docVm.deliveryDate}}</span><br/>
-                        <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate docVm.dueDate}}</span>
+                        {{#if isBill}}
+                            <span><strong>{{_ 'schemaBills.issueDate.label'}}:</strong> {{displayDate docVm.issueDate}}</span><br/>
+                            <span><strong>{{_ 'schemaBills.deliveryDate.label'}}:</strong> {{displayDate docVm.deliveryDate}}</span><br/>
+                            <span><strong>{{_ 'schemaBills.dueDate.label'}}:</strong> {{displayDate docVm.dueDate}}</span>
+                        {{else}}
+                            <span><strong>{{_ 'schemaTransactions.valueDate.label'}}:</strong> {{displayDate docVm.valueDate}}</span><br/>
+                            <span><strong>{{_ 'schemaTransactions.payAccount.label'}}:</strong> {{{displayAccount docVm.payAccount}}}</span><br/>
+                        {{/if}}
                     </p>
                 </div>
             </div>
@@ -86,7 +91,7 @@
                                 </strong>
                                 </div>
                                 <small>{{line.details}}</small>
-                                {{#if userHasPermission 'transactions.post'}}
+                                {{#if currentUserHasPermission 'transactions.post'}}
                                     {{{displayAccount line.account activeCommunityId}}}
                                     {{{displayLocalizer line.localizer activeCommunityId}}}
                                 {{/if}}
@@ -120,14 +125,16 @@
                 </tbody>
             </table>
   
+            {{#if isBill}}
             <table class="table invoice-total"> 
               <tbody>
               {{#each payment in docVm.getPayments}}
               <tr>
-                  <td><i>
-                    {{#if not @index}}{{_ 'schemaBills.payments.label'}} {{/if}}
-                    {{displayDate payment.valueDate}} :
-                  </i></td>
+                  <td>
+                    {{#if not @index}}{{_ 'schemaBills.payments.label'}}: {{/if}}
+                    {{displayDate payment.valueDate}}
+                    {{>Action_buttons_group collection='transactions' doc=payment actions='view' size='sm'}}
+                  </td>
                   <td>{{payment.amount}}</td>
               </tr>
               {{/each}}
@@ -137,6 +144,7 @@
               </tr>
               </tbody>
             </table>
+            {{/if}}
 
             <div class="text-right" data-id="{{docVm._id}}">
               {{>Action_button doc=docVm action=actions.edit size='xl'}}

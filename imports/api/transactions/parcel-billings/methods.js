@@ -14,7 +14,7 @@ import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-//  import { TxCats } from '/imports/api/transactions/tx-cats.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { Bills } from '/imports/api/transactions/bills/bills';
 import { Period } from '/imports/api/transactions/breakdowns/period.js';
 import { ActiveTimeMachine } from '../../behaviours/active-time-machine';
@@ -28,7 +28,7 @@ export const apply = new ValidatedMethod({
   validate: ParcelBillings.applySchema.validator(),
 
   run({ communityId, date, ids, localizer }) {
-    checkPermissions(this.userId, 'parcelBillings.apply', communityId);
+    checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
     ActiveTimeMachine.runAtTime(date, () => {
       const bills = {}; // parcelId => his bill
       const activeParcelBillings = ids
@@ -79,7 +79,8 @@ export const apply = new ValidatedMethod({
           debugAssert(line.uom && _.isDefined(line.quantity), 'Billing needs consumption or projection.');
           if (line.quantity === 0) return; // Should not create bill for zero amount
           line.amount = line.quantity * line.unitPrice;
-          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+//          line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
+          line.account = Breakdowns.name2code('Incomes', 'Owner payins', parcelBilling.communityId) + parcelBilling.payinType;
           line.localizer = Localizer.parcelRef2code(parcel.ref);
           line.title = `${parcelBilling.title}`;
 
@@ -89,6 +90,7 @@ export const apply = new ValidatedMethod({
             communityId: parcelBilling.communityId,
             category: 'bill',
             relation: 'parcel',
+            defId: TxDefs.findOne({ communityId, category: 'bill', 'data.relation': 'parcel' })._id,
   //          amount: Math.round(totalAmount), // Not dealing with fractions of a dollar or forint
             partnerId: parcel.leadParcel().payer()._id,
             valueDate: Clock.currentDate(),
@@ -140,7 +142,7 @@ export const insert = new ValidatedMethod({
   validate: ParcelBillings.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkPermissions(this.userId, 'parcelBillings.insert', doc.communityId);
+    checkPermissions(this.userId, 'parcelBillings.insert', doc);
     const id = ParcelBillings.insert(doc);
     return id;
   },
@@ -156,7 +158,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(ParcelBillings, _id);
 //    checkModifier(doc, modifier, );
-    checkPermissions(this.userId, 'parcelBillings.update', doc.communityId);
+    checkPermissions(this.userId, 'parcelBillings.update', doc);
     return ParcelBillings.update({ _id }, modifier);
   },
 });
@@ -169,7 +171,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(ParcelBillings, _id);
-    checkPermissions(this.userId, 'parcelBillings.remove', doc.communityId);
+    checkPermissions(this.userId, 'parcelBillings.remove', doc);
     return ParcelBillings.remove(_id);
   },
 });

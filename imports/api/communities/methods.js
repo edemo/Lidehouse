@@ -3,10 +3,29 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { Memberships } from '/imports/api/memberships/memberships.js';
 import { officerRoles } from '/imports/api/permissions/roles.js';
+import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { Meters } from '/imports/api/meters/meters.js';
+import { Parcels } from '/imports/api/parcels/parcels.js';
+import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Parcelships } from '/imports/api/parcelships/parcelships.js';
+import { Agendas } from '/imports/api/agendas/agendas.js';
+import { Topics } from '/imports/api/topics/topics.js';
+import { Comments } from '/imports/api/comments/comments.js';
+import { Delegations } from '/imports/api/delegations/delegations.js';
+import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Balances } from '/imports/api/transactions/balances/balances.js';
+import { Statements } from '/imports/api/transactions/statements/statements.js';
+import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
+import { Attachments } from '/imports/api/attachments/attachments.js';
+import { Sharedfolders } from '/imports/api/shareddocs/sharedfolders/sharedfolders.js';
+import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Communities } from './communities.js';
-import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '../method-checks.js';
 
 export const create = new ValidatedMethod({
   name: 'communities.create',
@@ -33,7 +52,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Communities, _id);
     // checkModifier(doc, modifier, ['lot'], true);     // all fields are modifiable except lot
-    checkPermissions(this.userId, 'communities.update', _id);
+    checkPermissions(this.userId, 'communities.update', doc);
     Communities.update({ _id }, modifier);
   },
 });
@@ -44,16 +63,37 @@ export const remove = new ValidatedMethod({
     _id: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ _id }) {
-    const community = checkExists(Communities, _id);
-    checkPermissions(this.userId, 'communities.remove', _id);
+    const doc = checkExists(Communities, _id);
+    const communityId = _id;
+    checkPermissions(this.userId, 'communities.remove', doc);
     // Community cannot be deleted while it has any active officers apart from the admin
-    const officers = Memberships.findActive({ communityId: _id, role: { $in: officerRoles } });
+    const officers = Memberships.findActive({ communityId, role: { $in: officerRoles } });
     if (officers.count() > 1) {
-      throw new Meteor.Error('err_unableToRemove', 'Community cannot be deleted while it has active officers',
-        `Found: {${officers.count()}}`);
+      throw new Meteor.Error('err_unableToRemove',
+      'Community cannot be deleted while it has active officers', `Found: {${officers.count()}}`);
     }
     // Once there are no active officers, the community can be purged
-    Communities.remove(_id);
+    Meters.remove({ communityId });
+    Memberships.remove({ communityId });
+    Parcelships.remove({ communityId });
+    Comments.remove({ communityId });
+    Topics.remove({ communityId });
+    Agendas.remove({ communityId });
+    Delegations.remove({ communityId });
+    Transactions.remove({ communityId });
+    ParcelBillings.remove({ communityId });
+    Balances.remove({ communityId });
+    Statements.remove({ communityId });
+    StatementEntries.remove({ communityId });
+    TxDefs.remove({ communityId });
+    Breakdowns.remove({ communityId });
+    Parcels.remove({ communityId });
+    Partners.remove({ communityId });
+    Contracts.remove({ communityId });
+    Attachments.remove({ communityId });
+    Shareddocs.remove({ communityId });
+    Sharedfolders.remove({ communityId });
+    Communities.remove(communityId);
   },
 });
 

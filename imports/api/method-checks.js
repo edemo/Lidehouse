@@ -38,24 +38,24 @@ export function checkNotExists(collection, predicate) {
   }
 }
 
-export function checkPermissions(userId, permissionName, communityId, object) {
+export function checkPermissions(userId, permissionName, doc) {
   // Checks that *user* has *permission* in given *community* to perform things on given *object*
   const user = Meteor.users.findOneOrNull(userId);
-  if (!user.hasPermission(permissionName, communityId, object)) {
+  if (!user.hasPermission(permissionName, doc)) {
     throw new Meteor.Error('err_permissionDenied',
-      `No permission to perform this activity: ${permissionName}, userId: ${userId}, communityId: ${communityId}, objectId: ${object ? object._id : '-'}`);
+      `No permission to perform this activity: ${permissionName}, userId: ${userId}, doc: ${doc}`);
   }
 }
 
-export function checkPermissionsWithApprove(userId, permissionName, communityId, object) {
+export function checkPermissionsWithApprove(userId, permissionName, doc) {
   const user = Meteor.users.findOneOrNull(userId);
-  if (user.hasPermission(permissionName, communityId, object)) {
-    object.approved = true;
-  } else if (user.hasPermission(permissionName + '.unapproved', communityId, object)) {
-    object.approved = false;
+  if (user.hasPermission(permissionName, doc)) {
+    doc.approved = true;
+  } else if (user.hasPermission(permissionName + '.unapproved', doc)) {
+    doc.approved = false;
   } else {
     throw new Meteor.Error('err_permissionDenied',
-      `No permission to perform this activity: ${permissionName}, userId: ${userId}, communityId: ${communityId}, objectId: ${object ? object._id : '-'}`);
+      `No permission to perform this activity: ${permissionName}, userId: ${userId}, doc: ${doc}`);
   }
 }
 
@@ -67,7 +67,7 @@ export function checkTopicPermissions(userId, permissionName, topic) {
   }
   if (topic.category === 'ticket') derivedPermissionName = `${topic.ticket.type}.${permissionName}`;
   debugAssert(Permissions.find(perm => perm.name === derivedPermissionName));
-  checkPermissions(userId, derivedPermissionName, topic.communityId, topic);
+  checkPermissions(userId, derivedPermissionName, topic);
 }
 
 export function checkModifier(object, modifier, modifiableFields, exclude = false) {
@@ -102,5 +102,12 @@ export function checkNeededStatus(status, doc) {
   if (status !== doc.status) {
     throw new Meteor.Error('err_permissionDenied',
       `No permission to perform this activity in this status: ${doc.status}, needed status: ${status}`);
+  }
+}
+
+export function checkNoOutstanding(doc) {
+  if (doc.outstanding) {
+    throw new Meteor.Error('err_unableToRemove',
+      'Partner/parcel cannot be deleted while it has outstanding balance', `Outstanding: {${doc.outstanding}}`);
   }
 }

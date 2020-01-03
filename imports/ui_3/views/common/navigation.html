@@ -77,7 +77,7 @@
                         <i class="glyphicon glyphicon-wrench" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Tickets'}}</span>
                         {{#if Template.subscriptionsReady}}
-                        {{#if userHasPermission 'ticket.update'}}
+                        {{#if currentUserHasPermission 'ticket.update'}}
                         {{#if countNotifications 'ticket'}}
                         <span class="badge badge-danger pull-right">{{countNotifications 'ticket'}}</span>
                         {{/if}}
@@ -89,7 +89,7 @@
                     <a class="js-submenu-toggle" href="#"><i class="glyphicon glyphicon-wrench"></i>
                         <span class="nav-label">{{_ 'Maintenance'}}</span>
                         <!--span class="fa arrow"> </span-->
-                        {{#if userHasPermission 'ticket.update'}}
+                        {{#if currentUserHasPermission 'ticket.update'}}
                         {{> Badge value=(countNotifications 'ticket')}}
                         {{/if}}
                     </a>
@@ -98,7 +98,7 @@
                             <a href="{{pathFor 'Tickets'}}">
                                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Tickets report'}}</span>
-                                {{#if userHasPermission 'ticket.update'}}
+                                {{#if currentUserHasPermission 'ticket.update'}}
                                 {{> Badge value=(countNotifications 'ticket')}}
                                 {{/if}}
                             </a>
@@ -107,7 +107,7 @@
                             <a href="{{pathFor 'Worksheets'}}">
                                 <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
                                 <span class="nav-label">{{_ 'Worksheets'}}</span>
-                                {{#if userHasPermission 'ticket.update'}}
+                                {{#if currentUserHasPermission 'ticket.update'}}
                                 {{> Badge value=(countNotifications 'ticket')}}
                                 {{/if}}
                             </a>
@@ -138,7 +138,7 @@
                                 <span class="nav-label">{{_ 'Community finances'}}</span>
                             </a>
                         </li>
-                        {{#if userHasPermission 'transactions.inCommunity'}}
+                        {{#if currentUserHasPermission 'transactions.inCommunity'}}
                         <!--li class="{{isActivePath regex='inventory'}}">
                             <a href="{{pathFor 'Inventory'}}">
                                 <i class="fa fa-calculator" aria-hidden="true"></i>
@@ -146,7 +146,7 @@
                             </a>
                         </li-->
                         {{/if}}
-                        {{#if userHasPermission 'transactions.inCommunity'}}
+                        {{#if currentUserHasPermission 'transactions.inCommunity'}}
                         <li class="{{isActivePath regex='accounting'}}">
                             <a href="{{pathFor 'Accounting'}}">
                                 <i class="fa fa-calculator" aria-hidden="true"></i>
@@ -160,7 +160,7 @@
                     <a href="{{pathFor 'Community page' _cid=(fromSession 'activeCommunityId')}}">
                         <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
                         <span class="nav-label">{{_ 'Community page'}}</span>
-                        {{#if userHasPermission 'parcels.update'}}
+                        {{#if currentUserHasPermission 'parcels.update'}}
                         {{> Badge value=countUnapprovedEntities}}
                         {{/if}}
                     </a>

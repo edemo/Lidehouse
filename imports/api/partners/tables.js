@@ -6,7 +6,7 @@ import './actions.js';
 
 export function partnersColumns() {
   const columns = [
-    { data: 'toString()', title: __('schemaBills.partnerId.label') },
+    { data: 'toString()', title: __('schemaTransactions.partnerId.label') },
     { data: 'outstanding', title: __('schemaBills.outstanding.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'partners', actions: '', size: 'sm' }),

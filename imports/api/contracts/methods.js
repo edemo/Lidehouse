@@ -12,7 +12,7 @@ export const insert = new ValidatedMethod({
   validate: Contracts.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkPermissions(this.userId, 'contracts.insert', doc.communityId);
+    checkPermissions(this.userId, 'contracts.insert', doc);
 
     return Contracts.insert(doc);
   },
@@ -28,7 +28,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Contracts, _id);
     checkModifier(doc, modifier, ['title', 'text', 'partnerId', 'active', 'activeTime.begin', 'activeTime.end']);
-    checkPermissions(this.userId, 'contracts.update', doc.communityId);
+    checkPermissions(this.userId, 'contracts.update', doc);
 
     Contracts.update({ _id }, modifier);
   },
@@ -42,7 +42,7 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Contracts, _id);
-    checkPermissions(this.userId, 'contracts.remove', doc.communityId);
+    checkPermissions(this.userId, 'contracts.remove', doc);
     const worksheets = doc.worksheets();
     if (worksheets.count() > 0) {
       throw new Meteor.Error('err_unableToRemove', 'Contract cannot be deleted while it contains worksheets',

@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
-import { checkExists, checkNotExists, checkModifier, checkPermissions } from '/imports/api/method-checks.js';
+import { checkExists, checkNotExists, checkModifier, checkPermissions, checkNoOutstanding } from '/imports/api/method-checks.js';
 import { crudBatchOps } from '/imports/api/batch-method.js';
 import { Partners } from './partners.js';
 
@@ -14,7 +14,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     doc = Partners._transform(doc);
-    checkPermissions(this.userId, 'partners.insert', doc.communityId);
+    checkPermissions(this.userId, 'partners.insert', doc);
     const _id = Partners.insert(doc);
     return _id;
   },
@@ -30,7 +30,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Partners, _id);
 //    checkModifier(doc, modifier, Partners.modifiableFields);
-    checkPermissions(this.userId, 'partners.update', doc.communityId);
+    checkPermissions(this.userId, 'partners.update', doc);
 
     const result = Partners.update({ _id }, modifier);
     return result;
@@ -45,8 +45,8 @@ export const remove = new ValidatedMethod({
 
   run({ _id }) {
     const doc = checkExists(Partners, _id);
-    checkPermissions(this.userId, 'partners.remove', doc.communityId);
-    
+    checkPermissions(this.userId, 'partners.remove', doc);
+    checkNoOutstanding(doc);
     return Partners.remove(_id);
   },
 });

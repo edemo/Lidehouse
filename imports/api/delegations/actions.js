@@ -17,7 +17,7 @@ Delegations.actions = {
     visible: (options, doc) => currentUserHasPermission('delegations.insert', doc),
     run(options, doc) {
       const communityId = Session.get('activeCommunityId');
-      const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
+      const omitFields = Meteor.user().hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourcePersonId'];
       Modal.show('Autoform_modal', {
         id: 'af.delegation.insert',
         collection: Delegations,
@@ -50,7 +50,7 @@ Delegations.actions = {
     },
     run(options, doc) {
       const communityId = Session.get('activeCommunityId');
-      const omitFields = Meteor.user().hasPermission('delegations.forOthers', communityId) ? [] : ['sourcePersonId'];
+      const omitFields = Meteor.user().hasPermission('delegations.forOthers', { communityId }) ? [] : ['sourcePersonId'];
       Modal.show('Autoform_modal', {
         id: 'af.delegation.update',
         collection: Delegations,

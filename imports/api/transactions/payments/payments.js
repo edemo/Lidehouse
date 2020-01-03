@@ -7,16 +7,14 @@ import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Breakdowns, chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 
-export const Payments = {};
-
-Payments.extensionSchema = new SimpleSchema([Transactions.partnerSchema, {
-  payAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from
+const paymentSchema = new SimpleSchema([Transactions.partnerSchema, {
+  payAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '38') },  // the money account paid to/from -- if $exists: false, means this is a remission
   // Connect either a bill or a contra account
   billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   // contraAccount: { type: String, optional: true, autoform: chooseSubAccount('COA', '') },  // the contra account if no bill is connected
@@ -27,9 +25,9 @@ Transactions.categoryHelpers('payment', {
     if (this.billId) return 0;
     return Transactions.findOne(this.billId).lineCount();
   },
-  post(accountingMethod) {
+  makeJournalEntries(accountingMethod) {
 //    const communityId = this.communityId;
-//    const cat = TxCats.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
+//    const cat = TxDefs.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
     const bill = Transactions.findOne(this.billId);
     const ratio = this.amount / bill.amount;
     function copyLinesInto(txSide) {
@@ -39,27 +37,11 @@ Transactions.categoryHelpers('payment', {
       });
     }
     if (accountingMethod === 'accrual') {
-      if (bill.relation === 'supplier') {
-        this.debit = [{ account: '46' }];
-        this.credit = [{ account: this.payAccount }];
-      } else if (bill.relation === 'customer') {
-        this.debit = [{ account: this.payAccount }];
-        this.credit = [{ account: '31' }];
-      } else if (bill.relation === 'parcel') {
-        this.debit = [{ account: this.payAccount }];
-        this.credit = [{ account: '33'+'' }];
-      } else debugAssert(false, 'No such bill relation');
+      this[bill.conteerSide()] = [{ account: bill.relationAccount() }];
+      this[bill.relationSide()] = [{ account: this.payAccount }];
     } else if (accountingMethod === 'cash') {
-      if (bill.relation === 'supplier') {
-        this.debit = []; copyLinesInto(this.debit);
-        this.credit = [{ account: '46' }];
-      } else if (bill.relation === 'customer') {
-        this.debit = [{ account: '31' }];
-        this.credit = []; copyLinesInto(this.credit);
-      } else if (bill.relation === 'parcel') {
-        this.debit = [{ account: '33'+'' }];  // line.account = Breakdowns.name2code('Assets', 'Owner obligations', parcelBilling.communityId) + parcelBilling.payinType;
-        this.credit = []; copyLinesInto(this.credit);
-      } else debugAssert(false, 'No such bill relation');
+      this[bill.conteerSide()] = []; copyLinesInto(this.bill.conteerSide());
+      this[bill.relationSide()] = [{ account: this.payAccount }];
     }
     return { debit: this.debit, credit: this.credit };
   },
@@ -88,10 +70,10 @@ Transactions.categoryHelpers('payment', {
   },
 });
 
-Transactions.attachVariantSchema(Payments.extensionSchema, { selector: { category: 'payment' } });
+Transactions.attachVariantSchema(paymentSchema, { selector: { category: 'payment' } });
 
 Meteor.startup(function attach() {
-  Transactions.simpleSchema({ category: 'payment' }).i18n('schemaPayments');
+  Transactions.simpleSchema({ category: 'payment' }).i18n('schemaTransactions');
 });
 
 // --- Factory ---

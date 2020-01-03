@@ -16,7 +16,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     doc = Comments._transform(doc);
     const topic = checkExists(Topics, doc.topicId);
-    checkPermissions(this.userId, `${doc.entityName()}.insert`, topic.communityId);
+    checkPermissions(this.userId, `${doc.entityName()}.insert`, topic);
     const docId = Comments.insert(doc);
     const newDoc = Comments.findOne(docId); // we need the createdAt timestamp from the server
     updateMyLastSeen._execute({ userId: this.userId },
@@ -37,7 +37,7 @@ export const update = new ValidatedMethod({
     const doc = checkExists(Comments, _id);
     const topic = checkExists(Topics, doc.topicId);
     checkModifier(doc, modifier, ['text']);     // only the text can be modified
-    checkPermissions(this.userId, `${doc.entityName()}.update`, topic.communityId, doc);
+    checkPermissions(this.userId, `${doc.entityName()}.update`, doc);
 
     Comments.update(_id, modifier, { selector: { category: doc.category } });
   },
@@ -52,7 +52,7 @@ export const move = new ValidatedMethod({
 
   run({ _id, destinationId }) {
     const doc = checkExists(Comments, _id);
-    checkPermissions(this.userId, 'comment.move', doc.communityId, doc);
+    checkPermissions(this.userId, 'comment.move', doc);
 
     Comments.update(_id, { $set: { topicId: destinationId } });
   },
@@ -67,7 +67,7 @@ export const remove = new ValidatedMethod({
   run({ _id }) {
     const doc = checkExists(Comments, _id);
     const topic = checkExists(Topics, doc.topicId);
-    checkPermissions(this.userId, `${doc.entityName()}.remove`, topic.communityId, doc);
+    checkPermissions(this.userId, `${doc.entityName()}.remove`, doc);
 
     Comments.remove(_id);
   },

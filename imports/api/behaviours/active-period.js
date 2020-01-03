@@ -43,6 +43,7 @@ const schema = new SimpleSchema({
     },
   },
 });
+Meteor.startup(() => schema.i18n('schemaActivePeriod'));
 
 const helpers = {
   wasActiveAt(time) {
@@ -129,7 +130,7 @@ const updateActivePeriod = new ValidatedMethod({
     const entity = doc.entityName ? doc.entityName() : collectionName;
 
     if (doc.communityId) {   // TODO: figure out which permission needed
-      checkPermissions(userId, `${entity}.update`, doc.communityId, doc);
+      checkPermissions(userId, `${entity}.update`, doc);
     }
     checkModifier(doc, modifier, ActivePeriod.fields);
 

@@ -17,6 +17,50 @@
       "label": "Last activity by"
     }
   },
+  "schemaActivePeriod": {
+    "activeTime": {
+      "label": "Active time (Can leave blank, if no time constraint)",
+      "begin": {
+        "label": "From",
+        "placeholder": "yyyy-mm-dd"
+      },
+      "end": {
+        "label": "Until",
+        "placeholder": "yyyy-mm-dd"
+      }
+    }
+  },
+  "schemaMoneyAccounts": {
+    "category": {
+      "label": "Account type",
+      "bank": "Bank",
+      "cash": "Cash"
+    },
+    "name": {
+      "label": "Name",
+      "placeholder": "(eg. Savings account)"
+    },
+    "digit": {
+      "label": "Accounting code",
+      "placeholder": "(pl. 2)"
+    },
+    "ban": {
+      "label": "Bank account number",
+      "placeholder": "(eg 12345678-00000000-00000525)"
+    },
+    "sync": {
+      "label": "Bank statement uploading",
+      "none": "None",
+      "manual": "Manual",
+      "auto": "Automatic"
+    },
+    "protocol": {
+      "label": "Bank protocol (if uploading)"
+    },
+    "primary": {
+      "label": "Primary"
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Registered e-mail address",
@@ -157,13 +201,13 @@
       "label": "Last billed"
     },
     "activeTime": {
-      "label": "Active time (install/uninstall)",
+      "label": "Active time period",
       "begin": {
-        "label": "From",
+        "label": "Installation",
         "placeholder": "yyyy-mm-dd"
       },
       "end": {
-        "label": "Until",
+        "label": "Uninstallation",
         "placeholder": "yyyy-mm-dd"
       }
     }
@@ -185,20 +229,9 @@
       }
     }
   },
-  "schemaLeaderships": {
+  "schemaParcelships": {
     "leadRef": {
       "label": "Lead parcel"
-    },
-    "activeTime": {
-      "label": "Active time",
-      "begin": {
-        "label": "From",
-        "placeholder": "yyyy-mm-dd"
-      },
-      "end": {
-        "label": "Until",
-        "placeholder": "yyyy-mm-dd"
-      }
     }
   },
   "schemaMemberships" : {
@@ -268,17 +301,6 @@
       "type": {
         "label": "Type"
       }
-    },
-    "activeTime": {
-      "label": "Active time (Can leave blank, if no time constraint)",
-      "begin": {
-        "label": "From",
-        "placeholder": "yyyy-mm-dd"
-      },
-      "end": {
-        "label": "Until",
-        "placeholder": "yyyy-mm-dd"
-      }
     }
   },
   "schemaDelegations": {
@@ -325,17 +347,6 @@
     },
     "topicIds": {
       "label": "Worksheets"
-    },
-    "activeTime": {
-      "label": "Active time (Can leave blank, if no time constraint)",
-      "begin": {
-        "label": "From",
-        "placeholder": "yyyy-mm-dd"
-      },
-      "end": {
-        "label": "Until",
-        "placeholder": "yyyy-mm-dd"
-      }
     }
   },
   "schemaTopics": {
@@ -618,12 +629,14 @@
       "placeholder": "(eg. 2017-05-06)"
     },
     "partnerId": {
-      "label": "Partner",
-      "placeholder": "(eg. Super Clean Inc)"
+      "label": "Partner"
     },
     "contractId": {
+      "label": "Contract"
+    },
+    "partnerTxt": {
       "label": "Partner",
-      "placeholder": "(eg. Cleaning contract)"
+      "placeholder": "(eg. Super Clean Inc)"
     },
     "sourceId": {
       "label": "Source transaction id"
@@ -664,32 +677,62 @@
         }
       }
     },
-    "ref": {
-      "label": "Reference id",
-      "placeholder": "(eg. transaction no. from bank statement)"
-    },
     "note": {
-      "label": "Note",
-      "placeholder": "(eg. reason or partner identifier)"
+      "label": "Note"
     },
-    // Following lines are for the different txCats
+    // Following lines are for the different txDefs
+    "supplierBillId": {
+      "label": "Supplier bill being bartered"
+    },
+    "customerBillId": {
+      "label": "Customer bill being bartered"
+    },
+    "fromAccount": {
+      "label": "Moving from"
+    },
+    "toAccount": {
+      "label": "Moving to"
+    },
     "account": {
       "label": "Account"
     },
-    "incomeAccount": {
-      "label": "Income account"
-    },
-    "expenseAccount": {
-      "label": "Expense account"
-    },
-    "moneyAccount": {
+    "payAccount": {
       "label": "Money account"
     },
     "localizer": {
       "label": "Accounting location (when applicable)"
     }
   },
-  "schemaTxCats": {
+  "schemaStatementEntries": {
+    "valueDate": {
+      "label": "Accounting date",
+      "placeholder": "(eg. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Amount",
+      "placeholder": "(eg. 14560)"
+    },
+    "account": {
+      "label": "Account"
+    },
+    "partner": {
+      "label": "Partner"
+    },
+    "ref": {
+      "label": "Reference id",
+      "placeholder": "(eg. transaction no. from bank statement)"
+    },
+    "refType": {
+      "label": "Reference type"
+    },
+    "note": {
+      "label": "Note"
+    },
+    "original": {
+      "label": "Original data"
+    }
+  },
+  "schemaTxDefs": {
     "name": {
       "label": "Transaction type name",
       "placeholder": ""
@@ -836,11 +879,6 @@
           "label": "Money account"
         }
       }
-    }
-  },
-  "schemaPayments": {
-    "payAccount": {
-      "label": "Money account"
     }
   },
   "schemaReconiliation": {

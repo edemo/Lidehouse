@@ -30,7 +30,7 @@ Meters.actions = {
   view: {
     name: 'view',
     icon: () => 'fa fa-eye',
-    visible: (options, doc) => currentUserHasPermission('meters.inCommunity', doc),
+    visible: (options, doc) => currentUserHasPermission('parcels.details', doc.parcel()),
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.meter.view',
@@ -94,7 +94,8 @@ Meters.actions = {
     run(options, doc) {
       Modal.show('Autoform_modal', {
         id: 'af.meter.update',
-        schema: ActivePeriod.schema,
+        collection: Meters,
+        fields: ['activeTime'],
         doc,
         type: 'method-update',
         meteormethod: 'meters.updateActivePeriod',

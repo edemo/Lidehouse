@@ -3,20 +3,28 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { _ } from 'meteor/underscore';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { BatchAction } from '/imports/api/batch-action.js';
+
+import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { BatchAction } from '/imports/api/batch-action.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { Transactions } from './transactions.js';
+import './entities.js';
 import './methods.js';
 
-function setModalContext(category) {
+function txDefFromEntity(options, doc, event, instance) {
+  const category = options.entity.name;
   const communityId = Session.get('activeCommunityId');
-  const activePartnerRelation = Session.get('activePartnerRelation');
-  if (category === 'bill' || category === 'payment') {
-    const txCat = TxCats.findOne({ communityId, category, 'data.relation': activePartnerRelation });
-    Session.update('modalContext', 'txCatId', txCat._id);
-  }
+  const partnerRelation = (doc && doc.relation) || instance.viewmodel.activePartnerRelation();
+  const txDef = TxDefs.findOne({ communityId, category, 'data.relation': partnerRelation });
+  return txDef;
+}
+
+function fillMissingOptionParams(options, doc, event, instance) {
+  if (options.entity) options.txDef = txDefFromEntity(options, doc, event, instance);
+  else if (options.txDef) options.entity = Transactions.entities[options.txDef.category];
+  else debugAssert(false, 'Either entity or txDef needs to come in the options');
 }
 
 Transactions.actions = {
@@ -24,9 +32,10 @@ Transactions.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('transactions.insert', doc),
-    run(options, doc) {
+    run(options, doc, event, instance) {
+      fillMissingOptionParams(options, doc, event, instance);
+      Session.update('modalContext', 'txDef', options.txDef);
       const entity = options.entity;
-      setModalContext(entity.name);
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -51,7 +60,7 @@ Transactions.actions = {
     visible: (options, doc) => currentUserHasPermission('transactions.inCommunity', doc),
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-      setModalContext(entity.name);
+      Session.update('modalContext', 'txDef', doc.txDef());
       Modal.show('Autoform_modal', {
         body: entity.viewForm,
         bodyContext: { doc },
@@ -76,7 +85,7 @@ Transactions.actions = {
     },
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-      setModalContext(entity.name);
+      Session.update('modalContext', 'txDef', doc.txDef());
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -146,31 +155,33 @@ Transactions.batchActions = {
 
 //-------------------------------------------------
 
-AutoForm.addModalHooks('af.transaction.view');
-AutoForm.addModalHooks('af.transaction.insert');
-AutoForm.addModalHooks('af.transaction.update');
-AutoForm.addModalHooks('af.transaction.post');
+Transactions.categoryValues.forEach(category => {
+  AutoForm.addModalHooks(`af.${category}.view`);
+  AutoForm.addModalHooks(`af.${category}.insert`);
+  AutoForm.addModalHooks(`af.${category}.update`);
 
-AutoForm.addHooks('af.transaction.insert', {
-  formToDoc(doc) {
-    doc.communityId = Session.get('activeCommunityId');
-    return doc;
-  },
-  onSubmit(doc) {
-    AutoForm.validateForm('af.transaction.insert');
-    const catId = Session.get('modalContext').txCatId;
-    const cat = TxCats.findOne(catId);
-    doc.catId = catId;
-    cat.transformToTransaction(doc);
-    const self = this;
-    Transactions.methods.insert.call(doc, function handler(err, res) {
-      if (err) {
-//        displayError(err);
-        self.done(err);
-        return;
+  AutoForm.addHooks(`af.${category}.insert`, {
+    formToDoc(doc) {
+      doc.communityId = Session.get('activeCommunityId');
+      doc.category = category;
+      const txDef = Session.get('modalContext').txDef;
+      doc.defId = txDef._id;
+      _.each(txDef.data, (value, key) => doc[key] = value);
+      if (category === 'bill') {
+        doc.valueDate = doc.deliveryDate;
+        doc.lines = _.without(doc.lines, undefined);
+      } else if (category === 'receipt') {
+        doc.lines = _.without(doc.lines, undefined);
+      } else if (category === 'payment') {
+        const billId = Session.get('modalContext').billId;
+        if (billId) {
+          const bill = Transactions.findOne(billId);
+          doc.relation = bill.relation;
+          doc.partnerId = bill.partnerId;
+          doc.billId = billId;
+        }
       }
-      self.done(null, res);
-    });
-    return false;
-  },
+      return doc;
+    },
+  });
 });

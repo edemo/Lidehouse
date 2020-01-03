@@ -216,10 +216,10 @@ Template.Worksheets.viewmodel({
       const communityId = self.communityId();
       const permissions = {
         view: true,
-        edit: Meteor.userOrNull().hasPermission('ticket.update', communityId),
-        statusChange: Meteor.userOrNull().hasPermission('ticket.statusChange', communityId),
-        statusUpdate: Meteor.userOrNull().hasPermission('ticket.statusChange', communityId),
-        delete: Meteor.userOrNull().hasPermission('ticket.remove', communityId),
+        edit: Meteor.userOrNull().hasPermission('ticket.update', { communityId }),
+        statusChange: Meteor.userOrNull().hasPermission('ticket.statusChange', { communityId }),
+        statusUpdate: Meteor.userOrNull().hasPermission('ticket.statusChange', { communityId }),
+        delete: Meteor.userOrNull().hasPermission('ticket.remove', { communityId }),
       };
       return {
         columns: ticketColumns(permissions),

@@ -13,5 +13,26 @@ Transactions.entities = {
     name: 'payment',
     fields: ['amount', 'valueDate', 'payAccount'],
   },
+  barter: {
+    name: 'barter',
+    omitFields: ['debit', 'credit'],
+  },
+  receipt: {
+    name: 'receipt',
+    viewForm: 'Bill_show',
+    editForm: 'Bill_edit',
+    size: 'lg',
+  },
+  transfer: {
+    name: 'transfer',
+    fields: ['amount', 'valueDate', 'fromAccount', 'toAccount'],
+  },
+  opening: {
+    name: 'opening',
+    fields: ['amount', 'valueDate', 'account'],
+  },
+  freeTx: {
+    name: 'freeTx',
+  },
 };
 

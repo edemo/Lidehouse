@@ -28,8 +28,8 @@ Template.Parcels_finances.viewmodel({
     instance.autorun(() => {
       const communityId = Session.get('activeCommunityId');
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('leaderships.inCommunity', { communityId });
-      if (Meteor.userOrNull().hasPermission('bills.outstanding')) {
+      instance.subscribe('parcelships.inCommunity', { communityId });
+      if (Meteor.userOrNull().hasPermission('bills.outstanding', { communityId })) {
         if (self.showAllParcels()) {
           instance.subscribe('parcels.outstanding', { communityId });
         } else {
@@ -48,7 +48,7 @@ Template.Parcels_finances.viewmodel({
   },
   parcelChoices() {
     const communityId = Session.get('activeCommunityId');
-    const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers') ?
+    const parcels = Meteor.userOrNull().hasPermission('balances.ofLocalizers', { communityId }) ?
         Parcels.find({ communityId, approved: true }).fetch().filter(p => !p.isLed()) : this.myLeadParcels();
     return parcels.map((parcel) => {
       return {
@@ -92,10 +92,10 @@ Template.Parcels_finances.viewmodel({
     return () => {
       const communityId = self.communityId();
       const permissions = {
-        view: Meteor.userOrNull().hasPermission('parcels.inCommunity', communityId),
-        edit: Meteor.userOrNull().hasPermission('parcels.update', communityId),
-        delete: Meteor.userOrNull().hasPermission('parcels.remove', communityId),
-        assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', communityId),
+        view: Meteor.userOrNull().hasPermission('parcels.inCommunity', { communityId }),
+        edit: Meteor.userOrNull().hasPermission('parcels.update', { communityId }),
+        delete: Meteor.userOrNull().hasPermission('parcels.remove', { communityId }),
+        assign: Meteor.userOrNull().hasPermission('memberships.inCommunity', { communityId }),
       };
       return {
         columns: parcelColumns(permissions),

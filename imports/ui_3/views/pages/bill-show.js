@@ -16,7 +16,7 @@ Template.Bill_show.viewmodel({
   docVm: undefined,
   onCreated(instance) {
   //  const billId = FlowRouter.getParam('_bid');
-  //  this.subscribe('bills.byId', { _id: billId });
+    instance.subscribe('bills.byId', { _id: this.templateInstance.data.doc._id });
   //  this.docVm(instance.data.doc);
   },
   autorun() {
@@ -42,5 +42,11 @@ Template.Bill_show.viewmodel({
   },
   code2parcelRef(code) {
     return Localizer.code2parcelRef(code);
+  },
+  partnerRelation() {
+    return Session.get('modalContext').txDef.data.relation;
+  },
+  isBill() {
+    return Session.get('modalContext').txDef.category === 'bill';
   },
 });

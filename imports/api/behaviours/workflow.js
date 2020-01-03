@@ -34,8 +34,8 @@ const schema = new SimpleSchema({
   closesAt: { type: Date, optional: true, autoform: _.extend({ omit: true }, noUpdate),
     custom() {
       const closingDate = this.value;
-      const openingDate = this.field('opensAt').value || Clock.currentTime(); 
-      const dayLater = moment(openingDate).add(1, 'day').toDate()
+      const openingDate = this.field('opensAt').value || Clock.currentTime();
+      const dayLater = moment(openingDate).add(1, 'day').toDate();
       if (moment(Clock.currentTime()).add(1, 'day').toDate() > this.value) return 'notAllowed';
       if (closingDate <= dayLater) return 'notAllowed';
       return undefined;
@@ -106,8 +106,8 @@ const statusChange = new ValidatedMethod({
     const topic = checkExists(Topics, event.topicId);
     const category = topic.category;
     const workflow = topic.workflow();
-    // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic.communityId);
-    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic.communityId, topic);
+    // checkPermissions(this.userId, `${category}.${event.type}.${topic.status}.leave`, topic);
+    checkPermissions(this.userId, `${category}.statusChangeTo.${event.status}.enter`, topic, topic);
     checkStatusChangeAllowed(topic, event.status);
 
     const onLeave = workflow[topic.status].obj.onLeave;
@@ -148,7 +148,7 @@ const statusUpdate = new ValidatedMethod({
     if (topic.modifiableFieldsByStatus()) {
       topic.modifiableFieldsByStatus().forEach(key => modifiableFields.push(`${category}.${key}`));
     }
-    checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic.communityId, topic);
+    checkPermissions(this.userId, `${category}.statusChangeTo.${topic.status}.enter`, topic);
     checkModifier(topic, modifier, modifiableFields);
     Topics.update(_id, modifier, { selector: { category } });
   },

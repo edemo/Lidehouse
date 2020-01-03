@@ -76,7 +76,7 @@ Meteor.startup(function indexMemberships() {
   Memberships.ensureIndex({ parcelId: 1 }, { sparse: true });
   Memberships.ensureIndex({ personId: 1 }, { sparse: true });
   if (Meteor.isServer) {
-    Memberships._ensureIndex({ communityId: 1, approved: 1, active: 1, role: 1 });
+    Memberships._ensureIndex({ communityId: 1, parcelId: 1, approved: 1, active: 1, role: 1 });
   }
 });
 
@@ -192,9 +192,10 @@ nonOccupantRoles.forEach(role =>
 // but unfortunately when you pull it into Memberships.schema, it gets copied over,
 // and that happens earlier than TAPi18n extra comtype transaltions get added.
 Meteor.startup(function attach() {
-  nonOccupantRoles.forEach(role =>
-    Memberships.simpleSchema({ role }).i18n('schemaMemberships')
-  );
+  nonOccupantRoles.forEach((role) => {
+    Memberships.simpleSchema({ role }).i18n('schemaMemberships');
+    Memberships.simpleSchema({ role }).i18n('schemaActivePeriod');
+  });
 });
 
 Memberships.publicFields = {

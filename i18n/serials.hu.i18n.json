@@ -6,6 +6,12 @@
   "UPG": "F",
   // Transactions
   "BIL": "SZ",
+  "REC": "NY",
+  "PAY": "FIZ",
+  "BAR": "BESZ",
+  "OPE": "NYIT",
+  "FRE": "VEGY",
+
   "SUP": "BE",
   "CUS": "KI",
   "PAR": "DB"

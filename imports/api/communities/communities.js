@@ -13,12 +13,12 @@ import { availableLanguages } from '/imports/startup/both/language.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { MoneyAccounts } from '/imports/api/money-accounts/money-accounts.js';
 
 export const Communities = new Mongo.Collection('communities');
 
 const defaultAvatar = '/images/defaulthouse.jpg';
 Communities.accountingMethods = ['cash', 'accrual'];
-Communities.bankProtocols = ['auto', 'manual'];
 
 Communities.settingsSchema = new SimpleSchema({
   joinable: { type: Boolean, defaultValue: true },
@@ -28,26 +28,18 @@ Communities.settingsSchema = new SimpleSchema({
   accountingMethod: { type: String, allowedValues: Communities.accountingMethods, autoform: autoformOptions(Communities.accountingMethods, 'schemaCommunities.settings.accountingMethod.'), defaultValue: 'accrual' },
 });
 
-Communities.bankAccountSchema = new SimpleSchema({
+Communities.schema = new SimpleSchema([{
   name: { type: String, max: 100 },
-  accountNumber: { type: String, max: 100 },
-  protocol: { type: String, allowedValues: Communities.bankProtocols, autoform: autoformOptions(Communities.bankProtocols, 'schemaCommunities.settings.bankAccounts.protocol.'),  optional: true },
-  primary: { type: Boolean, optional: true },
-});
-
-Communities.schema = new SimpleSchema([
-  { name: { type: String, max: 100 } },
-  { description: { type: String, max: 1200, optional: true } },
-  { avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload } },
-  comtype.profileSchema,
-  { management: { type: String, optional: true, autoform: { type: 'textarea' } } },
-  { taxNumber: { type: String, max: 50, optional: true } },
-  { totalunits: { type: Number } },
-  { settings: { type: Communities.settingsSchema } },
-  { bankAccounts: { type: [Communities.bankAccountSchema] } },
+  description: { type: String, max: 1200, optional: true },
+  avatar: { type: String, defaultValue: defaultAvatar, optional: true, autoform: fileUpload },
+}, comtype.profileSchema, {
+  management: { type: String, optional: true, autoform: { type: 'textarea' } },
+  taxNumber: { type: String, max: 50, optional: true },
+  totalunits: { type: Number },
+  settings: { type: Communities.settingsSchema },
   // redundant fields:
-  { parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } } },
-]);
+  parcels: { type: Object, blackbox: true, defaultValue: {}, autoform: { omit: true } },
+}]);
 
 Meteor.startup(function indexCommunities() {
   if (Meteor.isServer) {
@@ -69,18 +61,24 @@ Communities.helpers({
   displayAddress() {
     return displayAddress(this);
   },
-  primaryBankAccount() {
-    let result;
-    this.bankAccounts.forEach(bank => {
-      if (bank.primary) { result = bank; return false; }
-    });
-    return result || this.bankAccounts[0];
-  },
   asPartner() {
     const partner = _.clone(this);
     partner.contact = { address: this.displayAddress() };
     partner.bankAccountNumber = this.primaryBankAccount().number; 
     return partner;
+  },
+  moneyAccounts() {
+    return MoneyAccounts.find({ communityId: this._id });
+  },
+  primaryBankAccount() {
+    const bankAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'bank', primary: true });
+    if (!bankAccount) throw new Meteor.Error('err_notExixts', 'no primary bankaccount configured');
+    return bankAccount;
+  },
+  primaryCashAccount() {
+    const cashAccount = MoneyAccounts.findOne({ communityId: this._id, category: 'cash', primary: true });
+    if (!cashAccount) throw new Meteor.Error('err_notExixts', 'no primary cash account configured');
+    return cashAccount;
   },
   admin() {
     const adminMembership = Memberships.findOneActive({ communityId: this._id, role: 'admin' });
@@ -117,10 +115,7 @@ Meteor.startup(function attach() {
 
 if (Meteor.isServer) {
   Communities.after.remove(function (userId, doc) {
-    Mongo.Collection.getAll().forEach((collection) => {
-      releaseAssert(doc._id, 'err_notExists', 'No _id on doc');
-      collection.instance.remove({ communityId: doc._id });
-    });
+    // cascading clean was moved to the method
   });
 }
 
@@ -139,9 +134,4 @@ Factory.define('community', Communities, {
     joinable: true,
     accountingMethod: 'cash',
   },
-  bankAccounts: () => [{
-    name: 'bankszla',
-    accountNumber: faker.finance.account(8) + '-' + faker.finance.account(8) + '-' + faker.finance.account(8),
-    primary: true,
-  }],
 });

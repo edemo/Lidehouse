@@ -29,7 +29,7 @@ if (Meteor.isClient) {
 }
 
 export const nullUser = {
-  hasPermission(permissionName, communityId, object) {
+  hasPermission(permissionName, doc) {
     const permission = Permissions.find(perm => perm.name === permissionName);
     if (!permission) return false;
     return _.contains(permission.roles, 'null');
@@ -221,8 +221,17 @@ Meteor.users.helpers({
   ownedLeadParcels(communityId) {
     return this.ownedParcels(communityId).filter(p => !p.isLed());
   },
-  activeRoles(communityId) {
-    return _.uniq(Memberships.findActive({ communityId, approved: true, personId: this._id }).fetch().map(m => m.role));
+  activeRoles(communityId, parcelId) {
+    if (!communityId) return [];
+    let roles;
+    if (parcelId) {
+      const communityScopedRoles = Memberships.findActive({ communityId, parcelId: { $exists: false }, approved: true, personId: this._id }).map(m => m.role);
+      const parcelScopedRoles = Memberships.findActive({ communityId, parcelId, approved: true, personId: this._id }).map(m => m.role);
+      roles = communityScopedRoles.concat(parcelScopedRoles);
+    } else { // parcelId may be undefined, when permission is not parcelScoped
+      roles = Memberships.findActive({ communityId, approved: true, personId: this._id }).map(m => m.role);
+    }
+    return _.uniq(roles);
   },
   communities() {
     const memberships = Memberships.findActive({ approved: true, personId: this._id }).fetch();
@@ -247,15 +256,22 @@ Meteor.users.helpers({
     const userHasTheseRoles = this.activeRoles(communityId);
     return _.contains(userHasTheseRoles, roleName);
   },
-  hasPermission(permissionName, communityId = getActiveCommunityId(), object) {
+  hasPermission(permissionName, doc) {
+    if (!doc) return false;
     const permission = Permissions.find(p => p.name === permissionName);
     debugAssert(permission, `No such permission "${permissionName}"`);
     const rolesWithThePermission = permission.roles;
     if (_.contains(rolesWithThePermission, 'null')) return true;
-    if (permission.allowAuthor && object && object.creatorId && (object.creatorId === this._id)) return true;
-    const userHasTheseRoles = this.activeRoles(communityId);
+    if (permission.allowAuthor && doc && doc.creatorId && (doc.creatorId === this._id)) return true;
+    const entityName = permissionName.split('.')[0];
+    const communityId = (entityName === 'communities') ? doc._id : doc.communityId;
+    let parcelId;
+    if (permission.parcelScoped) {
+      parcelId = (entityName === 'parcels') ? doc._id : doc.parcelId;
+    }
+    const userHasTheseRoles = this.activeRoles(communityId, parcelId);
     const result = _.some(userHasTheseRoles, role => _.contains(rolesWithThePermission, role));
-//  console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, ' is ', result);
+//    console.log(this.safeUsername(), ' haspermission ', permissionName, ' in ', communityId, parcelId, ' is ', result);
 //  if (!result) console.log(this.safeUsername(), 'current permissions:', this.activeRoles(communityId));
     return result;
   },

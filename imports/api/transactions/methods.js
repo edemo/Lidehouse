@@ -10,11 +10,11 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import '/imports/api/transactions/breakdowns/methods.js';
-import '/imports/api/transactions/tx-cats/methods.js';
+import '/imports/api/transactions/tx-defs/methods.js';
 
 /*
 function runPositingRules(context, doc) {
@@ -40,25 +40,57 @@ function runPositingRules(context, doc) {
 }
 */
 
+export const post = new ValidatedMethod({
+  name: 'transactions.post',
+  validate: new SimpleSchema({
+    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
+  }).validator(),
+  run({ _id }) {
+    const doc = checkExists(Transactions, _id);
+    checkPermissions(this.userId, 'transactions.post', doc);
+    if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
+    if (doc.category === 'bill') {
+      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+    } else if (doc.category === 'payment') {
+      if (!doc.billId) throw new Meteor.Error('Bill has to exist first');
+      const bill = checkExists(Transactions, doc.billId);
+      if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+    }
+
+    const community = Communities.findOne(doc.communityId);
+    const accountingMethod = community.settings.accountingMethod;
+    const updateData = doc.makeJournalEntries(accountingMethod);
+    return Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
+  },
+});
+
 export const insert = new ValidatedMethod({
   name: 'transactions.insert',
   validate: doc => Transactions.simpleSchema(doc).validator({ clean: true })(doc),
   run(doc) {
-    checkPermissions(this.userId, 'transactions.insert', doc.communityId);
+    doc = Transactions._transform(doc);
+    checkPermissions(this.userId, 'transactions.insert', doc);
     if (doc.category === 'payment') {
       if (doc.billId) {
         const bill = Transactions.findOne(doc.billId);
+//      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
         if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
         doc.relation = bill.relation;
         doc.partnerId = bill.partnerId;
         doc.contractId = bill.contractId;
       }
-//      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');
+    } else if (doc.category === 'barter') {
+      const supplierBill = doc.supplierBill();
+      const customerBill = doc.customerBill();
+      if (!supplierBill.hasConteerData() || !customerBill.hasConteerData()) throw new Meteor.Error('Bartered bill has to be conteered first');
+      if (supplierBill.relation !== 'supplier') throw new Meteor.Error('Supplier bill is not from a supplier');
+      if (customerBill.relation !== 'customer' && customerBill.relation !== 'parcel') throw new Meteor.Error('Customer bill is not from a customer/owner');
     }
 
-    const id = Transactions.insert(doc);
+    const _id = Transactions.insert(doc);
+    if (doc.txDef().isAutoPosting()) post._execute({ userId: this.userId }, { _id });
 //    runPositingRules(this, doc);
-    return id;
+    return _id;
   },
 });
 
@@ -71,7 +103,7 @@ export const update = new ValidatedMethod({
   run({ _id, modifier }) {
     const doc = checkExists(Transactions, _id);
     checkModifier(doc, modifier, ['communityId'], true);
-    checkPermissions(this.userId, 'transactions.update', doc.communityId);
+    checkPermissions(this.userId, 'transactions.update', doc);
     if (doc.isSolidified() && doc.complete) {
       throw new Meteor.Error('err_permissionDenied', 'No permission to modify transaction after 24 hours');
     }
@@ -86,30 +118,6 @@ function checkMatches(tx, txLeg, bill) {
   }
 }
 
-export const post = new ValidatedMethod({
-  name: 'transactions.post',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id },
-  }).validator(),
-  run({ _id }) {
-    const doc = checkExists(Transactions, _id);
-    checkPermissions(this.userId, 'transactions.post', doc.communityId);
-    if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
-    if (doc.category === 'bill') {
-      if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-    } else if (doc.category === 'payment') {
-      if (!doc.billId) throw new Meteor.Error('Bill has to exist first');
-      const bill = checkExists(Transactions, doc.billId);
-      if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-    }
-
-    const community = Communities.findOne(doc.communityId);
-    const accountingMethod = community.settings.accountingMethod;
-    const updateData = doc.post(accountingMethod);
-    return Transactions.update(_id, { $set: { postedAt: new Date(), ...updateData } });
-  },
-});
-
 export const remove = new ValidatedMethod({
   name: 'transactions.remove',
   validate: new SimpleSchema({
@@ -117,7 +125,7 @@ export const remove = new ValidatedMethod({
   }).validator(),
   run({ _id }) {
     const doc = checkExists(Transactions, _id);
-    checkPermissions(this.userId, 'transactions.remove', doc.communityId);
+    checkPermissions(this.userId, 'transactions.remove', doc);
     if (doc.isSolidified() && doc.complete) {
       // Not possible to delete tx after 24 hours, but possible to negate it with another tx
       Transactions.insert(doc.negator());
@@ -134,7 +142,7 @@ export const cloneAccountingTemplates = new ValidatedMethod({
 //    name: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
   run({ communityId /*, name*/ }) {
-    checkPermissions(this.userId, 'breakdowns.insert', communityId);
+    checkPermissions(this.userId, 'breakdowns.insert', { communityId });
     const user = Meteor.users.findOne(this.userId);
     const breakdownsToClone = Breakdowns.find({ communityId: null }).map(brd => brd.name);
     breakdownsToClone.forEach((breakdownName) => {
@@ -143,11 +151,11 @@ export const cloneAccountingTemplates = new ValidatedMethod({
         { name: breakdownName, communityId },
       );
     });
-    const txCatsToClone = TxCats.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
-    txCatsToClone.forEach((txCatName) => {
-      TxCats.methods.clone._execute(
+    const txDefsToClone = TxDefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
+    txDefsToClone.forEach((txDefName) => {
+      TxDefs.methods.clone._execute(
         { userId: this.userId },
-        { name: txCatName, communityId },
+        { name: txDefName, communityId },
       );
     });
     Localizer.generateParcels(communityId, user.settings.language);

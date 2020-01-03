@@ -10,7 +10,7 @@ Meteor.publish('agendas.inCommunity', function agendasInCommunity(params) {
   const { communityId } = params;
 
   const user = Meteor.users.findOneOrNull(this.userId);
-  if (!user.hasPermission('agendas.inCommunity', communityId)) {
+  if (!user.hasPermission('agendas.inCommunity', { communityId })) {
     return this.ready();
   }
 

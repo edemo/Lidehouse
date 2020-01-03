@@ -8,14 +8,14 @@ export const Attachments = new Mongo.Collection('attachments');
 Attachments.hasPermissionToUpload = function hasPermissionToUpload(userId, doc) {
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
-  return user.hasPermission('attachments.upload', doc.communityId, doc);
+  return user.hasPermission('attachments.upload', doc);
 };
 
 Attachments.hasPermissionToRemoveUploaded = function hasPermissionToRemoveUploaded(userId, doc) {
   if (Meteor.isServer) return true;
   if (!userId) return false;
   const user = Meteor.users.findOne(userId);
-  return user.hasPermission('attachments.remove', doc.communityId, doc);
+  return user.hasPermission('attachments.remove', doc);
 };
 
 // Can be manipulated only through the AttachmentsStore interface

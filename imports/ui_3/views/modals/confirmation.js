@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
+import { _ } from 'meteor/underscore';
 
 import { displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { __ } from '/imports/localization/i18n.js';
@@ -18,9 +19,7 @@ Template.Confirmation.events({
 Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options) {
   const split = options.action.split(' ');
   const translatedDoneMessage = __(split[1]) + ' ' + __(`actionDone_${split[0]}`);
-  Modal.show('Confirmation', {
-    action: options.action,
-    body: (options.message || ''),
+  Modal.show('Confirmation', _.extend({}, options, {
     onOK() {
       method.call(params, function handler(err, res) {
         if (err) {
@@ -32,5 +31,5 @@ Modal.confirmAndCall = function ModalConfirmAndCall(method, params, options) {
         }
       });
     },
-  });
+  }));
 };

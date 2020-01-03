@@ -15,7 +15,7 @@ export const insert = new ValidatedMethod({
 
   run(doc) {
     checkNotExists(Balances, { communityId: doc.communityId, account: doc.account, localizer: doc.localizer, tag: doc.tag });
-    checkPermissions(this.userId, 'balances.insert', doc.communityId);
+    checkPermissions(this.userId, 'balances.insert', doc);
     checkConstraint(doc.tag.startsWith('C-'), 'Only closing balances can be inserted directly');
     // T-balances get automatically updaed by transactions, and P balances are created by balances.publish
     const result = Balances.insert(doc);
@@ -53,7 +53,7 @@ export const publish = new ValidatedMethod({
   }).validator(),
 
   run({ communityId }) {
-    checkPermissions(this.userId, 'balances.publish', communityId);
+    checkPermissions(this.userId, 'balances.publish', { communityId });
     const coa = ChartOfAccounts.get(communityId);
     coa.leafs().forEach((leaf) => {
       // Publish makes a copy of all T-balances, and mark it as a P-balance

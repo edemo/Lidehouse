@@ -17,11 +17,13 @@ import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-a
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
 import '/imports/api/transactions/breakdowns/actions.js';
-import '/imports/api/transactions/tx-cats/actions.js';
+import '/imports/api/transactions/tx-defs/actions.js';
+import { MoneyAccounts } from '/imports/api/money-accounts/money-accounts.js';
+import '/imports/api/money-accounts/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-import '/imports/api/transactions/tx-cats/methods.js';
+import '/imports/api/transactions/tx-defs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-breakdowns.html';
@@ -31,7 +33,8 @@ Template.Accounting_breakdowns.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txCats.inCommunity', { communityId });
+      instance.subscribe('txDefs.inCommunity', { communityId });
+      instance.subscribe('moneyAccounts.inCommunity', { communityId });
     });
   },
   communityId() {
@@ -41,10 +44,15 @@ Template.Accounting_breakdowns.viewmodel({
     const communityId = Session.get('activeCommunityId');
     return Breakdowns.find({ communityId }).count() === 0;
   },
-  txCats() {
+  txDefs() {
     const communityId = Session.get('activeCommunityId');
-    const txCats = TxCats.find({ communityId });
-    return txCats;
+    const txDefs = TxDefs.find({ communityId });
+    return txDefs;
+  },
+  moneyAccounts() {
+    const communityId = Session.get('activeCommunityId');
+    const moneyAccounts = MoneyAccounts.find({ communityId }, { sort: { digit: 1 } });
+    return moneyAccounts;
   },
   breakdownsTableDataFn(tab) {
     const templateInstance = Template.instance();
@@ -81,15 +89,10 @@ Template.Accounting_breakdowns.viewmodel({
   },
 });
 
-Template.Accounting_breakdowns.events(
-  actionHandlers(Breakdowns)
-);
-
-Template.Accounting_breakdowns.events(
-  actionHandlers(TxCats)
-);
-
 Template.Accounting_breakdowns.events({
+  ...(actionHandlers(Breakdowns)),
+  ...(actionHandlers(TxDefs, 'new')),
+  ...(actionHandlers(MoneyAccounts, 'new')),
   'click #coa .js-clone'(event, instance) {
     const communityId = Session.get('activeCommunityId');
     Transactions.methods.cloneAccountingTemplates.call({ communityId }, handleError);

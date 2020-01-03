@@ -49,7 +49,7 @@ Template.Main_layout.onCreated(function() {
   this.autorun(() => {
     const user = Meteor.userOrNull();
     const communityId = Session.get('activeCommunityId');
-    if (user.hasPermission('delegations.inCommunity', communityId)) {
+    if (user.hasPermission('delegations.inCommunity', { communityId })) {
       this.subscribe('delegations.inCommunity', { communityId });
     }
   });

@@ -2,7 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
-import { TxCats } from '/imports/api/transactions/tx-cats/tx-cats.js';
+
+import { BatchAction } from '/imports/api/batch-action.js';
+import { importCollectionFromFile } from '/imports/utils/import.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { StatementEntries } from './statement-entries.js';
 import './methods.js';
@@ -12,14 +14,22 @@ StatementEntries.actions = {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('statements.insert', doc),
-    run() {
+    run(options, doc, event, instance) {
+      Session.update('modalContext', 'account', instance.viewmodel.accountSelected());
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.insert',
         collection: StatementEntries,
+        omitFields: ['original'],
         type: 'method',
         meteormethod: 'statementEntries.insert',
       });
     },
+  },
+  import: {
+    name: 'import',
+    icon: () => 'fa fa-upload',
+    visible: (options, doc) => currentUserHasPermission('statements.upsert', doc),
+    run: () => importCollectionFromFile(StatementEntries, { keepOriginals: true }),
   },
   view: {
     name: 'view',
@@ -42,6 +52,7 @@ StatementEntries.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.update',
         collection: StatementEntries,
+        omitFields: ['original'],
         doc,
         type: 'method-update',
         meteormethod: 'statements.update',
@@ -69,6 +80,20 @@ StatementEntries.actions = {
       });
     },
   },
+  delete: {
+    name: 'delete',
+    icon: () => 'fa fa-trash',
+    visible: (options, doc) => currentUserHasPermission('transactions.remove', doc),
+    run(options, doc) {
+      Modal.confirmAndCall(StatementEntries.methods.remove, { _id: doc._id }, {
+        action: 'delete statementEntry',
+      });
+    },
+  },
+};
+
+StatementEntries.batchActions = {
+  delete: new BatchAction(StatementEntries.actions.delete, StatementEntries.methods.batch.remove),
 };
 
 //--------------------------------------------------------
@@ -78,9 +103,28 @@ AutoForm.addModalHooks('af.statementEntry.update');
 AutoForm.addModalHooks('af.statementEntry.reconcile');
 
 AutoForm.addHooks('af.statementEntry.insert', {
+  docToForm(doc) {
+    doc.account = Session.get('modalContext').account;
+    return doc;
+  },
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;
+  },
+});
+
+AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.insert', 'af.statementEntry.update'], {
+  formToDoc(doc) {
+    doc.original = JSON.parse(doc.original);
+    return doc;
+  },
+  docToForm(doc) {
+    doc.original = JSON.stringify(doc.original, null, 2);
+    return doc;
+  },
+  formToModifier(modifier) {
+    modifier.$set.original = JSON.parse(modifier.$set.original);
+    return modifier;
   },
 });
 

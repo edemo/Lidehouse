@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
+import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';  // TODO get rid of
 import './menu-overflow-guard.js';
 import './action-buttons.html';
 
@@ -17,9 +18,11 @@ export function actionHandlers(collection, actionNames) {
       const id = $(event.target).closest('[data-id]').data('id');
       const doc = id ? collection.findOne(id) : undefined;
       const entity = $(event.target).closest('[data-entity]').data('entity');
+      const txdef = $(event.target).closest('[data-txdef]').data('txdef');
       const status = $(event.target).closest('[data-status]').data('status');
       const options = {
         entity: entity && collection.entities[entity],
+        txDef: txdef && TxDefs.findOne(txdef),
         status: doc && status && doc.statusObject(status),
       };
       action.run(options, doc, event, instance);
@@ -33,6 +36,7 @@ function buttonData2HtmlObj(instanceData) {
   obj['data-id'] = (typeof instanceData.doc === 'object') ? instanceData.doc._id : instanceData.doc;
   obj['data-status'] = instanceData.options && instanceData.options.status && instanceData.options.status.name;
   obj['data-entity'] = instanceData.options && instanceData.options.entity && instanceData.options.entity.name;
+  obj['data-txdef'] = instanceData.options && instanceData.options.txDef && instanceData.options.txDef._id;
   // TODO should copy all data-* atts over in one generic call
   //  _.forEach(instanceData.options, (value, key) => {
   //    obj[`data-${key}`] = value;

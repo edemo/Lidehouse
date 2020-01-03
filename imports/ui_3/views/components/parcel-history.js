@@ -22,7 +22,7 @@ Template.Parcel_history.viewmodel({
     instance.autorun(() => {
       if (this.partnerSelected()) {
         instance.subscribe('transactions.byPartner', this.subscribeParams());
-        instance.subscribe('txCats.inCommunity', { communityId: this.communityId() });
+        instance.subscribe('txDefs.inCommunity', { communityId: this.communityId() });
       }
     });
   },

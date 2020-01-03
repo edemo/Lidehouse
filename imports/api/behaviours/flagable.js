@@ -31,7 +31,7 @@ const helpers = {
     this.getFlags().forEach((flaggerId) => {
       if (flaggerId === userId) result = 'you';
       const flagger = Meteor.users.findOne(flaggerId);
-      if (flagger.hasPermission('flag.forOthers', communityId)) result = 'moderator';
+      if (flagger.hasPermission('flag.forOthers', { communityId })) result = 'moderator';
     });
     return result;
   },
@@ -45,11 +45,11 @@ const flag = new ValidatedMethod({
   run({ id }) {
     const collectionName = this.name.split('.')[0];
     const collection = Mongo.Collection.get(collectionName);
-    const object = checkExists(collection, id);
+    const doc = checkExists(collection, id);
     const userId = this.userId;
 
-    if (object.communityId) { // A user for example does not have a community()
-      checkPermissions(userId, 'flag.toggle', object.communityId, object);
+    if (doc.communityId) { // A user for example does not have a community()
+      checkPermissions(userId, 'flag.toggle', doc);
     }
 
     // toggle Flag status of this user

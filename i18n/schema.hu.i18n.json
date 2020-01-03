@@ -17,6 +17,51 @@
       "label": "Módosította"
     }
   },
+  "schemaActivePeriod": {
+    "activeTime": {
+      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
+      "begin": {
+        "label": "Időponttól",
+        "placeholder": "éééé-hh-nn"
+      },
+      "end": {
+        "label": "Időpontig",
+        "placeholder": "éééé-hh-nn"
+      }
+    }
+  },
+  "schemaMoneyAccounts": {
+    "category": {
+      "label": "Típus",
+      "bank": "Bank",
+      "cash": "Pénztár"
+    },
+    "name": {
+      "label": "Elnevezése",
+      "placeholder": "(pl. Megtakarítási számla)"
+    },
+    "digit": {
+      "label": "Sorszám",
+      "placeholder": "(pl. 2)",
+      "help": "Egyedinek kell lennie. Ezzel a sorszámmal jelenik meg a főkönyvi számlák között. (Például ha a Pénz számlák a 38-as főkönyvi számlaszámon vannak, és ön 2-es sorszámot ad ennek a pénzszámlának, akkor e pénzszámla a 382-es főkönyvi számon lesz könyvelve.)"
+    },
+    "ban": {
+      "label": "Bankszámlaszám",
+      "placeholder": "(pl. 12345678-00000000-00000525)"
+    },
+    "sync": {
+      "label": "Bankkivonatok feltöltése",
+      "none": "Nincs",
+      "manual": "Manuális",
+      "auto": "Automatikus"
+    },
+    "protocol": {
+      "label": "Bank protokol (ha van kivonat feltöltés)"
+    },
+    "primary": {
+      "label": "Elsődleges"
+    }
+  },
   "schemaUsers": {
     "email": {
       "label": "Regisztrált e-mail cím",
@@ -157,13 +202,13 @@
       "label": "Számlázva"
     },
     "activeTime": {
-      "label": "Aktív időszak (felszerelés/leszerelés)",
+      "label": "Aktív időszak",
       "begin": {
-        "label": "Időponttól",
+        "label": "Felszerelés ideje",
         "placeholder": "éééé-hh-nn"
       },
       "end": {
-        "label": "Időpontig",
+        "label": "Leszerelés ideje",
         "placeholder": "éééé-hh-nn"
       }
     }
@@ -185,20 +230,9 @@
       }
     }
   },
-  "schemaLeaderships" : {
+  "schemaParcelships" : {
     "leadRef": {
       "label": "Vezető albetét"
-    },
-    "activeTime": {
-      "label": "Aktív időszak",
-      "begin": {
-        "label": "Időponttól",
-        "placeholder": "éééé-hh-nn"
-      },
-      "end": {
-        "label": "Időpontig",
-        "placeholder": "éééé-hh-nn"
-      }
     }
   },
   "schemaMemberships" : {
@@ -268,17 +302,6 @@
       "type": {
         "label": "Típus"
       }
-    },
-    "activeTime": {
-      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
-      "begin": {
-        "label": "Időponttól",
-        "placeholder": "éééé-hh-nn"
-      },
-      "end": {
-        "label": "Időpontig",
-        "placeholder": "éééé-hh-nn"
-      }
     }
   },
   "schemaDelegations": {
@@ -325,17 +348,6 @@
     },
     "topicIds": {
       "label": "Munkalapok"
-    },
-    "activeTime": {
-      "label": "Aktív időszak (Nem kötelező megadni, ha nincs időben korlátozva)",
-      "begin": {
-        "label": "Időponttól",
-        "placeholder": "éééé-hh-nn"
-      },
-      "end": {
-        "label": "Időpontig",
-        "placeholder": "éééé-hh-nn"
-      }
     }
   },
   "schemaTopics": {
@@ -622,12 +634,14 @@
       "placeholder": "(pl. 2017-05-06)"
     },
     "partnerId": {
-      "label": "Partner",
-      "placeholder": "(pl. Kulcslyuk kft)"
+      "label": "Partner"
     },
     "contractId": {
-      "label": "Szerződés",
-      "placeholder": "(pl. Épülettakarítási szerződés)"
+      "label": "Szerződés"
+    },
+    "partnerTxt": {
+      "label": "Partner",
+      "placeholder": "(pl. Kulcslyuk kft)"
     },
     "sourceId": {
       "label": "Forrás tranzakció azonosítója"
@@ -668,16 +682,63 @@
         }
       }
     },
+    "note": {
+      "label": "Megjegyzés",
+      "placeholder": "(pl. közlemény vagy partner azonosító)"
+    },
+    // Following lines are for the different txDefs
+    "supplierBillId": {
+      "label": "Bejövő számla, amit beszámítunk"
+    },
+    "customerBillId": {
+      "label": "Kimenő számla, amibe beszámítunk"
+    },
+    "fromAccount": {
+      "label": "Átvezetés innen"
+    },
+    "toAccount": {
+      "label": "Átvezetés ide"
+    },
+    "account": {
+      "label": "Számla"
+    },
+    "payAccount": {
+      "label": "Pénz számla"
+    },
+    "localizer": {
+      "label": "Könyvelési hely (amennyiben megadható)"
+    }
+  },
+  "schemaStatementEntries": {
+    "valueDate": {
+      "label": "Könyvelési nap",
+      "placeholder": "(pl. 2017-05-06)"
+    },
+    "amount": {
+      "label": "Összeg",
+      "placeholder": "(pl. 14560)"
+    },
+    "account": {
+      "label": "Számla"
+    },
+    "partner": {
+      "label": "Partner"
+    },
     "ref": {
       "label": "Referencia azonosító",
       "placeholder": "(pl. tranzakciós szám bankkivonatról)"
     },
+    "refType": {
+      "label": "Referencia típus"
+    },
     "note": {
-      "label": "Megjegyzés",
-      "placeholder": "(pl. közlemény vagy partner azonosító)"
+      "label": "Közlemény"
+    },
+    "original": {
+      "label": "Eredeti adatok"
     }
   },
-  "schemaTxCats": {
+  "schemaTxDefs": {
     "name": {
       "label": "Tranzakció típus neve",
       "placeholder": ""
@@ -825,11 +886,6 @@
           "label": "Pénz számla"
         }
       }
-    }
-  },
-  "schemaPayments": {
-    "payAccount": {
-      "label": "Pénz számla"
     }
   },
   "schemaReconiliation": {

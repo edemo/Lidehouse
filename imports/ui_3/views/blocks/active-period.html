@@ -1,0 +1,16 @@
+<template name="Active_period">
+    {{#let begin=this.activeTime.begin}}
+    {{#let end=this.activeTime.end}}
+    {{#unless and (not begin) (not end)}}
+        <small>{{displayDate begin}} - {{or (displayDate end) (_ 'active')}}</small>
+    {{/unless}}    
+    {{#if currentUserHasPermission (concat this.entityName '.update') }}
+        {{#if and (not begin) (not end)}}
+        <button class="btn btn-xs btn-white js-period" data-id={{_id}}><i class="fa fa-history"></i> {{_ 'period'}}</button>
+        {{else}}
+        <button class="btn btn-xs btn-white js-period" data-id={{_id}}><i class="fa fa-pencil"></i></button>
+        {{/if}}
+    {{/if}}
+    {{/let}}
+    {{/let}}
+</template>

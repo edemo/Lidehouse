@@ -100,7 +100,7 @@ if (Meteor.isServer) {
           const user = Meteor.users.findOne(userId);
           // This user has no privileges in the community, until not approved
           chai.assert.isFalse(user.hasRole('owner', Fixture.demoCommunityId));
-          chai.assert.isFalse(user.hasPermission('vote.cast', Fixture.demoCommunityId));
+          chai.assert.isFalse(user.hasPermission('vote.cast', { communityId: Fixture.demoCommunityId }));
 
           done();
         });
@@ -126,7 +126,7 @@ if (Meteor.isServer) {
           const user = Meteor.users.findOne(userId);
           // Now he has privileges
           chai.assert.isTrue(user.hasRole('owner', Fixture.demoCommunityId));
-          chai.assert.isTrue(user.hasPermission('vote.cast', Fixture.demoCommunityId));
+          chai.assert.isTrue(user.hasPermission('vote.cast', { communityId: Fixture.demoCommunityId }));
 
           done();
         });

@@ -1,17 +1,48 @@
 <template name="Accounting_reconciliation">
-    {{#if userHasPermission 'statements.inCommunity' (fromSession 'activeCommunityId')}}
+    {{#if currentUserHasPermission 'statements.inCommunity'}}
         <div class="statementEntries" id='statementEntries'>
-            {{#if userHasPermission 'statements.update' communityId}}
+            {{#if currentUserHasPermission 'statements.update'}}
             <div class="btn-group pull-right">
-                  <button class="btn btn-primary btn-sm js-new-statement"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'statement'}}</strong></button>
-                  <button class="btn btn-white btn-sm js-upload-statement"><i class="fa fa-upload"></i><strong> {{_ 'Upload statement'}}</strong></button>
+                  <button class="btn btn-primary btn-sm js-new"><i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ 'statementEntry'}}</strong></button>
+                  <button class="btn btn-white btn-sm js-import"><i class="fa fa-upload"></i><strong> {{_ 'Upload statement'}}</strong></button>
             </div>
             {{/if}}
             <p>
-                {{_ 'Itt a bankivonatokat látja, és egyeztetheti azokat.'}}<br>
+                {{_ 'Itt a pénz számlákhoz bankivonatokat tölthet fel, és egyeztetheti azokat'}}<br>
+                {{_ 'már meglevő tranzakciókhoz. Vagy létrehozhatja trakzakcióit a kivonatokból.'}}<br>
             </p>
             <br>
             <div class="filters m-b-md">
+              <div class="row">
+                  <div class="col-sm-4">
+                      <div class="form-group">
+                          <label class="control-label" for="account">{{_ 'Account'}}</label>
+                          <select id="account" name="account" {{b 'options: accountOptions, value: accountSelected, optionsValue: value, optionsText: label'}} class="form-control"></select>
+                      </div>
+                  </div>
+                  <div class="col-sm-3">
+                      <div class="form-group">
+                          <label class="control-label" for="begin_date">{{_ 'Begin date'}}</label>
+                          <input type="date" id="begin_date" name="begin_date" {{b 'value: beginDate'}} class="form-control">
+                      </div>
+                  </div>
+                  <div class="col-sm-3">
+                      <div class="form-group">
+                          <label class="control-label" for="end_date">{{_ 'End date'}}</label>
+                          <input type="date" id="end_date" name="end_date" {{b 'value: endDate'}} class="form-control">
+                      </div>
+                  </div>
+                  <!--div class="col-sm-2">
+                      <div class="form-group">
+                          <label class="control-label" for="status">{{_ 'Status'}}</label>
+                          <select name="status" id="status" class="form-control">
+                              <option value="0" selected="">{{_ 'All'}}</option>
+                              <option value="1">{{_ 'Reconciled'}}</option>
+                              <option value="2">{{_ 'Unreconciled'}}</option>
+                          </select>
+                      </div>
+                  </div-->
+              </div>
               <div class="row">
                 <div class="col-sm-9">
                   <input type="checkbox" name="allow" id="unreconciled-only" {{b "check: unreconciledOnly"}}>
@@ -24,7 +55,7 @@
             </div>
         </div>
     {{/if}}
-    {{#if userHasPermission 'transactions.inCommunity'}}
+    {{#if currentUserHasPermission 'transactions.inCommunity'}}
     <!--div class="col-md-12">
         <div class="ibox ibox-dark transactions" id='incomplete'>
             <div class="ibox-title">
@@ -32,7 +63,7 @@
                 {{>iboxTools}}
             </div>  
             <div class="ibox-content">
-                {{#if userHasPermission 'transactions.insert'}}
+                {{#if currentUserHasPermission 'transactions.insert'}}
                 <div class="pull-right">
                     <a href="" class="btn btn-primary btn-sm js-publish"><i class="fa fa-bullhorn"></i> {{_ 'Publish'}}</a>
                     <a href="" class="btn btn-white btn-sm js-import-statement"><i class="fa fa-upload"></i> {{_ 'Upload statement'}}</a>
