@@ -1,9 +1,20 @@
 import { Meteor } from 'meteor/meteor';
 import { TAPi18n } from 'meteor/tap:i18n';
+import { _ } from 'meteor/underscore';
+import { moment } from 'meteor/momentjs:moment';
 import { FlowRouterHelpers } from 'meteor/arillo:flow-router-helpers';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Topics } from '/imports/api/topics/topics.js';
+import { Contracts } from '/imports/api/contracts/contracts.js';
+import { Partners } from '/imports/api/partners/partners.js';
+import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import '/imports/api/users/users.js';
+
+function displayLocalizer(localizer, communityId) {
+  const loc = Localizer.get(communityId);
+  if (!localizer || !loc) return '';
+  return loc.display(localizer).substring(1);
+}
 
 export const Notification_Email = {
   path: 'email/notification-email.html',    // Relative to the 'private' dir.
@@ -52,6 +63,16 @@ export const Notification_Email = {
     },
     oldTopic(t) {
       return t.isUnseen ? '' : 'oldTopic';
+    },
+    displayStatusChangeDataUpdate(key, value) {
+      const user = Meteor.users.findOne(this.userId);
+      if (key === 'localizer') return displayLocalizer(value, this.communityId);
+      if (key === 'partnerId') return Partners.findOne(value) ? Partners.findOne(value).name : '';
+      if (key === 'contractId') return Contracts.findOne(value) ? Contracts.findOne(value).title : '';
+      if (key === 'chargeType') return TAPi18n.__('schemaTickets.ticket.chargeType.' + value, {}, user.settings.language);
+      if (_.isDate(value)) return moment(value).format('L');
+      if (_.isString(value)) return TAPi18n.__(value, {}, user.settings.language);
+      return value;
     },
   },
 

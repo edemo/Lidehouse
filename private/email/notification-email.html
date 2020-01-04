@@ -52,7 +52,7 @@
                     <span>{{_ 'Content hidden by' hider=(_ hider)}}</span>
                   {{else}}  
                     <a href="{{userUrlFor  comment.creator}}">{{comment.creator.displayOfficialName this.communityId user.settings.language}}</a>
-                    {{#if (equals comment.type 'statusChangeTo')}}
+                    {{#if (equals comment.category 'statusChangeTo')}}
                         {{#let eventStatusObject = (comment.topic.statusObject comment.status)}}
                         {{_ 'changed the status'}}: <span class="label {{eventStatusObject.color}}">
                            {{_ (concat 'schemaTopics.status.' comment.status)}}
@@ -62,7 +62,7 @@
                             {{#each dataEntry in entriesOf comment.dataUpdate}}
                             <span>
                             {{_ (concat 'schemaTickets.ticket.' dataEntry.[0] '.label')}}:
-                            {{displayValue dataEntry.[1]}} 
+                            {{displayStatusChangeDataUpdate dataEntry.[0] dataEntry.[1]}}
                             </span><br>
                             {{/each}}
                         {{/if}}
