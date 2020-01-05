@@ -715,8 +715,8 @@
     "account": {
       "label": "Account"
     },
-    "partner": {
-      "label": "Partner"
+    "name": {
+      "label": "Partner name"
     },
     "ref": {
       "label": "Reference id",
@@ -726,10 +726,13 @@
       "label": "Reference type"
     },
     "note": {
-      "label": "Note"
+      "label": "Note to payee"
     },
     "original": {
       "label": "Original data"
+    },
+    "match": {
+      "label": "Matched transaction"
     }
   },
   "schemaTxDefs": {

@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 import { __ } from '/imports/localization/i18n.js';
+import { TAPi18n } from 'meteor/tap:i18n';
 import { debugAssert } from '/imports/utils/assert.js';
 import { noUpdate } from '/imports/utils/autoform.js';
 
@@ -21,8 +22,10 @@ export function SerialId(definerFields = []) {
   const helpers = {
     serialId() {
       let preKey = '';
+      const language = this.community().settings.language;
       definerFields.forEach((field) => {
-        preKey += __(Object.getByString(this, field).substr(0, 3).toUpperCase()) + '/';
+        const preKeyFragment = Object.getByString(this, field).substr(0, 3).toUpperCase();
+        preKey += TAPi18n.__(preKeyFragment, {}, language) + '/';
       });
       debugAssert(this.serial);
       return `${preKey}${this.serial}/${this.createdAt.getFullYear()}`;

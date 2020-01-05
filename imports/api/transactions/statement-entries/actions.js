@@ -3,6 +3,7 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
@@ -29,7 +30,10 @@ StatementEntries.actions = {
     name: 'import',
     icon: () => 'fa fa-upload',
     visible: (options, doc) => currentUserHasPermission('statements.upsert', doc),
-    run: () => importCollectionFromFile(StatementEntries, { keepOriginals: true }),
+    run: () => {
+      importCollectionFromFile(StatementEntries, { keepOriginals: true });
+      StatementEntries.methods.matching.call({ communityId: getActiveCommunityId() });
+    },
   },
   view: {
     name: 'view',
@@ -52,7 +56,7 @@ StatementEntries.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.update',
         collection: StatementEntries,
-        omitFields: ['original'],
+        omitFields: ['original', 'match'],
         doc,
         type: 'method-update',
         meteormethod: 'statements.update',
@@ -63,21 +67,24 @@ StatementEntries.actions = {
   reconcile: {
     name: 'reconcile',
     icon: () => 'fa fa-external-link',
-    color: () => 'danger',
+    color(options, doc) {
+      if (doc.match) return 'info';
+      else return 'danger';
+    },
     visible(options, doc) {
       if (!doc || doc.isReconciled()) return false;
       return currentUserHasPermission('statements.reconcile', doc);
     },
     run(options, doc) {
       Session.set('activeStatementEntryId', doc._id);
-      Modal.show('Autoform_modal', {
+/*      Modal.show('Autoform_modal', {
         title: 'Reconciliation',
         description: 'Válasszon egyet a 3 lehetséges egyeztetési mód közül. A másik kettő mezőben kérjük ne adjon meg értéket.',
         id: 'af.statementEntry.reconcile',
         schema: StatementEntries.reconcileSchema,
         type: 'method',
         meteormethod: 'statementEntries.reconcile',
-      });
+      });*/
     },
   },
   delete: {

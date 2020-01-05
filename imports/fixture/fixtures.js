@@ -275,8 +275,8 @@ export function insertUnittestFixture(lang) {
 
   // ===== Transactions =====
 
-  const supplier = demoBuilder.create('supplier');
-  const customer = demoBuilder.create('customer');
+  const supplier = demoBuilder.create('supplier', { name: 'Supplier Inc' });
+  const customer = demoBuilder.create('customer', { name: 'Customer Inc' });
 
   //
 //  otherBuilder.insertLoadsOfFakeMembers(10);

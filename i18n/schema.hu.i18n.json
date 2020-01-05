@@ -721,8 +721,8 @@
     "account": {
       "label": "Számla"
     },
-    "partner": {
-      "label": "Partner"
+    "name": {
+      "label": "Partner neve"
     },
     "ref": {
       "label": "Referencia azonosító",
@@ -736,6 +736,9 @@
     },
     "original": {
       "label": "Eredeti adatok"
+    },
+    "match": {
+      "label": "Társított tranzakció"
     }
   },
   "schemaTxDefs": {

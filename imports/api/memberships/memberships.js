@@ -115,6 +115,14 @@ Memberships.helpers({
     debugAssert(this.person.userId);
     return Meteor.users.findOne(this.person.userId);
   },
+  // --- Partner interface ---
+  getName() {
+    return this.Person().displayName();
+  },
+  getRelation() {
+    return 'parcel';
+  },
+  // -------------------------
   community() {
     const community = Communities.findOne(this.communityId);
     debugAssert(community);
