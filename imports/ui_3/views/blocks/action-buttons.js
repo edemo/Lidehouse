@@ -93,12 +93,12 @@ Template.Action_button.viewmodel({
   },
 });
 
-Template.Action_button_status_change.viewmodel({
+Template.Action_sub_actions_button.viewmodel({
   long() {
     return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
   },
-  optionsWithNewStatus(status) {
-    return _.extend({}, this.templateInstance.data.options, { status });
+  extendOptions(subOptions) {
+    return _.extend({}, this.templateInstance.data.options, subOptions);
   },
   getDoc() {
     return fetchDoc(this.templateInstance.data);
@@ -154,9 +154,9 @@ Template.Action_listitem.events({
   },
 });
 
-Template.Action_listitems_status_change.viewmodel({
-  optionsWithNewStatus(status) {
-    return _.extend({}, this.templateInstance.data.options, { status });
+Template.Action_sub_actions_listitems.viewmodel({
+  extendOptions(subOptions) {
+    return _.extend({}, this.templateInstance.data.options, subOptions);
   },
 });
 
@@ -170,10 +170,7 @@ Template.Action_buttons_dropdown_list.viewmodel({
     return actions;
   },
   needsDividerAfter(action) {
-    switch (action.name) {
-      case 'statusChange': return true;
-      default: return false;
-    }
+    return !!action.subActions;
   },
 });
 
