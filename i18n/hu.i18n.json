@@ -142,6 +142,7 @@
   "parcelBill": "díjbekérő",
   "payment": "számla teljesítés",
   "payments": " számla teljesítések",
+  "remission": "számla elengedés",
   "receipt": "nyugta",
   "receipts": "nyugták",
   "transfer": "átvezetés",
@@ -216,6 +217,7 @@
   "post": "Könyvelésbe küldés",
   "apply": "kivetés",
   "registerPayment": "Kifizetés rögzítése",
+  "registerRemission": "Elengedés",
   "registerReading": "leolvasás",
 
   "join": "Csatlakozás",

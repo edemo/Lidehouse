@@ -70,7 +70,7 @@ export const insert = new ValidatedMethod({
   run(doc) {
     doc = Transactions._transform(doc);
     checkPermissions(this.userId, 'transactions.insert', doc);
-    if (doc.category === 'payment') {
+    if (doc.category === 'payment' || doc.category === 'remission') {
       if (doc.billId) {
         const bill = Transactions.findOne(doc.billId);
 //      if (!doc.relation || !doc.partnerId) throw new Meteor.Error('Payment relation fields are required');

@@ -72,7 +72,7 @@ Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },
   credit: { type: [Transactions.entrySchema], optional: true },
   complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
-  reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
+//  reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
 };
 
 Transactions.noteSchema = {
@@ -345,7 +345,7 @@ if (Meteor.isServer) {
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
     tdoc.updateBalances(+1);
-    if (tdoc.category === 'payment') tdoc.registerOnBill();
+    if (tdoc.category === 'payment' || tdoc.category === 'remission') tdoc.registerOnBill();
     tdoc.updateOutstandings(+1);
   });
 
