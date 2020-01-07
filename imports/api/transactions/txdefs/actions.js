@@ -3,20 +3,20 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
-import { TxDefs } from './tx-defs.js';
+import { Txdefs } from './txdefs.js';
 import './methods.js';
 
-TxDefs.actions = {
+Txdefs.actions = {
   new: {
     name: 'new',
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('breakdowns.insert', doc),
     run() {
       Modal.show('Autoform_modal', {
-        id: 'af.txDef.insert',
-        collection: TxDefs,
+        id: 'af.txdef.insert',
+        collection: Txdefs,
         type: 'method',
-        meteormethod: 'txDefs.insert',
+        meteormethod: 'txdefs.insert',
       });
     },
   },
@@ -26,11 +26,11 @@ TxDefs.actions = {
     visible: (options, doc) => currentUserHasPermission('breakdowns.update', doc),
     run(options, doc) {
       Modal.show('Autoform_modal', {
-        id: 'af.txDef.update',
-        collection: TxDefs,
+        id: 'af.txdef.update',
+        collection: Txdefs,
         doc,
         type: 'method-update',
-        meteormethod: 'txDefs.update',
+        meteormethod: 'txdefs.update',
         singleMethodArgument: true,
       });
     },
@@ -40,8 +40,8 @@ TxDefs.actions = {
     icon: () => 'fa fa-trash',
     visible: (options, doc) => currentUserHasPermission('breakdowns.remove', doc),
     run(options, doc) {
-      Modal.confirmAndCall(TxDefs.methods.remove, { _id: doc._id }, {
-        action: 'delete txDef',
+      Modal.confirmAndCall(Txdefs.methods.remove, { _id: doc._id }, {
+        action: 'delete txdef',
       });
     },
   },
@@ -49,10 +49,10 @@ TxDefs.actions = {
 
 //------------------------------------------------------
 
-AutoForm.addModalHooks('af.txDef.insert');
-AutoForm.addModalHooks('af.txDef.update');
+AutoForm.addModalHooks('af.txdef.insert');
+AutoForm.addModalHooks('af.txdef.update');
 
-AutoForm.addHooks('af.txDef.insert', {
+AutoForm.addHooks('af.txdef.insert', {
   formToDoc(doc) {
     doc.communityId = Session.get('activeCommunityId');
     return doc;

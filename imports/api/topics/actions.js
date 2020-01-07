@@ -119,6 +119,7 @@ Topics.actions = {
       return newStatus.label || __('Change status to', newStatusName);
     },
     icon(options) {
+      if (!options) return 'fa fa-cogs';
       const newStatus = options.status;
       return newStatus.icon || 'fa fa-cogs';
     },

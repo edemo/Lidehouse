@@ -8,23 +8,18 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { handleError, onSuccess, displayMessage } from '/imports/ui_3/lib/errors.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { BatchAction } from '/imports/api/batch-action.js';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions } from './transactions.js';
 import './entities.js';
 import './methods.js';
 
-function txDefFromEntity(options, doc, event, instance) {
-  const category = options.entity.name;
-  const communityId = Session.get('activeCommunityId');
-  const partnerRelation = (doc && doc.relation) || instance.viewmodel.activePartnerRelation();
-  const txDef = TxDefs.findOne({ communityId, category, 'data.relation': partnerRelation });
-  return txDef;
-}
-
-function fillMissingOptionParams(options, doc, event, instance) {
-  if (options.entity) options.txDef = txDefFromEntity(options, doc, event, instance);
-  else if (options.txDef) options.entity = Transactions.entities[options.txDef.category];
-  else debugAssert(false, 'Either entity or txDef needs to come in the options');
+function fillMissingOptionParams(options, doc) {
+  const mcTxdef = Session.get('modalContext').txdef;
+  if (mcTxdef && !options.txdef) options.txdef = mcTxdef; // This happens when new tx action is called from within statementEntry match action
+    // TODO: Refactor. - entity data may come from so many places its confusing (options.entity, options.txdef, modalContext.txdef)
+  if (typeof options.entity === 'string') options.entity = Transactions.entities[options.txdef.category];
+  if (options.txdef && !options.entity) options.entity = Transactions.entities[options.txdef.category];
+  debugAssert(options.entity && options.txdef, 'Either entity or txdef needs to come in the options');
 }
 
 Transactions.actions = {
@@ -33,8 +28,8 @@ Transactions.actions = {
     icon: () => 'fa fa-plus',
     visible: (options, doc) => currentUserHasPermission('transactions.insert', doc),
     run(options, doc, event, instance) {
-      fillMissingOptionParams(options, doc, event, instance);
-      Session.update('modalContext', 'txDef', options.txDef);
+      fillMissingOptionParams(options, doc);
+      Session.update('modalContext', 'txdef', options.txdef);
       const entity = options.entity;
       Modal.show('Autoform_modal', {
         body: entity.editForm,
@@ -60,7 +55,7 @@ Transactions.actions = {
     visible: (options, doc) => currentUserHasPermission('transactions.inCommunity', doc),
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-      Session.update('modalContext', 'txDef', doc.txDef());
+      Session.update('modalContext', 'txdef', doc.txdef());
       Modal.show('Autoform_modal', {
         body: entity.viewForm,
         bodyContext: { doc },
@@ -85,7 +80,7 @@ Transactions.actions = {
     },
     run(options, doc) {
       const entity = Transactions.entities[doc.entityName()];
-      Session.update('modalContext', 'txDef', doc.txDef());
+      Session.update('modalContext', 'txdef', doc.txdef());
       Modal.show('Autoform_modal', {
         body: entity.editForm,
         bodyContext: { doc },
@@ -164,9 +159,9 @@ Transactions.categoryValues.forEach(category => {
     formToDoc(doc) {
       doc.communityId = Session.get('activeCommunityId');
       doc.category = category;
-      const txDef = Session.get('modalContext').txDef;
-      doc.defId = txDef._id;
-      _.each(txDef.data, (value, key) => doc[key] = value);
+      const txdef = Session.get('modalContext').txdef;
+      doc.defId = txdef._id;
+      _.each(txdef.data, (value, key) => doc[key] = value);
       if (category === 'bill') {
         doc.valueDate = doc.deliveryDate;
         doc.lines = _.without(doc.lines, undefined);

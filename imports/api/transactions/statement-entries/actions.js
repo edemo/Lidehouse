@@ -7,6 +7,8 @@ import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
 import './methods.js';
 
@@ -59,13 +61,16 @@ StatementEntries.actions = {
         omitFields: ['original', 'match'],
         doc,
         type: 'method-update',
-        meteormethod: 'statements.update',
+        meteormethod: 'statementEntries.update',
         singleMethodArgument: true,
       });
     },
   },
-  reconcile: {
-    name: 'reconcile',
+  match: {
+    name: 'match',
+    label(options) {
+      return options.txdef.name;
+    },
     icon: () => 'fa fa-external-link',
     color(options, doc) {
       if (doc.match) return 'info';
@@ -73,18 +78,35 @@ StatementEntries.actions = {
     },
     visible(options, doc) {
       if (!doc || doc.isReconciled()) return false;
+      return currentUserHasPermission('statements.match', doc);
+    },
+    subActions: true,
+    subActionsOptions(doc) {
+      const txdefs = Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx());
+      return txdefs.map(txdef => ({ txdef }));
+    },
+    run(options, doc) {
+      Session.update('modalContext', 'statementEntry', doc);
+      Session.update('modalContext', 'txdef', options.txdef);
+      Modal.show('Autoform_modal', {
+        title: 'Reconciliation',
+        id: 'af.statementEntry.match',
+        schema: StatementEntries.matchSchema,
+        type: 'method',
+        meteormethod: 'statementEntries.match',
+      });
+    },
+  },
+  reconcile: {
+    name: 'reconcile',
+    icon: () => 'fa fa-check-square-o',
+    color: () => 'warning',
+    visible(options, doc) {
+      if (!doc || !doc.match) return false;
       return currentUserHasPermission('statements.reconcile', doc);
     },
     run(options, doc) {
-      Session.set('activeStatementEntryId', doc._id);
-/*      Modal.show('Autoform_modal', {
-        title: 'Reconciliation',
-        description: 'Válasszon egyet a 3 lehetséges egyeztetési mód közül. A másik kettő mezőben kérjük ne adjon meg értéket.',
-        id: 'af.statementEntry.reconcile',
-        schema: StatementEntries.reconcileSchema,
-        type: 'method',
-        meteormethod: 'statementEntries.reconcile',
-      });*/
+      StatementEntries.methods.reconsile.call({ _id: doc._id });
     },
   },
   delete: {
@@ -107,7 +129,7 @@ StatementEntries.batchActions = {
 
 AutoForm.addModalHooks('af.statementEntry.insert');
 AutoForm.addModalHooks('af.statementEntry.update');
-AutoForm.addModalHooks('af.statementEntry.reconcile');
+AutoForm.addModalHooks('af.statementEntry.match');
 
 AutoForm.addHooks('af.statementEntry.insert', {
   docToForm(doc) {
@@ -135,9 +157,15 @@ AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.insert', 'af.sta
   },
 });
 
-AutoForm.addHooks('af.statementEntry.reconcile', {
+AutoForm.addHooks('af.statementEntry.match', {
   formToDoc(doc) {
-    doc._id = Session.get('activeStatementEntryId');
+    doc._id = Session.get('modalContext').statementEntry._id;
     return doc;
   },
+/*  onSubmit(doc) {
+    AutoForm.validateForm('af.statementEntry.match');
+    if (!doc.txId)
+      Transactions.actions.new.run(options);
+    return false;
+  },*/
 });

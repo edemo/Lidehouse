@@ -10,7 +10,7 @@ import '/imports/ui_3/views/modals/bill-edit.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
 import { Bills } from './bills.js';
 import { Payments } from '../payments/payments.js';
-import { TxDefs } from '../tx-defs/tx-defs.js';
+import { Txdefs } from '../txdefs/txdefs.js';
 import { Transactions } from '../transactions.js';
 import '../methods.js';
 

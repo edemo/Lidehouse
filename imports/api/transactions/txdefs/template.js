@@ -1,15 +1,15 @@
 import { Meteor } from 'meteor/meteor';
 import { _ } from 'meteor/underscore';
 // import { Breakdowns } from './breakdowns.js';
-import { TxDefs } from './tx-defs.js';
+import { Txdefs } from './txdefs.js';
 
   // Double entry accounting
 
-export function defineTxDefTemplates() {
+export function defineTxdefTemplates() {
 
   // Bill accounting -Számla kollaudálás
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Supplier bill', // 'Bejövő számla',
     category: 'bill',
     data: { relation: 'supplier' },
@@ -18,7 +18,7 @@ export function defineTxDefTemplates() {
   });
 /*
   // Inventory accounting
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Recording inventory', // 'Készletrevétel',
     category: 'bill',
     data: { relation: 'supplier' },
@@ -26,7 +26,7 @@ export function defineTxDefTemplates() {
     credit: ['46'],
   });
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Costing of inventory', // 'Készlet költség elszámolás',
     category: 'free',
     debit: ['5'],
@@ -36,7 +36,7 @@ export function defineTxDefTemplates() {
 */
   // Supplier payment -  Bejövő számla kifizetése
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Supplier payment', // 'Bejövő számla kifizetése',
     category: 'payment',
     data: { relation: 'supplier' },
@@ -44,9 +44,9 @@ export function defineTxDefTemplates() {
     credit: ['38'],
   });
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Supplier bill remission', // 'Bejövő számla elengedés',
-    category: 'payment',
+    category: 'remission',
     data: { relation: 'supplier' },
     debit: ['46'],
     credit: ['8', '5'],
@@ -54,7 +54,7 @@ export function defineTxDefTemplates() {
 
   // Számlázás vevőknek
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Customer bill', // 'Kimenő számla',
     category: 'bill',
     data: { relation: 'customer' },
@@ -62,7 +62,7 @@ export function defineTxDefTemplates() {
     credit: ['9'],
   });
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Customer payment', // 'Kimenő számla befolyás',
     category: 'payment',
     data: { relation: 'customer' },
@@ -70,9 +70,9 @@ export function defineTxDefTemplates() {
     credit: ['31'],
   });
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Customer bill remission', // 'Kimenő számla elengedés',
-    category: 'payment',
+    category: 'remission',
     data: { relation: 'customer' },
     debit: ['9'],
     credit: ['31'],
@@ -80,7 +80,7 @@ export function defineTxDefTemplates() {
 
   // Albetét előírás és befizetések
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Parcel bill', // 'Albetét előírás',
     category: 'bill',
     data: { relation: 'parcel' },
@@ -88,7 +88,7 @@ export function defineTxDefTemplates() {
     credit: ['95'],
   });
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Parcel payment', // 'Albetét befizetés',
     category: 'payment',
     data: { relation: 'parcel' },
@@ -96,9 +96,9 @@ export function defineTxDefTemplates() {
     credit: ['33'],
   });
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Parcel bill remission', // 'Albetét előírás elengedés',
-    category: 'payment',
+    category: 'remission',
     data: { relation: 'parcel' },
     debit: ['95'],
     credit: ['33'],
@@ -107,21 +107,21 @@ export function defineTxDefTemplates() {
 /*
   // Nem azonosított bevételek kezelése 
   // Befolyás
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Non identified payment', // 'Nem azonosított befolyás',
     category: 'payment',
     debit: ['38'],
     credit: ['43'],
   });
   // Azonosítás - Identification
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Identification', // 'Azonosítás',
     debit: ['43'],
     credit: ['3'],
   });
 */
   // Pénzműveletek
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Money transfer', // 'Átvezetés pénz számlák között',
     category: 'transfer',
     debit: ['38'],
@@ -129,14 +129,14 @@ export function defineTxDefTemplates() {
   });
   /*
   // Készpénz felvétel bankszámláról
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Cash withdraw', // 'Készpénz felvétel',
     category: 'transfer',
     debit: ['381'],
     credit: ['38'],
   });
   // Készpénz befizetés bankszámlára pénztárból
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Cash deposit', // 'Készpénz befizetés',
     category: 'transfer',
     debit: ['38'],
@@ -145,7 +145,7 @@ export function defineTxDefTemplates() {
 */
 // Single entry accouting
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Income', // 'Bevétel',
     category: 'receipt',
     data: { relation: 'customer' },
@@ -153,7 +153,7 @@ export function defineTxDefTemplates() {
     credit: ['9'],
   });
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Expense', // 'Kiadás',
     category: 'receipt',
     data: { relation: 'supplier' },
@@ -163,7 +163,7 @@ export function defineTxDefTemplates() {
 
   // Barter
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Barter', // 'Albetét előírás elengedés',
     category: 'barter',
 //    data: { relation: 'parcel' },
@@ -173,7 +173,7 @@ export function defineTxDefTemplates() {
 //    credit: ['8', '5'],
   });
 
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Opening',
     category: 'opening',
     debit: [''],
@@ -181,7 +181,7 @@ export function defineTxDefTemplates() {
   });
 
   // Joker
-  TxDefs.define({ communityId: null,
+  Txdefs.define({ communityId: null,
     name: 'Accounting operation', // 'Könyvelési művelet',
     category: 'freeTx',
     debit: [''],
@@ -190,5 +190,5 @@ export function defineTxDefTemplates() {
 }
 
 if (Meteor.isServer) {
-  Meteor.startup(defineTxDefTemplates);
+  Meteor.startup(defineTxdefTemplates);
 }

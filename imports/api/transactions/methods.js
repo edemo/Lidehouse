@@ -10,11 +10,11 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Bills } from '/imports/api/transactions/bills/bills.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import '/imports/api/transactions/breakdowns/methods.js';
-import '/imports/api/transactions/tx-defs/methods.js';
+import '/imports/api/transactions/txdefs/methods.js';
 
 /*
 function runPositingRules(context, doc) {
@@ -88,7 +88,7 @@ export const insert = new ValidatedMethod({
     }
 
     const _id = Transactions.insert(doc);
-    if (doc.txDef().isAutoPosting()) post._execute({ userId: this.userId }, { _id });
+    if (doc.txdef().isAutoPosting()) post._execute({ userId: this.userId }, { _id });
 //    runPositingRules(this, doc);
     return _id;
   },
@@ -151,11 +151,11 @@ export const cloneAccountingTemplates = new ValidatedMethod({
         { name: breakdownName, communityId },
       );
     });
-    const txDefsToClone = TxDefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
-    txDefsToClone.forEach((txDefName) => {
-      TxDefs.methods.clone._execute(
+    const txdefsToClone = Txdefs.find({ communityId: null }).map(td => td.name);  // TODO select whats needed
+    txdefsToClone.forEach((txdefName) => {
+      Txdefs.methods.clone._execute(
         { userId: this.userId },
-        { name: txDefName, communityId },
+        { name: txdefName, communityId },
       );
     });
     Localizer.generateParcels(communityId, user.settings.language);

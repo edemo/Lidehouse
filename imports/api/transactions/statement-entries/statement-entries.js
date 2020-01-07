@@ -1,10 +1,12 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
+import { AutoForm } from 'meteor/aldeed:autoform';
 import { Factory } from 'meteor/dburles:factory';
 import faker from 'faker';
 import { _ } from 'meteor/underscore';
 import { moment } from 'meteor/momentjs:moment';
+
 import { __ } from '/imports/localization/i18n.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
@@ -92,13 +94,32 @@ export const choosePayment = {
   firstOption: () => __('(Select one)'),
 };
 
-StatementEntries.reconcileSchema = new SimpleSchema({
+export let chooseTransaction = {};
+if (Meteor.isClient) {
+  import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
+
+  chooseTransaction = {
+    relation: 'transaction',
+    value() {
+      const selfId = AutoForm.getFormId();
+      const category = Session.get('modalContext').txdef.category;
+      return ModalStack.readResult(selfId, `af.${category}.insert`);
+    },
+    options() {
+      const communityId = Session.get('activeCommunityId');
+      const txdef = Session.get('modalContext').txdef;
+      const txs = Transactions.find({ communityId, defId: txdef._id, reconciledId: { $exists: false } });
+      const options = txs.map(tx => ({ label: tx.serialId(), value: tx._id }));
+      return options;
+    },
+    firstOption: () => __('(Select one)'),
+  };
+}
+StatementEntries.matchSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-  paymentId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: choosePayment },
-  billId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseBill },
-  account: { type: String, optional: true, autoform: chooseAccountNode },
+  txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseTransaction },
 });
 
 Meteor.startup(function attach() {
-  StatementEntries.reconcileSchema.i18n('schemaReconiliation');
+  StatementEntries.matchSchema.i18n('schemaReconiliation');
 });

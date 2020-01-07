@@ -11,21 +11,21 @@ import { debugAssert } from '/imports/utils/assert.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
-export const TxDefs = new Mongo.Collection('txDefs');
+export const Txdefs = new Mongo.Collection('txdefs');
 
-TxDefs.define = function define(doc) {
-  TxDefs.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
+Txdefs.define = function define(doc) {
+  Txdefs.upsert({ communityId: doc.communityId, name: doc.name }, { $set: doc });
 };
 
-TxDefs.clone = function clone(name, communityId) {
-  const doc = TxDefs.findOne({ name, communityId: null });
+Txdefs.clone = function clone(name, communityId) {
+  const doc = Txdefs.findOne({ name, communityId: null });
   if (!doc) return undefined;
   Mongo.Collection.stripAdministrativeFields(doc);
   doc.communityId = communityId;
-  return TxDefs.insert(doc);
+  return Txdefs.insert(doc);
 };
 
-TxDefs.schema = new SimpleSchema({
+Txdefs.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: { omit: true } },
   name: { type: String, max: 100 },
   category: { type: String, max: 15, optional: true, autoform: { omit: true } }, // Name of the entity
@@ -34,7 +34,7 @@ TxDefs.schema = new SimpleSchema({
   credit: { type: [String], max: 6, autoform: chooseAccountNode, optional: true },
 });
 
-TxDefs.helpers({
+Txdefs.helpers({
   schema() {
     const schema = new SimpleSchema([
       _.clone(Transactions.baseSchema), {
@@ -50,6 +50,9 @@ TxDefs.helpers({
   },
   isAccountantTx() {
     return !_.contains(['bill', 'payment', 'receipt'], this.category);
+  },
+  isReconciledTx() {
+    return _.contains(['payment', 'receipt', 'transfer', 'freeTx'], this.category);
   },
   conteerSide() {
     const relation = this.data.relation;
@@ -75,12 +78,12 @@ TxDefs.helpers({
   },
 });
 
-TxDefs.attachSchema(TxDefs.schema);
-TxDefs.attachBehaviour(Timestamped);
+Txdefs.attachSchema(Txdefs.schema);
+Txdefs.attachBehaviour(Timestamped);
 
 Meteor.startup(function attach() {
-  TxDefs.simpleSchema().i18n('schemaTxDefs');
+  Txdefs.simpleSchema().i18n('schemaTxdefs');
 });
 
-Factory.define('txDef', TxDefs, {
+Factory.define('txdef', Txdefs, {
 });

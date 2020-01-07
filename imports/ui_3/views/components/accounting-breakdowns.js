@@ -17,13 +17,13 @@ import { ChartOfAccounts } from '/imports/api/transactions/breakdowns/chart-of-a
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import '/imports/api/transactions/breakdowns/actions.js';
-import '/imports/api/transactions/tx-defs/actions.js';
+import '/imports/api/transactions/txdefs/actions.js';
 import { MoneyAccounts } from '/imports/api/money-accounts/money-accounts.js';
 import '/imports/api/money-accounts/actions.js';
 import { actionHandlers } from '/imports/ui_3/views/blocks/action-buttons.js';
-import '/imports/api/transactions/tx-defs/methods.js';
+import '/imports/api/transactions/txdefs/methods.js';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-breakdowns.html';
@@ -33,7 +33,7 @@ Template.Accounting_breakdowns.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txDefs.inCommunity', { communityId });
+      instance.subscribe('txdefs.inCommunity', { communityId });
       instance.subscribe('moneyAccounts.inCommunity', { communityId });
     });
   },
@@ -44,10 +44,10 @@ Template.Accounting_breakdowns.viewmodel({
     const communityId = Session.get('activeCommunityId');
     return Breakdowns.find({ communityId }).count() === 0;
   },
-  txDefs() {
+  txdefs() {
     const communityId = Session.get('activeCommunityId');
-    const txDefs = TxDefs.find({ communityId });
-    return txDefs;
+    const txdefs = Txdefs.find({ communityId });
+    return txdefs;
   },
   moneyAccounts() {
     const communityId = Session.get('activeCommunityId');
@@ -91,7 +91,7 @@ Template.Accounting_breakdowns.viewmodel({
 
 Template.Accounting_breakdowns.events({
   ...(actionHandlers(Breakdowns)),
-  ...(actionHandlers(TxDefs, 'new')),
+  ...(actionHandlers(Txdefs, 'new')),
   ...(actionHandlers(MoneyAccounts, 'new')),
   'click #coa .js-clone'(event, instance) {
     const communityId = Session.get('activeCommunityId');

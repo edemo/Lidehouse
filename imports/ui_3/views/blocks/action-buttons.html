@@ -8,9 +8,8 @@
 
 <template name="Action_sub_actions_button">
     <div class="dropdown pull-left">
-        <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white" title="{{#unless long}}{{_ 'statusChange'}}{{/unless}}">
-          <i class="fa fa-cogs"></i> 
-          <b class="caret"></b>
+        <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white" title="{{#unless long}}{{_ action.name}}{{/unless}}">
+          <i class="{{action.icon}}"></i> <b class="caret"></b>
         </a>
         <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs">
         {{#each subOptions in (action.subActionsOptions getDoc)}}

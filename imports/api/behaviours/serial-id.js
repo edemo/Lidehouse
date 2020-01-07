@@ -24,8 +24,11 @@ export function SerialId(definerFields = []) {
       let preKey = '';
       const language = this.community().settings.language;
       definerFields.forEach((field) => {
-        const preKeyFragment = Object.getByString(this, field).substr(0, 3).toUpperCase();
-        preKey += TAPi18n.__(preKeyFragment, {}, language) + '/';
+        const fieldValue = Object.getByString(this, field);
+        if (fieldValue) {
+          const preKeyFragment = fieldValue.substr(0, 3).toUpperCase();
+          preKey += TAPi18n.__(preKeyFragment, {}, language) + '/';
+        }
       });
       debugAssert(this.serial);
       return `${preKey}${this.serial}/${this.createdAt.getFullYear()}`;
