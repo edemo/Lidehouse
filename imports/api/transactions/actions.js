@@ -124,8 +124,10 @@ Transactions.actions = {
       if (doc.category !== 'bill' || !doc.outstanding) return false;
       return currentUserHasPermission('transactions.insert', doc);
     },
-    run(options, doc) {
+    run(options, doc, event, instance) {
       Session.update('modalContext', 'billId', doc._id);
+      const paymentTxdef = Txdefs.findOne({ communityId: doc.communityId, category: 'payment', 'data.relation': doc.relation });
+      Session.update('modalContext', 'txdef', paymentTxdef);
       const paymentOptions = _.extend({}, options, { entity: Transactions.entities.payment });
       Transactions.actions.new.run(paymentOptions, doc);
     },

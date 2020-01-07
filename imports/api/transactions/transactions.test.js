@@ -169,8 +169,7 @@ if (Meteor.isServer) {
           amount: -100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.match, { _id: entryIdWrongRelation, match: { _id: bill.payments[0] } });
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongRelation });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongRelation, txId: bill.payments[0] });
         }, 'err_notAllowed');
 
         const entryIdWrongAmount = FixtureA.builder.create('statementEntry', {
@@ -180,8 +179,7 @@ if (Meteor.isServer) {
           amount: 100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.match, { _id: entryIdWrongAmount, match: { _id: bill.payments[0] } });
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount, txId: bill.payments[0] });
         }, 'err_notAllowed');
 
         const entryIdWrongDate = FixtureA.builder.create('statementEntry', {
@@ -191,8 +189,7 @@ if (Meteor.isServer) {
           amount: -100,
         });
         chai.assert.throws(() => {
-          FixtureA.builder.execute(StatementEntries.methods.match, { _id: entryIdWrongDate, match: { _id: bill.payments[0] } });
-          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongDate });
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongDate, txId: bill.payments[0] });
         }, 'err_notAllowed');
       });
 
@@ -203,8 +200,7 @@ if (Meteor.isServer) {
           name: 'Supplier Inc',
           amount: -100,
         });
-        FixtureA.builder.execute(StatementEntries.methods.match, { _id: entryId1, match: { _id: bill.payments[0] } });
-        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1 });
+        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, txId: bill.payments[0] });
 
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
@@ -224,9 +220,9 @@ if (Meteor.isServer) {
         let entry2 = StatementEntries.findOne(entryId2);
         chai.assert.equal(entry2.isReconciled(), false);
 
-        FixtureA.builder.execute(StatementEntries.methods.match, { _id: entryId2 });
-        entry2 = StatementEntries.findOne(entryId2);
-        chai.assert.equal(entry2.match.billId, billId);
+//        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId2 });
+//        entry2 = StatementEntries.findOne(entryId2);
+//        chai.assert.equal(entry2.match.billId, billId);
         FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId2 });
         entry2 = StatementEntries.findOne(entryId2);
         chai.assert.equal(entry2.isReconciled(), true);

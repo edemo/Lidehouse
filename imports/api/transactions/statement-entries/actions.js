@@ -34,7 +34,7 @@ StatementEntries.actions = {
     visible: (options, doc) => currentUserHasPermission('statements.upsert', doc),
     run: () => {
       importCollectionFromFile(StatementEntries, { keepOriginals: true });
-      StatementEntries.methods.matching.call({ communityId: getActiveCommunityId() });
+      StatementEntries.methods.autoReconciliation.call({ communityId: getActiveCommunityId() });
     },
   },
   view: {
@@ -66,8 +66,8 @@ StatementEntries.actions = {
       });
     },
   },
-  match: {
-    name: 'match',
+  reconcile: {
+    name: 'reconcile',
     label(options) {
       return options.txdef.name;
     },
@@ -78,7 +78,7 @@ StatementEntries.actions = {
     },
     visible(options, doc) {
       if (!doc || doc.isReconciled()) return false;
-      return currentUserHasPermission('statements.match', doc);
+      return currentUserHasPermission('statements.reconcile', doc);
     },
     subActions: true,
     subActionsOptions(doc) {
@@ -90,14 +90,14 @@ StatementEntries.actions = {
       Session.update('modalContext', 'txdef', options.txdef);
       Modal.show('Autoform_modal', {
         title: 'Reconciliation',
-        id: 'af.statementEntry.match',
-        schema: StatementEntries.matchSchema,
+        id: 'af.statementEntry.reconcile',
+        schema: StatementEntries.reconcileSchema,
         type: 'method',
-        meteormethod: 'statementEntries.match',
+        meteormethod: 'statementEntries.reconcile',
       });
     },
   },
-  reconcile: {
+/*  reconcile: {
     name: 'reconcile',
     icon: () => 'fa fa-check-square-o',
     color: () => 'warning',
@@ -108,7 +108,7 @@ StatementEntries.actions = {
     run(options, doc) {
       StatementEntries.methods.reconsile.call({ _id: doc._id });
     },
-  },
+  },*/
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
@@ -129,7 +129,7 @@ StatementEntries.batchActions = {
 
 AutoForm.addModalHooks('af.statementEntry.insert');
 AutoForm.addModalHooks('af.statementEntry.update');
-AutoForm.addModalHooks('af.statementEntry.match');
+AutoForm.addModalHooks('af.statementEntry.reconcile');
 
 AutoForm.addHooks('af.statementEntry.insert', {
   docToForm(doc) {
@@ -157,15 +157,9 @@ AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.insert', 'af.sta
   },
 });
 
-AutoForm.addHooks('af.statementEntry.match', {
+AutoForm.addHooks('af.statementEntry.reconcile', {
   formToDoc(doc) {
     doc._id = Session.get('modalContext').statementEntry._id;
     return doc;
   },
-/*  onSubmit(doc) {
-    AutoForm.validateForm('af.statementEntry.match');
-    if (!doc.txId)
-      Transactions.actions.new.run(options);
-    return false;
-  },*/
 });

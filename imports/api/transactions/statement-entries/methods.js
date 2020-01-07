@@ -50,25 +50,33 @@ function moneyFlowSign(relation) {
   }
 }
 
-export const match = new ValidatedMethod({
-  name: 'statementEntries.match',
-  validate: new SimpleSchema({
-    _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-    match: { type: Object, blackbox: true, optional: true },  // not present means auto match requested
-  }).validator(),
-  run({ _id, match }) {
+function checkMatch(entry, transaction) {
+  function throwMatchError(mismatch) {
+//    console.log(JSON.stringify(entry));/
+//    console.log(JSON.stringify(transaction));
+    throw new Meteor.Error('err_notAllowed', `Cannot reconcile entry with transaction - ${mismatch} does not match`);
+  }
+  if (transaction.amount !== moneyFlowSign(transaction.relation) * entry.amount) throwMatchError('amount');
+  if (!namesMatch(entry, transaction.partner().getName())) throwMatchError('partnerName');
+  if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatchError('valueDate');
+}
+
+export const reconcile = new ValidatedMethod({
+  name: 'statementEntries.reconcile',
+  validate: StatementEntries.reconcileSchema.validator(),
+  run({ _id, txId }) {
     const entry = checkExists(StatementEntries, _id);
     checkPermissions(this.userId, 'statements.reconcile', entry);
-    if (!match) {
+    if (!txId) { // not present means auto match requested
       const partner = Partners.findByName(entry.communityId, entry.partner);
       if (!partner) return;
       const matchingBill = Transactions.findOne({ category: 'bill', partnerId: partner._id, outstanding: moneyFlowSign(partner.getRelation()) * entry.amount });
       if (!matchingBill) return;
       const matchingPayment = matchingBill.getPayments().find(payment => !payment.reconciledId && payment.amount === matchingBill.outstanding);
       if (matchingPayment) {
-        match = matchingPayment;
+        txId = matchingPayment._id;
       } else {
-        match = {
+        const tx = {
           communityId: entry.communityId,
           category: 'payment',
           defId: Txdefs.findOne({ communityId: entry.communityId, category: 'payment', 'data.relation': matchingBill.relation })._id,
@@ -78,38 +86,30 @@ export const match = new ValidatedMethod({
           relation: matchingBill.relation,
           partnerId: matchingBill.partnerId,
         };
+        txId = Transactions.methods.insert._execute({ userId: this.userId }, tx);
       }
     }
-    const result = StatementEntries.update(entry._id, { $set: { match } });
-    return match;
+    const reconciledTx = Transactions.findOne(txId);
+    checkMatch(entry, reconciledTx);
+    Transactions.update(reconciledTx._id, { $set: { reconciledId: _id } });
+    StatementEntries.update(entry._id, { $set: { reconciledId: txId } });
+    return txId;
   },
 });
 
-export const matching = new ValidatedMethod({
-  name: 'statementEntries.matching',
+export const autoReconciliation = new ValidatedMethod({
+  name: 'statementEntries.autoReconciliation',
   validate: new SimpleSchema({
     communityId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
 
   run({ communityId }) {
     StatementEntries.find({ communityId, match: { $exists: false } }).forEach(entry => {
-      match._execute({ userId: this.userId }, { _id: entry._id });
+      reconcile._execute({ userId: this.userId }, { _id: entry._id });
     });
   },
 });
-
-function checkMatch(entry, transaction) {
-  function throwMatcherror(mismatch) {
-//    console.log(JSON.stringify(entry));/
-//    console.log(JSON.stringify(transaction));
-    throw new Meteor.Error('err_notAllowed',
-      `Cannot reconcile entry with transaction - mismatch: ${mismatch}`);
-  }
-  if (transaction.amount !== moneyFlowSign(transaction.relation) * entry.amount) throwMatcherror('amount');
-  if (!namesMatch(entry, transaction.partner().getName())) throwMatcherror('partnerName');
-  if (transaction.valueDate.getTime() !== entry.valueDate.getTime()) throwMatcherror('valueDate');
-}
-
+/*
 export const reconcile = new ValidatedMethod({
   name: 'statementEntries.reconcile',
   validate: new SimpleSchema({
@@ -131,7 +131,7 @@ export const reconcile = new ValidatedMethod({
     return result;
   },
 });
-
+*/
 export const remove = new ValidatedMethod({
   name: 'statementEntries.remove',
   validate: new SimpleSchema({
@@ -147,6 +147,6 @@ export const remove = new ValidatedMethod({
 });
 
 StatementEntries.methods = StatementEntries.methods || {};
-_.extend(StatementEntries.methods, { insert, update, match, matching, reconcile, remove });
+_.extend(StatementEntries.methods, { insert, update, reconcile, autoReconciliation, remove });
 _.extend(StatementEntries.methods, crudBatchOps(StatementEntries));
 

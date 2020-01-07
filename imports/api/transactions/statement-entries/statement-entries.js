@@ -115,11 +115,11 @@ if (Meteor.isClient) {
     firstOption: () => __('(Select one)'),
   };
 }
-StatementEntries.matchSchema = new SimpleSchema({
+StatementEntries.reconcileSchema = new SimpleSchema({
   _id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
   txId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoform: chooseTransaction },
 });
 
 Meteor.startup(function attach() {
-  StatementEntries.matchSchema.i18n('schemaReconiliation');
+  StatementEntries.reconcileSchema.i18n('schemaReconiliation');
 });

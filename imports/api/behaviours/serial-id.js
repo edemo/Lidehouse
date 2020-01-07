@@ -30,7 +30,7 @@ export function SerialId(definerFields = []) {
           preKey += TAPi18n.__(preKeyFragment, {}, language) + '/';
         }
       });
-      debugAssert(this.serial);
+//      debugAssert(this.serial); not exist yet when inserting
       return `${preKey}${this.serial}/${this.createdAt.getFullYear()}`;
     },
   };
