@@ -268,8 +268,8 @@
   "leaves unchanged": "Helybenhagy",
   " documents": " dokumentumot",
 
-  "Select all": "Mind kijelöl",
-  "Select none": "Mégsem jelöl",
+  "Select all": "Mindent kijelöl",
+  "Select none": "Kijelölés megszüntetése",
   "Action with selected": "Csoportos akció",
   "This operation will be performed on many documents": "Amennyiben jóváhagyja, a műveletet <strong>%s kijelölt dokumentumon</strong> egyszerre fogja végrehajtani",
   "No actions available": "Nincs elvégezhető művelet",
