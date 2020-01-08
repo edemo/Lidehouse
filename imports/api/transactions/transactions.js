@@ -254,6 +254,9 @@ Transactions.helpers({
   updateOutstandings() {
     // NOP -- will be overwritten in the categories
   },
+  makeJournalEntries() {
+    // NOP -- will be overwritten in the categories
+  },
   // bill/receipt helpers
   issuer() {
     if (this.relation === 'supplier') return this.partner();

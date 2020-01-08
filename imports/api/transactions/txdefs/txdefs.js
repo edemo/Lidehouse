@@ -46,7 +46,7 @@ Txdefs.helpers({
     return schema;
   },
   isAutoPosting() {
-    return !_.contains(['bill', 'payment', 'receipt', 'freeTx'], this.category);
+    return this.isAccountantTx();
   },
   isAccountantTx() {
     return !_.contains(['bill', 'payment', 'remission', 'receipt'], this.category);

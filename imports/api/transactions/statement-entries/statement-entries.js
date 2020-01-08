@@ -62,7 +62,7 @@ Meteor.startup(function attach() {
 Factory.define('statementEntry', StatementEntries, {
   account: '31',
   valueDate: () => new Date(),
-  partner: () => faker.random.word(),
+  name: () => faker.random.word(),
   ref: () => faker.random.uuid(),
   note: () => faker.random.word(),
   amount: 10000,
