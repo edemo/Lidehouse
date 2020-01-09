@@ -2,7 +2,7 @@ import { Template } from 'meteor/templating';
 import { Mongo } from 'meteor/mongo';
 import { $ } from 'meteor/jquery';
 import { _ } from 'meteor/underscore';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';  // TODO get rid of
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';  // TODO get rid of
 import './menu-overflow-guard.js';
 import './action-buttons.html';
 
@@ -22,7 +22,7 @@ export function actionHandlers(collection, actionNames) {
       const status = $(event.target).closest('[data-status]').data('status');
       const options = {
         entity: entity && collection.entities[entity],
-        txDef: txdef && TxDefs.findOne(txdef),
+        txdef: txdef && Txdefs.findOne(txdef),
         status: doc && status && doc.statusObject(status),
       };
       action.run(options, doc, event, instance);
@@ -36,7 +36,7 @@ function buttonData2HtmlObj(instanceData) {
   obj['data-id'] = (typeof instanceData.doc === 'object') ? instanceData.doc._id : instanceData.doc;
   obj['data-status'] = instanceData.options && instanceData.options.status && instanceData.options.status.name;
   obj['data-entity'] = instanceData.options && instanceData.options.entity && instanceData.options.entity.name;
-  obj['data-txdef'] = instanceData.options && instanceData.options.txDef && instanceData.options.txDef._id;
+  obj['data-txdef'] = instanceData.options && instanceData.options.txdef && instanceData.options.txdef._id;
   // TODO should copy all data-* atts over in one generic call
   //  _.forEach(instanceData.options, (value, key) => {
   //    obj[`data-${key}`] = value;
@@ -93,12 +93,12 @@ Template.Action_button.viewmodel({
   },
 });
 
-Template.Action_button_status_change.viewmodel({
+Template.Action_sub_actions_button.viewmodel({
   long() {
     return this.templateInstance.data.size === 'lg' || this.templateInstance.data.size === 'xl';
   },
-  optionsWithNewStatus(status) {
-    return _.extend({}, this.templateInstance.data.options, { status });
+  extendOptions(subOptions) {
+    return _.extend({}, this.templateInstance.data.options, subOptions);
   },
   getDoc() {
     return fetchDoc(this.templateInstance.data);
@@ -154,9 +154,9 @@ Template.Action_listitem.events({
   },
 });
 
-Template.Action_listitems_status_change.viewmodel({
-  optionsWithNewStatus(status) {
-    return _.extend({}, this.templateInstance.data.options, { status });
+Template.Action_sub_actions_listitems.viewmodel({
+  extendOptions(subOptions) {
+    return _.extend({}, this.templateInstance.data.options, subOptions);
   },
 });
 
@@ -170,10 +170,7 @@ Template.Action_buttons_dropdown_list.viewmodel({
     return actions;
   },
   needsDividerAfter(action) {
-    switch (action.name) {
-      case 'statusChange': return true;
-      default: return false;
-    }
+    return !!action.subActions;
   },
 });
 

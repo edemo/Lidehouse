@@ -10,7 +10,7 @@ export function compareNames(param1, param2) {
     const reverse = deaccentLowerCase(string2).includes(deaccentLowerCase(string1));
     if (compare || reverse) return true;
     else return false;
-  };
+  }
 
   if ((param1.firstName && param1.lastName) && (param2.firstName && param2.lastName)) {
     if ((param1.firstName === param2.firstName) && (param1.lastName === param2.lastName)) return 'equal';

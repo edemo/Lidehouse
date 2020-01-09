@@ -6,15 +6,14 @@
   {{/if}}
 </template>
 
-<template name="Action_button_status_change">
+<template name="Action_sub_actions_button">
     <div class="dropdown pull-left">
-        <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white" title="{{#unless long}}{{_ 'statusChange'}}{{/unless}}">
-          <i class="fa fa-cogs"></i> 
-          <b class="caret"></b>
+        <a href="" data-toggle="dropdown" class="dropdown-toggle btn btn-xs btn-white" title="{{#unless long}}{{_ action.name}}{{/unless}}">
+          <i class="{{action.icon}}"></i> <b class="caret"></b>
         </a>
         <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs">
-        {{#each status in getDoc.possibleNextStatuses}}
-            {{>Action_listitem options=(optionsWithNewStatus status) doc=doc collection=collection action=action}}
+        {{#each subOptions in (action.subActionsOptions getDoc)}}
+            {{>Action_listitem options=(extendOptions subOptions) doc=doc collection=collection action=action}}
         {{/each}}
         </ul>
     </div>
@@ -23,8 +22,8 @@
 <template name="Action_buttons_group">
   <div class="btn-group">
     {{#each action in _actions}}
-        {{#if (equals action.name 'statusChange')}}
-            {{>Action_button_status_change options=options doc=doc collection=collection action=action size=size}}
+        {{#if action.subActions}}
+            {{>Action_sub_actions_button options=options doc=doc collection=collection action=action size=size}}
         {{else}}
             {{>Action_button options=options doc=doc collection=collection action=action size=size}}
         {{/if}}
@@ -46,17 +45,17 @@
   {{/let}}
 </template>
 
-<template name="Action_listitems_status_change">
-    {{#each status in doc.possibleNextStatuses}}
-        {{>Action_listitem options=(optionsWithNewStatus status) doc=doc collection=collection action=action}}
+<template name="Action_sub_actions_listitems">
+    {{#each subOptions in (action.subActionsOptions doc)}}
+        {{>Action_listitem options=(extendOptions subOptions) doc=doc collection=collection action=action}}
     {{/each}}
 </template>
 
 <template name="Action_buttons_dropdown_list">
   <ul class="slim-menu dropdown-menu pull-right animated fadeInDown m-t-xs" aria-labelledby="drop_{{getDoc._id}}">
     {{#each action in _actions}}
-        {{#if (equals action.name 'statusChange')}}
-            {{>Action_listitems_status_change options=options doc=doc collection=collection action=action}}
+        {{#if action.subActions}}
+            {{>Action_sub_actions_listitems options=options doc=doc collection=collection action=action}}
         {{else}}
             {{>Action_listitem options=options doc=doc collection=collection action=action}}
         {{/if}}

@@ -12,10 +12,10 @@ import './bill-edit.html';
 
 Template.Bill_edit.helpers({
   partnerRelation() {
-    return Session.get('modalContext').txDef.data.relation;
+    return Session.get('modalContext').txdef.data.relation;
   },
   isBill() {
-    return Session.get('modalContext').txDef.category === 'bill';
+    return Session.get('modalContext').txdef.category === 'bill';
   },
   defaultDate() {
     return Clock.currentTime();

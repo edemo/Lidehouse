@@ -119,11 +119,17 @@ Topics.actions = {
       return newStatus.label || __('Change status to', newStatusName);
     },
     icon(options) {
+      if (!options) return 'fa fa-cogs';
       const newStatus = options.status;
       return newStatus.icon || 'fa fa-cogs';
     },
     visible(options, doc) {
       return doc && currentUserHasPermission(`${doc.category}.statusChangeTo.${options.status.name}.enter`, doc);
+    },
+    subActions: true,
+    subActionsOptions(doc) {
+      if (!doc) return [];
+      return doc.possibleNextStatuses().map(status => ({ status }));
     },
     run(options, doc, event, instance) {
       const newStatus = options.status;

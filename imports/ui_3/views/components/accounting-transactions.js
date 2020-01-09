@@ -19,8 +19,8 @@ import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
 import '/imports/api/transactions/balances/methods.js';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
-import '/imports/api/transactions/tx-defs/methods.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
+import '/imports/api/transactions/txdefs/methods.js';
 import { transactionColumns } from '/imports/api/transactions/tables.js';
 import '/imports/api/transactions/actions.js';
 import '/imports/api/transactions/categories';
@@ -30,8 +30,8 @@ import '/imports/ui_3/views/modals/autoform-modal.js';
 import './accounting-transactions.html';
 
 Template.Accounting_transactions.viewmodel({
-  txDefSelected: '',
-  txDefOptions: [],
+  txdefSelected: '',
+  txdefOptions: [],
   creditAccountSelected: '',
   creditAccountOptions: [],
   debitAccountSelected: '',
@@ -47,7 +47,7 @@ Template.Accounting_transactions.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txDefs.inCommunity', { communityId });
+      instance.subscribe('txdefs.inCommunity', { communityId });
       instance.subscribe('transactions.incomplete', { communityId });
       instance.subscribe('bills.outstanding', { communityId });
     });
@@ -56,34 +56,34 @@ Template.Accounting_transactions.viewmodel({
     return Session.get('activeCommunityId');
   },
   autorun: [
-    function setTxDefOptions() {
+    function setTxdefOptions() {
       const communityId = Session.get('activeCommunityId');
-      this.txDefOptions(TxDefs.find({ communityId }).map(function (cat) {
+      this.txdefOptions(Txdefs.find({ communityId }).map(function (cat) {
         return { value: cat._id, label: __(cat.name) };
       }));
-      if (!this.txDefSelected() && this.txDefOptions() && this.txDefOptions().length > 0) {
-        this.txDefSelected(this.txDefOptions()[0].value);
+      if (!this.txdefSelected() && this.txdefOptions() && this.txdefOptions().length > 0) {
+        this.txdefSelected(this.txdefOptions()[0].value);
       }
     },
     function setFilterAccountOptions() {
-      const txDef = TxDefs.findOne(this.txDefSelected());
+      const txdef = Txdefs.findOne(this.txdefSelected());
       const coa = ChartOfAccounts.get();
       const loc = Localizer.get();
-      if (!txDef || !coa || !loc) return;
-      this.creditAccountOptions(coa.nodeOptionsOf(txDef.credit));
-      this.debitAccountOptions(coa.nodeOptionsOf(txDef.debit));
-      this.creditAccountSelected(txDef.credit[0] || '');
-      this.debitAccountSelected(txDef.debit[0] || '');
+      if (!txdef || !coa || !loc) return;
+      this.creditAccountOptions(coa.nodeOptionsOf(txdef.credit));
+      this.debitAccountOptions(coa.nodeOptionsOf(txdef.debit));
+      this.creditAccountSelected(txdef.credit[0] || '');
+      this.debitAccountSelected(txdef.debit[0] || '');
       this.localizerOptions(loc.nodeOptions());
     },
     function txSubscription() {
       this.templateInstance.subscribe('transactions.betweenAccounts', this.subscribeParams());
     },
   ],
-  txDefs() {
+  txdefs() {
     const communityId = Session.get('activeCommunityId');
-    const txDefs = TxDefs.find({ communityId }).fetch().filter(c => c.isAccountantTx());
-    return txDefs;
+    const txdefs = Txdefs.find({ communityId }).fetch().filter(c => c.isAccountantTx());
+    return txdefs;
   },
   optionsOf(accountCode) {
 //    const accountSpec = new AccountSpecification(communityId, accountCode, undefined);
@@ -94,7 +94,7 @@ Template.Accounting_transactions.viewmodel({
   subscribeParams() {
     return {
       communityId: this.communityId(),
-      defId: this.txDefSelected(),
+      defId: this.txdefSelected(),
       debitAccount: '\\^' + this.debitAccountSelected() + '\\',
       creditAccount: '\\^' + this.creditAccountSelected() + '\\',
       begin: new Date(this.beginDate()),

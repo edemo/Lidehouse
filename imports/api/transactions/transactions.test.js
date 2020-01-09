@@ -119,15 +119,13 @@ if (Meteor.isServer) {
       });
     });
 
-    describe('bills payments', function () {
+    describe('Bills payments reconciliation', function () {
       let billId;
       let bill;
-      let statementId;
-      let entryId1, entryId2, entryId3;
-      let entry1, entry2, entry3;
+//      let statementId;
       const bankAccount = '31';
 
-      beforeEach(function () {
+      before(function () {
         billId = FixtureA.builder.create('bill', {
           relation: 'supplier',
           partnerId: FixtureA.supplier,
@@ -143,47 +141,67 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Transactions.methods.post, { _id: billId });
         bill = Transactions.findOne(billId);
 
-        statementId = FixtureA.builder.create('statement', {
+/*        statementId = FixtureA.builder.create('statement', {
           account: bankAccount,
           startDate: moment().subtract(1, 'month').toDate(),
           endDate: new Date(),
           startBalance: 0,
           endBalance: 100,
         });
-        entryId1 = FixtureA.builder.create('statementEntry', {
-          account: bankAccount,
-          valueDate: moment().subtract(3, 'week').toDate(),
-          partner: 'CUSTOMER',
-          amount: 100,
-          statementId,
-        });
-        entryId2 = FixtureA.builder.create('statementEntry', {
-          account: bankAccount,
-          valueDate: moment().subtract(2, 'week').toDate(),
-          partner: 'SUPPLIER',
-          amount: -1000,
-          statementId,
-        });
-        entryId3 = FixtureA.builder.create('statementEntry', {
-          account: bankAccount,
-          valueDate: moment().subtract(1, 'week').toDate(),
-          partner: 'CUSTOMER',
-          amount: 200,
-          statementId,
-        });
+*/
       });
 
-      it('Can pay bill manually', function () {
-        FixtureA.builder.create('payment', { billId, amount: 100, valueDate: Clock.currentTime(), payAccount: bankAccount });
+      it('Can pay bill by registering a payment tx - later a statementEntry will be matched to it', function () {
+        FixtureA.builder.create('payment', { billId, amount: 100, valueDate: Clock.currentDate(), payAccount: bankAccount });
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);
         chai.assert.equal(bill.getPayments()[0].isReconciled(), false);
         chai.assert.equal(bill.outstanding, 200);
         chai.assert.equal(bill.partner().outstanding, 200);
+      });
 
-        // later if the same tx comes in from bank import, no extra payment is created
-        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, paymentId: bill.payments[0] });
+      it('Can NOT reconcile statementEntry with different relation, amount or date', function () {
+        const entryIdWrongRelation = FixtureA.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: Clock.currentDate(),
+          name: 'Customer Inc',
+          amount: -100,
+        });
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongRelation, txId: bill.payments[0] });
+        }, 'err_notAllowed');
+
+        const entryIdWrongAmount = FixtureA.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: Clock.currentDate(),
+          name: 'Supplier Inc',
+          amount: 100,
+        });
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongAmount, txId: bill.payments[0] });
+        }, 'err_notAllowed');
+
+        const entryIdWrongDate = FixtureA.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: moment().subtract(3, 'week').toDate(),
+          name: 'Supplier Inc',
+          amount: -100,
+        });
+        chai.assert.throws(() => {
+          FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryIdWrongDate, txId: bill.payments[0] });
+        }, 'err_notAllowed');
+      });
+
+      it('Can reconcile statementEntry to existing payment - no extra payment is created', function () {
+        const entryId1 = FixtureA.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: Clock.currentDate(),
+          name: 'Supplier Inc',
+          amount: -100,
+        });
+        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, txId: bill.payments[0] });
+
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
         chai.assert.equal(bill.payments.length, 1);
@@ -192,19 +210,28 @@ if (Meteor.isServer) {
         chai.assert.equal(bill.partner().outstanding, 200);
       });
 
-      it('Can pay bill from bank import', function () {
-        entry1 = StatementEntries.findOne(entryId1);
-        chai.assert.equal(entry1.isReconciled(), false);
+      it('Can auto reconcile from bank import', function () {
+        const entryId2 = FixtureA.builder.create('statementEntry', {
+          account: bankAccount,
+          valueDate: Clock.currentDate(),
+          name: 'Supplier Inc',
+          amount: -200,
+        });
+        let entry2 = StatementEntries.findOne(entryId2);
+        chai.assert.equal(entry2.isReconciled(), false);
 
-        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId1, billId });
-        entry1 = StatementEntries.findOne(entryId1);
-        chai.assert.equal(entry1.isReconciled(), true);
+//        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId2 });
+//        entry2 = StatementEntries.findOne(entryId2);
+//        chai.assert.equal(entry2.match.billId, billId);
+        FixtureA.builder.execute(StatementEntries.methods.reconcile, { _id: entryId2 });
+        entry2 = StatementEntries.findOne(entryId2);
+        chai.assert.equal(entry2.isReconciled(), true);
         bill = Transactions.findOne(billId);
         chai.assert.equal(bill.amount, 300);
-        chai.assert.equal(bill.payments.length, 1);
-        chai.assert.equal(bill.getPayments()[0].isReconciled(), true);
-        chai.assert.equal(bill.outstanding, 200);
-        chai.assert.equal(bill.partner().outstanding, 400);  // prev test billed the same partner!
+        chai.assert.equal(bill.payments.length, 2);
+        chai.assert.equal(bill.getPayments()[1].isReconciled(), true);
+        chai.assert.equal(bill.outstanding, 0);
+        chai.assert.equal(bill.partner().outstanding, 0);
       });
     });
 

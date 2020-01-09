@@ -67,6 +67,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     taxNumber: '128686-1-41',
     totalunits: 10000,
     settings: {
+      language: lang,
       accountingMethod: 'accrual',
       topicAgeDays: 365,
     },
@@ -921,7 +922,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     account: demoBuilder.name2code('Assets', 'Folyószámla'),
     valueDate: new Date(`${lastYear}-12-30`),
     amount: 24500,
-    partner: 'Gipsz Jakab',
+    name: 'Gipsz Jakab',
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
   });
 

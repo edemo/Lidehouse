@@ -22,12 +22,12 @@ import { Communities } from '/imports/api/communities/communities.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Contracts, chooseContract } from '/imports/api/contracts/contracts.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from '/imports/api/transactions/statements/statements.js';
 
 export const Transactions = new Mongo.Collection('transactions');
 
-Transactions.categoryValues = ['bill', 'payment', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
+Transactions.categoryValues = ['bill', 'payment', 'remission', 'receipt', 'barter', 'transfer', 'opening', 'freeTx'];
 
 Transactions.entrySchema = new SimpleSchema([
   AccountSchema,
@@ -72,7 +72,7 @@ Transactions.legsSchema = {
   debit: { type: [Transactions.entrySchema], optional: true },
   credit: { type: [Transactions.entrySchema], optional: true },
   complete: { type: Boolean, optional: true, autoform: { omit: true } },  // calculated in hooks
-  reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
+//  reconciled: { type: Boolean, defaultValue: false, autoform: { omit: true } },
 };
 
 Transactions.noteSchema = {
@@ -126,8 +126,8 @@ Transactions.helpers({
   contract() {
     return Contracts.findOne(this.contractId);
   },
-  txDef() {
-    if (this.defId) return TxDefs.findOne(this.defId);
+  txdef() {
+    if (this.defId) return Txdefs.findOne(this.defId);
     return undefined;
   },
   entityName() {
@@ -254,6 +254,9 @@ Transactions.helpers({
   updateOutstandings() {
     // NOP -- will be overwritten in the categories
   },
+  makeJournalEntries() {
+    // NOP -- will be overwritten in the categories
+  },
   // bill/receipt helpers
   issuer() {
     if (this.relation === 'supplier') return this.partner();
@@ -345,7 +348,7 @@ if (Meteor.isServer) {
   Transactions.after.insert(function (userId, doc) {
     const tdoc = this.transform();
     tdoc.updateBalances(+1);
-    if (tdoc.category === 'payment') tdoc.registerOnBill();
+    if (tdoc.category === 'payment' || tdoc.category === 'remission') tdoc.registerOnBill();
     tdoc.updateOutstandings(+1);
   });
 

@@ -61,6 +61,11 @@ Partners.relCollection = function relCollection(relation) {
   return Partners;
 };
 
+Partners.findByName = function findByName(communityId, name) {
+  const partner = Partners.findOne({ communityId, name }) || Memberships.findOne({ communityId, 'person.idCard.name': name });
+  return partner;
+};
+
 export let choosePartner = {};
 if (Meteor.isClient) {
   import { ModalStack } from '/imports/ui_3/lib/modal-stack.js';
@@ -87,6 +92,12 @@ if (Meteor.isClient) {
 Partners.helpers({
   community() {
     return Communities.findOne(this.communityId);
+  },
+  getName() {
+    return this.name;
+  },
+  getRelation() {
+    return this.relation;
   },
   toString() {
     return this.name;
