@@ -33,8 +33,8 @@ Template.Accounting_breakdowns.viewmodel({
     instance.autorun(() => {
       const communityId = this.communityId();
       instance.subscribe('breakdowns.inCommunity', { communityId });
-      instance.subscribe('txdefs.inCommunity', { communityId });
       instance.subscribe('moneyAccounts.inCommunity', { communityId });
+      instance.subscribe('txdefs.inCommunity', { communityId });
     });
   },
   communityId() {
