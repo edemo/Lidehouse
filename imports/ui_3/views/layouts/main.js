@@ -40,12 +40,12 @@ Template.Main_layout.onCreated(function() {
       this.subscribe('breakdowns.inCommunity', { communityId });
     }
   });
-  // We subscribe to all topics in the community, so that we have access to the commentCounters
   this.autorun(() => {
     const communityId = Session.get('activeCommunityId');
     this.subscribe('agendas.inCommunity', { communityId });
+    // We need all the room topics and their comments for the counter badge
+    this.subscribe('topics.roomsOfUser', { communityId, userId: Meteor.userId() });
   });
-
   this.autorun(() => {
     const user = Meteor.userOrNull();
     const communityId = Session.get('activeCommunityId');
