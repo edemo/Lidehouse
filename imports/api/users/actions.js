@@ -45,10 +45,10 @@ Meteor.users.actions = {
   block: {
     name: 'block',
     label(options, doc) {
-      return doc.isFlaggedBy(Meteor.userId()) ? __('Unblock user') : __('Block user');
+      return doc && doc.isFlaggedBy(Meteor.userId()) ? __('Unblock user') : __('Block user');
     },
     icon(options, doc) {
-      return doc.isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
+      return doc && doc.isFlaggedBy(Meteor.userId()) ? 'fa fa-check' : 'fa fa-ban';
     },
     visible: () => true,
     run(options, doc) {
