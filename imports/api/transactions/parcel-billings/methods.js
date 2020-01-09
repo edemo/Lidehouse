@@ -28,6 +28,7 @@ export const apply = new ValidatedMethod({
   validate: ParcelBillings.applySchema.validator(),
 
   run({ communityId, date, ids, localizer }) {
+    if (Meteor.isClient) return;
     checkPermissions(this.userId, 'parcelBillings.apply', { communityId });
     ActiveTimeMachine.runAtTime(date, () => {
       const bills = {}; // parcelId => his bill
