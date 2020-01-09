@@ -205,8 +205,10 @@ Transactions.helpers({
   subjectiveAmount() {
     let sign = 0;
     switch (this.category) {
-      case 'bill': sign = -1; break;
-      case 'payment': sign = +1; break;
+      case 'bill':
+      case 'receipt': sign = -1; break;
+      case 'payment':
+      case 'remission': sign = +1; break;
       default: debugAssert(false);
     }
     return sign * this.amount;
