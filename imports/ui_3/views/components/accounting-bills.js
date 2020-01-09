@@ -14,6 +14,7 @@ import '/imports/api/partners/actions.js';
 import { partnersColumns } from '/imports/api/partners/tables.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/actions.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { billColumns, receiptColumns } from '/imports/api/transactions/bills/tables.js';
 import { paymentsColumns } from '/imports/api/transactions/payments/tables.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
@@ -69,6 +70,14 @@ Template.Accounting_bills.viewmodel({
       case 'parcel': return 'parcelBillings';
       default: debugAssert(false, 'No such bill relation')
     }
+  },
+  findTxdef(category) {
+    const txdef = Txdefs.findOne({ 
+      communityId: this.communityId(),
+      category,
+      'data.relation': this.activePartnerRelation(),
+    });
+    return txdef && txdef._id;
   },
   billsFilterSelector() {
     const selector = { communityId: this.communityId(), category: 'bill' };

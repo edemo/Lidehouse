@@ -8,7 +8,7 @@ import './actions.js';
 export function statementEntriesColumns() {
   const columns = [
     { data: 'valueDate', title: __('schemaStatementEntries.valueDate.label'), render: Render.formatDate },
-    { data: 'partner', title: __('schemaStatementEntries.partner.label') },
+    { data: 'name', title: __('schemaStatementEntries.name.label') },
     { data: 'amount', title: __('schemaStatementEntries.amount.label'), render: Render.formatNumber },
     { data: 'note', title: __('schemaStatementEntries.note.label') },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,

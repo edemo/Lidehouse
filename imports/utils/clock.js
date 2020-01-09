@@ -4,13 +4,17 @@ import { debugAssert } from '/imports/utils/assert.js';
 
 let simulatedTime = null;
 
+export function datePartOnly(date = new Date()) {
+  return moment(moment.utc(date)).startOf('day').toDate();
+}
+
 export const Clock = {
   currentTime() {
     if (simulatedTime) return simulatedTime;
     return new Date();
   },
   currentDate() {
-    return moment(Clock.currentTime()).endOf('date').toDate();
+    return datePartOnly(Clock.currentTime());
   },
   _moment(...args) {
     debugAssert(args.length === 3);

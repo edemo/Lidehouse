@@ -12,40 +12,9 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import '/imports/ui_3/views/modals/confirmation.js';
 import '/imports/ui_3/views/blocks/readmore.js';
 import { __ } from '/imports/localization/i18n.js';
-import { debugAssert } from '/imports/utils/assert.js';
-import { onSuccess, displayError, displayMessage } from '/imports/ui_3/lib/errors.js';
-import { Communities } from '/imports/api/communities/communities.js';
-import { Parcels } from '/imports/api/parcels/parcels';
-import { MarinaTransformers } from './import-marina.js';
+import { Transformers } from './import-transformers.js';
 
 const rABS = true;
-
-const DefaultTransformers = {
-  memberships(jsons, options) {
-    const tjsons = [];
-    const communityId = Session.get('activeCommunityId');
-    debugAssert(communityId);
-    jsons.forEach((doc) => {
-      const parcel = Parcels.findOne({ communityId, ref: doc.ref.trim() });
-      doc.parcelId = parcel._id;
-      doc.person = doc.person || {};
-      doc.person.idCard = doc.person.idCard || {};
-      doc.person.contact = doc.person.contact || {};
-      doc.person.idCard.type = 'natural';
-      doc.role = 'owner';
-      const names = doc.owners ? doc.owners.split(/,|;|\n/) : [];
-      const emails = doc.emails ? doc.emails.split(/,|;| |\n/) : [];
-      names.forEach((name) => {
-        const tdoc = {}; $.extend(true, tdoc, doc);
-        tdoc.person.idCard.name = name;
-        tdoc.person.contact.email = emails[0] || undefined;
-        tdoc.ownership = { share: new Fraction(1, names.length) };
-        tjsons.push(tdoc);
-      });
-    });
-    return tjsons;
-  },
-};
 
 export function importCollectionFromFile(collection, options) {
   UploadFS.selectFile(function (file) {
@@ -59,12 +28,8 @@ export function importCollectionFromFile(collection, options) {
       let jsons = XLSX.utils.sheet_to_json(worksheet).map(flatten.unflatten);
 
       const communityId = Session.get('activeCommunityId');
-      const community = Communities.findOne(communityId);
-
       // ---- custom transformation ----
-      const transformers = DefaultTransformers;
-      if (community.name.indexOf('Marina') >= 0) _.extend(transformers, MarinaTransformers);
-      const transformer = transformers[collection._name];
+      const transformer = Transformers[collection._name][options.transformer || 'default'];
       if (transformer) jsons = transformer(jsons, options);
       // ------------------------------
       jsons.forEach(json => json.communityId = communityId);

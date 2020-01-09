@@ -67,6 +67,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     taxNumber: '128686-1-41',
     totalunits: 10000,
     settings: {
+      language: lang,
       accountingMethod: 'accrual',
       topicAgeDays: 365,
     },
@@ -921,7 +922,7 @@ export function insertDemoHouse(lang, demoOrTest) {
     account: demoBuilder.name2code('Assets', 'Folyószámla'),
     valueDate: new Date(`${lastYear}-12-30`),
     amount: 24500,
-    partner: 'Gipsz Jakab',
+    name: 'Gipsz Jakab',
     note: 'Sógoromnak fizetem be mert elutazott Madridba',
   });
 
@@ -1172,85 +1173,96 @@ function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   Meteor.users.remove(userId);
 }
 
+let createDemoUserLock = false; // The clock manipualtion in this method has to be protected with a Lock
+
 Meteor.methods({
   createDemoUserWithParcel(lang) {
-    check(lang, String);
-    if (Meteor.isClient) return '';  // This should run only on the server side
+    if (!createDemoUserLock) {
+      try {
+        createDemoUserLock = true;
+        check(lang, String);
+        if (Meteor.isClient) return '';  // This should run only on the server side
 
-    const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
+        const __ = function translate(text) { return TAPi18n.__(text, {}, lang); };
 
-    const demoHouse = Communities.findOne({ name: __('demo.house') });
-    if (!demoHouse) throw new Meteor.Error('err_notImplemented', 'Demo house not available on this server');
-    const demoCommunityId = demoHouse._id;
-    const demoBuilder = new DemoCommunityBuilder(demoCommunityId, lang);
-    const counter = demoBuilder.nextSerial;
+        const demoHouse = Communities.findOne({ name: __('demo.house') });
+        if (!demoHouse) throw new Meteor.Error('err_notImplemented', 'Demo house not available on this server');
+        const demoCommunityId = demoHouse._id;
+        const demoBuilder = new DemoCommunityBuilder(demoCommunityId, lang);
+        const counter = demoBuilder.nextSerial;
 
-    const demoParcelId = demoBuilder.createParcel({
-      units: 100,
-      floor: '5',
-      door: counter.toString(),
-      type: 'flat',
-      area: 25,
-    });
-    const demoUserId = demoBuilder.createDemoUser(demoParcelId);
-    const demoParcel = Parcels.findOne(demoParcelId);
-    const demoMembershipId = demoBuilder.createMembership(demoUserId, 'owner', {
-      parcelId: demoParcelId,
-      ownership: { share: new Fraction(1, 1) },
-    });
-    const demoMembership = Memberships.findOne(demoMembershipId);
+        const demoParcelId = demoBuilder.createParcel({
+          units: 100,
+          floor: '5',
+          door: counter.toString(),
+          type: 'flat',
+          area: 25,
+        });
+        const demoUserId = demoBuilder.createDemoUser(demoParcelId);
+        const demoParcel = Parcels.findOne(demoParcelId);
+        const demoMembershipId = demoBuilder.createMembership(demoUserId, 'owner', {
+          parcelId: demoParcelId,
+          ownership: { share: new Fraction(1, 1) },
+        });
+        const demoMembership = Memberships.findOne(demoMembershipId);
 
-    Clock.starts(4, 'months', 'ago');
-    const waterMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'coldWater' });
-    const heatingMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'heating' });
-    Clock.tick(3, 'weeks');
-    demoBuilder.execute(Meters.methods.registerReading, { _id: waterMeterId,
-      reading: { date: Clock.currentTime(), value: 255 } });
-    demoBuilder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
-      reading: { date: Clock.currentTime(), value: 133 } });
-    Clock.clear();
+        Clock.starts(4, 'months', 'ago');
+        const waterMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'coldWater' });
+        const heatingMeterId = demoBuilder.create('meter', { parcelId: demoParcelId, service: 'heating' });
+        Clock.tick(3, 'weeks');
+        demoBuilder.execute(Meters.methods.registerReading, { _id: waterMeterId,
+          reading: { date: Clock.currentTime(), value: 255 } });
+        demoBuilder.execute(Meters.methods.registerReading, { _id: heatingMeterId,
+          reading: { date: Clock.currentTime(), value: 133 } });
+        Clock.clear();
 
-    Localizer.addParcel(demoCommunityId, demoParcel, lang);
+        Localizer.addParcel(demoCommunityId, demoParcel, lang);
 
-    const demoManagerId = demoBuilder.getUserWithRole('manager');
-    const chatPartnerId = demoBuilder.getUserWithRole('owner');
+        const demoManagerId = demoBuilder.getUserWithRole('manager');
+        const chatPartnerId = demoBuilder.getUserWithRole('owner');
 
-    const demoUserMessageRoom = demoBuilder.create('room', {
-      userId: demoUserId,
-      participantIds: [demoUserId, demoManagerId],
-    });
-    demoBuilder.insert(Comments, 'comment', {
-      topicId: demoUserMessageRoom,
-      creatorId: demoManagerId,
-      text: __('demo.manager.message'),
-    });
-    const demoUserMessageRoom2 = demoBuilder.create('room', {
-      userId: demoUserId,
-      participantIds: [demoUserId, chatPartnerId],
-    });
-    Clock.starts(6, 'hours', 'ago');
-    demoBuilder.insert(Comments, 'comment', {
-      topicId: demoUserMessageRoom2,
-      creatorId: demoUserId,
-      text: __('demo.messages.0'),
-    });
-    Clock.starts(3, 'hours', 'ago');
-    demoBuilder.insert(Comments, 'comment', {
-      topicId: demoUserMessageRoom2,
-      creatorId: chatPartnerId,
-      text: __('demo.messages.1'),
-    });
-    Clock.clear();
-    // lastSeens were updated in the comments.insert method,
+        const demoUserMessageRoom = demoBuilder.create('room', {
+          userId: demoUserId,
+          participantIds: [demoUserId, demoManagerId],
+        });
+        demoBuilder.insert(Comments, 'comment', {
+          topicId: demoUserMessageRoom,
+          creatorId: demoManagerId,
+          text: __('demo.manager.message'),
+        });
+        const demoUserMessageRoom2 = demoBuilder.create('room', {
+          userId: demoUserId,
+          participantIds: [demoUserId, chatPartnerId],
+        });
+        Clock.starts(6, 'hours', 'ago');
+        demoBuilder.insert(Comments, 'comment', {
+          topicId: demoUserMessageRoom2,
+          creatorId: demoUserId,
+          text: __('demo.messages.0'),
+        });
+        Clock.starts(3, 'hours', 'ago');
+        demoBuilder.insert(Comments, 'comment', {
+          topicId: demoUserMessageRoom2,
+          creatorId: chatPartnerId,
+          text: __('demo.messages.1'),
+        });
+        Clock.clear();
+        // lastSeens were updated in the comments.insert method,
 
-    demoBuilder.generateDemoPayments(demoParcel, demoMembership);
+        demoBuilder.generateDemoPayments(demoParcel, demoMembership);
 
-    Meteor.setTimeout(function () {
-      purgeDemoUserWithParcel(demoUserId, demoParcelId, demoCommunityId);
-    }, DEMO_LIFETIME);
+        Meteor.setTimeout(function () {
+          purgeDemoUserWithParcel(demoUserId, demoParcelId, demoCommunityId);
+        }, DEMO_LIFETIME);
 
-    const email = Meteor.users.findOne({ _id: demoUserId }).getPrimaryEmail();
-    return email;
+        const email = Meteor.users.findOne({ _id: demoUserId }).getPrimaryEmail();
+        return email;
+      } finally {
+        createDemoUserLock = false;
+      }
+    } else {
+      throw new Meteor.Error('err_notAvailable', 'Server is busy, please try again in a few seconds');
+    }
   },
 });
 

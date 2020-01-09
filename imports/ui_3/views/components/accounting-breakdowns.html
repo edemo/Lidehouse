@@ -43,7 +43,7 @@
                     <li class=""><a data-toggle="tab" href="#tab-loc">{{_ 'Localizers'}}</a></li>
                     <li class=""><a data-toggle="tab" href="#tab-others">{{_ 'Other breakdowns'}}</a></li>
                     <li class="active"><a data-toggle="tab" href="#tab-coa">{{_ 'Chart of accounts'}}</a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-defs" class="text-capitalize">{{_ 'txDefs'}}</a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-defs" class="text-capitalize">{{_ 'txdefs'}}</a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="tab-moneys" class="tab-pane moneyAccounts">
@@ -108,25 +108,25 @@
                             {{> ReactiveDatatable tableData=coaBreakdownsTableDataFn options=breakdownsOptionsFn }}
                         </div>
                     </div>
-                    <div id="tab-defs" class="tab-pane txDefs">
+                    <div id="tab-defs" class="tab-pane txdefs">
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                   <tr style="font-weight: bold">
-                                      <td>{{_ 'schemaTxDefs.name.label'}}</td>
-                                      <td>{{_ 'schemaTxDefs.debit.label'}}</td>
-                                      <td>{{_ 'schemaTxDefs.credit.label'}}</td>
+                                      <td>{{_ 'schemaTxdefs.name.label'}}</td>
+                                      <td>{{_ 'schemaTxdefs.debit.label'}}</td>
+                                      <td>{{_ 'schemaTxdefs.credit.label'}}</td>
                                       <td></td>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {{#each txDef in txDefs}}
+                                  {{#each txdef in txdefs}}
                                   <tr>
-                                      <td>{{_ txDef.name}}</td>
-                                      <td>{{{displayAccountSet txDef.debit}}}</td>
-                                      <td>{{{displayAccountSet txDef.credit}}}</td>
+                                      <td>{{_ txdef.name}}</td>
+                                      <td>{{{displayAccountSet txdef.debit}}}</td>
+                                      <td>{{{displayAccountSet txdef.credit}}}</td>
                                       <td class="text-right">
-                                          {{> Action_buttons_group doc=txDef collection='txDefs' actions='' size='sm'}}
+                                          {{> Action_buttons_group doc=txdef collection='txdefs' actions='' size='sm'}}
                                       </td>
                                   </tr>
                                   {{/each}}
@@ -136,7 +136,7 @@
                         {{#if currentUserHasPermission 'breakdowns.insert'}}
                         <div class="row">
                             <div class="col-xs-12 text-center">
-                                <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txDef'}}</button>
+                                <button class="btn btn-primary js-new"><i class="fa fa-plus"></i> {{_ 'new'}} {{_ 'txdef'}}</button>
                             </div>
                         </div>
                         {{/if}}

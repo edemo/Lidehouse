@@ -5,7 +5,7 @@ import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/methods.js';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Balances } from './balances';
 
 if (Meteor.isServer) {
@@ -81,7 +81,7 @@ if (Meteor.isServer) {
           return Transactions.methods.insert._execute({ userId: Fixture.demoAccountantId }, {
             communityId,
             category: 'freeTx',
-            defId: TxDefs.findOne({ communityId, category: 'freeTx' })._id,
+            defId: Txdefs.findOne({ communityId, category: 'freeTx' })._id,
             valueDate: params.valueDate,
             amount: params.amount,
             credit: [{

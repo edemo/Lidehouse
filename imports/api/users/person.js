@@ -80,7 +80,10 @@ export class Person {
   }
   displayName(lang) {
     if (this.idCard && this.idCard.name) return this.idCard.name;
-    if (this.userId && this.user()) return this.user().displayProfileName(lang);
+    if (this.userId) {
+      const user = this.user();
+      if (user) return user.displayProfileName(lang || user.settings.language);
+    }
     if (this.contact && this.contact.email) {
       const emailSplit = this.contact.email.split('@');
       const emailName = emailSplit[0];

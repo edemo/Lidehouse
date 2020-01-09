@@ -13,15 +13,17 @@ import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
+import { Person } from '/imports/api/users/person.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
 import '/imports/api/topics/rooms/rooms.js';
+import { Partners } from '/imports/api/partners/partners.js';
 import { Localizer } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import '/imports/api/transactions/categories';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from '/imports/api/transactions/statement-entries/statement-entries.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import '/imports/startup/server/register-api';  // brings all methods
@@ -89,7 +91,7 @@ export class CommunityBuilder {
         case 'parcelBillings':
         case 'moneyAccounts':
         case 'breakdowns':
-        case 'txDefs': return this.getUserWithRole('accountant');
+        case 'txdefs': return this.getUserWithRole('accountant');
         case 'transactions': return (params.category === 'bill' || params.category === 'receipt') ? this.getUserWithRole('treasurer') : this.getUserWithRole('accountant');
         case 'comments': return this.nextUser();
         case 'topics': switch (params.category) {
@@ -128,7 +130,7 @@ export class CommunityBuilder {
     const doc = this.build(name, data);
     const collection = Factory.get(name).collection;
     if (collection._name === 'transactions') {
-      doc.defId = TxDefs.findOne({ communityId: this.communityId, category: doc.category, 'data.relation': doc.relation })._id;
+      doc.defId = Txdefs.findOne({ communityId: this.communityId, category: doc.category, 'data.relation': doc.relation })._id;
     }
     return this.execute(collection.methods.insert, doc);
   }
@@ -213,6 +215,10 @@ export class CommunityBuilder {
     else if (typeof personSpec === 'string') person = { userId: personSpec };
     else if (typeof personSpec === 'object') person = personSpec;
     else debugAssert(false);
+    person.idCard = {
+      type: 'natural',
+      name: new Person(person).displayName(this.lang),
+    }
     return Memberships.insert({ communityId: this.communityId, person, accepted: true, role, ...membershipData });
   }
   name2code(breakdownName, nodeName) {
@@ -248,11 +254,11 @@ export class CommunityBuilder {
     const entryId = this.create('statementEntry', {
       account: '382',
       valueDate: bill.dueDate,
-      partner: bill.partner().toString(),
-      note: bill.serialId() + ' payment',
+      name: bill.partner().getName(),
+      note: bill.serialId(),
       amount: bill.outstanding,
     });
-    this.execute(StatementEntries.methods.reconcile, { _id: entryId, billId: bill._id }, this.getUserWithRole('accountant'));
+    this.execute(StatementEntries.methods.reconcile, { _id: entryId }, this.getUserWithRole('accountant'));
   }
   payBillsOf(membership) {
     const unpaidBills = Transactions.find({ communityId: this.communityId, category: 'bill', relation: 'parcel', partnerId: membership._id, outstanding: { $gt: 0 } });

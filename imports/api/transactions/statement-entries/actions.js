@@ -3,9 +3,12 @@ import { Session } from 'meteor/session';
 import { AutoForm } from 'meteor/aldeed:autoform';
 import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { BatchAction } from '/imports/api/batch-action.js';
 import { importCollectionFromFile } from '/imports/utils/import.js';
 import { currentUserHasPermission } from '/imports/ui_3/helpers/permissions.js';
+import { Transactions } from '/imports/api/transactions/transactions.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { StatementEntries } from './statement-entries.js';
 import './methods.js';
 
@@ -29,7 +32,10 @@ StatementEntries.actions = {
     name: 'import',
     icon: () => 'fa fa-upload',
     visible: (options, doc) => currentUserHasPermission('statements.upsert', doc),
-    run: () => importCollectionFromFile(StatementEntries, { keepOriginals: true }),
+    run: () => {
+      importCollectionFromFile(StatementEntries, { keepOriginals: true });
+      StatementEntries.methods.autoReconciliation.call({ communityId: getActiveCommunityId() });
+    },
   },
   view: {
     name: 'view',
@@ -52,27 +58,38 @@ StatementEntries.actions = {
       Modal.show('Autoform_modal', {
         id: 'af.statementEntry.update',
         collection: StatementEntries,
-        omitFields: ['original'],
+        omitFields: ['original', 'match'],
         doc,
         type: 'method-update',
-        meteormethod: 'statements.update',
+        meteormethod: 'statementEntries.update',
         singleMethodArgument: true,
       });
     },
   },
   reconcile: {
     name: 'reconcile',
+    label(options) {
+      return options.txdef.name;
+    },
     icon: () => 'fa fa-external-link',
-    color: () => 'danger',
+    color(options, doc) {
+      if (doc.match) return 'info';
+      else return 'danger';
+    },
     visible(options, doc) {
       if (!doc || doc.isReconciled()) return false;
       return currentUserHasPermission('statements.reconcile', doc);
     },
+    subActions: true,
+    subActionsOptions(doc) {
+      const txdefs = Txdefs.find({ communityId: doc.communityId }).fetch().filter(td => td.isReconciledTx());
+      return txdefs.map(txdef => ({ txdef }));
+    },
     run(options, doc) {
-      Session.set('activeStatementEntryId', doc._id);
+      Session.update('modalContext', 'statementEntry', doc);
+      Session.update('modalContext', 'txdef', options.txdef);
       Modal.show('Autoform_modal', {
         title: 'Reconciliation',
-        description: 'Válasszon egyet a 3 lehetséges egyeztetési mód közül. A másik kettő mezőben kérjük ne adjon meg értéket.',
         id: 'af.statementEntry.reconcile',
         schema: StatementEntries.reconcileSchema,
         type: 'method',
@@ -80,6 +97,18 @@ StatementEntries.actions = {
       });
     },
   },
+/*  reconcile: {
+    name: 'reconcile',
+    icon: () => 'fa fa-check-square-o',
+    color: () => 'warning',
+    visible(options, doc) {
+      if (!doc || !doc.match) return false;
+      return currentUserHasPermission('statements.reconcile', doc);
+    },
+    run(options, doc) {
+      StatementEntries.methods.reconsile.call({ _id: doc._id });
+    },
+  },*/
   delete: {
     name: 'delete',
     icon: () => 'fa fa-trash',
@@ -130,7 +159,7 @@ AutoForm.addHooks(['af.statementEntry.view', 'af.statementEntry.insert', 'af.sta
 
 AutoForm.addHooks('af.statementEntry.reconcile', {
   formToDoc(doc) {
-    doc._id = Session.get('activeStatementEntryId');
+    doc._id = Session.get('modalContext').statementEntry._id;
     return doc;
   },
 });

@@ -9,7 +9,7 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { Clock } from '/imports/utils/clock.js';
 import { debugAssert } from '/imports/utils/assert.js';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { Transactions, oppositeSide } from '/imports/api/transactions/transactions.js';
 import { MinimongoIndexing } from '/imports/startup/both/collection-patches.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
@@ -24,11 +24,11 @@ export const Bills = {};
 
 export const chooseConteerAccount = {
   options() {
-    const txDefId = Session.get('modalContext').txDef._id;
-    const txDef = TxDefs.findOne(txDefId);
+    const txdefId = Session.get('modalContext').txdef._id;
+    const txdef = Txdefs.findOne(txdefId);
     const coa = ChartOfAccounts.get();
-    if (!coa || !txDef) return [];
-    const nodeCodes = txDef[txDef.conteerSide()];
+    if (!coa || !txdef) return [];
+    const nodeCodes = txdef[txdef.conteerSide()];
     return coa.nodeOptionsOf(nodeCodes, /*leafsOnly*/ false);
   },
   firstOption: () => __('Conteer'),
@@ -95,7 +95,7 @@ Transactions.categoryHelpers('bill', {
   makeJournalEntries(accountingMethod) {
     const self = this;
 //    const communityId = this.communityId;
-//    const cat = TxDefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
+//    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
 //    this.valueDate = this.issueDate;
     function copyLinesInto(txSide) {
       self.lines.forEach(line => {

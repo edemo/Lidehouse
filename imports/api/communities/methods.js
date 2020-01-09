@@ -14,7 +14,7 @@ import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
-import { TxDefs } from '/imports/api/transactions/tx-defs/tx-defs.js';
+import { Txdefs } from '/imports/api/transactions/txdefs/txdefs.js';
 import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
 import { Balances } from '/imports/api/transactions/balances/balances.js';
@@ -85,7 +85,7 @@ export const remove = new ValidatedMethod({
     Balances.remove({ communityId });
     Statements.remove({ communityId });
     StatementEntries.remove({ communityId });
-    TxDefs.remove({ communityId });
+    Txdefs.remove({ communityId });
     Breakdowns.remove({ communityId });
     Parcels.remove({ communityId });
     Partners.remove({ communityId });

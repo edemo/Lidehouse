@@ -13,6 +13,10 @@ Transactions.entities = {
     name: 'payment',
     fields: ['amount', 'valueDate', 'payAccount'],
   },
+  remission: {
+    name: 'remission',
+    fields: ['amount', 'valueDate'],
+  },
   barter: {
     name: 'barter',
     omitFields: ['debit', 'credit'],

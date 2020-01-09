@@ -18,8 +18,8 @@
                           <i class="fa fa-plus"></i><strong> {{_ 'new'}} {{_ (concat 'schemaBills.relation.' activePartnerRelation)}}</strong> <b class="caret"></b>
                       </a>
                       <ul class="dropdown-menu pull-right animated fadeInDown m-t-xs">
-                          <li><a href="" class="js-new" data-entity="bill"> {{_ 'new'}} {{_ (concat activePartnerRelation '_bill')}}</a></li>
-                          <li><a href="" class="js-new" data-entity="receipt"> {{_ 'new'}} {{_ (concat activePartnerRelation '_receipt')}}</a></li>
+                          <li><a href="" class="js-new" data-entity="bill" data-txdef="{{findTxdef 'bill'}}"> {{_ 'new'}} {{_ (concat activePartnerRelation '_bill')}}</a></li>
+                          <li><a href="" class="js-new" data-entity="receipt" data-txdef="{{findTxdef 'receipt'}}"> {{_ 'new'}} {{_ (concat activePartnerRelation '_receipt')}}</a></li>
                       </ul>
                   </div>
                 {{/if}}
@@ -34,7 +34,7 @@
               <div class="row">
                 <div class="col-sm-12">
                   <div class="input-group">
-                    <label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.relation.label'}}</label><br>
+                    <!--label class="control-label text-capitalize">{{_ 'bill'}} {{_'schemaBills.relation.label'}}</label><br-->
                     {{#each partnerRelation in partnerRelations}}
                     <button type="button" class="btn btn-xs btn-outline btn-default js-relation-filter {{activeClass partnerRelation}}" data-value="{{partnerRelation}}">{{_ (concat 'schemaBills.relation.' partnerRelation)}}</button>
                     {{/each}}

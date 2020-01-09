@@ -686,7 +686,7 @@
       "label": "Megjegyzés",
       "placeholder": "(pl. közlemény vagy partner azonosító)"
     },
-    // Following lines are for the different txDefs
+    // Following lines are for the different txdefs
     "supplierBillId": {
       "label": "Bejövő számla, amit beszámítunk"
     },
@@ -721,8 +721,8 @@
     "account": {
       "label": "Számla"
     },
-    "partner": {
-      "label": "Partner"
+    "name": {
+      "label": "Partner neve"
     },
     "ref": {
       "label": "Referencia azonosító",
@@ -736,9 +736,12 @@
     },
     "original": {
       "label": "Eredeti adatok"
+    },
+    "match": {
+      "label": "Társított tranzakció"
     }
   },
-  "schemaTxDefs": {
+  "schemaTxdefs": {
     "name": {
       "label": "Tranzakció típus neve",
       "placeholder": ""
@@ -889,14 +892,9 @@
     }
   },
   "schemaReconiliation": {
-    "paymentId": {
-      "label": "Létező (de még egyeztetetlen) kifizetéshez kapcsolás"
-    },
-    "billId": {
-      "label": "Új kifizetés létrehozása egy választott számlához"
-    },
-    "account": {
-      "label": "Bevétel/kiadás tranzakció létrehozása"
+    "txId": {
+      "label": "Kapcsolandó tranzakció",
+      "help": "Válasszon egy létező tranzakciót, vagy hozzon létre újat, amit ehhez a kivonati tételhez kíván kapcsolni."
     }
   },
   "schemaParcelBillings": {

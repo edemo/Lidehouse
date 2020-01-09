@@ -680,7 +680,7 @@
     "note": {
       "label": "Note"
     },
-    // Following lines are for the different txDefs
+    // Following lines are for the different txdefs
     "supplierBillId": {
       "label": "Supplier bill being bartered"
     },
@@ -715,8 +715,8 @@
     "account": {
       "label": "Account"
     },
-    "partner": {
-      "label": "Partner"
+    "name": {
+      "label": "Partner name"
     },
     "ref": {
       "label": "Reference id",
@@ -726,13 +726,16 @@
       "label": "Reference type"
     },
     "note": {
-      "label": "Note"
+      "label": "Note to payee"
     },
     "original": {
       "label": "Original data"
+    },
+    "match": {
+      "label": "Matched transaction"
     }
   },
-  "schemaTxDefs": {
+  "schemaTxdefs": {
     "name": {
       "label": "Transaction type name",
       "placeholder": ""
@@ -882,14 +885,9 @@
     }
   },
   "schemaReconiliation": {
-    "paymentId": {
-      "label": "Choose already existing but unreconciled Payment"
-    },
-    "billId": {
-      "label": "Choose a bill and create a new Payment to it"
-    },
-    "account": {
-      "label": "Income/expense transaction creation"
+    "txId": {
+      "label": "Match to this transaction",
+      "help": "Select an existing (unreconciled) transaction, or create a new one now, that you will reconcile with."
     }
   },
   "schemaParcelBillings": {
