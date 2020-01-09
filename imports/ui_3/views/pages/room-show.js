@@ -7,8 +7,6 @@ import { $ } from 'meteor/jquery';
 import { handleError, onSuccess } from '/imports/ui_3/lib/errors.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { Comments } from '/imports/api/comments/comments.js';
-import { updateMyLastSeen } from '/imports/api/users/methods.js';
-import { update as updateUser } from '/imports/api/users/methods.js';
 import '/imports/api/topics/rooms/rooms.js';
 
 import '../components/members-panel.js';

@@ -30,12 +30,12 @@ export const insert = new ValidatedMethod({
     // readableId(Topics, doc);
     checkTopicPermissions(this.userId, 'insert', doc);
     const topicId = Topics.insert(doc);
-    const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
     if (Meteor.isServer) {
+      const newTopic = Topics.findOne(topicId); // we need the createdAt timestamp from the server
       autoOpen(newTopic);
-    };
-    updateMyLastSeen._execute({ userId: this.userId },
+      updateMyLastSeen._execute({ userId: this.userId },
       { topicId, lastSeenInfo: { timestamp: newTopic.createdAt } });
+    }
     return topicId;
   },
 });

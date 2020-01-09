@@ -154,3 +154,34 @@ Meteor.publish('topics.list', function topicsList(params) {
 
   return Topics.find(params);
 });
+
+Meteor.publishComposite('topics.roomsOfUser', function roomsOfUser(params) {
+  new SimpleSchema({
+    userId: { type: String },
+    communityId: { type: String },
+  }).validate(params);
+
+  const { communityId } = params;
+  const { userId } = params;
+  if (userId !== this.userId) return this.ready();
+  const user = Meteor.users.findOne(userId);
+  if (!user.hasPermission('topics.inCommunity', { communityId })) return this.ready();
+
+  const selector = {
+    communityId,
+    category: 'room',
+    participantIds: userId,
+  };
+  const publicFields = Topics.publicFields;
+
+  return {
+    find() {
+      return Topics.find(selector, { fields: publicFields });
+    },
+    children: [{
+      find(topic) {
+        return Comments.find({ topicId: topic._id }, { sort: { createdAt: -1 } });
+      },
+    }],
+  };
+});
