@@ -18,7 +18,7 @@ export function parcelBillingColumns() {
     { data: 'projectedPrice', title: __('schemaParcelBillings.projectedPrice.label') },
     { data: 'projection', title: __('schemaParcelBillings.projection.label'), render: Render.translate },
 //    { data: 'createdAt', title: __('schemaGeneral.createdAt.label'), render: Render.formatDate },
-    { data: 'lastAppliedAt().valueDate', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
+    { data: 'lastAppliedAt().date', title: __('schemaParcelBillings.lastAppliedAt.label'), render: Render.formatDate },
     { data: '_id', title: __('Action buttons'), render: cellData => Blaze.toHTMLWithData(Template.Action_buttons_group,
       { doc: cellData, collection: 'parcelBillings', actions: '', size: 'sm' }),
     },

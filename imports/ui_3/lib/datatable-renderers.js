@@ -18,11 +18,11 @@ export const Render = {
   formatNumber: $.fn.dataTable.render.number(' ', ',', 0),  // numeral no good here, it renders a string, so sorting not working correctly on this column afterwards
   // https://datatables.net/manual/data/renderers#Number-helper
   formatDate(cellData, renderType, currentRow) {
-    if (!cellData) return '---';
+    if (!cellData) return __('never');
     return moment(cellData).format('L');
   },
   formatTime(cellData, renderType, currentRow) {
-    if (!cellData) return '---';
+    if (!cellData) return __('never');
     return moment(cellData).format('L LT');
   },
   checkmarkBoolean(cellData, renderType, currentRow) {
