@@ -40,6 +40,12 @@ function runPositingRules(context, doc) {
 }
 */
 
+function checkBillIsPosted(billId) {
+  if (!billId) throw new Meteor.Error('Bill has to exist first');
+  const bill = checkExists(Transactions, billId);
+  if (!bill.isPosted()) throw new Meteor.Error('Bill has to be posted first');
+}
+
 export const post = new ValidatedMethod({
   name: 'transactions.post',
   validate: new SimpleSchema({
@@ -51,10 +57,11 @@ export const post = new ValidatedMethod({
     if (doc.isPosted()) throw new Meteor.Error('Transaction already posted');
     if (doc.category === 'bill') {
       if (!doc.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
-    } else if (doc.category === 'payment') {
-      if (!doc.billId) throw new Meteor.Error('Bill has to exist first');
-      const bill = checkExists(Transactions, doc.billId);
-      if (!bill.hasConteerData()) throw new Meteor.Error('Bill has to be conteered first');
+    } else if (doc.category === 'payment' || doc.category === 'remission') {
+      checkBillIsPosted(doc.billId);
+    } else if (doc.category === 'barter') {
+      checkBillIsPosted(doc.supplierBillId);
+      checkBillIsPosted(doc.customerBillId);
     }
 
     const community = Communities.findOne(doc.communityId);

@@ -38,6 +38,7 @@ Transactions.categoryHelpers('barter', {
         txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer });
       });
     }
+    // TODO: this does not work for parcel bills, needs payin digit
     if (accountingMethod === 'accrual') {
       this.debit = [{ account: supplierBill.relationAccount() }];
       this.credit = [{ account: customerBill.relationAccount() }];

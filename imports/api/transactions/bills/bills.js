@@ -16,6 +16,7 @@ import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { ChartOfAccounts, chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 import { Localizer, chooseLocalizerNode } from '/imports/api/transactions/breakdowns/localizer.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
+import { ParcelBillings } from '/imports/api/transactions/parcel-billings/parcel-billings.js';
 import { Partners, choosePartner } from '/imports/api/partners/partners.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
@@ -93,20 +94,20 @@ Transactions.categoryHelpers('bill', {
     return this.payments.length;
   },
   makeJournalEntries(accountingMethod) {
-    const self = this;
 //    const communityId = this.communityId;
 //    const cat = Txdefs.findOne({ communityId, category: 'bill', 'data.relation': this.relation });
 //    this.valueDate = this.issueDate;
-    function copyLinesInto(txSide) {
-      self.lines.forEach(line => {
-        if (!line) return; // can be null, when a line is deleted from the array
-        txSide.push({ amount: line.amount, account: line.account, localizer: line.localizer });
-      });
-    }
     if (accountingMethod === 'accrual') {
-      this[this.conteerSide()] = []; copyLinesInto(this[this.conteerSide()]);
-      this[this.relationSide()] = [{ account: this.relationAccount() }];
-    } // else we have no accounting to do
+      this.debit = [];
+      this.credit = [];
+      this.lines.forEach(line => {
+        if (!line) return; // can be null, when a line is deleted from the array
+        this[this.conteerSide()].push({ amount: line.amount, account: line.account, localizer: line.localizer });
+        let contraAccount = this.relationAccount();
+        if (this.relation === 'parcel') contraAccount += ParcelBillings.findOne(line.billingId).payinType;
+        this[this.relationSide()].push({ amount: line.amount, account: contraAccount, localizer: line.localizer });
+      });
+    } // else if (accountingMethod === 'cash') >> we have no accounting to do
     return { debit: this.debit, credit: this.credit };
   },
   autofillOutstanding() {

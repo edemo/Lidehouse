@@ -32,18 +32,21 @@ Transactions.categoryHelpers('payment', {
 //    const cat = Txdefs.findOne({ communityId, category: 'payment', 'data.relation': this.relation });
     const bill = Transactions.findOne(this.billId);
     const ratio = this.amount / bill.amount;
-    function copyLinesInto(txSide) {
+    this.debit = [];
+    this.credit = [];
+    if (accountingMethod === 'accrual') {
+      bill[this.relationSide()].forEach(entry => {
+        const partialAmount = Math.round(entry.amount * ratio);
+        this[this.conteerSide()].push({ amount: partialAmount, account: entry.account, localizer: entry.localizer });
+        this[this.relationSide()].push({ amount: partialAmount, account: this.payAccount, localizer: entry.localizer });
+      });
+    } else if (accountingMethod === 'cash') {
       bill.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array
-        txSide.push({ amount: line.amount * ratio, account: line.account, localizer: line.localizer });
+        const partialAmount = Math.round(line.amount * ratio);
+        this[this.conteerSide()].push({ amount: partialAmount, account: line.account, localizer: line.localizer });
+        this[this.relationSide()].push({ amount: partialAmount, account: this.payAccount, localizer: line.localizer });
       });
-    }
-    if (accountingMethod === 'accrual') {
-      this[bill.conteerSide()] = [{ account: bill.relationAccount() }];
-      this[bill.relationSide()] = [{ account: this.payAccount }];
-    } else if (accountingMethod === 'cash') {
-      this[bill.conteerSide()] = []; copyLinesInto(this.bill.conteerSide());
-      this[bill.relationSide()] = [{ account: this.payAccount }];
     }
     return { debit: this.debit, credit: this.credit };
   },

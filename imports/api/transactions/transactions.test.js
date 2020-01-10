@@ -73,7 +73,7 @@ if (Meteor.isServer) {
         chai.assert.equal(tx.category, 'bill');
         chai.assert.equal(tx.amount, 300);
         chai.assert.deepEqual(tx.debit, [{ amount: 300, account: '85', localizer: '@' }]);
-        chai.assert.deepEqual(tx.credit, [{ account: '46' }]);
+        chai.assert.deepEqual(tx.credit, [{ amount: 300, account: '46', localizer: '@' }]);
       });
 
       it('Can register Payments', function () {
@@ -108,14 +108,14 @@ if (Meteor.isServer) {
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId1 });
         tx1 = Transactions.findOne(paymentId1);
         chai.assert.isTrue(tx1.isPosted());
-        chai.assert.deepEqual(tx1.debit, [{ account: '46' }]);
-        chai.assert.deepEqual(tx1.credit, [{ account: bankAccount }]);
+        chai.assert.deepEqual(tx1.debit, [{ amount: 100, account: '46', localizer: '@' }]);
+        chai.assert.deepEqual(tx1.credit, [{ amount: 100, account: bankAccount, localizer: '@' }]);
 
         FixtureA.builder.execute(Transactions.methods.post, { _id: paymentId2 });
         tx2 = Transactions.findOne(paymentId2);
         chai.assert.isTrue(tx2.isPosted());
-        chai.assert.deepEqual(tx2.debit, [{ account: '46' }]);
-        chai.assert.deepEqual(tx2.credit, [{ account: bankAccount }]);
+        chai.assert.deepEqual(tx2.debit, [{ amount: 200, account: '46', localizer: '@' }]);
+        chai.assert.deepEqual(tx2.credit, [{ amount: 200, account: bankAccount, localizer: '@' }]);
       });
     });
 
