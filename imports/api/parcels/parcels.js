@@ -193,6 +193,7 @@ if (Meteor.isServer) {
 
   Parcels.after.update(function (userId, doc, fieldNames, modifier, options) {
     updateCommunity(doc, 1);
+    Localizer.updateParcel(doc);
   });
 
   Parcels.after.remove(function (userId, doc) {

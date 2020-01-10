@@ -53,6 +53,8 @@ export const Localizer = {
     // TODO: remove node
   },
   addParcel(parcel) {
+    this.generateParcels(parcel.communityId);
+// TODO: not regenerate each time, but keep in sync
     const community = Communities.findOne(parcel.communityId);
     const parcelBreakdown = Localizer.getParcels(community._id);
     Localizer._addParcel(parcelBreakdown, parcel, community);
@@ -60,7 +62,13 @@ export const Localizer = {
     Mongo.Collection.stripAdministrativeFields(parcelBreakdown);
     Breakdowns.update(id, { $set: parcelBreakdown });
   },
+  updateParcel(parcel) {
+    this.generateParcels(parcel.communityId);
+// TODO: not regenerate each time, but keep in sync
+  },
   removeParcel(parcel) {
+    this.generateParcels(parcel.communityId);
+// TODO: not regenerate each time, but keep in sync
     const community = Communities.findOne(parcel.communityId);
     const parcelBreakdown = Localizer.getParcels(community._id);
     Localizer._removeParcel(parcelBreakdown, parcel, community);
