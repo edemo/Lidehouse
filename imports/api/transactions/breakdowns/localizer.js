@@ -2,6 +2,7 @@ import { Mongo } from 'meteor/mongo';
 import { __ } from '/imports/localization/i18n.js';
 import { TAPi18n } from 'meteor/tap:i18n';
 import { Breakdowns } from '/imports/api/transactions/breakdowns/breakdowns.js';
+import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 
@@ -26,12 +27,9 @@ export const Localizer = {
   leafIsParcel(leaf) {
     return leaf.code && leaf.code.substr(0, 1) === '@';
   },
-  _addParcel(parcelBreakdown, parcel, lang) {
+  _addParcel(parcelBreakdown, parcel, community) {
     const ___ = function translate(text) {
-//      console.log('lang', lang);
-//      console.log('text', text);
-//      console.log('trans', TAPi18n.__(text, {}, lang));
-      return TAPi18n.__(text, {}, lang);
+      return TAPi18n.__(text, {}, community.settings.language);
     };
     let buildingNode = parcelBreakdown.children.find(c => c.digit === parcel.building);
     if (!buildingNode) {
@@ -49,17 +47,32 @@ export const Localizer = {
       floorNode.children.push(doorNode);
     }
   },
-  addParcel(communityId, parcel, lang) {
-    const parcelBreakdown = Localizer.getParcels(communityId);
-    Localizer._addParcel(parcelBreakdown, parcel, lang);
+  _removeParcel(parcelBreakdown, parcel, community) {
+    const code = this.parcelRef2code(parcel.ref);
+    const node = parcelBreakdown.nodeByCode(code);
+    // TODO: remove node
+  },
+  addParcel(parcel) {
+    const community = Communities.findOne(parcel.communityId);
+    const parcelBreakdown = Localizer.getParcels(community._id);
+    Localizer._addParcel(parcelBreakdown, parcel, community);
     const id = parcelBreakdown._id;
     Mongo.Collection.stripAdministrativeFields(parcelBreakdown);
     Breakdowns.update(id, { $set: parcelBreakdown });
   },
-  generateParcels(communityId, lang) {
+  removeParcel(parcel) {
+    const community = Communities.findOne(parcel.communityId);
+    const parcelBreakdown = Localizer.getParcels(community._id);
+    Localizer._removeParcel(parcelBreakdown, parcel, community);
+    const id = parcelBreakdown._id;
+    Mongo.Collection.stripAdministrativeFields(parcelBreakdown);
+    Breakdowns.update(id, { $set: parcelBreakdown });
+  },
+  generateParcels(communityId) {
     const parcelBreakdown = { communityId, name: 'Parcels', digit: '@', children: [] };
+    const community = Communities.findOne(communityId);
     Parcels.find({ communityId }).forEach((parcel) => {
-      Localizer._addParcel(parcelBreakdown, parcel, lang);
+      Localizer._addParcel(parcelBreakdown, parcel, community);
     });
     Breakdowns.define(parcelBreakdown);
   },

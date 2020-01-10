@@ -165,7 +165,7 @@ export const cloneAccountingTemplates = new ValidatedMethod({
         { name: txdefName, communityId },
       );
     });
-    Localizer.generateParcels(communityId, user.settings.language);
+    Localizer.generateParcels(communityId);
   },
 });
 

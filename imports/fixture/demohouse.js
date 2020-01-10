@@ -1216,8 +1216,6 @@ Meteor.methods({
           reading: { date: Clock.currentTime(), value: 133 } });
         Clock.clear();
 
-        Localizer.addParcel(demoCommunityId, demoParcel, lang);
-
         const demoManagerId = demoBuilder.getUserWithRole('manager');
         const chatPartnerId = demoBuilder.getUserWithRole('owner');
 
