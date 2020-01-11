@@ -10,8 +10,6 @@ import { moment } from 'meteor/momentjs:moment';
 import { __ } from '/imports/localization/i18n.js';
 import { chooseSubAccount } from '/imports/api/transactions/breakdowns/breakdowns.js';
 import { Transactions } from '/imports/api/transactions/transactions.js';
-import { Payments } from '/imports/api/transactions/payments/payments.js';
-import { chooseAccountNode } from '/imports/api/transactions/breakdowns/chart-of-accounts.js';
 
 const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: () => undefined };
 
@@ -69,30 +67,6 @@ Factory.define('statementEntry', StatementEntries, {
 });
 
 // --- Reconciliation ---
-
-export const chooseBill = {
-  options() {
-    const communityId = Session.get('activeCommunityId');
-    const bills = Transactions.find({ communityId, category: 'bill', outstanding: { $gt: 0 } });
-    const options = bills.map(function option(bill) {
-      return { label: `${bill.serialId()} ${bill.partner()} ${moment(bill.valueDate).format('L')} ${bill.outstanding}`, value: bill._id };
-    });
-    return options;
-  },
-  firstOption: () => __('(Select one)'),
-};
-
-export const choosePayment = {
-  options() {
-    const communityId = Session.get('activeCommunityId');
-    const payments = Transactions.find({ communityId, category: 'payment', reconciledId: { $exists: false } });
-    const options = payments.map(function option(payment) {
-      return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
-    });
-    return options;
-  },
-  firstOption: () => __('(Select one)'),
-};
 
 export let chooseTransaction = {};
 if (Meteor.isClient) {

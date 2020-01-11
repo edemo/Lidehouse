@@ -884,6 +884,24 @@
       }
     }
   },
+  "schemaPayments": {
+    "bills": {
+      "label": "Paid bills",
+      "$": {
+        "id": {
+          "label": "Bill"
+        },
+        "amount": {
+          "label": "Amount",
+          "placeholder": "(eg. 14560)"
+        }
+      }
+    },
+    "outstanding": {
+      "label": "Outstanding amount",
+      "placeholder": "(eg. 14560)"
+    }
+  },
   "schemaReconiliation": {
     "txId": {
       "label": "Match to this transaction",

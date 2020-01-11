@@ -246,7 +246,7 @@ export class CommunityBuilder {
       this.execute(Transactions.methods.post, { _id: bill._id }, this.getUserWithRole('accountant'));
     }
 /*    const paymentId = this.create('payment', {
-      billId: bill._id,
+      bills: [{ id: bill._id, amount: bill.outstanding }],
       valueDate: Clock.currentDate(),
       amount: bill.outstanding,
       payAccount: '381',

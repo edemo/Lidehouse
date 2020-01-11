@@ -968,9 +968,9 @@ export function insertDemoHouse(lang, demoOrTest) {
       demoBuilder.execute(Transactions.methods.post, { _id: billId });
       demoBuilder.create('payment', {
         relation: 'supplier',
-        billId,
-        valueDate: new Date(`${lastYear}-${mm}-25`),
+        bills: [{ id: billId, amount: 282600 }],
         amount: 282600,
+        valueDate: new Date(`${lastYear}-${mm}-25`),
         partnerId: supplier2,
         payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
       });
@@ -995,9 +995,9 @@ export function insertDemoHouse(lang, demoOrTest) {
   demoBuilder.execute(Transactions.methods.post, { _id: invoiceId });
   demoBuilder.create('payment', {
     relation: 'customer',
-    billId: invoiceId,
-    valueDate: new Date(`${lastYear}-03-25`),
+    bills: [{ id: invoiceId, amount: 25000 }],
     amount: 25000,
+    valueDate: new Date(`${lastYear}-03-25`),
     partnerId: customer0,
     payAccount: demoBuilder.name2code('Assets', 'Folyószámla'),
   });

@@ -5,3 +5,4 @@ import './opening.js';
 import './receipt.js';
 import './transfer.js';
 import './barter.js';
+import './remission.js';

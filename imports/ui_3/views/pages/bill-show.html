@@ -128,7 +128,7 @@
             {{#if isBill}}
             <table class="table invoice-total"> 
               <tbody>
-              {{#each payment in docVm.getPayments}}
+              {{#each payment in docVm.payments}}
               <tr>
                   <td>
                     {{#if not @index}}{{_ 'schemaBills.payments.label'}}: {{/if}}

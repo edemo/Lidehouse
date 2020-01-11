@@ -38,7 +38,7 @@ Transactions.actions = {
         id: `af.${entity.name}.insert`,
         schema: Transactions.simpleSchema({ category: entity.name }),
         fields: entity.fields,
-        omitFields: entity.omitFields,
+        omitFields: entity.omitFields && entity.omitFields(),
         doc,
         type: 'method',
         meteormethod: 'transactions.insert',
@@ -63,7 +63,7 @@ Transactions.actions = {
         id: `af.${entity.name}.view`,
         schema: Transactions.simpleSchema({ category: entity.name }),
         fields: entity.fields,
-        omitFields: entity.omitFields,
+        omitFields: entity.omitFields && entity.omitFields(),
         doc,
         type: 'readonly',
         // --- --- --- ---
@@ -88,7 +88,7 @@ Transactions.actions = {
         id: `af.${entity.name}.update`,
         schema: Transactions.simpleSchema({ category: entity.name }),
         fields: entity.fields,
-        omitFields: entity.omitFields,
+        omitFields: entity.omitFields && entity.omitFields(),
         doc,
         type: 'method-update',
         meteormethod: 'transactions.update',
@@ -192,7 +192,8 @@ Transactions.categoryValues.forEach(category => {
           const bill = Transactions.findOne(billId);
           doc.relation = bill.relation;
           doc.partnerId = bill.partnerId;
-          doc.billId = billId;
+          doc.contractId = bill.contractId;
+          doc.bills = [{ id: billId, amount: doc.amount, valueDate: doc.valueDate }];
         }
       }
       return doc;

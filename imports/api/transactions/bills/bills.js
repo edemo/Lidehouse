@@ -23,6 +23,18 @@ const Session = (Meteor.isClient) ? require('meteor/session').Session : { get: (
 
 export const Bills = {};
 
+export const choosePayment = {
+  options() {
+    const communityId = Session.get('activeCommunityId');
+    const payments = Transactions.find({ communityId, category: 'payment', reconciledId: { $exists: false } });
+    const options = payments.map(function option(payment) {
+      return { label: `${payment.partner()} ${moment(payment.valueDate).format('L')} ${payment.amount} ${payment.note || ''}`, value: payment._id };
+    });
+    return options;
+  },
+  firstOption: () => __('(Select one)'),
+};
+
 export const chooseConteerAccount = {
   options() {
     const txdefId = Session.get('modalContext').txdef._id;
@@ -63,16 +75,20 @@ Bills.receiptSchema = new SimpleSchema({
   'lines.$': { type: Bills.lineSchema },
 });
 
+Bills.paymentSchema = new SimpleSchema({
+  id: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePayment },
+  amount: { type: Number, decimal: true },
+//  valueDate: { type: Date },
+});
+
 Bills.extensionSchema = new SimpleSchema([
   Transactions.partnerSchema,
   Bills.receiptSchema, {
     issueDate: { type: Date },
     deliveryDate: { type: Date },
     dueDate: { type: Date },
-    payments: { type: Array, defaultValue: [] },
-    'payments.$': { type: String, regEx: SimpleSchema.RegEx.Id, autoform: { omit: true } },
-    // cached value, so client can ask to sort on outstanding amount:
-    outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } },
+    payments: { type: [Bills.paymentSchema], defaultValue: [] },
+    outstanding: { type: Number, decimal: true, optional: true, autoform: { omit: true } }, // cached value
   //  closed: { type: Boolean, optional: true },  // can use outstanding === 0 for now
   },
 ]);
@@ -88,7 +104,7 @@ Meteor.startup(function indexBills() {
 
 Transactions.categoryHelpers('bill', {
   getPayments() {
-    return (this.payments || []).map(id => Transactions.findOne(id));
+    return (this.payments || []).map(payment => Transactions.findOne(payment.id));
   },
   paymentCount() {
     return this.payments.length;
@@ -112,7 +128,7 @@ Transactions.categoryHelpers('bill', {
   },
   autofillOutstanding() {
     let paid = 0;
-    this.getPayments().forEach(p => paid += p.amount);
+    this.payments.forEach(p => paid += p.amount);
     this.outstanding = this.amount - paid;
   },
   updateOutstandings(directionSign) {

@@ -891,6 +891,24 @@
       }
     }
   },
+  "schemaPayments": {
+    "bills": {
+      "label": "Számlák kifizetve ",
+      "$": {
+        "id": {
+          "label": "Számla"
+        },
+        "amount": {
+          "label": "Összeg",
+          "placeholder": "(pl. 14560)"
+        }
+      }
+    },
+    "outstanding": {
+      "label": "Fennmaradó összeg",
+      "placeholder": "(pl. 14560)"
+    }
+  },
   "schemaReconiliation": {
     "txId": {
       "label": "Kapcsolandó tranzakció",

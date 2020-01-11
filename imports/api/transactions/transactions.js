@@ -91,11 +91,11 @@ Transactions.idSet = ['communityId', 'ref'];
 Meteor.startup(function indexTransactions() {
   Transactions.ensureIndex({ communityId: 1, complete: 1, valueDate: -1 });
   Transactions.ensureIndex({ reconciledId: 1 });
-  Transactions.ensureIndex({ billId: 1 });
   if (Meteor.isClient && MinimongoIndexing) {
     Transactions._collection._ensureIndex('relation');
   } else if (Meteor.isServer) {
     Transactions._ensureIndex({ communityId: 1, relation: 1, serial: 1 });
+    Transactions._ensureIndex({ 'bills.id': 1 });
     Transactions._ensureIndex({ 'debit.account': 1 });
     Transactions._ensureIndex({ 'credit.account': 1 });
   }

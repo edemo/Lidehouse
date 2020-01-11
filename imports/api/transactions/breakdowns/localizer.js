@@ -48,8 +48,8 @@ export const Localizer = {
     }
   },
   _removeParcel(parcelBreakdown, parcel, community) {
-    const code = this.parcelRef2code(parcel.ref);
-    const node = parcelBreakdown.nodeByCode(code);
+//    const code = this.parcelRef2code(parcel.ref);
+//    const node = parcelBreakdown.nodeByCode(code);
     // TODO: remove node
   },
   addParcel(parcel) {

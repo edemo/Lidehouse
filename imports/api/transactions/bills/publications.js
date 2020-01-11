@@ -13,7 +13,7 @@ function findBillsWithTheirPayments(selector) {
     },
     children: [{
       find(bill) {
-        return Transactions.find({ billId: bill._id });
+        return Transactions.find({ 'bills.id': bill._id });
       },
     }],
   };
