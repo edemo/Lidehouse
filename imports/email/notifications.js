@@ -51,17 +51,19 @@ export function notifyExpiringVotings() {
       },
     }).fetch();
     if (expiringVotings.length === 0) return;
-    community.voters().filter(v => v.settings.notiFrequency !== 'never').forEach((voter) => {
+    community.voters().forEach((voter) => {
+      const user = voter.user();
+      if (user.settings.notiFrequency === 'never') return;
       const notVotedYetVotings = expiringVotings.filter((voting) => {
         return !voting.voteCastsIndirect[voter._id];
       });
       if (notVotedYetVotings.length > 0) {
         emailSender.sendHTML({
-          to: voter.getPrimaryEmail(),
-          subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, voter.settings.language),
+          to: user.getPrimaryEmail(),
+          subject: TAPi18n.__('email.NotificationSubject', { name: community.name }, user.settings.language),
           template: 'Voteexpires_Email',
           data: {
-            userId: voter._id,
+            userId: user._id,
             communityId: community._id,
             topics: notVotedYetVotings,
             alertColor: 'alert-warning',

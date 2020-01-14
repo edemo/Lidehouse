@@ -13,7 +13,6 @@ import { Accounts } from 'meteor/accounts-base';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
-import { Person } from '/imports/api/users/person.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import '/imports/api/topics/votings/votings.js';
 import '/imports/api/topics/tickets/tickets.js';
@@ -49,9 +48,9 @@ export class CommunityBuilder {
     return Communities.findOne(this.communityId);
   }
   getUserWithRole(role) {
-    const member = Memberships.findOne({ communityId: this.communityId, role, 'person.userId': { $exists: true } });
+    const member = Memberships.findOneActive({ communityId: this.communityId, role, userId: { $exists: true } });
     if (!member) throw Error(`No user with role ${role} in the community`);
-    return member.person.userId;
+    return member.person().userId;
   }
   sameUser() {
     return this.dummyUsers[this.nextUserIndex];
@@ -176,6 +175,7 @@ export class CommunityBuilder {
       },
     } });
     if (userData) Meteor.users.update(userId, { $set: userData });
+    if (role === 'admin') this.adminId = userId;
     this.createMembership(userId, role, membershipData);
     return userId;
   }
@@ -215,11 +215,14 @@ export class CommunityBuilder {
     else if (typeof personSpec === 'string') person = { userId: personSpec };
     else if (typeof personSpec === 'object') person = personSpec;
     else debugAssert(false);
-    person.idCard = {
-      type: 'natural',
-      name: new Person(person).displayName(this.lang),
+    let partnerId;
+    if (person.idCard) {
+      person.communityId = this.communityId;
+      person.relation = 'parcel';
+      partnerId = Partners.insert(person);
     }
-    return Memberships.insert({ communityId: this.communityId, person, accepted: true, role, ...membershipData });
+    const membershipId = Memberships.insert({ communityId: this.communityId, userId: person.userId, partnerId, accepted: true, role, ...membershipData });
+    return membershipId;
   }
   name2code(breakdownName, nodeName) {
     return Breakdowns.name2code(breakdownName, nodeName, this.communityId);

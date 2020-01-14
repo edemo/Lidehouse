@@ -27,14 +27,14 @@
 </template>
 
 <template name="Member_slot">
-    {{#if Person.user}}
+    {{#if person.user}}
         <div class="member-slot sidebar-message">
             <a href="">
                 <div class="pull-left text-center">
-                    <img alt="avatar" class="img-circle message-avatar" src="{{Person.avatar}}">
+                    <img alt="avatar" class="img-circle message-avatar" src="{{person.avatar}}">
                 </div>
                 <div class="media-body">
-                    <strong>{{Person.displayName}}</strong><br>
+                    <strong>{{person.displayName}}</strong><br>
                     <small class="text-muted">({{this}})</small>
                 </div>
                 <div class="media-body pull-right">

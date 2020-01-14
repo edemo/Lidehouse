@@ -6,6 +6,7 @@ import { _ } from 'meteor/underscore';
 import { leaderRoles } from '/imports/api/permissions/roles.js';
 import { Memberships } from './memberships.js';
 import { Communities } from '../communities/communities.js';
+import { Partners } from '../partners/partners.js';
 
 Meteor.publishComposite('memberships.ofUser', function membershipsOfUser(params) {
   new SimpleSchema({
@@ -16,20 +17,22 @@ Meteor.publishComposite('memberships.ofUser', function membershipsOfUser(params)
   if (userId !== this.userId) {
     return this.ready();
   }
-  const user = Meteor.users.findOne(userId);
-  const userEmail = user.emails[0].address;
+//  const user = Meteor.users.findOne(userId);
+//  const userEmail = user.emails[0].address;
 
   return {
     find() {
-      return Memberships.find({ personId: userId });
+      return Memberships.find({ userId });
     },
 
     children: [{
       find(membership) {
         const communityId = membership.communityId;
-       // const user = Meteor.users.findOne(this.userId);
-       // const visibleFields = user.hasPermission('finances.view') ? {} : { finances: 0 };
-        return Communities.find({ _id: communityId } /* , { fields: visibleFields } */);
+        return Communities.find({ _id: communityId });
+      },
+    }, {
+      find(membership) {
+        return Partners.find({ _id: membership.partnerId }, { fields: Partners.publicFields });
       },
     }],
   };
@@ -53,11 +56,14 @@ Meteor.publishComposite('memberships.inCommunity', function membershipsInCommuni
     },
 
     children: [{
+      // Publish the Partners of the Membership
+      find(membership) {
+        return Partners.find({ _id: membership.partnerId }, { fields: Partners.publicFields });
+      },
+    }, {
       // Publish the User of the Membership
       find(membership) {
-        const showFields = _.extend({}, Meteor.users.publicFields);
-        if (user.hasPermission('memberships.details', membership)) showFields.emails = 1;  // to be able to resend invites
-        return Meteor.users.find({ _id: membership.person.userId }, { fields: showFields });
+        return Meteor.users.find({ _id: membership.userId }, { fields: Meteor.users.publicFields });
       },
     }],
   };

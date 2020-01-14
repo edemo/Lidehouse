@@ -10,14 +10,13 @@ import { TimeSync } from 'meteor/mizzao:timesync';
 
 import { __ } from '/imports/localization/i18n.js';
 import { getCurrentUserLang } from '/imports/api/users/users.js';
-import { Person } from '/imports/api/users/person.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Communities } from '/imports/api/communities/communities.js';
-import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { autoformOptions, noUpdate } from '/imports/utils/autoform.js';
 import { Topics } from '/imports/api/topics/topics.js';
 import { debugAssert } from '/imports/utils/assert.js';
+import { Partners } from '../../partners/partners';
 
 export const Votings = {};
 
@@ -87,7 +86,7 @@ Votings.extensionSchema = new SimpleSchema({
   votePaths: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
     // userId -> ranked array of choice indexes (or single entry in the array)
   voteResults: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
-    // ownershipId -> {}
+    // votershipId -> {}
   voteSummary: { type: Object, optional: true, autoValue: defaultsTo({}), blackbox: true },
     // choiceIndex -> {}
   voteParticipation: { type: Votings.voteParticipationSchema, optional: true, autoValue: defaultsTo({ count: 0, units: 0 }) },
@@ -146,7 +145,7 @@ Topics.categoryHelpers('vote', {
   },
   voteEvaluate(revealResults) {
     if (Meteor.isClient) return; // 'voteEvaluate' should only run on the server, client does not have the necessary data to perform it
-    const voteResults = {};         // results by ownerships
+    const voteResults = {};         // results by voterships
     const voteCastsIndirect = {};   // results by users
     const votePaths = {};
     const voteSummary = {};         // results by choices
@@ -155,32 +154,32 @@ Topics.categoryHelpers('vote', {
     const self = this;
     const voteType = this.vote.type;
     const community = Communities.findOne(this.communityId);
-    community.voterships().forEach((ownership) => {
-      const ownerId = ownership.personId;
-      debugAssert(ownerId);
-      const votePath = [ownerId];
+    community.voterships().forEach((votership) => {
+      const partnerId = votership.partnerId;
+      debugAssert(partnerId);
+      const votePath = [partnerId];
 
       function getVoteResult(voterId) {
         const castedVote = directVotes[voterId];
         if (castedVote) {
           const result = {
-            votingShare: ownership.votingUnits(),
+            votingShare: votership.votingUnits(),
             castedVote,
             votePath,
           };
-          voteResults[ownership._id] = result;
-          voteCastsIndirect[ownerId] = castedVote;
-          votePaths[ownerId] = votePath;
+          voteResults[votership._id] = result;
+          voteCastsIndirect[partnerId] = castedVote;
+          votePaths[partnerId] = votePath;
           castedVote.forEach((choice, i) => {
             voteSummary[choice] = voteSummary[choice] || 0;
             const choiceWeight = (voteType === 'preferential') ? (1 - (i / castedVote.length)) : 1;
-            voteSummary[choice] += ownership.votingUnits() * choiceWeight;
+            voteSummary[choice] += votership.votingUnits() * choiceWeight;
           });
           voteParticipation.count += 1;
-          voteParticipation.units += ownership.votingUnits();
+          voteParticipation.units += votership.votingUnits();
           return true;
         }
-        const delegations = Delegations.find({ sourcePersonId: voterId,
+        const delegations = Delegations.find({ sourceId: voterId,
           $or: [
             { scope: 'topic', scopeObjectId: self._id },
             { scope: 'agenda', scopeObjectId: self.agendaId },
@@ -188,16 +187,16 @@ Topics.categoryHelpers('vote', {
           ],
         });
         for (const delegation of delegations.fetch()) {
-          if (!_.contains(votePath, delegation.targetPersonId)) {
-            votePath.push(delegation.targetPersonId);
-            if (getVoteResult(delegation.targetPersonId)) return true;
+          if (!_.contains(votePath, delegation.targetId)) {
+            votePath.push(delegation.targetId);
+            if (getVoteResult(delegation.targetId)) return true;
             votePath.pop();
           }
         }
         return false;
       }
 
-      getVoteResult(ownerId);
+      getVoteResult(partnerId);
     });
 
     Topics.update(this._id, { $set: { voteParticipation } }, { selector: { category: 'vote' } });
@@ -212,7 +211,7 @@ Topics.categoryHelpers('vote', {
     Object.keys(results).forEach(key => {
       data.push(_.extend(results[key], {
         voter() {
-          return Person.constructFromId(this.votePath[0]);
+          return Partners.findOne(this.votePath[0]);
         },
         voteResultDisplay() {
           let display = topic.vote.choices[this.castedVote[0]];
@@ -224,7 +223,7 @@ Topics.categoryHelpers('vote', {
         votePathDisplay() {
           if (this.votePath.length === 1) return 'direct';
           let path = '';
-          this.votePath.forEach((pid, ind) => { if (ind > 0) path += (' -> ' + Person.constructFromId(pid).toString()); });
+          this.votePath.forEach((pid, ind) => { if (ind > 0) path += (' -> ' + Partners.findOne(pid).toString()); });
           return path;
         },
       }));
@@ -262,6 +261,7 @@ Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) 
   // User cannot see other user's votes, but need to see his own votes (during active voting)
   // Soution: Use 2 subsrciptions, one on the live votings, one on the closed, and the public fields are different for the two
   const user = Meteor.users.findOne(userId);
+  const partnerId = user.partnerId(communityId);
   if (user.hasPermission('vote.peek', { communityId })) {
     return _.extend({}, Topics.publicFields, {
       voteCasts: 1,
@@ -272,9 +272,9 @@ Votings.extendPublicFieldsForUser = function extendForUser(userId, communityId) 
     });
   } else {
     const publicFiledsForOwnVotes = {};
-    publicFiledsForOwnVotes['voteCasts.' + userId] = 1;
-    publicFiledsForOwnVotes['voteCastsIndirect.' + userId] = 1;
-    publicFiledsForOwnVotes['votePaths.' + userId] = 1;
+    publicFiledsForOwnVotes['voteCasts.' + partnerId] = 1;
+    publicFiledsForOwnVotes['voteCastsIndirect.' + partnerId] = 1;
+    publicFiledsForOwnVotes['votePaths.' + partnerId] = 1;
     return _.extend({}, Topics.publicFields, publicFiledsForOwnVotes);
   }
 };

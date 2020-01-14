@@ -34,8 +34,8 @@ export function insertUnittestFixture(lang) {
   const otherBuilder = new CommunityBuilder(otherCommunityId, 'test', lang);
 
   const com = { en: 'com', hu: 'hu' }[lang];
-  const demoManagerId = demoBuilder.createLoginableUser('manager');
   const demoAdminId = demoBuilder.createLoginableUser('admin');
+  const demoManagerId = demoBuilder.createLoginableUser('manager');
   const demoAccountantId = demoBuilder.createLoginableUser('accountant');
 
 // ===== Parcels =====
@@ -212,10 +212,10 @@ export function insertUnittestFixture(lang) {
     },
   });
 
-  castVote._execute({ userId: voterships[0].personId }, { topicId: voteTopic0, castedVote: [2] });  // no
-  castVote._execute({ userId: voterships[1].personId }, { topicId: voteTopic0, castedVote: [1] });  // yes
-  castVote._execute({ userId: voterships[2].personId }, { topicId: voteTopic0, castedVote: [2] });  // no
-  castVote._execute({ userId: voterships[3].personId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
+  castVote._execute({ userId: voterships[0].userId }, { topicId: voteTopic0, castedVote: [2] });  // no
+  castVote._execute({ userId: voterships[1].userId }, { topicId: voteTopic0, castedVote: [1] });  // yes
+  castVote._execute({ userId: voterships[2].userId }, { topicId: voteTopic0, castedVote: [2] });  // no
+  castVote._execute({ userId: voterships[3].userId }, { topicId: voteTopic0, castedVote: [0] });  // abstain
 
   Clock.clear();
   demoBuilder.execute(Topics.methods.statusChange, { topicId: voteTopic0, status: 'votingFinished' });
@@ -237,9 +237,9 @@ export function insertUnittestFixture(lang) {
     // not part of any agenda
   });
 
-  castVote._execute({ userId: voterships[1].personId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
-  castVote._execute({ userId: voterships[2].personId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
-  castVote._execute({ userId: voterships[3].personId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
+  castVote._execute({ userId: voterships[1].userId }, { topicId: voteTopic2, castedVote: [1, 2, 3, 4] });
+  castVote._execute({ userId: voterships[2].userId }, { topicId: voteTopic2, castedVote: [2, 3, 4, 1] });
+  castVote._execute({ userId: voterships[3].userId }, { topicId: voteTopic2, castedVote: [3, 4, 1, 2] });
 
   ['0', '1'].forEach(commentNo =>
     demoBuilder.create('comment', {
@@ -275,8 +275,8 @@ export function insertUnittestFixture(lang) {
 
   // ===== Transactions =====
 
-  const supplier = demoBuilder.create('supplier', { name: 'Supplier Inc' });
-  const customer = demoBuilder.create('customer', { name: 'Customer Inc' });
+  const supplier = demoBuilder.create('supplier', { idCard: { type: 'legal', name: 'Supplier Inc' } });
+  const customer = demoBuilder.create('customer', { idCard: { type: 'legal', name: 'Customer Inc' } });
 
   //
 //  otherBuilder.insertLoadsOfFakeMembers(10);
@@ -294,5 +294,6 @@ export function insertUnittestFixture(lang) {
     supplier,
     customer,
     builder: demoBuilder,
+    partnerId(userId) { return Meteor.users.findOne(userId).partnerId(this.demoCommunityId); },
   };
 }

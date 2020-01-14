@@ -56,7 +56,7 @@ Transactions.categoryHelpers('remission', {
     debugAssert(this.billId, 'Cannot process a remission without connecting it to a bill first');
     debugAssert(this.partnerId, 'Cannot process a remission without a partner');
     const bill = Transactions.findOne(this.billId);
-    Partners.relCollection(this.relation).update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
     if (this.relation === 'parcel') {
       bill.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array

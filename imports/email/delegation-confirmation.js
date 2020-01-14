@@ -5,18 +5,20 @@ import { _ } from 'meteor/underscore';
 
 import { Delegations } from '/imports/api/delegations/delegations.js';
 import { Communities } from '/imports/api/communities/communities.js';
+import { Partners } from '/imports/api/partners/partners.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
 
 export function delegationConfirmationEmail(delegation, method, formerDelegation) {
   const community = Communities.findOne(delegation.communityId).name;
   const date = delegation.updatedAt.toLocaleDateString();
   const link = FlowRouterHelpers.urlFor('Delegations');
-  const sourcePerson = Memberships.findOne({ personId: delegation.sourcePersonId }).Person();
-  const targetPerson = Memberships.findOne({ personId: delegation.targetPersonId }).Person();
-  const addressee = [delegation.sourcePersonId, delegation.targetPersonId];
-  if (formerDelegation && delegation.targetPersonId !== formerDelegation.targetPersonId) addressee.push(formerDelegation.targetPersonId);
+  const sourcePerson = Partners.findOne(delegation.sourceId);
+  const targetPerson = Partners.findOne(delegation.targetId);
+  const addressee = [delegation.sourceId, delegation.targetId];
+  if (formerDelegation && delegation.targetId !== formerDelegation.targetId) addressee.push(formerDelegation.targetId);
   addressee.forEach((personId) => {
-    const user = Meteor.users.findOne(personId);
+    const person = Partners.findOne(personId);
+    const user = Meteor.users.findOne(person.userId);
     if (!user) return;
     const language = user.language();
     const personName = user.displayOfficialName(delegation.communityId, language);
@@ -39,9 +41,9 @@ export function delegationConfirmationEmail(delegation, method, formerDelegation
     const acceptance = method === 'remove' ?
       TAPi18n.__('email.delegationRemoved', { date }, language) : TAPi18n.__('email.delegationAcceptance', {}, language);
     const beforeUpdate = method === 'update' ?
-      TAPi18n.__('email.delegationBefore', { 
-        formerSourcePerson: Memberships.findOne({ personId: formerDelegation.sourcePersonId }).Person().displayName(language),
-        formerTargetPerson: Memberships.findOne({ personId: formerDelegation.targetPersonId }).Person().displayName(language),
+      TAPi18n.__('email.delegationBefore', {
+        formerSourcePerson: Partners.findOne(formerDelegation.sourceId).displayName(language),
+        formerTargetPerson: Partners.findOne(formerDelegation.targetId).displayName(language),
         formerScopeObject: scopeObject(formerDelegation),
       }, language) :
       '';

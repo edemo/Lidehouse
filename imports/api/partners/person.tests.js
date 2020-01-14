@@ -15,6 +15,7 @@ import { freshFixture, logDB } from '/imports/api/test-utils.js';
 import '/imports/api/users/users.js';
 
 import { Email } from 'meteor/email';   // We will be mocking it over
+import { Partners } from './partners';
 
 if (Meteor.isServer) {
 
@@ -24,7 +25,7 @@ if (Meteor.isServer) {
   let parcelId;
 
   describe('person', function () {
-    this.timeout(15000);
+    this.timeout(150000);
     before(function () {
       sinon.stub(Email);          // Mocking the Email sending
       Fixture = freshFixture();
@@ -52,9 +53,11 @@ if (Meteor.isServer) {
 
       describe('Scenario A1: Person creates user account, submits join community request', function () {
         let membershipId;
+        let partnerId;
         let userId;
         after(function () {
           Memberships.remove(membershipId);
+          Partners.remove(partnerId);
           Meteor.users.remove(userId);
         });
 
@@ -65,14 +68,17 @@ if (Meteor.isServer) {
 
         it('[x] user has no permission to create approved membership', function (done) {
           chai.assert.throws(() => {
+/*            partnerId = Partners.methods.insert._execute({ userId }, {
+              communityId: Fixture.demoCommunityId,
+              relation: 'parcel',
+              userId,
+              idCard: { type: 'natural', name: 'Mr New' },
+              contact: { email: 'newuser@honline.hu' },
+            });*/
             Memberships.methods.insert._execute({ userId }, {   // he is not admin/manager
               communityId: Fixture.demoCommunityId,
               approved: true, // tries to create approved membership
-              person: {
-                userId,
-                idCard: { type: 'natural', name: 'Mr New' },
-                contact: { email: 'newuser@honline.hu' },
-              },
+              userId,
               role: 'owner',
               parcelId,
               ownership: { share: new Fraction(1, 1) },
@@ -82,21 +88,26 @@ if (Meteor.isServer) {
         });
 
         it('[2] user asks to join community', function (done) {
+/*          partnerId = Partners.methods.insert._execute({ userId }, {
+            communityId: Fixture.demoCommunityId,
+            relation: 'parcel',
+            userId,
+            idCard: { type: 'natural', name: 'Mr New' },
+            contact: { email: 'newuser@honline.hu' },
+          });*/
           membershipId = Memberships.methods.insert._execute({ userId }, {
             communityId: Fixture.demoCommunityId,
             approved: false, // tries to create non-approved membership
-            person: {
-              userId,
-              idCard: { type: 'natural', name: 'Mr New' },
-              contact: { email: 'newuser@honline.hu' },
-            },
+            userId,
             role: 'owner',
             parcelId,
             ownership: { share: new Fraction(1, 1) },
           });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.equal(membership.Person().id(), userId);
+          partnerId = membership.partnerId;
+
+          chai.assert.equal(membership.person().id(), userId);
           const user = Meteor.users.findOne(userId);
           // This user has no privileges in the community, until not approved
           chai.assert.isFalse(user.hasRole('owner', Fixture.demoCommunityId));
@@ -122,7 +133,7 @@ if (Meteor.isServer) {
           });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.equal(membership.Person().id(), userId);
+          chai.assert.equal(membership.person().id(), userId);
           const user = Meteor.users.findOne(userId);
           // Now he has privileges
           chai.assert.isTrue(user.hasRole('owner', Fixture.demoCommunityId));
@@ -132,24 +143,35 @@ if (Meteor.isServer) {
         });
 
         it('[4] later manager certifies the person', function (done) {
-          Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, {
-            _id: membershipId,
-            modifier: { $set: { 'person.idCard.identifier': 'JIMS_ID_NUMBER' } },
+          Partners.methods.update._execute({ userId: Fixture.demoManagerId }, {
+            _id: partnerId,
+            modifier: { $set: { idCard: { type: 'natural', identifier: 'JIMS_ID_NUMBER' } } },
           });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.equal(membership.Person().id(), userId);    // userId binds stronger than idCard.identifier
+          chai.assert.equal(membership.person().id(), userId);    // userId binds stronger than idCard.identifier
 
           done();
         });
 
+        it('[x] user has no permission to change his certification details', function (done) {
+          chai.assert.throws(() => {
+            Partners.methods.update._execute({ userId }, {
+              _id: partnerId,
+              modifier: { $set: { idCard: { type: 'natural', identifier: 'CHANGED_ID_NUMBER' } } },
+            });
+          }, 'err_permissionDenied');
+          done();
+        });
       });
 
       describe('Scenario A2: Person creates user account, admin adds him to the community', function () {
         let membershipId;
+        let partnerId;
         let userId;
         after(function () {
           Memberships.remove(membershipId);
+          Partners.remove(partnerId);
           Meteor.users.remove(userId);
         });
         
@@ -159,20 +181,24 @@ if (Meteor.isServer) {
         });
 
         it('[2] admin adds him with a role', function (done) {
+          partnerId = Partners.methods.insert._execute({ userId: Fixture.demoAdminId }, {
+            communityId: Fixture.demoCommunityId,
+            relation: 'parcel',
+            userId,
+              // no contact email
+          });
           membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoAdminId }, {
             communityId: Fixture.demoCommunityId,
             approved: true,
-            person: {
-              userId,
-              // no contact email
-            },
+            userId,
+            partnerId,
             role: 'accountant',
           });
 
           const membership = Memberships.findOne(membershipId);
           const user = Meteor.users.findOne(userId);
-          chai.assert.equal(membership.Person().id(), userId);
-          chai.assert.equal(membership.Person().primaryEmail(), user.getPrimaryEmail());
+          chai.assert.equal(membership.person().id(), userId);
+          chai.assert.equal(membership.person().primaryEmail(), user.getPrimaryEmail());
           chai.assert.isTrue(user.hasRole('accountant', Fixture.demoCommunityId));
 
           done();
@@ -182,25 +208,30 @@ if (Meteor.isServer) {
 
       describe('Scenario B1: manager links person, who will never be a user', function () {
         let membershipId;
+        let partnerId;
         after(function () {
           Memberships.remove(membershipId);
+          Partners.remove(partnerId);
         });
 
         it('[1] manager creates identifed person, and links it to the parcel with an ownership', function (done) {
+          partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            relation: 'parcel',
+            idCard: { type: 'natural', name: 'Jim', identifier: 'JIMS_ID_NUMBER' },
+            contact: { phone: '+3630 3334445' },
+          });
           membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
             approved: true,
-            person: {
-              idCard: { type: 'natural', name: 'Jim', identifier: 'JIMS_ID_NUMBER' },
-              contact: { phone: '+3630 3334445' },
-            },
+            partnerId,
             role: 'owner',
             parcelId,
             ownership: { share: new Fraction(1, 1) },
           });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.equal(membership.Person().id(), 'JIMS_ID_NUMBER');
+          chai.assert.equal(membership.person().id(), 'JIMS_ID_NUMBER');
 
           done();
         });
@@ -215,22 +246,28 @@ if (Meteor.isServer) {
 
       describe('Scenario B2: manager links person, who is not yet a user, but will be', function () {
         let membershipId;
+        let partnerId;
         let userId, user;
         after(function () {
           Memberships.remove(membershipId);
+          Partners.remove(partnerId);
           Meteor.users.remove(userId);
         });
-
+/*
         it('[x] manager unable to create person, with mismatched email', function (done) {
           chai.assert.throws(() => {
+            partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+              communityId: Fixture.demoCommunityId,
+              relation: 'parcel',
+              userId: Fixture.demoUserId,
+              idCard: { type: 'natural', name: 'Jim' },
+              contact: { name: 'Jimmy', email: 'jim@honline.hu' }, // mismatched contact email supplied
+            });
             Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
               communityId: Fixture.demoCommunityId,
               approved: true,
-              person: {
-                userId: Fixture.demoUserId, // immediately link him
-                idCard: { type: 'natural', name: 'Jim' },
-                contact: { name: 'Jimmy', email: 'jim@honline.hu' }, // mismatched contact email supplied
-              },
+              userId: Fixture.demoUserId, // immediately link him
+              partnerId,
               role: 'owner',
               parcelId,
               ownership: { share: new Fraction(1, 1) },
@@ -238,32 +275,35 @@ if (Meteor.isServer) {
           }, 'err_sanityCheckFailed');
           done();
         });
-
+*/
         it('[1] manager creates approved person, and links it to the parcel with an ownership', function (done) {
+          partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            relation: 'parcel',
+            idCard: { type: 'natural', name: 'Jim' },
+            contact: { email: 'jim@honline.hu' },
+          });
           membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
             approved: true,
-            person: {
-              idCard: { type: 'natural', name: 'Jim' },
-              contact: { email: 'jim@honline.hu' },
-            },
+            partnerId,
             role: 'owner',
             parcelId,
             ownership: { share: new Fraction(1, 1) },
           });
 
           let membership = Memberships.findOne(membershipId);
-          chai.assert.isUndefined(membership.person.userId);
-          chai.assert.isUndefined(membership.Person().id());
+          chai.assert.isUndefined(membership.person().userId);
+          chai.assert.isUndefined(membership.person().id());
 
-          Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, {
-            _id: membershipId,
-            modifier: { $set: { 'person.idCard.identifier': 'JIMS_ID_NUMBER' } },
+          Partners.methods.update._execute({ userId: Fixture.demoManagerId }, {
+            _id: partnerId,
+            modifier: { $set: { 'idCard.identifier': 'JIMS_ID_NUMBER' } },
           });
 
           membership = Memberships.findOne(membershipId);
-          chai.assert.isUndefined(membership.person.userId);
-          chai.assert.equal(membership.Person().id(), 'JIMS_ID_NUMBER');
+          chai.assert.isUndefined(membership.person().userId);
+          chai.assert.equal(membership.person().id(), 'JIMS_ID_NUMBER');
 
           done();
         });
@@ -272,10 +312,10 @@ if (Meteor.isServer) {
           Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.isDefined(membership.person.userId);
-          userId = membership.person.userId;
+          chai.assert.isDefined(membership.person().userId);
+          userId = membership.person().userId;
           user = Meteor.users.findOne(userId);
-          chai.assert.equal(membership.Person().id(), userId);
+          chai.assert.equal(membership.person().id(), userId);
           chai.assert.isFalse(membership.accepted);
 
           sinon.assert.calledOnce(Email.send);
@@ -288,9 +328,9 @@ if (Meteor.isServer) {
 
         it('[x] cannot change the linked userId under an existing person', function (done) {
           chai.assert.throws(() => {
-            Memberships.methods.update._execute({ userId: Fixture.demoManagerId }, {
-              _id: membershipId,
-              modifier: { $set: { 'person.userId': Fixture.demoUserId } },
+            Partners.methods.update._execute({ userId: Fixture.demoManagerId }, {
+              _id: partnerId,
+              modifier: { $set: { userId: Fixture.demoUserId } },
             });
           }, 'err_permissionDenied');
           done();
@@ -300,7 +340,7 @@ if (Meteor.isServer) {
           Memberships.methods.linkUser._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.equal(membership.Person().id(), userId);
+          chai.assert.equal(membership.person().id(), userId);
           chai.assert.isFalse(membership.accepted);
 
           sinon.assert.calledTwice(Email.send);
@@ -317,8 +357,8 @@ if (Meteor.isServer) {
           Memberships.methods.accept._execute({ userId });
 
           const membership = Memberships.findOne(membershipId);
-          chai.assert.isDefined(membership.person.userId);
-          chai.assert.equal(membership.Person().id(), userId);
+          chai.assert.isDefined(membership.person().userId);
+          chai.assert.equal(membership.person().id(), userId);
           chai.assert.isTrue(membership.accepted);    // now he is accepted state
 
           done();
@@ -335,14 +375,17 @@ if (Meteor.isServer) {
         });
 
         it('B3a: creating membership and linking in same step', function (done) {
+          const partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            relation: 'parcel',
+            userId: alreadyUserId, // immediately link him
+            idCard: { type: 'natural', name: 'Mr Already' },
+            // no contact email
+          });
           const membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
             approved: true,
-            person: {
-              userId: alreadyUserId, // immediately link him
-              idCard: { type: 'natural', name: 'Mr Already' },
-              // no contact email
-            },
+            partnerId,
             role: 'owner',
             parcelId,
             ownership: { share: new Fraction(1, 1) },
@@ -350,22 +393,26 @@ if (Meteor.isServer) {
 
           const membership = Memberships.findOne(membershipId);
           const alreadyUser = Meteor.users.findOne(alreadyUserId);
-          chai.assert.equal(membership.Person().id(), alreadyUserId);
-          chai.assert.equal(membership.Person().primaryEmail(), alreadyUser.getPrimaryEmail());
+          chai.assert.equal(membership.person().id(), alreadyUserId);
+          chai.assert.equal(membership.person().primaryEmail(), alreadyUser.getPrimaryEmail());
 
+          Partners.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: partnerId });
           Memberships.methods.remove._execute({ userId: Fixture.demoManagerId }, { _id: membershipId });
           done();
         });
 
         it('B3b: creating membership and linking in two steps', function (done) {
+          const partnerId = Partners.methods.insert._execute({ userId: Fixture.demoManagerId }, {
+            communityId: Fixture.demoCommunityId,
+            relation: 'parcel',
+            // no userId yet
+            idCard: { type: 'natural', name: 'Mr Already' },
+            contact: { name: 'Already User', email: 'alreadyuser@honline.hu' },
+          });
           const membershipId = Memberships.methods.insert._execute({ userId: Fixture.demoManagerId }, {
             communityId: Fixture.demoCommunityId,
             approved: true,
-            person: {
-              // no userId yet
-              idCard: { type: 'natural', name: 'Mr Already' },
-              contact: { name: 'Already User', email: 'alreadyuser@honline.hu' },
-            },
+            partnerId,
             role: 'owner',
             parcelId,
             ownership: { share: new Fraction(1, 1) },
@@ -374,9 +421,10 @@ if (Meteor.isServer) {
 
           const membership = Memberships.findOne(membershipId);
           const alreadyUser = Meteor.users.findOne(alreadyUserId);
-          chai.assert.equal(membership.Person().id(), alreadyUserId);
-          chai.assert.equal(membership.Person().primaryEmail(), alreadyUser.getPrimaryEmail());
+          chai.assert.equal(membership.person().id(), alreadyUserId);
+          chai.assert.equal(membership.person().primaryEmail(), alreadyUser.getPrimaryEmail());
 
+          Partners.remove(partnerId);
           Memberships.remove(membershipId);
           done();
         });

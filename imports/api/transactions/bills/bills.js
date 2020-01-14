@@ -134,7 +134,7 @@ Transactions.categoryHelpers('bill', {
   updateOutstandings(directionSign) {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a bill without a partner');
-    Partners.relCollection(this.relation).update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } }, { selector: { role: 'owner' } });
+    Partners.update(this.partnerId, { $inc: { outstanding: directionSign * this.amount } });
     if (this.relation === 'parcel') {
       this.lines.forEach(line => {
         if (!line) return; // can be null, when a line is deleted from the array

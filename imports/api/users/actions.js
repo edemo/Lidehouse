@@ -4,6 +4,7 @@ import { Modal } from 'meteor/peppelg:bootstrap-3-modal';
 import { $ } from 'meteor/jquery';
 
 import { __ } from '/imports/localization/i18n.js';
+import { getActiveCommunityId } from '/imports/ui_3/lib/active-community.js';
 import { handleError } from '/imports/ui_3/lib/errors.js';
 import { Rooms } from '/imports/api/topics/rooms/rooms.js';
 import { Delegations } from '/imports/api/delegations/delegations';
@@ -39,7 +40,8 @@ Meteor.users.actions = {
     visible: () => true,
     href: () => FlowRouter.path('Delegations'),
     run(options, doc) {
-      Delegations.actions.new.run({}, { targetPersonId: doc._id });
+      const communityId = getActiveCommunityId();
+      Delegations.actions.new.run({}, { targetId: doc.partnerId(communityId) });
     },
   },
   block: {

@@ -120,7 +120,7 @@ Transactions.helpers({
     return Communities.findOne(this.communityId);
   },
   partner() {
-    if (this.partnerId) return Partners.relCollection(this.relation).findOne(this.partnerId);
+    if (this.partnerId) return Partners.findOne(this.partnerId);
     return this.partnerTxt;
   },
   contract() {

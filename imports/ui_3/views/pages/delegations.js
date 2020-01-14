@@ -75,10 +75,10 @@ Template.Delegations.helpers({
     return Delegations.find();
   },
   delegationsFromMe() {
-    return Delegations.find({ sourcePersonId: Meteor.userId() });
+    return Delegations.find({ sourceId: Meteor.user().partnerId(Session.get('activeCommunityId')) });
   },
   delegationsToMe() {
-    return Delegations.find({ targetPersonId: Meteor.userId() });
+    return Delegations.find({ targetId: Meteor.user().partnerId(Session.get('activeCommunityId')) });
   },
   doughnutData() {
     const user = Meteor.user();
@@ -110,7 +110,7 @@ Template.Delegations_for_others.events({
 
 Template.Delegations.events({
   'click .js-new'(event) {
-    Delegations.actions.new.run({}, { sourcePersonId: Meteor.userId() });
+    Delegations.actions.new.run({}, { sourceId: Meteor.userId() });
   },
   'click #allow'(event) {
     event.preventDefault();

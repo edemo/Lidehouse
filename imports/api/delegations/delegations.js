@@ -9,7 +9,7 @@ import faker from 'faker';
 import { __ } from '/imports/localization/i18n.js';
 import { autoformOptions } from '/imports/utils/autoform.js';
 
-import { Person, choosePerson, chooseDelegate } from '/imports/api/users/person.js';
+import { Partners, choosePerson, chooseDelegate } from '/imports/api/partners/partners.js';
 import { Timestamped } from '/imports/api/behaviours/timestamped.js';
 import { Communities } from '/imports/api/communities/communities.js';
 import { Agendas } from '/imports/api/agendas/agendas.js';
@@ -59,18 +59,17 @@ const PersonIdSchema = new SimpleSchema({
 
 Delegations.schema = new SimpleSchema({
   communityId: { type: String, regEx: SimpleSchema.RegEx.Id, optional: true, autoValue: communityIdAutoValue, autoform: { omit: true } },
-  // PersonId is either a registered user's userId or a non-registered user's idCard.identifier
-  sourcePersonId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: choosePerson },
-  targetPersonId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: chooseDelegate },
+  sourceId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: choosePerson },
+  targetId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseDelegate },
   scope: { type: String, allowedValues: Delegations.scopeValues, autoform: autoformOptions(Delegations.scopeValues, 'schemaDelegations.scope.') },
-  scopeObjectId: { type: String, /* regEx: SimpleSchema.RegEx.Id,*/ autoform: chooseScopeObject },
+  scopeObjectId: { type: String, regEx: SimpleSchema.RegEx.Id, autoform: chooseScopeObject },
 });
 
 Meteor.startup(function indexDelegations() {
-  Delegations.ensureIndex({ sourcePersonId: 1 });
-  Delegations.ensureIndex({ targetPersonId: 1 });
+  Delegations.ensureIndex({ sourceId: 1 });
+  Delegations.ensureIndex({ targetId: 1 });
   if (Meteor.isServer) {
-    Delegations._ensureIndex({ communityId: 1, sourcePersonId: 1 });
+    Delegations._ensureIndex({ communityId: 1, sourceId: 1 });
   }
 });
 
@@ -86,10 +85,16 @@ Delegations.helpers({
     return undefined;
   },
   sourcePerson() {
-    return Person.constructFromId(this.sourcePersonId);
+    return Partners.findOne(this.sourceId);
   },
   targetPerson() {
-    return Person.constructFromId(this.targetPersonId);
+    return Partners.findOne(this.targetId);
+  },
+  sourceUser() {
+    return Partners.findOne(this.sourceId).user();
+  },
+  targetUser() {
+    return Partners.findOne(this.targetId).user();
   },
   getAffectedVotings() {
     if (this.scope === 'community') return Topics.find({ communityId: this.scopeObjectId, category: 'vote', closed: false });
@@ -107,7 +112,7 @@ Meteor.startup(function attach() {
 });
 
 Factory.define('delegation', Delegations, {
-  sourcePersonId: () => Factory.get('user'),
+  sourceId: () => Factory.get('partner'),
   scope: 'community',
   scopeObjectId: () => Factory.get('community'),
 });

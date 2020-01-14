@@ -30,7 +30,7 @@ Template.Members_panel.viewmodel({
     let managers = Memberships.findActive({ communityId, role: { $in: leaderRoles }, 'person.userId': { $exists: true, $ne: Meteor.userId() } }).fetch();
     managers = _.uniq(managers, false, m => m.person.userId);
     if (personSearch) {
-      managers = managers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
+      managers = managers.filter(m => m.person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     }
     return managers;
   },
@@ -41,7 +41,7 @@ Template.Members_panel.viewmodel({
     nonManagers = _.uniq(nonManagers, false, m => m.person.userId);
     if (nonManagers.length > MEMBERS_TO_SHOW * 2) this.tooManyMembers(true);
     if (personSearch) {
-      nonManagers = nonManagers.filter(m => m.Person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
+      nonManagers = nonManagers.filter(m => m.person().displayName().toLowerCase().search(personSearch.toLowerCase()) >= 0);
     } else {
       if (this.tooManyMembers()) {
         nonManagers = nonManagers.filter(m => Rooms.getRoom(Session.get('roomMode'), m.person.userId));

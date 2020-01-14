@@ -50,18 +50,24 @@ if (Meteor.isServer) {
       let voteTopic;
       let maintainerId;
       let ownerId;
+      let ownerPartnerId;
       let benefactorId;
+      let benefactorPartnerId;
       let adminId;
-      let accountanId;
+      let accountantId;
+      let accountantPartnerId;
       let randomUserId;
       let communityId;
 
       before(function () {
         maintainerId = Fixture.dummyUsers[0];
         ownerId = Fixture.dummyUsers[1];
+        ownerPartnerId = Fixture.partnerId(Fixture.dummyUsers[1]);
         benefactorId = Fixture.dummyUsers[2];
+        benefactorPartnerId = Fixture.partnerId(Fixture.dummyUsers[2]);
         adminId = Fixture.demoAdminId;
-        accountanId = Fixture.dummyUsers[4];
+        accountantId = Fixture.dummyUsers[4];
+        accountantPartnerId = Fixture.partnerId(Fixture.dummyUsers[4]);
         randomUserId = Random.id();
         communityId = Fixture.demoCommunityId;
         forumTopic = Factory.create('forum', { userId: maintainerId, communityId });
@@ -69,10 +75,10 @@ if (Meteor.isServer) {
         voteTopic = Factory.create('vote', { userId: ownerId, communityId });
         insertDelegation._execute(
           { userId: ownerId },
-          { sourcePersonId: ownerId, targetPersonId: benefactorId, scope: 'community', scopeObjectId: communityId }
+          { sourceId: ownerPartnerId, targetId: benefactorPartnerId, scope: 'community', scopeObjectId: communityId }
         );
         castVote._execute({ userId: benefactorId }, { topicId: voteTopic._id, castedVote: [0] });
-        castVote._execute({ userId: accountanId }, { topicId: voteTopic._id, castedVote: [0] });
+        castVote._execute({ userId: accountantId }, { topicId: voteTopic._id, castedVote: [0] });
 
 
         _.times(3, () => {
@@ -146,9 +152,9 @@ if (Meteor.isServer) {
             'topics.byId',
             { _id: voteTopic._id },
             (collections) => {
-              chai.assert.deepEqual(collections.topics[0].voteCasts, { [benefactorId]: [0], [accountanId]: [0] });
-              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerId]: [0], [benefactorId]: [0], [accountanId]: [0] });
-              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerId]: [ownerId, benefactorId], [benefactorId]: [benefactorId], [accountanId]: [accountanId] });
+              chai.assert.deepEqual(collections.topics[0].voteCasts, { [benefactorPartnerId]: [0], [accountantPartnerId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerPartnerId]: [0], [benefactorPartnerId]: [0], [accountantPartnerId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerPartnerId]: [ownerPartnerId, benefactorPartnerId], [benefactorPartnerId]: [benefactorPartnerId], [accountantPartnerId]: [accountantPartnerId] });
               done();
             }
           );
@@ -161,8 +167,8 @@ if (Meteor.isServer) {
             { _id: voteTopic._id },
             (collections) => {
               chai.assert.deepEqual(collections.topics[0].voteCasts, {});
-              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerId]: [0] });
-              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerId]: [ownerId, benefactorId] });
+              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerPartnerId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerPartnerId]: [ownerPartnerId, benefactorPartnerId] });
               done();
             }
           );
@@ -176,9 +182,9 @@ if (Meteor.isServer) {
             'topics.byId',
             { _id: voteTopic._id },
             (collections) => {
-              chai.assert.deepEqual(collections.topics[0].voteCasts, { [benefactorId]: [0], [accountanId]: [0] });
-              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerId]: [0], [benefactorId]: [0], [accountanId]: [0] });
-              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerId]: [ownerId, benefactorId], [benefactorId]: [benefactorId], [accountanId]: [accountanId] });
+              chai.assert.deepEqual(collections.topics[0].voteCasts, { [benefactorPartnerId]: [0], [accountantPartnerId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerPartnerId]: [0], [benefactorPartnerId]: [0], [accountantPartnerId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerPartnerId]: [ownerPartnerId, benefactorPartnerId], [benefactorPartnerId]: [benefactorPartnerId], [accountantPartnerId]: [accountantPartnerId] });
               done();
             }
           );
@@ -190,9 +196,9 @@ if (Meteor.isServer) {
             'topics.byId',
             { _id: voteTopic._id },
             (collections) => {
-              chai.assert.deepEqual(collections.topics[0].voteCasts, { [benefactorId]: [0], [accountanId]: [0] });
-              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerId]: [0], [benefactorId]: [0], [accountanId]: [0] });
-              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerId]: [ownerId, benefactorId], [benefactorId]: [benefactorId], [accountanId]: [accountanId] });
+              chai.assert.deepEqual(collections.topics[0].voteCasts, { [benefactorPartnerId]: [0], [accountantPartnerId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].voteCastsIndirect, { [ownerPartnerId]: [0], [benefactorPartnerId]: [0], [accountantPartnerId]: [0] });
+              chai.assert.deepEqual(collections.topics[0].votePaths, { [ownerPartnerId]: [ownerPartnerId, benefactorPartnerId], [benefactorPartnerId]: [benefactorPartnerId], [accountantPartnerId]: [accountantPartnerId] });
               done();
             }
           );

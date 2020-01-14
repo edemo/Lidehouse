@@ -23,7 +23,6 @@ if (Meteor.isServer) {
     after(function () {
     });
 
-
     describe('Bills lifecycle with accrual method', function () {
       let billId;
       let bill;

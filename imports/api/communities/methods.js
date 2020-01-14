@@ -4,7 +4,7 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { _ } from 'meteor/underscore';
 
 import { officerRoles } from '/imports/api/permissions/roles.js';
-import { checkLoggedIn, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
+import { checkRegisteredUser, checkExists, checkNotExists, checkPermissions, checkModifier } from '/imports/api/method-checks.js';
 import { Meters } from '/imports/api/meters/meters.js';
 import { Parcels } from '/imports/api/parcels/parcels.js';
 import { Memberships } from '/imports/api/memberships/memberships.js';
@@ -28,16 +28,16 @@ import { Shareddocs } from '/imports/api/shareddocs/shareddocs.js';
 import { Communities } from './communities.js';
 
 export const create = new ValidatedMethod({
-  name: 'communities.create',
+  name: 'communities.insert',
   validate: Communities.simpleSchema().validator({ clean: true }),
 
   run(doc) {
-    checkLoggedIn(this.userId);
+    checkRegisteredUser(this.userId);
     checkNotExists(Communities, { name: doc.name });
     const communityId = Communities.insert(doc);
     
     // The user creating the community, becomes the first 'admin' of it.
-    Memberships.insert({ communityId, person: { userId: this.userId }, role: 'admin', approved: true, accepted: true });
+    Memberships.insert({ communityId, userId: this.userId, role: 'admin', approved: true, accepted: true });
     return communityId;
   },
 });

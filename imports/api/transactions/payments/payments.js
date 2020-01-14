@@ -85,7 +85,7 @@ Transactions.categoryHelpers('payment', {
   updateOutstandings(sign) {
     if (Meteor.isClient) return;
     debugAssert(this.partnerId, 'Cannot process a payment without a partner');
-    Partners.relCollection(this.relation).update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
+    Partners.update(this.partnerId, { $inc: { outstanding: (-1) * sign * this.amount } });
     if (this.relation === 'parcel') {
       this.bills.forEach(bp => {
         const bill = Transactions.findOne(bp.id);

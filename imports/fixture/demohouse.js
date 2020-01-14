@@ -453,10 +453,10 @@ export function insertDemoHouse(lang, demoOrTest) {
 //    topicIds: [voteTopicBike, voteTopicWallColor, voteTopicManager],
   });
 
-  const ownerships = Memberships.findActive({ communityId: demoCommunityId, role: 'owner', 'person.userId': { $exists: true } }).fetch();
+  const ownerships = Memberships.findActive({ communityId: demoCommunityId, role: 'owner', userId: { $exists: true } }).fetch();
   function castDemoVotes(topicId, votes) {
     votes.forEach((v, index) => {
-      if (v) castVote._execute({ userId: ownerships[index].person.userId }, { topicId, castedVote: v });
+      if (v) castVote._execute({ userId: ownerships[index].userId }, { topicId, castedVote: v });
     });
   }
 
@@ -646,16 +646,28 @@ export function insertDemoHouse(lang, demoOrTest) {
 
   Clock.starts(3, 'month', 'ago');
   const supplier0 = demoBuilder.create('supplier', {
-    name: __('demo.contract.0.partner'),
+    idCard: {
+      type: 'legal',
+      name: __('demo.contract.0.partner'),
+    },
   });
   const supplier1 = demoBuilder.create('supplier', {
-    name: __('demo.contract.1.partner'),
+    idCard: {
+      type: 'legal',
+      name: __('demo.contract.1.partner'),
+    },
   });
   const supplier2 = demoBuilder.create('supplier', {
-    name: __('demo.contract.2.partner'),
+    idCard: {
+      type: 'legal',
+      name: __('demo.contract.2.partner'),
+    },
   });
   const customer0 = demoBuilder.create('customer', {
-    name: __('demo.contract.10.partner'),
+    idCard: {
+      type: 'legal',
+      name: __('demo.contract.10.partner'),
+    },
   });
 
   const contract0 = demoBuilder.create('contract', {
@@ -1141,12 +1153,13 @@ const DEMO_LIFETIME = moment.duration(2, 'hours').asMilliseconds();
 
 function purgeDemoUserWithParcel(userId, parcelId, communityId) {
   debugAssert(userId && parcelId && communityId, `purgeDemoUserWithParcel parameter not defined ${userId} ${parcelId} ${communityId}`);
+  const user = Meteor.users().findOne(userId);
   // Purge user activity
   Topics.remove({ userId });
   Topics.remove({ 'participantIds.$': userId });
   Comments.remove({ userId });
-  Delegations.remove({ sourcePersonId: userId });
-  Delegations.remove({ targetPersonId: userId });
+  Delegations.remove({ sourceId: user.partnerId(communityId) });
+  Delegations.remove({ targetId: user.partnerId(communityId) });
   // Purge votes
   const demoUserVote = 'voteCasts.' + userId;
   const demoUserVoteIndirect = 'voteCastsIndirect.' + userId;

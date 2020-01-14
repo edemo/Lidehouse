@@ -88,12 +88,12 @@ Memberships.actions = {
   invite: {
     name: 'invite',
     icon: () => 'fa fa-user-plus',
-    color: (options, doc) => (doc && doc.personId ? 'info' : 'warning'),
+    color: (options, doc) => (doc && doc.userId ? 'info' : 'warning'),
     visible: (options, doc) => doc && currentUserHasPermission(`${doc.entityName()}.update`, doc) && !doc.accepted,
     run(options, doc, event, instance) {
       Modal.confirmAndCall(Memberships.methods.linkUser, { _id: doc._id }, {
         action: 'invite user',
-        message: __('Connecting user', doc.Person().primaryEmail() || __('undefined')),
+        message: __('Connecting user', doc.person().primaryEmail() || __('undefined')),
       });
     },
   },

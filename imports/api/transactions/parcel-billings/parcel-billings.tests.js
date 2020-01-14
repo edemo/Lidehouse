@@ -22,7 +22,7 @@ chai.assert.equalDate = function equalDate(d1, d2) {
 if (Meteor.isServer) {
   let Fixture;
 
-  describe('parcel billings', function () {
+  describe.only('parcel billings', function () {
     this.timeout(15000);
     before(function () {
     });
@@ -78,7 +78,8 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, parcels.length);
         bills.forEach(bill => {
           chai.assert.isDefined(bill.partnerId);
-          const parcel = Memberships.findOne(bill.partnerId).parcel();
+          console.log('looking for bill.partnerId:', bill.partnerId);
+          const parcel = Memberships.findOne({ communityId, partnerId: bill.partnerId, parcelId: { $exists: true } }).parcel();
 
           chai.assert.equal(bill.lines.length, 1);
           const line = bill.lines[0];
@@ -131,7 +132,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, parcels.length);
         bills.forEach(bill => {
           chai.assert.isDefined(bill.partnerId);
-          const parcel = Memberships.findOne(bill.partnerId).parcel();
+          const parcel = Memberships.findOne({ communityId, partnerId: bill.partnerId }).parcel();
 
           chai.assert.equal(bill.lines.length, 2);
           const line0 = bill.lines[0];
@@ -174,7 +175,7 @@ if (Meteor.isServer) {
         chai.assert.equal(bills.length, parcels.length - 1);
         bills.forEach(bill => {
           chai.assert.isDefined(bill.partnerId);
-          const parcel = Memberships.findOne(bill.partnerId).parcel();
+          const parcel = Memberships.findOne({ communityId, partnerId: bill.partnerId }).parcel();
 
           chai.assert.equal(bill.lines.length, 1);
           const line = bill.lines[0];
